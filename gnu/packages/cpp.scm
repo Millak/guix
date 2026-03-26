@@ -975,6 +975,47 @@ distribute with your projects
 @end itemize")
     (license license:boost1.0)))
 
+(define-public span
+  (let ((commit "836dc6a0efd9849cb194e88e4aa2387436bb079b")
+        (revision "0"))
+    (package
+      (name "span")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/tcbrindle/span")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1v3x1mj4if8jrr7cmrcbhv8n8ygla0liqb0dic6g6ji7px2pr6jf"))
+                (snippet
+                 #~(delete-file "test/catch.hpp"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-catch2
+                   (lambda _
+                     ;; Use catch2 from Guix.
+                     (substitute* (find-files "test" "\\.cpp$")
+                       (("#include \"catch.hpp\"")
+                        "#include <catch2/catch.hpp>"))))
+                 (replace 'install
+                   (lambda _
+                     (install-file "../source/include/tcb/span.hpp"
+                                   (string-append #$output "/include")))))))
+      (native-inputs
+       (list catch2))
+      (home-page "https://github.com/tcbrindle/span")
+      (synopsis "C++20's @code{std::span} shim for older compilers")
+      (description "This package provides a single-header implementation of
+C++20's @code{std::span}, conforming to the C++20 committee draft.  It is
+compatible with C++11, but will use newer language features if they are
+available.")
+      (license license:boost1.0))))
+
 (define-public google-highway
   (package
     (name "google-highway")
