@@ -5881,7 +5881,7 @@ color-related widgets.")
                 "0b92b4zi5rqg5acgbb6yan349idvzmc0x8wjwkdwkga2ad38gh4y"))))
     (build-system cmake-build-system)
     (inputs
-     (list clang-toolchain-15
+     (list clang-toolchain-18
            libxml2
            libxslt
            python-wrapper
