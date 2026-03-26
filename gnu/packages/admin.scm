@@ -4010,7 +4010,7 @@ throughput (in the same interval).")
 (define-public dool
   (package
     (name "dool")
-    (version "1.3.4")
+    (version "1.3.8")
     (source
      (origin
        (method git-fetch)
@@ -4019,7 +4019,7 @@ throughput (in the same interval).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11myxg4y4z0nr60cg0xi3r4akjypyjjg1mxbc4y2a6lg0pras9bv"))))
+        (base32 "17fqrd6kvsfzgh5z8vkkk2n2fysj9zdwbdgd85l7n2q0qnzri0b8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
