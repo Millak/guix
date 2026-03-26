@@ -9760,7 +9760,7 @@ diagrams.")
 (define-public libpoly
   (package
    (name "libpoly")
-   (version "0.2.0")
+   (version "0.2.1")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -9769,7 +9769,7 @@ diagrams.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "0vwdffmff3widzj8x1pjvpw48s7h1y1pm8cad3zscmg2hzaqwkc0"))))
+              "1nyiddvxzziagz7zrl2in8k1mypaj8z7vmm633h9mk4iiy586ddq"))))
    (build-system cmake-build-system)
    (inputs (list gmp))
    (native-inputs
