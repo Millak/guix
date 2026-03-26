@@ -74,6 +74,7 @@
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2026 Joan Vilardaga Castro <codeberg-hn80@joanvc.cat>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2816,6 +2817,32 @@ family.")
 ;; https://github.com/adobe-fonts/source-serif/issues/77
 (define-deprecated-package font-adobe-source-serif-pro
   font-adobe-source-serif)
+
+(define-public font-medieval-sharp
+  ;; No releases, use newest commit.
+  (let ((commit "ee7510b6b13854fd340e7d2e44c218780f672cd1")
+        (revision "1"))
+    (package
+      (name "font-medieval-sharp")
+      ;; From FONTLOG.txt.
+      (version (git-version "3.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/wmk69/Medieval-Sharp")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1r300591pra4nxpm5kppl5q3ihsp01wk2zh24f9pvv0jgf1ik87x"))))
+      (build-system font-build-system)
+      (home-page "https://github.com/wmk69/Medieval-Sharp")
+      (synopsis "Font based on gothic letters")
+      (description
+       "Medieval Sharp is a font created for inscriptions on stone, based on
+gothic letters.")
+      (license license:silofl1.1))))
 
 (define-public font-microsoft-cascadia
   (package
