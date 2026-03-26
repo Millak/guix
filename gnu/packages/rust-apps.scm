@@ -3450,7 +3450,7 @@ colorized view to stdout.")
     (native-inputs (list pkg-config))
     (inputs (cons* libgit2-1.8 openssl zlib
                    (cargo-inputs 'tokei)))
-    (home-page "https://tokei.rs")
+    (home-page "https://github.com/XAMPPRocky/tokei")
     (synopsis "Count code, quickly")
     (description
      "Tokei is a program that displays statistics about your code.  Tokei will
