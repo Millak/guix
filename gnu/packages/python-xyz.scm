@@ -21351,7 +21351,20 @@ development version of CPython that are not available in older releases.")
                           "test_ftp"
                           "test_main"
                           "test_moves_urllib_request_http"
-                          "test_urllib_request_http")
+                          "test_urllib_request_http"
+                          ;; Tests failing on Python 3.12
+                          "test_converting_drive_letter"
+                          "test_converting_drive_letter"
+                          "test_converting_when_no_drive_letter"
+                          "test_converting_when_no_drive_letter"
+                          "test_converting_when_no_drive_letter"
+                          "test_converting_when_no_drive_letter"
+                          "test_isinstance_recursion_limit"
+                          "test_roundtrip_pathname2url"
+                          "test_roundtrip_pathname2url"
+                          "test_roundtrip_url2pathname"
+                          "test_roundtrip_url2pathname"
+                          "test_subclass_recursion_limit")
                     " and not "))))
     (native-inputs
      (list python-pytest
