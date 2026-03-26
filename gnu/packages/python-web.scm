@@ -11272,17 +11272,16 @@ forked version whose pypi name is @code{marshmallow_jsonapi_minfork}.")
 (define-public python-pecan
   (package
     (name "python-pecan")
-    (version "1.6.1")
+    (version "1.8.0")
     (source
      (origin
-       (method git-fetch)               ;no tests in pypi release
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pecan/pecan")
-             (commit version)))
+              (url "https://github.com/pecan/pecan")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1ybjvpws741bvxd7aq5hh8gv5sk9836hb9afgalqsm0lxsq0li3a"))))
+        (base32 "0w693jpnjy358992f3jrrlf31knkqn0jvz2jx0iz7ziikprc61p8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -11292,13 +11291,11 @@ forked version whose pypi name is @code{marshmallow_jsonapi_minfork}.")
            python-genshi
            python-jinja2
            python-pytest
-           python-sqlalchemy))
-    (propagated-inputs
-     (list python-logutils
-           python-mako
-           python-six
-           python-webob
+           python-sqlalchemy-2
            python-webtest))
+    (propagated-inputs
+     (list python-mako
+           python-webob))
     (home-page "http://github.com/pecan/pecan")
     (synopsis "WSGI object-dispatching web framework")
     (description "This package provides a WSGI object-dispatching web
