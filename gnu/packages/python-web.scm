@@ -3542,49 +3542,35 @@ other HTTP libraries.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/cherrypy/cheroot")
-             (commit (string-append "v" version))))
+              (url "https://github.com/cherrypy/cheroot")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "02rhci01m5fcn8mqpvq3c35rs4n28gxlfvfw2if2f85rgwrji8y8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      #~(list ;; Tests are flaky in parallel invocation.
-              ;; "--numprocesses=auto"
-              "--doctest-modules"
-              "--showlocals"
-              "-k" (string-append
-                    ;; Disable test requiring networking.
-                    "not test_tls_client_auth"
-                    ;; TypeError: HTTPConnection.request() got an unexpected keyword
-                    ;; argument 'chunked'
-                    " and not test_peercreds_unix_sock"
-                    " and not test_peercreds_unix_sock_with_lookup"))
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion "/tmp"
-                  (apply invoke "pytest" "-v"
-                         (append test-flags (list #$output))))))))))
-    (propagated-inputs
-     (list python-jaraco-functools python-more-itertools))
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; See: <https://codeberg.org/guix/guix/issues/7476>.
+              (delete-file "pytest.ini"))))))
     (native-inputs
-     (list python-jaraco-text
-           python-portend
+     (list python-portend
            python-pyopenssl
            python-pypytools
+           python-pytest
            python-pytest-mock
            python-requests
            python-requests-toolbelt
            python-requests-unixsocket2
            python-setuptools
            python-setuptools-scm
-           python-trustme
-           python-wheel))
+           python-trustme))
+    (propagated-inputs
+     (list python-jaraco-functools
+           python-more-itertools))
     (home-page "https://cheroot.cherrypy.dev")
     (synopsis "Highly-optimized, pure-python HTTP server")
     (description
