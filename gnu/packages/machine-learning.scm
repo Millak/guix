@@ -1116,7 +1116,7 @@ algorithm.")
 (define-public openmm
   (package
     (name "openmm")
-    (version "8.4.0")
+    (version "8.5.0")
     (source
      (origin
        (method git-fetch)
@@ -1126,7 +1126,7 @@ algorithm.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0lb1idyaas550fp6j8ykiy37lykkm7wzz5na70z27hj4m1m1sgdw"))))
+         "081yxldinf5ldrag4f50a7kx13fi9wzynq1zc1m619ap14y6nzrl"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1137,13 +1137,13 @@ algorithm.")
              "-DOPENMM_BUILD_CUDA_LIB=FALSE")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-python-build-system
+          (add-after 'unpack 'patch-wrappers-python-install
             (lambda _
               (substitute* "wrappers/python/CMakeLists.txt"
                 (("install --root=\\\\\\$ENV\\{DESTDIR\\}/")
                  (string-append "install --prefix=" #$output
                                 " --root=/ --single-version-externally-managed")))))
-          (add-after 'patch-python-build-system 'remove-shaky-tests
+          (add-after 'unpack 'remove-shaky-tests
             (lambda _
               ;; These tests may unpredictably fail in CI, even passing
               ;; locally.
@@ -1162,15 +1162,18 @@ algorithm.")
     (propagated-inputs
      (list python-numpy))
     (native-inputs
-     (list doxygen gfortran opencl-headers python-cython swig-4.0))
+     (list doxygen gfortran opencl-headers python-cython swig))
     (home-page "https://github.com/openmm/openmm/")
     (synopsis "Toolkit for molecular simulation")
     (description
      "OpenMM is a toolkit for molecular simulation.  It can be used either as
 a stand-alone application for running simulations, or as a library you call
 from your own code.")
-    ;; See https://github.com/openmm/openmm/issues/4278#issuecomment-1772982471
-    (license license:expat)))
+    ;; All licenses are listed in  <docs-source/licenses/Licenses.txt>.
+    (license (list license:cc-by3.0  ;PdbxReader
+                   license:expat     ;API, Reference Platform, CPU Platform, VkFFT
+                   license:gpl3      ;Hilbert Curve
+                   license:lgpl3)))) ;CUDA and OpenCL Platforms
 
 (define-public randomjungle
   (package
