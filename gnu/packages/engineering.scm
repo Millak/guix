@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2016, 2018, 2020-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018, 2020-2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2016-2019, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018 Theodoros Foradis <theodoros@foradis.org>
@@ -3076,16 +3076,19 @@ extension and customization.")
         (base32
          "1a0zbdaj3s459s0cdayq4s3k3vbrfg7y32sf7s7qvi2bhz3fvwgq"))))
     (build-system cmake-build-system)
-    (inputs (list hdf5 zlib))
     (arguments
      (list
       #:parallel-tests? #f
+      #:configure-flags
+      #~(list "-DMEDFILE_BUILD_DOC=ON")
       #:phases
       #~(modify-phases %standard-phases
         (add-after 'install 'remove-test-output
           (lambda _
             (delete-file-recursively
              (string-append #$output "/bin/testc")))))))
+    (inputs (list hdf5 zlib))
+    (native-inputs (list doxygen graphviz-minimal))
     (home-page "https://www.salome-platform.org")
     (synopsis "Library to read and write MED files")
     (description
