@@ -3280,7 +3280,7 @@ to download videos from Austria's national television broadcaster.")
             (lambda _
               (delete-file-recursively "tests/integration"))))))
     (native-inputs
-     (list python-flit-core python-pytest python-pytest-runner))
+     (list python-flit-core python-pytest))
     (inputs (list bash-minimal ffmpeg-5 wget))
     (propagated-inputs
      (list python-attrs

@@ -6698,10 +6698,7 @@ isolation or root privileges.")
     (inputs
      (list singularity))
     (native-inputs
-     (list python-pytest
-           python-pytest-runner
-           python-setuptools
-           python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/singularityhub/singularity-cli")
     (synopsis "Singularity Python client")
     (description "@code{python-spython} is a Python library to interact with

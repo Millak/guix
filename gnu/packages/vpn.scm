@@ -1220,7 +1220,7 @@ private network between hosts on the internet.")
            ;; For tests only.
            python-hatchling
            python-mock
-           python-pytest-runner
+           python-pytest
            ;; For documentation only.
            python-sphinx
            texinfo))

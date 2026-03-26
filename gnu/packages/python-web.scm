@@ -3413,7 +3413,6 @@ AWS S3 Service using boto3 S3 resource as a driver.")
            python-pillow
            python-pytest
            python-pytest-asyncio
-           python-pytest-runner
            python-pyyaml
            python-rapidjson
            python-requests
@@ -9746,7 +9745,7 @@ simplified fork of html5lib.")
     (propagated-inputs
      (list python-tinycss2))
     (native-inputs
-     (list python-flit python-pytest-runner))
+     (list python-flit))
     (home-page "https://cssselect2.readthedocs.io/")
     (synopsis "CSS selectors for Python ElementTree")
     (description "@code{cssselect2} is a straightforward implementation of

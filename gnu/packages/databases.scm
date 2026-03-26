@@ -5823,7 +5823,6 @@ __version_tuple__ = version_tuple = (~a)~%" version version-tuple))))))
            pkg-config
            python-cython
            python-pytest
-           python-pytest-runner
            python-setuptools-scm
            python-setuptools))
     (outputs '("out"))
@@ -6471,7 +6470,6 @@ mechanism of @code{dogpile}.")
            python-cogapp
            python-pytest
            python-pytest-asyncio-0.26
-           python-pytest-runner
            python-pytest-timeout
            python-pytest-xdist
            python-setuptools

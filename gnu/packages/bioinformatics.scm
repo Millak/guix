@@ -6964,7 +6964,6 @@ and v1.1 to v1.2.")
      (list python-mypy-extensions
            python-pytest
            python-pytest-mock
-           python-pytest-runner
            python-setuptools
            python-wheel))
     (propagated-inputs

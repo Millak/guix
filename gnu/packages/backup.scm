@@ -136,7 +136,6 @@
            python-paramiko
            python-pexpect
            python-pytest
-           python-pytest-runner
            python-setuptools-scm
            tzdata-for-tests
            python-mock))
@@ -1365,9 +1364,9 @@ borgmatic is powered by borg.")
             (assoc-ref qt:%standard-phases 'qt-wrap)))))
     (native-inputs
      (list python-platformdirs
+           python-pytest
            python-pytest-mock
            python-pytest-qt
-           python-pytest-runner
            python-setuptools
            python-setuptools-git))
     (inputs

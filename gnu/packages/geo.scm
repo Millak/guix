@@ -1867,10 +1867,7 @@ utilities for data translation and processing.")
       ;; This test requires internet access.
       '(list "--deselect" "test_shapefile.py::test_reader_url")))
     (native-inputs
-     (list python-pytest
-           python-pytest-runner
-           python-setuptools
-           python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/GeospatialPython/pyshp")
     (synopsis "Read/write support for ESRI Shapefile format")
     (description

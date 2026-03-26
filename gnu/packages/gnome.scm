@@ -12395,7 +12395,6 @@ advanced image management tool")
            intltool
            pkg-config
            python-psutil
-           python-pytest-runner
            python-pytest))
     (inputs
      (list bash-minimal ;for wrap-program

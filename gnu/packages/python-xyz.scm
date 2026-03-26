@@ -3447,8 +3447,7 @@ scipy and numpy of negative binomial maximum likelihood estimation.")
                 "0523jrzjj29kxpdllmfhrfj9kysi9mphp2m7ippjkn5b07i1g2pd"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-six))
-    (native-inputs (list python-pytest python-pytest-runner
-                         python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/Chilipp/docrep")
     (synopsis "Python package for docstring repetition")
     (description "Docrep is the documentation repetition module.  This module
@@ -14201,7 +14200,6 @@ ManimPango is internally used in Manim to render (non-LaTeX) text.")
            python-numpy
            python-pikepdf
            python-pytest
-           python-pytest-runner
            python-sphinx
            python-sphinx-rtd-theme))
     (propagated-inputs
@@ -22867,8 +22865,10 @@ etc.")
        (sha256
         (base32 "1qyxq54r2fbh09ab5sffbxajy8arbk6czxz5lq3ccr9qrypw6w27"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-easyprocess python-pytest python-pytest-runner
-                         python-setuptools python-wheel))
+    (native-inputs (list python-easyprocess
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
     (home-page "https://github.com/ponty/entrypoint2")
     (synopsis "Command-line interface for Python modules")
     (description

@@ -620,7 +620,6 @@ for fontTools.")
      (list python-cython
            python-defcon
            python-pytest
-           python-pytest-runner
            python-setuptools
            python-setuptools-scm
            python-wheel

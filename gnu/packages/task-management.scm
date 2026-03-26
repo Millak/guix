@@ -711,7 +711,6 @@ on arbitrary tasks.  All the time data is saved in files residing in the
      (list python-freezegun
            python-hypothesis
            python-pytest
-           python-pytest-runner
            python-pytz
            python-setuptools
            python-wheel))
