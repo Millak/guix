@@ -2957,15 +2957,39 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1zyz473fzrz9h073wp4k65qq4bkhqsp245nsv6nv186sl78l99xa"))
-       (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; not required, because 3D mouse support if OFF
-           (delete-file-recursively "src/3rdParty/3Dconnexion")
-           (delete-file-recursively "src/3rdParty/GSL")           ;; c++-gsl
-           (delete-file-recursively "src/3rdParty/OndselSolver")  ;; ondsel-solver
-           (delete-file-recursively "src/3rdParty/OpenGL")))))    ;; glext.h from mesa
+        #~(begin
+            (use-modules (guix build utils))
+            ;; not required, because 3D mouse support if OFF
+            (delete-file-recursively "src/3rdParty/3Dconnexion")
+            (delete-file-recursively "src/3rdParty/GSL")           ;; c++-gsl
+            (delete-file-recursively "src/3rdParty/OndselSolver")  ;; ondsel-solver
+            (delete-file-recursively "src/3rdParty/OpenGL")))))    ;; glext.h from mesa
     (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f  ;; Project has tests, but they are a pain to build
+      #:configure-flags
+      #~(list
+         "-DBUILD_FLAT_MESH:BOOL=ON"
+         "-DBUILD_ENABLE_CXX_STD:STRING=C++17"
+         "-DENABLE_DEVELOPER_TESTS=OFF"  ;; see the above: #:tests? comment
+         "-DFREECAD_QT_VERSION=6"  ;; Build with Qt6
+         "-DFREECAD_USE_EXTERNAL_ONDSELSOLVER=ON"  ;; unbundle ondsel-solver
+         ;; Do not try to install modules into system python
+         "-DINSTALL_TO_SITEPACKAGES=OFF"
+         (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'restore-pythonpath
+            (lambda _
+              (substitute* "src/Main/MainGui.cpp"
+                (("_?putenv\\(\"PYTHONPATH=\"\\);") ""))))
+          (add-after 'install 'wrap-pythonpath
+            (lambda _
+              (wrap-program (string-append #$output "/bin/FreeCAD")
+                (list "GUIX_PYTHONPATH"
+                      'prefix (list (getenv "GUIX_PYTHONPATH")))))))))
     (native-inputs
      (list c++-gsl
            doxygen
@@ -3023,30 +3047,6 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
            xerces-c
            yaml-cpp
            zlib))
-    (arguments
-     `(#:tests? #f  ;; Project has tests, but they are a pain to build
-       #:configure-flags
-       ,#~(list
-           "-DBUILD_FLAT_MESH:BOOL=ON"
-           "-DBUILD_ENABLE_CXX_STD:STRING=C++17"
-           "-DENABLE_DEVELOPER_TESTS=OFF"  ;; see the above: #:tests? comment
-           "-DFREECAD_QT_VERSION=6"  ;; Build with Qt6
-           "-DFREECAD_USE_EXTERNAL_ONDSELSOLVER=ON"  ;; unbundle ondsel-solver
-           ;; Do not try to install modules into system python
-           "-DINSTALL_TO_SITEPACKAGES=OFF"
-           (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'restore-pythonpath
-           (lambda _
-             (substitute* "src/Main/MainGui.cpp"
-               (("_?putenv\\(\"PYTHONPATH=\"\\);") ""))))
-         (add-after 'install 'wrap-pythonpath
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/FreeCAD")
-                 (list "GUIX_PYTHONPATH"
-                       'prefix (list (getenv "GUIX_PYTHONPATH"))))))))))
     (home-page "https://www.freecad.org/")
     (synopsis "Your Own 3D Parametric Modeler")
     (description
