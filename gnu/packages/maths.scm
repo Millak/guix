@@ -1865,6 +1865,7 @@ extremely large and complex data collections.")
   (package
     (name "hdf5")
     (version "1.14.6")
+    (outputs '("out" "doc"))
     (source
      (origin
        (method git-fetch)
@@ -2015,7 +2016,12 @@ extremely large and complex data collections.")
                                 '("bin/h5hlfc"
                                   "bin/h5fc"))
                 (("/gnu/store/[a-z0-9]*-gfortran-[0-9.]*/bin/")
-                 "")))))))
+                 ""))))
+          (add-after 'install 'move-html-documentation
+            (lambda _
+              (mkdir-p (string-append #$output:doc "/share"))
+              (rename-file (string-append #$output "/share/html")
+                           (string-append #$output:doc "/share/html")))))))
     (inputs (list libaec zlib))
     (native-inputs
      (list bison
