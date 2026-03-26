@@ -10683,14 +10683,16 @@ language-neutral coding interface compatible with all major web browsers.")))
 (define-public python-rapidjson
   (package
     (name "python-rapidjson")
-    (version "1.10")
+    (version "1.23")
     (source
       (origin
-        (method url-fetch)
-        (uri (pypi-uri "python-rapidjson" version))
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/python-rapidjson/python-rapidjson")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
         (sha256
-         (base32
-          "0h1m9m4a5rlf5hw6ak7z3qbgdhmqarzxw9d140mcf7mrxpswpzmc"))
+         (base32 "0ajf919gg3qmi68jb0m6v80al2n65cn2ac36qz46s0h6zh92cl86"))
         (modules '((guix build utils)))
         (snippet
          '(delete-file-recursively "rapidjson"))))
@@ -10711,7 +10713,7 @@ language-neutral coding interface compatible with all major web browsers.")))
                                 "/include/rapidjson" "'"))
                 (("if not os.path.isdir.*") "if False:")))))))
     (native-inputs
-     (list rapidjson python-pytest python-pytz python-setuptools python-wheel))
+     (list rapidjson python-pytest python-pytz python-setuptools))
     (home-page "https://github.com/python-rapidjson/python-rapidjson")
     (synopsis "Python wrapper around rapidjson")
     (description "This package provides a python wrapper around rapidjson.")
