@@ -3994,8 +3994,7 @@ that beneath its ruins lay buried an ancient evil.")
            (delete-file-recursively "src/win")))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:configure-flags (list (string-append "--bindir=" %output "/bin"))
+     `(#:configure-flags (list (string-append "--bindir=" %output "/bin"))
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'fix-infinite-loop-on-sighup
@@ -4006,8 +4005,39 @@ that beneath its ruins lay buried an ancient evil.")
            (lambda _
              (substitute* "src/ui-signals.c"
                (("(SIGHUP, )SIG_IGN" _ first)
-                (string-append first "handle_signal_abort"))))))))
-    (native-inputs (list autoconf automake))
+                (string-append first "handle_signal_abort")))))
+         (add-before 'check 'skip-failing-tests
+           (lambda _
+             (let ((to-skip '(;; some of these may be fixable, but most try to
+                              ;; create a directory in the user's home directory.
+                              ;; Rather than reading environment variables, they
+                              ;; lookup the username using getpwnam(3) and manually
+                              ;; construct the string.
+                              ;; Generic "Suite died":
+                              "game/basic"
+                              "game/mage"
+                              ;; "Cannot create '//.angband/Angband'":
+                              "effects/chain"
+                              "effects/destruction"
+                              "effects/earthquake"
+                              "object/info"
+                              "object/slays"
+                              "player/calc-inventory"
+                              "player/combine-pack"
+                              "player/digging"
+                              "player/inven-carry-num"
+                              "player/inven-wield"
+                              "player/timed"
+                              ;; This file likes to read /etc/passwd
+                              "z-file/path-normalize")))
+               (substitute* "src/tests/Makefile"
+                 (("include \\$\\(SUITES\\)" all)
+                  (string-append all "\nTESTPROGS := $(filter-out "
+                                 (string-join to-skip " ")
+                                 ", $(TESTPROGS))")))))))))
+    (native-inputs (list autoconf
+                         automake
+                         perl)) ;for tests
     (inputs (list ncurses))
     (home-page "https://rephial.org/")
     (synopsis "Dungeon exploration roguelike")
