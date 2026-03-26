@@ -14,7 +14,7 @@
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 (unmatched parenthesis <paren@disroot.org>
-;;; Copyright © 2022, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022, 2025, 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
@@ -1721,8 +1721,8 @@ will take care of dispatching tasks to available cores.")
 
 (define-public utf8-h
   ;; The latest tag is used as there is no release.
-  (let ((commit "500d4ea9f4c3449e5243c088d8af8700f7189734")
-        (revision "0"))
+  (let ((commit "a6cd7d4329e9336518d2e2a449d4f3cb8def54cc")
+        (revision "1"))
     (package
       (name "utf8-h")
       (version (git-version "0.0.0" revision commit))
@@ -1734,7 +1734,7 @@ will take care of dispatching tasks to available cores.")
                 (file-name (git-file-name "utf8.h" version))
                 (sha256
                  (base32
-                  "0x9f7ivww8c7cigf4ck0hfx2bm79qgx6q4ccwzqbzkrmcrl9shfb"))))
+                  "095cmlj2522mp3p85nqilzhsg006n29vfzknc7r524c59zadii4x"))))
       (build-system cmake-build-system)
       (arguments
        (list
