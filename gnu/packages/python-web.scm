@@ -3631,7 +3631,24 @@ other HTTP libraries.")
           "test_session.py::SessionTest::test_3_Redirect"
           "test_session.py::SessionTest::test_4_File_deletion"
           ;; XXX: Unraisable exceptions.
-          "test_core.py::CoreRequestHandlingTest"))))
+          "test_conn.py::LimitedRequestQueueTests::test_queue_full"
+          "test_config_server.py::ServerConfigTests::testMaxRequestSize"
+          "test_core.py::CoreRequestHandlingTest::testRanges"
+          "test_core.py::CoreRequestHandlingTest::testRedirect"
+          "test_encoding.py::EncodingTests::\
+test_multipart_decoding_bigger_maxrambytes"
+          "test_encoding.py::EncodingTests::\
+test_test_http.py::HTTPTests::test_post_filename_with_special_characters"
+          "test_http.py::HTTPTests::test_post_multipart"
+          "test_http.py::HTTPTests::test_post_filename_with_special_characters"
+          "test_mime.py::SafeMultipartHandlingTest::test_Flash_Upload"
+          "test_tutorials.py::TutorialTest::test09Files"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; See: <https://codeberg.org/guix/guix/issues/7476>.
+              (delete-file "pytest.ini"))))))
     (propagated-inputs
      (list python-cheroot
            python-jaraco-collections
