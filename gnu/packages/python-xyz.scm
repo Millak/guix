@@ -20673,7 +20673,7 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 3248 passed, 26 skipped, 8 deselected, 3 xfailed, 54 warnings,
+      ;; tests: 3248 passed, 26 skipped, 8 deselected, 3 xfailed, 55 warnings,
       ;;        28958 subtests passed
       #:test-flags
       ;; The MongoDB backend test appears to expect an older version of
@@ -20713,9 +20713,9 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
            python-setuptools))
     (propagated-inputs
      (list python-billiard
-           python-click
+           python-click-8.1
            python-click-didyoumean
-           python-click-plugins-1
+           python-click-plugins
            python-click-repl
            python-dateutil
            python-kombu
