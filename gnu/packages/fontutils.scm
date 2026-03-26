@@ -747,8 +747,7 @@ implementing the pen protocol for manipulating glyphs.")
       (modify-inputs native-inputs
         (append python-fontparts-bootstrap
                 python-fontpens-bootstrap
-                python-pytest
-                python-pytest-runner))))))
+                python-pytest))))))
 
 ;;; A variant used to break a cycle with python-fontpens.
 (define-public python-fontparts-bootstrap
