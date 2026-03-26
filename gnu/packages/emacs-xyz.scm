@@ -17721,6 +17721,29 @@ etc), but also compiling languages (C, C++, Go, Java etc) and markup
 languages.")
     (license license:gpl3+)))
 
+(define-public emacs-quotable
+  (package
+    (name "emacs-quotable")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/coopi/emacs-quotable")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00359yljynmk6bqifvfrrradm4na9ap76isibi2d6s4i810szixh"))))
+    (build-system emacs-build-system)
+    (home-page "https://codeberg.org/coopi/emacs-quotable")
+    (synopsis "Emacs Lisp client for the Quotable API")
+    (description
+     "This package provides a programmatic interface for the
+@uref{https://github.com/lukePeavey/quotable, Quotable @acronym{API,
+Application Programming Interface}}, a free and open-source quotations
+@acronym{API}.")
+    (license license:agpl3+)))
+
 (define-public emacs-pkg-info
   (package
     (name "emacs-pkg-info")
