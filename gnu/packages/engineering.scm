@@ -3066,6 +3066,7 @@ extension and customization.")
   (package
     (name "libmedfile")
     (version "6.0.1")
+    (outputs '("out" "doc"))
     (source
      (origin
        (method url-fetch)
@@ -3086,7 +3087,12 @@ extension and customization.")
         (add-after 'install 'remove-test-output
           (lambda _
             (delete-file-recursively
-             (string-append #$output "/bin/testc")))))))
+             (string-append #$output "/bin/testc"))))
+        (add-after 'install 'move-html-documentation
+          (lambda _
+            (mkdir-p (string-append #$output:doc "/share"))
+            (rename-file (string-append #$output "/share/doc")
+                         (string-append #$output:doc "/share/doc")))))))
     (inputs (list hdf5 zlib))
     (native-inputs (list doxygen graphviz-minimal))
     (home-page "https://www.salome-platform.org")
