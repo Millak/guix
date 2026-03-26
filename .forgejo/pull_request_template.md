@@ -28,7 +28,13 @@ Tick a box by changing it from [ ] to [x].
   - [ ] i586-gnu
 
 - Package **update**
-  - Closure size increase after update (`./pre-inst-env guix size PACKAGE`).
+  - Closure size increase.
+```console
+$ guix size PACKAGE | tail -n1 # before
+total: ...
+$ ./pre-inst-env guix size PACKAGE | tail -n1 # after
+total: ...
+```
   - Build status of direct dependents (`./pre-inst-env guix build -k -P1 PACKAGE ...`):
 ```text
 
