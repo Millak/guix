@@ -18307,7 +18307,8 @@ and other @acronym{IDEs, Integrated Development Environments}.")
               ;; Python site packages.
               (setenv "DEBUGPY_BUNDLING_DISABLED" "1"))))))
     (native-inputs
-     (list python-setuptools))
+     (list python-setuptools
+           python-versioneer))
     (propagated-inputs
      (list python-pydevd))
     (home-page "https://aka.ms/debugpy")
