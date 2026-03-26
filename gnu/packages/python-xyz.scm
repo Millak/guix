@@ -16065,13 +16065,16 @@ tie-resolvement is accelerated by numba.")
 (define-public python-pyzmq
   (package
     (name "python-pyzmq")
-    (version "27.0.1")
+    (version "27.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyzmq" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zeromq/pyzmq")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0jznvl7v41241pbbvwzjxi028mrfy1n5ymfjzy2783n29ch4kia5"))))
+        (base32 "1zw0wm48ja90f616nwd33njplcni7wszw6r660l7cnim81yb3rhq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
