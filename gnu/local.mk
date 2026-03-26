@@ -2468,6 +2468,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/t4k-common-libpng16.patch		\
   %D%/packages/patches/tao-add-missing-headers.patch		\
   %D%/packages/patches/tao-fix-parser-types.patch		\
+  %D%/packages/patches/tao-synth-include-string-you-use.patch		\
   %D%/packages/patches/tar-remove-wholesparse-check.patch	\
   %D%/packages/patches/tar-skip-unreliable-tests.patch		\
   %D%/packages/patches/taskwarrior-link-taskchampion-cpp-with-sqlite3.patch \

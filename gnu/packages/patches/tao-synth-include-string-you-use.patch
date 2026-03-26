@@ -1,0 +1,187 @@
+Upstream-Status: not reported
+
+diff --git a/include/tao/bow.h b/include/tao/bow.h
+index 38c7081..0a35886 100644
+--- a/include/tao/bow.h
++++ b/include/tao/bow.h
+@@ -21,6 +21,7 @@
+ 
+ #include <tao/access_point.h>
+ #include <tao/device.h>
++#include <string>
+ 
+ #ifdef WIN32
+ #define DLLEXPORT __declspec(dllexport)
+diff --git a/include/tao/circle.h b/include/tao/circle.h
+index f3061ae..2f96c68 100644
+--- a/include/tao/circle.h
++++ b/include/tao/circle.h
+@@ -21,6 +21,7 @@
+ 
+ #include <tao/cell.h>
+ #include <tao/instrument.h>
++#include <string>
+ 
+ #ifdef WIN32
+ #define DLLEXPORT __declspec(dllexport)
+diff --git a/include/tao/connector.h b/include/tao/connector.h
+index 0c255f2..1cdcc13 100644
+--- a/include/tao/connector.h
++++ b/include/tao/connector.h
+@@ -21,6 +21,7 @@
+ 
+ #include <tao/access_point.h>
+ #include <tao/device.h>
++#include <string>
+ 
+ #ifdef WIN32
+ #define DLLEXPORT __declspec(dllexport)
+diff --git a/include/tao/device.h b/include/tao/device.h
+index 06d025c..9bb48aa 100644
+--- a/include/tao/device.h
++++ b/include/tao/device.h
+@@ -32,6 +32,7 @@
+ #endif
+ 
+ #include <tao/access_point.h>
++#include <string>
+ 
+ #ifdef WIN32
+ #define DLLEXPORT __declspec(dllexport)
+diff --git a/include/tao/ellipse.h b/include/tao/ellipse.h
+index ac3b849..c05fcf7 100644
+--- a/include/tao/ellipse.h
++++ b/include/tao/ellipse.h
+@@ -21,6 +21,7 @@
+ 
+ #include <tao/cell.h>
+ #include <tao/instrument.h>
++#include <string>
+ 
+ #ifdef WIN32
+ #define DLLEXPORT __declspec(dllexport)
+diff --git a/include/tao/graphics_engine.h b/include/tao/graphics_engine.h
+index bf67425..b2764aa 100644
+--- a/include/tao/graphics_engine.h
++++ b/include/tao/graphics_engine.h
+@@ -23,6 +23,7 @@
+ #include <iomanip>
+ #include <memory>
+ #include <sstream>
++#include <string>
+ 
+ #ifdef WIN32
+ #define DLLEXPORT __declspec(dllexport)
+diff --git a/include/tao/hammer.h b/include/tao/hammer.h
+index 172a8e8..0a4cf2d 100644
+--- a/include/tao/hammer.h
++++ b/include/tao/hammer.h
+@@ -20,6 +20,7 @@
+ #define HAMMER_H
+ 
+ #include <tao/device.h>
++#include <string>
+ 
+ #ifdef WIN32
+ #define DLLEXPORT __declspec(dllexport)
+diff --git a/include/tao/instrument.h b/include/tao/instrument.h
+index 3b23ac7..60cb6e0 100644
+--- a/include/tao/instrument.h
++++ b/include/tao/instrument.h
+@@ -26,6 +26,7 @@ extern "C" {
+ #include <tao/access_point.h>
+ #include <tao/pitch.h>
+ #include <vector>
++#include <string>
+ 
+ #ifdef WIN32
+ #define DLLEXPORT __declspec(dllexport)
+diff --git a/include/tao/output.h b/include/tao/output.h
+index db34e92..03e3224 100644
+--- a/include/tao/output.h
++++ b/include/tao/output.h
+@@ -23,6 +23,7 @@
+ #include <fstream>
+ #include <sstream>
+ #include <vector>
++#include <string>
+ 
+ #ifdef WIN32
+ #define DLLEXPORT __declspec(dllexport)
+diff --git a/include/tao/pitch.h b/include/tao/pitch.h
+index a76f5eb..fa31ab2 100644
+--- a/include/tao/pitch.h
++++ b/include/tao/pitch.h
+@@ -19,6 +19,8 @@
+ #ifndef TAOPITCH_H
+ #define TAOPITCH_H
+ 
++#include <string>
++
+ #ifdef WIN32
+ #define DLLEXPORT __declspec(dllexport)
+ #else
+diff --git a/include/tao/rectangle.h b/include/tao/rectangle.h
+index 5c1e77c..0056dcd 100644
+--- a/include/tao/rectangle.h
++++ b/include/tao/rectangle.h
+@@ -21,6 +21,7 @@
+ 
+ #include <tao/cell.h>
+ #include <tao/instrument.h>
++#include <string>
+ 
+ #ifdef WIN32
+ #define DLLEXPORT __declspec(dllexport)
+diff --git a/include/tao/rgb_color.h b/include/tao/rgb_color.h
+index 69259b6..3f8f7b7 100644
+--- a/include/tao/rgb_color.h
++++ b/include/tao/rgb_color.h
+@@ -1,6 +1,8 @@
+ #ifndef TAORGBCOLOR_H
+ #define TAORGBCOLOR_H
+ 
++#include <string>
++
+ /*
+ static struct colors=
+ {
+diff --git a/include/tao/stop.h b/include/tao/stop.h
+index 85a6570..f6868f2 100644
+--- a/include/tao/stop.h
++++ b/include/tao/stop.h
+@@ -23,6 +23,7 @@
+ #include <tao/device.h>
+ #include <tao/pitch.h>
+ #include <tao/strand.h>
++#include <string>
+ 
+ #ifdef WIN32
+ #define DLLEXPORT __declspec(dllexport)
+diff --git a/include/tao/strand.h b/include/tao/strand.h
+index 65a0d30..1fe99a4 100644
+--- a/include/tao/strand.h
++++ b/include/tao/strand.h
+@@ -21,6 +21,7 @@
+ 
+ #include <tao/cell.h>
+ #include <tao/instrument.h>
++#include <string>
+ 
+ #ifdef WIN32
+ #define DLLEXPORT __declspec(dllexport)
+diff --git a/include/tao/triangle.h b/include/tao/triangle.h
+index 06d2b2c..9978f94 100644
+--- a/include/tao/triangle.h
++++ b/include/tao/triangle.h
+@@ -21,6 +21,7 @@
+ 
+ #include <tao/cell.h>
+ #include <tao/instrument.h>
++#include <string>
+ 
+ #ifdef WIN32
+ #define DLLEXPORT __declspec(dllexport)
+-- 
+2.52.0
+

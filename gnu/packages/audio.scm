@@ -2316,13 +2316,13 @@ object library.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1jds2l3cb96b02jxd7lmrjjl9s7mylnrvg6fpw0j8c141bk8vyg3"))))
+                  "1jds2l3cb96b02jxd7lmrjjl9s7mylnrvg6fpw0j8c141bk8vyg3"))
+                (patches
+                 (search-patches "tao-synth-include-string-you-use.patch"))))
       (build-system cmake-build-system)
       (arguments (list #:tests? #false))  ;there are no tests
       (inputs
        (list glfw freeglut))
-      (native-inputs
-       (list gcc-7))
       (home-page "https://github.com/lucasw/tao_synth")
       (synopsis "Sound synthesis with physical models")
       (description "Tao is a software package for sound synthesis using physical
