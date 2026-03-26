@@ -644,32 +644,6 @@ editor (console only)")
     (description "This Emacs build implements graphical UI purely in terms
 of GTK.")))
 
-(define-public emacs-xwidgets
-  (package/inherit emacs
-    (name "emacs-xwidgets")
-    (synopsis "The extensible, customizable, self-documenting text
-editor (with xwidgets support)")
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:configure-flags flags #~'())
-        #~(cons "--with-xwidgets" #$flags))))
-    (inputs
-     (modify-inputs inputs
-       (prepend webkitgtk-with-libsoup2 libxcomposite)))))
-
-(define-public emacs-pgtk-xwidgets
-  (package
-    (inherit emacs-pgtk)
-    (name "emacs-pgtk-xwidgets")
-    (synopsis "Emacs text editor with @code{xwidgets} and @code{pgtk} support")
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:configure-flags flags #~'())
-        #~(cons "--with-xwidgets" #$flags))))
-    (inputs
-     (modify-inputs inputs
-       (prepend gsettings-desktop-schemas webkitgtk-with-libsoup2)))))
-
 (define-public emacs-lucid
   (package/inherit emacs-no-x
     (name "emacs-lucid")
@@ -774,7 +748,6 @@ editor (with wide ints)" )
 
 (define-public emacs-next (emacs->emacs-next emacs))
 (define-public emacs-next-pgtk (emacs->emacs-next emacs-pgtk))
-(define-public emacs-next-pgtk-xwidgets (emacs->emacs-next emacs-pgtk-xwidgets))
 (define-deprecated-package emacs-next-tree-sitter
   emacs-next)
 
