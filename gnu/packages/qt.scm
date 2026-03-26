@@ -5943,7 +5943,6 @@ color-related widgets.")
 
 (define-public python-shiboken-6
   (package
-    (inherit python-shiboken-2)
     (name "python-shiboken-6")
     (version "6.9.2")
     (source (origin
@@ -5956,25 +5955,54 @@ color-related widgets.")
                 "0b92b4zi5rqg5acgbb6yan349idvzmc0x8wjwkdwkga2ad38gh4y"))))
     (build-system cmake-build-system)
     (inputs
-     (modify-inputs inputs
-       (replace "qtbase" qtbase)
-       (delete "qtxmlpatterns")))
+     (list clang-toolchain-15
+           libxml2
+           libxslt
+           python-wrapper
+           qtbase))
+    (properties `((upstream-name . "pyside-setup")))
     (arguments
-     (substitute-keyword-arguments arguments
-       ((#:phases p)
-        #~(modify-phases #$p
-            (delete 'workaround-importlib-error)
-            (replace 'use-shiboken-dir-only
-              (lambda _ (chdir "sources/shiboken6")))))
-       ((#:configure-flags flags)
-        #~(cons*
-           ;; The RUNPATH of shibokenmodule contains the entry in build
-           ;; directory instead of install directory.
-           "-DCMAKE_SKIP_RPATH=TRUE"
-           (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath="
-                          #$output "/lib")
-           #$flags))))
-    (properties `((upstream-name . "pyside-setup")))))
+     (list
+      #:tests? #f
+      ;; FIXME: Building tests fails
+      #:configure-flags #~(list
+                           ;; The RUNPATH of shibokenmodule contains the entry
+                           ;; in build directory instead of install directory.
+                           "-DCMAKE_SKIP_RPATH=TRUE"
+                           (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath="
+                                          #$output "/lib")
+                           "-DBUILD_TESTS=off")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-shiboken-dir-only
+            (lambda _ (chdir "sources/shiboken6")))
+          (add-before 'configure 'make-files-writable-and-update-timestamps
+            (lambda _
+              ;; The build scripts need to modify some files in
+              ;; the read-only source directory, and also attempts
+              ;; to create Zip files which fails because the Zip
+              ;; format does not support timestamps before 1980.
+              (let ((circa-1980 (* 10 366 24 60 60)))
+                (for-each (lambda (file)
+                            (make-file-writable file)
+                            (utime file circa-1980 circa-1980))
+                          (find-files ".")))))
+          (add-before 'configure 'set-build-env
+            (lambda _
+              (let ((llvm #$(this-package-input "clang-toolchain")))
+                (setenv "CLANG_INSTALL_DIR" llvm)))))))
+    (home-page "https://wiki.qt.io/Qt_for_Python")
+    (synopsis
+     "Shiboken generates bindings for C++ libraries using CPython source code")
+    (description
+     "Shiboken generates bindings for C++ libraries using CPython source code")
+    (license
+     (list
+      ;; The main code is GPL3 or LGPL3.
+      ;; Examples are BSD-3.
+      license:gpl3
+      license:lgpl3
+      license:bsd-3))))
 
 (define-public python-pyside-2
   (package
