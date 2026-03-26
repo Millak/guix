@@ -90,7 +90,7 @@
             (lambda _
               (mkdir-p "/tmp/mygh/")
               (setenv "HOME" "/tmp"))))))
-    (native-inputs (list python-pyside-2 python-setuptools))
+    (native-inputs (list python-pyside-6 python-setuptools))
     (inputs (list bash-minimal
                   kirigami-5
                   python
