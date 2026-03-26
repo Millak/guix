@@ -9895,19 +9895,19 @@ also included.")
 (define-public cadical
   (package
     (name "cadical")
-    (version "2.1.3")
+    (version "2.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/arminbiere/cadical")
                     (commit (string-append "rel-" version))))
               (file-name (git-file-name name version))
-              (patches (search-patches "cadical-add-shared-library.patch"))
               (sha256
-               (base32 "1gl0xd6zyxb127w8k0mps9m2izaqb7im7j91by4lkknmm7xhwyav"))))
+               (base32 "09p4nm8jyvhnsgpmbawzlk8b932k33s922a2rxm77sy8s31mm13m"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "test"
+           #:configure-flags #~(list "-shared")
            #:modules `(((guix build copy-build-system) #:prefix copy:)
                        (guix build gnu-build-system)
                        (guix build utils)
@@ -9917,16 +9917,7 @@ also included.")
            #~(modify-phases %standard-phases
                (replace 'configure
                  (lambda* (#:key configure-flags #:allow-other-keys)
-                   (setenv "CXXFLAGS" "-DPIC -fPIC")
                    (apply invoke "./configure" configure-flags)))
-               (replace 'check
-                 (lambda args
-                   ;; Tests are incorrectly linked upstream.
-                   ;; Since we don't install them, just work around this in the
-                   ;; check phase.
-                   (setenv "LD_LIBRARY_PATH" (string-append (getcwd) "/build"))
-                   (apply (assoc-ref %standard-phases 'check) args)
-                   (unsetenv "LD_LIBRARY_PATH")))
                (replace 'install
                  (lambda args
                    (apply
@@ -9957,7 +9948,25 @@ clause learning.")
               (file-name (git-file-name name version))
               (patches (search-patches "cadical-add-shared-library.patch"))
               (sha256 (base32
-                       "1gl0xd6zyxb127w8k0mps9m2izaqb7im7j91by4lkknmm7xhwyav"))))))
+                       "1gl0xd6zyxb127w8k0mps9m2izaqb7im7j91by4lkknmm7xhwyav"))))
+    (arguments (substitute-keyword-arguments (package-arguments cadical)
+                 ((#:configure-flags _)
+                  #~(list))
+                 ((#:phases phases)
+                  #~(modify-phases #$phases
+                      (add-before 'configure 'set-shared-flags
+                        (lambda _
+                          (setenv "CXXFLAGS" "-DPIC -fPIC")))
+                      (replace 'check
+                        (lambda args
+                          ;; Tests are incorrectly linked upstream.
+                          ;; Since we don't install them, just work around this in the
+                          ;; check phase.
+                          (setenv "LD_LIBRARY_PATH"
+                                  (string-append (getcwd) "/build"))
+                          (apply (assoc-ref %standard-phases
+                                            'check) args)
+                          (unsetenv "LD_LIBRARY_PATH")))))))))
 
 (define-public cadiback
   (let ((commit "789329d8fcda851085ed72f1b07d8c3f46243b8a")
