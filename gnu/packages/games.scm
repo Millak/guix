@@ -3964,7 +3964,7 @@ that beneath its ruins lay buried an ancient evil.")
 (define-public angband
   (package
     (name "angband")
-    (version "4.2.5")
+    (version "4.2.6")
     (source
      (origin
        (method git-fetch)
@@ -3973,7 +3973,7 @@ that beneath its ruins lay buried an ancient evil.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kg6npbfy42mhggsqvs04khc8198i980z52xm59pws29698qazaw"))
+        (base32 "0hgzdvlh0j42w4q9kch9xvhnbvcrypac01xhpksw35gj9my887cp"))
        (modules '((guix build utils)))
        (snippet
         ;; So, some of the sounds/graphics/tilesets are under different
@@ -3989,11 +3989,24 @@ that beneath its ruins lay buried an ancient evil.")
            (substitute* "lib/Makefile"
              ;; And don't try to invoke makefiles in the directories we removed.
              (("gamedata customize help screens fonts tiles sounds icons user")
-              "gamedata customize help screens user"))))))
+              "gamedata customize help screens user"))
+           ;; Remove nonfree .dll files too.
+           (delete-file-recursively "src/win")))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no check target
-       #:configure-flags (list (string-append "--bindir=" %output "/bin"))))
+       #:configure-flags (list (string-append "--bindir=" %output "/bin"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'fix-infinite-loop-on-sighup
+           ;; XXX Release 4.2.6 has a major bug where sending the process a
+           ;; SIGHUP when closing the terminal causes it to infinite loop
+           ;; waiting for input: https://github.com/angband/angband/issues/6558
+           ;; Reevaluate for future versions.
+           (lambda _
+             (substitute* "src/ui-signals.c"
+               (("(SIGHUP, )SIG_IGN" _ first)
+                (string-append first "handle_signal_abort"))))))))
     (native-inputs (list autoconf automake))
     (inputs (list ncurses))
     (home-page "https://rephial.org/")
