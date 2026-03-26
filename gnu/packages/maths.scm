@@ -9895,7 +9895,7 @@ also included.")
 (define-public cadical
   (package
     (name "cadical")
-    (version "2.0.0")
+    (version "2.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9904,7 +9904,7 @@ also included.")
               (file-name (git-file-name name version))
               (patches (search-patches "cadical-add-shared-library.patch"))
               (sha256
-               (base32 "1dzjah3z34v89ka48hncwqkxrwl4xqn9947p0ipf39lxshrq91xa"))))
+               (base32 "1gl0xd6zyxb127w8k0mps9m2izaqb7im7j91by4lkknmm7xhwyav"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "test"
