@@ -3431,21 +3431,25 @@ colorized view to stdout.")
 (define-public tokei
   (package
     (name "tokei")
-    (version "12.1.2")
+    (version "14.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokei" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "000w549v1bpw7r57xw656p40ywf1gimvxxx5cjnri2js0xg927x4"))))
+        (base32 "15v7ha13w4zrr2a6vlrj641qcrczvyjhvnqf147g64n3q1spipp4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (cons* libgit2 openssl zlib (cargo-inputs 'tokei)))
+     `(#:cargo-test-flags
+       '("--"
+         ;; Tests directory not included in release.
+         "--skip=language::language_type::tests::lf_embedded_language_is_counted"
+         "--skip=language::language_type::tests::jupyter_notebook_has_correct_totals")
+       #:install-source? #f))
+    (native-inputs (list pkg-config))
+    (inputs (cons* libgit2-1.8 openssl zlib
+                   (cargo-inputs 'tokei)))
     (home-page "https://tokei.rs")
     (synopsis "Count code, quickly")
     (description
