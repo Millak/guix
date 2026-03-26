@@ -1556,9 +1556,10 @@ files.  It is designed to be fast and to handle large input files.")
 (define-public python-defusedxml
   (package
     (name "python-defusedxml")
-    (properties '((commit . "c7445887f5e1bcea470a16f61369d29870cfcfe1")
+    (properties '((upstream-version . "0.7.1")
+                  (commit . "c7445887f5e1bcea470a16f61369d29870cfcfe1")
                   (revision . "0")))
-    (version (git-version "0.7.1"
+    (version (git-version (assoc-ref properties 'upstream-version)
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
     (source
@@ -1574,7 +1575,18 @@ files.  It is designed to be fast and to handle large input files.")
     (arguments
      (list
       #:test-backend #~'custom
-      #:test-flags #~(list "tests.py")))
+      #:test-flags #~(list "tests.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Most dependents require ^0.7.1, source indicates 0.8.0rc2
+          ;; but is necessary at this version to build with Python@3.12
+          ;; Fake still being 0.7.1, despite running on Python@3.12.
+          (add-after 'unpack 'patch-version
+            (lambda _
+              (substitute* "defusedxml/__init__.py"
+                (("__version__ = .*")
+                 (format #f "__version__ = ~s~%"
+                         #$(assoc-ref properties 'upstream-version)))))))))
     (home-page "https://github.com/tiran/defusedxml")
     (native-inputs
      (list python-setuptools))
