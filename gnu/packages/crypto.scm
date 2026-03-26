@@ -264,7 +264,7 @@ fast, secure, parallelizable, capable of incremental updates.")
                                (string-append
                                 "--prefix="
                                 (python:site-packages inputs outputs)))))))))
-      (native-inputs (list python-minimal-wrapper))
+      (native-inputs (list python-minimal-wrapper python-setuptools))
       (synopsis "Decaf Elliptic Curve Library")
       (description "The libdecaf library is an implementation of elliptic curve
 cryptography using the Montgomery and Edwards curves Curve25519, Ed25519,
