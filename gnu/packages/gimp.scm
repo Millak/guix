@@ -476,17 +476,31 @@ inverse fourier transform.")
   (package
     (name "libmypaint")
     (version "1.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/mypaint/libmypaint/"
-                                  "releases/download/v" version "/libmypaint-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "0priwpmc7dizccqvn21ig6d649bprl3xl1hmjj7nddznjgr585vl"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mypaint/libmypaint")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ppgpmnhph9h8ayx9776f79a0bxbdszfw9c6bw7c3ffy2yk40178"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'bootstrap 'overwrite-automake-and-aclocal-versions
+            (lambda _
+              (setenv "AUTOMAKE" "automake")
+              (setenv "ACLOCAL" "aclocal"))))))
     (native-inputs
-     (list intltool pkg-config))
+     (list autoconf
+           automake
+           intltool
+           libtool
+           pkg-config
+           python))
     ;; As needed by 'libmypaint.pc'.
     (propagated-inputs
      (list json-c gobject-introspection))
