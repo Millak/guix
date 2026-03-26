@@ -2556,7 +2556,7 @@ functions.")
 (define-public python-pytest-celery
   (package
     (name "python-pytest-celery")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -2565,7 +2565,7 @@ functions.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04s5j456rl2lj4zxrzkynx1lb09bb8qrkn82pladj2q89pzqxh8k"))))
+        (base32 "0ck330n94q4yv3hhrs00px355xvvv2njfnv4b02i6dzlrg4fg87j"))))
     (build-system pyproject-build-system)
     (arguments
      (list
