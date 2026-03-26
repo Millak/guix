@@ -354,7 +354,7 @@ Design spec without sacrificing ease of use or application performance.")
 (define-public python-pivy
   (package
     (name "python-pivy")
-    (version "0.6.8")
+    (version "0.6.10")
     (source
       (origin
         (method git-fetch)
@@ -363,7 +363,7 @@ Design spec without sacrificing ease of use or application performance.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "00l4r06dwmgn8h29nrl3g3yv33cfyizyylk28x1j95qyj36sggfb"))))
+         (base32 "1ap0z41j6nwwhbwpans6gz0ik6qj97d56hixzj0ni0q760skh40d"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -381,7 +381,7 @@ Design spec without sacrificing ease of use or application performance.")
       (list cmake-minimal swig-4.0))
     (inputs
       (list python-wrapper
-            qtbase-5
+            qtbase
             libxi
             libice
             glew
