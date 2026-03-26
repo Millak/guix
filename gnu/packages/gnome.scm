@@ -4999,6 +4999,7 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
     (arguments
      (list
       #:configure-flags #~(list "-Ddocs=disabled")
+      #:parallel-tests? #f              ;hsts-db-test might hang otherwise.
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'adjust-tests
@@ -5040,7 +5041,7 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
            zlib))
     (inputs
      (list samba/pinned))               ; For ntlm_auth support
-    (home-page "https://wiki.gnome.org/Projects/libsoup")
+    (home-page "https://libsoup.gnome.org")
     (synopsis "GLib-based HTTP Library")
     (description
      "LibSoup is an HTTP client/server library for GNOME.  It uses GObjects
