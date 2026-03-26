@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016, 2017, 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -1250,6 +1250,14 @@ Some ACTIONS support additional ARGS.\n"))
                   "switch-generation" "search" "edit"
                   "docker-image" "installer"))
 
+(define (image-with-provenance img file)
+  "Return IMG with provenance information recorded, including FILE, the
+operating system or image configuration file."
+  (image (inherit img)
+         (operating-system
+           (operating-system-with-provenance (image-operating-system img)
+                                             file))))
+
 (define (process-action action args opts)
   "Process ACTION, a sub-command, with the arguments are listed in ARGS.
 ACTION must be one of the sub-commands that takes an operating system
@@ -1272,8 +1280,16 @@ resulting from command-line parsing."
          (system      (assoc-ref opts 'system))
          (target      (assoc-ref opts 'target))
          (transform   (lambda (obj)
-                        (if (and save-provenance? (operating-system? obj))
-                            (operating-system-with-provenance obj file)
+                        (if save-provenance?
+                            (cond
+                             ((operating-system? obj)
+                              (operating-system-with-provenance obj file))
+                             ((image? obj)
+                              (image-with-provenance obj file))
+                             (else
+                              (warning
+                               (G_ "'--save-provenance' has no effect~%"))
+                              obj))
                             obj)))
          (obj          (transform
                         (ensure-operating-system-or-image
