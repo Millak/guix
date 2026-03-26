@@ -2690,7 +2690,7 @@ and should be used with caution, especially on untested models.")
 (define-public corefreq
   (package
     (name "corefreq")
-    (version "1.98.4")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
@@ -2699,7 +2699,7 @@ and should be used with caution, especially on untested models.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mxp5h23y09674syaj5gpdifr53zvgjv7g7hargwg6897883qfln"))))
+        (base32 "054rnrwvkbfmy2maxjk928fh1p346313ixhkbjwcq7qjz3idjixl"))))
     ;; The upstream Makefile is now such a proprietary mess that standard builds
     ;; as performed by our linux-module-build-system are more or less impossible
     ;; without heavy patching.  However, we still keep it as the main build
@@ -2731,14 +2731,12 @@ and should be used with caution, especially on untested models.")
                         (string-append = dir "\n"))
                        (("^([[:space:]]+)(.* modules_install.*)"
                          _ indent command)
-                        (string-append indent "@echo skipping " command))))))
+                        (string-append indent "echo skipping " command))))))
                (add-before 'build 'prepare
-                 (lambda* (#:key source-directory make-flags #:allow-other-keys)
+                 (lambda* (#:key source-directory #:allow-other-keys)
                    ;; Lazily fix another mismatch between what the kernel module
                    ;; build system expects and what this package provides.
-                   (symlink "source/build" source-directory) ;$(BUILD)
-                   ;; Set up symbolic links inside $(BUILD), for some reason.
-                   (apply invoke "make" "prepare" make-flags)))
+                   (symlink "source/build" source-directory)))
                (replace 'build (assoc-ref gnu:%standard-phases 'build))
                (add-before 'install 'resolve-symlink
                  ;; The build system silently fails to install from a symlink.
