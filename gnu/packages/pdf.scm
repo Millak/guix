@@ -1711,40 +1711,34 @@ converter using the Poppler and Cairo libraries.")
 (define-public python-pypdf
   (package
     (name "python-pypdf")
-    (version "6.0.0")
+    (version "6.9.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/py-pdf/pypdf")
-             (commit version)))
+              (url "https://github.com/py-pdf/pypdf")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0p0650ya5f84d7khf34an9qpyww6yxnsdhgbppxfy3bg3qkx3s7g"))))
+        (base32 "1x0v1h7783baxqqgm77sdc6qdzckzd3fz8wqxic4bc8bp9f0cagn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Disable tests that use the network and non-free assets.
+      ;; tests: 721 passed, 15 skipped, 434 deselected
       #:test-flags
+      ;; Disable tests that use the network and non-free assets.
       #~(list "-m" "not samples and not enable_socket"
-              "--numprocesses" (number->string (parallel-job-count))
-              "-k" (string-join
-                    ;; ValueError: cannot save mode RGBA
-                    (list "not test_replace_image"
-                          ;; assert None
-                          "test_writer_xmp_metadata_samples")
-                    " and not "))))
+              ;; OSError: broken data stream when writing image file
+              (string-append "--deselect=tests/generic/test_image_xobject.py"
+                             "::test_handle_jpx__explicit_decode"))))
     (native-inputs
-     (list python-flit
-           python-flit-core
+     (list python-flit-core
            python-pytest
            python-pytest-socket
            python-pytest-timeout
-           python-pyyaml
-           python-pytest-xdist))
+           python-pyyaml))
     (propagated-inputs
-     (list python-typing-extensions
-           python-pillow))
+     (list python-pillow))
     (home-page "https://github.com/py-pdf/pypdf")
     (synopsis "Python PDF library")
     (description
