@@ -22,6 +22,7 @@
 ;;; Copyright © 2025 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;; Copyright © 2025 dan <i@dan.games>
+;;; Copyright © 2026 Noé Lopez <noelopez@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -142,6 +143,9 @@
             elogind-configuration?
             elogind-service  ; deprecated
             elogind-service-type
+
+            gardenhostd-configuration
+            gardenhostd-service-type
 
             %gdm-file-system
             gdm-file-system-service
@@ -1640,6 +1644,33 @@ system components to know the set of logged-in users as well as their session
 types (graphical, console, remote, etc.).  It can also clean up after users
 when they log out."
   (service elogind-service-type config))
+
+
+;;;
+;;; Gardenhostd.
+;;;
+
+(define-configuration/no-serialization gardenhostd-configuration
+  (gardenhostd
+   (package gardenhostd)
+   "The gardenhostd package to use."))
+
+(define (gardenhostd-profile config)
+  (list (gardenhostd-configuration-gardenhostd config)))
+
+(define gardenhostd-service-type
+  (service-type
+   (name 'gardenhostd)
+   (extensions
+    (list
+     (service-extension dbus-root-service-type gardenhostd-profile)
+     (service-extension polkit-service-type gardenhostd-profile)))
+   (default-value (gardenhostd-configuration))
+   (description "This service provides gardenhostd, a partial
+implementation of the systemd-hostnamed daemon.  It provides the
+org.freedesktop.hostname1 D-Bus interface, which helps applications
+like gnome-control-center retrieve and modify the system’s hostname,
+as well as set a pretty hostname for display.")))
 
 
 ;;;

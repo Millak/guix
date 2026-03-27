@@ -27017,6 +27017,32 @@ Deprecated option.
 
 @c %end of fragment
 
+@defvar gardenhostd-service-type
+Type for the service that runs gardenhostd, a partial implementation of
+the systemd-hostnamed daemon.  It provides the org.freedesktop.hostname1
+D-Bus interface, which helps applications like gnome-control-center
+retrieve and modify the system’s hostname, as well as set a pretty
+hostname for display.
+
+The value for this service is a @code{<gardenhostd-configuration>} object.
+@end defvar
+
+@c %start of fragment
+
+@deftp {Data Type} gardenhostd-configuration
+Available @code{gardenhostd-configuration} fields are:
+
+@table @asis
+@item @code{gardenhostd} (default: @code{gardenhostd}) (type: package)
+The gardenhostd package to use.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
 @defvar accountsservice-service-type
 Type for the service that runs AccountsService, a system service that can
 list available accounts, change their passwords, and so on.
