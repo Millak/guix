@@ -1022,56 +1022,6 @@ in the style of communicating sequential processes (@dfn{CSP}).")
           (map (lambda (suffix) (string-append "armv9" suffix "-a"))
                '("" ".1" ".2" ".3" ".4" ".5"))))
 
-(define-public go-1.23
-  (package
-    (inherit go-1.22)
-    (name "go")
-    (version "1.23.12")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/golang/go")
-             (commit (string-append "go" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0nxcp8wikn93zxipm829dyyagwys13yhf452ai357wzbdzqihm7x"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments go-1.22)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (replace 'disable-more-tests
-              (lambda _
-                #$@(cond
-                     ((target-aarch64?)
-                      ;; https://go-review.googlesource.com/c/go/+/151303
-                      ;; This test is known buggy on aarch64 and is enabled and
-                      ;; disabled upstream with some regularity.
-                      #~((substitute* "src/plugin/plugin_test.go"
-                           (("package plugin_test")
-                            (string-append "// +build !linux linux,!arm64\n\n"
-                                           "package plugin_test")))))
-                     ((target-arm32?)
-                      ;; This test fails when run on aarch64-linux.
-                      #~((substitute* "src/cmd/link/internal/ld/elf_test.go"
-                           (("TestElfBindNow.*" all)
-                            (string-append
-                              all
-                              "        if runtime.GOARCH == \"arm\" {\n"
-                              "                t.Skipf(\"skipping; flaky on armhf\")\n"
-                              "        }\n")))))
-                     (else (list #t)))))))))
-    (properties
-     `((compiler-cpu-architectures
-         ("aarch64" ,@%go-1.23-arm64-micro-architectures)
-         ("armhf" ,@%go-1.17-arm-micro-architectures)
-         ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures)
-         ("x86_64" ,@%go-1.18-x86_64-micro-architectures))))
-    (native-inputs
-     ;; setarch was added to the tsan test suite in 1.23.12
-     `(("go" ,util-linux)
-       ,@(package-native-inputs go-1.22)))))
-
 (define-public go-1.24
   (package
     (inherit go-1.22)
@@ -1239,7 +1189,6 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 (define-public go-std-1.20 (make-go-std go-1.20))
 (define-public go-std-1.21 (make-go-std go-1.21))
 (define-public go-std-1.22 (make-go-std go-1.22))
-(define-public go-std-1.23 (make-go-std go-1.23))
 (define-public go-std-1.24 (make-go-std go-1.24))
 (define-public go-std-1.25 (make-go-std go-1.25))
 (define-public go-std-1.26 (make-go-std go-1.26))
