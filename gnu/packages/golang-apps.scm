@@ -179,6 +179,50 @@ C++implementation.")
 definitions in Go programs.")
     (license license:bsd-3)))
 
+(define-public godoc
+  (package
+    (name "godoc")
+    (version "0.1.0-deprecated")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://go.googlesource.com/tools")
+              (commit (go-version->git-ref version #:subdir "cmd/godoc"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c1rxbj3v3m0fqb8q96xlbawxm9scyx6vvr8pddkiwp7zkx4ajym"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "cmd" "godoc")
+            (delete-all-but "." "cmd")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "golang.org/x/tools/cmd/godoc"
+      #:unpack-path "golang.org/x/tools"))
+    (native-inputs
+     (list go-golang-org-x-tools
+           go-golang-org-x-tools-godoc))
+    (home-page "https://golang.org/x/tools")
+    (synopsis "Extracts and generates documentation for Go programs")
+    (description
+     "Godoc extracts and generates documentation for Go programs.  It looks at
+the packages it finds via @code{$GOROOT} and @code{$GOPATH} (if set).  This
+behavior can be altered by providing an alternative @code{$GOROOT} with the
+@code{-goroot} flag.")
+    (license license:bsd-3)))
+
 (define-public gomacro
   (package
     (name "gomacro")
