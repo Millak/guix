@@ -34394,13 +34394,16 @@ Psycopg 2 is both Unicode and Python 3 friendly.")
 (define-public python-pyfuse3
   (package
     (name "python-pyfuse3")
-    (version "3.4.1")
+    (version "3.4.2")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pyfuse3" version))
-        (sha256
-          (base32 "02cjnkhn6rf19bcp5g6spq59fhdg8izhwv2jgxgbvkabjigrqbv0"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/libfuse/pyfuse3")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vnsk33ql77ix6wpw4sid0xfyskhgv9p4ifpaqynqsv2g2jnss6y"))))
     (build-system pyproject-build-system)
     (arguments
      (list
