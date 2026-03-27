@@ -70,6 +70,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages tex)
   #:use-module (gnu packages uglifyjs)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
@@ -108,10 +109,13 @@
                           #$output)
                          (("\\$cfg\\{'TMPSPACE'\\} = q'[^']*'")
                           "$cfg{'TMPSPACE'} = q'/tmp'")))))))
+    (propagated-inputs (list texlive-preview texlive-xcolor texlive-dvips))
     (inputs (list perl netpbm ghostscript))
     (synopsis "LaTeX documents to HTML")
     (description "LaTeX2HTML is a utility that converts LaTeX documents to web
-pages in HTML.")
+pages in HTML.  Since there are many different latex packages, it is expected
+that the user has their latex installation set up correctly when invoking
+@code{latex2html}.")
     (home-page "https://www.latex2html.org/")
     (license license:gpl2+)))
 
