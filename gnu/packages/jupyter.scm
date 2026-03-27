@@ -1657,7 +1657,7 @@ datasets across widgets.")
 (define-public python-papermill
   (package
     (name "python-papermill")
-    (version "2.6.0")
+    (version "2.7.0")
     (source
      (origin
        (method git-fetch)
@@ -1666,26 +1666,25 @@ datasets across widgets.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i5zikvl9inficryqfz0v885v24pcs78cj5nzyjw0x232kxbj41p"))))
+        (base32 "0lafh4lazx4rc3ly746bjflmihkzf9rhp788bni1l4vq12ks6a49"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 500 passed, 3 skipped, 2 deselected, 29 warnings
+      ;; tests: 503 passed, 2 deselected, 226 warnings
       #:test-flags
       ;; Do not bother testing Azure, AWS, and Google Cloud features.
       #~(list "--ignore=papermill/tests/test_abs.py"
               "--ignore=papermill/tests/test_adl.py"
               "--ignore=papermill/tests/test_gcs.py"
               "--ignore=papermill/tests/test_s3.py"
-              ;; AssertionError
-              #$@(map (lambda (test) (string-append "--deselect="
-                                                    "papermill/tests/"
-                                                    "test_execute.py::"
-                                                    test))
-                      (list "TestBrokenNotebook2::test"
-                            "TestOutputFormatting::test_output_formatting")))))
+              #$@(map (lambda (ls)
+                        (string-append "--deselect=papermill/tests/"
+                                       (string-join ls "::")))
+                      ;; AssertionError: 'error' != 'display_data'
+                      '(("test_execute.py" "TestBrokenNotebook2" "test")
+                        ;; NameError: name 'FileSelector' is not defined
+                        ("test_hdfs.py" "HDFSTest" "test_hdfs_listdir"))))))
     (propagated-inputs (list python-aiohttp
-                             python-ansicolors
                              python-click
                              python-entrypoints
                              python-nbclient
