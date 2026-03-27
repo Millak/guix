@@ -24500,7 +24500,7 @@ It should enable you to implement low-level X11 applications.")
                   (lambda _
                     (format #t "#!~a ~@
                      ~a +SI:localuser:$USER ~@
-                     exec ~a --exit-with-session ~a \"$@\" --eval '~s' ~%"
+                     exec ~a --exit-with-session ~a \"$@\" -mm --eval '~s' ~%"
                             (search-input-file inputs "/bin/sh")
                             (search-input-file inputs "/bin/xhost")
                             (search-input-file inputs "/bin/dbus-launch")
@@ -24510,7 +24510,7 @@ It should enable you to implement low-level X11 applications.")
                                (load-file "~/.exwm"))
                               ((not (featurep 'exwm))
                                (require 'exwm)
-                               (exwm-enable)
+                               (exwm-wm-mode)
                                (message
                                 "exwm configuration not found.
 Falling back to minimal configuration.
