@@ -369,6 +369,7 @@ FILE-SYSTEMS."
       "virtio_console" "virtio-rng" "virtio_mmio" "virtio_scsi"))
 
   `("ahci"                                  ;for SATA controllers
+    "nvme"                                  ;for NVMe controllers
     "usb-storage" "uas"                     ;for the installation image etc.
     "usbhid" "hid-generic"                  ;keyboards during early boot
     ,@(if (target-riscv64? system)
