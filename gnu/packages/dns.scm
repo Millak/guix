@@ -77,6 +77,8 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ragel)
   #:use-module (gnu packages serialization)
@@ -93,6 +95,8 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -549,6 +553,39 @@ a central configuration file.  Dnsmasq supports static and dynamic DHCP leases
 and BOOTP/TFTP for network booting of diskless machines.")
     ;; Source files only say GPL2 and GPL3 are allowed.
     (license (list license:gpl2 license:gpl3))))
+
+(define-public dnsupdate
+  (package
+    (name "dnsupdate")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lopsided98/dnsupdate")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bp6mm0yhg4hs698xdmvcfad4jqf5rgb1cab88pfzyx9w52x0ag6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest
+           #:test-flags #~'("discover" "-p" "*_test.py")))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-beautifulsoup4
+           python-netifaces
+           python-pyyaml
+           python-requests))
+    (home-page "https://github.com/lopsided98/dnsupdate")
+    (synopsis "Modern and flexible dynamic DNS client")
+    (description
+     "Dnsupdate is a dynamic DNS client that provides support for multiple DNS
+services, including Afraid.org FreeDNS, Cloudflare, IETF standard DNS
+updates (nsupdate), and custom HTTP-based services.  It uses YAML
+configuration files and supports multiple address detection methods.")
+    (license license:gpl3+)))
 
 ;; 'bind' is the name of a built-in Guile procedure, which is why we choose a
 ;; different name here.
