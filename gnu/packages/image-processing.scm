@@ -996,7 +996,7 @@ including 2D color images.")
     (inputs
      ;; GIMP and its dependencies.
      (modify-inputs inputs
-       (prepend gexiv2 gdk-pixbuf gegl gimp pango)))
+       (prepend gexiv2-0.14 gdk-pixbuf gegl gimp pango)))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:configure-flags flags)

@@ -318,7 +318,7 @@ buffers.")
      (list at-spi2-core
            babl
            gegl
-           gexiv2
+           gexiv2-0.14
            glib
            glib-networking
            gtk+-2
@@ -562,7 +562,7 @@ MyPaint.")
      (list cairo
            gdk-pixbuf
            gegl
-           gexiv2
+           gexiv2-0.14
            gimp
            gtk+
            pango))

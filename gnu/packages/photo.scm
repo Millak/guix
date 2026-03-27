@@ -178,7 +178,7 @@
     (inputs
      (list bash-minimal ;for wrap-program
            gdk-pixbuf
-           gexiv2
+           gexiv2-0.14
            gst-libav
            gst-plugins-base
            gst-plugins-good
@@ -889,7 +889,7 @@ such as Batch image processing.")
     (inputs
      (list bash-minimal
            gdk-pixbuf
-           gexiv2
+           gexiv2-0.14
            gst-plugins-base
            gstreamer
            gtk+

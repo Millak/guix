@@ -7559,7 +7559,7 @@ classes for commonly used data structures.")
 (define-public gexiv2
   (package
     (name "gexiv2")
-    (version "0.14.6")
+    (version "0.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7567,7 +7567,7 @@ classes for commonly used data structures.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "12rbly3y4zw4zdqpcnyjcv4a3ifpzxymxgpar3skw7vvmsm2hv30"))))
+                "1fvvlxs7802a9q30r38ajwr84kz8k94b4avvaxprd7sk4igqjvyr"))))
     (build-system meson-build-system)
     (native-inputs
      (list gcr-3
@@ -7589,6 +7589,20 @@ classes for commonly used data structures.")
 allows for GNOME applications to easily inspect and update EXIF, IPTC, and XMP
 metadata in photo and video files of various formats.")
     (license license:gpl2+)))
+
+(define-public gexiv2-0.14
+  (package
+    (inherit gexiv2)
+    (name "gexiv2")
+    (version "0.14.6")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "12rbly3y4zw4zdqpcnyjcv4a3ifpzxymxgpar3skw7vvmsm2hv30"))))))
 
 (define-public shotwell
   (package
@@ -7626,7 +7640,7 @@ metadata in photo and video files of various formats.")
            vala))
     (inputs
      (list gcr-3
-           gexiv2
+           gexiv2-0.14
            gst-plugins-base
            gstreamer
            json-glib

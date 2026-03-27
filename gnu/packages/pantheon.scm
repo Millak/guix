@@ -262,7 +262,7 @@ for elementary OS and its desktop environment: Pantheon.")
            vala))
     (inputs
      (list geocode-glib
-           gexiv2
+           gexiv2-0.14
            granite-6
            gst-plugins-bad
            gst-plugins-base
