@@ -343,6 +343,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/golang-check.scm		\
   %D%/packages/golang-compression.scm		\
   %D%/packages/golang-crypto.scm	      	\
+  %D%/packages/golang-graphics.scm	\
   %D%/packages/golang-maths.scm		\
   %D%/packages/golang-vcs.scm	        	\
   %D%/packages/golang-web.scm	        	\
