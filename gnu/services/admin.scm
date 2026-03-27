@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2016-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2023 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
@@ -380,6 +380,31 @@ terms of CPU and input/output.")
             "G-exp denoting the channels to use when updating the database
 (@pxref{Channels})."))
 
+(define %package-database-file
+  ;; System-wide package database used by 'guix locate'.
+  ;; See 'system-database-file' in (guix scripts locate).
+  "/var/cache/guix/locate/db.sqlite")
+
+(define %package-database-accounts
+  (list (user-account
+          (name "guix-locate")
+          (group "guix-locate")
+          (system? #t)
+          (comment "Account running 'guix locate'")
+          (home-directory "/var/run/guix-locate"))
+        (user-group
+          (name "guix-locate")
+          (system? #t))))
+
+(define %package-database-activation
+  ;; Create the package database directory at activation time.  Make it
+  ;; writable by 'guix-locate' and world-readable.
+  #~(begin
+      (use-modules (guix build utils))
+      (let ((directory #$(dirname %package-database-file))
+            (owner (getpwnam "guix-locate")))
+        (mkdir-p/perms directory owner #o755))))
+
 (define (package-database-shepherd-services configuration)
   (match-record configuration <package-database-configuration>
     (package schedule method channels)
@@ -388,8 +413,6 @@ terms of CPU and input/output.")
              (provision '(package-database-update))
              (requirement '(user-processes guix-daemon))
              (modules '((shepherd service timer)))
-             ;; XXX: The whole thing's running as "root" just because it needs
-             ;; write access to /var/cache/guix/locate.
              (start #~(make-timer-constructor
                        #$(if (string? schedule)
                              #~(cron-string->calendar-event #$schedule)
@@ -397,8 +420,13 @@ terms of CPU and input/output.")
                        (command '(#$(file-append package "/bin/guix")
                                   "time-machine" "-C" #$channels
                                   "--" "locate" "--update"
+                                  #$(string-append "--database="
+                                                   %package-database-file)
                                   #$(string-append
-                                     "--method=" (symbol->string method))))
+                                     "--method=" (symbol->string method)))
+                                #:user "guix-locate"
+                                #:group "guix-locate")
+                       #:log-file "/var/log/guix-locate.log"
                        #:wait-for-termination? #t))
              (stop #~(make-timer-destructor))
              (documentation
@@ -410,7 +438,11 @@ be queried by the 'guix locate' command.")
   (service-type
    (name 'package-database)
    (extensions (list (service-extension shepherd-root-service-type
-                                        package-database-shepherd-services)))
+                                        package-database-shepherd-services)
+                     (service-extension activation-service-type
+                                        (const %package-database-activation))
+                     (service-extension account-service-type
+                                        (const %package-database-accounts))))
    (description
     "Periodically update the package database used by the @code{guix locate} command,
 which lets you search for packages that provide a given file.")
