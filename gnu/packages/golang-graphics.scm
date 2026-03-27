@@ -159,6 +159,43 @@ bindings for ATK, Cairo, GdkPixbuf, GLib, Graphene, GTK4, GTK+3 and Pango.")
       (license (list license:agpl3       ;used by the generator
                      license:mpl2.0))))) ;used by the generated code
 
+(define-public go-github-com-dlasky-gotk3-layershell
+  ;; There are no tags or releases upstream.
+  (let ((commit "5c5115f0d77479c452ef686e3d7f327f2a341b3c")
+        (revision "0"))
+    (package
+      (name "go-github-com-dlasky-gotk3-layershell")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/dlasky/gotk3-layershell")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0k7flgwmkwfq3lki4fjwx0868nxv2wa2igbqxjgqfm6150mnhmp8"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/dlasky/gotk3-layershell"))
+      (native-inputs
+       (list cairo
+             gdk-pixbuf
+             glib
+             gtk+
+             gtk-layer-shell
+             pango
+             pkg-config))
+      (propagated-inputs
+       (list go-github-com-gotk3-gotk3))
+      (home-page "https://github.com/dlasky/gotk3-layershell")
+      (synopsis "gotk3 addon module for GTK Layer Shell compatibility")
+      (description
+       "gotk3-layershell is a simple golang library to provide bindings for
+GTK Layer Shell library which can also be consumed in the gotk3 library.")
+      (license license:expat))))
+
 (define-public go-github-com-gotk3-gotk3
   (package
     (name "go-github-com-gotk3-gotk3")
