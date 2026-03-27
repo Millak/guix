@@ -1150,6 +1150,60 @@ GNOME Shell.  The @command{localectl} command-line tool allows you to interact
 with localed.  This package is extracted from the broader systemd package.")
     (license license:lgpl2.1+)))
 
+(define-public gardenhostd
+  (package
+   (name "gardenhostd")
+   (version "1.1")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://codeberg.org/axtlos/gardenhostd.git")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "1q0pdh0imc2ggb26cddl62hx6fmz6z4hqj2352a4k9wxyn5kfiam"))))
+   (build-system meson-build-system)
+   (arguments
+    (list
+     #:imported-modules `(,@%meson-build-system-modules
+                          ,@%pyproject-build-system-modules)
+     #:modules '(((guix build pyproject-build-system) #:prefix pyproject:)
+                 (guix build meson-build-system)
+                 (guix build utils))
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-after 'install 'remove-extra-files
+           (lambda _
+             (with-directory-excursion #$output
+               (delete-file-recursively "etc/init.d")
+               (rmdir "etc"))))
+         ;; See <https://codeberg.org/guix/guix/issues/7579>.
+         (add-after 'install 'wrap-search-paths
+           (lambda _
+             (wrap-program (string-append #$output "/libexec/gardenhostd")
+               `("GUIX_PYTHONPATH" prefix
+                 ,(map
+                   (lambda (package)
+                     (string-append
+                      package "/lib/python"
+                      (pyproject:python-version #$(this-package-input "python"))
+                      "/site-packages"))
+                   ;; Avoids references to meson’s libraries.
+                   (list #$(this-package-input "python")
+                         #$(this-package-input "python-pygobject"))))))))))
+   (inputs
+    (list bash-minimal
+          python
+          python-pygobject))
+   (home-page "https://codeberg.org/axtlos/gardenhostd")
+   (synopsis "Minimal Python implementation of systemd-hostnamed")
+   (description "This package is a partial implementation of the
+systemd-hostnamed daemon.  It provides the @code{org.freedesktop.hostname1}
+D-Bus interface, which helps applications like GNOME Settings retrieve and
+modify the system’s hostname, as well as set a pretty hostname for display.")
+   (license license:gpl3+)))
+
 (define-public packagekit
   (package
     (name "packagekit")
