@@ -957,33 +957,36 @@ highlighting tool to ease code review from your terminal.")
 (define-public difftastic
   (package
     (name "difftastic")
-    (version "0.63.0")
+    (version "0.68.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "difftastic" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0md332fch4b87akdvljzxp4m2k5yri7cpkz3n54jc762j7j9qmrz"))))
+        (base32 "012h76wx5jv6czc9j4awfan7vhrc6g5fdgnxrjmzg5q27wn99hn6"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       #:cargo-test-flags
-       `("--release" "--"
-         "--skip=display::side_by_side::tests::test_display_hunks"
-         "--skip=display::style::tests::split_string_cjk"
-         "--skip=display::style::tests::split_string_cjk2"
-         "--skip=display::style::tests::split_string_simple"
-         "--skip=display::style::tests::split_string_unicode"
-         "--skip=display::style::tests::test_combining_char"
-         "--skip=display::style::tests::test_split_and_apply"
-         ,(string-append "--skip=display::style::tests::"
-                         "test_split_and_apply_gap_between_styles_on_wrap_boundary")
-         "--skip=display::style::tests::test_split_and_apply_trailing_text"
-         "--skip=display::style::tests::test_split_and_apply_trailing_text_newline")))
+     (list
+      #:install-source? #f
+      #:cargo-test-flags
+      '(list "--"
+             "--skip=display::side_by_side::tests::test_display_hunks"
+             "--skip=display::style")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; jemalloc needs unbundling for tikv-jemallocator-sys
+          (add-before 'build 'override-jemalloc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((jemalloc (assoc-ref inputs "jemalloc")))
+                ;; This flag is needed when not using the bundled jemalloc.
+                ;; https://github.com/tikv/jemallocator/issues/19
+                (setenv
+                 "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
+                (setenv "JEMALLOC_OVERRIDE"
+                        (string-append jemalloc "/lib/libjemalloc.so"))))))))
     (inputs
-     (cons mimalloc (cargo-inputs 'difftastic)))
+     (cons jemalloc (cargo-inputs 'difftastic)))
     (home-page "https://difftastic.wilfred.me.uk/")
     (synopsis "Structural diff command that understands syntax")
     (description
