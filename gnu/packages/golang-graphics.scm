@@ -100,3 +100,60 @@ bindings for ATK, Cairo, GdkPixbuf, GLib, Graphene, GTK4, GTK+3 and Pango.")
     (license (list license:agpl3+    ;used by gotk4/gir
                    license:mpl2.0    ;used by gotk4/pkg
                    license:expat)))) ;used by gotk4/pkg/cairo
+
+(define-public go-github-com-diamondburned-gotk4-layer-shell
+  ;; There are no tags or releases upstream.
+  (let ((commit "6efa9f6dc438e10869f9ef0b8f7b5197e585bac1")
+        (revision "0"))
+    (package
+      (name "go-github-com-diamondburned-gotk4-layer-shell")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/diamondburned/gotk4-layer-shell")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "03kch2g9fzgbd7q2lnp7xhdbi9rsh1fd997nw1phdvw80xshsvlr"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/diamondburned/gotk4-layer-shell"
+        #:embed-files #~(list "capitalized.txt" "replaced.txt")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'go-generate
+              (lambda* (#:key import-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "go" "generate" "-v" "-n")))))))
+      (native-inputs
+       (list at-spi2-core
+             cairo
+             gdk-pixbuf
+             glib
+             go-github-com-davecgh-go-spew
+             gobject-introspection
+             graphene
+             gtk
+             gtk+
+             gtk-layer-shell
+             gtk4-layer-shell
+             pango
+             pkg-config))
+      (propagated-inputs
+       (list go-github-com-diamondburned-gotk4
+             go-github-com-fatih-color
+             go-github-com-mattn-go-colorable
+             go-github-com-mattn-go-isatty
+             go-github-com-pkg-errors
+             go-golang-org-x-sync
+             go-golang-org-x-sys))
+      (home-page "https://github.com/diamondburned/gotk4-layer-shell")
+      (synopsis "Layer Shell bindings generator for Go and gotk4")
+      (description
+       "gotk4-layer-shell is a GTK Layer Shell and GTK4 Layer Shell bindings
+ generator for Go and gotk4.  It also provides generated bindings.")
+      (license (list license:agpl3       ;used by the generator
+                     license:mpl2.0))))) ;used by the generated code
