@@ -154,7 +154,11 @@ MODULES and taken from LINUX."
                  '())))
 
             (define modules-to-lookup
-              (lset-difference string=? '#$modules builtin-modules))
+              (remove (lambda (module)
+                        (member (normalize-module-name module)
+                                ;; Normalized by `file-name->module-name'.
+                                builtin-modules))
+                      '#$modules))
 
             (define modules
               (let* ((lookup  (cut find-module-file module-dir <>))
