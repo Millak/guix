@@ -15810,6 +15810,37 @@ called concurrently with themselves and each other.")
      "This package provides an easy access to native byte order.")
     (license license:expat)))
 
+(define-public go-github-com-joshuarubin-lifecycle
+  (package
+    (name "go-github-com-joshuarubin-lifecycle")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/joshuarubin/lifecycle")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k2siagdyh1v99hlnykd0ldi9icfsaq19rjfz0npvjczza52dg3z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/joshuarubin/lifecycle"))
+    (propagated-inputs
+     (list go-golang-org-x-sync))
+    (home-page "https://github.com/joshuarubin/lifecycle")
+    (synopsis "Goroutines management helper for Golang applications")
+    (description
+     "@code{lifecycle} helps manage goroutines at the application
+level.  @code{context.Context} has been great for propagating cancellation
+signals, but not for getting any feedback about when goroutines actually
+finish.
+
+This package works with @code{context.Context} to ensure that applications
+don't quit before their goroutines do.")
+    (license license:expat)))
+
 (define-public go-github-com-jpillora-backoff
   (let ((commit "fab01a9d9810a410d2d95a0a697f0afb604658f9")
         (revision "1"))
