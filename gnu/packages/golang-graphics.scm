@@ -28,7 +28,8 @@
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gtk)
-  #:use-module (gnu packages pkg-config))
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages xorg))
 
 ;;; Commentary:
 ;;;
@@ -157,3 +158,57 @@ bindings for ATK, Cairo, GdkPixbuf, GLib, Graphene, GTK4, GTK+3 and Pango.")
  generator for Go and gotk4.  It also provides generated bindings.")
       (license (list license:agpl3       ;used by the generator
                      license:mpl2.0))))) ;used by the generated code
+
+(define-public go-github-com-gotk3-gotk3
+  (package
+    (name "go-github-com-gotk3-gotk3")
+    (version "0.6.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gotk3/gotk3")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hbqy4skn56xi69wqbys9rc1g46cx9sazj5n8ckq9638wphnp202"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/gotk3/gotk3"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xorg-server
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; The test suite requires opening a display server.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1"))))))
+    (native-inputs
+     (list cairo
+           gdk-pixbuf
+           glib
+           gtk+
+           pango
+           pkg-config
+           xorg-server))
+    (home-page "https://github.com/gotk3/gotk3")
+    (synopsis "Go bindings for GTK+3")
+    (description
+     "gotk3 provides Go bindings for GTK+3 and dependent projects.
+
+Partial binding support for the following libraries is currently implemented:
+
+@itemize
+@item GTK 3 (3.12 and later)
+@item GDK 3 (3.12 and later)
+@item GLib 2 (2.36 and later)
+@item Cairo (1.10 and later)
+@end itemize
+
+Functions use the same names as the native C function calls, but use
+CamelCase.  In cases where native GTK uses pointers to values to simulate
+multiple return values, Go's native multiple return values are used instead.
+Whenever a native GTK call could return an unexpected NULL pointer, an
+additional error is returned in the Go binding.")
+    (license license:isc)))
