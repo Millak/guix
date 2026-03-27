@@ -4211,13 +4211,10 @@ G-codes to binary and vice versa.")
            openvdb
            pango
            prusa-libbgcode
-           ;; XXX: Using Prusa wxWidgets fork as PrusaSlicer segfaults when compiled
-           ;; with regular wxwidgets.
-           prusa-wxwidgets
+           wxwidgets
            qhull
            onetbb
            webkitgtk-for-gtk3
-           webkitgtk-with-libsoup2
            z3
            zlib))
     (home-page "https://www.prusa3d.com/prusaslicer/")
