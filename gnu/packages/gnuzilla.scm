@@ -1842,7 +1842,8 @@ associated with their name."))
   (package
     (name "mozjs")
     (version %icecat-version)
-    (source icecat-source)
+    (source (origin (inherit icecat-source)
+                    (patches (search-patches "mozjs-bug-1973994-fix-c-header.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
