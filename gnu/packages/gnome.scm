@@ -3195,7 +3195,7 @@ the GNOME desktop environment.")
 (define-public blueprint-compiler
   (package
     (name "blueprint-compiler")
-    (version "0.16.0")
+    (version "0.20.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3205,7 +3205,7 @@ the GNOME desktop environment.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1y40kf9yfrjlfr5ax27j7ksv27fsznl7jhvvkzbfifdymjv10wqn"))))
+                "1kdvmy644dvm2wpmrv96n5vmk3ax0agn9s4ljymkwkv66i0qa3vl"))))
     (build-system meson-build-system)
     (arguments
      (list
