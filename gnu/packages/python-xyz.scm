@@ -39362,6 +39362,11 @@ distance (Ukkonen).")
        (sha256
         (base32 "0m1sixmqynlalsw50af5mv5q4gpz2052d1p2ig9hr7yqmdvqcz6p"))))
     (build-system pyproject-build-system)
+    (arguments
+     ;; test_same_millisecond_overflow is flaky, fails 1 in 10 times.
+     ;; See <https://github.com/mdomke/python-ulid/issues/55>.
+     ;; 68 passed, 1 deselected in 2.55s
+     (list #:test-flags #~(list "-k" "not test_same_millisecond_overflow")))
     (native-inputs
      (list python-freezegun
            python-hatch-fancy-pypi-readme
