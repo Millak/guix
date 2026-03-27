@@ -30927,6 +30927,33 @@ for locating directories
 pass & access either a read-only @code{[]byte} or a @code{string}.")
     (license license:asl2.0)))
 
+(define-public go-go4-org-unsafe-assume-no-moving-gc
+  ;; XXX: No release and not published in <https://pkg.go.dev/>.
+  (let ((commit "b99613f794b6b2f6d80da53bb131c5c98ea2fdd2")
+        (revision "0"))
+    (package
+      (name "go-go4-org-unsafe-assume-no-moving-gc")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/go4org/unsafe-assume-no-moving-gc")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "00ny3qha8k9nnx37ryvls2n5r7lw3bnldz6kwdmjxk8s19mxqim7"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "go4.org/unsafe/assume-no-moving-gc"))
+      (home-page "https://github.com/go4org/unsafe-assume-no-moving-gc")
+      (synopsis "Declare that Go package plays @code{unsafe} games")
+      (description
+       "This package provides a Go library which helps to declare that which
+of imported modules uses @code{unsafe} and report back as error trace.")
+      (license license:bsd-3))))
+
 (define-public go-golang-org-rainycape-unidecode
   (let ((commit "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c")
         (revision "1"))
