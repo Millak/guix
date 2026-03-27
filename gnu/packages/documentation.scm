@@ -70,6 +70,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages tex)
   #:use-module (gnu packages uglifyjs)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
@@ -108,6 +109,7 @@
                           #$output)
                          (("\\$cfg\\{'TMPSPACE'\\} = q'[^']*'")
                           "$cfg{'TMPSPACE'} = q'/tmp'")))))))
+    (propagated-inputs (list (texlive-local-tree (list texlive-preview texlive-xcolor texlive-dvips))))
     (inputs (list perl netpbm ghostscript))
     (synopsis "LaTeX documents to HTML")
     (description "LaTeX2HTML is a utility that converts LaTeX documents to web
