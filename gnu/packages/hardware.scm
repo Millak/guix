@@ -112,6 +112,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
@@ -309,6 +310,38 @@ sharing.")
 ;; Added on 2025-09-24.
 (define-deprecated-package barrier
   deskflow)
+
+(define-public hd-idle
+  (package
+    (name "hd-idle")
+    (version "1.22")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+          (url "https://github.com/adelolmo/hd-idle")
+          (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12nckzp00b3y91igp8jzlf6as353la6ar8gp6b646kn9gi2hrla3"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/adelolmo/hd-idle"
+           #:install-source? #f))
+    (inputs
+     (list go-github-com-benmcclelland-sgio))
+    (home-page "https://github.com/adelolmo/hd-idle")
+    (synopsis "Spin down idle hard disks")
+    (description "@command{hd-idle} is a utility program for spinning down
+external disks after a period of idle time.  Since most USB hard drives do not
+support setting the idle timer via @command{hdparm}, hd-idle can be used as a
+workaround.")
+    (license license:gpl3+)))
 
 (define-public hw-probe
   (package
