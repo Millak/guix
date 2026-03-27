@@ -7070,7 +7070,7 @@ side panel;
                    librsvg
                    (cargo-inputs 'glycin)))
     ;; The following inputs are 'Required' in the pkg-config files.
-    (propagated-inputs (list fontconfig glib gtk lcms-next libseccomp))
+    (propagated-inputs (list fontconfig glib gtk lcms libseccomp))
     (home-page "https://gitlab.gnome.org/GNOME/glycin")
     (synopsis "Rust library for sandboxed image decoding")
     (description "Glycin is a sandbox image decoder for image viewers and

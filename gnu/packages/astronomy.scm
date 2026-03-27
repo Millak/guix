@@ -13207,7 +13207,7 @@ It can be used to calculate the trajectory of satellites.")
            gtksourceview-4
            healpix-cxx
            json-glib
-           lcms-next
+           lcms
 
            ;; XXX: It downloads script and data during start up, check if they
            ;; may be presented as packages with wrapped environment variables

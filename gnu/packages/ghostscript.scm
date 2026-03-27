@@ -50,15 +50,15 @@
 (define-public lcms
   (package
     (name "lcms")
-    (version "2.13.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/lcms/lcms/"
-                                  (version-major+minor version)
-                                  "/lcms2-" version ".tar.gz"))
-              (sha256
-               (base32
-                "121v414bg2zk0fcwx0kigr2l6nxl88nmblfn3gq5lz5jwybffwyl"))))
+    (version "2.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/lcms/lcms/"
+                           (version-major+minor version)
+                           "/lcms2-" (version-major+minor version) ".tar.gz"))
+       (sha256
+        (base32 "0lasskcj7k0sp0z7cpnwwisp826j51i1l7v322hcxd5rv15d6wyq"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
@@ -73,19 +73,8 @@ Consortium standard (ICC), approved as ISO 15076-1.")
     (home-page "https://www.littlecms.com/")
     (properties '((cpe-name . "little_cms_color_engine")))))
 
-(define-public lcms-next
-  (package
-    (inherit lcms)
-    (name "lcms-next")
-    (version "2.16.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/lcms/lcms/"
-                           (version-major+minor version)
-                           "/lcms2-" (version-major+minor version) ".tar.gz"))
-       (sha256
-        (base32 "0lasskcj7k0sp0z7cpnwwisp826j51i1l7v322hcxd5rv15d6wyq"))))))
+;; Can be removed after 2027/05/01.
+(define-deprecated-package lcms-next lcms)
 
 (define-public libpaper
   (package
