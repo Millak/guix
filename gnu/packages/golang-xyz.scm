@@ -2875,6 +2875,31 @@ Unified Format}.")
      "The chardet package ports character set detection from ICU to Go.")
     (license license:expat)))
 
+(define-public go-github-com-benmcclelland-sgio
+  (package
+    (name "go-github-com-benmcclelland-sgio")
+    (version "0.0.0-20250710154739-45e823ff1f46")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/benmcclelland/sgio")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bkilgs6ikbgy31m0w2ixhv94mjcbicqnx8kl6mwddhb7qwznki8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/benmcclelland/sgio"
+      #:test-flags #~(list "-vet=off")))
+    (home-page "https://github.com/benmcclelland/sgio")
+    (synopsis "SCSI commands using SG_IO ioctl")
+    (description
+     "This package provides support for issuing SCSI commands with SG_IO
+ioctl.")
+    (license license:expat)))
+
 (define-public go-github-com-beorn7-perks
   (package
     (name "go-github-com-beorn7-perks")
