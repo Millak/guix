@@ -77,6 +77,7 @@
 ;;; Copyright © 2026 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2026 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
+;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1786,6 +1787,32 @@ shells.")
     (description
      "@code{FileMutex} is similar to @code{sync.RWMutex}, but also
 synchronizes across processes.")
+    (license license:expat)))
+
+(define-public go-github-com-allan-simon-go-singleinstance
+  (package
+    (name "go-github-com-allan-simon-go-singleinstance")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/allan-simon/go-singleinstance")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q0s03cmp488d4pyxjysfingzisj4r5n8vy4cffapr6rcr9rfj1h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/allan-simon/go-singleinstance"
+      #:test-flags #~(list "-vet=off")))
+    (home-page "https://github.com/allan-simon/go-singleinstance")
+    (synopsis "Go library to have only one instance of a software")
+    (description
+     "@code{go-singleinstance} is a Go library to have only one instance of a
+software (based on Python's
+@uref{https://github.com/pycontribs/tendo, tendo}).")
     (license license:expat)))
 
 (define-public go-github-com-alsm-ioprogress
