@@ -378,7 +378,7 @@ the namespace @code{/nbclassic/}.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 307 passed, 7 skipped, 16 deselected, 9 warnings
+      ;; tests: 305 passed, 7 skipped, 18 deselected, 2696 warning
       #:test-flags
       '(list "-k" (string-append
                    ;; TODO: This tests fails because nbconvert does not
@@ -394,6 +394,12 @@ the namespace @code{/nbclassic/}.")
                    ;; tornado.simple_httpclient.HTTPTimeoutError: Timeout
                    ;; during request
                    " and not test_connections")
+        ;; AttributeError: 'TestContentsManager' object has no attribute
+        ;; 'assertDictContainsSubset'
+        (string-append "--deselect=notebook/services/contents/tests/"
+                       "test_manager.py::TestContentsManager::test_get")
+        (string-append "--deselect=notebook/services/contents/tests/"
+                       "test_manager.py::TestContentsManagerNoAtomic::test_get")
         ;; These tests require a browser.
         "--ignore=notebook/tests/selenium")
       #:phases
