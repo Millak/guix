@@ -17415,18 +17415,6 @@ suitable for similar data to JSON.  This package provides CPython bindings for
 reading and writing MessagePack data.")
     (license license:asl2.0)))
 
-(define-public python-msgpack-for-borg
-  (hidden-package
-   (package
-     (inherit python-msgpack)
-     (version "1.0.4")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "msgpack" version))
-        (sha256
-         (base32 "0pqzy1zclyhd42gfibhkcqymbspy5a6v421g87mh40h3iz0nkn7m")))))))
-
 (define-public python-openstep-plist
   (package
     (name "python-openstep-plist")
