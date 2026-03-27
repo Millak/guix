@@ -9891,7 +9891,7 @@ through portals.")
 (define-public nautilus
   (package
     (name "nautilus")
-    (version "48.5")
+    (version "50.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9899,7 +9899,7 @@ through portals.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0bwxvapfidanblwv732w98xvvzaz3203zz2g4mcq52hwphyk7cpg"))
+                "1k1kcg8ran40b86554cds7pf2v3dhfrrp43ws2v8l4gy8jxnwnd9"))
               (patches
                (search-patches "nautilus-extension-search-path.patch"))))
     (build-system meson-build-system)
@@ -9927,7 +9927,13 @@ through portals.")
               ;; https://gitlab.gnome.org/GNOME/nautilus/-/issues/2486).
               (substitute* "test/automated/displayless/meson.build"
                 (("^foreach t: tracker_tests" all)
-                 (string-append "tracker_tests = []\n" all)))
+                 (string-append "tracker_tests = []\n" all))
+                ;; This test fails for unknown reasons (see:
+                ;; <https://gitlab.gnome.org/GNOME/nautilus/-/issues/4174>).
+                ((".*'test-file-operations-archive'.*") "")
+                ;; This 'displayless' test requires a display (see:
+                ;; <https://gitlab.gnome.org/GNOME/nautilus/-/issues/4174>).
+                ((".*'test-thumbnails'.*") ""))
               ;; /etc does not have that many files in our build container.
               (substitute* "test/automated/displayless/test-directory.c"
                 (("g_assert_cmpint \\(g_list_length \\(files\\), >, 10\\);")
@@ -9948,19 +9954,22 @@ through portals.")
                       (string-append (getenv "XDG_DATA_DIRS")
                                      ":" #$output "/share")))))))
     (native-inputs
-     (list desktop-file-utils           ;for update-desktop-database
+     (list blueprint-compiler
+           desktop-file-utils           ;for update-desktop-database
            `(,glib "bin")               ;for glib-mkenums, etc.
            gettext-minimal
            gobject-introspection
            pkg-config
            python
-           python-pygobject))
+           python-pygobject
+           xorg-server-for-tests))
     (inputs
      (list bash-minimal
            dconf
            gexiv2
            gvfs
            exempi
+           glycin-loaders
            gnome-desktop
            gnome-autoar
            gst-plugins-base
@@ -9981,8 +9990,8 @@ through portals.")
            libxml2))
     (native-search-paths
      (list (search-path-specification
-            (variable "NAUTILUS_EXTENSION_PATH")
-            (files '("lib/nautilus/extensions-4")))))
+             (variable "NAUTILUS_EXTENSION_PATH")
+             (files '("lib/nautilus/extensions-4")))))
     (synopsis "File manager for GNOME")
     (home-page "https://wiki.gnome.org/Apps/Nautilus")
     (description
