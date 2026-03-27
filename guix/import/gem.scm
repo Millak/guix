@@ -8,6 +8,7 @@
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2026 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,6 +34,8 @@
   #:use-module (guix import json)
   #:use-module (guix packages)
   #:use-module (guix upstream)
+  #:use-module (guix diagnostics)
+  #:use-module (guix i18n)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix base16)
   #:use-module (guix base32)
@@ -158,7 +161,15 @@ Optionally include a VERSION string to fetch a specific version gem."
                                  dependencies
                                  licenses)
                   dependencies-names))
-        (values #f '()))))
+        (begin
+          (if version
+              (warning
+               (G_ "version ~a of gem '~a' was not found at '~a'~%")
+               version package-name repo)
+              (warning
+               (G_ "gem '~a' not found at '~a'~%")
+               package-name repo))
+          (values #f '())))))
 
 (define (guix-package->gem-name package)
   "Given a PACKAGE built from rubygems.org, return the name of the
