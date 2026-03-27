@@ -242,39 +242,6 @@ and many other languages.")
                (substitute* "src/unix/mimetype.cpp"
                  (("/usr(/local)?/share/mime") mime))))))))))
 
-(define-public prusa-wxwidgets
-  ;; There is no proper tag/release, all patches are in separate branches based on
-  ;; the wxWidgets release (e.g. this commit is taken from "v3.2.0-patched" branch".)
-  (let ((commit "78aa2dc0ea7ce99dc19adc1140f74c3e2e3f3a26")
-        (revision "0"))
-    (package
-      (inherit wxwidgets-sans-egl)
-      (name "prusa-wxwidgets")
-      (version (git-version "3.2.0" revision commit))
-      (home-page "https://github.com/prusa3d/wxWidgets")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url home-page)
-               (commit commit)))
-         (file-name (git-file-name name version))
-         ;; The patch is taken from the NixOS nixpkgs repository (see
-         ;; <https://github.com/NixOS/nixpkgs/commit/0e724ac89f3dbf6ed31d647290a371b44a85e5ad>.)
-         (patches (search-patches "prusa-wxwidgets-makefile-fix.patch"))
-         (sha256
-          (base32
-           "1xk6w7q4xv4cj906xa5dwam5q51mc8bszbkkz7l8d3wjmsz73rwv"))))
-      (native-inputs (modify-inputs native-inputs
-                       (prepend nanosvg)))
-      (arguments
-       (substitute-keyword-arguments arguments
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'copy-nanosvg-source
-                (lambda _
-                  (copy-recursively #$(package-source nanosvg) "3rdparty/nanosvg/"))))))))))
-
 (define-public python-wxpython
   (package
     (name "python-wxpython")
