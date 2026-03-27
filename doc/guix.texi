@@ -51944,7 +51944,9 @@ following format:
 @defvar home-activation-service-type
 The service of this type generates a guile script, which runs on every
 @command{guix home reconfigure} invocation or any other action, which
-leads to the activation of the home environment.
+leads to the activation of the home environment.  This service can be
+extended with G-Expressions (@pxref{G-Expressions}), which will be run
+in the generated guile script.
 @end defvar
 
 @defvar home-symlink-manager-service-type
