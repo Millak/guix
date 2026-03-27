@@ -676,7 +676,7 @@ from software emulation to complete hardware acceleration for modern GPUs.")
         #~(cons* "-Dgallium-rusticl=true"
                  ;; Enable all drivers by default.
                  (string-append "-Dgallium-rusticl-enable-drivers="
-                                "iris,llvmpipe,nouveau,panfrost,radeonsi,r600")
+                                "asahi,freedreno,radeonsi")
                  #$flags))
        ((#:phases phases)
         #~(modify-phases #$phases
