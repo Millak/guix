@@ -15810,6 +15810,36 @@ called concurrently with themselves and each other.")
      "This package provides an easy access to native byte order.")
     (license license:expat)))
 
+(define-public go-github-com-joshuarubin-go-sway
+  (package
+    (name "go-github-com-joshuarubin-go-sway")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/joshuarubin/go-sway")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a4h34m5l2fjxp4s5ps66rjwpkvccvbqk4hr86cd2ajh127icvyv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f       ;require sway running
+      #:import-path "github.com/joshuarubin/go-sway"))
+    (propagated-inputs
+     (list go-github-com-joshuarubin-lifecycle
+           go-go-uber-org-multierr))
+    (home-page "https://github.com/joshuarubin/go-sway")
+    (synopsis "Sway client for Go")
+    (description
+     "This package simplifies working with the sway IPC from Go.
+
+The @env{SWAYSOCK} environment variable must be set properly and
+@command{sway} must be running with the same byteorder as the client.")
+    (license license:expat)))
+
 (define-public go-github-com-joshuarubin-lifecycle
   (package
     (name "go-github-com-joshuarubin-lifecycle")
