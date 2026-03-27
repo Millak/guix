@@ -63,6 +63,7 @@
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;; Copyright © 2026 Ivan Vilata i Balaguer <ivan@selidor.net>
+;;; Copyright © 2026 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -500,6 +501,58 @@ score, keyboard, guitar, drum and controller views.")
     (description "This package provides a library to access iPod contents.  It
 enables iPod support in music players such as Clementine.")
     (license license:lgpl2.1+)))
+
+(define-public mopidy
+  (package
+    (name "mopidy")
+    (version "3.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mopidy/mopidy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fdnsbb13xqxwbfqzmgd1jxyqzfnifyc968rlv8syhnsc6zmmqfq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; This test is not compatible with our build environment.
+      #~(list "-k" "not test_help_has_mopidy_options")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-env
+            (lambda _
+              ;; Fix "Fontconfig error: No writable cache directories"
+              (setenv "HOME" "/tmp")))
+          (add-after 'wrap 'wrap-gstreamer
+            (lambda _
+              (wrap-program (string-append #$output "/bin/mopidy")
+                `("GI_TYPELIB_PATH" =
+                  (,(getenv "GI_TYPELIB_PATH")))
+                `("GST_PLUGIN_SYSTEM_PATH" =
+                  (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
+    (native-inputs
+     (list python-pytest
+           python-responses
+           python-setuptools))
+    (inputs
+     (list bash-minimal
+           gst-libav
+           python-gst
+           python-pygobject
+           python-pykka
+           python-requests
+           python-tornado))
+    (home-page "https://mopidy.com")
+    (synopsis "Extensible music server")
+    (description
+     "Mopidy is an extensible music server written in Python.  It plays music
+from local disk or cloud services, and can be controlled using a variety of
+MPD and web clients.")
+    (license license:asl2.0)))
 
 (define-public clementine
   ;; Clementine has one automatic release per commit at
