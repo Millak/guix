@@ -16168,6 +16168,32 @@ resources located relative to the executable file.")
 using reflink operations on compatible filesystems such as btrfs and xfs.")
     (license license:expat)))
 
+(define-public go-github-com-karpeleslab-weak
+  (package
+    (name "go-github-com-karpeleslab-weak")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/KarpelesLab/weak")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jjyd04iqwhk1mjjw7fbxn91qvf8z2a370gpkm3wg6caym4s99sm"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/KarpelesLab/weak"))
+    (home-page "https://github.com/KarpelesLab/weak")
+    (synopsis "Weak reference map for Go 1.18+")
+    (description
+     "This is a weakref map for Go 1.18, with some inspiration from
+@uref{https://github.com/xeus2001/go-weak, xeus2001's weakref implementation}.
+
+This provides both a @code{weak.Ref} object to store weak references, and a
+@code{weak.Map} object for maps.")
+    (license license:expat)))
+
 (define-public go-github-com-karrick-godirwalk
   (package
     (name "go-github-com-karrick-godirwalk")
