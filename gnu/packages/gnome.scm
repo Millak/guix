@@ -6893,8 +6893,6 @@ side panel;
                          vala           ;for vapigen
                          ;; Dependencies for tests.
                          bubblewrap
-                         gtk
-                         lcms-next
                          (origin
                            (method git-fetch)
                            (uri (git-reference
@@ -6905,13 +6903,12 @@ side panel;
                             (base32
                              "16s3lss4cbny5d0ixhc0vaxxcvq2n7rcnbklrxdm84p2m21192vm")))))
     (inputs (cons* bubblewrap
-                   fontconfig
-                   glib
-                   libseccomp
                    libheif
                    libjxl
                    librsvg
                    (cargo-inputs 'glycin)))
+    ;; The following inputs are 'Required' in the pkg-config files.
+    (propagated-inputs (list fontconfig glib gtk lcms-next libseccomp))
     (home-page "https://gitlab.gnome.org/GNOME/glycin")
     (synopsis "Rust library for sandboxed image decoding")
     (description "Glycin is a sandbox image decoder for image viewers and
