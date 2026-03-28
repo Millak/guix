@@ -3847,7 +3847,7 @@ arrows and custom ligatures for @code{TODO:} and @code{NOTE:}.")
 (define-public font-monaspace
   (package
     (name "font-monaspace")
-    (version "1.301")
+    (version "1.400")
     (source
      (origin
        (method git-fetch)
@@ -3857,7 +3857,7 @@ arrows and custom ligatures for @code{TODO:} and @code{NOTE:}.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0f6i9v2m7x5zjdfwmcj180nmgxzlnbk2z0x7yv5sbdcrvndz1lzj"))))
+         "1rldcci0nh5zqqcmj8mfqsv7c8bqy2nxgfn8gk4zsxvgdbxa79vk"))))
     (build-system font-build-system)
     (outputs '("out" "ttf" "woff"))
     (home-page "https://monaspace.githubnext.com")
