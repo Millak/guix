@@ -5216,19 +5216,22 @@ by the Xorg server.")
         (base32
          "06dm3bxb1xgzn994wfk8a1irajhms78k1f14c2p5nr1zbdafbjy0"))
        (patches
-        (list
+        (cons
          ;; See:
          ;;   https://lists.fedoraproject.org/archives/list/devel@lists.
          ;;      fedoraproject.org/message/JU655YB7AM4OOEQ4MOMCRHJTYJ76VFOK/
          (origin
            (method url-fetch)
            (uri (string-append
-                 "http://pkgs.fedoraproject.org/cgit/rpms/xorg-x11-server.git"
-                 "/plain/06_use-intel-only-on-pre-gen4.diff"))
+                 "https://src.fedoraproject.org/rpms/xorg-x11-server/raw/"
+                 "ee515e44b07e37689abf48cf2fffb41578f3bc1d/f/"
+                 "06_use-intel-only-on-pre-gen4.diff"))
            (sha256
             (base32
              "0mm70y058r8s9y9jiv7q2myv0ycnaw3iqzm7d274410s0ik38w7q"))
-           (file-name "xorg-server-use-intel-only-on-pre-gen4.diff"))))))
+           (file-name "xorg-server-use-intel-only-on-pre-gen4.diff"))
+         ;; https://codeberg.org/guix/guix/issues/1006
+         (search-patches "xorg-server-tearfree-modesetting.patch")))))
     (build-system gnu-build-system)
     (propagated-inputs
      ;; The following libraries are required by xorg-server.pc.
@@ -5341,7 +5344,9 @@ draggable titlebars and borders.")
                             "/xserver/xorg-server-" version ".tar.xz"))
         (sha256
          (base32
-          "12g0g9ksswzx1kgn23gvrpa570fnpkdkmw1dfqjjg4422a884744")))))))
+          "12g0g9ksswzx1kgn23gvrpa570fnpkdkmw1dfqjjg4422a884744"))
+        ;; Exclude the modesetting tearfree patch, it doesn't apply to 21.1.15.
+        (patches (list-head (origin-patches (package-source xorg-server)) 1)))))))
 
 ;;; XXX: Not really at home, but unless we break the inheritance between
 ;;; tigervnc-server and xorg-server, it must live here to avoid cyclic module
