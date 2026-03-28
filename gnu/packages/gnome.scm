@@ -10524,7 +10524,7 @@ playing media, scanning, and much more.")
            loupe
            nautilus
            simple-scan
-           totem
+           showtime
            xdg-desktop-portal-gnome
            yelp))))
 
