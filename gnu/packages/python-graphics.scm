@@ -354,7 +354,7 @@ Design spec without sacrificing ease of use or application performance.")
 (define-public python-pivy
   (package
     (name "python-pivy")
-    (version "0.6.10")
+    (version "0.6.11")
     (source
       (origin
         (method git-fetch)
@@ -363,7 +363,7 @@ Design spec without sacrificing ease of use or application performance.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1ap0z41j6nwwhbwpans6gz0ik6qj97d56hixzj0ni0q760skh40d"))))
+         (base32 "0rjbhhxyrh0fszc0va7qmkv6ayf2s49ppnw31p51xmq63bx3n5wc"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -378,7 +378,7 @@ Design spec without sacrificing ease of use or application performance.")
                 (("\\$\\{SoQt_INCLUDE_DIRS}")
                  "${Coin_INCLUDE_DIR};${SoQt_INCLUDE_DIRS}")))))))
     (native-inputs
-      (list cmake-minimal swig-4.0))
+      (list cmake-minimal swig-4.4))
     (inputs
       (list python-wrapper
             qtbase
