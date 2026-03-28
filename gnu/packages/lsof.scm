@@ -37,7 +37,7 @@
 (define-public lsof
   (package
     (name "lsof")
-    (version "4.99.3")
+    (version "4.99.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -46,8 +46,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v32407al4j0hhcph95lv4xvr9h012lii29iyq41iwj39zwfavax"))
-              (patches (search-patches "lsof-compat-linux-6.9.patch"))))
+                "08p0c0wci9vam6b29ym7z7sip8gd0j0dz7zy4f0b32dw51rb3z9k"))))
     (build-system gnu-build-system)
     (native-inputs (list automake
                          autoconf
@@ -57,27 +56,6 @@
                          pkg-config
                          procps ;for ps
                          util-linux)) ;for unshare
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-configure-ac-version
-                 ;; see https://github.com/lsof-org/lsof/commit/932a0b3b1992497e23fd9b8d31116b9ca9b0f98d
-                 ;; to fix tests/case-01-version.bash test fail.
-                 (lambda _
-                   (substitute* "configure.ac"
-                     (("4\\.99\\.0")
-                      "4.99.3"))))
-               (add-before 'bootstrap 'disable-failing-tests
-                 (lambda _
-                   (substitute* "Makefile.am"
-                     ;; Fails with ‘ERROR!!! client gethostbyaddr() failure’.
-                     (("(TESTS \\+=.*) tests/LTsock" _ prefix)
-                      prefix)
-                     ;; Fails on CoW filesystems (eg. btrfs)
-                     (("tests/LTlock") "")
-                     ;; Fails because /proc not mounted in sandbox
-                     (("\tdialects/linux/tests/case-20-epoll.bash \\\\")
-                      "\\")))))))
     (synopsis "Display information about open files")
     (description
      "Lsof stands for LiSt Open Files, and it does just that.
