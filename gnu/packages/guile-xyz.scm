@@ -918,7 +918,7 @@ generate API documentation for GNU Guile projects.")
 (define-public guile-dotenv
   (package
    (name "guile-dotenv")
-   (version "0.2.0")
+   (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -927,7 +927,7 @@ generate API documentation for GNU Guile projects.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0smwlfggvx3dpc1zx8wva9df8nfawcinzizhvk5f3yf7bdyy4rym"))))
+        (base32 "1zgc9xwpz6w64rbndvl8c73lsx935byin921209acyw54j52g706"))))
    (build-system gnu-build-system)
    (arguments
     (list
@@ -1001,7 +1001,7 @@ variables from them.")
        (append bash-minimal)))
    (native-inputs
     (modify-inputs native-inputs
-      ;; As opposed to guile-config, here we need to propagate it.
+      ;; As opposed to guile-dotenv, here we need to propagate it.
       (delete "guile-config")))
    (propagated-inputs
     (modify-inputs propagated-inputs
