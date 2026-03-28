@@ -5287,7 +5287,7 @@ more fun.")
 (define-public gnome-console
   (package
     (name "gnome-console")
-    (version "48.1")
+    (version "50.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-console/"
@@ -5295,7 +5295,7 @@ more fun.")
                                   "gnome-console-" version ".tar.xz"))
               (sha256
                (base32
-                "1kvb4wk9gzx4si4sxyz8hxy1qdnq514gqgjqnps1nnszzschklbh"))))
+                "0vmcqx210asimq5awbqgmcg4c40sdv7vzvhq1xn6lzjly03h55g4"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t
@@ -5307,13 +5307,28 @@ more fun.")
                    (substitute* "tests/test-utils.c"
                      (("/usr/bin/true")
                       (format #f "~a" (search-input-file
-                                       inputs "bin/true")))))))))
-    (native-inputs (list `(,glib "bin")
+                                       inputs "bin/true"))))))
+               (replace 'check
+                 (lambda* (#:key tests? test-options parallel-tests?
+                           #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME" (getcwd))
+                     (system "Xvfb &")
+                     (setenv "DISPLAY" ":0")
+                     (setenv "MESON_TESTTHREADS"
+                             (if parallel-tests?
+                                 (number->string (parallel-job-count))
+                                 "1"))
+                     (apply invoke "dbus-run-session" "--" "meson" "test"
+                            "--print-errorlogs" "-t" "0" test-options)))))))
+    (native-inputs (list dbus
+                         `(,glib "bin")
                          gettext-minimal
                          sassc
                          pkg-config
                          `(,gtk+ "bin")
-                         desktop-file-utils))
+                         desktop-file-utils
+                         xorg-server-for-tests))
     (inputs (list gtk
                   libadwaita
                   vte
