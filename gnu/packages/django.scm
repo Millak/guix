@@ -572,6 +572,46 @@ when coding custom template tags.")
      "Django-taggit is a reusable Django application for simple tagging.")
     (license license:bsd-3)))
 
+(define-public python-django-webtest
+  (package
+    (name "python-django-webtest")
+    (version "1.9.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/django-webtest/django-webtest")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yndvjhccm6251cxl0y1rdx7k36b1q26d7rhz6vb6ajv3w68d8r7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "django_webtest_tests"
+                  (setenv "DJANGO_SETTINGS_MODULE" "settings")
+                  (invoke "python" "runtests.py")
+                  (invoke "pytest" "test_pytest.py"))))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-django
+           python-setuptools
+           python-tzdata))
+    (propagated-inputs
+     (list python-webtest
+           python-django))
+    (home-page "https://github.com/django-webtest/django-webtest")
+    (synopsis "Integration of WebTest with Django")
+    (description
+     "This package provides an instant integration of Ian Bicking's WebTest with
+Django's testing framework.")
+    (license license:expat)))
+
 (define-public python-easy-thumbnails
   (package
     (name "python-easy-thumbnails")
