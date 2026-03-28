@@ -1795,17 +1795,23 @@ driver for the X.Org X Server version 1.7 and later (X11R7.5 or later).")
 (define-public redshift
   (package
     (name "redshift")
-    (version "1.12")
+    ;; redshift 1.12 does not support Python 3.12, so use latest commit.
+    (properties '((commit . "490ba2aae9cfee097a88b6e2be98aeb1ce990050")
+                  (revision . "0")))
+    (version (git-version "1.12"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
+       (method git-fetch)
        (uri
-        (string-append "https://github.com/jonls/redshift/"
-                       "releases/download/v" version
-                       "/redshift-" version ".tar.xz"))
+        (git-reference
+          (url "https://github.com/jonls/redshift/")
+          (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1fi27b73x85qqar526dbd33av7mahca2ykaqwr7siqiw1qqcby6j"))))
+         "1qn2xp174f77lkkiq8k66k9180anj5c7d84by7lgyv7azdqflwkj"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1848,7 +1854,11 @@ driver for the X.Org X Server version 1.7 and later (X11R7.5 or later).")
                     (,(getenv "GI_TYPELIB_PATH"))))))))))
     (outputs '("out" "gtk"))
     (native-inputs
-     (list pkg-config intltool))
+     (list autoconf
+           automake
+           intltool
+           libtool
+           pkg-config))
     (inputs
      (list bash-minimal
            libdrm
