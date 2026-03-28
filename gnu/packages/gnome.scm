@@ -12567,7 +12567,7 @@ desktop environment.")
 (define-public gnome-boxes
   (package
     (name "gnome-boxes")
-    (version "49.1")
+    (version "50.0")
     (source
      (origin
        (method url-fetch)
@@ -12575,7 +12575,7 @@ desktop environment.")
                            (version-major version) "/"
                            "gnome-boxes-" version ".tar.xz"))
        (sha256
-        (base32 "1jj41r9ras2ys0r2cw8f5bs3nkz0fj1jl693sc5q50yhvl0qhism"))))
+        (base32 "0rrdcw9lll6ix0k259znhf0xq59ym8s5l7wzm5n9940hiphmsspx"))))
     (outputs '("out" "debug"))
     (build-system meson-build-system)
     (arguments
