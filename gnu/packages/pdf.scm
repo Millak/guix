@@ -725,7 +725,7 @@ by using the @code{mupdf} rendering library.")
 (define-public zathura-pdf-poppler
   (package
     (name "zathura-pdf-poppler")
-    (version "0.3.3")
+    (version "2026.02.03")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -734,7 +734,7 @@ by using the @code{mupdf} rendering library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pzxhld2bfgq5403qn9w3acglvqnhfb2l959m9b149wa936rnfm8"))))
+                "11ivqwwpj0rj4ar6b1p413j8zpcril1j0057lr0iz8a1x94vdmbm"))))
     (native-inputs (list pkg-config))
     (inputs
      (list poppler zathura))
