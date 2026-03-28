@@ -752,7 +752,7 @@ by using the poppler rendering engine.")
 (define-public zathura
   (package
     (name "zathura")
-    (version "0.5.12")
+    (version "2026.03.27")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -761,7 +761,7 @@ by using the poppler rendering engine.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wrr9vr0d83kawkg0wj4i91g293cbjgyhmfspf4bxbs62x77zb9m"))))
+                "1l5p0w84in8hlw07406ahkcg9x6ci56vp02i4fc3skp38svz0wia"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -794,11 +794,9 @@ by using the poppler rendering engine.")
            (librsvg-for-system)
 
            ;; For tests.
-           check
            xorg-server-for-tests))
-    (inputs (list sqlite))
-    ;; Listed in 'Requires.private' of 'zathura.pc'.
-    (propagated-inputs (list cairo girara))
+    (inputs (list json-glib sqlite))
+    (propagated-inputs (list girara gtk+))
     (native-search-paths
      (list (search-path-specification
             (variable "ZATHURA_PLUGINS_PATH")
