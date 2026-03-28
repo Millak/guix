@@ -633,7 +633,7 @@ using libarchive.")
 (define-public zathura-ps
   (package
     (name "zathura-ps")
-    (version "0.2.8")
+    (version "2026.02.03")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -642,7 +642,7 @@ using libarchive.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04nv4cpxhx2f1m6iagrhj3dx3mranljl604sj2yn11anhnm0igc5"))))
+                "14p188qmd9kkdfi8im8ispdzzafslqa0h6aafcgxl0fwv2ywnbg6"))))
     (native-inputs (list pkg-config))
     (inputs (list libspectre zathura))
     (build-system meson-build-system)
