@@ -96,6 +96,7 @@
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages graphics)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
@@ -116,6 +117,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages suckless)
   #:use-module (gnu packages stb)
   #:use-module (gnu packages terminals)
@@ -1050,6 +1052,67 @@ allows creating false color images.  A unique feature of Nomacs is the
 synchronization of multiple instances.")
     (home-page "https://nomacs.org/")
     (license license:gpl3+)))
+
+(define-public timg
+  (package
+    (name "timg")
+    (version "1.6.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hzeller/timg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xr3g6my2n9ry5mqiw1qvf7m0lpmj20h2xsnh75653ha83wqxmhm"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove bundled sources
+        #~(begin
+            (delete-file-recursively "third_party") #t))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~'("-Wno-dev" "-DWITH_OPENSLIDE_SUPPORT=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-stb-path
+            ;; This package expects stb-image to be at stb/stb_image.h, but
+            ;; Guix puts it at stb_image.h instead
+            (lambda _
+              (substitute* "src/CMakeLists.txt"
+                (("stb/stb")
+                 "stb"))
+              (substitute* "src/stb-image-source.cc"
+                (("#include \"stb/stb_image.h\"")
+                 "#include \"stb_image.h\"")))))
+      #:tests? #f)) ;No tests
+    (inputs (list cairo
+                  ffmpeg
+                  graphicsmagick
+                  libdeflate
+                  libdicom
+                  libexif
+                  libjpeg-turbo
+                  librsvg
+                  libsixel
+                  libxml2
+                  openjpeg
+                  openslide
+                  poppler
+                  qoi
+                  sqlite
+                  stb-image))
+    (native-inputs (list git pandoc pkg-config))
+    (home-page "https://timg.sh/")
+    (synopsis "Terminal image and video viewer")
+    (description
+     "This package provides a user-friendly terminal image viewer that uses
+graphic capabilities of terminals (Sixel, Kitty or iterm2), or 24-Bit color
+capabilities and unicode character blocks if these are not available.")
+    (license license:gpl2)))
 
 (define-public xzgv
   (package
