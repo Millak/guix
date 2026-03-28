@@ -483,7 +483,7 @@ it and customize it for your needs.")
 (define-public nsxiv
   (package
     (name "nsxiv")
-    (version "33")
+    (version "34")
     (source
      (origin
        (method git-fetch)
@@ -492,7 +492,7 @@ it and customize it for your needs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y8rsg8q45b1dbm9zrsr0s7v86z95b87cvn7n81nlkj7paj3wnqz"))))
+        (base32 "1ac53508dk0wf2smsvsjj3nsnil6ycvfs2hxignn4rd2pp3lzzk2"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;no check target
@@ -527,7 +527,7 @@ it and customize it for your needs.")
            libexif
            libx11
            libxft))
-    (home-page "https://github.com/nsxiv/nsxiv")
+    (home-page "https://nsxiv.codeberg.page/")
     (synopsis "Neo Simple X Image Viewer")
     (description
      "nsxiv is a fork of sxiv.  Its primary goal is to provide the most basic
