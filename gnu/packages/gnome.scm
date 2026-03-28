@@ -11125,7 +11125,7 @@ handling the startup notification side.")
 (define-public gnome-calculator
   (package
     (name "gnome-calculator")
-    (version "48.1")
+    (version "50.0")
     (source
      (origin
        (method url-fetch)
@@ -11134,7 +11134,7 @@ handling the startup notification side.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0qliq7ry3np2046bvipirsq2hpfw5iswdn70prfg9451kcdd8jxw"))))
+         "140a6m1hffa66nn8p2vqxc2h0cdzqm8xphb59f3q5s352n4xclw0"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -11151,7 +11151,8 @@ handling the startup notification side.")
               ;; Tests require a writable HOME.
               (setenv "HOME" (getcwd)))))))
     (native-inputs
-     (list gettext-minimal
+     (list blueprint-compiler
+           gettext-minimal
            `(,glib "bin")               ;for glib-compile-schemas, gio-2.0.
            itstool
            pkg-config
