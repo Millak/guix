@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2015-2023, 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2023, 2025-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017, 2018, 2019 Christopher Baines <mail@cbaines.net>
@@ -987,11 +987,15 @@ of index files."
             (modules `((ice-9 match)
                        ,@%default-modules))
             (start (nginx-action "-p" run-directory))
-
-            ;; Instead of invoking "nginx -s stop", use
-            ;; 'make-kill-destructor', which waits for the main process to
-            ;; actually terminate.
-            (stop #~(make-kill-destructor))
+            (stop #~(lambda (value)
+                      ;; When the PID is known, use 'terminate-process', which
+                      ;; waits for the main process to actually terminate.
+                      ;; When FILE is true, there's potentially no PID file
+                      ;; and thus the PID is not known; in that case, invoke
+                      ;; "nginx -s stop".
+                      (if (process? value)
+                          (terminate-process (process-id value) SIGTERM)
+                          (#$(nginx-action "stop")))))
 
             (actions
               (list
