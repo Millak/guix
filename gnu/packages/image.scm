@@ -107,6 +107,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages ragel)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages video)
@@ -1132,6 +1133,41 @@ still-image compression standard from the Joint Photographic Experts Group
 JPEG 2000 Reference Software.")
     (home-page "https://github.com/uclouvain/openjpeg")
     (license license:bsd-2)))
+
+(define-public openslide
+  (package
+    (name "openslide")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openslide/openslide")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00gc530g0lxm2lhwq249w97021w1v1y9ybqs2z5l1z922s15rhl2"))))
+    (build-system meson-build-system)
+    (inputs (list cairo
+                  gdk-pixbuf
+                  glib
+                  libdicom
+                  libjpeg-turbo
+                  libpng
+                  libtiff
+                  libxml2
+                  openjpeg
+                  sqlite
+                  zlib
+                  zstd))
+    (native-inputs (list pkg-config))
+    (home-page "https://openslide.org/")
+    (synopsis "C library for reading slide image files")
+    (description
+     "OpenSlide is a C library for reading whole slide image files (also known
+as virtual slides).  It provides a consistent and simple API for reading files
+from multiple vendors.")
+    (license license:lgpl2.1)))
 
 (define-public giflib
   (package
