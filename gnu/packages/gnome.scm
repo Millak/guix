@@ -11368,7 +11368,7 @@ Bluefish supports many programming and markup languages.")
 (define-public gnome-system-monitor
   (package
     (name "gnome-system-monitor")
-    (version "48.1")
+    (version "50.0")
     (source
      (origin
        (method url-fetch)
@@ -11377,7 +11377,7 @@ Bluefish supports many programming and markup languages.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0f36zkb6xxncd57krrjnwkd5xgd714j5i01dzmcycrk351p3lg0k"))))
+         "0qj89kc05gmnccc7dpjp4jy14yz2hpbd3ylivr34qn5lajkql4x4"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
