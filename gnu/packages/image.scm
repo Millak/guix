@@ -2028,6 +2028,34 @@ possible, all formats supported by the PNG standard are represented.")
 use, copy, modify and distribute these images for any purpose and without fee
 is hereby granted."))))
 
+(define-public qoi
+  (let ((commit "6fff9b70dd79b12f808b0acc5cb44fde9998725e")
+        (revision "0"))
+    (package
+      (name "qoi")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/phoboslab/qoi")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "078zasncyylgnwx6br82nkjssl82wygz6fh8zm65fbfpadzfa3x7"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~'(("qoi.h" "include/"))
+        #:tests? #f)) ;No tests
+      (home-page "https://qoiformat.org")
+      (synopsis "Library for the QOI image format")
+      (description
+       "This package provides a library for the QOI image format, offering
+fast, lossless image compression.")
+      (license license:expat))))
+
 (define-public libjpeg-turbo
   (package
     (name "libjpeg-turbo")
