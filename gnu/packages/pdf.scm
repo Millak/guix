@@ -687,7 +687,7 @@ using the DjVuLibre library.")
 (define-public zathura-pdf-mupdf
   (package
     (name "zathura-pdf-mupdf")
-    (version "0.4.4")
+    (version "2026.02.03")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -696,7 +696,7 @@ using the DjVuLibre library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g1wiazyqdjd40qvq5vkxqabxzd0qlk6wvfvllm4y8x1jcc11vbs"))))
+                "1s4dnr5yl4bpqccp79y7i2dgd4qj7x4zrwms4l1id61il70rmmm4"))))
     (native-inputs (list pkg-config))
     (inputs
      (list mupdf zathura))
