@@ -2183,11 +2183,9 @@ and routines to assist in editing internationalized text.")
     (license license:lgpl2.1+)))
 
 (define-public girara
-  ;; TODO: Move propagated inputs to inputs after core-updates is merged (as
-  ;; of 2024-03)
   (package
     (name "girara")
-    (version "0.4.5")
+    (version "2026.02.04")
     (source
      (origin
        (method git-fetch)
@@ -2196,35 +2194,10 @@ and routines to assist in editing internationalized text.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04igidbihgq5k7fh0jd5n26w00qlb47riky6q7qlp5k314d6cd2y"))))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'start-xserver
-            ;; Tests require a running X server.
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((xorg-server (assoc-ref inputs "xorg-server"))
-                    (display ":1"))
-                (setenv "DISPLAY" display)
-
-                ;; On busy machines, tests may take longer than
-                ;; the default of four seconds.
-                (setenv "CK_DEFAULT_TIMEOUT" "20")
-
-                ;; Don't fail due to missing '/etc/machine-id'.
-                (setenv "DBUS_FATAL_WARNINGS" "0")
-                (zero? (system (string-append xorg-server "/bin/Xvfb "
-                                              display " &")))))))))
-    (native-inputs
-     (list pkg-config
-           check
-           gettext-minimal
-           `(,glib "bin")
-           xorg-server-for-tests))
-    ;; Listed in 'Requires.private' of 'girara.pc'.
-    (propagated-inputs (list gtk+ json-glib))
+        (base32 "04adir5a8g2hqgv4vzpg52i2524abpcrqf3fcffrbwp8syan0df1"))))
     (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list glib))
     (home-page "https://pwmt.org/projects/girara/")
     (synopsis "Library for minimalistic gtk+3 user interfaces")
     (description "Girara is a library that implements a user interface that
