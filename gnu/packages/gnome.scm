@@ -7270,7 +7270,7 @@ USB transfers with your high-level application or system daemon.")
 (define-public simple-scan
   (package
     (name "simple-scan")
-    (version "46.0")
+    (version "49.1")
     (source
      (origin
        (method url-fetch)
@@ -7278,12 +7278,23 @@ USB transfers with your high-level application or system daemon.")
                            (version-major version) "/"
                            "simple-scan-" version ".tar.xz"))
        (sha256
-        (base32 "1aghnkvjdyj73kv55nd9gl5b1xjkpcxjn4j3a6z67r9g2j86avn1"))))
+        (base32 "0d733cjq0dy07fx3yxh2rzr3ij3rslvb96czxd2miyfa3qax9s4s"))))
     (build-system meson-build-system)
     (arguments
-     '(#:glib-or-gtk? #t))
+     (list #:glib-or-gtk? #t
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'skip-gtk-update-icon-cache
+                 ;; Don't create 'icon-theme.cache'.
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("gtk_update_icon_cache: true")
+                      "gtk_update_icon_cache: false")
+                     (("glib_compile_schemas: true")
+                      "glib_compile_schemas: false")))))))
     (native-inputs
      (list gettext-minimal
+           `(,gtk "bin")
            itstool
            `(,glib "bin")               ; glib-compile-schemas, etc.
            pkg-config
