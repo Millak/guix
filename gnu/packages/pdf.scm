@@ -599,31 +599,24 @@ reading and editing of existing PDF files.")
 (define-public zathura-cb
   (package
     (name "zathura-cb")
-    (version "0.1.10")
+    (version "2026.02.03")
     (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "https://pwmt.org/projects/zathura-cb/download/zathura-cb-"
-                              version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/pwmt/zathura-cb")
+                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1j5v32f9ki35v1jc7a067anhlgqplzrp4fqvznlixfhcm0bwmc49"))))
+                "17w0iv7a503q95qdqx7qpjkxdqfyzw0qld4d8a98hkhg3ljrp5ck"))))
     (native-inputs (list pkg-config))
     (inputs (list libarchive zathura))
     (build-system meson-build-system)
     (arguments
-     `(#:tests? #f                      ; package does not contain tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-plugin-directory
-           ;; Something of a regression in 0.1.10: the new Meson build system
-           ;; now hard-codes an incorrect plugin directory.  Fix it.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "meson.build"
-               (("(install_dir:).*" _ key)
-                (string-append key
-                               "'" (assoc-ref outputs "out") "/lib/zathura'\n")))
-             #t)))))
+     (list
+      #:tests? #f                      ; package does not contain tests
+      #:configure-flags
+      #~(list (string-append "-Dplugindir=" #$output "/lib/zathura"))))
     (home-page "https://pwmt.org/projects/zathura-cb/")
     (synopsis "Comic book support for zathura (libarchive backend)")
     (description "The zathura-cb plugin adds comic book support to zathura
