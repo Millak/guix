@@ -6543,12 +6543,22 @@ discovery protocols.")
           (add-after 'add-install-to-pythonpath 'wrap-python
             (assoc-ref py:%standard-phases 'wrap))
           (add-after 'wrap-python 'gi-wrap
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (wrap-program (string-append #$output "/bin/showtime")
                 `("GI_TYPELIB_PATH" prefix
                   (,(getenv "GI_TYPELIB_PATH")))
                 `("GST_PLUGIN_SYSTEM_PATH" prefix
-                  (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
+                  ,(map (lambda (x)
+                          (dirname (search-input-file
+                                    inputs
+                                    (string-append "lib/gstreamer-1.0/" x))))
+                        ;; libgstgtk4.so appears to be sensitive to ordering;
+                        ;; ensure it comes first in the plugin path.
+                        (list "libgstgtk4.so"     ;gst-plugins-rs:video
+                              "libgstopengl.so"   ;gst-plugins-base
+                              "libgstmatroska.so" ;gst-plugins-good
+                              "libgstmpegpsdemux.so"))))))))) ;gst-plugins-bad
+
     (native-inputs
      (list blueprint-compiler
            desktop-file-utils
@@ -6559,8 +6569,9 @@ discovery protocols.")
     (inputs
      (list bash-minimal
            gstreamer
+           gst-plugins-base
            gst-plugins-bad              ;for GstPlay
-           gst-plugins-rs
+           gst-plugins-good
            `(,gst-plugins-rs "video")
            gobject-introspection        ;for cairo-1.0.typelib
            gtk
