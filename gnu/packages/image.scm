@@ -74,6 +74,7 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -244,6 +245,29 @@ SIMM, MSE, and PSNR.  It is designed to be fast, accurate, and reliable.  All
 code is Valgrind-clean and unit tested.")
     (home-page "https://sourceforge.net/projects/iqa/")
     (license license:bsd-4)))
+
+(define-public libdicom
+  (package
+    (name "libdicom")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ImagingDataCommons/libdicom")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l1z8riv7lrw65nswq8lvyvnxn5vc06gydwc96gj3ywb1gcqv831"))))
+    (build-system meson-build-system)
+    (inputs (list check uthash))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/ImagingDataCommons/libdicom")
+    (synopsis "C library for reading DICOM files")
+    (description
+     "This package is a C library and a set of command-line tools for reading
+DICOM WSI files.")
+    (license license:expat)))
 
 (define-public libpng
   (package
