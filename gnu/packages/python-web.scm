@@ -9734,19 +9734,23 @@ simplified fork of html5lib.")
 (define-public python-cssselect2
   (package
     (name "python-cssselect2")
-    (version "0.4.1")
+    (version "0.9.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "cssselect2" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Kozea/cssselect2")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1j2fcr217rsvkipsg6zjq03rl64rxnvb5hqqpx0dv58fhspvkywk"))))
+        (base32 "1drvb83siq9s6dygyhab6kzk2v2ib6cv51ls42p4jrxs9q8cdiw0"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-tinycss2))
     (native-inputs
-     (list python-flit))
-    (home-page "https://cssselect2.readthedocs.io/")
+     (list python-flit-core
+           python-pytest))
+    (home-page "https://doc.courtbouillon.org/cssselect2/stable/")
     (synopsis "CSS selectors for Python ElementTree")
     (description "@code{cssselect2} is a straightforward implementation of
 CSS3 Selectors for markup documents (HTML, XML, etc.) that can be read by
