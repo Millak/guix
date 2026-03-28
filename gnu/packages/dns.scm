@@ -303,6 +303,58 @@ protocol.")
       (home-page "https://github.com/earlchew/cloudflare-cli")
       (license license:expat))))
 
+(define-public ddclient
+  (package
+    (name "ddclient")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ddclient/ddclient")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sz4f7qx4yjg6q6ybhzilb7f0kshz46c54y3i4hq2nww2bhkc8a4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'bootstrap 'patch-ddclient.in-shebang
+            (lambda _
+              ;; This is run in the bootstrap phase, so patch before
+              (patch-shebang "ddclient.in")))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/ddclient")
+                `("PERL5LIB" ":" prefix
+                  ,(map (lambda (input-name)
+                          (string-append (assoc-ref inputs input-name)
+                                         "/lib/perl5/site_perl"))
+                        '("perl-json")))))))))
+    (native-inputs
+     (list autoconf
+           automake
+           perl-http-daemon
+           perl-plack
+           perl-test-mockmodule
+           perl-test-tcp
+           perl-test-warnings))
+    (inputs
+     (list curl
+           perl
+           perl-json
+           bash-minimal))
+    (home-page "https://github.com/ddclient/ddclient")
+    (synopsis "Dynamic DNS update client")
+    (description
+     "ddclient is used to update dynamic DNS entries for accounts on many
+dynamic DNS services.  It supports a wide range of routers and protocols,
+including Cloudflare, Namecheap, DynDNS, FreeDNS, Google Domains, and many
+more.")
+    (license license:gpl2+)))
+
 (define-public ldns
   (package
     (name "ldns")
