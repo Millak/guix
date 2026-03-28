@@ -34,6 +34,7 @@
   #:use-module (gnu packages anthy)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages dictionaries)
@@ -95,7 +96,7 @@ client.")
 (define-public fcitx5
   (package
     (name "fcitx5")
-    (version "5.1.16")
+    (version "5.1.19")
     (source
      (origin
        (method url-fetch)
@@ -103,9 +104,14 @@ client.")
              "https://download.fcitx-im.org/fcitx5/fcitx5/fcitx5-"
              version "_dict.tar.zst"))
        (sha256
-        (base32 "0lwp90wjrkiws121rqn9kzdz6p1ncsk18dkmbv0zi37yqx2mv180"))))
+        (base32 "1ngsadqdrwy99w63dmk493gg56j7r991v6pq1nwkx6apib9ykpc0"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "third_party")))))
     (arguments
-     (list #:configure-flags #~(list "-DUSE_SYSTEMD=OFF")))
+     (list #:configure-flags #~(list "-DUSE_SYSTEMD=OFF"
+                                     "-DUSE_SYSTEM_YOGA=ON")))
     (build-system cmake-build-system)
     (inputs
      (list cairo
@@ -118,12 +124,12 @@ client.")
            gettext-minimal
            glib
            iso-codes/pinned
-           json-c
            libevent
            libuv
            libxcb
            libxkbcommon
            libxkbfile
+           nlohmann-json
            pango
            `(,util-linux "lib")         ;For libuuid.
            wayland
@@ -132,7 +138,8 @@ client.")
            xcb-util
            xcb-util-keysyms
            xcb-util-wm
-           xkeyboard-config))
+           xkeyboard-config
+           yoga))
     (native-inputs
      (list extra-cmake-modules
            zstd
