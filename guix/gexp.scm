@@ -1455,7 +1455,8 @@ and in the current monad setting (system type, etc.)"
         (($ <gexp-input> (? self-quoting? x))
          (return x))
         (($ <gexp-input> x)
-         (raise (condition (&gexp-input-error (input x)))))
+         (raise (condition (&gexp-input-error (input x))
+                           (&error-location (location (gexp-location exp))))))
         (x
          (return x)))))
 

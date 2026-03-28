@@ -33,7 +33,10 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bootstrap)
-  #:use-module ((guix diagnostics) #:select (guix-warning-port))
+  #:use-module ((guix diagnostics) #:select (error-location
+                                             error-location?
+                                             guix-warning-port
+                                             source-properties->location))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-64)
@@ -1306,6 +1309,18 @@ importing.* \\(guix config\\) from the host"
   (lowered-gexp-sexp
    (run-with-store %store
      (lower-gexp #~(#\+)))))
+
+(let* ((g      #~#$*unspecified*)
+       (loc    (current-source-location))      ;keep this alignment!
+       (g-loc (source-properties->location
+               `((line . ,(- (assq-ref loc 'line) 1))
+                 ,@(alist-delete 'line loc)))))
+  (test-equal "lower-gexp, invalid input location"
+    g-loc
+    (guard (c ((and (gexp-input-error? c) (error-location? c))
+               (error-location c)))
+      (run-with-store %store
+        (lower-gexp g)))))
 
 (test-assertm "gexp->derivation #:references-graphs"
   (mlet* %store-monad
