@@ -451,7 +451,7 @@ topology functions.")
 (define-public gnome-maps
   (package
     (name "gnome-maps")
-    (version "49.4")
+    (version "50.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -459,7 +459,7 @@ topology functions.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1c04z2ly9vri98gmn4p5lhmfxhqjsc6rqz7kyprf0shdsicazyl6"))))
+                "0vins6a8ca6qdy4v5q97bw3hcq0mljr3my5hjfkliw1cpldf0rha"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -487,7 +487,8 @@ topology functions.")
                 `("GI_TYPELIB_PATH" ":" prefix
                   (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
-     (list gettext-minimal
+     (list blueprint-compiler
+           gettext-minimal
            `(,glib "bin")
            gobject-introspection
            libportal
