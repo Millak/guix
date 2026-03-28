@@ -9,7 +9,7 @@
 ;;; Copyright © 2020 Sebastian Schott <sschott@mailbox.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2024. 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -39,6 +39,7 @@
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -109,7 +110,7 @@
 (define-public rapid-photo-downloader
   (package
     (name "rapid-photo-downloader")
-    (version "0.9.37a5")
+    (version "0.9.37b1")
     (source
      (origin
        (method git-fetch)
@@ -118,10 +119,15 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pb7gfsbgq9zl6yiapmaax814c0ydkl75xj8025mqygy3lmm9mba"))))
+        (base32 "0mh9mbzkncjlsshcmjkj6mwy3dyvbbwx4d6nsxanyva27y85ycbm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:imported-modules (append %qt-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '((guix build pyproject-build-system)
+                  ((guix build qt-build-system) #:prefix qt:)
+                  (guix build utils))
       #:test-flags
       #~(list
          ;; XXX: KeyError: Preference key 'Extension' is invalid.
@@ -158,15 +164,22 @@
                 (("from (cache|interprocess|rpdfile|utilities)" _ module)
                  (string-append "from raphodo." module)))))
           (add-after 'wrap 'wrap-more
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda* (#:key inputs outputs #:allow-other-keys)
               (wrap-program (string-append #$output
                                            "/bin/rapid-photo-downloader")
-                `("PATH" ":" prefix
-                  (,(dirname (search-input-file inputs "bin/exiftool"))))
-                `("GI_TYPELIB_PATH" ":" prefix
+                `("PATH" prefix
+                  (,(dirname (search-input-file inputs "bin/exiftool"))
+                   ,(dirname (search-input-file inputs "bin/gsettings"))))
+                `("GI_TYPELIB_PATH" prefix
                   (,(getenv "GI_TYPELIB_PATH")))
-                `("GUIX_PYTHONPATH" ":" prefix
-                  (,(getenv "GUIX_PYTHONPATH")))))))))
+                `("GST_PLUGIN_SYSTEM_PATH" prefix
+                  (,(getenv "GST_PLUGIN_SYSTEM_PATH")))
+                `("GUIX_PYTHONPATH" prefix
+                  (,(getenv "GUIX_PYTHONPATH"))))))
+          (add-after 'wrap-more 'wrap-qt
+            (lambda args
+              (apply (assoc-ref qt:%standard-phases 'qt-wrap)
+                     `(,@args #:qtbase #$(this-package-input "qtbase"))))))))
     (native-inputs
      (list file
            intltool
@@ -176,9 +189,10 @@
            python-hatch-gettext
            python-pytest))
     (inputs
-     (list bash-minimal ;for wrap-program
+     (list bash-minimal                 ;for wrap-program
            gdk-pixbuf
            gexiv2-0.14
+           `(,glib "bin")               ;for gsettings
            gst-libav
            gst-plugins-base
            gst-plugins-good
@@ -202,7 +216,10 @@
            python-pymediainfo
            python-sortedcontainers
            python-tenacity
-           perl-image-exiftool))
+           perl-image-exiftool
+           qtbase-5
+           qtsvg-5
+           qtwayland-5))
     (home-page "https://github.com/damonlynch/rapid-photo-downloader")
     (synopsis "Import photos and videos from cameras, phones and memory cards")
     (description
