@@ -1346,7 +1346,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.12.15")
+    (version "1.14.0")
     (source
      (origin
        (method git-fetch)
@@ -1355,7 +1355,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "191q23nj690bn4cbb26yf7pw5ihb1xmbna6ccdrkkf4m19yrxr12"))))
+        (base32 "1fhnnm58ndfd6hzdagrsgcdcm2qlcjlda13vyx5d9lclhxgdn0vf"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
@@ -1364,7 +1364,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
            tzdata-for-tests           ; for tests
            texinfo))
     (inputs
-     (list glib gmime guile-3.0 xapian readline python))
+     (list glib gmime guile-3.0-latest xapian readline python))
     (arguments
      (list
       #:modules '((guix build meson-build-system)
