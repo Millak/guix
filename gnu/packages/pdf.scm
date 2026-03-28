@@ -660,7 +660,7 @@ using libspectre.")
 (define-public zathura-djvu
   (package
     (name "zathura-djvu")
-    (version "0.2.10")
+    (version "2026.02.03")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -669,7 +669,7 @@ using libspectre.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1c069n676c9byy1sp2c6idm3mlfijcdpv6z09ifx8hjkryaajplx"))))
+                "0742bd7f8nansshnfa2qvq344kz8wvnwa3l3cz6jyfdfmn27vng4"))))
     (native-inputs (list pkg-config))
     (inputs
      (list djvulibre zathura))
