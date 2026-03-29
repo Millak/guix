@@ -595,17 +595,17 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.6)))
 
-(define-public linux-libre-6.1-version "6.1.166")
+(define-public linux-libre-6.1-version "6.1.167")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
    linux-libre-6.1-version
    linux-libre-6.1-gnu-revision
    (base32 "10gcbkd5jxfspa712kvb3qmsjgsapd9cz47pmpfk03bbfzf8ydlv")
-   (base32 "1jiwwl5sgpc16x0v6phbknv94mc46gvwgc2z8s4pdgn4j54yrd8v")))
+   (base32 "1w5pfws6l39dpc3lzazs1n6r4m96f6rdf6vb2scy5fhmrd933ldc")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "0jcl12gjlfdf9pwqg1m84rzwnrj3grxxgk5blrq8zlaq45sgr3c1")))
+        (hash (base32 "1jwqwp2fg3wdsh9w663rbnbv1rvsvksv1pj4bzns8swp0wy0a618")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
