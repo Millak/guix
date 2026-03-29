@@ -11,7 +11,7 @@
 ;;; Copyright © 2016–2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020, 2024 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
-;;; Copyright © 2018, 2020, 2022-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2018, 2020, 2022-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
@@ -404,7 +404,7 @@ displays a histogram of the roundtrip time jitter.")
 (define-public webrtc-audio-processing
   (package
     (name "webrtc-audio-processing")
-    (version "1.3")
+    (version "2.1")
     (source
      (origin
        (method url-fetch)
@@ -412,30 +412,14 @@ displays a histogram of the roundtrip time jitter.")
         (string-append "http://freedesktop.org/software/pulseaudio/"
                        name "/" name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xfvq5lxg612vfzk3zk6896zcb4cgrrb7fq76w9h40magz0jymcm"))))
+        (base32 "0lrjzhshwj1rkh4fxh7sq2dkkfimlyjs2ha7s3ribsh2dnc6ps1m"))
+       (patches (search-patches "webrtc-audio-processing-abseil-cpp.patch"
+                                "webrtc-audio-processing-gcc-14.patch"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags (if (target-x86-32?)
                                  #~(list "-Dc_args=-DPFFFT_SIMD_DISABLE")
-                                 #~'())
-           #:phases
-           (if (or (target-x86-32?) (target-powerpc?))
-               #~(modify-phases %standard-phases
-                   (add-after 'unpack 'apply-patches
-                     (lambda _
-                       (define (patch file)
-                         (invoke "patch" "-p1" "--force" "-i" file))
-
-                       ;; https://gitlab.freedesktop.org/pulseaudio/webrtc-audio-processing/-/issues/5
-                       ;; TODO: Move to the 'patches' field of the origin on
-                       ;; the next rebuild.
-                       (patch #$(local-file
-                                 (search-patch
-                                  "webrtc-audio-processing-byte-order-pointer-size.patch")))
-                       (patch #$(local-file
-                                 (search-patch
-                                  "webrtc-audio-processing-x86-no-sse.patch"))))))
-               #~%standard-phases)))
+                                 #~'())))
     (native-inputs (list pkg-config))
     (inputs (list abseil-cpp))
     (synopsis "WebRTC's Audio Processing Library")
