@@ -3686,24 +3686,23 @@ SLURM jobs (meant for internal use by python-snakemake-executor-plugin-slurm).")
 (define-public python-sparse
   (package
     (name "python-sparse")
-    (version "0.15.5")
+    (version "0.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sparse" version))
        (sha256
         (base32
-         "0rp29gp82qwwkq210pzh2qmlqhi2007nb7p7nwqmrkgmjq6cwxjc"))))
+         "1x5zkgbsgmpr6nis0k2y5vrsg7l61ly2zishnijcgh0fxdhjdyap"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-numba python-numpy python-scipy))
     (native-inputs
      (list python-dask
            python-pytest
-           python-pytest-cov
+           python-pytest-cov ; runs by default
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (home-page "https://github.com/pydata/sparse/")
     (synopsis "Library for multi-dimensional sparse arrays")
     (description
