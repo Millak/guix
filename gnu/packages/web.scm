@@ -10389,6 +10389,40 @@ libraries.")
 console, a file, syslog, journald, or a callback function.")
     (license license:lgpl2.1)))
 
+(define-public yoga
+  (package
+    (name "yoga")
+    (version "3.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/facebook/yoga")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09g2kispng520mcaky87lkpj7k1lscsz2jyv05cjxzfrwwf4pfyb"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'use-system-googletest
+                 (lambda _
+                   (substitute* "tests/CMakeLists.txt"
+                     (("FetchContent_MakeAvailable[(]googletest[)]")
+                      "find_package(GTest REQUIRED)"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "./tests/yogatests")))))))
+    (inputs (list googletest))
+    (home-page "https://github.com/facebook/yoga/")
+    (synopsis "Flexbox layout engine")
+    (description
+     "Yoga is an embeddable and performant flexbox layout engine with bindings
+for multiple languages.")
+    (license license:expat)))
+
 (define-public ulfius
   (package
     (name "ulfius")
