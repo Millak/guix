@@ -809,7 +809,7 @@ wrappers for common SDL2 functionality.")
 (define-public python-qtawesome
   (package
     (name "python-qtawesome")
-    (version "1.4.0")
+    (version "1.4.2")
     (source
      (origin
        (method git-fetch)
@@ -818,7 +818,7 @@ wrappers for common SDL2 functionality.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "109anjlnin5cafx579clj1x21ggig3qkcm2g1wlx0lshxqzjadan"))))
+        (base32 "16vjnngg5hjmmbp0c2ikgc88g8q0l44n1w3wa04ga5zfhd1yhyn2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
