@@ -555,6 +555,44 @@ from local disk or cloud services, and can be controlled using a variety of
 MPD and web clients.")
     (license license:asl2.0)))
 
+(define-public mopidy-local
+  (package
+    (name "mopidy-local")
+    (version "3.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mopidy/mopidy-local")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fqw6rq39w4q53w6jgl80x358rhzl4c9gdqb9kfgckmcz6vbcfm1"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list mopidy
+           python-pykka
+           python-uritools))
+    (home-page "https://mopidy.com/ext/local/")
+    (synopsis "Mopidy extension for playing music from local file archive")
+    (description
+     "This package provides Mopidy's extension for playing music from local
+file archive.
+
+In contrast to @url{https://mopidy.com/ext/file, Mopidy-File}, Mopidy-Local
+builds an index of archive’s metadata ahead of time, and can thus provide
+additional features like search.
+
+The music metadata is stored in a SQLite database. This lets users to browse
+their music collection by album, artist, composer and performer, and provides
+full-text search capabilities based on SQLite’s FTS modules.  It also notices
+updates via @command{mopidy local scan} while Mopidy is running, so you can
+scan your media library periodically, for example from a cron job.")
+    (license license:asl2.0)))
+
 (define-public clementine
   ;; Clementine has one automatic release per commit at
   ;; <https://github.com/clementine-player/Clementine/releases>.
