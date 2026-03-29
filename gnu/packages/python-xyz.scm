@@ -39547,6 +39547,31 @@ package updates.")
 adherence to RFC 6570, but adds a few extensions.")
     (license license:expat)))
 
+(define-public python-uritools
+  (package
+    (name "python-uritools")
+    (version "6.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tkem/uritools/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "115a8xphnv0ykd4c0pjh5rd4zy92znpdv4nwbn7n2d6irznvk00v"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/tkem/uritools/")
+    (synopsis "URI parsing, classification and composition")
+    (description
+     "This package provides RFC 3986 compliant functions for parsing,
+classifying and composing URIs and URI references, largely replacing the
+Python Standard Library's urllib.parse module.")
+    (license license:expat)))
+
 (define-public python-urwid
   (package
     (name "python-urwid")
