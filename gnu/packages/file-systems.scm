@@ -969,7 +969,7 @@ minimal bcachefs-tools package.  It is meant to be used in initrds.")
 (define-public bcachefs-linux-module
   (package
     (name "bcachefs-linux-module")
-    (version "1.35.1")
+    (version "1.37.4")
     (source
      (origin
        (method git-fetch)
@@ -978,7 +978,7 @@ minimal bcachefs-tools package.  It is meant to be used in initrds.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jn7fqlvhr0iazfx31wamvmf3qmgrzlf9ghvz8qazk8b6ipv77fn"))))
+        (base32 "17041jphzbg0ppxlc1acr3d73zyn02spjvi5my30wak8xh9n6nan"))))
     (build-system linux-module-build-system)
     (arguments
      (list
@@ -992,12 +992,6 @@ minimal bcachefs-tools package.  It is meant to be used in initrds.")
               (with-output-to-file ".version"
                 (lambda ()
                   (display #$version)))))
-          (add-after 'unpack 'patch-source
-            (lambda _
-              (substitute* "Makefile"
-                ;; Remove unnecessary dependencies
-                (("^.*PKG_CONFIG.*$")
-                 ""))))
           (add-before 'configure 'prepare-build-directory
             (lambda* (#:key make-flags #:allow-other-keys)
               (apply invoke "make" "install_dkms"
