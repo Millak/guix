@@ -1663,6 +1663,49 @@ cProfile or profile modules, depending on what is available.  It's a
 successor of @url{https://github.com/rkern/line_profiler}.")
     (license license:bsd-3)))
 
+(define-public python-lsp-ruff
+  (package
+    (name "python-lsp-ruff")
+    (version "2.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/python-lsp/python-lsp-ruff")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xjvqyn3qn54cq63ay9n1rr1wkzx04bf99cki68n46gm8nwjvn6m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list (string-append
+                            ;; Tests below do a diff check on the ruff store
+                            ;; path against the python store path.
+                            "-k" "not test_ruff_settings"
+                            " and not test_ruff_config_param"))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'use-system-ruff
+                     ;; This package requests Ruff from PyPI.  Make it use
+                     ;; the guix package instead.
+                     (lambda _
+                       (substitute* "pyproject.toml"
+                         (("\"ruff.*\",") "")))))))
+    (propagated-inputs (list python-cattrs
+                             python-lsprotocol
+                             python-lsp-server
+                             python-tomli
+                             ;; Ruff is detected by shutil.which.
+                             ruff))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/python-lsp/python-lsp-ruff")
+    (synopsis "Ruff linting plugin for @code{pylsp}")
+    (description
+     "@code{python-lsp-ruff} is a plugin for @code{python-lsp-server} that
+adds linting, code actions and formatting capabilities that are provided by
+Ruff.")
+    (license license:expat)))
+
 (define-public python-mamba
   (package
     (name "python-mamba")
