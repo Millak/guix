@@ -540,8 +540,9 @@ enables iPod support in music players such as Clementine.")
            python-setuptools))
     (inputs
      (list bash-minimal
-           gst-libav
-           python-gst
+           gst-libav))
+    (propagated-inputs
+     (list python-gst
            python-pygobject
            python-pykka
            python-requests
