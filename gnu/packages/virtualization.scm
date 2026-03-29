@@ -2467,9 +2467,23 @@ Open Container Initiative specification.")
       #:build-flags
       #~(list (string-append "-ldflags="
                              "-X github.com/opencontainers/umoci.version="
-                             #$version))))
-    ;; TODO: build manpages from <doc/man> with 'go-md2man'.
-    (propagated-inputs
+                             #$version))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'build-and-install-man-pages
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion
+                  (string-append "src/" unpack-path "/doc/man")
+                (mkdir-p (string-append #$output "/share/man/man1"))
+                (for-each
+                 (lambda (file)
+                   (let* ((file (string-drop-right file 3))      ;cut .md
+                          (in-md (string-append file ".md"))
+                          (out-man (string-append #$output
+                                                  "/share/man/man1/" file)))
+                     (invoke "go-md2man" "-in" in-md "-out" out-man)))
+                 (find-files "." "\\.md$"))))))))
+    (native-inputs
      (list go-github-com-adalogics-go-fuzz-headers
            go-github-com-apex-log
            go-github-com-blang-semver-v4
@@ -2489,7 +2503,8 @@ Open Container Initiative specification.")
            go-github-com-stretchr-testify
            go-github-com-urfave-cli
            go-golang-org-x-sys
-           go-google-golang-org-protobuf))
+           go-google-golang-org-protobuf
+           go-md2man))
     (home-page "https://umo.ci/")
     (synopsis "Tool for modifying Open Container images")
     (description
