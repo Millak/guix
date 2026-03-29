@@ -969,16 +969,8 @@ minimal bcachefs-tools package.  It is meant to be used in initrds.")
 (define-public bcachefs-linux-module
   (package
     (name "bcachefs-linux-module")
-    (version "1.37.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://evilpiepirate.org/git/bcachefs-tools.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "17041jphzbg0ppxlc1acr3d73zyn02spjvi5my30wak8xh9n6nan"))))
+    (version (package-version bcachefs-tools-minimal))
+    (source (package-source bcachefs-tools-minimal))
     (build-system linux-module-build-system)
     (arguments
      (list
