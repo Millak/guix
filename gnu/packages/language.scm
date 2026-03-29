@@ -929,7 +929,7 @@ and manipulation.")
 (define-public libskk
   (package
     (name "libskk")
-    (version "1.0.5")
+    (version "1.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -938,15 +938,10 @@ and manipulation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0y279pcgs3jrsi9vzx086xhz9jbz23dqqijp4agygc9ackp9sxy5"))
-              (patches
-               (search-patches
-                "libskk-fix-invalid-escape.patch"))))
+                "0x2fswxybc5ii821ydmm7bjn8cyr35zi3mdld2zmaqc7863hzhqq"))))
     (build-system gnu-build-system)
     (arguments
      (list #:parallel-tests? #f        ;Concurrency issues in tests.
-           ;; relax gcc 14 strictness
-           #:configure-flags #~(list "CFLAGS=-g2 -O2 -Wno-error=int-conversion")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'install 'symlink-skk-jisyo
@@ -961,7 +956,8 @@ and manipulation.")
                          libtool
                          pkg-config
                          vala))
-    (inputs (list libgee json-glib libxkbcommon skk-jisyo))
+    (inputs (list json-glib libxkbcommon skk-jisyo))
+    (propagated-inputs (list glib libgee)) ;required by libskk.pc
     (home-page "https://github.com/ueno/libskk")
     (synopsis "Dealing with Japanese kana-to-kanji conversion")
     (description
