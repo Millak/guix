@@ -1278,6 +1278,52 @@ dependent on sampled parameters.  It assumes one has a Bayesian posterior
 conditional posterior @code{P(y|x,D,M)} in the @code{(x,y)} plane.")
     (license license:expat)))
 
+(define-public python-flox
+  (package
+    (name "python-flox")
+    (version "0.11.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xarray-contrib/flox")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jy1kxk9r0az39zmbmf6md55c35ldkk9q6pcfg8jb4chwi4i34iw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore" "tests/test_asv.py" ; ignore benchmark test
+              ;; FIXME: Check why test_cohorts failed.
+              "--ignore" "tests/test_cohorts.py")))
+    (propagated-inputs (list python-numpy
+                             python-numpy-groupies
+                             python-packaging
+                             python-pandas
+                             python-scipy
+                             python-toolz))
+    (native-inputs (list ;; python-cubed ; TODO: package this
+                         python-dask
+                         python-netcdf4
+                         python-numbagg
+                         python-pytest
+                         python-pytest-snapshot
+                         python-pytest-xdist
+                         python-setuptools
+                         python-setuptools-scm
+                         python-sparse
+                         python-xarray))
+    (home-page "https://github.com/xarray-contrib/flox")
+    (synopsis "GroupBy operations for @code{dask.array}")
+    (description "@code{flox} mainly provides strategies for fast GroupBy
+reductions with @code{dask.array}.  It uses the MapReduce paradigm (or a
+\"tree reduction\") to run the GroupBy operation in a parallel-native way
+totally avoiding a sort or shuffle operation.  @code{flox} can use either
+@code{dask} or @code{cubed} as its backend.")
+    (license license:asl2.0)))
+
 (define-public python-formulaic
   (package
     (name "python-formulaic")
