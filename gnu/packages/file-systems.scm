@@ -1005,7 +1005,7 @@ minimal bcachefs-tools package.  It is meant to be used in initrds.")
                                     (getcwd) "/")
                      "DKMSDIR=build/"
                      make-flags))))))
-    (home-page (package-home-page bcachefs-tools-minimal/static))
+    (home-page (package-home-page bcachefs-tools-minimal))
     (synopsis "Bcachefs Linux kernel module")
     (description
      "This package provides the Linux kernel module for Bcachefs.
