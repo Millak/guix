@@ -11458,7 +11458,7 @@ expression parsing and evaluation.")
 (define-public highs
   (package
     (name "highs")
-    (version "1.10.0")
+    (version "1.14.0")
     (source
      (origin
        (method git-fetch)
@@ -11467,14 +11467,14 @@ expression parsing and evaluation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19q99nkk6r6k91gxp8a5rjil1399qyfgfc6jqlg2gd82vpcw8c8b"))))
+        (base32 "16y664rzvxd8785195k0srz0842zvl0zdkf6qi103p503pj81afh"))))
     (build-system cmake-build-system)
     (home-page "https://highs.dev")
     (synopsis "High performance software for linear optimization")
     (description
      "HiGHS provides serial and parallel solvers for large-scale sparse
 linear programming (LP), mixed-integer programming (MIP), and quadratic
-programming (QP) models")
+programming (QP) models.")
     (license license:expat)))
 
 (define-public trilinos-zoltan
