@@ -10082,7 +10082,20 @@ true in all models.")
                  (add-after 'unpack 'no-tune-native
                    (lambda _
                      (substitute* "CMakeLists.txt"
-                       (("-mtune=native") "")))))))
+                       (("-mtune=native") ""))))
+                 ;; Refer to the library in ${LOUVAIN_COMMUNITIES_LIBRARIES} by
+                 ;; full path.  This ensures that we find references to it in
+                 ;; software using this library via CMake.
+                 ;;
+                 ;; CMake expects module to set this variable to a full path.
+                 ;; See <https://cmake.org/cmake/help/v4.3/module/SelectLibraryConfigurations.html#command:select_library_configurations>.
+                 (add-after 'unpack 'cmake-lib-full-path
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (substitute* "louvain_communitiesConfig.cmake.in"
+                       (("louvain_communities")
+                        (string-append
+                          (assoc-ref outputs "out")
+                          "/lib/liblouvain_communities.so"))))))))
       (native-inputs (list python))
       (home-page "https://github.com/meelgroup/louvain-community")
       (synopsis "Multi-criteria community detection")
