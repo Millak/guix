@@ -533,7 +533,7 @@ and Ethernet frame transmission.")
 (define-public libnice
   (package
     (name "libnice")
-    (version "0.1.22")
+    (version "0.1.23")
     (source
      (origin
        (method git-fetch)
@@ -543,7 +543,7 @@ and Ethernet frame transmission.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ik45q1qlr04llr2ssm6zb73840dmn31q303k3qrcpgj0jp578hg"))))
+         "0zqnqhcm1rx5axbzd448yi6j4bq4kykiqb4wihs2p8h1k49nkyjh"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -565,17 +565,16 @@ and Ethernet frame transmission.")
                  (string-append "# " all))
                 ;; The following test is disabled as it fails in a
                 ;; nondeterministic fashion (see:
-                ;; https://gitlab.freedesktop.org/libnice/libnice/-/issues/151).
+                ;; <https://gitlab.freedesktop.org/libnice/libnice/-/issues/151>).
                 (("'test-bsd'" all)
                  (string-append "# " all))
-                ;; The test-new-trickle fails with GLib 2.83.0 (see:
-                ;; https://gitlab.freedesktop.org/libnice/libnice/-/issues/198).
-                (("'test-new-trickle'" all)
-                 (string-append "# " all)))
+                ;; This test uses getaddrinfo, which cannot resolve in the
+                ;; build environment.
+                ((".*'test-slow-resolving',.*") ""))
               (substitute* "stun/tests/meson.build"
                 ;; test-bind.c:234: bad_responses: Assertion `len >= 20'
                 ;; failed (see:
-                ;; https://gitlab.freedesktop.org/libnice/libnice/-/issues/150).
+                ;; <https://gitlab.freedesktop.org/libnice/libnice/-/issues/150>).
                 (("'bind', ")
                  ""))))
           (add-after 'install 'move-docs
