@@ -2134,6 +2134,35 @@ The supported distributions are:
 @end itemize")
     (license license:expat)))
 
+(define-public python-numbagg
+  (package
+    (name "python-numbagg")
+    (version "0.9.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/numbagg/numbagg")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1frx10rdyklp0zbd8bckl63i0vmj0z93nkx1i7dylbv99iw27215"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numba python-numpy))
+    (native-inputs (list python-bottleneck
+                         python-pandas
+                         python-pytest
+                         python-pytest-benchmark ; runs by default
+                         python-setuptools
+                         python-setuptools-scm
+                         python-tabulate))
+    (home-page "https://github.com/numbagg/numbagg")
+    (synopsis "Fast N-dimensional aggregation functions with Numba")
+    (description "Numbagg provides high-performance implementations for moving
+window, aggregation, and grouping functions.  It leverages Numba's JIT
+compilation and is especially performant on multi-core parallelism.")
+    (license license:bsd-3)))
+
 (define-public python-numdifftools
   (package
     (name "python-numdifftools")
