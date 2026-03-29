@@ -24608,7 +24608,8 @@ of XELB.")
     (name "emacs-exwm-no-x-toolkit")
     (synopsis "Emacs X window manager (without an X toolkit)")
     (propagated-inputs
-     (list emacs-xelb-no-x-toolkit))
+     (modify-inputs propagated-inputs
+       (replace "emacs-xelb" emacs-xelb-no-x-toolkit)))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:emacs emacs) `,emacs-no-x-toolkit)))))
