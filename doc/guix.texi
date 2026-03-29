@@ -2658,9 +2658,11 @@ bootloaders.
 
 Once you are done partitioning the target hard disk drive, you have to
 create a file system on the relevant partition(s)@footnote{Currently
-Guix System only supports ext4, btrfs, JFS, F2FS, and XFS file systems.  In
-particular, code that reads file system UUIDs and labels only works for these
-file system types.}.  For the ESP, if you have one and assuming it is
+Guix System supports only ext4, btrfs, bcachefs, JFS, F2FS, and XFS
+file systems.  In particular, code that reads file system UUIDs and
+labels works only for these file system types.  For bcachefs, also add
+the @code{bcachefs-linux-module} to your @code{operating-system}'s
+@code{initrd-modules}.}.  For the ESP, if you have one and assuming it is
 @file{/dev/sda1}, run:
 
 @example
