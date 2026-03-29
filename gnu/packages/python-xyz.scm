@@ -2426,6 +2426,29 @@ pyte is a fork of vt102, which was an incomplete pure Python implementation
 of VT100 terminal.")
     (license license:lgpl3+)))
 
+(define-public python-pyuca
+  (package
+    (name "python-pyuca")
+    (version "1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jtauber/pyuca")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zi301f1kpzcnkgd90ax8f1xhylcxy2c9fy3ym4pwc9mzbxs9198"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; there are no tests
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/jtauber/pyuca")
+    (synopsis "Python implementation of the Unicode Collation Algorithm")
+    (description "This package provides a Python implementation of the
+@url{http://unicode.org/reports/tr10/, Unicode Collation Algorithm}.")
+    (license license:expat)))
+
 (define-public python-pyxdameraulevenshtein
   (package
     (name "python-pyxdameraulevenshtein")
