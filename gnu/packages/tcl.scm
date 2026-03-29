@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2018 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2016, 2023, 2024, 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2018, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
@@ -391,7 +391,10 @@ modules for Tk, all written in high-level Tcl.  Examples of provided widgets:
             (files (list (string-append "lib/Tclxml" version))))))
     (arguments
      `(#:configure-flags
-       (list (string-append "--exec-prefix=" (assoc-ref %outputs "out"))
+       (list (string-append "CFLAGS=-g -O2"
+                            " -Wno-implicit-function-declaration"
+                            " -Wno-incompatible-pointer-types")
+             (string-append "--exec-prefix=" (assoc-ref %outputs "out"))
              (string-append "--with-tclconfig="
                             (assoc-ref %build-inputs "tcl") "/lib")
              (string-append "--with-xml2-config="
