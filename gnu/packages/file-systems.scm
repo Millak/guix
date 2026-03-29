@@ -982,7 +982,8 @@ minimal bcachefs-tools package.  It is meant to be used in initrds.")
     (build-system linux-module-build-system)
     (arguments
      (list
-      #:tests? #f ;no 'check' target
+      #:make-flags #~(list "BCACHEFS_DKMS=1")
+      #:tests? #f                       ;no 'check' target
       #:source-directory "build/src/fs/bcachefs"
       #:phases
       #~(modify-phases %standard-phases
@@ -997,11 +998,13 @@ minimal bcachefs-tools package.  It is meant to be used in initrds.")
                 ;; Remove unnecessary dependencies
                 (("^.*PKG_CONFIG.*$")
                  ""))))
-          (add-before 'configure 'prepare-build-dir
-            (lambda _
-              (invoke "make" "install_dkms"
-                      (string-append "DESTDIR="
-                                     (getcwd) "/") "DKMSDIR=build/"))))))
+          (add-before 'configure 'prepare-build-directory
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "install_dkms"
+                     (string-append "DESTDIR="
+                                    (getcwd) "/")
+                     "DKMSDIR=build/"
+                     make-flags))))))
     (home-page (package-home-page bcachefs-tools-minimal/static))
     (synopsis "Bcachefs Linux kernel module")
     (description
