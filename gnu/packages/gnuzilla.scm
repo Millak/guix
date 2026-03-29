@@ -1841,16 +1841,8 @@ associated with their name."))
 (define-public mozjs
   (package
     (name "mozjs")
-    (version "140.3.0")
-    (source (origin
-              (method url-fetch)
-              ;; TODO: Switch to IceCat source once available on ftp.gnu.org.
-              (uri (string-append "https://ftp.mozilla.org/pub/firefox"
-                                  "/releases/" version "esr/source/firefox-"
-                                  version "esr.source.tar.xz"))
-              (sha256
-               (base32
-                "05i3czn3v2qnhir8apcphbqy7rmy1dn7kcwx5yyi2qvmjcyfpipg"))))
+    (version %icecat-version)
+    (source icecat-source)
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1924,6 +1916,8 @@ associated with their name."))
                   ((".*killed process should not have exitStatus.*")
                    ""))
 
+                ;; Test failures are marked with “TEST-UNEXPECTED-FAIL”.
+                ;;
                 ;; Most of the timezone related failures are probably
                 ;; attributable to our use of a system-provided icu4c library
                 ;; instead of the bundled one.
@@ -1993,7 +1987,11 @@ getTimeZoneTransition/nanoseconds-subtracted-or-added-at-dst-transition.js"
                    ;; TypeError: can't access property "epochNanoseconds",
                    ;; before.getTimeZoneTransition(...) is null
                    "test262/intl402/Temporal/ZonedDateTime/prototype/\
-getTimeZoneTransition/transitions-close-together.js")))))
+getTimeZoneTransition/transitions-close-together.js"
+
+                   ;; Since 140.11:
+                   "non262/Date/time-zones-historic.js"
+                   )))))
           (add-before 'check 'pre-check
             (lambda _
               (setenv "JSTESTS_EXTRA_ARGS"
