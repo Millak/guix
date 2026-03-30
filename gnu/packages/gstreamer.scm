@@ -1002,10 +1002,6 @@ par compared to the rest.")
               "-Dquinn=disabled"        ;test fails
               "-Dskia=disabled"         ;attempts to download binaries
               "-Dsodium-source=system"
-              ;; The 'spotify' option causes the build error: "the trait
-              ;; bound `vergen::feature::build::Build:
-              ;; vergen_lib::entries::Add` is not satisfied"
-              "-Dspotify=disabled"
               "-Dtests=enabled"
               "-Dtracers=disabled"      ;test fails
               "-Dthreadshare=disabled"  ;test fails
@@ -1061,7 +1057,8 @@ par compared to the rest.")
                                         "libgstlewton.so"
                                         "libgstrsaudiofx.so"
                                         "libgstrsaudioparsers.so"
-                                        "libgstspeechmatics.so"))
+                                        "libgstspeechmatics.so"
+                                        "libgstspotify.so"))
                                     (,#$output:net
                                      . ("libgstdeepgram.so"
                                         "libgsthlsmultivariantsink.so"
