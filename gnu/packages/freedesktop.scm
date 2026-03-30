@@ -3310,6 +3310,7 @@ compatible with the well-known scripts of the same name.")
      (list gettext-minimal
            `(,glib "bin")
            gst-plugins-good             ;for wavparse plugin
+           (librsvg-for-system)         ;SVG loader needed for one test
            pkg-config
            python
            python-dbusmock
