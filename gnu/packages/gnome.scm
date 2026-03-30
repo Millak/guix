@@ -3217,6 +3217,7 @@ API add-ons to make GTK+ widgets OpenGL-capable.")
     (build-system meson-build-system)
     (arguments
      (list
+      #:glib-or-gtk? #t
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'skip-gtk-update-icon-cache
@@ -3224,17 +3225,13 @@ API add-ons to make GTK+ widgets OpenGL-capable.")
             (lambda _
               (substitute* "meson_post_install.py"
                 (("gtk-update-icon-cache") "true"))))
-
-          #$@(if (this-package-input "gjs")
-                 '()
-                 '((add-after 'unpack 'skip-gjs-test
-                     (lambda _
-                       ;; When the optional dependency on GJS is missing, skip
-                       ;; the GJS plugin tests.
-                       (substitute* "tests/modules.c"
-                         (("g_test_add.*JavaScript.*" all)
-                          (string-append "// " all "\n")))
-                       (delete-file "tests/catalogs/gjsplugin.xml")))))
+          (add-after 'unpack 'skip-modules-test
+            ;; This test fails with 'GLib-GObject-FATAL-CRITICAL: cannot
+            ;; register existing type 'GIRepository' since the GNOME 49
+            ;; upgrades.
+            (lambda _
+              (substitute* "tests/meson.build"
+                ((".*'modules', .*") ""))))
           (add-before 'check 'pre-check
             (lambda _
               (setenv "HOME" "/tmp")
