@@ -437,7 +437,8 @@ fetch and store media in Amazon S3.")
                  (apply (assoc-ref cargo:%standard-phases phase)
                         #:cargo-target #$(cargo-triplet)
                         args))
-               '(unpack-rust-crates
+               '(prepare-rust-crates
+                 unpack-rust-crates
                  configure
                  check-for-pregenerated-files
                  patch-cargo-checksums))))
