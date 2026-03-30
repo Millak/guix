@@ -170,6 +170,33 @@ used as part of a procedure to replace the nonfree BIOS with free software on
 various computers (Lenovo X60, X60s, X60T, T60, probably more).")
     (license license:gpl2)))
 
+(define-public ectool
+  (package
+    (name "ectool")
+    (version %coreboot-version)
+    (source %coreboot-origin)
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no test suite
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "INSTALL=install"
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "util/ectool")))
+          (delete 'configure)))) ; no configure script
+    (home-page "https://doc.coreboot.org/util.html")
+    (synopsis "Tool to dump and modify @acronym{EC, Embedded Controller} RAM
+on computers such as laptops")
+    (description "This package provides @command{ectool}, a program to dump
+and modify the contents of @acronym{EC, Embedded Controller} RAM
+on mobile computers.")
+    (license license:gpl2)))
+
 (define-public ifdtool
   (package
     (name "ifdtool")
