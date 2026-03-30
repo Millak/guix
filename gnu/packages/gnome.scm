@@ -2168,6 +2168,31 @@ The gnome-about program helps find which version of GNOME is installed.")
                                         ; Some bits under the LGPL.
     (license license:gpl2+)))
 
+(define-public gnome-desktop-testing
+  ;; Use the most recent commit as the last release tag is from 2021.
+  (let ((commit "036b7357f1892b3bdf19aba8d0be7d7b75bda291")
+        (revision "0"))
+    (package
+      (name "gnome-desktop-testing")
+      (version (git-version "2021.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://gitlab.gnome.org/GNOME/gnome-desktop-testing")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0qk3j6rkl0l531gxwy8ss8ybrl96k5rrqqq896pjh0fin5k25lrx"))))
+      (build-system meson-build-system)
+      (native-inputs (list pkg-config))
+      (inputs (list glib))
+      (home-page "https://gitlab.gnome.org/GNOME/gnome-desktop-testing")
+      (synopsis "Basic test runner from GNOME installed tests.")
+      (description "This package provides a basic runner for GNOME installed
+tests, as used by gjs for example.")
+      (license license:gpl2+))))
+
 (define-public gnome-disk-utility
   (package
     (name "gnome-disk-utility")
