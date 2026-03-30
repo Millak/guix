@@ -353,7 +353,8 @@ to finish tasks, not organize them.")
                   (format #t "Running cargo phase: ~a~%" phase)
                   (apply (assoc-ref cargo:%standard-phases phase)
                          #:cargo-target #$(cargo-triplet) args))
-                '(unpack-rust-crates
+                '(prepare-rust-crates
+                  unpack-rust-crates
                   configure
                   check-for-pregenerated-files
                   patch-cargo-checksums)))))))
