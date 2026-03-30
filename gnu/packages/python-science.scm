@@ -5905,7 +5905,8 @@ science including tools for accessing data sets in Python.")
                  (apply (assoc-ref cargo:%standard-phases phase)
                         #:cargo-target #$(cargo-triplet)
                         args))
-               '(unpack-rust-crates
+               '(prepare-rust-crates
+                 unpack-rust-crates
                  configure
                  check-for-pregenerated-files
                  patch-cargo-checksums)))))))
