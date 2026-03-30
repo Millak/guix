@@ -3810,6 +3810,52 @@ implements an analogue of the Texas Instruments Smart Amp speaker protection
 model.")
     (license license:expat)))
 
+(define-public system76-power
+  (package
+    (name "system76-power")
+    (version "1.2.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pop-os/system76-power")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x68i6r3qy12mb1r48p1dfijdihkl1sp16hwslgjxxrlakgi8dxp"))))
+    (inputs (cons libusb (cargo-inputs 'system76-power)))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-dependencies
+            (lambda _
+              (substitute* "Cargo.toml"
+                (("sysfs-class .*")
+                 "sysfs-class = \"0.1.3\"\n"))))
+          (replace 'install
+            (lambda _
+              (invoke "make" "install"
+                      (string-append "prefix=" #$output))
+              (let ((dir (string-append
+                          #$output "/share/dbus-1/system-services")))
+                (mkdir-p dir)
+                (chdir dir))
+              (with-output-to-file "com.system76.PowerDaemon.service"
+                (lambda _
+                  (display "\
+[D-BUS Service]
+Name=com.system76.PowerDaemon
+User=root"))))))))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/pop-os/system76-power")
+    (synopsis "Power profile management for Linux")
+    (description "This package provides a utility for managing graphics and
+power profiles.")
+    (license license:gpl3)))
+
 (define-public systemd-lsp
   (package
     (name "systemd-lsp")
