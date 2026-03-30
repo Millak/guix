@@ -443,22 +443,34 @@ topology functions.")
                                     "update_desktop_database"))
                    (string-append option ": false"))
                   (else all))))))
-          (add-before 'check 'check-setup
-            (lambda* (#:key native-inputs inputs #:allow-other-keys)
-              ;; for timeTest
-              (setenv "TZDIR"
-                      (search-input-directory (or native-inputs inputs)
-                                              "share/zoneinfo"))))
           (add-after 'install 'wrap
             (lambda _
               (wrap-program (string-append #$output "/bin/gnome-maps")
                 `("GI_TYPELIB_PATH" ":" prefix
-                  (,(getenv "GI_TYPELIB_PATH")))))))))
+                  (,(getenv "GI_TYPELIB_PATH"))))))
+          (delete 'check)               ;moved after install
+          (add-after 'wrap 'check
+            (lambda* (#:key native-inputs inputs #:allow-other-keys #:rest args)
+              ;; for timeTest
+              (setenv "TZDIR"
+                      (search-input-directory (or native-inputs inputs)
+                                              "share/zoneinfo"))
+                ;; This workaround is made necessary by a custom patch to our
+                ;; gobject-introspection package that causes it to always use
+                ;; absolute paths for the shared objects referenced by the
+                ;; typelibs.
+              (let* ((src (string-append #$output
+                                         "/lib/gnome-maps/libgnome-maps.so.0"))
+                     (dest (string-append #$output "/lib/libgnome-maps.so.0")))
+                (symlink src dest)
+                (apply (assoc-ref %standard-phases 'check) args)
+                (delete-file dest)))))))
     (native-inputs
      (list blueprint-compiler
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
+           (libc-utf8-locales-for-target)
            libportal
            pkg-config
            tzdata-for-tests))
