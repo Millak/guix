@@ -78,6 +78,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages xfce)
   #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages scanner)
   #:use-module (gnu packages suckless)
   #:use-module (gnu packages sugar)
@@ -121,6 +122,14 @@
             upower-configuration-critical-power-action
 
             upower-service-type
+
+            system76-power-configuration
+            system76-power-configuration?
+            system76-power-configuration-package
+            system76-power-configuration-profile-on-ac
+            system76-power-configuration-profile-on-battery
+            system76-power-configuration-charge-thresholds
+            system76-power-service-type
 
             udisks-configuration
             udisks-configuration?
@@ -2651,6 +2660,122 @@ hardware files."
           (service-extension profile-service-type
                              (compose list
                                       plasma-package))))))
+
+
+;;;
+;;; System76 power service.
+;;;
+
+(define (system76-power-profile? profile)
+  (and (memq profile '(battery balanced performance))
+       #t))
+
+(define (system76-power-charge-thresholds? profile)
+  (match profile
+    ((or 'full-charge 'balanced 'max-lifespan) #t)
+    (((? number?) . (? number?)) #t)
+    (_ #f)))
+
+(define-configuration/no-serialization system76-power-configuration
+  (package
+    (package system76-power)
+    "The package to use for @code{system76-power}.")
+  (profile-on-ac
+   (system76-power-profile 'performance)
+   "The power profile to use when plugged in.
+
+Possible values are @code{battery}, @code{balanced}, or @code{performance}.")
+  (profile-on-battery
+   (system76-power-profile 'battery)
+   "The power profile to use on battery.
+
+Possible values are @code{battery}, @code{balanced}, or @code{performance}.")
+  (charge-thresholds
+   (system76-power-charge-thresholds 'balanced)
+   "Set thresholds for battery charging. This is either a profile
+name (@code{full-charge}, @code{balanced},@code{max-lifespan}) or a pair of
+start and stop percentages."))
+
+(define system76-power-supply-changed
+  (match-record-lambda <system76-power-configuration>
+      (package profile-on-ac profile-on-battery)
+    (program-file
+     "system76-power-supply-changed"
+     (with-imported-modules '((guix build utils))
+       #~(begin
+           (use-modules (ice-9 popen)
+                        (ice-9 textual-ports)
+                        (guix build utils))
+           (let ((on-line? (string-contains
+                            (get-string-all
+                             (open-pipe*
+                              OPEN_READ
+                              #$(file-append acpi "/bin/acpi") "-a"))
+                            "on-line")))
+             (invoke #$(file-append package "/bin/system76-power")
+                     "profile"
+                     (symbol->string
+                      (if on-line?
+                          '#$profile-on-ac
+                          '#$profile-on-battery)))))))))
+
+(define (system76-power-udev-rules config)
+  (list
+   (file->udev-rule
+    "99-system76-power.rules"
+    (computed-file
+     "99-system76-power.rules"
+     #~(with-output-to-file #$output
+         (lambda _
+           (format #t "\
+ACTION==\"change\", SUBSYSTEM==\"power_supply\",\
+KERNEL!=\"hidpp_battery*\", RUN+=~s"
+                   #$(system76-power-supply-changed config))))))))
+
+(define (system76-power-shepherd-services config)
+  (match-record config <system76-power-configuration>
+                (package charge-thresholds)
+    (list
+     (shepherd-service
+       (provision '(system76-power))
+       (requirement '(dbus-system))
+       (documentation "System76 Power Daemon")
+       (start #~(make-forkexec-constructor
+                 (list #$(file-append package "/bin/system76-power")
+                       "daemon")))
+       (stop #~(make-kill-destructor)))
+     (shepherd-service
+       (provision '(system76-power-defaults))
+       (requirement '(system76-power))
+       (documentation "Load System76 Power defaults")
+       (start #~(lambda _
+                  (invoke #$(system76-power-supply-changed config))
+                  (invoke #$(file-append package "/bin/system76-power")
+                          "charge-thresholds"
+                          #$@(match charge-thresholds
+                               ((start . end)
+                                (list (number->string start) (number->string end)))
+                               ('full-charge '("--profile" "full_charge"))
+                               ('balanced '("--profile" "balanced"))
+                               ('max-lifespan '("--profile" "max_lifespan"))))))
+       (one-shot? #t)))))
+
+(define system76-power-service-type
+  (let ((pkgs (compose list system76-power-configuration-package)))
+    (service-type
+      (name 'system76-power)
+      (description "Run the @code{system76-power} daemon to manage graphics
+and power options as well as battery charge thresholds.")
+      (extensions
+       (list
+        (service-extension dbus-root-service-type pkgs)
+        (service-extension polkit-service-type pkgs)
+        (service-extension profile-service-type pkgs)
+        (service-extension shepherd-root-service-type
+                           system76-power-shepherd-services)
+        (service-extension udev-service-type
+                           system76-power-udev-rules)))
+      (default-value (system76-power-configuration)))))
 
 
 ;;;

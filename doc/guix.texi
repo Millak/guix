@@ -28210,6 +28210,63 @@ for their own passwords when performing administrative actions instead of
 @code{root}'s, similar to the behaviour used by @code{sudo}.
 @end defvar
 
+@defvar system76-power-service-type
+Service that runs the @code{system76-power} daemon to manage graphics
+and power options as well as battery charge thresholds. Its value is a
+@code{<system76-power-configuration>} object.
+@end defvar
+
+The following example sets the battery charge thresholds to 70% and 90%,
+and can be added to the list of services in your
+@code{operating-system}.
+
+@lisp
+(service system76-power-service-type
+         (system76-power-configuration
+          (charge-thresholds '(70 . 90))))
+@end lisp
+
+@deftp {Data Type} system76-power-configuration
+Available @code{system76-power-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{system76-power}) (type: package)
+The package to use for @code{system76-power}.
+
+@item @code{profile-on-ac} (default: @code{performance}) (type: system76-power-profile)
+The power profile to use when plugged in.  Possible values are
+@code{battery}, @code{balanced}, or @code{performance}.
+
+@item @code{profile-on-battery} (default: @code{battery}) (type: system76-power-profile)
+The power profile to use on battery.  Possible values are
+@code{battery}, @code{balanced}, or @code{performance}.
+
+@item @code{charge-thresholds} (default: @code{balanced}) (type: system76-power-charge-thresholds)
+Set thresholds for battery charging.  This is either a profile name
+(@code{full-charge}, @code{balanced},@code{max-lifespan}) or a pair of
+start and stop percentages for when to charge.
+
+Possible profiles are:
+
+@table @asis
+@item @code{full-charge} (start: 90) (end: 100)
+Battery is charged to its full capacity for the longest possible use on
+battery power. Charging resumes when the battery falls below 90% charge.
+
+@item @code{balanced} (start: 86) (end: 90)
+Use this threshold when you unplug frequently but don't need the full
+battery capacity. Charging stops when the battery reaches 90% capacity
+and resumes when the battery falls below 86%.
+
+@item @code{max-lifespan} (start: 50) (end: 60)
+Use this threshold if you rarely use the system on battery for extended
+periods. Charging stops when the battery reaches 60% capacity and
+resumes when the battery falls below 50%.
+
+@end table
+@end table
+@end deftp
+
 @defvar upower-service-type
 Service that runs @uref{https://upower.freedesktop.org/, @command{upowerd}}, a
 system-wide monitor for power consumption and battery levels, with the given
