@@ -4239,7 +4239,8 @@ Full featured offline client with caching support.")
                  (format #t "Running cargo phase: ~a~%" phase)
                  (apply (assoc-ref cargo:%standard-phases phase)
                         args))
-               '(unpack-rust-crates
+               '(prepare-rust-crates
+                 unpack-rust-crates
                  configure
                  check-for-pregenerated-files
                  patch-cargo-checksums))))
