@@ -1505,7 +1505,8 @@ hardware.  The utility support USB and UART as serial link.")
                  (apply (assoc-ref cargo:%standard-phases phase)
                         #:cargo-target #$(cargo-triplet)
                         args))
-               '(unpack-rust-crates
+               '(prepare-rust-crates
+                 unpack-rust-crates
                  configure
                  check-for-pregenerated-files
                  patch-cargo-checksums)))))))
