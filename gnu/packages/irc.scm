@@ -14,7 +14,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Christian Miller <christian.miller@dadoes.de>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
@@ -348,7 +348,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "4.8.2")
+    (version "4.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -357,7 +357,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06lmbd27fdj7z7v6m096csswp73354516z64apfyz8lr5kh140wq"))))
+                "1pwayhpnyd6nq1sph4hqi43xwqgq6vj6fr8q0xqn0jx5zzjlyx8c"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -393,12 +393,13 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
            #~(modify-phases %standard-phases
                #$@(if (target-x86?)
                       #~((add-after 'install 'move-doc
-                           (lambda* (#:key outputs #:allow-other-keys)
-                             (let* ((out (assoc-ref outputs "out"))
-                                    (doc (assoc-ref outputs "doc"))
-                                    (from (string-append out "/share/doc/weechat"))
-                                    (to (string-append doc "/share/doc/weechat")))
-                               (mkdir-p (string-append doc "/share/doc"))
+                           (lambda _
+                             (let ((from (string-append #$output
+                                                        "/share/doc/weechat"))
+                                   (to (string-append #$output:doc
+                                                      "/share/doc/weechat")))
+                               (mkdir-p (string-append #$output:doc
+                                                       "/share/doc"))
                                (rename-file from to)))))
                       #~()))))
     (synopsis "Extensible chat client")
