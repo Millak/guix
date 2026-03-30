@@ -948,7 +948,6 @@ generate API documentation for GNU Guile projects.")
           pkg-config
           texinfo))
    (inputs (list guile-3.0))
-   (propagated-inputs (list nyacc))
    (synopsis "Read environment variables specifications from @code{.env} files")
    (description "This package provides a simple Guile interface to @code{.env}
 (or dotenv) files.  It implements parsing of files and setting environment
