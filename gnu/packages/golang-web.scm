@@ -1941,6 +1941,7 @@ functions.")
             ;;
             ;; - github.com/aws/aws-sdk-go-v2/config
             ;; - github.com/aws/aws-sdk-go-v2/credentials
+            ;; - github.com/aws/aws-sdk-go-v2/feature/ec2/imds
             ;; - github.com/aws/aws-sdk-go-v2/feature/s3/manager
             ;; - github.com/aws/aws-sdk-go-v2/service/iam
             ;; - github.com/aws/aws-sdk-go-v2/service/s3
@@ -1951,6 +1952,7 @@ functions.")
             (for-each delete-file-recursively
                       (list "config"
                             "credentials"
+                            "feature/ec2/imds"
                             "feature/s3/manager"
                             "service/iam"
                             "service/s3"
@@ -2064,6 +2066,7 @@ utilities.")
                   (("/bin/sleep") (which "sleep")))))))))
     (propagated-inputs
      (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-feature-ec2-imds
            go-github-com-aws-aws-sdk-go-v2-service-sso
            go-github-com-aws-aws-sdk-go-v2-service-ssooidc
            go-github-com-aws-aws-sdk-go-v2-service-sts
@@ -2073,6 +2076,54 @@ utilities.")
     (description
      "Package credentials provides types for retrieving credentials from
 credentials sources.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-aws-aws-sdk-go-v2-feature-ec2-imds
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-feature-ec2-imds")
+    (version "1.18.17")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aws/aws-sdk-go-v2")
+              (commit (go-version->git-ref version
+                                           #:subdir "feature/ec2/imds"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04cv6g96hhmjl6snql6a909grq4yxyjk95a3dzk6mpihvg79q47p"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "feature")
+            (delete-all-but "feature" "ec2")
+            (delete-all-but "feature/ec2" "imds")
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/aws/aws-sdk-go-v2/feature/ec2/imds/internal/configtesting
+            (delete-file-recursively "feature/ec2/imds/internal/configtesting")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/feature/ec2/imds"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"
+      #:test-flags #~(list "-vet=off")))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS SDK for Go v2 - EC2 IMDS module")
+    (description
+     "Package imds provides the API client for interacting with the Amazon EC2
+Instance Metadata Service.")
     (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
