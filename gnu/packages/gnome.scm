@@ -7948,57 +7948,88 @@ configuration program to choose applications starting on login.")
 (define-public gjs
   (package
     (name "gjs")
-    (version "1.86.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1687l3nshrbc0wn18q6mn974vl14wa85wzqcilm4qkc0axx8yi33"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* "installed-tests/scripts/testCommandLine.sh"
-                    (("Valentín") "")
-                    (("☭") ""))
-                  (substitute* "modules/script/package.js"
-                    (("type_default_interface_ref")
-                     "type_default_interface_get"))))))
+    (version "1.88.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/" name "/"
+                           (version-major+minor version) "/"
+                           name "-" version ".tar.xz"))
+       (sha256
+        (base32
+         "0ly43lcpafl0an3k4g4mvwrwvc78f0y91ckdi6qn13ky67rvk81h"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "subprojects"
+                            "gobject-introspection-tests")))))
     (build-system meson-build-system)
     (arguments
-     '(#:configure-flags '("-Dinstalled_tests=false")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; The test suite requires a running X server.
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-
-             ;; For the missing /etc/machine-id.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             (setenv "HOME" (getcwd))))
-         (add-after 'unpack 'skip-failing-tests
-           (lambda _
-               ;; Expects to test against 2.84, but we're using 2.86.
-             (substitute* "installed-tests/js/testIntrospection.js"
-               (("const skip = imports.gi.versions.GioUnix !== '2\\.0';")
-                "const skip = true;"))))
-         (add-after 'install 'wrap-gi
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (wrap-program (string-append (assoc-ref outputs "out")
-                                          "/bin/gjs")
-               `("GI_TYPELIB_PATH" suffix
-                 (,(dirname
-                    (search-input-file
-                     inputs
-                     "lib/girepository-1.0/GObject-2.0.typelib"))
-                  ,(dirname
-                    (search-input-file
-                     inputs
-                     "lib/girepository-1.0/GIRepository-2.0.typelib"))))))))))
+     (list
+      #:modules '((guix build meson-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:configure-flags #~(list "-Dinstalled_tests=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-gi
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/gjs")
+                `("GI_TYPELIB_PATH" suffix
+                  (,(dirname
+                     (search-input-file
+                      inputs
+                      "lib/girepository-1.0/GObject-2.0.typelib"))
+                   ,(dirname
+                     (search-input-file
+                      inputs
+                      "lib/girepository-1.0/GIRepository-2.0.typelib")))))))
+          (replace 'check
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (when tests?
+                ;; For the missing /etc/machine-id.
+                (setenv "DBUS_FATAL_WARNINGS" "0")
+                (setenv "HOME" (getcwd))
+                ;; In Guix, gobject-introspection is patched to always embed
+                ;; the absolute path of a typelib library; unfortunately it
+                ;; does this also for test typelibs not meant to be installed;
+                ;; work around it via temporary symlinks.
+                (let* ((test-libraries (find-files (getcwd)
+                                                   "\\.so(\\.[0-9]*)?$"))
+                       (test-library-links (map (lambda (x)
+                                                  (cons x (string-append
+                                                           #$output "/lib/"
+                                                           (basename x))))
+                                                test-libraries)))
+                  (for-each (match-lambda
+                              ((old . new)
+                               (symlink old new)))
+                            test-library-links)
+                  (invoke "xvfb-run" "--" "dbus-run-session"
+                          "meson" "test" "--print-errorlogs" "-t" "0"
+                          "-j" (if parallel-tests?
+                                   (number->string (parallel-job-count))
+                                   "1"))
+                  (for-each delete-file (map cdr test-library-links))))))
+          (add-after 'install 'delete-installed-tests
+            (lambda _
+              ;; Installed tests libraries are installed despite
+              ;; -Dinstalled_tests=false.
+              (delete-file-recursively
+               (string-append #$output "/libexec/installed-tests"))))
+          (add-after 'install 'sanitize-pkg-config-files
+            (lambda _
+              (substitute* (find-files #$output "\\.pc$")
+                (("^Requires.private:.*") "")))))))
     (native-inputs
      (list `(,glib "bin")               ;for glib-compile-resources
            pkg-config
@@ -8007,13 +8038,13 @@ configuration program to choose applications starting on login.")
            dbus
            dconf                        ;required to properly store settings
            gtk+
+           sysprof
            util-linux
-           xorg-server-for-tests))
+           xvfb-run))
+    (inputs (list mozjs readline))
     (propagated-inputs
-     ;; These are all in the Requires.private field of gjs-1.0.pc.
-     ;; Check the version of mozjs required in meson.build.
-     (list cairo gobject-introspection mozjs))
-    (inputs (list readline))
+     ;; These are all in the Requires field of gjs-1.0.pc.
+     (list glib gobject-introspection))
     (synopsis "Javascript bindings for GNOME")
     (home-page "https://gitlab.gnome.org/GNOME/gjs")
     (description
