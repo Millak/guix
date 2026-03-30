@@ -6781,52 +6781,48 @@ result in several formats:
         (base32 "0axk3ji3jmlr81svmsy5zvj8shmhpp8lz5nyghkq752xx1bdvdj3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
+     (list
+       #:install-source? #f
+       #:modules '((guix build cargo-build-system)
+                   (guix build utils)
+                   (ice-9 match))
        #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "cargo" "cinstall" "--release"
-                       ;; Only build the dynamic library.
-                       "--library-type" "cdylib"
-                       (string-append "--prefix=" out)))))
-         (add-after 'install 'install-completions
-           (lambda* (#:key native-inputs outputs #:allow-other-keys)
-             (unless ,(%current-target-system)
-               (let* ((out (assoc-ref outputs "out"))
-                      (share (string-append out "/share"))
-                      (bash-completions-dir
-                        (string-append out "/etc/bash_completion.d"))
-                      (zsh-completions-dir
-                        (string-append share "/zsh/site-functions"))
-                      (fish-completions-dir
-                        (string-append share "/fish/vendor_completions.d"))
-                      (elvish-completions-dir
-                        (string-append share "/elvish/lib"))
-                      (rav1e (string-append out "/bin/rav1e"))
-                      (common-flags '("-" "-o" "-" "advanced" "--completion")))
-                 (mkdir-p bash-completions-dir)
-                 (with-output-to-file
-                   (string-append bash-completions-dir "/rav1e")
-                   (lambda _ (apply invoke rav1e (append common-flags '("bash")))))
-                 (mkdir-p zsh-completions-dir)
-                 ;; This one currently fails to build.
-                 ;(with-output-to-file
-                 ;  (string-append zsh-completions-dir "/_rav1e")
-                 ;  (lambda _ (apply invoke rav1e (append common-flags '("zsh")))))
-                 (mkdir-p fish-completions-dir)
-                 (with-output-to-file
-                   (string-append fish-completions-dir "/rav1e.fish")
-                   (lambda _ (apply invoke rav1e (append common-flags '("fish")))))
-                 (mkdir-p elvish-completions-dir)
-                 (with-output-to-file
-                   (string-append elvish-completions-dir "/rav1e")
-                   (lambda _
-                     (apply invoke rav1e (append common-flags '("elvish"))))))))))))
+       #~(modify-phases %standard-phases
+           (replace 'build
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (invoke "cargo" "cinstall" "--release"
+                         ;; Only build the dynamic library.
+                         "--library-type" "cdylib"
+                         (string-append "--prefix=" out)))))
+           (add-after 'install 'install-completions
+              (lambda* (#:key native-inputs #:allow-other-keys)
+                (for-each
+                  (match-lambda
+                    ((shell . path)
+                     (mkdir-p (in-vicinity #$output (dirname path)))
+                     (let ((binary
+                             (if #$(%current-target-system)
+                                 (search-input-file native-inputs "bin/rav1e")
+                                 (in-vicinity #$output "bin/rav1e"))))
+                       (with-output-to-file (in-vicinity #$output path)
+                         (lambda _
+                           (invoke binary
+                                   "-" "-o"
+                                   "-" "advanced"
+                                   "--completion" shell))))))
+                  '(("bash" . "share/bash-completion/completions/rav1e")
+                    ("elvish" . "share/elvish/lib/rav1e")
+                    ("fish" . "share/fish/vendor_completions.d/rav1e.fish")
+                    ;; This one currently fails to build.
+                    ;("zsh" . "share/zsh/site-functions/_rav1e")
+                    )))))))
     (native-inputs
      (append (if (target-x86?)
                  (list nasm)
+                 '())
+             (if (%current-target-system)
+                 (list this-package)
                  '())
              (list pkg-config rust-cargo-c)))
     (inputs
