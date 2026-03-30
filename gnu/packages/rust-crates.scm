@@ -4096,7 +4096,8 @@ fn main() {
 
 (define rust-cargo-0.94.0
   (crate-source "cargo" "0.94.0"
-                "0dpv8cd1k35zzk5lnayca3h1qdlv712nhpvcmzng4b01269g4yfj"))
+                "0dpv8cd1k35zzk5lnayca3h1qdlv712nhpvcmzng4b01269g4yfj"
+                #:snippet '(delete-file-recursively "benches")))
 
 (define rust-cargo-config2-0.1.39
   (crate-source "cargo-config2" "0.1.39"
@@ -35911,11 +35912,13 @@ fn main() {
 
 (define rust-unicode-ident-1.0.23
   (crate-source "unicode-ident" "1.0.23"
-                "17m0v64a09qyp1b4jy2d9ywinp1ic2rd2jyxcjdvwy4qm0wd0zak"))
+                "17m0v64a09qyp1b4jy2d9ywinp1ic2rd2jyxcjdvwy4qm0wd0zak"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-unicode-ident-1.0.24
   (crate-source "unicode-ident" "1.0.24"
-                "0xfs8y1g7syl2iykji8zk5hgfi5jw819f5zsrbaxmlzwsly33r76"))
+                "0xfs8y1g7syl2iykji8zk5hgfi5jw819f5zsrbaxmlzwsly33r76"
+                #:snippet '(delete-file-recursively "tests")))
 
 (define rust-unicode-joining-type-0.7.0
   (crate-source "unicode-joining-type" "0.7.0"
@@ -40925,11 +40928,13 @@ fn main() {
 
 (define rust-zlib-rs-0.5.5
   (crate-source "zlib-rs" "0.5.5"
-                "1lxa1hf3bs8ip15jq8i8h9wdaaahcgxlzxvsj2vc5qmaa7fhx6a0"))
+                "1lxa1hf3bs8ip15jq8i8h9wdaaahcgxlzxvsj2vc5qmaa7fhx6a0"
+                #:snippet '(delete-file-recursively "src/deflate/test-data")))
 
 (define rust-zlib-rs-0.6.0
   (crate-source "zlib-rs" "0.6.0"
-                "0g3ydblvzjn6lfs04q3myxxmvzn1a660whp9nr137g6chbv8m557"))
+                "0g3ydblvzjn6lfs04q3myxxmvzn1a660whp9nr137g6chbv8m557"
+                #:snippet '(delete-file-recursively "src/deflate/test-data")))
 
 (define rust-zlib-rs-0.6.2
   (crate-source "zlib-rs" "0.6.2"
