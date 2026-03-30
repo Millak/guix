@@ -4216,7 +4216,7 @@ be used for realtime video capture via Linux-specific APIs.")
                 "-DENABLE_QSV11=OFF"
                 "-DENABLE_NVENC=OFF"
                 ;; Requires a custom version of websocketpp in inputs, that's
-                ;; patched to be compatible with recent versions of Boost 
+                ;; patched to be compatible with recent versions of Boost
                 "-DENABLE_WEBSOCKET=ON"
                 ;; Browser plugin requires cef, but it is not packaged yet.
                 ;; <https://bitbucket.org/chromiumembedded/cef/src/master/>
@@ -6771,14 +6771,14 @@ result in several formats:
 (define-public rav1e
   (package
     (name "rav1e")
-    (version "0.7.1")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rav1e" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1sawva6nmj2fvynydbcirr3nb7wjyg0id2hz2771qnv6ly0cx1yd"))))
+        (base32 "0axk3ji3jmlr81svmsy5zvj8shmhpp8lz5nyghkq752xx1bdvdj3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
