@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-02-04 03:18+0000\n"
-"PO-Revision-Date: 2026-02-19 20:58+0000\n"
+"POT-Creation-Date: 2026-03-15 03:18+0000\n"
+"PO-Revision-Date: 2026-03-30 15:58+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/documentation-manual/de/>\n"
 "Language: de\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 5.16.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -73,12 +73,6 @@ msgstr "Perfekt eingerichtet"
 
 msgid "The right tools."
 msgstr "Die richtigen Werkzeuge."
-
-msgid "Alternative Setups"
-msgstr "Alternativ eingerichtet"
-
-msgid "Other possible tools that do the job."
-msgstr "Mit diesen Werkzeugen geht es auch."
 
 msgid "Source Tree Structure"
 msgstr "Aufbau des Quellbaums"
@@ -188,8 +182,8 @@ msgstr "@url{https://gnu.org/software/guile/, GNU Guile}, Version 3.0.x,"
 msgid "version 3.0.9 or later;"
 msgstr "Version 3.0.9 oder neuer,"
 
-msgid "@url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, version"
-msgstr "@url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, Version"
+msgid "@url{https://codeberg.org/guile-gcrypt/guile-gcrypt, Guile-Gcrypt}, version"
+msgstr "@url{https://codeberg.org/guile-gcrypt/guile-gcrypt, Guile-Gcrypt}, Version"
 
 msgid "0.1.0 or later;"
 msgstr "0.1.0 oder neuer,"
@@ -197,17 +191,14 @@ msgstr "0.1.0 oder neuer,"
 msgid "@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS} (@pxref{Guile Preparations, how to install the GnuTLS bindings for Guile,, gnutls-guile, GnuTLS-Guile})@footnote{The Guile bindings to @uref{https://gnutls.org/, GnuTLS} were distributed as part of GnuTLS until version 3.7.8 included.};"
 msgstr "@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS} (siehe die @ref{Guile Preparations, Installationsanleitung der GnuTLS-Anbindungen für Guile,, gnutls-guile, GnuTLS-Guile})@footnote{Bis einschließlich Version 3.7.8 wurden die Guile-Anbindungen für @uref{https://gnutls.org/, GnuTLS} bei GnuTLS mitgeliefert.},"
 
-msgid "@uref{https://notabug.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, version 0.1.0 or later;"
-msgstr "@uref{https://notabug.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, Version 0.1.0 oder neuer,"
-
-msgid "@uref{https://notabug.org/guile-zlib/guile-zlib, Guile-zlib},"
-msgstr "@uref{https://notabug.org/guile-zlib/guile-zlib, Guile-zlib},"
+msgid "@uref{https://codeberg.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, version 0.1.0 or later;"
+msgstr "@uref{https://codeberg.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, Version 0.1.0 oder neuer,"
 
 msgid "version 0.1.0 or later;"
 msgstr "Version 0.1.0 oder neuer,"
 
-msgid "@uref{https://notabug.org/guile-lzlib/guile-lzlib, Guile-lzlib};"
-msgstr "@uref{https://notabug.org/guile-lzlib/guile-lzlib, Guile-lzlib},"
+msgid "@uref{https://codeberg.org/guile-compression/guile-lzlib, Guile-lzlib};"
+msgstr "@uref{https://codeberg.org/guile-compression/guile-lzlib, Guile-lzlib},"
 
 msgid "@uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};"
 msgstr "@uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi},"
@@ -233,8 +224,8 @@ msgstr "Folgende Abhängigkeiten sind optional:"
 msgid "Support for build offloading (@pxref{Daemon Offload Setup}) and @command{guix copy} (@pxref{Invoking guix copy}) depends on @uref{https://github.com/artyom-poptsov/guile-ssh, Guile-SSH}, version 0.13.0 or later."
 msgstr "Unterstützung für das Auslagern von Erstellungen (siehe @ref{Daemon Offload Setup}) und @command{guix copy} (siehe @ref{Invoking guix copy}) hängt von @uref{https://github.com/artyom-poptsov/guile-ssh, Guile-SSH}, Version 0.13.0 oder neuer, ab."
 
-msgid "@uref{https://notabug.org/guile-zstd/guile-zstd, Guile-zstd}, for zstd compression and decompression in @command{guix publish} and for substitutes (@pxref{Invoking guix publish})."
-msgstr "@uref{https://notabug.org/guile-zstd/guile-zstd, Guile-zstd}, für die Kompression und Dekompression mit zstd in @command{guix publish} und für Substitute (siehe @ref{Invoking guix publish})."
+msgid "@uref{https://codeberg.org/guile-compression/guile-zstd, Guile-zstd}, for zstd compression and decompression in @command{guix publish} and for substitutes (@pxref{Invoking guix publish})."
+msgstr "@uref{https://codeberg.org/guile-compression/guile-zstd, Guile-zstd}, für die Kompression und Dekompression mit zstd in @command{guix publish} und für Substitute (siehe @ref{Invoking guix publish})."
 
 msgid "@uref{https://ngyro.com/software/guile-semver.html, Guile-Semver} for the @code{crate} importer (@pxref{Invoking guix import})."
 msgstr "@uref{https://ngyro.com/software/guile-semver.html, Guile-Semver} für den @code{crate}-Importer (siehe @ref{Invoking guix import})."
@@ -610,17 +601,77 @@ msgstr "Es handelt sich lediglich um einen Hinweis und Sie können ihn getrost i
 msgid "You can run @command{make} automatically as you work using @command{watchexec} from the @code{watchexec} package.  For example, to build again each time you update a package file, run @samp{watchexec -w gnu/packages -- make -j4}."
 msgstr "Sie können @command{make} automatisch ausführen lassen, während Sie am Code arbeiten, nämlich mit @command{watchexec} aus dem Paket @code{watchexec}. Um zum Beispiel jedes Mal neu zu erstellen, wenn Sie etwas an einer Paketdatei ändern, führen Sie @samp{watchexec -w gnu/packages -- make -j4} aus."
 
-msgid "The Perfect Setup to hack on Guix is basically the perfect setup used for Guile hacking (@pxref{Using Guile in Emacs,,, guile, Guile Reference Manual}).  First, you need more than an editor, you need @url{https://www.gnu.org/software/emacs, Emacs}, empowered by the wonderful @url{https://nongnu.org/geiser/, Geiser}.  To set that up, run:"
-msgstr "Um perfekt für das Hacken an Guix eingerichtet zu sein, brauchen Sie an sich dasselbe wie um perfekt für das Hacken mit Guile (siehe @ref{Using Guile in Emacs,,, guile, Guile-Referenzhandbuch}). Zunächst brauchen Sie mehr als ein Textverarbeitungsprogramm, Sie brauchen @url{https://www.gnu.org/software/emacs, Emacs} zusammen mit den vom wunderbaren @url{https://nongnu.org/geiser/, Geiser} verliehenen Kräften. Um diese zu installieren, können Sie Folgendes ausführen:"
+msgid "editor setup, for Scheme"
+msgstr "Editor einrichten, für Scheme"
 
-msgid "guix install emacs guile emacs-geiser emacs-geiser-guile\n"
-msgstr "guix install emacs guile emacs-geiser emacs-geiser-guile\n"
+msgid "Scheme code editing"
+msgstr "Editieren von Scheme-Code"
+
+msgid "All configuration and development in Guix is done in the Scheme language.  Like all languages of the Lisp family, Scheme has a simple syntax.  The perfect setup is one where the editor you choose makes working with that syntax seamless and pleasant; for that it must absolutely support a few things for Scheme:"
+msgstr "Die gesamte Konfiguration und Entwicklung in Guix geschieht in der Sprache Scheme. Wie bei jeder Sprache aus der Lisp-Familie ist die Syntax von Scheme durchaus einfach. Perfekt eingerichtet sind Sie aber erst, wenn Ihr Editor beim Arbeiten mit Scheme mithilft und nicht hinderlich ist. Dazu muss er unbedingt ein paar Scheme-Kunststücke beherrschen:"
+
+msgid "automatic indentation, such that hitting the ``Enter'' key (or @kbd{RET}) places cursor ``at the right place'' on the next line;"
+msgstr "automatische Einrückung, damit Sie nur die Eingabetaste (sprich @kbd{RET}) drücken müssen und der Cursor steht gleich da, wo er auf der nächsten Zeile sein soll,"
+
+msgid "``parentheses matching'', allowing you to jump from a closing parenthesis to the corresponding opening parenthesis and vice-versa;"
+msgstr "Zuordnung von Klammern, so dass man von einer schließenden Klammer zur zugehörigen öffnenden Klammer springen kann und andersherum,"
+
+msgid "syntax highlighting, so that keywords are visually distinguishable."
+msgstr "Syntaxhervorhebung, damit Schlüsselwörter hervorstechen."
+
+msgid "The following optional features can make your life easier:"
+msgstr "Die folgenden optionalen Funktionen hätte man gerne:"
+
+msgid "structural editing of Scheme syntax;"
+msgstr "strukturierte Bearbeitung von Scheme-Syntax,"
+
+msgid "Guile integration so you can easily evaluate code, jump to procedure definitions, view documentation, and so on."
+msgstr "Guile-Integration, damit man Code leicht auswerten kann, zur Definition einer Prozedur springen kann, Dokumentation lesen kann und so weiter."
+
+msgid "The following sections look at editor setups that are known to work well.  Do share your setup for these and other editors for inclusion in this manual! @xref{Submitting Patches}."
+msgstr "Im folgenden Abschnitt befassen wir uns mit geeigneten Editoren und wie man sie zur Freude aller einrichtet. Teilen Sie gerne Ihr Wissen über diese und andere Editoren als Patch für dieses Handbuch! Siehe @ref{Submitting Patches}."
+
+msgid "Emacs"
+msgstr "Emacs"
+
+msgid "Best-of-breed editor for Scheme code."
+msgstr "Erste Sahne bei Editoren von Scheme-Code."
+
+msgid "Guile Studio"
+msgstr "Guile Studio"
+
+msgid "First step in your transition to Emacs."
+msgstr "Ein erster Schritt in Richtung Emacs."
+
+msgid "Vim and NeoVim"
+msgstr "Vim und NeoVim"
+
+msgid "Classical Unix editors."
+msgstr "Klassische Unix-Editoren."
+
+msgid "@url{https://www.gnu.org/software/emacs, Emacs} is probably the most widely used editor in the community; it is also the one that, historically, has always had excellent support for Lisp languages, being itself a Lisp implementation!"
+msgstr "@url{https://www.gnu.org/software/emacs, Emacs} ist wahrscheinlich der in der Gemeinde verbreitetste Editor, auch weil er in seiner Geschichte schon immer die Lisp-Sprachen am besten unterstützt hat, da er selbst eine Lisp-Implementierung ist!"
+
+msgid "If you are just getting started with Emacs, @pxref{Guile Studio} for a smooth way to start your transition."
+msgstr "Emacs-Anfänger können auf @ref{Guile Studio} loslegen für einen erleichterten Einstieg in diese Welt."
+
+msgid "Just like for Guile hacking (@pxref{Using Guile in Emacs,,, guile, Guile Reference Manual}), Emacs works best when empowered by the wonderful @url{https://nongnu.org/geiser/, Geiser}.  To set that up, run:"
+msgstr "Wie für das Hacken mit Guile (siehe @ref{Using Guile in Emacs,,, guile, Guile-Referenzhandbuch}) setzen Sie Emacs am besten zusammen mit dem wunderbaren @url{https://nongnu.org/geiser/, Geiser} ein. Um diese zu installieren, können Sie Folgendes ausführen:"
+
+msgid "guix install emacs guile emacs-geiser emacs-geiser-guile emacs-guix\n"
+msgstr "guix install emacs guile emacs-geiser emacs-geiser-guile emacs-guix\n"
 
 msgid "Geiser allows for interactive and incremental development from within Emacs: code compilation and evaluation from within buffers, access to on-line documentation (docstrings), context-sensitive completion, @kbd{M-.} to jump to an object definition, a REPL to try out your code, and more (@pxref{Introduction,,, geiser, Geiser User Manual}).  If you allow Emacs to load the @file{.dir-locals.el} file at the root of the project checkout, it will cause Geiser to automatically add the local Guix sources to the Guile load path."
 msgstr "Geiser ermöglicht interaktive und inkrementelle Entwicklung aus Emacs heraus: Code kann in Puffern kompiliert und ausgewertet werden. Zugang zu Online-Dokumentation (Docstrings) steht ebenso zur Verfügung wie kontextabhängige Vervollständigung, @kbd{M-.} um zu einer Objektdefinition zu springen, eine REPL, um Ihren Code auszuprobieren, und mehr (siehe @ref{Introduction,,, geiser, Geiser User Manual}). Wenn Sie Emacs die Erlaubnis erteilen, die Datei @file{.dir-locals.el} im obersten Verzeichnis Ihres Guix-Checkouts zu laden, wird Geiser die lokalen Guix-Quelldateien automatisch zu Guiles Ladepfad ergänzen."
 
 msgid "To actually edit the code, Emacs already has a neat Scheme mode.  But in addition to that, you must not miss @url{https://www.emacswiki.org/emacs/ParEdit, Paredit}.  It provides facilities to directly operate on the syntax tree, such as raising an s-expression or wrapping it, swallowing or rejecting the following s-expression, etc."
 msgstr "Um den Code tatsächlich zu bearbeiten, bietet Emacs schon einen netten Scheme-Modus. Aber Sie dürfen auch @url{https://www.emacswiki.org/emacs/ParEdit, Paredit} nicht verpassen. Es bietet Hilfsmittel, um direkt mit dem Syntaxbaum zu arbeiten, und kann so zum Beispiel einen S-Ausdruck hochheben oder ihn umhüllen, ihn verschlucken oder den nachfolgenden S-Ausdruck verwerfen, etc."
+
+msgid "Cherry on the cake: the Emacs-Guix package provides a convenient interface to many commands---e.g., it lets you browse packages, install or remove packages, and so on---as well as development helpers that enhance @code{scheme-mode} and Geiser.  @xref{Introduction,,, emacs-guix, Emacs-Guix Reference Manual}, to make sure you don't miss out!"
+msgstr "Die Kirsche auf der Torte: das Paket Emacs-Guix umfasst Schnittstellen für etliche Befehle, z.B.@: können Sie Pakete suchen, installieren oder entfernen, und so weiter, aber Sie bekommen auch Unterstützung bei der Entwicklung, um @code{scheme-mode} und Geiser zu erweitern. Siehe @ref{Introduction,,, emacs-guix, Referenzhandbuch von Emacs-Guix}, damit Sie es nicht verpassen!"
+
+msgid "Taming Boilerplate with Templates"
+msgstr "Mit Vorlagen Tipparbeit einhegen"
 
 msgid "code snippets"
 msgstr "Code-Schnipsel"
@@ -663,6 +714,9 @@ msgstr "Die Schnipsel für Commit-Nachrichten setzen @url{https://magit.vc/, Mag
 msgid "The main snippet for @code{scheme-mode} is triggered by typing @code{package...} followed by @kbd{TAB}.  This snippet also inserts the trigger string @code{origin...}, which can be expanded further.  The @code{origin} snippet in turn may insert other trigger strings ending on @code{...}, which also can be expanded further."
 msgstr "Das Hauptschnipsel für @code{scheme-mode} wird ausgelöst, indem Sie @code{package...} gefolgt von @kbd{TAB} eintippen. Dieses Snippet fügt auch die Auslöse-Zeichenkette @code{origin...} ein, die danach weiter umgeschrieben werden kann. Das @code{origin}-Schnipsel kann wiederum andere Auslöse-Zeichenketten einfügen, die alle auf @code{...} enden, was selbst wieder weiter umgeschrieben werden kann."
 
+msgid "Updating Copyright Lines"
+msgstr "Zeilen mit Copyright aktualisieren"
+
 msgid "insert or update copyright"
 msgstr "Copyright einfügen oder aktualisieren"
 
@@ -702,175 +756,28 @@ msgstr ""
 msgid "You can check if your copyright is up to date by evaluating @code{M-x copyright-update}.  If you want to do it automatically after each buffer save then add @code{(add-hook 'after-save-hook 'copyright-update)} in Emacs."
 msgstr "Sie können prüfen, ob Ihre Urheberrechtsinformationen aktuell sind, indem Sie @code{M-x copyright-update} auswerten. Wenn Sie möchten, dass dies automatisch nach jedem Speichern des Puffers geschieht, fügen Sie @code{(add-hook 'after-save-hook 'copyright-update)} in Emacs hinzu."
 
-msgid "Viewing Bugs within Emacs"
-msgstr "Bugs mit Emacs anschauen"
+msgid "Referencing Bug Reports"
+msgstr "Fehlerberichte referenzieren"
 
-msgid "Emacs has a nice minor mode called @code{bug-reference}, which, when combined with @samp{emacs-debbugs} (the Emacs package), can be used to open links such as @samp{<https://bugs.gnu.org/58697>} or @samp{<https://issues.guix.gnu.org/58697>} as bug report buffers.  From there you can easily consult the email thread via the Gnus interface, reply or modify the bug status, all without leaving the comfort of Emacs! Below is a sample configuration to add to your @file{~/.emacs} configuration file:"
-msgstr "Emacs hat einen nützlichen Minor-Mode namens @code{bug-reference}, mit dem man, zusammen mit @samp{emacs-debbugs} (dem Paket für Emacs), URLs wie @samp{<https://bugs.gnu.org/58697>} oder @samp{<https://issues.guix.gnu.org/58697>} als Buffer mit dem Fehlerbericht öffnen kann. Von diesem aus kann man leicht den E-Mail-Thread in Gnus lesen, antworten oder den Status des Bugs ändern ohne Emacs zu verlassen! Sie sehen im Folgenden eine Beispielkonfiguration, die Sie in Ihre @file{~/.emacs}-Konfigurationsdatei übernehmen können:"
+msgid "bug references, Emacs"
+msgstr "Bug-Referenzen, Emacs"
+
+msgid "Emacs has a nice minor mode called @code{bug-reference}, which can be used to follow link to issues and pull requests such as @samp{#1234} or @samp{guix/guix#1234} (@pxref{Bug Reference,,, emacs, The GNU Emacs Manual}).  To set it up, enable it in the relevant modes:"
+msgstr "Emacs hat einen nützlichen Minor-Mode namens @code{bug-reference}, mit dem man Links auf Issues und Pull Requests wie @samp{#1234} oder @samp{guix/guix#1234} öffnen kann (siehe @ref{Bug Reference,,, emacs, Handbuch von GNU Emacs}). Um ihn einzurichten, aktivieren Sie ihn in den relevanten Modi:"
 
 msgid ""
-";;; Bug references.\n"
 "(require 'bug-reference)\n"
 "(add-hook 'prog-mode-hook #'bug-reference-prog-mode)\n"
-"(add-hook 'gnus-mode-hook #'bug-reference-mode)\n"
 "(add-hook 'erc-mode-hook #'bug-reference-mode)\n"
-"(add-hook 'gnus-summary-mode-hook #'bug-reference-mode)\n"
-"(add-hook 'gnus-article-mode-hook #'bug-reference-mode)\n"
-"\n"
+";; Add extra hooks for your mail user agent: Gnus, mu4e, etc.\n"
 msgstr ""
-";;; Verweise auf Bugs.\n"
 "(require 'bug-reference)\n"
 "(add-hook 'prog-mode-hook #'bug-reference-prog-mode)\n"
-"(add-hook 'gnus-mode-hook #'bug-reference-mode)\n"
 "(add-hook 'erc-mode-hook #'bug-reference-mode)\n"
-"(add-hook 'gnus-summary-mode-hook #'bug-reference-mode)\n"
-"(add-hook 'gnus-article-mode-hook #'bug-reference-mode)\n"
-"\n"
+";; Fügen Sie weitere Hooks je nach Ihrem Mail User Agent hinzu: Gnus, mu4e etc.\n"
 
-msgid ""
-";;; This extends the default expression (the top-most, first expression\n"
-";;; provided to 'or') to also match URLs such as\n"
-";;; <https://issues.guix.gnu.org/58697> or <https://bugs.gnu.org/58697>.\n"
-";;; It is also extended to detect \"Fixes: #NNNNN\" git trailers.\n"
-"(setq bug-reference-bug-regexp\n"
-"      (rx (group (or (seq word-boundary\n"
-"                          (or (seq (char \"Bb\") \"ug\"\n"
-"                                   (zero-or-one \" \")\n"
-"                                   (zero-or-one \"#\"))\n"
-"                              (seq (char \"Pp\") \"atch\"\n"
-"                                   (zero-or-one \" \")\n"
-"                                   \"#\")\n"
-"                              (seq (char \"Ff\") \"ixes\"\n"
-"                                   (zero-or-one \":\")\n"
-"                                   (zero-or-one \" \") \"#\")\n"
-"                              (seq \"RFE\"\n"
-"                                   (zero-or-one \" \") \"#\")\n"
-"                              (seq \"PR \"\n"
-"                                   (one-or-more (char \"a-z+-\")) \"/\"))\n"
-"                          (group (one-or-more (char \"0-9\"))\n"
-"                                 (zero-or-one\n"
-"                                  (seq \"#\" (one-or-more\n"
-"                                            (char \"0-9\"))))))\n"
-"                     (seq (? \"<\") \"https://bugs.gnu.org/\"\n"
-"                          (group-n 2 (one-or-more (char \"0-9\")))\n"
-"                          (? \">\"))\n"
-"                     (seq (? \"<\") \"https://issues.guix.gnu.org/\"\n"
-"                          (? \"issue/\")\n"
-"                          (group-n 2 (one-or-more (char \"0-9\")))\n"
-"                          (? \">\"))))))\n"
-"(setq bug-reference-url-format \"https://issues.guix.gnu.org/%s\")\n"
-"\n"
-msgstr ""
-";;; Dies erweitert die „default expression“ (den obersten, ersten\n"
-";;; Ausdruck für 'or') so, dass er auch auf URLs wie\n"
-";;; <https://issues.guix.gnu.org/58697> oder\n"
-";;; <https://bugs.gnu.org/58697> passt.\n"
-";;; Auch werden so \"Fixes: #NNNNN\" in Git-Anhangszeilen erkannt.\n"
-"(setq bug-reference-bug-regexp\n"
-"      (rx (group (or (seq word-boundary\n"
-"                          (or (seq (char \"Bb\") \"ug\"\n"
-"                                   (zero-or-one \" \")\n"
-"                                   (zero-or-one \"#\"))\n"
-"                              (seq (char \"Pp\") \"atch\"\n"
-"                                   (zero-or-one \" \")\n"
-"                                   \"#\")\n"
-"                              (seq (char \"Ff\") \"ixes\"\n"
-"                                   (zero-or-one \":\")\n"
-"                                   (zero-or-one \" \") \"#\")\n"
-"                              (seq \"RFE\"\n"
-"                                   (zero-or-one \" \") \"#\")\n"
-"                              (seq \"PR \"\n"
-"                                   (one-or-more (char \"a-z+-\")) \"/\"))\n"
-"                          (group (one-or-more (char \"0-9\"))\n"
-"                                 (zero-or-one\n"
-"                                  (seq \"#\" (one-or-more\n"
-"                                            (char \"0-9\"))))))\n"
-"                     (seq (? \"<\") \"https://bugs.gnu.org/\"\n"
-"                          (group-n 2 (one-or-more (char \"0-9\")))\n"
-"                          (? \">\"))\n"
-"                     (seq (? \"<\") \"https://issues.guix.gnu.org/\"\n"
-"                          (? \"issue/\")\n"
-"                          (group-n 2 (one-or-more (char \"0-9\")))\n"
-"                          (? \">\"))))))\n"
-"(setq bug-reference-url-format \"https://issues.guix.gnu.org/%s\")\n"
-"\n"
-
-msgid ""
-"(require 'debbugs)\n"
-"(require 'debbugs-browse)\n"
-"(add-hook 'bug-reference-mode-hook #'debbugs-browse-mode)\n"
-"(add-hook 'bug-reference-prog-mode-hook #'debbugs-browse-mode)\n"
-"\n"
-msgstr ""
-"(require 'debbugs)\n"
-"(require 'debbugs-browse)\n"
-"(add-hook 'bug-reference-mode-hook #'debbugs-browse-mode)\n"
-"(add-hook 'bug-reference-prog-mode-hook #'debbugs-browse-mode)\n"
-"\n"
-
-msgid ""
-";; The following allows Emacs Debbugs user to open the issue directly within\n"
-";; Emacs.\n"
-"(setq debbugs-browse-url-regexp\n"
-"      (rx line-start\n"
-"          \"http\" (zero-or-one \"s\") \"://\"\n"
-"          (or \"debbugs\" \"issues.guix\" \"bugs\")\n"
-"          \".gnu.org\" (one-or-more \"/\")\n"
-"          (group (zero-or-one \"cgi/bugreport.cgi?bug=\"))\n"
-"          (group-n 3 (one-or-more digit))\n"
-"          line-end))\n"
-"\n"
-msgstr ""
-";; Mit folgendem Code kann man mit Emacs Debbugs Fehlerberichte direkt\n"
-";; in Emacs öffnen.\n"
-"(setq debbugs-browse-url-regexp\n"
-"      (rx line-start\n"
-"          \"http\" (zero-or-one \"s\") \"://\"\n"
-"          (or \"debbugs\" \"issues.guix\" \"bugs\")\n"
-"          \".gnu.org\" (one-or-more \"/\")\n"
-"          (group (zero-or-one \"cgi/bugreport.cgi?bug=\"))\n"
-"          (group-n 3 (one-or-more digit))\n"
-"          line-end))\n"
-"\n"
-
-msgid ""
-";; Change the default when run as 'M-x debbugs-gnu'.\n"
-"(setq debbugs-gnu-default-packages '(\"guix\" \"guix-patches\"))\n"
-"\n"
-msgstr ""
-";; Ändern, welche Fehlerberichte uns 'M-x debbugs-gnu' anzeigt.\n"
-"(setq debbugs-gnu-default-packages '(\"guix\" \"guix-patches\"))\n"
-"\n"
-
-msgid ""
-";; Show feature requests.\n"
-"(setq debbugs-gnu-default-severities\n"
-" '(\"serious\" \"important\" \"normal\" \"minor\" \"wishlist\"))\n"
-msgstr ""
-";; Auch Bitten um neue Funktionalität zeigen.\n"
-"(setq debbugs-gnu-default-severities\n"
-" '(\"serious\" \"important\" \"normal\" \"minor\" \"wishlist\"))\n"
-
-msgid "For more information, refer to @ref{Bug Reference,,, emacs, The GNU Emacs Manual} and @ref{Minor Mode,,, debbugs-ug, The Debbugs User Guide}."
-msgstr "Mehr Informationen finden Sie im @ref{Bug Reference,,, emacs, Handbuch zu GNU Emacs} und in der @ref{Minor Mode,,, debbugs-ug, Bedienungsanleitung zu Debbugs}."
-
-msgid "Alternative setups than Emacs may let you work on Guix with a similar development experience and they might work better with the tools you currently use or help you make the transition to Emacs."
-msgstr "Andere Entwicklungswerkzeuge als Emacs sind zum Entwickeln an Guix ähnlich gut nutzbar und sie gliedern sich vielleicht besser in Ihren bisherigen Werkzeugkasten ein. Vielleicht helfen sie Ihnen auch beim Wechsel auf Emacs."
-
-msgid "The options listed below only provide the alternatives to the Emacs based setup, which is the most widely used in the Guix community.  If you want to really understand how the perfect setup for Guix development is supposed to work, we encourage you to read the section before this regardless of the editor you choose to use."
-msgstr "Die folgend aufgelisteten Programme sind die Alternativen zu einer Emacs-basierten Programmierumgebung, die die am häufigsten benutzte Wahl unter Guix-Nutzern ist. Wenn Sie wirklich verstehen wollen, wie perfekt eingerichtetes Arbeiten mit Guix aussehen soll, möchten wir dazu anhalten, den vorherigen Abschnitt trotzdem zu lesen, auch wenn Sie sich lieber für einen anderen Editor entscheiden."
-
-msgid "Guile Studio"
-msgstr "Guile Studio"
-
-msgid "First step in your transition to Emacs."
-msgstr "Ein erster Schritt in Richtung Emacs."
-
-msgid "Vim and NeoVim"
-msgstr "Vim und NeoVim"
-
-msgid "When you are evil to the root."
-msgstr "Völlig indiskutabel (Scherz)."
+msgid "When working from a Git checkout of Guix, setup is automatic: @code{bug-reference} automatically detects that the project is hosted on Codeberg@footnote{ As of Emacs@tie{}30.2, auto-detection works if and only if the Git remote is called @code{upstream} or @code{origin}.} and infers the issue and pull request URL from there."
+msgstr "Wenn Sie aus einem Git-Checkout von Guix heraus arbeiten, wird dies automatisch eingerichtet: @code{bug-reference} stellt automatisch fest, dass das Projekt auf Codeberg zu finden ist@footnote{Stand Emacs@tie{}30.2 funktioniert die automatische Erkennung nur, wenn die Git-Remote @code{upstream} oder @code{origin} genannt wurde.} und erkennt daran die URL für ein Issue oder einen Pull Request."
 
 msgid "Guile Studio is a pre-configured Emacs with mostly everything you need to start hacking in Guile. If you are not familiar with Emacs it makes the transition easier for you."
 msgstr "Guile Studio ist ein voreingestellter Emacs mit ziemlich allem, um in Guile loszulegen. Wenn Sie Emacs nicht kennen, ist es ein leichterer Einstieg."
@@ -881,8 +788,11 @@ msgstr "guix install guile-studio\n"
 msgid "Guile Studio comes with Geiser preinstalled and prepared for action."
 msgstr "In Guile Studio ist Geiser vorinstalliert und einsatzbereit."
 
-msgid "Vim (and NeoVim) are also packaged in Guix, just in case you decided to go for the evil path."
-msgstr "Für Vim (und NeoVim) gibt es Pakete in Guix, falls Sie sich dem Bösen verschrieben haben."
+msgid "Vim, for Scheme code editing"
+msgstr "Vim, zum Editieren von Scheme-Code"
+
+msgid "Vim (and NeoVim) are also packaged in Guix, in case these popular modal editors are more to your taste."
+msgstr "Für Vim (und NeoVim) gibt es Pakete in Guix, falls diese beliebten Editoren Ihnen mehr zusagen."
 
 msgid "guix install vim\n"
 msgstr "guix install vim\n"
@@ -1698,17 +1608,14 @@ msgstr "Wenn Sie auf Probleme stoßen, ist es ratsam, auf eine Kopfzeile @code{P
 msgid "python"
 msgstr "python"
 
-msgid "We currently package Python 2 and Python 3, under the Scheme variable names @code{python-2} and @code{python} as explained in @ref{Version Numbers}.  To avoid confusion and naming clashes with other programming languages, it seems desirable that the name of a package for a Python module contains the word @code{python}."
-msgstr "Zurzeit stellen wir ein Paket für Python 2 und eines für Python 3 jeweils über die Scheme-Variablen mit den Namen @code{python-2} und @code{python} zur Verfügung, entsprechend der Erklärungen im Abschnitt @ref{Version Numbers}. Um Verwirrungen und Namenskollisionen mit anderen Programmiersprachen zu vermeiden, erscheint es als wünschenswert, dass der Name eines Pakets für ein Python-Modul auch das Wort @code{python} enthält."
+msgid "The standard way to generate a package definition is to use @code{guix import pypi <name>}, where @var{name} is the name of the Python package on @url{https://pypi.org, PyPI}, see @pxref{Invoking guix import}.  Please check with @code{guix lint <package-name>} that the generated package is valid."
+msgstr "Normalerweise legen Sie eine neue Paketdefinition mit @code{guix import pypi <Name>} an. Als @var{Name} schreiben Sie den Namen des Python-Pakets auf @url{https://pypi.org, PyPI}. Siehe @ref{Invoking guix import}. Bitte überprüfen Sie mit @code{guix lint <Paketname>}, ob das erzeugte Paket so gültig ist."
 
-msgid "Some modules are compatible with only one version of Python, others with both.  If the package Foo is compiled with Python 3, we name it @code{python-foo}.  If it is compiled with Python 2, we name it @code{python2-foo}.  Python 2 packages are being removed from the distribution; please do no not submit any new Python 2 packages."
-msgstr "Manche Module sind nur mit einer Version von Python kompatibel, andere mit beiden. Wenn das Paket Foo mit Python 3 kompiliert wird, geben wir ihm den Namen @code{python-foo}. Wenn es mit Python 2 kompiliert wird, wählen wir den Namen @code{python2-foo}. Wir sind dabei, Python-2-Pakete aus der Distribution zu entfernen; bitte reichen Sie keine neuen Python-2-Pakete mehr ein."
+msgid "To avoid confusion and naming clashes with other programming languages, Python module packages should be prefixed with @code{python-}."
+msgstr "Um nicht zu verwirren und damit die Namen von Python-Paketen nicht mit anderen Programmiersprachen kollidieren, wird den Namen der Pakete in den Python-Modulen @code{python-} vorangestellt."
 
-msgid "If a project already contains the word @code{python}, we drop this; for instance, the module python-dateutil is packaged under the names @code{python-dateutil} and @code{python2-dateutil}.  If the project name starts with @code{py} (e.g.@: @code{pytz}), we keep it and prefix it as described above."
-msgstr "Wenn ein Projekt bereits das Wort @code{python} im Namen hat, lassen wir es weg; zum Beispiel ist das Modul python-dateutil unter den Namen @code{python-dateutil} und @code{python2-dateutil} verfügbar. Wenn der Projektname mit @code{py} beginnt (z.B.@: @code{pytz}), behalten wir ihn bei und stellen das oben beschriebene Präfix voran."
-
-msgid "Currently there are two different build systems for Python packages in Guix: @var{python-build-system} and @var{pyproject-build-system}.  For the longest time, Python packages were built from an informally specified @file{setup.py} file.  That worked amazingly well, considering Python's success, but was difficult to build tooling around.  As a result, a host of alternative build systems emerged and the community eventually settled on a @url{https://peps.python.org/pep-0517/, formal standard} for specifying build requirements.  @var{pyproject-build-system} is Guix's implementation of this standard.  It is considered ``experimental'' in that it does not yet support all the various PEP-517 @emph{build backends}, but you are encouraged to try it for new Python packages and report any problems.  It will eventually be deprecated and merged into @var{python-build-system}."
-msgstr "Im Moment sind gleich zwei verschiedene Erstellungssysteme für Python-Pakete in Guix in Umlauf: @var{python-build-system} und @var{pyproject-build-system}. Lange Zeit hat man sein Python-Paket aus einer Datei @file{setup.py} heraus erstellt, deren gewachsene Struktur @emph{nicht} formell festgelegt war. Das lief überraschend gut, wenn man sich den Erfolg von Python anschaut, allerdings ließen sich nur schwer Werkzeuge zur Handhabung schreiben. Daraus ergab sich eine Vielzahl alternativer Erstellungssysteme, bis sich die Gemeinschaft auf einen @url{https://peps.python.org/pep-0517/, formellen Standard} zum Festlegen der Erstellungsanforderungen geeinigt hatte. @var{pyproject-build-system} ist die Implementierung dieses Standards in Guix. Wir stufen es als „experimentell“ ein, insofern als dass es noch nicht all die @emph{Build Backends} für PEP-517 unterstützt. Dennoch würden wir es begrüßen, wenn Sie es für neue Python-Pakete verwenden und Probleme melden würden. Schlussendlich wird es für veraltet erklärt werden und in @var{python-build-system} aufgehen."
+msgid "If a project already contains the word @code{python}, please do not repeat it; for instance, the module python-dateutil is packaged under the name @code{python-dateutil}.  If the project name starts with @code{py}, it is kept and prefixed as described above (e.g.@: @code{python-pytz})."
+msgstr "Wenn ein Projekt bereits das Wort @code{python} im Namen hat, wiederholen Sie es nicht noch einmal; zum Beispiel ist das Modul python-dateutil unter dem Namen @code{python-dateutil} verfügbar. Wenn der Projektname mit @code{py} beginnt, behalten wir ihn bei und stellen das oben beschriebene Präfix voran (z.B.@: @code{python-pytz})."
 
 msgid "Specifying Dependencies"
 msgstr "Abhängigkeiten angeben"
@@ -1719,23 +1626,20 @@ msgstr "Eingaben, für Python-Pakete"
 msgid "Dependency information for Python packages is usually available in the package source tree, with varying degrees of accuracy: in the @file{pyproject.toml} file, the @file{setup.py} file, in @file{requirements.txt}, or in @file{tox.ini} (the latter mostly for test dependencies)."
 msgstr "Informationen über Abhängigkeiten von Python-Paketen, welche mal mehr und mal weniger stimmen, finden sich normalerweise im Verzeichnisbaum des Paketquellcodes: in der Datei @file{pyproject.toml}, der Datei @file{setup.py}, in @file{requirements.txt} oder in @file{tox.ini} (letztere beherbergt hauptsächlich Abhängigkeiten für Tests)."
 
-msgid "Your mission, when writing a recipe for a Python package, is to map these dependencies to the appropriate type of ``input'' (@pxref{package Reference, inputs}).  Although the @code{pypi} importer normally does a good job (@pxref{Invoking guix import}), you may want to check the following check list to determine which dependency goes where."
-msgstr "Wenn Sie ein Rezept für ein Python-Paket schreiben, lautet Ihr Auftrag, diese Abhängigkeiten auf angemessene Arten von „Eingaben“ abzubilden (siehe @ref{package Reference, Eingaben}). Obwohl der @code{pypi}-Importer hier normalerweise eine gute Arbeit leistet (siehe @ref{Invoking guix import}), könnten Sie die folgende Prüfliste durchgehen wollen, um zu bestimmen, wo welche Abhängigkeit eingeordnet werden sollte."
+msgid "When editing a recipe for a Python package, the goal is to map these dependencies to the appropriate type of ``input'' (@pxref{package Reference, inputs}).  Although the @code{pypi} importer normally does a good job (@pxref{Invoking guix import}), please verify the following check list to determine which dependency goes where."
+msgstr "Wenn Sie ein Rezept für ein Python-Paket bearbeiten, ist das Ziel, diese Abhängigkeiten auf angemessene Arten von „Eingaben“ abzubilden (siehe @ref{package Reference, Eingaben}). Obwohl der @code{pypi}-Importer hier normalerweise eine gute Arbeit leistet (siehe @ref{Invoking guix import}), gehen Sie bitte die folgende Prüfliste durch, um zu bestimmen, wo welche Abhängigkeit eingeordnet werden sollte."
 
-msgid "We currently package Python with @code{setuptools} and @code{pip} installed per default.  This is about to change, and users are encouraged to use @code{python-toolchain} if they want a build environment for Python."
-msgstr "Derzeit ist unser Python-Paket so geschrieben, dass es @code{setuptools} und @code{pip} mitinstalliert. Das wird sich bald ändern und wir möchten unseren Nutzern nahelegen, für Python-Entwicklungsumgebungen @code{python-toolchain} zu verwenden."
-
-msgid "@command{guix lint} will warn if @code{setuptools} or @code{pip} are added as native-inputs because they are generally not necessary."
-msgstr "@command{guix lint} wird Sie mit einer Warnung darauf aufmerksam machen, wenn @code{setuptools} oder @code{pip} zu den nativen Eingaben hinzugefügt wurden, weil man im Allgemeinen keines der beiden anzugeben braucht."
+msgid "Python is packaged @emph{without} @code{setuptools} and @code{pip} installed per default."
+msgstr "Unser Python-Paket installiert @emph{weder} @code{setuptools} noch @code{pip} von selbst mit."
 
 msgid "Python dependencies required at run time go into @code{propagated-inputs}.  They are typically defined with the @code{install_requires} keyword in @file{setup.py}, or in the @file{requirements.txt} file."
 msgstr "Python-Abhängigkeiten, die zur Laufzeit gebraucht werden, stehen im @code{propagated-inputs}-Feld. Solche werden typischerweise mit dem Schlüsselwort @code{install_requires} in @file{setup.py} oder in der Datei @file{requirements.txt} definiert."
 
-msgid "Python packages required only at build time---e.g., those listed under @code{build-system.requires} in @file{pyproject.toml} or with the @code{setup_requires} keyword in @file{setup.py}---or dependencies only for testing---e.g., those in @code{tests_require} or @file{tox.ini}---go into @code{native-inputs}.  The rationale is that (1) they do not need to be propagated because they are not needed at run time, and (2) in a cross-compilation context, it's the ``native'' input that we'd want."
-msgstr "Python-Pakete, die nur zur Erstellungszeit gebraucht werden@tie{}– z.B.@: jene, die in @file{pyproject.toml} unter @code{build-system.requires} stehen oder die mit dem Schlüsselwort @code{setup_requires} in @file{setup.py} aufgeführt sind@tie{}– oder Abhängigkeiten, die nur zum Testen gebraucht werden@tie{}– also die in @code{tests_require} oder in der @file{tox.ini}@tie{}–, schreibt man in @code{native-inputs}. Die Begründung ist, dass (1) sie nicht propagiert werden müssen, weil sie zur Laufzeit nicht gebraucht werden, und (2) wir beim Cross-Kompilieren die „native“ Eingabe des Wirtssystems wollen."
+msgid "Python packages required only at build time---e.g., those listed under @code{build-system.requires} in @file{pyproject.toml} or with the @code{setup_requires} keyword in @file{setup.py}---or dependencies only for testing---e.g., those in @code{tests_require} or @file{tox.ini}---go into @code{native-inputs}.  The rationale is that (1) they do not need to be propagated because they are not needed at run time, and (2) in a cross-compilation context, it's the target ``native'' input."
+msgstr "Python-Pakete, die nur zur Erstellungszeit gebraucht werden@tie{}– z.B.@: jene, die in @file{pyproject.toml} unter @code{build-system.requires} stehen oder die mit dem Schlüsselwort @code{setup_requires} in @file{setup.py} aufgeführt sind@tie{}– oder Abhängigkeiten, die nur zum Testen gebraucht werden@tie{}– also die in @code{tests_require} oder in der @file{tox.ini}@tie{}–, schreibt man in @code{native-inputs}. Die Begründung ist, dass (1) sie nicht propagiert werden müssen, weil sie zur Laufzeit nicht gebraucht werden, und (2) sie beim Cross-Kompilieren in die „native“ Eingabe des Wirtssystems gehören."
 
-msgid "Examples are the @code{pytest}, @code{mock}, and @code{nose} test frameworks.  Of course if any of these packages is also required at run-time, it needs to go to @code{propagated-inputs}."
-msgstr "Beispiele sind die Testrahmen @code{pytest}, @code{mock} und @code{nose}. Wenn natürlich irgendeines dieser Pakete auch zur Laufzeit benötigt wird, muss es doch in @code{propagated-inputs} stehen."
+msgid "Examples are the @code{pytest}, @code{mock}, and @code{stestr} test frameworks.  Of course if any of these packages is also required at run-time, it needs to go to @code{propagated-inputs}."
+msgstr "Beispiele sind die Testrahmen @code{pytest}, @code{mock} und @code{stestr}. Wenn natürlich irgendeines dieser Pakete auch zur Laufzeit benötigt wird, muss es doch in @code{propagated-inputs} stehen."
 
 msgid "Anything that does not fall in the previous categories goes to @code{inputs}, for example programs or C libraries required for building Python packages containing C extensions."
 msgstr "Alles, was nicht in die bisher genannten Kategorien fällt, steht in @code{inputs}, zum Beispiel Programme oder C-Bibliotheken, die zur Erstellung von Python-Paketen mit enthaltenen C-Erweiterungen gebraucht werden."
@@ -1949,6 +1853,9 @@ msgstr "Wir fordern von allen Prozeduren auf oberster Ebene, dass sie über eine
 
 msgid "Procedures should not have more than four positional parameters.  Use keyword parameters for procedures that take more than four parameters."
 msgstr "Prozeduren sollten nicht mehr als vier positionsbestimmte Parameter haben. Benutzen Sie Schlüsselwort-Parameter für Prozeduren, die mehr als vier Parameter entgegennehmen."
+
+msgid "patch submission"
+msgstr "Patch einreichen"
 
 msgid "Contributors are encouraged to take a moment to set some Git repository options (@pxref{Configuring Git}) first, which can improve the readability of patches.  Seasoned Guix developers may also want to look at the section on commit access (@pxref{Commit Access})."
 msgstr "Wir möchten Mitwirkenden nahelegen, zunächst einige Git-Repository-Optionen festzulegen (siehe @ref{Configuring Git}), damit Ihr Patch leichter lesbar wird. Erfahrene Guix-Entwickler möchten vielleicht auch einen Blick auf den Abschnitt über Commit-Zugriff werfen (siehe @ref{Commit Access})."
@@ -2261,8 +2168,8 @@ msgstr "Um zum Beispiel alle noch ausstehenden, „offenen“ Fehler bezüglich 
 msgid "@kbd{C-u} @kbd{M-x} debbugs-gnu @kbd{RET} @kbd{RET} guix-patches @kbd{RET} n y\n"
 msgstr "@kbd{C-u} @kbd{M-x} debbugs-gnu @kbd{RET} @kbd{RET} guix-patches @kbd{RET} n y\n"
 
-msgid "For a more convenient (shorter) way to access both the bugs and patches submissions, you may want to configure the @code{debbugs-gnu-default-packages} and @code{debbugs-gnu-default-severities} Emacs variables (@pxref{Viewing Bugs within Emacs})."
-msgstr "Um einen bequemeren (schnelleren) Zugang zu Bugs wie auch eingereichten Patches zu bekommen, empfehlen wir, die Emacs-Variablen @code{debbugs-gnu-default-packages} und @code{debbugs-gnu-default-severities} einzustellen (siehe @ref{Viewing Bugs within Emacs})."
+msgid "For a more convenient (shorter) way to access both the bugs and patches submissions, you may want to configure the @code{debbugs-gnu-default-packages} and @code{debbugs-gnu-default-severities} Emacs variables (@pxref{Minor Mode,,, debbugs-ug, The Debbugs User Guide})."
+msgstr "Um einen bequemeren (schnelleren) Zugang zu Bugs wie auch eingereichten Patches zu bekommen, empfehlen wir, die Emacs-Variablen @code{debbugs-gnu-default-packages} und @code{debbugs-gnu-default-severities} einzustellen (siehe @ref{Minor Mode,,, debbugs-ug, Debbugs-Benutzerhandbuch})."
 
 msgid "To search for bugs, @samp{@kbd{M-x} debbugs-gnu-guix-search} can be used."
 msgstr "Zur Suche nach Bugs können Sie @samp{@kbd{M-x} debbugs-gnu-guix-search} verwenden."
@@ -3973,9 +3880,6 @@ msgstr "Dienste für virtuelle Maschinen."
 
 msgid "Version Control Services"
 msgstr "Versionskontrolldienste"
-
-msgid "Providing remote access to Git repositories."
-msgstr "Entfernten Zugang zu Git-Repositorys bieten."
 
 msgid "Game Services"
 msgstr "Spieldienste"
@@ -10665,6 +10569,9 @@ msgstr "Scheme-Programmiersprache, Einstieg in die"
 msgid "Intimidated by the Scheme language or curious about it? The Cookbook has a short section to get started that recaps some of the things shown above and explains the fundamentals.  @xref{A Scheme Crash Course,,, guix-cookbook, GNU Guix Cookbook}, for more information."
 msgstr "Fühlen Sie sich eingeschüchtert von der Scheme-Sprache oder wurde Ihre Neugier geweckt? Im Kochbuch gibt es einen kurzen Abschnitt, wie man anfängt. Dort werden einige der oben gezeigten Dinge wiederholt und die Grundlagen erklärt. Siehe @ref{Ein Schnellkurs in Scheme,,, guix-cookbook.de, GNU-Guix-Kochbuch} für weitere Informationen."
 
+msgid "@xref{The Perfect Setup}, on how to set up your editor for Scheme hacking."
+msgstr "Siehe @ref{The Perfect Setup}, um zu erfahren, wie Sie Ihren Editor zum Scheme-Hacking einrichten."
+
 msgid "Once a package definition is in place, the package may actually be built using the @code{guix build} command-line tool (@pxref{Invoking guix build}), troubleshooting any build failures you encounter (@pxref{Debugging Build Failures}).  You can easily jump back to the package definition using the @command{guix edit} command (@pxref{Invoking guix edit}).  @xref{Packaging Guidelines}, for more information on how to test package definitions, and @ref{Invoking guix lint}, for information on how to check a definition for style conformance."
 msgstr "Sobald eine Paketdefinition eingesetzt wurde, können Sie das Paket mit Hilfe des Befehlszeilenwerkzeugs @code{guix build} dann auch tatsächlich erstellen (siehe @ref{Invoking guix build}) und dabei jegliche Erstellungsfehler, auf die Sie stoßen, beseitigen (siehe @ref{Debugging Build Failures}). Sie können den Befehl @command{guix edit} benutzen, um leicht zur Paketdefinition zurückzuspringen (siehe @ref{Invoking guix edit}). Unter @ref{Packaging Guidelines} finden Sie mehr Informationen darüber, wie Sie Paketdefinitionen testen, und unter @ref{Invoking guix lint} finden Sie Informationen, wie Sie prüfen, ob eine Definition alle Stilkonventionen einhält."
 
@@ -11430,17 +11337,17 @@ msgid ""
 "(define gdb-sans-guile\n"
 "  (package\n"
 "    (inherit gdb)\n"
-"    (inputs (modify-inputs (package-inputs gdb)\n"
+"    (inputs (modify-inputs inputs\n"
 "              (delete \"guile\")))))\n"
 msgstr ""
 "(define gdb-sans-guile\n"
 "  (package\n"
 "    (inherit gdb)\n"
-"    (inputs (modify-inputs (package-inputs gdb)\n"
+"    (inputs (modify-inputs inputs\n"
 "              (delete \"guile\")))))\n"
 
-msgid "The @code{modify-inputs} form above removes the @code{\"guile\"} package from the @code{inputs} field of @code{gdb}.  The @code{modify-inputs} macro is a helper that can prove useful anytime you want to remove, add, or replace package inputs."
-msgstr "Mit obiger @code{modify-inputs}-Form wird das @code{\"guile\"}-Paket aus den Eingaben im @code{inputs}-Feld von @code{gdb} entfernt. Das @code{modify-inputs}-Makro hilft Ihnen, wann immer Sie etwas aus den Paketeingaben entfernen, hinzufügen oder ersetzen möchten."
+msgid "In the body of the @code{inputs} field above, @code{inputs} is bound to the inherited value.  Thus, the @code{modify-inputs} form above removes the @code{\"guile\"} package from the @code{inputs} field of @code{gdb}.  The @code{modify-inputs} macro is a helper that can prove useful anytime you want to remove, add, or replace package inputs."
+msgstr "Im Rumpf des @code{inputs}-Felds oben ist @code{inputs} an den geerbten Wert gebunden. Mit obiger @code{modify-inputs}-Form wird das @code{\"guile\"}-Paket aus den Eingaben im @code{inputs}-Feld von @code{gdb} entfernt. Das @code{modify-inputs}-Makro hilft Ihnen, wann immer Sie etwas aus den Paketeingaben entfernen, hinzufügen oder ersetzen möchten."
 
 msgid "modify-inputs inputs clauses"
 msgstr "modify-inputs Eingaben Klauseln"
@@ -11787,7 +11694,7 @@ msgid ""
 "(define gdb-sans-guile\n"
 "  (package\n"
 "    (inherit gdb)\n"
-"    (inputs (modify-inputs (package-inputs gdb)\n"
+"    (inputs (modify-inputs inputs\n"
 "              (delete \"guile\")))))\n"
 "\n"
 msgstr ""
@@ -11795,7 +11702,7 @@ msgstr ""
 "(define gdb-sans-guile\n"
 "  (package\n"
 "    (inherit gdb)\n"
-"    (inputs (modify-inputs (package-inputs gdb)\n"
+"    (inputs (modify-inputs inputs\n"
 "              (delete \"guile\")))))\n"
 "\n"
 
@@ -14811,6 +14718,12 @@ msgstr ""
 "                        (use-modules (json))\n"
 "                        …)))\n"
 
+msgid "Going Further"
+msgstr "Vertiefung"
+
+msgid "To learn more about the design of g-expressions, read @uref{https://arxiv.org/abs/1709.00833, @i{Code Staging in GNU@tie{}Guix}} (2017)."
+msgstr "Um mehr über die Gestaltung von G-Ausdrücken zu erfahren, lesen Sie @uref{https://arxiv.org/abs/1709.00833, @i{Code Staging in GNU@tie{}Guix}} (2017)."
+
 msgid "The syntactic form to construct gexps is summarized below."
 msgstr "Die syntaktische Form, in der G-Ausdrücke konstruiert werden, ist im Folgenden zusammengefasst."
 
@@ -14926,6 +14839,29 @@ msgstr "Im Beispiel oben werden die ersten beiden Module vom Suchpfad genommen u
 
 msgid "This form has @emph{lexical} scope: it has an effect on the gexps directly defined in @var{body}@dots{}, but not on those defined, say, in procedures called from @var{body}@dots{}."
 msgstr "Diese Form hat einen @emph{lexikalischen} Sichtbarkeitsbereich: Sie wirkt sich auf die direkt in @var{Rumpf}…@: definierten G-Ausdrücke aus, aber nicht auf jene, die, sagen wir, in aus @var{Rumpf}…@: heraus aufgerufenen Prozeduren definiert wurden."
+
+msgid "Caveat"
+msgstr "Einschränkung"
+
+msgid "It is important to distinguish between modules available in the build environment and modules in scope.  The @code{with-imported-modules} form pulls modules in the build environment of the gexp but it does @emph{not} import them.  To do so, you still need to use @code{use-modules} in the gexp:"
+msgstr "Wichtig ist, dass Sie zwischen in die Erstellungsumgebung importierten Modulen und sichtbaren Modulen unterscheiden. Die @code{with-imported-modules}-Form holt Module in die Erstellungsumgebung des G-Ausdrucks, importiert Sie jedoch @emph{nicht}. Dazu müssen Sie sie zusätzlich mit @code{use-modules} innerhalb des G-Ausdrucks nutzbar machen:"
+
+msgid ""
+"(with-imported-modules '((guix build utils))\n"
+"  #~(begin\n"
+"      (use-modules (guix build utils))\n"
+"      @dots{}))\n"
+msgstr ""
+"(with-imported-modules '((guix build utils))\n"
+"  #~(begin\n"
+"      (use-modules (guix build utils))\n"
+"      @dots{}))\n"
+
+msgid "@xref{Using Guile Modules,,, guile, GNU Guile Reference Manual}, for more information on @code{use-modules}."
+msgstr "Siehe @ref{Using Guile Modules,,, guile, Handbuch von GNU Guile} für weitere Informationen zu @code{use-modules}."
+
+msgid "Likewise, to import a module provided by Guile---e.g., @code{(srfi srfi-1)}---add a @code{use-modules} form in your gexp.  Do @emph{not} add Guile-provided modules such as @code{(srfi srfi-1)} to a @code{with-imported-modules}; doing so would force a potentially incompatible version into your environment."
+msgstr "Ebenso kann ein Modul, das von Guile mitgebracht wird, importiert werden, z.B.@: @code{(srfi srfi-1)}, indem Sie eine @code{use-modules}-Form zu Ihrem G-Ausdruck hinzufügen. Aber fügen Sie zu Guile gehörige Module wie @code{(srfi srfi-1)} @emph{nicht} zu einem @code{with-imported-modules} hinzu. Das würde eine möglicherweise inkompatible Version in Ihre Umgebung zwängen."
 
 msgid "with-extensions extensions body@dots{}"
 msgstr "with-extensions Erweiterungen Rumpf…"
@@ -20808,6 +20744,9 @@ msgstr "zugeordnete Geräte"
 
 msgid "The Linux kernel has a notion of @dfn{device mapping}: a block device, such as a hard disk partition, can be @dfn{mapped} into another device, usually in @code{/dev/mapper/}, with additional processing over the data that flows through it@footnote{Note that the GNU@tie{}Hurd makes no difference between the concept of a ``mapped device'' and that of a file system: both boil down to @emph{translating} input/output operations made on a file to operations on its backing store.  Thus, the Hurd implements mapped devices, like file systems, using the generic @dfn{translator} mechanism (@pxref{Translators,,, hurd, The GNU Hurd Reference Manual}).}.  A typical example is encryption device mapping: all writes to the mapped device are encrypted, and all reads are deciphered, transparently.  Guix extends this notion by considering any device or set of devices that are @dfn{transformed} in some way to create a new device; for instance, RAID devices are obtained by @dfn{assembling} several other devices, such as hard disks or partitions, into a new one that behaves as one partition."
 msgstr "Der Linux-Kernel unterstützt das Konzept der @dfn{Gerätezuordnung}: Ein blockorientiertes Gerät wie eine Festplattenpartition kann einem neuen Gerät @dfn{zugeordnet} werden, gewöhnlich unter @code{/dev/mapper/}, wobei das neue Gerät durchlaufende Daten zusätzlicher Verarbeitung unterzogen werden@footnote{Beachten Sie, dass mit GNU@tie{}Hurd kein Unterschied zwischen dem Konzept eines „zugeordneten Geräts“ und dem eines Dateisystems besteht: Dort werden bei beiden Ein- und Ausgabeoperationen auf eine Datei in Operationen auf dessen Hintergrundspeicher @emph{übersetzt}. Hurd implementiert zugeordnete Geräte genau wie Dateisysteme mit dem generischen @dfn{Übersetzer}-Mechanismus (siehe @ref{Translators,,, hurd, Referenzhandbuch von GNU Hurd}).}. Ein typisches Beispiel ist eine Gerätezuordnung zur Verschlüsselung: Jeder Schreibzugriff auf das zugeordnete Gerät wird transparent verschlüsselt und jeder Lesezugriff ebenso entschlüsselt. Guix erweitert dieses Konzept, indem es darunter jedes Gerät und jede Menge von Geräten versteht, die auf irgendeine Weise @dfn{umgewandelt} wird, um ein neues Gerät zu bilden; zum Beispiel entstehen auch RAID-Geräte aus einem @dfn{Verbund} mehrerer anderer Geräte, wie etwa Festplatten oder Partition zu einem einzelnen Gerät, das sich wie eine Partition verhält."
+
+msgid "Mapped devices are declared using the @code{mapped-device} form, defined as follows."
+msgstr "Zugeordnete Geräte werden mittels einer @code{mapped-device}-Form deklariert, die wie folgt definiert ist."
 
 msgid "{Data Type} mapped-device"
 msgstr "{Datentyp} mapped-device"
@@ -29681,27 +29620,6 @@ msgstr "{Datentyp} alsa-configuration"
 msgid "Data type representing the configuration for @code{alsa-service}."
 msgstr "Repräsentiert die Konfiguration für den Dienst @code{alsa-service}."
 
-msgid "@code{alsa-plugins} (default: @var{alsa-plugins})"
-msgstr "@code{alsa-plugins} (Vorgabe: @var{alsa-plugins})"
-
-msgid "@code{alsa-plugins} package to use."
-msgstr "@code{alsa-plugins}-Paket, was benutzt werden soll."
-
-msgid "@code{pulseaudio?} (default: @var{#t})"
-msgstr "@code{pulseaudio?} (Vorgabe: @var{#t})"
-
-msgid "Whether ALSA applications should transparently be made to use the @uref{https://www.pulseaudio.org/, PulseAudio} sound server."
-msgstr "Ob ALSA-Anwendungen transparent den @uref{https://www.pulseaudio.org/, PulseAudio-Audioserver} benutzen sollen."
-
-msgid "Using PulseAudio allows you to run several sound-producing applications at the same time and to individual control them @i{via} @command{pavucontrol}, among other things."
-msgstr "Wenn PulseAudio benutzt wird, können Sie gleichzeitig mehrere Anwendungen mit Tonausgabe ausführen und sie unter anderem mit @command{pavucontrol} einzeln einstellen."
-
-msgid "@code{extra-options} (default: @var{\"\"})"
-msgstr "@code{extra-options} (Vorgabe: @var{\"\"})"
-
-msgid "String to append to the @file{/etc/asound.conf} file."
-msgstr "Die Zeichenkette, die an die Datei @file{/etc/asound.conf} angehängt werden soll."
-
 msgid "Individual users who want to override the system configuration of ALSA can do it with the @file{~/.asoundrc} file:"
 msgstr "Wenn einzelne Benutzer von ALSAs Systemkonfiguration abweichende Einstellungen vornehmen möchten, können Sie das mit der Konfigurationsdatei @file{~/.asoundrc} tun:"
 
@@ -32818,6 +32736,12 @@ msgstr "@code{loglevel} (Vorgabe: @code{\"Info\"})"
 msgid "The level of logging desired.  Accepted values are Debug, Info, Warning and Error."
 msgstr "Die gewünschte Detailstufe der Protokollierung. Akzeptiert werden die Werte Debug (ausführlich zur Fehlersuche), Info, Warning (nur Warnungen und Fehler) und Error (nur Fehler)."
 
+msgid "@code{extra-content} (default: @code{'()}) (type: text-config)"
+msgstr "@code{extra-content} (Vorgabe: @code{'()}) (Typ: Konfigurationstexte)"
+
+msgid "@code{key} (type: string)"
+msgstr "@code{key} (Typ: Zeichenkette)"
+
 msgid "telephony, services"
 msgstr "Telefonie, Dienste"
 
@@ -34664,6 +34588,9 @@ msgstr "@code{zabbix-port} (Vorgabe: @code{10051}) (Typ: Zahl)"
 
 msgid "Zabbix server port."
 msgstr "Zabbix-Server-Port."
+
+msgid "@code{host-name} (type: maybe-string)"
+msgstr "@code{host-name} (Typ: Vielleicht-Zeichenkette)"
 
 msgid "Kerberos"
 msgstr "Kerberos"
@@ -41300,13 +41227,13 @@ msgid "You will probably find it useful to create an account for you in the GNU/
 msgstr "Es bietet sich an, dass Sie sich auf der virtuellen GNU/Hurd-Maschine ein eigenes Benutzerkonto deklarieren und die Anmeldung über Ihren SSH-Schlüssel erlauben. Als Grundlage nehmen Sie eine normale GNU/Hurd-Systemdefinition (siehe @ref{Using the Configuration System}) und übergeben dieses Betriebssystem im @code{os}-Feld von @code{hurd-vm-configuration}, wie in diesem Beispiel:"
 
 msgid ""
-"(define childhurd-os\n"
+"(define %childhurd-os\n"
 "  ;; Definition of my GNU/Hurd system, derived from the default one.\n"
 "  (operating-system\n"
 "    (inherit %hurd-vm-operating-system)\n"
 "\n"
 msgstr ""
-"(define childhurd-os\n"
+"(define %childhurd-os\n"
 "  ;; Definition meines GNU/Hurd-Systems, abgeleitet vom vorgegebenen.\n"
 "  (operating-system\n"
 "    (inherit %hurd-vm-operating-system)\n"
@@ -41443,9 +41370,6 @@ msgstr "@code{disk-size} (Vorgabe: @code{'guess})"
 
 msgid "The size of the disk image."
 msgstr "Die Größe des Disk-Images."
-
-msgid "@code{memory-size} (default: @code{512})"
-msgstr "@code{memory-size} (Vorgabe: @code{512})"
 
 msgid "The memory size of the Virtual Machine in mebibytes."
 msgstr "Die Größe des Arbeitsspeichers der virtuellen Maschine in Mebibyte."
@@ -42328,11 +42252,11 @@ msgstr "@code{node-schedule} (Vorgabe: @code{\"45 2 * * *\"})"
 msgid "How often to run the node cleaning job.  The default is once per day, at 02:45:00."
 msgstr "Wie oft der Bereinigungsauftrag für Knoten durchgeführt werden soll. Vorgegeben ist einmal täglich um 02:45:00 Uhr."
 
-msgid "The @code{(gnu services version-control)} module provides a service to allow remote access to local Git repositories.  There are three options: the @code{git-daemon-service-type}, which provides access to repositories via the @code{git://} unsecured TCP-based protocol, extending the @code{nginx} web server to proxy some requests to @code{git-http-backend}, or providing a web interface with @code{cgit-service-type}."
-msgstr "Das Modul @code{(gnu services version-control)} stellt einen Dienst zur Verfügung, der einen Fernzugriff auf lokale Git-Repositorys ermöglicht. Dafür gibt es drei Möglichkeiten: den @code{git-daemon-service-type}, der Zugang zu Repositorys über das ungesicherte, TCP-basierte @code{git://}-Protokoll gewährt, das Erweitern des @code{nginx}-Webservers, um ihn als Proxy für Anfragen an das @code{git-http-backend} einzusetzen, oder mit dem @code{cgit-service-type} eine Weboberfläche zur Verfügung zu stellen."
-
 msgid "git-daemon-service-type"
 msgstr "git-daemon-service-type"
+
+msgid "Git, hosting"
+msgstr "Git, Server anbieten („hosten“)"
 
 msgid "Type for a service that runs @command{git daemon}, a simple TCP server to expose repositories over the Git protocol for anonymous access."
 msgstr "Diensttyp für einen Dienst, der @command{git daemon} ausführt. Der Befehl startet den Git-Daemon, einen einfachen TCP-Server, um Repositorys über das Git-Protokoll für anonymen Zugriff zugänglich zu machen."
@@ -42391,8 +42315,11 @@ msgstr "Wenn dies nicht leer gelassen wird, wird nur der Zugriff auf die aufgeli
 msgid "Extra options that will be passed to @command{git daemon}.@footnote{Run @command{man git-daemon} for more information.}"
 msgstr "Zusätzliche Befehlszeilenoptionen, die dem @command{git daemon} mitgegeben werden sollen@footnote{Führen Sie @command{man git-daemon} aus, um weitere Informationen zu erhalten.}."
 
-msgid "The @code{git://} protocol lacks authentication.  When you pull from a repository fetched via @code{git://}, you don't know whether the data you receive was modified or is even coming from the specified host, and your connection is subject to eavesdropping.  It's better to use an authenticated and encrypted transport, such as @code{https}.  Although Git allows you to serve repositories using unsophisticated file-based web servers, there is a faster protocol implemented by the @code{git-http-backend} program.  This program is the back-end of a proper Git web service.  It is designed to sit behind a FastCGI proxy.  @xref{Web Services}, for more on running the necessary @code{fcgiwrap} daemon."
-msgstr "Zugriffe über das @code{git://}-Protokoll werden nicht authentifiziert. Wenn Sie von einem Repository pullen, dass Sie über @code{git://} geholt haben, wissen Sie nicht, ob die empfangenen Daten modifiziert wurden oder auch nur vom angegebenen Rechner kommen, und Ihre Verbindung kann abgehört werden. Es ist besser, eine authentifizierte und verschlüsselte Übertragungsart zu verwenden, zum Beispiel @code{https}. Obwohl Git es Ihnen ermöglicht, Repositorys über schlichte dateibasierte Webserver anzubieten, gibt es ein schnelleres Protokoll, das vom @code{git-http-backend}-Programm implementiert wird. Dieses Programm dient als Hintergrundsystem für einen ordentlichen Git-Webdienst. Es wurde so konstruiert, dass es über einen FastCGI-Proxy abrufbar ist. Siehe @ref{Web Services} für weitere Informationen, wie Sie den benötigten @code{fcgiwrap}-Daemon ausführen."
+msgid "The @code{git://} protocol lacks authentication.  When you pull from a repository fetched via @code{git://}, you don't know whether the data you receive was modified or is even coming from the specified host, and your connection is subject to eavesdropping."
+msgstr "Zugriffe über das @code{git://}-Protokoll werden nicht authentifiziert. Wenn Sie von einem Repository pullen, dass Sie über @code{git://} geholt haben, wissen Sie nicht, ob die empfangenen Daten modifiziert wurden oder auch nur vom angegebenen Rechner kommen, und Ihre Verbindung kann abgehört werden."
+
+msgid "It's better to use an authenticated and encrypted transport, such as @code{https}.  Although Git allows you to serve repositories using unsophisticated file-based web servers, there is a faster protocol implemented by the @code{git-http-backend} program.  This program is the back-end of a proper Git web service.  It is designed to sit behind a FastCGI proxy.  @xref{Web Services}, for more on running the necessary @code{fcgiwrap} daemon."
+msgstr "Es ist besser, eine authentifizierte und verschlüsselte Übertragungsart zu verwenden, zum Beispiel @code{https}. Obwohl Git es Ihnen ermöglicht, Repositorys über schlichte dateibasierte Webserver anzubieten, gibt es ein schnelleres Protokoll, das vom @code{git-http-backend}-Programm implementiert wird. Dieses Programm dient als Hintergrundsystem für einen ordentlichen Git-Webdienst. Es wurde so konstruiert, dass es über einen FastCGI-Proxy abrufbar ist. Siehe @ref{Web Services} für weitere Informationen, wie Sie den benötigten @code{fcgiwrap}-Daemon ausführen."
 
 msgid "Guix has a separate configuration data type for serving Git repositories over HTTP."
 msgstr "Guix hat einen separaten Konfigurationsdatentyp, um Git-Repositorys über HTTP anzubieten."
@@ -43251,9 +43178,6 @@ msgstr "Gitolite-Dienst"
 msgid "Gitolite service"
 msgstr "Gitolite-Dienst"
 
-msgid "Git, hosting"
-msgstr "Git, Server anbieten („hosten“)"
-
 msgid "@uref{https://gitolite.com/gitolite/, Gitolite} is a tool for hosting Git repositories on a central server."
 msgstr "@uref{https://gitolite.com/gitolite/, Gitolite} ist ein Werkzeug, um Git-Repositorys anderen auf einem zentralen Server anzubieten."
 
@@ -43569,6 +43493,9 @@ msgstr "Ein Server-Block für NGinx. NGinx wird durch Gitile erweitert und als i
 
 msgid "You can use this block to add more custom URLs to your domain, such as a @code{/git/} URL for anonymous clones, or serving any other files you would like to serve."
 msgstr "Über diesen Block können Sie weitere eigene URLs auf Ihrer Domain anbieten lassen wie z.B.@: eine @code{/git/}-URL zum „anonymen“ Klonen ohne Anmeldung oder sonstige Dateien, die Sie anbieten möchten."
+
+msgid "@code{from} (type: maybe-string)"
+msgstr "@code{from} (Typ: Vielleicht-Zeichenkette)"
 
 msgid "Joycond service"
 msgstr "Joycond-Dienst"
@@ -45831,9 +45758,6 @@ msgstr "@code{extra-jails} (Vorgabe: @code{'()}) (Typ: Liste-von-„fail2ban-jai
 msgid "Instances of @code{<fail2ban-jail-configuration>} explicitly provided."
 msgstr "@code{<fail2ban-jail-configuration>}-Instanzen, die explizit angegeben werden."
 
-msgid "@code{extra-content} (default: @code{'()}) (type: text-config)"
-msgstr "@code{extra-content} (Vorgabe: @code{'()}) (Typ: Konfigurationstexte)"
-
 msgid "Extra raw content to add to the end of the @file{jail.local} file, provided as a list of file-like objects."
 msgstr "Zusätzlicher „roher Inhalt“, der ans Ende der Datei @file{jail.local} angefügt wird. Geben Sie ihn als Liste von dateiartigen Objekten an."
 
@@ -45842,9 +45766,6 @@ msgstr "{Datentyp} fail2ban-ignore-cache-configuration"
 
 msgid "Available @code{fail2ban-ignore-cache-configuration} fields are:"
 msgstr "Verfügbare @code{fail2ban-ignore-cache-configuration}-Felder sind:"
-
-msgid "@code{key} (type: string)"
-msgstr "@code{key} (Typ: Zeichenkette)"
 
 msgid "Cache key."
 msgstr "Schlüssel, für den zwischengespeichert wird."
@@ -48698,6 +48619,15 @@ msgstr "cat $(herd configuration tor)\n"
 msgid "This can come in as a handy debugging tool!"
 msgstr "So gelingt die Fehlersuche!"
 
+msgid "{Procedure} shepherd-signal-action name signal @"
+msgstr "{Prozedur} shepherd-signal-action Name Signal @"
+
+msgid "[#:documentation `Send signal @var{signal} to the running service`] @ [#:message `Service has been asked to perform @var{name}`] Return a shepherd action with @var{name} to send @var{signal} to the running process. The optional @var{documentation} and @var{message} can be used to customize the documentation and output message."
+msgstr ""
+"[#:documentation `Send signal @var{Signal} to the running service`] @\n"
+"[#:message `Service has been asked to perform @var{Name}`]\n"
+"Liefert eine Shepherd-Aktion, die @var{Name} heißt und das @var{Signal} an den laufenden Prozess schickt. Optional kann mit @var{documentation} und @var{message} die ausgegebene Meldung angepasst werden."
+
 msgid "The service type for the Shepherd ``root service''---i.e., PID@tie{}1."
 msgstr "Der Diensttyp für den Shepherd-„Wurzeldienst“@tie{}– also für PID@tie{}1."
 
@@ -49940,8 +49870,8 @@ msgstr ""
 msgid "home-activation-service-type"
 msgstr "home-activation-service-type"
 
-msgid "The service of this type generates a guile script, which runs on every @command{guix home reconfigure} invocation or any other action, which leads to the activation of the home environment."
-msgstr "Mit dem Dienst dieses Diensttyps wird ein Guile-Skript erzeugt, das bei jedem Aufruf von @command{guix home reconfigure} und jeder anderen Aktion ausgeführt wird. Damit wird die Persönliche Umgebung aktiviert."
+msgid "The service of this type generates a guile script, which runs on every @command{guix home reconfigure} invocation or any other action, which leads to the activation of the home environment.  This service can be extended with G-Expressions (@pxref{G-Expressions}), which will be run in the generated guile script."
+msgstr "Mit dem Dienst dieses Diensttyps wird ein Guile-Skript erzeugt, das bei jedem Aufruf von @command{guix home reconfigure} und jeder anderen Aktion ausgeführt wird. Damit wird die Persönliche Umgebung aktiviert. Den Dienst können Sie mit G-Ausdrücken erweitern (siehe @ref{G-Expressions}), die im erzeugten Guile-Skript ausgeführt werden."
 
 msgid "home-symlink-manager-service-type"
 msgstr "home-symlink-manager-service-type"
@@ -50633,9 +50563,6 @@ msgstr "Verfügbare @code{openssh-host}-Felder sind:"
 
 msgid "Name of this host declaration.  A @code{openssh-host} must define only @code{name} or @code{match-criteria}.  Use host-name @code{\\\"*\\\"} for top-level options."
 msgstr "Der Name zu dieser Rechnerdeklaration. Für einen @code{openssh-host} darf nur entweder @code{name} oder @code{match-criteria} festgelegt werden. Für allgemeine Optionen verwenden Sie @code{\\\"*\\\"} als einen @code{host-name}."
-
-msgid "@code{host-name} (type: maybe-string)"
-msgstr "@code{host-name} (Typ: Vielleicht-Zeichenkette)"
 
 msgid "Host name---e.g., @code{\"foo.example.org\"} or @code{\"192.168.1.2\"}."
 msgstr "Der Rechnername, z.B.@: @code{\"foo.example.org\"} oder @code{\"192.168.1.2\"}."
@@ -51525,9 +51452,6 @@ msgstr "Auf welchem Port der SMTP-Server lauscht. Vorgegeben ist 25 („smtp“)
 
 msgid "Set the user name for authentication."
 msgstr "Legt fest, mit welchem Benutzernamen die Authentisierung durchgeführt werden soll."
-
-msgid "@code{from} (type: maybe-string)"
-msgstr "@code{from} (Typ: Vielleicht-Zeichenkette)"
 
 msgid "Set the envelope-from address."
 msgstr "Legt als Absenderadresse im Umschlag (Envelope-From) die angegebene Adresse fest."
@@ -52456,6 +52380,9 @@ msgstr "Dokumentation, Suche danach"
 msgid "searching for documentation"
 msgstr "Suchen nach Dokumentation"
 
+msgid "Documentation for Guix itself is @uref{https://guix.gnu.org/manual/devel, available online} and documentation for a number of ``Guix-adjacent packages'' is available from @uref{https://doc.guix.gnu.org, the Documentation Center}.  These provide an easy way to browse documentation online, but you can also access it locally on your computer, as we will see below."
+msgstr "Dokumentation zu Guix selbst steht @uref{https://guix.gnu.org/manual/devel, online} zur Verfügung und die Dokumentation für einige „Guix“-nahe Pakete finden Sie im @uref{https://doc.guix.gnu.org, Documentation Center}. So können Sie leicht online die Dokumentation durchlesen, aber Sie können sie auch lokal auf Ihrem Rechner lesen, wie nun gezeigt wird."
+
 msgid "Info, documentation format"
 msgstr "Info, Dokumentationsformat"
 
@@ -52466,7 +52393,7 @@ msgid "manual pages"
 msgstr "Handbuchseiten („Man-Pages“)"
 
 msgid "In most cases packages installed with Guix come with documentation.  There are two main documentation formats: ``Info'', a browsable hypertext format used for GNU software, and ``manual pages'' (or ``man pages''), the linear documentation format traditionally found on Unix.  Info manuals are accessed with the @command{info} command or with Emacs, and man pages are accessed using @command{man}."
-msgstr "In den meisten Fällen liegt den mit Guix installierten Paketen auch Dokumentation bei, die diese beschreibt. Die zwei üblichsten Formate für Dokumentation sind „Info“, ein durchsuchbares Hypertextformat, das für GNU-Software benutzt wird, und sogenannte „Handbuchseiten“ (englisch „Manual Pages“, kurz Man-Pages), das linear aufgebaute Dokumentationsformat, das auf Unix traditionell mitgeliefert wird. Info-Handbücher können mit dem Befehl @command{info} oder mit Emacs abgerufen werden, auf Handbuchseiten kann mit dem Befehl @command{man} zugegriffen werden."
+msgstr "In den meisten Fällen liegt den mit Guix installierten Paketen die Dokumentation bei, die diese beschreibt. Die zwei üblichsten Formate für Dokumentation sind „Info“, ein durchsuchbares Hypertextformat, das für GNU-Software benutzt wird, und sogenannte „Handbuchseiten“ (englisch „Manual Pages“, kurz Man-Pages), das linear aufgebaute Dokumentationsformat, das auf Unix traditionell mitgeliefert wird. Info-Handbücher können mit dem Befehl @command{info} oder mit Emacs abgerufen werden, auf Handbuchseiten kann mit dem Befehl @command{man} zugegriffen werden."
 
 msgid "You can look for documentation of software installed on your system by keyword.  For example, the following command searches for information about ``TLS'' in Info manuals:"
 msgstr "Sie können die Dokumentation von auf Ihrem System installierter Software nach einem Schlüsselwort durchsuchen. Zum Beispiel suchen Sie mit folgendem Befehl in den Info-Handbüchern nach „TLS“."
