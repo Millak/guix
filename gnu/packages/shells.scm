@@ -190,7 +190,8 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                  (apply (assoc-ref cargo:%standard-phases phase)
                         #:cargo-target #$(cargo-triplet)
                         args))
-               '(unpack-rust-crates
+               '(prepare-rust-crates
+                 unpack-rust-crates
                  configure
                  check-for-pregenerated-files
                  patch-cargo-checksums))))
