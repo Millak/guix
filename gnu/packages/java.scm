@@ -12630,6 +12630,43 @@ public Bundle getBundle()"))
 libraries from source.")
     (license license:asl2.0)))
 
+(define-public java-lucene-core-3.6.2
+  (package
+    (name "java-lucene-core")
+    (version "3.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://archive.apache.org/dist/lucene/solr/"
+                           version "/apache-solr-" version "-src.tgz"))
+       (sha256
+        (base32 "032dfpk7likiwb9pnlr518wwlyxn57i5wyp18mi32320vsprd4r0"))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              (let ((jar-file (string-append (getcwd) "/build/lucene-core-"
+                                             #$version ".jar")))
+                (mkdir-p "build")
+                (with-directory-excursion "lucene/core"
+                  (mkdir-p "build/classes")
+                  (apply invoke "javac" "-d" "build/classes"
+                         (find-files "src/java" "\\.java$"))
+                  (invoke "jar" "-cf" jar-file "-C" "build/classes" "."))
+                #t)))
+          (replace 'install
+            (install-jars "build")))))
+    (home-page "https://lucene.apache.org/core/")
+    (synopsis "Apache Lucene core library")
+    (description
+     "This package provides the Apache Lucene 3.6.2 core library, built
+entirely from source.")
+    (license license:asl2.0)))
+
 (define-public java-json-simple-1.1.1
   (package
     (name "java-json-simple")
