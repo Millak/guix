@@ -6110,10 +6110,8 @@ retrieval analyses, or similar technologies.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _ (delete-file "tests/testthat/test-download.R"))))))
+      ;; This requires internet access.
+      #:skipped-tests '("test-download.R")))
     (propagated-inputs (list cmake r-dir-expiry))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/LTLA/biocmake")
