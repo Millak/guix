@@ -1102,6 +1102,9 @@ Grammars (PEGs).")
 (define-public lua5.2-lpeg
   (make-lua-lpeg "lua5.2-lpeg" lua-5.2))
 
+(define-public lua5.4-lpeg
+  (make-lua-lpeg "lua5.4-lpeg" lua-5.4))
+
 (define (make-lua-luv name lua)
   (package
     (name name)
