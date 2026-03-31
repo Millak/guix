@@ -12441,6 +12441,49 @@ analysis.")
 @code{@@SuppressFBWarnings} and @code{@@ExcludeFromCodeCoverageGeneratedReport}.")
     (license license:asl2.0)))
 
+(define junixsocket-source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/kohlschutter/junixsocket")
+          (commit "junixsocket-parent-2.5.1")))
+    (file-name (git-file-name "java-junixsocket" "2.5.1"))
+    (sha256
+     (base32
+      "1zc84qbl2zsi9ch6b12crbiqlrkbrlw1z09kqlj04zrmck4k4pzn"))))
+
+(define-public java-junixsocket-common-2
+  (package
+    (name "java-junixsocket-common")
+    (version "2.5.1")
+    (source junixsocket-source)
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "junixsocket-common.jar"
+       #:source-dir "junixsocket-common/src/main/java"
+       #:jdk ,openjdk9
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'delete-module-info
+           (lambda _
+             ;; module-info.java requires modules not available in
+             ;; our build (com.kohlschutter.annotations.compiletime,
+             ;; org.eclipse.jdt.annotation).  The classes compile
+             ;; and work without JPMS metadata.
+             (delete-file
+              "junixsocket-common/src/main/java/module-info.java")))
+         (replace 'install
+           (install-from-pom "junixsocket-common/pom.xml")))))
+    (inputs (list java-eclipse-jdt-annotation-2
+                  java-kohlschutter-compiler-annotations-1))
+    (home-page "https://github.com/kohlschutter/junixsocket")
+    (synopsis "Java library for Unix domain sockets")
+    (description "junixsocket is a Java library for Unix domain sockets
+(AF_UNIX) and other address/protocol families, providing a Java Socket API
+compatible interface.")
+    (license license:asl2.0)))
+
 (define-public java-lmax-disruptor
   (package
     (name "java-lmax-disruptor")
