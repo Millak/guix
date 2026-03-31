@@ -2781,7 +2781,7 @@ modules for building a Wayland compositor.")
   (package
     (inherit wlroots)
     (name "wlroots")
-    (version "0.19.2")
+    (version "0.19.3")
     (source
      (origin
        (method git-fetch)
@@ -2790,7 +2790,7 @@ modules for building a Wayland compositor.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w1mq72r92zk9z650gdik17h6rxqnxjy63r2mfj423zxl54s2lzi"))))))
+        (base32 "1k8qzss7iycbbnwjp3ygsrb3rc8m45vxpy99r213d2vf9dai5v17"))))))
 
 (define-public wlroots-0.18
   (package
