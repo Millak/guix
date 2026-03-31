@@ -12408,6 +12408,39 @@ and @code{@@NonNullByDefault} annotations used by Eclipse JDT for null
 analysis.")
     (license license:epl2.0)))
 
+(define-public java-kohlschutter-compiler-annotations-1
+  (package
+    (name "java-kohlschutter-compiler-annotations")
+    (version "1.4.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://repo1.maven.org/maven2/"
+                                  "com/kohlschutter/compiler-annotations/"
+                                  version "/compiler-annotations-"
+                                  version "-sources.jar"))
+              (sha256
+               (base32
+                "0fzmhr9binv1ah410955m95w6lwwidy9sw06yy5cjcrcjx7v0455"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:tests? #f
+       #:jar-name "compiler-annotations.jar"
+       #:jdk ,openjdk9
+       #:source-dir "."
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'create-pom
+           (generate-pom.xml "pom.xml" "com.kohlschutter"
+                             "compiler-annotations" ,version))
+         (replace 'install (install-from-pom "pom.xml")))))
+    (inputs (list java-eclipse-jdt-annotation-2))
+    (native-inputs (list unzip))
+    (home-page "https://github.com/kohlschutter/compiler-annotations")
+    (synopsis "Compile-time annotations for Java")
+    (description "This package provides compile-time annotations such as
+@code{@@SuppressFBWarnings} and @code{@@ExcludeFromCodeCoverageGeneratedReport}.")
+    (license license:asl2.0)))
+
 (define-public java-lmax-disruptor
   (package
     (name "java-lmax-disruptor")
