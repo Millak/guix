@@ -29351,6 +29351,57 @@ decimal arithmetic.")
     (description "Go library for ini files")
     (license license:asl2.0)))
 
+(define-public go-gopkg-in-mgo-v2
+  ;; XXX: Upstream note - UNMAINTAINED
+  ;; Suggested alternatives:
+  ;; - https://github.com/globalsign/mgo
+  ;;   Community supported fork of mgo.
+  ;; - https://github.com/coreos/bbolt
+  ;;   Single file in-memory document database for Go.
+  ;; - https://github.com/dgraph-io/badger
+  ;;   Fast in-memory document database for Go.
+  ;; - https://github.com/dgraph-io/dgraph
+  ;;   Distributed graph database on top of Badger.
+  ;; - https://github.com/lib/pq
+  ;;   PostgreSQL driver in pure Go.
+  (package
+    (name "go-gopkg-in-mgo-v2")
+    (version "2016.08.01")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-mgo/mgo")
+             (commit (string-append "r" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rwbi1z63w43b0z9srm8m7iz1fdwx7bq7n2mz862d6liiaqa59jd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gopkg.in/mgo.v2"
+      #:test-flags
+      #~(list "-vet=off"
+              ;; Panic: runtime error: invalid memory address or nil pointer
+              ;; dereference (PC=0x47ADB1)
+              "-skip" "TestAll")
+    #:test-subdirs
+    ;; internal/sasl/sasl.go needs <sasl/sasl.h> header.
+    #~(list "internal/json/..."
+            "internal/scram/...")))
+    (native-inputs
+     (list go-gopkg-in-check-v1
+           go-gopkg-in-yaml-v2))
+    (propagated-inputs
+     (list go-gopkg-in-tomb-v2))
+    (home-page "https://labix.org/mgo")
+    (synopsis "Rich MongoDB driver for Go")
+    (description
+     "@command{mgo} (pronounced as mango) is a MongoDB driver for the Go
+language that implements a rich and well tested selection of features under a
+very simple API following standard Go idioms.")
+    (license license:expat)))
+
 (define-public go-gopkg-in-natefinch-lumberjack-v2
   (package
     (name "go-gopkg-in-natefinch-lumberjack-v2")
