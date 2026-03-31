@@ -25800,14 +25800,14 @@ methods.")
 (define-public r-catdap
   (package
     (name "r-catdap")
-    (version "1.3.7")
+    (version "1.3.7-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "catdap" version))
        (sha256
         (base32
-         "0z84bx808hy70bkzdda9l42ljh9i9pz07isxq756axi7nr0ky6p9"))))
+         "0gk7xmldf4vbn3igd622y5iv15ad9np2fr9mvqwjd8wvqjfmscz1"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcolorbrewer))
