@@ -4335,44 +4335,43 @@ tools.")
         (base32 "1xr1bjia3sx2i7hw99r2s950xi4fa996bcg3n7j9arcjmrb7w14c"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-manual-page
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man (string-append out "/share/man/man1")))
-               (with-directory-excursion "Documentation"
-                 (invoke "a2x"
-                         "--no-xmllint"
-                         "--doctype=manpage"
-                         "--format=manpage"
-                         "git-absorb.adoc"))
-               (install-file "Documentation/git-absorb.1" man))))
-         (add-after 'install 'install-completions
-           (lambda* (#:key native-inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share"))
-                    (git-absorb
-                      (if ,(%current-target-system)
-                          (search-input-file native-inputs "/bin/git-absorb")
-                          (string-append out "/bin/git-absorb"))))
-               (mkdir-p (string-append out "/etc/bash_completion.d"))
-               (with-output-to-file
-                 (string-append out "/etc/bash_completion.d/git-absorb")
-                 (lambda _ (invoke git-absorb "--gen-completions" "bash")))
-               (mkdir-p (string-append share "/fish/vendor_completions.d"))
-               (with-output-to-file
-                 (string-append share "/fish/vendor_completions.d/git-absorb.fish")
-                 (lambda _ (invoke git-absorb "--gen-completions" "fish")))
-               (mkdir-p (string-append share "/zsh/site-functions"))
-               (with-output-to-file
-                 (string-append share "/zsh/site-functions/_git-absorb")
-                 (lambda _ (invoke git-absorb "--gen-completions" "zsh")))
-               (mkdir-p (string-append share "/elvish/lib"))
-               (with-output-to-file
-                 (string-append share "/elvish/lib/git-absorb")
-                 (lambda _ (invoke git-absorb "--gen-completions" "elvish")))))))))
+     (list
+      #:install-source? #f
+      #:modules
+      '((guix build cargo-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-manual-page
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (man (string-append out "/share/man/man1")))
+                (with-directory-excursion "Documentation"
+                  (invoke "a2x"
+                          "--no-xmllint"
+                          "--doctype=manpage"
+                          "--format=manpage"
+                          "git-absorb.adoc"))
+                (install-file "Documentation/git-absorb.1" man))))
+          (add-after 'install 'install-completions
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+               (match-lambda
+                 ((shell . path)
+                  (mkdir-p (in-vicinity #$output (dirname path)))
+                  (let ((binary
+                         (if #$(%current-target-system)
+                             (search-input-file native-inputs "bin/git-absorb")
+                             (in-vicinity #$output "bin/git-absorb"))))
+                    (with-output-to-file (in-vicinity #$output path)
+                      (lambda _
+                        (invoke binary "--gen-completions" shell))))))
+               '(("bash"    . "share/bash-completion/completions/git-absorb")
+                 ("elvish"  . "share/elvish/lib/git-absorb")
+                 ("fish"    . "share/fish/vendor_completions.d/git-absorb.fish")
+                 ("nushell" . "share/nushell/vendor/autoload/git-absorb")
+                 ("zsh"     . "share/zsh/site-functions/_git-absorb"))))))))
     (native-inputs
      (append
        (if (%current-target-system)
