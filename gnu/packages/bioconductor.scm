@@ -7900,13 +7900,13 @@ Kallisto, Salmon, StringTie, Cufflinks/Cuffdiff etc.")
 (define-public r-isva
   (package
     (name "r-isva")
-    (version "1.9")
+    (version "1.10")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "isva" version))
               (sha256
                (base32
-                "05qx9q0kg4ma23v4abhihw0vz017nq6hv2jzsiqx4d20ngh1dl4z"))))
+                "1im1bwbf6l88m4bwwwr0z2x8bvw927s3fqbwc06s5240wc8syjpl"))))
     (properties `((upstream-name . "isva")))
     (build-system r-build-system)
     (propagated-inputs (list r-fastica r-jade r-qvalue))
