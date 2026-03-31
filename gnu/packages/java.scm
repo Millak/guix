@@ -8808,6 +8808,52 @@ more efficient storage-wise than an uncompressed bitmap (as implemented in the
     ;; GPL2.0 derivates are explicitly allowed.
     (license license:asl2.0)))
 
+(define-public java-javaewah-1.2.3
+  (package
+    (inherit java-javaewah)
+    (version "1.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/lemire/javaewah/")
+                     (commit (string-append "JavaEWAH-" version))))
+              (file-name (git-file-name "java-javaewah" version))
+              (sha256
+               (base32
+                "0bl1702pkzr8c8ygprmdc47lrb3m4yn4097jf6liiin54d4km8j5"))))
+    (arguments
+     `(#:jar-name "javaewah.jar"
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'enable-assertions
+           (lambda _
+             ;; FuzzEWAHTest requires assertions enabled in the JVM.
+             (substitute* "build.xml"
+               (("haltonfailure=\"yes\">")
+                "haltonfailure=\"yes\"><jvmarg value=\"-ea\" />"))))
+         (add-after 'build 'add-osgi-manifest
+           (lambda _
+             ;; The Maven Central jar has OSGi manifest attributes set by
+             ;; Maven Bundle Plugin.  The NetBeans build uses
+             ;; Bundle-SymbolicName as a fallback for OpenIDE-Module when
+             ;; wrapping external libraries as modules.
+             (call-with-output-file "osgi-manifest.mf"
+               (lambda (port)
+                 (display (string-append
+                           "Bundle-ManifestVersion: 2\n"
+                           "Bundle-SymbolicName: com.googlecode.javaewah.JavaEWAH\n"
+                           "Bundle-Version: " ,version "\n"
+                           "Export-Package: com.googlecode.javaewah,"
+                           "com.googlecode.javaewah.datastructure,"
+                           "com.googlecode.javaewah.symmetric\n"
+                           "Import-Package: com.googlecode.javaewah,"
+                           "com.googlecode.javaewah.datastructure\n"
+                           "Multi-Release: true\n")
+                          port)))
+             (invoke "jar" "ufm" "build/jar/javaewah.jar"
+                     "osgi-manifest.mf")))
+         (replace 'install (install-from-pom "pom.xml")))))))
+
 (define-public java-slf4j-api
   (package
     (name "java-slf4j-api")
