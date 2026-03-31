@@ -9086,6 +9086,52 @@ printed.")
 discards all logging messages.")
     (license license:expat)))
 
+(define-public java-slf4j-jdk14
+  (package
+    (name "java-slf4j-jdk14")
+    (version "1.7.25")
+    (source (package-source java-slf4j-api))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "slf4j-jdk14.jar"
+       #:source-dir "slf4j-jdk14/src/main"
+       #:test-dir "slf4j-jdk14/src/test"
+       #:test-exclude (list "**/*MultithreadedInitializationTest.java")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'build 'add-osgi-manifest
+           (lambda _
+             ;; The NetBeans wrapper module has an empty jar target and
+             ;; relies on Bundle-SymbolicName from the Maven Central jar.
+             (call-with-output-file "osgi-manifest.mf"
+               (lambda (port)
+                 (display (string-append
+                           "Bundle-ManifestVersion: 2\n"
+                           "Bundle-SymbolicName: slf4j.jdk14\n"
+                           "Bundle-Version: " ,version "\n"
+                           "Export-Package: org.slf4j.impl\n"
+                           "Import-Package: org.slf4j,org.slf4j.spi,"
+                           "org.slf4j.helpers,org.slf4j.event\n")
+                          port)))
+             (invoke "jar" "ufm" "build/jar/slf4j-jdk14.jar"
+                     "osgi-manifest.mf")))
+         (add-before 'check 'build-slf4j-api-test-helpers
+           (lambda _
+             (setenv "CLASSPATH"
+                     (string-append (getcwd) ":" (getenv "CLASSPATH")))
+             (apply invoke
+                    `("javac" "-d" "."
+                      ,@(find-files "slf4j-api/src/test" ".*\\.java")))))
+         (replace 'install
+           (install-from-pom "slf4j-jdk14/pom.xml")))))
+    (propagated-inputs (list java-slf4j-api))
+    (native-inputs (list java-junit java-hamcrest-core))
+    (home-page "https://www.slf4j.org/")
+    (synopsis "SLF4J binding for @code{java.util.logging}")
+    (description "SLF4J binding for the JDK14 @code{java.util.logging}
+framework.")
+    (license license:expat)))
+
 (define-public antlr2
   (package
     (name "antlr2")
