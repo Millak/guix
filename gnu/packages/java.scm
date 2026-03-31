@@ -12447,6 +12447,124 @@ public Bundle getBundle()"))
     (native-inputs
      (list java-junit java-hamcrest-core))))
 
+(define-public java-simplevalidation-1.14.1
+  (package
+    (name "java-simplevalidation")
+    (version "1.14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/timboudreau/simplevalidation.git")
+             (commit "7a9d6adbac685b34746aaa72b20a1e639b89c733")))
+       (file-name (git-file-name "java-simplevalidation" version))
+       (sha256
+        (base32 "1l0h2a6brzh4qrkjjxpiijjspapd1s7wr9pqzzwgh6qisjgb176w"))
+       (patches
+        (search-patches "java-simplevalidation-1.14.1.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (for-each delete-file (find-files "." "\\.jar$"))
+           #t))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:jdk openjdk17
+      #:tests? #f
+      #:modules
+      '((guix build utils)
+        (guix build ant-build-system)
+        (guix build java-utils)
+        (srfi srfi-13))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              (define build-root (getcwd))
+              (define (normalize-path file)
+                (if (string-prefix? "./" file)
+                    (substring file 2)
+                    file))
+              (define (copy-resources source-root class-root)
+                (with-directory-excursion source-root
+                  (for-each
+                   (lambda (file)
+                     (unless (string-suffix? ".java" file)
+                       (let* ((relative (normalize-path file))
+                              (destination
+                               (string-append class-root "/" relative)))
+                         (mkdir-p (dirname destination))
+                         (copy-file file destination))))
+                   (find-files "." ".*"))))
+              (define (compile-tree source-root class-root classpath)
+                (mkdir-p class-root)
+                (copy-resources source-root class-root)
+                (with-directory-excursion source-root
+                  (let ((sources (find-files "." "\\.java$")))
+                    (apply invoke "javac"
+                           (append
+                            (list "-d" class-root)
+                            (if classpath
+                                (list "-cp" classpath)
+                                '())
+                            sources)))))
+              (let* ((nbstubs-classes (string-append build-root "/build/nbstubs"))
+                     (core-classes (string-append build-root "/build/core"))
+                     (swing-classes (string-append build-root "/build/swing"))
+                     (nbstubs-jar (string-append build-root
+                                                 "/build/nbstubs-1.14.1.jar"))
+                     (core-jar (string-append build-root
+                                              "/build/simplevalidation-1.14.1.jar"))
+                     (swing-jar
+                      (string-append build-root
+                                     "/build/simplevalidation-swing-1.14.1.jar"))
+                     (converter-services
+                      (string-append
+                       swing-classes
+                       "/META-INF/services/org.netbeans.validation.api.conversion.Converter")))
+                (compile-tree "nbstubs/src" nbstubs-classes #f)
+                (invoke "jar" "-cf" nbstubs-jar "-C" nbstubs-classes ".")
+                (compile-tree "ValidationAPI/src" core-classes #f)
+                (invoke "jar" "-cf" core-jar "-C" core-classes ".")
+                (compile-tree "simplevalidation-swing/src/main/java"
+                              swing-classes
+                              (string-append core-classes ":" nbstubs-classes))
+                (mkdir-p (dirname converter-services))
+                (call-with-output-file converter-services
+                  (lambda (port)
+                    (for-each
+                     (lambda (line)
+                       (display line port)
+                       (newline port))
+                     '("org.netbeans.validation.api.conversion.swing.SelectedIndicesToButtonModelArrayConverter"
+                       "org.netbeans.validation.api.conversion.swing.SelectedIndicesToListSelectionModelConverter"
+                       "org.netbeans.validation.api.conversion.swing.StringToComboBoxModelConverter"
+                       "org.netbeans.validation.api.conversion.swing.StringToDocumentConverter"))))
+                (invoke "jar" "-cf" swing-jar "-C" swing-classes ".")
+                #t)))
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              ((install-pom-file "pom.xml")
+               #:inputs inputs
+               #:outputs outputs)
+              ((install-from-pom "nbstubs/pom.xml")
+               #:inputs inputs
+               #:outputs outputs)
+              ((install-from-pom "ValidationAPI/pom.xml")
+               #:inputs inputs
+               #:outputs outputs)
+              ((install-from-pom "simplevalidation-swing/pom.xml")
+               #:inputs inputs
+               #:outputs outputs)
+              #t)))))
+    (home-page "https://github.com/timboudreau/simplevalidation/")
+    (synopsis "Simple Validation libraries for Swing forms")
+    (description
+     "This package builds the Simple Validation core and Swing adapter
+libraries from source.")
+    (license license:asl2.0)))
+
 (define-public java-gson
   (package
     (name "java-gson")

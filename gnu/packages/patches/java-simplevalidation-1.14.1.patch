@@ -1,0 +1,107 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-03-31
+Subject: Update simplevalidation to 1.14.1.
+
+diff -urN orig/ValidationAPI/pom.xml mod/ValidationAPI/pom.xml
+--- orig/ValidationAPI/pom.xml	2022-07-23 01:17:30.000000000 +0000
++++ mod/ValidationAPI/pom.xml	2026-03-18 08:31:38.200321916 +0000
+@@ -4,7 +4,7 @@
+     <parent>
+         <artifactId>simplevalidation-parent</artifactId>
+         <groupId>com.mastfrog</groupId>
+-        <version>1.14</version>
++        <version>1.14.1</version>
+     </parent>
+     <modelVersion>4.0.0</modelVersion>
+     <artifactId>simplevalidation</artifactId>
+diff -urN orig/nbstubs/pom.xml mod/nbstubs/pom.xml
+--- orig/nbstubs/pom.xml	2022-07-23 01:17:30.000000000 +0000
++++ mod/nbstubs/pom.xml	2026-03-18 08:31:38.200321916 +0000
+@@ -4,7 +4,7 @@
+     <parent>
+         <artifactId>simplevalidation-parent</artifactId>
+         <groupId>com.mastfrog</groupId>
+-        <version>1.14</version>
++        <version>1.14.1</version>
+     </parent>
+     <modelVersion>4.0.0</modelVersion>
+     <artifactId>nbstubs</artifactId>
+diff -urN orig/nbstubs/src/org/openide/util/lookup/ServiceProvider.java mod/nbstubs/src/org/openide/util/lookup/ServiceProvider.java
+--- orig/nbstubs/src/org/openide/util/lookup/ServiceProvider.java	1970-01-01 00:00:00.000000000 +0000
++++ mod/nbstubs/src/org/openide/util/lookup/ServiceProvider.java	2026-03-18 08:31:38.200321916 +0000
+@@ -0,0 +1,31 @@
++/*
++ * Copyright 2025 Danny Milosavljevic
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package org.openide.util.lookup;
++
++import java.lang.annotation.ElementType;
++import java.lang.annotation.Retention;
++import java.lang.annotation.RetentionPolicy;
++import java.lang.annotation.Target;
++
++@Retention(RetentionPolicy.SOURCE)
++@Target(ElementType.TYPE)
++public @interface ServiceProvider {
++    Class<?> service();
++
++    String path() default "";
++
++    int position() default Integer.MAX_VALUE;
++}
+diff -urN orig/pom.xml mod/pom.xml
+--- orig/pom.xml	2022-07-23 01:17:30.000000000 +0000
++++ mod/pom.xml	2026-03-18 08:31:38.200321916 +0000
+@@ -21,7 +21,7 @@
+     </organization>
+     <packaging>pom</packaging>
+     <name>Simple Validation (parent)</name>
+-    <version>1.14</version>
++    <version>1.14.1</version>
+     <description>
+         Simple Validation Parent Project:
+         This is a simple library for quickly adding validation code to Swing user-interfaces.
+diff -urN orig/simplevalidation-swing/pom.xml mod/simplevalidation-swing/pom.xml
+--- orig/simplevalidation-swing/pom.xml	2022-07-23 01:17:30.000000000 +0000
++++ mod/simplevalidation-swing/pom.xml	2026-03-18 08:41:00.326700212 +0000
+@@ -5,7 +5,7 @@
+     <parent>
+         <groupId>com.mastfrog</groupId>
+         <artifactId>simplevalidation-parent</artifactId>
+-        <version>1.14</version>
++        <version>1.14.1</version>
+     </parent>
+     <artifactId>simplevalidation-swing</artifactId>
+     <scm>
+@@ -49,17 +49,12 @@
+     </build>
+     <dependencies>
+         <dependency>
+-            <groupId>${project.groupId}</groupId>
++            <groupId>com.mastfrog</groupId>
+             <artifactId>simplevalidation</artifactId>
+         </dependency>
+         <dependency>
+-            <groupId>${project.groupId}</groupId>
++            <groupId>com.mastfrog</groupId>
+             <artifactId>nbstubs</artifactId>
+         </dependency>
+-        <dependency>
+-            <groupId>org.netbeans.api</groupId>
+-            <artifactId>org-openide-util-lookup</artifactId>
+-            <scope>provided</scope>
+-        </dependency>
+     </dependencies>
+ </project>
