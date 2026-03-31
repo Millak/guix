@@ -306,27 +306,26 @@ prompt the user with the option to go with insecure DNS only.")
        (sha256
         (base32 "055gn5kigz0m9y09vig97s1g257hnlkhw4wv9d9wdficnsxcbwwm"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list dbus))
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure)
-          (add-after 'install 'install-dbus
-            (lambda _
-              (install-file "dbus/dnsmasq.conf"
-                            (string-append #$output "/etc/dbus-1/system.d")))))
-
+      #:tests? #f ;no tests
       #:make-flags
       #~(list (string-append "PREFIX=" #$output)
               (string-append "CC=" #$(cc-for-target))
               (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
               "COPTS=\"-DHAVE_DBUS\"")
-      #:tests? #f))                    ; no ‘check’ target
-    (home-page "https://www.thekelleys.org.uk/dnsmasq/doc.html")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure) ;no configure
+          (add-after 'install 'install-dbus
+            (lambda _
+              (install-file "dbus/dnsmasq.conf"
+                            (string-append #$output "/etc/dbus-1/system.d")))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list dbus))
+    (home-page "https://thekelleys.org.uk/dnsmasq/doc.html")
     (synopsis "Small caching DNS proxy and DHCP/TFTP server")
     (description
      "Dnsmasq is a light-weight DNS forwarder and DHCP server.  It is designed
