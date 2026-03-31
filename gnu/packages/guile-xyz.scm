@@ -989,8 +989,7 @@ variables from them.")
                                              (assoc-ref inputs input)
                                              path))
                                           (list "guile-config"
-                                                "guile-dotenv"
-                                                "nyacc"))))))
+                                                "guile-dotenv"))))))
                       (bin (string-append (ungexp output) "/bin/")))
                  (wrap-program (string-append bin "dotenv")
                    (dep-path "GUILE_LOAD_PATH" site)
