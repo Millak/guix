@@ -1688,14 +1688,14 @@ structure.  However CryFS is not considered stable yet by the developers.")
 (define-public b3sum
   (package
     (name "b3sum")
-    (version "1.8.2")
+    (version "1.8.4")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "b3sum" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "06qc6iv574km4j1ja4qhxyai680jkll58qzpz4mb79c0rk750dpd"))))
+         (base32 "0pkra5zh680cl9q92hpzmg9flz99b06bhpg7jyhymg1nkm0anw7a"))))
     (build-system cargo-build-system)
     (arguments
      (list
