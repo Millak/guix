@@ -7445,6 +7445,64 @@ and service platform for the Java programming language.  This package contains
 the OSGi Core module.")
     (license license:asl2.0)))
 
+(define-public java-osgi-core-8.0.0
+  ;; Upstream uses release-train tags for the monorepo; osgi.core/bnd.bnd
+  ;; emits artifact version 8.0.0 from the r8-core-final checkout.
+  (let ((tag "r8-core-final"))
+    (package
+      (name "java-osgi-core")
+      (version "8.0.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/osgi/osgi")
+                      (commit tag)))
+                (modules '((guix build utils)))
+                (snippet
+                 '(begin
+                    (for-each delete-file
+                              (find-files "." "\\.jar$"))
+                    #t))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "01z4c3jakzjdh4m0j71shppa1nfgaqgxwajnhyv56s1l1a9hxb6x"))))
+      (build-system ant-build-system)
+      (arguments
+       (list
+        #:tests? #f
+        #:jar-name "osgi-core.jar"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'prepare-source-layout
+              (lambda _
+                (mkdir-p "src")
+                (for-each
+                 (lambda (directory)
+                   (invoke "cp" "-r" (string-append directory "/.") "src/"))
+                 '("org.osgi.dto/src"
+                   "org.osgi.framework/src"
+                   "org.osgi.resource/src"
+                   "org.osgi.service.condition/src"
+                   "org.osgi.service.condpermadmin/src"
+                   "org.osgi.service.log/src"
+                   "org.osgi.service.packageadmin/src"
+                   "org.osgi.service.permissionadmin/src"
+                   "org.osgi.service.resolver/src"
+                   "org.osgi.service.startlevel/src"
+                   "org.osgi.service.url/src"
+                   "org.osgi.util.tracker/src"))))
+            (add-before 'install 'create-pom
+              (generate-pom.xml "pom.xml" "org.osgi" "osgi.core" #$version))
+            (replace 'install (install-from-pom "pom.xml")))))
+      (inputs (list java-osgi-annotation-8.1.0))
+      (home-page "https://www.osgi.org")
+      (synopsis "Core module of OSGi framework")
+      (description "OSGi, for Open Services Gateway initiative framework, is a
+module system and service platform for the Java programming language.  This
+package contains the OSGi Core module.")
+      (license license:asl2.0))))
+
 (define-public java-osgi-service-event
   (package
     (name "java-osgi-service-event")
