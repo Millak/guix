@@ -280,15 +280,15 @@ return the resulting alist."
     (tarball
      (call-with-temporary-directory
       (lambda (dir)
-        (parameterize ((current-error-port (%make-void-port "rw+"))
-                       (current-output-port (%make-void-port "rw+")))
-          (and (zero? (system* "tar" "--wildcards" "-x"
-                               "--strip-components=1"
-                               "-C" dir
-                               "-f" tarball "*/DESCRIPTION"))
-               (description->alist
-                (call-with-input-file (string-append dir "/DESCRIPTION")
-                  read-string)))))))))
+        (and (match (waitpid (spawn "tar" `("tar" "--wildcards" "-x"
+                                            "--strip-components=1"
+                                            "-C" ,dir
+                                            "-f" ,tarball "*/DESCRIPTION")))
+               ((pid . status)
+                (zero? status)))
+             (description->alist
+              (call-with-input-file (string-append dir "/DESCRIPTION")
+                read-string))))))))
 
 (define* (fetch-description repository name #:optional version replacement-download)
   "Return an alist of the contents of the DESCRIPTION file for the R package
@@ -709,8 +709,7 @@ by TARBALL?"
   (if tarball?
     (call-with-temporary-directory
      (lambda (dir)
-       (parameterize ((current-error-port (%make-void-port "rw+")))
-         (system* "tar" "xf" source "-C" dir))
+       (waitpid (spawn "tar" `("tar" "xf" ,source "-C" ,dir)))
        (source-dir->dependencies dir)))
     (source-dir->dependencies source)))
 
