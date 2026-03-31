@@ -398,7 +398,8 @@ that is extensible via a plugin system.")
                         ;; environment, as it could cause Gimp to crash (see
                         ;; bug#77921).
                         `("GI_TYPELIB_PATH" prefix
-                          (,(getenv "GI_TYPELIB_PATH")))
+                          (,(getenv "GI_TYPELIB_PATH")
+                           ,(string-append #$output "/lib/girepository-1.0")))
                         `("GUIX_PYTHONPATH" prefix
                           (,(getenv "GUIX_PYTHONPATH")))
                         `("GDK_PIXBUF_MODULE_FILE" =
