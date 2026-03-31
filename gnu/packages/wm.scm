@@ -2493,7 +2493,7 @@ limited size and a few external dependencies.  It is configurable via
                   pcre2
                   libxcb
                   xcb-util-wm
-                  wlroots
+                  wlroots-0.19
                   scenefx))
     (home-page "https://github.com/DreamMaoMao/mangowc")
     (synopsis "Wayland compositor based on wlroots and scenefx")
