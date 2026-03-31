@@ -1251,7 +1251,7 @@ to events.")
            pulseaudio
            wayland
            wayland-protocols
-           wlroots))
+           wlroots-0.19))
     (propagated-inputs
      (list python-aiohttp
            python-cairocffi
