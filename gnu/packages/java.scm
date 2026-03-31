@@ -15785,6 +15785,64 @@ network protocols, and core version control algorithms.")
 using the JSch library.")
     (license license:edl1.0)))
 
+(define-public java-jgit-gpg-bc-7
+  (package
+    (name "java-jgit-gpg-bc")
+    (version "7.0.0.202409031743-r")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://repo1.maven.org/maven2/"
+                                  "org/eclipse/jgit/org.eclipse.jgit.gpg.bc/"
+                                  version "/org.eclipse.jgit.gpg.bc-"
+                                  version "-sources.jar"))
+              (sha256
+               (base32
+                "1123x1i19h3a674mc44csdx7spn5qh6qk3klkfih4am9ak81w27n"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:tests? #f
+       #:jar-name "jgit-gpg-bc.jar"
+       #:jdk ,openjdk17
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'build 'add-osgi-manifest
+           (lambda _
+             (call-with-output-file "osgi-manifest.mf"
+               (lambda (port)
+                 (display (string-append
+                           "Bundle-ManifestVersion: 2\n"
+                           "Bundle-SymbolicName: org.eclipse.jgit.gpg.bc\n"
+                           "Bundle-Version: " ,version "\n"
+                           "Export-Package: org.eclipse.jgit.gpg.bc.internal\n"
+                           "Import-Package: org.bouncycastle.asn1,"
+                           "org.bouncycastle.bcpg,"
+                           "org.bouncycastle.gpg,"
+                           "org.bouncycastle.gpg.keybox,"
+                           "org.bouncycastle.openpgp,"
+                           "org.bouncycastle.openpgp.operator,"
+                           "org.bouncycastle.openpgp.operator.jcajce,"
+                           "org.bouncycastle.util.encoders,"
+                           "org.eclipse.jgit.api.errors,"
+                           "org.eclipse.jgit.lib,"
+                           "org.eclipse.jgit.nls,"
+                           "org.eclipse.jgit.transport,"
+                           "org.eclipse.jgit.util,"
+                           "org.slf4j\n")
+                          port)))
+             (invoke "jar" "ufm" "build/jar/jgit-gpg-bc.jar"
+                     "osgi-manifest.mf")))
+         (replace 'install
+           (install-from-pom
+            "src/META-INF/maven/org.eclipse.jgit/org.eclipse.jgit.gpg.bc/pom.xml")))))
+    (inputs
+     (list java-bouncycastle-1.77 java-jgit-7 java-slf4j-api))
+    (native-inputs (list unzip))
+    (home-page "https://eclipse.org/jgit/")
+    (synopsis "GPG support for JGit using Bouncy Castle")
+    (description "This package provides GPG commit signing support for
+JGit using the Bouncy Castle cryptographic library.")
+    (license license:edl1.0)))
+
 (define-public abcl
   (package
     (name "abcl")
