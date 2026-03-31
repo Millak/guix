@@ -37560,15 +37560,21 @@ several formats and MIME types.")
 (define-public r-irace
   (package
     (name "r-irace")
-    (version "4.4.0")
+    (version "4.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "irace" version))
        (sha256
-        (base32 "1mf5dsrsw1jmjs86bm1flcbmxd8gh77xqc1ambrm36z9pzziw65s"))))
+        (base32 "017mh1jkxpl4bkdh1dxrh9srp2fr7yy50n2v7r50ax8cg18g0bjc"))))
     (properties `((upstream-name . "irace")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:skipped-tests
+      ;; Fails with "incorrect number of dimensions"
+      '(("test-blocksize.R"
+         "blockSize cap_irace maxExperiments = 1000"))))
     (propagated-inputs (list r-codetools
                              r-data-table
                              r-fs
@@ -37576,7 +37582,7 @@ several formats and MIME types.")
                              r-r6
                              r-spacefillr
                              r-withr))
-    (native-inputs (list r-knitr r-rmpi r-testthat))
+    (native-inputs (list r-highr r-knitr r-rmpi r-testthat))
     (home-page "https://mlopez-ibanez.github.io/irace/")
     (synopsis "Iterated racing for automatic algorithm configuration")
     (description
