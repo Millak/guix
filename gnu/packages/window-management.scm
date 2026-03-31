@@ -5401,6 +5401,39 @@ file.")
 program and unhides it after quitting.")
     (license license:gpl2)))
 
+(define-public tinyrwm
+  ;; No releases.
+  (let ((commit "5c01698cf605305fcb2a26a932fbc0e0b3d813f4")
+        (revision "3"))
+    (package
+      (name "tinyrwm")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/river/tinyrwm/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "150jcs17zk22vvyl70plrj01dg2pv5pfxjsi793z025q952wpwx6"))))
+      (build-system meson-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'change-to-source-dir
+                   (lambda _
+                     (chdir "c"))))))
+      (native-inputs (list pkg-config))
+      (inputs (list wayland libxkbcommon))
+      (home-page "https://codeberg.org/river/tinyrwm/")
+      (synopsis "Example River window manager")
+      (description "tinyrwm is a reference window manager for the River
+Wayland compositor.  This package provides the canonical C implementation.")
+      (license (list license:bsd-0
+                     license:expat)))))
+
 (define-public trayer-srg
   (package
     (name "trayer-srg")
