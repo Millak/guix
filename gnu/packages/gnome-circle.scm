@@ -39,6 +39,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
+  #:use-module (gnu packages ebook)
   #:use-module (gnu packages enchant)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
@@ -681,7 +682,7 @@ and a high score table.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "1.99.0")
+    (version "50.1.0")
     (source
      (origin
        (method git-fetch)
@@ -691,7 +692,7 @@ and a high score table.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1did8rh3aw6d3g1myavsma986rwashw09g3m442lv8fzmdiw18r4"))))
+         "0q858zvpqy32nb2lxdfy1k6fgal46kp634534fg983192fyk1pqp"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -740,8 +741,10 @@ and a high score table.")
            python-cloudscraper
            python-colorthief
            python-dateparser
+           python-ebooklib
            python-emoji
            python-keyring
+           python-jxlpy
            python-lxml
            python-magic
            python-natsort
