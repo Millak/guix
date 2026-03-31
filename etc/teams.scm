@@ -828,6 +828,7 @@ and the maven-build-system."
               (make-regexp* "^gnu/packages/java(-.+|)\\.scm$")
               ;; Match maven.scm and maven-*.scm
               (make-regexp* "^gnu/packages/maven(-.+|)\\.scm$")
+              "gnu/packages/netbeans.scm"
               "guix/build/ant-build-system.scm"
               "guix/build/clojure-build-system.scm"
               "guix/build/clojure-utils.scm"
