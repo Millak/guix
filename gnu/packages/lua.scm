@@ -1061,13 +1061,14 @@ Notable examples are GTK+, GStreamer and Webkit.")
 (define (make-lua-lpeg name lua)
   (package
     (name name)
-    (version "1.0.2")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.inf.puc-rio.br/~roberto/lpeg/lpeg-"
                                   version ".tar.gz"))
               (sha256
-               (base32 "1zjzl7acvcdavmcg5l7wi12jd4rh95q9pl5aiww7hv0v0mv6bmj8"))))
+               (base32
+                "0aimsjpcpkh3kk65f0pg1z2bp6d83rn4dg6pgbx1yv14s9kms5ab"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
