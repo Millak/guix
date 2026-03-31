@@ -16056,6 +16056,41 @@ with safe fallbacks in the presence of proxies.")
      "Package linkheader provides functions for parsing HTTP Link headers.")
     (license license:expat)))
 
+(define-public go-github-com-tonistiigi-go-actions-cache
+  (package
+    (name "go-github-com-tonistiigi-go-actions-cache")
+    (version "0.0.0-20260120203934-54bc28c26fd2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tonistiigi/go-actions-cache")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13jijp4zhc7cz3qrp6z70mq2f7k92mbms4qs1qxmzkp1pgpw5n4i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tonistiigi/go-actions-cache"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           openssl))
+    (propagated-inputs
+     (list go-github-com-azure-azure-sdk-for-go-sdk-azcore
+           go-github-com-azure-azure-sdk-for-go-sdk-storage-azblob
+           go-github-com-dimchansky-utfbom
+           go-github-com-golang-jwt-jwt-v5
+           go-github-com-pkg-errors
+           go-golang-org-x-sync))
+    (home-page "https://github.com/tonistiigi/go-actions-cache")
+    (synopsis "GitHub Actions cache protocol implementation for Golang")
+    (description
+     "This package is a Go library that implements the internal GitHub Actions
+caching protocol.  It provides support to programmatically store and retrieve
+build caches, instead of relying on the standard actions/cache YAML step.")
+    (license license:expat)))
+
 (define-public go-github-com-tv42-httpunix
   (let ((commit "2ba4b9c3382c77e7b9ea89d00746e6111d142a22")
         (revision "0"))
