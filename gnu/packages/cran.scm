@@ -23189,20 +23189,17 @@ features:
 (define-public r-n2r
   (package
     (name "r-n2r")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "N2R" version))
        (sha256
-        (base32 "17806y0992nxrdmv2s2v80g6f55s1pgkd9j39jpks62qr7i14kcl"))))
+        (base32 "09h8kvbdxvq4bjyshhgvx1mjvywlf9w4xsnwmfyrggxxwbyv2h1d"))))
     (properties `((upstream-name . "N2R")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-matrix
-           r-rcpp
-           r-rcppeigen
-           r-rcppspdlog))
+     (list r-bh r-matrix r-rcpp r-rcppeigen r-rcppspdlog))
     (native-inputs (list r-testthat))
     (home-page "https://github.com/kharchenkolab/N2R")
     (synopsis "Fast and scalable approximate k-Nearest Neighbor search methods")
