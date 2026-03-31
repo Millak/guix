@@ -11060,16 +11060,16 @@ considerably faster, produces smaller files, and leaves text as is.")
 (define-public r-swagger
   (package
     (name "r-swagger")
-    (version "5.17.14.1")
+    (version "5.32.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "swagger" version))
               (sha256
                (base32
-                "0ykmz3j1n06w1injcnlkb3xv79vwiyv94j74m950rfrbv97dda58"))))
+                "08l4f0cvpgavpfcjvzc5cxydml840n2qih5sb6gn028461jigf2a"))))
     (properties `((upstream-name . "swagger")))
     (build-system r-build-system)
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-jsonlite r-testthat))
     (home-page "https://github.com/rstudio/swagger")
     (synopsis
      "Dynamically generate documentation from a Swagger-compliant API")
