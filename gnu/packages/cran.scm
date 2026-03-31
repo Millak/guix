@@ -10798,16 +10798,15 @@ Connector for Python and the Snowflake CLI.")
 (define-public r-sourcetools
   (package
     (name "r-sourcetools")
-    (version "0.1.7-1")
+    (version "0.1.7-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sourcetools" version))
        (sha256
         (base32
-         "1l9i9ram12pjks8h2gzmj119wf4ixwyhljsfv289dn8dgbdjp0cn"))))
+         "19ziwi85khfmscdr1ks9md897r5czxhl6897nnjxzz6ph2vq9r87"))))
     (build-system r-build-system)
-    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/web/packages/sourcetools")
     (synopsis "Tools for reading, tokenizing and parsing R code")
     (description
