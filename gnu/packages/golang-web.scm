@@ -8666,6 +8666,40 @@ protocol) - used to discover UPnP services on a network
  by the IBM Cloud @code{OpenAPI} SDK Generator (openapi-sdkgen).")
     (license license:asl2.0)))
 
+(define-public go-github-com-igungor-gofakes3
+  (package
+    (name "go-github-com-igungor-gofakes3")
+    (version "0.0.18")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/igungor/gofakes3")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "136wvgz8d1982ns3vqqlvk3r7cbns7b0givwcrala562sd87yqka"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/igungor/gofakes3"))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go
+           go-github-com-ryszard-goskiplist
+           go-github-com-shabbyrobe-gocovmerge
+           go-github-com-spf13-afero
+           go-go-etcd-io-bbolt
+           go-golang-org-x-tools
+           go-gopkg-in-mgo-v2))
+    (home-page "https://github.com/igungor/gofakes3")
+    (synopsis "Simple fake AWS S3 object storage")
+    (description
+     "AWS S3 fake server and testing library for extensive S3 test integrations.
+Either by running a test-server, e.g. for testing of AWS Lambda functions
+accessing S3.  Or, to have a simple and convencience S3 mock- and test-server.
+It's an alternative fork of @url{https://github.com/johannesboyne/gofakes3}.")
+    (license license:expat)))
+
 (define-public go-github-com-inetaf-tcpproxy
   (package
     (name "go-github-com-inetaf-tcpproxy")
