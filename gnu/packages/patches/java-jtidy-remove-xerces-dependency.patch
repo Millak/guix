@@ -1,0 +1,24 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-03-31
+Subject: Remove lib that is built-in into JDK since Java 5.
+
+Remove xerces:dom3-xml-apis dependency from pom.xml.
+The DOM Level 3 API has been part of the JDK since Java 5.
+Without this patch, install-from-pom's fix-pom-dependencies throws
+no-such-input because the dependency is not test-scoped or optional
+and no matching package is in inputs.
+
+--- a/pom.xml
++++ b/pom.xml
+@@ -171,11 +171,6 @@
+     </plugins>
+   </build>
+   <dependencies>
+-    <dependency>
+-      <groupId>xerces</groupId>
+-      <artifactId>dom3-xml-apis</artifactId>
+-      <version>1.0</version>
+-    </dependency>
+     <dependency>
+       <groupId>ant</groupId>
+       <artifactId>ant</artifactId>

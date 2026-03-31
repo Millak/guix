@@ -3276,6 +3276,71 @@ specification.")
     ;; Some files are licensed under ASL 2.0.
     (license (list license:asl2.0 license:gpl2 license:cddl1.1))))
 
+(define-public java-jtidy
+  (package
+    (name "java-jtidy")
+    (version "8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jtidy/jtidy")
+             (commit "r938")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zksmvmrr10nzk5ya6sz0l8093yf3b08lkg76cn4fdv2jqm3cssp"))
+       ;; Remove xerces:dom3-xml-apis dependency -- DOM Level 3 has been
+       ;; part of the JDK since Java 5.  install-from-pom calls
+       ;; fix-pom-dependencies which throws no-such-input for
+       ;; dependencies not in inputs and not test-scoped or optional.
+       ;; A patch is used because programmatic removal does not work:
+       ;;
+       ;; - pre-post-order to filter the dependency from the parsed
+       ;;   SXML, then sxml->xml to write it back: xml->sxml expands
+       ;;   the default xmlns into long tag names like
+       ;;   http://maven.apache.org/POM/4.0.0:dependency, and
+       ;;   sxml->xml's check-name rejects symbols with more than
+       ;;   one colon ("Invalid QName").
+       ;;
+       ;; - fix-maven-xml from (guix build maven pom) strips those
+       ;;   namespace prefixes before sxml->xml, but it is not
+       ;;   exported.
+       ;;
+       ;; - fix-pom-dependencies #:excludes: the excludes parameter
+       ;;   only affects plugins (fix-plugins) and extensions
+       ;;   (fix-extensions), not dependencies -- fix-deps and
+       ;;   fix-dep do not check excludes.
+       (patches
+        (search-patches "java-jtidy-remove-xerces-dependency.patch"))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:jar-name "jtidy.jar"
+      #:source-dir "src/main/java"
+      #:test-dir "src/test"
+      ;; Tests are disabled: upstream's pom.xml sets testFailureIgnore=true
+      ;; because 140 of 216 .msg reference files have wrong expected message
+      ;; counts -- the code changed but the test data was never updated.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'copy-resources
+            (lambda _
+              (copy-recursively "src/main/resources" "build/classes")))
+          (replace 'install
+            (install-from-pom "pom.xml")))))
+    (inputs
+     (list java-slf4j-api))
+    (home-page "https://github.com/jtidy/jtidy")
+    (synopsis "Java port of HTML Tidy, an HTML syntax checker and pretty printer")
+    (description
+     "JTidy is a Java port of HTML Tidy, a HTML syntax checker and pretty
+printer.  Like its non-Java cousin, JTidy can be used as a tool for cleaning
+up malformed and faulty HTML.  In addition, JTidy provides a DOM interface to
+the document that is being processed, which effectively makes it a Java HTML
+parser.")
+    (license license:w3c)))
+
 (define-public java-swt
   (package
     (name "java-swt")
