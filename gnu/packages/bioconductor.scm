@@ -29218,16 +29218,6 @@ reproducibility.")
         (base32 "106zwzzwzvb5x0lz9i68wshh2nsa2rf5rmkqjqsvr4smxq6hknlj"))))
     (properties `((upstream-name . "phyloseq")))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; These deprecated procedures have been removed in testthat.
-         (add-after 'unpack 'testthat-compatibility
-           (lambda _
-             (substitute* (find-files "tests/testthat" "\\.R$")
-               (("is_true\\(\\)") "expect_true")
-               (("is_false\\(\\)") "expect_false")))))))
     (propagated-inputs
      (list r-ade4
            r-ape
