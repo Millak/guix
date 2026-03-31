@@ -1928,7 +1928,7 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.93))
+  (let ((base-rust rust-1.94))
     (package
       (inherit base-rust)
       (properties (append
@@ -1949,6 +1949,17 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
           (cons '(srfi srfi-26) modules))
          ((#:phases phases)
           `(modify-phases ,phases
+             (add-after 'unpack 'patch-shebangs-in-tests
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (with-directory-excursion
+                   "src/tools/rust-analyzer/crates/parser/test_data"
+                   (substitute* '("lexer/ok/shebang_frontmatter.rast"
+                                  "parser/inline/ok/frontmatter.rast")
+                     (("/usr/bin/env cargo")
+                      (search-input-file inputs "bin/cargo")))
+                   (substitute* "lexer/ok/single_line_comments.rast"
+                     (("/usr/bin/env bash")
+                      (search-input-file inputs "bin/bash"))))))
              (add-after 'unpack 'disable-tests-requiring-git
                (lambda _
                  (substitute* "src/tools/cargo/tests/testsuite/publish_lockfile.rs"
@@ -2161,7 +2172,7 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                  (with-directory-excursion
                    (string-append (assoc-ref outputs "rust-src")
                                   "/lib/rustlib/src/rust/src/tools/")
-                   (substitute* (find-files "." "\\.rs$")
+                   (substitute* (find-files "." "\\.(rs|rast)$")
                      (("#!.*/bin/cargo")
                       (string-append "#!" (assoc-ref outputs "cargo")
                                      "/bin/cargo"))))))
