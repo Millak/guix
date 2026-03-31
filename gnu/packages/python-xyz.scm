@@ -13218,6 +13218,30 @@ and a plugin for Pillow.")
        (sha256
         (base32 "16mkap63d14f69105b3bm8pi64fvpdznncgn48vhgls0jf977m31"))))))
 
+(define-public python-jxlpy
+  (package
+    (name "python-jxlpy")
+    (version "0.9.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/olokelo/jxlpy")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d1jrvpyvp8rix8kfmi962hl73mj0f7mib0xzk04va4kzc9p726s"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; no tests, just examples
+    (inputs (list libjxl))
+    (propagated-inputs (list python-cython))
+    (native-inputs (list python-cython python-setuptools))
+    (home-page "https://github.com/olokelo/jxlpy")
+    (synopsis "JPEG XL integration in Python")
+    (description "This package provides Cython-based Python bindings for
+libjxl, as well as a pillow plugin.")
+    (license license:expat)))
+
 (define-public python-pixelmatch
   (package
     (name "python-pixelmatch")
