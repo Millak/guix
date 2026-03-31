@@ -18920,16 +18920,17 @@ do-it-yourself toolkit allows users to define their own Lambert W x
 (define-public r-lamw
   (package
     (name "r-lamw")
-    (version "2.2.6")
+    (version "2.2.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "lamW" version))
               (sha256
                (base32
-                "1yijyha6x2wx8pg6ysp0ks5ps482k0vr4iv8shkhafasabricxd4"))))
+                "1yar71j4g0yp2chmxnxd7zrl04sdspz1b8z64ial3yksl84klh2n"))))
     (properties `((upstream-name . "lamW")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp r-rcppparallel))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/aadler/lamW")
     (synopsis "Lambert-W function")
     (description
