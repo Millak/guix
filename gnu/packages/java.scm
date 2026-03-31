@@ -5621,6 +5621,17 @@ including java-asm.")
      (list java-asm-9.7.1
            java-asm-tree-9.7.1))))
 
+(define-public java-asm-commons-9.7.1
+  (package
+    (inherit java-asm-commons-9)
+    (name "java-asm-commons")
+    (version (package-version java-asm-9.7.1))
+    (source (package-source java-asm-9.7.1))
+    (inputs
+     (list java-asm-9.7.1
+           java-asm-analysis-9.7.1
+           java-asm-tree-9.7.1))))
+
 (define-public java-cglib
   (package
     (name "java-cglib")
