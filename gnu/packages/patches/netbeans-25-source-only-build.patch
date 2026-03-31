@@ -1,0 +1,95 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-03-31
+Subject: Disable build-time (test-time) downloaders.
+
+diff -urN orig/harness/apisupport.harness/build.xml mod/harness/apisupport.harness/build.xml
+--- orig/harness/apisupport.harness/build.xml	2026-03-17 23:30:32.335913224 +0000
++++ mod/harness/apisupport.harness/build.xml	2026-03-17 23:30:51.503442261 +0000
+@@ -33,19 +33,6 @@
+             <zipfileset file="taskdefs.properties" fullpath="org/netbeans/nbbuild/taskdefs.properties"/>
+         </nb-ext-jar>
+         
+-        <!-- verify that the DownloadBinaries task is properly functional -->
+-        <taskdef name="TestDownload" classname="org.netbeans.nbbuild.extlibs.DownloadBinaries">
+-            <classpath>
+-                <pathelement location="${cluster}/tasks.jar"></pathelement>
+-            </classpath>
+-        </taskdef>
+-        <echo file="build/binaries-list">F0ED132A49244B042CD0E15702AB9F2CE3CC8436 org.ow2.asm:asm:9.7.1</echo>
+-        <TestDownload>
+-            <manifest dir="build">
+-                <include name="binaries-list"/>
+-            </manifest>
+-        </TestDownload>
+-        <delete file="build/asm-9.7.1.jar"/>
+     </target>
+ 
+     <target name="compile-jnlp-launcher" depends="init,compile">
+diff -urN orig/nbbuild/antsrc/org/netbeans/nbbuild/ModuleListParser.java mod/nbbuild/antsrc/org/netbeans/nbbuild/ModuleListParser.java
+--- orig/nbbuild/antsrc/org/netbeans/nbbuild/ModuleListParser.java	2026-03-18 07:25:25.497125691 +0000
++++ mod/nbbuild/antsrc/org/netbeans/nbbuild/ModuleListParser.java	2026-03-18 07:25:35.587014287 +0000
+@@ -467,6 +467,9 @@
+                 if (testtype == null) {
+                     throw new IOException("Must declare <name>unit</name> (e.g.) in <test-type> in " + projectxml);
+                 }
++                if (Boolean.parseBoolean((String) properties.get("disable." + testtype + ".tests"))) {
++                    continue;
++                }
+                 List<String> compileDepsList = new ArrayList<>();
+                 for (Element dep : XMLUtil.findSubElements(depssEl)) {
+                     if (dep.getTagName().equals("test-dependency")) {
+diff -urN orig/nbbuild/antsrc/org/netbeans/nbbuild/ParseProjectXml.java mod/nbbuild/antsrc/org/netbeans/nbbuild/ParseProjectXml.java
+--- orig/nbbuild/antsrc/org/netbeans/nbbuild/ParseProjectXml.java	2026-03-17 23:30:32.338404995 +0000
++++ mod/nbbuild/antsrc/org/netbeans/nbbuild/ParseProjectXml.java	2026-03-18 07:16:44.662227912 +0000
+@@ -1574,6 +1574,9 @@
+                 } else if (testType.equals(TestDeps.QA_FUNCTIONAL)) {
+                     existsQaFunctionalTests = true;
+                 }
++                if (Boolean.parseBoolean(getProject().getProperty("disable." + testType + ".tests"))) {
++                    continue;
++                }
+                 TestDeps testDeps = new TestDeps(testType,testCnb,modules);
+                 testDepsList.add(testDeps);
+                 for (Element el : XMLUtil.findSubElements(depssEl)) {
+@@ -1619,6 +1622,9 @@
+             if (testDeps.fullySpecified) {
+                 continue;
+             }
++            if (Boolean.parseBoolean(getProject().getProperty("disable." + testDeps.testtype + ".tests"))) {
++                continue;
++            }
+             if (new File(moduleProject, "test/" + testDeps.testtype + "/src").isDirectory()) {
+                 log("Warning: " + testCnb + " lacks a " + testDeps.testtype +
+                         " test dependency on org.netbeans.libs.junit4; using default dependencies for compatibility", Project.MSG_WARN);
+diff -urN orig/nbbuild/build.xml mod/nbbuild/build.xml
+--- orig/nbbuild/build.xml	2026-03-17 23:30:32.340737929 +0000
++++ mod/nbbuild/build.xml	2026-03-17 23:30:51.503442261 +0000
+@@ -101,6 +101,8 @@
+     </path>
+     <javac srcdir="antsrc" destdir="${build.ant.classes.dir}" deprecation="true" debug="${build.compiler.debug}" source="1.8" target="1.8">
+       <classpath refid="bootstrap-cp"/>
++      <exclude name="org/netbeans/nbbuild/CheckHelpSets.java"/>
++      <exclude name="org/netbeans/nbbuild/CheckHelpSetsBin.java"/>
+       <compilerarg line="-Xlint -Xlint:-serial"/>
+     </javac>
+     <jar jarfile="${nbantext.jar}">
+@@ -461,18 +463,7 @@
+     </fixcrlf>
+   </target>
+   
+-  <target name="-download-nb-windows-launchers" depends="init,-check-nb-cluster" if="has.nb.cluster">
+-    <downloadbinaries cache="${binaries.cache}" server="${binaries.server}" repos="${binaries.repos}">
+-        <manifest dir="${nb_all}" includes="nb/ide.launcher/external/binaries-list"/>
+-    </downloadbinaries>
+-
+-    <mkdir dir="${netbeans.dest.dir}/bin" />
+-    <unzip src="../nb/ide.launcher/external/launcher-external-binaries-2-6c17cc6.zip" dest="${netbeans.dest.dir}/bin">
+-        <patternset>
+-            <include name="netbeans*.exe"/>
+-        </patternset>
+-    </unzip>
+-  </target>
++  <target name="-download-nb-windows-launchers" depends="init,-check-nb-cluster" if="has.nb.cluster"/>
+ 
+   <target name="finish-build-nb" depends="init,-check-nb-cluster,-download-nb-windows-launchers,-load-module-flags" if="has.nb.cluster">
+     <loadproperties srcFile="${clusters.list.file}" />

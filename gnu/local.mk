@@ -502,6 +502,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/myrddin.scm			\
   %D%/packages/ncdu.scm				\
   %D%/packages/ncurses.scm			\
+  %D%/packages/netbeans.scm			\
   %D%/packages/netpbm.scm			\
   %D%/packages/nettle.scm			\
   %D%/packages/networking.scm			\
@@ -1981,6 +1982,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/netdde-csum.patch			\
   %D%/packages/patches/java-apache-xml-commons-resolver-1.2-netbeans.patch \
   %D%/packages/patches/java-simplevalidation-1.14.1.patch	\
+  %D%/packages/patches/netbeans-25-nativeexecution-paths.patch \
+  %D%/packages/patches/netbeans-25-terminal-no-login-shell.patch \
+  %D%/packages/patches/netbeans-25-source-only-build.patch	\
   %D%/packages/patches/netpbm-CVE-2017-2586.patch		\
   %D%/packages/patches/netpbm-CVE-2017-2587.patch		\
   %D%/packages/patches/netsurf-message-timestamp.patch		\

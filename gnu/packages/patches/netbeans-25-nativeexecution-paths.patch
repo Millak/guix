@@ -1,0 +1,73 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-03-31
+Subject: Make nativeexecution helper work with Guix
+
+diff -urN orig/ide/dlight.nativeexecution/release/bin/nativeexecution/dorun.sh mod/ide/dlight.nativeexecution/release/bin/nativeexecution/dorun.sh
+--- orig/ide/dlight.nativeexecution/release/bin/nativeexecution/dorun.sh	2026-03-19 00:00:00.000000000 +0000
++++ mod/ide/dlight.nativeexecution/release/bin/nativeexecution/dorun.sh	2026-03-19 00:00:00.000000000 +0000
+@@ -16,8 +16,8 @@
+ # specific language governing permissions and limitations
+ # under the License.
+ 
+-PATH=/bin:/usr/bin
+-PROG=`basename "$0"`
++PATH="${PATH:+$PATH:}/bin:/usr/bin"
++PROG="${0##*/}"
+ USAGE="usage: ${PROG} [-p prompt] -x execScript"
+ PROMPT=NO
+ STATUS=-1
+@@ -43,7 +43,7 @@
+   esac
+ done
+ 
+-shift `expr $OPTIND - 1`
++shift "$((OPTIND - 1))"
+ 
+ trap "doExit" 1 2 15 EXIT
+ 
+diff -urN orig/ide/dlight.nativeexecution/release/bin/nativeexecution/hostinfo.sh mod/ide/dlight.nativeexecution/release/bin/nativeexecution/hostinfo.sh
+--- orig/ide/dlight.nativeexecution/release/bin/nativeexecution/hostinfo.sh	2026-03-19 00:00:00.000000000 +0000
++++ mod/ide/dlight.nativeexecution/release/bin/nativeexecution/hostinfo.sh	2026-03-19 00:00:00.000000000 +0000
+@@ -16,13 +16,13 @@
+ # specific language governing permissions and limitations
+ # under the License.
+ 
+-PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin
++PATH="${PATH:+$PATH:}/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin"
+ HOSTNAME=`uname -n`
+ OS=`uname -s`
+ CPUTYPE=`uname -p`
+ BITNESS=32
+ 
+-LS=/bin/ls
++LS=ls
+ OSFAMILY=
+ DATETIME=`date -u +'%Y-%m-%d %H:%M:%S'`
+ 
+@@ -139,7 +139,7 @@
+         echo "Warning: TMPDIRBASE is not writable: ${TMPDIRBASE}">&2
+         SUFFIX=`expr 1 + ${SUFFIX}`
+         TMPDIRBASE=${TMPBASE}/dlight_${USER_D}_${SUFFIX}
+-        /bin/mkdir -p ${TMPDIRBASE} 2>/dev/null
++        mkdir -p ${TMPDIRBASE} 2>/dev/null
+     else
+         break
+     fi
+@@ -157,7 +157,7 @@
+             echo "Warning: TMPDIRBASE is not writable: ${TMPDIRBASE}">&2
+             SUFFIX=`expr 1 + ${SUFFIX}`
+             TMPDIRBASE=${TMPBASE}/${NB_KEY}_${SUFFIX}
+-            /bin/mkdir -p ${TMPDIRBASE} 2>/dev/null
++            mkdir -p ${TMPDIRBASE} 2>/dev/null
+         else
+             break
+         fi
+@@ -174,7 +174,7 @@
+ 
+ ENVFILE="${TMPDIRBASE}/env"
+ 
+-ID=`LC_MESSAGES=C /usr/bin/id`
++ID=`LC_MESSAGES=C id`
+ 
+ echo BITNESS=${BITNESS}
+ echo CPUFAMILY=${CPUFAMILY}

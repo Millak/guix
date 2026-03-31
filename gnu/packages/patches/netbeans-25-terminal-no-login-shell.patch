@@ -1,0 +1,17 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-03-31
+Subject: Remove forced login shell
+
+diff -urN orig/ide/dlight.terminal/src/org/netbeans/modules/dlight/terminal/action/TerminalSupportImpl.java mod/ide/dlight.terminal/src/org/netbeans/modules/dlight/terminal/action/TerminalSupportImpl.java
+--- orig/ide/dlight.terminal/src/org/netbeans/modules/dlight/terminal/action/TerminalSupportImpl.java	2026-03-19 00:00:00.000000000 +0000
++++ mod/ide/dlight.terminal/src/org/netbeans/modules/dlight/terminal/action/TerminalSupportImpl.java	2026-03-19 00:00:00.000000000 +0000
+@@ -320,9 +320,6 @@
+                         }
+ //                            npb.setWorkingDirectory("${HOME}");
+                         npb.setExecutable(shell);
+-                        if (shell.endsWith("bash") || shell.endsWith("bash.exe")) { // NOI18N
+-                            npb.setArguments("--login"); // NOI18N
+-                        }
+                         
+                         NativeExecutionDescriptor descr;
+                         descr = new NativeExecutionDescriptor().controllable(true).frontWindow(true).inputVisible(true).inputOutput(ioRef.get());

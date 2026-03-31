@@ -1,0 +1,94 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-03-31
+Subject: Add font hints (for Wayland).
+
+--- a/platform/o.n.swing.plaf/src/org/netbeans/swing/plaf/Startup.java	2026-03-20 03:13:28.788555561 +0000
++++ b/platform/o.n.swing.plaf/src/org/netbeans/swing/plaf/Startup.java	2026-03-20 03:15:03.827463921 +0000
+@@ -19,6 +19,7 @@
+ 
+ package org.netbeans.swing.plaf;
+ 
++import java.awt.RenderingHints;
+ import java.awt.Toolkit;
+ import java.util.logging.Logger;
+ import org.netbeans.swing.plaf.aqua.AquaLFCustoms;
+@@ -228,6 +229,20 @@
+         installPerLFDefaults();
+         installTheme(UIManager.getLookAndFeel());
+ 
++        // WLToolkit (JBR's native Wayland backend) does not provide font
++        // rendering hints via awt.font.desktophints, so Swing components
++        // render text without antialiasing.  Set LCD subpixel hints in
++        // UIManager so JComponent.setUI() picks them up.
++        if (System.getenv("WAYLAND_DISPLAY") != null
++                && Toolkit.getDefaultToolkit().getDesktopProperty(
++                       "awt.font.desktophints") == null) {
++            UIManager.getDefaults().put(
++                RenderingHints.KEY_TEXT_ANTIALIASING,
++                RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR);
++            UIManager.getDefaults().put(
++                RenderingHints.KEY_TEXT_LCD_CONTRAST, 140);
++        }
++
+         runPostInstall();
+ 
+         attachListener();
+
+--- a/platform/openide.awt/src/org/openide/awt/GraphicsUtils.java	2026-03-20 03:13:28.792998877 +0000
++++ b/platform/openide.awt/src/org/openide/awt/GraphicsUtils.java	2026-03-20 03:16:15.622974599 +0000
+@@ -37,7 +37,8 @@
+         Boolean.getBoolean("nb.cellrenderer.antialiasing") // NOI18N
+          ||Boolean.getBoolean("swing.aatext") // NOI18N
+          ||(isGTK() && gtkShouldAntialias()) // NOI18N
+-         || isAqua();
++         || isAqua()
++         || isWayland();
+     private static Boolean gtkAA;
+     private static Map<Object,Object> hintsMap;
+ 
+@@ -49,6 +50,10 @@
+         return "GTK".equals(UIManager.getLookAndFeel().getID());
+     }
+ 
++    private static boolean isWayland() {
++        return System.getenv("WAYLAND_DISPLAY") != null;
++    }
++
+     private static final boolean gtkShouldAntialias() {
+         if (gtkAA == null) {
+             Object o = Toolkit.getDefaultToolkit().getDesktopProperty("gnome.Xft/Antialias"); //NOI18N
+@@ -84,7 +89,14 @@
+             if (ret == null) {
+                 ret = new HashMap<Object,Object>();
+                 if (antialias) {
+-                    ret.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
++                    if (isWayland()) {
++                        ret.put(RenderingHints.KEY_TEXT_ANTIALIASING,
++                                RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR);
++                        ret.put(RenderingHints.KEY_TEXT_LCD_CONTRAST, 140);
++                    } else {
++                        ret.put(RenderingHints.KEY_TEXT_ANTIALIASING,
++                                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
++                    }
+                 }
+             }
+             if (antialias ||
+
+--- a/ide/dlight.terminal/src/org/netbeans/modules/dlight/terminal/action/TerminalSupportImpl.java	2026-03-20 03:01:46.421416137 +0000
++++ b/ide/dlight.terminal/src/org/netbeans/modules/dlight/terminal/action/TerminalSupportImpl.java	2026-03-20 03:02:11.284626650 +0000
+@@ -266,6 +266,15 @@
+                         //
+                         term.setEmulation("xterm"); // NOI18N
+ 
++                        // WLToolkit (Wayland) doesn't provide desktop font hints,
++                        // so term.drawGlyphVector() renders without antialiasing.
++                        // Set LCD subpixel hints explicitly.
++                        java.util.Map<java.awt.RenderingHints.Key, Object> fontHints = new java.util.HashMap<>();
++                        fontHints.put(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING,
++                                      java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR);
++                        fontHints.put(java.awt.RenderingHints.KEY_TEXT_LCD_CONTRAST, 140);
++                        term.setRenderingHints(fontHints);
++
+                         NativeProcessBuilder npb = NativeProcessBuilder.newProcessBuilder(env);
+                         // clear env modified by NB. Let it be initialized by started shell process
+                         npb.getEnvironment().put("LD_LIBRARY_PATH", "");// NOI18N
