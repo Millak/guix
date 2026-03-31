@@ -5587,6 +5587,21 @@ including java-asm.")
            #:tests? #f))
     (inputs (list java-asm-9 java-asm-analysis-9 java-asm-tree-9))))
 
+(define-public java-asm-9.7.1
+  (package
+    (inherit java-asm-9)
+    (name "java-asm")
+    (version "9.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.ow2.org/asm/asm.git")
+             (commit "ASM_9_7_1")))
+       (file-name (git-file-name "java-asm" version))
+       (sha256
+        (base32 "0q1i01al9mpggf3256iwmhx9yj9pg52v4vi1gdni2x9jcikq65lf"))))))
+
 (define-public java-cglib
   (package
     (name "java-cglib")
