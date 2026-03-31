@@ -20794,19 +20794,19 @@ Core algorithms are executed in parallel on systems supporting OpenMP.")
 (define-public r-rcpproll
   (package
     (name "r-rcpproll")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppRoll" version))
        (sha256
         (base32
-         "1prnc3svhc2v1w97vbdzfyxh545zx2h0p9d1q4753f7ynrwdkxfj"))))
+         "10cznxyjlb2n4lhlqb9f9da37skzmglgmczpbwa3918dpjkh2zci"))))
     (properties `((upstream-name . "RcppRoll")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-testthat r-zoo))
     (home-page "https://cran.r-project.org/web/packages/RcppRoll")
     (synopsis "Efficient rolling and windowed operations")
     (description
