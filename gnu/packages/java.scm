@@ -10147,6 +10147,83 @@ specification, providing dependency resolution for OSGi bundles.")
 Framework and Service platform.")
     (license license:asl2.0)))
 
+(define-public java-felix-main-7.0.5
+  (package
+    (name "java-felix-main")
+    (version "7.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/apache/felix-dev")
+                    (commit (string-append "org.apache.felix.main-"
+                                           version))))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (for-each delete-file
+                            (find-files "." "\\.jar$"))
+                  #t))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "04miqvr8lqng4a0n6zry8rary8hrcbrq41652adyz85znmcp1z59"))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:jar-name "org.apache.felix.main.jar"
+      #:source-dir "main/src/main/java"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'create-uber-jar
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; org.apache.felix.main is an uber jar combining framework,
+              ;; resolver, and osgi-core classes with Main and AutoProcessor.
+              (let ((jar (canonicalize-path
+                          "build/jar/org.apache.felix.main.jar"))
+                    (work-dir (mkdtemp "/tmp/felix-merge-XXXXXX")))
+                (with-directory-excursion work-dir
+                  (for-each
+                   (lambda (input-name)
+                     (for-each
+                      (lambda (dep-jar)
+                        (invoke "jar" "xf" dep-jar))
+                      (find-files (assoc-ref inputs input-name)
+                                  "\\.jar$")))
+                   '("java-felix-framework"
+                     "java-felix-resolver"
+                     "java-osgi-core"))
+                  ;; Remove metadata that would conflict with the
+                  ;; main jar's own manifest.
+                  (when (file-exists? "META-INF/MANIFEST.MF")
+                    (delete-file "META-INF/MANIFEST.MF"))
+                  (when (file-exists? "META-INF/maven")
+                    (delete-file-recursively "META-INF/maven"))
+                  (invoke "jar" "uf" jar "-C" work-dir ".")))))
+          (add-after 'create-uber-jar 'add-service-descriptor
+            (lambda _
+              (let ((jar "build/jar/org.apache.felix.main.jar"))
+                (mkdir-p "META-INF/services")
+                (call-with-output-file
+                    "META-INF/services/org.osgi.framework.launch.FrameworkFactory"
+                  (lambda (port)
+                    (display
+                     "org.apache.felix.framework.FrameworkFactory\n" port)))
+                (invoke "jar" "uf" jar "-C" "." "META-INF/services"))))
+          (add-before 'install 'create-pom
+            (generate-pom.xml "pom.xml" "org.apache.felix"
+                              "org.apache.felix.main" #$version))
+          (replace 'install (install-from-pom "pom.xml")))))
+    (inputs (list java-felix-framework-7
+                  java-felix-resolver-2
+                  java-osgi-core-8.0.0))
+    (home-page "https://felix.apache.org/")
+    (synopsis "Apache Felix Main distribution jar")
+    (description "Apache Felix Main is the standard distribution jar for
+the Apache Felix OSGi framework.  It bundles the framework, resolver, and
+OSGi core classes into a single jar with a standalone launcher.")
+    (license license:asl2.0)))
+
 (define-public java-osgi-service-component-annotations
   (package
     (name "java-osgi-service-component-annotations")
