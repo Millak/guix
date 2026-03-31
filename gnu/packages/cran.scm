@@ -13477,13 +13477,13 @@ indexed series, which are compatible with FAME frequencies.")
 (define-public r-tkrplot
   (package
     (name "r-tkrplot")
-    (version "0.0-30")
+    (version "0.0-32")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tkrplot" version))
        (sha256
-        (base32 "1qfb5jiajlfa6y5hr4qwmv11fh3w0pfwdm3mrv9gw0j13xx9jv6c"))))
+        (base32 "1avpshwgs16qk7a59qbjripjys46fnda69qjcc7hv2bvv0g5jym3"))))
     (properties
      '((upstream-name . "tkrplot")
        (updater-extra-inputs . ("libx11"))))
