@@ -4322,7 +4322,7 @@ tools.")
 (define-public git-absorb
   (package
     (name "git-absorb")
-    (version "0.7.0")
+    (version "0.9.0")
     (source
      (origin
        ;; crates.io does not include the manual page.
@@ -4332,7 +4332,7 @@ tools.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cqz9m5w7sh7pgfcirvdpv6i7l7nfaqbgs88zx0wr5sqg5wk2zky"))))
+        (base32 "1xr1bjia3sx2i7hw99r2s950xi4fa996bcg3n7j9arcjmrb7w14c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
