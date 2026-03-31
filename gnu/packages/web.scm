@@ -8736,6 +8736,41 @@ provides a very convenient API for extracting and manipulating data, using the
 best of DOM, CSS, and jQuery-like methods.")
     (license license:expat)))
 
+(define-public java-jsoup-1.15.3
+  (package
+    (inherit java-jsoup)
+    (name "java-jsoup")
+    (version "1.15.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jhy/jsoup.git")
+             (commit (string-append "jsoup-" version))))
+       (file-name (git-file-name "java-jsoup" version))
+       (sha256
+        (base32 "1rp35w2138qkmpy7q7sn7yx50v3ks4dabd6ij50i9258yx38x3v9"))))
+    (arguments
+     `(#:jar-name "jsoup.jar"
+       #:source-dir "src/main/java"
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'copy-resources
+           (lambda _
+             (let ((classes-dir (string-append (getcwd) "/build/classes")))
+               (with-directory-excursion "src/main/java"
+                 (for-each (lambda (file)
+                             (let ((dist (string-append classes-dir "/" file)))
+                               (mkdir-p (dirname dist))
+                               (copy-file file dist)))
+                           (find-files "." ".*\\.properties"))))
+             #t))
+         (replace 'install
+           (install-from-pom "pom.xml")))))
+    (inputs
+     (list java-jsr305))))
+
 (define-public java-signpost-core
   (package
     (name "java-signpost-core")
