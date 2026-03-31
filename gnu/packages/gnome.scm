@@ -8300,53 +8300,50 @@ to display dialog boxes from the commandline and shell scripts.")
                 (("^Requires.private:.*" all)
                  (string-append "# " all))))))))
     (native-inputs
-     (list desktop-file-utils           ;for update-desktop-database
-           `(,glib "bin")               ;for glib-compile-schemas, etc.
+     (list adwaita-icon-theme
+           desktop-file-utils           ;for update-desktop-database
            gettext-minimal
+           `(,glib "bin")               ;for glib-compile-schemas, etc.
            gobject-introspection
            `(,gtk "bin")
-           pkg-config
-           xvfb-run
-           wayland-protocols
-           ;; For tests.
-           ;; Warnings are configured to be fatal during the tests; add an icon
-           ;; theme to please libxcursor.
-           adwaita-icon-theme
            libei
            libxcursor                   ;for XCURSOR_PATH
            pipewire
+           pkg-config
            python
            python-dbus
            python-dbusmock
            python-docutils
            umockdev
+           wayland-protocols
            wireplumber-minimal
+           xvfb-run
            zenity))
     (inputs
      (list colord
-           elogind
            egl-wayland                  ;for wayland-eglstream-protocols
+           elogind
            eudev
            gdk-pixbuf
            glycin-loaders
+           gnome-desktop
+           gnome-settings-daemon
            json-glib
+           libcanberra
            libdisplay-info
            libei
-           libcanberra
            libglycin
            libgudev
            libinput
-           libxkbfile
+           libwacom
            libxcomposite
            libxcvt
            libxdamage
            libxext
+           libxkbfile
            libxml2
            libxrandr
-           libwacom
            libxtst
-           gnome-desktop
-           gnome-settings-daemon
            pango
            pipewire
            python                       ; for gdctl
@@ -8356,15 +8353,15 @@ to display dialog boxes from the commandline and shell scripts.")
            xkeyboard-config))
     (propagated-inputs
      ;; The following inputs are in 'Requires' of pkg-config files.
-     (list graphene
-           gsettings-desktop-schemas
-           at-spi2-core                 ;for atk
+     (list at-spi2-core                 ;for atk
            cairo
            glib
+           graphene
+           gsettings-desktop-schemas
            lcms
            libx11
-           libxkbcommon
            libxfixes
+           libxkbcommon
            mesa
            pixman
            xinput                       ;for xi.pc
