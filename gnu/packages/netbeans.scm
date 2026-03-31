@@ -108,3 +108,15 @@ interfaces.")
     (native-inputs
      (list unzip))
     (license license:cddl1.0)))
+
+(define java-apache-xml-commons-resolver-netbeans-1.2
+  (package
+    (inherit java-apache-xml-commons-resolver)
+    (name "java-apache-xml-commons-resolver-netbeans")
+    (source
+     (origin
+       (inherit (package-source java-apache-xml-commons-resolver))
+       (patches
+        (search-patches
+         "java-apache-xml-commons-resolver-1.2-netbeans.patch"))))))
+
