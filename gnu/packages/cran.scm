@@ -58702,13 +58702,13 @@ obtain the best possible results.")
 (define-public r-gstat
   (package
     (name "r-gstat")
-    (version "2.1-5")
+    (version "2.1-6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "gstat" version))
               (sha256
                (base32
-                "1imc3s869zql4sfpmacqmlngffhf49wp8x9s2l21qa80s3zyjc45"))))
+                "0ffxp2shqb0jni8zm02s3f1wivzgqdl9i3v0sps7g90gh14wh9zj"))))
     (properties `((upstream-name . "gstat")))
     (build-system r-build-system)
     (propagated-inputs
