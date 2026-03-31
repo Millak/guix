@@ -4552,15 +4552,9 @@ these biases and construct statistically consistent estimators.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'skip-bad-tests
-           (lambda _
-             ;; This test needs Internet access.
-             (with-directory-excursion "tests/testthat"
-               (substitute* "test-examples.R"
-                 ((".*find_taxonomy\\(\\) is working.*" m)
-                  (string-append m "skip('guix')\n")))))))))
+      #:skipped-tests
+      ;; This test needs Internet access.
+      '(("test-examples.R" ".*find_taxonomy\\(\\) is working.*"))))
     (propagated-inputs
      (list r-ape
            r-assertthat
