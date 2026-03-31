@@ -12338,6 +12338,44 @@ algorithms and xxHash hashing algorithm.")
 programming language.")
     (license license:expat)))
 
+(define-public java-jakarta-activation-1.2
+  (package
+    (name "java-jakarta-activation")
+    (version "1.2.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jakartaee/jaf-api")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13kkr0kj9wp45vpfackcbyycilzs5r3sj33px5pny1k4hq09cyar"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:tests? #f
+       #:jar-name "jakarta.activation.jar"
+       #:jdk ,openjdk9
+       #:source-dir "activation/src/main/java"
+       #:phases
+       (modify-phases %standard-phases
+         ;; Install under javax.activation:activation coordinates
+         ;; so consumers like javax.mail can find it.  The source
+         ;; pom uses com.sun.activation:jakarta.activation but that's
+         ;; the new coordinate; most existing poms reference the
+         ;; old javax.activation:activation.
+         (add-before 'install 'create-pom
+           (generate-pom.xml "pom.xml" "javax.activation"
+                             "activation" ,version))
+         (replace 'install
+           (install-from-pom "pom.xml")))))
+    (home-page "https://jakarta.ee/specifications/activation/")
+    (synopsis "Jakarta Activation API (javax.activation)")
+    (description "Jakarta Activation provides the @code{javax.activation}
+package, which was removed from the JDK in Java 11.  This is the 1.2.x
+transitional release that still uses the @code{javax.activation} namespace.")
+    (license license:edl1.0)))
+
 (define-public java-lmax-disruptor
   (package
     (name "java-lmax-disruptor")
