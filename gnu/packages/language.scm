@@ -282,16 +282,18 @@ Random Cage Fighting Birds, Cool Music etc.")
 (define-public libchewing
   (package
     (name "libchewing")
-    (version "0.9.1")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/chewing/libchewing")
-             (commit (string-append "v" version))))
+             (commit (string-append "v" version))
+             ;; Also libchewing-data
+             (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gh64wvrk5pn0fhmpvj1j99d5g7f7697rk96zbkc8l72yjr819z5"))))
+        (base32 "08734i3xyq3wv5vimki7cz438v56ywk3x3assgfjlrngj1ijw0y8"))))
     (build-system cmake-build-system)
     (arguments
      (list
