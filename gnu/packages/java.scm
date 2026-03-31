@@ -10048,6 +10048,105 @@ and classes for use in compiling bundles.")
 specification, providing dependency resolution for OSGi bundles.")
     (license license:asl2.0)))
 
+(define-public java-felix-framework-7
+  (package
+    (name "java-felix-framework")
+    (version "7.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/apache/felix-dev")
+                    (commit (string-append "org.apache.felix.framework-"
+                                           version))))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (for-each delete-file
+                            (find-files "." "\\.jar$"))
+                  #t))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1w4kdy0m4md2j0nf3shn76v9vxvjqa9sxl4j06bk08yn9icnj72k"))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:jar-name "org.apache.felix.framework.jar"
+      #:source-dir "framework/src/main/java"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'create-animal-sniffer-stub
+            (lambda _
+              ;; Felix uses this compile-time Maven annotation to suppress
+              ;; JRE compatibility warnings.  It has no runtime effect.
+              (mkdir-p "framework/src/main/java/org/codehaus/mojo/animal_sniffer")
+              (call-with-output-file
+                  "framework/src/main/java/org/codehaus/mojo/animal_sniffer/IgnoreJRERequirement.java"
+                (lambda (port)
+                  (display (string-append
+                            "package org.codehaus.mojo.animal_sniffer;\n"
+                            "import java.lang.annotation.*;\n"
+                            "@Retention(RetentionPolicy.CLASS)\n"
+                            "@Target({ElementType.METHOD,"
+                            " ElementType.CONSTRUCTOR,"
+                            " ElementType.TYPE})\n"
+                            "public @interface IgnoreJRERequirement {}\n")
+                           port)))))
+          (add-after 'build 'add-service-descriptor-and-resources
+            (lambda _
+              ;; Include the upstream service descriptors and resources that
+              ;; Felix expects in the framework jar.
+              (invoke "jar" "uf" "build/jar/org.apache.felix.framework.jar"
+                      "-C" "framework/src/main/resources" "META-INF/services")
+              ;; Felix reads default.properties at startup to determine
+              ;; system packages.  The source file uses Maven's ${dollar}
+              ;; placeholder, so replace it here.
+              (substitute* "framework/src/main/resources/default.properties"
+                (("\\$\\{dollar\\}") "$"))
+              (invoke "jar" "uf" "build/jar/org.apache.felix.framework.jar"
+                      "-C" "framework/src/main/resources" "default.properties")
+              ;; Compile accessor.src (a java.net.Accessor class used by
+              ;; SecureAction to bypass access controls) and include the
+              ;; compiled bytecode as accessor.bytes.
+              (mkdir-p "build/accessor-src/java/net")
+              (copy-file
+               "framework/src/main/resources/org/apache/felix/framework/util/accessor.src"
+               "build/accessor-src/java/net/Accessor.java")
+              (mkdir-p "build/accessor-out")
+              (invoke "javac"
+                      "-d" "build/accessor-out"
+                      "build/accessor-src/java/net/Accessor.java")
+              (copy-file "build/accessor-out/java/net/Accessor.class"
+                         "build/accessor.bytes")
+              (invoke "jar" "uf" "build/jar/org.apache.felix.framework.jar"
+                      "-C" "build"
+                      "accessor.bytes")))
+          (add-after 'add-service-descriptor-and-resources
+              'fix-accessor-path
+            (lambda _
+              ;; accessor.bytes must be at
+              ;; org/apache/felix/framework/util/accessor.bytes
+              (let ((jar "build/jar/org.apache.felix.framework.jar"))
+                (mkdir-p "build/accessor-pkg/org/apache/felix/framework/util")
+                (copy-file "build/accessor.bytes"
+                           "build/accessor-pkg/org/apache/felix/framework/util/accessor.bytes")
+                (invoke "jar" "uf" jar
+                        "-C" "build/accessor-pkg"
+                        "org/apache/felix/framework/util/accessor.bytes"))))
+          (add-before 'install 'create-pom
+            (generate-pom.xml "pom.xml" "org.apache.felix"
+                              "org.apache.felix.framework" #$version))
+          (replace 'install (install-from-pom "pom.xml")))))
+    (inputs (list java-osgi-annotation-8.1.0
+                  java-osgi-core-8.0.0
+                  java-felix-resolver-2))
+    (home-page "https://felix.apache.org/")
+    (synopsis "Apache Felix OSGi framework")
+    (description "Apache Felix is a community effort to implement the OSGi
+Framework and Service platform.")
+    (license license:asl2.0)))
+
 (define-public java-osgi-service-component-annotations
   (package
     (name "java-osgi-service-component-annotations")
