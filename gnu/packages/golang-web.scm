@@ -5277,7 +5277,8 @@ for Go.")
     (home-page "https://github.com/emersion/go-sasl")
     (synopsis "SASL library written in Go")
     (description
-     "This package provides a SASL library written in Go.")
+     "This package provides a @acronym{Simple Authentication and Security
+Layer, SASL} library written in Go.")
     (license license:expat)))
 
 (define-public go-github-com-emersion-go-smtp
