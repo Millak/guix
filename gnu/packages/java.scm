@@ -2099,6 +2099,71 @@ and is best suited to building Java projects.  Ant uses XML to describe the
 build process and its dependencies, whereas Make uses Makefile format.")
     (license license:asl2.0)))
 
+(define-public ant-1.10.14
+  (package
+    (inherit ant/java8)
+    (name "ant")
+    (version "1.10.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://apache/ant/source/apache-ant-"
+                           version "-src.tar.gz"))
+       (sha256
+        (base32 "0m0vcazy1634nra8mcs3hvvf49avnbxf8f5y1icn5syi8hgy6pws"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (for-each delete-file
+                     (find-files "lib/optional" "\\.jar$"))
+           #t))))
+        (arguments
+     (substitute-keyword-arguments (package-arguments ant/java8)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'remove-scripts
+              (lambda _
+                (for-each delete-file
+                          (find-files "src/script" ".*\\.(bat|cmd)$"))))
+            (add-after 'build 'install-distribution-files
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (bin-dir (string-append out "/bin"))
+                       (etc-dir (string-append out "/etc"))
+                       (checkstyle-dir (string-append etc-dir "/checkstyle")))
+                  (for-each
+                   (lambda (file)
+                     (copy-file (string-append "src/script/" file)
+                                (string-append bin-dir "/" file))
+                     (chmod (string-append bin-dir "/" file) #o755))
+                   '("antRun" "antRun.pl" "runant.pl" "runant.py"))
+                  (mkdir-p checkstyle-dir)
+                  (for-each
+                   (lambda (file)
+                     (copy-file (string-append "src/etc/" file)
+                                (string-append etc-dir "/" file)))
+                   '("junit-frames.xsl"
+                     "junit-noframes.xsl"
+                     "junit-frames-xalan1.xsl"
+                     "coverage-frames.xsl"
+                     "maudit-frames.xsl"
+                     "mmetrics-frames.xsl"
+                     "changelog.xsl"
+                     "jdepend.xsl"
+                     "jdepend-frames.xsl"
+                     "log.xsl"
+                     "tagdiff.xsl"))
+                  (for-each
+                   (lambda (file)
+                     (copy-file (string-append "src/etc/checkstyle/" file)
+                                (string-append checkstyle-dir "/" file)))
+                   '("checkstyle-frames-sortby-check.xsl"
+                     "checkstyle-frames.xsl"
+                     "checkstyle-text.xsl"
+                     "checkstyle-xdoc.xsl"))
+                  (copy-file "build/lib/ant-bootstrap.jar"
+                             (string-append etc-dir "/ant-bootstrap.jar")))))))))))
+
 ;; The 1.9.x series is the last that can be built with GCJ.  The 1.10.x series
 ;; requires Java 8.
 (define-public ant
