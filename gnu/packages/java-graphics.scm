@@ -165,17 +165,18 @@ ascii art drawings that contain characters that resemble lines like @samp{|}
                 "017n1w6hds4wrz597jk7v8r6pz0kz5j9xwd240nq7s8hc58d4c2q"))
               (modules '((guix build utils)))
               (snippet
-               '(for-each
-                 delete-file
-                 (find-files "flatlaf-core/src/main/resources/com/formdev/flatlaf/natives/"
-                             ".*")))))
+               ;; Remove pre-built native libraries.
+               '(for-each delete-file
+                          (find-files "." "\\.(dll|dylib|so)$")))))
     (build-system ant-build-system)
     (arguments
      (list
+      #:jdk openjdk17
       #:tests? #false                   ;XXX requires junit5
-      #:jar-name "flatlaf.jar"
-      #:source-dir '(list "flatlaf-core/src/main/java")
-      #:test-dir '(list "flatlaf-core/src/test")
+      #:modules '((guix build ant-build-system)
+                  (guix build java-utils)
+                  (guix build utils)
+                  (sxml simple))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'build-native-code
@@ -224,8 +225,58 @@ ascii art drawings that contain characters that resemble lines like @samp{|}
           (add-before 'build 'copy-resources
             (lambda _
               (copy-recursively "flatlaf-core/src/main/resources"
-                                "build/classes"))))))
-    (inputs (list libx11 libxt))
+                                "build/classes")))
+          (add-before 'build 'generate-pom
+            (lambda _
+              (call-with-output-file "pom.xml"
+                (lambda (port)
+                  (sxml->xml
+                   `(*TOP*
+                     (*PI* xml "version=\"1.0\" encoding=\"UTF-8\"")
+                     (project
+                      (modelVersion "4.0.0")
+                      (groupId "com.formdev")
+                      (artifactId "flatlaf")
+                      (version ,#$version)))
+                   port)))))
+          (replace 'build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((jdk (assoc-ref inputs "jdk"))
+                     (src-dir "flatlaf-core/src/main/java")
+                     (java9-dir "flatlaf-core/src/main/java9")
+                     (classes-dir "build/classes")
+                     (classes9-dir "build/classes9")
+                     (jar-file
+                      (string-append "build/flatlaf-" #$version ".jar")))
+                ;; Compile main sources (Java 8 target).
+                (apply invoke "javac"
+                       "--release" "8"
+                       "-d" classes-dir
+                       (find-files src-dir "\\.java$"))
+                ;; Compile Java 9 multi-release sources.
+                (mkdir-p classes9-dir)
+                (apply invoke "javac"
+                       "--release" "9"
+                       "-cp" classes-dir
+                       "-d" classes9-dir
+                       (find-files java9-dir "\\.java$"))
+                ;; Create multi-release JAR.
+                (let ((meta-versions
+                       (string-append classes-dir
+                                      "/META-INF/versions/9")))
+                  (mkdir-p meta-versions)
+                  (copy-recursively classes9-dir meta-versions))
+                (call-with-output-file "build/manifest.mf"
+                  (lambda (port)
+                    (display "Multi-Release: true\n" port)))
+                (invoke "jar" "--create"
+                        "--file" jar-file
+                        "--manifest" "build/manifest.mf"
+                        "-C" classes-dir "."))))
+          (replace 'install
+            (install-from-pom "pom.xml")))))
+    (inputs
+     (list libx11 libxt))
     (home-page "https://www.formdev.com/flatlaf/")
     (synopsis "Flat Look and Feel for Java Swing applications")
     (description "FlatLaf is a cross-platform Look and Feel for Java Swing
