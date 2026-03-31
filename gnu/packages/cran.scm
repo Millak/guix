@@ -40911,14 +40911,14 @@ colored by the number of neighboring points.  This is useful to visualize the
 (define-public r-arrow
   (package
     (name "r-arrow")
-    (version "23.0.1.1")
+    (version "23.0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "arrow" version))
        (sha256
         (base32
-         "15a84vqhl1hb5d5n4f70g3ssklqzymnr9has6yff8xdj1sw015bf"))))
+         "0cgaalxgf80w4801rz0gik2nlrp659nxcw2l43an90f8fbsjfhzz"))))
     (properties
      `((upstream-name . "arrow")
        (updater-ignored-native-inputs . ("r-duckdb"))
