@@ -28451,28 +28451,18 @@ separate published packages.")
 (define-public r-biomformat
   (package
     (name "r-biomformat")
-    (version "1.38.0")
+    (version "1.38.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biomformat" version))
        (sha256
         (base32
-         "1ydcgifdrgg48y7qxg0gw30h332y3yk3k3n17fajkv58mlvyx1yc"))))
+         "0b0w0mfx448ph8fla3nb4i50mvpnv498kxip7rnh14xwas9rhdd7"))))
     (properties `((upstream-name . "biomformat")))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; These deprecated procedures have been removed in testthat.
-         (add-after 'unpack 'testthat-compatibility
-           (lambda _
-             (substitute* "tests/testthat/test-IO.R"
-               (("is_true\\(\\)") "expect_true")
-               (("is_false\\(\\)") "expect_false")))))))
     (propagated-inputs
-     (list r-jsonlite r-matrix r-plyr r-rhdf5))
+     (list r-jsonlite r-matrix r-rhdf5))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/joey711/biomformat/")
     (synopsis "Interface package for the BIOM file format")
