@@ -7238,13 +7238,13 @@ components/nonparametric terms for models fit with @code{nlme::lme()},
 (define-public r-rmarkdown
   (package
     (name "r-rmarkdown")
-    (version "2.30")
+    (version "2.31")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rmarkdown" version))
        (sha256
-        (base32 "0f53lnppigjnrl8qsfs9js6vnrisz2x6rxyzjk9xxaf1639d6ajd"))))
+        (base32 "1g7w26i9rndwm2nscpn4lqgsx2xiwvfx553pa0ajyaa7lkaawnqc"))))
     (properties
      `((upstream-name . "rmarkdown")
        (updater-extra-propagated-inputs . ("pandoc"))
