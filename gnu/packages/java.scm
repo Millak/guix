@@ -8743,6 +8743,23 @@ phonetic encoding utilities.
 This is a part of the Apache Commons Project.")
     (license license:asl2.0)))
 
+(define-public java-commons-codec-1.17.1
+  (package
+    (inherit java-commons-codec)
+    (version "1.17.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://apache/commons/codec/source/"
+                                  "commons-codec-" version "-src.tar.gz"))
+              (sha256
+               (base32
+                "0f9f80azc13phkwa2fdkmpj5fkh85hf081fz5mmm6rqflmk83wp9"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments java-commons-codec)
+       ;; Tests require JUnit 5 (org.junit.jupiter) which is not
+       ;; yet available in Guix.
+       ((#:tests? _ #t) #f)))))
+
 (define-public java-commons-daemon
   (package
     (name "java-commons-daemon")
