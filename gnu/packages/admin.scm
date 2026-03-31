@@ -4988,16 +4988,16 @@ Python loading in HPC environments.")
   (let ((real-name "inxi"))
     (package
       (name "inxi-minimal")
-      (version "3.3.31-2")
+      (version "3.3.40-1")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/smxi/inxi")
+               (url "https://codeberg.org/smxi/inxi")
                (commit version)))
          (file-name (git-file-name real-name version))
          (sha256
-          (base32 "1fca5minalpmizbxh5kmjiv8xrl7k6g91zn8d84fxmbhsk8vn3kk"))))
+          (base32 "0ivj0dcx7d2hmmkhyql156sb08385rzw640z9kyq4cv1n8ndz58s"))))
       (build-system trivial-build-system)
       (inputs
        (list bash-minimal
@@ -5023,8 +5023,8 @@ Python loading in HPC environments.")
            (copy-recursively (assoc-ref %build-inputs "source")
                              ,(string-append real-name "-" version))
            (with-directory-excursion ,(string-append real-name "-" version)
-             (with-fluids ((%default-port-encoding #f))
-               (substitute* "inxi" (("/usr/bin/env perl") (which "perl"))))
+             (patch-shebang "inxi" (list (dirname (search-input-file
+                                                    %build-inputs "bin/perl"))))
              (let ((bin (string-append %output "/bin")))
                (install-file "inxi" bin)
                (wrap-program (string-append bin "/inxi")
@@ -5039,7 +5039,8 @@ Python loading in HPC environments.")
                                    ((member name '("util-linux"))
                                     (string-append (store-append "/bin") ":"
                                                    (store-append "/sbin")))
-                                   ((member name '("dmidecode" "iproute2"))
+                                   ((member name '("dmidecode" "iproute2" "lvm2"
+                                                   "mdadm"))
                                     (store-append "/sbin"))
                                    (else (store-append "/bin")))))))
                            %build-inputs)))
@@ -5067,6 +5068,7 @@ support forum.  It runs with the @code{/exec} command in most IRC clients.")
     (name "inxi")
     (inputs
      `(("dmidecode" ,dmidecode)
+       ("eudev" ,eudev)
        ("file" ,file)
        ("bind:utils" ,isc-bind "utils") ; dig
        ("gzip" ,gzip)
@@ -5092,11 +5094,14 @@ support forum.  It runs with the @code{/exec} command in most IRC clients.")
        ("perl-time-hires" ,perl-time-hires)
        ("lvm2" ,lvm2)                   ; lvs
        ("mdadm" ,mdadm)
+       ("wayland-utils" ,wayland-utils)
        ;; TODO: Add more inputs:
        ;; ipmi-sensors
        ;; hddtemp
        ;; perl-xml-dumper
        ;; ipmitool
+       ;; wlr-randr
+       ;; vulkan-tools
        ,@(package-inputs inxi-minimal)))))
 
 (define-public pscircle
