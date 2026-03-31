@@ -7328,6 +7328,35 @@ transfer, etc., and you can integrate its functionality into your own Java
 programs.")
     (license license:bsd-3)))
 
+(define-public java-jzlib-1.1.3
+  (package
+    (name "java-jzlib")
+    (version "1.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ymnk/jzlib")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wma04qlx65ybyf49dngqb5db1xc7sya0g98frj5chhr4qc7fjs8"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "jzlib.jar"
+       #:source-dir "src/main/java"
+       #:tests? #f                      ; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (install-from-pom "pom.xml")))))
+    (home-page "http://www.jcraft.com/jzlib/")
+    (synopsis "Pure Java implementation of zlib")
+    (description "JZlib is a re-implementation of zlib in pure Java.  It
+provides @code{Deflater}, @code{Inflater}, and streaming classes for
+compression and decompression compatible with the zlib format.")
+    (license license:bsd-3)))
+
 (define-public java-commons-compress
   (package
     (name "java-commons-compress")
