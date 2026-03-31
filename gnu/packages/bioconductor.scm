@@ -27203,14 +27203,14 @@ with your data.")
 (define-public r-gwascat
   (package
     (name "r-gwascat")
-    (version "2.42.0")
+    (version "2.42.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "gwascat" version))
        (sha256
         (base32
-         "1v5z4fmwgs3swvpa09y986sracz0nsggq8s9hp1nmwb9a9grw8px"))))
+         "0djrd63nsqpy46acblg5k8pq6ldqccr35r6h0sf4xridpkqm78b1"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
@@ -27225,7 +27225,6 @@ with your data.")
            r-readr
            r-s4vectors
            r-seqinfo
-           r-snpstats
            r-tibble
            r-variantannotation))
     (native-inputs
