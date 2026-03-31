@@ -14820,6 +14820,76 @@ and mappings for a number of commonly used platform functions, including a
 large number of Win32 mappings as well as a set of utility classes that
 simplify native access.")))
 
+(define-public java-native-access-platform-5.14.0
+  (package
+    (inherit java-native-access-platform)
+    (name "java-native-access-platform")
+    (version (package-version java-native-access-5.14.0))
+    (source (package-source java-native-access-5.14.0))
+    (arguments
+     `(#:build-target "jar"
+       #:tests? #f
+       #:modules ((guix build ant-build-system)
+                  (guix build utils)
+                  (guix build java-utils)
+                  (sxml simple))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'chdir
+           (lambda _
+             (chdir "contrib/platform")
+             #t))
+         (add-after 'chdir 'fix-ant
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((jna-jar (car (find-files (assoc-ref inputs "java-native-access")
+                                            "jna-jpms.*\\.jar$")))
+                   (asm-jar (search-input-file inputs "/share/java/asm9.jar"))
+                   (ant-jar (search-input-file inputs "/lib/ant.jar")))
+               (mkdir-p "../../build")
+               (mkdir-p "../../lib")
+               (copy-file jna-jar "../../build/jna.jar")
+               (copy-file asm-jar "../../lib/asm-8.0.1.jar")
+               (copy-file ant-jar "../../lib/ant.jar")
+               (substitute* "build.xml"
+                 (("../../build/jna\\.jar") jna-jar)
+                 (("../../lib/asm-8\\.0\\.1\\.jar") asm-jar))
+               (substitute* "../../build-ant-tools.xml"
+                 (("lib/ant\\.jar") ant-jar)
+                 (("lib/asm-8\\.0\\.1\\.jar") asm-jar))
+               #t)))
+         (add-before 'install 'create-pom
+           (lambda _
+             (call-with-output-file "pom.xml"
+               (lambda (port)
+                 (sxml->xml
+                  `(*TOP*
+                    (*PI* xml "version=\"1.0\" encoding=\"UTF-8\"")
+                    (project
+                     (modelVersion "4.0.0")
+                     (groupId "net.java.dev.jna")
+                     (artifactId "jna-platform-jpms")
+                     (version ,,version)
+                     (dependencies
+                      (dependency
+                       (groupId "net.java.dev.jna")
+                       (artifactId "jna-jpms")
+                       (version ,,version)))))
+                  port)))))
+         (add-before 'install 'keep-only-jna-platform-jpms
+           (lambda _
+             (for-each delete-file
+                       (filter (lambda (f)
+                                 (not (string-contains f "jna-platform-jpms")))
+                               (append (find-files "build" "\\.jar$")
+                                       (find-files "dist" "\\.jar$"))))))
+         (replace 'install
+           (install-from-pom "pom.xml")))))
+    (native-inputs
+     (modify-inputs (package-native-inputs java-native-access-platform)
+       (prepend java-asm-9)))
+    (inputs
+     (list java-native-access-5.14.0))))
+
 (define-public java-jsch-agentproxy-core
   (package
     (name "java-jsch-agentproxy-core")
