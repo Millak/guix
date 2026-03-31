@@ -8212,6 +8212,7 @@ to display dialog boxes from the commandline and shell scripts.")
          (string-append "-Dgles2_libname="
                         (search-input-file %build-inputs "lib/libGLESv2.so"))
          "-Degl_device=true"            ;false by default
+         "-Dx11=true"                   ;false by default
          "-Dwayland_eglstream=true"     ;false by default
          (string-append "-Dudev_dir=" #$output "/lib/udev"))
       #:test-options #~(list "--verbose")
@@ -8292,7 +8293,12 @@ to display dialog boxes from the commandline and shell scripts.")
                        "--no-suite=mutter/backends/native"
                        "--no-rebuild"
                        "--print-errorlogs"
-                       test-options)))))))
+                       test-options))))
+          (add-after 'install 'sanitize-pkg-config-files
+            (lambda _
+              (substitute* (find-files #$output "\\.pc$")
+                (("^Requires.private:.*" all)
+                 (string-append "# " all))))))))
     (native-inputs
      (list desktop-file-utils           ;for update-desktop-database
            `(,glib "bin")               ;for glib-compile-schemas, etc.
@@ -8316,56 +8322,52 @@ to display dialog boxes from the commandline and shell scripts.")
            umockdev
            wireplumber-minimal
            zenity))
-    (propagated-inputs
-     (list
-      ;; required by libmutter-16.pc
-      colord
-      elogind
-      egl-wayland                       ;for wayland-eglstream-protocols
-      graphene
-      libdisplay-info
-      libei
-      libcanberra
-      libgudev
-      libinput
-      libice
-      libsm
-      `(,libjxl "pixbuf-loader")        ;for the jxl backgrounds
-      libxkbfile
-      libxrandr
-      libwacom
-      libxtst
-      gsettings-desktop-schemas
-      gnome-settings-daemon
-      pipewire
-      startup-notification
-      ;; mutter-clutter-16.pc and mutter-cogl-16.pc refer to these:
-      at-spi2-core
-      cairo
-      eudev
-      gdk-pixbuf
-      glib
-      json-glib
-      libx11
-      libxcomposite
-      libxcvt
-      libxdamage
-      libxext
-      libxfixes
-      libxkbcommon
-      libxml2
-      libxrandr
-      mesa
-      pango
-      sysprof
-      xinput))
     (inputs
-     (list glycin-loaders
-           gnome-desktop
+     (list colord
+           elogind
+           egl-wayland                  ;for wayland-eglstream-protocols
+           eudev
+           gdk-pixbuf
+           glycin-loaders
+           json-glib
+           libdisplay-info
+           libei
+           libcanberra
            libglycin
+           libgudev
+           libinput
+           libxkbfile
+           libxcomposite
+           libxcvt
+           libxdamage
+           libxext
+           libxml2
+           libxrandr
+           libwacom
+           libxtst
+           gnome-desktop
+           gnome-settings-daemon
+           pango
+           pipewire
            python                       ; for gdctl
+           startup-notification
+           sysprof
            upower
-           xkeyboard-config
+           xkeyboard-config))
+    (propagated-inputs
+     ;; The following inputs are in 'Requires' of pkg-config files.
+     (list graphene
+           gsettings-desktop-schemas
+           at-spi2-core                 ;for atk
+           cairo
+           glib
+           lcms
+           libx11
+           libxkbcommon
+           libxfixes
+           mesa
+           pixman
+           xinput                       ;for xi.pc
            xorg-server-xwayland))
     (synopsis "Window and compositing manager")
     (home-page "https://www.gnome.org")
