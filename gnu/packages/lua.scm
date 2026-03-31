@@ -432,6 +432,9 @@ directory structure and file attributes.")
 (define-public lua5.2-filesystem
   (make-lua-filesystem "lua5.2-filesystem" lua-5.2))
 
+(define-public lua5.4-filesystem
+  (make-lua-filesystem "lua5.4-filesystem" lua-5.4))
+
 (define-public lua-bee
   ;; There are no releases; use the commit known to work with the packaged
   ;; luamake.
