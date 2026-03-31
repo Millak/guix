@@ -1308,6 +1308,85 @@ for syntax highlighting or a linting tool.")
     (native-inputs (list pandoc))
     (inputs (list luajit))))
 
+(define (make-lua-scintillua name lua lua-lpeg lua-filesystem)
+  (package
+    (name name)
+    (version "6.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/orbitalquark/scintillua")
+             (commit (string-append "scintillua_" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "121ilpy91wyprqp3la4xzbb60i2yp1xpnvjlahzgzg0vck48njm7"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(let* ((lua-api-version #$(version-major+minor (package-version lua)))
+               (lua-cpath (string-append "/lib/lua/" lua-api-version))
+               (lua-path (string-append "/share/lua/" lua-api-version))
+               (scintillua (string-append #$output lua-path "/scintillua"))
+               (lexers (string-append scintillua "/lexers")))
+          (modify-phases %standard-phases
+            (delete 'configure)
+            (delete 'build)
+            (delete 'check)             ;move after install
+            (replace 'install
+              (lambda _
+                (mkdir-p scintillua)
+                (copy-recursively "lexers" lexers)
+                (substitute* (string-append lexers "/lexer.lua")
+                  (("package\\.path")
+                   (string-append "('" lexers "/?.lua;' .. package.path)")))
+                (with-output-to-file (string-append scintillua "/init.lua")
+                  (lambda ()
+                    (display
+                     "return require'scintillua.lexers.lexer'\n")))))
+            (add-after 'install 'set-lua-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((input-dirs (map cdr (alist-delete "source" inputs))))
+                  (setenv "GUIX_LUA_CPATH"
+                          (string-join
+                           (map (lambda (prefix)
+                                  (string-append prefix lua-cpath))
+                                input-dirs)
+                           ";"))
+                  (setenv "GUIX_LUA_PATH"
+                          (string-join
+                           (map (lambda (prefix)
+                                  (string-append prefix lua-path))
+                                (cons #$output input-dirs))
+                           ";")))))
+            (add-after 'set-lua-path 'check
+              (lambda _
+                (substitute* "tests.lua"
+                  (("^package\\.path = .*") "")
+                  (("require\\('lexer'\\)") "require'scintillua'")
+                  (("'lexers'") (string-append "'" lexers "'"))
+                  (("test_lua51" all)
+                   (string-append "skip_" all)))
+                (invoke "lua" "tests.lua")))))))
+      (native-inputs (list lua))
+      (propagated-inputs (list lua-lpeg lua-filesystem))
+      (home-page "https://orbitalquark.github.io/scintillua/")
+      (synopsis "Collection of LPeg lexer for source code")
+      (description
+       "This Lua library provides LPeg lexers for source code syntax
+highlighting.  It can either be used by itself or as a drop-in replacement
+for Scintilla lexers.")
+      (license license:expat)))
+
+(define-public lua-scintillua
+  (make-lua-scintillua "lua-scintillua" lua
+                       lua-lpeg lua-filesystem))
+
+(define-public lua5.4-scintillua
+  (make-lua-scintillua "lua5.4-scintillua" lua-5.4
+                       lua5.4-lpeg lua5.4-filesystem))
+
 (define-public lutok
   (package
     (name "lutok")
