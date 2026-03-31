@@ -29418,6 +29418,25 @@ decimal arithmetic.")
 termination.")
     (license license:bsd-3)))
 
+(define-public go-gopkg-in-tomb-v2
+  (package
+    (inherit go-gopkg-in-tomb-v1)
+    (name "go-gopkg-in-tomb-v2")
+    (version "2.0.0-20161208151619-d5d1b5820637")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-tomb/tomb")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sv15sri99szkdz1bkh0ir46w9n8prrwx5hfai13nrhkawfyfy10"))))
+    (build-system go-build-system)
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "gopkg.in/tomb.v2")))))
+
 (define-public go-gopkg-in-validator-v2
   (package
     (name "go-gopkg-in-validator-v2")
