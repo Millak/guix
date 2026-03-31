@@ -242,14 +242,14 @@ managers.")
 (define-public asciinema
   (package
     (name "asciinema")
-    (version "3.1.0")
+    (version "3.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "asciinema" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19pszccw536g0ryd4z33ni1lx9a20hi47g9x4xwmg1v4plpr5szr"))))
+        (base32 "1p99rnhp62n50jmlmxlvs8w56si0lvcy505fb1mgxhn1a66i5rqw"))))
     (build-system cargo-build-system)
     (arguments
      (list
