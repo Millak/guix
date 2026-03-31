@@ -9180,6 +9180,48 @@ described in @url{https://www.rfc-editor.org/rfc/rfc959,RFC 959}.")
 transforms one JSON document into another through a JMESPath expression.")
     (license license:asl2.0)))
 
+(define-public go-github-com-johannesboyne-gofakes3
+  (package
+    (name "go-github-com-johannesboyne-gofakes3")
+    (version "0.0.0-20260208201424-4c385a1f6a73")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/johannesboyne/gofakes3")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14h4wrryrn4darp2vg2kyh2rwz0p93y99plv7lyql9i50h351895"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/johannesboyne/gofakes3"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-go-shabbyrobe-org-gocovmerge))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
+           go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
+           go-github-com-aws-aws-sdk-go-v2-service-s3
+           go-github-com-aws-smithy-go
+           go-github-com-cevatbarisyilmaz-ara
+           go-github-com-ryszard-goskiplist
+           go-github-com-spf13-afero
+           go-go-etcd-io-bbolt
+           go-golang-org-x-tools
+           go-gopkg-in-mgo-v2))
+    (home-page "https://github.com/johannesboyne/gofakes3")
+    (synopsis "Simple fake AWS S3 object storage")
+    (description
+     "AWS S3 fake server and testing library for extensive S3 test
+integrations.  Either by running a test-server, e.g. for testing of AWS Lambda
+functions accessing S3.  Or, to have a simple and convencience S3 mock- and
+test-server.")
+    (license license:expat)))
+
 (define-public go-github-com-jsimonetti-rtnetlink
   (package
     (name "go-github-com-jsimonetti-rtnetlink")
