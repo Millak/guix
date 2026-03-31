@@ -89,14 +89,14 @@
 (define-public ibus-minimal
   (package
     (name "ibus")
-    (version "1.5.32")
+    (version "1.5.34")
     (source (origin
       (method git-fetch)
       (uri (git-reference
         (url "https://github.com/ibus/ibus")
         (commit version)))
       (file-name (git-file-name name version))
-      (sha256 (base32 "1rn2xpzi6x57n01rjin4a2h8yy1wdmvadgnglw0p6bdnc31q17a6"))))
+      (sha256 (base32 "1x05dwhi79s1mqgs34srdr2d5fvkyvihqvcnw91630xyf4r76b1h"))))
     (build-system glib-or-gtk-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -204,7 +204,7 @@
            wayland
            xmodmap))
     (native-inputs
-     (list autoconf
+     (list autoconf-2.72
            automake
            docbook-xml-4.1.2
            `(,glib "bin")               ;for glib-genmarshal
