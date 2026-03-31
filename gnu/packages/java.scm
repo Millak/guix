@@ -8964,7 +8964,21 @@ more efficient storage-wise than an uncompressed bitmap (as implemented in the
              ;; we get the error "This code should have never made it into slf4j-api.jar"
              (delete-file-recursively "build/classes/org/slf4j/impl")
              (invoke "jar" "-cf" "build/jar/slf4j-api.jar" "-C"
-                     "build/classes" ".")))
+                     "build/classes" ".")
+             ;; The NetBeans wrapper module has an empty jar target and
+             ;; relies on Bundle-SymbolicName from the Maven Central jar.
+             (call-with-output-file "osgi-manifest.mf"
+               (lambda (port)
+                 (display (string-append
+                           "Bundle-ManifestVersion: 2\n"
+                           "Bundle-SymbolicName: slf4j.api\n"
+                           "Bundle-Version: " ,version "\n"
+                           "Export-Package: org.slf4j,org.slf4j.spi,"
+                           "org.slf4j.helpers,org.slf4j.event\n"
+                           "Import-Package: org.slf4j.impl\n")
+                          port)))
+             (invoke "jar" "ufm" "build/jar/slf4j-api.jar"
+                     "osgi-manifest.mf")))
          (add-before 'check 'dont-test-abstract-classes
            (lambda _
              ;; abstract classes are not meant to be run with junit
