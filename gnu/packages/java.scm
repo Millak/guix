@@ -14720,6 +14720,71 @@ Java method invocation.")
                license:asl2.0
                license:lgpl2.1+))))
 
+(define-public java-native-access-5.14.0
+  (package
+    (inherit java-native-access)
+    (name "java-native-access")
+    (version "5.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/java-native-access/jna.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0blf6ka69c3zywa74fjh8gykhzn3vgbvlxzy3v9znncb2a97v6bb"))
+       (modules '((guix build utils)))
+       (snippet
+        `(begin
+           (for-each delete-file (find-files "." ".*.jar"))
+           (delete-file-recursively "native/libffi")
+           (delete-file-recursively "dist")))))
+    (arguments
+     `(#:tests? #f
+       #:test-target "test"
+       #:make-flags (list "-Ddynlink.native=true")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'fix-build.xml
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((ant-jar (search-input-file inputs "/lib/ant.jar"))
+                   (asm-jar (search-input-file inputs "/share/java/asm9.jar")))
+               (substitute* "build.xml"
+                 (("lib/ant\\.jar") ant-jar)
+                 (("\\$lib/asm-8\\.0\\.1\\.jar") asm-jar)
+                 (("lib/asm-8\\.0\\.1\\.jar") asm-jar)
+                 (("<zipfileset") "<zipfileset erroronmissingarchive=\"false\""))
+               (substitute* "build-ant-tools.xml"
+                 (("lib/ant\\.jar") ant-jar)
+                 (("lib/asm-8\\.0\\.1\\.jar") asm-jar)))
+             (copy-file (car (find-files (assoc-ref inputs "java-junit") "jar$"))
+                        "lib/junit.jar")
+             (copy-file (car (find-files (assoc-ref inputs "java-hamcrest-core")
+                                         "jar$"))
+                        "lib/hamcrest-core.jar")))
+         (add-before 'build 'build-native
+           (lambda _
+             (invoke "ant" "-Ddynlink.native=true" "native")))
+         (add-before 'install 'create-pom
+           (generate-pom.xml "pom.xml" "net.java.dev.jna"
+                             "jna-jpms" ,version))
+         (add-before 'install 'keep-only-jna-jpms
+           (lambda _
+             ;; The build produces multiple jars.  install-from-pom
+             ;; expects exactly one.  Remove all except jna-jpms.jar.
+             (for-each delete-file
+                       (filter (lambda (f)
+                                 (not (string-contains f "jna-jpms")))
+                               (find-files "build" "\\.jar$")))
+             (for-each delete-file
+                       (find-files "lib" "\\.jar$"))))
+         (replace 'install
+           (install-from-pom "pom.xml")))))
+    (native-inputs
+     (modify-inputs (package-native-inputs java-native-access)
+       (prepend java-asm-9)))))
+
 (define-public java-native-access-platform
   (package
     (inherit java-native-access)
