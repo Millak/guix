@@ -3404,6 +3404,41 @@ pattern.")
 @code{net/rpc}.")
     (license license:expat)))
 
+(define-public go-github-com-cevatbarisyilmaz-ara
+  (package
+    (name "go-github-com-cevatbarisyilmaz-ara")
+    (version "0.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cevatbarisyilmaz/ara")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0512nlqqv9bnsplphiw7q9s80icl63wgl88b7m6m4vsvn5ghphc8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cevatbarisyilmaz/ara"
+      #:test-flags
+      ;; ialer_test.go:46: lookup google.com on [::1]:53: read udp
+      ;; [::1]:39632->[::1]:53: read: connection refused
+      #~(list "-skip" "TestDialer|TestNewCustomResolver")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "example_test.go")))))))
+    (home-page "https://github.com/cevatbarisyilmaz/ara")
+    (synopsis "Dialer with customizable resolver")
+    (description
+     "Package ara provides a dialer with customizable resolver.  It can be
+used with @code{http.Client} and @code{http.Transport} to alter host
+lookups.")
+    (license license:expat)))
+
 (define-public go-github-com-chris-ramon-douceur
   (package
     (name "go-github-com-chris-ramon-douceur")
