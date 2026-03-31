@@ -75,7 +75,7 @@ a value to be written as JSON to the replacement FILE."
 ;; This is the function we eventually want to migrate to.
 (define* (modify-json* file #:rest modifications)
   "Modify JSON FILE with successive callbacks."
-  (with-atomic-json-file-replacement file
+  (with-atomic-json-file-replacement* file
     (apply compose modifications)))
 
 ;; Copied and adapted from (guix utils).
