@@ -3342,6 +3342,33 @@ and restore them afterwards.")
 @url{http://www.freebsd.org/cgi/man.cgi?query=fail,failpoints} for Golang.")
     (license license:asl2.0)))
 
+(define-public go-go-shabbyrobe-org-gocovmerge
+  (package
+    (name "go-go-shabbyrobe-org-gocovmerge")
+    (version "0.0.0-20230507111327-fa4f82cfbf4d")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~shabbyrobe/gocovmerge")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sbr6i1m5hjbnlfad8cl8w30949r02c66l85hcmyyd9ka30mqr23"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.shabbyrobe.org/gocovmerge"))
+    (propagated-inputs
+     (list go-golang-org-x-tools))
+    (home-page "https://go.shabbyrobe.org/gocovmerge")
+    (synopsis "gocovmerge")
+    (description
+     "Package gocovmerge takes the results from multiple @code{go test
+-coverprofile} runs and merges them into one profile.  It is a maintained fork
+of @url{https://github.com/wadey/gocovmerge}.")
+    (license license:bsd-2)))
+
 (define-public go-go-simpler-org-sloglint
   (package
     (name "go-go-simpler-org-sloglint")
