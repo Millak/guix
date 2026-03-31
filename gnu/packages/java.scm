@@ -9908,6 +9908,107 @@ the compendium specification module, providing interfaces and classes for use
 in compiling bundles.")
     (license license:asl2.0)))
 
+(define-public java-osgi-cmpn-7.0.0
+  ;; Upstream uses release-train tags for the monorepo; osgi.cmpn/bnd.bnd
+  ;; emits artifact version 7.0.0 from the r7-cmpn-spec-final checkout.
+  (let ((tag "r7-cmpn-spec-final"))
+    (package
+      (name "java-osgi-cmpn")
+      (version "7.0.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/osgi/osgi")
+                      (commit tag)))
+                (modules '((guix build utils)))
+                (snippet
+                 '(begin
+                    (for-each delete-file
+                              (find-files "." "\\.jar$"))
+                    #t))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "08i8d2y7awr09809qwnv7l5hzqi5di3sv21bvgrmhibm07hr4ml9"))))
+      (build-system ant-build-system)
+      (arguments
+       (list
+        #:tests? #f
+        #:jdk openjdk9
+        #:jar-name "osgi-cmpn.jar"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'prepare-source-layout
+              (lambda _
+                (mkdir-p "src")
+                (for-each
+                 (lambda (directory)
+                   (invoke "cp" "-r" (string-append directory "/.") "src/"))
+                 '("org.osgi.application/src"
+                   "org.osgi.namespace.contract/src"
+                   "org.osgi.namespace.extender/src"
+                   "org.osgi.namespace.implementation/src"
+                   "org.osgi.namespace.service/src"
+                   "org.osgi.namespace.unresolvable/src"
+                   "org.osgi.service.async/src"
+                   "org.osgi.service.application/src"
+                   "org.osgi.service.blueprint/src"
+                   "org.osgi.service.cm/src"
+                   "org.osgi.service.component/src"
+                   "org.osgi.service.component.annotations/src"
+                   "org.osgi.service.configurator/src"
+                   "org.osgi.service.coordinator/src"
+                   "org.osgi.service.deploymentadmin/src"
+                   "org.osgi.service.device/src"
+                   "org.osgi.service.dmt/src"
+                   "org.osgi.service.event/src"
+                   "org.osgi.service.http/src"
+                   "org.osgi.service.http.whiteboard/src"
+                   "org.osgi.service.io/src"
+                   "org.osgi.service.jaxrs/src"
+                   "org.osgi.service.jdbc/src"
+                   "org.osgi.service.jndi/src"
+                   "org.osgi.service.jpa/src"
+                   "org.osgi.service.log/src"
+                   "org.osgi.service.metatype/src"
+                   "org.osgi.service.metatype.annotations/src"
+                   "org.osgi.service.monitor/src"
+                   "org.osgi.service.prefs/src"
+                   "org.osgi.service.provisioning/src"
+                   "org.osgi.service.remoteserviceadmin/src"
+                   "org.osgi.service.repository/src"
+                   "org.osgi.service.rest/src"
+                   "org.osgi.service.serviceloader/src"
+                   "org.osgi.service.subsystem/src"
+                   "org.osgi.service.transaction.control/src"
+                   "org.osgi.service.upnp/src"
+                   "org.osgi.service.useradmin/src"
+                   "org.osgi.service.wireadmin/src"
+                   "org.osgi.util.converter/src"
+                   "org.osgi.util.function/src"
+                   "org.osgi.util.measurement/src"
+                   "org.osgi.util.position/src"
+                   "org.osgi.util.promise/src"
+                   "org.osgi.util.pushstream/src"
+                   "org.osgi.util.xml/src"))))
+            (add-before 'install 'create-pom
+              (generate-pom.xml "pom.xml" "org.osgi" "osgi.cmpn" #$version))
+            (replace 'install (install-from-pom "pom.xml")))))
+      (inputs
+       (list java-osgi-annotation-8.1.0
+             java-osgi-core-8.0.0
+             java-classpathx-servletapi
+             java-microemulator-cldc
+             java-datanucleus-javax-persistence
+             java-jaxrs-api-2))
+      (home-page "https://www.osgi.org")
+      (synopsis "Compendium specification module of OSGi framework")
+      (description "OSGi, for Open Services Gateway initiative framework, is a
+module system and service platform for the Java programming language.  This
+package contains the compendium specification module, providing interfaces
+and classes for use in compiling bundles.")
+      (license license:asl2.0))))
+
 (define-public java-osgi-service-component-annotations
   (package
     (name "java-osgi-service-component-annotations")
