@@ -40990,19 +40990,19 @@ library.")
 (define-public r-rex
   (package
     (name "r-rex")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rex" version))
        (sha256
         (base32
-         "1mmzlc3j7xa0rbjxa369f4sr0iw3gq58g8fmjjxbsjvfq14ychmg"))))
+         "0j7fqa35rz9l78w8dv9g9k17g6nndizimrr8wn5061smqjdnysjw"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-lazyeval))
+     (list r-withr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-magrittr r-testthat))
     (home-page "https://github.com/kevinushey/rex")
     (synopsis "Friendly regular expressions")
     (description
