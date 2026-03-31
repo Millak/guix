@@ -1946,6 +1946,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/mediasdk-gcc-14.patch			\
   %D%/packages/patches/memtest86+-build-reproducibly.patch	\
   %D%/packages/patches/mercurial-hg-extension-path.patch	\
+  %D%/packages/patches/meson-keep-rpath-vicinity.patch		\
   %D%/packages/patches/meson-gir-fallback-path.patch	        \
   %D%/packages/patches/mhash-keygen-test-segfault.patch		\
   %D%/packages/patches/mia-fix-boost-headers.patch		\

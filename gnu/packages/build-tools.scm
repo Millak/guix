@@ -539,7 +539,8 @@ files and generates build instructions for the Ninja build system.")
                (base32
                 "13a9pj7d2mxgv5gbd78di4pb4w722vjis0vmk38m1vdm95v2f9yd"))
               (patches
-               (search-patches "meson-gir-fallback-path.patch"))))
+               (search-patches "meson-gir-fallback-path.patch"
+                               "meson-keep-rpath-vicinity.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list

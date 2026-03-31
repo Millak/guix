@@ -1,0 +1,25 @@
+This patch provides a roundabout way of keeping "$prefix/..", i.e. the store
+directory, in DT_RPATH/DT_RUNPATH.  See <https://issues.guix.gnu.org/70349>
+for motivation.
+
+Upstream-Status: Not submitted.
+
+--- a/mesonbuild/build.py
++++ b/mesonbuild/build.py
+@@ -1826,6 +1826,7 @@ class BuildTarget(Target):
+     def rpaths_for_non_system_absolute_shared_libraries(self, exclude_system: bool = True) -> ImmutableListProtocol[str]:
+         paths: OrderedSet[str] = OrderedSet()
+         srcdir = self.environment.get_source_dir()
++        vicinity = os.path.dirname(self.prefix)
+ 
+         system_dirs = set()
+         if exclude_system:
+@@ -1840,7 +1841,7 @@ class BuildTarget(Target):
+             if dep.type_name not in {'library', 'pkgconfig', 'cmake'}:
+                 continue
+             for libpath in dep.link_args:
+-                if libpath.startswith('-'):
++                if libpath.startswith('-') or libpath.startswith(vicinity):
+                     continue
+                 # For all link args that are absolute paths to a library file, add RPATH args
+                 if not os.path.isabs(libpath):
