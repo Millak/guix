@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.ccom>
-;;; Copyright © 2021, 2022, 2025 Zheng Junjie <z572@z572.online>
+;;; Copyright © 2021, 2022, 2025, 2026 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021, 2023-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
@@ -143,14 +143,14 @@
 (define-public aardvark-dns
   (package
     (name "aardvark-dns")
-    (version "1.14.0")
+    (version "1.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aardvark-dns" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1d2bs5lmijv6s3n71gqc986n1wy7ny9w74741njjix7932a7yd5f"))))
+        (base32 "1i7agi5ivg1399xy2cgcrz2hgg1bgfs68jwvdrxfz5856hc0gcrk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f))
