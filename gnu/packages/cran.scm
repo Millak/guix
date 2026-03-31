@@ -6367,13 +6367,13 @@ canonical correlation analysis.")
 (define-public r-pmml
   (package
     (name "r-pmml")
-    (version "2.5.2")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pmml" version))
        (sha256
-        (base32 "1faad5yqyh6dx40056w74vlyw4wxjgh41jv8b2vf2gh26laf22kk"))))
+        (base32 "1z8gpi4whirw6gcc57s7fhjjz9ir70ij2g0sv7c56fv6ly0lfbwn"))))
     (properties `((upstream-name . "pmml")))
     (build-system r-build-system)
     (propagated-inputs (list r-stringr r-xml))
