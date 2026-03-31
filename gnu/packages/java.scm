@@ -3886,6 +3886,21 @@ JUnit provides assertions for testing expected results, test fixtures for
 sharing common test data, and test runners for running tests.")
     (license license:epl1.0)))
 
+(define-public java-junit-4.13.2
+  (package
+    (inherit java-junit)
+    (name "java-junit")
+    (version "4.13.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/junit-team/junit/")
+             (commit (string-append "r" version))))
+       (file-name (git-file-name "java-junit" version))
+       (sha256
+        (base32 "1r7k4zzscc8019np3is3bzfigw8fxd6s3259cbhzzh02q6d5p9h3"))))))
+
 (define-public java-junitparams
   (package
     (name "java-junitparams")
