@@ -390,7 +390,7 @@ handy.")
 (define (make-lua-filesystem name lua)
   (package
     (name name)
-    (version "1.7.0.2")
+    (version "1.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -401,7 +401,7 @@ handy.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zmprgkm9zawdf9wnw0v3w6ibaj442wlc6alp39hmw610fl4vghi"))))
+                "0vd1b9rnbjl24bbnk91jrkli81dc1b2kvpjlsx319azjmynlk0y6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
