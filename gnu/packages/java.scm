@@ -8383,7 +8383,7 @@ such as Xtend.")
 (define-public java-javax-mail
   (package
     (name "java-javax-mail")
-    (version "1.5.6")
+    (version "1.6.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://repo1.maven.org/maven2/"
@@ -8392,7 +8392,7 @@ such as Xtend.")
                                   version "-sources.jar"))
               (sha256
                (base32
-                "0sdlfgsc2b5s89xv1261y8i0jijcja019k2x1c8ngfn582w4jly9"))))
+                "15cryjf398x7sy42j5gzlj5cmc2nx05b175b4gclwxj6qg5ly0li"))))
     (build-system ant-build-system)
     (arguments
      `(#:tests? #f ; no tests
