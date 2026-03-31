@@ -12376,6 +12376,38 @@ package, which was removed from the JDK in Java 11.  This is the 1.2.x
 transitional release that still uses the @code{javax.activation} namespace.")
     (license license:edl1.0)))
 
+(define-public java-eclipse-jdt-annotation-2
+  (package
+    (name "java-eclipse-jdt-annotation")
+    (version "2.2.600")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://repo1.maven.org/maven2/"
+                                  "org/eclipse/jdt/org.eclipse.jdt.annotation/"
+                                  version "/org.eclipse.jdt.annotation-"
+                                  version "-sources.jar"))
+              (sha256
+               (base32
+                "1jlq14ivhj32i7glfdmk068ya1spm4wfa9h8h2p326y0fkkzwyp9"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:tests? #f
+       #:jar-name "org.eclipse.jdt.annotation.jar"
+       #:source-dir "."
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'create-pom
+           (generate-pom.xml "pom.xml" "org.eclipse.jdt"
+                             "org.eclipse.jdt.annotation" ,version))
+         (replace 'install (install-from-pom "pom.xml")))))
+    (native-inputs (list unzip))
+    (home-page "https://www.eclipse.org/jdt/")
+    (synopsis "Eclipse JDT null analysis annotations")
+    (description "This package provides the @code{@@NonNull}, @code{@@Nullable},
+and @code{@@NonNullByDefault} annotations used by Eclipse JDT for null
+analysis.")
+    (license license:epl2.0)))
+
 (define-public java-lmax-disruptor
   (package
     (name "java-lmax-disruptor")
