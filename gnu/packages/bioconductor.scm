@@ -27685,16 +27685,6 @@ visualizations for publication-quality multi-panel figures.")
          "1c7vy10ga3cswsqwxljbgqlsjg0d2lx9srfknbjy4fkbyrjci15k"))))
     (properties `((upstream-name . "ballgown")))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; These deprecated procedures have been removed in testthat.
-         (add-after 'unpack 'testthat-compatibility
-           (lambda _
-             (substitute* "tests/testthat/test-annotation.R"
-               (("is_true\\(\\)") "expect_true")
-               (("is_false\\(\\)") "expect_false")))))))
     (propagated-inputs
      (list r-biobase
            r-genomicranges
