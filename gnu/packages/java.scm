@@ -7450,6 +7450,38 @@ CSVFormat class:
 Custom formats can be created using a fluent style API.")
     (license license:asl2.0)))
 
+(define-public java-jaxrs-api-2
+  (package
+    (name "java-jaxrs-api")
+    (version "2.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jakartaee/rest")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1sa490sag5r23hx84haddkbbyn4dlhav4m445k53y53jzs64cs4c"))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:jdk openjdk9
+      #:jar-name "javax.ws.rs-api.jar"
+      #:source-dir "jaxrs-api/src/main/java"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'create-pom
+            (generate-pom.xml "pom.xml" "javax.ws.rs" "javax.ws.rs-api"
+                              #$version))
+          (replace 'install (install-from-pom "pom.xml")))))
+    (home-page "https://github.com/jax-rs")
+    (synopsis "Java API for RESTful Web Services")
+    (description "JAX-RS provides a standardized API for building RESTful
+web services in Java.")
+    (license license:cddl1.1)))
+
 (define-public java-osgi-annotation
   (package
     (name "java-osgi-annotation")
