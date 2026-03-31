@@ -918,7 +918,7 @@ generate API documentation for GNU Guile projects.")
 (define-public guile-dotenv
   (package
    (name "guile-dotenv")
-   (version "0.3.0")
+   (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -927,7 +927,7 @@ generate API documentation for GNU Guile projects.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "139ql729nll2zcqwkqww9ajmbwl9dvzmdnkvzzhxl1r40g9vddy7"))))
+        (base32 "0j2m9nnjp7096gdy2b038p7wrx93hgw6i6rfy4gh9hkvk4q43b1m"))))
    (build-system gnu-build-system)
    (arguments
     (list
