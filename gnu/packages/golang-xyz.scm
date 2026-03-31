@@ -24807,6 +24807,34 @@ standard library.")
      "This package provides XOR bitwise code engine.")
     (license license:expat)))
 
+(define-public go-github-com-termie-go-shutil
+  (package
+    (name "go-github-com-termie-go-shutil")
+    (version "0.0.0-20140729215957-bcacb06fecae")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/termie/go-shutil")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xwdx3qiqxm1bmlzqlf1cgdmrkmmahhdm2piikyhw8cbl3wdih82"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/termie/go-shutil"
+      #:test-flags
+      ;; shutil_test.go:101: open test/testfile3: permission denied
+      #~(list "-skip" "TestCopy")))
+    (home-page "https://github.com/termie/go-shutil")
+    (synopsis "Golang port of Python's shutil")
+    (description
+     "This package implements a direct port of a few of the functions from
+Python's @url{https://docs.python.org/3/library/shutil.html, shutil} package
+for high-level filesystem operations.")
+    (license license:expat)))
+
 (define-public go-github-com-texttheater-golang-levenshtein
   (package
     (name "go-github-com-texttheater-golang-levenshtein")
