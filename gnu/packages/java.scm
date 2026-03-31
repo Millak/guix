@@ -5602,6 +5602,15 @@ including java-asm.")
        (sha256
         (base32 "0q1i01al9mpggf3256iwmhx9yj9pg52v4vi1gdni2x9jcikq65lf"))))))
 
+(define-public java-asm-tree-9.7.1
+  (package
+    (inherit java-asm-tree-9)
+    (name "java-asm-tree")
+    (version (package-version java-asm-9.7.1))
+    (source (package-source java-asm-9.7.1))
+    (inputs
+     (list java-asm-9.7.1))))
+
 (define-public java-cglib
   (package
     (name "java-cglib")
