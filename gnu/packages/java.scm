@@ -15645,6 +15645,91 @@ network protocols, and core version control algorithms.")
     (inputs
      (list java-javaewah java-jsch java-slf4j-api))))
 
+(define-public java-jgit-7
+  (package
+    (name "java-jgit")
+    (version "7.0.0.202409031743-r")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://repo1.maven.org/maven2/"
+                                  "org/eclipse/jgit/org.eclipse.jgit/"
+                                  version "/org.eclipse.jgit-"
+                                  version "-sources.jar"))
+              (sha256
+               (base32
+                "0hdl11cbb6zy39zw4jpg0ip00nikilw7dajrqky6d3l18khjby5k"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:tests? #f                      ; sources jar has no tests
+       #:jar-name "jgit.jar"
+       #:jdk ,openjdk17
+       #:modules ((guix build ant-build-system)
+                  (guix build utils)
+                  (guix build java-utils)
+                  (srfi srfi-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'build 'add-properties
+           (lambda* (#:key jar-name #:allow-other-keys)
+             (with-directory-excursion "src"
+               (apply invoke "jar" "-uf"
+                      (string-append "../build/jar/" jar-name)
+                      (find-files "." "\\.properties$")))
+             (let* ((pkgs (delete-duplicates
+                           (filter-map
+                            (lambda (f)
+                              (let* ((d (dirname f))
+                                     (d (if (string-prefix? "./" d)
+                                            (substring d 2)
+                                            d)))
+                                (and (not (string-null? d))
+                                     (not (string=? d "."))
+                                     (string-map
+                                      (lambda (c)
+                                        (if (char=? c #\/) #\. c))
+                                      d))))
+                            (with-directory-excursion "build/classes"
+                              (find-files "." "\\.class$")))))
+                    (export-pkg (string-join (sort pkgs string<?) ",")))
+               ;; Write manifest with continuation lines for long values.
+               ;; Manifest spec: max 72 bytes per line, continuation
+               ;; lines start with a single space.
+               (call-with-output-file "osgi-manifest.mf"
+                 (lambda (port)
+                   (for-each
+                    (lambda (line)
+                      (let loop ((s line))
+                        (if (<= (string-length s) 70)
+                            (begin (display s port) (newline port))
+                            (begin (display (substring s 0 70) port)
+                                   (newline port)
+                                   (loop (string-append
+                                          " " (substring s 70)))))))
+                    (list
+                     "Bundle-ManifestVersion: 2"
+                     "Bundle-SymbolicName: org.eclipse.jgit"
+                     (string-append "Bundle-Version: " ,version)
+                     (string-append "Export-Package: " export-pkg)
+                     (string-append
+                      "Import-Package: com.googlecode.javaewah,"
+                      "javax.crypto,javax.management,javax.net.ssl,"
+                      "org.apache.commons.codec.digest,"
+                      "org.slf4j,org.xml.sax,org.xml.sax.helpers")))
+                   (newline port))))
+             (invoke "jar" "ufm" (string-append "build/jar/" jar-name)
+                     "osgi-manifest.mf")))
+         (replace 'install
+           (install-from-pom
+            "src/META-INF/maven/org.eclipse.jgit/org.eclipse.jgit/pom.xml")))))
+    (inputs
+     (list java-commons-codec java-javaewah-1.2.3 java-slf4j-api))
+    (home-page "https://eclipse.org/jgit/")
+    (synopsis "Java library implementing the Git version control system")
+    (description "JGit is a lightweight, pure Java library implementing the
+Git version control system, providing repository access routines, support for
+network protocols, and core version control algorithms.")
+    (license license:edl1.0)))
+
 (define-public abcl
   (package
     (name "abcl")
