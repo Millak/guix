@@ -295,15 +295,16 @@ prompt the user with the option to go with insecure DNS only.")
 (define-public dnsmasq
   (package
     (name "dnsmasq")
-    (version "2.90")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://www.thekelleys.org.uk/dnsmasq/dnsmasq-"
-                    version ".tar.xz"))
-              (sha256
-               (base32
-                "1r09l537vi867hlpv6vl7nvqhscvq1kf04m896bfrgrpv2dk0l4f"))))
+    (version "2.92")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "http://thekelleys.org.uk/git/dnsmasq.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "055gn5kigz0m9y09vig97s1g257hnlkhw4wv9d9wdficnsxcbwwm"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
