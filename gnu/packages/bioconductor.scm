@@ -6421,17 +6421,6 @@ objects.")
         (base32 "189akh4lpbp0dzgflb3nb3vi94bhmsj7qkcl597dnnzxqz00hsb2"))))
     (properties `((upstream-name . "CoreGx")))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; It is unclear why 3 tests fail.
-             (with-directory-excursion "tests/testthat"
-               (substitute* "test-LongTable-utils.R"
-                 ((".*doesn't miss assay observations.*" m)
-                  (string-append m "skip('guix')\n")))))))))
     (propagated-inputs
      (list r-bench
            r-biobase
