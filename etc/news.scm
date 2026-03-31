@@ -46,7 +46,8 @@
  (entry (commit "a7c8e68dc51144a6d3981b770aca9c4897fc7c0c")
         (title
          (en "Records can refer to inherited values of thunked fields")
-         (de "Vererbung in Verbundsobjekten erlaubt Verweise auf geerbte Werte verzögert ausgewerteter Felder"))
+         (de "Vererbung in Verbundsobjekten erlaubt Verweise auf geerbte Werte verzögert ausgewerteter Felder")
+         (pt "Registros podem referir-se a valores herdados de campos ainda não evaluados (thunks)"))
         (body
          (en "A new feature has been added to records—the facility used when
 defining packages, services, operating systems, and many other things—that,
@@ -114,7 +115,42 @@ Verbundstypen aus, die mit @code{define-record-type*} erstellt wurden:
 und so weiter.
 
 Hinweis: das ist eine inkompatible Änderung. Die neu eingeführte Bindung –
-@code{inputs} im obigen Beispiel – kann gleichnamige Bindungen überschatten.")))
+@code{inputs} im obigen Beispiel – kann gleichnamige Bindungen überschatten.")
+         (pt "Um novo recurso foi adicionado aos registros - a ferramenta
+usada quando se definem pacotes, serviços, sistemas operacionais, e muitas
+outras coisas - que, quando herdados de outro registro, te permitem referir
+aos valores de campos herdados.  Durante a definição de variantes de pacotes,
+você pode encontrar este padrão:
+
+@lisp
+(package
+  (inherit gdb)
+  (inputs (modify-inputs (package-inputs gdb)
+            (delete \"guile\"))))
+@end lisp
+
+Agora isto pode ser escrito desta forma:
+
+@lisp
+(package
+  (inherit gdb)
+  (inputs (modify-inputs inputs ;<- Note a modificação
+            (delete \"guile\"))))
+@end lisp
+
+Dentro do corpo de @code{inputs}, o identificador @code{inputs} agora está
+atrelado ao @dfn{valor herdado} - id est, ap valor que este campo herda de
+@code{gdb}.  O mesmo mecanismo pode ser empregado ao modificar outros campos
+da entrada ou ao campo @code{arguments}.  É menos verboso mas também
+@uref{https://issues.guix.gnu.org/50335, é mais preciso}.
+
+Esta mudança se aplica aos campos \"thunk-ados\" de todos os tipos de registro
+produzidos por @code{define-record-type*}: @code{package}, @code{origin},
+@code{operating-system}, @code{home-environment}, e assim por diante.
+
+Note que esta é uma modificação incompatível: as ligações introduzidas
+recentemente - @code{inputs} no exemplo acima - podem sombrear ligações de
+mesmo nome.")))
 
  (entry (commit "b52ce9041ad58aeababd2d50d3e72bc23dffff60")
         (title
