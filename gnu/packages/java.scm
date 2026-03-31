@@ -10009,6 +10009,45 @@ package contains the compendium specification module, providing interfaces
 and classes for use in compiling bundles.")
       (license license:asl2.0))))
 
+(define-public java-felix-resolver-2
+  (package
+    (name "java-felix-resolver")
+    (version "2.0.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/apache/felix-dev")
+                    (commit (string-append "org.apache.felix.resolver-"
+                                           version))))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (for-each delete-file
+                            (find-files "." "\\.jar$"))
+                  #t))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lkwh6q58vm0inll8zaqizwfvw8d7kzaff0x6lwa17j9k91yllyf"))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:jar-name "org.apache.felix.resolver.jar"
+      #:source-dir "resolver/src/main/java"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'create-pom
+            (generate-pom.xml "pom.xml" "org.apache.felix"
+                              "org.apache.felix.resolver" #$version))
+          (replace 'install (install-from-pom "pom.xml")))))
+    (inputs (list java-osgi-annotation java-osgi-core))
+    (home-page "https://felix.apache.org/")
+    (synopsis "Apache Felix OSGi resolver")
+    (description "Apache Felix Resolver implements the OSGi resolver
+specification, providing dependency resolution for OSGi bundles.")
+    (license license:asl2.0)))
+
 (define-public java-osgi-service-component-annotations
   (package
     (name "java-osgi-service-component-annotations")
