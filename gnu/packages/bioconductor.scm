@@ -11359,17 +11359,6 @@ high distances can be flagged as potentially low-quality.")
        ;; Avoid dependency cycle.
        (updater-ignored-native-inputs . ("r-spectra"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         ;; This test uses a deprecated procedure that has since been removed
-         ;; from testthat.
-         (add-after 'unpack 'testthat-compatibility
-           (lambda _
-             (substitute* "tests/testthat/test_zzz.R"
-               ((".*.onLoad works.*" m)
-                (string-append m "skip('guix')\n"))))))))
     (propagated-inputs (list r-biocparallel r-mscoreutils))
     (native-inputs (list r-callr r-knitr r-microbenchmark r-robustbase
                          r-testthat))
