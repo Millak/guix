@@ -8831,13 +8831,13 @@ previous requests in the same cassette use a cached HTTP response.")
 (define-public r-venn
   (package
     (name "r-venn")
-    (version "1.12")
+    (version "1.13")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "venn" version))
        (sha256
-        (base32 "07bjv0m21gljdr3sj1z9rp6xhgxspah9j1m3a8rskvlwv6dvd1pd"))))
+        (base32 "17ifis5al6d13hy2ffbyi2f0rqhznwfs75w1fzs406bq9vzziaji"))))
     (properties `((upstream-name . "venn")))
     (build-system r-build-system)
     (propagated-inputs (list r-admisc))
