@@ -12630,6 +12630,34 @@ public Bundle getBundle()"))
 libraries from source.")
     (license license:asl2.0)))
 
+(define-public java-json-simple-1.1.1
+  (package
+    (name "java-json-simple")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fangyidong/json-simple.git")
+             (commit "tag_release_1_1_1")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c598dvms70fs6w3l1dc0z7lqq3hndd5250ciwqm8xk3zbx465kf"))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:build-target "jar"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (install-from-pom "pom.xml")))))
+    (home-page "https://github.com/fangyidong/json-simple")
+    (synopsis "Simple JSON toolkit for Java")
+    (description
+     "JSON.simple is a small JSON parser and encoder for Java.")
+    (license license:asl2.0)))
+
 (define-public java-gson
   (package
     (name "java-gson")
