@@ -1,0 +1,144 @@
+From 6f12ff22c3a902db64ef2bc4f94cb2ad4b26f4ce Mon Sep 17 00:00:00 2001
+From: Danny Milosavljevic <dannym@nova.friendly-machines.com>
+Date: Tue, 31 Mar 2026 05:24:04 +0000
+Subject: [PATCH 2/2] Wayland: enable intra-JVM drag-and-drop transfers
+
+Advertise JAVA_DATAFLAVOR natives for local drags, register the current JVM-local Transferable before starting the drag, and let the drop target fall back to the source actions when Wayland MIME negotiation stays at zero for a local Java-object transfer.
+---
+ .../sun/awt/wl/WLDragSourceContextPeer.java   | 42 +++++++++++++++++--
+ .../sun/awt/wl/WLDropTargetContextPeer.java   | 11 ++++-
+ 2 files changed, 48 insertions(+), 5 deletions(-)
+
+diff --git a/src/java.desktop/unix/classes/sun/awt/wl/WLDragSourceContextPeer.java b/src/java.desktop/unix/classes/sun/awt/wl/WLDragSourceContextPeer.java
+index 46747ddca..3490b9f2b 100644
+--- a/src/java.desktop/unix/classes/sun/awt/wl/WLDragSourceContextPeer.java
++++ b/src/java.desktop/unix/classes/sun/awt/wl/WLDragSourceContextPeer.java
+@@ -28,6 +28,7 @@
+ import sun.awt.AWTAccessor;
+ import sun.awt.CustomCursor;
+ import sun.awt.dnd.SunDragSourceContextPeer;
++import sun.awt.dnd.SunDropTargetContextPeer;
+ 
+ import java.awt.Cursor;
+ import java.awt.Dimension;
+@@ -35,7 +36,9 @@
+ import java.awt.Point;
+ import java.awt.datatransfer.DataFlavor;
+ import java.awt.datatransfer.Transferable;
++import java.awt.dnd.DnDConstants;
+ import java.awt.dnd.DragGestureEvent;
++import java.util.HashSet;
+ import java.util.Map;
+ 
+ public class WLDragSourceContextPeer extends SunDragSourceContextPeer {
+@@ -59,7 +62,9 @@ private synchronized void sendFinishedEvent() {
+             }
+             didSendFinishedEvent = true;
+ 
+-            final int javaAction = didSucceed ? WLDataDevice.waylandActionsToJava(action) : 0;
++            final int javaAction = didSucceed
++                    ? WLDataDevice.waylandActionsToJava(action)
++                    : DnDConstants.ACTION_NONE;
+             final int x = WLToolkit.getInputState().getPointerX();
+             final int y = WLToolkit.getInputState().getPointerY();
+             WLDragSourceContextPeer.this.dragDropFinished(didSucceed, javaAction, x, y);
+@@ -149,15 +154,41 @@ private void handleSourceActionChanged(int previousWaylandAction, int waylandAct
+         int javaAction = WLDataDevice.waylandActionsToJava(waylandAction);
+         int previousJavaAction = WLDataDevice.waylandActionsToJava(previousWaylandAction);
+ 
+-        if (previousJavaAction == 0 && javaAction != 0) {
++        if (previousJavaAction == DnDConstants.ACTION_NONE
++                && javaAction != DnDConstants.ACTION_NONE) {
+             postDragSourceDragEvent(javaAction, modifiers, x, y, DISPATCH_ENTER);
+-        } else if (previousJavaAction != 0 && javaAction == 0) {
++        } else if (previousJavaAction != DnDConstants.ACTION_NONE
++                && javaAction == DnDConstants.ACTION_NONE) {
+             dragExit(x, y);
+-        } else if (previousJavaAction != 0) {
++        } else if (previousJavaAction != DnDConstants.ACTION_NONE) {
+             postDragSourceDragEvent(javaAction, modifiers, x, y, DISPATCH_CHANGED);
+         }
+     }
+ 
++    private void offerJavaFlavorMimes(WLDragSource source, Transferable trans) {
++        var transferer = (WLDataTransferer) WLDataTransferer.getInstance();
++        var flavorTable = transferer.getFlavorTable();
++        var extraMimes = new HashSet<String>();
++        var flavors = trans.getTransferDataFlavors();
++
++        if (flavors == null) {
++            return;
++        }
++
++        for (DataFlavor flavor : flavors) {
++            if (flavor == null) {
++                continue;
++            }
++            for (String nativeName : flavorTable.getNativesForFlavor(flavor)) {
++                if (nativeName != null
++                        && nativeName.startsWith("JAVA_DATAFLAVOR:")
++                        && extraMimes.add(nativeName)) {
++                    source.offerExtraMime(nativeName);
++                }
++            }
++        }
++    }
++
+     @Override
+     protected void startDrag(Transferable trans, long[] formats, Map<Long, DataFlavor> formatMap) {
+         var mainSurface = getSurface();
+@@ -167,6 +198,7 @@ protected void startDrag(Transferable trans, long[] formats, Map<Long, DataFlavo
+ 
+         // formats and formatMap are unused, because WLDataSource already references the same DataTransferer singleton
+         var source = new WLDragSource(trans);
++        offerJavaFlavorMimes(source, trans);
+ 
+         var actions = getDragSourceContext().getSourceActions();
+         int waylandActions = WLDataDevice.javaActionsToWayland(actions);
+@@ -199,9 +231,11 @@ protected void startDrag(Transferable trans, long[] formats, Map<Long, DataFlavo
+             activeDragSourceUsesCursorFallback = usesCursorFallback;
+         }
+         try {
++            SunDropTargetContextPeer.setCurrentJVMLocalSourceTransferable(trans);
+             dataDevice.startDrag(source, mainSurface.getWlSurfacePtr(), eventSerial);
+         } catch (RuntimeException | Error e) {
+             finishDragSource(source);
++            SunDropTargetContextPeer.setCurrentJVMLocalSourceTransferable(null);
+             throw e;
+         }
+     }
+diff --git a/src/java.desktop/unix/classes/sun/awt/wl/WLDropTargetContextPeer.java b/src/java.desktop/unix/classes/sun/awt/wl/WLDropTargetContextPeer.java
+index 76e47a133..757e20652 100644
+--- a/src/java.desktop/unix/classes/sun/awt/wl/WLDropTargetContextPeer.java
++++ b/src/java.desktop/unix/classes/sun/awt/wl/WLDropTargetContextPeer.java
+@@ -31,6 +31,7 @@
+ import sun.awt.dnd.SunDropTargetEvent;
+ 
+ import java.awt.Component;
++import java.awt.dnd.DnDConstants;
+ import java.awt.event.MouseEvent;
+ import java.io.IOException;
+ 
+@@ -67,10 +68,18 @@ private synchronized void postEvent(int event) {
+         var x = peer.surfaceUnitsToJavaUnits((int) currentX);
+         var y = peer.surfaceUnitsToJavaUnits((int) currentY);
+         var actions = WLDataDevice.waylandActionsToJava(currentOffer.getSourceActions());
+-        int dropAction = 0;
++        int dropAction = DnDConstants.ACTION_NONE;
+ 
+         if (hasTarget() && event != MouseEvent.MOUSE_EXITED) {
++            // For intra-JVM transfers, the Wayland-level action negotiation
++            // may fail (no matching MIME types for Java object flavors).
++            // Fall back to the source actions directly.
+             dropAction = WLDataDevice.waylandActionsToJava(currentOffer.getSelectedAction());
++            if (dropAction == DnDConstants.ACTION_NONE
++                    && currentJVMLocalSourceTransferable != null) {
++                dropAction = SunDragSourceContextPeer.convertModifiersToDropAction(
++                        WLToolkit.getInputState().getModifiers(), actions);
++            }
+         }
+ 
+         postDropTargetEvent(
+-- 
+2.52.0
+

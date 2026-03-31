@@ -2008,6 +2008,67 @@ OpenJDK.")
     (home-page "https://www.jetbrains.com/")
     (license license:gpl2+)))
 
+(define-public jbr25
+  (package
+    (inherit openjdk25)
+    (name "jbr")
+    (version "25.0.2b329.72")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/JetBrains/JetBrainsRuntime.git")
+                     (commit (string-append "jbr-release-" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1m7pbz2ypx4h7n6iqss8bgymg9hqn14lnis4a2w87mgy51p370ib"))
+              (patches
+               (search-patches "jbr-25-wayland-drag-icon.patch"
+                               "jbr-25-wayland-intra-jvm-dnd.patch"))))
+    (inputs
+     `(("wayland" ,wayland)
+       ("libxkbcommon" ,libxkbcommon) ; for wayland
+       ,@(package-inputs openjdk25)))
+    (native-inputs
+     (modify-inputs (package-native-inputs openjdk25)
+       (append wayland-protocols)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openjdk25)
+       ((#:configure-flags configure-flags)
+        #~(append #$configure-flags
+                  (list "--disable-warnings-as-errors"
+                        "--disable-java-warnings-as-errors"
+                        "--with-jvm-features=shenandoahgc"
+                        "--enable-cds=yes"
+                        (string-append "--with-wayland-protocols="
+                         (assoc-ref %build-inputs "wayland-protocols")
+                         "/share/wayland-protocols")
+                        "--with-vendor-name=JetBrains s.r.o"
+                        "--with-vendor-url=https://www.jetbrains.com/"
+                        "--with-vendor-bug-url=https://youtrack.jetbrains.com/issues/JBR")))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            ;; JBR adds a 'static-jdk-image' target to 'make all' that
+            ;; statically links both the Wayland and X11 AWT backends,
+            ;; causing duplicate symbol errors.  Build only what we need.
+            ;; See also their workaround BROKEN_STATIC_LIBS make variable.
+            (replace 'build
+              (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+                (apply invoke "make" "product-images" "all-docs-images"
+                       (format #f "JOBS=~a" (if parallel-build?
+                                                (parallel-job-count)
+                                                1))
+                       make-flags)))))))
+    (synopsis "JetBrains Java Runtime")
+    (description "This package provides a Java runtime environment for
+and Java development kit.  It supports enhanced class redefinition (DCEVM),
+includes a number of improvements in font rendering, keyboards support,
+windowing/focus subsystems, Wayland, HiDPI, accessibility, and performance,
+provides better desktop integration and bugfixes not yet present in
+OpenJDK.")
+    (home-page "https://www.jetbrains.com/")
+    (license license:gpl2+)))
+
 
 (define-public ant/java8
   (package

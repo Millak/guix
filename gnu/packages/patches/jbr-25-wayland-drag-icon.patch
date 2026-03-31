@@ -1,0 +1,508 @@
+From 0602a477881f7d4047edd2ffe2b6f5157fda9bc9 Mon Sep 17 00:00:00 2001
+From: Danny Milosavljevic <dannym@nova.friendly-machines.com>
+Date: Tue, 31 Mar 2026 05:11:27 +0000
+Subject: [PATCH 1/2] Wayland: fix drag icon updates during drag-and-drop
+
+Expose the actual cursor image and size to the Wayland peer, provide DnD cursor desktop properties, and use the Wayland drag icon surface as the drag-and-drop status channel. Preserve application-supplied drag images, update cursor-derived fallback icons during action changes, pad drag icon buffers for compositor scale requirements, and reuse the drag icon surface so later status changes reach the compositor.
+---
+ .../share/classes/sun/awt/CustomCursor.java   |  21 ++-
+ .../classes/sun/awt/wl/WLCursorManager.java   |  30 +++++
+ .../unix/classes/sun/awt/wl/WLDataSource.java |  32 +++--
+ .../sun/awt/wl/WLDragSourceContextPeer.java   | 122 ++++++++++++++++--
+ .../unix/classes/sun/awt/wl/WLToolkit.java    |  11 +-
+ .../unix/native/libawt_wlawt/WLCursor.c       |  14 ++
+ .../unix/native/libawt_wlawt/WLDataDevice.c   |  37 +++++-
+ 7 files changed, 243 insertions(+), 24 deletions(-)
+
+diff --git a/src/java.desktop/share/classes/sun/awt/CustomCursor.java b/src/java.desktop/share/classes/sun/awt/CustomCursor.java
+index 2b65c5dbe..aa7e5559d 100644
+--- a/src/java.desktop/share/classes/sun/awt/CustomCursor.java
++++ b/src/java.desktop/share/classes/sun/awt/CustomCursor.java
+@@ -37,6 +37,8 @@
+ public abstract class CustomCursor extends Cursor {
+ 
+     protected Image image;
++    private Image cursorImage;
++    private Point hotSpot;
+ 
+     public CustomCursor(Image cursor, Point hotSpot, String name)
+             throws IndexOutOfBoundsException {
+@@ -80,6 +82,9 @@ public CustomCursor(Image cursor, Point hotSpot, String name)
+             throw new IndexOutOfBoundsException("invalid hotSpot");
+         }
+ 
++        cursorImage = cursor;
++        this.hotSpot = new Point(hotSpot);
++
+         /* Extract ARGB array from image.
+          *
+          * A transparency mask can be created in native code by checking
+@@ -96,10 +101,24 @@ public CustomCursor(Image cursor, Point hotSpot, String name)
+         } catch (InterruptedException e) {
+         }
+ 
+-        createNativeCursor(image, pixels, width, height, hotSpot.x, hotSpot.y);
++        createNativeCursor(cursorImage, pixels, width, height, hotSpot.x, hotSpot.y);
+     }
+ 
+     protected abstract void createNativeCursor(Image im,  int[] pixels,
+                                                int width, int height,
+                                                int xHotSpot, int yHotSpot);
++
++    /**
++     * Returns the image used to create the native cursor.
++     */
++    public Image getImage() {
++        return cursorImage;
++    }
++
++    /**
++     * Returns the hotspot used to create the native cursor.
++     */
++    public Point getHotSpot() {
++        return new Point(hotSpot);
++    }
+ }
+diff --git a/src/java.desktop/unix/classes/sun/awt/wl/WLCursorManager.java b/src/java.desktop/unix/classes/sun/awt/wl/WLCursorManager.java
+index 75927e762..0b1ef8d57 100644
+--- a/src/java.desktop/unix/classes/sun/awt/wl/WLCursorManager.java
++++ b/src/java.desktop/unix/classes/sun/awt/wl/WLCursorManager.java
+@@ -29,6 +29,7 @@
+ import sun.awt.AWTAccessor;
+ import sun.util.logging.PlatformLogger;
+ 
++import java.awt.Dimension;
+ import java.awt.Cursor;
+ import java.awt.GraphicsConfiguration;
+ 
+@@ -139,7 +140,36 @@ private long createNativeCursor(int type, int scale) {
+         return 0;
+     }
+ 
++    /**
++     * Returns the width and height in pixels of the given cursor at the
++     * specified display scale. Returns null if the cursor is unavailable.
++     */
++    public static Dimension getCursorSize(Cursor cursor, int scale) {
++        if (cursor == null) {
++            return null;
++        }
++
++        synchronized (instance) {
++            long pData = AWTAccessor.getCursorAccessor().getPData(cursor, scale);
++            if (pData == 0 && cursor.getType() == Cursor.CUSTOM_CURSOR) {
++                pData = AWTAccessor.getCursorAccessor().getPData(cursor);
++            }
++            if (pData <= 0) {
++                return null;
++            }
++
++            int w = nativeGetCursorWidth(pData);
++            int h = nativeGetCursorHeight(pData);
++            if (w <= 0 || h <= 0) {
++                return null;
++            }
++            return new Dimension(w, h);
++        }
++    }
++
+     private static native void nativeSetCursor(long pData, int scale, long pointerEnterSerial);
+     private static native long nativeGetPredefinedCursor(String name, int scale);
+     private static native void nativeDestroyPredefinedCursor(long pData);
++    private static native int nativeGetCursorWidth(long pData);
++    private static native int nativeGetCursorHeight(long pData);
+ }
+diff --git a/src/java.desktop/unix/classes/sun/awt/wl/WLDataSource.java b/src/java.desktop/unix/classes/sun/awt/wl/WLDataSource.java
+index 260aab964..2ecc52619 100644
+--- a/src/java.desktop/unix/classes/sun/awt/wl/WLDataSource.java
++++ b/src/java.desktop/unix/classes/sun/awt/wl/WLDataSource.java
+@@ -103,22 +103,38 @@ public void setDnDIcon(Image image, int scale, int offsetX, int offsetY) {
+ 
+         int width = image.getWidth(null);
+         int height = image.getHeight(null);
+-        int[] pixels = new int[width * height];
++        int paddedWidth = width;
++        int paddedHeight = height;
++        Image iconImage = image;
++
++        if (scale > 1) {
++            paddedWidth = ((width + scale - 1) / scale) * scale;
++            paddedHeight = ((height + scale - 1) / scale) * scale;
++            if (paddedWidth != width || paddedHeight != height) {
++                BufferedImage paddedImage = new BufferedImage(paddedWidth, paddedHeight, BufferedImage.TYPE_INT_ARGB);
++                Graphics2D g = paddedImage.createGraphics();
++                g.drawImage(image, 0, 0, null);
++                g.dispose();
++                iconImage = paddedImage;
++            }
++        }
++
++        int[] pixels = new int[paddedWidth * paddedHeight];
+ 
+-        if (image instanceof BufferedImage) {
++        if (iconImage instanceof BufferedImage) {
+             // NOTE: no need to ensure that the BufferedImage is TYPE_INT_ARGB,
+             // getRGB() does pixel format conversion automatically
+-            ((BufferedImage) image).getRGB(0, 0, width, height, pixels, 0, width);
++            ((BufferedImage) iconImage).getRGB(0, 0, paddedWidth, paddedHeight, pixels, 0, paddedWidth);
+         } else {
+-            BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
++            BufferedImage bufferedImage = new BufferedImage(paddedWidth, paddedHeight, BufferedImage.TYPE_INT_ARGB);
+             Graphics2D g = bufferedImage.createGraphics();
+-            g.drawImage(image, 0, 0, null);
++            g.drawImage(iconImage, 0, 0, null);
+             g.dispose();
+ 
+-            bufferedImage.getRGB(0, 0, width, height, pixels, 0, width);
++            bufferedImage.getRGB(0, 0, paddedWidth, paddedHeight, pixels, 0, paddedWidth);
+         }
+ 
+-        setDnDIconImpl(nativePtr, scale, width, height, offsetX, offsetY, pixels);
++        setDnDIconImpl(nativePtr, scale, paddedWidth, paddedHeight, offsetX, offsetY, pixels);
+     }
+ 
+     public void offerExtraMime(String mime) {
+@@ -152,4 +168,4 @@ protected void handleDnDDropPerformed() {}
+     protected void handleDnDFinished() {}
+ 
+     protected void handleDnDAction(int action) {}
+-}
+\ No newline at end of file
++}
+diff --git a/src/java.desktop/unix/classes/sun/awt/wl/WLDragSourceContextPeer.java b/src/java.desktop/unix/classes/sun/awt/wl/WLDragSourceContextPeer.java
+index afd727d1a..46747ddca 100644
+--- a/src/java.desktop/unix/classes/sun/awt/wl/WLDragSourceContextPeer.java
++++ b/src/java.desktop/unix/classes/sun/awt/wl/WLDragSourceContextPeer.java
+@@ -26,9 +26,13 @@
+ package sun.awt.wl;
+ 
+ import sun.awt.AWTAccessor;
++import sun.awt.CustomCursor;
+ import sun.awt.dnd.SunDragSourceContextPeer;
+ 
+ import java.awt.Cursor;
++import java.awt.Dimension;
++import java.awt.Image;
++import java.awt.Point;
+ import java.awt.datatransfer.DataFlavor;
+ import java.awt.datatransfer.Transferable;
+ import java.awt.dnd.DragGestureEvent;
+@@ -36,6 +40,8 @@
+ 
+ public class WLDragSourceContextPeer extends SunDragSourceContextPeer {
+     private final WLDataDevice dataDevice;
++    private WLDragSource activeDragSource;
++    private boolean activeDragSourceUsesCursorFallback;
+ 
+     private class WLDragSource extends WLDataSource {
+         private int action;
+@@ -47,7 +53,7 @@ private class WLDragSource extends WLDataSource {
+             super(dataDevice, WLDataDevice.DATA_TRANSFER_PROTOCOL_WAYLAND, data);
+         }
+ 
+-        private void sendFinishedEvent() {
++        private synchronized void sendFinishedEvent() {
+             if (didSendFinishedEvent) {
+                 return;
+             }
+@@ -67,7 +73,11 @@ protected synchronized void handleDnDAction(int action) {
+             // except for maybe action(dnd_ask), but since we do not announce support for dnd_ask,
+             // we don't need to worry about it.
+             if (!didSucceed) {
++                int previousAction = this.action;
+                 this.action = action;
++                if (previousAction != action) {
++                    WLDragSourceContextPeer.this.handleSourceActionChanged(previousAction, action);
++                }
+             }
+         }
+ 
+@@ -78,8 +88,8 @@ protected synchronized void handleDnDDropPerformed() {
+ 
+         @Override
+         protected synchronized void handleDnDFinished() {
++            WLDragSourceContextPeer.this.finishDragSource(this);
+             sendFinishedEvent();
+-            destroy();
+         }
+ 
+         @Override
+@@ -88,9 +98,9 @@ protected synchronized void handleTargetAcceptsMime(String mime) {
+         }
+ 
+         @Override
+-        protected void handleCancelled() {
++        protected synchronized void handleCancelled() {
++            WLDragSourceContextPeer.this.finishDragSource(this);
+             sendFinishedEvent();
+-            super.handleCancelled();
+         }
+     }
+ 
+@@ -119,6 +129,35 @@ private WLMainSurface getSurface() {
+         return null;
+     }
+ 
++    private synchronized void activateDragSource(WLDragSource dragSource) {
++        activeDragSource = dragSource;
++    }
++
++    private synchronized void finishDragSource(WLDragSource dragSource) {
++        if (activeDragSource == dragSource) {
++            activeDragSource = null;
++            activeDragSourceUsesCursorFallback = false;
++        }
++        dragSource.destroy();
++    }
++
++    private void handleSourceActionChanged(int previousWaylandAction, int waylandAction) {
++        var inputState = WLToolkit.getInputState();
++        int x = inputState.getPointerX();
++        int y = inputState.getPointerY();
++        int modifiers = inputState.getModifiers();
++        int javaAction = WLDataDevice.waylandActionsToJava(waylandAction);
++        int previousJavaAction = WLDataDevice.waylandActionsToJava(previousWaylandAction);
++
++        if (previousJavaAction == 0 && javaAction != 0) {
++            postDragSourceDragEvent(javaAction, modifiers, x, y, DISPATCH_ENTER);
++        } else if (previousJavaAction != 0 && javaAction == 0) {
++            dragExit(x, y);
++        } else if (previousJavaAction != 0) {
++            postDragSourceDragEvent(javaAction, modifiers, x, y, DISPATCH_CHANGED);
++        }
++    }
++
+     @Override
+     protected void startDrag(Transferable trans, long[] formats, Map<Long, DataFlavor> formatMap) {
+         var mainSurface = getSurface();
+@@ -134,21 +173,88 @@ protected void startDrag(Transferable trans, long[] formats, Map<Long, DataFlavo
+ 
+         source.setDnDActions(waylandActions);
+ 
++        int scale = mainSurface.getGraphicsDevice().getDisplayScale();
+         var dragImage = getDragImage();
++        Point dragImageOffset = null;
++        boolean usesCursorFallback = false;
++        if (dragImage == null) {
++            dragImage = cursorToImage(getDragSourceContext().getCursor());
++            if (dragImage != null) {
++                dragImageOffset = cursorToDragImageOffset(getDragSourceContext().getCursor(), scale);
++                usesCursorFallback = true;
++            }
++        } else {
++            dragImageOffset = getDragImageOffset();
++        }
+         if (dragImage != null) {
+-            var dragImageOffset = getDragImageOffset();
+             source.setDnDIcon(dragImage,
+-                    mainSurface.getGraphicsDevice().getDisplayScale(),
++                    scale,
+                     dragImageOffset.x, dragImageOffset.y);
+         }
+ 
+         long eventSerial = WLToolkit.getInputState().pointerButtonSerial();
+ 
+-        dataDevice.startDrag(source, mainSurface.getWlSurfacePtr(), eventSerial);
++        synchronized (this) {
++            activateDragSource(source);
++            activeDragSourceUsesCursorFallback = usesCursorFallback;
++        }
++        try {
++            dataDevice.startDrag(source, mainSurface.getWlSurfacePtr(), eventSerial);
++        } catch (RuntimeException | Error e) {
++            finishDragSource(source);
++            throw e;
++        }
+     }
+ 
+     @Override
+     protected void setNativeCursor(long nativeCtxt, Cursor c, int cType) {
+-        // TODO: setting cursor here doesn't seem to be required on Wayland?
++        // On Wayland, cursor changes during a drag are expressed by
++        // updating the drag icon surface content.
++        var mainSurface = getSurface();
++        int scale = mainSurface != null ? mainSurface.getGraphicsDevice().getDisplayScale() : 1;
++
++        synchronized (this) {
++            if (activeDragSource == null) {
++                return;
++            }
++            if (!activeDragSourceUsesCursorFallback) {
++                return;
++            }
++
++            Image image = cursorToImage(c);
++            if (image == null) {
++                return;
++            }
++
++            Point dragImageOffset = cursorToDragImageOffset(c, scale);
++            activeDragSource.setDnDIcon(image, scale, dragImageOffset.x, dragImageOffset.y);
++        }
++    }
++
++    private static Image cursorToImage(Cursor cursor) {
++        if (cursor instanceof CustomCursor cc) {
++            return cc.getImage();
++        }
++        return null;
++    }
++
++    private static Point cursorToDragImageOffset(Cursor cursor, int scale) {
++        Dimension cursorSize = WLCursorManager.getCursorSize(cursor, scale);
++        if (cursorSize == null) {
++            Image image = cursorToImage(cursor);
++            if (image != null) {
++                cursorSize = new Dimension(image.getWidth(null), image.getHeight(null));
++            }
++        }
++
++        if (cursorSize == null) {
++            return new Point(0, 0);
++        }
++
++        // This is only for the Wayland fallback path where no application drag
++        // image was supplied and we reuse DnD cursor artwork as the drag icon.
++        // Keep that fallback icon visible by placing it one cursor width/height
++        // away from the pointer hotspot, expressed in surface-local coordinates.
++        return new Point(cursorSize.width / scale, cursorSize.height / scale);
+     }
+ }
+diff --git a/src/java.desktop/unix/classes/sun/awt/wl/WLToolkit.java b/src/java.desktop/unix/classes/sun/awt/wl/WLToolkit.java
+index 058306539..e768cbfd8 100644
+--- a/src/java.desktop/unix/classes/sun/awt/wl/WLToolkit.java
++++ b/src/java.desktop/unix/classes/sun/awt/wl/WLToolkit.java
+@@ -983,9 +983,18 @@ public int getNumberOfButtons(){
+         return MOUSE_BUTTONS_COUNT;
+     }
+ 
++    private static final String DND_CURSOR_PREFIX = "DnD.Cursor.";
++
+     @Override
+     protected Object lazilyLoadDesktopProperty(String name) {
+-        if (log.isLoggable(PlatformLogger.Level.FINE)) {
++        if (name.startsWith(DND_CURSOR_PREFIX)) {
++            String cursorName = name.substring(DND_CURSOR_PREFIX.length()) + ".32x32";
++            try {
++                return Cursor.getSystemCustomCursor(cursorName);
++            } catch (AWTException awte) {
++                throw new RuntimeException("cannot load system cursor: " + cursorName, awte);
++            }
++        } else if (log.isLoggable(PlatformLogger.Level.FINE)) {
+             log.fine("Not implemented: WLToolkit.lazilyLoadDesktopProperty()");
+         }
+         return null;
+diff --git a/src/java.desktop/unix/native/libawt_wlawt/WLCursor.c b/src/java.desktop/unix/native/libawt_wlawt/WLCursor.c
+index f56f39d16..6d1a95460 100644
+--- a/src/java.desktop/unix/native/libawt_wlawt/WLCursor.c
++++ b/src/java.desktop/unix/native/libawt_wlawt/WLCursor.c
+@@ -100,6 +100,20 @@ JNIEXPORT void JNICALL Java_sun_awt_wl_WLCursorManager_nativeDestroyPredefinedCu
+     free(cursor);
+ }
+ 
++JNIEXPORT jint JNICALL Java_sun_awt_wl_WLCursorManager_nativeGetCursorWidth
++        (JNIEnv *env, jclass cls, jlong cursorPtr)
++{
++    struct WLCursor *cursor = jlong_to_ptr(cursorPtr);
++    return cursor ? (jint) cursor->width : 0;
++}
++
++JNIEXPORT jint JNICALL Java_sun_awt_wl_WLCursorManager_nativeGetCursorHeight
++        (JNIEnv *env, jclass cls, jlong cursorPtr)
++{
++    struct WLCursor *cursor = jlong_to_ptr(cursorPtr);
++    return cursor ? (jint) cursor->height : 0;
++}
++
+ JNIEXPORT jlong JNICALL Java_sun_awt_wl_WLCustomCursor_nativeCreateCustomCursor
+   (JNIEnv *env, jclass cls, jintArray pixels, jint width, jint height, jint xHotSpot, jint yHotSpot)
+ {
+diff --git a/src/java.desktop/unix/native/libawt_wlawt/WLDataDevice.c b/src/java.desktop/unix/native/libawt_wlawt/WLDataDevice.c
+index 5d0095dae..7e6311529 100644
+--- a/src/java.desktop/unix/native/libawt_wlawt/WLDataDevice.c
++++ b/src/java.desktop/unix/native/libawt_wlawt/WLDataDevice.c
+@@ -86,6 +86,8 @@ struct DataSource
+ 
+     struct wl_surface* dragIcon;
+     struct wl_buffer* dragIconBuffer;
++    int dragIconOffsetX;
++    int dragIconOffsetY;
+ 
+     struct DataSource* nextDel;
+ };
+@@ -673,7 +675,10 @@ zwp_primary_selection_source_handle_cancelled(void *user,
+ static void
+ wl_data_offer_handle_offer(void *user, struct wl_data_offer *wl_data_offer, const char *mime)
+ {
+-    DataOffer_callOfferHandler((struct DataOffer *) user, mime);
++    struct DataOffer *offer = user;
++    assert(offer != NULL);
++
++    DataOffer_callOfferHandler(offer, mime);
+ }
+ 
+ static void
+@@ -1149,6 +1154,14 @@ JNIEXPORT void JNICALL Java_sun_awt_wl_WLDataSource_setDnDIconImpl
+    jint width, jint height, jint offsetX, jint offsetY, jintArray pixels)
+ {
+     struct DataSource *source = jlong_to_ptr(nativePtr);
++    bool updating_existing_icon = source->dragIcon != NULL;
++    struct wl_buffer *oldBuffer = source->dragIconBuffer;
++    // Drag-icon updates reuse the same wl_surface after start_drag().
++    // For that surface, wl_surface.offset (or pre-v5 nonzero attach offsets)
++    // is relative to the current buffer position, not an absolute placement.
++    // Keep the last requested absolute offset and send only the delta here.
++    int deltaOffsetX = offsetX - source->dragIconOffsetX;
++    int deltaOffsetY = offsetY - source->dragIconOffsetY;
+ 
+     size_t pixelCount = (size_t)((*env)->GetArrayLength(env, pixels));
+     size_t byteSize = pixelCount * 4U;
+@@ -1180,7 +1193,9 @@ JNIEXPORT void JNICALL Java_sun_awt_wl_WLDataSource_setDnDIconImpl
+         return;
+     }
+ 
+-    source->dragIcon = wl_compositor_create_surface(wl_compositor);
++    if (!source->dragIcon) {
++        source->dragIcon = wl_compositor_create_surface(wl_compositor);
++    }
+     if (!source->dragIcon) {
+         wl_buffer_destroy(source->dragIconBuffer);
+         source->dragIconBuffer = NULL;
+@@ -1191,12 +1206,12 @@ JNIEXPORT void JNICALL Java_sun_awt_wl_WLDataSource_setDnDIconImpl
+     int wl_compositor_version = wl_compositor_get_version(wl_compositor);
+     if (wl_compositor_version >= 5) {
+         wl_surface_attach(source->dragIcon, source->dragIconBuffer, 0, 0);
+-        wl_surface_offset(source->dragIcon, offsetX, offsetY);
++        wl_surface_offset(source->dragIcon, deltaOffsetX, deltaOffsetY);
+     } else {
+-        wl_surface_attach(source->dragIcon, source->dragIconBuffer, offsetX, offsetY);
++        wl_surface_attach(source->dragIcon, source->dragIconBuffer, deltaOffsetX, deltaOffsetY);
+     }
+ #else
+-    wl_surface_attach(source->dragIcon, source->dragIconBuffer, offsetX, offsetY);
++    wl_surface_attach(source->dragIcon, source->dragIconBuffer, deltaOffsetX, deltaOffsetY);
+ #endif
+ 
+     if (scale >= 1) {
+@@ -1205,7 +1220,17 @@ JNIEXPORT void JNICALL Java_sun_awt_wl_WLDataSource_setDnDIconImpl
+ 
+     wl_surface_damage_buffer(source->dragIcon, 0, 0, width, height);
+ 
+-    // NOTE: we still need to commit the surface, this is done immediately after start_drag
++    if (oldBuffer) {
++        wl_buffer_destroy(oldBuffer);
++    }
++
++    source->dragIconOffsetX = offsetX;
++    source->dragIconOffsetY = offsetY;
++
++    if (updating_existing_icon) {
++        wl_surface_commit(source->dragIcon);
++        wlFlushToServer(env);
++    }
+ }
+ 
+ JNIEXPORT void JNICALL
+-- 
+2.52.0
+

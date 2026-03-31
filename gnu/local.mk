@@ -1686,6 +1686,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/java-xerces-build_dont_unzip.patch	\
   %D%/packages/patches/java-xerces-xjavac_taskdef.patch	\
   %D%/packages/patches/jbr-17-xcursor-no-dynamic.patch	\
+  %D%/packages/patches/jbr-25-wayland-drag-icon.patch	\
+  %D%/packages/patches/jbr-25-wayland-intra-jvm-dnd.patch	\
   %D%/packages/patches/jdk-currency-time-bomb.patch		\
   %D%/packages/patches/jdk-currency-time-bomb2.patch		\
   %D%/packages/patches/jfsutils-add-sysmacros.patch		\
