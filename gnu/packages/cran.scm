@@ -36314,13 +36314,13 @@ regression coefficients can be conducted via jackknifing.")
 (define-public r-huge
   (package
     (name "r-huge")
-    (version "1.5")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "huge" version))
        (sha256
-        (base32 "05jlw1rlpzbk4ylbxzsmzv0mfxbgs7xcy3fbw0cmmh694p4pgl11"))))
+        (base32 "125db71bxi837027h884m7hkicjl06cdqh22g6zqz11hgpva3rw3"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-igraph r-mass r-matrix r-rcpp))
