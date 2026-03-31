@@ -15730,6 +15730,61 @@ Git version control system, providing repository access routines, support for
 network protocols, and core version control algorithms.")
     (license license:edl1.0)))
 
+(define-public java-jgit-ssh-jsch-7
+  (package
+    (name "java-jgit-ssh-jsch")
+    (version "7.0.0.202409031743-r")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://repo1.maven.org/maven2/"
+                                  "org/eclipse/jgit/org.eclipse.jgit.ssh.jsch/"
+                                  version "/org.eclipse.jgit.ssh.jsch-"
+                                  version "-sources.jar"))
+              (sha256
+               (base32
+                "1vb3zkd2iz6bpz2nq8xxi5d5jdb8hy8jq7gka2ck22azm9bb6p94"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:tests? #f                      ; sources jar has no tests
+       #:jar-name "jgit-ssh-jsch.jar"
+       #:jdk ,openjdk17
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'build 'add-osgi-manifest
+           (lambda _
+             ;; The NetBeans wrapper module has an empty jar target and
+             ;; relies on Bundle-SymbolicName from the Maven Central jar.
+             (call-with-output-file "osgi-manifest.mf"
+               (lambda (port)
+                 (display (string-append
+                           "Bundle-ManifestVersion: 2\n"
+                           "Bundle-SymbolicName: org.eclipse.jgit.ssh.jsch\n"
+                           "Bundle-Version: " ,version "\n"
+                           "Export-Package: org.eclipse.jgit.transport.ssh"
+                           ".jsch\n"
+                           "Import-Package: com.jcraft.jsch,"
+                           "org.eclipse.jgit.errors,"
+                           "org.eclipse.jgit.internal,"
+                           "org.eclipse.jgit.internal.transport.ssh,"
+                           "org.eclipse.jgit.nls,"
+                           "org.eclipse.jgit.transport,"
+                           "org.eclipse.jgit.util,"
+                           "org.eclipse.jgit.util.io,"
+                           "org.slf4j\n")
+                          port)))
+             (invoke "jar" "ufm" "build/jar/jgit-ssh-jsch.jar"
+                     "osgi-manifest.mf")))
+         (replace 'install
+           (install-from-pom
+            "src/META-INF/maven/org.eclipse.jgit/org.eclipse.jgit.ssh.jsch/pom.xml")))))
+    (inputs
+     (list java-jgit-7 java-jsch-0.1.72 java-jzlib-1.1.3 java-slf4j-api))
+    (home-page "https://eclipse.org/jgit/")
+    (synopsis "SSH support for JGit using JSch")
+    (description "This package provides SSH transport support for JGit
+using the JSch library.")
+    (license license:edl1.0)))
+
 (define-public abcl
   (package
     (name "abcl")
