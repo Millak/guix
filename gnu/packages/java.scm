@@ -7366,6 +7366,54 @@ the OSGi annotation module, providing additional services to help dynamic
 components.")
     (license license:asl2.0)))
 
+(define-public java-osgi-annotation-8.1.0
+  ;; Upstream tags the monorepo as 8.0.0.1, but osgi.annotation/bnd.bnd sets
+  ;; the annotation artifact's release/minor version to 8.1, yielding 8.1.0.
+  (let ((tag "8.0.0.1"))
+    (package
+      (name "java-osgi-annotation")
+      (version "8.1.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/osgi/osgi")
+                      (commit tag)))
+                (modules '((guix build utils)))
+                (snippet
+                 '(begin
+                    (for-each delete-file
+                              (find-files "." "\\.jar$"))
+                    #t))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0s0ig6prnkvjp9159087mf16ihbqc91qlwdi1l0n5afhh2z5cnn5"))))
+      (build-system ant-build-system)
+      (arguments
+       (list
+        #:tests? #f
+        #:jar-name "osgi-annotation.jar"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'prepare-source-layout
+              (lambda _
+                (mkdir-p "src")
+                (for-each
+                 (lambda (directory)
+                   (invoke "cp" "-r" (string-append directory "/.") "src/"))
+                 '("org.osgi.annotation.bundle/src"
+                   "org.osgi.annotation.versioning/src"))))
+            (add-before 'install 'create-pom
+              (generate-pom.xml "pom.xml" "org.osgi" "osgi.annotation"
+                                #$version))
+            (replace 'install (install-from-pom "pom.xml")))))
+      (home-page "https://www.osgi.org")
+      (synopsis "Annotations for use in compiling OSGi bundles")
+      (description "OSGi, for Open Services Gateway initiative framework, is a
+module system and service platform for the Java programming language.  This
+package contains the annotation classes used at compile time.")
+      (license license:asl2.0))))
+
 (define-public java-osgi-core
   (package
     (name "java-osgi-core")
