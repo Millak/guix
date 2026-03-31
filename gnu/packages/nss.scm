@@ -398,7 +398,7 @@ taken from the NSS package and thus ultimately from the Mozilla project.")
 (define-public nsncd
   (package
     (name "nsncd")
-    (version "1.5.1")
+    (version "1.5.2")
     (source
      (origin
        (method git-fetch)
@@ -407,7 +407,7 @@ taken from the NSS package and thus ultimately from the Mozilla project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qiphwlwbnni2vfqjbdzv2a1qgqv2ycmygmyrbx8pgaak9gl5hfi"))))
+        (base32 "1kzwd5vlz5paal8k79dkamjqczz7k8azyc8zwjyhalcxzsjkdn0w"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
