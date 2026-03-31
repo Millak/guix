@@ -12376,6 +12376,110 @@ package, which was removed from the JDK in Java 11.  This is the 1.2.x
 transitional release that still uses the @code{javax.activation} namespace.")
     (license license:edl1.0)))
 
+(define-public java-bouncycastle-1.77
+  (package
+    (inherit java-bouncycastle)
+    (version "1.77")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/bcgit/bc-java")
+                     (commit (string-append "r1rv" (substring version 2 4)))))
+              (file-name (git-file-name "java-bouncycastle" version))
+              (sha256
+               (base32
+                "1adxic0pgb7gv2yflw72np7zilj6rrhgjcj3xvnmidwp2pc887k1"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (for-each delete-file
+                            (find-files "." "\\.jar$"))
+                  #t))))
+    (arguments
+     `(#:jdk ,openjdk17
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'build
+           (lambda _
+             (let ((suffix (string-append
+                            "-Drelease.suffix="
+                            ,(string-join (string-split version #\.) ""))))
+               (mkdir-p "ant/docs")
+               ;; Build individual targets.  Can't use the 'build'
+               ;; target because it includes 'build-test' which needs
+               ;; the UnboundID LDAP SDK.
+               (invoke "ant" "-f" "ant/jdk18+.xml" suffix
+                       "build-provider")
+               ;; The remaining targets are only in bc+-build.xml.
+               ;; Call it via ant's -f but pass properties that
+               ;; jdk18+.xml normally sets.
+               (let ((props (list suffix
+                                  "-Dtarget.prefix=jdk18on"
+                                  "-Djdk.name=jdk1.8"
+                                  "-Dbc.javac.source=1.8"
+                                  "-Dbc.javac.target=1.8"
+                                  "-Dbuild.dir=build"
+                                  "-Djavadoc.args=-breakiterator"
+                                  (string-append "-Dsrc.dir="
+                                                 (getcwd) "/build/jdk1.8")
+                                  (string-append "-Dartifacts.dir="
+                                                 (getcwd) "/build/artifacts/jdk1.8"))))
+                 (for-each
+                  (lambda (target)
+                    (apply invoke "ant" "-f" "ant/bc+-build.xml"
+                           (append props (list target))))
+                  '("build-util" "build-pkix" "build-pg" "build-mail"))))))
+         (add-after 'build 'add-osgi-manifests
+           (lambda _
+             ;; The Maven Central jars have OSGi manifest attributes
+             ;; from maven-bundle-plugin.  Add them since we build
+             ;; with ant.
+             (for-each
+              (lambda (name)
+                (let ((jar (car (find-files "build/artifacts"
+                                            (string-append name "-jdk18on.*\\.jar$")))))
+                  (call-with-output-file "osgi-manifest.mf"
+                    (lambda (port)
+                      (display (string-append
+                                "Bundle-ManifestVersion: 2\n"
+                                "Bundle-SymbolicName: " name "\n"
+                                "Bundle-Version: " ,version "\n")
+                               port)))
+                  (invoke "jar" "ufm" jar "osgi-manifest.mf")))
+              '("bcprov" "bcutil" "bcpkix" "bcpg"))))
+         (add-after 'add-osgi-manifests 'rename-jars
+           (lambda _
+             ;; Ant produces e.g. bcprov-jdk18on-177.jar but
+             ;; install-from-pom expects bcprov-jdk18on-1.77.jar.
+             (for-each
+              (lambda (name)
+                (let ((src (car (find-files "build/artifacts"
+                                            (string-append name "-jdk18on-.*\\.jar$"))))
+                      (dest (string-append "build/artifacts/jdk1.8/jars/"
+                                           name "-jdk18on-" ,version ".jar")))
+                  (unless (string=? src dest)
+                    (rename-file src dest))))
+              '("bcprov" "bcutil" "bcpkix" "bcpg"))))
+         (replace 'install
+           (lambda* (#:key inputs outputs jar-name #:allow-other-keys)
+             (for-each
+              (lambda (name)
+                (let ((pom-file (string-append name "-pom.xml"))
+                      (artifact (string-append name "-jdk18on")))
+                  ((generate-pom.xml pom-file "org.bouncycastle"
+                                     artifact ,version))
+                  ((install-from-pom pom-file)
+                   #:inputs inputs #:outputs outputs
+                   #:jar-name (string-append artifact "-" ,version "\\.jar$"))))
+              '("bcprov" "bcutil" "bcpkix" "bcpg")))))))
+    (inputs
+     (list java-jakarta-activation-1.2
+           java-javax-mail))
+    (description "Bouncy Castle is a cryptographic library for the Java
+programming language.  This is version 1.77 which has breaking API changes
+compared to 1.67 (removed classes in ASN1, CMC, and other packages).")))
+
 (define-public java-eclipse-jdt-annotation-2
   (package
     (name "java-eclipse-jdt-annotation")
