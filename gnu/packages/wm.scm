@@ -2777,6 +2777,9 @@ modules for building a Wayland compositor.")
 
 ;; Allow packages referring to stable wlroots version, because
 ;; wlroots updates are backward incompatible.
+(define-public wlroots-0.20
+  wlroots)
+
 (define-public wlroots-0.19 
   (package
     (inherit wlroots)
