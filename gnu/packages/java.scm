@@ -12484,6 +12484,82 @@ analysis.")
 compatible interface.")
     (license license:asl2.0)))
 
+(define-public java-junixsocket-native-common-2.5.1
+  (package
+    (name "java-junixsocket-native-common")
+    (version "2.5.1")
+    (source junixsocket-source)
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:jdk openjdk9
+      #:jar-name "junixsocket-native-common.jar"
+      #:source-dir "junixsocket-native-common/src/main/java"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-module-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; javac needs compiler-annotations on the module path
+              ;; (not classpath) for JPMS 'requires static' resolution.
+              (let ((mod-dir (assoc-ref inputs
+                                        "java-kohlschutter-compiler-annotations")))
+                (setenv "JDK_JAVAC_OPTIONS"
+                        (string-append "--module-path="
+                                       (car (find-files mod-dir "\\.jar$")))))))
+          (add-before 'build 'build-native
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((jdk (assoc-ref inputs "jdk"))
+                    (c-dir "junixsocket-native/src/main/c"))
+                ;; Fix GCC incompatibility: _Pragma inside expressions
+                ;; is a Clang extension, not supported by GCC.
+                (substitute* (string-append c-dir "/ckmacros.h")
+                  (("#   define CK_IGNORE_CAST_BEGIN \\\\")
+                   "#   define CK_IGNORE_CAST_BEGIN")
+                  (("#   define CK_IGNORE_CAST_END \\\\")
+                   "#   define CK_IGNORE_CAST_END")
+                  (("_Pragma\\(\"GCC diagnostic.*cast.*\"\\)") "")
+                  (("_Pragma\\(\"GCC diagnostic push\"\\)") "")
+                  (("_Pragma\\(\"GCC diagnostic pop\"\\)") ""))
+                (let ((so-file (string-append
+                                "junixsocket-native-common/src/main/"
+                                "resources/lib/amd64-Linux-clang/jni/"
+                                "libjunixsocket-native-" #$version ".so")))
+                  (mkdir-p (dirname so-file))
+                  (apply invoke "gcc" "-shared" "-fPIC" "-O2"
+                         "-Wno-int-to-pointer-cast"
+                         "-Wno-pointer-to-int-cast"
+                         "-Wno-bad-function-cast"
+                         "-Wno-cast-function-type"
+                         "-Wno-stringop-overflow"
+                         (string-append "-I" c-dir)
+                         (string-append "-I" c-dir "/jni")
+                         (string-append "-I" jdk "/include")
+                         (string-append "-I" jdk "/include/linux")
+                         "-o" so-file
+                         (find-files c-dir "\\.c$"))))))
+          (add-after 'build 'add-native-to-jar
+            (lambda _
+              (invoke "jar" "uf"
+                      "build/jar/junixsocket-native-common.jar"
+                      "-C" "junixsocket-native-common/src/main/resources"
+                      "lib")))
+          ;; The source pom.xml lists pre-built native library
+          ;; NARs for every platform.  We build the native code
+          ;; from source, so none of those dependencies apply.
+          (add-before 'install 'create-pom
+            (generate-pom.xml "pom.xml"
+                              "com.kohlschutter.junixsocket"
+                              "junixsocket-native-common" #$version))
+          (replace 'install
+            (install-from-pom "pom.xml")))))
+    (native-inputs (list java-kohlschutter-compiler-annotations-1))
+    (home-page "https://github.com/kohlschutter/junixsocket")
+    (synopsis "Native JNI library for junixsocket")
+    (description "This package provides the native JNI library for
+junixsocket, built from source for Linux.")
+    (license license:asl2.0)))
+
 (define-public java-lmax-disruptor
   (package
     (name "java-lmax-disruptor")
