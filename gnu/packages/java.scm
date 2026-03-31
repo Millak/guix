@@ -7328,6 +7328,116 @@ transfer, etc., and you can integrate its functionality into your own Java
 programs.")
     (license license:bsd-3)))
 
+(define-public java-jsch-0.1.72
+  (package
+    (name "java-jsch")
+    (version "0.1.72")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mwiede/jsch.git")
+             (commit (string-append "jsch-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xx50fw9wxnkm9yg8v8scr2c7781506flv0ivalpw7bg27w8sm59"))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:jdk openjdk17
+      #:tests? #f
+      #:modules
+      '((guix build utils)
+        (guix build ant-build-system)
+        (guix build java-utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define classes-dir (string-append (getcwd) "/build/classes"))
+              (define generated-dir (string-append (getcwd) "/build/generated"))
+              (define manifest-file (string-append (getcwd) "/build/manifest.mf"))
+              (define jar-file (string-append (getcwd) "/build/jsch-" #$version ".jar"))
+              (define jna
+                (car (find-files (assoc-ref inputs "java-native-access")
+                                "jna-jpms.*\\.jar$")))
+              (define jna-platform
+                (car (find-files (assoc-ref inputs "java-native-access-platform")
+                                "jna-platform-jpms.*\\.jar$")))
+              (define bcprov
+                (car (find-files (assoc-ref inputs "java-bouncycastle")
+                                "bcprov.*\\.jar$")))
+              (define junixsocket
+                (car (find-files (assoc-ref inputs "java-junixsocket-common")
+                                "\\.jar$")))
+              (define classpath
+                (string-append jna ":" jna-platform ":" bcprov
+                               ":" junixsocket))
+              (define (java-sources source-root)
+                (filter (lambda (file)
+                          (and (string-suffix? ".java" file)
+                               (not (string-suffix? "module-info.java" file))))
+                        (find-files source-root "\\.java$")))
+              (define (compile-release source-root release)
+                (let ((sources (java-sources source-root))
+                      (target (string-append classes-dir "/META-INF/versions/"
+                                             release)))
+                  (when (pair? sources)
+                    (mkdir-p target)
+                    (apply invoke "javac"
+                           (append
+                            (list "--release" release
+                                  "-cp" (string-append classes-dir ":" classpath)
+                                  "-d" target)
+                            sources)))))
+              (mkdir-p classes-dir)
+              (mkdir-p (string-append generated-dir "/com/jcraft/jsch"))
+              (copy-file "src/main/java-templates/com/jcraft/jsch/Version.java"
+                         (string-append generated-dir
+                                        "/com/jcraft/jsch/Version.java"))
+              (substitute* (string-append generated-dir
+                                          "/com/jcraft/jsch/Version.java")
+                (("\\$\\{project.version\\}") #$version))
+              (apply invoke "javac"
+                     (append
+                      (list "--release" "8"
+                            "-cp" classpath
+                            "-d" classes-dir)
+                      (java-sources "src/main/java")
+                      (list (string-append generated-dir
+                                           "/com/jcraft/jsch/Version.java"))))
+              (for-each
+               (lambda (release)
+                 (compile-release (string-append "src/main/java" release)
+                                  release))
+               '("9" "11" "15" "16"))
+              (call-with-output-file manifest-file
+                (lambda (port)
+                  (display "Multi-Release: true\n" port)))
+              (invoke "jar" "--create"
+                      "--file" jar-file
+                      "--manifest" manifest-file
+                      "-C" classes-dir ".")))
+          (add-before 'install 'create-pom
+            (generate-pom.xml "pom.xml" "com.jcraft"
+                              "jsch" #$version))
+          (replace 'install
+            (install-from-pom "pom.xml")))))
+    (inputs
+     (list java-bouncycastle-1.77
+           java-junixsocket-common-2
+           java-native-access-5.14.0
+           java-native-access-platform-5.14.0))
+    (native-inputs
+     (list java-kohlschutter-compiler-annotations-1
+           unzip))
+    (home-page "https://github.com/mwiede/jsch")
+    (synopsis "Pure Java implementation of SSH2")
+    (description
+     "JSch is a pure Java implementation of SSH2.  This package builds the
+0.1.72 release from source with bouncycastle and junixsocket support.")
+    (license license:bsd-3)))
+
 (define-public java-jzlib-1.1.3
   (package
     (name "java-jzlib")
