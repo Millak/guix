@@ -10646,13 +10646,13 @@ Zurich, including many that are related to graphics.")
 (define-public r-simr
   (package
     (name "r-simr")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "simr" version))
        (sha256
-        (base32 "14vzyncs9p10n0n9bqx1p4bxr0l3zanmvf6dppi4rjpfl1q22kzy"))))
+        (base32 "1cq3pbk30fhp6l2v7rkrw7bp43cd9x86yam2qagrbjfwhx68v78g"))))
     (properties `((upstream-name . "simr")))
     (build-system r-build-system)
     (propagated-inputs
@@ -10664,6 +10664,7 @@ Zurich, including many that are related to graphics.")
            r-pbkrtest
            r-plotrix
            r-plyr
+           r-reformulas
            r-rlrsim
            r-stringr))
     (native-inputs (list r-knitr))
