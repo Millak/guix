@@ -3341,6 +3341,91 @@ specification.")
     ;; Some files are licensed under ASL 2.0.
     (license (list license:asl2.0 license:gpl2 license:cddl1.1))))
 
+(define-public java-jsvg-1.6.1
+  (package
+    (name "java-jsvg")
+    (version "1.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/weisJ/jsvg")
+             (commit "v1.6.1-rc1")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rcphd1596ps87q31qmksnh1nc4m1x1rrkn9amk3ggwy9l2pavsy"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove @MustBeInvokedByOverriders annotations; not present
+        ;; in java-jetbrains-annotations 19.0.0.
+        ;; TODO: Update java-jetbrains-annotations to >= 20.0.0.
+        '(begin
+           (substitute* (find-files "." "\\.java$")
+             (("import org\\.jetbrains\\.annotations\\.MustBeInvokedByOverriders;")
+              "")
+             (("@MustBeInvokedByOverriders") ""))
+           #t))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:jdk openjdk17
+      #:tests? #f
+      ;; ant-build-system does not export a default-modules constant.
+      #:modules '((guix build ant-build-system)
+                  (guix build java-utils)
+                  (guix build utils)
+                  (sxml simple))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((src-dir "jsvg/src/main/java")
+                     (classes-dir "build/classes")
+                     (jar-file
+                      (string-append "build/jsvg-" #$version ".jar"))
+                     (annotations-cp
+                      (string-join
+                       (append
+                        (find-files (assoc-ref inputs
+                                              "java-jetbrains-annotations")
+                                    "\\.jar$")
+                        (find-files (assoc-ref inputs
+                                              "java-error-prone-annotations")
+                                    "\\.jar$"))
+                       ":")))
+                (mkdir-p classes-dir)
+                (apply invoke "javac"
+                       "--release" "11"
+                       "-cp" annotations-cp
+                       "-d" classes-dir
+                       (find-files src-dir "\\.java$"))
+                (invoke "jar" "-cf" jar-file
+                        "-C" classes-dir "."))))
+          (add-before 'build 'generate-pom
+            (lambda _
+              (call-with-output-file "pom.xml"
+                (lambda (port)
+                  (sxml->xml
+                   `(*TOP*
+                     (*PI* xml "version=\"1.0\" encoding=\"UTF-8\"")
+                     (project
+                      (modelVersion "4.0.0")
+                      (groupId "com.github.weisj")
+                      (artifactId "jsvg")
+                      (version ,#$version)))
+                   port)))))
+          (replace 'install
+            (install-from-pom "pom.xml")))))
+    (native-inputs
+     (list java-jetbrains-annotations
+           java-error-prone-annotations))
+    (home-page "https://github.com/weisJ/jsvg")
+    (synopsis "Java SVG rendering library")
+    (description
+     "JSVG is a Java library for rendering SVG images.  It provides a
+lightweight SVG parser and renderer using the Java2D API.")
+    (license license:expat)))
+
 (define-public java-jtidy
   (package
     (name "java-jtidy")
