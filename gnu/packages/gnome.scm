@@ -7127,7 +7127,7 @@ runtime image loader executables that are used inside the sandbox.")
 (define-public loupe
   (package
     (name "loupe")
-    (version "49.1")
+    (version "50.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/loupe/"
@@ -7135,7 +7135,7 @@ runtime image loader executables that are used inside the sandbox.")
                                   "loupe-" version ".tar.xz"))
               (sha256
                (base32
-                "1iaibi8jv50crhmrrfqhsw5r1gssfamsbd17rcp7mj51g74qn29h"))))
+                "15592gcbln4sw83gzw6q5nk4h53rbbf80vy582k6lc8rbspgpr3s"))))
     (build-system meson-build-system)
     (arguments
      (list
