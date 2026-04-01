@@ -364,7 +364,7 @@ Design spec without sacrificing ease of use or application performance.")
         (file-name (git-file-name name version))
         (sha256
          (base32 "0rjbhhxyrh0fszc0va7qmkv6ayf2s49ppnw31p51xmq63bx3n5wc"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       ;; The test suite fails due to an import cycle between 'pivy' and '_coin'
