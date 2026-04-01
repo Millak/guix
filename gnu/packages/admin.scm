@@ -4067,51 +4067,59 @@ plug-in architecture to allow monitoring other system metrics.")
     (license license:gpl2+)))
 
 (define-public thefuck
-  (package
-    (name "thefuck")
-    (version "3.32")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/nvbn/thefuck")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "18ipa1bm6q1n5drbi8i65726hhqhl1g41390lfqrc11hkbvv443d"))
-       (patches (search-patches "thefuck-test-environ.patch"
-                                "thefuck-remove-broken-tests.patch"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              ;; Tests look for installed package
-              ;; Some tests need write access to $HOME.
-              (setenv "HOME" "/tmp")
-              ;; Even with that, this function tries to mkdir /.config.
-              (substitute* "tests/test_utils.py"
-                (("settings\\.init\\(\\)") "")))))))
-    (native-inputs
-     (list go
-           python-mock
-           python-pytest-8
-           python-pytest-mock
-           python-setuptools
-           python-wheel))
-    (inputs
-     (list python-colorama
-           python-decorator
-           python-psutil
-           python-pyte))
-    (home-page "https://github.com/nvbn/thefuck")
-    (synopsis "Correct mistyped console command")
-    (description
-     "The Fuck tries to match a rule for a previous, mistyped command, creates
+  ;; Latest release, 3.32, is not compatible with Python 3.12.
+  (let ((revision "0")
+        (commit "c7e7e1d884d3bb241ea6448f72a989434c2a35ec"))
+    (package
+      (name "thefuck")
+      (version (git-version "3.32" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/nvbn/thefuck")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1l3i2cpdf3vznpbzqw7b18l23xikqs7andx6yzqvm5415snaqg06"))
+         (patches (search-patches "thefuck-test-environ.patch"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        #~(list
+           "--deselect=tests/test_utils.py::TestGetValidHistoryWithoutCurrent"
+           "--ignore=tests/functional/conftest.py")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'pre-check
+              (lambda _
+                ;; ModuleNotFoundError: No module named 'pytest_docker_pexpect'
+                (delete-file "tests/functional/conftest.py")
+                ;; Tests look for installed package
+                ;; Some tests need write access to $HOME.
+                (setenv "HOME" "/tmp")
+                ;; Even with that, this function tries to mkdir /.config.
+                (substitute* "tests/test_utils.py"
+                  (("settings\\.init\\(\\)") "")))))))
+      (native-inputs
+       (list go
+             python-mock
+             ;; Uses test markers that are incompatible with pytest 9.
+             python-pytest-8
+             python-pytest-mock
+             python-setuptools))
+      (inputs
+       (list python-colorama
+             python-decorator
+             python-psutil
+             python-pyte))
+      (home-page "https://github.com/nvbn/thefuck")
+      (synopsis "Correct mistyped console command")
+      (description
+       "The Fuck tries to match a rule for a previous, mistyped command, creates
 a new command using the matched rule, and runs it.")
-    (license license:x11)))
+      (license license:x11))))
 
 (define-public di
   (package
