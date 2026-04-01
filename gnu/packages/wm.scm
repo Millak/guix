@@ -3289,7 +3289,7 @@ resources and provides animations for switching between backgrounds.")
 (define-public swaynotificationcenter
   (package
     (name "swaynotificationcenter")
-    (version "0.10.1")
+    (version "0.12.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3297,7 +3297,7 @@ resources and provides animations for switching between backgrounds.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0cx3ql7qb2wajck1vip9sm2a122jv9x8g2r0bnw4rrxd91yca7a9"))))
+               (base32 "0zg599v36ljd8561rpw1rzhacxms2x9gma6r19636cajd0gyr62k"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -3324,13 +3324,16 @@ resources and provides animations for switching between backgrounds.")
            scdoc
            vala))
     (inputs
-     (list json-glib
+     (list blueprint-compiler
+           json-glib
            glib
-           granite-6
-           gtk+
-           gtk-layer-shell
+           granite
+           gtk
+           gtk4-layer-shell
+           libadwaita
            libhandy
            libgee
+           libshumate
            pulseaudio
            wayland-protocols))
     (synopsis "Notification daemon with a graphical interface")
