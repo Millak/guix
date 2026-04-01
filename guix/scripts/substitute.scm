@@ -48,7 +48,7 @@
   #:use-module (guix cache)
   #:use-module (gcrypt pk-crypto)
   #:use-module (guix pki)
-  #:autoload   (guix build utils) (mkdir-p delete-file-recursively)
+  #:autoload   (guix build utils) (mkdir-p delete-file-recursively strip-store-file-name)
   #:use-module ((guix build download)
                 #:select (uri-abbreviation
                           (open-connection-for-uri
@@ -277,22 +277,31 @@ authorized substitutes."
         (lambda (obj)
           (valid-narinfo? obj acl))))
 
-  (define* (make-progress-reporter total #:key url)
-    (define done 0)
+  (define (make-progress-reporter paths)
+    (match paths
+      ((path)                           ;a single path
+       (begin
+         (format (current-error-port)
+                 (G_ "looking up a substitute for '~a'...~%")
+                 (strip-store-file-name path))
+         (const progress-reporter/silent)))
+      (_
+       (lambda* (total #:key url)
+         (define done 0)
 
-    (define (report-progress)
-      (erase-current-line (current-error-port)) ;erase current line
-      (force-output (current-error-port))
-      (format (current-error-port)
-              (G_ "looking for substitutes on '~a'... ~5,1f%")
-              url (* 100. (/ done total)))
-      (set! done (+ 1 done)))
+         (define (report-progress)
+           (erase-current-line (current-error-port)) ;erase current line
+           (force-output (current-error-port))
+           (format (current-error-port)
+                   (G_ "looking for substitutes on '~a'... ~5,1f%")
+                   url (* 100. (/ done total)))
+           (set! done (+ 1 done)))
 
-    (progress-reporter
-     (start report-progress)
-     (report report-progress)
-     (stop (lambda ()
-             (newline (current-error-port))))))
+         (progress-reporter
+           (start report-progress)
+           (report report-progress)
+           (stop (lambda ()
+                   (newline (current-error-port)))))))))
 
   (match (string-tokenize command)
     (("have" paths ..1)
@@ -300,7 +309,8 @@ authorized substitutes."
      (let ((substitutable (lookup-narinfos/diverse
                            cache-urls paths valid?
                            #:open-connection open-connection-for-uri/cached
-                           #:make-progress-reporter make-progress-reporter)))
+                           #:make-progress-reporter
+                           (make-progress-reporter paths))))
        (for-each (lambda (narinfo)
                    (format port "~a~%" (narinfo-path narinfo)))
                  substitutable)
@@ -310,7 +320,8 @@ authorized substitutes."
      (let ((substitutable (lookup-narinfos/diverse
                            cache-urls paths valid?
                            #:open-connection open-connection-for-uri/cached
-                           #:make-progress-reporter make-progress-reporter)))
+                           #:make-progress-reporter
+                           (make-progress-reporter paths))))
        (for-each (cut display-narinfo-data port <>) substitutable)
        (newline port)))
     (wtf
