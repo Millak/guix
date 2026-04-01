@@ -3763,7 +3763,8 @@ soon as it starts.")
                                         (string-length ".so")))))
               (substitute* "src/libbluray/disc/aacs.c"
                 (("\"libaacs\"")
-                 (string-append "\"" (lib/no.so "lib/libaacs.so") "\""))
+                 (string-append "\"" (lib/no.so "lib/libaacs.so") "\"")))
+              (substitute* "src/libbluray/disc/bdplus.c"
                 (("\"libbdplus\"")
                  (string-append "\"" (lib/no.so "lib/libbdplus.so") "\"")))))
           (add-after 'install 'move-packages-to-libs
