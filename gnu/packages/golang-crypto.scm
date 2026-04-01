@@ -1711,6 +1711,35 @@ See http://keccak.noekeon.org.")
 MurmurHash} revision (aka MurmurHash3).")
     (license license:bsd-3)))
 
+(define-public go-github-com-hiddeco-sshsig
+  (package
+    (name "go-github-com-hiddeco-sshsig")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hiddeco/sshsig")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1raq5j1hr693lcj7nrj3wnsyfp30w96apjxyjmlvxb7ihnkhikv1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hiddeco/sshsig"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://github.com/hiddeco/sshsig")
+    (synopsis "Messages signing and verification using SSH in Golang")
+    (description
+     "Package sshsig provides an API to sign and verify messages using SSH
+keys.  It is an implementation of the SSH Signature format as described in
+@url{https://github.com/openssh/openssh-portable/blob/V_9_3_P1/PROTOCOL.sshsig}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-jcmturner-aescts-v2
   (package
     (name "go-github-com-jcmturner-aescts-v2")
