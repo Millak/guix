@@ -11127,7 +11127,7 @@ levels to unlock.")
 (define-public simgear
   (package
     (name "simgear")
-    (version "2024.1.4")
+    (version "2024.1.5")
     (source
      (origin
        (method git-fetch)
@@ -11139,7 +11139,7 @@ levels to unlock.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k855yxq06gv42f83c3k9hrsz05xxj6vi1c60227zm0dx3jkb4jq"))
+        (base32 "1ygdc8xkrj7qzm9zklibb1v5w3jp718707zmiwl8fn63sxanbqsq"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -11191,7 +11191,7 @@ and also provides the base for the FlightGear Flight Simulator.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xlpry1g5xci4qmj37rjk4sdhg9zada0vw6a047gsm7cq5p7pkxk"))
+        (base32 "0hpfvacnba2kcyjwm01lkrqkz0gccvljjil8b0ai42l38hxn5r5h"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -11275,12 +11275,12 @@ and also provides the base for the FlightGear Flight Simulator.")
        ("flightgear-data"
         ,(origin
            (method url-fetch)
-           (uri (string-append "mirror://sourceforge/flightgear/release-"
+           (uri (string-append "https://mirrors.ibiblio.org/flightgear/ftp/release-"
                                (version-major+minor version) "/"
                                "FlightGear-" version "-data.txz"))
            (sha256
             (base32
-             "0pgwxpm5cdm0y6klrmpqspmhmqsfxshz4jljw2kd4wy18fqzd1s6"))))))
+             "0d81yz9jqmg2jzw5rm769pl1j18pvh2mjkx61l13kw76ja8p6159"))))))
     (home-page "https://www.flightgear.org/")
     (synopsis "Flight simulator")
     (description "The goal of the FlightGear project is to create a
