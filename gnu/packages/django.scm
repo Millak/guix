@@ -298,22 +298,6 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
                       ;; This CVE is fixed in 4.1.9.
                       "CVE-2023-31047"))))))
 
-(define-public python-django-4
-  (package
-    (inherit python-django)
-    (name "python-django-4")
-    (version "4.2.28")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "django" version))
-        (sha256
-         (base32 "1znc2q1m9p2kxz1rkfkh2hg2sx6i3aqv72zsraad7bci364cvfd4"))))
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:phases phases)
-        #~(modify-phases #$phases (delete 'delete-sitecustomize)))))))
-
 (define-public python-django-cache-url
   (package
     (name "python-django-cache-url")
