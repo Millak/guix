@@ -28167,7 +28167,7 @@ end users.")
 (define-public emacs-pgmacs
   (package
     (name "emacs-pgmacs")
-    (version "0.42")
+    (version "0.30")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -28176,7 +28176,7 @@ end users.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pf8y64hka1fl47dphmh4xgxiwfsd0g4q2fazq5yc48zwr9nsf02"))))
+                "0f4mbamk2n9l7qwhi2n1kwvng6wa9yp6k2w1qn6yc07pri2mb6yc"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-pg))
@@ -28184,6 +28184,12 @@ end users.")
     (description "This package provides a PostgreSQL client in emacs.")
     (home-page "https://github.com/emarsden/pgmacs")
     (license license:gpl3+)))
+
+(define-public emacs-pgmacs-0.42
+  (package
+    (inherit emacs-pgmacs)
+    (version "0.42")
+    (properties `((superseded . ,emacs-pgmacs)))))
 
 (define-public emacs-finalize
   (package
