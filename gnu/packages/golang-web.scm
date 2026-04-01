@@ -12772,6 +12772,39 @@ mainly for managing the configuration of Open vSwitch and OVN, but it could
 also be used to manage your stamp collection.")
     (license license:asl2.0)))
 
+(define-public go-github-com-package-url-packageurl-go
+  (package
+    (name "go-github-com-package-url-packageurl-go")
+    (version "0.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/package-url/packageurl-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yjqmijynkjhz69nxj8x13hd547m0lfk3dsb68j6dbklf2p2i8xd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/package-url/packageurl-go"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; open testdata/test-suite-data.json:
+                       ;; no such file or directory
+                       (list "TestFromStringExamples"
+                             "TestToStringExamples"
+                             "TestStringer"
+                             "TestPurlSpecFixtures")
+                       "|"))))
+    (home-page "https://github.com/package-url/packageurl-go")
+    (synopsis "Implementation of package-url in Golang")
+    (description
+     "This package provides a Golang implementation of the
+@url{https://ecma-tc54.github.io/ECMA-427/, package-url specification}.")
+    (license license:expat)))
+
 (define-public go-github-com-pascaldekloe-goe
   (package
     (name "go-github-com-pascaldekloe-goe")
