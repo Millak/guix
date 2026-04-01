@@ -30,20 +30,26 @@
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
+  #:use-module (gnu packages algebra)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages java)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages sqlite))
+  #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages xorg))
 
 (define-public apl
-  (let ((revision 1550))
+  (let ((revision 1977))
     (package
       (name "apl")
-      (version (string-append "1.8-r" (number->string revision)))
+      (version (string-append "2.0.1-r" (number->string revision)))
       (source
        (origin
          (method svn-fetch)
@@ -52,12 +58,18 @@
                (revision revision)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1bgc3a09f35zrqq2irhm1hspppnxjqas0fmcw14hkc7910br9ip3"))))
+          (base32 "1llm1hqpfd71jrhd4pizhmvvca5wr18v8zqfajwmvjjxcmzfkvv1"))))
       (build-system gnu-build-system)
       (home-page "https://www.gnu.org/software/apl/")
+      (native-inputs (list gettext-minimal which pkg-config))
       (inputs
        (list gettext-minimal
+             libxcb
+             fftw
              openblas
+             gsl
+             libpng
+             gtk+
              pcre2
              readline
              sqlite))
@@ -69,15 +81,11 @@
              #~(modify-phases %standard-phases
                  (add-before 'configure 'fix-configure
                    (lambda _
-                     (substitute* "buildtag.sh"
-                       ;; Don't exit on failed SVN-related calls.
-                       (("^ +return 0\n") "")
-                       ;; Manually set the SVN revision, since the directory is
-                       ;; unversioned and we know it anyway.
-                       (("^SVNINFO=.*")
-                        (string-append "SVNINFO=" #$(number->string revision) "\n"))
-                       ;; Requires running ‘svn info’ on a versioned directory.
-                       (("\\\\\"\\$ARCHIVE_SVNINFO\\\\\"") "\\\"\\\"")))))))
+                     (substitute* "configure"
+                       ;; Manually set the SVN revision, since the directory
+                       ;; is unversioned and we know it anyway.
+                       (("\\$apl_ARCHIVE_SVNINFO")
+                        #$(number->string revision))))))))
       (synopsis "APL interpreter")
       (description
        "GNU APL is a free interpreter for the programming language APL.  It is
