@@ -53,7 +53,7 @@
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
-;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024, 2026 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2023 Ryan Desfosses <rdesfo@sdf.org>
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 Simon Tournier <zimon.toutoune@gmail.com>
@@ -838,6 +838,28 @@ everything from small to very large projects with speed and efficiency.")
       (substitute-keyword-arguments arguments
         ((#:configure-flags flags #~'())
          (if (%current-target-system) git-cross-configure-flags #~(list)))))))
+
+(define-public mergiraf
+  (package
+    (name "mergiraf")
+    (version "0.16.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mergiraf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0b5rsdz1s68kc37rqvjwpgwj2651arigbzgcf7chdspzjc9fkllk"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f))
+    ;; for tests
+    (native-inputs (list git-minimal/pinned))
+    (inputs (cargo-inputs 'mergiraf))
+    (home-page "https://mergiraf.org/")
+    (synopsis "Syntax-aware merge driver for Git")
+    (description "This package provides a syntax-aware merge driver for Git.")
+    (license license:gpl3)))
 
 (define-public python-klaus
   (package
