@@ -25718,14 +25718,14 @@ contain lags, diffs and missing values.")
 (define-public r-dyngen
   (package
     (name "r-dyngen")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dyngen" version))
        (sha256
         (base32
-         "0wi068nz7c6278k1n81pm40sgs6rqgca223bvnz74s98swmrmr8s"))))
+         "0wywjhsdymdqmgrq0xz8mv0p0aigqk8a9s3mn9pfi8kw19p4f8rp"))))
     (properties `((upstream-name . "dyngen")))
     (build-system r-build-system)
     (arguments
