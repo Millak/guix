@@ -139,11 +139,11 @@ generation also needs to be wrapped within a `faketime' call in the
              (local-sources (font-sources "fonts/source" local-metrics))
              ((not (null? local-sources))) ;nothing to generate: bail out
              (root (getcwd))
+             ;; "texlive-metafont" may be a native input, or included in
+             ;; `texlive-local-tree'.  Handle both cases.
              (metafont
-              (cond ((assoc-ref (or native-inputs inputs) "texlive-metafont") =>
-                     (cut string-append <> "/share/texmf-dist"))
-                    (else
-                     (error "Missing 'texlive-metafont' native input"))))
+              (search-input-directory (or native-inputs inputs)
+                                      "share/texmf-dist/metafont"))
              ;; Collect all font source files from texlive (native-)inputs so
              ;; "mf" can know where to look for them.
              (font-inputs
@@ -151,21 +151,21 @@ generation also needs to be wrapped within a `faketime' call in the
                (append-map (match-lambda
                              ((? (negate texlive-input?)) '())
                              (("texlive-bin" . _) '())
-                             (("texlive-metafont" . _)
-                              (list (string-append metafont "/metafont/base")))
+                             (("texlive-metafont" . _) '())
                              ((_ . input)
                               (font-sources input #f)))
                            (or native-inputs inputs)))))
     ;; Tell mf where to find "mf.base".
-    (setenv "MFBASES" (string-append metafont "/web2c/"))
+    (setenv "MFBASES" (in-vicinity metafont "../web2c"))
     (mkdir-p "build")
     (for-each
      (lambda (source)
        ;; Tell "mf" where are the font source files.  In case current package
        ;; provides multiple sources, treat them separately.
        (setenv "MFINPUTS"
-               (string-join (cons (string-append root "/" source)
-                                  font-inputs)
+               (string-join (cons* (string-append root "/" source)
+                                   (in-vicinity metafont "base")
+                                   font-inputs)
                             ":"))
        ;; Build font metrics (tfm).
        (with-directory-excursion source
