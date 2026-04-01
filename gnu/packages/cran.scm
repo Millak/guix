@@ -37388,14 +37388,16 @@ latent growth curve models.")
 (define-public r-nonnest2
   (package
     (name "r-nonnest2")
-    (version "0.5-8")
+    (version "0.5-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nonnest2" version))
        (sha256
         (base32
-         "10nw8b0qcppbwc4lvvpyxpxvg583bl3fy916yx74xcm563aar98r"))))
+         "0p0z3rxg9hgy34ggapcj3pynqy6zh4zcl11sgz27mwh3snsj5n9a"))))
+    (properties
+     '((updater-ignored-native-inputs . '("r-mirt"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-compquadform r-lavaan r-mvtnorm r-sandwich))
