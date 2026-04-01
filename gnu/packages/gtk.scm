@@ -1194,6 +1194,9 @@ application suites.")
                 (("[ \t]*'empty-text.node',") "")
                 (("[ \t]*'testswitch.node',") "")
                 (("[ \t]*'widgetfactory.node',") "")
+                ;; The gtklistitemmanager test is flaky (see:
+                ;; <https://gitlab.gnome.org/GNOME/gtk/-/issues/6547>).
+                ((".*'gtklistitemmanager.c',.*") "")
                 ;; XXX: Figure out why this fails and report upstream.
                 ((".*'memorytexture',.*") "")
                 ((".*'yuv-matrix-dmabuf',.*") ""))
