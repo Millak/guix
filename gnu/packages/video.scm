@@ -5346,6 +5346,7 @@ specifications.")
     (native-inputs
      (list bison flex))
     (build-system gnu-build-system)
+    (arguments (list #:configure-flags #~(list "--disable-static")))
     (home-page "https://www.videolan.org/developers/libaacs.html")
     (synopsis "Library for decrypting certain Blu-Ray discs")
     (description "libaacs is a library which implements the Advanced Access
