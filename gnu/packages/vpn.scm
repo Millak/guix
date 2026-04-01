@@ -936,17 +936,16 @@ packages.")
 (define-public python-proton-vpn-api-core
   (package
     (name "python-proton-vpn-api-core")
-    (version "4.14.1")
-    (home-page "https://github.com/ProtonVPN/python-proton-vpn-api-core")
+    (version "4.18.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url home-page)
+              (url "https://github.com/ProtonVPN/python-proton-vpn-api-core")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s7qasxiwd924dps1696vlnxr7626li5c31kv2kb3c4sqk6s6867"))))
+        (base32 "0hlcgickj0ji25m3szrpb44363nvd859jr0853aqbj8yd74148vp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -976,6 +975,7 @@ packages.")
            python-pygobject
            python-pycairo
            python-jinja2))
+    (home-page "https://github.com/ProtonVPN/python-proton-vpn-api-core")
     (synopsis "Core logic used by the other Proton VPN components")
     (description
      "This package is a core library used by other @code{python-proton-vpn-}
