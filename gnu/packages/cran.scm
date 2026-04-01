@@ -29942,25 +29942,20 @@ genotypes as \"graphical genotypes\".")
 (define-public r-furrr
   (package
     (name "r-furrr")
-    (version "0.3.1")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "furrr" version))
        (sha256
         (base32
-         "12z4q0fn7asxis17hisi82bvfabl5if1338lmfqmkrwv5rg7748d"))))
+         "0577zh7brip2yvh1rx5ks32qnslk3flpiacfvy5rdppxg20d3y42"))))
     (build-system r-build-system)
     (properties
      '((updater-extra-native-inputs . ("r-dplyr"))))
     (propagated-inputs
-     (list r-future
-           r-globals
-           r-lifecycle
-           r-purrr
-           r-rlang
-           r-vctrs))
-    (native-inputs (list r-dplyr r-testthat))
+     (list r-future r-globals r-purrr r-rlang r-vctrs))
+    (native-inputs (list r-dplyr r-parallelly r-testthat))
     (home-page "https://github.com/DavisVaughan/furrr")
     (synopsis "Apply mapping functions in parallel using futures")
     (description
