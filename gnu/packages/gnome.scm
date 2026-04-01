@@ -6968,7 +6968,7 @@ side panel;
 (define-public glycin-loaders
   (package
     (name "glycin-loaders")
-    (version "2.0.7")
+    (version "2.1.1")
     (source
      (origin
        (method git-fetch)
@@ -6978,7 +6978,7 @@ side panel;
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0v6szxk5h8a4b28xb0lrhqrq6b4vka2ha4qgpdp35f6c49v9pdyp"))
+         "1mrv733xhbxydww4szskv7jc0hif908aavh8h4kjcxp0zgy13blf"))
        (patches (search-patches "glycin-sandbox-Adapt-bwrap-invocation.patch"))))
     (outputs '("out" "debug"))
     (build-system meson-build-system)
@@ -7069,11 +7069,11 @@ side panel;
                            (method git-fetch)
                            (uri (git-reference
                                   (url "https://gitlab.gnome.org/sophie-h/test-images.git")
-                                  (commit "b148bcf70847d6f126a8e83e27e1c59d2e474adf")))
+                                  (commit "b3a107267cc4f1d136b7007938556250ce06fc4f")))
                            (file-name "glycin-test-images")
                            (sha256
                             (base32
-                             "16s3lss4cbny5d0ixhc0vaxxcvq2n7rcnbklrxdm84p2m21192vm")))))
+                             "1jvra75kjqkndxzzpmi5lb8d3q4fi3yc4hha0r1g9brdsnbhsp6f")))))
     (inputs (cons* bubblewrap
                    libheif
                    libjxl
