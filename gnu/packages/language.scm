@@ -877,7 +877,7 @@ noun phrases, verb phrases, etc.).")
 (define-public praat
   (package
     (name "praat")
-    (version "6.4.61")
+    (version "6.4.62")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -886,7 +886,7 @@ noun phrases, verb phrases, etc.).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lxg0h07cgz5fjhpsihvf8dk6g03fp4a7ar8x70pm2s5lbfr1amy"))))
+                "0jplas35yrhh1csdiw2mim4cgmj5iz5c3b87908smd0r528v75a6"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list (string-append "CC="
