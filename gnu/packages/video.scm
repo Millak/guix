@@ -177,6 +177,7 @@
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages iso-codes)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libcanberra)
@@ -3753,8 +3754,18 @@ soon as it starts.")
     (build-system meson-build-system)
     (arguments
      (list
+      #:disallowed-references
+      (list (gexp-input (this-package-native-input "openjdk") "jdk"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'build 'set-java-home
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; There is a jdk_home build option, but it conflates build-time
+              ;; (openjdk:jdk) and runtime (openjdk), so use JAVA_HOME
+              ;; instead.
+              (setenv "JAVA_HOME"
+                      #$(gexp-input (this-package-native-input "openjdk")
+                                    "jdk"))))
           (add-after 'unpack 'fix-dlopen-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (define (lib/no.so library)
@@ -3764,6 +3775,14 @@ soon as it starts.")
               (substitute* "src/libbluray/disc/aacs.c"
                 (("\"libaacs\"")
                  (string-append "\"" (lib/no.so "lib/libaacs.so") "\"")))
+              (substitute* "src/libbluray/bdj/bdj.c"
+                ;; Manually fix the JDK_HOME macro that is set by Meson for
+                ;; the `jdk_home' option and embedded in the binaries for use
+                ;; at runtime.  The Meson option is not used because we need
+                ;; to build with the 'jdk' output but don't want to retain a
+                ;; reference to it.
+                (("JDK_HOME")
+                 (format #f "~s" #$(this-package-input "openjdk"))))
               (substitute* "src/libbluray/disc/bdplus.c"
                 (("\"libbdplus\"")
                  (string-append "\"" (lib/no.so "lib/libbdplus.so") "\"")))))
@@ -3784,8 +3803,11 @@ soon as it starts.")
                                 " -L" (search-input-vicinity "freetype")
                                 " -L" (search-input-vicinity "fontconfig")
                                 " -lxml2 -lfreetype -lfontconfig"))))))))
-    (native-inputs (list pkg-config))
-    (inputs (list fontconfig freetype libaacs libbdplus libudfread libxml2))
+    ;; The latest OpenJDK 25 is not yet supported, so we use an older version
+    ;; that is a bit smaller and produces less warnings at runtime.
+    (native-inputs (list ant `(,openjdk11 "jdk") pkg-config))
+    (inputs (list fontconfig freetype libaacs libbdplus libudfread libxml2
+                  openjdk11))
     (home-page "https://www.videolan.org/developers/libbluray.html")
     (synopsis "Blu-Ray Disc playback library")
     (description
