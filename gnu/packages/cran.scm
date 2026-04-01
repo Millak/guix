@@ -15545,7 +15545,7 @@ previewing themes in real time.")
 (define-public r-shiny
   (package
     (name "r-shiny")
-    (version "1.11.1")
+    (version "1.13.0")
     (source
      (origin
        (method git-fetch)
@@ -15555,7 +15555,7 @@ previewing themes in real time.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rvn6lqy5ga2p4c3s33lm92kl6pmi99b43nw1cfjprrhf5s0439q"))
+         "09qj0dscj21v00vvgj6idi3r22q4p5adbs85qlvbca91bhbnfr0c"))
        (snippet
         '(for-each delete-file
                    '("inst/www/shared/bootstrap/js/bootstrap.min.js"
@@ -15574,7 +15574,6 @@ previewing themes in real time.")
                      ;; little trickier to do correctly.
                      ;; "inst/www/shared/shiny-showcase.js" ;TODO
                      ;; "inst/www/shared/shiny-autoreload.js" ;TODO
-                     "inst/www/shared/showdown/compressed/showdown.js"
                      "inst/www/shared/strftime/strftime-min.js")))))
     (properties
      '((updater-extra-native-inputs . ("r-coro"))))
@@ -15634,9 +15633,7 @@ previewing themes in real time.")
                              ("legacy/jquery.js" .
                               "legacy/jquery.min.js")
                              ("selectize/accessibility/js/selectize-plugin-a11y.js" .
-                              "selectize/accessibility/js/selectize-plugin-a11y.min.js")
-                             ("showdown/src/showdown.js" .
-                              "showdown/compressed/showdown.js"))))))))))
+                              "selectize/accessibility/js/selectize-plugin-a11y.min.js"))))))))))
     (propagated-inputs
      (list r-bslib
            r-cachem
