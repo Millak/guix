@@ -53440,11 +53440,11 @@ goal of enhancing interoperability between Seurat and Scanpy.")
       (license license:gpl3))))
 
 (define-public r-seuratdata
-  (let ((commit "4dc08e022f51c324bc7bf785b1b5771d2742701d")
+  (let ((commit "3e51f44303069b64f5dc4d68e6a3d4a343f55c39")
         (revision "1"))
     (package
       (name "r-seuratdata")
-      (version (git-version "0.2.2.9001" revision commit))
+      (version (git-version "0.2.2.9002" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -53453,7 +53453,7 @@ goal of enhancing interoperability between Seurat and Scanpy.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1wac1jqh42nbaikkd8v3apr1lwqcn1ppprfkwqfnqs6mvavgqavp"))))
+          (base32 "09331pljqd3w9pn7gwzqafmp0bwbmszz1v5d5cqphc257bycx25f"))))
       (properties `((upstream-name . "SeuratData")))
       (build-system r-build-system)
       (arguments
