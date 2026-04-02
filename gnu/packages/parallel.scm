@@ -689,17 +689,15 @@ single-instruction multiple-data (SIMD) intrinsics.")
     (name "openpmix")
     (version "6.0.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/openpmix/openpmix/releases/download/v"
-                    version "/pmix-" version ".tar.bz2"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/openpmix/openpmix")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))       ;for the M4 macros in 'config/oac'
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "062k2agr311j06pavmrim1savmcv4f3c5jir4w1jxs0cdnb6ksdz"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Remove ~5 MiB of pre-built HTML doc.
-               #~(delete-file-recursively "docs/_build/html"))))
+                "0kcm2bxlfk0cbd8fsksa0nia5z1zp1sda3vm16aqsbdxw52hfxmy"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -711,6 +709,11 @@ single-instruction multiple-data (SIMD) intrinsics.")
                                    (list (canonical-package gcc)))
       #:phases
       #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            (lambda _
+              (for-each patch-shebang
+                        (cons "autogen.pl" (find-files "config")))
+              (invoke "./autogen.pl")))
           (add-after 'unpack 'set-LDFLAGS
             (lambda _
               ;; The Cython-compiled shared library would fail the
@@ -732,7 +735,14 @@ single-instruction multiple-data (SIMD) intrinsics.")
                 (("#define PMIX_CONFIGURE_CLI .*")
                  "#define PMIX_CONFIGURE_CLI \"[scrubbed]\"\n")))))))
     (inputs (list libevent `(,hwloc "lib") zlib))
-    (native-inputs (list perl python python-cython-0))
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           perl
+           flex
+           python
+           python-cython-0))
     (synopsis "PMIx library")
     (description
      "PMIx is an application programming interface standard that provides
@@ -747,19 +757,24 @@ commonly needed services in distributed and parallel computing systems.")
 (define-public openpmix-4
   (package
     (inherit openpmix)
+    (name "openpmix")
     (version "4.2.8")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/openpmix/openpmix/releases/download/v"
-                    version "/pmix-" version ".tar.bz2"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/openpmix/openpmix")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))       ;for the M4 macros in 'config/oac'
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1j9xlhqrrmgjdkwakamn78y5gj756adi53hn25zksgr3is3l5d09"))
+                "08ni1km2gy2nwk2dymvj3pr74nffnmqicdw53nnrc3ls5s82iw1c"))
+              (modules '((guix build utils)))
               (snippet
-               '(begin (use-modules (guix build utils))
-                       ;; Remove ~5 MiB of pre-built HTML doc.
-                       (delete-file-recursively "docs/_build/html")))))
+               ;; Prevent 'autogen.pl' from running 'git submodule'.
+               #~(substitute* "autogen.pl"
+                   (("-f \".gitmodules\"")
+                    "0")))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:configure-flags flags #~'())
