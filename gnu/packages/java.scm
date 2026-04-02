@@ -1177,6 +1177,7 @@ new Date();"))))
            fontconfig
            freetype
            giflib
+           gtk+
            lcms
            elfutils
            libjpeg-turbo
