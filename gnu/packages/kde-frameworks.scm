@@ -2782,20 +2782,10 @@ covers feedback and persistent events.")
       ;; The `plasma-querytest' test is known to fail when tests are run in parallel:
       ;; <https://sources.debian.org/src/kpackage/5.115.0-2/debian/changelog/#L109>
       #:parallel-tests? #f
-      #:test-exclude "plasmoidpackagetest"
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'check-setup
-            (lambda _ (setenv "HOME" (getcwd))))
-          (replace 'check
-            (lambda* (#:key tests? parallel-tests? test-exclude
-                      #:allow-other-keys)
-              (setenv "CTEST_OUTPUT_ON_FAILURE" "1")
-              (invoke "ctest" "--rerun-failed" "--output-on-failure"
-                      "-j" (if parallel-tests?
-                               (number->string (parallel-job-count))
-                               "1")
-                      "-E" test-exclude))))))
+            (lambda _ (setenv "HOME" (getcwd)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Installation and loading of additional content as packages")
     (description "The Package framework lets the user install and load packages
