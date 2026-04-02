@@ -8591,15 +8591,10 @@ classes.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; Three attributes have no name.
-             (with-directory-excursion "tests/testthat"
-               (substitute* "test_CountSignals.R"
-                 ((".*Test CountSignals class and methods.*" m)
-                  (string-append m "skip('guix')\n")))))))))
+      #:skipped-tests
+      '(("test_CountSignals.R"
+         ;; Three attributes have no name.
+         "Test CountSignals class and methods"))))
     (propagated-inputs
      (list r-biocgenerics r-genomicranges r-iranges r-rcpp r-rhtslib))
     (native-inputs
