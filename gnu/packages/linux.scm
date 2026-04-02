@@ -10495,7 +10495,7 @@ known as Slingshot.")
 (define-public libfabric
   (package
     (name "libfabric")
-    (version "2.3.1")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
@@ -10503,7 +10503,7 @@ known as Slingshot.")
         (string-append "https://github.com/ofiwg/libfabric/releases/download/v"
                        version "/libfabric-" version ".tar.bz2"))
        (sha256
-        (base32 "0npkfkkhyir31r2p1zsfi7yrvcam60fp8ps4s2csjc2drqbrz4rf"))))
+        (base32 "1589hm7mj86imqf7i69ji2qsfnrr5r0ll1pkkibc13bhrbnijq17"))))
     (build-system gnu-build-system)
     (inputs
      (let ((if-supported                          ;XXX: modified from openmpi
