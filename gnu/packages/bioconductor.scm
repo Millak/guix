@@ -27328,14 +27328,6 @@ on the plot.")
         (base32
          "1l1yv2rc4aa3zp5w9qsr4n9mbr7g5n5bgldpvpy9z1wf664lxy8w"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; Seven tests need INLA, which bundles mystery binaries.
-             (delete-file "tests/testthat/test-build_score_cache.R"))))))
     (inputs
      (list gsl jags))
     (propagated-inputs
