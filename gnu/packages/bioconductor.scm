@@ -64,6 +64,7 @@
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-science)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
@@ -15536,8 +15537,22 @@ libraries for systems that do not have these available via other means.")
         (base32 "1si2g69l4scgkfrgas7fj6klj1rn1bcnch9panv564nyvkfrlmmv"))))
     (properties `((upstream-name . "zellkonverter")))
     (build-system r-build-system)
-    ;; This uses r-basilisk, which attempts to set up a Conda environment.
-    (arguments (list #:tests? #false))
+    (arguments
+     (list
+      #:skipped-tests
+      ;; In this file code outside of any particular testthat test attempts to
+      ;; fetch data from gypsum.artifactdb.com.
+      '("test-write.R")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'basilisk-configuration
+            ;; This uses r-basilisk, which attempts to set up a Conda
+            ;; environment.  We've patched basilisk to work without Conda when
+            ;; GUIX_BYPASS_BASILISK is set, so that's what we do here.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "HOME" "/tmp")
+              (setenv "RETICULATE_PYTHON" (which "python3"))
+              (setenv "GUIX_BYPASS_BASILISK" "1"))))))
     (propagated-inputs
      (list r-basilisk
            r-cli
@@ -15548,6 +15563,13 @@ libraries for systems that do not have these available via other means.")
            r-singlecellexperiment
            r-sparsearray
            r-summarizedexperiment))
+    (inputs (list python-anndata
+                  python-h5py
+                  python-natsort
+                  python-numpy
+                  python-pandas
+                  python-scipy
+                  python-wrapper))
     (native-inputs (list r-biocfilecache
                          r-hdf5array
                          r-knitr
