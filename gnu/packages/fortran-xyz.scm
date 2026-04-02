@@ -28,7 +28,8 @@
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages python))
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build))
 
 ;;; Please: Try to add new module packages in alphabetic order.
 ;;;
@@ -243,7 +244,7 @@ calculate partial charges used in the DFT-D4 model.")
 (define-public fortran-simple-dftd3
   (package
     (name "fortran-simple-dftd3")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -252,7 +253,7 @@ calculate partial charges used in the DFT-D4 model.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0aygmnax3vwz2x3ad7syksfjca4zc85nyslsibs0wg8wqfsmr33k"))))
+        (base32 "1602pwmxa8qjllgj7k9hq2bm4s838f6qzr7mpc0rbh28gm00c1fw"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -265,7 +266,8 @@ calculate partial charges used in the DFT-D4 model.")
      (list gfortran
            pkg-config
            python-minimal
-           python-cffi))
+           python-cffi
+           python-setuptools))
     (inputs
      (list fortran-mctc-lib
            fortran-mstore
