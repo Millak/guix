@@ -7206,6 +7206,34 @@ replacement for memcached in many cases.  It provides a data loading mechanism
 with caching and de-duplication that works across a set of peer processes.")
     (license license:asl2.0)))
 
+(define-public go-github-com-google-certtostore
+  (package
+    (name "go-github-com-google-certtostore")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/certtostore")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v5fk72ys61rbrczxx80mbnarlz55vil3hkpr7pw5s2lmb9r2qb9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/certtostore"))
+    (propagated-inputs
+     (list go-github-com-google-deck
+           ;; go-github-com-stackexchange-wmi ;Windows only
+           go-golang-org-x-crypto
+           go-golang-org-x-sys))
+    (home-page "https://github.com/google/certtostore")
+    (synopsis "Certificate storage for Golang")
+    (description
+     "This Golang package handles storage for x509 certificates.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-google-go-containerregistry
   (package
     (name "go-github-com-google-go-containerregistry")
