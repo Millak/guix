@@ -10498,13 +10498,17 @@ known as Slingshot.")
     (version "2.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri
-        (string-append "https://github.com/ofiwg/libfabric/releases/download/v"
-                       version "/libfabric-" version ".tar.bz2"))
-       (sha256
-        (base32 "1589hm7mj86imqf7i69ji2qsfnrr5r0ll1pkkibc13bhrbnijq17"))))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ofiwg/libfabric")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "14yhvywbz98yajffq5pmpphhpdr0g8m8a5579dfy56fpxar441an"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf
+           automake
+           libtool))
     (inputs
      (let ((if-supported                          ;XXX: modified from openmpi
             (lambda (package . extra)
@@ -10561,15 +10565,16 @@ libraries, which are often integrated directly into libfabric.")
 (define-public libfabric-1                        ;needed by Open MPI 4.x
   (package
     (inherit libfabric)
+    (name "libfabric")
     (version "1.22.0")
     (source
      (origin
-       (method url-fetch)
-       (uri
-        (string-append "https://github.com/ofiwg/libfabric/releases/download/v"
-                       version "/libfabric-" version ".tar.bz2"))
-       (sha256
-        (base32 "1znmw83rmippv0fwz0x7lgylfk17dr9ckll8lrm4z7kclspnqpj8"))))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ofiwg/libfabric")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "1scwkfdnlg20hld03pdq83jq1q3nmvj1gravpn02pacqq18bv9xk"))))
     (inputs
      (modify-inputs inputs
        (append cxi-driver-for-libfabric-1)))))
