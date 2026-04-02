@@ -11779,18 +11779,6 @@ platform that mimics both single and multi-sample scRNA-seq data.")
     (properties
      '((updater-extra-native-inputs . ("r-ccfindr"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'skip-bad-tests
-           (lambda _
-             ;; These tests may fail with accuracy problems.
-             (with-directory-excursion "tests/testthat"
-               (substitute* "test-context_potential_damage_analysis.R"
-                 ((".*Output is equal to expected.*" m)
-                  (string-append m "skip('guix')\n")))
-               (delete-file "test-mut_matrix_stranded.R")))))))
     (native-inputs
      (list r-ccfindr
            r-knitr
