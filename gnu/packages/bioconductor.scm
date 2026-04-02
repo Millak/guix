@@ -26035,29 +26035,6 @@ decompression of raw bead-level data from the Illumina BeadArray platform.")
         (base32 "18ii60kxr3f1rsydj29ml49gjicnciq7ypvrm1dz2rv4app0bp5j"))))
     (properties
      '((upstream-name . "CNEr")))
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; These require Internet access to download data from UCSC.
-             (delete-file "tests/testthat/test_Axt.R")
-             (substitute* "tests/testthat/test_CNE.R"
-               ((".*test_CNE.*" m)
-                (string-append m "skip('guix')\n")))))
-         (add-before 'install 'fix-gcc-14-strictness
-           (lambda _
-              ;; XXX FIXME: $HOME/.R/Makevars seems to be the only way to
-              ;; set custom CFLAGS for R?
-              (setenv "HOME" (getcwd))
-              (mkdir-p ".R")
-              (with-directory-excursion ".R"
-                (with-output-to-file "Makevars"
-                  (lambda _
-                    (display (string-append
-                              "CFLAGS=-g -O2"
-                              " -std=gnu11 \n"))))))))))
     (build-system r-build-system)
     (inputs (list zlib))
     (propagated-inputs
