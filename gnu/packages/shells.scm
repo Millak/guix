@@ -133,7 +133,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
 (define-public fish
   (package
     (name "fish")
-    (version "4.5.0")
+    (version "4.6.0")
     (source
      (origin
        (method url-fetch)
@@ -141,7 +141,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                            "releases/download/" version "/"
                            "fish-" version ".tar.xz"))
        (sha256
-        (base32 "1vb45i480723lin9jabnqx9x3m77kipnkzi60844wqsby661y5c9"))
+        (base32 "1ak12wpjllckv566k9jjy59si25whsib3j8ip8yqmqm06gvnb4gw"))
        ;; TODO: Unbundle corrosion.
        (patches (search-patches "corrosion-honor-CARGO_BUILD_TARGET.patch"))))
     (build-system cmake-build-system)
@@ -230,13 +230,9 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                                    "src/highlight/file_tester.rs"
                                    "src/highlight/highlight.rs"
                                    (find-files "tests"))
-                 (("/bin/pwd" pwd) (string-append coreutils pwd))
-                 (("/bin/echo" echo) (string-append coreutils echo))
                  (("/bin/sh" sh) (string-append bash sh))
-                 (("/bin/ls" ls) (string-append coreutils ls))
-                 (("/test/root/bin") "")
-                 (("/bin/ca\"" ca) (string-append coreutils ca))
-                 (("/bin/c\"" ca) (string-append coreutils ca))
+                 (("/usr/bin/en\"") (string-append coreutils "/bin/en\""))
+                 (("/usr/bin/e\"") (string-append coreutils "/bin/e\""))
                  (("\"/bin") "\"/tmp")
                  (("\"/usr") "\"/tmp"))
                (substitute* "tests/test_driver.py"
