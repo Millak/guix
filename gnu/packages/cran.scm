@@ -17483,13 +17483,13 @@ print, summary, plot, update, etc.
 (define-public r-ps
   (package
     (name "r-ps")
-    (version "1.9.1")
+    (version "1.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ps" version))
        (sha256
-        (base32 "0zfzlifhg88cfk1sg4l9sgai0qinjdjy2wcb17z4ls47xc5kq2bg"))))
+        (base32 "1nmmy0m7ll4j6j5cfvaq9jmzvvdl19a8mhmbm59wymhhds75nczm"))))
     (properties
      ;; We can't have r-testthat among the inputs, because that would lead to
      ;; a dependency cycle.
