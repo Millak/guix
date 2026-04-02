@@ -27983,13 +27983,8 @@ approach and a multi-scale contact profile.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             (substitute* "tests/testthat/test_misc.R"
-               ((".*ERCC works.*" m)
-                (string-append m "skip('guix')\n"))))))))
+      ;; This test attempts to contact gypsum.artifactdb.com
+      #:skipped-tests '(("test_misc.R" "ERCC works"))))
     (propagated-inputs
      (list r-assertthat
            r-biobase
