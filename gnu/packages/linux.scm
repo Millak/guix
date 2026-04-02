@@ -10393,7 +10393,7 @@ software uses @file{cxi_prov_hw.h} from this package.")
 (define-public cxi-driver
   (package
     (name "cxi-driver")
-    (version "13.0.0")
+    (version "14.0.0")
     (home-page "https://github.com/HewlettPackard/shs-cxi-driver")
     (source
      (origin
@@ -10404,7 +10404,7 @@ software uses @file{cxi_prov_hw.h} from this package.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1md6ammah7ywk5k9gsxix945w5498hpdfwzr603aiirlz2x4m4wh"))))
+         "07dhdm1az9hvy48iq8bn0wypwyml59yr5aqqyf1yhwrf1basry9g"))))
     ;; TODO: Actually build the Linux driver.
     (build-system copy-build-system)
     (arguments
