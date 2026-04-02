@@ -26675,15 +26675,6 @@ memory usage and processing time is minimized.")
                                        "r-preprocesscore"
                                        "r-vsn"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             (substitute* "tests/testthat/test_imputation.R"
-               ((".*impute_matrix\\(\\) preserves dimnames.*" m)
-                (string-append m "skip('guix')\n"))))))))
     (propagated-inputs
      (list r-clue r-mass r-rcpp r-s4vectors))
     (native-inputs
