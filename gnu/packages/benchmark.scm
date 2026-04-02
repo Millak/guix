@@ -944,7 +944,20 @@ configurable through a set of options.")
       #~(list (string-append
                "CC=" #$(this-package-input "openmpi") "/bin/mpicc")
               (string-append
-               "CXX=" #$(this-package-input "openmpi") "/bin/mpicxx"))))
+               "CXX=" #$(this-package-input "openmpi") "/bin/mpicxx"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; OSU installs its binaries to /libexec. Have a symlink in /bin to
+          ;; improve user experience.
+          (add-after 'install 'symlink-binaries-in-bin
+            (lambda _
+              (mkdir-p (string-append #$output "/bin"))
+              (for-each (lambda (file)
+                          (symlink file
+                                   (string-append #$output "/bin/"
+                                                  (basename file))))
+                        (find-files (string-append #$output
+                                                   "/libexec"))))))))
     (home-page "https://mvapich.cse.ohio-state.edu/benchmarks/")
     (synopsis "Benchmarking suite from the MVAPICH project")
     (description
