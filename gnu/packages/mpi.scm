@@ -470,7 +470,7 @@ software vendors, application developers and computer science researchers.")
                    "--with-sge"
                    "--disable-static"
 
-                   #$@(if (package? (this-package-input "valgrind"))
+                   #$@(if (this-package-input "valgrind")
                           #~("--enable-memchecker"
                              "--with-valgrind")
                           #~("--without-valgrind"))
@@ -491,13 +491,13 @@ software vendors, application developers and computer science researchers.")
                    ;; Explicitly activate PSM2 when present. This is required
                    ;; for autotools to add the -L flag to .la files, that
                    ;; fixes link-time errors when missing.
-                   #$@(if (package? (this-package-input "psm2"))
+                   #$@(if (this-package-input "psm2")
                           #~((string-append "--with-psm2=" #$(this-package-input "psm2")))
                           #~())
 
                    ;; Since 5.x, Infiniband support is provided by ucx.
                    ;; See https://docs.open-mpi.org/en/main/release-notes/networks.html#miscellaneous-network-notes
-                   #$@(if (package? (this-package-input "ucx"))
+                   #$@(if (this-package-input "ucx")
                           #~((string-append "--with-ucx=" #$(this-package-input "ucx")))
                           #~()))
 
