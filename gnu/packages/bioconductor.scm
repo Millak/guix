@@ -6984,16 +6984,19 @@ make mapping WGBS data to their probe IDs easier.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; viper is non-free software.
-             (delete-file "tests/testthat/test-statistic-viper.R")
-             ;; This test also attempts to load viper.
-             (delete-file "tests/testthat/test-decoupleR-decouple.R")
-             ;; These tests require Internet access.
-             (delete-file "tests/testthat/test-omnipath.R"))))))
+      #:skipped-tests
+      ;; viper is non-free software; this test tries to load it.
+      '(("test-decoupleR-decouple.R"
+         "decouple same results as independent functions")
+        ;; These tests require Internet access.
+        ("test-omnipath.R"
+         "test show_resources"
+         "test get_resource"
+         "test get_progeny human"
+         "test get_progeny mouse"
+         "test get_dorothea human"
+         "test get_dorothea mouse"
+         "test get_collectri"))))
     (propagated-inputs
      (list r-biocparallel
            r-broom
