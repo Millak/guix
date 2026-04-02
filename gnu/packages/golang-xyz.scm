@@ -11615,6 +11615,33 @@ designed for simplicity, speed, safety, and portability.  CEL's C-like
 equivalent expressions in C++, Go, Java, and TypeScript.")
     (license license:asl2.0)))
 
+(define-public go-github-com-google-deck
+  (package
+    (name "go-github-com-google-deck")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/deck")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15ma03jp3hhra3iwbi22x5zyf3hwv164zjg27ysvgpwbfcww5pn2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/google/deck"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-golang-glog))
+    (home-page "https://github.com/google/deck")
+    (synopsis "Deck - Flexible Logging Framework for Go")
+    (description
+     "This package provides a Flexible Logging Framework for Go.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-google-gnostic-models
   (package
     (name "go-github-com-google-gnostic-models")
