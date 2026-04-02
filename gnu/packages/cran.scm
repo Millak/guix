@@ -17559,14 +17559,14 @@ is configured appropriately so R can use them.")
 (define-public r-pkgload
   (package
     (name "r-pkgload")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pkgload" version))
        (sha256
         (base32
-         "1rlkk7zyn6k59albwhmg1zy724bcgk3cy7r1hbxrnjl1hfhqlki1"))))
+         "1wm80wccs1a16498jjg1hxd1xrl6x3047gq5k48lramzw5p4shmj"))))
     (properties
      ;; Avoid dependency cycle.
      '((updater-ignored-native-inputs . ("r-testthat"))))
