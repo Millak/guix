@@ -28040,8 +28040,38 @@ package, primarily for creation of the underlying Conda instance.")
      '((upstream-name . "basilisk")
        (updater-ignored-native-inputs . ("r-expiry"))))
     (build-system r-build-system)
-    ;; Several tests attempt to install things with Conda.
-    (arguments (list #:tests? #false))
+    (arguments
+     (list
+      ;; Several tests attempt to install things with Conda.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-for-guix
+           (lambda _
+             (substitute* "R/useBasiliskEnv.R"
+               (("^useBasiliskEnv <- function.*" m)
+                (string-append m "
+if (!is.na(Sys.getenv(\"GUIX_BYPASS_BASILISK\"))) {
+  py_config()
+  return()
+}
+")))
+             (substitute* "R/basiliskStart.R"
+               (("^basiliskRun <- function.*" m)
+                (string-append m "
+if (!is.na(Sys.getenv(\"GUIX_BYPASS_BASILISK\"))) {
+  if (is.environment(proc)) {
+      output <- fun(...)
+  } else {
+      proc <- new.env()
+      proc <- makePSOCKcluster(1)
+      clusterCall(proc, useBasiliskEnv, envpath=NULL)
+      on.exit(basiliskStop(proc), add=TRUE)
+      output <- clusterCall(proc, fun=fun, ...)[[1]]
+  }
+  return(output)
+}
+"))))))))
     (propagated-inputs
      (list r-dir-expiry r-reticulate))
     (native-inputs (list r-callr r-knitr r-testthat))
