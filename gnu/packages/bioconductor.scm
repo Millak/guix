@@ -25771,7 +25771,9 @@ provided.")
          (add-after 'unpack 'delete-bad-tests
            (lambda _
              ;; This file depends on r-zellkonverter, which uses r-basilisk to
-             ;; set up a Conda environment.  We don't want that.
+             ;; set up a Conda environment.  We don't want that.  It also
+             ;; leads to a dependency cycle, because zellkonverter directly
+             ;; and indirectly depends on hdf5array.
              (delete-file "inst/unitTests/test_H5ADMatrixSeed-class.R"))))))
     (propagated-inputs
      (list r-biocgenerics
