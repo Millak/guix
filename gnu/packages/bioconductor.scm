@@ -25110,14 +25110,19 @@ analytics on packages.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; One test tries to connect to a website.
-             (delete-file "tests/testthat/test_mapping_set.R")
-             ;; One test fails with a sorting error.
-             (delete-file "tests/testthat/test_BiocSet-methods.R"))))))
+      #:skipped-tests
+      ;; One test tries to connect to a website. ("'kegg_sets\\(\\)' works")
+      '("test_mapping_set.R"
+        ("test_BiocSet-methods.R"
+         ;; This test fails because "The `add` argument of `group_by()` was
+         ;; deprecated in dplyr 1.0.0 and is now defunct."
+         "'summarise.BiocSet\\(\\)' works"
+         ;; Expected `es_elementset(es2)$element` to equal
+         ;; `sort(es_elementset(es)$element)`.
+         "'arrange.BiocSet\\(\\)' works")
+        ("test_tbl_elementset_base-class.R"
+         ;; `set` must be size 1, not 52.
+         "'summarise.tbl_elementset_base\\(\\)' works"))))
     (propagated-inputs
      (list r-annotationdbi
            r-biocio
