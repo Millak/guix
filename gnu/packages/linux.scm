@@ -10364,7 +10364,7 @@ comparing system environments.")
 (define-public cassini-headers
   (package
     (name "cassini-headers")
-    (version "12.0.1")
+    (version "14.0.0")
     (home-page "https://github.com/HewlettPackard/shs-cassini-headers")
     (source (origin
               (method git-fetch)
@@ -10374,7 +10374,7 @@ comparing system environments.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fvhk42pssw67zba4zq1b73d1m9ysc4g8sfibjmmhc0fwr92iamp"))))
+                "074r1snc682f1b6vgswyz55n8zjf5rhqnsl31xsswih7q9q38jda"))))
     (build-system copy-build-system)
     (arguments
      (list #:install-plan
