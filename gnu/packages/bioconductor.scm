@@ -22960,14 +22960,10 @@ accessibility data.")
            "0n1wgjirdfs9vwa37grmfdqmqb1nssa1r5xsssahg4049b126gn3"))))
       (arguments
        (list
-        #:phases
-        '(modify-phases %standard-phases
-           (add-after 'unpack 'skip-bad-tests
-             (lambda _
-               ;; FIXME 1 test fails with: "nrow(over) not equal to 98."
-               (substitute* "tests/testthat/test-runCicero.R"
-                 ((".*find_overlapping_ccans works.*" m)
-                  (string-append m "skip('guix')"))))))))
+        #:skipped-tests
+        '(("test-runCicero.R"
+           ;; "nrow(over) not equal to 98."
+           "find_overlapping_ccans works"))))
       (propagated-inputs
        (modify-inputs propagated-inputs
          (delete "r-monocle")
