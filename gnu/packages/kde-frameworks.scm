@@ -2760,7 +2760,13 @@ covers feedback and persistent events.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1dkzq7zn10v5qx75ybbi8p8bqaxnqxkp666my7f85hvkgnga8kfd"))))
+                "1dkzq7zn10v5qx75ybbi8p8bqaxnqxkp666my7f85hvkgnga8kfd"))
+              (modules '((guix build utils)))
+              ;; Allow following paths or symlinks outside this package.
+              (snippet
+               '(substitute* "src/kpackage/private/package_p.h"
+                    (("bool externalPaths = false;")
+                     "bool externalPaths = true;")))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -2779,14 +2785,6 @@ covers feedback and persistent events.")
       #:test-exclude "plasmoidpackagetest"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch
-            (lambda _
-              (substitute* "src/kpackage/package.cpp"
-                (("bool externalPaths = false;")
-                 "bool externalPaths = true;"))
-              (substitute* '("src/kpackage/packageloader.cpp")
-                (("QDirIterator::Subdirectories")
-                 "QDirIterator::Subdirectories | QDirIterator::FollowSymlinks"))))
           (add-before 'check 'check-setup
             (lambda _ (setenv "HOME" (getcwd))))
           (replace 'check
