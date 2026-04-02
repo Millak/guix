@@ -19,6 +19,7 @@
 (define-module (tests-style)
   #:use-module ((gcrypt hash) #:select (port-sha256))
   #:use-module (guix packages)
+  #:use-module (guix read-print)
   #:use-module (guix scripts style)
   #:use-module ((guix utils)
                 #:select (guile-version>?
@@ -127,24 +128,18 @@
 (define* (read-package-field package field #:optional (count 1))
   (let* ((location (package-field-location package field))
          (file (location-file location))
-         (line (location-line location)))
-    (call-with-input-file (if (string-prefix? "/" file)
-                              file
-                              (string-append (test-directory) "/"
-                                             file))
-      (lambda (port)
-        (read-lines port line count)))))
+         (line (location-line location))
+         (absolute-file (if (string-prefix? "/" file)
+                            file
+                            (string-append (test-directory) "/"
+                                           file)))
+         (lines (call-with-input-file absolute-file
+                  (lambda (port)
+                    (read-lines port line count)))))
+    (call-with-input-string lines read-with-comments/sequence)))
 
 
 (test-begin "style")
-
-(when (guile-version>? "3.0.9")
-  ;; The output of 'pretty-print' changed in Guile 3.0.10.  These tests are
-  ;; currently written against the output of 'pretty-print' from 3.0.9, so
-  ;; skip them when running on a newer version.
-  ;;
-  ;; TODO: Adjust tests for 3.0.10+.
-  (test-skip 1000))
 
 (test-equal "nothing to rewrite"
   '()
@@ -153,29 +148,21 @@
 
 (test-equal "input labels, mismatch"
   (list `(("foo" ,gmp) ("bar" ,acl))
-        "      (inputs `((\"foo\" ,gmp) (\"bar\" ,acl)))\n")
+        '((inputs `(("foo" ,gmp) ("bar" ,acl)))))
   (with-test-package '((inputs `(("foo" ,gmp) ("bar" ,acl))))
     (list (package-direct-inputs (@ (my-packages) my-coreutils))
           (read-package-field (@ (my-packages) my-coreutils) 'inputs))))
 
 (test-equal "input labels, simple"
   (list `(("gmp" ,gmp) ("acl" ,acl))
-        "      (inputs (list gmp acl))\n")
+        '((inputs (list gmp acl))))
   (with-test-package '((inputs `(("gmp" ,gmp) ("acl" ,acl))))
     (list (package-direct-inputs (@ (my-packages) my-coreutils))
           (read-package-field (@ (my-packages) my-coreutils) 'inputs))))
 
 (test-equal "input labels, long list with one item per line"
   (list (concatenate (make-list 4 `(("gmp" ,gmp) ("acl" ,acl))))
-        "\
-        (list gmp
-              acl
-              gmp
-              acl
-              gmp
-              acl
-              gmp
-              acl))\n")
+        '((list gmp acl gmp acl gmp acl gmp acl) unbalanced))
   (with-test-package '((inputs `(("gmp" ,gmp) ("acl" ,acl)
                                  ("gmp" ,gmp) ("acl" ,acl)
                                  ("gmp" ,gmp) ("acl" ,acl)
@@ -184,25 +171,22 @@
           (read-package-field (@ (my-packages) my-coreutils) 'inputs 8))))
 
 (test-equal "input labels, sdl-union"
-  "\
-        (list gmp acl
-              (sdl-union 1 2 3 4)))\n"
+  '((inputs (list gmp acl (sdl-union 1 2 3 4))))
   (with-test-package '((inputs `(("gmp" ,gmp) ("acl" ,acl)
                                  ("sdl-union" ,(sdl-union 1 2 3 4)))))
     (read-package-field (@ (my-packages) my-coreutils) 'inputs 2)))
 
 (test-equal "input labels, output"
   (list `(("gmp" ,gmp "debug") ("acl" ,acl))
-        "      (inputs (list `(,gmp \"debug\") acl))\n")
+        '((inputs (list `(,gmp "debug") acl))))
   (with-test-package '((inputs `(("gmp" ,gmp "debug") ("acl" ,acl))))
     (list (package-direct-inputs (@ (my-packages) my-coreutils))
           (read-package-field (@ (my-packages) my-coreutils) 'inputs))))
 
 (test-equal "input labels, prepend"
   (list `(("gmp" ,gmp) ("acl" ,acl))
-        "\
-        (modify-inputs (package-propagated-inputs coreutils)
-          (prepend gmp acl)))\n")
+        '((modify-inputs (package-propagated-inputs coreutils)
+           (prepend gmp acl)) unbalanced))
   (with-test-package '((inputs `(("gmp" ,gmp) ("acl" ,acl)
                                  ,@(package-propagated-inputs coreutils))))
     (list (package-inputs (@ (my-packages) my-coreutils))
@@ -210,10 +194,9 @@
 
 (test-equal "input labels, prepend + delete"
   (list `(("gmp" ,gmp) ("acl" ,acl))
-        "\
-        (modify-inputs (package-propagated-inputs coreutils)
-          (delete \"gmp\")
-          (prepend gmp acl)))\n")
+        `((modify-inputs (package-propagated-inputs coreutils)
+            (delete "gmp")
+            (prepend gmp acl)) unbalanced))
   (with-test-package '((inputs `(("gmp" ,gmp)
                                  ("acl" ,acl)
                                  ,@(alist-delete "gmp"
@@ -223,10 +206,9 @@
 
 (test-equal "input labels, prepend + delete multiple"
   (list `(("gmp" ,gmp) ("acl" ,acl))
-        "\
-        (modify-inputs (package-propagated-inputs coreutils)
-          (delete \"foo\" \"bar\" \"baz\")
-          (prepend gmp acl)))\n")
+        '((modify-inputs (package-propagated-inputs coreutils)
+            (delete "foo" "bar" "baz")
+            (prepend gmp acl)) unbalanced))
   (with-test-package '((inputs `(("gmp" ,gmp)
                                  ("acl" ,acl)
                                  ,@(fold alist-delete
@@ -237,9 +219,8 @@
 
 (test-equal "input labels, replace"
   (list '()                                 ;there's no "gmp" input to replace
-        "\
-        (modify-inputs (package-propagated-inputs coreutils)
-          (replace \"gmp\" gmp)))\n")
+         '((modify-inputs (package-propagated-inputs coreutils)
+             (replace "gmp" gmp)) unbalanced))
   (with-test-package '((inputs `(("gmp" ,gmp)
                                  ,@(alist-delete "gmp"
                                                  (package-propagated-inputs coreutils)))))
@@ -248,8 +229,7 @@
 
 (test-equal "input labels, 'safe' policy"
   (list `(("gmp" ,gmp) ("acl" ,acl))
-        "\
-      (inputs (list gmp acl))\n")
+        '((inputs (list gmp acl))))
   (call-with-test-package '((inputs `(("GMP" ,gmp) ("ACL" ,acl)))
                             (arguments '()))      ;no build system arguments
     (lambda (directory)
@@ -266,8 +246,7 @@
 
 (test-equal "input labels, 'safe' policy, trivial arguments"
   (list `(("gmp" ,gmp) ("mpfr" ,mpfr))
-        "\
-      (inputs (list gmp mpfr))\n")
+        `((inputs (list gmp mpfr))))
   (call-with-test-package '((inputs `(("GMP" ,gmp) ("Mpfr" ,mpfr)))
                             (arguments            ;"trivial" arguments
                              '(#:tests? #f
@@ -286,8 +265,7 @@
 
 (test-equal "input labels, 'safe' policy, nothing changed"
   (list `(("GMP" ,gmp) ("ACL" ,acl))
-        "\
-      (inputs `((\"GMP\" ,gmp) (\"ACL\" ,acl)))\n")
+        '((inputs `(("GMP" ,gmp) ("ACL" ,acl)))))
   (call-with-test-package '((inputs `(("GMP" ,gmp) ("ACL" ,acl)))
                             ;; Non-empty argument list, so potentially unsafe
                             ;; input simplification.
@@ -309,8 +287,8 @@
 (test-equal "input labels, margin comment"
   (list `(("gmp" ,gmp))
         `(("acl" ,acl))
-        "      (inputs (list gmp)) ;margin comment\n"
-        "      (native-inputs (list acl)) ;another one\n")
+        `((inputs (list gmp)) ,(comment ";margin comment\n" #t))
+        `((native-inputs (list acl)) ,(comment ";another one\n" #t)))
   (call-with-test-package '((inputs `(("gmp" ,gmp)))
                             (native-inputs `(("acl" ,acl))))
     (lambda (directory)
@@ -337,15 +315,15 @@
 
 (test-equal "input labels, margin comment on long list"
   (list (concatenate (make-list 4 `(("gmp" ,gmp) ("acl" ,acl))))
-        "\
-        (list gmp ;margin comment
-              acl
-              gmp ;margin comment
-              acl
-              gmp ;margin comment
-              acl
-              gmp ;margin comment
-              acl))\n")
+        `((list gmp ,(comment ";margin comment\n" #t)
+                acl
+                gmp ,(comment ";margin comment\n" #t)
+                acl
+                gmp ,(comment ";margin comment\n" #t)
+                acl
+                gmp ,(comment ";margin comment\n" #t)
+                acl)
+          unbalanced))
   (call-with-test-package '((inputs `(("gmp" ,gmp) ("acl" ,acl)
                                       ("gmp" ,gmp) ("acl" ,acl)
                                       ("gmp" ,gmp) ("acl" ,acl)
@@ -369,10 +347,9 @@
 
 (test-equal "input labels, line comment"
   (list `(("gmp" ,gmp) ("acl" ,acl))
-        "\
-      (inputs (list gmp
-                    ;; line comment!
-                    acl))\n")
+        `((inputs (list gmp
+                        ,(comment ";; line comment!\n")
+                        acl))))
   (call-with-test-package '((inputs `(("gmp" ,gmp) ("acl" ,acl))))
     (lambda (directory)
       (define file
@@ -391,11 +368,10 @@
 
 (test-equal "input labels, modify-inputs and margin comment"
   (list `(("gmp" ,gmp) ("acl" ,acl) ("mpfr" ,mpfr))
-        "\
-        (modify-inputs (package-propagated-inputs coreutils)
-          (prepend gmp ;margin comment
-                   acl ;another one
-                   mpfr)))\n")
+        `((modify-inputs (package-propagated-inputs coreutils)
+            (prepend gmp ,(comment ";margin comment\n" #t)
+                     acl ,(comment ";another one\n" #t)
+                     mpfr)) unbalanced))
   (call-with-test-package '((inputs
                              `(("gmp" ,gmp) ("acl" ,acl) ("mpfr" ,mpfr)
                                ,@(package-propagated-inputs coreutils))))
@@ -435,9 +411,8 @@
 
 (test-equal "gexpify arguments, non-gexp arguments, margin comment"
   (list (list #:tests? #f #:test-target "check")
-        "\
-      (arguments (list #:tests? #f ;no tests
-                       #:test-target \"check\"))\n")
+        `((arguments (list #:tests? #f ,(comment ";no tests\n" #t)
+                           #:test-target "check"))))
   (call-with-test-package '((arguments
                              '(#:tests? #f
                                #:test-target "check")))
@@ -457,14 +432,13 @@
             (read-package-field (@ (my-packages) my-coreutils) 'arguments 2)))))
 
 (test-equal "gexpify arguments, phases and flags"
-  "\
-        (list #:tests? #f
-              #:configure-flags #~'(\"--fast\")
-              #:make-flags #~(list (string-append \"CC=\"
-                                                  #$(cc-for-target)))
-              #:phases #~(modify-phases %standard-phases
-                           ;; Line comment.
-                           whatever)))\n"
+  `((list #:tests? #f
+          #:configure-flags #~'("--fast")
+          #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+          #:phases #~(modify-phases %standard-phases
+                       ,(comment ";; Line comment.\n")
+                       whatever))
+    unbalanced)
   (call-with-test-package '((arguments
                              `(#:tests? #f
                                #:configure-flags '("--fast")
@@ -487,10 +461,9 @@
       (read-package-field (@ (my-packages) my-coreutils) 'arguments 7))))
 
 (test-equal "gexpify arguments, append arguments"
-  "\
-        (append (list #:tests? #f
-                      #:configure-flags #~'(\"--fast\"))
-                (package-arguments coreutils)))\n"
+  `((append (list #:tests? #f
+                  #:configure-flags #~'("--fast"))
+            (package-arguments coreutils)) unbalanced)
   (call-with-test-package '((arguments
                              `(#:tests? #f
                                #:configure-flags '("--fast")
@@ -506,14 +479,11 @@
       (read-package-field (@ (my-packages) my-coreutils) 'arguments 3))))
 
 (test-equal "gexpify arguments, substitute-keyword-arguments"
-  "\
-        (substitute-keyword-arguments (package-arguments coreutils)
-          ((#:tests? _ #f)
-           #t)
-          ((#:make-flags flags
-            #~'())
-           #~(cons \"-DXYZ=yes\"
-                   #$flags))))\n"
+  `((substitute-keyword-arguments (package-arguments coreutils)
+      ((#:tests? _ #f)
+       #t)
+      ((#:make-flags flags #~'())
+       #~(cons "-DXYZ=yes" #$flags))) unbalanced)
   (call-with-test-package '((arguments
                              (substitute-keyword-arguments
                                  (package-arguments coreutils)
@@ -531,13 +501,9 @@
       (read-package-field (@ (my-packages) my-coreutils) 'arguments 7))))
 
 (test-equal "gexpify arguments, substitute-keyword-arguments + unquote-splicing"
-  "\
-        (substitute-keyword-arguments (package-arguments coreutils)
-          ((#:make-flags flags
-            #~'())
-           #~(cons \"-DXYZ=yes\"
-                   #$@(if #t flags
-                          '())))))\n"
+  `((substitute-keyword-arguments (package-arguments coreutils)
+      ((#:make-flags flags #~'())
+       #~(cons "-DXYZ=yes" #$@(if #t flags '())))) unbalanced)
   (call-with-test-package '((arguments
                              (substitute-keyword-arguments
                                  (package-arguments coreutils)
@@ -554,12 +520,10 @@
       (read-package-field (@ (my-packages) my-coreutils) 'arguments 6))))
 
 (test-equal "gexpify arguments, append substitute-keyword-arguments"
-  "\
-        (append (list #:tests? #f)
-                (substitute-keyword-arguments (package-arguments coreutils)
-                  ((#:make-flags flags)
-                   #~(append `(\"-n\" ,%output)
-                             #$flags)))))\n"
+  `((append (list #:tests? #f)
+            (substitute-keyword-arguments (package-arguments coreutils)
+              ((#:make-flags flags)
+               #~(append `("-n" ,%output) #$flags)))) unbalanced)
   (call-with-test-package '((arguments
                              `(#:tests? #f
                                ,@(substitute-keyword-arguments
@@ -581,13 +545,16 @@
 ;;;
 
 (test-equal "url-fetch->git-fetch, basic transformation"
-  `(origin
-     (method git-fetch)
-     (uri (git-reference (url "https://github.com/foo/bar")
-                         (commit version)))
-     (file-name (git-file-name name version))
-     (sha256
-      (base32 "0j8vhvfj1d3jvbrd4kh20m50knmwj19xk0l3s78z1xxayp3c5zkk")))
+  `((origin
+      (method git-fetch)
+      (uri (git-reference (url "https://github.com/foo/bar")
+                          (commit version)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "0j8vhvfj1d3jvbrd4kh20m50knmwj19xk0l3s78z1xxayp3c5zkk")))
+    unbalanced
+    (properties (quote ()))
+    unbalanced unbalanced unbalanced)
   (call-with-test-package
       '((home-page "@substitute-me@")
         (version "1.0")
@@ -617,12 +584,22 @@
                    "https://github.com/foo/bar"))
 
                 (load file)
-                (and=> (false-if-exception
-                        (read-package-field (@ (my-packages-0) my-coreutils-0) 'source 8))
-                       (cut call-with-input-string <> read))))))
+                (read-package-field (@ (my-packages-0) my-coreutils-0) 'source 8)))))
     "0"))
 
-(test-assert "url-fetch->git-fetch, preserved field"
+(test-equal "url-fetch->git-fetch, preserved field"
+  `((origin
+      (method git-fetch)
+      (uri (git-reference
+             (url "https://github.com/foo/bar")
+             (commit version)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "0j8vhvfj1d3jvbrd4kh20m50knmwj19xk0l3s78z1xxayp3c5zkk"))
+      (patches (search-patches "foo.patch")))
+    unbalanced
+    (properties (quote ()))
+    unbalanced unbalanced unbalanced)
   (call-with-test-package
       '((home-page "@substitute-me@")
         (version "1.0")
@@ -664,24 +641,25 @@
                         (((string-append "file://" repository))
                          "https://github.com/foo/bar"))
                       (load file)
-                      (and=> (read-package-field
-                              (@ (my-packages-1) my-coreutils-1) 'source 9)
-                             (cut string-contains <> "patches")))))))
+                      (read-package-field
+                       (@ (my-packages-1) my-coreutils-1) 'source 9))))))
     "1"))
 
 (unless (false-if-exception
          (getaddrinfo "https.git.savannah.gnu.org" "https"))
   (test-skip 1))
 (test-equal "url-fetch->git-fetch, mirror:// URL"
-  '(origin
-     (method git-fetch)
-     (uri (git-reference
-            (url "https://https.git.savannah.gnu.org/git/sed.git")
-            (commit (string-append "v" version))))
-     (file-name (git-file-name name version))
-     (sha256
-      (base32
-       "00p6v3aa22jz365scmifr06fspkylzrvbqda0waz4x06q5qv0263")))
+  '((origin
+      (method git-fetch)
+      (uri (git-reference
+             (url "https://https.git.savannah.gnu.org/git/sed.git")
+             (commit (string-append "v" version))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "00p6v3aa22jz365scmifr06fspkylzrvbqda0waz4x06q5qv0263")))
+    unbalanced
+    (properties (quote ()))
+    unbalanced unbalanced unbalanced)
   (call-with-test-package
       '((version "4.9")
         (source
@@ -699,9 +677,7 @@
       (system* "guix" "style" "-L" directory "-S" "git-source" "my-coreutils-1")
 
       (load file)
-      (call-with-input-string (read-package-field
-                               (@ (my-packages-1) my-coreutils-1) 'source 8)
-        read))
+      (read-package-field (@ (my-packages-1) my-coreutils-1) 'source 8))
     "1"))
 
 (test-assert "url-fetch->git-fetch, non-git home-page unchanged"
