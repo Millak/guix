@@ -9146,13 +9146,13 @@ self-defined annotation graphics.")
 (define-public r-conos
   (package
     (name "r-conos")
-    (version "1.5.2")
+    (version "1.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "conos" version))
        (sha256
-        (base32 "0p66gb308w2zfsppm0k1vsvgr33kzzhql0vh7l39vlsgayi00skk"))))
+        (base32 "02rhmvdmsrcnmqwza68wy7zzazvg3d49j7wpgck3l3fdh9g2l4w7"))))
     (properties `((upstream-name . "conos")))
     (build-system r-build-system)
     (propagated-inputs
