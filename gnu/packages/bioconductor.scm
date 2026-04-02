@@ -8654,20 +8654,22 @@ on Bioconductor or which replace R functions.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These tests attempt to download files.
-             (for-each delete-file
-                       '("tests/testthat/test_ensemblFunctions.R"
-                         "tests/testthat/test_ensemblGenomes.R"
-                         "tests/testthat/test_getBM.R"
-                         "tests/testthat/test-getGene.R"
-                         "tests/testthat/test_utilityFunctions.R"
-                         "tests/testthat/test_z_cache.R"
-                         ;; This produces unexpected warnings.
-                         "tests/testthat/test_ensembl_ssl_settings.R")))))))
+      #:skipped-tests
+      '(("test_ensembl_ssl_settings.R"
+         ;; This produces unexpected warnings.
+         "SSL settings are stored in the cache")
+        ;; These tests attempt to download files.
+        ("test_ensemblFunctions.R"
+         "useEnsembl\\(\\) error handling is OK"
+         "useEnsembl\\(host = \\) is not necessary for ensembl.org"
+         "Ensembl URLs are constructed correctly")
+        ("test_getBM.R"
+         "getBM returns sensible things"
+         "getBM doesn't convert T/F alleles into TRUE/FALSE")
+        ("test-getGene.R"
+         "getGene\\(\\) recognizes new ensembl name as ensembl")
+        ;; Code run outside of testthat accesses www.ensembl.org
+        "test_z_cache.R")))
     (propagated-inputs
      (list r-annotationdbi
            r-biocfilecache
