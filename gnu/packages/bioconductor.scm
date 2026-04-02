@@ -26227,14 +26227,10 @@ This package wraps C++ code from the MOODS motif calling library.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; Fails with "more columns than column names".
-             (substitute* "tests/testthat/test_get_counts.R"
-               ((".*can count fragments with bed file.*" m)
-                (string-append m "skip('guix')\n"))))))))
+      #:skipped-tests
+      ;; Fails with "more columns than column names".
+      '(("test_get_counts.R"
+         "can count fragments with bed file"))))
     (propagated-inputs
      (list r-biocgenerics
            r-biocparallel
