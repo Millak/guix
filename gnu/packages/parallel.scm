@@ -687,7 +687,7 @@ single-instruction multiple-data (SIMD) intrinsics.")
 (define-public openpmix
   (package
     (name "openpmix")
-    (version "6.0.0")
+    (version "6.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -697,7 +697,7 @@ single-instruction multiple-data (SIMD) intrinsics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kcm2bxlfk0cbd8fsksa0nia5z1zp1sda3vm16aqsbdxw52hfxmy"))))
+                "1sj4hqnbis0a8466qv47fp9ii6akvbl6n9scha0hg9cpljk6kif0"))))
     (build-system gnu-build-system)
     (arguments
      (list
