@@ -785,15 +785,23 @@ commonly needed services in distributed and parallel computing systems.")
 (define-public prrte
   (package
    (name "prrte")
-   (version "4.0.0")
+   (version "4.1.0")
    (source (origin
-            (method url-fetch)
-            (uri (string-append
-                  "https://github.com/openpmix/prrte/releases/download/v"
-                  version "/prrte-" version ".tar.bz2"))
-            (sha256
-             (base32
-              "1r2dxnv3spmfd3l5is8cly2mmmc98xgm9wvvih99j35sw1hwjbiw"))))
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/openpmix/prrte")
+                   (commit (string-append "v" version))
+                   (recursive? #t)))        ;for the M4 macros in 'config/oac'
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "0f40hpppvfcc2ckryb1v6wckjqw6j0480dmixrf0ip69mcb9vv8l"))
+             (modules '((guix build utils)))
+             (snippet
+              ;; Prevent 'autogen.pl' from running 'git submodule'.
+              #~(substitute* "autogen.pl"
+                  (("-f \".gitmodules\"")
+                   "0")))))
    (build-system gnu-build-system)
    (arguments
     (list #:configure-flags
@@ -805,11 +813,26 @@ commonly needed services in distributed and parallel computing systems.")
                 (lambda _
                   ;; Remove references to GCC, the shell, etc. (shown by
                   ;; 'prte_info') to reduce the closure size.
-                  (substitute* "src/tools/prte_info/param.c"
-                    (("_ABSOLUTE")
-                     "")
-                    (("PRTE_CONFIGURE_CLI")
-                     "\"[elided to reduce closure]\""))))
+                  (substitute* "config/prte_setup_cc.m4"
+                    (("AC_SUBST\\(PRTE_CC_ABSOLUTE\\)")
+                     (string-append
+                      "PRTE_CC_ABSOLUTE=\"$(basename $PRTE_CC_ABSOLUTE)\"\n"
+                      "AC_SUBST([PRTE_CC_ABSOLUTE])\n")))
+                  (substitute* "configure.ac"
+                    (("PRTE_CAPTURE_CONFIGURE_CLI\\(\\[PRTE_CONFIGURE_CLI\\]\\)"
+                      all)
+                     (string-append
+                      "dnl " all "\n"
+                      "PRTE_CONFIGURE_CLI=\"[elided to reduce closure]\"\n"
+                      "AC_SUBST([PRTE_CONFIGURE_CLI])\n"
+                      "AC_DEFINE_UNQUOTED([PRTE_CONFIGURE_CLI],"
+                      " [\"$PRTE_CONFIGURE_CLI\"],"
+                      " [Capture the configure cmd line])\n")))))
+              (replace 'bootstrap
+                (lambda _
+                  (for-each patch-shebang
+                        (cons "autogen.pl" (find-files "config")))
+                  (invoke "./autogen.pl")))
               (add-after 'unpack 'patch-prted-reference
                 (lambda _
                   ;; Record the absolute file name of 'prted' instead of
@@ -833,12 +856,14 @@ commonly needed services in distributed and parallel computing systems.")
                  `(,hwloc "lib")
                  openpmix
                  libnl))
-   (native-inputs (list pkg-config perl))
-   (outputs '("out"
-
-              ;; Move ~5 MiB of HTML docs (including CSS, JS, and fonts!) to a
-              ;; separate output.
-              "doc"))
+   (native-inputs
+    (list autoconf
+          automake
+          flex
+          libtool
+          perl
+          pkg-config
+          python))                                ;for 'prte-convert-help.py'
    (synopsis "PMIx Reference RunTime Environment (PRRTE)")
    (description
     "The PMIx Reference RunTime Environment is a runtime environment
