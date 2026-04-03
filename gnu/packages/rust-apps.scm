@@ -2309,6 +2309,37 @@ specified image or color, easing the process of theme creation.")
 @code{cffi} bindings as well as rust binaries as python packages.")
     (license (list license:expat license:asl2.0))))
 
+(define-public mdopen
+  (package
+    (name "mdopen")
+    (properties '((commit . "3858a4d2222ac789b168729ac1ae7b726342526e")))
+    (version (git-version "0.5.0" "0"
+                          (assoc-ref properties
+                                     'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/immanelg/mdopen")
+             (commit (assoc-ref properties
+                                'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "024pv3wg6dg7yh8acpq3m0rrh046zfmcs940jivkjh8i9a5s2k3b"))))
+    (arguments
+     (list
+      #:install-source? #f
+      #:tests? #f)) ;tests are non-functional
+    (build-system cargo-build-system)
+    (inputs (cons* openssl oniguruma
+                   (cargo-inputs 'mdopen)))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/immanelg/mdopen")
+    (synopsis "Markdown preview server")
+    (description "Quickly preview local markdown files in browser with
+GitHub-like look.")
+    (license license:gpl3+)))
+
 (define-public mitm-cache
   (package
     (name "mitm-cache")
