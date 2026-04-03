@@ -15153,6 +15153,27 @@ exporter already existing in Org mode.  It supports the Github flavored
 markdown features.")
     (license license:gpl3+)))
 
+(define-public emacs-grip-mode
+  (package
+    (name "emacs-grip-mode")
+    (version "2.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/seagle0128/grip-mode")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mrpmzcxgc9hkv55d6kv79f8y6ldqrf5b48f0a4fy30qlgby2wyz"))))
+    (arguments (list #:tests? #f)) ;no tests
+    (build-system emacs-build-system)
+    (home-page "https://github.com/seagle0128/grip-mode")
+    (synopsis "Instant GitHub-flavored Markdown/Org preview")
+    (description "Instant GitHub-flavored Markdown/Org preview using
+@code{grip}, @code{mdopen} or @code{go-grip}.")
+    (license license:gpl3)))
+
 (define-public emacs-2048-game
   (package
     (name "emacs-2048-game")
