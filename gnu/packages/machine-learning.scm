@@ -6448,43 +6448,35 @@ powered by the Argos Translate library.")
     (version "0.3.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "hmmlearn" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hmmlearn/hmmlearn")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1v24rkqjjf67w2rys25qxa3vk30bf23m7zn1ilihqzi5qp25sg0x"))))
-    (properties
-     '((updater-extra-native-inputs . ("pybind11" "python-setuptools-scm"))))
+        (base32 "1d1gcw2xb1i7zvkcz2vmrk4c2iqsfy71pgrc0r5p65r51w9p97n1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; _flapack.error: (liwork>=max(1,10*n)||liwork==-1) failed for 10th
-      ;; keyword liwork: dsyevr:liwork=1
-      #~(list "-k" (string-join
-                    (list "not test_fit_mcgrory_titterington1d"
-                          "test_common_initialization"
-                          "test_initialization")
-                    " and not "))
+      #~(list "--pyargs" "hmmlearn")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'set-core-count
-           (lambda _
-             ;; "Could not find the number of physical cores", so we tell it
-             ;; how many cores to use.
-             (setenv "LOKY_MAX_CPU_COUNT" "1")))
-         (add-before 'check 'build-extensions
-           (lambda _
-             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (propagated-inputs
-     (list python-numpy python-scikit-learn python-scipy))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-core-count
+            (lambda _
+              ;; "Could not find the number of physical cores", so we tell it
+              ;; how many cores to use.
+              (setenv "LOKY_MAX_CPU_COUNT" "1"))))))
     (native-inputs
-     (list pybind11-2
+     (list pybind11
            python-pytest
            python-setuptools
            python-setuptools-scm
-           python-wheel
            util-linux)) ;for lscpu
+    (propagated-inputs
+     (list python-numpy
+           python-scikit-learn
+           python-scipy))
     (home-page "https://github.com/hmmlearn/hmmlearn")
     (synopsis "Hidden Markov Models with scikit-learn like API")
     (description
