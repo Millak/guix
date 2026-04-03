@@ -377,7 +377,7 @@ desktop environment (originally from elementary OS).")
 (define-public pantheon-terminal
   (package
     (name "pantheon-terminal")
-    (version "6.3.1")
+    (version "8.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -386,7 +386,7 @@ desktop environment (originally from elementary OS).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "142nwx2jc7ks529dk8dqhgs39gdqh6bc7gv9b10qdfm81bwqjkjv"))))
+                "0kldk74rmifgbf2wq9qbzv414dl4mgf94mzr5a4i2cags4rxlci3"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -394,10 +394,6 @@ desktop environment (originally from elementary OS).")
       #:glib-or-gtk? #t
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'install 'set-environment-variables
-            (lambda _
-              ;; Disable compiling schemas and updating desktop databases
-              (setenv "DESTDIR" "/")))
           (add-after 'install 'install-symlinks
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((bin (string-append #$output
@@ -412,12 +408,13 @@ desktop environment (originally from elementary OS).")
                          pkg-config
                          vala
                          xvfb-run))
-    (inputs (list granite-6
-                  gtk+
+    (inputs (list granite
+                  gtk
+                  libadwaita
                   libgee
                   libhandy
                   pcre2
-                  vte/gtk+-3))
+                  vte))
     (synopsis "Terminal emulator from elementaryOS")
     (description "pantheon-terminal is a lightweight, beautiful and simple
 terminal.  It comes with sane defaults, browser-class tabs, sudo paste
