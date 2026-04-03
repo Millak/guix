@@ -217,7 +217,7 @@ elementary OS.")
 (define-public pantheon-icons
   (package
     (name "pantheon-icons")
-    (version "8.1.0")
+    (version "8.2.0")
     (source
       (origin
         (method git-fetch)
@@ -226,7 +226,7 @@ elementary OS.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "1yvjisvcjdpgibnc5l5cm16rw53zffinp1pvknlllz8wcdylqnss"))))
+          (base32 "04x8r1kknm7iswlg71da24aqqgrs494mivdx3jx1wz1jz5wzxnwy"))))
     (build-system meson-build-system)
     (arguments
       (list #:configure-flags #~(list "-Dvolume_icons=false"
@@ -234,7 +234,7 @@ elementary OS.")
     (native-inputs (list gettext-minimal ;for msgfmt
                          librsvg
                          xcursorgen))
-    (propagated-inputs (list hicolor-icon-theme))
+    (propagated-inputs (list adwaita-icon-theme))
     (synopsis "Named, vector icons for the pantheon desktop")
     (description
      "pantheon-icons is an original set of vector icons designed
