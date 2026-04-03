@@ -158,7 +158,7 @@ desktop.")
 (define-public pantheon-calendar
   (package
     (name "pantheon-calendar")
-    (version "8.0.0")
+    (version "8.0.1")
     (source
      (origin
        (method git-fetch)
@@ -168,7 +168,7 @@ desktop.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1bynv5gnfs4sdr5ngd1c8jh42fkiw4gl5064fb579hws2jniy540"))))
+         "0344wr5ka2cfkr46vrclh1w9nhrrznn0jbb5g95dfww2czrp6iwj"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -177,12 +177,13 @@ desktop.")
       #:glib-or-gtk? #t
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'install 'set-environment-variables
-            (lambda _
-              ;; Disable compiling schemas and updating desktop databases
-              (setenv "DESTDIR" "/")))
+          (add-after 'unpack 'disable-icon-cache
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("gtk_update_icon_cache: true")
+                      "gtk_update_icon_cache: false"))))
           (add-after 'install 'install-symlinks
-            (lambda* (#:key outputs #:allow-other-keys)
+            (lambda _
               (let* ((bin (string-append #$output
                                          "/bin/io.elementary.calendar"))
                      (link (string-append #$output "/bin/pantheon-calendar")))
