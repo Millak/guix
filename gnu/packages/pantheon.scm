@@ -3,6 +3,7 @@
 ;;; Copyright © 2023 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2023, 2024 altadil <Altadil@protonmail.com>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
+;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,7 +52,7 @@
 (define-public granite
   (package
     (name "granite")
-    (version "7.3.0")
+    (version "7.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -60,13 +61,19 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pyvkif2kin5dskh7adadsh4r96mvx12y7cs6gnm0ml733q548dj"))))
+                "01s37b6ssfhawbzxzq5yyjcxq9m2qf16q0h4g4vfhj1c6f4l8khy"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'disable-icon-cache
-                    (lambda _
-                      (setenv "DESTDIR" "/"))))))
+     (list
+      #:configure-flags
+      #~(list "-Ddemo=false") ;requires libshumate
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")))))))
     (inputs (list sassc))
     (propagated-inputs (list glib libgee gtk))      ;required in .pc file
     (native-inputs (list gettext-minimal
@@ -96,6 +103,15 @@ in apps built for the Pantheon desktop.")
               (sha256
                (base32
                 "0ilslmg63hh2x7h5rvs3mhzw1y9ixhhkqnn1j1lzwm12v2iidkaq"))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:configure-flags _ '())
+        #~'())
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'disable-icon-cache
+              (lambda _
+                (setenv "DESTDIR" "/")))))))
     (propagated-inputs (list glib libgee gtk+))))
 
 (define-public pantheon-calculator
