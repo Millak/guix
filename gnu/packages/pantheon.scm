@@ -478,7 +478,7 @@ download.")
 (define-public pantheon-wallpapers
   (package
     (name "pantheon-wallpapers")
-    (version "7.0.0")
+    (version "8.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -486,7 +486,7 @@ download.")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256 (base32
-                       "0km3h52kapbm8ymwxdxasz80qbgzkfni7981pdyf740wjp7linwb"))))
+                       "163y98x0vc8icmd5prrjja7sp3clp8apvx0ha2shiaymxnprifm9"))))
     (build-system meson-build-system)
     (native-inputs (list gettext-minimal))  ; for msgfmt
     (inputs (list libexif))
