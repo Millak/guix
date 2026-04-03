@@ -1548,6 +1548,7 @@ new Date();"))))
            fontconfig
            freetype
            giflib
+           gtk+
            lcms
            libjpeg-turbo
            libpng
