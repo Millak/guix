@@ -12832,19 +12832,18 @@ the graph algorithms contained in the Boost library.")
     (build-system r-build-system)
     (arguments
      (list
+      #:skipped-tests
+      ;; Code running outside testthat accesses the Internet
+      '("test_motif.R"
+        ;; These tests attempt to download data.
+        ("test_database_functions.R"
+         "Testing createDB function")
+        ("test_report.R"
+         "Testing runReport function"))
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp")))
-         (add-after 'unpack 'skip-bad-tests
-           (lambda _
-             ;; These tests need Internet access.
-             (with-directory-excursion "tests/testthat"
-               (substitute* "test_database_functions.R"
-                 ((".*Testing createDB function.*" m)
-                  (string-append m "skip('guix')\n")))
-               (delete-file "test_report.R")
-               (delete-file "test_motif.R")))))))
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (inputs (list pandoc))
     (propagated-inputs
      (list r-biocgenerics
