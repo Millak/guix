@@ -24488,11 +24488,9 @@ conflicts.")
             (lambda* (#:key inputs native-inputs #:allow-other-keys)
               (substitute* "xelb-gen"
                 (("/usr/bin/env") (which "env")))
-              (let ((xcb-proto #$(this-package-native-input "xcb-proto"))
-                    (emacs (search-input-file (or native-inputs inputs)
-                                              "/bin/emacs")))
-                (invoke "make"
-                        (format #f "PROTO_PATH=~a/share/xcb" xcb-proto))))))))
+              (invoke "make"
+                      (format #f "PROTO_PATH=~a/share/xcb"
+                              #$(this-package-native-input "xcb-proto"))))))))
     (native-inputs (list xcb-proto))
     (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/emacs-exwm/xelb")
