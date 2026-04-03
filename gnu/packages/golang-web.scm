@@ -18431,6 +18431,59 @@ metrics into the Prometheus exposition format and implements
 prometheus.Collector to provide a handler for these metrics.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-otel-exporters-stdout-stdoutmetric
+  (package
+    (name "go-go-opentelemetry-io-otel-exporters-stdout-stdoutmetric")
+    (version "1.43.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-telemetry/opentelemetry-go")
+              (commit (go-version->git-ref version
+                                           #:subdir
+					   "exporters/stdout/stdoutmetric"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0583dw99k25k07pnq8hhhb45kwqhsx30lbk9yxsh4m50ji65wl8h"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "exporters/stdout" "stdoutmetric")
+            (delete-all-but "exporters" "stdout")
+            (delete-all-but "." "exporters")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/otel/exporters/stdout/stdoutmetric"
+      #:unpack-path "go.opentelemetry.io/otel"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestExporterExportObservability/Enabled"
+                             "TestExporterExportObservability/EncodingError")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-go-opentelemetry-io-otel
+	   go-go-opentelemetry-io-otel-sdk
+	   go-go-opentelemetry-io-otel-sdk-metric))
+    (home-page "https://go.opentelemetry.io/otel")
+    (synopsis "OTLP STDOUT Metric Exporter")
+    (description
+     "Package stdoutmetric provides an @code{OpenTelemetry} exporter for
+metric telemetry.  It is intended to be used for testing and debugging, not
+for production use.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-otel-exporters-stdout-stdouttrace
   (package
     (name "go-go-opentelemetry-io-otel-exporters-stdout-stdouttrace")
