@@ -375,7 +375,7 @@ contents, and discovering ways to shrink the size of Docker/OCI image.")
 (define-public guix-compose
   (package
     (name "guix-compose")
-    (version "0.1.1")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -384,7 +384,7 @@ contents, and discovering ways to shrink the size of Docker/OCI image.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ij6rfs5pfykk8c53q029sl2qx3k572dqdfb6pn5s569l6697ci1"))))
+        (base32 "1dy48qkz3ifxagijpvwg7rmq7hz3pikhdcfral6djyc9ppmz8mbm"))))
     (build-system guile-build-system)
     (arguments
      (list
@@ -426,7 +426,7 @@ contents, and discovering ways to shrink the size of Docker/OCI image.")
                  "guile" "-L" "./modules" "-s" "tests/test-compose.scm")))))))
     (native-inputs (list guile-3.0))
     ;; Avoid setting propagated so that we use the user’s profile.
-    (inputs (list guix guile-yamlpp))
+    (inputs (list guix guile-dotenv guile-yamlpp))
     (native-search-paths
      (list $GUIX_EXTENSIONS_PATH))
     (synopsis "Guix' docker compose compatibility layer")
