@@ -4549,7 +4549,7 @@ instances.")
 (define-public pyotherside
   (package
     (name "pyotherside")
-    (version "1.6.0")
+    (version "1.6.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4558,7 +4558,7 @@ instances.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vwl088p8zjkh2rwmzwpz5mkjs2rfyb80018dq4r571c9vpwp2r0"))))
+                "1nn0rmdwrxz6j95plzfy4r6s2jfq9ddqj7danbn4rx2nnd81brnq"))))
     (build-system qt-build-system)
     (arguments
      (list
