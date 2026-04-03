@@ -426,7 +426,7 @@ terminal in the Pantheon desktop.")
 (define-public sideload
   (package
     (name "sideload")
-    (version "6.2.1")
+    (version "6.3.1")
     (source
      (origin
        (method git-fetch)
@@ -436,42 +436,38 @@ terminal in the Pantheon desktop.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0vrj91899f13cvzpycqy3y74hmixsffjbzsj29da7n370fa3ci86"))))
+         "0hn9gnzr25i0k6b81ia6c73lqmr43grfdwn18sfp8xhjiqlqqmlq"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
-         (add-before 'install 'set-environment-variables
-           (lambda _
-             ;; Disable compiling schemas and updating desktop databases
-             (setenv "DESTDIR" "/")))
          (add-after 'install 'install-symlinks
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin/io.elementary.sideload"))
-                    (link (string-append out "/bin/sideload")))
+           (lambda _
+             (let ((bin (string-append #$output "/bin/io.elementary.sideload"))
+                   (link (string-append #$output "/bin/sideload")))
                (symlink bin link)))))))
     (inputs
-     `(("flatpak" ,flatpak)
-       ("glib" ,glib)
-       ("granite" ,granite)
-       ("gtk" ,gtk+)
-       ("hicolor-icon-theme" ,hicolor-icon-theme)
-       ("libgee" ,libgee)
-       ("libhandy" ,libhandy)
-       ("libostree" ,libostree)
-       ("libxml2" ,libxml2)))
+     (list flatpak
+           glib
+           granite
+           gtk+
+           hicolor-icon-theme
+           libgee
+           libhandy
+           libostree
+           libxml2))
     (propagated-inputs
      ;; Sideload needs these in the environment to fetch data securely from
      ;; Flatpak remotes.
      (list gnupg gpgme))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list desktop-file-utils ;for update-desktop-database
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           pkg-config
+           vala))
     (home-page "https://github.com/elementary/sideload")
     (synopsis "Graphical application to side-load Flatpaks")
     (description "Sideload handles flatpakref files, like those you might find
