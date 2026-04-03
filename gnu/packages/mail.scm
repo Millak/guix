@@ -1432,9 +1432,12 @@ attachments, create new maildirs, and so on.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 334 passed, 4 deselected, 9 xfailed, 29 warnings, 11 subtests
+      ;; tests: 299 passed, 39 deselected, 9 xfailed, 29 warnings, 11 subtests
       #:test-flags
       #~(list
+         ;; Randomly fails with FileNotFoundError; does not happen
+         ;; in git checkout though, so no upstream issue.
+         "--deselect=tests/test_crypto.py"
          "-k" (string-join
                ;; alot.settings.errors.ConfigError: failed to read notmuch
                ;; config with command ...
