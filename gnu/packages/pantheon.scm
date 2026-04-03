@@ -355,7 +355,7 @@ the Pantheon desktop environment.")
 (define-public pantheon-stylesheet
   (package
     (name "pantheon-stylesheet")
-    (version "8.1.0")
+    (version "8.2.2")
     (source
      (origin
        (method git-fetch)
@@ -364,7 +364,7 @@ the Pantheon desktop environment.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h8k75m9jrqxwq0py8hrqrsc83myrwpmnrwx05aljdyr6sys06k6"))))
+        (base32 "065zzv1b39i0j775kc60cywiwizw2rckg2kildfhs4mp81yswdv6"))))
     (build-system meson-build-system)
     (native-inputs (list gettext-minimal)) ;for msgfmt
     (inputs (list sassc))
