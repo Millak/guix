@@ -27267,6 +27267,28 @@ Package object for GVfs.
 @end table
 @end deftp
 
+@defvar kmonad-service-type
+This is the type of the service that runs
+@uref{https://github.com/kmonad/kmonad, KMonad}.  Its value is a
+@code{kmonad-configuration} object.  This service allows spawning
+@command{kmonad} configurations to manage keyboards.
+
+@deftp {Data Type} kmonad-configuration
+Configuration record for the KMonad service.
+
+@table @asis
+@item @code{kmonad} (default: @code{kmonad})
+The KMonad package to use.
+
+@item @code{keymaps}
+A list of files with KMonad configurations. One shepherd service will be
+created to control each configuration. Each configuration should target
+a distinct input device as KMonad operates on a per-input basis.
+
+@end table
+@end deftp
+@end defvar
+
 @defvar colord-service-type
 This is the type of the service that runs @command{colord}, a system
 service with a D-Bus

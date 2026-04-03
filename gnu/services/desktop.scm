@@ -62,6 +62,7 @@
   #:use-module (gnu system pam)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gnome)
@@ -79,6 +80,7 @@
   #:use-module (gnu packages mate)
   #:use-module (gnu packages nfs)
   #:use-module (gnu packages enlightenment)
+  #:use-module (gnu packages haskell-apps)
   #:use-module (guix deprecation)
   #:use-module (guix i18n)
   #:use-module (guix records)
@@ -121,6 +123,10 @@
             gvfs-service-type
 
             colord-service-type
+
+            kmonad-service-type
+            kmonad-configuration
+            kmonad-configuration?
 
             geoclue-application
             geoclue-configuration
@@ -235,6 +241,9 @@
 
 (define (bool value)
   (if value "true\n" "false\n"))
+
+(define list-of-file-likes?
+  (list-of file-like?))
 
 (define (package-direct-input-selector tree)
   "Return a procedure that selects TREE from the inputs of PACKAGE.  If TREE
@@ -1016,6 +1025,49 @@ screens and scanners.")))
 
 
 ;;;
+;;; KMonad.
+;;;
+
+(define-configuration/no-serialization kmonad-configuration
+  (kmonad
+   (package kmonad)
+   "The KMonad package to use.")
+  (keymaps
+   (list-of-file-likes '())
+   "A list of KMonad configurations (file-like objects).  See
+@uref{https://github.com/kmonad/kmonad/blob/master/keymap/tutorial.kbd, KMonad
+- Keymap Tutorial}"))
+
+(define (kmonad-shepherd-services config)
+  "Return a shepherd service for each @command{kmonad} configuration."
+  (let* ((kmonad (file-append (kmonad-configuration-kmonad config)
+                              "/bin/kmonad"))
+         (keymaps (kmonad-configuration-keymaps config)))
+    (map (lambda (index keymap)
+           (let ((name (string-append "kmonad-" (number->string index))))
+             (shepherd-service
+               (provision (list (string->symbol name)))
+               (requirement '(user-processes udev))
+               (documentation #~#$(string-append "Run a kmonad process for `"
+                                                 (computed-file-name keymap) "'."))
+               (start #~(make-forkexec-constructor
+                         (list #$kmonad "-l" "info" #$keymap)
+                         #:log-file #$(string-append "/var/log/" name ".log")))
+               (stop #~(make-kill-destructor)))))
+         (iota (length keymaps))
+         keymaps)))
+
+(define kmonad-service-type
+  (service-type
+    (name 'kmonad)
+    (extensions
+     (list (service-extension shepherd-root-service-type
+                              kmonad-shepherd-services)))
+    (description "Run the @command{kmonad} daemon, which allows customizing
+and extending the functionalities of different keyboards.")))
+
+
+;;;
 ;;; UDisks.
 ;;;
 
@@ -1188,9 +1240,6 @@ and many other) available for GIO applications.")
     (warn-about-deprecation name #f
                             #:replacement #f))
   "")
-
-(define list-of-file-likes?
-  (list-of file-like?))
 
 (define-maybe list-of-strings
   (prefix elogind-))
