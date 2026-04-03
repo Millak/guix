@@ -18210,6 +18210,56 @@ go.opentelemetry.io/otel/trace.")
      "Package jaeger contains an OpenTelemetry tracing exporter for Jaeger.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-otel-exporters-otlp-otlpmetric-otlpmetrichttp
+  (package
+    (name "go-go-opentelemetry-io-otel-exporters-otlp-otlpmetric-otlpmetrichttp")
+    (version "1.33.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-telemetry/opentelemetry-go")
+              (commit (go-version->git-ref version
+                                           #:subdir
+                                           "exporters/otlp/otlpmetric/otlpmetrichttp"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sb36qyq389fif9qp5iiqp6w41dfcwi95gb0bsbvznvijhd8c1cc"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "exporters/otlp/otlpmetric" "otlpmetrichttp")
+            (delete-all-but "." "exporters")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path
+      "go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp"
+      #:unpack-path "go.opentelemetry.io/otel"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-cenkalti-backoff-v4
+           go-github-com-google-go-cmp
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-go-opentelemetry-io-proto-otlp
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://go.opentelemetry.io/otel")
+    (synopsis "OTLP Metric HTTP Exporter")
+    (description
+     "Package otlpmetrichttp provides an OTLP metrics exporter using HTTP with
+protobuf payloads.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-otel-exporters-otlp-otlptrace
   (package
     (name "go-go-opentelemetry-io-otel-exporters-otlp-otlptrace")
