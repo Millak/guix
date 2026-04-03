@@ -22429,7 +22429,7 @@ are common in Chromium-derived projects.")
 (define-public emacs-gnosis
   (package
     (name "emacs-gnosis")
-    (version "0.8.0")
+    (version "0.10.3")
     (source
      (origin
        (method git-fetch)
@@ -22438,7 +22438,7 @@ are common in Chromium-derived projects.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "003pmd0ahpcss5ydk3wbx5j45225ypa85zrgljz5qajijiybvxpi"))))
+        (base32 "0kpzc2jw51sklz15v0d0vzm5ck05n3d90l02la4nxn8r85jb1f53"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -22451,20 +22451,21 @@ are common in Chromium-derived projects.")
             (lambda _
               (setenv "HOME"
                       (getenv "TMPDIR"))
-              (mkdir-p (string-append (getenv "HOME") "/.emacs.d"))))
+              (mkdir-p (string-append
+                        (getenv "HOME")
+                        "/.emacs.d"))))
           (add-before 'install 'make-info
             (lambda _
               (invoke "make" "doc" "GUIX_SHELL="))))))
     (native-inputs (list texinfo))
-    (propagated-inputs (list emacs-compat emacs-emacsql emacs-org-gnosis
-                             emacs-transient))
+    (propagated-inputs (list emacs-transient))
     (home-page "https://thanosapollo.org/projects/gnosis/")
-    (synopsis "Spaced repetition system for GNU Emacs")
+    (synopsis "Personal knowledge system for GNU Emacs")
     (description
-     "Gnosis is a spaced repetition system for note-taking and self-testing
-where notes are formatted as Question/Answer/Explanation.  Notes are reviewed
-at spaced intervals based on the success or failure in recalling the answer to
-each question.")
+     "Gnosis is a personal knowledge system for GNU Emacs that
+integrates note-taking with spaced repetition.  It combines
+Zettelkasten-style linked notes with self-testing review,
+all stored in a single SQLite database.")
     (license license:gpl3+)))
 
 (define-public emacs-drag-stuff
