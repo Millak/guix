@@ -17792,16 +17792,6 @@ gene and isoform level using RNA-seq data")
                (base32
                 "0ymrs6mf0sxfczyxyy8nicg5cir7vz4srl2rjdz7h3937rz965yh"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; This test fails with "invalid scipen"
-             (substitute* "tests/testthat/test_plotKaryotype.R"
-               ((".*kpAddBaseNumbers works.*" m)
-                (string-append m "skip('guix')\n"))))))))
     (propagated-inputs
      (list r-annotationdbi
            r-bamsignals
