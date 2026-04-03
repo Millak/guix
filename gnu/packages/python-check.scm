@@ -13,7 +13,7 @@
 ;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
-;;; Copyright © 2020, 2021, 2025 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2025, 2026 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
@@ -2245,6 +2245,32 @@ style, syntax and other code health metrics.  It is essentially a convenient
 wrapper above tools such as Pyflakes, pydocstyle, pycodestyle and McCabe,
 among others.")
     (license license:lgpl3+)))
+
+(define-public python-pylint-venv
+  (package
+    (name "python-pylint-venv")
+    (version "3.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jgosmann/pylint-venv/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06va7vy3bg331aab589wcr3nmafxlya0ac1as39qqyvkbdz9b5bl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Test is a simple shell script that activates a virtual environment
+     ;; and runs pylint inside of it.  There are no checks.
+     (list #:tests? #f))
+    (native-inputs (list python-poetry-core))
+    (home-page "https://github.com/jgosmann/pylint-venv/")
+    (synopsis
+     "Pylint init-hook to share a Pylint installation across virtualenvs")
+    (description "@code{pylint-venv} provides a Pylint init-hook to use the
+same Pylint installation with different virtual environments.")
+    (license license:expat)))
 
 (define-public python-pynose
   (package
