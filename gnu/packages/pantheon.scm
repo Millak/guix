@@ -245,7 +245,7 @@ for elementary OS and its desktop environment: Pantheon.")
 (define-public pantheon-photos
   (package
     (name "pantheon-photos")
-    (version "8.0.0")
+    (version "8.0.1")
     (source
      (origin
        (method git-fetch)
@@ -254,18 +254,20 @@ for elementary OS and its desktop environment: Pantheon.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z3b582y093x6pb3bl7zs4w97vg88rflyhwxfaycxw0rv8pcshhi"))))
+        (base32 "15ppxzbj882i2hpm88nn5azijhmgjc9js07i3wdpick2ciw83apr"))))
     (build-system meson-build-system)
     (arguments
      (list
       #:glib-or-gtk? #t
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-schema-cache-generation
-            (lambda _
-              (setenv "DESTDIR" "/")))
+          (add-after 'unpack 'disable-icon-cache
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("gtk_update_icon_cache: true")
+                      "gtk_update_icon_cache: false"))))
           (add-after 'install 'install-symlinks
-            (lambda* (#:key outputs #:allow-other-keys)
+            (lambda _
               (let* ((bin (string-append #$output
                                          "/bin/io.elementary.photos"))
                      (link (string-append #$output "/bin/pantheon-photos")))
