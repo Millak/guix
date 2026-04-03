@@ -11009,30 +11009,28 @@ compatible with Python's ConfigParser style of .INI files, including RFC
     (license license:bsd-3)))
 
 (define-public simpleini
-  (let ((commit "6048871ea9ee0ec24be5bd099d161a10567d7dc2")
-        (revision "1"))
-    (package
-      (name "simpleini")
-      (version (git-version "4.22" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/brofield/simpleini")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1szaflnrzw1zx9v5g6mbbiaf9wfglp4n4jjq2793k9ryz3qxil9j"))))
-      (build-system cmake-build-system)
-      (arguments
-       (list #:configure-flags #~(list "-DSIMPLEINI_USE_SYSTEM_GTEST=ON")))
-      (native-inputs (list googletest))
-      (home-page "https://github.com/brofield/simpleini")
-      (synopsis "Simple API to read and write INI-style files")
-      (description
-       "SimpleIni provides a simple API to read and write INI-style
+  (package
+    (name "simpleini")
+    (version "4.25")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/brofield/simpleini")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1v9s0kr5ca1gdbnlkdz7chzypy0wz95f09l0r6jnmff4qy6db56l"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DSIMPLEINI_USE_SYSTEM_GTEST=ON")))
+    (native-inputs (list googletest))
+    (home-page "https://github.com/brofield/simpleini")
+    (synopsis "Simple API to read and write INI-style files")
+    (description
+     "SimpleIni provides a simple API to read and write INI-style
 configuration files.  It supports data files in ASCII, MBCS and Unicode.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public xfsprogs
   (package
