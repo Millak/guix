@@ -18194,13 +18194,12 @@ basecalls and plotting chromatograms.")
     (license license:gpl2)))
 
 (define-public r-sanssouci
-  ;; sansscouci doesn't have a (versioned) release yet.
   ;; This is the latest commit as of packaging for Guix.
-  (let ((commit "5fe20a9aaf4ac637fa83d9cc73ff1c22de97ca6f")
+  (let ((commit "fcd60da7f3fadfa993a151288f3e67acd3d40b49")
         (revision "1"))
     (package
       (name "r-sanssouci")
-      (version (git-version "0" revision commit))
+      (version (git-version "0.16.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -18209,19 +18208,11 @@ basecalls and plotting chromatograms.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "13ycdd790qw64qy2zdvcrpj3fc8as628rsly32438d3rifnlc5sk"))))
+                  "0ayfz6l3l1d8wialrgkd61d0p3wzci9jbj1yivgwbyr3a47828im"))))
       (build-system r-build-system)
-      (arguments
-       (list
-        #:phases
-        '(modify-phases %standard-phases
-           (add-after 'unpack 'delete-bad-tests
-             (lambda _
-               ;; Two tests fail with: Objects equal but not identical
-               (delete-file "tests/testthat/test_calibration.R"))))))
       (propagated-inputs
-       (list r-generics r-matrix r-matrixstats r-rcpp r-rcpparmadillo))
-      (native-inputs (list r-ggplot2 r-testthat))
+       (list r-generics r-matrix r-matrixstats r-matrixtests r-rlang))
+      (native-inputs (list r-knitr r-testthat))
       (home-page "https://pneuvial.github.io/sanssouci")
       (synopsis "Post Hoc multiple testing inference")
       (description
