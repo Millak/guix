@@ -4875,6 +4875,8 @@ need.")
                                          "languagetoolconfigwidgettest"
                                          "translator-translatorwidgettest"
                                          "translator-translatorengineloader\
+test"
+                                         "texttospeech-texttospeechactions\
 test")
                                        "|")
                           ")")
@@ -4904,6 +4906,7 @@ test")
            kxmlgui
            qtkeychain-qt6
            qtmultimedia
+           qtspeech
            sonnet))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Various text handling addons")
