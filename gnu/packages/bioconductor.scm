@@ -7643,14 +7643,10 @@ arbitrary genomic intervals along chromosomal ideogram.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'skip-bad-tests
-           (lambda _
-             ;; XXX: fails because "kideraFactors" is an unknown property.
-             (substitute* "tests/testthat/test-sequenceDecoder.R"
-               ((".*.propertyDecoder decodes standard sequences correctly.*" m)
-                (string-append m "skip('guix')\n"))))))))
+      #:skipped-tests
+      '(("test-sequenceDecoder.R"
+         ;; XXX: fails because "kideraFactors" is an unknown property.
+         ".propertyDecoder decodes standard sequences correctly"))))
     (propagated-inputs (list r-hash
                              r-httr
                              r-matrix
