@@ -8859,6 +8859,57 @@ It's an alternative fork of @url{https://github.com/johannesboyne/gofakes3}.")
 decisions based on HTTP/1 Host headers and the SNI hostname in TLS connections.")
     (license license:asl2.0)))
 
+(define-public go-github-com-intel-goresctrl
+  (package
+    (name "go-github-com-intel-goresctrl")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/intel/goresctrl")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lifx5nq3x29x17lixhwh2f6yp2q3sxy8mqm036mp2bh2araqgdy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/intel/goresctrl"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestInfo"
+                             "TestConfig"
+                             "TestRdt"
+                             "TestCacheAllocation")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-opencontainers-runtime-spec
+           go-github-com-prometheus-client-golang
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-exporters-otlp-otlpmetric-otlpmetricgrpc
+           go-go-opentelemetry-io-otel-exporters-otlp-otlpmetric-otlpmetrichttp
+           go-go-opentelemetry-io-otel-exporters-prometheus
+           go-go-opentelemetry-io-otel-exporters-stdout-stdoutmetric
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-golang-org-x-exp
+           go-golang-org-x-sys
+           go-k8s-io-apimachinery
+           go-sigs-k8s-io-yaml))
+    (home-page "https://github.com/intel/goresctrl")
+    (synopsis "CPU and I/O resources interface for Golang")
+    (description
+     "This package provides Go interface to manage CPU cache allocation and
+memory bandwidth; CPU frequency in core granularity; and Storage I/O scheduler
+priority and bandwidth.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-insomniacslk-dhcp
   (package
     (name "go-github-com-insomniacslk-dhcp")
