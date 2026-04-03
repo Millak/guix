@@ -8222,6 +8222,42 @@ and more, which can be a great generic building blocks that make it easy to
 build multiple microservices easily.")
     (license license:asl2.0)))
 
+(define-public go-github-com-grpc-ecosystem-go-grpc-middleware-v2
+  (package
+    (inherit go-github-com-grpc-ecosystem-go-grpc-middleware)
+    (name "go-github-com-grpc-ecosystem-go-grpc-middleware-v2")
+    (version "2.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/grpc-ecosystem/go-grpc-middleware")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qbh34r44sfw9s05kdipmz49fcgvlpnns20d0lbwvw9g3qwa095r"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            (for-each delete-file-recursively
+                      (list ".bingo"
+                            "examples"
+                            "providers"
+                            "interceptors/logging/examples"))))))
+    (arguments
+     (list
+      #:import-path "github.com/grpc-ecosystem/go-grpc-middleware/v2"
+      ;; Tests from files:
+      ;;  * github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/protovalidate
+      ;;  * github.com/grpc-ecosystem/go-grpc-middleware/v2/testing/
+      ;;        testvalidate/v1/test_validate.pb.go
+      ;; require:
+      ;;  * buf.build/go/protovalidate
+      ;;  * buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate
+      ;; which require others unpackages Go libraries. All other tests pass.
+      #:tests? #f))))
+
 (define-public go-github-com-grpc-ecosystem-grpc-gateway-v2
   (package
     (name "go-github-com-grpc-ecosystem-grpc-gateway-v2")
