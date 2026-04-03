@@ -1419,13 +1419,13 @@ attachments, create new maildirs, and so on.")
 (define-public alot
   (package
     (name "alot")
-    (version "v0.12")
+    (version "0.12")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/pazz/alot")
-              (commit version)))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "018zqpjrl3cggj1myysjj04a054mg890khhdh1qjmd70k8l3w1di"))))
