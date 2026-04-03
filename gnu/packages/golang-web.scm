@@ -8258,6 +8258,52 @@ build multiple microservices easily.")
       ;; which require others unpackages Go libraries. All other tests pass.
       #:tests? #f))))
 
+(define-public go-github-com-grpc-ecosystem-go-grpc-middleware-providers-prometheus
+  (package
+    (name "go-github-com-grpc-ecosystem-go-grpc-middleware-providers-prometheus")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/grpc-ecosystem/go-grpc-middleware")
+              (commit (go-version->git-ref version
+                                           #:subdir "providers/prometheus"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fr8z4dr9n1x6zgs2n7m2wd1j2wnnmig0xq099xcg5lvcxiqjv73"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "providers" "prometheus")
+            (delete-all-but "." "providers")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus"
+      #:unpack-path "github.com/grpc-ecosystem/go-grpc-middleware"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-grpc-ecosystem-go-grpc-middleware-v2
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-google-golang-org-grpc))
+    (home-page "https://github.com/grpc-ecosystem/go-grpc-middleware")
+    (synopsis "Prometheus monitoring for gRPC Go servers and clients")
+    (description
+     "This package provides a standalone interceptor for Prometheus monitoring
+for gRPC Go servers and clients.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-grpc-ecosystem-grpc-gateway-v2
   (package
     (name "go-github-com-grpc-ecosystem-grpc-gateway-v2")
