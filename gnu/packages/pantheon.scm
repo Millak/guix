@@ -117,7 +117,7 @@ in apps built for the Pantheon desktop.")
 (define-public pantheon-calculator
   (package
     (name "pantheon-calculator")
-    (version "8.0.0")
+    (version "8.0.1")
     (source
      (origin
        (method git-fetch)
@@ -127,7 +127,7 @@ in apps built for the Pantheon desktop.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1as5rxd0b6z3lnh8my36szr056rxxqwkjzvaiylspx5g2kg3qjs0"))))
+         "157a2xryp9013m5grr3brfrs6hqz2ndg0ys8h0184am5zvg9w4sw"))))
     (build-system meson-build-system)
     (arguments
      (list
