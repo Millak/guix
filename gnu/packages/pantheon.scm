@@ -309,7 +309,7 @@ also be used on others.")
 (define-public pantheon-screenshot
   (package
     (name "pantheon-screenshot")
-    (version "8.0.1")
+    (version "8.0.4")
     (source
      (origin
        (method git-fetch)
@@ -318,7 +318,7 @@ also be used on others.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h3xv0pckkkgvqkk6fxssydq9gmncapaf1hx4n7j19jcvhwx65da"))))
+        (base32 "0ib6g47pykpscfazd12gssxv6in0v4jlcn8lfp0i1g0i4ap36ml5"))))
     (build-system meson-build-system)
     (arguments
       (list
@@ -328,7 +328,7 @@ also be used on others.")
                (add-after 'unpack 'disable-schema-cache-generation
                  (lambda _ (setenv "DESTDIR" "/")))
                (add-after 'install 'install-symlinks
-                 (lambda* (#:key outputs #:allow-other-keys)
+                 (lambda _
                    (let* ((bin (string-append #$output
                                               "/bin/io.elementary.screenshot"))
                           (link (string-append #$output
