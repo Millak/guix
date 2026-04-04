@@ -46,6 +46,7 @@
 ;;; Copyright © 2025 Isidor Zeuner <guix@quidecco.pl>
 ;;; Copyright © 2026 John Dawson <dawson.john.andrew@gmail.com>
 ;;; Copyright © 2026 Ivan Vilata i Balaguer <ivan@selidor.net>
+;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -101,6 +102,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages golang-web)
@@ -660,6 +662,93 @@ For copying and pasting secrets into web browsers and other graphical
 applications, there is xclip integration." )
     (home-page "https://dthompson.us/projects/shroud.html")
     (license license:gpl3+)))
+
+(define-public sops
+  (package
+    (name "sops")
+    (version "3.12.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/getsops/sops")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01w67iv0v9hnxgaklixk871dwnhyhllm3zz36iiwqsd19d5rllfm"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:install-source? #f
+           #:unpack-path "github.com/getsops/sops/v3"
+           #:import-path "github.com/getsops/sops/v3/cmd/sops"
+           #:build-flags
+           #~(list (string-append
+                    "-ldflags="
+                    "-X github.com/getsops/sops/v3/version.Version="
+                    #$(package-version this-package)))
+           #:modules
+           '(((guix build gnu-build-system) #:prefix gnu:)
+             (guix build go-build-system)
+             (guix build utils))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install-license-files
+                 (lambda _
+                   (define license
+                     (string-append #$output "/share/doc/" #$name
+                                    "-" #$(package-version this-package)))
+                   (install-file "./src/github.com/getsops/sops/v3/LICENSE"
+                                 license))))))
+    (native-inputs
+     (list go-cloud-google-com-go-kms
+           go-cloud-google-com-go-storage
+           go-filippo-io-age
+           go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
+           go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
+           go-github-com-aws-aws-sdk-go-v2-service-kms
+           go-github-com-aws-aws-sdk-go-v2-service-s3
+           go-github-com-aws-aws-sdk-go-v2-service-sts
+           go-github-com-azure-azure-sdk-for-go-sdk-azcore
+           go-github-com-azure-azure-sdk-for-go-sdk-azidentity
+           go-github-com-azure-azure-sdk-for-go-sdk-security-keyvault-azkeys
+           go-github-com-blang-semver
+           go-github-com-envoyproxy-go-control-plane
+           go-github-com-fatih-color
+           go-github-com-getsops-gopgagent
+           go-github-com-google-go-cmp
+           go-github-com-google-shlex
+           go-github-com-goware-prefixer
+           go-github-com-hashicorp-go-cleanhttp
+           go-github-com-hashicorp-vault-api
+           go-github-com-huaweicloud-huaweicloud-sdk-go-v3
+           go-github-com-lib-pq
+           go-github-com-mitchellh-go-homedir
+           go-github-com-mitchellh-go-wordwrap
+           go-github-com-pkg-errors
+           go-github-com-protonmail-go-crypto
+           go-github-com-sirupsen-logrus
+           go-github-com-stretchr-testify
+           go-github-com-urfave-cli
+           go-go-yaml-in-yaml-v3
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-oauth2
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-google-golang-org-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-gopkg-in-ini-v1))
+    (home-page "https://getsops.io")
+    (synopsis "Tool for managing secrets")
+    (description
+     "sops is an editor of encrypted files that supports YAML, JSON,
+ENV, INI and BINARY formats and encrypts with AWS KMS, GCP KMS, Azure Key Vault,
+age, and PGP.")
+    (license license:mpl2.0)))
 
 (define-public ssh-to-age
   (package
