@@ -3379,35 +3379,36 @@ encountered in PDB files prior to simulation tasks.")
 (define-public python-peaks2utr
   (package
     (name "python-peaks2utr")
-    (version "1.4.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "peaks2utr" version))
-              (sha256
-               (base32
-                "104il0kk61q07b58g9xrss7xflwlbx4kzsmw9iih99lhfsii0wzg"))))
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/haessar/peaks2utr")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b4qiccp5j394pzqd1d4ss3k90zv3kdr84lykl6p8izn3k85b2bl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      ;; These tests fail because file names are not URLs.
-      '(list "-k" (string-join
-                   (list "not test_forward_strand_annotations"
-                         "test_matching_chr"
-                         "test_reverse_strand_annotations")
-                   " and not "))
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.cfg"
-               (("==") ">=")))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.cfg"
+                (("==") ">=")
+                ;; See: <https://github.com/haessar/peaks2utr/issues/47>.
+                (("numpy >= 1.21.4, <= 1.26.4") "numpy >= 1.21.4")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-asgiref
            python-gffutils
            python-importlib-resources
-           macs
-           python-numpy-1
+           macs-3
+           python-numpy
            python-psutil
            python-pybedtools
            python-pysam
@@ -3415,7 +3416,6 @@ encountered in PDB files prior to simulation tasks.")
            python-tqdm
            python-typing-extensions
            python-zipp))
-    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/haessar/peaks2utr")
     (synopsis "Python CLI for annotating three prime UTR")
     (description
