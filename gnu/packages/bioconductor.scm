@@ -25672,18 +25672,6 @@ assays such as Hi-C.")
        ;; Avoid dependency cycle.
        (updater-ignored-native-inputs . ("r-hdf5array"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; These require r-hdf5array.
-             (for-each delete-file
-                       '("tests/testthat/test-h5writeDimnames.R"
-                         "tests/testthat/test-h5dimscales.R"
-                         "tests/testthat/test-h5mread.R"
-                         "tests/testthat/test-h5mread_from_reshaped.R")))))))
     (propagated-inputs (list r-biocgenerics
                              r-iranges
                              r-rhdf5
