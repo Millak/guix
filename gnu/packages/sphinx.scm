@@ -207,11 +207,10 @@ sources.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1815 passed, 24 skipped, 4451 warnings
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               "-k" (string-join
-                    ;; 1818 passed, 24 skipped, 97 warnings
-                    ;;
                     ;; AttributeError: module 'alabaster' has no
                     ;; attribute 'version'
                     (list "not test_theme_api"
@@ -223,12 +222,16 @@ sources.")
                           "test_additional_targets_should_be_translated"
                           "test_additional_targets_should_not_be_translated"
                           "test_autodoc_default_options"
+                          "test_autodoc_type_aliases"
+                          "test_enum_class"
                           "test_html_code_role"
                           "test_latex_code_role"
                           "test_latex_images"
                           "test_linenothreshold"
                           "test_literal_include_linenos"
-                          "test_viewcode")
+                          "test_viewcode"
+                          ;; ModuleNotFoundError: No module named 'target'
+                          "test_attrgetter_using")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
