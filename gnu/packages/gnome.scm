@@ -564,6 +564,7 @@ It is written in C using GObject and libsoup.")
     (arguments
      `(#:configure-flags
        (list
+        "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"
         "--disable-static"
         "--enable-gtk-doc"
         (string-append "--with-html-dir="
