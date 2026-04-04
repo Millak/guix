@@ -12153,6 +12153,30 @@ provides a buffered io.Writer that is flushed at a timed interval.")
 @code{wrapErrorsUsing}.")
     (license license:expat)))
 
+(define-public go-github-com-goware-prefixer
+  (package
+    (name "go-github-com-goware-prefixer")
+    (version "0.0.0-20160118172347-395022866408")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/goware/prefixer")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h1ngpyx4pkhh0x6b7njrmx1pk2w175f4cy3bac909drnaxn7yzc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/goware/prefixer"))
+    (home-page "https://github.com/goware/prefixer")
+    (synopsis "@code{io.Reader} wrapper")
+    (description
+     "This package provides the @code{prefixer} library.  It implements an
+@code{io.Reader} wrapper prepending every line with a given string.")
+    (license license:expat)))
+
 (define-public go-github-com-gowebpki-jcs
   (package
     (name "go-github-com-gowebpki-jcs")
