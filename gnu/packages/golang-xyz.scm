@@ -73,6 +73,7 @@
 ;;; Copyright © 2025 jgart <jgart@dismail.de>
 ;;; Copyright © 2025 Aleksandr Lebedev <alex.lebedev2003@icloud.com>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
+;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -12865,6 +12866,35 @@ HashiCorp Configuration Language}.  HCL is designed to be a language for
 expressing configuration which is easy for both humans and machines to read.")
     (home-page "https://github.com/hashicorp/hcl")
     (license license:mpl2.0)))
+
+(define-public go-github-com-hashicorp-hcl-vault-7
+  (package
+    (inherit go-github-com-hashicorp-hcl)
+    (name "go-github-com-hashicorp-hcl-vault-7")
+    (version "1.0.1-vault-7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hashicorp/hcl")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0crhhxk1357l1x4qhi83lxgvmf75j0nm7xl8w4schmjh4a62v9n6"))))
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/hcl"
+      #:test-subdirs
+      #~(list "json/..." "hcl/ast" "hcl/fmtcmd" "hcl/printer" "hcl/scanner"
+              "hcl/strconv" "hcl/token" ".")
+      #:test-flags
+      #~(list "-skip" #$(string-join '("TestFiles/list.input"
+                                       "TestFiles/list_comment.input"
+                                       "TestFiles/comment_aligned.input")
+                                     "|"))))
+    ;; Don't expose since it's is only needed to build
+    ;; go-github-com-hashicorp-vault-api.
+    (properties '((hidden? . #t)))))
 
 (define-public go-github-com-hashicorp-hcl-v2
   (package
