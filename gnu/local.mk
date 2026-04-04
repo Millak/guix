@@ -1745,7 +1745,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/kissfft-tflite-micro.patch               \
   %D%/packages/patches/kitty-fix-wayland-protocols.patch	\
   %D%/packages/patches/kmod-module-directory.patch		\
-  %D%/packages/patches/kmscon-runtime-keymap-switch.patch	\
+  %D%/packages/patches/kmscon-8-runtime-keymap-switch.patch	\
   %D%/packages/patches/knot-remove-runtime-deps.patch		\
   %D%/packages/patches/kobodeluxe-paths.patch			\
   %D%/packages/patches/kobodeluxe-enemies-pipe-decl.patch	\

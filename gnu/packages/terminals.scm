@@ -405,6 +405,69 @@ multi-seat support, a replacement for @command{mingetty}, and more.")
     (supported-systems (filter (cut string-suffix? "-linux" <>)
                                %supported-systems))))
 
+;;; INFO: kmscon-8 is a dependency of Guix System installer. When upgrading,
+;;; remeber to test it; you can fire a VM by following the procedure below:
+;;;
+;;; 1. Manually change `(gnu system install)' module so that in procedure
+;;;    `%installation-services' the key `guix-for-system' refers to `guix'
+;;;    instead of `(current-guix)'.
+;;;    With this temporary change, you will need neither to rebuild guix
+;;;    nor to have commit rights.
+;;;
+;;; 2. Execute `./pre-inst-env guix system vm gnu/system/install.scm' in the
+;;;    development environment.
+;;;
+(define-public kmscon-8
+  (let ((commit "db868619fbb785f184f38c729cd4842012ef4478")
+        (revision "2"))
+    (package
+      (inherit kmscon)
+      (name "kmscon")
+      (version (git-version "8" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/kmscon/kmscon")
+                (commit commit)))
+         (sha256
+          (base32
+           "0rj3icrfm584pq3916div0chd9h3gxwd1qgw7inf5x508yvgrgxl"))
+         (file-name (git-file-name name version))
+         (patches
+          ;; INFO: This Guix-specific patch is useful for making keyboard
+          ;; selection in Guix System installer work as intended.
+          ;; TODO: port it to 9.x series.
+          (search-patches "kmscon-8-runtime-keymap-switch.patch"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'configure 'remove-systemd
+              ;; Use elogind instead of systemd.
+              (lambda _
+                (substitute* "configure"
+                  (("libsystemd-daemon libsystemd-login")
+                   "libelogind"))
+                (substitute* "src/uterm_systemd.c"
+                  (("#include <systemd/sd-login.h>")
+                   "#include <elogind/sd-login.h>")
+                  ;; We don't have this header.
+                  (("#include <systemd/sd-daemon\\.h>")
+                   "")
+                  ;; Replace the call to 'sd_booted' by the truth value.
+                  (("sd_booted\\(\\)")
+                   "1")))))))
+      (native-inputs
+       (list autoconf
+             automake
+             libtool
+             pkg-config
+             ;; to generate the man page
+             docbook-xsl
+             libxslt)))))
+
 (define-public libtermkey
   (package
     (name "libtermkey")
