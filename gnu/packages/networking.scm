@@ -2041,7 +2041,7 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "4.6.3")
+    (version "4.6.4")
     (source
      (origin
        (method git-fetch)
@@ -2050,7 +2050,7 @@ of the same name.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j49gnvc1x37sf7dq3wklzlhp5gihi7d926mmfqb1avyb68n7qjn"))))
+        (base32 "05jivnnlmbbhc6b3r7zdahiw22fvb9r6pg4pc83ascnja49xlyq6"))))
     (build-system qt-build-system)
     (arguments
      (list
