@@ -1261,7 +1261,7 @@ of xmpppy.")
           ;; FIXME: Cannot use this expression as it would
           ;; introduce a circular dependency at the top level.
           ;; (version-major+minor (package-version python))
-          "3.10"
+          "3.11"
           "/site-packages"))))))
     (native-inputs
      (list gettext-minimal
