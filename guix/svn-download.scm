@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2016, 2019, 2021-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2016, 2019, 2021-2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Sree Harsha Totakura <sreeharsha@totakura.in>
 ;;; Copyright © 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;;
@@ -105,6 +105,7 @@
                        (guix build download-nar)
                        (guix build utils)
                        (guix swh)
+                       (rnrs bytevectors)
                        (ice-9 match))
 
           ;; Add tar and gzip to $PATH so
