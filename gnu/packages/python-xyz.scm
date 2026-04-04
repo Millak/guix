@@ -21007,6 +21007,35 @@ can also be used to get the exact location, font or color of the text.")
 zipfile like as possible.")
     (license license:isc)))
 
+(define-public python-rassumfrassum
+  (package
+    (name "python-rassumfrassum")
+    (version "0.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/joaotavora/rassumfrassum")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0iyqg7pnlca9i9a5n2v1pg8xy0chy297d1a934wqxvjzrv11wxyw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "test/run-all.sh")))))))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/joaotavora/rassumfrassum")
+    (synopsis "Connect an LSP client to multiple LSP servers")
+    (description
+     "LSP/JSONRPC multiplexer for connecting one LSP client to multiple servers.")
+    (license license:gpl3+)))
+
 (define-public python-slugid
   (package
     (name "python-slugid")
