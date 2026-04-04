@@ -153,7 +153,7 @@ hardware.")
   (package
     (inherit sdl2)
     (name "sdl3")
-    (version "3.2.10")
+    (version "3.4.4")
     (source
      (origin
        (method url-fetch)
@@ -162,7 +162,7 @@ hardware.")
                            version "/SDL3-" version ".tar.gz"))
        (sha256
         (base32
-         "1q0ksmg1h0xfjpgbshslxc5a2b2flcm7n5lwiq4v8vf6vssffyzq"))))
+         "0r1q1frjs0am93aspgha4k15rvmmiwsp5kn2pw5i9fw9daz2swgf"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -188,8 +188,11 @@ hardware.")
     (propagated-inputs
      (list alsa-lib
            libxcursor                   ;enables X11 cursor support
+           libxi
            libxkbcommon
            libxrandr
+           libxscrnsaver
+           libxtst
            mesa                         ;required by wayland
            pipewire-minimal
            pulseaudio
