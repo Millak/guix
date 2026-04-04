@@ -11646,15 +11646,10 @@ location information (and the reverse operation) is implemented as well.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; Genome length information unavailable.
-             (with-directory-excursion "tests/testthat"
-               (substitute* "test-check_inputs.R"
-                 ((".*res_de and de_container are related.*" m)
-                  (string-append m "skip('guix')\n")))))))))
+      #:skipped-tests
+      '(("test-check_inputs.R"
+         ;; Genome length information unavailable.
+         "res_de and de_container are related"))))
     (propagated-inputs (list r-annotationdbi
                              r-clusterprofiler
                              r-deseq2
