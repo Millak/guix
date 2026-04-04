@@ -1994,6 +1994,7 @@ functions.")
             ;; - github.com/aws/aws-sdk-go-v2/internal/configsources
             ;; - github.com/aws/aws-sdk-go-v2/internal/endpoints/v2
             ;; - github.com/aws/aws-sdk-go-v2/service/iam
+            ;; - github.com/aws/aws-sdk-go-v2/service/kms
             ;; - github.com/aws/aws-sdk-go-v2/service/s3
             ;; - github.com/aws/aws-sdk-go-v2/service/sqs
             ;; - github.com/aws/aws-sdk-go-v2/service/sso
@@ -2007,6 +2008,7 @@ functions.")
                             "internal/configsources"
                             "internal/endpoints/v2"
                             "service/iam"
+                            "service/kms"
                             "service/s3"
                             "service/sqs"
                             "service/sso"
@@ -2296,6 +2298,50 @@ configuration sources in AWS.")
     (description
      "Package internal/endpoints/v2 provides utilities for managing AWS as
 structured records.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-aws-aws-sdk-go-v2-service-kms
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-service-kms")
+    (version "1.50.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aws/aws-sdk-go-v2")
+              (commit (go-version->git-ref version
+                                           #:subdir "service/kms"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1syzl2cd6m9hdjnn15163afz1wh85gva10l4k8j8w5i1jhk5sf40"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "service" "kms")
+            (delete-all-but "." "service")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/service/kms"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-internal-configsources
+           go-github-com-aws-aws-sdk-go-v2-internal-endpoints-v2
+           go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "API client, operations, and parameter types for AWS KMS")
+    (description
+     "This package provides the API client, operations, and parameter types for
+AWS Key Management Service.")
     (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-service-iam
