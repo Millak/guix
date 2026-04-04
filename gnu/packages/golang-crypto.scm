@@ -1444,6 +1444,43 @@ providing bidirectional mapping values to their names, plus enum convenience
 for values.")
     (license license:bsd-3)))
 
+(define-public go-github-com-getsops-gopgagent
+  (package
+    (name "go-github-com-getsops-gopgagent")
+    (version "0.0.0-20241224165529-7044f28e491e")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/getsops/gopgagent")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n1r7jkb48y06jw2dhkaqs33j6qgwf9fvbisd1zsr6v2k7wgfvf3"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (for-each
+             (lambda (f)
+               ;; XXX: Without this snippet the build fails with
+               ;; code in directory github.com/getsops/gopgagent
+               ;; expects import "go.mozilla.org/gopgagent"
+               (substitute* f
+                 (("import \"go\\.mozilla\\.org/gopgagent\"") "")))
+             '("gpgagent.go" "gpgagent_test.go"))
+            #t))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/getsops/gopgagent"
+      #:test-flags #~(list "-vet=off")))
+    (home-page "https://github.com/getsops/gopgagent")
+    (synopsis "GPG Agent helpers for Go")
+    (description
+     "This package provides an API to interact with the local GPG Agent from
+Golang.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-gliderlabs-ssh
   (package
     (name "go-github-com-gliderlabs-ssh")
