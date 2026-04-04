@@ -57,7 +57,7 @@
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Benjamin Slade <slade@lambda-y.net>
 ;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
-;;; Copyright © 2024, 2025 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024-2026 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2025-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -138,6 +138,7 @@
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages language)
   #:use-module (gnu packages libbsd)
@@ -148,6 +149,7 @@
   #:use-module (gnu packages libunistring)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages lsof)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages m4)
@@ -198,6 +200,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system glib-or-gtk)
@@ -3909,6 +3912,83 @@ indexed mbox files.  There are two programs: @code{bindex} and @code{bit}.
 are supported).  @code{bit} is a CGI/SSI program that generates web pages
 on the fly.  Both programs are written in C and are very fast.")
     (license license:expat)))
+
+(define computed-origin-method (@@ (guix packages) computed-origin-method))
+
+(define-public stalwart
+  (package
+    (name "stalwart")
+    (version "0.15.5")
+    (source
+     (let ((upstream-source
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                      (url "https://github.com/stalwartlabs/stalwart")
+                      (commit (string-append "v" version))))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "1b21whr8qjjq2r8jgrhs3ifj0g1cx5nxwa2sajhgab0bckwfvdsg")))))
+       (origin
+         (method computed-origin-method)
+         (file-name (git-file-name name version))
+         (sha256 #f)
+         (uri
+          (delay
+            (with-imported-modules '((guix build utils))
+              #~(begin
+                  (use-modules (guix build utils))
+                  (set-path-environment-variable
+                   "PATH" '("bin")
+                   (list #+python-minimal))
+                  (copy-recursively #+upstream-source "upstream-source")
+                  (with-directory-excursion "upstream-source"
+                    (for-each make-file-writable (find-files "crates" "\\.rs"))
+                    (invoke "python3" "resources/scripts/ossify.py" "crates")
+                    (substitute* "crates/main/Cargo.toml"
+                      ((", \"enterprise\"")
+                       "")))
+                  (copy-recursively "upstream-source" #$output))))))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      ;; TODO: Currently, if the test is enabled, it will attempt to link
+      ;; the foundationdb library. However, we haven't packaged it yet,
+      ;; so for now, skip tests.
+      #:tests? #f
+      #:cargo-install-paths ''("crates/main")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'setenv
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "LIBZ_SYS_STATIC" "0")
+              ;; jemalloc needs unbundling for tikv-jemallocator-sys
+              ;; This flag is needed when not using the bundled jemalloc.
+              ;; https://github.com/tikv/jemallocator/issues/19
+              (setenv
+               "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
+              (setenv "JEMALLOC_OVERRIDE"
+                      (search-input-file inputs "/lib/libjemalloc.so")))))))
+    (native-inputs (list clang pkg-config))
+    (inputs (cons* bzip2
+                   jemalloc
+                   librdkafka
+                   lz4
+                   rocksdb
+                   snappy
+                   sqlite
+                   zlib
+                   openssl
+                   `(,zstd "lib")
+                   (cargo-inputs 'stalwart)))
+    (home-page "https://stalw.art")
+    (synopsis "All in one Mail and Collaboration server")
+    (description
+     "Stalwart is an mail and collaboration server with JMAP, IMAP4, POP3, SMTP,
+CalDAV, CardDAV and WebDAV support and a wide range of modern features.")
+    (license license:agpl3)))
 
 (define-public swaks
   (package

@@ -1,0 +1,61 @@
+adjust from https://sources.debian.org/data/main/r/rust-librocksdb-sys/0.17.1-2/debian/patches/pkgconf
+
+diff -u a/build.rs b/build.rs
+--- a/build.rs
++++ b/build.rs
+@@ -396,8 +396,13 @@
+ }
+ 
+ fn main() {
++    let Ok(rocksdb_lib) = pkg_config::Config::new().atleast_version("10.4.2").probe("rocksdb") else {
++        panic!("guix: rocksdb library not found");
++    };
++    env::set_var("ROCKSDB_INCLUDE_DIR", &rocksdb_lib.include_paths[0]);
++    env::set_var("ROCKSDB_LIB_DIR", &rocksdb_lib.link_paths[0]);
+     if !Path::new("rocksdb/AUTHORS").exists() {
+-        update_submodules();
++        // update_submodules();
+     }
+     bindgen_rocksdb();
+     let target = env::var("TARGET").unwrap();
+@@ -417,14 +422,14 @@
+         }
+ 
+         println!("cargo:rerun-if-changed=rocksdb/");
+-        fail_on_empty_directory("rocksdb");
++        // fail_on_empty_directory("rocksdb");
+         build_rocksdb();
+     }
+-    if cfg!(feature = "snappy") && !try_to_find_and_link_lib("SNAPPY") {
+-        println!("cargo:rerun-if-changed=snappy/");
+-        fail_on_empty_directory("snappy");
+-        build_snappy();
+-    }
++    // if cfg!(feature = "snappy") && !try_to_find_and_link_lib("SNAPPY") {
++    //     println!("cargo:rerun-if-changed=snappy/");
++    //     fail_on_empty_directory("snappy");
++    //     build_snappy();
++    // }
+ 
+     // Allow dependent crates to locate the sources and output directory of
+     // this crate. Notably, this allows a dependent crate to locate the RocksDB
+
+diff -u a/Cargo.toml b/Cargo.toml
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -48,7 +48,7 @@
+     "static",
+     "bindgen/runtime",
+ ]
+-io-uring = ["pkg-config"]
++io-uring = []
+ jemalloc = ["tikv-jemalloc-sys"]
+ lto = []
+ lz4 = ["lz4-sys"]
+@@ -115,4 +115,4 @@
+ 
+ [build-dependencies.pkg-config]
+ version = "0.3"
+-optional = true
++
+

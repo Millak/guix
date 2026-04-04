@@ -57,7 +57,7 @@
 # Copyright © 2022 ( <paren@disroot.org>
 # Copyright © 2022, 2026 jgart <jgart@dismail.de>
 # Copyright © 2022-2023, 2025-2026 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
-# Copyright © 2023-2025 Zheng Junjie <z572@z572.online>
+# Copyright © 2023-2026 Zheng Junjie <z572@z572.online>
 # Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 # Copyright © 2023 Andy Tai <atai@atai.org>
 # Copyright © 2023 B. Wilson <elaexuotee@wilsonb.com>
@@ -2412,6 +2412,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rust-codex-0.120.0-test-timeout.patch	\
   %D%/packages/patches/rust-codex-0.124.0-code-mode-stub-toolname.patch	\
   %D%/packages/patches/rust-codex-0.124.0-remove-patch-sections.patch	\
+  %D%/packages/patches/rust-librocksdb-sys-unbundled-sources.patch	\
   %D%/packages/patches/rust-ring-0.17-ring-core.patch		\
   %D%/packages/patches/rw-igraph-0.10.patch			\
   %D%/packages/patches/rxvt-unicode-fix-cursor-position.patch	\
