@@ -9310,6 +9310,58 @@ multiple routes.")
 that is lightweight, highly available, and fault tolerant.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-vault-api
+  (package
+    (name "go-github-com-hashicorp-vault-api")
+    (version "1.23.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hashicorp/vault")
+              (commit (go-version->git-ref version #:subdir "api"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zimh4g8bwj9zz7hjrpk1arg02m3lkyaqmyl9jdw08qkc2vq679p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/vault/api"
+      #:unpack-path "github.com/hashicorp/vault"
+      #:test-flags
+      ;; This test requires a running Vault instance.
+      #~(list "-skip" "TestCommand")))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-go-test-deep))
+    (propagated-inputs
+     (list go-cloud-google-com-go
+           go-cloud-google-com-go-iam
+           go-github-com-cenkalti-backoff-v4
+           go-github-com-go-jose-go-jose-v4
+           go-github-com-hashicorp-errwrap
+           go-github-com-hashicorp-go-cleanhttp
+           go-github-com-hashicorp-go-hclog
+           go-github-com-hashicorp-go-multierror
+           go-github-com-hashicorp-go-retryablehttp
+           go-github-com-hashicorp-go-rootcerts
+           go-github-com-hashicorp-go-secure-stdlib-awsutil
+           go-github-com-hashicorp-go-secure-stdlib-parseutil
+           go-github-com-hashicorp-go-secure-stdlib-strutil
+           go-github-com-hashicorp-go-uuid
+           go-github-com-hashicorp-hcl-vault-7
+           go-github-com-mitchellh-go-homedir
+           go-github-com-mitchellh-mapstructure
+           go-github-com-natefinch-atomic
+           go-golang-org-x-net
+           go-golang-org-x-time))
+    (home-page "https://github.com/hashicorp/vault")
+    (synopsis "Golang Vault API client")
+    (description
+     "This package provides the @code{github.com/hashicorp/vault/api} Golang
+package.  It contains code for interacting with a Vault server.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hashicorp-yamux
   (package
     (name "go-github-com-hashicorp-yamux")
