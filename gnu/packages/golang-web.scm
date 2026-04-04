@@ -8999,6 +8999,32 @@ standard @code{net/http} client library and exposes nearly the same public
 API.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-go-rootcerts
+  (package
+    (name "go-github-com-hashicorp-go-rootcerts")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hashicorp/go-rootcerts")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06z1bxcnr0rma02b6r52m6y0q7niikqjs090vm1i8xi3scyaw1qa"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-rootcerts"))
+    (propagated-inputs
+     (list go-github-com-mitchellh-go-homedir))
+    (home-page "https://github.com/hashicorp/go-rootcerts")
+    (synopsis "CA certificates library for Golang")
+    (description
+     "This package contains functions to aid in loading CA certificates for TLS
+connections.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hashicorp-go-sockaddr
   (package
     (name "go-github-com-hashicorp-go-sockaddr")
