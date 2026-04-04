@@ -10833,7 +10833,7 @@ Server (PLS).")
 (define-public python-lsp-server
   (package
     (name "python-lsp-server")
-    (version "1.13.0")
+    (version "1.14.0")
     (source
      (origin
        (method git-fetch)
@@ -10842,7 +10842,7 @@ Server (PLS).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xr1d7dqb46mkdh9vfiag5952gdxssknkq9hxxl8q6q83qh832il"))))
+        (base32 "1dyp49x844c4mja0qg01nilsbi09w7526izsk3pi5zpylmhmvbk2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -10854,7 +10854,10 @@ Server (PLS).")
                "not " (string-join
                        (list "test_concurrent_ws_requests" ; flaky
                              "test_pyqt_completion" ; avoid pyqt5
-                             "test_pandas_completion") ; avoid pandas
+                             "test_pandas_completion" ; avoid pandas
+                             ;; test_missing_message requests write permission
+                             ;; in /dev/cache.
+                             "test_missing_message")
                        " and not ")))
       #:phases
       #~(modify-phases %standard-phases
