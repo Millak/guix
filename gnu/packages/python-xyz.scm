@@ -10836,47 +10836,53 @@ Server (PLS).")
     (version "1.13.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python_lsp_server" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/python-lsp/python-lsp-server")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0s8dipxkdshg27a7a2nnkgg3kmksvbkfa7g39n310k6g7sv2d3rp"))))
+        (base32 "1xr1d7dqb46mkdh9vfiag5952gdxssknkq9hxxl8q6q83qh832il"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list "-c" "/dev/null"           ;avoid coverage
-             "--ignore-glob" "**/test_autopep8_format.py"  ;avoid autopep8 dep
-             "-k"
-             (string-append
-              "not test_concurrent_ws_requests "  ; flaky
-              "and not test_pyqt_completion "  ; avoid pyqt5
-              "and not test_pandas_completion"))  ; avoid pandas
+      #~(list "-c" "/dev/null"           ;avoid coverage
+              "--ignore-glob" "**/test_autopep8_format.py"  ;avoid autopep8 dep
+              "-k"
+              (string-append
+               "not " (string-join
+                       (list "test_concurrent_ws_requests" ; flaky
+                             "test_pyqt_completion" ; avoid pyqt5
+                             "test_pandas_completion") ; avoid pandas
+                       " and not ")))
       #:phases
-      '(modify-phases %standard-phases
-         (add-before 'check 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp"))))))
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-HOME
+            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-black
            python-docstring-to-markdown
+           python-flake8
            python-jedi
            python-lsp-jsonrpc
+           python-mccabe
            python-pluggy
+           python-pycodestyle
            python-pydocstyle
+           python-pyflakes
+           python-pylint
+           python-rope
            python-ujson
            python-whatthepatch
            python-yapf))
     (native-inputs
-     (list python-flake8
-           python-flaky
+     (list python-flaky
            python-matplotlib
-           python-pylint
            python-pytest
-           python-rope
            python-setuptools
            python-setuptools-scm
-           python-websockets
-           python-wheel))
+           python-websockets))
     (home-page "https://github.com/python-lsp/python-lsp-server")
     (synopsis "Python implementation of the Language Server Protocol")
     (description
