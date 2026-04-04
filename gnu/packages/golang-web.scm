@@ -9591,6 +9591,54 @@ user interface for humans, to read and edit before passing the JSON data to
 the machine.")
     (license license:expat)))
 
+(define-public go-github-com-huaweicloud-huaweicloud-sdk-go-v3
+  (package
+    (name "go-github-com-huaweicloud-huaweicloud-sdk-go-v3")
+    (version "0.1.191")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/huaweicloud/huaweicloud-sdk-go-v3")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dgvaayihhly5ghphdabhv27z04ff8qzfvvbghmcn2da17w066hf"))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    (for-each
+                     (lambda (f)
+                       ;; XXX: Without this snippet the build fails with
+                       ;;
+                       ;; core/auth/signer/derived_signer.go:27:2:
+                       ;; code in directory core/auth/signer/hkdf expects
+                       ;; import "golang.org/x/crypto/hkdf"
+                       (substitute* (string-append "core/auth/signer/hkdf/" f)
+                         (("import \"golang\\.org/x/crypto/hkdf\"") "")))
+                     '("hkdf.go" "hkdf_test.go"))
+                    #t))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/huaweicloud/huaweicloud-sdk-go-v3"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-goccy-go-yaml
+           go-github-com-json-iterator-go
+           go-github-com-shopspring-decimal
+           go-github-com-tjfoc-gmsm
+           go-go-mongodb-org-mongo-driver
+           go-golang-org-x-crypto
+           go-gopkg-in-ini-v1))
+    (home-page "https://github.com/huaweicloud/huaweicloud-sdk-go-v3")
+    (synopsis "Go client for Huawei Cloud services")
+    (description
+     "This package provides a Go interface with Huawei Cloud services such as
+Elastic Compute Service (ECS) and Virtual Private Cloud (VPC).")
+    ;; See https://github.com/huaweicloud/huaweicloud-sdk-go-v3/blob/master/LICENSE
+    (license (list license:asl2.0 license:bsd-2 license:bsd-3))))
+
 (define-public go-github-com-hugelgupf-socketpair
   (package
     (name "go-github-com-hugelgupf-socketpair")
