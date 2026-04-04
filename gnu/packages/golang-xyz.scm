@@ -23199,6 +23199,30 @@ specification at http://partners.adobe.com/public/developer/en/tiff/TIFF6.pdf
      "This package implements column-formatted output for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-ryanuber-go-glob
+  (package
+    (name "go-github-com-ryanuber-go-glob")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ryanuber/go-glob")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mhrjy0iba3jr6bsgy7q50zjr42ar1njn1sb2fvihlkhxgb2ahv2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ryanuber/go-glob"))
+    (home-page "https://github.com/ryanuber/go-glob")
+    (synopsis "String globbing in golang")
+    (description
+     "@@code{go-glob} is a single-function library implementing basic string glob
+support.")
+    (license license:expat)))
+
 (define-public go-github-com-ryszard-goskiplist
   (package
     (name "go-github-com-ryszard-goskiplist")
