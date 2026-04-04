@@ -109,7 +109,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
-  #:use-module (gnu packages adns)
+  #:use-module (gnu packages dns)
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)

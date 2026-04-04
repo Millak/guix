@@ -65,7 +65,7 @@
   #:use-module (guix search-paths)
   #:use-module (guix utils)
   #:use-module (gnu packages)
-  #:use-module (gnu packages adns)
+  #:use-module (gnu packages dns)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)

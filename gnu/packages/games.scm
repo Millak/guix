@@ -125,7 +125,7 @@
   #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
-  #:use-module (gnu packages adns)
+  #:use-module (gnu packages dns)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)

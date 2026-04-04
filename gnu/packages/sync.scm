@@ -40,7 +40,7 @@
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
-  #:use-module (gnu packages adns)
+  #:use-module (gnu packages dns)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)

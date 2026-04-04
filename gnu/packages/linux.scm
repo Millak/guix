@@ -106,7 +106,7 @@
 (define-module (gnu packages linux)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
-  #:use-module (gnu packages adns)
+  #:use-module (gnu packages dns)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages apparmor)

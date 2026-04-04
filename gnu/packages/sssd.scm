@@ -35,7 +35,7 @@
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages)
-  #:use-module (gnu packages adns)
+  #:use-module (gnu packages dns)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages augeas)
   #:use-module (gnu packages autotools)

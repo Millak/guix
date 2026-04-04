@@ -199,7 +199,7 @@
 (define-module (gnu packages python-xyz)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
-  #:use-module (gnu packages adns)
+  #:use-module (gnu packages dns)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)

@@ -45,7 +45,7 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system meson)
   #:use-module (gnu packages)
-  #:use-module (gnu packages adns)
+  #:use-module (gnu packages dns)
   #:use-module (gnu packages aspell)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
