@@ -2764,6 +2764,51 @@ clients supporting token authentication.")
     (description "This package contains content for Azure SDK developers.")
     (license license:expat)))
 
+(define-public go-github-com-azure-azure-sdk-for-go-sdk-security-keyvault-internal
+  (package
+    (name "go-github-com-azure-azure-sdk-for-go-sdk-security-keyvault-internal")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Azure/azure-sdk-for-go")
+              (commit (go-version->git-ref version
+                                           #:subdir "sdk/security/keyvault/internal"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16xb2gyl48xcc1xc58l8c8qhraxsmar7655348ggi4r2jzyc6sik"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "sdk/security/keyvault" "internal")
+                    (delete-all-but "sdk/security" "keyvault")
+                    (delete-all-but "sdk" "security")
+                    (delete-all-but "." "sdk")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/internal"
+      #:unpack-path "github.com/Azure/azure-sdk-for-go"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-azure-azure-sdk-for-go-sdk-azcore
+           go-github-com-azure-azure-sdk-for-go-sdk-internal))
+    (home-page "https://github.com/Azure/azure-sdk-for-go")
+    (synopsis "Key Vault Internal Module for Go")
+    (description
+     "This module contains shared code for all the Key Vault SDKs, mainly the
+challenge authentication policy.")
+    (license license:expat)))
+
 (define-public go-github-com-azure-azure-sdk-for-go-sdk-storage-azblob
   (package
     (name "go-github-com-azure-azure-sdk-for-go-sdk-storage-azblob")
