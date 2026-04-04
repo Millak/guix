@@ -63,6 +63,7 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages package-management)
+  #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match)
@@ -464,6 +465,7 @@ or by starting the installer, using `guix-system-installer` command.
 
          (service kmscon-service-type
                   (kmscon-configuration
+                    (kmscon kmscon-8)
                     (virtual-terminal "tty1")
                     (login-program installer)))
 
