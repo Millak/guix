@@ -9025,6 +9025,35 @@ API.")
 connections.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-go-secure-stdlib-strutil
+  (package
+    (name "go-github-com-hashicorp-go-secure-stdlib-strutil")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-secure-stdlib")
+             (commit (go-version->git-ref version
+                                          #:subdir "strutil"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19jgdmw5snwfq4z8ifsqr917aj535x6fjkv7ma08qmibv1rrxs6s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-secure-stdlib/strutil"
+      #:unpack-path "github.com/hashicorp/go-secure-stdlib"))
+    (propagated-inputs
+     (list go-github-com-ryanuber-go-glob))
+    (home-page "https://github.com/hashicorp/go-secure-stdlib")
+    (synopsis "Stdlib for HashiCorp Secure products")
+    (description
+     "This package provides the
+@url{github.com/hashicorp/go-secure-stdlib/strutil, strutil} Golang package.
+It is part of HashiCorp's Secure division products stdlib.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hashicorp-go-sockaddr
   (package
     (name "go-github-com-hashicorp-go-sockaddr")
