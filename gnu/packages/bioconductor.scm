@@ -16342,15 +16342,11 @@ determining dependencies between variables, code improvement suggestions.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; "sequence MT not found", but it's probably because it tries to
-             ;; access the Internet earlier
-             (substitute* "tests/testthat/test_getAllPeakSequence.R"
-               ((".*getAllPeakSequence works not correct.*" m)
-                (string-append m "skip('guix')\n"))))))))
+      #:skipped-tests
+      ;; "sequence MT not found", but it's probably because it tries to access
+      ;; the Internet earlier
+      '(("test_getAllPeakSequence.R"
+         "getAllPeakSequence works not correct"))))
     (propagated-inputs
      (list r-annotationdbi
            r-biocgenerics
