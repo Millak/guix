@@ -19,7 +19,7 @@
 ;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Adam Kandur <kefironpremise@gmail.com>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
-;;; Copyright © 2022 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2022, 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2022, 2025 jgart via Guix-patches via <guix-patches@gnu.org>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
@@ -8734,7 +8734,7 @@ with other clients.")
 (define-public go-github-com-hashicorp-go-retryablehttp
   (package
     (name "go-github-com-hashicorp-go-retryablehttp")
-    (version "0.7.7")
+    (version "0.7.8")
     (source
      (origin
        (method git-fetch)
@@ -8743,7 +8743,7 @@ with other clients.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11bqzz3244vpa91l5bx8pp5pajbcg4qxrl8ic2x0qgwbrjfz362x"))))
+        (base32 "1k9pxdypflyc6i30g7cclm9hfmisllpfgajlysi94vj1l4lp1dp0"))))
     (build-system go-build-system)
     (arguments
      (list
