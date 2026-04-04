@@ -2346,6 +2346,29 @@ for the Sweetscape 010 binary-format editor.")
 like pie glass').")
     (license license:asl2.0)))
 
+(define-public python-pyls-spyder
+  (package
+    (name "python-pyls-spyder")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/spyder-ide/pyls-spyder")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11ajbsia60d4c9s6m6rbvaqp1d69fcdbq6a98lkzkkzv2b9pdhkk"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-lsp-server))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/spyder-ide/pyls-spyder")
+    (synopsis "Spyder extensions for @code{python-lsp-server}")
+    (description "This package provides Spyder-specific extras for the
+Language Server Protocol (LSP) on Python, such as document symbol searching
+and others.")
+    (license license:expat)))
+
 (define-public python-pypydispatcher
   (package
     (name "python-pypydispatcher")
