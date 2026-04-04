@@ -9025,6 +9025,51 @@ API.")
 connections.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-go-secure-stdlib-parseutil
+  (package
+    (name "go-github-com-hashicorp-go-secure-stdlib-parseutil")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hashicorp/go-secure-stdlib")
+              (commit (go-version->git-ref version
+                                           #:subdir "parseutil"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08wp7cx0br7wz0rwz92v0c6jgbv735l04438k74wgqrghsxgl31m"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "." "parseutil")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-secure-stdlib/parseutil"
+      #:unpack-path "github.com/hashicorp/go-secure-stdlib"
+      #:test-flags #~(list "-skip" "Test_NormalizeAddr")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-hashicorp-go-secure-stdlib-strutil
+           go-github-com-hashicorp-go-sockaddr
+           go-github-com-mitchellh-mapstructure))
+    (home-page "https://github.com/hashicorp/go-secure-stdlib")
+    (synopsis "Stdlib for HashiCorp Secure products")
+    (description
+     "This package provides the
+@url{github.com/hashicorp/go-secure-stdlib/parseutil, parseutil} Golang
+package.  It is part of HashiCorp's Secure division products stdlib.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hashicorp-go-secure-stdlib-strutil
   (package
     (name "go-github-com-hashicorp-go-secure-stdlib-strutil")
