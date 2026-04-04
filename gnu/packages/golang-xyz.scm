@@ -10746,6 +10746,36 @@ standard log package.")
 (define-deprecated-package go-github-com-go-md2man
   go-github-com-cpuguy83-go-md2man-v2)
 
+(define-public go-github-com-go-logr-zapr
+  (package
+    (name "go-github-com-go-logr-zapr")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-logr/zapr")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07kg9h853jijfc86zm07856sisac6jwvn06gbk694fg00mj1806f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-logr/zapr"
+      #:test-flags #~(list "-skip" "TestSlogHandler")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-logr-logr
+           go-go-uber-org-zap))
+    (home-page "https://github.com/go-logr/zapr")
+    (synopsis "Zap powered logr interface for Golang")
+    (description
+     "This package provides a @url{github.com/go-logr/logr, logr} interface
+built on top of @url{go.uber.org/zap, Zap}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-openapi-inflect
   (package
     (name "go-github-com-go-openapi-inflect")
