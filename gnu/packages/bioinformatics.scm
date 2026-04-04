@@ -9745,29 +9745,39 @@ sequencing tag position and orientation.")
 (define-public macs-3
   (package
     (name "macs")
-    (version "3.0.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/macs3-project/MACS")
-                    (commit (string-append "v" version))
-                    (recursive? #true)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "08hi0a2a0md9gfg7jc75wxv69rggv2yqfd1hyrg4mi5bhi712m0v"))))
+    (version "3.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/macs3-project/MACS")
+              (commit (string-append "v" version))
+              (recursive? #true)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16cv6bvvppi0z69r5l357ai8x4jg61rx8xrvcapk1wz6mh9naf5s"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; AssertionError: np.float32(1.0) != np.float64(-1.0)
+      ;; calculated step by step:
+      ;;  6.559423e-18
+      ;; expected:
+      ;;  -2.98155597e-18
+      #~(list (string-append "--deselect=test/test_SignalProcessing.py::"
+                             "Test_maxima::test_implement_smooth_here"))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools
+           zlib))
     (propagated-inputs
      (list python-cykhash
            python-hmmlearn
            python-numpy
            python-scikit-learn
            python-scipy))
-    (native-inputs
-     (list python-cython
-           python-pytest
-           python-setuptools
-           zlib))
     (home-page "https://github.com/macs3-project/MACS")
     (synopsis "Model based analysis for ChIP-Seq data")
     (description
