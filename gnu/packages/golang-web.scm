@@ -17780,6 +17780,54 @@ library code
 browsing activities based on HTTP Upgrade (HTTPT).")
     (license license:bsd-2)))
 
+(define-public go-go-etcd-io-etcd-api-v3
+  (package
+    (name "go-go-etcd-io-etcd-api-v3")
+    (version "3.6.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/etcd-io/etcd")
+              (commit (go-version->git-ref version
+                                           #:subdir "api"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xyq7flcdvbmiss0snriylvabkwclhyb3977vl1xy9gxq94cwqq4"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "api")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "go.etcd.io/etcd/api"
+      #:unpack-path "go.etcd.io/etcd"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-coreos-go-semver
+           go-github-com-gogo-protobuf
+           go-github-com-golang-protobuf
+           go-github-com-grpc-ecosystem-grpc-gateway-v2
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://go.etcd.io/etcd")
+    (synopsis "Golang definitions of etcd v3 API")
+    (description
+     "This package provides the Golang definitions and protocol interfaces for
+interacting with the etcd v3 API.")
+    (license license:asl2.0)))
+
 (define-public go-go-mau-fi-whatsmeow
   (package
     (name "go-go-mau-fi-whatsmeow")
