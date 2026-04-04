@@ -209,7 +209,7 @@ hardware.")
 (define-public sdl2-compat
   (package
     (name "sdl2-compat")
-    (version "2.32.54")
+    (version "2.32.66")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -218,7 +218,7 @@ hardware.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ijpx62b9syypxxnwvggz4l5fmrgln95ka180am9g2hgyqkqlj5n"))))
+                "1las3lq2sn7hiwpcdzf1rpcjz2g3dfrnl83b8n78v8y665fmbbk4"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases
