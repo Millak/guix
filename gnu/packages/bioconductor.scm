@@ -14276,12 +14276,13 @@ level.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; These tests require Internet access.
-             (delete-file "tests/testthat/test-ID-translation.R"))))))
+      #:skipped-tests
+      '(("test-ID-translation.R"
+         ;; These tests require Internet access.
+         "UUIDhistory correctly returns the appropriate identifiers"
+         "UUIDtoBarcode shows multiple entries per file_id"
+         "UUIDtoBarcode translates correctly"
+         "barcodeToUUID translates correctly"))))
     (propagated-inputs (list r-annotationdbi
                              r-biocbaseutils
                              r-biocgenerics
