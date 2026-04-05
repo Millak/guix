@@ -13739,30 +13739,21 @@ for downstream analysis and data visualization.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; These attempt to connect to the Internet.
-             (substitute* "tests/testthat/test-getContigDoublets.R"
-               ((".*getContigDoublets works for no doublets.*" m)
-                (string-append m "skip('guix')\n"))
-               ((".*getContigDoublets works for inputs with doublets.*" m)
-                (string-append m "skip('guix')\n")))
-             (substitute* "tests/testthat/test-loadContigs.R"
-               ((".*loadContigs correctly auto-detects and processes various formats.*" m)
-                (string-append m "skip('guix')\n"))
-               ((".*loadContigs correctly processes various formats from URL.*" m)
-                (string-append m "skip('guix')\n")))
-             ;; There is code running outside of testthat that tries to
-             ;; download files off the Internet.
-             (delete-file "tests/testthat/test-combineContigs.R")
-             ;; These fail with: Unknown property set: 'kideraFactors'.
-             (substitute* "tests/testthat/test-positionalProperty.R"
-               ((".*positionalProperty: Output structure is correct.*" m)
-                (string-append m "skip('guix')\n"))
-               ((".*positionalProperty: ggplot object is correctly formed.*" m)
-                (string-append m "skip('guix')\n"))))))))
+      #:skipped-tests
+      ;; There is code running outside of testthat that tries to
+      ;; download files off the Internet.
+      '("test-combineContigs.R"
+        ;; These attempt to connect to the Internet.
+        ("test-getContigDoublets.R"
+         "getContigDoublets works for no doublets"
+         "getContigDoublets works for inputs with doublets")
+        ("test-loadContigs.R"
+         "loadContigs correctly auto-detects and processes various formats"
+         "loadContigs correctly processes various formats from URL")
+        ;; These fail with: Unknown property set: 'kideraFactors'.
+        ("test-positionalProperty.R"
+         "positionalProperty: Output structure is correct"
+         "positionalProperty: ggplot object is correctly formed"))))
     (propagated-inputs
      (list r-dplyr
            r-evmix
