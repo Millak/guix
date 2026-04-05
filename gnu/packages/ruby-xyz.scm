@@ -7970,50 +7970,46 @@ alternative to Marshal for Object serialization.")
     (license license:expat)))
 
 (define-public ruby-pg
-  (let ((commit "378b7a35c12292625460ef2f33373de7114bf255")
-        (revision "0"))
   (package
     (name "ruby-pg")
-    (version (git-version "1.5.9" revision commit))
+    (version "1.6.2")
     (home-page "https://github.com/ged/ruby-pg")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url home-page)
-             (commit commit)))
+              (url home-page)
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1aq6kakyghgbb4yykxxl9ziaaa7jbdbyc7vz6avyxhlby1jkj0m8"))
-       (patches
-        (search-patches "ruby-pg-fix-connect-timeout.patch"))))
+        (base32 "14164l86xjla4sbaw8flnd2krc2n61l6gjvmmy31v07w5ys4xyjj"))))
     (build-system ruby-build-system)
     (arguments
      (list
       #:test-target "spec"
       #:phases
       #~(modify-phases %standard-phases
-               (add-before 'build 'compile
-                 (lambda _
-                   (invoke "rake" "compile")))
-               ;; Some tests rely on postgresql_lib_path.rb, but it is not
-               ;; available until the gem is installed.  Run tests after
-               ;; installing to work around it.
-               (delete 'check)
-               (add-after 'install 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (let ((new-gem (string-append #$output
-                                                 "/lib/ruby/vendor_ruby")))
-                     (setenv "GEM_PATH"
-                             (string-append (getenv "GEM_PATH") ":" new-gem))
-                     (when tests?
-                       (invoke "rspec"))))))))
+          (add-before 'build 'compile
+            (lambda _
+              (invoke "rake" "compile")))
+          ;; Some tests rely on postgresql_lib_path.rb, but it is not
+          ;; available until the gem is installed.  Run tests after
+          ;; installing to work around it.
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (let ((new-gem (string-append #$output
+                                            "/lib/ruby/vendor_ruby")))
+                (setenv "GEM_PATH"
+                        (string-append (getenv "GEM_PATH") ":" new-gem))
+                (when tests?
+                  (invoke "rspec"))))))))
     (native-inputs (list ruby-rake-compiler ruby-hoe ruby-rspec))
     (inputs (list postgresql))
     (synopsis "Ruby interface to PostgreSQL")
     (description "Pg is the Ruby interface to the PostgreSQL RDBMS.  It works
-with PostgreSQL 9.3 and later.")
-    (license license:ruby))))
+with PostgreSQL 10 and later.")
+    (license license:ruby)))
 
 (define-public ruby-byebug
   (package
