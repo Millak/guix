@@ -403,22 +403,26 @@ has a small feature set similar to a traditional Bourne shell.")
 (define-public es
   (package
     (name "es")
-    (version "0.9.2")
+    (version "0.10.0")
     (source
      (origin
-       (method url-fetch/tarbomb)
-       (uri (string-append "https://github.com/wryun/es-shell/releases/"
-                           "download/v" version "/es-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/wryun/es-shell")
+              (commit (string-append "v" version))))
        (sha256
-        (base32 "1pgmqhsk14wyvl489sxdy7kdl2gwrsq1xvkip0z90kh888mlh9n9"))
-       (file-name (string-append name "-" version ".tar.gz"))))
+        (base32 "11zykg28r018vl9n0sw82jwv3m2yk1r9d25y2mjrvpkxf0dj2va6"))
+       (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     (list #:test-target "test"))
+     (list
+      #:test-target "test"))
     (inputs
      (list readline))
     (native-inputs
-     (list bison))
+     (list autoconf-2.72 ;2.69 does not detect that some files are missing
+           automake
+           procps)) ;for tests
     (synopsis "Extensible shell with higher-order functions")
     (description
      "Es is an extensible shell.  The language was derived from the Plan 9
