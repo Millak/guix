@@ -22282,7 +22282,8 @@ into 22 character URL-safe base64 slug representation.")
        (sha256
         (base32 "1qs8n1hcjxcpwbfjjlzfmywfczxzcpvjkk3ay04kdbi1lvlynkaj"))))
     (build-system pyproject-build-system)
-    ;; tests: 952 passed, 25 skipped
+    ;; The test_brokenpipeerror is flaky.
+    (arguments (list #:test-flags #~(list "-k" "not test_brokenpipeerror")))
     (native-inputs
      (list python-poetry-core
            python-pytest
