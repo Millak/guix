@@ -200,7 +200,7 @@ bind processes, and much more.")
     (propagated-inputs
      ;; hwloc.pc lists libze_loader and libxml2 in
      ;; 'Requires.private' in 'hwloc.pc'.
-     (list level-zero libpciaccess libxml2))
+     (list libpciaccess libxml2))
     (arguments
      (list
       #:configure-flags
