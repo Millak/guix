@@ -41,32 +41,16 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages bittorrent)
-  #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix git-download)
-  #:use-module (guix build-system cmake)
-  #:use-module (guix build-system gnu)
-  #:use-module (guix build-system meson)
-  #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
-  #:use-module (guix build-system qt)
-  #:use-module (guix build-system glib-or-gtk)
-  #:use-module ((guix licenses) #:prefix l:)
-  #:use-module (guix gexp)
-  #:use-module (guix utils)
-  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
-  #:use-module (gnu packages)
-  #:use-module (gnu packages dns)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
-  #:use-module (gnu packages nss)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
+  #:use-module (gnu packages dns)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -76,8 +60,9 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages multiprecision)
-  #:use-module (gnu packages nettle)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages nettle)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -86,15 +71,30 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
-  #:use-module (gnu packages serialization)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xorg)
+  #:use-module (gnu packages)
+  #:use-module (guix build-system cmake)
+  #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix packages)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
+  #:use-module (guix utils))
 
 (define-public transmission
   (package
@@ -194,7 +194,7 @@ DHT, µTP, PEX and Magnet Links.")
     ;; or any future license endorsed by Mnemosyne LLC.
     ;;
     ;; A few files files carry an MIT/X11 license header.
-    (license (list l:gpl2 l:gpl3))))
+    (license (list license:gpl2 license:gpl3))))
 
 (define-public transmission-remote-gtk
   (package
@@ -224,7 +224,7 @@ DHT, µTP, PEX and Magnet Links.")
     (description "transmission-remote-gtk is a GTK client for remote management
 of the Transmission BitTorrent client, using its HTTP RPC protocol.")
     (home-page "https://github.com/transmission-remote-gtk/transmission-remote-gtk")
-    (license l:gpl2+)))
+    (license license:gpl2+)))
 
 (define-public stig
   (package
@@ -267,7 +267,7 @@ of the Transmission BitTorrent client, using its HTTP RPC protocol.")
      "Stig is a @acronym{TUI, Text User Interface} and @acronym{CLI, Command
 Line Interface} client for the BitTorrent client Transmission.")
     (home-page "https://github.com/rndusr/stig")
-    (license l:gpl3)))
+    (license license:gpl3)))
 
 (define-public libtorrent
   (package
@@ -291,7 +291,7 @@ Line Interface} client for the BitTorrent client Transmission.")
 with the BitTorrent client rtorrent.  It is written in C++ with emphasis on
 speed and efficiency.")
     (home-page "https://github.com/rakshasa/libtorrent")
-    (license l:gpl2+)))
+    (license license:gpl2+)))
 
 (define-public rtorrent
   (package
@@ -320,7 +320,7 @@ speed and efficiency.")
 full encryption, DHT, PEX, and Magnet Links.  It can also be controlled via
 XML-RPC over SCGI.")
     (home-page "https://github.com/rakshasa/rtorrent")
-    (license l:gpl2+)))
+    (license license:gpl2+)))
 
 (define-public tremc
   (let ((commit "d8deaa5ac25bb45a2ca3a930309d6ecc74836a54")
@@ -354,7 +354,7 @@ XML-RPC over SCGI.")
     (description "Tremc is a console client, with a curses interface, for the
 Transmission BitTorrent daemon.")
     (home-page "https://github.com/tremc/tremc")
-    (license l:gpl3+))))
+    (license license:gpl3+))))
 
 (define-public aria2
   (package
@@ -419,7 +419,7 @@ download utility.  It supports HTTP/HTTPS, FTP, SFTP, BitTorrent and Metalink.
 Aria2 can be manipulated via built-in JSON-RPC and XML-RPC interfaces.")
     (properties
      '((release-monitoring-url . "https://github.com/aria2/aria2/releases")))
-    (license l:gpl2+)))
+    (license license:gpl2+)))
 
 (define-public uget
   (package
@@ -453,7 +453,7 @@ Aria2 can be manipulated via built-in JSON-RPC and XML-RPC interfaces.")
      "uGet is portable download manager with GTK+ interface supporting
 HTTP, HTTPS, BitTorrent and Metalink, supporting multi-connection
 downloads, download scheduling, download rate limiting.")
-    (license l:lgpl2.1+)))
+    (license license:lgpl2.1+)))
 
 (define-public mktorrent
   (package
@@ -488,8 +488,8 @@ files and whole directories.  It can add multiple trackers and web seed URLs,
 and set the @code{private} flag to disallow advertisement through the
 distributed hash table (@dfn{DHT}) and Peer Exchange.  Hashing is multi-threaded
 and will take advantage of multiple processor cores where possible.")
-    (license (list l:public-domain      ; sha1.*, used to build without OpenSSL
-                   l:gpl2+))))          ; with permission to link with OpenSSL
+    (license (list license:public-domain ; sha1.*, used to build without OpenSSL
+                   license:gpl2+))))     ; with permission to link with OpenSSL
 
 (define-public libtorrent-rasterbar
   (package
@@ -541,7 +541,7 @@ and will take advantage of multiple processor cores where possible.")
      "libtorrent-rasterbar is a feature-complete C++ BitTorrent implementation
 focusing on efficiency and scalability.  It runs on embedded devices as well as
 desktops.")
-    (license l:bsd-2)))
+    (license license:bsd-2)))
 
 (define-public qbittorrent
   (package
@@ -585,7 +585,7 @@ libtorrent (sometimes called libtorrent-rasterbar) by Arvid Norberg.
 It aims to be a good alternative to all other BitTorrent clients out there.
 qBittorrent is fast, stable and provides unicode support as well as many
 features.")
-    (license l:gpl2+)))
+    (license license:gpl2+)))
 
 (define-public qbittorrent-no-x
   (let ((base qbittorrent))
@@ -727,4 +727,4 @@ Protocol Encryption, DHT, Local Peer Discovery (LSD), Peer Exchange
 speed limits.  Deluge heavily utilises the ​libtorrent library.  It is
 designed to run as both a normal standalone desktop application and as a
 ​client-server.")
-    (license l:gpl3+)))
+    (license license:gpl3+)))
