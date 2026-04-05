@@ -556,6 +556,9 @@ and Ethernet frame transmission.")
           (add-after 'unpack 'disable-failing-tests
             (lambda _
               (substitute* "tests/meson.build"
+                ;; This test is flaky (see:
+                ;; <https://gitlab.freedesktop.org/libnice/libnice/-/work_items/210>).
+                ((".*'test-send-recv',.*") "")
                 ;; ‘test-set-port-range.c:66:main: assertion failed:
                 ;; (nice_agent_gather_candidates (agent, stream1))’
                 (("'test-set-port-range'" all)
