@@ -50,6 +50,7 @@
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
+;;; Copyright © 2026 Brent Wedderburn <mb@bean.za.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -253,13 +254,21 @@ their devices.")
           (replace 'build (assoc-ref gnu:%standard-phases 'build))
           (replace 'check (assoc-ref gnu:%standard-phases 'check))
           (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((bin   (string-append #$output "/bin"))
-                    (share (string-append #$output "/share/librecad")))
+            (lambda _
+              (let* ((bin (string-append #$output "/bin"))
+                     (share (string-append #$output "/share"))
+                     (apps (string-append share "/applications"))
+                     (icons (string-append share "/icons/hicolor/128x128/apps")))
                 (mkdir-p bin)
                 (install-file "unix/librecad" bin)
                 (mkdir-p share)
-                (copy-recursively "unix/resources" share)))))))
+                (copy-recursively "unix/resources"
+                                  (string-append share "/librecad"))
+                (mkdir-p apps)
+                (install-file "desktop/librecad.desktop" apps)
+                (mkdir-p icons)
+                (copy-file "librecad/res/main/librecad.png"
+                           (string-append icons "/librecad.png"))))))))
     (inputs
      (list bash-minimal boost muparser freetype qtbase-5 qtsvg-5))
     (native-inputs
