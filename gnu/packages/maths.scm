@@ -407,6 +407,31 @@ BLAS routines: basic linear algebra subprograms operating on vectors and
 matrices.")
     (license license:asl2.0)))
 
+(define-public cobra
+  (package
+    (name "cobra")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/trailofbits/CoBRA")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1f66503kl9gl3wnr4ibs43bkmgrh8zphxj1pfb9vf7czrb14zaww"))))
+    (build-system cmake-build-system)
+    (arguments (list #:configure-flags #~(list "-DUSE_EXTERNAL_LLVM=ON"
+                                               "-DCOBRA_BUILD_TESTS=ON")
+                     ;; Skip heavy test cases.
+                     #:test-exclude "(SiM|GAM)BADataset.*"))
+    (inputs (list abseil-cpp google-highway llvm z3))
+    (native-inputs (list googletest))
+    (home-page "https://github.com/trailofbits/CoBRA")
+    (synopsis "Coefficient-based reconstruction of arithmetic")
+    (description "CoBRA is a mixed boolean-arithmetic expression simplifier
+aimed at deobfuscation.")
+    (license license:asl2.0)))
+
 (define-public coda
   (package
     (name "coda")
