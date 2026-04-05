@@ -18267,12 +18267,11 @@ the @code{sendfile(2)} system call.")
     (arguments
      (list
       #:test-flags
-      #~(list "-k" "not TestCommandLineParser"
-              #$@(if (target-aarch64?)
-                     ;; TimeoutError: timed out
-                     '((string-append "--deselect=pyftpdlib/test/test_functional.py"
-                                      "::TestTimeouts::test_idle_data_timeout2"))
-                     '()))))
+      #~(list
+         "-k" "not TestCommandLineParser"
+         ;; These contains flaky tests.
+         "--deselect=pyftpdlib/test/test_functional.py"
+         "--deselect=pyftpdlib/test/test_functional_ssl.py")))
     (native-inputs
      (list python-psutil
            python-pytest
