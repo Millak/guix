@@ -1,0 +1,81 @@
+The wayland-unit test is flaky (see: <https://gitlab.gnome.org/GNOME/mutter/-/issues/4711>).
+
+When disabling the wayland-unit test, the wayland-keyboard test fail to build:
+
+../mutter-49.4/src/tests/wayland-keyboard-tests.c:39:10: fatal error: dummy-client-protocol.h: No such file or directory
+   39 | #include "dummy-client-protocol.h"
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~
+
+so disable it as well.
+
+diff --git a/src/tests/meson.build b/src/tests/meson.build
+index 8c3773033f..cd259c8c52 100644
+--- a/src/tests/meson.build
++++ b/src/tests/meson.build
+@@ -914,17 +914,6 @@ wayland_test_cases = [
+       test_client_executables.get('drm-lease'),
+     ],
+   },
+-  {
+-    'name': 'wayland-keyboard',
+-    'suite': 'wayland',
+-    'sources': [
+-      'wayland-keyboard-tests.c',
+-      wayland_test_utils,
+-    ],
+-    'depends': [
+-      test_client_executables.get('keyboard'),
+-    ],
+-  },
+   {
+     'name': 'wayland-fullscreen',
+     'suite': 'wayland',
+@@ -966,48 +955,6 @@ wayland_test_cases = [
+       test_client_executables.get('buffer-less-viewport-client'),
+     ],
+   },
+-  {
+-    'name': 'wayland-unit',
+-    'suite': 'wayland',
+-    'timeout': 300,
+-    'sources': [
+-      'wayland-unit-tests.c',
+-      dummy_client_header,
+-      dummy_server_header,
+-      dummy_protocol_code,
+-      wayland_test_utils,
+-    ],
+-    'depends': [
+-      test_client,
+-      test_client_executables.get('buffer-transform'),
+-      test_client_executables.get('cursor-shape'),
+-      test_client_executables.get('dma-buf-scanout'),
+-      test_client_executables.get('fractional-scale'),
+-      test_client_executables.get('fullscreen'),
+-      test_client_executables.get('idle-inhibit'),
+-      test_client_executables.get('invalid-size-limits-on-map-client'),
+-      test_client_executables.get('invalid-subsurfaces'),
+-      test_client_executables.get('invalid-xdg-shell-actions'),
+-      test_client_executables.get('invalid-geometry'),
+-      test_client_executables.get('kms-cursor-hotplug-helper'),
+-      test_client_executables.get('service-client'),
+-      test_client_executables.get('shm-destroy-before-release'),
+-      test_client_executables.get('single-pixel-buffer'),
+-      test_client_executables.get('subsurface-corner-cases'),
+-      test_client_executables.get('subsurface-parent-unmapped'),
+-      test_client_executables.get('subsurface-remap-toplevel'),
+-      test_client_executables.get('subsurface-reparenting'),
+-      test_client_executables.get('xdg-activation'),
+-      test_client_executables.get('xdg-activation-before-mapped'),
+-      test_client_executables.get('xdg-apply-limits'),
+-      test_client_executables.get('xdg-foreign'),
+-      test_client_executables.get('xdg-toplevel-bounds'),
+-      test_client_executables.get('xdg-session-management'),
+-      test_client_executables.get('xdg-session-management-replace'),
+-      test_client_executables.get('xdg-toplevel-tag'),
+-      test_client_executables.get('ycbcr'),
+-    ],
+-  },
+ ]
+ 
+ test_cases += wayland_test_cases

@@ -8188,7 +8188,8 @@ to display dialog boxes from the commandline and shell scripts.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0mbq7pijx29bp0b8nfy6057z6anc5ff973dqbki0nlv10p2nwrn1"))))
+                "0mbq7pijx29bp0b8nfy6057z6anc5ff973dqbki0nlv10p2nwrn1"))
+              (patches (search-patches "mutter-disable-flaky-tests.patch"))))
     ;; NOTE: Since version 3.21.x, mutter now bundles and exports forked
     ;; versions of cogl and clutter.  As a result, many of the inputs,
     ;; propagated-inputs, and configure flags used in cogl and clutter are
