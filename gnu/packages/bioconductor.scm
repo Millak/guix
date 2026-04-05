@@ -14451,18 +14451,6 @@ methylation data.")
        (updater-extra-native-inputs
         . ("r-txdb-hsapiens-ucsc-hg19-knowngene"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; XXX: expected and actual lengths differ.
-             (substitute* "tests/testthat/test-TranscriptionDataSet-methods.R"
-               ((".*detectTranscripts works.*" m)
-                (string-append m "skip('guix')\n"))
-               ((".*estimateGapDistance works.*" m)
-                (string-append m "skip('guix')\n"))))))))
     (propagated-inputs
      (list r-biocgenerics
            r-caret
