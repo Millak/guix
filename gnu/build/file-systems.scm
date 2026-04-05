@@ -1226,10 +1226,12 @@ file name or an nfs-root containing ':/')."
 
   (match spec
     ((? string?)
-     (if (string-prefix? "/dev/" spec)
+     (if (string-match "^/dev/[a-zA-Z0-9]+$" spec)
          ;; Nothing to do, but wait until SPEC shows up.
          (resolve device-exists? spec identity)
-         spec)) ; do not resolve NFS / CIFS / tmpfs devices
+         ;; Do not resolve NFS / CIFS / tmpfs devices
+         ;; or bcachefs multi-device specifications.
+         spec))
     ((? file-system-label?)
      ;; Resolve the label.
      (resolve find-partition-by-label
