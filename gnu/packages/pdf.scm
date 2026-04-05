@@ -472,6 +472,34 @@ Poppler gives access to the following binary programs:
    (license license:gpl2+)
    (home-page "https://poppler.freedesktop.org/")))
 
+(define-public poppler-next
+  (package
+    (inherit poppler)
+    (name "poppler-next")
+    (version "26.04.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://poppler.freedesktop.org/poppler-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "14q69q6ipy3m4ywdhlr48qlscwzrv8jcns3g2306pyaa25im35dh"))))
+    (arguments (substitute-keyword-arguments arguments
+                 ((#:configure-flags flags)
+                  #~(cons*
+                     "-DENABLE_GPGME=OFF"
+                     "-DENABLE_QT5=OFF"
+                     "-DENABLE_QT6=OFF"
+                     #$flags))
+                 ((#:phases phases)
+                  #~(modify-phases #$phases
+                      (add-after 'install 'sanitize-pkg-config-files
+                        (lambda _
+                          (substitute* (find-files #$output "\\.pc$")
+                            (("^Requires.private:.*" all)
+                             (string-append "# " all)))))))))
+    (inputs (modify-inputs inputs (prepend curl)))))
+
 (define-public poppler-data
   (package
     (name "poppler-data")
