@@ -3033,38 +3033,46 @@ genetic variation data.")
 (define-public python-scikit-build-core
   (package
     (name "python-scikit-build-core")
-    (version "0.11.2")
+    (version "0.12.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "scikit_build_core" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/scikit-build/scikit-build-core")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0baaava7jvc69r5j803vjxvf2cnx0f3gjhqalipp7l4d1cgwg3vp"))))
+        (base32 "18xh572ndd0dww7czic775p6n8y5kxd072fj7xdhxwykdxr0bl2g"))))
     (build-system pyproject-build-system)
-    ;; Tests are aborted with the admonition: "setup.py install is
-    ;; deprecated. Use build and pip and other standards-based tools."
-    (arguments (list #:tests? #false))
-    (propagated-inputs (list python-importlib-metadata
-                             python-importlib-resources
-                             python-packaging
-                             python-pathspec
-                             python-tomli
-                             python-typing-extensions))
-    (native-inputs (list pybind11-2
-                         python-cattrs
-                         python-fastjsonschema
-                         python-hatch-fancy-pypi-readme
-                         python-hatch-vcs
-                         python-hatchling
-                         python-numpy
-                         python-pypa-build
-                         python-pytest
-                         python-pytest-subprocess
-                         python-rich
-                         python-setuptools
-                         python-setuptools-scm
-                         python-virtualenv
-                         python-wheel))
+    (arguments
+     (list
+      ;; tests: 296 passed, 66 skipped, 1 xfailed
+      #:test-flags
+      ;; XXX: Check why the most of the tests fail in these files.
+      #~(list "--ignore=tests/test_cmake_config.py"
+              "--ignore=tests/test_custom_modules.py"
+              "--ignore=tests/test_editable.py"
+              "--ignore=tests/test_editable_generated.py"
+              "--ignore=tests/test_get_requires.py"
+              "--ignore=tests/test_hatchling.py"
+              "--ignore=tests/test_prepare_metadata.py"
+              "--ignore=tests/test_program_search.py"
+              "--ignore=tests/test_pyproject_pep518.py"
+              "--ignore=tests/test_pyproject_pep660.py"
+              "--ignore=tests/test_settings_overrides.py"
+              "--ignore=tests/test_setuptools_pep518.py")))
+    (native-inputs
+     (list python-cattrs
+           python-hatch-vcs
+           python-hatchling
+           python-pypa-build
+           python-pytest
+           python-virtualenv))
+    (propagated-inputs
+     (list cmake-minimal
+           ;; pybind11           ;XXX: cycles, bootstrapping is required
+           python-packaging
+           python-pathspec))
     (home-page "https://github.com/scikit-build/scikit-build-core")
     (synopsis "Build backend for CMake based projects")
     (description "Scikit-build-core is a build backend for Python that uses
