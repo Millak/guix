@@ -23,7 +23,7 @@
 ;;; Copyright © 2023, 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright @ 2022, Kitzman <kitzman@disroot.org>
 ;;; Copyright @ 2025 Dariqq <dariqq@posteo.net>
-;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025, 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
@@ -1762,7 +1762,7 @@ string.h, but with a utf8* prefix instead of the str* prefix.")
 (define-public simdutf
   (package
     (name "simdutf")
-    (version "7.7.1")
+    (version "9.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1771,7 +1771,7 @@ string.h, but with a utf8* prefix instead of the str* prefix.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kw4j4qqcfjaii667xa745pklj50m70nqq8cj5agj714acczbk7y"))))
+        (base32 "0f5ccvqj7pfa69m9y1kxp2v1lybx6x8i9pykdqfkr7dydqbhrhx6"))))
     (build-system cmake-build-system)
     (arguments (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")))
     (synopsis "SIMD Unicode validation and transcoding")
