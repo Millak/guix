@@ -578,7 +578,10 @@ This package provides the core library and elements.")
               (substitute* "tests/check/meson.build"
                 ;; This test causes nondeterministic failures (see:
                 ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/895>).
-                ((".*'elements/appsrc.c'.*") ""))
+                ((".*'elements/appsrc.c'.*") "")
+                ;; This one is flaky (see:
+                ;; <https://gitlab.freedesktop.org/gstreamer/gstreamer/-/work_items/5016>).
+                ((".*'elements/inputselector.c'.*") ""))
               ;; Some other tests fail on other architectures.
               #$@(cond
                    ((target-x86-32?)
