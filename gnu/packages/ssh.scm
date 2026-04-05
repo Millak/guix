@@ -19,7 +19,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2023 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
@@ -237,7 +237,7 @@ a server that supports the SSH-2 protocol.")
 (define-public openssh
   (package
    (name "openssh")
-   (version "10.2p1")
+   (version "10.3p1")
    (source
     (origin
       (method url-fetch)
@@ -245,7 +245,7 @@ a server that supports the SSH-2 protocol.")
                           "openssh-" version ".tar.gz"))
       (patches (search-patches "openssh-trust-guix-store-directory.patch"))
       (sha256
-       (base32 "1clqyxh6mrbwjg964df0hjwmd361mxnx3nx17wk5jyck3422ri6c"))))
+       (base32 "1x25iv8yfcfpf3b1ap72indbfna0wz48xz8ny2sg9p4jpcv2ls2n"))))
    (build-system gnu-build-system)
    (arguments
     (list
