@@ -2598,6 +2598,92 @@ of Evince is to replace the multiple document viewers that exist
 on the GNOME Desktop with a single simple application.")
     (license license:gpl2+)))
 
+(define-public papers
+  (package
+    (name "papers")
+    (version "50.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/papers/"
+                                  (version-major version) "/"
+                                  "papers-" version ".tar.xz"))
+              (sha256
+               (base32 "01dws72fb19i9jwp3r0khr7ym2ns51fifdzafb5dcr5w8vmj06rh"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list (string-append "-Dc_link_args=-Wl,-rpath=" #$output "/lib"))
+      #:imported-modules `(,@%meson-build-system-modules
+                           ,@%cargo-build-system-modules)
+      #:modules `(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build meson-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-for-build
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")
+                (("update_desktop_database: true")
+                 "update_desktop_database: false"))
+              (substitute* "meson.build"
+                (("'Cargo.lock',")
+                  ""))
+              (delete-file "Cargo.lock")))
+          (add-after 'configure 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:vendor-dir "vendor"
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))
+
+              (setenv "RUSTFLAGS"
+                      (string-append (or (getenv "RUSTFLAGS") "")
+                                     " -C link-arg=-Wl,-rpath,"
+                                     #$output "/lib")))))))
+    (native-inputs
+     (cons* blueprint-compiler
+            gettext-minimal
+            `(,glib "bin")
+            gobject-introspection
+            gi-docgen
+            itstool
+            pkg-config
+            rust
+            `(,rust "cargo")
+            (or (and=> (%current-target-system)
+                       (compose list make-rust-sysroot))
+                '())))
+    (inputs
+     (cons* appstream
+            djvulibre
+            exempi
+            gtk
+            libadwaita
+            libarchive
+            libspelling
+            libtiff
+            nautilus                    ; for nautilus extension
+            poppler-next
+            zlib
+            (cargo-inputs 'papers)))
+    (home-page "https://apps.gnome.org/Papers")
+    ;; TODO: drop “new” when updating to GNOME 49 or newer.
+    (synopsis "GNOME's new document viewer")
+    (description "Papers is a document viewer capable of displaying multiple
+and single page document formats like PDF and DejaVu.")
+    (license license:gpl2+)))
+
 (define-public gsettings-desktop-schemas
   (package
     (name "gsettings-desktop-schemas")
