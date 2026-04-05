@@ -35831,27 +35831,31 @@ platform using the ActivityPub protocol.")
   (package
     (name "python-lief")
     (version "0.17.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/lief-project/LIEF")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1k3rl02ap6ldn8zdrj1c1vdxf4wx8jv9x5bgrlgph6h8hhc8miar"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lief-project/LIEF")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k3rl02ap6ldn8zdrj1c1vdxf4wx8jv9x5bgrlgph6h8hhc8miar"))))
     (build-system pyproject-build-system)
-    (native-inputs (list cmake-minimal
-                         ninja
-                         python-scikit-build-core
-                         python-pydantic))
     (arguments
      (list
-      #:tests? #f                  ;needs network
-      #:phases #~(modify-phases %standard-phases
-                   (add-before 'build 'change-directory
-                     (lambda _
-                       (chdir "api/python"))))))
+      ;; TODO: Tests neeed some setup, see:
+      ;; <.github/workflows/linux-x86-64.yml>.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'change-directory
+            (lambda _
+              (chdir "api/python"))))))
+    (native-inputs
+     (list ninja
+           python-pydantic
+           python-scikit-build-core
+           python-tomli))
     (home-page "https://github.com/lief-project/LIEF")
     (synopsis "Library to instrument executable formats")
     (description
