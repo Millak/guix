@@ -17010,23 +17010,6 @@ genes or proteins in these datasets.")
      '((upstream-name . "plyranges")
        (updater-extra-native-inputs . ("r-helloranges"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; These fail because seqinfo is not defined.
-             (substitute* "tests/testthat/test-io-bw.R"
-               ((".*reading/ writing bigwig files returns correct GRanges.*" m)
-                (string-append m "skip('guix')\n")))
-             (substitute* "tests/testthat/test-io-gff.R"
-               ((".*reading GFF files returns correct GRanges.*" m)
-                (string-append m "skip('guix')\n")))
-             ;; Could not find function "WIGFile"
-             (substitute* "tests/testthat/test-io-wig.R"
-               ((".*reading WIG files.*" m)
-                (string-append m "skip('guix')\n"))))))))
     (propagated-inputs (list r-biocgenerics
                              r-dplyr
                              r-genomicalignments
