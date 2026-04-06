@@ -29,6 +29,7 @@
   #:use-module (gnu services networking)
   #:use-module (gnu packages databases)
   #:use-module (guix gexp)
+  #:use-module (guix packages)
   #:use-module (guix store)
   #:use-module (srfi srfi-1)
   #:export (%test-memcached
@@ -312,6 +313,8 @@
      (service postgresql-service-type
               (postgresql-configuration
                (inherit postgresql-service-configuration)
+               (postgresql (car (assoc-ref (package-inputs timescaledb)
+                                           "postgresql")))
                (extension-packages (list timescaledb))
                (config-file
                 (postgresql-config-file
@@ -381,8 +384,7 @@
                 (use-modules (guix build utils))
 
                 (current-output-port (open-file "/dev/console" "w0"))
-                (invoke #$(file-append postgresql "/bin/psql")
-                        "-tA" "-c" "CREATE DATABASE test"))
+                (invoke "psql" "-tA" "-c" "CREATE DATABASE test"))
              marionette))
 
           (test-assert "load extension"
@@ -391,7 +393,7 @@
                 (current-output-port (open-file "/dev/console" "w0"))
                 ;; Capture stderr for the next test.
                 (current-error-port (open-file "timescaledb.stderr" "w0"))
-                (invoke #$(file-append postgresql "/bin/psql")
+                (invoke "psql"
                         "-tA" "-c" "CREATE EXTENSION timescaledb"
                         "test"))
              marionette))
@@ -408,13 +410,13 @@
             (marionette-eval
              '(begin
                 (current-output-port (open-file "/dev/console" "w0"))
-                (invoke #$(file-append postgresql "/bin/psql")
+                (invoke "psql"
                         "-tA" "-c" "CREATE TABLE ht (
 time TIMESTAMP NOT NULL,
 data double PRECISION NULL
 )"
                         "test")
-                (invoke #$(file-append postgresql "/bin/psql")
+                (invoke "psql"
                         "-tA" "-c" "SELECT create_hypertable('ht','time')"
                         "test"))
              marionette))
