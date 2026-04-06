@@ -18460,15 +18460,9 @@ Bayes Analyses of Microarrays} (EBAM).")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; This test attempts to download a data file.
-             (delete-file "tests/testthat/test_annotation.R")
-             ;; This file attempts to run the testthat tests, which we just
-             ;; deleted.
-             (delete-file "tests/test-all.R"))))))
+      ;; Test in test_annotation attempt to download a data file.  There are
+      ;; no other tests.
+      #:tests? #false))
     (propagated-inputs
      (list r-annotationdbi
            r-biocgenerics
