@@ -2850,6 +2850,32 @@ Unified Format}.")
     (description "Package list implements a doubly linked list.")
     (license license:bsd-3)))
 
+(define-public go-github-com-baozisoftware-qrcode-terminal-go
+  (package
+    (name "go-github-com-baozisoftware-qrcode-terminal-go")
+    (version "0.0.0-20170407111555-c0650d8dff0f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Baozisoftware/qrcode-terminal-go")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "166h9zy9y7ygayhybg7d080hpdcf1mvkf3rwnq5lqg8i3cg71s7b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Baozisoftware/qrcode-terminal-go"))
+    (propagated-inputs
+     (list go-github-com-mattn-go-colorable
+           go-github-com-skip2-go-qrcode))
+    (home-page "https://github.com/Baozisoftware/qrcode-terminal-go")
+    (synopsis "QRCode terminal for Golang")
+    (description
+     "This package implments a QR code generator for terminal for Golang.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-baulk-chardet
   (package
     (name "go-github-com-baulk-chardet")
