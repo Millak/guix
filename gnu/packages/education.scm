@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018-2026 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -385,7 +385,7 @@ not have any other specialized device.")
 (define-public openboard
   (package
     (name "openboard")
-    (version "1.7.3")
+    (version "1.7.7")
     (source
      (origin
        (method git-fetch)
@@ -394,7 +394,7 @@ not have any other specialized device.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1098pys5p82sx97xrhw54vlkn6jly0rhq8b09grmmx2h4mcpj2i2"))))
+        (base32 "1i27h84p77pl1chw791fjs3vyzsjvsqc9ky2mbw7g8xpzxz1nd9j"))))
     (build-system qt-build-system)
     (arguments
      (list
