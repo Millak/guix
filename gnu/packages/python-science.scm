@@ -2010,6 +2010,9 @@ between dataframe libraries.
       ;; tests: 121 passed, 1 deselected, 3 warnings
       #:test-flags
       #~(list "--pyargs" "ndindex"
+              "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              "-p" "no:cov"
+              "-W" "ignore:Unknown pytest.mark.no_cover:pytest.PytestUnknownMarkWarning"
               "-k" "not test_iter_indices_matmul") ; flaky
       #:phases
       #~(modify-phases %standard-phases
@@ -2020,6 +2023,7 @@ between dataframe libraries.
      (list python-cython
            python-numpy
            python-pytest
+           python-pytest-xdist
            python-setuptools
            python-sympy))
     (home-page "https://quansight-labs.github.io/ndindex/")
