@@ -7335,7 +7335,7 @@ genome- and pangenome-scale queries using a laptop.")
 (define-public delly
   (package
     (name "delly")
-    (version "0.8.3")
+    (version "1.7.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7343,7 +7343,7 @@ genome- and pangenome-scale queries using a laptop.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1ibnplgfzj96w8glkx17v7sld3pm402fr5ybmf3h0rlcryabxrqy"))
+               (base32 "1ri7m7iv3wakm7zdwqdzm5m71y0swad9n78dzrzr9gs3j7j5yxjs"))
               (modules '((guix build utils)))
               (snippet
                '(delete-file-recursively "src/htslib"))))
