@@ -8910,12 +8910,9 @@ genome data packages and support for efficient SNP representation.")
      (list
       ;; Vignettes attempt to connect to rest.kegg.jp.
       #:test-types '(list "tests")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These tests need r-gostats, which depends on this package.
-             (delete-file "inst/UnitTests/hyperGTest_test.R"))))))
+      #:test-directory "inst/UnitTests"
+      ;; These tests need r-gostats, which depends on this package.
+      #:skipped-tests '("hyperGTest_test.R")))
     (propagated-inputs
      (list r-annotate
            r-annotationdbi
