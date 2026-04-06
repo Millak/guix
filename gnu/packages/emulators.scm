@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2018, 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2016 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017-2024, 2026 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2017, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -3247,14 +3247,14 @@ that compiles to WebAssembly.")
 (define-public scummvm
   (package
     (name "scummvm")
-    (version "2.9.1")
+    (version "2026.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://downloads.scummvm.org/frs/scummvm/" version
                            "/scummvm-" version ".tar.xz"))
        (sha256
-        (base32 "1qspqawdazsxisxm1lxzgi0i4gx54qd10xyk3nmmirwxz9mg70ka"))))
+        (base32 "1wv0z9c4dnjywgla9zhbkgnzahj829ybvcx9jw67hdmagnbys42f"))))
     (build-system gnu-build-system)
     (arguments
      (list
