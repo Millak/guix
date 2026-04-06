@@ -1070,6 +1070,42 @@ Tkinter elements.")
 decorators in Python.")
     (license license:bsd-3)))
 
+(define-public python-discovery
+  (package
+    (name "python-discovery")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tox-dev/python-discovery")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zshaiar80h5zzbgv05z74kj8y4dgc96hwqfj2gziwdpcyl3rapp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; assert []
+      #~(list "--deselect=tests/test_discovery.py::test_get_paths_no_path_env")))
+    (native-inputs
+     (list python-pytest
+           python-pytest-mock
+           python-hatchling
+           python-hatch-vcs))
+    (propagated-inputs
+     (list python-filelock
+           python-platformdirs))
+    (home-page "https://github.com/tox-dev/python-discovery")
+    (synopsis "Python interpreter discovery")
+    (description
+     "@code{python-discovery} is a library for discovering Python interpreters
+installed on the current machine which may have multiple Python versions from
+system packages, @code{pyenv}, @code{mise}, @code{asdf}, @code{uv}, or the
+Windows registry (PEP 514).  This library finds the right one.")
+    (license license:expat)))
+
 (define-public python-distance
   (let ((commit "ad7f9dc7e9b0e88a08d0cefd1442f4ab1dd1779b")
         (revision "0"))
