@@ -2369,17 +2369,29 @@ workflows.")
 (define-public python-opt-einsum
   (package
     (name "python-opt-einsum")
-    (version "3.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "opt_einsum" version))
-              (sha256
-               (base32
-                "0jb5lia0q742d1713jk33vlj41y61sf52j6pgk7pvhxvfxglgxjr"))))
+    (version "3.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dgasmith/opt_einsum")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14p8rncba295w1bfnmn27fxi6mjas31y7yawvbiwj7d7ci196kx4"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-numpy))
+    ;; tests: 7752 passed, 139 skipped, 6 warnings
     (native-inputs
-     (list python-pytest python-setuptools python-wheel))
+     (list python-hatch-fancy-pypi-readme
+           python-hatch-vcs
+           python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-dask
+           ;; python-jax
+           python-numpy
+           python-sparse
+           #;python-torch))
     (home-page "https://github.com/dgasmith/opt_einsum")
     (synopsis "Optimizing numpys einsum function")
     (description
