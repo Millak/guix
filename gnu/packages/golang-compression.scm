@@ -706,7 +706,7 @@ files.")
   (package
     (inherit  go-github-com-nwaples-rardecode)
     (name "go-github-com-nwaples-rardecode-v2")
-    (version "2.0.0-beta.2")
+    (version "2.2.2")
     (source
      (origin
        (method git-fetch)
@@ -715,7 +715,7 @@ files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1344mxfdgs5fps6mqxk6352arrfszi33kmq394rgmqpf4394f1y7"))))
+        (base32 "1i48ca45726jyhg8i1j14ikf0pc16i1gq027zlmf12l3z37vzw78"))))
     (arguments
      (list
       #:import-path "github.com/nwaples/rardecode/v2"))))
