@@ -7518,16 +7518,6 @@ dynamic documents and vignettes.")
        (updater-extra-native-inputs
         . ("r-delayedmatrixstats" "r-fgsea" "r-gsva"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; This test uses experimenthub to download and cache things.
-             (substitute* "tests/testthat/test-getGeneSets.R"
-               ((".*Caching behavior works for a new species.*" m)
-                (string-append m "skip('guix')\n"))))))))
     (propagated-inputs (list r-ggdist r-ggplot2 r-matrix r-matrixgenerics
                              r-summarizedexperiment))
     (native-inputs (list r-biocparallel
