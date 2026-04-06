@@ -551,27 +551,30 @@ similar to CoqIDE or ProofGeneral.")
        (append python-minimal)))))
 
 (define-public vim-fugitive
-  (package
-    (name "vim-fugitive")
-    (version "3.7")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
+  (let ((commit "3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0")
+        (revision "1"))
+    (package
+      (name "vim-fugitive")
+      (version (git-version "3.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
                (url "https://github.com/tpope/vim-fugitive")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "138290g2aph1jjhaza6biky5qi4ka6435s01bwxivllgb53g3irc"))))
-    (build-system vim-build-system)
-    (arguments
-     (list #:plugin-name "fugitive"))
-    (home-page "https://github.com/tpope/vim-fugitive")
-    (synopsis "Vim plugin to work with Git")
-    (description "Vim-fugitive is a wrapper for Vim that complements the
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12254b827ps68naihdhzdhvcr0v0ksdxwks2yvq63vwwr85xpbqq"))))
+      (build-system vim-build-system)
+      (arguments
+       (list #:plugin-name "fugitive"))
+      (home-page "https://github.com/tpope/vim-fugitive")
+      (synopsis "Vim plugin to work with Git")
+      (description
+       "Vim-fugitive is a wrapper for Vim that complements the
 command window, where you can stage and review your changes before the next
 commit or run any Git arbitrary command.")
-    (license license:vim))) ; distributed under the same license as vim
+      (license license:vim))))  ; distributed under the same license as vim
 
 (define-public vim-airline
   (package
