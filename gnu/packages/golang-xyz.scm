@@ -16730,6 +16730,34 @@ rotate, crop, and various adjustments.  This is a fork maintained by Kovid
 Goyal for use in Kitty.")
     (license license:expat)))
 
+(define-public go-github-com-kovidgoyal-go-shm
+  (package
+    (name "go-github-com-kovidgoyal-go-shm")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kovidgoyal/go-shm")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11in63r0ib7r5fp92ac33srkhdqqfydz5yf5izv9zf7683nzsvg4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kovidgoyal/go-shm"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/kovidgoyal/go-shm")
+    (synopsis "POSIX shared memory across various Unix flavors.")
+    (description
+     "Tools to create and manage shared memory (POSIX Shared memory) across
+all Unix variants. Pure Go, no external dependencies.  Implements Go versions
+of @code{shm_open()} and @code{shm_unlink()} that interoperate with the libc
+versions.")
+    (license license:expat)))
+
 (define-public go-github-com-kpango-fastime
   (package
     (name "go-github-com-kpango-fastime")
