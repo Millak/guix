@@ -9953,15 +9953,12 @@ alignments.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These tests attempt to download files.
-             (for-each delete-file
-                       '("tests/testthat/test_api.R"
-                         "tests/testthat/test_clinical.R"
-                         "tests/testthat/test_data.R")))))))
+      #:skipped-tests
+      ;; These tests attempt to download files.
+      '(("test_clinical.R"
+         "clinical data is structured properly")
+        "test_api.R"
+        "test_data.R")))
     (propagated-inputs (list r-dplyr
                              r-genomicranges
                              r-httr
