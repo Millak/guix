@@ -3241,17 +3241,18 @@ music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
      (origin
        (method git-fetch)
        (uri (git-reference
-         (url "https://github.com/Abjad/abjad-ext-rmakers")
+         (url "https://github.com/Abjad/rmakers")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1y8s55b4mlsigm0xkk6qjpp08c75rv0swvjp0lj3cs6lgqdjxdjl"))))
     (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: See: <https://github.com/Abjad/rmakers/issues/78>.
+     (list #:tests? #f))
     (native-inputs
      (list lilypond
-           python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-abjad))
     (home-page "https://abjad.github.io")
