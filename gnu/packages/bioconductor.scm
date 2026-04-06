@@ -7242,17 +7242,6 @@ heterogeneity in the original high-dimensional space.")
                 "19r6bzx6lz03pvzjvvy0g6pbf48vzp229lbd2lpgp3z6x1ncrrz5"))))
     (properties `((upstream-name . "derfinder")))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These tests attempt to download files.
-             (delete-file "tests/testthat/test_data.R")
-             ;; One test fails with: object of type 'closure' is not
-             ;; subsettable
-             (delete-file "tests/testthat/test_Fstats.R"))))))
     (propagated-inputs (list r-annotationdbi
                              r-biocgenerics
                              r-biocparallel
