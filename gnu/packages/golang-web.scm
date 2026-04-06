@@ -11813,6 +11813,34 @@ forwarding and DNS resolution across host and VM boundaries.")
 the standard library.")
     (license license:expat)))
 
+(define-public go-github-com-mrexodia-wray
+  (package
+    (name "go-github-com-mrexodia-wray")
+    (version "0.0.0-20160318003008-78a2c1f284ff")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mrexodia/wray")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13fpq4sav9bb5g4vhq9lygimxzhslfp7nplfd5cyfgcxmckp5yrj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;tests are broken
+      #:import-path "github.com/mrexodia/wray"))
+    (native-inputs
+     (list go-github-com-smartystreets-goconvey))
+    (home-page "https://github.com/mrexodia/wray")
+    (synopsis "Faye client for golang")
+    (description
+     "Wray is a client for the @url{http://faye.jcoglan.com/, Faye}
+publish-subscribe messaging service.  It's alternative fork of
+@url{https://github.com/pythonandchips/wray}.")
+    (license license:expat)))
+
 (define-public go-github-com-muhlemmer-httpforwarded
   (package
     (name "go-github-com-muhlemmer-httpforwarded")
