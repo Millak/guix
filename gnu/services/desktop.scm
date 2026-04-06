@@ -1718,66 +1718,6 @@ the user shall be removed when the user fully logs out.")
                    '#$(elogind-configuration-system-shutdown-hook-files
                        config))))))
 
-(define (elogind-dbus-service config)
-  "Return a @file{org.freedesktop.login1.service} file that tells D-Bus how to
-\"start\" elogind.  In practice though, our elogind is started when booting by
-shepherd.  Thus, the @code{Exec} line of this @file{.service} file does not
-explain how to start elogind; instead, it spawns a wrapper that waits for the
-@code{elogind} shepherd service.  This avoids a race condition where both
-@command{shepherd} and @command{dbus-daemon} would attempt to start elogind."
-  ;; For more info on the elogind startup race, see
-  ;; <https://issues.guix.gnu.org/55444>.
-
-  (define elogind
-    (elogind-configuration-elogind config))
-
-  (define wrapper
-    (program-file "elogind-dbus-shepherd-sync"
-                  (with-imported-modules '((gnu services herd))
-                    #~(begin
-                        (use-modules (gnu services herd)
-                                     (srfi srfi-34))
-
-                        (guard (c ((service-not-found-error? c)
-                                   (format (current-error-port)
-                                           "no elogind shepherd service~%")
-                                   (exit 1))
-                                  ((shepherd-error? c)
-                                   (format (current-error-port)
-                                           "elogind shepherd service not \
-started~%")
-                                   (exit 2)))
-                          (wait-for-service 'elogind))))))
-
-  (define build
-    (with-imported-modules '((guix build utils))
-      #~(begin
-          (use-modules (guix build utils)
-                       (ice-9 match))
-
-          (define service-directory
-            "/share/dbus-1/system-services")
-
-          (mkdir-p (dirname (string-append #$output service-directory)))
-          (copy-recursively (string-append #$elogind service-directory)
-                            (string-append #$output service-directory))
-          (symlink (string-append #$elogind "/etc") ;for etc/dbus-1
-                   (string-append #$output "/etc"))
-          ;; Also expose the D-Bus policy configurations (.conf) files, now
-          ;; installed under '/share' instead of the legacy '/etc' prefix.
-          (symlink (string-append #$elogind "/share/dbus-1/system.d")
-                   (string-append #$output "/share/dbus-1/system.d"))
-
-          ;; Replace the "Exec=" line of the 'org.freedesktop.login1.service'
-          ;; file with one that refers to WRAPPER instead of elogind.
-          (match (find-files #$output "\\.service$")
-            ((file)
-             (substitute* file
-               (("Exec[[:blank:]]*=.*" _)
-                (string-append "Exec=" #$wrapper "\n"))))))))
-
-  (list (computed-file "elogind-dbus-service-wrapper" build)))
-
 (define (pam-extension-procedure config)
   "Return an extension for PAM-ROOT-SERVICE-TYPE that ensures that all the PAM
 services use 'pam_elogind.so', a module that allows elogind to keep track of
@@ -1825,7 +1765,7 @@ of the service's configuration files."
    (name 'elogind)
    (extensions
     (list (service-extension dbus-root-service-type
-                             elogind-dbus-service)
+                             (compose list elogind-configuration-elogind))
           (service-extension udev-service-type
                              (compose list elogind-configuration-elogind))
           (service-extension polkit-service-type
