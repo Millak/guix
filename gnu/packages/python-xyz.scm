@@ -40351,31 +40351,39 @@ e.g. filters, callbacks and errbacks can all be promises.")
 (define-public python-virtualenv
   (package
     (name "python-virtualenv")
-    (version "20.29.1")
+    (version "20.35.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "virtualenv" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pypa/virtualenv")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0dfwnn8i1y33kgxhi4xyhsj4yr5vsin7zf9c343bcbyk700rgf5q"))))
+        (base32 "0yiwqkdxlk3ly8xafyc7raaib75hr6df6zs50n77ikbz9mhqixfh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 347 passed, 43 skipped, 8 deselected
       #:test-flags
-      #~(list "-k"
-              (string-join
-               (list
-                ;; AssertionError: assert 'python' in ['python3', 'python3.11'].
-                "not test_seed_link_via_app_data"
-                ;;
-                ;; These tests require Internet access.
-                "test_build_c_ext.py"
-                ;;
-                ;; PythonInfo() returns: 'system_executable':
-                ;; '/gnu/store/...-python-wrapper-3.11.11/bin/python'
-                "test_fallback_existent_system_executable")
-               " and not "))))
+      #~(list #$@(map (lambda (ls) (string-append "--deselect=tests/unit/"
+                                                  (string-join ls "::")))
+                      '(("discovery/py_info/test_py_info.py"
+                         "test_fallback_existent_system_executable")
+                        ("discovery/test_discovery.py"
+                         "test_get_paths_no_path_env")
+                        ("create/via_global_ref/test_build_c_ext.py"
+                         "test_can_build_c_extensions[cpython3-posix]")
+                        ("create/via_global_ref/test_build_c_ext.py"
+                         "test_can_build_c_extensions[venv]")
+                        ("create/test_creator.py"
+                         "test_create_distutils_cfg[cpython3-posix]")
+                        ("create/test_creator.py"
+                         "test_create_distutils_cfg[venv]")
+                        ("seed/embed/test_bootstrap_link_via_app_data.py"
+                         "test_seed_link_via_app_data[True]")
+                        ("seed/embed/test_bootstrap_link_via_app_data.py"
+                         "test_seed_link_via_app_data[False]"))))))
     (native-inputs
      (list python-flaky
            python-hatch-vcs
