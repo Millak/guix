@@ -16730,6 +16730,32 @@ rotate, crop, and various adjustments.  This is a fork maintained by Kovid
 Goyal for use in Kitty.")
     (license license:expat)))
 
+(define-public go-github-com-kovidgoyal-go-parallel
+  (package
+    (name "go-github-com-kovidgoyal-go-parallel")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kovidgoyal/go-parallel")
+             (commit "e428118cc95f6816133ed0c02f209a9750fee9cf")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zy34cghw78r2kkfjbvrsdrbll1p4p4figi466x6cd1gw03waf0i"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/kovidgoyal/go-parallel"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (home-page "https://github.com/kovidgoyal/go-parallel")
+    (synopsis "Parallel processing utilities for Go")
+    (description
+     "Utility functions to make running code in parallel easier and safer.
+Panics in go routines are turned into regular errors, instead of crashing the
+program.")
+    (license license:expat)))
+
 (define-public go-github-com-kovidgoyal-go-shm
   (package
     (name "go-github-com-kovidgoyal-go-shm")
