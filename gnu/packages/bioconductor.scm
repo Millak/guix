@@ -17256,16 +17256,10 @@ workflows.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; Some tests need r-ggtree, which depends on this package.
-             (for-each delete-file
-                       '("tests/testthat/test-conversion.R"
-                         "tests/testthat/test-merge-tree.R"
-                         "tests/testthat/test-tree-subset.R"
-                         "tests/testthat/test-treedata-accessor.R")))))))
+      #:skipped-tests
+      ;; Some tests need r-ggtree, which depends on this package.
+      '("test-merge-tree.R"
+        "test-tree-subset.R")))
     (propagated-inputs
      (list r-ape
            r-dplyr
