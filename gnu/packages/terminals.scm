@@ -79,6 +79,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages assembly)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -87,6 +88,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dlang)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages fcitx5)
@@ -99,9 +101,15 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-compression)
+  #:use-module (gnu packages golang-maths)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libevent)
@@ -121,9 +129,11 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages rsync)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages shells)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
@@ -1217,126 +1227,168 @@ terminal with other users over the Internet.  tmate is a fork of tmux.")
 (define-public kitty
   (package
     (name "kitty")
-    (version "0.21.2")
-    (home-page "https://sw.kovidgoyal.net/kitty/")
+    (version "0.46.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/kovidgoyal/kitty")
-             (commit (string-append "v" version))))
+              (url "https://github.com/kovidgoyal/kitty")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y0mg8rr18mn0wzym7v48x6kl0ixd5q387kr5jhbdln55ph2jk9d"))
-       (patches (search-patches "kitty-fix-wayland-protocols.patch"))
+        (base32 "0yh8b3bjbgghfb6166zr3dvsi3jb4c9dc1dk7kxah89pp11c3s67"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; patch needed as sphinx-build is used as a python script
-           ;; whereas the guix package uses a bash script launching the
-           ;; python script
-           (substitute* "docs/conf.py"
-             (("(from kitty.constants import str_version)" kitty-imp)
-              (string-append "sys.path.append(\"..\")\n" kitty-imp)))
-           (substitute* "docs/Makefile"
-             (("^SPHINXBUILD[[:space:]]+= (python3.*)$")
-              "SPHINXBUILD = sphinx-build\n"))
-           #t))))
-    (build-system gnu-build-system)
+        #~(begin
+            (substitute* "docs/conf.py"
+              (("(from kitty.constants import str_version)" imp)
+               (string-append "sys.path.append(\"..\")\n" imp)))
+            ;; Depends on <https://github.com/pradyunsg/furo> which
+            ;; is not packaged yet and depends on some missing Node.js packages
+            (substitute* "docs/conf.py"
+              (("^html_theme = .*$") "html_theme = 'alabaster'\n"))
+            (substitute* "docs/Makefile"
+              (("^SPHINXBUILD[[:space:]]+= (python3.*)$")
+               "SPHINXBUILD = sphinx-build\n"))))))
+    (build-system go-build-system)
+    (outputs '("out" "terminfo" "shell-integration" "kitten"))
+    (arguments
+     (list
+      #:go go-1.26
+      #:import-path "github.com/kovidgoyal/kitty/tools/cmd"
+      #:unpack-path "github.com/kovidgoyal/kitty"
+      #:embed-files #~(list ".*\\.xml" ".*\\.json" ".*\\.txt" ".*\\.css" ".*\\.html" ".*\\.icc")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)
+
+          (add-after 'unpack 'setup-fonts
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((fonts (string-append
+                            (assoc-ref inputs "font-nerd-symbols")
+                            "/share/fonts/truetype")))
+                ;; FontConfig expects a home
+                (setenv "HOME" "/tmp")
+                (mkdir-p "fonts")
+                (copy-recursively fonts "fonts"))))
+
+          (add-after 'fix-embed-files 'build-kitty
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "src/github.com/kovidgoyal/kitty"
+                (for-each make-file-writable (find-files "kitty"))
+                (apply invoke "python3" "setup.py" "linux-package"
+                       "--update-check-interval=0"
+                       "--shell-integration=enabled no-rc"
+                       (map (lambda (pair)
+                              (string-append "--" (car pair) "="
+                                             (search-input-file inputs (cdr pair))))
+                            '(("egl-library" . "/lib/libEGL.so.1")
+                              ("startup-notification-library" . "/lib/libstartup-notification-1.so")
+                              ("canberra-library" . "/lib/libcanberra.so")
+                              ("fontconfig-library" . "/lib/libfontconfig.so"))))
+                (invoke "python3" "setup.py" "build-launcher"))))
+
+          (add-after 'build-kitty 'run-python-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (with-directory-excursion "src/github.com/kovidgoyal/kitty"
+                (when tests?
+                  (setenv "HOME" (getcwd))
+                  (mkdir-p "test-home")
+                  (setenv "XDG_CONFIG_HOME" (string-append (getcwd) "/test-home"))
+                  (setenv "TMPDIR" (string-append (getcwd) "/test-tmp"))
+                  (mkdir-p (getenv "TMPDIR"))
+                  ;; Remove tests requiring display server and dbus access
+                  (for-each (lambda (f)
+                              (let ((path (string-append "kitty_tests/" f ".py")))
+                                (when (file-exists? path) (delete-file path))))
+                            '("check_build" "glfw" "graphics" "multicell"
+                              "tui" "shell_integration" "ssh" "options"
+                              "atexit" "shm" "file_transmission" "completion"))
+                  (invoke "python3" "test.py")))))
+
+          (replace 'install
+            (lambda _
+              (with-directory-excursion "src/github.com/kovidgoyal/kitty"
+                (let ((out #$output)
+                      (terminfo #$output:terminfo)
+                      (shell-int #$output:shell-integration)
+                      (kitten #$output:kitten))
+                  (copy-recursively "linux-package/bin" (string-append out "/bin"))
+                  (copy-recursively "linux-package/share" (string-append out "/share"))
+                  (copy-recursively "linux-package/lib" (string-append out "/lib"))
+                  (mkdir-p (string-append kitten "/bin"))
+                  ;; symlinking instead of renaming since kitty expects the kitten
+                  ;; to be alongside of it
+                  (symlink (string-append out "/bin/kitten")
+                           (string-append kitten "/bin/kitten"))
+                  (mkdir-p (string-append terminfo "/share"))
+                  (rename-file (string-append out "/share/terminfo")
+                               (string-append terminfo "/share/terminfo"))
+                  (copy-recursively "shell-integration" shell-int))))))))
     (native-inputs
-     (list dbus
-           mesa
-           libxcursor
-           libxi
-           libxinerama
-           libxkbcommon
-           libxrandr
-           ncurses ;; for tic command
+     (list bash
+           dbus
+           fish
+           font-nerd-symbols
+           go-github-com-alecthomas-chroma-v2
+           go-github-com-altree-bigfloat
+           go-github-com-bmatcuk-doublestar-v4
+           go-github-com-dlclark-regexp2
+           go-github-com-google-go-cmp
+           go-github-com-google-uuid
+           go-github-com-hako-durafmt
+           go-github-com-klauspost-compress
+           go-github-com-kovidgoyal-dbus
+           go-github-com-kovidgoyal-exiffix
+           go-github-com-kovidgoyal-go-parallel
+           go-github-com-kovidgoyal-go-shm
+           go-github-com-kovidgoyal-imaging
+           go-github-com-nwaples-rardecode-v2
+           go-github-com-rwcarlsen-goexif
+           go-github-com-seancfoley-bintree
+           go-github-com-seancfoley-ipaddress-go
+           go-github-com-shirou-gopsutil-v4
+           go-github-com-ulikunitz-xz
+           go-github-com-zeebo-xxh3
+           go-golang-org-x-exp
+           go-golang-org-x-image
+           go-golang-org-x-sys
+           go-golang-org-x-text
+           go-howett-net-plist
            pkg-config
+           python-pillow
            python-sphinx
-           wayland-protocols-1.42))
+           python-sphinx-copybutton
+           python-sphinx-inline-tabs
+           python-sphinxext-opengraph
+           wayland-protocols
+           zsh))
     (inputs
-     (list fontconfig
-           freetype
+     (list cairo
+           fontconfig
            harfbuzz
            lcms
            libcanberra
            libpng
-           python-pygments
+           librsync
+           libx11
+           libxcursor
+           libxext
+           libxi
+           libxinerama
+           libxkbcommon
+           libxrandr
+           mesa
+           ncurses
+           openssl
            python-wrapper
+           simde
+           startup-notification
            wayland
+           xxhash
            zlib))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure)   ;no configure script
-          (replace 'build
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; Don't fail on deprecation warnings from GCC or when not using
-              ;; sizeof in one of the two arguments of calloc
-              (setenv "CFLAGS"
-                      (string-append "-Wno-error=deprecated-declarations "
-                                     "-Wno-error=calloc-transposed-args"))
-              ;; The "kitty" sub-directory must be writable prior to
-              ;; configuration (e.g., un-setting updates).
-              (for-each make-file-writable (find-files "kitty"))
-              (invoke "python3" "setup.py" "linux-package"
-                      ;; Do not phone home.
-                      "--update-check-interval=0"
-                      ;; Wayland backend requires EGL, which isn't
-                      ;; found out-of-the-box for some reason.
-                      (string-append "--egl-library="
-                                     (search-input-file inputs "/lib/libEGL.so.1")))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; Fix "cannot find kitty executable" error when running
-                ;; tests.
-                (setenv "PATH" (string-append "linux-package/bin:"
-                                              (getenv "PATH")))
-                ;; Don't fail on deprecation warnings from Python
-                (substitute* "test.py"
-                  (("'error'") "'ignore'"))
-                ;; Fails: No writable cache directories
-                (substitute* "kitty_tests/fonts.py"
-                  (("    def test_box_drawing")
-                   (string-append
-                    "    @unittest.skip('No writable cache directories')\n"
-                    "    def test_box_drawing")))
-                ;; Fails: Permission denied
-                (substitute* "kitty_tests/parser.py"
-                  (("import time")
-                   "import time\nimport unittest\n")
-                  (("    def test_graphics_command")
-                   (string-append
-                    "    @unittest.skip('Permission denied')\n"
-                    "    def test_graphics_command")))
-                ;; TypeError: expected bytes, str found
-                (substitute* "kitty_tests/tui.py"
-                  (("from . import BaseTest")
-                   "from . import BaseTest\nimport unittest\n")
-                  (("    def test_multiprocessing_spawn")
-                   (string-append
-                    "    @unittest.skip('TypeError: expected bytes, str found')\n"
-                    "    def test_multiprocessing_spawn")))
-                (invoke "python3" "test.py"))))
-          (add-before 'install 'rm-pycache
-            ;; created python cache __pycache__ are non deterministic
-            (lambda _
-              (let ((pycaches (find-files "linux-package/"
-                                          "__pycache__"
-                                          #:directories? #t)))
-                (for-each delete-file-recursively pycaches))))
-          (replace 'install
-            (lambda _
-              (let* ((obin (string-append #$output "/bin"))
-                     (olib (string-append #$output "/lib"))
-                     (oshare (string-append #$output "/share")))
-                (copy-recursively "linux-package/bin" obin)
-                (copy-recursively "linux-package/share" oshare)
-                (copy-recursively "linux-package/lib" olib)))))))
-    (synopsis "Fast, featureful, GPU based terminal emulator")
+    (home-page "https://sw.kovidgoyal.net/kitty/")
+    (synopsis "Fast, feature-rich, GPU-based terminal emulator")
     (description "Kitty is a fast and featureful GPU-based terminal emulator:
 @itemize
 @item Offloads rendering to the GPU for lower system load and buttery smooth
