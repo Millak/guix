@@ -8191,7 +8191,7 @@ fish.  The whole game is accompanied by quiet, comforting music.")
 (define-public crawl
   (package
     (name "crawl")
-    (version "0.34.0")
+    (version "0.34.1")
     (source
      (origin
        (method git-fetch)
@@ -8200,7 +8200,7 @@ fish.  The whole game is accompanied by quiet, comforting music.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16fsvrzcndrplw8zcn6nh8459x8zl5xdnf9r9hzh4ll2a4w9dkcr"))
+        (base32 "09x4n4w3rw8sldwprb03yg1igwh4m09iw00g2iq30466jryys6bv"))
        (patches (search-patches "crawl-upgrade-saves.patch"))))
     (build-system gnu-build-system)
     (inputs
