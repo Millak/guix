@@ -17206,6 +17206,9 @@ multiplication.")
     (build-system r-build-system)
     (arguments
      (list
+      #:skipped-tests
+      ;; This attempts to fetch datasets from the Internet.
+      '("test-analyze.R")
       #:phases
       '(modify-phases %standard-phases
          ;; I really don't like the trend on Bioconductor to repackage
@@ -17221,12 +17224,7 @@ multiplication.")
                (("^RIGRAPH_FLAGS.*")
                 "RIGRAPH_FLAGS=`pkg-config --cflags igraph`\n")
                (("^RIGRAPH_LIBS=.*")
-                "RIGRAPH_LIBS=`pkg-config --libs igraph`\n"))))
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             (with-directory-excursion "tests/testthat/"
-               ;; This attempts to fetch datasets from the Internet.
-               (delete-file "test-analyze.R")))))))
+                "RIGRAPH_LIBS=`pkg-config --libs igraph`\n")))))))
     (inputs (list igraph-for-r-rigraphlib))
     (propagated-inputs (list r-assorthead
                              r-beachmat
