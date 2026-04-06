@@ -30,7 +30,7 @@
 ;;; Copyright © 2018 Eric Brown <brown@fastmail.com>
 ;;; Copyright © 2018, 2021, 2024 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018 Amin Bandali <bandali@gnu.org>
-;;; Copyright © 2019, 2021-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2021-2026 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Steve Sprang <scs@stevesprang.com>
 ;;; Copyright © 2019 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -9470,7 +9470,7 @@ built on top of DUNE, the Distributed and Unified Numerics Environment.")
 (define-public nauty
   (package
     (name "nauty")
-    (version "2.9.1")
+    (version "2.9.3")
     (source
      (origin
        (method url-fetch)
@@ -9478,7 +9478,7 @@ built on top of DUNE, the Distributed and Unified Numerics Environment.")
              "https://pallini.di.uniroma1.it/"
              "nauty" (string-join (string-split version #\.) "_") ".tar.gz"))
        (sha256
-        (base32 "0gl7rpl2viahrqmjrrgv0iq31xz093p5sk1ns9r2qdqas43ak3s8"))))
+        (base32 "0nqvri1jfi95xswrcvn9dkyriy7pkjry6nwqhdc0z2pq0jpfvi4z"))))
     (build-system gnu-build-system)
     (outputs '("out" "lib"))
     (arguments
