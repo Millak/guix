@@ -33,6 +33,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages textutils))
 
@@ -95,7 +96,7 @@
                                                  "/html"))))))
       #:tests? #f))                     ; tests fail without access to USB
     (native-inputs
-     (list doxygen graphviz pkg-config python swig-4.0))
+     (list doxygen graphviz pkg-config python python-setuptools swig))
     (inputs
      (list boost libconfuse))
     (propagated-inputs
