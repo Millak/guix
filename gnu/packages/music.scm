@@ -3200,19 +3200,28 @@ detail of symbols on the page.")
 (define-public python-abjad-ext-nauert
   (package
     (name "python-abjad-ext-nauert")
-    (version "3.19")
+    (version "3.31")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-         (url "https://github.com/Abjad/abjad-ext-nauert")
-         (commit (string-append "v" version))))
+              (url "https://github.com/Abjad/abjad-ext-nauert")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j4pf4h27jm3df0dn2rwkdx6zqcxvr7pqchbaa9rffz7q4hbakmf"))))
+        (base32 "03nav7f8wi5f5lyib6xp1fnd6mrk0j1l2mx0q01ixkkc1v2h77h2"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "source"))))))
     (native-inputs
-     (list lilypond python-pytest python-setuptools python-wheel))
+     (list lilypond
+           python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-abjad))
     (home-page "https://abjad.github.io")
