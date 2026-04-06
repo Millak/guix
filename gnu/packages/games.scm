@@ -11517,7 +11517,7 @@ player adaptability for character progression.")
 (define-public li-ri
   (package
     (name "li-ri")
-    (version "3.1.5")
+    (version "3.1.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11526,7 +11526,7 @@ player adaptability for character progression.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fd5hl9qhgvyix51la8sl34jzk4mcin8sai05gidy2r2grb1dy4s"))))
+                "09r6l0sbxp3q750kpbrx513yrafmg7a2769j4wgx812lsk92n3hg"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #false              ;no tests
