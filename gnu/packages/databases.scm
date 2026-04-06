@@ -1726,7 +1726,7 @@ pictures, sounds, or video.")
 (define-public timescaledb
   (package
     (name "timescaledb")
-    (version "2.16.1")
+    (version "2.26.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1735,7 +1735,7 @@ pictures, sounds, or video.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v17x00a15il4r3rbr0waqjv1nwzy6rcqxgfi2hdk1x235s5dg5h"))
+                "0zfm224jyz874pk4r9qlz5c2mn1xjvairhxh6widlbh3mn62m3j8"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove files carrying the proprietary TIMESCALE license.
@@ -1745,8 +1745,7 @@ pictures, sounds, or video.")
                             '("scripts/c_license_header-timescale.h"
                               "scripts/license_tsl.spec"
                               "scripts/sql_license_tsl.sql"
-                              "test/perl/AccessNode.pm"
-                              "test/perl/DataNode.pm"
+                              "test/t/001_replication_telemetry.pl"
                               "test/perl/TimescaleNode.pm"))))))
     (build-system cmake-build-system)
     (arguments
@@ -1830,7 +1829,7 @@ pictures, sounds, or video.")
                  (lambda* (#:rest args)
                    (apply (assoc-ref gnu:%standard-phases 'check)
                           #:test-target "regresschecklocal" args))))))
-    (inputs (list openssl postgresql))
+    (inputs (list openssl postgresql-17))
     (home-page "https://www.timescale.com/")
     (synopsis "Time-series extension for PostgreSQL")
     (description
