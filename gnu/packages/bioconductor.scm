@@ -15078,14 +15078,11 @@ dependencies between GO terms can be implemented and applied.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These tests attempt to download files.
-             (for-each delete-file
-                       '("inst/unitTests/test_makeTxDbFromUCSC.R"
-                         "inst/unitTests/test_makeTxDbFromBiomart.R")))))))
+      #:test-directory "inst/unitTests"
+      #:skipped-tests
+      ;; These tests attempt to download files.
+      '("test_makeTxDbFromUCSC.R"
+        "test_makeTxDbFromBiomart.R")))
     (propagated-inputs (list r-annotationdbi
                              r-biobase
                              r-biocgenerics
