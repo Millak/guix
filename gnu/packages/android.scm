@@ -765,7 +765,7 @@ file system.")
        (sha256
         (base32 "0r3xwk8xsfxvmxyw3d57sy2i9by24g0l1jl40735jiac9mypcg7n"))))
     (build-system pyproject-build-system)
-    (inputs (list python-requests python-argcomplete python-urllib3
+    (propagated-inputs (list python-requests python-argcomplete python-urllib3
                   python-looseversion gnupg))
     (native-inputs (list python-setuptools python-wheel python-requests-cache
                          python-defusedxml))
@@ -773,8 +773,7 @@ file system.")
      (list $SSL_CERT_FILE))
     (arguments
      (list
-      #:test-flags
-      #~(list "-k" "test_*")
+      #:test-backend #~'unittest
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-tests
@@ -793,11 +792,7 @@ file system.")
             (lambda _
               (substitute* "sdkmanager.py"
                 (("gpgv")
-                 (string-append #$(this-package-input "gnupg") "/bin/gpgv")))))
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (apply invoke "python" "-m" "unittest" test-flags)))))))
+                 (string-append #$(this-package-input "gnupg") "/bin/gpgv"))))))))
     (home-page "https://gitlab.com/fdroid/sdkmanager")
     (synopsis "Replacement for Android sdkmanager written in Python")
     (description
