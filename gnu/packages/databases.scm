@@ -6419,7 +6419,7 @@ mechanism of @code{dogpile}.")
 (define-public datasette
   (package
     (name "datasette")
-    (version "1.0a19")
+    (version "1.0a26")
     (source
      (origin
        (method git-fetch)
@@ -6428,23 +6428,20 @@ mechanism of @code{dogpile}.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wb73iksrc5vg2lnq3q4vr7yhlzxwr711jfmjdndd0s77996zsfh"))))
+        (base32 "1ra0yfrz9w3jx7ix3dmcsg0g8hjxkz37586g7ijmqshxpzczxfm7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1720 passed, 9 skipped, 8 xfailed, 13 xpassed, 3 warnings, 120
+      ;; subtests passed
       #:test-flags
-      ;; See https://github.com/simonw/datasette/issues/2048
-      #~(list "-k" (string-append
-                    ;; These contain two unexpected extra items.
-                    "not test_searchable"
-                    " and not test_searchmode")
-              "--ignore=tests/test_black.py"
-              "-n" (number->string (parallel-job-count)))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              "--ignore=tests/test_black.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
             (lambda _
-              (substitute* "setup.py"
+              (substitute* "pyproject.toml"
                 (("\"pip\",") "")))))))
     (propagated-inputs
      (list python-aiofiles
@@ -6459,7 +6456,6 @@ mechanism of @code{dogpile}.")
            python-janus
            python-jinja2
            python-mergedeep
-           python-pint
            python-pluggy
            python-pyyaml
            python-sqlite-utils
@@ -6468,8 +6464,9 @@ mechanism of @code{dogpile}.")
      (list nss-certs-for-test
            python-beautifulsoup4
            python-cogapp
+           python-multipart-form-data-conformance
            python-pytest
-           python-pytest-asyncio-0.26
+           python-pytest-asyncio
            python-pytest-timeout
            python-pytest-xdist
            python-setuptools
