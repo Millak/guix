@@ -987,6 +987,34 @@ Gemini clients and servers.")
 @url{https://1password.com/, 1Password} API.")
     (license license:expat)))
 
+(define-public go-github-com-42wim-go-gitter
+  (let ((commit "16aadfbb65c6641501ea8eebb6bcf23b9011912b")
+        (revision "0"))
+    (package
+      (name "go-github-com-42wim-go-gitter")
+      (version "0.0.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/42wim/go-gitter")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "07l07msyackkzvxhc9cljzgh81v5g48crravz29ph516smqj0x6c"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/42wim/go-gitter"))
+      (propagated-inputs
+       (list go-github-com-mreiferson-go-httpclient
+             go-github-com-mrexodia-wray))
+      (home-page "https://github.com/42wim/go-gitter")
+      (synopsis "Gitter API in Go")
+      (description
+       "This package provides a Gitter API for Golang.")
+      (license license:asl2.0))))
+
 (define-public go-github-com-42wim-httpsig
   (package
     (name "go-github-com-42wim-httpsig")
