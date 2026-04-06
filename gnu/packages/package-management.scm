@@ -799,47 +799,45 @@ high-performance computing} clusters.")
     (license license:gpl3+)))
 
 (define-public toys
-  (let ((commit "8080a76df47660693915296c7c2d1b3a4e057b71")
-        (revision "0"))
-    (package
-      (name "toys")
-      (version (git-version "0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://git.sr.ht/~whereiseveryone/toys")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "09iffdvjpixik3whasfxk8b9wk4rcbv9604q454pw45h8gx3qml0"))))
-      (build-system guile-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'register-guix-extension
-              (lambda* (#:key outputs #:allow-other-keys)
-                (let ((ext-path (string-append #$output "/share/guix/extensions")))
-                  (mkdir-p ext-path)
-                  (copy-recursively "guix/extensions" ext-path))))
-            (add-after 'register-guix-extension 'clean-up
-              (lambda* _
-                (delete-file "channels.scm")
-                (delete-file-recursively "guix"))))))
-      (native-inputs (list guile-3.0-latest))
-      (inputs
-       (list guile-json-4
-             guile-readline
-             guile-sqlite3
-             guix))
-      (native-search-paths (list $GUIX_EXTENSIONS_PATH))
-      (home-page "https://toys.whereis.social/")
-      (synopsis "Search engine for Guix channels")
-      (description "Toys is a search engine for collecting and displaying Guix
+  (package
+    (name "toys")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.sr.ht/~whereiseveryone/toys")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "169jxh5knp5f2y9wbnc454jjdvvyqb5r0ydv3qkpm332vr0cl6p9"))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'register-guix-extension
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((ext-path (string-append #$output "/share/guix/extensions")))
+                (mkdir-p ext-path)
+                (copy-recursively "guix/extensions" ext-path))))
+          (add-after 'register-guix-extension 'clean-up
+            (lambda* _
+              (delete-file "channels.scm")
+              (delete-file-recursively "guix"))))))
+    (native-inputs (list guile-3.0-latest))
+    (inputs
+     (list guile-json-4
+           guile-readline
+           guile-sqlite3
+           guix))
+    (native-search-paths (list $GUIX_EXTENSIONS_PATH))
+    (home-page "https://toys.whereis.social/")
+    (synopsis "Search engine for Guix channels")
+    (description "Toys is a search engine for collecting and displaying Guix
 channel data found across the internet.  Toys provides a command-line
 interface for interacting with the application.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public guix-xsearch
   (package
