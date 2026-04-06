@@ -1766,6 +1766,31 @@ library of the same name.  It eases monkey patching, for example to stub out
 side effects when unit testing.")
     (license license:expat)))
 
+(define-public python-multipart-form-data-conformance
+  (package
+    (name "python-multipart-form-data-conformance")
+    (version "0.1a0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/simonw/multipart-form-data-conformance")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lxaz00s5q5qdvqcyc233qd622f4fw6qsw2pny55j3v6ssn8m2v6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;XXX: tests need some setupt
+    (native-inputs
+     (list python-hatchling))
+    (home-page "https://github.com/simonw/multipart-form-data-conformance")
+    (synopsis "Conformance suite for HTTP multipart form data")
+    (description
+     "This package provides a language-independent test suite for validating
+HTTP @code{multipart/form-data} parsers and generators.")
+    (license license:expat)))
+
 (define-public python-mypy
   (package
     (name "python-mypy")
