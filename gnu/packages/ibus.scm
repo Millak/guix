@@ -1133,6 +1133,7 @@ IBus-Table on IBus framework:
                                (string-append out "/libexec/ibus-setup-stt")))))))))
     (inputs
      (list bash-minimal
+           gst-plugins-good ; for pulsesrc
            gst-vosk
            gstreamer
            gtk
