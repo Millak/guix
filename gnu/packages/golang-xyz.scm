@@ -12865,6 +12865,30 @@ unmarshaling and slicing.  In other words, parth provides simple and flexible
 access to (URL) path parameters.")
     (license license:expat)))
 
+(define-public go-github-com-hako-durafmt
+  (package
+    (name "go-github-com-hako-durafmt")
+    (version "0.0.0-20210608123155-5c1018a8b0d2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hako/durafmt")
+             (commit "5c1018a4e16b9db6718f25e524de025b1fc67303")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0clj20nr3j83brvdd0yxbnpk6zyhjy9a58gjdxi7nqq1vjchp0pw"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/hako/durafmt"))
+    (home-page "https://github.com/hako/durafmt")
+    (synopsis "Time duration formatting for Go")
+    (description
+     "This package provides human-readable time duration formatting for Go.
+It converts raw time durations into a more readable format, such as
+@code{2 weeks 3 days 4 hours 5 minutes 6 seconds}.")
+    (license license:expat)))
+
 (define-public go-github-com-hanwen-go-fuse
   (package
     (name "go-github-com-hanwen-go-fuse")
