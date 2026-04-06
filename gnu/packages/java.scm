@@ -1499,7 +1499,7 @@ new Date();"))))
                               (for-each reset-file-timestamp
                                         (find-files dir #:directories? #t)))
                             (with-directory-excursion dir
-                              (let ((files (find-files "." #:directories? #t)))
+                              (let ((files (find-files ".")))
                                 (apply invoke "zip" "-0" "-X" archive files)))))))
                 (for-each repack-archive
                           (find-files #$output:doc "\\.zip$"))
