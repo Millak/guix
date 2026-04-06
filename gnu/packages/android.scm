@@ -1177,14 +1177,16 @@ for communicating with Xiaomi smart appliances over miIO and MIoT protocols.")
 (define-public fdroidserver
   (package
     (name "fdroidserver")
-    (version "2.4.2")
+    (version "2.4.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fdroidserver" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/fdroid/fdroidserver")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "06xybginrwi5c7bw000wz5s5hzi0aqrxskzwh8qc6wv463w2djax"))))
+        (base32 "1745fqxr2qfrls4wr6x9w1262b9pxmw9yvzd9b71ya2qmj74q17n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1195,22 +1197,17 @@ for communicating with Xiaomi smart appliances over miIO and MIoT protocols.")
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list python-androguard
+     (list python-platformdirs
+           python-androguard
            python-apache-libcloud
-           python-argcomplete
            python-asn1crypto
            python-clint
            python-defusedxml
-           python-docker
            python-gitpython
-           python-mwclient
            python-oscrypto
            python-paramiko
            python-pillow
-           python-platformdirs
            python-puremagic
-           python-pyasn1
-           python-pyasn1-modules
            python-pyyaml
            python-qrcode
            python-requests
