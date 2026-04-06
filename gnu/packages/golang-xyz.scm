@@ -115,6 +115,7 @@
   #:use-module (gnu packages golang-maths)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages graph)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
@@ -16696,23 +16697,31 @@ EXIF metadata. It's an alternative fork of
 (define-public go-github-com-kovidgoyal-imaging
   (package
     (name "go-github-com-kovidgoyal-imaging")
-    (version "1.7.1")
+    (version "1.8.21")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/kovidgoyal/imaging")
-             (commit (string-append "v" version))))
+              (url "https://github.com/kovidgoyal/imaging")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17ivgnqlwwxbjs2s3w5phxf1n27z8r7an70ih904wrx6gmjkyd94"))))
+        (base32 "0s0z0zljzqk6kq5rlig6yhlqx3i4ir1l4qdpssxvssz9vbr5vppn"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/kovidgoyal/imaging"))
+     (list
+      #:import-path "github.com/kovidgoyal/imaging"
+      #:embed-files #~(list ".*\\.icc")))
     (native-inputs
-     (list go-github-com-google-go-cmp))
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-golang-org-x-image))
+     (list go-github-com-kovidgoyal-go-parallel
+           go-github-com-kovidgoyal-go-shm
+           go-github-com-rwcarlsen-goexif
+           go-golang-org-x-image
+           go-golang-org-x-sys
+           imagemagick/stable))
     (home-page "https://github.com/kovidgoyal/imaging")
     (synopsis "Simple image processing package for Golang")
     (description
