@@ -23055,16 +23055,21 @@ completes.")
 (define-public python-asyncinject
   (package
     (name "python-asyncinject")
-    (version "0.6")
+    (version "0.6.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "asyncinject" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/simonw/asyncinject")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0x57idiy19lzyn32klgm06r223z8gr2aqqk91gysbshq7jg8g3pf"))))
+        (base32 "127ahb32x2qqjk17a667adrvrl63ima8khifq6dfm0q3vlfslxnn"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-pytest-asyncio
-                         python-setuptools python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools))
     (home-page "https://github.com/simonw/asyncinject")
     (synopsis
      "Run async workflows using pytest-fixtures-style dependency injection")
