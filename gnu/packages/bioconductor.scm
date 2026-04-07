@@ -11321,14 +11321,6 @@ mixes commonly used in MS experiments.")
         (base32 "0bkgf6kyh7j767cynxcxqm9xxrqxfq0zzps82hj168n27agx5m30"))))
     (properties `((upstream-name . "metagenomeSeq")))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; Two tests fail with accuracy problems.
-             (delete-file "tests/testthat/test-fitZig.R"))))))
     (propagated-inputs
      (list r-biobase
            r-foreach
