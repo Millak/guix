@@ -33939,13 +33939,13 @@ giving it a description in the specific format.")
 (define-public r-spamm
   (package
     (name "r-spamm")
-    (version "4.6.1")
+    (version "4.6.65")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spaMM" version))
        (sha256
-        (base32 "1ng4l3izsj4qzl61zyhmqqkp008d6r9xvl4i8w65cgn1riyh3x5b"))))
+        (base32 "1b3xfn8h6vzck3h8jbywv04vl5s9pr9linqkfwpgjdvd7i1a77l5"))))
     (properties
      '((upstream-name . "spaMM")
        (updater-extra-inputs . ("gsl"))
