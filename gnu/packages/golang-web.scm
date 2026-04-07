@@ -1992,6 +1992,7 @@ functions.")
             ;; - github.com/aws/aws-sdk-go-v2/feature/ec2/imds
             ;; - github.com/aws/aws-sdk-go-v2/feature/s3/manager
             ;; - github.com/aws/aws-sdk-go-v2/internal/configsources
+            ;; - github.com/aws/aws-sdk-go-v2/internal/endpoints/v2
             ;; - github.com/aws/aws-sdk-go-v2/service/iam
             ;; - github.com/aws/aws-sdk-go-v2/service/s3
             ;; - github.com/aws/aws-sdk-go-v2/service/sqs
@@ -2004,6 +2005,7 @@ functions.")
                             "feature/ec2/imds"
                             "feature/s3/manager"
                             "internal/configsources"
+                            "internal/endpoints/v2"
                             "service/iam"
                             "service/s3"
                             "service/sqs"
@@ -2118,6 +2120,7 @@ utilities.")
      (list go-github-com-aws-aws-sdk-go-v2
            go-github-com-aws-aws-sdk-go-v2-feature-ec2-imds
            go-github-com-aws-aws-sdk-go-v2-internal-configsources
+           go-github-com-aws-aws-sdk-go-v2-internal-endpoints-v2
            go-github-com-aws-aws-sdk-go-v2-service-sso
            go-github-com-aws-aws-sdk-go-v2-service-ssooidc
            go-github-com-aws-aws-sdk-go-v2-service-sts
@@ -2251,6 +2254,50 @@ S3 concurrently.  Helpful for when working with large objects.")
 configuration sources in AWS.")
     (license license:asl2.0)))
 
+(define-public go-github-com-aws-aws-sdk-go-v2-internal-endpoints-v2
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-internal-endpoints-v2")
+    (version "2.7.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aws/aws-sdk-go-v2")
+              (commit
+               (go-version->git-ref version
+                                    #:subdir "internal/endpoints"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "068yzhxxxdymr1avb1l1pm9m0p7mcd0zlw5an66mcqldgl7hfivg"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "internal/endpoints" "v2")
+            (delete-all-but "internal" "endpoints")
+            (delete-all-but "." "internal")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/internal/endpoints/v2"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS SDK for Go v2 - internal/endpoints/v2 module")
+    (description
+     "Package internal/endpoints/v2 provides utilities for managing AWS as
+structured records.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-aws-aws-sdk-go-v2-service-iam
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-service-iam")
@@ -2372,8 +2419,8 @@ parameter types for AWS Secrets Manager.")
       #:unpack-path "github.com/aws/aws-sdk-go-v2"))
     (propagated-inputs
      (list go-github-com-aws-aws-sdk-go-v2-internal-configsources
-           go-github-com-aws-smithy-go
-           go-github-com-aws-aws-sdk-go-v2))
+           go-github-com-aws-aws-sdk-go-v2-internal-endpoints-v2
+           go-github-com-aws-smithy-go))
     (home-page "https://github.com/aws/aws-sdk-go-v2")
     (synopsis "AWS Golang SDK for Simple Queue Service")
     (description
