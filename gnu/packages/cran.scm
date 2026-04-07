@@ -9378,13 +9378,13 @@ for reading and writing some dBase files.")
 (define-public r-fingerprint
   (package
     (name "r-fingerprint")
-    (version "3.5.7")
+    (version "3.5.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fingerprint" version))
        (sha256
-        (base32 "04jcwkydjrs31pia6kq8z2n9s54im950q08hs2ay15xjxxkmb8ic"))))
+        (base32 "0549yg619k51askn4ds576q0s14mwwpz66rmfvdfh1hq3d4xy3sy"))))
     (properties `((upstream-name . "fingerprint")))
     (build-system r-build-system)
     (native-inputs (list r-runit))
