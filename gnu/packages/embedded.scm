@@ -65,6 +65,7 @@
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libftdi)
   #:use-module (gnu packages libusb)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
@@ -2067,26 +2068,27 @@ operations.")
     (license license:asl2.0)))
 
 (define-public ts4900-utils
-  ;; There are no proper release nor tag; use the latest commit.
-  (let ((revision "0")
-        (commit "e10a12f8050d1d1229e711c7cfab8a0d5d93ee58"))
-    (package
-      (name "ts4900-utils")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/embeddedTS/ts4900-utils")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1vr8i425qijbwgbc10av3wr35p3x11wy6y442w0ja0yny7si8wp8"))))
-      (build-system gnu-build-system)
-      (native-inputs (list autoconf automake))
-      (home-page "https://github.com/embeddedTS/ts4900-utils")
-      (synopsis "Utilities for the TS-4900 board family")
-      (description "This package contains utilities useful for boards of the
+  (package
+    (name "ts4900-utils")
+    (version "3.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/embeddedTS/ts4900-utils")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "08x40ii56v4cmnz9hk6rvjrc500k1bij5ns52360vczznc8lx8bx"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf
+           automake
+           libgpiod
+           pkg-config))
+    (home-page "https://github.com/embeddedTS/ts4900-utils")
+    (synopsis "Utilities for the TS-4900 board family")
+    (description "This package contains utilities useful for boards of the
 TS-4900 family.  The included commands are:
 @itemize @code
 @item adc8390
@@ -2099,7 +2101,7 @@ TS-4900 family.  The included commands are:
 @item tsmicroupdate
 @item tssilomon
 @end itemize")
-      (license license:bsd-2))))
+    (license license:bsd-2)))
 
 (define-public cc-tool
   (package
