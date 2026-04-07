@@ -1991,6 +1991,7 @@ functions.")
             ;; - github.com/aws/aws-sdk-go-v2/credentials
             ;; - github.com/aws/aws-sdk-go-v2/feature/ec2/imds
             ;; - github.com/aws/aws-sdk-go-v2/feature/s3/manager
+            ;; - github.com/aws/aws-sdk-go-v2/internal/configsources
             ;; - github.com/aws/aws-sdk-go-v2/service/iam
             ;; - github.com/aws/aws-sdk-go-v2/service/s3
             ;; - github.com/aws/aws-sdk-go-v2/service/sqs
@@ -2002,6 +2003,7 @@ functions.")
                             "credentials"
                             "feature/ec2/imds"
                             "feature/s3/manager"
+                            "internal/configsources"
                             "service/iam"
                             "service/s3"
                             "service/sqs"
@@ -2115,6 +2117,7 @@ utilities.")
     (propagated-inputs
      (list go-github-com-aws-aws-sdk-go-v2
            go-github-com-aws-aws-sdk-go-v2-feature-ec2-imds
+           go-github-com-aws-aws-sdk-go-v2-internal-configsources
            go-github-com-aws-aws-sdk-go-v2-service-sso
            go-github-com-aws-aws-sdk-go-v2-service-ssooidc
            go-github-com-aws-aws-sdk-go-v2-service-sts
@@ -2199,6 +2202,53 @@ Instance Metadata Service.")
     (description
      "Package manager provides utilities to upload and download objects from
 S3 concurrently.  Helpful for when working with large objects.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-aws-aws-sdk-go-v2-internal-configsources
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-internal-configsources")
+    (version "1.4.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aws/aws-sdk-go-v2")
+              (commit
+               (go-version->git-ref version
+                                    #:subdir "internal/configsources"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "068yzhxxxdymr1avb1l1pm9m0p7mcd0zlw5an66mcqldgl7hfivg"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "internal" "configsources")
+            (delete-all-but "." "internal")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Tests depend on go-github-com-aws-aws-sdk-go-v2-config,
+      ;; introducing a cyclical dependency through
+      ;; go-github-com-aws-aws-sdk-go-v2-credentials
+      #:tests? #f
+      #:import-path "github.com/aws/aws-sdk-go-v2/internal/configsources"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS SDK for Go v2 - internal/configsources module")
+    (description
+     "Package internal/configsources provides utilities for looking up
+configuration sources in AWS.")
     (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-service-iam
@@ -2321,7 +2371,8 @@ parameter types for AWS Secrets Manager.")
       #:import-path "github.com/aws/aws-sdk-go-v2/service/sqs"
       #:unpack-path "github.com/aws/aws-sdk-go-v2"))
     (propagated-inputs
-     (list go-github-com-aws-smithy-go
+     (list go-github-com-aws-aws-sdk-go-v2-internal-configsources
+           go-github-com-aws-smithy-go
            go-github-com-aws-aws-sdk-go-v2))
     (home-page "https://github.com/aws/aws-sdk-go-v2")
     (synopsis "AWS Golang SDK for Simple Queue Service")
