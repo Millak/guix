@@ -7196,13 +7196,13 @@ using just two functions: melt and dcast (or acast).")
 (define-public r-rlang
   (package
     (name "r-rlang")
-    (version "1.1.7")
+    (version "1.2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rlang" version))
               (sha256
                (base32
-                "0wz3kd0d3iy0mkywmxipxx6qfsnk2w3c6cca6r553lxcxbkr2g0j"))))
+                "0ms3hyiqab9m4jckxfp4pvak0kbx9bdjqjka3gc3gfn1yva8m04g"))))
     (properties
      ;; We can't have r-testthat among the inputs here to avoid a dependency
      ;; cycle.
