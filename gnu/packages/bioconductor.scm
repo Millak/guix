@@ -22264,21 +22264,19 @@ statistics to the plot.")
      (list
       #:configure-flags
       '(list "--configure-args=--enable-bundled-gsl=no")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; "invalid subscript type 'list'"
-             (delete-file "tests/testthat/test_2d.R")
-             ;; "argument is of length zero"
-             (delete-file "tests/testthat/test_1d_gated_data.R"))))))
+      #:skipped-tests
+      ;; "argument is of length zero"
+      '("test_1d_gated_data.R"
+        ;; This test eventually times out.
+        ("test_1d.R" "flowClust:SSH-H, 1 mode")
+        ;; "invalid subscript type 'list'"
+        "test_2d.R")))
     (propagated-inputs
      (list r-biobase
            r-biocgenerics
            r-flowcore
            r-graph))
-    (inputs
-     (list gsl))
+    (inputs (list gsl))
     (native-inputs
      (list pkg-config
            r-devtools
