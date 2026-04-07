@@ -21312,13 +21312,13 @@ functions for:
 (define-public r-statsexpressions
   (package
     (name "r-statsexpressions")
-    (version "1.7.3")
+    (version "1.7.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "statsExpressions" version))
               (sha256
                (base32
-                "09fnpnwh2gj7vjinkcw4h50x4j3icprzv5p34blw1fn8j9rwxmb5"))))
+                "0vrrg9vam9h1mcq8bbmxgwzzm3gm2m2q001p50l2zhfb480nz8b0"))))
     (properties `((upstream-name . "statsExpressions")))
     (build-system r-build-system)
     (propagated-inputs (list r-afex
