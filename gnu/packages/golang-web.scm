@@ -17828,6 +17828,37 @@ browsing activities based on HTTP Upgrade (HTTPT).")
 interacting with the etcd v3 API.")
     (license license:asl2.0)))
 
+(define-public go-go-etcd-io-raft-v3
+  (package
+    (name "go-go-etcd-io-raft-v3")
+    (version "3.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/etcd-io/raft")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18d9l8739irzgl0860qrrmdn3aqhc92lhc9brv8lkq7n59gxqd6i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.etcd.io/raft"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-cockroachdb-datadriven
+           go-github-com-gogo-protobuf
+           go-github-com-golang-protobuf))
+    (home-page "https://raft.github.io")
+    (synopsis "Raft library for Golang")
+    (description
+     "This package provides a Golang implementation of the Raft Protocol.
+Raft is a protocol with which a cluster of nodes can maintain a replicated
+state machine.  See @url{https://raft.github.io/raft.pdf} for more info.")
+    (license license:asl2.0)))
+
 (define-public go-go-mau-fi-whatsmeow
   (package
     (name "go-go-mau-fi-whatsmeow")
