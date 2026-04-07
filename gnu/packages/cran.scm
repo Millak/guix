@@ -20152,13 +20152,13 @@ contexts.")
 (define-public r-cvxr
   (package
     (name "r-cvxr")
-    (version "1.8.1")
+    (version "1.8.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "CVXR" version))
               (sha256
                (base32
-                "1ws4g64qbw0grk253pvxy5pnlp7336y94md5cvslcwy8ww1yql64"))))
+                "172ld1cakd745jl0zf55xdmr9gslb24xbb8z2izwaphz1z0wjr67"))))
     (properties `((upstream-name . "CVXR")))
     (build-system r-build-system)
     (propagated-inputs
