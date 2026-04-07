@@ -515,6 +515,11 @@ database.")
                 (substitute* "src/sage/interfaces/gp.py"
                   (("command=f\"gp")
                    (string-append "command=f\"" pari-gp "/bin/gp")))
+                ;; Remove when updating to sage-10.8, python-3.12.
+                ;; See https://github.com/sagemath/sage/pull/41141
+                (substitute* "src/sage/repl/display/formatter.py"
+                  (("from IPython.utils.py3compat import unicode_to_str") "")
+                  (("unicode_to_str\\(self.newline\\)") "self.newline"))
                 (substitute* "src/bin/sage"
                   (("exec python3")
                    (string-append "exec " python "/bin/python3"))
