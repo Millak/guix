@@ -380,16 +380,18 @@ devices.")
             ;; Submodules with their own go.mod files and packaged separately:
             ;;
             ;; - cloud.google.com/go/auth
-            ;; - cloud.google.com/go/iam
             ;; - cloud.google.com/go/auth/oauth2adapt
             ;; - cloud.google.com/go/compute/metadata
+            ;; - cloud.google.com/go/iam
+            ;; - cloud.google.com/go/kms
             ;; - cloud.google.com/go/longrunning
             ;; - cloud.google.com/go/monitoring
             ;; - cloud.google.com/go/storage
             (for-each delete-file-recursively
                       (list "auth"
-                            "iam"
                             "compute/metadata"
+                            "iam"
+                            "kms"
                             "longrunning"
                             "monitoring"
                             "storage"))))))
@@ -593,6 +595,53 @@ cloud.google.com/go/auth and golang.org/x/oauth2.")
     (description
      "This package provides access to Google Compute Engine (GCE) metadata and
 API service accounts for Go.")
+    (license license:asl2.0)))
+
+(define-public go-cloud-google-com-go-kms
+  (package
+    (name "go-cloud-google-com-go-kms")
+    (version "1.26.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/google-cloud-go")
+              (commit (go-version->git-ref version
+                                           #:subdir "kms"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l3dc1i1qqj8mfvl7xcm8rgvsi49xaxlzlrx3p4vjhc23skx1688"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "." "kms")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "cloud.google.com/go/kms"
+      #:unpack-path "cloud.google.com/go"))
+    (propagated-inputs
+     (list go-cloud-google-com-go-iam
+           go-cloud-google-com-go-longrunning
+           go-github-com-googleapis-gax-go-v2
+           go-google-golang-org-api
+           go-google-golang-org-genproto
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://cloud.google.com/go")
+    (synopsis "Google Cloud Key Management Service Goland API")
+    (description
+     "This package provides a Go Client Library for Google Cloud Key Management
+Service (KMS) API.")
     (license license:asl2.0)))
 
 (define-public go-cloud-google-com-go-iam
