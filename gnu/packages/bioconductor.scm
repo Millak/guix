@@ -14850,14 +14850,10 @@ involving two separate genomic loci encoded as GRanges objects.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-test
-           (lambda _
-             ;; This test requires r-txdb-hsapiens-ucsc-hg19-knowngene, but we
-             ;; can't add it due to a dependency cycle.
-             (delete-file
-              "inst/unitTests/test_makeSummarizedExperimentFromExpressionSet.R"))))))
+      #:test-directory "inst/unitTests"
+      ;; This test requires r-txdb-hsapiens-ucsc-hg19-knowngene, but we can't
+      ;; add it due to a dependency cycle.
+      #:skipped-tests '("test_makeSummarizedExperimentFromExpressionSet.R")))
     (propagated-inputs
      (list r-biobase
            r-biocgenerics
