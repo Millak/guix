@@ -48422,9 +48422,10 @@ A string denoting the name service (@pxref{Services in the NSS
 configuration,,, libc, The GNU C Library Reference Manual}).
 
 Note that name services listed here must be visible to nscd.  This is
-achieved by passing the @code{#:name-services} argument to
-@code{nscd-service} the list of packages providing the needed name
-services (@pxref{Base Services, @code{nscd-service}}).
+achieved by providing the list of packages implementing the needed
+services via the @code{name-services} field of the
+@code{nscd-configuration} record to be used with the @code{nscd-service-type}
+service (@pxref{Base Services, @code{nscd-configuration}}).
 
 @item reaction
 An action specified using the @code{lookup-specification} macro
