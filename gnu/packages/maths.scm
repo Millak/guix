@@ -458,6 +458,7 @@ programming languages.")
              (url "https://github.com/cvc5/cvc5/")
              (commit (string-append "cvc5-" version))))
        (file-name (git-file-name name version))
+       (patches (search-patches "cvc5-reproducible-build.patch"))
        (sha256
         (base32 "0ynz7di4dyyiiydgmf0z9dc2jl7nm44xi0amch29rcgznwr4wy5m"))))
     (build-system cmake-build-system)
