@@ -7216,7 +7216,7 @@ CWL descriptions.")
     (inputs
      (list bash-minimal
            node
-           guile-3.0
+           (lookup-package-input guix "guile")
            guile-filesystem
            guile-gcrypt
            guile-json-4
