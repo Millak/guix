@@ -25747,13 +25747,11 @@ packages.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-test
-           (lambda _
-             ;; This test would require r-beachmat-hdf5, but that package
-             ;; depends on r-beachmat.
-             (delete-file "tests/testthat/test-initializeCpp-other.R"))))))
+      #:skipped-tests
+      '(("test-initializeCpp-other.R"
+         ;; This test requires r-beachmat-hdf5, but that package depends on
+         ;; r-beachmat.
+         "initialization works correctly with the HDF5Arrays"))))
     (propagated-inputs
      (list r-assorthead
            r-biocgenerics
