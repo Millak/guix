@@ -3039,16 +3039,16 @@ Jellyfin.  It has support for various media files without transcoding.")
 (define-public gallery-dl
   (package
     (name "gallery-dl")
-    (version "1.30.10")
+    (version "1.31.10")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/mikf/gallery-dl")
+              (url "https://codeberg.org/mikf/gallery-dl")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rgzgmw11b0ay1cf42cshn35gvll9iypw7phi389r5ahf56am6h4"))))
+        (base32 "1yv7nvljrpfd8w1jnsxmn1h1jd294kc89ck68va0h7j1n26pv6wy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3057,7 +3057,7 @@ Jellyfin.  It has support for various media files without transcoding.")
     (native-inputs
      (list python-pytest python-setuptools python-wheel nss-certs-for-test))
     (inputs (list python-requests ffmpeg))
-    (home-page "https://github.com/mikf/gallery-dl")
+    (home-page "https://codeberg.org/mikf/gallery-dl")
     (synopsis "Command-line program to download images from several sites")
     (description
      "Gallery-dl is a command-line program that downloads image galleries and
