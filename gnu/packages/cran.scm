@@ -9826,14 +9826,15 @@ well as additional utilities such as panel and axis annotation functions.")
 (define-public r-lazyeval
   (package
     (name "r-lazyeval")
-    (version "0.2.2")
+    (version "0.2.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "lazyeval" version))
               (sha256
                (base32
-                "1m10i059csrcqkcn59a8wspn784alxsq3symzhn24mhhl894346n"))))
+                "1jxdhsg64hj2xpnnwwxj52s7g8jy6hsbiyrsmfq7nnhrgfcv2pf6"))))
     (build-system r-build-system)
+    (propagated-inputs (list r-rlang))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/hadley/lazyeval")
     (synopsis "Lazy (non-standard) evaluation in R")
