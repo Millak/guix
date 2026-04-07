@@ -17886,15 +17886,14 @@ multiplication and calculation of row/column sums or means.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; Two tests fail with: Objects equal but not identical
-             (for-each delete-file
-                       '("tests/testthat/test-correct-exps.R"
-                         "tests/testthat/test-cluster-mnn.R"
-                         "tests/testthat/test-reduced-mnn.R")))))))
+      #:skipped-tests
+      ;; Objects equal but not identical
+      '(("test-cluster-mnn.R"
+         "clusterMNN behaves like fastMNN on pseudo-bulk samples")
+        ("test-correct-exps.R"
+         "correctExperiments works properly")
+        ("test-reduced-mnn.R"
+         "reducedMNN works correctly with restriction"))))
     (propagated-inputs
      (list r-beachmat
            r-biocgenerics
