@@ -16974,16 +16974,16 @@ provided.")
 (define-public r-geosphere
   (package
     (name "r-geosphere")
-    (version "1.6-5")
+    (version "1.6-8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "geosphere" version))
        (sha256
         (base32
-         "0vncljdgjhhyx1kywz2d946bkrmpawcxx8nfs1fv9875mjx9hd9p"))))
+         "0h3ikklkgzx0ir1dxvxwarg1ja1zkg36przxbq7nvgjj7kmimnqy"))))
     (build-system r-build-system)
-    (propagated-inputs (list r-rcpp r-sp))
+    (propagated-inputs (list r-rcpp))
     (home-page "https://cran.r-project.org/web/packages/geosphere")
     (synopsis "Spherical trigonometry")
     (description "This package computes spherical trigonometry for geographic
