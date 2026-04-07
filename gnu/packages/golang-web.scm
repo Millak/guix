@@ -9025,6 +9025,40 @@ API.")
 connections.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-go-secure-stdlib-awsutil
+  (package
+    (name "go-github-com-hashicorp-go-secure-stdlib-awsutil")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hashicorp/go-secure-stdlib")
+              (commit (go-version->git-ref version #:subdir "awsutil"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04hpyprwdcz150avjlkg62hdqf6rq0l9a55b4892sr5jv81zxq3a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-secure-stdlib/awsutil"
+      #:unpack-path "github.com/hashicorp/go-secure-stdlib"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go
+           go-github-com-hashicorp-errwrap
+           go-github-com-hashicorp-go-cleanhttp
+           go-github-com-hashicorp-go-hclog
+           go-github-com-hashicorp-go-multierror
+           go-github-com-pkg-errors))
+    (home-page "https://github.com/hashicorp/go-secure-stdlib")
+    (synopsis "Stdlib for HashiCorp Secure products")
+    (description "This package provides the
+@url{github.com/hashicorp/go-secure-stdlib/awsutil, awsutil} Golang package.
+It is part of HashiCorp's Secure division products stdlib.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hashicorp-go-secure-stdlib-parseutil
   (package
     (name "go-github-com-hashicorp-go-secure-stdlib-parseutil")
