@@ -1492,13 +1492,13 @@ encoder/decoder, round-off-error-free sum and cumsum, etc.")
 (define-public r-cftime
   (package
     (name "r-cftime")
-    (version "1.7.2")
+    (version "1.7.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "CFtime" version))
        (sha256
-        (base32 "0r5jf2zwr8z62q38p4jhc0n42bbbvh59kjiawi006847n9g0wk5c"))))
+        (base32 "1aaln5i6xxkx6cqy1m7h1nsljag5qxhv42pi62hv67b84j5sxysr"))))
     (properties
      '((upstream-name . "CFtime")
        ;; Avoid dependency cycle.
