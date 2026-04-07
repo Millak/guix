@@ -953,8 +953,8 @@ HTTP-PORT."
                      %miniflux-create-admin-credentials)
      (service dhcpcd-service-type)
      (service postgresql-service-type
-	      (postgresql-configuration
-	        (postgresql postgresql-13)))
+              (postgresql-configuration
+               (postgresql postgresql)))
      (service miniflux-service-type
               miniflux-config))))
 
