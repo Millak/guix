@@ -26132,14 +26132,14 @@ dependency on Java.")
 (define-public r-rio
   (package
     (name "r-rio")
-    (version "1.2.4")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rio" version))
        (sha256
         (base32
-         "1qj3vm3lka2asa36w6mrczgn63a6mdaxvd4kbrw1wh539wh6xi5v"))))
+         "04pf4xzz9xnil2jiw4lf693ma70w9ciyy8sv1p43148r4v6vw4pw"))))
     (properties
      '((updater-extra-native-inputs . ("r-xml2" "zip"))))
     (build-system r-build-system)
@@ -26163,7 +26163,6 @@ dependency on Java.")
            r-writexl))
     (native-inputs
      (list r-arrow
-           r-jpeg
            r-knitr
            r-readods
            r-testthat
