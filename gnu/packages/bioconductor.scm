@@ -23330,13 +23330,7 @@ provides methods for retrieving enriched pathways.")
       ;; Vignettes require an obscene amount of humongous annotation packages
       ;; and *still* attempt to download additional files off the Internet.
       ;; Enough is enough.
-      #:test-types '(list "tests")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; One test tries to connect to a website.
-             (delete-file "inst/unitTests/test_location-methods.R"))))))
+      #:test-types '(list "tests")))
     (propagated-inputs
      (list r-annotationdbi
            r-biobase
