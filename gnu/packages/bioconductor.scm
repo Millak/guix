@@ -12936,14 +12936,11 @@ described at
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These tests require internet access.
-             (for-each delete-file
-                       '("tests/testthat/test_randomizationFunctions.R"
-                         "tests/testthat/test_toGRanges.R")))))))
+      #:skipped-tests
+      ;; These tests require internet access.
+      '("test_randomizationFunctions.R"
+        ("test_toGRanges.R"
+         " toGRanges works for a data.frame"))))
     (propagated-inputs
      (list r-biostrings
            r-bsgenome
