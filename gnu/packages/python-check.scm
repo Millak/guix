@@ -5152,13 +5152,13 @@ interactions, which will update them to correspond to the new API.")
 (define-public python-vulture
   (package
     (name "python-vulture")
-    (version "2.14")
+    (version "2.16")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "vulture" version))
        (sha256
-        (base32 "05c4kfg6s2zf7lzplq53ihjf19knf3pmpv4nnzmdwf0i5a87g0nb"))))
+        (base32 "05zpb79nhskdrbfmy4yk2wlkjgsvfv4l1hn6ldj1c083mzigdngq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5174,10 +5174,10 @@ interactions, which will update them to correspond to the new API.")
                     " and not "))))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-pytest-cov
+           python-setuptools))
     (propagated-inputs
-     (list python-toml))
+     (list python-tomli))
     (home-page "https://github.com/jendrikseipp/vulture")
     (synopsis "Find dead Python code")
     (description
