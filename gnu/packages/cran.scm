@@ -407,14 +407,14 @@ packages @code{ps} and @code{psutil}.")
 (define-public r-backports
   (package
     (name "r-backports")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "backports" version))
        (sha256
         (base32
-         "18kwi50bvha6p5jfl833grmhqzi55adnd3glcy4yh18mizdxjghd"))))
+         "1bavfgag0szpimkd6yb9gkfp1s7hayp8vcg08dpliq977jzfmvmq"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/backports")
     (synopsis "Reimplementations of functions introduced since R 3.0.0")
