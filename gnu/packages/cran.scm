@@ -13454,6 +13454,30 @@ designed to make it easy to install and load multiple tidyverse packages in a
 single step.")
     (license license:gpl3)))
 
+(define-public r-timereg
+  (package
+    (name "r-timereg")
+    (version "2.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "timereg" version))
+       (sha256
+        (base32 "0pwv918s9wih0s5y2ys0dn1v75a7iybvlxpqkisjyz2hhlvzz1yw"))))
+    (properties `((upstream-name . "timereg")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-lava r-numderiv r-survival))
+    (home-page "https://github.com/scheike/timereg")
+    (synopsis "Flexible regression models for survival data")
+    (description
+     "This package provides programs for Martinussen and Scheike (2006),
+`Dynamic Regression Models for Survival Data', Springer Verlag.  Plus more
+recent developments.  Additive survival model, semiparametric proportional
+odds model, fast cumulative residuals, excess risk models and more.  Flexible
+competing risks regression including GOF-tests.  Two-stage frailty modelling.
+PLS for the additive risk model.")
+    (license license:gpl2+)))
+
 (define-public r-tis
   (package
     (name "r-tis")
