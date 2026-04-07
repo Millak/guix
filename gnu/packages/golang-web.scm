@@ -17828,6 +17828,52 @@ browsing activities based on HTTP Upgrade (HTTPT).")
 interacting with the etcd v3 API.")
     (license license:asl2.0)))
 
+(define-public go-go-etcd-io-etcd-client-pkg-v3
+  (package
+    (name "go-go-etcd-io-etcd-client-pkg-v3")
+    (version "3.6.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/etcd-io/etcd")
+              (commit (go-version->git-ref version
+                                           #:subdir "client/pkg"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xyq7flcdvbmiss0snriylvabkwclhyb3977vl1xy9gxq94cwqq4"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "client")
+            (delete-all-but "client" "pkg")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "go.etcd.io/etcd/client/pkg"
+      #:unpack-path "go.etcd.io/etcd"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-coreos-go-systemd-v22
+           go-go-uber-org-zap
+           go-golang-org-x-sys))
+    (home-page "https://go.etcd.io/etcd")
+    (synopsis "Shared utilities used by etcd v3 Go clients")
+    (description
+     "This package provides a set of shared utility packages used by the etcd
+v3 Go clients, including logging helpers, TLS configuration utilities,
+endpoint parsing, retry logic, and test support functions.")
+    (license license:asl2.0)))
+
 (define-public go-go-etcd-io-raft-v3
   (package
     (name "go-go-etcd-io-raft-v3")
