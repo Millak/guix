@@ -18158,14 +18158,14 @@ validation and filtering on the values, making options invisible or private.")
 (define-public r-circlize
   (package
     (name "r-circlize")
-    (version "0.4.17")
+    (version "0.4.18")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "circlize" version))
        (sha256
         (base32
-         "12lal2f64nj05y766xf9lgc9rsx7n6s32jwf93w5ip061lfhqs35"))))
+         "06s8wp6x4x804z3c4asji3wrj4qzdiy2i7jrhnmfygkn728mp1ry"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-colorspace r-globaloptions r-shape))
