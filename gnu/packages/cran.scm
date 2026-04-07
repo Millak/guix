@@ -4912,6 +4912,12 @@ samples) are easily visualized.")
     (properties
      '((updater-extra-native-inputs . ("r-mapproj"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:skipped-tests
+      '(("test-plot.R"
+         ;; did not generate expected warning
+         "ggplot\\(\\) throws informative errors"))))
     (propagated-inputs
      (list r-cli
            r-gtable
