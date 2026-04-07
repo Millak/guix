@@ -23328,13 +23328,13 @@ explored with minimal deviation from the common work patterns of
 (define-public r-nanonext
   (package
     (name "r-nanonext")
-    (version "1.8.1")
+    (version "1.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nanonext" version))
        (sha256
-        (base32 "039cnzsx5p9iyxyza4acw2mrc0qhax6b1222yp1kxm0rcz04kfwl"))))
+        (base32 "1kmbpkj6g0ah8c6wliakz05wk65yxw33hnfizsw92hdf80b28kjj"))))
     (properties
      '((upstream-name . "nanonext")
        (updater-extra-inputs . ("mbedtls-lts" "nng"))))
