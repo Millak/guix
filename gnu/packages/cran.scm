@@ -55538,13 +55538,13 @@ data you need the @code{pdftools} package.")
 (define-public r-pbdmpi
   (package
     (name "r-pbdmpi")
-    (version "0.5-4")
+    (version "0.5-5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "pbdMPI" version))
               (sha256
                (base32
-                "0bcjcmpmwgykwvng7m2rn6s1bbzxs9146w3g8jmk835z6qdmi8zz"))))
+                "15yjdq2zrwkkjkpxc9smgvbkkd2q27c4qblj0s1zicbn40d0df4p"))))
     (properties
      '((upstream-name . "pbdMPI")
        (updater-extra-inputs . ("openmpi"))))
