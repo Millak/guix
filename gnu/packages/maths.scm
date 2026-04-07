@@ -9977,6 +9977,17 @@ also included.")
            #:imported-modules %copy-build-system-modules
            #:phases
            #~(modify-phases %standard-phases
+               ;; By default, cadical defines the DATE macro to have a $(date)
+               ;; value.  This makes the build not reproducible.  If the macro
+               ;; is not defined it uses __DATE__ and __TIME__, which we patch
+               ;; to return a fixed date.  Thus, achieving a reproducible build.
+               ;;
+               ;; An upstream patch for respecting SOURCE_DATE_EPOCH is pending.
+               ;; See also <https://github.com/arminbiere/cadical/pull/164>.
+               (add-after 'unpack 'no-build-date
+                 (lambda _
+                   (substitute* "scripts/make-build-header.sh"
+                     (("\\[ x\"\\$DATE\" = x\" \" \\]") "true"))))
                (replace 'configure
                  (lambda* (#:key configure-flags #:allow-other-keys)
                    (apply invoke "./configure" configure-flags)))
