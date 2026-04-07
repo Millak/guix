@@ -3334,13 +3334,13 @@ using the parallel package.")
 (define-public r-dplyr
   (package
     (name "r-dplyr")
-    (version "1.2.0")
+    (version "1.2.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "dplyr" version))
               (sha256
                (base32
-                "18xz87aahk15d64z0ny7czs435yrs7nh9dc6g4akkm2948pjjb58"))))
+                "1q4hjdbf8cgssdkzm5cnp6d245fhkp9jcwqpkihqpnjcybi6zmhq"))))
     (build-system r-build-system)
     (arguments
      (list
