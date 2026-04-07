@@ -11982,13 +11982,13 @@ functions are simplified but can be faster or have other advantages.")
 (define-public r-magrittr
   (package
     (name "r-magrittr")
-    (version "2.0.4")
+    (version "2.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "magrittr" version))
        (sha256
-        (base32 "1ww1b7cllp8v2kr7vnmhc4brf63l6yxvxd1d9pxxhw6y8067kfka"))))
+        (base32 "08zdlbn7iwjqzs5z04sjxg2z52hxrf46q2y5jmx804kd9qfmnnrz"))))
     (properties
      ;; We can't have r-knitr or r-testthat among the inputs here, because
      ;; that would lead to dependency cycles.
@@ -11996,6 +11996,7 @@ functions are simplified but can be faster or have other advantages.")
     (build-system r-build-system)
     ;; Tests require r-testthat, which uses this package.
     (arguments (list #:tests? #false))
+    (native-inputs (list r-rlang))
     (home-page "https://cran.r-project.org/web/packages/magrittr/index.html")
     (synopsis "Forward-pipe operator for R")
     (description
