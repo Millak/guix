@@ -16860,12 +16860,11 @@ information.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; This test needs r-deseq2, which depends on this package.
-             (delete-file "tests/testthat/test-size_factors.R"))))))
+      #:skipped-tests
+      ;; This test needs r-scran/r-deseq2, which depends on this package.
+      '(("test-size_factors.R"
+         "estimate size factor works"
+         "combine_size_factors_and_offset works"))))
     (propagated-inputs
      (list r-assorthead
            r-beachmat
