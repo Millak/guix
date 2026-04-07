@@ -15170,13 +15170,10 @@ R, enabling interactive analysis and visualization of genome-scale data.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; These tests depend on SIFT.Hsapiens.dbSNP132, which depends on
-             ;; r-variantannotation.
-             (delete-file "inst/unitTests/test_SIFTandPolyPhen.R"))))))
+      #:test-directory "inst/unitTests"
+      ;; These tests depend on SIFT.Hsapiens.dbSNP132, which depends on
+      ;; r-variantannotation.
+      #:skipped-tests '("test_SIFTandPolyPhen.R")))
     (propagated-inputs
      (list r-annotationdbi
            r-biobase
