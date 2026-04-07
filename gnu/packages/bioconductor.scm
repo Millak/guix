@@ -11942,6 +11942,33 @@ containers.")
     (build-system r-build-system)
     (arguments
      (list
+      #:skipped-tests
+      ;; These all need Internet access
+      '("test_MSmap.R"
+        ("test_MzTab.R"
+         "MzTab creation and accessors"
+         "MzTab-M creation and accessors"
+         "MzTab-M MS-Dial import"
+         "MzTab reading and writing"
+         "MzTab-M reading and writing"
+         "Conversion to MSnSetList")
+        ("test_MzTab_09.R"
+         "read MzTab data v 0.9 and 1.0")
+        ("test_fileNames.R"
+         "fileNames accessor MzTab")
+        ;; Fails with: unable to find an inherited method for function
+        ;; ‘pickPeaks’
+        ("test_OnDiskMSnExp_other_methods.R"
+         "Compare OnDiskMSnExp and MSnExp pickPeaks"
+         "pickPeaks,OnDiskMSnExp works with refineMz")
+        ;; Fails with: object 'hyperLOPIT2015' not found
+        ("test_utils.R"
+         "merging and expanding features")
+        ;; Fails with: invalid 'description' argument
+        ("test_io.R"
+         "readMSnSet2: rownames and fnames")
+        ;; Attempts to run "hostname"
+        "test_readMSData2.R")
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'set-HOME
@@ -11952,36 +11979,7 @@ containers.")
            (lambda _
              (substitute* "tests/testthat.R"
                (("library\\(\"MSnbase\"\\)" m)
-                (string-append "XML::libxmlFeatures()\n" m)))))
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; Needs r-prolocdata
-             (for-each delete-file
-                       '("tests/testthat/test_average.R"
-                         "tests/testthat/test_fdata-selection.R"
-                         "tests/testthat/test_foi.R"
-                         "tests/testthat/test_nadata.R"
-                         "tests/testthat/test_trimws.R"
-                         "tests/testthat/test_MSnSet.R"))
-             ;; Attempts to run "hostname"
-             (delete-file "tests/testthat/test_readMSData2.R")
-             ;; Needs Internet access
-             (for-each delete-file
-                       '("tests/testthat/test_fileNames.R"
-                         "tests/testthat/test_MSmap.R"
-                         "tests/testthat/test_MzTab.R"
-                         "tests/testthat/test_MzTab_09.R"))
-             ;; Fails with: object 'hyperLOPIT2015' not found
-             (delete-file "tests/testthat/test_utils.R")
-             ;; Fails with: invalid 'description' argument
-             (delete-file "tests/testthat/test_io.R")
-             ;; Fails with: unable to find an inherited method for function
-             ;; ‘pickPeaks’
-             (substitute* "tests/testthat/test_OnDiskMSnExp_other_methods.R"
-               ((".*pickPeaks,OnDiskMSnExp works with refineMz.*" m)
-                (string-append m "skip('guix')\n"))
-               ((".*Compare OnDiskMSnExp and MSnExp pickPeaks.*" m)
-                (string-append m "skip('guix')\n"))))))))
+                (string-append "XML::libxmlFeatures()\n" m))))))))
     (propagated-inputs
      (list r-affy
            r-biobase
