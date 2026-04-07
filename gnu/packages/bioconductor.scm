@@ -21821,12 +21821,11 @@ and to both short and long sequence reads.")
     (build-system r-build-system)
     (arguments
      (list
+      #:skipped-tests
+      ;; These tests expect the optional oarfish to be installed.
+      '("test-run_FLAMES.R")
       #:phases
       '(modify-phases %standard-phases
-         ;; These tests expect the optional oarfish to be installed.
-         (add-after 'unpack 'disable-some-tests
-           (lambda _
-             (delete-file "tests/testthat/test-run_FLAMES.R")))
          (add-after 'unpack 'do-not-build-minimap2
            (lambda _
              (substitute* "src/Makevars"
