@@ -21406,14 +21406,6 @@ alignment tool.")
          "04sk9q7v22p1hc7znaa2fn390y5pn1nj0ayjb0b3746klsyxxc11"))))
     (properties `((upstream-name . "SGSeq")))
     (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; This test attempts to download a data file.
-             (delete-file "inst/unitTests/test_predictVariantEffects.R"))))))
     (propagated-inputs
      (list r-annotationdbi
            r-biocgenerics
