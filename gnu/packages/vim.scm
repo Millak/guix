@@ -792,7 +792,7 @@ is based on Vim's builtin plugin support.")
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.11.5")
+    (version "0.12.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -801,7 +801,7 @@ is based on Vim's builtin plugin support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b524vi44gkcsyy8w4jggvprwdsgy0gjprgxpyhh0dmqm47c0c48"))
+                "1lydhvm4abh2y3336nyqqbwiszllnw63c98wdna2mrhi44gfh2jf"))
               (patches (search-patches "neovim-tree-sitter-grammar-path.patch"))))
     (build-system cmake-build-system)
     (arguments
