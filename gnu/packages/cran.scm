@@ -11764,14 +11764,14 @@ information.")
 (define-public r-ellipsis
   (package
     (name "r-ellipsis")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ellipsis" version))
        (sha256
         (base32
-         "0n0mm9jngklv7j9wa64jdji035z0smmnsp2dfwcz9isrxgjnc0m9"))))
+         "0wv8jqr2xza4y1gvb4x3jckbzyjivdw711v9ik7z3fn1wny845ys"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rlang))
