@@ -16065,7 +16065,6 @@ expressed genes in DNA microarray experiments.")
     (build-system r-build-system)
     (arguments
      (list
-      #:tests? #false ;TODO: segfault... investigate!
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'disable-bad-test
