@@ -41356,13 +41356,13 @@ code edited with @code{RStudio IDE}, @code{Emacs} and @code{Vim}.")
 (define-public r-sccore
   (package
     (name "r-sccore")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sccore" version))
        (sha256
-        (base32 "1lbqg8m6mh997fk0cx8yyv0iq68lsp61nfhk4r5xy7k6cf3gvjkn"))))
+        (base32 "0nkbg2hrhfiswc8kqcqj1ma9x45phni6h435k0wqmqk9xpry0v96"))))
     (properties `((upstream-name . "sccore")))
     (build-system r-build-system)
     (propagated-inputs
@@ -41381,7 +41381,6 @@ code edited with @code{RStudio IDE}, @code{Emacs} and @code{Vim}.")
            r-rcppprogress
            r-rlang
            r-scales
-           r-seurat
            r-tibble
            r-uwot
            r-withr))
