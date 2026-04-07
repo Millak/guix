@@ -7830,13 +7830,13 @@ framework, with additional code inspection and report generation tools.")
 (define-public r-rush
   (package
     (name "r-rush")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rush" version))
        (sha256
-        (base32 "1bn28rnyi0awfipl6apd9x58ghnqmqj77m1fwqbdg3plplqgfm55"))))
+        (base32 "1bvjpilhql5pgq081r75n1vjxygw1gkwn73kbidc3g6dwbxazczm"))))
     (properties `((upstream-name . "rush")))
     (build-system r-build-system)
     (propagated-inputs (list r-checkmate
