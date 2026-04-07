@@ -7713,7 +7713,15 @@ and copy/paste text in the console and in xterm.")
                         "/etc/security/limits.d")
          ;; Guix does not use systemd.
          "-Dwith-systemd-user-unit=false"
-         "-Dwith-systemd-group=false")))
+         "-Dwith-systemd-group=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-references
+            (lambda _
+              (substitute* '("lib/gamemode_client.h"
+                             "data/gamemoderun")
+                (("libgamemode(auto)?\\.so\\.0" lib)
+                 (string-append #$output "/lib/" lib))))))))
     (native-inputs
      (list pkg-config))
     (inputs
