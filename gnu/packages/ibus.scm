@@ -518,6 +518,8 @@ Japanese language input in most graphical applications.")
     (arguments
      (list
       #:tests? #f ;no tests
+      #:configure-flags
+      #~(list "CFLAGS=-Wno-error=incompatible-pointer-types")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-skk-jisyo
