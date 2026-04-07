@@ -17369,12 +17369,10 @@ missing values and weighting where appropriate.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; 4 tests fail with "Objects equal but not identical".
-             (delete-file "tests/testthat/test-lowrank.R"))))))
+      #:skipped-tests
+      '(("test-lowrank.R"
+         ;; Objects equal but not identical
+         "LowRankMatrix subsetting works as expected"))))
     (propagated-inputs
      (list r-assorthead
            r-beachmat
