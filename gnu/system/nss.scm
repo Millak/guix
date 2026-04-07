@@ -54,7 +54,7 @@
 ;; Lookup specification (info "(libc) Actions in the NSS Configuration").
 
 (define-enumeration lookup-action
-  (return continue)
+  (return continue merge)
   make-lookup-action)
 
 (define-enumeration lookup-status
