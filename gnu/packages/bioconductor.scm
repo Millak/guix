@@ -13062,16 +13062,14 @@ browser.")
     (build-system r-build-system)
     (arguments
      (list
-      #:tests? #false ;TODO: they are killed
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; Some of the tests expect to be able to use the proprietary
-             ;; SZIP, which we've removed from r-rhdf5lib.
-             (for-each delete-file
-                       '("tests/testthat/test_H5P_dcpl.R"
-                         "tests/testthat/test_h5read.R")))))))
+      #:skipped-tests
+      ;; Some of the tests expect to be able to use the proprietary
+      ;; SZIP, which we've removed from r-rhdf5lib.
+      '(("test_H5P_dcpl.R"
+         "Filters can be set"
+         "Filter information can be retrieved")
+        ("test_h5read.R"
+         "Reading SZIP"))))
     (propagated-inputs
      (list r-rhdf5filters r-rhdf5lib))
     (native-inputs
