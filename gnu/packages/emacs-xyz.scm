@@ -9435,35 +9435,40 @@ column by drawing a thin line down the length of the editing window.")
     (license license:gpl3+)))
 
 (define-public emacs-greader
-  (let ((commit "b25974aeae49f11b91bb78d94ab51913fdfcdc05")) ;version bump
-    (package
-      (name "emacs-greader")
-      (version "0.13.1")
-      (source
-       (origin
-         (uri (git-reference
-                (url "https://gitlab.com/michelangelo-rodriguez/greader")
-                (commit commit)))
-         (method git-fetch)
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1qkszb4yrfnzb2rqkf6vmzca53w68p78zb58frcxslxn7s5l7ih1"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list #:tests? #f))              ;no tests
-      (inputs (list emacs-compat espeak-ng))
-      (home-page "https://gitlab.com/michelangelo-rodriguez/greader")
-      (synopsis
-       "Gnamù Reader, or Greader, sends buffer contents to a speech engine")
-      (description
-       "Greader is a module that sends any Emacs buffer to a @acronym{TTS,
+  (package
+    (name "emacs-greader")
+    (version "0.19.0")
+    (source
+     (origin
+       (uri (git-reference
+              (url "https://gitlab.com/michelangelo-rodriguez/greader")
+              (commit (string-append "v" version))))
+       (method git-fetch)
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08c4i5qbr0ndbbps6y5kpp0lzfmxnwifrxssqkd9qdzj068k69k3"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'make-info
+                 (lambda _
+                   (invoke "makeinfo" "--no-split" "greader.texi"))))))
+    (inputs (list emacs-compat espeak-ng))
+    (native-inputs (list texinfo))
+    (home-page "https://gitlab.com/michelangelo-rodriguez/greader")
+    (synopsis
+     "Gnamù Reader, or Greader, sends buffer contents to a speech engine")
+    (description
+     "Greader is a module that sends any Emacs buffer to a @acronym{TTS,
 Text To Speech} engine, such as Espeak-NG or Speech Dispatcher.
 
 The mode supports timer reading, automatic scrolling of buffers in modes like
 Info mode, and repeating reading of regions or the whole buffer.  It also
 includes a feature to facilitate the compilation of Espeak-NG
 pronunciations.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-grep-a-lot
   (package
