@@ -4526,7 +4526,7 @@ configuration file.")
 (define-public python-pytooling
   (package
     (name "python-pytooling")
-    (version "8.12.0")
+    (version "8.14.0")
     (source
      (origin
        (method git-fetch)
@@ -4535,7 +4535,7 @@ configuration file.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03zfm12n0zxnr51sybs7dy83q152p2jylahl1307icarpn8553c2"))))
+        (base32 "02pm3h7y83rv7s6c9b861zzfqfrzrwyb31x2hjr6vj838h5kpvns"))))
     (build-system pyproject-build-system)
     (arguments
      (list
