@@ -14254,6 +14254,32 @@ reference points, permutation tests, detection of outliers, processing of
 sliding semi-landmarks and semi-automated surface landmark placement.")
     (license license:gpl2)))
 
+(define-public r-handtill2001
+  (package
+    (name "r-handtill2001")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "HandTill2001" version))
+       (sha256
+        (base32 "0c2kkd0zmk91gh46ckw5hlpmc90s0pfrnr4rvrrng2cpvkgq6bh7"))))
+    (properties `((upstream-name . "HandTill2001")))
+    (build-system r-build-system)
+    (native-inputs (list r-mass
+                         r-mda
+                         r-nnet
+                         r-pkgload
+                         r-rpart
+                         r-runit
+                         r-testthat))
+    (home-page "https://gitlab.com/fvafrcu/HandTill2001")
+    (synopsis "Multiple class area under ROC curve")
+    (description
+     "This package provides an S4 implementation of Eq. (3) and Eq. (7) by
+David J. Hand and Robert J. Till (2001) <DOI:10.1023/A:1010920819831>.")
+    (license license:bsd-2)))
+
 (define-public r-hexbin
   (package
     (name "r-hexbin")
