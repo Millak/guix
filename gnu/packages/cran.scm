@@ -3907,6 +3907,49 @@ everywhere in package development.")
 various statistical models with linear predictors.")
     (license license:gpl2+)))
 
+(define-public r-embed
+  (package
+    (name "r-embed")
+    (version "1.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "embed" version))
+       (sha256
+        (base32 "0qnblnr9az2bhk3d0i39n774zks9bjks00ldibcn6n13wrc9lchn"))))
+    (properties `((upstream-name . "embed")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli
+                             r-dplyr
+                             r-generics
+                             r-glue
+                             r-lifecycle
+                             r-purrr
+                             r-recipes
+                             r-rlang
+                             r-rsample
+                             r-tibble
+                             r-tidyr
+                             r-uwot
+                             r-vctrs
+                             r-withr))
+    (native-inputs (list r-hardhat
+                         r-irlba
+                         r-lme4
+                         r-rpart
+                         r-rstanarm
+                         r-testthat
+                         r-xgboost))
+    (home-page "https://embed.tidymodels.org")
+    (synopsis "Extra recipes for encoding predictors")
+    (description
+     "Predictors can be converted to one or more numeric representations using
+a variety of methods.  Effect encodings using simple generalized linear models
+<doi:10.48550/arXiv.1611.09477> or nonlinear models
+<doi:10.48550/arXiv.1604.06737> can be used.  There are also functions for
+dimension reduction and other approaches.")
+    (license license:expat)))
+
 (define-public r-embedsom
   (package
     (name "r-embedsom")
