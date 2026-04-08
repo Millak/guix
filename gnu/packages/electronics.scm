@@ -3460,7 +3460,7 @@ form of AXI, AXI lite, and AXI stream modules.")
 (define-public python-edalize
   (package
     (name "python-edalize")
-    (version "0.6.5")
+    (version "0.6.6")
     (source
      (origin
        (method git-fetch)
@@ -3469,7 +3469,7 @@ form of AXI, AXI lite, and AXI stream modules.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1drmc126a12zlynx8ps9iwghaqs058pqj2xpdysxnrj26hg3sp15"))))
+        (base32 "115nc15n2cx4x9irjim07zkg0287418djqd6ja7rm8jrnyldvln9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3496,7 +3496,7 @@ form of AXI, AXI lite, and AXI stream modules.")
     (native-inputs
      (list python-pytest python-setuptools python-setuptools-scm))
     (propagated-inputs
-     (list python-importlib-metadata python-jinja2))
+     (list python-importlib-metadata python-jinja2 python-pandas))
     (home-page "https://github.com/olofk/edalize/")
     (synopsis "Python Library for interacting with EDA tools")
     (description
