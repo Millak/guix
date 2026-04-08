@@ -1489,6 +1489,29 @@ encoder/decoder, round-off-error-free sum and cumsum, etc.")
 @code{A1:D10} style of cell range specification.")
     (license license:expat)))
 
+(define-public r-cereal
+  (package
+    (name "r-cereal")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cereal" version))
+       (sha256
+        (base32 "02s9hwp387dwzfbwwga05rxayk67zvj49hii7b4ksznynad7khsr"))))
+    (properties `((upstream-name . "cereal")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-jsonlite r-rlang r-tibble r-vctrs))
+    (native-inputs (list r-testthat r-withr))
+    (home-page "https://r-lib.github.io/cereal/")
+    (synopsis "Serialize vctrs objects to JSON")
+    (description
+     "The vctrs package provides a concept of vector prototype that can be
+especially useful when deploying models and code.  Serialize these object
+prototypes to JSON so they can be used to check and coerce data in production
+systems, and deserialize JSON back to the correct object prototypes.")
+    (license license:expat)))
+
 (define-public r-cftime
   (package
     (name "r-cftime")
