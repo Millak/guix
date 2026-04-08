@@ -898,6 +898,16 @@ binary booleans, @code{TRUE} and @code{FALSE} can be stored with 1 bit only.")
         (base32
          "1dqr2g43rhiryzgpfsjb7mb4idnz2jl31jdsvjgrlb625wacxh7v"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:skipped-tests
+      (if (target-32bit?)
+          '(("test-integer64.R"
+             ;; Minor differences due to accuracy.
+             "arithmetic & basic math works"
+             ;; The array is shifted by one.
+             "Old ..dontshow\\{\\} tests in .format.integer64 continue working"))
+          '())))
     (propagated-inputs
      (list r-bit))
     (native-inputs (list r-testthat))
