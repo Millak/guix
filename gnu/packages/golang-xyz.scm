@@ -25828,7 +25828,7 @@ emulator.")
     (home-page "https://github.com/transparency-dev/merkle")
     (synopsis "Merkle trees in Golang")
     (description
-     "Thi package provides a @url{https://en.wikipedia.org/wiki/Merkle_tree,
+     "This package provides a @url{https://en.wikipedia.org/wiki/Merkle_tree,
 Merkle tree} implementation in Golang.")
     (license license:asl2.0)))
 
