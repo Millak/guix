@@ -1713,13 +1713,13 @@ analyzing Jupyter Notebooks.")
 (define-public python-qtconsole
   (package
     (name "python-qtconsole")
-    (version "5.7.0")
+    (version "5.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "qtconsole" version))
        (sha256
-        (base32 "0w9i0s70dm39cxgn3vh4wcaxdywzp9j0ac7f49q4qmggx4f3fcqd"))))
+        (base32 "088m56fav6xlcw55srxz96yf7rj2ndmycy4f3m69498r2swqbd17"))))
     (build-system pyproject-build-system)
     (arguments
      (list
