@@ -9084,6 +9084,72 @@ display Venn diagrams up to 7 sets, and any Boolean union of set
 intersections.")
     (license license:gpl3+)))
 
+(define-public r-vetiver
+  (package
+    (name "r-vetiver")
+    (version "0.2.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "vetiver" version))
+       (sha256
+        (base32 "1nqs5panpqr2ga3nz2hbmngrrklbjdqqlh8xd572yvvca57wm8ak"))))
+    (properties `((upstream-name . "vetiver")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bundle
+                             r-butcher
+                             r-cereal
+                             r-cli
+                             r-fs
+                             r-generics
+                             r-glue
+                             r-hardhat
+                             r-lifecycle
+                             r-pins
+                             r-purrr
+                             r-rapidoc
+                             r-readr
+                             r-rlang
+                             r-tibble
+                             r-vctrs
+                             r-withr))
+    (native-inputs (list r-caret
+                         r-clustmixtype
+                         r-dplyr
+                         r-httpuv
+                         r-httr
+                         r-jsonlite
+                         r-knitr
+                         r-mgcv
+                         r-mlr3
+                         r-mlr3learners
+                         r-mockery
+                         r-parsnip
+                         r-paws-machine-learning
+                         r-pingr
+                         r-plumber
+                         r-probably
+                         r-ranger
+                         r-recipes
+                         r-reticulate
+                         r-rmarkdown
+                         r-rsample
+                         r-testthat
+                         r-tune
+                         r-vdiffr
+                         r-workflows
+                         r-xgboost
+                         r-yardstick))
+    (home-page "https://vetiver.posit.co")
+    (synopsis "Version, share, deploy, and monitor models")
+    (description
+     "The goal of @code{vetiver} is to provide fluent tooling to version,
+share, deploy, and monitor a trained model.  Functions handle both recording
+and checking the model's input data prototype, and predicting from a remote
+API endpoint.  The @code{vetiver} package is extensible, with generics that
+can support many kinds of models.")
+    (license license:expat)))
+
 (define-public r-vpc
   (package
     (name "r-vpc")
