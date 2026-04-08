@@ -52212,15 +52212,18 @@ object sizes.")
 (define-public r-yardstick
   (package
     (name "r-yardstick")
-    (version "1.3.2")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "yardstick" version))
        (sha256
         (base32
-         "0h7rq12v3vgwqhdy2qrq7bany4gfj1cajv6xqw631lw1qchgf80i"))))
-    (properties `((upstream-name . "yardstick")))
+         "12w8fj67315cjx2lly47pm7lxmyhwiphgahkjkfpsa8hncyjp7sp"))))
+    (properties
+     '((upstream-name . "yardstick")
+       ;; Avoid a dependency cycle.
+       (updater-ignored-native-inputs . ("r-probably"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -52237,9 +52240,12 @@ object sizes.")
      (list r-caret
            r-devtools
            r-e1071
+           r-epir
            r-ggplot2
+           r-handtill2001
            r-knitr
            r-mlmetrics
+           r-orf
            r-proc
            r-reticulate
            r-survival
