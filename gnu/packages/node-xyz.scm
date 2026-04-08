@@ -2377,21 +2377,25 @@ This is not a through or through2 stream. It doesn't transform the data, it just
   (package
     (inherit node-minipass-5)
     (version "7.1.2")
-    (source (origin
-      (method git-fetch)
-      (uri (git-reference
-        (url (git-reference-url (origin-uri (package-source node-minipass-5))))
-        (commit (string-append "v" version))))
-      (file-name (git-file-name (package-name node-minipass-5) version))
-      (sha256 (base32 "0zqnnw9ibwm660md1pfqsiwbbpbizydiwjp4fr8niyzczxk66k1j"))))
-    ; Use ESBuild because this is used to build Typescript.
+    (name "node-minipass")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/isaacs/minipass")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zqnnw9ibwm660md1pfqsiwbbpbizydiwjp4fr8niyzczxk66k1j"))))
+    ;; Use ESBuild because this is used to build Typescript.
     (native-inputs (list esbuild))
-    (arguments (list
-      #:modules '(
-        (guix build node-build-system)
-        (guix build utils)
-        (ice-9 match))
+    (arguments
+     (list
       #:tests? #f ; FIXME: Tests require 'tap'.
+      #:modules '((guix build node-build-system)
+                  (guix build utils)
+                  (ice-9 match)
+                  (srfi srfi-26))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'patch-dependencies 'modify-package
@@ -2401,30 +2405,28 @@ This is not a through or through2 stream. It doesn't transform the data, it just
                 (delete-json-fields (list "scripts.prepare")))))
           (replace 'build
             (lambda _
-              (define output "output")
               (for-each
                (match-lambda
-                 ((format directory type)
-                  (define target-output (string-append output "/dist/" directory))
-                  (invoke "esbuild"
-                          "src/index.ts"
-                          "--platform=node"
-                          "--target=es2022"
-                          (string-append "--format=" format)
-                          "--jsx=transform"
-                          "--sourcemap"
-                          (string-append "--outdir=" target-output))
-                  (call-with-output-file
-                      (string-append target-output "/package.json")
-                    (lambda (port)
-                      (format port "{type: ~s}" type)))))
+                 ((esbuild-format directory type)
+                  (let ((target-output (string-append "output/dist/"
+                                                      directory)))
+                    (invoke "esbuild"
+                            "src/index.ts"
+                            "--platform=node"
+                            "--target=es2022"
+                            (string-append "--format=" esbuild-format)
+                            "--jsx=transform"
+                            "--sourcemap"
+                            (string-append "--outdir=" target-output))
+                    (call-with-output-file (string-append target-output
+                                                          "/package.json")
+                      (cut format <> "{type: ~s}" type)))))
                (list
                 (list "cjs" "commonjs" "commonjs")
                 (list "esm" "esm" "module")))
-            (for-each
-              (lambda (file) (install-file file output))
-              (list "LICENSE" "package.json" "README.md"))
-            (chdir output))))))))
+              (for-each (cut install-file <> "output")
+                        (list "LICENSE" "package.json" "README.md"))
+              (chdir "output"))))))))
 
 (define-public node-mkdirp
   (package
