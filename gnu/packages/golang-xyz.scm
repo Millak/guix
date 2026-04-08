@@ -16319,6 +16319,45 @@ to handle datasets larger than available RAM.")
  @url{https://github.com/yuin/gopher-lua, gopher-lua}.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-leaanthony-go-ansi-parser
+  (package
+    (name "go-github-com-leaanthony-go-ansi-parser")
+    (version "1.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/leaanthony/go-ansi-parser")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n40rf6wzcz196ajwf3cq3ky86n48fv09qrk434v0iljax8phd9r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/leaanthony/go-ansi-parser"))
+    (propagated-inputs
+     (list go-github-com-matryer-is
+           go-github-com-rivo-uniseg))
+    (home-page "https://github.com/leaanthony/go-ansi-parser")
+    (synopsis "Go Parser for ANSI strings")
+    (description
+     "Go ANSI Parser converts strings with ANSI escape codes into a slice of
+structs that represent styled text.
+
+Features:
+@itemize
+@item can parse ANSI 16, 256 and TrueColor
+@item supports all styles: Regular, Bold, Faint, Italic, Blinking, Inversed,
+Invisible, Underlined, Strikethrough
+@item provides RGB, Hex, HSL, ANSI ID and Name for parsed colours
+@item truncation - works with emojis and grapheme clusters
+@item length - works with emojis and grapheme clusters
+@item cleanse - removes the ansi escape codes
+@item configurable colour map for customisation
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-leodido-go-urn
   (package
     (name "go-github-com-leodido-go-urn")
