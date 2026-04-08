@@ -21566,6 +21566,14 @@ from the data points.")
      '((upstream-name . "coro")
        (updater-extra-native-inputs . ("r-later" "r-promises"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:skipped-tests
+      (if (target-32bit?)
+          '(("test-step-reduce.R"
+             ;; This test never terminates.
+             "collect\\(\\) preserves type \\(#32\\)"))
+          '())))
     (propagated-inputs (list r-rlang))
     (native-inputs (list r-knitr r-later r-promises r-testthat))
     (home-page "https://github.com/r-lib/coro")
