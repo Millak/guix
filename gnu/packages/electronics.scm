@@ -2690,20 +2690,20 @@ formats.")
 (define-public openroad
   (package
     (name "openroad")
-    (version "26Q1")
+    (version "26Q2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/The-OpenROAD-Project/OpenROAD")
-              (commit "e06ca0f5f2e641cd7b138a4d9b4fdd290359eca8")
+              (commit version)
               ;; 26Q1 Uses:
-              ;; - forked, custom opensta: v2.2.0-1579-g9c9b5659
-              ;; - forked, custom (berkeley) abc: 20260104.1628-g4c756ffb8
+              ;; - forked, custom opensta: v2.2.0-1952-g43177bba
+              ;; - forked, custom (berkeley) abc: 20260301.0445-g17cadca08
               (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13x4kqi4j489k4sz56ws4aqhp60nff1i18z6hjd6xx8y7flaik0c"))))
+        (base32 "152j78c47wyq4sw42bwlxdhvs5g47a8jqz1qz5yzdsk9z5y4y7vl"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -2737,7 +2737,7 @@ formats.")
            flex
            googletest
            pkg-config
-           swig-4.0))
+           swig-4.4))
     (inputs
      (list abseil-cpp
            boost
