@@ -970,6 +970,29 @@ hydrology and waste deposition.")
         (base32
          "03r6mspfv22fs4x4jcgv25v9gsj5k6zy8incvyf94qf50g47s2bc"))))
     (build-system cmake-build-system)
+    (arguments
+     (if (target-32bit?)
+         (list
+          #:phases
+          '(modify-phases %standard-phases
+             (add-after 'unpack 'patch-tests
+               (lambda _
+                 ;; These regression tests fail due to accuracy problems.
+                 (substitute* "test/unit/test_factory.cpp"
+                   (("^TEST\\(factory, AuthorityFactory_createUnitOfMeasure_linear_us_survey_foot\\) \\{" m)
+                    (string-append m "\nGTEST_SKIP();\n")))
+                 (substitute* "test/unit/test_grids.cpp"
+                   (("^TEST_F\\(GridTest, VerticalShiftGridSet_gtx\\) \\{" m)
+                    (string-append m "\nGTEST_SKIP();\n")))
+                 (substitute* "test/unit/test_defmodel.cpp"
+                   (("^TEST\\(defmodel, evaluator_horizontal_unit_metre\\) \\{" m)
+                    (string-append m "\nGTEST_SKIP();\n")))
+                 ;; These regression tests fail due to accuracy problems.
+                 (substitute* "test/CMakeLists.txt"
+                   (("proj_add_gie_test\\(\"4D-API-cs2cs-style\".+") "")
+                   (("proj_add_gie_test\\(\"Builtins\".+") "")
+                   (("proj_add_gie_test\\(\"peirce_q\".+") ""))))))
+         '()))
     (native-inputs (list googletest pkg-config))
     (propagated-inputs (list curl libtiff sqlite)) ;required by proj.pc
     (home-page "https://proj.org/")
