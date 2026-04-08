@@ -2776,7 +2776,6 @@ clock tree synthesis, routing, parasitic extraction, and timing analysis.")
   (package
     (inherit openroad)
     (name "openroad-cli")
-    (build-system cmake-build-system)
     (arguments
      (delkw
       #:qtbase
