@@ -1183,6 +1183,42 @@ regression model terms by variable, insert reference and header rows for
 categorical variables, add variable labels, and more.")
     (license license:gpl3+)))
 
+(define-public r-bundle
+  (package
+    (name "r-bundle")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "bundle" version))
+       (sha256
+        (base32 "0xagw15dn4vfgn2n2v5ii0sn0snqz5p7f4f0h4a0cqd27df7az7i"))))
+    (properties `((upstream-name . "bundle")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-glue r-lifecycle r-purrr r-rlang r-withr))
+    ;; Note: the importer will add expensive dependencies like r-keras,
+    ;; r-tensorflow, etc, but they are not actually needed.
+    (native-inputs (list r-butcher
+                         r-callr
+                         r-caret
+                         r-embed
+                         r-knitr
+                         r-modeldata
+                         r-parsnip
+                         r-recipes
+                         r-testthat
+                         r-workflows
+                         r-xgboost))
+    (home-page "https://github.com/rstudio/bundle")
+    (synopsis "Serialize model objects with a consistent interface")
+    (description
+     "Typically, models in R exist in memory and can be saved via regular R
+serialization.  However, some models store information in locations that
+cannot be saved using R serialization alone.  The goal of @code{bundle} is to
+provide a common interface to capture this information, situate it within a
+portable object, and restore it for use in new settings.")
+    (license license:expat)))
+
 (define-public r-ca
   (package
     (name "r-ca")
