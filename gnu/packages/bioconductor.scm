@@ -9554,13 +9554,13 @@ parameter configurations.")
 (define-public r-enmix
   (package
     (name "r-enmix")
-    (version "1.46.1")
+    (version "1.46.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ENmix" version))
               (sha256
                (base32
-                "1kkf387na8ldm7vqvv49cvz57yh4yi88mxcn3606xmdqxq69i78k"))))
+                "1j5rj6476lpgyhnc7727skbgr2grx0rm1667q89x1ydkak6s43hf"))))
     (properties
      '((upstream-name . "ENmix")
        (updater-extra-native-inputs . ("r-minfidata"))))
