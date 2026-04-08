@@ -547,7 +547,7 @@ remain fully idle, saving power and producing less noise.")
          "0miklk4bqblpyzh1bni4x6lqn88fa8fjn15x1k1n8bxkx60nlymd"))))
     (build-system gnu-build-system)
     (inputs
-     (list librsync-0.9))
+     (list librsync))
     (arguments
      `(#:make-flags `("CFLAGS=-fcommon"
                       ,(string-append "PREFIX=" (assoc-ref %outputs "out"))
