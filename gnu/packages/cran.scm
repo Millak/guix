@@ -44250,18 +44250,25 @@ Social Sciences\" by Mark S. Handcock and Martina Morris, Springer-Verlag,
 (define-public r-accept
   (package
     (name "r-accept")
-    (version "1.0.0")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "accept" version))
        (sha256
         (base32
-         "0yjihmgi94yfwhnvgw4v235yyr8n6w1ass2qbmvk0ia1hmjis8zq"))))
+         "0lnb8z9q2ncraicpfizjn3kfvwhg9nb6jla9lh73gzhr8wm3gv73"))))
     (properties `((upstream-name . "accept")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-dplyr r-reldist))
+     (list r-dplyr
+           r-hardhat
+           r-reldist
+           r-tibble
+           r-tidyselect
+           r-vctrs
+           r-vetiver))
+    (native-inputs (list r-spelling r-testthat))
     (home-page "https://cran.r-project.org/web/packages/accept/")
     (synopsis "Acute COPD Exacerbation Prediction Tool (ACCEPT)")
     (description
