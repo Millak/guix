@@ -6252,6 +6252,43 @@ in which the whole-plots or split-plots or both can be freely exchangeable.")
 @command{ping} command, or check a specified TCP port.")
     (license license:expat)))
 
+(define-public r-pins
+  (package
+    (name "r-pins")
+    (version "1.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "pins" version))
+       (sha256
+        (base32 "18x665cvag5glpfmq2c8kc0ga4fwpkln75b8y90hzd2rifkjxi1g"))))
+    (properties `((upstream-name . "pins")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli
+                             r-digest
+                             r-fs
+                             r-generics
+                             r-glue
+                             r-httr
+                             r-jsonlite
+                             r-lifecycle
+                             r-purrr
+                             r-rappdirs
+                             r-rlang
+                             r-tibble
+                             r-whisker
+                             r-withr
+                             r-yaml))
+    (native-inputs (list r-knitr r-mockery r-testthat r-webfakes))
+    (home-page "https://pins.rstudio.com/")
+    (synopsis "Pin, discover, and share resources")
+    (description
+     "Publish data sets, models, and other R objects, making it easy to share
+them across projects and with your colleagues.  You can pin objects to a
+variety of \"boards\", including local folders (to share on a networked drive
+or with DropBox), Posit Connect, AWS S3, and more.")
+    (license license:asl2.0)))
+
 (define-public r-pkgconfig
   (package
     (name "r-pkgconfig")
