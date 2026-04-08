@@ -9957,7 +9957,8 @@ grepping the list.")
         #:configure-flags
         #~(list
            (string-append "-Dtest_data_dir="
-                          #+(this-package-native-input testsuite-file-name)))))
+                          #+(this-package-native-input testsuite-file-name)
+                          "/data"))))
       (inputs
        (list icu4c
              python-wrapper ; for libzim-compile-resources
@@ -9970,17 +9971,16 @@ grepping the list.")
              googletest
              ;; The testsuite is a pre-generated artifact that can be
              ;; regenerated from the upstream repository, but it
-             ;; explicitely advises against it.   Not knowing better,
-             ;; not doing it for now.
+             ;; explicitely advises against it.  Use it pregenerated.
+             ;; Using git-fetch allows us to avoid additional unpacking.
              (origin
-	       (method url-fetch)
-	       (uri (apply format #f "https://github.com/openzim/\
-	zim-testing-suite/releases/download/~a/zim-testing-suite-~a.tar.gz"
-	                   (make-list 2 "0.9.0")))
-	       (file-name "zim-testing-suite.tar.gz")
+	       (method git-fetch)
+	       (uri (git-reference
+	              (url "https://github.com/openzim/zim-testing-suite")
+	              (commit testsuite-version)))
+	       (file-name testsuite-file-name)
 	       (sha256
-	        (base32
-	         "175916xb24xrrgwhdcnsbmpzvddz7mynacm73595qias5ias94hi")))))
+	        (base32 "14ac58i0zzvzssl5fyykc494jlw4ia8dhfr10hmi8h3gfn08dm62")))))
       (home-page "https://wiki.openzim.org/wiki/Main_Page")
       (synopsis "Reference implementation of the ZIM specification")
       (description "The openZIM project proposes offline storage solutions for
