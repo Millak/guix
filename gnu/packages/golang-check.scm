@@ -3579,6 +3579,13 @@ the source code, it only prints out style mistakes.")
     (propagated-inputs
      (list go-go-yaml-in-yaml-v4))))
 
+(define-public go-gopkg-in-h2non-gock-v1
+  (package/inherit go-github-com-h2non-gock
+    (name "go-gopkg-in-h2non-gock-v1")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "gopkg.in/h2non/gock.v1")))))
+
 (define-public go-gopkg-in-go-playground-assert-v1
   (package
     (inherit go-github-com-go-playground-assert-v2)
