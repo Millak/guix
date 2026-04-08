@@ -7067,6 +7067,60 @@ dataset in O(N log N) time using Arya and Mount's ANN library.  It provides
 approximate, exact searches, fixed radius searches, bd and kb trees.")
     (license license:gpl3+)))
 
+(define-public r-rapidoc
+  (package
+    (name "r-rapidoc")
+    (version "9.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rapidoc" version))
+       (sha256
+        (base32 "1nzwf4wx8syl9xpvmqn3mz72nhj80ssnm6wbfwnasg003ccfi43c"))))
+    (properties `((upstream-name . "rapidoc")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build r-build-system)
+                  ((guix build minify-build-system)
+                   #:select (minify))
+                  (guix build utils)
+                  (ice-9 match))
+      #:imported-modules
+      `(,@%r-build-system-modules (guix build minify-build-system))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'process-javascript
+            (lambda _
+              (with-directory-excursion "inst/"
+                (for-each
+                 (match-lambda
+                   ((source . target)
+                    (minify source #:target target)))
+                 '((#$(this-package-native-input "rapidoc.js")
+                    . "dist/rapidoc-min.js")
+                   (#$(this-package-native-input "highlight.pack.js")
+                    . "dist/highlight.min.js")))))))))
+    (native-inputs
+     (list esbuild r-plumber r-testthat
+           (origin
+             (method url-fetch)
+             (uri "https://unpkg.com/rapidoc@9.3.4/dist/rapidoc.js")
+             (sha256
+              (base32 "1fbq5admm6fgpchg58m98fbk05kqc3x8rf9grj81qpjhxsfbzzbk")))
+           (origin
+             (method url-fetch)
+             (uri "https://unpkg.com/highlightjs@9.16.2/highlight.pack.js")
+             (sha256
+              (base32 "1wdnxnsaddjf8mfri3frq3g182w2bfjnkf4bzd88niabak1b1qrz")))))
+    (home-page "https://github.com/meztez/rapidoc")
+    (synopsis
+     "Generate RapiDoc documentation from an OpenAPI specification")
+    (description
+     "This package provides a collection of HTML, JavaScript, CSS and fonts
+assets that generate RapiDoc documentation from an OpenAPI specification.")
+    (license license:expat)))
+
 (define-public r-rcolorbrewer
   (package
     (name "r-rcolorbrewer")
