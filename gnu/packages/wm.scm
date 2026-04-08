@@ -2554,13 +2554,10 @@ built on dwl — crafted for speed, flexibility, and a customizable desktop expe
                   (setenv "RAYON_NUM_THREADS" "1")
                   (setenv "XDG_RUNTIME_DIR" "/tmp")))
               (add-after 'install 'install-extras
-                (lambda* (#:key inputs #:allow-other-keys)
+                (lambda _
                   (substitute* "resources/niri.desktop"
                     (("niri-session")
-                     (format #f "~a --dbus-daemon=~a ~a/bin/niri --session"
-                             (search-input-file inputs "bin/dbus-run-session")
-                             (search-input-file inputs "bin/dbus-daemon")
-                             #$output)))
+                     (string-append #$output "/bin/niri --session")))
                   (install-file
                    "resources/niri.desktop"
                    (in-vicinity #$output "share/wayland-sessions"))
