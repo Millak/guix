@@ -2536,6 +2536,11 @@ built on dwl — crafted for speed, flexibility, and a customizable desktop expe
                      "version = \"*\", optional")
                     (("^git = .*")
                      ""))))
+              (add-after 'unpack 'patch-references
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (substitute* "src/main.rs"
+                    (("dbus-update-activation-environment" cmd)
+                     (search-input-file inputs (in-vicinity "bin" cmd))))))
               (add-after 'unpack 'set-environment
                 (lambda _
                   (setenv "RUSTFLAGS"
