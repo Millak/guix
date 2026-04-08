@@ -264,6 +264,7 @@
   #:use-module (gnu packages lisp-xyz)
   #:use-module (gnu packages lsof)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages music)
   #:use-module (gnu packages version-control)
@@ -25701,6 +25702,52 @@ for the default of 1 second, the minibuffer will expand with all of the
 available key bindings that follow C-x (or as many as space allows given your
 settings).")
     (license license:gpl3+)))
+
+(define-public emacs-whisper-el
+  (let ((commit "fd9bf5787a99dd31a4bdf54d2bd9821aacf84e93")
+        (revision "0"))
+    (package
+      (name "emacs-whisper-el")
+      (version "0.4.7")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/natrys/whisper.el")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0za55s117v7sc7cj4xlxxhkaamjlggs1g319n7fz54saa2wzmdj5"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-external-programs
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "whisper.el"
+                  (("\\(executable-find \"ffmpeg\"\\)")
+                   "t")
+                  (("\"ffmpeg\"")
+                   (string-append "\"" #$(this-package-input "ffmpeg")
+                                  "/bin/ffmpeg\""))
+                  ((",\\(whisper--find-whispercpp-main\\)")
+                   (string-append "\"" #$(this-package-input "whisper-cpp")
+                                  "/bin/whisper-cli\"")))
+                (emacs-substitute-variables "whisper.el"
+                  ("whisper-install-whispercpp" 'nil)))))))
+      (inputs
+       (list ffmpeg whisper-cpp))
+      (home-page "https://github.com/natrys/whisper.el")
+      (synopsis "Speech to text interface for Emacs")
+      (description
+       "@code{emacs-whisper-el} captures audio with an input device, and
+transcribes text inserted into current Emacs buffer, optionally after
+translating to English from your local language.  Transcription uses the
+C/C++ port whisper.cpp for inference.")
+      (license license:gpl3+))))
 
 ;; Tagged release upstream is from before the package was orphaned.
 ;; The base version is extracted from the "Version" keyword in the main file
