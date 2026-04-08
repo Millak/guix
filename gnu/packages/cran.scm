@@ -20817,6 +20817,12 @@ methods.")
     (build-system r-build-system)
     (arguments
      (list
+      #:skipped-tests
+      (if (target-32bit?)
+          '(("test-round.R"
+             ;; Minor differences due to accuracy limitations.
+             "time_floor works for fractional asecons"))
+          '())
       #:phases
       '(modify-phases %standard-phases
          ;; We need this for tests.
