@@ -10503,6 +10503,35 @@ methods for manually performing crypto calculations on large multibyte
 integers.")
     (license license:expat)))
 
+(define-public r-orf
+  (package
+    (name "r-orf")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "orf" version))
+       (sha256
+        (base32 "1njcnya5f2wx50l7gyf53js16xj1y6pwgbghxq4nm4grf2ck3mz1"))))
+    (properties `((upstream-name . "orf")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2 r-ranger r-rcpp r-xtable))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/okasag/orf")
+    (synopsis "Ordered random forests")
+    (description
+     "This package provides an implementation of the Ordered Forest estimator
+as developed in Lechner & Okasa (2019) <@code{arXiv:1907.02436>}.  The Ordered
+Forest flexibly estimates the conditional probabilities of models with ordered
+categorical outcomes (so-called ordered choice models).  Additionally to
+common machine learning algorithms the @code{orf} package provides functions
+for estimating marginal effects as well as statistical inference thereof and
+thus provides similar output as in standard econometric models for ordered
+choice.  The core forest algorithm relies on the fast C++ forest
+implementation from the @code{ranger} package (Wright & Ziegler, 2017)
+<@code{arXiv:1508.04409>}.")
+    (license license:gpl3)))
+
 (define-public r-orgmassspecr
   (package
     (name "r-orgmassspecr")
