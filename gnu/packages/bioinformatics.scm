@@ -7175,14 +7175,16 @@ CWL descriptions.")
   (package
     (name "ravanan")
     (version "0.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/arunisaac/ravanan/releases/download/v"
-                    version "/ravanan-" version ".tar.lz"))
-              (sha256
-               (base32
-                "00ayvxsgvma3231ja1759f5fr99a4nw3j23i8qz616wfxa54745s"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/arunisaac/ravanan")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1ap9h2d92wjvnn8914baqkx6xn8zdanxmpjfg81v3qx35pn938al"))))
     (arguments
      (list #:make-flags
            #~(list (string-append "prefix=" #$output)
