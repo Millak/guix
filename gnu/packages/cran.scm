@@ -3986,6 +3986,42 @@ and a user-specified prior linear model.  The package includes functionality
 to evaluate quadratic forms efficiently.")
     (license (list license:gpl2+ license:gpl3+))))
 
+(define-public r-epir
+  (package
+    (name "r-epir")
+    (version "2.0.91")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "epiR" version))
+       (sha256
+        (base32 "17av6wp28q6pzgm24fcpafzrg9j10xyv87z9dwkwjcj65m5zfmqk"))))
+    (properties `((upstream-name . "epiR")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biasedurn
+                             r-flextable
+                             r-lubridate
+                             r-officer
+                             r-pander
+                             r-sf
+                             r-survival
+                             r-zoo))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=epiR")
+    (synopsis "Tools for the analysis of epidemiological data")
+    (description
+     "This package provides tools for the analysis of epidemiological and
+surveillance data.  It contains functions for directly and indirectly
+adjusting measures of disease frequency, quantifying measures of association
+on the basis of single or multiple strata of count data presented in a
+contingency table, computation of confidence intervals around incidence risk
+and incidence rate estimates and sample size calculations for cross-sectional,
+case-control and cohort studies.  Surveillance tools include functions to
+calculate an appropriate sample size for 1- and 2-stage representative freedom
+surveys, functions to estimate surveillance system sensitivity and functions
+to support scenario tree modelling analyses.")
+    (license license:gpl2+)))
+
 (define-public r-esc
   (package
     (name "r-esc")
