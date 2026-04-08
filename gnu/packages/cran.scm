@@ -901,7 +901,7 @@ binary booleans, @code{TRUE} and @code{FALSE} can be stored with 1 bit only.")
     (propagated-inputs
      (list r-bit))
     (native-inputs (list r-testthat))
-    (home-page "https://ff.r-forge.r-project.org/")
+    (home-page "https://cran.r-project.org/web/packages/bit64")
     (synopsis "S3 class for vectors of 64 bit integers")
     (description
      "The bit64 package provides serializable S3 atomic 64 bit (signed)
