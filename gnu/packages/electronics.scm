@@ -4289,8 +4289,8 @@ front-end program for Yosys-based formal hardware verification flows.")
     (license license:isc)))
 
 (define-public sby-gui
-  (let ((commit "6c977084c17c4842c504829c6d455a07d67e119c")
-        (revision "0"))
+  (let ((commit "0a89301bf347c9f42932186e49ba2c0014ff3661")
+        (revision "1"))
     (package
       (name "sby-gui")
       (version (git-version "0" revision commit))
@@ -4302,10 +4302,13 @@ front-end program for Yosys-based formal hardware verification flows.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "137x3s5mwbzlcv2p6671ijvbafzwhxpvszzfi9wifq0wcli6cxxg"))))
+          (base32 "1zp2c7zqclsfvl5xhb8zlc1dclp2s36w2nd0x80fazsxp7ksw5gr"))))
       (build-system qt-build-system)
       (arguments
-       (list #:tests? #f))               ;no tests
+       (list
+        #:qtbase qtbase                 ;for Qt 6
+        #:tests? #f))                   ;no tests
+      (native-inputs (list python-minimal-wrapper))
       (propagated-inputs (list sby))
       (home-page "https://github.com/YosysHQ/sby-gui/")
       (synopsis "Graphical user interface for code{sby}")
