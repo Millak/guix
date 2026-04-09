@@ -10259,8 +10259,8 @@ known as JOSE) technologies.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/letsencrypt/boulder")
-             (commit (string-append "v" version))))
+              (url "https://github.com/letsencrypt/boulder")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1n8pg1bnxb7ajpjs93ji8vibaqx5rs5wyv082klajdx80pz7mbks"))
@@ -10286,6 +10286,10 @@ known as JOSE) technologies.")
               "grpc/noncebalancer"
               "iana"
               "identifier"
+              "linter/lints"
+              "linter/lints/cabf_br"
+              "linter/lints/cpcps"
+              "linter/lints/rfc"
               "log/validator"
               "metrics/measured_http"
               "must"
@@ -10311,6 +10315,7 @@ known as JOSE) technologies.")
            go-github-com-go-logr-stdr
            go-github-com-go-sql-driver-mysql
            go-github-com-golang-groupcache
+           go-github-com-grpc-ecosystem-go-grpc-middleware-providers-prometheus
            go-github-com-jmhodges-clock
            go-github-com-letsencrypt-borp
            go-github-com-letsencrypt-challtestsrv
@@ -10324,6 +10329,8 @@ known as JOSE) technologies.")
            go-github-com-redis-go-redis-v9
            go-github-com-titanous-rocacheck
            go-github-com-weppos-publicsuffix-go
+           go-github-com-zmap-zcrypto
+           go-github-com-zmap-zlint-v3
            go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
            go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
            go-go-opentelemetry-io-otel
@@ -10341,10 +10348,7 @@ known as JOSE) technologies.")
 
            ;; TODO: Complete packaging
            ;; go-github-com-google-certificate-transparency-go
-           ;; go-github-com-grpc-ecosystem-go-grpc-middleware-providers-prometheus
-           ;; go-github-com-redis-go-redis-extra-redisotel-v9
-           ;; go-github-com-zmap-zcrypto
-           #;go-github-com-zmap-zlint-v3))
+           #;go-github-com-redis-go-redis-extra-redisotel-v9))
     (home-page "https://github.com/letsencrypt/boulder")
     (synopsis "ACME-based certificate authority used by Let's Encrypt")
     (description
