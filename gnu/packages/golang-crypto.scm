@@ -3779,6 +3779,38 @@ is an extremely fast non-cryptographic hash algorithm.")
 @url{https://en.wikipedia.org/wiki/RC2, RC2} Cipher in Golang.")
     (license license:asl2.0)))
 
+(define-public go-github-com-zmap-zcertificate
+  (package
+    (name "go-github-com-zmap-zcertificate")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zmap/zcertificate")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lxayyxb0gvls1l05jglqdf8b7zxz3gw94kwbgxvshs7lc0s6hnw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Source only, to break cycle with
+      ;; go-github-com-zmap-zcrypto. Addintional inputs requaired only to
+      ;; build CLI:
+      ;; 
+      ;; -  github.com/sirupsen/logrus
+      ;; -  github.com/zmap/zcrypto
+      ;; -  github.com/zmap/zlint/v3
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/zmap/zcertificate"))
+    (home-page "https://github.com/zmap/zcertificate")
+    (synopsis "ZCertificate")
+    (description "ZCertificate parses X.509 certificates and runs
+@@url{https://github.com/zmap/zlint,ZLint}.")
+    (license license:asl2.0)))
+
 (define-public go-gitlab-com-nyarla-go-crypt
   (package
     (name "go-gitlab-com-nyarla-go-crypt")
