@@ -12282,7 +12282,7 @@ that avoids the usage of older system-wide @file{/sys} interface.")
 (define-public libtraceevent
   (package
     (name "libtraceevent")
-    (version "1.7.3")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -12291,7 +12291,7 @@ that avoids the usage of older system-wide @file{/sys} interface.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06mw2f0xnk6dy9w2z0n4dz7lnm02qfsmnmj2h24453qxlw57x0d6"))
+        (base32 "10fklw4znjhm8mlg6hwlipdyk7v3053lnrc5bpqifnsc8gwqbaz0"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
