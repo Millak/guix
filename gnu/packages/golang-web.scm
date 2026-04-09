@@ -762,8 +762,7 @@ its service definition.")
     (arguments
      (list
       #:skip-build? #t
-      ;; XXX: Enable when all inputs are packages, using as source only
-      ;; package to update Restic.
+      ;; XXX: Enable when recursive issue is fixed.
       #:tests? #f
       #:import-path "cloud.google.com/go/storage"
       #:unpack-path "cloud.google.com/go"))
@@ -772,15 +771,15 @@ its service definition.")
     (propagated-inputs
      (list go-cloud-google-com-go
            go-cloud-google-com-go-auth
-           ;; go-cloud-google-com-go-compute-metadata
-           ;; go-cloud-google-com-go-iam
+           go-cloud-google-com-go-compute-metadata
+           go-cloud-google-com-go-iam
            go-cloud-google-com-go-longrunning
            go-github-com-google-uuid
            go-github-com-googleapis-gax-go-v2
            go-github-com-googlecloudplatform-opentelemetry-operations-go-exporter-metric
            go-go-opentelemetry-io-contrib-detectors-gcp
            go-go-opentelemetry-io-otel
-           ;; go-go-opentelemetry-io-otel-exporters-stdout-stdoutmetric
+           go-go-opentelemetry-io-otel-exporters-stdout-stdoutmetric
            go-go-opentelemetry-io-otel-sdk
            go-go-opentelemetry-io-otel-sdk-metric
            go-go-opentelemetry-io-otel-trace
