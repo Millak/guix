@@ -28222,7 +28222,7 @@ match and total match information in the mode-line in various search modes.")
 (define-public emacs-pg
   (package
     (name "emacs-pg")
-    (version "0.63")
+    (version "0.6.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url "https://github.com/emarsden/pg-el")
@@ -28230,7 +28230,7 @@ match and total match information in the mode-line in various search modes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19hh45mlb4j6a3ys3wvivj0bm5xy5vjwscnvn68b656b5jk5himh"))))
+                "0w9a8y3s2dbmpqbbnxycxd38niqq2slzr26bfl4v1pfcm0w7skfz"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-peg))
     (home-page "https://github.com/emarsden/pg-el")
