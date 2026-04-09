@@ -253,7 +253,7 @@ as well as some desktop-wide documents.")
            pkg-config
            xorg-server-for-tests))
     (inputs
-     (list atk
+     (list at-spi2-core
            cinnamon-desktop
            exempi
            gsettings-desktop-schemas
