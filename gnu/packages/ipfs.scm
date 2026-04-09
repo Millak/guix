@@ -1191,11 +1191,9 @@ IPLD graph as detailed below.  Objects are demonstrated here using both
            go-github-com-libp2p-go-libp2p))
     (home-page "https://github.com/ipfs/go-peertaskqueue")
     (synopsis "Prioritized queue of abstract tasks distributed among peers")
-    ;; Project has nothing in README, see
-    ;; <https://github.com/ipfs/go-peertaskqueue/issues/1>.
     (description
-     "This package implements a functionality to prioritize queue of abstract
-tasks distributed among peers.")
+     "This package implements a prioritized list of tasks to be executed on
+peers.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public go-github-com-ipfs-go-test
