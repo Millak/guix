@@ -4663,7 +4663,7 @@ parallel computing platforms.  It also supports serial execution.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.63")
+    (version "0.64")
     (source
      (origin
        (method git-fetch)
@@ -4671,7 +4671,7 @@ parallel computing platforms.  It also supports serial execution.")
               (url "https://github.com/YosysHQ/yosys")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "1iaafzsc0pbd61m5hh12nzr2z4rn4n7i68l6ij9vli4m5zsxw39k"))
+        (base32 "13gw5msk1kv05jkb330nybvx2s0ixm6l6mdpyapnqmv3lkhby1mj"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
@@ -4784,12 +4784,12 @@ parallel computing platforms.  It also supports serial execution.")
               (git-reference
                 (url "https://github.com/povik/yosys-slang")
                 ;; No tags, nor releases.
-                (commit "d82b0b163a725fc1a401fbb6b465cd862517ec1f")
+                (commit "4e53d772996184b07e9bfe784060f96e6cb0a267")
                 (recursive? #t)))  ;requires slang and fmt
              (file-name "yosys-slang")
              (sha256
               (base32
-               "07h4qssphggd4mbn376vldqwzj1i16y1ix455xzr4lgx6s2q9ryg")))))
+               "1jjr1b6xd1sr9fkyfyl4y2wkzl51m7g10bw97mnw81v2mzssrs2q")))))
     ;; Optional dependencies increase considerably package closure.
     ;; - gtkwave: required only for vcd2fst binary, used by ‘sim’ command.
     ;; - graphviz, xdot: used by ‘show’ command to display schematics.
