@@ -3499,13 +3499,13 @@ form of AXI, AXI lite, and AXI stream modules.")
     (home-page "https://github.com/olofk/edalize/")
     (synopsis "Python Library for interacting with EDA tools")
     (description
-     "This package implements a functionality to create project files for
-supported tools and run them in batch or GUI mode.  All EDA tools such as
-Icarus, Yosys, ModelSim, Vivado, Verilator, GHDL, Quartus etc get input HDL
-files (Verilog and VHDL) and some tool-specific files (constraint files,memory
-initialization files, IP description files etc).  Together with the files,
-perhaps a couple of Verilog `defines, some top-level parameters/generics or
-some tool-specific options are set.")
+     "This package can create project files for supported tools and run them in
+batch or GUI mode.  All EDA tools such as Icarus, Yosys, ModelSim, Vivado,
+Verilator, GHDL, Quartus etc get input HDL files (Verilog and VHDL) and some
+tool-specific files (constraint files,memory initialization files, IP
+description files etc).  Together with the files, perhaps a couple of Verilog
+`defines, some top-level parameters/generics or some tool-specific options are
+set.")
     (license license:bsd-2)))
 
 (define-public fusesoc
