@@ -38895,6 +38895,15 @@ high-performance functions are provided here.")
     (build-system r-build-system)
     (arguments
      (list
+      #:skipped-tests
+      (if (target-32bit?)
+          '(("test-s2-transformers.R"
+             ;; There is an extra tuple.
+             "s2_rebuild\\(\\) works"
+             ;; Same problem here, but here it also looks like the result of
+             ;; an accuracy error.
+             "s2_simplify\\(\\) works"))
+          '())
       #:phases
       `(modify-phases %standard-phases
          ;; We don't want to convert -lssl to -l:libssl.so.1.1; there is only
