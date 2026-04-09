@@ -5005,69 +5005,6 @@ toolkit.  It also provides the @code{ccs} executable to scan for circular
 consensus sequences.")
     (license license:expat)))
 
-(define-public ciri-long
-  (package
-    (name "ciri-long")
-    (version "1.0.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/bioinfo-biols/CIRI-long")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "10k88i1fcqchrrjv82rmylwvbwqfba0n51palhig9hsg71xs0dbi"))
-       ;; Delete bundled binary
-       (snippet '(delete-file "libs/ccs"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "setup.py"
-                (("'argparse[^']*',")
-                 "") ;only for python2
-                (("==")
-                 ">=")
-                ;; This package changed names.
-                (("python-Levenshtein")
-                 "levenshtein"))))
-          (add-before 'build 'build-libssw
-            (lambda _
-              (with-directory-excursion "libs/striped_smith_waterman"
-                (invoke "make" "libssw.so"))))
-          (add-before 'build 'fix-reference-to-ccs
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "CIRI_long/pipeline.py"
-                (("'ccs -i")
-                 (string-append "'"
-                                (assoc-ref inputs "circtools") "/bin/ccs"
-                                " -i")))
-              ;; yuck!
-              (substitute* "CIRI_long/main.py"
-                (("os.chmod\\(lib_path.*")
-                 "")))))))
-    (inputs (list circtools
-                  python-biopython
-                  python-bwapy
-                  python-levenshtein
-                  python-mappy
-                  python-numpy
-                  python-pandas
-                  python-pysam
-                  python-pyspoa
-                  python-scikit-learn
-                  python-scipy))
-    (native-inputs (list python-cython python-pynose python-setuptools))
-    (home-page "https://ciri-cookbook.readthedocs.io/")
-    (synopsis "Circular RNA identification for Nanopore sequencing")
-    (description "CIRI-long is a package for circular RNA identification using
-long-read sequencing data.")
-    (license license:expat)))
-
 (define-public python-circe
   (package
     (name "python-circe")
