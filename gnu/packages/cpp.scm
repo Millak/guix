@@ -683,38 +683,6 @@ computer program to introspect and modify an object at runtime.  It is also
 the name of the library itself, which is written in C++.")
     (license license:expat)))
 
-(define-public rct
-  (let* ((commit "b3e6f41d9844ef64420e628e0c65ed98278a843a")
-         (revision "2"))
-    (package
-      (name "rct")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/Andersbakken/rct")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "1m2931jacka27ghnpgf1z1plkkr64z0pga4r4zdrfpp2d7xnrdvb"))
-                (patches (search-patches "rct-add-missing-headers.patch"))
-                (file-name (git-file-name name version))))
-      (build-system cmake-build-system)
-      (arguments
-       '(#:configure-flags
-         '("-DWITH_TESTS=ON"            ; To run the test suite
-           "-DRCT_RTTI_ENABLED=ON")))
-      (native-inputs
-       (list cppunit pkg-config))
-      (inputs
-       (list openssl zlib))
-      (home-page "https://github.com/Andersbakken/rct")
-      (synopsis "C++ library providing Qt-like APIs on top of the STL")
-      (description "Rct is a set of C++ tools that provide nicer (more Qt-like)
- APIs on top of Standard Template Library (@dfn{STL}) classes.")
-      (license (list license:expat        ; cJSON
-                     license:bsd-4)))))   ; everything else (LICENSE.txt)
-
 (define-public plutovg
   (package
     (name "plutovg")

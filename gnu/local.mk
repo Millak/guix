@@ -2332,7 +2332,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/rapidcheck-fix-libs.patch		\
   %D%/packages/patches/ratpoison-shell.patch			\
   %D%/packages/patches/retroarch-unbundle-spirv-cross.patch	\
-  %D%/packages/patches/rct-add-missing-headers.patch		\
   %D%/packages/patches/readline-link-ncurses.patch		\
   %D%/packages/patches/renpy-python-3.11-compat.patch			\
   %D%/packages/patches/renpy-fix-integer-slots.patch			\
