@@ -24482,6 +24482,27 @@ key-bindings, avoiding most if not all the hassle introduced by key-binding
 conflicts.")
     (license license:gpl3+)))
 
+(define-public emacs-meow-tree-sitter
+  (package
+    (name "emacs-meow-tree-sitter")
+    (version "2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://stable.melpa.org/packages/meow-tree-sitter-" version
+             ".tar"))
+       (sha256
+        (base32 "1sxa1flngzsj3hh3sp3kccwgsxq6d40wsn8vzgv0ahrxkz2s6fxg"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-meow))
+    (home-page "https://github.com/skissue/meow-tree-sitter")
+    (synopsis "Tree-sitter powered motions for Meow")
+    (description
+     "This package integrates the treesitter library in modern Emacs with
+Meow’s motions.")
+    (license license:mpl2.0)))
+
 (define-public emacs-xelb
   (package
     (name "emacs-xelb")
