@@ -6861,6 +6861,35 @@ go-swagger projects.")
 OpenAPI 2.0).")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-ping-ping
+  (package
+    (name "go-github-com-go-ping-ping")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-ping/ping")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rn40cavn9l2av1rg8m2si5jgpf60wz10z2gyx2hi7l9cgx4df3f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-ping/ping"
+      ;; Some tests require a network
+      #:test-flags #~(list "-skip" "TestNewPingerValid|TestSetIPAddr")))
+    (propagated-inputs
+     (list go-github-com-google-uuid
+           go-golang-org-x-net
+           go-golang-org-x-sync))
+    (home-page "https://github.com/go-ping/ping")
+    (synopsis "ICMP ping library")
+    (description
+     "This package provides a simple but powerful ICMP echo (ping) library.")
+    (license license:expat)))
+
 (define-public go-github-com-go-resty-resty-v2
   (package
     (name "go-github-com-go-resty-resty-v2")
