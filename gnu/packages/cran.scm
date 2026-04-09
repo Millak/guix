@@ -5075,9 +5075,14 @@ samples) are easily visualized.")
     (arguments
      (list
       #:skipped-tests
-      '(("test-plot.R"
+      `(("test-plot.R"
          ;; did not generate expected warning
-         "ggplot\\(\\) throws informative errors"))))
+         "ggplot\\(\\) throws informative errors")
+        ,@(if (target-32bit?)
+              ;; This test fails because of a lack of accuracy.
+              '(("test-sec-axis.R"
+                 "sec axis works with tidy eval"))
+              '()))))
     (propagated-inputs
      (list r-cli
            r-gtable
