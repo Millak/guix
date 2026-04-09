@@ -1553,32 +1553,6 @@ It aims to conform to RFC 7159.")
                                " -Wno-error=calloc-transposed-args"
                                " -Wno-error=implicit-function-declaration"))))))
 
-(define-public json-c-0.12
-  (package
-    (inherit json-c-0.13)
-    (version "0.12.1")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://s3.amazonaws.com/json-c_releases/releases/json-c-"
-                   version ".tar.gz"))
-             (sha256
-              (base32 "08qibrq29a5v7g23wi5icy6l4fbfw90h9ccps6vq0bcklx8n84ra"))
-              (patches (search-patches "json-c-0.12-CVE-2020-12762.patch"))
-             (modules '((guix build utils)))
-             (snippet
-              '(begin
-                 ;; Somehow 'config.h.in' is older than
-                 ;; 'aclocal.m4', which would trigger a rule to
-                 ;; run 'autoheader'.
-                 (set-file-time "config.h.in"
-                                (stat "aclocal.m4"))
-
-                 ;; Don't try to build with -Werror.
-                 (substitute* (find-files "." "Makefile\\.in")
-                   (("-Werror") ""))
-                 #t))))))
-
 (define-public json-parser
   (package
     (name "json-parser")

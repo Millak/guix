@@ -1681,7 +1681,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/jfsutils-gcc-compat.patch		\
   %D%/packages/patches/jfsutils-include-systypes.patch		\
   %D%/packages/patches/john-the-ripper-jumbo-with-gcc-11.patch	\
-  %D%/packages/patches/json-c-0.12-CVE-2020-12762.patch		\
   %D%/packages/patches/json-c-0.13-CVE-2020-12762.patch		\
   %D%/packages/patches/jsonnet-include-cstdint-for-gcc-13-builds.patch	\
   %D%/packages/patches/julia-SOURCE_DATE_EPOCH-mtime.patch	\
