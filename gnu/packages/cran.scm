@@ -2145,6 +2145,21 @@ labels on the node can also be achieved.")
         (base32 "1nas21avxrc28pqn83iknnd0nriyx3ygj290gy68bqwpcch71nwl"))))
     (properties `((upstream-name . "collapse")))
     (build-system r-build-system)
+    (arguments
+     (if (target-32bit?)
+         (list
+          #:skipped-tests
+          ;; Many accuracy related errors
+          '("test-fquantile.R"
+            ("test-fvar-fsd.R"
+             "fvar with direct algorithm performs like fvar with unit weights")
+            ("test-miscellaneous-issues.R"
+             "fmedian ties handled properly with weights")
+            ("test-fmedian.R"
+             "fnth performs like nth \\(defined above\\)")
+            ("test-fmode.R"
+             "fmode performs like fmode with weights all equal")))
+         '()))
     (propagated-inputs (list r-rcpp))
     (native-inputs (list r-bit64
                          r-data-table
