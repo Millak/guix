@@ -284,7 +284,7 @@ a focus on simplicity and productivity.")
     (home-page "https://www.ruby-lang.org")
     (license license:ruby)))
 
-(define-public ruby ruby-3.3)
+(define-public ruby ruby-3.4)
 
 (define-public mruby
   (package
