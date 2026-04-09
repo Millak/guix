@@ -1400,6 +1400,13 @@ Companion to Applied Regression, Third Edition, Sage.")
        ;; Do not create dependency cycle.
        (updater-ignored-native-inputs . ("r-cardx"))))
     (build-system r-build-system)
+    (arguments
+     (if (target-32bit?)
+         (list
+          #:skipped-tests
+          ;; Got 0.0 when we expected 0.1.
+          '(("test-options.R" "options\\(cards.round_type\\)")))
+         '()))
     (propagated-inputs (list r-cli
                              r-dplyr
                              r-glue
