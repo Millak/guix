@@ -5259,6 +5259,6 @@ features:
     (home-page "https://github.com/emersion/hydroxide")
     (synopsis "ProtonMail CardDAV, IMAP and SMTP bridge")
     (description
-     "This package implements a functionality to translate standard
-protocols (SMTP, IMAP, CardDAV) into ProtonMail API requests.")
+     "A third-party, open-source ProtonMail bridge.  It is designed to run on a
+server.  It supports CardDAV, IMAP and SMTP.")
     (license license:expat)))
