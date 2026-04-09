@@ -15771,16 +15771,16 @@ multiprecision arithmetic.")
 (define-public python-plac
   (package
     (name "python-plac")
-    (version "1.3.5")
+    (version "1.4.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ialbert/plac")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ialbert/plac")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n0cbil1snbn0diw8zjm7qs77zpbgmf2k76mc2jknhk1hbnksyak"))))
+        (base32 "0c9nagff8x7wk137yhs9fm1823c2l6yiyvm6w5gb0i4w5nsh6v0i"))))
     (build-system pyproject-build-system)
     (arguments
      (list
