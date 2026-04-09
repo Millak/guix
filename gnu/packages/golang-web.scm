@@ -380,6 +380,7 @@ devices.")
             ;; Submodules with their own go.mod files and packaged separately:
             ;;
             ;; - cloud.google.com/go/auth
+            ;; - cloud.google.com/go/iam
             ;; - cloud.google.com/go/auth/oauth2adapt
             ;; - cloud.google.com/go/compute/metadata
             ;; - cloud.google.com/go/longrunning
@@ -387,6 +388,7 @@ devices.")
             ;; - cloud.google.com/go/storage
             (for-each delete-file-recursively
                       (list "auth"
+                            "iam"
                             "compute/metadata"
                             "longrunning"
                             "monitoring"
@@ -591,6 +593,53 @@ cloud.google.com/go/auth and golang.org/x/oauth2.")
     (description
      "This package provides access to Google Compute Engine (GCE) metadata and
 API service accounts for Go.")
+    (license license:asl2.0)))
+
+(define-public go-cloud-google-com-go-iam
+  (package
+    (name "go-cloud-google-com-go-iam")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/google-cloud-go")
+              (commit (go-version->git-ref version
+                                           #:subdir "iam"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qrhsn90v1myvyd46pjvg02pzwqzny1v3f75jdby03bbdcd7al9m"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "." "iam")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "cloud.google.com/go/iam"
+      #:unpack-path "cloud.google.com/go"))
+    (propagated-inputs
+     (list go-cloud-google-com-go
+           go-cloud-google-com-go-longrunning
+           go-github-com-googleapis-gax-go-v2
+           go-google-golang-org-api
+           go-google-golang-org-genproto
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://cloud.google.com/go")
+    (synopsis "GCP Identity and Access Management API")
+    (description
+     "Package iam supports the resource-specific operations of Google Cloud
+@acronym{IAM, Identity and Access Management} for the Google Cloud Libraries,
+see: @url{https://cloud.google.com/iam, IAM specification} for more details.")
     (license license:asl2.0)))
 
 (define-public go-cloud-google-com-go-longrunning
