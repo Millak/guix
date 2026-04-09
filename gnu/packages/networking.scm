@@ -3401,6 +3401,54 @@ notations in use for IPv4 and IPv6 addresses and networks.")
 speedtest.net.")
     (license license:asl2.0)))
 
+(define-public librespeed-cli
+  (package
+    (name "librespeed-cli")
+    (version "1.0.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/librespeed/speedtest-cli")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08x09b3j2qvhnwy8lrbfxqh1lbs64wyqlr4jj6m31b5r2zy90dly"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/librespeed/speedtest-cli"
+      #:build-flags
+      #~(list (format #f "-ldflags=-X ~s -X ~s"
+                      (string-append "github.com/librespeed/speedtest-cli"
+                                     "/defs.ProgName=librespeed-cli")
+                      (string-append "github.com/librespeed/speedtest-cli"
+                                     "/defs.ProgVersion="
+                                     #$version)))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Avoid naming conflict with speedtest-cli package
+          (add-after 'install 'rename-executable
+            (lambda _
+              (with-directory-excursion (string-append #$output "/bin")
+                (rename-file "speedtest-cli" "librespeed-cli")))))))
+    (native-inputs
+     (list go-github-com-briandowns-spinner
+           go-github-com-go-ping-ping
+           go-github-com-gocarina-gocsv
+           go-github-com-sirupsen-logrus
+           go-github-com-urfave-cli-v2
+           go-golang-org-x-sys))
+    (home-page "https://github.com/librespeed/speedtest-cli")
+    (synopsis "Command-line internet speed test tool")
+    (description
+     "Command-line interface for LibreSpeed internet bandwidth testing.
+It functions as a command-line alternative to @url{https://librespeed.org/}.
+It features ping, jitter, download, and upload testing, as well as the ability
+to test using multiple servers in a single run.")
+    (license license:lgpl3)))
+
 (define-public atftp
   (package
     (name "atftp")
