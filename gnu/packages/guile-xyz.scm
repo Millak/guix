@@ -7808,13 +7808,13 @@ is an attempt to combine both into something useful.")
      (list pkg-config
            autoconf
            automake
-           guile-next
+           guile-3.0-latest
            guile-lib
-           guile-fibers-next))
+           guile-fibers))
     (inputs
-     (list guile-next))
+     (list guile-3.0-latest))
     (propagated-inputs
-     (list guile-fibers-next))
+     (list guile-fibers))
     (home-page "https://cbaines.codeberg.page/guile-knots/")
     (synopsis "Patterns and functionality to use with Guile Fibers")
     (description
