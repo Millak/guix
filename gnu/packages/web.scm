@@ -5926,7 +5926,7 @@ Cloud.")
              bash-minimal))
       (propagated-inputs
        (list guix
-             guile-fibers-next
+             guile-fibers
              guile-knots
              guile-json-4
              guile-email
@@ -5934,9 +5934,7 @@ Cloud.")
              guile-squee
              guile-lzlib))
       (native-inputs
-       ;; Use the highest Guile version found among dependencies to ensure .go
-       ;; files can be loaded.
-       (list (lookup-package-native-input guile-fibers-next "guile")
+       (list guile-3.0-latest
              autoconf
              automake
              emacs-minimal
