@@ -11201,6 +11201,31 @@ native Go structure.")
 size.")
     (license license:expat)))
 
+(define-public go-github-com-gocarina-gocsv
+  (package
+    (name "go-github-com-gocarina-gocsv")
+    (version "0.0.0-20240520201108-78e41c74b4b1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gocarina/gocsv")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16scxa7cydlaqbygw9sbss6c2wpgs0d2dy5x7rkjfghf7kg88f02"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gocarina/gocsv"
+      #:test-flags #~(list "-vet=off")))
+    (home-page "https://github.com/gocarina/gocsv")
+    (synopsis "CSV serialization and deserialization in Golang")
+    (description
+     "This package provides easy serialization and deserialization functions
+to use CSV files in Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-goccy-go-yaml
   (package
     (name "go-github-com-goccy-go-yaml")
