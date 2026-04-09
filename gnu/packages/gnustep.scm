@@ -117,7 +117,7 @@ GCC runtime.
 (define-public windowmaker
   (package
     (name "windowmaker")
-    (version "0.95.9")
+    (version "0.96.0")
     (synopsis "NeXTSTEP-like window manager")
     (source (origin
               (method url-fetch)
@@ -126,60 +126,58 @@ GCC runtime.
                     "wmaker-" version "/WindowMaker-" version ".tar.gz"))
               (sha256
                (base32
-                "055pqvlkhipyjn7m6bb3fs4zz9rd1ynzl0mmwbhp05ihc3zmh8zj"))))
+                "0vbgjbqnv2gcpimnrh2fc383gxcdfhgz1j3f2lfa4jng4fx31qag"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules ((guix build gnu-build-system)
+     (list
+      #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   (ice-9 match))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'pre-configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; 'wmaker' wants to invoke 'wmaker.inst' the first time,
-             ;; and the 'wmsetbg', so make sure it uses the right ones.
-             ;; We can't use a wrapper here because that would pollute
-             ;; $PATH in the whole session.
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (substitute* "src/main.c"
-                 (("\"wmaker\\.inst")
-                  (string-append "\"" bin "/wmaker.inst")))
-               (substitute* '("src/defaults.c" "WPrefs.app/Menu.c")
-                 (("\"wmsetbg")
-                  (string-append "\"" bin "/wmsetbg")))
-               ;; Add enough cells to the command character array to
-               ;; allow passing our large path to the wmsetbg binary.
-               ;; The path to wmsetbg in Guix requires 67 extra characters.
-               (substitute* "src/defaults.c"
-                 (("len = strlen\\(text\\) \\+ 40;")
-                  (string-append "len = strlen(text) + 107;"))))))
-         (add-after 'install 'install-xsession
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (xsessions (string-append out "/share/xsessions")))
-               (mkdir-p xsessions)
-               (call-with-output-file
-                   (string-append xsessions "/windowmaker.desktop")
-                 (lambda (port)
-                   (format port "~
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'pre-configure
+            (lambda _
+              ;; 'wmaker' wants to invoke 'wmaker.inst' the first time,
+              ;; and the 'wmsetbg', so make sure it uses the right ones.
+              ;; We can't use a wrapper here because that would pollute
+              ;; $PATH in the whole session.
+              (let* ((bin (string-append #$output "/bin")))
+                (substitute* "src/main.c"
+                  (("\"wmaker\\.inst")
+                   (string-append "\"" bin "/wmaker.inst")))
+                (substitute* '("src/defaults.c" "WPrefs.app/Menu.c")
+                  (("\"wmsetbg")
+                   (string-append "\"" bin "/wmsetbg")))
+                ;; Add enough cells to the command character array to
+                ;; allow passing our large path to the wmsetbg binary.
+                ;; The path to wmsetbg in Guix requires 67 extra characters.
+                (substitute* "src/defaults.c"
+                  (("len = strlen\\(text\\) \\+ 40;")
+                   (string-append "len = strlen(text) + 107;"))))))
+          (add-after 'install 'install-xsession
+            (lambda _
+              (let* ((xsessions (string-append #$output "/share/xsessions")))
+                (mkdir-p xsessions)
+                (call-with-output-file
+                    (string-append xsessions "/windowmaker.desktop")
+                  (lambda (port)
+                    (format port "~
                     [Desktop Entry]~@
                     Name=Window Maker~@
                     Comment=~a~@
                     Exec=~a/bin/wmaker~@
                     Type=Application~%"
-                           (string-map (match-lambda
-                                         (#\newline #\space)
-                                         (chr chr))
-                                       ,synopsis) out))))))
-         (add-after 'install-xsession 'wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               ;; In turn, 'wmaker.inst' wants to invoke 'wmmenugen'
-               ;; etc., so make sure everything is in $PATH.
-               (wrap-program (string-append bin "/wmaker.inst")
-                 `("PATH" ":" prefix (,bin)))))))))
+                            (string-map (match-lambda
+                                          (#\newline #\space)
+                                          (chr chr))
+                                        #$synopsis) #$output))))))
+          (add-after 'install-xsession 'wrap
+            (lambda _
+              (let* ((bin (string-append #$output "/bin")))
+                ;; In turn, 'wmaker.inst' wants to invoke 'wmmenugen'
+                ;; etc., so make sure everything is in $PATH.
+                (wrap-program (string-append bin "/wmaker.inst")
+                  `("PATH" ":" prefix (,bin)))))))))
     (inputs
      (list bash-minimal                 ;for wrap-program
            fontconfig
