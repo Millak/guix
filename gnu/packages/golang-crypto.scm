@@ -3811,6 +3811,51 @@ is an extremely fast non-cryptographic hash algorithm.")
 @@url{https://github.com/zmap/zlint,ZLint}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-zmap-zcrypto
+  (package
+    (name "go-github-com-zmap-zcrypto")
+    (version "0.0.0-20260309174858-0e3c42de5a13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zmap/zcrypto")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vbgpr2jms9la1nrzxwcfn6ngi3c2pzglh3a3yfkm0ahxvh4wpca"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zmap/zcrypto"
+      #:test-flags
+      ;; Network access is required.
+      #~(list "-skip" (string-join
+                       (list "TestFetchRemote"
+                             "TestVerifyHostname"
+                             "TestTLSVersions"
+                             "TestCipherSuitesBadSSL")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-gopkg-in-check-v1))
+    (propagated-inputs
+     (list go-github-com-mreiferson-go-httpclient
+           go-github-com-op-go-logging
+           go-github-com-sirupsen-logrus
+           go-github-com-weppos-publicsuffix-go
+           go-github-com-zmap-zcertificate
+           go-golang-org-x-crypto
+           go-golang-org-x-net))
+    (home-page "https://github.com/zmap/zcrypto")
+    (synopsis "Liberal Go TLS + X.509 Library for Research")
+    (description
+     "ZCrypto is a research and data collection cryptography library, designed
+to be used for measuring and analyzing cryptographic deployments on the
+Internet.  It is largely centered around the @code{WebPKI}.")
+    ;; See LICENSE file for more details.
+    (license (list license:asl2.0 license:expat license:isc))))
+
 (define-public go-gitlab-com-nyarla-go-crypt
   (package
     (name "go-gitlab-com-nyarla-go-crypt")
