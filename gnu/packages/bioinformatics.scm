@@ -4961,50 +4961,6 @@ bioinformatics formats (FASTA/Q, MHAP/PAF/SAM), with support for zlib
 compressed files.")
     (license license:expat)))
 
-(define-public circtools
-  (package
-    (name "circtools")
-    (version "1.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Kevinzjy/circtools")
-             ;; Corresponds to tag v1.0.0
-             (commit "79380de59013601021ca3b1352d6f64d2fb89646")
-             (recursive? #t)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0wg1s927g32k25j967kfr8l30nmr4c0p4zvy5igvy7cs6chd60lh"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f
-       #:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))))
-         (add-after 'unpack 'prepare-spoa-dependencies
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "vendor/spoa/CMakeLists.txt"
-               (("find_package\\(bioparser 3.0.13 QUIET\\)")
-                "find_package(bioparser 3.0.13 CONFIG)")
-               (("find_package\\(biosoup 0.10.0 QUIET\\)")
-                "find_package(biosoup 0.10.0 CONFIG)")
-               (("GTest_FOUND") "TRUE")))))))
-    (inputs
-     (cons* bioparser biosoup (cargo-inputs 'circtools)))
-    (native-inputs
-     (list cmake-minimal pkg-config googletest))
-    (home-page "https://github.com/Kevinzjy/circtools")
-    (synopsis "Accelerating functions in CIRI toolkit")
-    (description "This package provides accelerated functions for the CIRI
-toolkit.  It also provides the @code{ccs} executable to scan for circular
-consensus sequences.")
-    (license license:expat)))
-
 (define-public python-circe
   (package
     (name "python-circe")
