@@ -195,7 +195,7 @@
   (listen-repl                     guix-build-coordinator-configuration-listen-repl
                                    (default #f))
   (guile                           guix-build-coordinator-configuration-guile
-                                   (default guile-next))
+                                   (default guile-3.0-latest))
   (extra-environment-variables
    guix-build-coordinator-configuration-extra-environment-variables
    (default '()))
@@ -276,7 +276,7 @@
                                                    client-communication-uri-string
                                                    (hooks '())
                                                    (parallel-hooks '())
-                                                   (guile guile-next)
+                                                   (guile guile-3.0-latest)
                                                    listen-repl
                                                    (extra-build-coordinator-arguments
                                                     '()))
