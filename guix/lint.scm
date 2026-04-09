@@ -530,13 +530,15 @@ by two spaces; possible infraction~p at ~{~a~^, ~}")
          (check-ends-with-period description)
          (check-description-typo description
           '(("Infrastucture" . "Infrastructure")    ; codespell:ignore
+            ("This package provide " . "This package provides")
             ("This packages" . "This package")      ; codespell:ignore
             ("This modules" . "This module")        ; codespell:ignore
-            ("allows to " . #f)                     ; codespell:ignore
+            ("allows to " . #f)
             ("dependant" . "dependent")             ; codespell:ignore
             ("dissapears" . "disappears")           ; codespell:ignore
+            ("implements a functionality" . #f)
             ("invokation" . "invocation")           ; codespell:ignore
-            ("permits to " . #f)                    ; codespell:ignore
+            ("permits to " . #f)
             ("provices" . "provides")               ; codespell:ignore
             ("useable" . "usable")))                ; codespell:ignore
          ;; Use raw description for this because Texinfo rendering
