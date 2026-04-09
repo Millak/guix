@@ -6738,27 +6738,29 @@ both CSS3 selector and XPath 1.0 support.")
 (define-public ruby-method-source
   (package
     (name "ruby-method-source")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "method_source" version))
        (sha256
-        (base32
-         "1pnyh44qycnf9mzi1j6fywd5fkskv3x7nmsqrrws0rjn5dd4ayfp"))))
+        (base32 "1igmc3sq9ay90f8xjvfnswd1dybj1s3fi0dwd53inwsvqk4h24qq"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "spec"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-git-ls-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "Rakefile"
-               (("git ls-files") "find . -type f")))))))
-    (native-inputs
-     (list ruby-rspec))
+     (list
+      #:ruby ruby-3.3
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-git-ls-files
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "Rakefile"
+                (("git ls-files")
+                 "find . -type f")))))))
+    (native-inputs (list ruby-rspec))
     (synopsis "Retrieve the source code for Ruby methods")
-    (description "Method_source retrieves the source code for Ruby methods.
+    (description
+     "Method_source retrieves the source code for Ruby methods.
 Additionally, it can extract source code from Proc and Lambda objects or just
 extract comments.")
     (home-page "https://github.com/banister/method_source")
