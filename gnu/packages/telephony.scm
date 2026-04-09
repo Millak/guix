@@ -27,6 +27,7 @@
 ;;; Copyright © 2025 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Igorj Gorjaĉev <igor@goryachev.org>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -267,13 +268,14 @@ https://www.soft-switch.org/index.html")
             (sha256 (base32
                      "0kmgr5w3b1qwzxnsnw94q6rqs0hr8nbv9clf07ca2a2fyypx9kjk"))))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'pre-configure
-           (lambda _
-             (substitute* "src/applog.cpp"
-               (("^// TODO sc.*") "#include <sys/types.h>\n#include <sys/stat.h>\n"))
-             #t)))))
+     (list #:make-flags #~(list "CXXFLAGS=-std=c++11 -fpermissive")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'pre-configure
+                 (lambda _
+                   (substitute* "src/applog.cpp"
+                     (("^// TODO sc.*")
+                      "#include <sys/types.h>\n#include <sys/stat.h>\n")))))))
    (build-system gnu-build-system)
    (synopsis "(u)Common C++ framework for threaded applications")
    (description "GNU Common C++ is an portable, optimized class framework for
