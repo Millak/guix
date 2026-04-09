@@ -1335,6 +1335,41 @@ animation of closing windowed applications.")
 GNOME Shell, including the top panel, dash and overview.")
     (license license:gpl3)))
 
+(define-public gnome-shell-extension-caffeine
+  (package
+    (name "gnome-shell-extension-caffeine")
+    (version "59")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url
+              "https://github.com/eonpatapon/gnome-shell-extension-caffeine")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sv0iqfb6kjhgcg4pb59n91dyf667vax96kfhz5ik5hhx9n0z43w"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("caffeine@patapon.info"
+           "share/gnome-shell/extensions/caffeine@patapon.info"
+           #:include-regexp ("icons" "locale" "preferences" "schemas"
+                             "\\.js(on)?$")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'compile-schemas
+            (lambda _
+              (with-directory-excursion "caffeine@patapon.info/schemas"
+                (invoke "glib-compile-schemas" ".")))))))
+    (native-inputs (list `(,glib "bin")))
+    (synopsis "Disable screensaver and auto suspend in Gnome")
+    (description "This extension provides a quick setting toggle to enable or
+disable the Gnome auto-suspend and screensaver.")
+    (home-page "https://github.com/eonpatapon/gnome-shell-extension-caffeine")
+    (license license:gpl2+)))
+
 (define-public gnome-shell-extension-radio
   (let ((commit "860e55b9e704eb3dde43e6bbeccec5748242498e")
         (revision "0"))
