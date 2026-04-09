@@ -695,57 +695,6 @@ Kcov uses DWARF debugging information for compiled programs to make it
 possible to collect coverage information without special compiler switches.")
     (license license:gpl2+)))
 
-(define-public rtags
-  (package
-    (name "rtags")
-    (version "2.18")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Andersbakken/rtags")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (patches (search-patches "rtags-separate-rct.patch"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Part of spliting rct with rtags.
-        ;; Substitute #include "rct/header.h" with #include <rct/header.h>.
-        '(with-directory-excursion "src"
-           (delete-file-recursively "rct")        ;remove bundled copy
-           (let ((files (find-files "." ".*\\.cpp|.*\\.h")))
-             (substitute* files
-               (("#include ?\"rct/(.*.h)\"" all header)
-                (string-append "#include <rct/" header ">")))
-             #t)))
-       (sha256
-        (base32
-         "0raqjbkl1ykga4ahgl9xw49cgh3cyqcf42z36z7d6fz1fw192kg0"))))
-    (build-system cmake-build-system)
-    (arguments
-     '(#:build-type "RelWithDebInfo"
-       #:configure-flags
-       '("-DRTAGS_NO_ELISP_FILES=1")
-       #:tests? #f))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list bash-completion
-           clang
-           llvm
-           lua
-           rct
-           selene))
-    (home-page "https://github.com/Andersbakken/rtags")
-    (synopsis "Indexer for the C language family with Emacs integration")
-    (description
-     "RTags is a client/server application that indexes C/C++ code and keeps a
-persistent file-based database of references, declarations, definitions,
-symbolnames etc.  There’s also limited support for ObjC/ObjC++.  It allows you
-to find symbols by name (including nested class and namespace scope).  Most
-importantly we give you proper follow-symbol and find-references support.")
-    (license license:gpl3+)))
-
 (define-public colormake
   (package
     (name "colormake")
