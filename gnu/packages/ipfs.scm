@@ -298,8 +298,8 @@ Verification specification
     (home-page "https://github.com/ipfs/go-bitfield")
     (synopsis "Allocated up-front Bitfield for Golang")
     (description
-     "This package implements a functionality similar to standard
-@code{big.Int} with some optimizations to use in IPFS.")
+     "This package implements bitfields to the standard library's @code{big.Int}
+with some optimizations for use in IPFS.")
     (license (list license:expat license:asl2.0))))
 
 (define-public go-github-com-ipfs-go-block-format
