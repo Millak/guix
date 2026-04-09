@@ -24501,7 +24501,7 @@ conflicts.")
     (description
      "This package integrates the treesitter library in modern Emacs with
 Meow’s motions.")
-    (license license:mpl2.0)))
+    (license (list license:gpl3+ license:mpl2.0))))
 
 (define-public emacs-xelb
   (package
