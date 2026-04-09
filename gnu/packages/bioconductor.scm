@@ -24547,6 +24547,21 @@ different graph related packages produced by Bioconductor.")
     (properties
      `((upstream-name . "BiocStyle")))
     (build-system r-build-system)
+    (arguments
+     (if (target-32bit?)
+         (list
+          #:phases
+          '(modify-phases %standard-phases
+             ;; XXX: On i686 pandoc segfaults when building self contained
+             ;; reports.
+             (add-after 'unpack 'prevent-pandoc-segfault
+               (lambda _
+                 (substitute* "inst/rmarkdown/templates/html_document/skeleton/skeleton.Rmd"
+                   (("  BiocStyle::html_document")
+                    "\
+  BiocStyle::html_document:
+    self_contained: FALSE"))))))
+         '()))
     (propagated-inputs
      (list r-biocmanager r-bookdown r-knitr r-rmarkdown r-yaml))
     (native-inputs
