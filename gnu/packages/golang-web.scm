@@ -224,7 +224,7 @@ alternative fork of https://git.autistici.org/ale/lb.")
      "@code{menshen} is a resource distributor for LEAP VPN.  Here, resource
 means information for accessing either gateways, bridges, or a combination of
 the two.  This information includes not only endpoint discovery but also
-crendentials (although the credential distribution is not fully integrated at
+credentials (although the credential distribution is not fully integrated at
 this point).  In chinese folk religions,
 @url{https://en.wikipedia.org/wiki/Menshen, menshen} are guardians of doors
 and gates.")
@@ -1724,7 +1724,7 @@ be useful for other network applications.")
       #:import-path "github.com/hashicorp/go-metrics"
       #:test-flags
       #~(list "-skip" (string-join
-                       ;; Networking and runnint Prometheus are required.
+                       ;; Networking and running Prometheus are required.
                        (list "TestAddSample"
                              "TestMetricSink"
                              "TestSetGauge"
@@ -1789,7 +1789,7 @@ statsite instances for example
      "This package implements a functionality to be used for servers listening
 behind HAProxy of Amazon ELB load balancers.  Those load balancers support the
 use of a @url{http://haproxy.1wt.eu/download/1.5/doc/proxy-protocol.txt, proxy
-protocol}, which provides a simple mechansim for the server to get the address
+protocol}, which provides a simple mechanism for the server to get the address
 of the client instead of the load balancer.")
     (license license:expat)))
 
@@ -1992,7 +1992,7 @@ functions.")
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -2041,7 +2041,7 @@ utilities.")
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -2206,7 +2206,7 @@ parameter types for AWS Secrets Manager.")
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -2931,7 +2931,7 @@ Storage}.")
     (arguments
      (list
       #:import-path "github.com/beevik/ntp"
-      ;; Tests requir access to <0.beevik-ntp.pool.ntp.org:53>.
+      ;; Tests require access to <0.beevik-ntp.pool.ntp.org:53>.
       #:test-flags #~(list "-skip" "TestOnlineQuery|TestOnlineTime")))
     (native-inputs
      (list go-github-com-stretchr-testify))
@@ -3346,7 +3346,7 @@ and RFC 5389).")
     (description
      ;; URL https://raw.githubusercontent.com/googleapis/google-http-java-client
      ;; Commit da1aa993e90285ec18579f1553339b00e19b3ab5
-     ;; Dirrectory google-http-client/src/main/java/com/google/api/client/util
+     ;; Directory google-http-client/src/main/java/com/google/api/client/util
      ;; File ExponentialBackOff.java
      "This is a Go port of the exponential backoff algorithm from
 Google's HTTP Client Library for Java.
@@ -3511,7 +3511,7 @@ lookups.")
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Module name has been changed upstream, permament redirect:
+            ;; Module name has been changed upstream, permanent redirect:
             ;; <https://github.com/circonus-labs/circonusllhist> ->
             ;; <https://github.com/openhistogram/circonusllhist>.
             (substitute* (find-files "." "\\.go$")
@@ -4400,7 +4400,7 @@ containernetworking team.")
 netfilter does not have a good userspace API. The tables are manipulated via
 setsockopt that sets/replaces the entire table.  Changes to existing table
 need to be resolved by userspace code which is difficult and error-prone.
-Netfilter developers heavily advocate using iptables utlity for programmatic
+Netfilter developers heavily advocate using iptables utility for programmatic
 manipulation.  go-iptables wraps invocation of iptables utility with functions
 to append and delete rules; create, clear and delete chains.")
     (license license:asl2.0)))
@@ -4943,7 +4943,7 @@ RFC 9651}.")
     (home-page "https://github.com/dylibso/observe-sdk")
     (synopsis "Continuous runtime observablity SDKs to monitor WebAssembly code")
     (description
-     "This package provides a Golang implementatin of observability SDKs for
+     "This package provides a Golang implementation of observability SDKs for
 WebAssembly, enabling continuous monitoring of WebAssembly code as it executes
 within a runtime.")
     (license license:asl2.0)))
@@ -6099,7 +6099,7 @@ of HTML5[1] by the W3C}.")
     (home-page "https://github.com/gin-gonic/gin")
     (synopsis "HTTP web framework")
     (description
-     "This package provides a Golang web framework wit martini-like API.
+     "This package provides a Golang web framework with martini-like API.
 
 Features:
 @itemize
@@ -6750,7 +6750,7 @@ OpenAPI 2.0).")
                              "TestUseNode")
                        "|"))
       #:test-subdirs
-      ;; The full test suite requires acces to the browser and network, run
+      ;; The full test suite requires access to the browser and network, run
       ;; portion of unittests only.
       #~(list "lib/cdp"
               "lib/defaults"
@@ -6816,7 +6816,7 @@ Chromium browsers programmatically.")
               (with-directory-excursion (string-append "src/" import-path)
                 (for-each delete-file
                           (list
-                           ;; It tryes to access outbound network:
+                           ;; It tries to access outbound network:
                            ;;
                            ;; Get "https://mds.fidoalliance.org": dial tcp:
                            ;; lookup mds.fidoalliance.org on [::1]:53: read udp
@@ -7580,8 +7580,8 @@ Terraform by using the enterprise certificates feature.")
      (list go-go-opentelemetry-io-otel
            go-go-opentelemetry-io-otel-metric
            go-go-opentelemetry-io-otel-sdk-metric
-           ;; go-google-golang-org-api           ;cycles, boostrap is required
-           ;; go-google-golang-org-genproto      ;cycles, boostrap is required
+           ;; go-google-golang-org-api           ;cycles, bootstrap is required
+           ;; go-google-golang-org-genproto      ;cycles, bootstrap is required
            go-google-golang-org-genproto-googleapis-api
            go-google-golang-org-genproto-googleapis-rpc
            go-google-golang-org-grpc
@@ -7721,7 +7721,7 @@ send collected metrics to Google Cloud.")
            go-google-golang-org-genproto-googleapis-api))
     (home-page "https://github.com/GoogleCloudPlatform/opentelemetry-operations-go")
     (synopsis "OpenTelemetry Google Cloud resource mapping module")
-    ;; XXX: Project lacks proper descripton.
+    ;; XXX: Project lacks proper description.
     (description
      "This package provides an OpenTelemetry Google Cloud resource mapping
 module.")
@@ -8364,7 +8364,7 @@ enables peer-to-peer discovery.")
 failure detection using a gossip based protocol.
 
 The use cases for such a library are far-reaching: all distributed systems
-require membership, and memberlist is a re-usable solution to managing cluster
+require membership, and memberlist is a reusable solution to managing cluster
 membership and node failure detection.
 
 memberlist is eventually consistent but converges quickly on average.  The
@@ -8542,7 +8542,7 @@ Features:
     (home-page "https://github.com/henrybear327/Proton-API-Bridge")
     (synopsis "Proton API Bridge")
     (description
-     "This package implements a funtionality of a bridge to the Proton API,
+     "This package implements a functionality of a bridge to the Proton API,
  with the goal of providing enough functionality to be a usable backend for
 projects like rclone.")
     (license license:expat)))
@@ -8750,7 +8750,7 @@ protocol) - used to discover UPnP services on a network
     (description
      "AWS S3 fake server and testing library for extensive S3 test integrations.
 Either by running a test-server, e.g. for testing of AWS Lambda functions
-accessing S3.  Or, to have a simple and convencience S3 mock- and test-server.
+accessing S3.  Or, to have a simple and convenience S3 mock- and test-server.
 It's an alternative fork of @url{https://github.com/johannesboyne/gofakes3}.")
     (license license:expat)))
 
@@ -9151,7 +9151,7 @@ Call}.")
     (home-page "https://github.com/jeremija/gosubmit")
     (synopsis "Go library for parsing and submitting HTML forms")
     (description
-     "This package implements a functinality to help filling out plain html
+     "This package implements a functionality to help filling out plain html
 forms during testing.  Will automatically take the existing values from the
 form so there is no need to manually set things like csrf tokens.  Alerts
 about missing required fields, or when pattern validation does not match.")
@@ -9306,7 +9306,7 @@ transforms one JSON document into another through a JMESPath expression.")
     (description
      "AWS S3 fake server and testing library for extensive S3 test
 integrations.  Either by running a test-server, e.g. for testing of AWS Lambda
-functions accessing S3.  Or, to have a simple and convencience S3 mock- and
+functions accessing S3.  Or, to have a simple and convenience S3 mock- and
 test-server.")
     (license license:expat)))
 
@@ -12416,7 +12416,7 @@ standard library.")
     (build-system go-build-system)
     (arguments
      (list
-      ;; TODO: Enable tests and build when all missing inputs are packags, use
+      ;; TODO: Enable tests and build when all missing inputs are packages, use
       ;; as source only package for Kubo.
       #:skip-build? #t
       #:tests? #f
@@ -12497,7 +12497,7 @@ Go.")
     (home-page "https://github.com/oracle/oci-go-sdk")
     (synopsis "Oracle Cloud Infrastructure Golang SDK")
     (description
-     "This package provices an official Go SDK for Oracle Cloud Infrastructure.")
+     "This package provides an official Go SDK for Oracle Cloud Infrastructure.")
     ;; This software is dual-licensed to you under the Universal Permissive
     ;; License (UPL) 1.0 as shown at https://oss.oracle.com/licenses/upl or
     ;; Apache License 2.0 as shown at
@@ -13149,7 +13149,7 @@ interceptors are then run sequentially.")
     (build-system go-build-system)
     (arguments
      (list
-      ;; Tests are implemented in GitHub Actions and require aditional
+      ;; Tests are implemented in GitHub Actions and require additional
       ;; packaging, see
       ;; <https://github.com/pion/.goassets/blob/master/.github/workflows/test.reusable.yml>.
       #:tests? #f
@@ -13800,7 +13800,7 @@ this library support AWS, Azure and GCP.")
     (description
      "Package browser provides helpers to open files, readers, and urls in a
 browser window.  The choice of which browser is started is entirely client
-dependant.")
+dependent.")
     (license license:bsd-2)))
 
 (define-public go-github-com-planetscale-vtprotobuf
@@ -14780,7 +14780,7 @@ local peer discovery using UDP multicast.")
     (native-inputs
      (list go-github-com-stretchr-testify))
     (home-page "https://github.com/sebest/xff")
-    (synopsis "X-Forwarded-For middleware fo Golang")
+    (synopsis "X-Forwarded-For middleware for Golang")
     (description
      "Package @@code{xff} is a @code{net/http} middleware/handler to parse
 @url{http://tools.ietf.org/html/rfc7239, Forwarded HTTP Extension} in
@@ -15424,7 +15424,7 @@ StatHat} account.")
       ;; XXX: The most of the tests fail with error: Couldn't reach
       ;; stripe-mock at `localhost:12112`.
       ;; Running with helper function from Makefile breaks on the same point,
-      ;; keep just a smal portin of tests.
+      ;; keep just a small portion of tests.
       #~(list "client" "form" "webhook")))
     (native-inputs
      (list go-github-com-stretchr-testify))
@@ -16928,7 +16928,7 @@ version with various improvements
     (arguments
      (list
       ;; XXX: In CI with 16+ threads goroutines fail. Figure out how to detect
-      ;; CI enviroment.
+      ;; CI environment.
       #:tests? #f
       #:parallel-tests? #f
       #:import-path "github.com/xtaci/lossyconn"))
@@ -17169,7 +17169,7 @@ for the Go programming language.")
       #:import-path "github.com/zitadel/oidc/v3"
       #:test-flags
       #~(list "-skip" (string-join
-                       ;; Tests requring Internet access.
+                       ;; Tests requiring Internet access.
                        (list "TestDiscover/spotify"
                              "TestIntrospect"
                              "TestNewResourceServer/spotify-full-discovery"
@@ -17200,7 +17200,7 @@ for the Go programming language.")
     (home-page "https://github.com/zitadel/oidc")
     (synopsis "OpenID Connect client and server library in Golang")
     (description
-     "This package provide an implementatin of @url{OpenID Connect,
+     "This package provide an implementation of @url{OpenID Connect,
 https://openid.net/developers/how-connect-works/}.")
     (license license:asl2.0)))
 
@@ -17800,7 +17800,7 @@ Handler) and routes @code{WithRouteTag}.")
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -18083,7 +18083,7 @@ go.opentelemetry.io/otel/trace.")
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -18138,7 +18138,7 @@ go.opentelemetry.io/otel/trace.")
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -18151,7 +18151,7 @@ go.opentelemetry.io/otel/trace.")
     (build-system go-build-system)
     (arguments
      (list
-      ;; TODO: Enable when all missing inputs are availalbe, use as source
+      ;; TODO: Enable when all missing inputs are available, use as source
       ;; only package for Boxo.
       #:skip-build? #t
       #:tests? #f
@@ -18194,7 +18194,7 @@ By default the telemetry is sent to @@url{https://localhost:4317}.")
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -18207,7 +18207,7 @@ By default the telemetry is sent to @@url{https://localhost:4317}.")
     (build-system go-build-system)
     (arguments
      (list
-      ;; TODO: Enable when all missing inputs are availalbe, use as source
+      ;; TODO: Enable when all missing inputs are available, use as source
       ;; only package for Boxo.
       #:skip-build? #t
       #:tests? #f
@@ -18249,7 +18249,7 @@ protobuf payloads.  By default the telemetry is sent to
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -18302,7 +18302,7 @@ prometheus.Collector to provide a handler for these metrics.")
     (build-system go-build-system)
     (arguments
      (list
-      ;; TODO: Enable when all missing inputs are availalbe, use as source
+      ;; TODO: Enable when all missing inputs are available, use as source
       ;; only package for Boxo.
       #:skip-build? #t
       #:tests? #f
@@ -18336,7 +18336,7 @@ telemetry to be written to an output destination as JSON.")
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -18384,7 +18384,7 @@ telemetry to be written to an output destination as JSON.")
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -18444,7 +18444,7 @@ OpenTelemetry API.")))
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -18494,7 +18494,7 @@ OpenTelemetry API.")))
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -18542,7 +18542,7 @@ OpenTelemetry API.")))
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -18898,7 +18898,7 @@ an alternative fork of @url{https://github.com/mattbaird/jsonpatch}.")
       #:tests? #f ;no tests
       #:import-path "google.golang.org/genproto"))
     (propagated-inputs
-     (list go-cloud-google-com-go ;keep here untill all inputs are available
+     (list go-cloud-google-com-go ;keep here until all inputs are available
            ;; go-cloud-google-com-go-accessapproval
            ;; go-cloud-google-com-go-accesscontextmanager
            ;; go-cloud-google-com-go-aiplatform
@@ -19044,7 +19044,7 @@ interacting with Google's @code{gRPC} APIs.")
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -19233,7 +19233,7 @@ Google Cloud Platform}.")
     (home-page "https://google.golang.org/grpc")
     (synopsis "Generate Go bindings of gRPC's services in protobuf definition files")
     (description
-     "This packge provides a plugin for the Google protocol buffer compiler to
+     "This package provides a plugin for the Google protocol buffer compiler to
 generate Go code.")
     (license license:asl2.0)))
 
@@ -19537,7 +19537,7 @@ the code or routes.")
     (home-page "https://k8s.io/kube-openapi")
     (synopsis "Kube OpenAPI Integration Tests")
     (description
-     "This package providies itegration tests module for
+     "This package providies integration tests module for
 @code{k8s.io/kube-openapi}.")
     (license license:asl2.0)))
 

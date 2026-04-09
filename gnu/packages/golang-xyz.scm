@@ -825,7 +825,7 @@ substitution.")
      "Implementation of the tree command that can be used programmatically")
     (description
      "This package implements the @code{tree} command in Go, in a way such that it
-can be used programatically.")
+can be used programmatically.")
     (license license:expat)))
 
 (define-public go-github-com-aalpar-deheap
@@ -996,7 +996,7 @@ supporting event counters and a basic set of events.")
      "@code{gronx} is cron expression parser ported from
 @url{https://github.com/adhocore/php-cron-expr, adhocore/cron-expr} with task
 runner and daemon that supports crontab like task list file.  It may be used
-programatically in Golang or as standalone binary instead of crond.")
+programmatically in Golang or as standalone binary instead of crond.")
     (license license:expat)))
 
 (define-public go-github-com-adrg-frontmatter
@@ -1022,7 +1022,7 @@ programatically in Golang or as standalone binary instead of crond.")
     (home-page "https://github.com/adrg/frontmatter")
     (synopsis "Detecting and decoding various content front matter formats")
     (description
-     "This package implements fuctionality of detecting and decoding various
+     "This package implements functionality of detecting and decoding various
 content front matter formats e.g. @code{JSON}, @code{TOML} and @code{YAML}.")
     (license license:expat)))
 
@@ -2064,7 +2064,7 @@ parsing.")
     (build-system go-build-system)
     (arguments
      (list
-      ;; Network access is requried.
+      ;; Network access is required.
       #:test-flags #~(list "-skip" "TestService_GetProjects|TestHTTP")
       #:import-path "github.com/apex/logs"))
     (native-inputs
@@ -2431,7 +2431,7 @@ optimized for sparse nodes of
     (home-page "https://github.com/arolek/p")
     (synopsis "Pointer to the value")
     (description
-     "Pacakge p takes in values and returns a pointer to the value.")
+     "Package p takes in values and returns a pointer to the value.")
     (license license:expat)))
 
 (define-public go-github-com-arran4-golang-ical
@@ -2873,7 +2873,7 @@ Unified Format}.")
     (home-page "https://github.com/Baozisoftware/qrcode-terminal-go")
     (synopsis "QRCode terminal for Golang")
     (description
-     "This package implments a QR code generator for terminal for Golang.")
+     "This package implements a QR code generator for terminal for Golang.")
     (license license:bsd-3)))
 
 (define-public go-github-com-baulk-chardet
@@ -3320,7 +3320,7 @@ https://github.com/syndtr/goleveldb.")
     (propagated-inputs
      (list go-golang-org-x-sys))
     (home-page "https://github.com/blevesearch/mmap-go")
-    (synopsis "Memory mapped fiels (mmap) in Golang")
+    (synopsis "Memory mapped files (mmap) in Golang")
     (description
      "This package implements functionality of mapping files into memory.  It
 tries to provide a simple interface, but doesn't go out of its way to abstract
@@ -3812,7 +3812,7 @@ quantiles over an unbounded data stream within low memory and CPU bounds.")
     (name "go-github-com-bodgit-plumbing")
     (version "1.3.0")
     (source
-     (origin 
+     (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/bodgit/plumbing")
@@ -4404,7 +4404,7 @@ over strings.")
         (base32 "1103iah700q9id04hz37nxbpb25qz13g1ia2r6gdffc3vh2w3riv"))
        (modules '((guix build utils)))
        ;; FIXME: The project indludes a copy of libwebp
-       ;; (internal/libwebp-1.5.0) which is availalbe in Guix, find out how to
+       ;; (internal/libwebp-1.5.0) which is available in Guix, find out how to
        ;; build it with it's source.
        (snippet
         #~(begin
@@ -5196,7 +5196,7 @@ package provides an API for comparing Golden files.")
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -5254,7 +5254,7 @@ Windows systems and supports both @code{ConPTY} and classic Unix PTYs.")
     (home-page "https://github.com/checkpoint-restore/go-criu")
     (synopsis "Go bindings for CRIU")
     (description
-     "This pacakge provides bindings for @url{https://criu.org/, CRIU}.  The
+     "This package provides bindings for @url{https://criu.org/, CRIU}.  The
 code is based on the Go-based PHaul implementation from the CRIU repository.")
     (license license:asl2.0)))
 
@@ -6223,7 +6223,7 @@ packages.")
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -6247,7 +6247,7 @@ packages.")
     (home-page "https://github.com/containerd/errdefs")
     (synopsis "Addintional error handling modules for containerd")
     (description
-     "This package provides an additinal Golang modules for error handling in
+     "This package provides an additional Golang modules for error handling in
 containerd projects.
 
 @itemize
@@ -6444,7 +6444,7 @@ repositories.")
     (home-page "https://github.com/containerd/zfs")
     (synopsis "ZFS snapshotter plugin for containerd")
     (description
-     "This packae provides a ZFS snapshotter plugin for containerd.")
+     "This package provides a ZFS snapshotter plugin for containerd.")
     (license license:asl2.0)))
 
 ;; XXX: This package was moved; please update your references to use
@@ -6597,7 +6597,7 @@ between different image formats like Docker and OCI.")
       #~(list "-skip" (string-join
                        ;; Most of these tests require root level access to
                        ;; write files in, check if they may be covered:
-                       ;; 
+                       ;;
                        ;; creating an ID-mapped copy of layer "Layer": error
                        ;; chrooting to <...>
                        (list "TestAttachLoopbackDeviceRace"
@@ -8234,7 +8234,7 @@ on throughput and hit ratio performance.")
     (arguments
      (list
       ;; dicedb-go depends on dicedb for running tests
-      ;; but dicedb depends on dice-db, creating a cyclic depedency
+      ;; but dicedb depends on dice-db, creating a cyclic dependency
       #:tests? #f
       #:import-path "github.com/dicedb/dicedb-go"))
     (propagated-inputs (list go-github-com-google-uuid
@@ -9016,7 +9016,7 @@ file format to be read and used by those editors.")
      (list
       #:import-path "github.com/edsrzf/mmap-go"))
     (home-page "https://github.com/edsrzf/mmap-go")
-    (synopsis "Memory mapped fiels (mmap) in Golang")
+    (synopsis "Memory mapped files (mmap) in Golang")
     (description
      "This package implements functionality of mapping files into memory.  It
 tries to provide a simple interface, but doesn't go out of its way to abstract
@@ -10863,7 +10863,7 @@ professionally translated
     (arguments
      (list
       #:test-flags
-      ;; Tests requir running Redis server.
+      ;; Tests require running Redis server.
       #~(list "-skip" "Example|TestGinkgoSuite")
       #:import-path "github.com/go-redis/redis"))
     (native-inputs
@@ -15359,7 +15359,7 @@ word-splitting rules.")
     (build-system go-build-system)
     (arguments
      (list
-      ;; Tests require runnint MySQL server: panic: dial tcp [::1]:5432:
+      ;; Tests require running MySQL server: panic: dial tcp [::1]:5432:
       ;; connect: connection refused.
       #:tests? #f
       #:import-path "github.com/kellydunn/golang-geo"))
@@ -15580,7 +15580,7 @@ memory limit.")
      (list
       #:import-path "github.com/kisielk/sqlstruct"))
     (home-page "https://github.com/kisielk/sqlstruct")
-    (synopsis "Golang sturcts with std @code{database/sql}")
+    (synopsis "Golang structs with std @code{database/sql}")
     (description
      "Package sqlstruct provides some convenience functions for using structs
 with the Go standard library's @code{database/sql} package.")
@@ -15866,7 +15866,7 @@ aid data snapshotting.")
                 (with-directory-excursion (string-append "src/" import-path)
                   (invoke "dbus-run-session" "--"
                           "go" "test" "./..."
-                          ;; Tests requireing a system D-Bus instance.
+                          ;; Tests requiring a system D-Bus instance.
                           "-skip" (string-append "TestConnectToDifferentUserNamespace"
                                                  "|TestSystemBus"
                                                  "|TestConnectSystemBus")))))))))
@@ -15904,7 +15904,7 @@ by Kovid Goyal for use in Kitty.")
     (description
      "This package provides utilities for correcting image orientation based on
 EXIF metadata. It's an alternative fork of
-@url{https://github.com/edwvee/exiffix} maintained by Kitty comunity.")
+@url{https://github.com/edwvee/exiffix} maintained by Kitty community.")
     (license license:expat)))
 
 (define-public go-github-com-kovidgoyal-imaging
@@ -16534,7 +16534,7 @@ write code that is both more explicit and flexibile.")
     (home-page "https://github.com/lestrrat-go/blackmagic")
     (synopsis "Reflect-based black magic for Golang")
     (description
-     ;; XXX: REAMDE lacks of any description at all, code not documented
+     ;; XXX: README lacks of any description at all, code not documented
      ;; either.
      "This package implements a reflect-based black magic for Go.")
     (license license:expat)))
@@ -21116,7 +21116,7 @@ included in this package.")
     (home-page "https://github.com/ostreedev/ostree-go")
     (synopsis "Golang bindings for @code{libostree}")
     (description
-     "This packae provides bindings for
+     "This package provides bindings for
 @code{https://github.com/ostreedev/ostree, OSTree}.")
     (license license:isc)))
 
@@ -22085,7 +22085,7 @@ Google Authenticator compatible manner.")
     (home-page "https://github.com/ProtonMail/go-mbox")
     (synopsis "Mbox files into messages parser in Golang")
     (description
-     "This package implements functionality for parsing and formating the
+     "This package implements functionality for parsing and formatting the
 mbox file format.  It's an alternative fork of
 https://github.com/emersion/go-mbox.")
     (license license:expat)))
@@ -22120,7 +22120,7 @@ https://github.com/emersion/go-mbox.")
            go-golang-org-x-term
            go-golang-org-x-text))
     (home-page "https://github.com/pterm/pterm")
-    (synopsis "Configurable consol outputs in Golang")
+    (synopsis "Configurable console outputs in Golang")
     (description
      "Package pterm is a modern go module to beautify console output.  It can be used
 without configuration, but if desired, everything can be customized down to the
@@ -22149,7 +22149,7 @@ smallest detail.")
     (home-page "https://github.com/quasilyte/go-ruleguard")
     (synopsis "DSL for custom linting rules in Go")
     (description
-     "This package provdes DSL module for Go custom linting rules.")
+     "This package provides DSL module for Go custom linting rules.")
     (license license:bsd-3)))
 
 ;; XXX: This repository was archived by the owner on Mar 18, 2019. It is
@@ -22173,7 +22173,7 @@ smallest detail.")
       #:import-path "github.com/RackSec/srslog"
       #:test-flags
       #~(list "-skip" (string-join
-                       ;; failed to dial: Unix syslog delivery error 
+                       ;; failed to dial: Unix syslog delivery error
                        (list "TestUnixDialer"
                              "TestDial"
                              "TestNew"
@@ -22349,7 +22349,7 @@ policy.")
      (list
       #:import-path "github.com/redis/go-redis/v9"
       #:test-flags
-      ;; Tests requir running Redis server.
+      ;; Tests require running Redis server.
       #~(list "-skip" "Example|TestGinkgoSuite")
       #:phases
       #~(modify-phases %standard-phases
@@ -26863,7 +26863,7 @@ programming language.")
       "Package gojq provides the parser and the interpreter of gojq.  Please refer to
 @url{https://github.com/itchyny/gojq#usage-as-a-library, Usage as a library} for
 introduction. It's fork of github.com/itchyny/gojq, see github.com/wader/gojq fq
-branc.")
+branch.")
      (license license:expat))))
 
 (define-public go-github-com-wadey-gocovmerge
@@ -28095,7 +28095,7 @@ utilities for cty Golang module.")
     (synopsis "Go Object Finder")
     (description
      "Goof (Go Object Finder) is a package that does the unthinkable to the
-binaryes: calling functions, @code{fmt.Fprintf}, and accesing
+binaryes: calling functions, @code{fmt.Fprintf}, and accessing
 @code{reflect.Type} from them.")
     (license license:asl2.0)))
 
@@ -28552,7 +28552,7 @@ word on a list of words, if none is found, look for a similar word.")
       (license license:expat))))
 
 (define-public go-go-abhg-dev-container-ring
-  ;; The latest verion 0.3.0 was released in 2023, use the latest commit.
+  ;; The latest version 0.3.0 was released in 2023, use the latest commit.
   (let ((commit "5feb657d1370c86f039188acc39afdc16172de0e")
         (revision "0"))
     (package
@@ -28853,7 +28853,7 @@ written in Go, as well as some other related libraries like whatsmeow.")
         (base32 "0g2m162kmnz1d2zpmbgja330q1p9ygdryllfzm71zr7d5pr9fc13"))
        (modules '((guix build utils)))
        ;; FIXME: The project indludes a copy of libwebp
-       ;; (internal/libwebp-1.5.0) which is availalbe in Guix, find out how to
+       ;; (internal/libwebp-1.5.0) which is available in Guix, find out how to
        ;; build it with it's source.
        (snippet
         #~(begin
@@ -29289,7 +29289,7 @@ when they'd prefer a more familiar, loosely typed API.")
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
@@ -29309,7 +29309,7 @@ when they'd prefer a more familiar, loosely typed API.")
     (propagated-inputs
      (list go-go-uber-org-zap))
     (home-page "https://github.com/uber-go/zap")
-    (synopsis "Experemental modules for Uber's Zap")
+    (synopsis "Experimental modules for Uber's Zap")
     (description
      "This package providies two additional libraries for go.uber.org/zap:
 
@@ -29573,7 +29573,7 @@ their ASCII approximations.")
     (home-page "https://cs.opensource.google/go/x/perf")
     (synopsis "Golang benchmark analysis tools and libraries")
     (description
-     "This package provides tooling and utility libraries for perfoming and
+     "This package provides tooling and utility libraries for performing and
 reading benchmarks results.
 
 @itemize
@@ -30191,7 +30191,7 @@ dependencies.")
        (snippet
         #~(begin
             ;; It has to be build with GOOS=js GOARCH=wasm and it is marked as
-            ;; experemental.
+            ;; experimental.
             (delete-file-recursively "cmd/experimental/plait")
             ;; v1 has been deprecated for a long time use v2 instead.
             (substitute* (find-files "." "\\.go$")
@@ -30930,7 +30930,7 @@ Backus–Naur form, EBNF} grammars.")
     (description
      "Golex is a lex/flex like (not fully POSIX lex compatible) utility.  It
 renders @code{.l}
-@url{https://westes.github.io/flex/manual/Format.html#Format, formated data}
+@url{https://westes.github.io/flex/manual/Format.html#Format, formatted data}
 to Go source code.  The @code{.l} data can come from a file named in a command
 line argument.  If no non-opt args are given, golex reads stdin.")
     (license license:bsd-3)))
@@ -31103,7 +31103,7 @@ with ccgo-generated code.")
     (home-page "https://gitlab.com/cznic/parser")
     (synopsis "Collection of Golang parsers")
     (description
-     "This package provides an imlementation of @code{nquads} and @code{yacc}
+     "This package provides an implementation of @code{nquads} and @code{yacc}
 parsers.")
     (license license:bsd-3)))
 
@@ -31395,7 +31395,7 @@ formatter, and interpreter with bash support.")
 
 (define-public go-ninefans-net-go
   ;; XXX: The package name in Guix uses 'ninefans' instead of '9fans' to
-  ;; accomodate from a shortcoming of the go-build-system where the
+  ;; accommodate from a shortcoming of the go-build-system where the
   ;; `go-inputs' procedure in the `setup-go-environment' phase uses
   ;; `package-name->name+version', which returns 'go' as name for
   ;; go-9fans-net-go-acme, which gets removed from the results and thus
@@ -31669,7 +31669,7 @@ unmarshaling functions based on @code{encoding/json} @code{Unmarshal()}.")
        (snippet
         #~(begin
             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider to implement it as re-usable procedure in
+            ;; Consider implementing it as a reusable procedure in
             ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory

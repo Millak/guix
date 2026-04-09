@@ -181,7 +181,7 @@ collections like from @code{container/tree}.
      "This package provides a library for calling C functions from Go without
 Cgo.
 
-Featues:
+Features:
 @itemize
 @item build for other platforms easily without a C compiler
 @item efficiently cache entirely Go builds
@@ -1042,7 +1042,7 @@ compile does not support generics.")
      (list
       #:skip-build? #t
       #:import-path "golang.org/x/mod"
-      ;; Test tries to acces:
+      ;; Test tries to access:
       ;; "http://ct.googleapis.com/logs/argon2020/ct/v1/get-sth": dial tcp:
       ;; lookup ct.googleapis.com
       #:test-flags #~(list "-skip" "TestCertificateTransparency")))
@@ -1712,7 +1712,7 @@ values.")
     (license license:bsd-3)))
 
 (define-public go-google-golang-org-genproto-googleapis-rpc
-  ;; No release or verion tags, use the latest commit.
+  ;; No release or version tags, use the latest commit.
   (let ((commit "49b9836ed3ff1e1dd329d17e442987447e931c7d")
         (revision "1"))
     (package

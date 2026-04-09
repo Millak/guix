@@ -1951,7 +1951,7 @@ hash.")
     (description
      "Package ssh wraps the @code{crypto/ssh} package with a higher-level API
 for building SSH servers.  The goal of the API was to make it as simple as
-using net/http, so the API is very similar.  It's alternaive fork of
+using net/http, so the API is very similar.  It's alternative fork of
 @url{https://github.com/gliderlabs/ssh}.")
     (license license:bsd-3)))
 

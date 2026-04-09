@@ -532,7 +532,7 @@ Library with namespaces, exception handling, and member template functions.")
                                    "See License.txt in the distribution."))))
 
 (define-public celestia
-  ;; 1.6.4 was placed in 2023 while master migrated to Qt6, use the lates
+  ;; 1.6.4 was placed in 2023 while master migrated to Qt6, use the latest
   ;; commit for now.
   (let ((commit "6de0339a85be38e85e2ad34f58850700be4342c5")
         (revision "1"))
@@ -561,7 +561,7 @@ Library with namespaces, exception handling, and member template functions.")
                 "-DUSE_QT6=ON")
         #:phases
         #~(modify-phases %standard-phases
-            ;; TODO: Wrap celestia-content instead of copping it, if posible.
+            ;; TODO: Wrap celestia-content instead of copying it, if possible.
             (add-after 'install 'install-content
               (lambda _
                 (copy-recursively
@@ -602,7 +602,7 @@ accurately in real time at any rate desired.")
       (license license:gpl2+))))
 
 (define-public celestia-content
-  ;; No rleases or version tags.
+  ;; No releases or version tags.
   (let ((commit "54e4760132be3617e4782fee8eefcfce6694f4ff")
         (revision "6"))
     (package
@@ -783,7 +783,7 @@ analysis.")
     (arguments
      ;; pycpl expects to find a lib/esopipes-plugins directory.  This is
      ;; overruled by the PYESOREX_PLUGIN_DIR search path, but the default
-     ;; directory is still consulted and therefor needs to exist.
+     ;; directory is still consulted and therefore needs to exist.
      (list
       #:phases
       #~(modify-phases %standard-phases
@@ -1490,7 +1490,7 @@ more.")
      (list
       ;; XXX: All tests fail, figure out how to fix them.
       #:tests? #f
-      ;; It failes with segmentation fault in parallel build
+      ;; It fails with segmentation fault in parallel build
       #:parallel-build? #f
       ;; No such file or directory .../lib/iraf/lib/libmemdbg.a
       #:validate-runpath? #f
@@ -1569,7 +1569,7 @@ release from 2013.")
     (description
      "This package provides a @acronym{Centre de Données astronomiques de
 Strasbourg, CDS} implementation in Java of the @acronym{Hierarchical Equal
-Area isoLatitude Pixelization of a sphere , HEALPix} tesselation.")
+Area isoLatitude Pixelization of a sphere , HEALPix} tessellation.")
     (license license:bsd-3)))
 
 (define-public libnova
@@ -2847,7 +2847,7 @@ simulated Astronomical data in Python.")
     (build-system pyproject-build-system)
     ;; Tests are not thread save, see
     ;; <https://github.com/kyleaoman/martini/issues/98>.
-    ;; 
+    ;;
     ;; tests: 2529 passed, 11 skipped, 4 xfailed, 8 warnings
     (native-inputs
      (list python-pytest
@@ -2905,7 +2905,7 @@ of functions to execute the desired steps in the mock-observing process.")
         "--ignore=astroML/density_estimation/tests/test_bayesian_blocks.py"
         "--ignore=astroML/density_estimation/tests/test_hist_binwidth.py"
         "--ignore=astroML/density_estimation/tests/test_hist_binwidth.py"
-        ;; Disalbe tests with NumPy, see
+        ;; Disable tests with NumPy, see
         ;; <https://github.com/astroML/astroML/issues/281>.
         "--ignore=astroML/tests/test_resample.py"
         "-k" (string-append "not astroML.density_estimation.empirical.EmpiricalDistribution"
@@ -3304,7 +3304,7 @@ celestial-to-terrestrial coordinate transformations.")
      (list
       ;; Tests are not thread save, see:
       ;; <https://github.com/astropy/astroquery/issues/2968>.
-      ;; 
+      ;;
       ;; tests: 1823 passed, 21 skipped, 2047 deselected, 2 xfailed
       #:test-flags
       #~(list "--pyargs" "astroquery"
@@ -3467,7 +3467,7 @@ aim of simplifying and streamlining data conversion and standardization.")
      "@code{BayesicFitting} is a package for model fitting and Bayesian
 evidence calculation, it is a Python version of the the fitter classes in
 @acronym{HCSS, Herschel Common Science System}.  HCSS was the all encompassing
-software system for the operations and analysis of the ESA satelite Herschel.")
+software system for the operations and analysis of the ESA satellite Herschel.")
     (license license:gpl3+)))
 
 (define-public python-bdsf
@@ -3576,12 +3576,12 @@ Origins Spectrograph}.")
       #:test-flags #~(list "camb.tests.camb_test")
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: It may be set via FORUTILSPATH environemnt variable but
+          ;; XXX: It may be set via FORUTILSPATH environment variable but
           ;; build fails with error:
           ;; mkdir: cannot create directory ‘Releaselib’: Read-only file system
           (add-after 'unpack 'copy-forutils
             (lambda _
-              ;; It's a git sumbodule to <https://github.com/cmbant/forutils>.
+              ;; It's a git submodule to <https://github.com/cmbant/forutils>.
               (copy-recursively
                #+(package-source (this-package-native-input "fortran-forutils"))
                "forutils"))))))
@@ -3660,7 +3660,7 @@ in fast modern Fortran.")
      "casa_cube is a python package that provides an interface to data cubes
 generates by CASA or Gildas.  It allows the user to perform simple tasks such
 plotting given channel maps, moment maps, line profile in various units,
-correcting for cloud extinction, reconvolving with a beam taper, triming a
+correcting for cloud extinction, reconvolving with a beam taper, trimming a
 cube.  The syntax is similar to pymcfost to perform quick and easy comparison
 with models.")
     (license license:expat)))
@@ -3941,7 +3941,7 @@ data in the CHIANTI database.")
     (version "2.0.2")
     (source
      (origin
-       (method git-fetch) 
+       (method git-fetch)
        (uri (git-reference
               (url "https://github.com/yt-project/cmyt")
               (commit (string-append "v" version))))
@@ -4226,7 +4226,7 @@ Spectrograph}.")
       ;; updates, see:
       ;; <https://github.com/spacetelescope/crds/blob/13.1.1/TESTING>.
       #~(list #$@(map (lambda (file) (string-append "--ignore=" file))
-                      ;; Network acces to <https://hst-crds.stsci.edu> or
+                      ;; Network access to <https://hst-crds.stsci.edu> or
                       ;; additional test data is required.
                       (list "test/bestrefs/test_bestrefs.py"
                             "test/bestrefs/test_special.py"
@@ -4847,7 +4847,7 @@ Euclid Consortium should be used.")
     (version "2.1.0")
     (source
      (origin
-       (method git-fetch) 
+       (method git-fetch)
        (uri (git-reference
               (url "https://github.com/cta-observatory/pyeventio")
               (commit (string-append "v" version))))
@@ -5549,7 +5549,7 @@ and a 3D volume rendering viewer.")
      (list
       #:test-flags
       ;; See: <https://github.com/Hazboun6/gw_sky/issues/2>.
-      ;; 
+      ;;
       ;; 0.1.0 was released in 2023 and might be not compatible with some
       ;; function in Jupyter: subprocess.CalledProcessError: Command
       ;; '['jupyter', 'nbconvert', <...>
@@ -6205,7 +6205,7 @@ etc.).")
         (base32 "14m1a6z884vg2n5ndwwhpnzpb5h28hh58a53dfjwwbjakwmixb0p"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f)) ; no tests in PyPI tarball, tests requir networking
+     (list #:tests? #f)) ; no tests in PyPI tarball, tests require networking
     (native-inputs
      (list python-setuptools
            python-wheel))
@@ -7370,7 +7370,7 @@ position-frequency slice.")
     (build-system pyproject-build-system)
     (arguments
      ;; See: <https://github.com/sczesla/PyAstronomy/issues/64>.
-     (list #:tests? #f)) 
+     (list #:tests? #f))
     (native-inputs
      (list python-ipython-minimal
            python-nbconvert
@@ -9748,7 +9748,7 @@ over many parameters:
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 19 passed, 1 deselected 
+      ;; tests: 19 passed, 1 deselected
       #:test-flags
       ;; Test fails due to numerical uncertainties.
       ;; See: <https://github.com/vrodgom/statmorph/issues/17>.
@@ -10231,7 +10231,7 @@ Institute, STScI} utility functions.")
       ;; Failed to load Vega spectrum from
       ;; /grp/redcat/trds/calspec/alpha_lyr_stis_010.fits;
       ;;
-      ;; Data is availalbe by the lnks: <https://ssb.stsci.edu/trds/calspec/>,
+      ;; Data is available by the lnks: <https://ssb.stsci.edu/trds/calspec/>,
       ;; <https://archive.stsci.edu/hlsp/reference-atlases>.
       #:tests? #f))
     (native-inputs
@@ -10421,8 +10421,8 @@ and @code{astropy}.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; TODO: tests require some remove data, findout how to run bare minmal
-      ;; unit tests withou it.
+      ;; TODO: tests require some removed data, find out how to run bare minimal
+      ;; unit tests without it.
       #:tests? #f))
     (native-inputs
      (list python-setuptools
@@ -11277,7 +11277,7 @@ crowded star fields.")
     (license license:gpl3+)))
 
 (define-public sgp4
-  ;; Version tag v1.0 is dated to <2021-01-11>, use the lates commit instead.
+  ;; Version tag v1.0 is dated to <2021-01-11>, use the latest commit instead.
   (let ((commit "6a448b4850e5fbf8c1ca03bb5f6013a9fdc1fd91")
         (revision "2"))
     (package
@@ -11967,7 +11967,7 @@ any knowledge of SQL
 including auto-parallelising custom analysis
 @item customization with multiple Python modules such as @code{pynbody} or
 @code{yt} to process raw simulation data
-@item suports file-based database SQLite, server-based MySQL and PostgreSQL
+@item supports file-based database SQLite, server-based MySQL and PostgreSQL
 @end itemize")
     (license license:bsd-3)))
 

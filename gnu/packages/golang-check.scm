@@ -127,7 +127,7 @@ value and call @code{t.Fatal()} if the assertion fails.")
     (description
      "Correct is a collection of assertion libraries for Golang, intended to be
 used together.  It tries not to strictly enforce that, though - most of
-correct should be customizeable either by changing some options or by using
+correct should be customizable either by changing some options or by using
 only some sub-packages of correct.")
     (license license:mpl2.0)))
 
@@ -1195,7 +1195,7 @@ when comparing complex types like structures and maps.")
     (home-page "https://github.com/go-testfixtures/testfixtures")
     (synopsis "Ruby on Rails like test fixtures for Go")
     (description
-     "Ths package mimics the
+     "This package mimics the
 @url{http://guides.rubyonrails.org/testing.html#the-test-database, Ruby on
 Rails' way} of writing tests for database applications, where sample data is
 kept in fixtures files.  Before the execution of every test, the test database
@@ -1462,7 +1462,7 @@ Node @code{nock} library, it has features like:
 @item Supports map and filters to handle mocks easily
 @item Wide compatible HTTP interceptor using @code{http.RoundTripper} interface
 @item Works with any @code{net/http} compatible client, such as @code{gentleman}
-@item Network timeout/cancelation delay simulation
+@item Network timeout/cancellation delay simulation
 @item Extensible and hackable API
 @end itemize")
     (license license:expat)))
@@ -1871,7 +1871,7 @@ differently.")
               (with-directory-excursion (string-append "src/" import-path)
                 (delete-file-recursively "example"))))
           (add-after 'unpack 'preserve-PATH-from-environment
-            ;; Unlike FHS systems, Guix needs to look its commands fom PATH.
+            ;; Unlike FHS systems, Guix needs to look for its commands in PATH.
             ;; Expose it by default in the test environments.
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
@@ -2333,7 +2333,7 @@ output.")
     (home-page "https://github.com/modocache/gover")
     (synopsis "Integration with coveralls.io for *.coverprofile files")
     (description
-     "This package inplements a functionality to collect all
+     "This package implements a functionality to collect all
 @code{.coverprofile} files rooted in the project and concatenante them into a
 single file ready for https://coveralls.io/.")
     (license license:asl2.0)))
