@@ -1146,7 +1146,7 @@ ca-certificates.crt file in the system profile."
                   (append
                    (list #:pid-file "/var/run/bffe/pid")
                    #$(bffe-configuration-arguments config)))))
-     #:guile (lookup-package-native-input bffe-package "guile-next")))
+     #:guile (lookup-package-native-input bffe-package "guile-3.0-latest")))
 
   (match-record config <bffe-configuration>
     (package user group arguments extra-environment-variables)

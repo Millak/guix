@@ -1225,13 +1225,13 @@ transactions from C or Python.")
              automake
 
              ;; Guile libraries are needed here for cross-compilation.
-             guile-next
+             guile-3.0-latest
              guile-gnutls
              guile-json-4
              guix
              guix-data-service
              guix-build-coordinator
-             guile-fibers-next
+             guile-fibers
              guile-knots
              guile-pfds
              guile-prometheus
@@ -1242,7 +1242,7 @@ transactions from C or Python.")
              guix
              guix-data-service
              guix-build-coordinator
-             guile-fibers-next
+             guile-fibers
              guile-knots
              guile-pfds
              guile-prometheus
