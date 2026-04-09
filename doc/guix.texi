@@ -53508,6 +53508,9 @@ Maximum time a cache entry for SSH keys is valid, in seconds.
 @item @code{extra-content} (default: @code{""}) (type: raw-configuration-string)
 Raw content to add to the end of @file{~/.gnupg/gpg-agent.conf}.
 
+@item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbols)
+List of services that should be started before this service.
+
 @end table
 
 @end deftp

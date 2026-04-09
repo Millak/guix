@@ -81,7 +81,10 @@ entry will be expired even if it has been accessed recently.")
    "Maximum time a cache entry for SSH keys is valid, in seconds.")
   (extra-content
    (raw-configuration-string "")
-   "Raw content to add to the end of @file{~/.gnupg/gpg-agent.conf}."))
+   "Raw content to add to the end of @file{~/.gnupg/gpg-agent.conf}.")
+  (shepherd-requirement
+   (list-of-symbols '())
+   "List of services that should be started before this service."))
 
 (define (home-gpg-agent-configuration-file config)
   "Return the @file{gpg-agent.conf} file for @var{config}."
@@ -104,7 +107,7 @@ entry will be expired even if it has been accessed recently.")
 (define (home-gpg-agent-shepherd-services config)
   "Return the possibly-empty list of Shepherd services for @var{config}."
   (match-record config <home-gpg-agent-configuration>
-    (gnupg ssh-support?)
+    (gnupg ssh-support? shepherd-requirement)
     ;; 'gpg-agent' is started on demand by GnuPG's programs, but it has to be
     ;; started explicitly when OpenSSH support is enabled (info "(gnupg) Agent
     ;; Options").
@@ -119,6 +122,7 @@ entry will be expired even if it has been accessed recently.")
                              #:socket-directory-permissions #o700))))
           (list (shepherd-service
                  (provision '(gpg-agent ssh-agent))
+                 (requirement shepherd-requirement)
                  (modules '((shepherd support)))  ;for '%user-runtime-dir'
                  (start
                   #~(lambda args
