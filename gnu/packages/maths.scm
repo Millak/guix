@@ -9647,7 +9647,7 @@ researchers and developers alike to get started on SAT.")
 (define-public kissat
   (package
     (name "kissat")
-    (version "4.0.1")
+    (version "4.0.4")
     (source
      (origin
        (method git-fetch)
@@ -9657,7 +9657,7 @@ researchers and developers alike to get started on SAT.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0acg61cfcjg13if2i375cyl4xvwmabhfhi9z8pnw971046am6bzv"))))
+         "1snimig4cp97p570nin2i38my72zvwypldyhr125i1z6cd9pa046"))))
     (build-system gnu-build-system)
     (inputs (list xz gzip lzip bzip2 p7zip))
     (arguments
@@ -9668,6 +9668,10 @@ researchers and developers alike to get started on SAT.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-source
             (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "test/testfile.c"
+                ;; Don't check if /etc/passwd isn't writable.
+                ;; When building in a container/chroot, this fails spuriously.
+                ((".*/etc/passwd.*") ""))
               (substitute* "scripts/generate-build-header.sh"
                 ;; by default BUILD includes the build date which
                 ;; makes the build not reproducible.
