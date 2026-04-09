@@ -3856,6 +3856,46 @@ Internet.  It is largely centered around the @code{WebPKI}.")
     ;; See LICENSE file for more details.
     (license (list license:asl2.0 license:expat license:isc))))
 
+(define-public go-github-com-zmap-zlint-v3
+  (package
+    (name "go-github-com-zmap-zlint-v3")
+    (version "3.6.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zmap/zlint")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "054ddx6xdzhdjd214kp3kby0q5w4z1d4n61fav5vz73afm4z4bij"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zmap/zlint/v3"
+      #:unpack-path "github.com/zmap/zlint"
+      #:build-flags
+      #~(list (string-append "-ldflags=-X main.version=" #$version))
+      #:test-flags
+      ;; gen_test.go:236: exec: "git": executable file not found in $PATH
+      #~(list "-skip" "TestGetTestData|TestSaveCert")))
+    (propagated-inputs
+     (list go-github-com-pelletier-go-toml
+           go-github-com-sirupsen-logrus
+           go-github-com-zmap-zcrypto
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-text))
+    (home-page "https://github.com/zmap/zlint")
+    (synopsis "X.509 Certificate Linter")
+    (description
+     "ZLint is a X.509 certificate linter that checks for consistency with
+standards (e.g. @url{https://www.ietf.org/rfc/rfc5280.txt, RFC 5280}) and
+other relevant PKI requirements (e.g.
+@url{https://cabforum.org/wp-content/uploads/CA-Browser-Forum-BR-1.4.8.pdf,
+CA/Browser Forum Baseline Requirements}).")
+    (license license:asl2.0)))
+
 (define-public go-gitlab-com-nyarla-go-crypt
   (package
     (name "go-gitlab-com-nyarla-go-crypt")
@@ -4334,6 +4374,19 @@ traffic.")))
     (description "This package provides @code{ssh-to-pgp}: a Go command line
 +utility to convert SSH RSA keys to GPG keys.")
     (license license:expat)))
+
+(define-public zlint
+  (package/inherit go-github-com-zmap-zlint-v3
+    (name "zlint")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/zmap/zlint/v3/cmd/zlint")))
+    (native-inputs (package-propagated-inputs go-github-com-zmap-zlint-v3))
+    (propagated-inputs '())
+    (inputs '())))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
