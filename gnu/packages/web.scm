@@ -9903,10 +9903,9 @@ of Geminispace, but it defaults to a specific domain.")
     (home-page "https://github.com/ferdinandyb/maildir-rank-addr")
     (synopsis "Generate an addressbook from locally available email")
     (description
-     "This package implements a functionality to generate a ranked addressbook
-from your locally available email.  It can be used in MUA's like
-@url{http://aerc-mail.org, aerc} or @url{http://www.mutt.org/,mutt} by
-grepping the list.")
+     "This package generates a ranked addressbook from your locally available
+email.  It can be used in MUA's like @url{http://aerc-mail.org, aerc} or
+@url{http://www.mutt.org/,mutt} by grepping the list.")
     (license license:expat)))
 
 (define-public libzim
