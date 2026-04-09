@@ -45099,6 +45099,33 @@ Features:
 @end itemize\n")
     (license license:gpl3+)))
 
+(define-public emacs-exemplify-ert
+  (package
+    (name "emacs-exemplify-ert")
+    (version "0.6.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~flandrew/exemplify-ert")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y98pf3hq595h7vkqs1rrwhdsizi22y32mv345drvrc6xysyb7hr"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-l" "dev/examples.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
+    (propagated-inputs (list emacs-dash emacs-f emacs-s))
+    (home-page "https://git.sr.ht/~flandrew/exemplify-ert")
+    (synopsis "Emacs library to implement regression tests")
+    (description
+     "This Emacs package is an extension to @code{ert}.  It aims at writing
+test cases in a simplified form.")
+    (license license:gpl3+)))
+
 (define-public emacs-pcmpl-args
   (package
     (name "emacs-pcmpl-args")
