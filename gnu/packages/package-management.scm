@@ -2464,7 +2464,7 @@ in an isolated environment, in separate namespaces.")
                                           "guile-prometheus"
                                           "guile-sqlite3"
                                           "guile-gnutls"
-                                          "guile-fibers-next"
+                                          "guile-fibers"
                                           "guile-knots")))
                        (wrap-program file
                          `("GUILE_LOAD_PATH" ":" prefix
@@ -2494,11 +2494,12 @@ in an isolated environment, in separate namespaces.")
 
              ;; Guile libraries are needed here for cross-compilation.
              guile-next
+             guile-3.0-latest
              guile-aws
              guile-json-4
              guile-gcrypt
              guix
-             guile-fibers-next
+             guile-fibers
              guile-knots
              guile-prometheus
              guile-lib
@@ -2507,13 +2508,13 @@ in an isolated environment, in separate namespaces.")
              guile-sqlite3))
       (inputs
        (list bash-minimal
-             guile-next))
+             guile-3.0-latest))
       (propagated-inputs
        (list guile-aws
              guile-json-4
              guile-gcrypt
              guix
-             guile-fibers-next
+             guile-fibers
              guile-knots
              guile-prometheus
              guile-lib
