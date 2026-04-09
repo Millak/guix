@@ -11994,28 +11994,6 @@ generation.")
     (home-page "https://github.com/halostatue/hoe-git2")
     (license license:expat)))
 
-(define-public ruby-hoe-git
-  (package
-    (name "ruby-hoe-git")
-    (version "1.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "hoe-git" version))
-       (sha256
-        (base32
-         "10jmmbjm0lkglwxbn4rpqghgg1ipjxrswm117n50adhmy8yij650"))))
-    (build-system ruby-build-system)
-    (propagated-inputs
-     (list ruby-hoe-3))
-    (synopsis "Hoe plugins for tighter Git integration")
-    (description
-     "This package provides a set of Hoe plugins for tighter Git integration.
-It provides tasks to automate release tagging and pushing and changelog
-generation.")
-    (home-page "https://github.com/jbarnette/hoe-git")
-    (license license:expat)))
-
 (define-public ruby-hoe-markdown
   (package
     (name "ruby-hoe-markdown")
