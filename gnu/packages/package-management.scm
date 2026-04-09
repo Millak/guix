@@ -2311,9 +2311,9 @@ outputs of those builds.")
            guix
            guile-prometheus
            guile-lib
-           guile-next))
+           guile-3.0-latest))
     (inputs
-     (list guile-next
+     (list guile-3.0-latest
            guix
            guile-prometheus
            guile-gcrypt
