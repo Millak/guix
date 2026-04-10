@@ -4,7 +4,7 @@
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2016, 2017, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2020, 2022, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Guy Fleury Iteriteka <hoonandon@gmail.com>
 ;;;
@@ -98,15 +98,15 @@
        "ftp://savannah.c3sl.ufpr.br/")
       (sourceforge ; https://sourceforge.net/p/forge/documentation/Mirrors/
        "http://downloads.sourceforge.net/project/"
-       "http://ufpr.dl.sourceforge.net/project/"
+       "http://cfhcable.dl.sourceforge.net/project/"
        "http://freefr.dl.sourceforge.net/project/"
-       "http://internode.dl.sourceforge.net/project/"
-       "http://jaist.dl.sourceforge.net/project/"
-       "http://liquidtelecom.dl.sourceforge.net/project/"
+       "http://gigenet.dl.sourceforge.net/project/"
        "http://nchc.dl.sourceforge.net/project/"
-       "http://netcologne.dl.sourceforge.net/project/"
+       "http://netactuate.dl.sourceforge.net/project/"
        "http://netix.dl.sourceforge.net/project/"
-       "http://tenet.dl.sourceforge.net/project/")
+       "http://onboardcloud.dl.sourceforge.net/project/"
+       "http://pilotfiber.dl.sourceforge.net/project/"
+       "http://sinalbr.dl.sourceforge.net/project/")
       (netfilter.org ; https://www.netfilter.org/mirrors.html
        "http://ftp.netfilter.org/pub/"
        "ftp://ftp.es.netfilter.org/mirrors/netfilter/"
