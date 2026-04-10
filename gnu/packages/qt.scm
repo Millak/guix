@@ -370,6 +370,7 @@ window managers, that don't provide Qt integration by themselves.")
        (uri (git-reference
              (url "https://www.opencode.net/trialuser/qt6ct")
              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "17hfx90wnc40a1sq0qcdp2hml5mkjhlj5rwm95pc40p03nicpn67"))))
     (build-system qt-build-system)
