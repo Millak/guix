@@ -1387,6 +1387,7 @@ mounted via FUSE.")
        (uri (git-reference
              (url "https://github.com/anestisb/android-simg2img")
              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
          "0drwvqxbhajka580j93z8ldckhjlpr0i84nh20krdpxcp54xvldh"))))
