@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2020 by Amar M. Singh <nly@disroot.org>
-;;; Copyright © 2015-2022, 2024-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2022, 2024-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021, 2022 Mathieu Othacehe <othacehe@gnu.org>
@@ -1180,7 +1180,7 @@ headers."
     (let ((name (service-name)))
       ;; XXX: Use a callback from Guile-Avahi here, as Avahi can pick a
       ;; different name to avoid name clashes.
-      (info (G_ "Advertising ~a~%.") name)
+      (info (G_ "advertising '~a'~%") name)
       (avahi-publish-service-thread name
                                     #:type publish-service-type
                                     #:port port)))
@@ -1231,6 +1231,13 @@ return the corresponding socket.  Otherwise return #f."
     (lambda (key proc message args . rest)
       (leave (G_ "user '~a' not found: ~a~%")
              user (apply format #f message args)))))
+
+(define (localhost? address)
+  "Return true if ADDRESS corresponds to localhost."
+  (and (memv (sockaddr:fam address)
+             (list AF_INET AF_INET6))
+       (memv (sockaddr:addr address)
+             (list INADDR_LOOPBACK IN6ADDR_LOOPBACK))))
 
 
 ;;;
@@ -1295,6 +1302,11 @@ return the corresponding socket.  Otherwise return #f."
         (warning (G_ "server running as root; \
 consider using the '--user' option!~%")))
 
+      (when (and advertise?
+                 (and=> (getsockname socket) localhost?))
+        (warning (G_ "ignoring '--advertise' \
+because service is listening to localhost~%")))
+
       (parameterize ((%public-key public-key)
                      (%private-key private-key)
                      (cache-bypass-threshold
@@ -1321,7 +1333,10 @@ consider using the '--user' option!~%")))
 
         (with-store store
           (run-publish-server socket store
-                              #:advertise? advertise?
+                              #:advertise?
+                              (and advertise?
+                                   (not (and=> (getsockname socket)
+                                               localhost?)))
                               #:port port
                               #:cache cache
                               #:pool (and cache (make-pool workers
