@@ -20260,6 +20260,34 @@ It provides:
 @end itemize")
     (license license:bsd-2)))
 
+(define-public go-github-com-nozzle-throttler
+  (package
+    (name "go-github-com-nozzle-throttler")
+    (version "0.0.0-20180817012639-2ea982251481")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nozzle/throttler")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06g6gbf25l8wd6m00gcrxyg2shakva394hkv4ppgynqrqs5cprx6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/nozzle/throttler"
+      #:test-flags #~(list "-vet=off")))
+    (home-page "https://github.com/nozzle/throttler")
+    (synopsis "Intelligent WaitGroups")
+    (description
+     "Package throttler fills the gap between @code{sync.WaitGroup} and
+manually monitoring goroutines with channels.  The API is almost identical to
+Wait Groups, but it allows user to set a max number of workers that can be
+running simultaneously.  It uses channels internally to block until a job
+completes by calling Done(err) or until all jobs have been completed.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-nsf-termbox-go
   (package
     (name "go-github-com-nsf-termbox-go")
