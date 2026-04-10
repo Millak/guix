@@ -19848,6 +19848,68 @@ Google Cloud Platform}.")
 generate Go code.")
     (license license:asl2.0)))
 
+(define-public go-google-golang-org-grpc-examples
+  (package
+    (name "go-google-golang-org-grpc-examples")
+    (version "0.0.0-20260408163837-74b3acd1a801")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/grpc/grpc-go")
+              (commit (go-version->git-ref version #:subdir "examples"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p7h51pm4r8gfxaimvkmkwk0ii4rvhs6p6shvs3qaig86wg1rxwb"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "examples")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f       ;TODO: some packages cycle
+      #:import-path "google.golang.org/grpc/examples"
+      #:unpack-path "google.golang.org/grpc"))
+    (propagated-inputs
+     (list go-github-com-cncf-xds-go
+           go-github-com-prometheus-client-golang
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-exporters-prometheus
+           go-go-opentelemetry-io-otel-exporters-stdout-stdouttrace
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-golang-org-x-oauth2
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc-security-advancedtls
+           go-google-golang-org-protobuf))
+    (home-page "https://google.golang.org/grpc")
+    (synopsis "Collection of gRPC examples in Golang")
+    (description
+     "This package provides examples to help users get started with @code{gRPC-Go}.
+
+They are arranged as follows:
+@itemize
+@item @code{helloworld} - a simple example showing a basic client and server
+@item @code{routeguide} - a more complicated example showing different types
+of streaming RPCs
+@item @code{features} - a collection of examples, each focused on a single
+gRPC feature
+@end itemize
+
+@code{data} is a directory containing data used by the examples, e.g. TLS
+certificates.")
+    (license license:asl2.0)))
+
 (define-public go-google-golang-org-grpc-security-advancedtls
   (package
     (name "go-google-golang-org-grpc-security-advancedtls")
