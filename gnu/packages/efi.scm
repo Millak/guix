@@ -65,8 +65,9 @@ environment presented by Intel's EFI.")
     (license (list license:bsd-2 license:bsd-3 license:bsd-4 license:expat))))
 
 (define-public efi-analyzer
-  (let ((commit "77c9e3a67cd7c2fca48a4292dad25a5429872f95")
-        (revision "0"))
+  ;; No public releases; this is the master tip since 2026-01-28.
+  (let ((commit "8b6527eec8fa6d66d5208983cf6a906aad464c6d")
+        (revision "1"))
     (package
       (name "efi-analyzer")
       (version (git-version "0.0.0" revision commit))
@@ -78,7 +79,7 @@ environment presented by Intel's EFI.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1izdkzybqyvzpzqz6kx4j7y47j6aa2dsdrychzgs65466x1a4br1"))))
+          (base32 "0i9gg3fk7cq41pg6jf2xyfw60fp9wsavyvxafbf7x031vbgf1wyk"))))
       (build-system gnu-build-system)
       (arguments
        `(#:make-flags
