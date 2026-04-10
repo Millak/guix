@@ -15589,6 +15589,7 @@ provided @code{http.FileSystem}.")
       ;; XXX: Remove when all inputs are packaged.
       #~(list "pkg/api"
               "pkg/certificate"
+              "pkg/ctl"
               "pkg/oauthflow")))
     (native-inputs
      (list go-github-com-stretchr-testify
@@ -15601,6 +15602,7 @@ provided @code{http.FileSystem}.")
            go-github-com-coreos-go-oidc-v3
            go-github-com-fsnotify-fsnotify
            go-github-com-go-jose-go-jose-v4
+           go-github-com-google-certificate-transparency-go
            go-github-com-grpc-ecosystem-go-grpc-middleware
            go-github-com-grpc-ecosystem-go-grpc-prometheus
            go-github-com-grpc-ecosystem-grpc-gateway-v2
@@ -15613,6 +15615,7 @@ provided @code{http.FileSystem}.")
            go-github-com-rs-cors
            go-github-com-sigstore-protobuf-specs
            go-github-com-sigstore-sigstore
+           go-github-com-spiffe-go-spiffe-v2
            go-github-com-tink-crypto-tink-go-v2
            go-go-uber-org-zap
            go-go-yaml-in-yaml-v3
@@ -15620,23 +15623,21 @@ provided @code{http.FileSystem}.")
            go-google-golang-org-genproto-googleapis-api
            go-google-golang-org-grpc
            go-google-golang-org-protobuf
+           go-sigs-k8s-io-release-utils
 
            ;; TODO: Complete packaging
            ;; go-chainguard-dev-go-grpc-kit
            ;; go-chainguard-dev-sdk
            ;; go-cloud-google-com-go-security
-           ;; go-github-com-google-certificate-transparency-go
            ;; go-github-com-sigstore-sigstore-pkg-signature-kms-aws
            ;; go-github-com-sigstore-sigstore-pkg-signature-kms-azure
            ;; go-github-com-sigstore-sigstore-pkg-signature-kms-gcp
            ;; go-github-com-sigstore-sigstore-pkg-signature-kms-hashivault
-           ;; go-github-com-spiffe-go-spiffe-v2
            ;; go-github-com-thalesignite-crypto11
            ;; go-github-com-tink-crypto-tink-go-awskms-v2
            ;; go-github-com-tink-crypto-tink-go-gcpkms-v2
            ;; go-go-step-sm-crypto
-           ;; go-goa-design-goa-v3
-           #;go-sigs-k8s-io-release-utils))
+           #;go-goa-design-goa-v3))
     (home-page "https://github.com/sigstore/fulcio")
     (synopsis "Sigstore certificate authority for code signing")
     (description
