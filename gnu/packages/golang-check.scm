@@ -2703,6 +2703,31 @@ GIT_TRACE mechanism.")
      "This package provides tools for detecting deadlocks at run-time in Go.")
     (license license:asl2.0)))
 
+(define-public go-github-com-sclevine-spec
+  (package
+    (name "go-github-com-sclevine-spec")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sclevine/spec")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y3rqb7dd51qnw5ns7w5sy93879ybnlg6gwslbv5mkfnrk0gl7na"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sclevine/spec"))
+    (home-page "https://github.com/sclevine/spec")
+    (synopsis "BDD-style test organizer for Go")
+    (description
+     "Spec is a simple BDD test organizer for Go.  It minimally extends the
+standard library @code{testing} package by facilitating easy organization of
+Go 1.7+ @url{https://blog.golang.org/subtests, subtests}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-shabbyrobe-gocovmerge
   (package
     (name "go-github-com-shabbyrobe-gocovmerge")
