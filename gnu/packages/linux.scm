@@ -11145,44 +11145,40 @@ configuration files.  It supports data files in ASCII, MBCS and Unicode.")
   (package
     (name "xfsprogs")
     (version "6.12.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kernel.org/linux/utils/fs/xfs/xfsprogs/"
-                    "xfsprogs-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1n46n27fxx1137kni3drrhzhp1l8ksxabcsmi8yzxbhpbnl4q293"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kernel.org/linux/utils/fs/xfs/xfsprogs/"
+                           "xfsprogs-" version ".tar.gz"))
+       (sha256
+        (base32 "1n46n27fxx1137kni3drrhzhp1l8ksxabcsmi8yzxbhpbnl4q293"))))
     (build-system gnu-build-system)
     (outputs (list "out" "python"))
     (arguments
-     `(#:tests? #f   ; kernel/user integration tests are in package "xfstests"
-       #:configure-flags
-       (list "--disable-static")
-       #:make-flags
-       (list "V=1")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'separate-python-output
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out    (assoc-ref outputs "out"))
-                   (python (assoc-ref outputs "python")))
-               (for-each
-                (lambda (script)
-                  (mkdir-p (string-append python (dirname script)))
-                  (rename-file (string-append out script)
-                               (string-append python script)))
-                (list "/sbin/xfs_scrub_all")))))
-         (add-after 'install 'install-headers
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "install-dev" make-flags))))))
-    (native-inputs
-     (list gettext-minimal))
-    (inputs
-     `(("libinih" ,libinih)
-       ("liburcu" ,liburcu)
-       ("libuuid" ,util-linux "lib")
-       ("python" ,python-wrapper)))
+     (list
+      #:tests? #f ;kernel/user integration tests are in package "xfstests"
+      #:configure-flags
+      #~(list "--disable-static")
+      #:make-flags
+      #~(list "V=1")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'separate-python-output
+            (lambda _
+              (for-each
+               (lambda (script)
+                 (mkdir-p (string-append #$output:python (dirname script)))
+                 (rename-file (string-append #$output script)
+                              (string-append #$output:python script)))
+               (list "/sbin/xfs_scrub_all"))))
+          (add-after 'install 'install-headers
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "install-dev" make-flags))))))
+    (native-inputs (list gettext-minimal))
+    (inputs (list libinih
+                  liburcu
+                  (list util-linux "lib")
+                  python-wrapper))
     (home-page "https://xfs.wiki.kernel.org/")
     (synopsis "XFS file system tools")
     (description "This package provides commands to create and check XFS
@@ -11206,9 +11202,8 @@ file systems.")
                 "13xkn9jpmwp4fm9r68vhgznkmxhnv83n2b39mhy2qdaph90w2a1l"))))
     (arguments
      (substitute-keyword-arguments arguments
-       ((#:configure-flags configure-flags '())
-        `(cons "--enable-gettext=no"
-               ,configure-flags))))
+       ((#:configure-flags configure-flags #~(list))
+        #~(cons* "--enable-gettext=no" #$configure-flags))))
     (native-inputs
      (modify-inputs native-inputs
        (delete "gettext-minimal")))))
@@ -11220,25 +11215,23 @@ file systems.")
     (outputs (list "out"))
     (arguments
      (substitute-keyword-arguments arguments
-       ((#:configure-flags configure-flags '())
-        `(append ,configure-flags
-                 (list "--enable-static")))
-       ((#:make-flags make-flags ''())
-        `(cons* "LLDFLAGS=-all-static" ,make-flags))
-       ((#:phases _ ''())
-        `(modify-phases %standard-phases
-           (add-after 'install 'delete-useless-files
-             (lambda* (#:key outputs #:allow-other-keys)
-               (with-directory-excursion (assoc-ref outputs "out")
-                 (for-each delete-file-recursively
-                           (list "include" "lib")))))))))
+       ((#:configure-flags configure-flags #~(list))
+        #~(append #$configure-flags
+                  (list "--enable-static")))
+       ((#:make-flags make-flags #~(list))
+        #~(cons* "LLDFLAGS=-all-static" #$make-flags))
+       ((#:phases _ #~%standard-phases)
+        #~(modify-phases %standard-phases
+            (add-after 'install 'delete-useless-files
+              (lambda _
+                (with-directory-excursion #$output
+                  (for-each delete-file-recursively
+                            (list "include" "lib")))))))))
     (inputs
-     `(("libinih:static" ,libinih "static")
-       ("util-linux:static" ,util-linux "static")
-       ,@(remove (match-lambda
-                   ((label . _)
-                    (member label '("python"))))
-                 (package-inputs xfsprogs))))
+     (modify-inputs inputs
+       (delete "python-wrapper")
+       (prepend (list libinih "static")
+                (list util-linux "static"))))
     (synopsis "Statically linked XFS file system tools")))
 
 (define-public xfs_repair/static
