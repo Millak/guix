@@ -549,6 +549,7 @@ when coding custom template tags.")
        (uri (git-reference
              (url "https://github.com/jazzband/django-taggit")
              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
          "1i8an3wcl7nygl5f565jcpyhyws9gabawazggxpf6m3vklxn3cj0"))))
