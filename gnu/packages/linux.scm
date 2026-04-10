@@ -11234,9 +11234,9 @@ file systems.")
                 (list util-linux "static"))))
     (synopsis "Statically linked XFS file system tools")))
 
-(define-public xfs_repair/static
+(define-public xfs-repair/static
   (package
-    (name "xfs_repair-static")
+    (name "xfs-repair-static")
     (version (package-version xfsprogs/static))
     (source #f)
     (build-system trivial-build-system)
@@ -11258,6 +11258,9 @@ file systems.")
      "This package provides a statically linked @command{xfs_repair} taken
 from the xfsprogs package.  It is meant to be used in initrds.")
     (license (package-license xfsprogs/static))))
+
+(define-deprecated-package xfs_repair/static
+  "xfs_repair-static" xfs-repair/static)
 
 (define-public genext2fs
   (package

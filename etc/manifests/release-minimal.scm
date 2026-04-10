@@ -84,7 +84,7 @@ TARGET."
          (@ (gnu packages file-systems) jfs_fsck/static)
          (@ (gnu packages linux) ntfsfix/static)
          (@ (gnu packages linux) f2fs-fsck/static)
-         (@ (gnu packages linux) xfs_repair/static)
+         (@ (gnu packages linux) xfs-repair/static)
          (map specification->package
               '("lvm2-static"
                 "cryptsetup-static"

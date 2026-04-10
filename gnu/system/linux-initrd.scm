@@ -321,7 +321,7 @@ FILE-SYSTEMS."
           (list f2fs-fsck/static)
           '())
     ,@(if (find (file-system-type-predicate "xfs") file-systems)
-          (list xfs_repair/static)
+          (list xfs-repair/static)
           '())))
 
 (define-syntax vhash                              ;TODO: factorize
