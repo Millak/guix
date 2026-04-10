@@ -82,16 +82,16 @@ environment presented by Intel's EFI.")
           (base32 "0i9gg3fk7cq41pg6jf2xyfw60fp9wsavyvxafbf7x031vbgf1wyk"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:make-flags
-         (list (string-append "prefix=" (assoc-ref %outputs "out")))
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'support-cross-compilation
-             (lambda _
-               (substitute* "Makefile"
-                 (("gcc") ,(cc-for-target)))
-               #t))
-           (delete 'configure))))       ; no configure script
+       (list
+        #:make-flags
+        #~(list (string-append "prefix=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'support-cross-compilation
+              (lambda _
+                (substitute* "Makefile"
+                  (("gcc") #$(cc-for-target)))))
+            (delete 'configure))))
       (home-page "https://github.com/xypron/efi_analyzer")
       (synopsis "Analyze EFI binaries")
       (description
