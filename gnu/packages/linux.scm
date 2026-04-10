@@ -9966,81 +9966,79 @@ Text-based output formats: CSV, XML, Netfilter's LOG, Netfilter's conntrack
      ;; Disable the test suite on armhf-linux, as there are too many
      ;; failures to keep track of (see for example:
      ;; https://github.com/proot-me/proot/issues/286).
-     `(#:tests? ,(not (or (%current-target-system)
-                          (string-prefix? "armhf"
-                                          (or (%current-system)))))
-       #:make-flags '("-C" "src")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-sources
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* (find-files "src" "\\.[ch]$")
-                        (("\"/bin/sh\"")
-                         (string-append "\"" (assoc-ref inputs "bash")
-                                        "/bin/sh\"")))
+     (list
+      #:tests? (not (or (%current-target-system)
+                        (string-prefix? "armhf"
+                                        (or (%current-system)))))
+      #:make-flags
+      #~'("-C" "src")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sources
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "src" "\\.[ch]$")
+                (("\"/bin/sh\"")
+                 (format #f "~s" (search-input-file inputs "/bin/sh"))))
 
-                      (substitute* "src/GNUmakefile"
-                        (("/bin/echo") (which "echo"))
-                        (("^VERSION = .*")
-                         (string-append "VERSION := " ,version "\n")))
+              (substitute* "src/GNUmakefile"
+                (("/bin/echo") (which "echo"))
+                (("^VERSION = .*")
+                 (string-append "VERSION := " #$version "\n")))
 
-                      (substitute* (find-files "test" "\\.sh$")
-                        ;; Some of the tests try to "bind-mount" /bin/true.
-                        (("-b /bin/true:")
-                         (string-append "-b " (which "true") ":"))
-                        ;; Likewise for /bin.
-                        (("-b /bin:") "-b /gnu:")
-                        ;; Others try to run /bin/sh.
-                        (("/bin/sh") (which "sh"))
-                        ;; Others assume /etc/fstab exists.
-                        (("/etc/fstab") "/etc/passwd"))
-                      (substitute* "test/GNUmakefile"
-                        (("-b /bin:") "-b /gnu:"))
-                      (substitute* "test/test-c6b77b77.mk"
-                        (("/bin/bash") (which "bash"))
-                        (("/usr/bin/test") (which "test")))
-                      (substitute* "test/test-16573e73.c"
-                        (("/bin/([a-z-]+)" _ program)
-                         (which program)))
-                      (substitute* "test/test-5467b986.sh"
-                        (("-w /usr") "-w /gnu")
-                        (("-w usr") "-w gnu")
-                        (("/usr/share") "/gnu/store")
-                        (("share") "store"))
-                      (substitute* "test/test-092c5e26.sh"
-                        (("-q echo ")
-                         "-q $(which echo) "))
+              (substitute* (find-files "test" "\\.sh$")
+                ;; Some of the tests try to "bind-mount" /bin/true.
+                (("-b /bin/true:")
+                 (string-append "-b " (which "true") ":"))
+                ;; Likewise for /bin.
+                (("-b /bin:") "-b /gnu:")
+                ;; Others try to run /bin/sh.
+                (("/bin/sh") (which "sh"))
+                ;; Others assume /etc/fstab exists.
+                (("/etc/fstab") "/etc/passwd"))
+              (substitute* "test/GNUmakefile"
+                (("-b /bin:") "-b /gnu:"))
+              (substitute* "test/test-c6b77b77.mk"
+                (("/bin/bash") (which "bash"))
+                (("/usr/bin/test") (which "test")))
+              (substitute* "test/test-16573e73.c"
+                (("/bin/([a-z-]+)" _ program)
+                 (which program)))
+              (substitute* "test/test-5467b986.sh"
+                (("-w /usr") "-w /gnu")
+                (("-w usr") "-w gnu")
+                (("/usr/share") "/gnu/store")
+                (("share") "store"))
+              (substitute* "test/test-092c5e26.sh"
+                (("-q echo ")
+                 "-q $(which echo) "))
 
-                      ;; The socket tests requires networking.
-                      (for-each delete-file
-                                (find-files "test" "test-socket.*\\.sh$"))))
-                  (delete 'configure)
-                  (add-after 'build 'build-manpage
-                    (lambda _
-                      (with-directory-excursion "doc"
-                        (invoke "make" "proot/man.1" "SUFFIX=.py"))))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (let ((n (parallel-job-count)))
-                          ;; Most of the tests expect "/bin" to be in $PATH so
-                          ;; they can run things that live in $ROOTFS/bin.
-                          (setenv "PATH"
-                                  (string-append (getenv "PATH") ":/bin"))
-                          (invoke "make" "check" "-C" "test"
-                                  ;;"V=1"
-                                  "-j" (number->string n))))))
-                  (replace 'install
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; The 'install' rule does nearly nothing.
-                      (let* ((out (assoc-ref outputs "out"))
-                             (man1 (string-append out "/share/man/man1")))
-                        ;; TODO: 'make install-care' (does not even
-                        ;; build currently.)
-                        (invoke "make" "-C" "src" "install"
-                                (string-append "PREFIX=" out))
-                        (mkdir-p man1)
-                        (copy-file "doc/proot/man.1"
-                                   (string-append man1 "/proot.1"))))))))
+              ;; The socket tests requires networking.
+              (for-each delete-file
+                        (find-files "test" "test-socket.*\\.sh$"))))
+          (delete 'configure)
+          (add-after 'build 'build-manpage
+            (lambda _
+              (with-directory-excursion "doc"
+                (invoke "make" "proot/man.1" "SUFFIX=.py"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Most of the tests expect "/bin" to be in $PATH so
+                ;; they can run things that live in $ROOTFS/bin.
+                (setenv "PATH" (string-append (getenv "PATH") ":/bin"))
+                (invoke "make" "check" "-C" "test"
+                        "-j" (number->string (parallel-job-count))))))
+          (replace 'install
+            (lambda _
+              ;; The 'install' rule does nearly nothing.
+              (let ((man1 (string-append #$output "/share/man/man1")))
+                ;; TODO: 'make install-care' (does not even
+                ;; build currently.)
+                (invoke "make" "-C" "src" "install"
+                        (string-append "PREFIX=" #$output))
+                (mkdir-p man1)
+                (copy-file "doc/proot/man.1"
+                           (string-append man1 "/proot.1"))))))))
     (native-inputs (list which
                          ;; For 'mcookie', used by some of the tests.
                          util-linux
@@ -10073,15 +10071,13 @@ available in the kernel Linux.")
     (arguments
      (substitute-keyword-arguments arguments
        ((#:make-flags flags)
-        `(cons "LDFLAGS = -ltalloc -static -static-libgcc" ,flags))
+        #~(cons* "LDFLAGS = -ltalloc -static -static-libgcc" #$flags))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'strip 'remove-store-references
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out")))
-                 (with-directory-excursion out
-                   (remove-store-references "bin/proot")
-                   #t))))))
+        #~(modify-phases #$phases
+            (add-after 'strip 'remove-store-references
+              (lambda _
+                (with-directory-excursion #$output
+                  (remove-store-references "bin/proot"))))))
        ((#:allowed-references _ '("out"))
         '("out"))))))
 
