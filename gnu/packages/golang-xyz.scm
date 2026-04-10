@@ -26539,6 +26539,53 @@ read flag values from JSON, YAML, and TOML.")
       #~(list "-vet=off")))
     (propagated-inputs '())))
 
+(define-public go-github-com-uwu-tools-magex
+  (package
+    (name "go-github-com-uwu-tools-magex")
+    (version "0.10.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/uwu-tools/magex")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sr2zb89qfar95r1g29303f9jjjzcs3s61lj9b8j0y40yjaqli00"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/uwu-tools/magex"
+      #:test-flags
+      #~(list "-vet=off"
+              "-skip" (string-join
+                       ;; Network access is required.
+                       (list "TestCopy_CopyNoOverwrite/overwrite"
+                             "TestDownloadArchiveToGopathBin"
+                             "TestDownloadArchiveToGopathBin_OsReplacement"
+                             "TestDownloadToGopathBin"
+                             "TestEnsurePackage_FreshInstall"
+                             "TestEnsurePackage_IntoDirectory"
+                             "TestEnsurePackage_Upgrade"
+                             "TestMove"
+                             "TestMove_MoveNoOverwrite/no_overwrite"
+                             "TestMove_MoveNoOverwrite/overwrite"
+                             "TestPreparedCommand_Run")
+                       "|"))
+      #:test-subdirs
+      #~(list "ci" "pkg/downloads" "shx" "xplat")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-magefile-mage
+           go-github-com-masterminds-semver-v3))
+    (home-page "https://github.com/uwu-tools/magex")
+    (synopsis "Magefile Extensions")
+    (description
+     "Package magex provides helper methods for working with
+@url{https://magefile.org, Magefiles} - make/rake-like build tool using Go.")
+    (license license:expat)))
+
 (define-public go-github-com-valyala-bytebufferpool
   (package
     (name "go-github-com-valyala-bytebufferpool")
