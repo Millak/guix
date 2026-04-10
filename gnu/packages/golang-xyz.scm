@@ -30361,7 +30361,7 @@ The yaml package supports most of YAML 1.2, but preserves some behavior from
              go-github-com-containerd-console
              ;; go-github-com-containerd-containerd
              go-github-com-containerd-fifo
-             ;; go-github-com-containerd-go-runc
+             go-github-com-containerd-go-runc
              go-github-com-containerd-typeurl
              go-github-com-coreos-go-systemd-v22
              go-github-com-godbus-dbus-v5
@@ -30374,7 +30374,7 @@ The yaml package supports most of YAML 1.2, but preserves some behavior from
              go-github-com-mohae-deepcopy
              go-github-com-opencontainers-runtime-spec
              go-github-com-sirupsen-logrus
-             ;; go-github-com-syndtr-gocapability
+             go-github-com-syndtr-gocapability
              go-github-com-vishvananda-netlink
              go-golang-org-x-mod
              go-golang-org-x-sync
@@ -30382,9 +30382,9 @@ The yaml package supports most of YAML 1.2, but preserves some behavior from
              go-golang-org-x-time
              go-golang-org-x-tools
              go-google-golang-org-protobuf
-             ;; go-k8s-io-api
-             ;; go-k8s-io-apimachinery
-             #; go-k8s-io-client-go))
+             go-k8s-io-api
+             go-k8s-io-apimachinery
+             go-k8s-io-client-go))
       (home-page "https://gvisor.dev/gvisor")
       (synopsis "Application Kernel for Containers")
       (description
