@@ -10067,7 +10067,7 @@ available in the kernel Linux.")
     (name "proot-static")
     (synopsis
      "Unprivileged chroot, bind mount, and binfmt_misc (statically linked)")
-    (inputs `(("talloc" ,talloc/static)))
+    (inputs (list talloc/static))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:make-flags flags)
