@@ -8043,6 +8043,7 @@ Home Page}.")
              (commit version)
              ;; For test files.
              (recursive? #true)))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "065x43hx670rjrclxi4hiqxscllb16v9s7myjvg7rd5pd3y0k7sg"))))
     (build-system pyproject-build-system)
