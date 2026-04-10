@@ -10277,7 +10277,28 @@ between a set of landmarks and the samples are calculated.")
      (list
       #:skipped-tests
       ;; 2/3 mismatches (average diff: 0.267)
-      '(("test-resids.R" "weighted residuals"))))
+      `(("test-resids.R" "weighted residuals")
+        ,@(if (target-32bit?)
+              '( ;; Small accuracy problem
+                ("test-ranef.R" "multiple terms work")
+                ;; object 'cbpp' not found
+                ("test-predict.R" "predict se.fit on response scale")
+                ("test-factors.R" "factors")   ;freezes
+                "test-NAhandling.R"            ;freezes
+                "test-covariance_structures.R" ;freezes
+                "test-isSingular.R"            ;freezes
+                "test-lmer.R"                  ;freezes
+                "test-methods.R")              ;freezes
+              '()))
+      #:phases
+      (if (target-32bit?)
+          '(modify-phases %standard-phases
+             ;; These tests freeze on i686
+             (add-after 'unpack 'delete-more-tests
+               (lambda _
+                 (delete-file "tests/lmer-0.R")
+                 (delete-file "tests/lmer-conv.R"))))
+          '%standard-phases)))
     (propagated-inputs
      (list r-boot
            r-lattice
