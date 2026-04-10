@@ -1039,6 +1039,7 @@ but can also be used independently as a logging bot.")
        (uri (git-reference
               (url "https://git.causal.agency/scooper")
               (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "0sqb8hg402il38pjhwa3lfyrskf1yr6yjd5fswqvk3d15v1jq4m8"))))
     (build-system gnu-build-system)
