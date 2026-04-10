@@ -52,6 +52,7 @@
       (uri (git-reference
               (url "https://github.com/fltk/fltk")
               (commit (string-append "release-" version))))
+      (file-name (git-file-name name version))
       (sha256
        (base32 "0pnifyhhvcqfjd6iaa4m14kvfyqhjjdw0aqbcizcdhhqrl6q4pjg"))))
    (build-system gnu-build-system)
