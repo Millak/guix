@@ -23547,8 +23547,15 @@ data.")
        (updater-extra-native-inputs . ("r-ape" "r-ggtree"))))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:skipped-tests
+      (if (target-32bit?)
+          ;; The length of `freqs` must be the power of the number of letters
+          ;; in the sequence alphabet.
+          '(("test_create_sequences.R" "sequence creation works"))
+          '())
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'fix-reference-to-strip
            (lambda _
              (substitute* "src/Makevars"
