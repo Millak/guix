@@ -2254,6 +2254,45 @@ can be used in test code as a mock of the interface.")
 Perl's @url{https://metacpan.org/pod/Test::Deep, Test::Deep perl}.")
     (license license:bsd-2)))
 
+(define-public go-github-com-maxbrunsfeld-counterfeiter-v6
+  (package
+    (name "go-github-com-maxbrunsfeld-counterfeiter")
+    (version "6.12.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/maxbrunsfeld/counterfeiter")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c4a8gcm3l992vydldcfsvb2jk4spnmxsk2i4klqh4fpagbpa069"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/maxbrunsfeld/counterfeiter/v6"
+      #:test-flags
+      #~(list "-skip" "TestIntegration")
+      #:test-subdirs
+      #~(list "." "arguments" "command" "generator" "integration")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'go-generate
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (invoke "go" "generate" "-v" "-n" "./...")))))))
+    (native-inputs
+     (list go-github-com-onsi-gomega
+           go-github-com-sclevine-spec
+           go-golang-org-x-text
+           go-golang-org-x-tools))
+    (home-page "https://github.com/maxbrunsfeld/counterfeiter")
+    (synopsis "Generate self-contained, type-safe test doubles in Go")
+    (description
+     "This package provides fake implementations of the object's
+collaborators.")
+    (license license:expat)))
+
 (define-public go-github-com-mfridman-tparse
   (package
     (name "go-github-com-mfridman-tparse")
