@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Aljosha Papsch <ep@stern-data.com>
 ;;; Copyright © 2025, 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2025, 2026 Ashvith Shetty <ashvithshetty0010@zohomail.in>
+;;; Copyright © 2026 Mattia Bunel <mattia.bunel@ehess.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -115,8 +116,8 @@
   (plain-file "pg_hba.conf"
               "
 local	all	all			peer
-host	all	all	127.0.0.1/32 	md5
-host	all	all	::1/128 	md5"))
+host	all	all	127.0.0.1/32 	scram-sha-256
+host	all	all	::1/128 	scram-sha-256"))
 
 (define %default-postgres-ident
   (plain-file "pg_ident.conf"
