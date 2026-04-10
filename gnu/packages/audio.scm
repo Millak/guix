@@ -3438,7 +3438,7 @@ from being able to mix multiple JACK audio streams.")
             (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "08ji4lg24flzi6g3yaavfq8hz3kr98q2ripk5m4qk9z172qxbbc9"))))
+       (base32 "0fvnvr74q5khxlj5sylfnkblydmwgdbvj04mhdqw0zzmfqwignhd"))))
     (build-system meson-build-system)
     (arguments
      (list
