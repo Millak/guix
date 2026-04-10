@@ -92,6 +92,7 @@
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system qt)
   #:use-module (ice-9 match)
   #:use-module (guix build-system meson)
   #:use-module (srfi srfi-1))
@@ -934,7 +935,22 @@ software.")))
     (inherit pinentry-tty)
     (name "pinentry-qt")
     (arguments
-     `(#:configure-flags '("--enable-fallback-curses")))
+     (list #:configure-flags
+           #~(list "--enable-fallback-curses")
+           #:imported-modules
+           (append %default-gnu-imported-modules
+                   %qt-build-system-modules)
+           #:modules
+           '((guix build utils)
+             (guix build gnu-build-system)
+             ((guix build qt-build-system) #:prefix qt:))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'qt-wrap
+                 (lambda args
+                   (apply (assoc-ref qt:%standard-phases 'qt-wrap)
+                          #:qtbase #$(this-package-input "qtbase")
+                          args))))))
     (inputs
      (modify-inputs inputs
        (prepend qtbase qtwayland)))
