@@ -1370,6 +1370,39 @@ disable the Gnome auto-suspend and screensaver.")
     (home-page "https://github.com/eonpatapon/gnome-shell-extension-caffeine")
     (license license:gpl2+)))
 
+(define-public gnome-shell-extension-hot-edge
+  (package
+    (name "gnome-shell-extension-hot-edge")
+    (version "27")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jdoda/hotedge")
+             (commit "90e9cdd6f2a171a676a96a4e6ad0126316317e4d")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08jqz6n04yvqa77930sghgip5qfj8i4dm8wsm5cqjc4sqm4pn9yy"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("." "share/gnome-shell/extensions/hotedge@jonathan.jdoda.ca"
+           #:include-regexp ("\\.css$" "\\.js(on)?$" "schemas")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'compile-schemas
+            (lambda _
+              (with-directory-excursion "schemas"
+                (invoke "glib-compile-schemas" ".")))))))
+    (native-inputs (list `(,glib "bin")))
+    (synopsis "Add a hot edge to the bottom of the screen in Gnome")
+    (description
+     "Add a hot edge that activates the overview to the bottom of the screen.
+This provides a better mouse-based workflow and can be an alternative to a dock.")
+    (home-page "https://github.com/jdoda/hotedge")
+    (license license:gpl2+)))
+
 (define-public gnome-shell-extension-radio
   (let ((commit "860e55b9e704eb3dde43e6bbeccec5748242498e")
         (revision "0"))
