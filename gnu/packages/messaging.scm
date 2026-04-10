@@ -2096,7 +2096,7 @@ are both supported).")
 (define-public profanity
   (package
     (name "profanity")
-    (version "0.17.0")
+    (version "0.18.1")
     (source
      (origin
        (method git-fetch)
@@ -2107,38 +2107,36 @@ are both supported).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0d3srcw23qhkzal76maqyq0sr5hbblsd06hdgpcy0l34hh0z4zi0"))))
-    (build-system glib-or-gtk-build-system)
+         "1rbdyw1pmszmmxalcjb2w9ph60yq270wgw0fs2g1mqhhmqpg0g3s"))))
+    (build-system meson-build-system)
     (arguments
      (list
        #:configure-flags
          #~(list
-           "--disable-static"
-           "--enable-notifications"
-           "--enable-python-plugins"
-           "--enable-c-plugins"
-           "--enable-plugins"
-           "--enable-otr"
-           "--enable-pgp"
-           "--enable-omemo"
-           "--enable-icons-and-clipboard")))
+           "-Dnotifications=enabled"
+           "-Dpython-plugins=enabled"
+           "-Dc-plugins=enabled"
+           "-Dotr=enabled"
+           "-Dpgp=enabled"
+           "-Domemo=enabled"
+           "-Domemo-backend=libomemo-c"
+           "-Dicons-and-clipboard=enabled"
+           "-Dinstall_themes=true"
+           "--buildtype=release")
+       #:glib-or-gtk? #t))
     (native-inputs
-     (list autoconf
-           autoconf-archive
-           automake
-           cmocka
-           libtool
+     (list cmocka
            pkg-config))
     (inputs
      (list curl
            expat
            glib
            gpgme
-           gtk+-2
+           gtk+
            libgcrypt
            libnotify
            libotr
-           libsignal-protocol-c
+           libomemo-c
            libstrophe
            ncurses
            openssl
