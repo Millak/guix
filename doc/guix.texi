@@ -8843,12 +8843,12 @@ dependencies than the original package.  For example, the default
 optional dependency, you can define a variant that removes that
 dependency like so:
 
+@findex package/inherit
 @lisp
 (use-modules (gnu packages gdb))   ;for 'gdb'
 
 (define gdb-sans-guile
-  (package
-    (inherit gdb)
+  (package/inherit gdb
     (inputs (modify-inputs inputs
               (delete "guile")))))
 @end lisp
@@ -8856,6 +8856,23 @@ dependency like so:
 In the body of the @code{inputs} field above, @code{inputs} is bound to
 the inherited value.  Thus, the @code{modify-inputs} form above removes
 the @code{"guile"} package from the @code{inputs} field of @code{gdb}.
+
+@quotation Note
+The example above uses @code{(package/inherit gdb @dots{})} instead of
+the usual @code{(package (inherit gdb) @dots{})}.  While the latter
+would work, @code{package/inherit} does extra work: if @code{gdb} has a
+@code{replacement} field (@pxref{Security Updates}),
+@code{package/inherit} propagates the @code{inputs} changes of this
+variant to the replacement.
+
+In other words, @code{package/inherit} ensures the variant gets a
+consistent @code{replacement} when the original package has one.  Thus,
+one should generally use @code{package/inherit} when creating a variant
+for the same version, but not when targeting a different version, as in
+the @code{hello} example we saw earlier, where the replacement may be
+incorrect.
+@end quotation
+
 The @code{modify-inputs} macro is a helper that can prove useful anytime
 you want to remove, add, or replace package inputs.
 
