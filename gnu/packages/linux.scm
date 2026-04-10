@@ -11241,18 +11241,17 @@ file systems.")
     (source #f)
     (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((xfsprogs (assoc-ref %build-inputs "xfsprogs"))
-                (out      (assoc-ref %outputs "out"))
-                (sbin     (string-append out "/sbin")))
-           (install-file (string-append xfsprogs "/sbin/xfs_repair") sbin)
-           (with-directory-excursion sbin
-             (remove-store-references "xfs_repair"))))))
-    (inputs
-     `(("xfsprogs" ,xfsprogs/static)))
+     (list
+      #:modules `((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let ((sbin (string-append #$output "/sbin")))
+            (install-file (search-input-file %build-inputs "/sbin/xfs_repair")
+                          sbin)
+            (with-directory-excursion sbin
+              (remove-store-references "xfs_repair"))))))
+    (inputs (list xfsprogs/static))
     (home-page (package-home-page xfsprogs/static))
     (synopsis "Statically linked @command{xfs_repair} from xfsprogs")
     (description
