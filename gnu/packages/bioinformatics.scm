@@ -13116,28 +13116,22 @@ differently labelled data.")
 (define-public r-pando
   (package
     (name "r-pando")
-    (version "1.0.5")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/quadbiolab/Pando")
-             (commit (string-append "v" version))))
+              (url "https://github.com/quadbio/Pando")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04kr1b28p5j7h48g32cldkg87xcmxnmd4kspygkfs7a4amihpi66"))))
+        (base32 "1zcsg3my1ka2wprvlx8p08cdz3dqphga54d5rp418zfhcyjy4fkp"))))
     (properties `((upstream-name . "Pando")))
     (build-system r-build-system)
     (arguments
      (list
       ;; The test file data/test_seurat.rds is not included.
-      #:tests? #false
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'loosen-requirements
-           (lambda _
-             (substitute* "DESCRIPTION"
-               ((" \\(==.*,") ",")))))))
+      #:tests? #false))
     (propagated-inputs
      (list r-bayestestr
            r-foreach
