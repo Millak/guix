@@ -31979,6 +31979,57 @@ libraries.")
 configuration as YAML.")
     (license license:asl2.0)))
 
+(define-public go-sigs-k8s-io-release-utils
+  (package
+    (name "go-sigs-k8s-io-release-utils")
+    (version "0.12.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kubernetes-sigs/release-utils")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kj4q81l6rxdlpv6280p4zf2skpjggdny88022cr5p0d3vi6p91h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "sigs.k8s.io/release-utils"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Git is required
+                       (list "TestGenerateLDFlags"
+                             ;; Package managers are expected in PATH: dpkg,
+                             ;; rpm, and packman.
+                             "TestPackagesAvailableFailure"
+                             "TestPackagesAvailableSuccess")
+                       "|"))
+    #:test-subdirs
+    #~(list "command" "editor" "env" "hash" "helpers" "log" "mage" "tar"
+            "version")))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-uwu-tools-magex))
+    (propagated-inputs
+     (list go-github-com-avast-retry-go-v4
+           go-github-com-blang-semver-v4
+           go-github-com-common-nighthawk-go-figure
+           go-github-com-maxbrunsfeld-counterfeiter-v6
+           go-github-com-moby-term
+           go-github-com-nozzle-throttler
+           go-github-com-olekukonko-tablewriter
+           go-github-com-sirupsen-logrus
+           go-github-com-spf13-cobra
+           go-k8s-io-utils))
+    (home-page "https://github.com/kubernetes-sigs/release-utils")
+    (synopsis "Release helputils for Go projects")
+    (description
+     "This package provides tiny utilities for use during the release
+preparation tasks.")
+    (license license:asl2.0)))
+
 (define-public go-sigs-k8s-io-structured-merge-diff-v4
   (package
     (name "go-sigs-k8s-io-structured-merge-diff-v4")
