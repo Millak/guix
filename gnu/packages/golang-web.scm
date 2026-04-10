@@ -49,6 +49,7 @@
 ;;; Copyright © 2025 Jared Klingenberger <jkling@noreply.codeberg.org>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2026 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2026 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10514,6 +10515,33 @@ jsoniter and variable type declarations (if any).  jsoniter interfaces gives
      "This package provides a @code{net.Conn} wrapper around
 https://github.com/flynn/noise crypto protocols.")
     (license license:expat)))
+
+(define-public go-github-com-juju-ratelimit
+  (package
+    (name "go-github-com-juju-ratelimit")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/juju/ratelimit")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qbjcm4y53awkqmpxb1nm9c1xdylc44vph4mn30qjb5wrcqy7c1r"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/juju/ratelimit"))
+    (native-inputs
+     (list go-gopkg-in-check-v1))
+    (home-page "https://github.com/juju/ratelimit")
+    (synopsis "Efficient token bucket implementation")
+    (description
+     "The ratelimit package provides an efficient
+@url{http://en.wikipedia.org/wiki/Token_bucket, token bucket} implementation
+that can be used to limit the rate of arbitrary things.")
+    (license license:lgpl3)))
 
 (define-public go-github-com-julienschmidt-httprouter
   (package
