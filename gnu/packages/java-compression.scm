@@ -55,13 +55,12 @@
        (modify-phases %standard-phases
          (add-after 'unpack 'make-git-checkout-writable
            (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t))
+             (for-each make-file-writable (find-files "."))))
          (add-before 'build 'remove-binaries
            (lambda _
              (delete-file "lib/org/xerial/snappy/OSInfo.class")
-             (delete-file-recursively "src/main/resources/org/xerial/snappy/native")
-             #t))
+             (delete-file-recursively
+              "src/main/resources/org/xerial/snappy/native")))
          (add-before 'build 'build-jni
            (lambda _
              ;; Rebuild one of the binaries we removed earlier
@@ -98,36 +97,33 @@
          (add-after 'build-jni 'copy-jni
            (lambda _
              (copy-recursively "src/main/resources/org/xerial/snappy/native"
-                               "build/classes/org/xerial/snappy/native")
-             #t))
+                               "build/classes/org/xerial/snappy/native")))
          (add-before 'build 'set-test-memory-size
            (lambda _
              (substitute* "build.xml"
-               (("<junit printsummary=") "<junit maxmemory=\"2G\" printsummary="))
-             #t))
+               (("<junit printsummary=")
+                "<junit maxmemory=\"2G\" printsummary="))))
          (add-before 'check 'fix-failing
            (lambda _
              (with-directory-excursion "src/test/java/org/xerial/snappy"
-               ;; This package assumes maven build, which puts results in "target".
-               ;; We put them in "build" instead, so fix that.
+               ;; This package assumes maven build, which puts results in
+               ;; "target". We put them in "build" instead, so fix that.
                (substitute* "SnappyLoaderTest.java"
                  (("target/classes") "build/classes"))
                ;; This requires Hadoop, which is not in Guix yet.
-               (delete-file "SnappyHadoopCompatibleOutputStreamTest.java"))
-             #t)))))
+               (delete-file "SnappyHadoopCompatibleOutputStreamTest.java")))))))
     (inputs
-     `(("osgi-framework" ,java-osgi-framework)))
+     (list java-osgi-framework))
     (propagated-inputs
-     `(("bitshuffle" ,bitshuffle-for-snappy)
-       ("snappy" ,snappy)))
+     (list bitshuffle-for-snappy snappy))
     (native-inputs
-     `(("junit" ,java-junit)
-       ("hamcrest" ,java-hamcrest-core)
-       ("xerial-core" ,java-xerial-core)
-       ("classworlds" ,java-plexus-classworlds)
-       ("commons-lang" ,java-commons-lang)
-       ("commons-io" ,java-commons-io)
-       ("perl" ,perl)))
+     (list java-junit
+           java-hamcrest-core
+           java-xerial-core
+           java-plexus-classworlds
+           java-commons-lang
+           java-commons-io
+           perl))
     (home-page "https://github.com/xerial/snappy-java")
     (synopsis "Compression/decompression algorithm in Java")
     (description "Snappy-java is a Java port of snappy, a fast C++
@@ -156,13 +152,13 @@ compressor/decompressor.")
          (add-before 'build 'remove-binaries
            (lambda _
              (delete-file "lib/org/xerial/snappy/OSInfo.class")
-             (delete-file-recursively "src/main/resources/org/xerial/snappy/native")
-             #t))
+             (delete-file-recursively
+              "src/main/resources/org/xerial/snappy/native")))
          (add-before 'build 'build-jni
            (lambda _
              ;; Rebuild one of the binaries we removed earlier
              (invoke "javac" "src/main/java/org/xerial/snappy/OSInfo.java"
-                      "-d" "lib")
+                     "-d" "lib")
              ;; Link to the dynamic snappy, not the static ones
              (substitute* "Makefile.common"
                (("-shared") "-shared -lsnappy"))
@@ -184,16 +180,14 @@ compressor/decompressor.")
          (add-after 'build-jni 'copy-jni
            (lambda _
              (copy-recursively "src/main/resources/org/xerial/snappy/native"
-                               "build/classes/org/xerial/snappy/native")
-             #t))
+                               "build/classes/org/xerial/snappy/native")))
          (add-before 'check 'fix-tests
            (lambda _
              (mkdir-p "src/test/resources/org/xerial/snappy/")
              (copy-recursively "src/test/java/org/xerial/snappy/testdata"
                                "src/test/resources/org/xerial/snappy/testdata")
              (install-file "src/test/java/org/xerial/snappy/alice29.txt"
-                           "src/test/resources/org/xerial/snappy/")
-             #t)))))))
+                           "src/test/resources/org/xerial/snappy/"))))))))
 
 (define-public java-iq80-snappy
   (package
