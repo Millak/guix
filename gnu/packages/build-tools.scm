@@ -345,8 +345,8 @@ programs and other files depend.")
     (license license:bsd-3)))
 
 (define-public gn
-  (let ((commit "ee5b7e32b961a9da1933e9f46a018ba6cac8ef60")
-        (revision "2277"))            ;as returned by `git describe`, used below
+  (let ((commit "6e8dcdebbadf4f8aa75e6a4b6e0bdf89dce1513a")
+        (revision "2354"))            ;as returned by `git describe`, used below
     (package
       (name "gn")
       (version (git-version "0.0" revision commit))
@@ -356,7 +356,7 @@ programs and other files depend.")
                 (uri (git-reference (url home-page) (commit commit)))
                 (sha256
                  (base32
-                  "19kkvwxl66vlzlfppbq03fmi59i5g8a1yc71fsfgwqqmx4wywd6w"))
+                  "0yz38czmbc72q1hkiv3cwxqh2i8ji2vkkvvk5ws2cjplmn2vj0x9"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
@@ -366,7 +366,8 @@ programs and other files depend.")
                    (lambda _
                      (setenv "CC" "gcc")
                      (setenv "CXX" "g++")
-                     (setenv "CXXFLAGS" "-g -O2 -Wno-error=redundant-move")
+                     (setenv "CXXFLAGS"
+                             "-g -O2 -Wno-error=redundant-move -Wno-error=comment")
                      (setenv "AR" "ar")))
                  (replace 'configure
                    (lambda _
