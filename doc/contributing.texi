@@ -2650,6 +2650,7 @@ applications settings page}, granting read/write access to the
 
 @cindex decision making
 @cindex consensus seeking
+Every contribution to the project involves a form of decision making.
 It is expected from all contributors, and even more so from committers,
 to help build consensus and make decisions based on consensus.  By using
 consensus, we are committed to finding solutions that everyone can live
@@ -2663,6 +2664,26 @@ proposing ideas/code or explain the rationale for the status quo to
 resolve the deadlock.  To learn what consensus decision making means and
 understand its finer details, you are encouraged to read
 @url{https://www.seedsforchange.org.uk/consensus}.
+
+Day-to-day decision making, for instance discussions about pull requests
+(@pxref{Reviewing the Work of Others}), happens informally among
+interested parties such as contributors and members of the relevant
+teams (@pxref{Teams}).
+
+@cindex GCD, Guix Consensus Documents
+@cindex Guix Consensus Documents (GCD)
+Decisions that are expected to have an impact on most contributors
+and/or on the broader user community---e.g., changes to project-wide
+policies, to core functionality, and so on---are made following the
+@acronym{GCD, Guix Consensus Document} process.  The process provides a
+framework to formalize proposals and draw attention to them, to leave
+time for interested parties to discuss them, and to collectively accept
+or withdraw them based on input from participating team members.  It is
+defined in
+@uref{https://consensus.guix.gnu.org/gcd/001-gcd-process.html,
+GCD@tie{}001}.  Past GCDs can be seen at
+@uref{https://consensus.guix.gnu.org}, and discussions take place at
+@uref{https://codeberg.org/guix/guix-consensus-documents}.
 
 @node Commit Access
 @section Commit Access
