@@ -5819,6 +5819,31 @@ This in-memory cache uses @url{https://go.dev/blog/generics-proposal, Go
 Generics} which is introduced in 1.18.")
     (license license:expat)))
 
+(define-public go-github-com-common-nighthawk-go-figure
+  (package
+    (name "go-github-com-common-nighthawk-go-figure")
+    (version "0.0.0-20210622060536-734e95fb86be")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/common-nighthawk/go-figure")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zn1qlrbkg8sa50smh1nrxsfdjxcyaj8cjj8abpfw4yf7l1mi3xw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/common-nighthawk/go-figure"
+      #:test-flags #~(list "-vet=off")))
+    (home-page "https://github.com/common-nighthawk/go-figure")
+    (synopsis "Prints ASCII art from text")
+    (description
+     "Go Figure prints beautiful ASCII art from text.  It supports
+@url{http://www.figlet.org/, FIGlet} files, and most of its features.")
+    (license license:expat)))
+
 (define-public go-github-com-container-storage-interface-spec
   (package
     (name "go-github-com-container-storage-interface-spec")
