@@ -4839,14 +4839,6 @@ configuration and monitoring interfaces.")
     (package
       (inherit libnl)
       (name name)
-      (inputs
-       (append (cond
-                ((string=? python "python2")
-                 (list python-2))
-                ((string=? python "python3")
-                 (list python-setuptools python-wrapper)))
-               (list libxcrypt)))       ;required by Python.h
-      (propagated-inputs (list libnl))
       (outputs '("out"))
       (arguments
        (list
@@ -4857,14 +4849,24 @@ configuration and monitoring interfaces.")
         #~(modify-phases %standard-phases
             (replace 'install
               (lambda* (#:key inputs #:allow-other-keys)
-                (let ((libnl (search-input-directory inputs "lib/libnl")))
-                  (setenv "LDFLAGS"
-                          (string-append "-Wl,-rpath=" (dirname libnl))))
-                (with-directory-excursion "./python"
-                  (invoke "python" "setup.py" "build")
-                  (invoke "python" "setup.py" "install"
+                (define (python-inst python)
+                  (invoke python "setup.py" "build")
+                  (invoke python "setup.py" "install"
                           (string-append "--prefix=" #$output))
-                  (invoke "python" "setup.py" "clean"))))))))))
+                  (invoke python "setup.py" "clean"))
+                (let ((libdir (dirname (search-input-directory inputs
+                                                               "lib/libnl"))))
+                  (setenv "LDFLAGS" (string-append "-Wl,-rpath=" libdir)))
+                (with-directory-excursion "./python"
+                  (python-inst #$python)))))))
+      (inputs
+       (append (cond
+                ((string=? python "python2")
+                 (list python-2))
+                ((string=? python "python3")
+                 (list python-setuptools python-wrapper)))
+               (list libxcrypt)))       ;required by Python.h
+      (propagated-inputs (list libnl)))))
 
 (define-public libnl-python3 (libnl-python-package "python3"))
 
