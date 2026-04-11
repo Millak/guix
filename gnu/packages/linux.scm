@@ -3991,28 +3991,25 @@ ext3 or ext4 partition.")
     (name "zerofree")
     (version "1.1.1")
     (home-page "https://frippery.org/uml/")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append home-page name "-" version
-                                  ".tgz"))
-              (sha256
-               (base32
-                "0rrqfa5z103ws89vi8kfvbks1cfs74ix6n1wb6vs582vnmhwhswm"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append home-page name "-" version ".tgz"))
+       (sha256
+        (base32 "0rrqfa5z103ws89vi8kfvbks1cfs74ix6n1wb6vs582vnmhwhswm"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (replace 'install
-           ;; The Makefile lacks an ‘install’ target.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (chmod "zerofree" #o555)
-               (install-file "zerofree" bin)
-               #t))))
-       #:tests? #f))                    ; no tests
-    (inputs `(("libext2fs" ,e2fsprogs)))
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ;no configure script
+          (replace 'install
+            ;; The Makefile lacks an ‘install’ target.
+            (lambda _
+              (chmod "zerofree" #o555)
+              (install-file "zerofree" (string-append #$output "/bin")))))))
+    (inputs (list e2fsprogs))
     (synopsis "Zero non-allocated regions in ext2/ext3/ext4 file systems")
     (description
      "Zerofree finds the unallocated blocks with non-zero value content in an
