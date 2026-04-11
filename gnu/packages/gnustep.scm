@@ -48,6 +48,34 @@
   #:use-module (gnu packages xml)
   #:use-module (ice-9 match))
 
+(define-public fsviewer
+  (package
+    (name "fsviewer")
+    (version "0.2.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/roblillack/fsviewer")
+              (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "067fvbq7b4lbnn1flmwf8lm0vq4n6qz5yz6hhab30l4gksfk51cg"))
+       (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (inputs
+     (list windowmaker libxmu libxpm))
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://github.com/roblillack/fsviewer")
+    (synopsis "File viewer for Window Maker")
+    (description "FSViewer is a NeXT FileViewer lookalike for Window
+Maker supporting browser mode and list mode.  This version is a fork of
+FSViewer.app originally written by George Clernon (1998-99) and later
+maintained by Guido Scholz (2002-07).")
+    (license license:gpl2)))
+
 (define-public gnustep-make
   (package
     (name "gnustep-make")
