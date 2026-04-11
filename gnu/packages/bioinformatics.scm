@@ -8247,20 +8247,23 @@ ChIP-Seq, and analysis of metagenomic data.")
                "0s0yzg5c21349rh7x4w9266jsvnp7j1hp9cf8sk32hz8nvrj745x"))))
    (build-system gnu-build-system)
    (arguments
-    `(#:phases
-      (modify-phases %standard-phases
-        (delete 'configure)
-        (add-before 'build 'enter-source (lambda _ (chdir "source") #t))
-        (replace 'check
-          (lambda _ (invoke "../bin/ExpressBetaDiversity" "-u") #t))
-        (replace 'install
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-              (install-file "../scripts/convertToEBD.py" bin)
-              (install-file "../bin/ExpressBetaDiversity" bin)
-              #t))))))
+    (list
+     #:phases
+     #~(modify-phases %standard-phases
+         (delete 'configure)
+         (add-before 'build 'enter-source
+           (lambda _
+             (chdir "source")))
+         (replace 'check
+           (lambda _
+             (invoke "../bin/ExpressBetaDiversity" "-u")))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((bin (string-append #$output "/bin")))
+               (install-file "../scripts/convertToEBD.py" bin)
+               (install-file "../bin/ExpressBetaDiversity" bin)))))))
    (inputs
-    `(("python" ,python-2)))
+    (list python-2))
    (home-page "https://github.com/dparks1134/ExpressBetaDiversity")
    (synopsis "Taxon- and phylogenetic-based beta diversity measures")
    (description
