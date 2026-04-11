@@ -2620,14 +2620,14 @@ the boot loader configuration.")
 (define-public flatpak
   (package
     (name "flatpak")
-    (version "1.16.5")
+    (version "1.16.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
                            version "/flatpak-" version ".tar.xz"))
        (sha256
-        (base32 "0mn1rf1q0r8bhqkm84f1vj3lvl63ccalnc4p98k6qxj92rcfj853"))
+        (base32 "1hzfb337cyg5h4k3rh30jjzccfwazm3gx9lj9prh5dj4zvryfqqy"))
        (patches
         (search-patches "flatpak-fix-fonts-icons.patch"
                         "flatpak-fix-icon-validation.patch"
