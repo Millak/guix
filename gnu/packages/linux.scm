@@ -8239,18 +8239,16 @@ The package provides additional NTFS tools.")
     (source #f)
     (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((ntfs-3g (assoc-ref %build-inputs "ntfs-3g"))
-                (out     (assoc-ref %outputs "out"))
-                (bin     (string-append out "/bin")))
-           (install-file (string-append ntfs-3g "/bin/ntfsfix") bin)
-           (with-directory-excursion bin
-             (remove-store-references "ntfsfix"))))))
-    (inputs
-     `(("ntfs-3g" ,ntfs-3g/static)))
+     (list
+      #:modules `((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let ((bin (string-append #$output "/bin")))
+            (install-file (search-input-file %build-inputs "/bin/ntfsfix") bin)
+            (with-directory-excursion bin
+              (remove-store-references "ntfsfix"))))))
+    (inputs (list ntfs-3g/static))
     (home-page (package-home-page ntfs-3g/static))
     (synopsis "Statically linked @command{ntfsfix} from ntfs-3g")
     (description
