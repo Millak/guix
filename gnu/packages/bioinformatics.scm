@@ -8611,38 +8611,39 @@ particular, reads spanning multiple exons.")
          "1q60a8r8vgnpyn1ivrw9yp89awbdwi85k8hisy8lyvdpgrxwxgji"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:make-flags (list "CC=gcc" "CXX=g++" "allall")
-       #:modules ((guix build gnu-build-system)
+     (list
+      #:tests? #f                      ; no check target
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "CXX=" #$(cxx-for-target))
+              "allall")
+      #:modules `((guix build gnu-build-system)
                   (guix build utils)
                   (srfi srfi-26))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-deterministic
-           (lambda _
-             (substitute* "Makefile"
-               (("`hostname`") "guix")
-               (("`date`") "0"))))
-         (delete 'configure)
-         (add-before 'build 'build-manual
-           (lambda _
-             (mkdir-p "doc")
-             (invoke "make" "doc")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin/"))
-                    (doc (string-append out "/share/doc/hisat2/")))
-               (for-each
-                (cut install-file <> bin)
-                (find-files "."
-                            "hisat2(-(build|align|inspect)(-(s|l)(-debug)*)*)*$"))
-               (mkdir-p doc)
-               (install-file "doc/manual.inc.html" doc)))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-deterministic
+            (lambda _
+              (substitute* "Makefile"
+                (("`hostname`") "guix")
+                (("`date`") "0"))))
+          (delete 'configure)
+          (add-before 'build 'build-manual
+            (lambda _
+              (mkdir-p "doc")
+              (invoke "make" "doc")))
+          (replace 'install
+            (lambda _
+              (for-each
+               (cute install-file <> (string-append #$output "/bin/"))
+               (find-files "."
+                           "hisat2(-(build|align|inspect)(-(s|l)(-debug)*)*)*$"))
+              (install-file "doc/manual.inc.html"
+                            (string-append #$output "/share/doc/hisat2/")))))))
     (native-inputs
      (list perl pandoc))             ; for documentation
     (inputs
-     `(("python" ,python-wrapper)))
+     (list python-wrapper))
     ;; Non-portable instructions are used so building fails on other platforms
     ;; There is an open PR to address this issue:
     ;; https://github.com/DaehwanKimLab/hisat2/pull/251
