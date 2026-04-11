@@ -91,8 +91,8 @@
 
 ;; See browser/locales/l10n-changesets.json for the commit.
 (define firefox-locales
-  (let ((commit "64046fdc97c1b1886a479dead61e6dc5428ae6e6")
-        (revision "1"))
+  (let ((commit "412690f1368e37f70af57eecabb93497167eb9ba")
+        (revision "2"))
     (package
       (name "firefox-locales")
       (version (git-version "0.0.0" revision commit))
@@ -105,7 +105,7 @@
           (file-name (git-file-name name version))
           (sha256
            (base32
-            "1rvk1m8bjnk9x61663s7bhgax6ig37v9m1d64g89fk1qwsk3djhh"))))
+            "15614g94zdk3n1nnx5jy622zryv2ydd5cmn4pidwrl07g1f3xxxa"))))
       (build-system copy-build-system)
       (home-page "https://github.com/mozilla-l10n/firefox-l10n")
       (synopsis "Firefox Locales")
@@ -115,16 +115,16 @@ Firefox locales.")
 
 ;; We copy the official build id, which is defined at
 ;; tor-browser-build/rbm.conf (browser_release_date).
-(define %torbrowser-build-date "20251028094500")
+(define %torbrowser-build-date "20260404073000")
 
 ;; To find the last version, look at https://www.torproject.org/download/.
-(define %torbrowser-version "15.0")
+(define %torbrowser-version "15.0.9")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/torbrowser/<%torbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-tor-browser-".
-(define %torbrowser-firefox-version "140.4.0esr-15.0-1-build4")
+(define %torbrowser-firefox-version "140.9.1esr-15.0-1-build1")
 
 ;; See tor-browser-build/rbm.conf for the list.
 (define %torbrowser-locales (list "ar" "be" "bg" "ca" "cs" "da" "de" "el" "es-ES" "fa"
@@ -139,11 +139,11 @@ Firefox locales.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "cdd3da6308bb3beb916744057af92331025053bb")))
+          (commit "ce651a6f8aa3a6c5ff9c3f9c77d3cb9585dcc903")))
     (file-name "translation-base-browser")
     (sha256
      (base32
-      "1l3alzgj1bz2xsijd323swiq450dm9s1zyygdwnzsjvcpdbbnm7b"))))
+      "0cr82adjkqkbamb4qk7xpr84lch4js4n126pzsm1993np0ap7vjp"))))
 
 ;; See tor-browser-build/projects/translation/config.
 (define torbrowser-translation-specific
@@ -151,11 +151,11 @@ Firefox locales.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "3395fe5bdb7556490e31d3c6804e6240278bc708")))
+          (commit "685a144cb5cfdb50afc1e4effae48a63b3a81ee3")))
     (file-name "translation-tor-browser")
     (sha256
      (base32
-      "16jzbjak2r3f8gi13bl1h8lg4cmgifv97qbg2ypjvg77vf4z4dd1"))))
+      "02z1cfzyg10g4z4iz5z1k3jjv7k0ydmsf6i923iir02yw2jgznp7"))))
 
 (define torbrowser-assets
   ;; This is a prebuilt Torbrowser from which we take the assets we need.
@@ -171,7 +171,7 @@ Firefox locales.")
          version "/tor-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "187yr0y14mbsakxbglr7jxp4x7kkiyc3k6xa6mf1nzhd32i4srr3"))))
+         "039nys7h83avkva16rg7lvrxh08pczw08vklxrh90pm38fpipddk"))))
     (arguments
      (list
       #:install-plan
@@ -212,7 +212,7 @@ Browser.")
          ".tar.xz"))
        (sha256
         (base32
-         "18inq4yfs4c3p68qwgx0xf54mk8lzs5pm5m0m9d6q2ikng1lmll1"))))
+         "0jvlznd2rc68c9bl7al405dpgk0806hznxn198ji0nryjr5hmzd5"))))
     (build-system mozilla-build-system)
     (inputs
      (list lyrebird
@@ -412,6 +412,12 @@ Browser.")
               (substitute* "dom/media/platforms/ffmpeg/FFmpegRuntimeLinker.cpp"
                 (("libavcodec\\.so")
                  (search-input-file inputs "lib/libavcodec.so")))))
+
+          (add-after 'fix-ffmpeg-runtime-linker 'fix-zucchini
+            (lambda _
+              ;; This option breaks the configure phase.
+              (substitute* "browser/config/mozconfigs/base-browser"
+                (("ac_add_options --disable-zucchini") ""))))
           (add-after 'patch-source-shebangs 'patch-cargo-checksums
             (lambda _
               (use-modules (guix build cargo-utils))
