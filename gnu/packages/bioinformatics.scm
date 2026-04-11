@@ -8911,22 +8911,23 @@ All with sensible, yet controllable defaults.")
                   #t))))
     (build-system ant-build-system)
     (arguments
-     `(#:tests? #f ; test require Internet access
-       #:jdk ,icedtea-8
-       #:make-flags
-       ,#~(list (string-append "-Ddist=" #$output "/share/java/htsjdk/"))
-       #:build-target "all"
-       #:phases
-       (modify-phases %standard-phases
-         ;; The build phase also installs the jars
-         (delete 'install))))
+     (list
+      #:tests? #f ; test require Internet access
+      #:jdk icedtea-8
+      #:make-flags
+      #~(list (string-append "-Ddist=" #$output "/share/java/htsjdk/"))
+      #:build-target "all"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The build phase also installs the jars
+          (delete 'install))))
     (inputs
-     `(("java-ngs" ,java-ngs)
-       ("java-snappy-1" ,java-snappy-1)
-       ("java-commons-compress" ,java-commons-compress)
-       ("java-commons-logging-minimal" ,java-commons-logging-minimal)
-       ("java-commons-jexl-2" ,java-commons-jexl-2)
-       ("java-xz" ,java-xz)))
+     (list java-commons-compress
+           java-commons-jexl-2
+           java-commons-logging-minimal
+           java-ngs
+           java-snappy-1
+           java-xz))
     (native-inputs
      (list java-testng))
     (home-page "https://samtools.github.io/htsjdk/")
