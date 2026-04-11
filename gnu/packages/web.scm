@@ -503,7 +503,7 @@ Interface} specification.")
 (define-public ablorb
   (package
     (name "ablorb")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method git-fetch)
@@ -512,7 +512,7 @@ Interface} specification.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i705p2gw5aryj0myfj3rmsrmj3ilqdn5w7xd5dwjkyi80rc20kj"))))
+        (base32 "1yyc52863bbqvq9si7bhwwraafa3kir6qr5xqavqbvi140d9c373"))))
     (build-system meson-build-system)
     (inputs (list glib gconf gnome-vfs libxml2))
     (native-inputs (list pkg-config))
