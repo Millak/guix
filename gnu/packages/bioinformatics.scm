@@ -16327,33 +16327,29 @@ $plotly_code = \"<script>\" . $plotly_code . \"</script>\";"))))))
                                 "bam2nuc"
                                 "bismark2summary"
                                 "NOMe_filtering")))
-                (mkdir-p share)
-                (mkdir-p docdir)
-                (mkdir-p bin)
-                (for-each (lambda (file) (install-file file bin))
-                          scripts)
+                (for-each mkdir-p (list bin docdir share))
+                (for-each (cut install-file <> bin) scripts)
                 (copy-recursively "docs" docdir)
                 (copy-recursively "plotly"
                                   (string-append share "/plotly"))
 
                 ;; Fix references to gunzip
-                (substitute* (map (lambda (file)
-                                    (string-append bin "/" file))
-                                  scripts)
-                  (("\"gunzip -c")
-                   (string-append "\"" (assoc-ref inputs "gzip")
-                                  "/bin/gunzip -c")))))))))
+                (with-directory-excursion bin
+                  (substitute* scripts
+                    (("\"gunzip -c")
+                     (format #f "\"~a -c"
+                             (search-input-file inputs "bin/gunzip")))))))))))
     (inputs
      (list bowtie gzip hisat2 minimap2 perl-carp perl-getopt-long samtools))
     (native-inputs
-     `(("plotly.js"
-        ,(origin
-           (method url-fetch)
-           (uri (string-append "https://raw.githubusercontent.com/plotly/plotly.js/"
-                               "v1.39.4/dist/plotly.js"))
-           (sha256
-            (base32 "138mwsr4nf5qif4mrxx286mpnagxd1xwl6k8aidrjgknaqg88zyr"))))
-       ("uglifyjs" ,node-uglify-js)))
+     (list
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://raw.githubusercontent.com/plotly/plotly.js/"
+                            "v1.39.4/dist/plotly.js"))
+        (sha256
+         (base32 "138mwsr4nf5qif4mrxx286mpnagxd1xwl6k8aidrjgknaqg88zyr")))
+      node-uglify-js))
     (home-page "https://www.bioinformatics.babraham.ac.uk/projects/bismark/")
     (synopsis "Map bisulfite treated sequence reads and analyze methylation")
     (description "Bismark is a program to map bisulfite treated sequencing
