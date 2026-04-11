@@ -6442,9 +6442,6 @@ Management Bus} devices on Linux.")))
                (base32
                 "1siplsfgvcxamyqf44h71jx6jdfmvhfm7mh0y1q8ps4zs6pj2zwh"))))
     (build-system gnu-build-system)
-    (inputs `(("lm-sensors" ,lm-sensors "lib")
-              ("gtk" ,gtk+-2)))
-    (native-inputs (list pkg-config))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -6452,13 +6449,13 @@ Management Bus} devices on Linux.")))
            (lambda _
              (substitute* "src/Makefile.in"
                (("-DGDK_DISABLE_DEPRECATED") "")
-               (("-DGTK_DISABLE_DEPRECATED") ""))
-             #t))
+               (("-DGTK_DISABLE_DEPRECATED") ""))))
          (add-before 'configure 'remove-Werror
            (lambda _
              (substitute* '("configure" "src/Makefile.in")
-               (("-Werror") ""))
-             #t)))))
+               (("-Werror") "")))))))
+    (inputs (list (list lm-sensors "lib") gtk+-2))
+    (native-inputs (list pkg-config))
     (home-page "http://www.linuxhardware.org/xsensors/")
     (synopsis "Hardware health information viewer")
     (description
