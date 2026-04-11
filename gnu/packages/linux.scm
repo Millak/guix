@@ -10497,40 +10497,36 @@ relevant @file{/dev/vcs*} file(s).")
        (sha256
         (base32 "07q6f0xj7b4gjvn69qfn0g04yd0ch8ndzyigcz8nnrhli0cvsbh6"))))
     (build-system gnu-build-system)
+    (outputs (list "out" "fbgrab"))
+    (arguments
+     (list
+      #:make-flags
+      #~(list "CC=gcc" (string-append "PREFIX=" #$output))
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure) ;no configure script
+          (add-after 'build 'qualify-references
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((pnmtopng (assoc-ref inputs "pnmtopng")))
+                (substitute* "fbgrab"
+                  (("fbcat" all)
+                   (string-append #$output "/bin/" all))
+                  (("pnmtopng")
+                   (search-input-file inputs "/bin/pnmtopng"))))))
+          (add-after 'install 'split-fbgrab-output
+            (lambda _
+              (for-each (lambda (file)
+                          (let ((old (string-append #$output "/" file))
+                                (new (string-append #$output:fbgrab "/" file)))
+                            (mkdir-p (dirname new))
+                            (rename-file old new)))
+                        (list "bin/fbgrab" "share/man/man1/fbgrab.1")))))))
     (inputs
      ;; The ‘fbgrab’ wrapper can use one of several PPM-to-PNG converters.  We
      ;; choose netpbm simply because it's the smallest.  It still adds ~94 MiB
      ;; to an otherwise tiny package, so we put ‘fbgrab’ in its own output.
-     `(("pnmtopng" ,netpbm)))
-    (outputs (list "out" "fbgrab"))
-    (arguments
-     `(#:make-flags
-       (list "CC=gcc"
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-after 'build 'qualify-references
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((pnmtopng (assoc-ref inputs "pnmtopng"))
-                    (out (assoc-ref outputs "out")))
-               (substitute* "fbgrab"
-                 (("fbcat" all)
-                  (string-append out "/bin/" all))
-                 (("pnmtopng" all)
-                  (string-append pnmtopng "/bin/" all))))))
-         (add-after 'install 'split-fbgrab-output
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (out:fbgrab (assoc-ref outputs "fbgrab")))
-               (for-each (lambda (file)
-                           (let ((old (string-append out "/" file))
-                                 (new (string-append out:fbgrab "/" file)))
-                             (mkdir-p (dirname new))
-                             (rename-file old new)))
-                         (list "bin/fbgrab"
-                               "share/man/man1/fbgrab.1"))))))))
+     (list netpbm))
     (home-page "https://jwilk.net/software/fbcat")
     (synopsis "Take a screenshot of the contents of the Linux framebuffer")
     (description
