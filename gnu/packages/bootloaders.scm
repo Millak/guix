@@ -267,8 +267,8 @@
              ;; rebooting.
              (if (member (or (%current-target-system)
                              (%current-system))
-                           (package-supported-systems fuse-2))
-                 (list fuse-2)
+                           (package-supported-systems fuse))
+                 (list fuse)
                  '())))
     (native-inputs
      (append (list pkg-config
