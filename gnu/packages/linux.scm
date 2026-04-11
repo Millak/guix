@@ -5918,56 +5918,46 @@ one to send arbitrary keycodes when a given key is tapped or held.")
                     (("DEFAULT_SYS_DIR = @DEFAULT_SYS_DIR@")
                      "DEFAULT_SYS_DIR = @sysconfdir@"))))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list config
-           pkg-config procps))                       ;tests use 'pgrep'
-    (inputs
-     `(("libaio" ,libaio)
-       ("udev" ,eudev)))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'update-config
-           (lambda* (#:key inputs native-inputs #:allow-other-keys)
-             (install-file (search-input-file
-                             (or native-inputs inputs) "/bin/config.sub")
-                           "autoconf")
-             (install-file (search-input-file
-                             (or native-inputs inputs) "/bin/config.guess")
-                           "autoconf")))
-         (add-after 'configure 'set-makefile-shell
-           (lambda _
-             ;; Use 'sh', not 'bash', so that '. lib/utils.sh' works as
-             ;; expected.
-             (setenv "SHELL" (which "sh"))
+     (list
+      #:tests? #f ;The tests use 'mknod', which requires root access.
+      #:configure-flags
+      #~(list (string-append "--sysconfdir=" #$output "/etc/lvm")
+              "--enable-udev_sync"
+              "--enable-udev_rules"
+              "--enable-pkgconfig"
+              "--enable-cmdlib"
+              "--enable-dmeventd" ;Requires '--enable-cmdlib'.
+              ;; Make sure programs such as 'dmsetup' can
+              ;; find libdevmapper.so.
+              (string-append "LDFLAGS=-Wl,-rpath="
+                             #$output "/lib,-rpath="
+                             #$output "/lib/device-mapper")
+              ;; This is needed when cross-compiling.
+              #$@(if (%current-target-system)
+                     '("ac_cv_func_malloc_0_nonnull=yes"
+                       "ac_cv_func_realloc_0_nonnull=yes")
+                     '()))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'update-config
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (install-file (search-input-file (or native-inputs inputs)
+                                               "/bin/config.sub")
+                            "autoconf")
+              (install-file (search-input-file (or native-inputs inputs)
+                                               "/bin/config.guess")
+                            "autoconf")))
+          (add-after 'configure 'set-makefile-shell
+            (lambda _
+              ;; Use 'sh', not 'bash', so that '. lib/utils.sh' works as
+              ;; expected.
+              (setenv "SHELL" (which "sh"))
 
-             ;; Replace /bin/sh with the right file name.
-             (patch-makefile-SHELL "make.tmpl"))))
-
-       #:configure-flags (list (string-append "--sysconfdir="
-                                              (assoc-ref %outputs "out")
-                                              "/etc/lvm")
-                               "--enable-udev_sync"
-                               "--enable-udev_rules"
-                               "--enable-pkgconfig"
-                               "--enable-cmdlib"
-                               "--enable-dmeventd" ; Requires '--enable-cmdlib'.
-
-                               ;; Make sure programs such as 'dmsetup' can
-                               ;; find libdevmapper.so.
-                               (string-append "LDFLAGS=-Wl,-rpath="
-                                              (assoc-ref %outputs "out")
-                                              "/lib,-rpath="
-                                              (assoc-ref %outputs "out")
-                                              "/lib/device-mapper")
-                               ;; This is needed when cross-compiling.
-                               ,@(if (%current-target-system)
-                                     '("ac_cv_func_malloc_0_nonnull=yes"
-                                       "ac_cv_func_realloc_0_nonnull=yes")
-                                     '()))
-
-       ;; The tests use 'mknod', which requires root access.
-       #:tests? #f))
+              ;; Replace /bin/sh with the right file name.
+              (patch-makefile-SHELL "make.tmpl"))))))
+    (native-inputs (list config pkg-config procps)) ;tests use 'pgrep'
+    (inputs (list libaio eudev))
     (supported-systems (remove target-hurd? %supported-systems))
     (home-page "https://sourceware.org/lvm2/")
     (synopsis "Logical volume management for Linux")
@@ -5987,21 +5977,17 @@ mapper.  Kernel components are part of Linux-libre.")
   (package
     (inherit lvm2)
     (name "lvm2-static")
-
-    (inputs `(,@(package-inputs lvm2)
-              ("udev:static" ,eudev "static")))
-
     (arguments
      (substitute-keyword-arguments arguments
-       ((#:configure-flags flags '())
+       ((#:configure-flags flags #~(list))
         ;; LVM2 doesn't use Libtool, hence the custom option.
-        `(append '("--enable-static_link")
-                 ;; Building dmeventd statically is complicated due to a
-                 ;; requirement on libdevmapper.a, which is being phased out
-                 ;; in favor of libdevice-mapper.a, which in turn is is not
-                 ;; easily made available at dmeventd build time.  Just ignore
-                 ;; it until the situation improves.
-                 (delete "--enable-dmeventd" ,flags)))
+        #~(append (list "--enable-static_link")
+                  ;; Building dmeventd statically is complicated due to a
+                  ;; requirement on libdevmapper.a, which is being phased out
+                  ;; in favor of libdevice-mapper.a, which in turn is is not
+                  ;; easily made available at dmeventd build time.  Just ignore
+                  ;; it until the situation improves.
+                  (delete "--enable-dmeventd" #$flags)))
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-before 'configure 'adjust-Makefile
@@ -6013,18 +5999,24 @@ mapper.  Kernel components are part of Linux-libre.")
                   ;; an erroneous GCC command line.
                   (("-L\\$\\(interfacebuilddir\\)") "")
                   ;; Remove obsolete reference to libdevmapper.a.
-                  (("-ldevmapper") ""))
-                #t))
+                  (("-ldevmapper")
+                   ""))))
             (add-after 'install 'adjust-pkgconfig
               ;; The static eudev is missing its pkg config file, and I am not
               ;; rebuilding it at this point.
               (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* (string-append #$output "/lib/pkgconfig/devmapper.pc")
-                  (("Requires.private: .*") "")
+                (substitute* (string-append #$output
+                                            "/lib/pkgconfig/devmapper.pc")
+                  (("Requires.private: .*")
+                   "")
                   (("Libs.private:")
                    (format #f "Libs.private: -L~a -ludev"
-                           (dirname (search-input-file inputs "lib/libudev.a")))))))))))
-  (synopsis "Logical volume management for Linux (statically linked)")))
+                           (dirname
+                            (search-input-file inputs
+                                               "lib/libudev.a")))))))))))
+    (inputs (modify-inputs inputs
+              (append (list eudev "static"))))
+    (synopsis "Logical volume management for Linux (statically linked)")))
 
 (define-public thin-provisioning-tools
   (package
