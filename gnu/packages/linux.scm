@@ -6848,7 +6848,7 @@ also contains the libsysfs library.")
         (revision "1"))
     (package
       (name "cpufrequtils")
-      (version (git-version "008" revision commit ))
+      (version (git-version "008" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -6861,25 +6861,25 @@ also contains the libsysfs library.")
           (base32 "01n2hp6v89cilqqvqvlcprphyhnljsjclh4h1zf3b1l7ypz29lbp"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f                      ; no test suite
-         #:make-flags
-         (let ((out (assoc-ref %outputs "out")))
-           (list "PROC=false"             ; obsoleted by sysfs in Linux 2.6(!)
-                 (string-append "CC=" ,(cc-for-target))
-                 (string-append "LDFLAGS=-Wl,-rpath=" out "/lib")
-                 "INSTALL=install"
-                 (string-append "bindir=" out "/bin")
-                 (string-append "sbindir=" out "/sbin")
-                 (string-append "mandir=" out "/share/man")
-                 (string-append "includedir=" out "/include")
-                 (string-append "libdir=" out "/lib")
-                 (string-append "localedir=" out "/share/locale")
-                 (string-append "docdir=" out "/share/doc/" ,name)))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure))))         ; no configure script
-      (native-inputs
-       `(("gettext" ,gettext-minimal)))
+       (list
+        #:tests? #f ;no test suite
+        #:make-flags
+        #~(let ((out #$output))
+            (list "PROC=false" ;obsoleted by sysfs in Linux 2.6(!)
+                  (string-append "CC=" #$(cc-for-target))
+                  (string-append "LDFLAGS=-Wl,-rpath=" out "/lib")
+                  "INSTALL=install"
+                  (string-append "bindir=" out "/bin")
+                  (string-append "sbindir=" out "/sbin")
+                  (string-append "mandir=" out "/share/man")
+                  (string-append "includedir=" out "/include")
+                  (string-append "libdir=" out "/lib")
+                  (string-append "localedir=" out "/share/locale")
+                  (string-append "docdir=" out "/share/doc/" #$name)))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)))) ;no configure script
+      (native-inputs (list gettext-minimal))
       (home-page
        "http://ftp.be.debian.org/pub/linux/utils/kernel/cpufreq/cpufrequtils.html")
       (synopsis "Utilities to get and set CPU frequency on Linux")
