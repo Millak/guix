@@ -3441,7 +3441,7 @@ modules and plugins that extend Ansible.")
      (list ansible
            bash-minimal
            encfs
-           fuse-2
+           fuse
            util-linux ;; for umount
            findutils
            git
