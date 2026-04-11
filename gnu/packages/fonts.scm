@@ -5559,6 +5559,39 @@ technical and idiosyncratic feel—perfect for headers and pull-quotes.  Made to
 work well together with Mona Sans.")
     (license license:silofl1.1)))
 
+(define-public font-open-sans
+  (package
+    (name "font-open-sans")
+    (version "3.003")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googlefonts/opensans")
+             (commit "bd7e37632246368c60fdcbd374dbf9bad11969b6")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mlnybaci1cr8z5xzxm7l2xpwfq27x9hqv649hc2ni1cjsyhpjp8"))))
+    (build-system font-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Install the variable fonts only.
+              (let ((%install (assoc-ref %standard-phases 'install)))
+                (with-directory-excursion "fonts/variable"
+                  (%install #:outputs outputs))))))))
+    (home-page "https://github.com/googlefonts/opensans")
+    (synopsis "Humanist sans-serif typeface by Steve Matteson")
+    (description
+     "Open Sans is an open source humanist sans-serif typeface
+that was designed by Steve Matteson under commission from Google.  It was
+released in 2011 and is based on his earlier design called Droid Sans, which
+was specifically created for Android mobile devices but with slight
+modifications to its width.")
+    (license license:silofl1.1)))
 
 (define-public font-peppercarrot
   (package
