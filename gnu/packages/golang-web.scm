@@ -21769,6 +21769,7 @@ feature set and features are added on as the need arises.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.25
       #:build-flags #~(list (string-append "-ldflags="
                                            "-X main.lyrebirdVersion="
                                            #$version " -s -w"))
