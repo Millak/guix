@@ -6035,12 +6035,9 @@ mapper.  Kernel components are part of Linux-libre.")
     (arguments
      ;; Doesn't build with --enable-testing due to a function name collision
      ;; with glibc. Fixed upstream. TODO: Enable tests when 0.9.0 is released.
-     `(#:tests? #f))
-    (native-inputs
-     `(("automake" ,automake)
-       ("autoreconf" ,autoconf)))
-    (inputs
-     (list boost expat libaio))
+     (list #:tests? #f))
+    (native-inputs (list autoconf automake))
+    (inputs (list boost expat libaio))
     (synopsis "Tools for manipulating the metadata of device-mapper targets")
     (description "A suite of tools for manipulating the metadata of the
 dm-thin, dm-cache and dm-era device-mapper targets.")
