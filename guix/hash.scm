@@ -29,7 +29,7 @@
 
 (define %vcs-directories
   ;; Directory used for determining the kind of VCS.
-  (list ".bzr" ".git" ".hg" ".svn" "CVS"))
+  (list ".bzr" ".git" ".hg" ".jj" ".svn" "CVS"))
 
 (define* (vcs-file? file stat
                     #:optional
