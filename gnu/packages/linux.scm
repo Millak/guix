@@ -7274,23 +7274,24 @@ applications.")
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
-       (list #:make-flags
-             #~(list (string-append "CC=" #$(cc-for-target))
-                     (string-append "prefix=" #$output))
-             #:tests? #f                    ; no tests
-             #:phases
-             #~(modify-phases %standard-phases
-                 (delete 'configure)          ; no configure script
-                 (add-after 'unpack 'fix-gnuplot-path
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (let ((gnuplot (assoc-ref inputs "gnuplot")))
-                       (substitute* "btt/bno_plot.py"
-                         (("gnuplot %s")
-                          (string-append gnuplot "/bin/gnuplot %s")))))))))
+       (list
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "prefix=" #$output))
+        #:tests? #f                    ; no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)          ; no configure script
+            (add-after 'unpack 'fix-gnuplot-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "btt/bno_plot.py"
+                  (("gnuplot %s")
+                   (string-append
+                    (search-input-file inputs "/bin/gnuplot" ) " %s"))))))))
       (inputs
-       `(("libaio" ,libaio)
-         ("gnuplot" ,gnuplot)
-         ("python" ,python-wrapper)))             ;for 'bno_plot.py'
+       (list libaio
+             gnuplot
+             python-wrapper))           ; for 'bno_plot.py'
       (synopsis "Block layer IO tracing mechanism")
       (description "Blktrace is a block layer IO tracing mechanism which provides
 detailed information about request queue operations to user space.  It extracts
