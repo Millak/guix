@@ -149,6 +149,11 @@ client.")
             (variable "FCITX_ADDON_DIRS")
             (files '("lib/fcitx5")))
            (search-path-specification
+            (variable "GUIX_GTK2_IM_MODULE_FILE")
+            (file-type 'regular)
+            (separator #f)
+            (files '("lib/gtk-2.0/2.10.0/immodules-gtk2.cache")))
+           (search-path-specification
             (variable "GUIX_GTK3_IM_MODULE_FILE")
             (file-type 'regular)
             (separator #f)
