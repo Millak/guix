@@ -6719,8 +6719,8 @@ meso, or continuum scale.")
        #:test-target "test"
        #:tests? #f ; tests require access to the web
        #:make-flags
-       #~(list "CC=gcc"
-               (string-append "prefix=" #$output))
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "prefix=" #$output))
        #:phases
        #~(modify-phases %standard-phases
          (delete 'configure))))
