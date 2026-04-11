@@ -5435,53 +5435,53 @@ NUMA performance on your system.")
   (package
     (name "kbd")
     (version "2.5.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kernel.org/linux/utils/kbd/kbd-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "10s608i4blprgy9nynlid0hglfdrrgln6wwjs9rhjf56hwilbpyc"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* '("src/unicode_start" "src/unicode_stop")
-                    ;; Assume the Coreutils are in $PATH.
-                    (("/usr/bin/tty")
-                     "tty"))))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kernel.org/linux/utils/kbd/kbd-" version
+                           ".tar.xz"))
+       (sha256
+        (base32 "10s608i4blprgy9nynlid0hglfdrrgln6wwjs9rhjf56hwilbpyc"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* '("src/unicode_start" "src/unicode_stop")
+             ;; Assume the Coreutils are in $PATH.
+             (("/usr/bin/tty")
+              "tty"))))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'pre-build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((bzip2 (assoc-ref inputs "bzip2"))
-                   (gzip  (assoc-ref inputs "gzip"))
-                   (xz    (assoc-ref inputs "xz"))
-                   (zstd  (assoc-ref inputs "zstd")))
-               (substitute* "src/libkbdfile/kbdfile.c"
-                 (("bzip2") (string-append bzip2 "/bin/bzip2"))
-                 (("gzip") (string-append gzip "/bin/gzip"))
-                 (("xz -d") (string-append xz "/bin/xz -d"))
-                 (("zstd") (string-append zstd "/bin/zstd"))))))
-         (add-after 'install 'post-install
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Make sure these programs find their comrades.
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (for-each (lambda (prog)
-                           (wrap-program (string-append bin "/" prog)
-                             `("PATH" ":" prefix (,bin))))
-                         '("unicode_start" "unicode_stop"))))))))
-    (native-inputs
-     (list autoconf pkg-config))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pre-build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/libkbdfile/kbdfile.c"
+                (("bzip2")
+                 (search-input-file inputs "/bin/bzip2"))
+                (("gzip")
+                 (search-input-file inputs "/bin/gzip"))
+                (("xz -d")
+                 (string-append (search-input-file inputs "/bin/xz") " -d"))
+                (("zstd")
+                 (search-input-file inputs "/bin/zstd")))))
+          (add-after 'install 'post-install
+            (lambda _
+              ;; Make sure these programs find their comrades.
+              (let ((bin (string-append #$output "/bin")))
+                (for-each (lambda (prog)
+                            (wrap-program (string-append bin "/" prog)
+                              `("PATH" ":" prefix (,bin))))
+                          '("unicode_start" "unicode_stop"))))))))
+    (native-inputs (list autoconf pkg-config))
     (inputs
-     `(("bash" ,bash-minimal) ; for wrap-program
-       ("bzip2" ,bzip2)
-       ("gzip" ,gzip)
-       ("pam" ,linux-pam)
-       ("xz" ,xz)
-       ("zstd" ,zstd)))
+     (list bash-minimal
+           ;; for wrap-program
+           bzip2
+           gzip
+           linux-pam
+           xz
+           zstd))
     (native-search-paths
      (list (search-path-specification
             (variable "LOADKEYS_KEYMAP_PATH")
@@ -5503,27 +5503,26 @@ for systems using the Linux kernel.  This includes commands such as
     (name "loadkeys-static")
     (arguments
      (substitute-keyword-arguments arguments
-       ((#:configure-flags flags ''())
-        `(append '("LDFLAGS=-static" "--disable-shared" "--disable-nls"
-                   "--disable-vlock"              ;so we don't need libpam
-                   "--disable-libkeymap")
-                 ,flags))
-       ((#:make-flags flags ''())
-        `(cons "LDFLAGS=-all-static -lrt -lpthread" ,flags))
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 ;; The binary keeps references to gzip, among other things,
-                 ;; which we don't need in the initrd, so strip references.
-                 (remove-store-references "src/loadkeys")
+       ((#:configure-flags flags #~(list))
+        #~(append '("LDFLAGS=-static" "--disable-shared" "--disable-nls"
+                    "--disable-vlock"              ;so we don't need libpam
+                    "--disable-libkeymap")
+                  #$flags))
+       ((#:make-flags flags #~(list))
+        #~(cons "LDFLAGS=-all-static -lrt -lpthread" #$flags))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'install
+              (lambda _
+                ;; The binary keeps references to gzip, among other things,
+                ;; which we don't need in the initrd, so strip references.
+                (remove-store-references "src/loadkeys")
 
-                 (install-file "src/loadkeys"
-                               (string-append out "/bin")))))
-           (delete 'post-install)))
-       ((#:strip-flags _ '())
-        ''("--strip-all"))
+                (install-file "src/loadkeys"
+                              (string-append #$output "/bin"))))
+            (delete 'post-install)))
+       ((#:strip-flags _ #~(list))
+        #~(list "--strip-all"))
        ((#:allowed-references _ '())
         '())))
 
