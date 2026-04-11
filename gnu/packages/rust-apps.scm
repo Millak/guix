@@ -1893,7 +1893,7 @@ JSON viewer and jq filter editor.")
 (define-public jujutsu
   (package
     (name "jujutsu")
-    (version "0.39.0")
+    (version "0.40.0")
     (source
      (origin
        (method git-fetch)
@@ -1902,7 +1902,7 @@ JSON viewer and jq filter editor.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c0n56b5y6wmyvcc18nhrfsmcavjlh2zwv9224lrcs6h602a5jdd"))))
+        (base32 "0wdl6jqvv3bhdij65gsn0lpycw2qg2i5p1rc2wi42fdhghsfq6iw"))))
     (build-system cargo-build-system)
     (arguments
      (list
