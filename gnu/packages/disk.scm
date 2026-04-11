@@ -266,14 +266,14 @@ tmpfs/ramfs filesystems.")
 (define-public parted
   (package
     (name "parted")
-    (version "3.6")
+    (version "3.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/parted/parted-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "04p6b4rygrfd1jrskwrx3bn2icajg1mvbfhyc0c9l3ya7kixnhrv"))))
+                "0yzga4cjq3yplqs47dl9714vwc3v3v8nxrj80rdc5wx4c5syb380"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -296,6 +296,7 @@ tmpfs/ramfs filesystems.")
        (,util-linux "lib")))
     (native-inputs
      (list gettext-minimal
+           pkg-config
 
            ;; For the tests.
            e2fsprogs
