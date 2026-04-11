@@ -22694,8 +22694,7 @@ than is possible with plain-text methods alone.")
        #:source-dir "src/main/java"
        #:test-dir "src/test"))
     (inputs
-     `(("java-commons-lang2" ,java-commons-lang)
-       ("java-args4j" ,java-args4j)))
+     (list java-args4j java-commons-lang))
     (native-inputs
      (list java-junit))
     (home-page "https://github.com/cbg-ethz/InDelFixer/")
