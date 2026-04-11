@@ -14751,18 +14751,18 @@ including VCF header and contents in RDF and JSON.")
            "00anrvcwsp02d98qhj1xpj85644h2pp4kfzq6dgbmwmdr6jvy7p4"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f ; There are no tests.
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (delete 'build)
-           (replace 'install
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((script (string-append (assoc-ref outputs "out")
-                                            "/share/scripts")))
-                 (install-file "run_spp.R" script)))))))
+       (list
+        #:tests? #f ; There are no tests.
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (delete 'build)
+            (replace 'install
+              (lambda _
+                (install-file "run_spp.R"
+                              (string-append #$output "/share/scripts")))))))
       (inputs
-       `(("r" ,r-minimal)))
+       (list r-minimal))
       (propagated-inputs
        (list r-catools
              r-snow
