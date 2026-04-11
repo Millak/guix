@@ -39440,10 +39440,16 @@ user interfaces for various built-in modes.")
               (make-file-writable "calibredb-core.el")
               (let ((calibredb (search-input-file inputs "/bin/calibredb"))
                     (fetch-ebook-metadata
-                     (search-input-file inputs "/bin/fetch-ebook-metadata")))
+                     (search-input-file inputs "/bin/fetch-ebook-metadata"))
+                    (ebook-convert
+                     (search-input-file inputs "/bin/ebook-convert"))
+                    (calibre-debug
+                     (search-input-file inputs "/bin/calibre-debug")))
                 (emacs-substitute-variables "calibredb-core.el"
                   ("calibredb-fetch-metadata-program" fetch-ebook-metadata)
-                  ("calibredb-program" calibredb))))))))
+                  ("calibredb-program" calibredb)
+                  ("calibredb-convert-program" ebook-convert)
+                  ("calibredb-debug-program" calibre-debug))))))))
     (inputs
      (list calibre))
     (propagated-inputs
