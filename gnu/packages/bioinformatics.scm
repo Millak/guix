@@ -15105,58 +15105,58 @@ intervals (e.g. genes, sequence alignments).")
   ;; There is no release tarball for the latest version.  The latest commit is
   ;; older than one year at the time of this writing.
   (let ((revision "1")
-        (commit   "0466d364b71117d01e4471b74c514436cc281233"))
+        (commit "0466d364b71117d01e4471b74c514436cc281233"))
     (package
       (name "piranha")
       (version (git-version "1.2.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/smithlabcode/piranha")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "117dc0zf20c61jam69sk4abl57ah6yi6i7qra7d7y5zrbgk12q5n"))))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/smithlabcode/piranha")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "117dc0zf20c61jam69sk4abl57ah6yi6i7qra7d7y5zrbgk12q5n"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:test-target "test"
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'copy-smithlab-cpp
-             (lambda* (#:key inputs #:allow-other-keys)
-               (for-each (lambda (file)
-                           (install-file file "./src/smithlab_cpp/"))
-                         (find-files (assoc-ref inputs "smithlab-cpp")))))
-           (add-after 'install 'install-to-store
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin")))
-                 (for-each (lambda (file)
-                             (install-file file bin))
-                           (find-files "bin" ".*"))))))
-         #:configure-flags
-         ,#~(list (string-append "--with-bam_tools_headers="
-                                 #$(this-package-input "bamtools") "/include/bamtools")
-                  (string-append "--with-bam_tools_library="
-                                 #$(this-package-input "bamtools") "/lib/bamtools"))))
+       (list
+        #:test-target "test"
+        #:configure-flags
+        #~(list (string-append "--with-bam_tools_headers="
+                               #$(this-package-input "bamtools")
+                               "/include/bamtools")
+                (string-append "--with-bam_tools_library="
+                               #$(this-package-input "bamtools")
+                               "/lib/bamtools"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'copy-smithlab-cpp
+              (lambda* (#:key inputs #:allow-other-keys)
+                (mkdir-p "./src/smithlab_cpp/")
+                (copy-recursively (assoc-ref inputs "smithlab_cpp-checkout")
+                                  "./src/smithlab_cpp/")))
+            (add-after 'install 'install-to-store
+              (lambda _
+                (let ((bin (string-append #$output "/bin")))
+                  (for-each (lambda (file)
+                              (install-file file bin))
+                            (find-files "bin" ".*"))))))))
       (inputs
-       `(("bamtools" ,bamtools)
-         ("samtools" ,samtools-0.1)
-         ("gsl" ,gsl)
-         ("smithlab-cpp"
-          ,(let ((commit "3723e2db438c51501d0423429ff396c3035ba46a"))
-             (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url "https://github.com/smithlabcode/smithlab_cpp")
-                     (commit commit)))
-               (file-name (string-append "smithlab_cpp-" commit "-checkout"))
-               (sha256
-                (base32
-                 "0l4gvbwslw5ngziskja41c00x1r06l3yidv7y0xw9djibhykzy0g")))))))
-      (native-inputs
-       `(("python" ,python-2)))
+       (list bamtools
+             samtools-0.1
+             gsl
+             (let ((commit "3723e2db438c51501d0423429ff396c3035ba46a"))
+               (origin
+                 (method git-fetch)
+                 (uri (git-reference
+                        (url "https://github.com/smithlabcode/smithlab_cpp")
+                        (commit commit)))
+                 (file-name "smithlab_cpp-checkout")
+                 (sha256
+                  (base32
+                   "0l4gvbwslw5ngziskja41c00x1r06l3yidv7y0xw9djibhykzy0g"))))))
+      (native-inputs (list python-2))
       (home-page "https://github.com/smithlabcode/piranha")
       (synopsis "Peak-caller for CLIP-seq and RIP-seq data")
       (description
