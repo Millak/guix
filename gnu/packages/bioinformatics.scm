@@ -8990,16 +8990,17 @@ manipulating HTS data.")
                 "1kxh7slm2pm3x9p6jxa1wqsq9a31dhiiflhxnxqcisan4k3rwia2"))))
     (build-system ant-build-system)
     (arguments
-     `(#:tests? #f                      ; tests require Scala
-       #:jdk ,icedtea-8
-       #:jar-name "htsjdk.jar"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-useless-build.xml
-           (lambda _ (delete-file "build.xml") #t))
-         ;; The tests require the scalatest package.
-         (add-after 'unpack 'remove-tests
-           (lambda _ (delete-file-recursively "src/test") #t)))))))
+     (list
+      #:tests? #f                      ; tests require Scala
+      #:jdk icedtea-8
+      #:jar-name "htsjdk.jar"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-useless-build.xml
+            (lambda _ (delete-file "build.xml")))
+          ;; The tests require the scalatest package.
+          (add-after 'unpack 'remove-tests
+            (lambda _ (delete-file-recursively "src/test"))))))))
 
 (define-public java-maxent
   (package
