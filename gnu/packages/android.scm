@@ -1230,22 +1230,27 @@ main repository.")
 (define-public fdroidcl
   (package
     (name "fdroidcl")
-    (version "0.7.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Hoverth/fdroidcl")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1s3fszlyyab9gbdrg52zcbafsb1mgb770skg7b3gj7f3pzfnra5n"))))
+    (version "0.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Hoverth/fdroidcl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bflahcsjarv4v6r61knl5gc5iydh1lwvqjgffhxr4pis4qfsqsa"))
+       ;; reported upstream: https://github.com/Hoverth/fdroidcl/pull/92
+       (patches (search-patches "fdroidcl-fix-tests.patch"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "mvdan.cc/fdroidcl"
-       #:tests? #f                      ;requires internet access
        #:install-source? #f))
-    (inputs (list go-github-com-kr-pretty go-github-com-schollz-progressbar-v3))
+    (inputs
+     (list go-github-com-kr-pretty
+           go-github-com-pelletier-go-toml-v2
+           go-github-com-rogpeppe-go-internal
+           go-github-com-schollz-progressbar-v3))
     (synopsis "F-Droid desktop client")
     (description
      "While the Android client integrates with the system with regular update

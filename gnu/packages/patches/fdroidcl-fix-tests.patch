@@ -1,0 +1,37 @@
+From 9c897545e73aa054d139f2f3c20ae7b8935080a2 Mon Sep 17 00:00:00 2001
+From: Sergey Trofimov <sarg@sarg.org.ru>
+Date: Sun, 17 May 2026 11:31:49 +0200
+Subject: [PATCH] Fix tests
+
+TESTSCRIPT_COMMAND got removed long time ago: https://github.com/rogpeppe/go-internal/commit/dc4b49510d96256f881880b9802536a6a70edfcc
+---
+ main_test.go              | 2 +-
+ testdata/scripts/show.txt | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/main_test.go b/main_test.go
+index 69d910b..1ea1a22 100644
+--- a/main_test.go
++++ b/main_test.go
+@@ -15,7 +15,7 @@ import (
+ )
+ 
+ func TestMain(m *testing.M) {
+-	if os.Getenv("TESTSCRIPT_COMMAND") == "" {
++	if filepath.Base(os.Args[0]) != "fdroidcl" {
+ 		// start the static http server once
+ 		path := filepath.Join("testdata", "staticrepo")
+ 		fs := http.FileServer(http.Dir(path))
+diff --git a/testdata/scripts/show.txt b/testdata/scripts/show.txt
+index d9833ba..1aeda47 100644
+--- a/testdata/scripts/show.txt
++++ b/testdata/scripts/show.txt
+@@ -14,4 +14,4 @@ fdroidcl show org.pocketworkstation.pckeyboard info.metadude.android.bitsundbaeu
+ ! stdout '&apos'
+ ! stdout '&amp'
+ stdout 'Name.*Hacker''s Keyboard'
+-stdout 'Version.*Bits-und-Baeume'
++stdout 'Version.*Bits & Bäume'
+-- 
+2.54.0
+
