@@ -517,22 +517,19 @@ functions which were removed.")
                 "0pik2d3995z0rjcjhb4hsj5fsph3m8khg6j10k6mx4j2j727aq6l"))))
     (build-system waf-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-flags
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Allow 'bin/ganv_bench' to find libganv-1.so.
-             (setenv "LDFLAGS"
-                     (string-append "-Wl,-rpath="
-                                    (assoc-ref outputs "out") "/lib"))
-             #t)))
-       #:tests? #f)) ; no check target
-    (inputs
-     `(("gtk" ,gtk+-2)
-       ("gtkmm" ,gtkmm-2)))
+     (list
+      #:tests? #f ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-flags
+            (lambda _
+              ;; Allow 'bin/ganv_bench' to find libganv-1.so.
+              (setenv "LDFLAGS"
+                      (string-append "-Wl,-rpath=" #$output "/lib")))))))
     (native-inputs
      (list `(,glib "bin") ; for glib-genmarshal, etc.
            pkg-config))
+    (inputs (list gtk+-2 gtkmm-2))
     (home-page "https://drobilla.net/software/ganv/")
     (synopsis "GTK+ widget for interactive graph-like environments")
     (description
