@@ -1952,6 +1952,34 @@ keys.  It is an implementation of the SSH Signature format as described in
 Stealing encryption and decryption methods.")
     (license license:asl2.0)))
 
+(define-public go-github-com-jedisct1-go-hpke-compact
+  (package
+    (name "go-github-com-jedisct1-go-hpke-compact")
+    (version "0.0.0-20241212093903-5caa4621366f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jedisct1/go-hpke-compact")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05zdmyfynv6i079d7dgavw5njlw8h01wcjq80ykpxa2yhg073p3p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jedisct1/go-hpke-compact"))
+    (propagated-inputs
+     (list go-github-com-powerman-check
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/jedisct1/go-hpke-compact")
+    (synopsis "Compact HPKE implemention for Go")
+    (description
+     "@@code{hpkecompact} is a small implementation of the
+@url{https://cfrg.github.io/draft-irtf-cfrg-hpke/draft-irtf-cfrg-hpke.html,
+Hybrid Public Key Encryption} (HPKE) draft.")
+    (license license:isc)))
+
 (define-public go-github-com-jedisct1-go-minisign
   (package
     (name "go-github-com-jedisct1-go-minisign")
