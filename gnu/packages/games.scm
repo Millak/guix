@@ -483,7 +483,7 @@ mouse and joystick control, and original music.")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.sr.ht/~drummyfish/Anarch")
+                      (url "https://gitlab.com/drummyfish/anarch")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
