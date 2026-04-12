@@ -28,6 +28,8 @@
 ;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2026 Anderson Torres <anderson.torres.8519@gmail.com>
+;;; Copyright © 2026 moksh <mysticmoksh@riseup.net>
+;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,6 +65,12 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages libdaemon)
@@ -96,6 +104,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
@@ -796,37 +805,74 @@ Dynamic DNS update utility
 (define-public dnscrypt-proxy
   (package
     (name "dnscrypt-proxy")
-    (version "1.9.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://download.dnscrypt.org/dnscrypt-proxy/"
-                    "dnscrypt-proxy-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1dhvklr4dg2vlw108n11xbamacaryyg3dbrg629b76lp7685p7z8"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Delete bundled libltdl. XXX: This package also bundles
-               ;; a modified libevent that cannot currently be removed.
-               '(begin
-                  (delete-file-recursively "libltdl")
-                  #t))))
-    (build-system gnu-build-system)
+    (version "2.1.18")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/DNSCrypt/dnscrypt-proxy")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dh22j428a631nxg7wgf4szmnyscwpm7z1dj8pizabjmsgcm4p9s"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "vendor")
+            ;; Old version has been deprecated for a long time use v22 instead.
+            (substitute* (find-files "." "\\.go$")
+              (("github.com/coreos/go-systemd")
+               "github.com/coreos/go-systemd/v22"))))))
+    (build-system go-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'autoreconf
-           (lambda _
-             ;; Re-generate build files due to unbundling ltdl.
-             ;; TODO: Prevent generating new libltdl and building it.
-             ;; The system version is still favored and referenced.
-             (invoke "autoreconf" "-vif"))))))
+     (list
+      #:install-source? #f
+      #:import-path "github.com/dnscrypt/dnscrypt-proxy/dnscrypt-proxy"
+      #:unpack-path "github.com/dnscrypt/dnscrypt-proxy"
+      #:test-subdirs #~(list "../...")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-config-file
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (let* ((etc (string-append #$output "/etc"))
+                       (cfg-example
+                        "dnscrypt-proxy/example-dnscrypt-proxy.toml")
+                       (cfg-src
+                        (string-append etc "/example-dnscrypt-proxy.toml"))
+                       (cfg-dst (string-append etc "/dnscrypt-proxy.toml")))
+                  (install-file cfg-example etc)
+                  (rename-file cfg-src cfg-dst))))))))
     (native-inputs
-     (list pkg-config automake autoconf libtool))
-    (inputs
-     (list libltdl libsodium))
-    (home-page "https://www.dnscrypt.org/")
+     (list go-codeberg-org-miekg-dns
+           go-github-com-burntsushi-toml
+           go-github-com-vividcortex-ewma
+           go-github-com-cloudflare-circl
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-dchest-safefile
+           go-github-com-fsnotify-fsnotify
+           go-github-com-gorilla-websocket
+           go-github-com-hashicorp-go-immutable-radix
+           go-github-com-hectane-go-acl
+           go-github-com-jedisct1-dlog
+           go-github-com-jedisct1-go-clocksmith
+           go-github-com-jedisct1-go-dnsstamps
+           go-github-com-jedisct1-go-hpke-compact
+           go-github-com-jedisct1-go-ipcrypt
+           go-github-com-jedisct1-go-minisign
+           go-github-com-jedisct1-go-sieve-cache
+           go-github-com-jedisct1-xsecretbox
+           go-github-com-k-sone-critbitgo
+           go-github-com-kardianos-service
+           go-github-com-lifenjoiner-dhcpdns
+           go-github-com-miekg-dns
+           go-github-com-powerman-check
+           go-github-com-quic-go-quic-go
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-gopkg-in-natefinch-lumberjack-v2))
+    (home-page "https://dnscrypt.info/")
     (synopsis "Securely send DNS requests to a remote server")
     (description
      "@command{dnscrypt-proxy} is a tool for securing communications
@@ -836,10 +882,8 @@ tampered with.  For optimal performance it is recommended to use this as
 a forwarder for a caching DNS resolver such as @command{dnsmasq}, but it
 can also be used as a normal DNS \"server\".  A list of public dnscrypt
 servers is included, and an up-to-date version is available at
-@url{https://download.dnscrypt.org/dnscrypt-proxy/dnscrypt-resolvers.csv}.")
-    (license (list license:isc
-                   ;; Libevent and src/ext/queue.h is 3-clause BSD.
-                   license:bsd-3))))
+@url{https://status.dnscrypt.info/}.")
+    (license license:isc)))
 
 (define-public dnscrypt-wrapper
   (package
