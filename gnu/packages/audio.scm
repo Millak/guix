@@ -3471,7 +3471,7 @@ from being able to mix multiple JACK audio streams.")
 (define-public pipemixer
   (package
     (name "pipemixer")
-    (version "0.4.1")
+    (version "0.5.0")
     (source
      (origin
       (method git-fetch)
@@ -3480,19 +3480,8 @@ from being able to mix multiple JACK audio streams.")
             (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0fvnvr74q5khxlj5sylfnkblydmwgdbvj04mhdqw0zzmfqwignhd"))))
+       (base32 "104h2zdhqx5gdddnb7v7rhrflznh4v7d4g3s6vk2mxwf938zgm72"))))
     (build-system meson-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pw-device
-            (lambda _
-              (substitute* "src/pw/device.c"
-                ;; TODO: Report upstream:
-                ;; ../source/src/pw/device.c:328:80: error: expected
-                ;; ‘;’ before ‘{’ token
-                (("iter\\) \\{") "iter); {")))))))
     (native-inputs
      (list pkg-config))
     (inputs
