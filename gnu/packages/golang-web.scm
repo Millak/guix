@@ -12242,6 +12242,31 @@ Call}.")
     (description "This package provide a DNS Stamps library for Go.")
     (license license:expat)))
 
+(define-public go-github-com-jedisct1-go-ipcrypt
+  (package
+    (name "go-github-com-jedisct1-go-ipcrypt")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jedisct1/go-ipcrypt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sk94l07kfiqqxzzkipsfr834949f3nys3b3vcsr9g7xzfxyg11p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jedisct1/go-ipcrypt"))
+    (home-page "https://ipcrypt-std.github.io/")
+    (synopsis "IP address encryption and obfuscation for Go")
+    (description
+     "Package ipcrypt implements IP address encryption and obfuscation methods
+specified in @url{https://datatracker.ietf.org/doc/draft-denis-ipcrypt/,
+ipcrypt document}.")
+    (license license:isc)))
+
 (define-public go-github-com-jellydator-ttlcache-v3
   (package
     (name "go-github-com-jellydator-ttlcache-v3")
