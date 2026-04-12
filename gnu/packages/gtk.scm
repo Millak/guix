@@ -1575,11 +1575,10 @@ images onto Cairo surfaces.")
     (inherit guile-rsvg)
     (name "guile2.2-rsvg")
     (inputs
-     `(("guile" ,guile-2.2)
-       ("guile-lib" ,guile2.2-lib)
-       ,@(fold alist-delete (package-inputs guile-rsvg)
-               '("guile" "guile-lib"))))
-    (propagated-inputs `(("guile-cairo" ,guile2.2-cairo)))))
+     (modify-inputs inputs
+       (delete "guile" "guile-lib")
+       (append guile-2.2 guile2.2-lib)))
+    (propagated-inputs (list guile2.2-cairo))))
 
 (define-public guile-present
   (package
