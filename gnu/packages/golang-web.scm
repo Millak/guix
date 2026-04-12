@@ -1411,6 +1411,46 @@ unparser.")
 @url{https://github.com/mCaptcha/mCaptcha, mCaptcha}.")
     (license license:expat)))
 
+(define-public go-codeberg-org-miekg-dns
+  (package
+    (name "go-codeberg-org-miekg-dns")
+    (version "0.6.90")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/miekg/dns.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07n1fj3qslw5h9dgz2xmin4fai2byq9l7ps38rvsv3q63ls1a08h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "codeberg.org/miekg/dns"))
+    (propagated-inputs
+     (list go-github-com-apparentlymart-go-cidr
+           go-github-com-caddyserver-certmagic
+           go-github-com-fsnotify-fsnotify
+           go-github-com-jmoiron-sqlx
+           go-github-com-oschwald-geoip2-golang-v2
+           go-github-com-phemmer-go-iptrie
+           go-github-com-prometheus-client-golang
+           go-github-com-tidwall-btree
+           go-go-uber-org-zap
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-modernc-org-sqlite))
+    (home-page "https://codeberg.org/miekg/dns")
+    (synopsis "Lightweight DNS library for Go")
+    (description
+     "Package dns implements a full featured interface to the @acronym{DNS,
+Domain Name System}. Both server-side and client-side programming is
+supported.")
+    (license license:bsd-3)))
+
 (define-public go-codeberg-org-tslocum-gmitohtml
   (package
     (name "go-codeberg-org-tslocum-gmitohtml")
