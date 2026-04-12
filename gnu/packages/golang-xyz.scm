@@ -17462,6 +17462,33 @@ Golang.")
 text, etc. with a heavy emphasis on customization.")
     (license license:expat)))
 
+(define-public go-github-com-jedisct1-dlog
+  (package
+    (name "go-github-com-jedisct1-dlog")
+    (version "0.0.0-20241212093805-3c5fd791b405")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jedisct1/dlog")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zlvsxqrr0m7li2h3d4cd049hfqqb9d3s0xk1nmb6nbrqghr806a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jedisct1/dlog"))
+    (propagated-inputs
+     (list go-github-com-hashicorp-go-syslog
+           go-golang-org-x-sys))
+    (home-page "https://github.com/jedisct1/dlog")
+    (synopsis "simple logger for Go")
+    (description
+     "This package provide a simple logger that supports stderr, logfiles,
+syslog and windows event log.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-jeffail-gabs
   (package
     (name "go-github-com-jeffail-gabs")
