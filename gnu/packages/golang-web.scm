@@ -16551,6 +16551,38 @@ original data and access it via a typed struct and a dynamic map.")
 is ready to use.")
     (license license:bsd-3)))
 
+(define-public go-github-com-phemmer-go-iptrie
+  (package
+    (name "go-github-com-phemmer-go-iptrie")
+    (version "0.0.0-20240326174613-ba542f5282c9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/phemmer/go-iptrie")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ns7qd8s6lbrm9gybdxjxcpq7n9yr9q79mmvzmil537qq5fp8kg8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/phemmer/go-iptrie"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-benchmarks
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "benchmark")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/phemmer/go-iptrie")
+    (synopsis "IP storage & lookup using a trie in Golang")
+    (description
+     "Package iptrie provides an IP/network tree (trie) implementation for
+fast IP address lookups.")
+    (license license:expat)))
+
 (define-public go-github-com-pion-datachannel
   (package
     (name "go-github-com-pion-datachannel")
