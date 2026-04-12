@@ -12220,6 +12220,28 @@ Call}.")
     (propagated-inputs
      (list go-golang-org-x-net))))
 
+(define-public go-github-com-jedisct1-go-dnsstamps
+  (package
+    (name "go-github-com-jedisct1-go-dnsstamps")
+    (version "0.0.0-20260518121737-6579dc73e4a2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jedisct1/go-dnsstamps")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "137h7s15y84z76f64h22s79pqv2z4sh4d29gm654dziyjdjcr2ml"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jedisct1/go-dnsstamps"))
+    (home-page "https://github.com/jedisct1/go-dnsstamps")
+    (synopsis "DNS Stamps library for Go")
+    (description "This package provide a DNS Stamps library for Go.")
+    (license license:expat)))
+
 (define-public go-github-com-jellydator-ttlcache-v3
   (package
     (name "go-github-com-jellydator-ttlcache-v3")
