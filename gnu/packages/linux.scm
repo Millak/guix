@@ -10831,7 +10831,7 @@ management tools in userspace.")
 (define-public libinih
   (package
     (name "libinih")
-    (version "57")
+    (version "62")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10840,7 +10840,7 @@ management tools in userspace.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03hpyahdkipm5wfalj2xkz6y9ncd9zrlhnf7vap6lr56jj2fz2bb"))))
+                "0yl5057682gvk1iszjkz4hy73yv45l7wr3fwhbgyf7r7fwx0cwwf"))))
     (build-system meson-build-system)
     ;; Install static libraries for use by the initrd's xfsprogs/static.
     (outputs (list "out" "static"))
