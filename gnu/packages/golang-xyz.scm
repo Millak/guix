@@ -26032,6 +26032,29 @@ files, executing subprocesses, counting lines, and matching strings.  It was
 inspired by @url{https://github.com/bitfield/script}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-powerman-deepequal
+  (package
+    (name "go-github-com-powerman-deepequal")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/powerman/deepequal")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02d3hjf73hd1flaw5n1crxy5nz5n7hww3mdzlbsw7y5jwa7w37p3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/powerman/deepequal"))
+    (home-page "https://github.com/powerman/deepequal")
+    (synopsis "Go package with improved @code{reflect.DeepEqual}")
+    (description
+     "Package deepequal provides improved @code{reflect.DeepEqual}.")
+    (license license:expat)))
+
 (define-public go-github-com-pquerna-otp
   (package
     (name "go-github-com-pquerna-otp")
