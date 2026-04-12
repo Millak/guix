@@ -531,6 +531,47 @@ MPRIS 2 support.")
     (home-page "https://github.com/eonpatapon/mpDris2")
     (license license:gpl3+)))
 
+(define-public mpdris2-rs
+  (package
+    (name "mpdris2-rs")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/szclsya/mpdris2-rs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "023m4g1kgr2q2vllaij7nlxd5gp3vklvbhf5drymgqz3pcmslb52"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-systemd-unit
+            (lambda _
+              (let ((unit-dir (in-vicinity #$output "lib/systemd/user/")))
+                (substitute* "misc/mpdris2-rs.service"
+                  (("/usr/local/bin/mpdris2-rs")
+                   (in-vicinity #$output "bin/mpdris2-rs")))
+                (install-file "misc/mpdris2-rs.service" unit-dir)))))))
+    (inputs (cargo-inputs 'mpdris2-rs))
+    (home-page "https://github.com/szclsya/mpdris2-rs")
+    (synopsis "Exposing MPRIS V2.2 D-Bus interface for mpd")
+    (description
+     "A lightweight implementation of MPD to D-Bus bridge, which exposes MPD
+player and playlist information onto MPRIS2 interface so other programs can use
+this generic interface to retrieve MPD's playback state.
+
+Distinctively, mpdris2-rs uses MPD protocol's native
+@command{readpicture}/@command{albumart} methods to fetch album arts.  This
+means mpdris2-rs won't need any access to your local filesystem (apart from
+your @env{XDG_RUNTIME_DIR} for temporarily storing fetched albumarts) and can
+provide album arts even with remote MPD servers and Internet radios.")
+    (license license:gpl3)))
+
 (define-public cantata
   (package
     (name "cantata")
