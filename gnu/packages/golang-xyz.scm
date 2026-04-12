@@ -9063,6 +9063,32 @@ console APIs are used.  Otherwise, ANSI texts are output.")
 more complicated parallel cases.")
     (license license:expat)))
 
+(define-public go-github-com-dchest-safefile
+  (package
+    (name "go-github-com-dchest-safefile")
+    (version "0.0.0-20151022103144-855e8d98f185")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dchest/safefile")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0842qrxf2kd0dvrimvwbd7x93dpazhz9gymsxrj52rzhj9baxf4l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dchest/safefile"))
+    (home-page "https://github.com/dchest/safefile")
+    (synopsis "Safe & atomic saving of files")
+    (description
+     "This package implements safe atomic saving of files.  Instead of
+truncating and overwriting the destination file, it creates a temporary file
+in the same directory, writes to it, and then renames the temporary file to
+the original name when calling Commit.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-dchest-stemmer
   (package
     (name "go-github-com-dchest-stemmer")
