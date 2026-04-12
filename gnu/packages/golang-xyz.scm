@@ -17489,6 +17489,30 @@ text, etc. with a heavy emphasis on customization.")
 syslog and windows event log.")
     (license license:bsd-2)))
 
+(define-public go-github-com-jedisct1-go-clocksmith
+  (package
+    (name "go-github-com-jedisct1-go-clocksmith")
+    (version "0.0.0-20260103230147-eff3e038eebd")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jedisct1/go-clocksmith")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c5v4n4xims72wa72vr30jy2chs0hf14d8zv65xcgynv9i3w4p96"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jedisct1/go-clocksmith"))
+    (home-page "https://github.com/jedisct1/go-clocksmith")
+    (synopsis "Sleep aware function for Go")
+    (description
+     "This package provides a @code{sleep-aware-sleep()} function, that
+doesn't pause (for too long) if the system goes to hibernation.")
+    (license license:expat)))
+
 (define-public go-github-com-jeffail-gabs
   (package
     (name "go-github-com-jeffail-gabs")
