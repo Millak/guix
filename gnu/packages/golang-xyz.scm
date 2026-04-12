@@ -15850,6 +15850,34 @@ Algorithms are included to calculate yahrzeits, birthdays, and
 anniversaries.")
     (license license:gpl2+)))
 
+;; For dnscrypt-proxy which can't build without it.
+(define-public go-github-com-hectane-go-acl
+  (package
+    (name "go-github-com-hectane-go-acl")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hectane/go-acl")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mwjj9vw7yfydhvzaiycz314sps3x7d847w37zhsv7zcbbjpzfp6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hectane/go-acl"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/hectane/go-acl")
+    (synopsis "Go library for manipulating ACLs on Windows")
+    (description
+     "Package go-acl is for manipulating ACLs (Access Control Lists) on
+Windows is difficult in Go.  It wraps the Windows API functions that control
+access to objects,simplifying the process.")
+    (license license:expat)))
+
 (define-public go-github-com-heimdalr-dag
   (package
     (name "go-github-com-heimdalr-dag")
