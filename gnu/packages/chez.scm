@@ -302,7 +302,7 @@ will name the threaded machine type unless THREADS? is provided as #f."
     (name "chez-scheme-for-racket")
     ;; The version should match `(scheme-version #t)`.
     ;; See s/cmacros.ss c. line 360.
-    (version "10.3.0-pre-release.2") ; expect a chez-nanopass-bootstrap update
+    (version "10.4.0-pre-release.1-1") ; expect a chez-nanopass-bootstrap update
     (source #f)
     (build-system gnu-build-system)
     (inputs `(,@(if (nix-system->native-chez-machine-type)
@@ -507,7 +507,7 @@ version of Chez Scheme.")
     (name "chez-scheme")
     ;; The version should match `(scheme-version-number #t)`.
     ;; See s/cmacros.ss c. line 360.
-    (version "10.2.0") ; expect a chez-nanopass-bootstrap update
+    (version "10.4.0") ; expect a chez-nanopass-bootstrap update
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -515,7 +515,7 @@ version of Chez Scheme.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "14iv4kfkyvrkigr1n2prf71n2l3vs0sf0549rvh6y4x2faa2l329"))
+                "079vlkl27qdvsg1rsynmd828m42n98c2dnldkhsxf2slfsqd9kv5"))
               (file-name (git-file-name name version))
               (patches (search-patches "chez-scheme-bin-sh.patch"))
               (snippet #~(begin
@@ -840,9 +840,9 @@ User's Guix}, among other documents.")
 (define-public chez-nanopass-bootstrap
   (hidden-package
    (package
-     (name "chez-nanopass")
-     (version "1.9.2")
-     (properties `((chez-nanopass-release-date . "October 18, 2020")))
+     (name "chez-nanopass-bootstrap")
+     (version "1.9.4")
+     (properties '((chez-nanopass-release-date . "December 29, 2025")))
      (source
       (origin
         (method git-fetch)
@@ -850,7 +850,7 @@ User's Guix}, among other documents.")
               (url "https://github.com/nanopass/nanopass-framework-scheme")
               (commit (string-append "v" version))))
         (sha256
-         (base32 "16vjsik9rrzbabbhbxbaha51ppi3f9n8rk59pc6zdyffs0vziy4i"))
+         (base32 "1qq0vnbrvcialgjgnblfq3qp1ilqg94h0kg896ksd9v4g7ipj9v0"))
         (file-name (git-file-name "nanopass-framework-scheme" version))
         (snippet
          #~(begin
@@ -929,10 +929,9 @@ create compilers, making them easier to understand and maintain.")
 (define-public chez-nanopass
   (package
     (inherit chez-nanopass-bootstrap)
-    ;; This release has a significant bug fix.  Expect the next releases of
-    ;; chez-scheme{,-for-racket} to want this for chez-nanopass-bootstrap.
-    (version "1.9.3")
-    (properties '((chez-nanopass-release-date . "August 24, 2025")))
+    (name "chez-nanopass")
+    (version "1.9.4")
+    (properties '((chez-nanopass-release-date . "December 29, 2025")))
     (source
      (let ((bootstrap-origin (package-source chez-nanopass-bootstrap)))
        (origin
@@ -941,7 +940,7 @@ create compilers, making them easier to understand and maintain.")
                 (url (git-reference-url (origin-uri bootstrap-origin)))
                 (commit (string-append "v" version))))
          (sha256
-          (base32 "0757x3a3b4kcd3jk52h4ikqzv7cc1mvphlw592f0r5pz99bkxiin"))
+          (base32 "1qq0vnbrvcialgjgnblfq3qp1ilqg94h0kg896ksd9v4g7ipj9v0"))
          (file-name (git-file-name "nanopass-framework-scheme" version)))))
     (native-inputs (list chez-scheme stex))))
 
