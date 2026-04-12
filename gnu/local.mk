@@ -738,6 +738,8 @@ GNU_SYSTEM_MODULES =				\
   %D%/services/cgit.scm			\
   %D%/services/ci.scm				\
   %D%/services/configuration.scm		\
+  %D%/services/configuration/environment-variables.scm		\
+  %D%/services/configuration/utils.scm		\
   %D%/services/containers.scm   		\
   %D%/services/cuirass.scm			\
   %D%/services/cups.scm				\
