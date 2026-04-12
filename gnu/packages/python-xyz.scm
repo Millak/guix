@@ -41052,6 +41052,36 @@ files.")
 (define-deprecated-package python-xdg
   python-xdg-base-dirs)
 
+(define-public python-xkbcommon
+  (package
+    (name "python-xkbcommon")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sde1000/python-xkbcommon")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r9fknyys2mr5fl9hbyp8n9izf27553yf49krzinzksnfr9b6c7s"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-cffi))
+    (native-inputs (list libxkbcommon python-setuptools))
+    (arguments
+     (list
+      #:test-backend
+      #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'cleanup
+            (lambda _
+              (delete-file-recursively "xkbcommon"))))))
+    (home-page "https://github.com/sde1000/python-xkbcommon")
+    (synopsis "Bindings for libxkbcommon using cffi")
+    (description "Bindings for libxkbcommon using cffi.")
+    (license license:expat)))
+
 (define-public python-xlib
   (package
     (name "python-xlib")
