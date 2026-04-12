@@ -2,6 +2,7 @@
 ;;; Copyright © 2012-2013, 2015-2020, 2022, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2026 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -140,6 +141,9 @@ current one."
 
         (option '("vacuum-database") #f #f
                 (lambda args
+                  (unless (zero? (getuid))
+                    (leave
+                      (G_ "vacuuming the database can only be used by root~%")))
                   (vacuum-database)
                   (exit 0)))
 
