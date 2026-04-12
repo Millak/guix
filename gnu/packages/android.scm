@@ -1234,7 +1234,7 @@ main repository.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/mvdan/fdroidcl")
+                    (url "https://github.com/Hoverth/fdroidcl")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
@@ -1251,7 +1251,7 @@ main repository.")
      "While the Android client integrates with the system with regular update
 checks and notifications, this is a simple command line client that talks to
 connected devices via ADB.")
-    (home-page "https://github.com/mvdan/fdroidcl")
+    (home-page "https://github.com/Hoverth/fdroidcl")
     (license license:bsd-3)))
 
 (define-public emacs-fdroid
