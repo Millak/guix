@@ -8479,23 +8479,36 @@ them whenever another command is invoked.")
     (license license:gpl3+)))
 
 (define-public emacs-keyfreq
+  (let ((commit "c6955162307f37c2ac631d9daf118781009f8dda")
+        (revision "0"))
+    (package
+      (name "emacs-keyfreq")
+      (version (git-version "1.8" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/dacap/keyfreq")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "18iw0jwr9hmxv5vikqf28sknml0k14rvddp80s2cm6bglaz4sdc3"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f))                   ; No tests
+      (home-page "https://github.com/dacap/keyfreq")
+      (synopsis "Track Emacs command frequencies")
+      (description
+       "@code{emacs-keyfeq} tracks and shows how many times you used a command.")
+      (license license:gpl3+))))
+
+(define-public emacs-keyfreq-superseded-version
   (package
-    (name "emacs-keyfreq")
+    (inherit emacs-keyfreq)
     (version "20160516.716")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://melpa.org/packages/keyfreq-"
-                           version ".el"))
-       (sha256
-        (base32
-         "008hd7d06qskc3mx0bbdgpgy2pwxr8185fzlyqf9qjg49y74p6g8"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/dacap/keyfreq")
-    (synopsis "Track Emacs command frequencies")
-    (description "@code{emacs-keyfeq} tracks and shows how many times you used
-a command.")
-    (license license:gpl3+)))
+    (properties (list (cons 'superseded emacs-keyfreq)))))
 
 (define-public emacs-khalel
   (package
