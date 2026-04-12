@@ -17513,6 +17513,31 @@ syslog and windows event log.")
 doesn't pause (for too long) if the system goes to hibernation.")
     (license license:expat)))
 
+(define-public go-github-com-jedisct1-go-sieve-cache
+  (package
+    (name "go-github-com-jedisct1-go-sieve-cache")
+    (version "0.1.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jedisct1/go-sieve-cache")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vn52fgjgw8mg5widfpyf2jgqs31nilld27vhkm8h7k7akpihbq7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/jedisct1/go-sieve-cache"))
+    (home-page "https://github.com/jedisct1/go-sieve-cache")
+    (synopsis "SIEVE Cache for Go")
+    (description
+     "This package provides a high-performance Go implementation of the
+SIEVE cache replacement algorithm with thread-safe and sharded variants.")
+    (license license:expat)))
+
 (define-public go-github-com-jeffail-gabs
   (package
     (name "go-github-com-jeffail-gabs")
