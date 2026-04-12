@@ -610,6 +610,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/rocm-apps.scm			\
   %D%/packages/rocm-libs.scm			\
   %D%/packages/rocm-tools.scm			\
+  %D%/packages/rocq.scm				\
   %D%/packages/rpc.scm				\
   %D%/packages/rpm.scm				\
   %D%/packages/rrdtool.scm			\

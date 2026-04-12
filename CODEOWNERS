@@ -318,6 +318,7 @@ gnu/packages/tor-browsers\.scm                     @guix/mozilla
 
 gnu/packages/ocaml\.scm                            @guix/ocaml
 gnu/packages/coq\.scm                              @guix/ocaml
+gnu/packages/rocq\.scm                             @guix/ocaml
 guix/build/ocaml-build-system\.scm                 @guix/ocaml
 guix/build/dune-build-system\.scm                  @guix/ocaml
 guix/build-system/ocaml\.scm                       @guix/ocaml

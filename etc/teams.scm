@@ -943,6 +943,7 @@ importer, and the ocaml-build-system."
         #:scope
         (list "gnu/packages/ocaml.scm"
               "gnu/packages/coq.scm"
+              "gnu/packages/rocq.scm"
               "guix/build/ocaml-build-system.scm"
               "guix/build/dune-build-system.scm"
               "guix/build-system/ocaml.scm"
