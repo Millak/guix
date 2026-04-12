@@ -1644,9 +1644,7 @@ documents.")
     (name "guile2.2-present")
     (inputs (list guile-2.2))
     (propagated-inputs
-     `(("guile-lib" ,guile2.2-lib)
-       ("guile-cairo" ,guile2.2-cairo)
-       ("guile-rsvg" ,guile2.2-rsvg)))))
+     (list guile2.2-lib guile2.2-cairo guile2.2-rsvg))))
 
 ;;;
 ;;; C++ bindings.
