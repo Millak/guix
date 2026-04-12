@@ -503,16 +503,16 @@
                       (derivation-file-name result)))))
 
 (test-assertm "with-parameters for %graft?"
-  (mlet* %store-monad ((replacement -> (package
-                                         (inherit %bootstrap-guile)
-                                         (name (string-upcase
-                                                (package-name
-                                                 %bootstrap-guile)))))
+  (mlet* %store-monad ((replacement-pkg -> (package
+                                             (inherit %bootstrap-guile)
+                                             (name (string-upcase
+                                                    (package-name
+                                                     %bootstrap-guile)))))
                        (guile -> (package
                                    (inherit %bootstrap-guile)
-                                   (replacement replacement)))
+                                   (replacement replacement-pkg)))
                        (drv0   (package->derivation %bootstrap-guile))
-                       (drv1   (package->derivation replacement))
+                       (drv1   (package->derivation replacement-pkg))
                        (obj0 -> (with-parameters ((%graft? #f))
                                   guile))
                        (obj1 -> (with-parameters ((%graft? #t))
