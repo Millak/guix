@@ -13703,6 +13703,30 @@ It is inspired by SPDY but is not interoperable with it.")
 intends to be compatible with Avahi.")
     (license license:expat)))
 
+(define-public go-github-com-lifenjoiner-dhcpdns
+  (package
+    (name "go-github-com-lifenjoiner-dhcpdns")
+    (version "0.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lifenjoiner/dhcpdns")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12jmhcqfi992vhmz295m4yrhh5hhifxzc6b57p3zy287s562c52g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lifenjoiner/dhcpdns"))
+    (home-page "https://github.com/lifenjoiner/dhcpdns")
+    (synopsis "Go package to get the DHCP DNS")
+    (description
+     "This package provide a Go package to get the Dynamic Host Configuration
+Protocol and Domain Name System.")
+    (license license:expat)))
+
 (define-public go-github-com-linbit-golinstor
   (package
     (name "go-github-com-linbit-golinstor")
