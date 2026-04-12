@@ -263,6 +263,77 @@ capable of sustaining any number of domain names in a bunch of original
 alternative zones.")
     (license license:agpl3+)))
 
+(define-public ast-grep
+  (package
+    (name "ast-grep")
+    (version "0.42.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ast-grep/ast-grep")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h6335dq768vn7gfyhi90j1ljawpsf7wzgqzysgbwrwnk6h67mad"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "fixtures")))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-install-paths ''("crates/cli")
+      #:cargo-test-flags
+      ''("--"
+         ;; These tests require the bundled shared libraries.
+         "--skip=test::test_load_parser"
+         "--skip=test::test_register_lang")
+      #:modules '((guix build cargo-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-completions
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+                (match-lambda
+                  ((shell . path)
+                   (mkdir-p (in-vicinity #$output (dirname path)))
+                   (let ((binary
+                           (if #$(%current-target-system)
+                               (search-input-file native-inputs "bin/ast-grep")
+                               (in-vicinity #$output "bin/ast-grep"))))
+                     (with-output-to-file (in-vicinity #$output path)
+                       (lambda _
+                         (invoke binary "completions" shell))))))
+                '(("bash" . "share/bash-completion/completions/ast-grep")
+                  ("elvish" . "share/elvish/lib/ast-grep")
+                  ("fish" . "share/fish/vendor_completions.d/ast-grep.fish")
+                  ("zsh" . "share/zsh/site-functions/_ast-grep")))))
+          (add-after 'install 'wrap-sg
+            (lambda _
+              ;; sg needs ast-grep to be in its PATH.
+              (wrap-program (in-vicinity #$output "bin/sg")
+                `("PATH" ":" prefix
+                  (,(dirname (in-vicinity #$output "bin/ast-grep"))))))))))
+    (native-inputs
+     (if (%current-target-system)
+         (list this-package)
+         '()))
+    (inputs (cons* bash-minimal (cargo-inputs 'ast-grep)))
+    (home-page "https://github.com/ast-grep/ast-grep")
+    (synopsis "CLI tool for code structural search, lint, and rewriting")
+    (description
+     "@code{ast-grep} is an abstract syntax tree based tool to search code by
+pattern code.  Think of it as your old-friend grep, but matching AST nodes
+instead of text.  Write patterns as if you are writing ordinary code.  It will
+match all code that has the same syntactical structure.  You can use @code{$}
+and upper case letters as a wildcard, e.g. @code{$MATCH}, to match any single
+AST node.  Think of it as regular expression dot @code{.}, except it is not
+textual.")
+    (license license:expat)))
+
 (define-public bat
   (package
     (name "bat")
