@@ -3792,7 +3792,7 @@ to enforce it.")
 (define-public python-vunit
   (package
     (name "python-vunit")
-    (version "5.0.0-dev.9") ;v4.7.0 dates back from 2 years ago.
+    (version "5.0.0-dev.10") ;v4.7.0 dates back from 2 years ago.
     (source
      (origin
        (method git-fetch)
@@ -3801,7 +3801,7 @@ to enforce it.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j9rvlshzi4mdy7wah1j8ri63drkjb47xly22q40wvl2xp2ghqgs"))))
+        (base32 "1gr9ghwgqly9zf0sf15ai20sac520rs84b9i5qjxdqpj26ayyl1q"))))
     (build-system pyproject-build-system)
     (arguments
      (list
