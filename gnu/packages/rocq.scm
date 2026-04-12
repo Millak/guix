@@ -29,7 +29,17 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu packages rocq))
+(define-module (gnu packages rocq)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages gawk)
+  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages ocaml)
+  #:use-module (guix build-system dune)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module (guix licenses)
+  #:use-module (guix packages))
 
 (define (rocq-arguments opam-package-name)
   ;; Dune parallel build is not reproducible (in rocq and camlp-streams,
@@ -45,3 +55,46 @@
         #:build-flags ''("-j1")
         ;; The tests must be serial as well for reproducible builds.
         #:test-flags ''("-j1")))
+
+(define-public rocq-runtime
+  (package
+    (name "rocq-runtime") ;see rocq-runtime.opam in rocq's git
+    (version "9.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       ;; Use github uri as recommended by "Contributing" docs.
+       ;; Signed by Nicolas Tabareau (GPG: 5F6E82ADF36B53F6)
+       (uri (git-reference
+             (url "https://github.com/rocq-prover/rocq")
+             (commit (string-append "V" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rxq2cfqlbp8vzygmk6cwszbsn5l2vka0syhrafrnpn2rpyivya9"))))
+    (build-system dune-build-system)
+    (arguments
+     (rocq-arguments "rocq-runtime"))
+    (propagated-inputs (list ocaml-zarith camlzip ocaml-yojson))
+    (inputs (list gmp))
+    (native-inputs (list ocaml-ounit2 which))
+    (native-search-paths
+     (list
+       (search-path-specification
+         (variable "ROCQLIB")
+         (files (list "lib/ocaml/site-lib/coq")))
+       (search-path-specification
+         (variable "ROCQRUNTIMELIB")
+         (files (list "lib/ocaml/site-lib/rocq-runtime")))))
+    (home-page "https://rocq-prover.org/")
+    (synopsis "Core Binaries and Tools for the Rocq Prover")
+    (description
+     "Rocq is an interactive theorem prover, or proof assistant.  It provides
+a formal language to write mathematical definitions, executable algorithms
+and theorems together with an environment for semi-interactive development
+of machine-checked proofs.
+
+This package includes the Rocq Prover core binaries, plugins, and tools, but
+not the language's standard library implementation.")
+    ;; The source code is distributed under lgpl2.1.
+    ;; Some of the documentation is distributed under opl1.0+.
+    (license (list lgpl2.1 opl1.0+))))
