@@ -1457,10 +1457,9 @@ exceptions, macros, and a dynamic programming environment.")
     (inherit guile-cairo)
     (name "guile2.2-cairo")
     (inputs
-     `(("guile" ,guile-2.2)
-       ("guile-lib" ,guile2.2-lib)
-       ,@(fold alist-delete (package-inputs guile-cairo)
-               '("guile" "guile-lib"))))))
+     (modify-inputs inputs
+       (delete "guile" "guile-lib")
+       (append guile-2.2 guile2.2-lib)))))
 
 (define-public guile-cairo-next
   ;; A commit with cairo-pointer->context, missing from guile-cairo@1.11.2
