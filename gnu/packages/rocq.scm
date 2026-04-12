@@ -98,3 +98,28 @@ not the language's standard library implementation.")
     ;; The source code is distributed under lgpl2.1.
     ;; Some of the documentation is distributed under opl1.0+.
     (license (list lgpl2.1 opl1.0+))))
+
+(define-public rocq-core
+  (package
+    (inherit rocq-runtime)
+    (name "rocq-core") ;see rocq-core.opam in rocq's git
+    (arguments
+     (append (rocq-arguments "rocq-core")
+             (list #:phases
+                   ;; this is the only package in rocq that /needs/ a "dunestrap"
+                   #~(modify-phases %standard-phases
+                       (add-before 'build 'make-dunestrap
+                         (lambda _
+                           (invoke "make" "DUNEOPT=-j1" "COQ_SPLIT=1"
+                                   "dunestrap")))))))
+    (propagated-inputs (modify-inputs (package-propagated-inputs rocq-runtime)
+                         (append rocq-runtime)))
+    (synopsis "Standard library modules for Rocq Prover")
+    (description
+     "Rocq is an interactive theorem prover, or proof assistant.  It provides
+ a formal language to write mathematical definitions, executable algorithms
+and theorems together with an environment for semi-interactive development
+of machine-checked proofs.
+
+This package includes the Rocq standard library some other core language
+libraries.")))
