@@ -2005,6 +2005,31 @@ Hybrid Public Key Encryption} (HPKE) draft.")
      "A Golang library to verify Minisign signatures.")
     (license license:expat)))
 
+(define-public go-github-com-jedisct1-xsecretbox
+  (package
+    (name "go-github-com-jedisct1-xsecretbox")
+    (version "0.0.0-20241212092125-3afc4917ac41")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jedisct1/xsecretbox")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h6l1gpvbwbg5spq3a731snh6sv6698h5d5sy0ydh17fiqanhmjm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jedisct1/xsecretbox"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://github.com/jedisct1/xsecretbox")
+    (synopsis "Go implementation of crypto_secretbox_xchacha20poly1305")
+    (description
+     "Go implementation of crypto_secretbox_xchacha20poly1305 algorithm.")
+    (license license:expat)))
+
 (define-public go-github-com-jphastings-jwker
   (package
     (name "go-github-com-jphastings-jwker")
