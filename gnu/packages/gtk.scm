@@ -2631,20 +2631,21 @@ printed to standard output.")
    (license license:gpl3+)))
 
 (define-public libdbusmenu
-  (let ((bzr-revision "496"))
+  (let ((revision "497")
+        (commit "cc15b23d35c755d5e6be8229889c851464353db2"))
     (package
       (name "libdbusmenu")
-      (version (string-append "16.04.0" "-" bzr-revision))
+      (version (git-version "16.04.0" revision commit))
       (source
        (origin
-         (method bzr-fetch)
-         (uri (bzr-reference
-               (url "lp:libdbusmenu")
-               (revision bzr-revision)))
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.launchpad.net/libdbusmenu")
+               (commit commit)))
          (file-name (string-append name "-" version "-checkout"))
          (sha256
           (base32
-           "1rnp86r8f2xjcbk6jjl6np1qdhc3d7fj1c3ggn0gbv2kksc8r1bx"))))
+           "0d8z176kv49ylqjhjnhfcfil8nrn4kqa222x2lpvbgw417na7cb4"))))
       (build-system gnu-build-system)
       (arguments
        (list
