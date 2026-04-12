@@ -18,6 +18,7 @@ Please send Guix bug reports to bug-guix@gnu.org.
 ** Distribution
 *** GNOME updated to version 48
 *** New service for Fossil SCM
+*** TeX Live updated to 2026.1
 
 * Changes in 1.5.0 (since 1.4.0)
 ** Package management
