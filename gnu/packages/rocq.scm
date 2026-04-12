@@ -123,3 +123,25 @@ of machine-checked proofs.
 
 This package includes the Rocq standard library some other core language
 libraries.")))
+
+; The Rocq project refers to the pacakge as the "RocqIDE server," but has not
+; yet changed the name of the opam package.
+; https://rocq-prover.org/install
+(define-public rocqide-server
+  (package
+    (inherit rocq-runtime)
+    (name "rocqide-server") ;see coqide-server.opam in rocq's git
+    (propagated-inputs (modify-inputs (package-propagated-inputs rocq-runtime)
+                         (append rocq-runtime)))
+    (arguments
+     (rocq-arguments "coqide-server"))
+    (synopsis "Rocq's XML protocol server")
+    (description
+     "Rocq is an interactive theorem prover, or proof assistant.  It provides
+ a formal language to write mathematical definitions, executable algorithms
+and theorems together with an environment for semi-interactive development
+of machine-checked proofs.
+
+This package provides the @code{coqidetop} language server, an implementation of
+Rocq's XML protocol which allows clients, such as RocqIDE, to interact with
+the Rocq Prover in a structured way.")))
