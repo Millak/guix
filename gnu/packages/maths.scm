@@ -487,8 +487,9 @@ programming languages.")
                  ""))))
           ;; The 'check phase requires test programs build using 'build-tests'.
           (add-before 'check 'build-tests
-            (lambda _
-              (invoke "cmake" "--build" "." "--target" "build-tests"))))))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "cmake" "--build" "." "--target" "build-tests")))))))
     (inputs (list cadical-2.1
                   cln
                   cryptominisat
