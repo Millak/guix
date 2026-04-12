@@ -29743,6 +29743,30 @@ the local time zone from operating system settings.  It works on Windows,
 Linux, and macOS.")
     (license license:unlicense)))
 
+(define-public go-github-com-tidwall-btree
+  (package
+    (name "go-github-com-tidwall-btree")
+    (version "1.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tidwall/btree")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cvxi4b0dhyghxmi4w738jxy739lqg628026qpdgq3yvb6f2iij2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tidwall/btree"))
+    (home-page "https://github.com/tidwall/btree")
+    (synopsis "B-tree implementation in Go")
+    (description
+     "This package provides an efficient
+@url{https://en.wikipedia.org/wiki/B-tree, B-tree} implementation in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-tidwall-cities
   (package
     (name "go-github-com-tidwall-cities")
