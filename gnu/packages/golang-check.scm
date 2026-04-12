@@ -3421,6 +3421,36 @@ current goroutine's ID.")
 Go application.")
     (license license:bsd-2)))
 
+(define-public go-github-com-powerman-check
+  (package
+    (name "go-github-com-powerman-check")
+    (version "1.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/powerman/check")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jnk5nc42xf264kda0s1qc4dq8lw81ksxszizcj0af5gw6njfm29"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            (delete-file-recursively "test")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/powerman/check"
+      ;; Test could not compare panic output.
+      #:test-flags #~(list "-skip" "TestCheckers/PanicMatch")))
+    (home-page "https://github.com/powerman/check")
+    (synopsis "Helper library to complement Go testing package")
+    (description
+     "This package provide helpers to complement Go testing package.")
+    (license license:expat)))
+
 (define-public go-github-com-poy-onpar
   (package
     (name "go-github-com-poy-onpar")
