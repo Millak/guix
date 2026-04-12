@@ -37,7 +37,7 @@
 ;;; Copyright © 2024 Murilo <murilo@disroot.org>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025, 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Marc Coquand <marc@coquand.email>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
@@ -414,39 +414,40 @@ based command language.")
 (define-public kakoune
   (package
     (name "kakoune")
-    (version "2025.06.03")
+    (version "2026.04.12")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/mawww/kakoune/"
-                           "releases/download/v" version "/"
-                           "kakoune-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mawww/kakoune/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "16b466anx7gf1jci3gxj87xr5qw9fgyhpc3509myzf6z3cgr9mff"))))
+        (base32 "11c4sgb9k1iahi06i5p6m0qz1qf5hz4g2f1z80di23987bwvbjlv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "CXX=" ,(cxx-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda _
-             ;; kakoune uses confstr with _CS_PATH to find out where to find
-             ;; a posix shell, but this doesn't work in the build
-             ;; environment. This substitution just replaces that result
-             ;; with the "sh" path.
-             (substitute* "src/shell_manager.cc"
-               (("if \\(m_shell.empty\\(\\)\\)" line)
-                (string-append "m_shell = \"" (which "sh")
-                               "\";\n        " line)))))
-         (add-after 'install 'wrap-executable
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (wrap-program (string-append (assoc-ref outputs "out") "/bin/kak")
-              `("PATH" ":" prefix
-                (,(dirname (search-input-file inputs "bin/perl")))))))
-         (delete 'configure))))            ; no configure script
-    (native-inputs (list pkg-config))
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "CXX=" #$(cxx-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda _
+              ;; kakoune uses confstr with _CS_PATH to find out where to find
+              ;; a posix shell, but this doesn't work in the build
+              ;; environment. This substitution just replaces that result
+              ;; with the "sh" path.
+              (substitute* "src/shell_manager.cc"
+                (("if \\(m_shell.empty\\(\\)\\)" line)
+                 (string-append "m_shell = \"" (which "sh")
+                                "\";\n        " line)))))
+          (add-after 'install 'wrap-executable
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/kak")
+                `("PATH" ":" prefix
+                  (,(dirname (search-input-file inputs "bin/perl")))))))
+          (delete 'configure))))            ; no configure script
     (inputs (list perl))
     (native-search-paths
      (list (search-path-specification
