@@ -108,9 +108,7 @@
            (lambda _
              (invoke "cmake" "--install" "."))))))
     (inputs
-     `(("libconfig" ,libconfig)
-       ("libedit" ,libedit)
-       ("zlib" ,zlib)))
+     `(("zlib" ,zlib)))
     (native-inputs
      `(("lld-wrapper" ,(make-lld-wrapper lld-17 #:lld-as-ld? #t))
        ("llvm" ,llvm-17)
