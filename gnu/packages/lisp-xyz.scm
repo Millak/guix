@@ -27737,9 +27737,6 @@ adaptations.")
 implementations for Radiance interfaces.")
       (license license:zlib))))
 
-(define-public cl-radiance-contribs
-  (sbcl-package->cl-source-package sbcl-radiance-contribs))
-
 (define-public sbcl-random-sample
   (let ((commit "46b70374ed796b84ea003e83c1db97b0caf97e22")
         (revision "0"))
