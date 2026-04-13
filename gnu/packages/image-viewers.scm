@@ -720,8 +720,14 @@ and WebP.")
                (wrap-program prog
                  `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (native-inputs (list python-setuptools))
-    (inputs
-     (list bash-minimal p7zip python python-pillow python-pygobject python-pycairo gtk+))
+    (inputs (list bash-minimal
+                  gobject-introspection
+                  gtk+
+                  p7zip
+                  python
+                  python-pillow
+                  python-pycairo
+                  python-pygobject))
     (home-page "https://sourceforge.net/p/mcomix/wiki/Home/")
     (synopsis "Image viewer for comics")
     (description "MComix is a customizable image viewer that specializes as
