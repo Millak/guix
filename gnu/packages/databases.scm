@@ -69,6 +69,7 @@
 ;;; Copyright © 2025 Simen Endsjø <contact@simendsjo.me>
 ;;; Copyright © 2025 bdunahu <bdunahu@operationnull.com>
 ;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
+;;; Copyright © 2026 Peter Polidoro <peter@polidoro.io>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3095,6 +3096,64 @@ Driver.")
    (license license:lgpl2.1+)
    ;; COPYING contains copy of lgpl2.1 - but copyright notices just say "LGPL"
    (home-page "https://www.unixodbc.org")))
+
+(define-public sqliteodbc
+  (package
+    (name "sqliteodbc")
+    (version "0.99991")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://www.ch-werner.de/sqliteodbc/"
+                                  name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0p4avhqxnd2l49g3vpzwrmdi8wxyqzy0vswalaagmqfdsfwav52d"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                      ; no check target
+      #:configure-flags
+      #~(list "--disable-static"
+              (string-append "--with-sqlite3=" #$(this-package-input "sqlite"))
+              (string-append "--with-odbc=" #$(this-package-input "unixodbc")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'create-lib-directory
+            (lambda _
+              (mkdir-p (string-append #$output "/lib"))))
+          (add-after 'install 'remove-extra-sqlite-extensions
+            (lambda _
+              ;; Keep this package focused on the ODBC driver itself.
+              (for-each delete-file
+                        (find-files (string-append #$output "/lib")
+                                    "^libsqlite3_mod_.*\\.(la|so)$"))))
+          (add-after 'install 'install-odbcinst.ini
+            (lambda _
+              (let ((dir (string-append #$output "/share/sqliteodbc")))
+                (mkdir-p dir)
+                (call-with-output-file (string-append dir "/odbcinst.ini")
+                  (lambda (port)
+                    (display
+                     (string-append
+                      "[SQLite3]\n"
+                      "Description = SQLite3 ODBC Driver\n"
+                      "Driver      = " #$output "/lib/libsqlite3odbc.so\n"
+                      "Setup       = " #$output "/lib/libsqlite3odbc.so\n"
+                      "Threading   = 2\n")
+                     port)))))))))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "ODBCSYSINI")
+            (files '("share/sqliteodbc"))
+            (separator #f))))
+    (inputs (list sqlite unixodbc))
+    (home-page "http://www.ch-werner.de/sqliteodbc/")
+    (synopsis "ODBC driver for SQLite")
+    (description
+     "SQLiteODBC provides an ODBC driver for SQLite 3 databases.  It installs
+the shared library and a driver registration file so applications using
+unixODBC can resolve the @code{SQLite3} driver name from a Guix profile.")
+    (license license:tcl/tk)))
 
 (define-public nanodbc
   (package
