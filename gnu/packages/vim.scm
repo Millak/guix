@@ -1017,7 +1017,10 @@ With the package comes a plugin to use vifm as a vim file selector.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0k98c0i14z3adx6l4ncf2zmzk9aykqkdnws6qw4m0yj5z61zh6av"))))
+        (base32 "0k98c0i14z3adx6l4ncf2zmzk9aykqkdnws6qw4m0yj5z61zh6av"))
+       ;; This patch can be removed when the next pynvim version after 0.6.0 is
+       ;; released.
+       (patches (search-patches "python-pynvim-fix-test-command-error.patch"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list neovim

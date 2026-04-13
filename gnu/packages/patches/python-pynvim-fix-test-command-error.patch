@@ -1,0 +1,29 @@
+Fix test_command_error for neovim 0.12.x.
+
+In neovim 0.12.0, the error message for an invalid cursor position changed from
+"Cursor position outside buffer" to "Invalid cursor line: out of range".  Update
+the test to accept both messages.
+
+Taken from upstream commit d89b62ed622976c8d6dbc7733a99dac371b01cbf.
+
+diff --git a/test/test_vim.py b/test/test_vim.py
+index 8a76f5e..26e2fce 100644
+--- a/test/test_vim.py
++++ b/test/test_vim.py
+@@ -1,6 +1,7 @@
+ """Tests interaction with neovim via Nvim API (with child process)."""
+ 
+ import os
++import re
+ import sys
+ import tempfile
+ from pathlib import Path
+@@ -50,7 +51,7 @@ def test_command_output(vim: Nvim) -> None:
+ def test_command_error(vim: Nvim) -> None:
+     with pytest.raises(vim.error) as excinfo:
+         vim.current.window.cursor = -1, -1
+-    assert excinfo.value.args == ('Cursor position outside buffer',)
++    assert re.search(r"Cursor position outside buffer|Invalid cursor line", excinfo.value.args[0])
+ 
+ 
+ def test_eval(vim: Nvim) -> None:
