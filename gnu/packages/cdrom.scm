@@ -625,27 +625,27 @@ capacity is user-selectable.")
              #t)))
        #:tests? #f)) ; No tests.
     (inputs ; TODO package bundled wxvillalib
-     `(("wxwidgets" ,wxwidgets)
-       ("wssvg" ,wxsvg)
-       ("bash" ,bash-minimal) ; for wrap-program
-       ("dbus" ,dbus)
-       ("cdrtools" ,cdrtools)
-       ("dvd+rw-tools" ,dvd+rw-tools)
-       ("dvdauthor" ,dvdauthor)
-       ("eudev" ,eudev)
-       ("fontconfig" ,fontconfig)
-       ("libexif" ,libexif)
-       ("libjpeg" ,libjpeg-turbo)
-       ("ffmpeg" ,ffmpeg-4)))
+     (list bash-minimal ; for wrap-program
+           cdrtools
+           dbus
+           dvd+rw-tools
+           dvdauthor
+           eudev
+           ffmpeg-4
+           fontconfig
+           libexif
+           libjpeg-turbo
+           wxsvg
+           wxwidgets))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("flex" ,flex)
-       ("python" ,python-minimal-wrapper)
-       ("xmlto" ,xmlto)
-       ("gettext" ,gettext-minimal)
-       ("docbook-xml" ,docbook-xml)
-       ("docbook-xsl" ,docbook-xsl)
-       ("zip" ,zip)))
+     (list docbook-xml
+           docbook-xsl
+           flex
+           gettext-minimal
+           pkg-config
+           python-minimal-wrapper
+           xmlto
+           zip))
     (synopsis "DVD authoring application")
     (description "DVDStyler is a DVD authoring application which allows users
 to burn video files in many formats to DVD discs, complete with individually
