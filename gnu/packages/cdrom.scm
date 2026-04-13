@@ -595,7 +595,11 @@ capacity is user-selectable.")
                             version "/DVDStyler-" version ".tar.bz2"))
        (sha256
         (base32
-         "0n3mfjsazvlzk9hl23q3iz7bmxjq7b5lx0ab8nbk1jgl763k9cqb"))))
+         "0n3mfjsazvlzk9hl23q3iz7bmxjq7b5lx0ab8nbk1jgl763k9cqb"))
+       (snippet
+        #~(begin (delete-file "src/dvdvml.c")
+                 (delete-file "src/dvdvmy.c")
+                 (delete-file "src/dvdvmy.h")))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -638,7 +642,8 @@ capacity is user-selectable.")
            wxsvg
            wxwidgets))
     (native-inputs
-     (list docbook-xml
+     (list bison
+           docbook-xml
            docbook-xsl
            flex
            gettext-minimal
