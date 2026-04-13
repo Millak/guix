@@ -35,6 +35,9 @@ guix shell --bootstrap --pure guile-bootstrap -- guile --version
 # '--symlink' can only be used with --container.
 guix shell --bootstrap guile-bootstrap -S /dummy=bin/guile && false
 
+# '--cwd' can only be used with --container.
+guix shell --cwd=/tmp -n hello && false
+
 # '--ad-hoc' is a thing of the past.
 guix shell --ad-hoc guile-bootstrap && false
 

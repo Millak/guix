@@ -123,6 +123,10 @@ shell'."
       --no-cwd           do not share current working directory with an
                          isolated container"))
   (display (G_ "
+      --cwd=DIR          change to DIRECTORY inside the container (default is
+                         current working directory--or $HOME if --no-cwd is
+                         used)"))
+  (display (G_ "
       --writable-root    make the container's root file system writable"))
 
   (display (G_ "
@@ -265,6 +269,9 @@ use '--preserve' instead~%"))
          (option '("no-cwd") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'no-cwd? #t result)))
+         (option '("cwd") #t #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'cwd arg result)))
          (option '("writable-root") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'writable-root? #t result)))
@@ -743,7 +750,7 @@ regexps in WHITE-LIST."
 
 (define* (launch-environment/container #:key command bash user user-mappings
                                        profile manifest link-profile? network?
-                                       map-cwd? emulate-fhs? nesting?
+                                       map-cwd? cwd emulate-fhs? nesting?
                                        writable-root?
                                        (setup-hook #f)
                                        (symlinks '()) (white-list '()))
@@ -825,7 +832,7 @@ WHILE-LIST."
                                 (inputs->requisites
                                  (list (direct-store-path bash) profile)))))
     (return
-     (let* ((cwd      (getcwd))
+     (let* ((host-cwd (getcwd))                    ;actual current working directory
             (home     (getenv "HOME"))
             (uid      (if user 1000 (getuid)))
             (gid      (if user
@@ -857,6 +864,13 @@ WHILE-LIST."
                                          (name "overflow"))))
             (home-dir (password-entry-directory passwd))
             (logname  (password-entry-name passwd))
+            (container-cwd
+             (and cwd
+                  (override-user-dir
+                   user home
+                   (if (string-prefix? "/" cwd)
+                       cwd
+                       (string-append host-cwd "/" cwd)))))
             (environ  (filter (match-lambda
                                 ((variable . value)
                                  (find (cut regexp-exec <> variable)
@@ -873,8 +887,8 @@ WHILE-LIST."
                 ;; Share current working directory, unless asked not to.
                 (if map-cwd?
                     (list (file-system-mapping
-                           (source cwd)
-                           (target cwd)
+                           (source host-cwd)
+                           (target host-cwd)
                            (writable? #t)))
                     '())
                 ;; Add the user mappings *after* the current working directory
@@ -942,9 +956,10 @@ WHILE-LIST."
 
             ;; For convenience, start in the user's current working
             ;; directory or, if unmapped, the home directory.
-            (chdir (if map-cwd?
-                       (override-user-dir user home cwd)
-                       home-dir))
+            (chdir (or container-cwd    ; explicit --cwd takes precedence
+                       (and map-cwd?    ; otherwise, use current dir unless --no-cwd
+                            (override-user-dir user home host-cwd))
+                       home-dir))       ; fallback to home
 
             ;; Set environment variables that match WHITE-LIST.
             (for-each (match-lambda
@@ -1187,6 +1202,8 @@ command-line option processing with 'parse-command-line'."
         (leave (G_ "'--link-profile' cannot be used without '--container'~%")))
       (when user
         (leave (G_ "'--user' cannot be used without '--container'~%")))
+      (when (assoc-ref opts 'cwd)
+        (leave (G_ "'--cwd' cannot be used without '--container'~%")))
       (when no-cwd?
         (leave (G_ "--no-cwd cannot be used without '--container'~%")))
       (when writable-root?
@@ -1278,6 +1295,7 @@ when using '--container'; doing nothing~%"))
                                                   #:link-profile? link-prof?
                                                   #:network? network?
                                                   #:map-cwd? (not no-cwd?)
+                                                  #:cwd (assoc-ref opts 'cwd)
                                                   #:writable-root? writable-root?
                                                   #:emulate-fhs? emulate-fhs?
                                                   #:nesting? nesting?

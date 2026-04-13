@@ -6591,6 +6591,21 @@ directory within the container.  If this is undesirable,
 be automatically shared and will change to the user's home directory
 within the container instead.  See also @option{--user}.
 
+@item --cwd=@var{directory}
+For containers, change to @var{directory} inside the container instead
+of the default location.  The default location is the current working
+directory when @option{--no-cwd} is not used, or the user's home
+directory when @option{--no-cwd} is used.  When @var{directory} is a
+relative file name, it is interpreted relative to the current working
+directory on the host.  Note that @option{--cwd} does not automatically
+share @var{directory}---you must ensure it is accessible via the default
+current directory sharing or explicit @option{--share}/@option{--expose}
+options.  For example:
+
+@example
+guix shell --container --cwd=/tmp --share=/tmp coreutils
+@end example
+
 @item --writable-root
 When using @option{--container}, this option makes the root file system
 writable (it is read-only by default).
@@ -7091,6 +7106,17 @@ directory within the container.  If this is undesirable,
 @option{--no-cwd} will cause the current working directory to @emph{not}
 be automatically shared and will change to the user's home directory
 within the container instead.  See also @option{--user}.
+
+@item --cwd=@var{directory}
+For containers, change to @var{directory} inside the container instead
+of the default location.  The default location is the current working
+directory when @option{--no-cwd} is not used, or the user's home
+directory when @option{--no-cwd} is used.  When @var{directory} is a
+relative file name, it is interpreted relative to the current working
+directory on the host.  Note that @option{--cwd} does not automatically
+share @var{directory}---you must ensure it is accessible via the default
+current directory sharing or explicit @option{--share}/@option{--expose}
+options.
 
 @item --expose=@var{source}[=@var{target}]
 @itemx --share=@var{source}[=@var{target}]

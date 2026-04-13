@@ -186,6 +186,24 @@ HOME="$tmpdir" guix environment --bootstrap --container --user=foognu \
             -- /bin/sh -c 'test $(pwd) == "/home/foo" -a ! -d '"$tmpdir"
 )
 
+# '--cwd' is independent from sharing the host current working directory.
+(
+  cd "$tmpdir" \
+    && guix environment --bootstrap --container --no-cwd --cwd=/tmp \
+            --ad-hoc guile-bootstrap --pure \
+            -- /bin/sh -c 'test $(pwd) == "/tmp" -a ! -d '"$tmpdir"
+)
+
+# Relative '--cwd' is resolved against the host CWD and still honors '--user'.
+mkdir -p "$tmpdir/home/wd"
+home_dir="$(cd "$tmpdir/home"; pwd -P)"
+(
+  cd "$tmpdir/home/wd" \
+    && HOME="$home_dir" guix environment --bootstrap --container --user=foo \
+            --cwd=. --ad-hoc guile-bootstrap --pure \
+            -- /bin/sh -c 'test "$(pwd)" = "/home/foo/wd"'
+)
+
 # Check that the root file system is read-only by default...
 guix environment --bootstrap --container --ad-hoc guile-bootstrap \
      -- guile -c '(mkdir "/whatever")' && false
