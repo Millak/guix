@@ -669,7 +669,7 @@ and WebP.")
 (define-public mcomix
   (package
     (name "mcomix")
-    (version "3.1.0")
+    (version "3.1.1")
     (source
      (origin
        (method url-fetch)
@@ -677,7 +677,7 @@ and WebP.")
                            "mcomix-" version ".tar.gz"))
        (sha256
         (base32
-         "09y4nhlcqvvhz0wscx4zpqxmyhiwh8wrjnhk52awxhzvgyx6wa7r"))))
+         "1y6fps1fbzjc4sdm381432zvrq97iadbz4yyxxsfnzf0ggnsl2m1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
