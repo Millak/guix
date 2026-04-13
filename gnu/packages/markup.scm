@@ -134,7 +134,7 @@ specific format when needed.")
                   (delete 'configure)) ; no configure script
        #:test-target "test"))
     (native-inputs
-     `(("python" ,python-2)
+     `(("python" ,python-minimal-wrapper)
        ("tidy" ,tidy-html)))
     (synopsis "Markdown processing library")
     (description "Hoedown is a standards compliant, fast, secure markdown
