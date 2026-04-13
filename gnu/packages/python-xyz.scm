@@ -40322,47 +40322,6 @@ e.g. filters, callbacks and errbacks can all be promises.")
         (sha256
          (base32 "1gj57xqgrg53yfn9ypikgky01hvazxdyl556kwsc7b7avyxm9dbv")))))))
 
-;; XXX: No new release since 2021, no updates on default branch since 2023, no
-;; users in Guix; consider to remove if it keeps failing to build.
-(define-public python-virtualenv-clone
-  (package
-    (name "python-virtualenv-clone")
-    (version "0.5.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/edwardgeorge/virtualenv-clone")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0p0d1y3axvjfnxlgwjx2374gikc8bmc82g0m7yashihbikh7pcxa"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k" (string-join
-                    ;; UnicodeDecodeError: 'utf-8' codec can't decode byte
-                    ;; 0xba in position 10: invalid start byte
-                    (list "not test_clone_contents"
-                          ;;  AssertionError: All versions were skipped.
-                          "test_clone_syspath"
-                          "test_clone_version"
-                          "test_virtualenv_syspath"
-                          "test_virtualenv_versions")
-                    " and not "))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-tomli
-           python-virtualenv
-           python-wheel))
-    (home-page "https://github.com/edwardgeorge/virtualenv-clone")
-    (synopsis "Clone a non-relocatable virtualenv cleanly")
-    (description
-     "Clone non-relocatable virtualenvs without breaking site-packages.")
-    (license license:expat)))
-
 (define-public python-vncdotool
   (package
     (name "python-vncdotool")
