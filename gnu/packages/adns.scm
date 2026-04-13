@@ -21,16 +21,16 @@
   #:use-module (guix deprecation))
 
 (define-deprecated/public-alias adns
-  (@ (guix packages dns) adns))
+  (@ (gnu packages dns) adns))
 
 (define-deprecated/public-alias c-ares
-  (@ (guix packages dns) c-ares))
+  (@ (gnu packages dns) c-ares))
 
 (define-deprecated/public-alias c-ares-for-node-lts
-  (@ (guix packages dns) c-ares-for-node-lts))
+  (@ (gnu packages dns) c-ares-for-node-lts))
 
 (define-deprecated/public-alias c-ares-for-node-bootstrap
-  (@ (guix packages dns) c-ares-for-node-bootstrap))
+  (@ (gnu packages dns) c-ares-for-node-bootstrap))
 
 (define-deprecated/public-alias c-ares/cmake
-  (@ (guix packages dns) c-ares/cmake))
+  (@ (gnu packages dns) c-ares/cmake))
