@@ -62,6 +62,7 @@
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;; Copyright © 2026 Noé Lopez <noelopez@free.fr>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
+;;; Copyright © 2026 Daniel Martins <email@danielfm.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3701,6 +3702,44 @@ compensation, (de)interleaving, and byte-swapping
     (home-page "https://www.music.mcgill.ca/~gary/rtaudio/")
     ;; License is expat with a non-binding request to send modifications to
     ;; original developer.
+    (license license:expat)))
+
+(define-public rtcqs
+  (package
+    (name "rtcqs")
+    (version "0.6.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/rtcqs/rtcqs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kc3niyaq4m8di68832pgfb1b0m54q5gm68dwlzwwilgxi61ifzc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-gui
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"FreeSimpleGUI\",?")
+                 "")
+                (("rtcqs_gui = \"rtcqs\\.rtcqs_gui:main\"")
+                 ""))
+              (delete-file "src/rtcqs/rtcqs_gui.py")
+              (delete-file "src/rtcqs/rtcqs_qt_gui.py"))))))
+    (native-inputs (list python-setuptools))
+    (home-page "https://codeberg.org/rtcqs/rtcqs")
+    (synopsis "Linux audio real-time performance analyzer")
+    (description
+     "rtcqs analyzes a Linux system to detect possible bottlenecks that could
+have a negative impact on real-time audio performance.  It checks kernel
+configuration, IRQ priorities, CPU governor, swappiness, and other settings
+relevant to low-latency audio work.")
     (license license:expat)))
 
 (define-public rtosc
