@@ -33,16 +33,16 @@
 (define-public gkrellm
   (package
     (name "gkrellm")
-    (version "2.3.11")
+    (version "2.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://gkrellm.srcbox.net/releases/gkrellm-"
                            version ".tar.bz2"))
        (sha256
-        (base32 "01lccz4fga40isv09j8rjgr0qy10rff9vj042n6gi6gdv4z69q0y"))))
+        (base32 "0qvy2xmwmfy5f0g09yn9lr262shnx82ba04r5il2wj4qscg3r7h8"))))
     (build-system gnu-build-system)
-    (inputs (list gtk+-2 libice libsm))
+    (inputs (list gtk+-2 libsm))
     (native-inputs (list gettext-minimal pkg-config))
     (arguments
      (list
