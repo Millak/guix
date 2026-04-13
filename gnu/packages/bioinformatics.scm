@@ -18335,44 +18335,6 @@ following the assay and produces a file detailing peaks of significant
 enrichment.")
     (license license:expat)))
 
-(define-public mantis
-  ;; This is an arbitrary commit as a year has passed since 0.1 was tagged.
-  (let ((commit "b6979a269172a45201c8366680d8b889f889432b")
-        (revision "2"))
-    (package
-      (name "mantis")
-      (version (git-version "0.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/splatlab/mantis")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0dq8a785hnaxx5kq757m5czs8xpcjpcph1inq2nm8h6zfvqyj8xs"))))
-      (build-system cmake-build-system)
-      (arguments
-       '(#:tests? #f ; there are none
-         #:configure-flags (list "-DNH=ON"))) ; do not use SSE4.2 instructions
-      (inputs
-       (list sdsl-lite openssl zlib))
-      (native-inputs
-       (list gcc-7))
-      (home-page "https://github.com/splatlab/mantis")
-      (synopsis "Large-scale sequence-search index data structure")
-      (description "Mantis is a space-efficient data structure that can be
-used to index thousands of raw-read genomics experiments and facilitate
-large-scale sequence searches on those experiments.  Mantis uses counting
-quotient filters instead of Bloom filters, enabling rapid index builds and
-queries, small indexes, and exact results, i.e., no false positives or
-negatives.  Furthermore, Mantis is also a colored de Bruijn graph
-representation, so it supports fast graph traversal and other topological
-analyses in addition to large-scale sequence-level searches.")
-      ;; uses __uint128_t and inline assembly
-      (supported-systems '("x86_64-linux"))
-      (license license:bsd-3))))
-
 (define-public sjcount
   ;; There is no tag for version 3.2, nor is there a release archive.
   (let ((commit "292d3917cadb3f6834c81e509c30e61cd7ead6e5")
