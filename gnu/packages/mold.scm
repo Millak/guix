@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,6 +27,7 @@
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages base)
   #:use-module (gnu packages c)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages digest)
   #:use-module (gnu packages oneapi)
   #:use-module (gnu packages tls)
@@ -36,7 +37,7 @@
 (define-public mold
   (package
     (name "mold")
-    (version "2.40.4")
+    (version "2.41.0")
     (source
      (origin
        (method git-fetch)
@@ -45,14 +46,14 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05prkdr3v8wb8l99qrri9r27yar5yl8aiv1ns41b556ckdjdw8q6"))
+        (base32 "1r4mvgwh652klhns1q45qy5axi54jx904ss0s428y98a9qk4brrp"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
             (for-each
              (lambda (x)
                (delete-file-recursively (string-append "third-party/" x)))
-             '("mimalloc" "tbb" "xxhash" "zlib" "zstd"))))))
+             '("blake3" "mimalloc" "tbb" "xxhash" "zlib" "zstd"))))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -86,7 +87,7 @@
        (if (target-64bit?)
            (list mimalloc)
            '())
-       (list onetbb xxhash zlib `(,zstd "lib"))))
+       (list libblake3 onetbb xxhash zlib `(,zstd "lib"))))
     (home-page "https://github.com/rui314/mold")
     (synopsis "Fast linker")
     (description
