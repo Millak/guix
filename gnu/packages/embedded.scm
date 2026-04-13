@@ -1902,7 +1902,7 @@ PicoBlaze; and Zilog Z80 families, plus many of their variants.")
     (inputs
      (list readline ucsim))
     (native-inputs
-     (list bison boost flex python-2 texinfo zlib))
+     (list bison boost flex python-minimal-wrapper texinfo zlib))
     (home-page "https://sdcc.sourceforge.net/")
     (synopsis "C compiler suite for 8-bit microcontrollers")
     (description "SDCC is a retargetable, optimizing Standard C compiler suite
