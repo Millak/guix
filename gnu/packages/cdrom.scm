@@ -640,7 +640,7 @@ capacity is user-selectable.")
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("flex" ,flex)
-       ("python" ,python-2)
+       ("python" ,python-minimal-wrapper)
        ("xmlto" ,xmlto)
        ("gettext" ,gettext-minimal)
        ("docbook-xml" ,docbook-xml)
