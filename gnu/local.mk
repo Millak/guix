@@ -1039,6 +1039,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/azr3.patch				\
   %D%/packages/patches/azr3-remove-lash.patch			\
   %D%/packages/patches/barony-fix-textures.patch		\
+  %D%/packages/patches/bam-python3-compat.patch		\
   %D%/packages/patches/bash-completion-directories.patch	\
   %D%/packages/patches/bash-linux-pgrp-pipe.patch		\
   %D%/packages/patches/basis-universal-unbundle-libs.patch	\

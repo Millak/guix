@@ -196,7 +196,8 @@ according to the system capabilities and the user-selected options.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13br735ig7lygvzyfd15fc2rdygrqm503j6xj5xkrl1r7w2wipq6"))))
+                "13br735ig7lygvzyfd15fc2rdygrqm503j6xj5xkrl1r7w2wipq6"))
+              (patches (search-patches "bam-python3-compat.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags `(,(string-append "CC=" ,(cc-for-target))
@@ -207,7 +208,7 @@ according to the system capabilities and the user-selected options.")
        (modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     `(("python" ,python-2)))
+     (list python-minimal-wrapper))
     (inputs
      (list lua))
     (home-page "https://matricks.github.io/bam/")
