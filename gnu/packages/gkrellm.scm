@@ -19,10 +19,12 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages gkrellm)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix build-system gnu)
+  #:use-module (guix utils)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages pkg-config)
@@ -34,29 +36,24 @@
     (version "2.3.11")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "http://gkrellm.srcbox.net/releases/gkrellm-"
-                          version ".tar.bz2"))
-      (sha256
-       (base32 "01lccz4fga40isv09j8rjgr0qy10rff9vj042n6gi6gdv4z69q0y"))))
+       (method url-fetch)
+       (uri (string-append "https://gkrellm.srcbox.net/releases/gkrellm-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32 "01lccz4fga40isv09j8rjgr0qy10rff9vj042n6gi6gdv4z69q0y"))))
     (build-system gnu-build-system)
-    (inputs
-     `(("gettext" ,gettext-minimal)
-       ("gtk+" ,gtk+-2)
-       ("libice" ,libice)
-       ("libsm" ,libsm)))
-    (native-inputs
-     (list pkg-config))
+    (inputs (list gtk+-2 libice libsm))
+    (native-inputs (list gettext-minimal pkg-config))
     (arguments
-     `(#:tests? #f                      ; there is no check target
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))           ; no configure script
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "INSTALLROOT=" out)
-               "CC=gcc"))))
-    (home-page "http://gkrellm.srcbox.net/")
+     (list
+      #:tests? #f ;there is no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)) ;no configure script
+      #:make-flags
+      #~(list (string-append "INSTALLROOT=" #$output)
+              (string-append "CC=" #$(cc-for-target)))))
+    (home-page "https://gkrellm.srcbox.net/")
     (synopsis "System monitors")
     (description
      "GKrellM is a single process stack of system monitors which supports
