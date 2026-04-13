@@ -8806,7 +8806,7 @@ and comparisons are supported.")
          "1fwlgbcdxz30dzsqw3y1b6ic1rhzfadghj7cq7yxsj14npgnwzga"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list pkg-config python-2)) ;for tests; syntax incompatible with Python 3
+     (list pkg-config python-minimal-wrapper))
     (inputs
      (list openblas suitesparse))
     (arguments
