@@ -387,6 +387,7 @@ devices.")
             ;; - cloud.google.com/go/kms
             ;; - cloud.google.com/go/longrunning
             ;; - cloud.google.com/go/monitoring
+            ;; - cloud.google.com/go/security
             ;; - cloud.google.com/go/storage
             (for-each delete-file-recursively
                       (list "auth"
@@ -395,6 +396,7 @@ devices.")
                             "kms"
                             "longrunning"
                             "monitoring"
+                            "security"
                             "storage"))))))
     (build-system go-build-system)
     (arguments
@@ -782,6 +784,51 @@ its service definition.")
     (synopsis "Cloud Monitoring API")
     (description
      "This package provides a Go Client Library for Cloud Monitoring API.")
+    (license license:asl2.0)))
+
+(define-public go-cloud-google-com-go-security
+  (package
+    (name "go-cloud-google-com-go-security")
+    (version "1.21.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/google-cloud-go")
+              (commit (go-version->git-ref version #:subdir "security"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pn77lf1d22sqpkia9zccdhdihlqc48lls6y9npc2wrp4lman2kv"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "." "security")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "cloud.google.com/go/security"
+      #:unpack-path "cloud.google.com/go"))
+    (propagated-inputs
+     (list go-cloud-google-com-go-iam
+           go-cloud-google-com-go-longrunning
+           go-github-com-googleapis-gax-go-v2
+           go-google-golang-org-api
+           go-google-golang-org-genproto
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://cloud.google.com/go")
+    (synopsis "Google Cloud Certificate Authority API")
+    (description
+     "This package provides a Go Client Library for Certificate Authority API.")
     (license license:asl2.0)))
 
 (define-public go-cloud-google-com-go-storage
