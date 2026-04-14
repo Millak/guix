@@ -16098,6 +16098,55 @@ support.")
 kinds of referrer URLs (search, social, ...).")
     (license license:expat)))
 
+(define-public go-github-com-sigstore-sigstore-pkg-signature-kms-aws
+  (package
+    (name "go-github-com-sigstore-sigstore-pkg-signature-kms-aws")
+    (version "1.10.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sigstore/sigstore")
+              (commit (go-version->git-ref version
+                                           #:subdir
+                                           "pkg/signature/kms/aws"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0shnvcgz4g7v65biwraahjrbsmr13qmb903al50giak2694qhyyk"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "pkg")
+            (delete-all-but "pkg" "signature")
+            (delete-all-but "pkg/signature" "kms")
+            (delete-all-but "pkg/signature/kms" "aws")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sigstore/sigstore/pkg/signature/kms/aws"
+      #:unpack-path "github.com/sigstore/sigstore"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-service-kms
+           go-github-com-jellydator-ttlcache-v3
+           go-github-com-sigstore-sigstore))
+    (home-page "https://github.com/sigstore/sigstore")
+    (synopsis "Utilities related to AWS KMS")
+    (description
+     "Package aws implement the interface with Amazon AWS KMS service.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-sigstore-sigstore-pkg-signature-kms-gcp
   (package
     (name "go-github-com-sigstore-sigstore-pkg-signature-kms-gcp")
