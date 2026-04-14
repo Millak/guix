@@ -3806,6 +3806,45 @@ processing of CCD images built on a framework to provide error propagation and
 bad pixel tracking throughout the reduction process.")
     (license license:bsd-3)))
 
+(define-public python-cdasws
+  (package
+    (name "python-cdasws")
+    (version "1.8.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cdasws" version))
+       (sha256
+        (base32 "04jfzbdpyrfzdz6x2xxcgnpv5bih58bnw0mvscbzklwhq9wsd0gk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))   ;require network, and missing "context" module
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-dateutil
+           python-requests
+           python-urllib3))
+    (home-page "https://cdaweb.gsfc.nasa.gov/WebServices/REST/")
+    (synopsis
+     "NASA's Coordinated Data Analysis System Web Service Client Library")
+    (description
+     "This package provides NASA's Coordinated Data Analysis System Web
+Service Client Library.
+
+The Coordinated Data Analysis System (CDAS) supports simultaneous
+multi-mission, multi-instrument selection and comparison of science data among
+a wide range of current space missions.  While CDAWeb provides access to this
+data through an HTML-based user interface, these Web services provides a (Web)
+application programmming interface (API) to CDAS.  If you are not a software
+developer and simply want to use the existing web (HTML) interface to CDAS,
+then return to the main CDAWeb page.  If you are developing software that
+requires science data from any of the CDAWeb datasets, then the CDAS Web
+services will provide access to the data without having to explicitly
+find,download, and read the data files.")
+    ;; NASA open source agreement version 1.3, BSD like.
+    (license license:bsd-3)))
+
 (define-public python-cdflib
   (package
     (name "python-cdflib")
