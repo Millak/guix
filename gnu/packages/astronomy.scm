@@ -7180,6 +7180,44 @@ Astronomy.")
      "Orbital is a high level orbital mechanics package for Python.")
     (license license:expat)))
 
+(define-public python-p-winds
+  (package
+    (name "python-p-winds")
+    (version "1.4.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ladsantos/p-winds")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z94nvx47v50c7nq20kny49cr2w2xszvijy9bfxp2dbgq49ip244"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))    ;network access is required to fetch test data
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-astropy
+           python-flatstar
+           python-numpy
+           python-scipy))
+    (home-page "https://github.com/ladsantos/p-winds")
+    (synopsis "Parker wind models for planetary atmospheres")
+    (description
+     "Python implementation of Parker wind models for planetary atmospheres.
+@code{p-winds} produces simplified, 1-D models of the upper atmosphere of a
+planet, and perform radiative transfer to calculate observable spectral
+signatures.
+
+The scalable implementation of 1D models allows for atmospheric retrievals to
+calculate atmospheric escape rates and temperatures.  In addition, the modular
+implementation allows for a smooth plugging-in of more complex descriptions to
+forward model their corresponding spectral signatures (e.g., self-consistent
+or 3D models).")
+    (license license:expat)))
+
 (define-public python-petrofit
   (package
     (name "python-petrofit")
