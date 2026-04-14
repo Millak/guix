@@ -1249,13 +1249,13 @@ testing.")
        (cpe-name . "firefox_esr")
        (cpe-version . ,(first (string-split version #\-)))))))
 
-(define %icedove-build-id "20260324000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-build-id "20260403000000") ;must be of the form YYYYMMDDhhmmss
 ;;; See <https://product-details.mozilla.org/1.0/thunderbird_versions.json>
 ;;; for the source of truth regarding Thunderbird releases.
 ;;; Please keep these version numbers in sync with icecat.
 ;;; Please also update thunderbird-comm-source and thunderbird-comm-l10n to
 ;;; the icedove version.
-(define %icedove-version "140.9.0")
+(define %icedove-version "140.9.1")
 
 ;; Provides the "comm" folder which is inserted into the icecat source.
 ;; Avoids the duplication of Icecat's source tarball.  Pick the changeset that
@@ -1267,11 +1267,11 @@ testing.")
     (method hg-fetch)
     (uri (hg-reference
           (url "https://hg.mozilla.org/releases/comm-esr140")
-          (changeset "8be9f2d3072c225a1e5f153745a18984c2babf8f")))
+          (changeset "427d792f23672fc4adbe9436ce7dddbb2bfb287a")))
     (file-name (string-append "thunderbird-" %icedove-version "-checkout"))
     (sha256
      (base32
-      "04j35957x03m5x7mhh8zxa86mwjy0is2vb614sr4inkvvz4rs2hg"))
+      "09fj375a0zb5kgvw94f13997zhcj67a4g5ylpdbjzfql0chh572p"))
     (patches (search-patches "icedove-observer-fix.patch"))))
 
 ;;; To regenerate, see the `format-locales' helper defined above.
