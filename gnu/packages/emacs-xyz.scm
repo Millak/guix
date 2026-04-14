@@ -147,7 +147,7 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024, 2025 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2024 emma thompson <bigbookofbug@proton.me>
-;;; Copyright © 2024-2025 Liam Hupfer <liam@hpfr.net>
+;;; Copyright © 2024-2026 Liam Hupfer <liam@hpfr.net>
 ;;; Copyright © 2024-2025 Alvin Hsu <aurtzy@gmail.com>
 ;;; Copyright © 2024 Olivier Rojon <o.rojon@posteo.net>
 ;;; Copyright © 2024 Divya Ranjan Pattanaik <divya@subvertising.org>
@@ -15797,8 +15797,16 @@ versions utilizing Consult's internal API.")
     (arguments
      (list
       #:tests? #f                       ;no tests
-      #:include #~(cons "^extensions\\/consult-eglot-embark"
-                        %default-include)))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Move the extensions source files to the top level, which is
+          ;; included in the EMACSLOADPATH.
+          (add-after 'unpack 'move-source-files
+            (lambda _
+              (let ((el-files (find-files "./extensions" ".*\\.el$")))
+                (for-each (lambda (f)
+                            (rename-file f (basename f)))
+                          el-files)))))))
     (propagated-inputs (list emacs-consult emacs-eglot emacs-embark))
     (home-page "https://github.com/mohkale/consult-eglot")
     (synopsis "Consulting-read interface for eglot")
