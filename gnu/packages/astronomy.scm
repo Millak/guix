@@ -8644,6 +8644,59 @@ experiments.  It is a large refactor of
 memory usage, improving performance and run in parallel with MPI.")
     (license license:bsd-3)))
 
+(define-public python-pyspedas
+  (package
+    (name "python-pyspedas")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spedas/pyspedas")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12fdqf45rxwcsy72vbfwrzmd03zlcan62bawq966rcmqs1riwqwn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Netowrk access is required and set up of geopack.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'sanity-check 'set-HOME
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-aioboto3
+           python-astropy
+           python-cdasws
+           python-cdflib
+           python-fsspec
+           python-geopack
+           python-hapiclient
+           python-matplotlib
+           python-netcdf4
+           python-numpy
+           python-pandas
+           python-pywavelets
+           python-requests
+           python-s3fs
+           python-scipy
+           python-setuptools
+           python-spacepy
+           python-xarray))
+    (home-page "https://spedas.org")
+    (synopsis "Python Space Physics Environment Data Analysis Software")
+    (description
+     "The Python-based Space Physics Environment Data Analysis Software
+(PySPEDAS) framework supports multi-mission, multi-instrument retrieval,
+analysis, and visualization of heliophysics time series data.")
+    (license license:expat)))
+
 (define-public python-pysynphot
   ;; XXX: 2.0.0 was released in 2021 there are a lot of changes since that
   ;; time and it failed to build with python-astropy 6.0.0, use the latest
