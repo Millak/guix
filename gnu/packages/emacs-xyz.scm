@@ -24580,6 +24580,13 @@ Meow’s motions.")
       #:tests? #f                       ; no test suite
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'patch-el-files 'patch-xauth-path
+            ;; Uses xauth directly at runtime to authenticate with the X server.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "xcb.el"
+                (("xauth list")
+                 (string-append (search-input-file inputs "/bin/xauth")
+                                " list")))))
           (add-after 'expand-load-path 'regenerate-el-files
             (lambda* (#:key inputs native-inputs #:allow-other-keys)
               (substitute* "xelb-gen"
@@ -24587,6 +24594,7 @@ Meow’s motions.")
               (invoke "make"
                       (format #f "PROTO_PATH=~a/share/xcb"
                               #$(this-package-native-input "xcb-proto"))))))))
+    (inputs (list xauth))
     (native-inputs (list xcb-proto))
     (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/emacs-exwm/xelb")
