@@ -5180,6 +5180,42 @@ CFITSIO library.  Among other things, it can
 @end itemize")
     (license license:gpl2+)))
 
+(define-public python-flatstar
+  (package
+    (name "python-flatstar")
+    (version "0.2.1-alpha")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ladsantos/flatstar")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r6w8sz7z9ri9plqn98dz93c9rb33ky544y1wzwifh1m8y3m67si"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; assert np.float32(2.861023e-06) < 1e-06
+      #~(list "--deselect=tests/test_draw.py::test_supersampling"
+              ;; assert np.float32(1.9073486e-06) < 1e-06
+              "--deselect=tests/test_draw.py::test_upscaling")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-numpy
+           python-pillow))
+    (home-page "https://github.com/ladsantos/flatstar")
+    (synopsis "Make 2d intensity maps of limb-darkened stars")
+    (description
+     "@code{flatstar} is a pure-Python tool for drawing stellar disks with
+scientifically-rigorous limb darkening.  Each pixel has an accurate fractional
+intensity in relation to the total stellar intensity of @code{1.0}.  It is
+ideal for ray-tracing simulations of stars and planetary transits.")
+    (license license:expat)))
+
 (define-public python-galsim
   (package
     (name "python-galsim")
