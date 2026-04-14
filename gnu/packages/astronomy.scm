@@ -9533,6 +9533,67 @@ Computing Cluster, HPCC}
 @end itemize")
     (license license:bsd-3)))
 
+(define-public python-spacepy
+  (package
+    (name "python-spacepy")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacepy/spacepy")
+              (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i9657j4qll3f8z20n9md93yh35n0vjj32k522bdqxq5pda8dng0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests:
+      #:test-flags
+      #~(list "--ignore=developer/"
+              ;; Tests depend on https://cdf.gsfc.nasa.gov/.
+              "--ignore=tests/test_all.py"
+              "--ignore=tests/test_coordinates.py"
+              "--ignore=tests/test_datamodel.py"
+              "--ignore=tests/test_irbempy.py"
+              "--ignore=tests/test_pycdf.py"
+              "--ignore=tests/test_pycdf_istp.py"
+              "--ignore=tests/test_time.py"
+              ;; AssertionError: Lists differ: ['[sp[38 chars]cePy UNRELEASED
+              ;; default test entry: value\n', [38 chars]]\n'] != ['[sp[38
+              ;; chars]cePy 0.7.0 default test entry: value\n', '#tes[33
+              ;; chars]]\n']
+              (string-append "--deselect=tests/test_base.py::"
+                             "SpacepyConfigTests::"
+                             "testWriteDefaultsMultipleSections"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'sanity-check 'set-HOME
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "spacepy"))))))
+    (native-inputs
+     (list gfortran
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-astropy
+           python-h5py
+           python-matplotlib
+           python-numpy
+           python-dateutil
+           python-scipy))
+    (home-page "https://github.com/spacepy/spacepy")
+    (synopsis "Tools for Space Science Applications")
+    (description
+     "SpacePy is a package for Python, targeted at the space sciences, that
+aims to make basic data analysis, modeling and visualization easier.  It
+builds on the capabilities of NumPy and MatPlotLib packages.")
+    (license license:psfl)))
+
 (define-public python-spacetrack
   (package
     (name "python-spacetrack")
