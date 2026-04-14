@@ -4055,6 +4055,64 @@ addition it can be used as a module in Python for plotting.  It supports
 vector and bitmap output, including PDF, Postscript, SVG and EMF.")
     (license license:gpl2+)))
 
+(define-public voro++
+  (package
+    (name "voro++")
+    (version "0.4.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/chr1shr/voro")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rxyb662w9y3xadyxz2x7gvc7mafbhl13szdc55fsk5sygpdlkv5"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)        ;no configure
+          (replace 'check
+            ;; There is no test suite but the project provides a verity of
+            ;; examples to check performance, target "all" build each example
+            ;; (basic, walls, custom, extra, degenerate, and interface), see
+            ;; detailed description in "examples/README".
+            ;;
+            ;; Running timing example only:
+            ;; These codes and scripts can be used to test the code's
+            ;; performance. The program timing_test.cc creates a container
+            ;; with 100000 particles, and then times the computation of all
+            ;; the cells in the container, using the dummy function
+            ;; compute_all_cells().
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "examples/timing"
+                  (invoke "perl" "timing_test.pl"))))))))
+    (native-inputs
+     (list perl))
+    (home-page "https://math.lbl.gov/voro++/")
+    (synopsis "C++ library for the computation of the Voronoi diagram")
+    (description
+     "Voro++ is a software library for carrying out three-dimensional
+computations of the Voronoi tessellation.  A distinguishing feature of the
+Voro++ library is that it carries out cell-based calculations, computing the
+Voronoi cell for each particle individually.  It is particularly well-suited
+for applications that rely on cell-based statistics, where features of Voronoi
+cells (eg. volume, centroid, number of faces) can be used to analyze a system
+of particles.
+
+Voro++ comprises of several C++ classes that can be built as a static library.
+A command-line utility is also provided that can use most features of the
+code.  The direct cell-by-cell construction makes the library particularly
+well-suited to handling special boundary conditions and walls.  It employs
+algorithms that are tolerant for numerical precision errors, it exhibits high
+performance, and it has been successfully employed on very large particle
+systems.")
+    (license license:bsd-3)))
+
 (define-public maxflow
   (package
     (name "maxflow")
