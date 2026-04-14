@@ -5787,6 +5787,43 @@ reading and writing PNG data, as well as some graphic primitives and basic image
 processing filters.")
     (license license:gpl3+)))
 
+(define-public guile-pnm
+  (package
+    (name "guile-pnm")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/artyom-poptsov/guile-pnm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yvsni4hll20g99zq4wl734f9i8gpjr1sqsnk3a93k2dd7b6ymac"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list "GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
+    (native-inputs (list autoconf
+                         automake
+                         pkg-config
+                         texinfo
+                         ;; needed when cross-compiling.
+                         guile-3.0
+                         guile-lib
+                         guile-smc))
+    (inputs (list guile-3.0 guile-lib))
+    (propagated-inputs (list guile-smc))
+    (home-page "https://github.com/artyom-poptsov/guile-pnm")
+    (synopsis "NetBPM (PNM) library for GNU Guile")
+    (description
+     "@code{guile-pnm} is a GNU Guile library for working with the
+@url{https://en.wikipedia.org/wiki/Netpbm, NetPBM} format (also known as PNM),
+including portable bitmap (PBM), portable graymap (PGM) and portable
+pixel (PPM) variants.")
+    (license license:gpl3+)))
+
 (define-public guile-cv
   (package
     (name "guile-cv")
