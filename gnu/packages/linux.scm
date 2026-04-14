@@ -5000,7 +5000,6 @@ configuration and monitoring interfaces.")
                (with-directory-excursion "./python" (python-inst ,python))
                #t))))))))
 
-(define-public libnl-python2 (libnl-python-package "python2"))
 (define-public libnl-python3 (libnl-python-package "python3"))
 
 (define-public iw
