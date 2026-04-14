@@ -21675,26 +21675,6 @@ programming errors.")
 into aligned columns.")
     (license license:expat)))
 
-(define-public python-chai
-  (package
-    (name "python-chai")
-    (version "1.1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "chai" version))
-       (sha256
-        (base32 "1k6n6zbgrrs83crp6mr3yqj9zlv40b8rpisyrliwsq7naml2p3gz"))
-       (patches (search-patches "python-chai-drop-python2.patch"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://github.com/agoragames/chai")
-    (synopsis "Mocking framework for Python")
-    (description
-     "Chai provides an api for mocking, stubbing and spying your python
-objects, patterned after the Mocha library for Ruby.")
-    (license license:bsd-3)))
-
 (define-public python-pysol-cards
   (package
     (name "python-pysol-cards")
