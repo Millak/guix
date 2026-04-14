@@ -2522,10 +2522,11 @@ dist_patch_DATA =						\
   %D%/packages/patches/ultrastar-deluxe-no-freesans.patch		\
   %D%/packages/patches/unity-test-set-subdir-correctly.patch		\
   %D%/packages/patches/unity-test-support-int64.patch		\
+  %D%/packages/patches/ungoogled-chromium-custom-compiler.patch 	\
+  %D%/packages/patches/ungoogled-chromium-empty-parsed-rustc-args.patch	\
   %D%/packages/patches/ungoogled-chromium-extension-search-path.patch	\
   %D%/packages/patches/ungoogled-chromium-RUNPATH.patch		\
   %D%/packages/patches/ungoogled-chromium-system-nspr.patch	\
-  %D%/packages/patches/ungoogled-chromium-unbundle-icu-target.patch     \
   %D%/packages/patches/unknown-horizons-python-3.8-distro.patch	\
   %D%/packages/patches/unknown-horizons-python-3.9.patch	\
   %D%/packages/patches/unknown-horizons-python-3.10.patch	\

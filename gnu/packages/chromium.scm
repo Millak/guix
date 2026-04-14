@@ -79,11 +79,13 @@
   '("base/third_party/cityhash" ;Expat
     "base/third_party/double_conversion" ;BSD-3
     "base/third_party/icu" ;Unicode, X11-style
+    "base/third_party/nspr" ;MPL-2.0
     "base/third_party/superfasthash" ;BSD-3
     "base/third_party/symbolize" ;BSD-3
     "base/third_party/xdg_user_dirs" ;Expat
+    "buildtools/third_party/libc++" ;BSD
+    "buildtools/third_party/libc++abi" ;BSD
     "net/third_party/mozilla_security_manager" ;MPL-1.1/GPL2+/LGPL2.1+
-    "net/third_party/nss" ;MPL-2.0
     "net/third_party/quiche" ;BSD-3
     "net/third_party/uri_template" ;ASL2.0
     "third_party/abseil-cpp" ;ASL2.0
@@ -104,8 +106,11 @@
     "third_party/catapult" ;BSD-3
     "third_party/catapult/common/py_vulcanize/third_party/rcssmin" ;ASL2.0
     "third_party/catapult/common/py_vulcanize/third_party/rjsmin" ;ASL2.0
+    "third_party/catapult/third_party/beautifulsoup4-4.9.3" ;Expat
+    "third_party/catapult/third_party/html5lib-1.1" ;Expat
     "third_party/catapult/third_party/polymer" ;BSD-3
     "third_party/catapult/third_party/six" ;Expat
+    "third_party/catapult/third_party/typ" ;ASL2.0
     ;; XXX: This is a minified version of <https://d3js.org/>.
     "third_party/catapult/tracing/third_party/d3" ;BSD-3
     "third_party/catapult/tracing/third_party/gl-matrix" ;Expat
@@ -120,19 +125,12 @@
     "third_party/cld_3" ;ASL2.0
     "third_party/closure_compiler" ;ASL2.0
     "third_party/compiler-rt" ;ASL2.0
-    "third_party/compiler-rt/src/lib" ;ASL2.0
-    "third_party/compiler-rt/src/lib/builtins" ;ASL2.0
     "third_party/content_analysis_sdk" ;BSD-3
     "third_party/cpuinfo" ;BSD-2
     "third_party/crabbyavif" ;ASL2.0
-    "third_party/crabbyavif/src/sys/dav1d-sys" ;ASL2.0
-    "third_party/crabbyavif/src/sys/aom-sys" ;ASL2.0
-    "third_party/crabbyavif/src/sys/libgav1-sys" ;ASL2.0
-    "third_party/crabbyavif/src/sys/libyuv-sys" ;ASL2.0
-    "third_party/crabbyavif/src/sys/ndk-sys" ;ASL2.0
     "third_party/crashpad" ;ASL2.0
     "third_party/crashpad/crashpad/third_party/lss" ;ASL2.0
-    "third_party/crashpad/crashpad/third_party/zlib/zlib_crashpad.h" ;Zlib
+    "third_party/crashpad/crashpad/third_party/zlib" ;Zlib
     "third_party/crc32c" ;BSD-3
     "third_party/cros_system_api" ;BSD-3
     "third_party/dav1d" ;BSD-2
@@ -140,19 +138,25 @@
     ;; TODO: can likely be unbundled when Vulkan is updated.
     "third_party/dawn/third_party/khronos" ;ASL2.0
     "third_party/dawn/third_party/gn/webgpu-cts" ;BSD-3
+    "third_party/dawn/third_party/renderdoc" ;Expat
+    "third_party/dawn/third_party/webgpu-headers" ;BSD-3
+    "third_party/depot_tools" ;BSD-3
+    "third_party/devscripts" ;GPL2.0
     "third_party/devtools-frontend" ;BSD-3
     "third_party/devtools-frontend/src/front_end"
     "third_party/devtools-frontend/src/front_end/third_party"
     "third_party/devtools-frontend/src/front_end/third_party/acorn" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party\
 /additional_readme_paths.json" ;no explicit license; trivial
-    "third_party/devtools-frontend/src/front_end/third_party/json5" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party/axe-core" ;MPL2.0
     "third_party/devtools-frontend/src/front_end/third_party/chromium" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/codemirror" ;Expat
+    "third_party/devtools-frontend/src/front_end/third_party/csp_evaluator" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/diff" ;ASL2.0
     "third_party/devtools-frontend/src/front_end/third_party/i18n" ;ASL2.0
     "third_party/devtools-frontend/src/front_end/third_party/intl-messageformat" ;BSD-3
+    "third_party/devtools-frontend/src/front_end/third_party/json5" ;Expat
+    "third_party/devtools-frontend/src/front_end/third_party/legacy-javascript" ;ASL-2.0
     "third_party/devtools-frontend/src/front_end/third_party/lighthouse" ;ASL2.0
     "third_party/devtools-frontend/src/front_end/third_party/lit" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/marked" ;Expat, BSD-3
@@ -164,10 +168,12 @@
     "third_party/devtools-frontend/src/front_end/third_party/puppeteer/third_party/parsel" ; Expat
     "third_party/devtools-frontend/src/front_end/third_party/puppeteer/third_party/rxjs" ; ASL2.0
     "third_party/devtools-frontend/src/front_end/third_party/puppeteer-replay" ;ASL2.0
+    "third_party/devtools-frontend/src/front_end/third_party/source-map-scopes-codec" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party\
 /vscode.web-custom-data" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party/third-party-web" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party/wasmparser" ;ASL2.0
+    "third_party/devtools-frontend/src/front_end/third_party/web-vitals" ;Expat
     "third_party/devtools-frontend/src/third_party/i18n" ;ASL2.0
     "third_party/devtools-frontend/src/third_party/pyjson5" ;ASL2.0
 
@@ -179,6 +185,7 @@
     "third_party/farmhash" ;Expat
     "third_party/fast_float" ;ASL2.0, Boost1.0, Expat
     "third_party/fdlibm" ;non-copyleft
+    "third_party/federated_compute/chromium/fcp/confidentialcompute" ;ASL2.0
     "third_party/federated_compute/src/fcp/base" ;ASL2.0
     "third_party/federated_compute/src/fcp/confidentialcompute" ;ASL2.0
     "third_party/federated_compute/src/fcp/protos/confidentialcompute" ;ASL2.0
@@ -187,7 +194,9 @@
     "third_party/fft2d" ;non-copyleft
     "third_party/flatbuffers" ;ASL2.0
     "third_party/fp16" ;Expat
+    "third_party/freetype" ;GPL2.0
     "third_party/fusejs" ;ASL2.0
+    "third_party/fxdiv" ;Expat
     "third_party/gemmlowp" ;ASL2.0
     "third_party/google_input_tools" ;ASL2.0
     "third_party/google_input_tools/third_party/closure_library" ;ASL2.0
@@ -196,6 +205,9 @@
     "third_party/harfbuzz-ng" ;Expat
     "third_party/highway" ;ASL2.0
     "third_party/hunspell" ;MPL1.1/GPL2+/LGPL2.1+
+    "third_party/hyphenation-patterns" ;Expat
+    ;; FIXME: Our icu does not have some headers such as udatamem.h.
+    "third_party/icu" ;Unicode3.0
     "third_party/ink" ;ASL2.0
     "third_party/ink_stroke_modeler" ;ASL2.0
     "third_party/inspector_protocol" ;BSD-3
@@ -208,12 +220,14 @@
     "third_party/libaddressinput" ;ASL2.0
     "third_party/libaom" ;BSD-2 or "Alliance for Open Media Patent License 1.0"
     "third_party/libaom/source/libaom/third_party/fastfeat" ;BSD-3
-    "third_party/libaom/source/libaom/third_party/SVT-AV1" ;BSD-3
     "third_party/libaom/source/libaom/third_party/vector" ;Expat
     "third_party/libaom/source/libaom/third_party/x86inc" ;ISC
+    "third_party/libc++" ;Expat
     "third_party/libdrm" ; Expat
     "third_party/libgav1" ;ASL2.0
     "third_party/libjingle_xmpp" ;BSD-3
+    "third_party/libpfm4" ;BSD
+    "third_party/libpng" ;PNG2.0
     "third_party/libphonenumber" ;ASL2.0
     "third_party/libsecret" ;LGPL2.1+
     "third_party/libsrtp" ;BSD-3
@@ -227,11 +241,15 @@
     "third_party/libvpx/source/libvpx/third_party/x86inc" ;Expat
 
     "third_party/libwebm" ;BSD-3
+    "third_party/libx11" ;BSD
+    "third_party/libxcb-keysyms" ;BSD
     "third_party/libxml/chromium" ;BSD-3
     "third_party/libyuv" ;BSD-3
     "third_party/libzip" ;BSD-3
     "third_party/lit" ;BSD-3
     "third_party/lit/v3_0" ;BSD-3
+    "third_party/llvm-libc" ;ASL2.0
+    "third_party/llvm-libc/src/shared" ;ASL2.0
     "third_party/lottie" ;Expat
     "third_party/lss" ;BSD-3
     "third_party/lzma_sdk" ;public domain
@@ -244,6 +262,7 @@
     "third_party/modp_b64" ;BSD-3
     "third_party/nasm" ;BSD-2
     "third_party/nearby" ;ASL2.0
+    "third_party/neon_2_sse" ;BSD-2
     "third_party/node" ;Expat
     "third_party/oak/chromium/proto" ;ASL2.0
     "third_party/oak/chromium/proto/attestation" ;ASL2.0
@@ -251,14 +270,20 @@
     "third_party/one_euro_filter" ;BSD-3
     "third_party/openscreen" ;BSD-3
     "third_party/openscreen/src/third_party/tinycbor" ;Expat
+    "third_party/opus" ;BSD-3
     "third_party/ots" ;BSD-3
     "third_party/pdfium" ;BSD-3
     "third_party/pdfium/third_party/agg23" ;Expat
     "third_party/pdfium/third_party/bigint" ;Public domain, BSD-3
+    "third_party/pdfium/third_party/lcms" ;Expat
+    "third_party/pdfium/third_party/libopenjpeg" ;BDS-2
     "third_party/pdfium/third_party/libtiff" ;non-copyleft
     "third_party/pdfium/third_party/freetype/include/pstables.h" ;FreeType
     "third_party/perfetto" ;ASL2.0
     "third_party/perfetto/protos/third_party/chromium" ;BSD-3
+    "third_party/perfetto/protos/third_party/pprof" ;ASL2.0
+    "third_party/perfetto/protos/third_party/primes" ;ASL2.0
+    "third_party/perfetto/protos/third_party/simpleperf" ;ASL2.0
     "third_party/pffft" ;the "FFTPACK" license
     "third_party/ply" ;BSD-3
     "third_party/polymer" ;BSD-3
@@ -268,6 +293,7 @@
     "third_party/protobuf/third_party/utf8_range" ; Expat
     "third_party/pthreadpool" ;BSD-2
     "third_party/puffin" ;Non-copyleft
+    "third_party/pyyaml" ;Expat
     "third_party/pyjson5" ;ASL2.0
     "third_party/rapidhash" ;BSD-2
     "third_party/readability" ;ASL2.0
@@ -279,11 +305,14 @@
     "third_party/search_engines_data" ;BSD-3
     "third_party/securemessage" ;ASL2.0
     "third_party/selenium-atoms" ;ASL2.0
+    "third_party/sentencepiece" ;ASL2.0
+    "third_party/sentencepiece/src/third_party/darts_clone" ;BSD-3
     "third_party/shell-encryption" ;ASL2.0
     "third_party/simdutf" ;Non-copyleft
     "third_party/simplejson" ; Non-copyleft
+    "third_party/six" ;Expat
     "third_party/skia" ;BSD-3
-    "third_party/skia/third_party/vulkanmemoryallocator" ;BSD-3, Expat
+    "third_party/skia/include/third_party/vulkan" ;BSD-3
     "third_party/smhasher" ;Expat, public domain
 
     ;; FIXME: the snappy "replacement" shim (see replace_gn_files.py below) does
@@ -338,7 +367,6 @@
     "third_party/webrtc/modules/third_party/fft" ;Non-copyleft
     "third_party/webrtc/modules/third_party/g711" ;Public domain
     "third_party/webrtc/modules/third_party/g722" ;Public domain
-    "third_party/webrtc/rtc_base/third_party/sigslot" ;Public domain
     "third_party/widevine/cdm/widevine_cdm_common.h" ;BSD-3
     "third_party/woff2" ;ASL2.0
     "third_party/wuffs" ;ASL2.0
@@ -372,7 +400,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "141.0.7390.65")
+(define %chromium-version "147.0.7727.55")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision (string-append "debian/" %ungoogled-revision))
 
@@ -384,7 +412,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "1hk4rww2gccly1qv0xnswd77haj02rlza82403dxdjm8fkdfndy6"))))
+      "0l6v4wf16067igawjlh90f3d287mkw0cq4j5lvrxxy17y1skynzc"))))
 
 (define %debian-origin
   (origin
@@ -397,7 +425,7 @@
                                 ((_ version) version))))
     (sha256
      (base32
-      "06s3kvwb3490xb28n6r3q5n1c0ylsvchiw6s4h1rrp8jqzwjbmc6"))))
+      "0gqarll08i7rcs1amapciv263xvzglc8p44ikavq3xd12yyvcd98"))))
 
 (define (origin-file origin file)
   (computed-file
@@ -410,26 +438,38 @@
 
 (define %debian-patches
   (map debian-patch
-       '("bookworm/clang19.patch"
-         "bookworm/foreach.patch"
+       '("bookworm/foreach.patch"
+         "debianization/safe-libcxx.patch"
+         "disable/enterprise-tests.patch"
          "disable/node-version-ck.patch"
+         "disable/rustc-allow-features.patch"
+         "fixes/bytemuck.patch"
          "fixes/gentoo-stylesheet.patch"
          "fixes/libcpp-headers.patch"
+         "fixes/libpng-testonly.patch"
          "fixes/rust-clanglib.patch"
+         "llvm-19/clang19.patch"
+         "llvm-19/clone-traits.patch"
+         "llvm-19/keyfactory.patch"
+         "llvm-19/value-or.patch"
+         "llvm-22/ignore-for-ubsan.patch"
          "system/openjpeg.patch"
-         ;; Remove after rust is past
-         ;; <https://github.com/rust-lang/rust/pull/141061>.
-         "trixie/rust-no-alloc-shim.patch")))
+         "trixie/cookie-string-view.patch"
+         "trixie/nodejs-main.patch")))
 
 (define %guix-patches
   (list (local-file
          (assume-valid-file-name
           (search-patch
-           "ungoogled-chromium-extension-search-path.patch")))
+           "ungoogled-chromium-custom-compiler.patch")))
         (local-file
          (assume-valid-file-name
           (search-patch
-           "ungoogled-chromium-unbundle-icu-target.patch")))
+           "ungoogled-chromium-empty-parsed-rustc-args.patch")))
+        (local-file
+         (assume-valid-file-name
+          (search-patch
+           "ungoogled-chromium-extension-search-path.patch")))
         (local-file
          (assume-valid-file-name
           (search-patch
@@ -500,9 +540,8 @@
              "#if 0"))
           (invoke "python" "build/linux/unbundle/replace_gn_files.py"
                   "--system-libraries" "flac" "fontconfig" "freetype"
-                  "harfbuzz-ng" "icu" "libjpeg"
-                  "libpng" "libwebp" "libxml" "libxslt" "openh264" "opus"
-                  "zlib")))))
+                  "harfbuzz-ng" "libjpeg" "libpng" "libwebp" "libxml"
+                  "libxslt" "openh264" "opus" "zlib")))))
 
 (define opus+custom
   (package/inherit opus
@@ -531,7 +570,7 @@
                                   %chromium-version "-lite.tar.xz"))
               (sha256
                (base32
-                "09iwglswnr6d45zz3zsjw7jpm1xlwwkxlz9h5nlhqxyd933a04fq"))
+                "1salvlw5sykx3zmsbp7cgmf7y8yy6jlgb4b4zswzsbjrprk4jnap"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -548,6 +587,7 @@
       ;; directory for an exhaustive list of supported flags.
       ;; (Note: The 'configure' phase will do that for you.)
       #~(list "is_debug=false"
+              "is_component_build=false"
               ;; Use the "official" release optimizations, as opposed to
               ;; a developer build.
               "is_official_build=true"
@@ -555,6 +595,7 @@
               "use_clang_modules=false"
               "use_custom_libcxx=false" ; support for this is deprecated and to be removed.
               "optimize_webui=false"
+              "webnn_use_tflite=false"
               "safe_browsing_use_unrar=false"
               "chrome_pgo_phase=0"
               "use_sysroot=false"
@@ -572,12 +613,10 @@
               "enable_service_discovery=false"
               "enable_vr=false"
               "enable_enterprise_companion=false"
-              "enable_glic=false"
               "enable_iterator_debugging=false"
               "enable_hangout_services_extension=false"
               "enable_widevine=false"
-              ;; Disable type-checking for the Web UI to avoid a Java dependency.
-              "enable_js_type_check=false"
+              "fatal_linker_warnings=false"
               ;; Disable code using TensorFlow until it has been scrutinized
               ;; by the ungoogled project.
               "build_with_tflite_lib=false"
@@ -589,6 +628,11 @@
               "angle_has_histograms=false"
               "angle_build_tests=false"
               "build_angle_perftests=false"
+              "enable_perfetto_unittests=false"
+              "skia_enable_skshapper_tests=false"
+              "tint_build_unittests=false"
+              "enable_nocompile_tests=false"
+              "enable_screen_ai_browsertests=false"
 
               "clang_warning_suppression_file=\"\""
 
@@ -597,6 +641,8 @@
               "is_cfi=false"
 
               "symbol_level=0"
+              "blink_symbol_level=0"
+              "v8_symbol_level=0"
               "v8_enable_backtrace=false"
 
               ;; Define a custom toolchain that simply looks up CC, AR and
@@ -628,26 +674,10 @@
                              ;; invokation and fails if it's just the version number.
                              " (f6e511eec 2024-10-15) (built from a source tarball)\"")
 
-              ;; Chromium's build/rust/std/BUILD.gn has a hardcoded
-              ;; list of stdlib rlibs (stdlib_files) that GN uses to
-              ;; declare build outputs.  GN requires static output
-              ;; declarations, so the list must exactly match what
-              ;; rlibs exist in the Rust sysroot.  Chromium's list
-              ;; includes unicode_width because their bundled
-              ;; toolchain (Rust 1.89) ships it as a dependency of
-              ;; getopts 0.2.23.  Our Rust 1.93 has getopts 0.2.24
-              ;; which dropped that dependency, so unicode_width is
-              ;; not in our sysroot.  This GN arg removes it from
-              ;; the list.  (Chromium's own use of unicode_width via
-              ;; codespan-reporting is a separate vendored copy under
-              ;; third_party/rust/chromium_crates_io/ and is
-              ;; unaffected.)
-              "removed_rust_stdlib_libs=[\"unicode_width\"]"
-
               ;; Prefer system libraries.
               "use_system_freetype=true"
               "use_system_harfbuzz=true"
-              "use_system_icu=true"
+              "use_system_icu=false"
               "use_system_lcms2=true"
               "use_system_libffi=true"
               "use_system_libjpeg=true"
@@ -713,9 +743,9 @@
 
                 ;; Many files try to include ICU headers from "third_party/icu/...".
                 ;; Remove the "third_party/" prefix to use system headers instead.
-                (substitute* (find-files "chrome" "\\.cc$")
-                  (("third_party/icu/source/(common|i18n)/")
-                   ""))
+                ;(substitute* (find-files "chrome" "\\.cc$")
+                ;  (("third_party/icu/source/(common|i18n)/")
+                ;   ""))
 
                 ;; XXX: Should be unnecessary when use_system_lcms2=true.
                 (substitute* "third_party/pdfium/core/fxcodec/icc/icc_transform.h"
@@ -732,16 +762,19 @@
                   (("include \"third_party/curl")
                    "include \"curl"))
 
-                ;; Unknown flags as of clang-19, can be removed when building with
-                ;; newer clang.
-                (substitute* "build/config/compiler/BUILD.gn"
-                  (("-gsimple-template-names") ""))
-
-                ;; Clang libs are not under bindgen root directory.
-                (substitute* "build/rust/rust_bindgen_generator.gni"
+                ;; Our clang libs and rustfmt are not under bindgen root directory.
+                (substitute* '("build/rust/rust_bindgen_generator.gni"
+                               "build/rust/rust_bindgen.gni")
                   (("(_libclang_path = )rust_bindgen_root" _ libclang)
-                   (string-append libclang "clang_base_path"))))))
-          (add-after 'patch-stuff 'add-absolute-references
+                   (string-append libclang "clang_base_path"))
+                  (("(_rustfmt_path = \")\\$\\{rust_bindgen_root\\}" _ rustfmt)
+                   (string-append rustfmt "${rust_sysroot_absolute}"))))))
+          (add-after 'patch-stuff 'include-pthreadpool
+            ;; FIXME: Somehow the build system cannot locate this header.
+            (lambda _
+              (copy-file "third_party/pthreadpool/src/include/pthreadpool.h"
+                         "pthreadpool.h")))
+          (add-after 'include-pthreadpool 'add-absolute-references
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((cups-config (search-input-file inputs "/bin/cups-config"))
                     (libnssckbi.so (search-input-file inputs
@@ -763,13 +796,22 @@
           (add-after 'add-absolute-references 'adjust-CPLUS_INCLUDE_PATH
             ;; The libcxx include/c++/v1 directory is not exposed via
             ;; CPLUS_INCLUDE_PATH by default, causing errors like
-            ;; "fatal error: 'format' file not found".
+            ;; "fatal error: 'format' file not found".  Also clang is
+            ;; unable to find gcc's bits/c++config.h which is machine
+            ;; dependent.
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
-              (setenv "CPLUS_INCLUDE_PATH"
-                      (string-append
-                       (search-input-directory inputs
-                                               "/include/c++/v1")
-                       ":" (getenv "CPLUS_INCLUDE_PATH")))))
+              (let* ((libcxx-v1 (search-input-directory inputs
+                                                        "include/c++/v1"))
+                     (target-system  #$(nix-system->gnu-triplet
+                                         (or (%current-target-system)
+                                             (%current-system))))
+                     (target-include (string-append "include/c++/"
+                                                    target-system))
+                     (gcc-bits  (search-input-directory inputs
+                                                        target-include)))
+                (setenv "CPLUS_INCLUDE_PATH"
+                        (string-append libcxx-v1 ":" gcc-bits ":"
+                         (getenv "CPLUS_INCLUDE_PATH"))))))
           (add-before 'configure 'prepare-build-environment
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
               (let ((node (search-input-file (or native-inputs inputs)
@@ -955,7 +997,7 @@
            glib
            gtk+
            harfbuzz
-           icu4c
+           icu4c-77
            lcms
            libcxx
            libffi
