@@ -6656,6 +6656,47 @@ quantification of galaxies, quasar-host galaxy decomposition and much more.")
     (native-inputs
      (list python-setuptools))))
 
+(define-public python-lephare
+  (package
+    (name "python-lephare")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "lephare" version))
+       (sha256
+        (base32 "1nkd807kl2xg25iwb5wj380pxlvrd9abdaznaw5if3qjmjkjx86s"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Network access is required to reach <http://svo2.cab.inta-csic.es>.
+      #~(list "--deselect=tests/lephare/test_data_retrieval.py::test_get_auxiliary_data"
+              "--deselect=tests/lephare/test_filter.py::test_filtersvc")
+      #:phases
+      '(modify-phases %standard-phases
+        (add-before 'sanity-check 'set-HOME
+          (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list cmake-minimal
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-platformdirs
+           python-pooch
+           python-requests
+           python-scipy
+           python-wurlitzer))
+    (home-page "https://lephare.readthedocs.io/en/latest/")
+    (synopsis "Photometric redshift estimator")
+    (description
+     "LePHARE is a code for estimating galaxy redshifts and physical parameters
+using template fitting.")
+    (license license:expat)))
+
 (define-public python-libstempo
   (package
     (name "python-libstempo")
