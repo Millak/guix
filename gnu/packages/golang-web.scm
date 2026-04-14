@@ -17328,6 +17328,34 @@ Features:
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-tink-crypto-tink-go-gcpkms-v2
+  (package
+    (name "go-github-com-tink-crypto-tink-go-gcpkms-v2")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tink-crypto/tink-go-gcpkms")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hf31f26lmpg81k64flsvcx83ngkhazkkf792i5qkq14q4ndsdhw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/tink-crypto/tink-go-gcpkms/v2"))
+    (propagated-inputs
+     (list go-github-com-tink-crypto-tink-go-v2
+           go-google-golang-org-api))
+    (home-page "https://github.com/tink-crypto/tink-go-gcpkms")
+    (synopsis "Tink Go Google Cloud KMS extension")
+    (description
+     "This is an extension to the @url{https://github.com/tink-crypto/tink-go,
+Tink Go} library that provides support for Google Cloud KMS.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-tink-crypto-tink-go-hcvault-v2
   (package
     (name "go-github-com-tink-crypto-tink-go-hcvault-v2")
