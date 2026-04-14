@@ -16098,6 +16098,56 @@ support.")
 kinds of referrer URLs (search, social, ...).")
     (license license:expat)))
 
+(define-public go-github-com-sigstore-sigstore-pkg-signature-kms-hashivault
+  (package
+    (name "go-github-com-sigstore-sigstore-pkg-signature-kms-hashivault")
+    (version "1.10.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sigstore/sigstore")
+              (commit (go-version->git-ref version
+                                           #:subdir
+                                           "pkg/signature/kms/hashivault"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0shnvcgz4g7v65biwraahjrbsmr13qmb903al50giak2694qhyyk"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "pkg")
+            (delete-all-but "pkg" "signature")
+            (delete-all-but "pkg/signature" "kms")
+            (delete-all-but "pkg/signature/kms" "hashivault")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sigstore/sigstore/pkg/signature/kms/hashivault"
+      #:unpack-path "github.com/sigstore/sigstore"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-hashicorp-vault-api
+           go-github-com-jellydator-ttlcache-v3
+           go-github-com-mitchellh-go-homedir
+           go-github-com-sigstore-sigstore))
+    (home-page "https://github.com/sigstore/sigstore")
+    (synopsis "Utilities related to Hashivault KMS")
+    (description
+     "Package hashivault implement the interface with
+@url{https://www.hashicorp.com/en/products/vault HashiCorp Vault} KMS
+service.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-shurcool-githubv4
   (package
     (name "go-github-com-shurcool-githubv4")
