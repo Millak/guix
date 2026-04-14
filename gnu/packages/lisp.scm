@@ -33,6 +33,7 @@
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;; Copyright © 2024 David Pflug <david@pflug.io>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2026 Igorj Gorjaĉev <igor@goryachev.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -912,7 +913,7 @@ assembler, PEG) is less than 1MB.")
 (define-public jpm
   (package
     (name "jpm")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -921,7 +922,7 @@ assembler, PEG) is less than 1MB.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05rdxigmiy7vf93s16a8n2029lq33073jccz1rjl4iisxj6piw4l"))))
+        (base32 "06ywq1ajvqx3lfpldwbakc21hxhb313r0196xnmrrbb6k1f8hsfx"))))
     (build-system copy-build-system)
     (arguments
      (list
