@@ -6835,6 +6835,37 @@ restrictive than the API used by astropy, so the appropriate module to use
 will depend on your needs.")
     (license license:expat)))
 
+(define-public python-madrigalweb
+  (package
+    (name "python-madrigalweb")
+    (version "3.3.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "madrigalweb" version))
+       (sha256
+        (base32 "0p55igi0xrckjbihcbjn14033hzliq6qjmacrxigrvjw3m016b75"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))    ;network access is required
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://cedar.openmadrigal.org")
+    (synopsis "Python Madrigal Remote API")
+    (description
+     "@code{madrigalWeb} is a pure python module to access data from any
+@url{https://cedar.openmadrigal.org/, Madrigal}
+database.
+
+Madrigal is an upper atmospheric science database used by groups throughout
+the world.  Madrigal is a robust, World Wide Web based system capable of
+managing and serving archival and real-time data, in a variety of formats,
+from a wide range of upper atmospheric science instruments.  Data at each
+Madrigal site is locally controlled and can be updated at any time, but shared
+metadata between Madrigal sites allow searching of all Madrigal sites at once
+from any Madrigal site.")
+    (license license:expat)))
+
 (define-public python-mapsims
   (package
     (name "python-mapsims")
