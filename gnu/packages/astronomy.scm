@@ -5884,6 +5884,41 @@ universes of galaxies starting from a catalog of dark matter halos obtained
 from a cosmological simulation.")
     (license license:bsd-3)))
 
+(define-public python-hapiclient
+  (package
+    (name "python-hapiclient")
+    (version "0.2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hapi-server/client-python")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mjb12cphcqq3vj3czyx77yrd3jl15gz6a2a2q5fcz21i63fpig6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Tests require access to:
+      ;; http://hapi-server.org/servers/TestData/xhapi
+      ;; http://hapi-server.org/servers/TestData2.0/hapi
+      #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-isodate
+           python-joblib
+           python-numpy
+           python-pandas
+           python-urllib3))
+    (home-page "https://github.com/hapi-server/client-python")
+    (synopsis "Interface to Heliophysics data server API")
+    (description
+     "This package provides an interface to @acronym{Heliophysics Application
+Programmer’s Interface, HAPI} data server API.")
+    (license license:bsd-3)))
+
 (define-public python-hasasia
   (package
     (name "python-hasasia")
