@@ -1465,12 +1465,12 @@ inference for statistical models.")
                          "|"))))))))
     (native-inputs
      (list bison
-           dvisvgm
            flex
            python-numpydoc
            python-sphinx
            ;; python-sphinx-gallery ;; Currently broken
-           swig-4.0))
+           swig-4.0
+           texlive-dvisvgm))
     (inputs
      (list openblas                ; the only required dependency
            ;; The dependencies below are all optional.

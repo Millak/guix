@@ -26,7 +26,6 @@
 
 (define %sundry-texlive-packages
   (list bibtool
-        dvisvgm
         rubber
         texmaker
         texstudio
