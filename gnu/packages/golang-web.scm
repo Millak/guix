@@ -10262,6 +10262,54 @@ Call}.")
     (propagated-inputs
      (list go-golang-org-x-net))))
 
+(define-public go-github-com-jellydator-ttlcache-v3
+  (package
+    (name "go-github-com-jellydator-ttlcache-v3")
+    (version "3.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jellydator/ttlcache")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c7k99d0km5vplfikb58j2wbriy3mzzrrfrc0d85x50km0y4g4ln"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jellydator/ttlcache/v3"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples-and-benchmarks
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "bench")
+                (delete-file-recursively "examples")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-go-uber-org-goleak))
+    (propagated-inputs
+     (list go-golang-org-x-sync))
+    (home-page "https://github.com/jellydator/ttlcache")
+    (synopsis "In-memory cache with item expiration and generics")
+    (description
+     "TTLCache is an in-memory cache with item expiration and generics which
+provides the following features:
+
+@itemize
+@item simple API
+@item type parameters
+@item item expiration and automatic deletion
+@item automatic expiration time extension on each Get call
+@item loader interface that may be used to load/lazily initialize missing
+citem items
+@item thread safety
+@item event handlers (insertion, update, and eviction)
+@item metrics
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-jeremija-gosubmit
   (package
     (name "go-github-com-jeremija-gosubmit")
