@@ -50,15 +50,6 @@
                           (type "ext4"))
                         %base-file-systems))
     (services (append (list
-                       (service
-                        agetty-service-type
-                        (agetty-configuration
-                          (extra-options '("-L")) ;no carrier detect
-                          ;; Upstream u-boot uses 1500000 as well, so the
-                          ;; u-boot-rock-4c-plus-rk3399 inherit it too.
-                          (baud-rate "1500000")
-                          (term "vt100")
-                          (tty "ttyS2")))
                        (service dhcpcd-service-type))
                       %base-services))))
 
