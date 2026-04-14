@@ -8146,6 +8146,65 @@ data.  Pysat's plug-in design allows analysis support for any data, including
 user provided data sets.")
     (license license:bsd-3)))
 
+(define-public python-pysatspaceweather
+  (package
+    (name "python-pysatspaceweather")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pysat/pysatSpaceWeather")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gd6vzy2ikgkrff94qg52pysf1vp7h1p12p8in9j6f6n3cs1b0z2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 352 passed, 561 skipped, 61 deselected, 2510 warnings
+      #:test-flags
+      #~(list "-m" "not remote_data"
+              ;; Network access is required.
+              "-k" (string-join
+                    (list "not test_download"
+                          "test_historic_ace_no_data"
+                          "test_historic_download_past_limit"
+                          "test_missing_kp_file"
+                          "test_missing_prelim_file"
+                          "test_realtime_ace_bad_day"
+                          ;; KeyError: 'f107'
+                          "test_45day_forecast_data_length")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'sanity-check 'set-HOME
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (add-before 'check 'pre-check
+            (lambda _
+              (mkdir "pysatData")
+              (invoke "python" "-c"
+                      "import pysat; pysat.params['data_dirs'] = 'pysatData'"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-netcdf4
+           python-numpy
+           python-packaging
+           python-pandas
+           python-pysat
+           python-requests
+           python-xarray))
+    (home-page "https://github.com/pysat/pysatSpaceWeather")
+    (synopsis "Pysat support for Space Weather Indices")
+    (description
+     "This package provides pysatSpaceWeather - a Python module, which
+contains routines to load common historic, real-time, and forecasted space
+weather indices as pysat.Instrument objects.")
+    (license license:bsd-3)))
+
 (define-public python-pysiaf
   (package
     (name "python-pysiaf")
