@@ -8177,6 +8177,55 @@ data.  Pysat's plug-in design allows analysis support for any data, including
 user provided data sets.")
     (license license:bsd-3)))
 
+(define-public python-pysatmadrigal
+  (package
+    (name "python-pysatmadrigal")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pysat/pysatMadrigal")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x1sbx9xv9h1p85cryn2b9kbnxy0kb9xzfgxcvfrpfxa5ji4qwcp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; ValueError: unable to open url http://cedar.openmadrigal.org
+      #~(list "-k" "not test_download and not test_remote_file_list")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'sanity-check 'set-HOME
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (add-before 'check 'pre-check
+            (lambda _
+              (mkdir "pysatData")
+              (invoke "python" "-c"
+                      "import pysat; pysat.params['data_dirs'] = 'pysatData'"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov    ;remove after pyton-team is merged
+           python-setuptools))
+    (propagated-inputs
+     (list python-h5py
+           python-madrigalweb
+           python-numpy
+           python-packaging
+           python-pandas
+           python-pysat
+           python-xarray))
+    (home-page "https://github.com/pysat/pysatMadrigal")
+    (synopsis "Madrigal instrument support for the pysat ecosystem")
+    (description
+     "This package provides functions to import data from the
+@url{https://cedar.openmadrigal.org/, Madrigal} database (upper atmospheric
+science database) into pysat.")
+    (license license:bsd-3)))
+
 (define-public python-pysatspaceweather
   (package
     (name "python-pysatspaceweather")
