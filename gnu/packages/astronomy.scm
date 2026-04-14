@@ -284,7 +284,7 @@ a wide set of telescopes.")
 (define-public astroterm
   (package
     (name "astroterm")
-    (version "1.0.10")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -293,7 +293,7 @@ a wide set of telescopes.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1k946b5qv6jqiap3pi4gv2w46lq0j9q19lfrzkzlypi8h2a9plng"))))
+        (base32 "1p6rxv18gp989fmydbp75mrqxffjlqwp6xkdk18jj322hri0lidv"))))
     (build-system meson-build-system)
     (arguments
      (list
