@@ -4,7 +4,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2024-2025 jgart <jgart@dismail.de>
+;;; Copyright © 2024-2026 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,6 +39,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages game-development)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages libedit)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages maths)
@@ -236,7 +237,7 @@ it.")
 (define-public trealla
   (package
     (name "trealla")
-    (version "2.92.29")
+    (version "2.92.30")
     (source
      (origin
        (method git-fetch)
@@ -245,12 +246,13 @@ it.")
           (url "https://github.com/trealla-prolog/trealla")
           (commit (string-append "v" version))))
        (sha256
-        (base32 "1032pza07dzyrsjrbh355h3cyrkwsg2vbzwwaaxcvfirjhn8zdam"))
+        (base32 "1vbjv2nf3c2npf349i9y0zknc2g0hizksv0yhgscdpwzvzfp6n9m"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
      (list curl
            gsl
+           libedit
            libffi
            openssl
            raylib
