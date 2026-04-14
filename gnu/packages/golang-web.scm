@@ -17328,6 +17328,34 @@ Features:
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-tink-crypto-tink-go-hcvault-v2
+  (package
+    (name "go-github-com-tink-crypto-tink-go-hcvault-v2")
+    (version "2.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tink-crypto/tink-go-hcvault")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ifwxrsyynkss652wnn2ivhfj8n84m8rz7fjpi8gcx2cppmx9zrv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/tink-crypto/tink-go-hcvault/v2"))
+    (propagated-inputs
+     (list go-github-com-hashicorp-vault-api
+           go-github-com-tink-crypto-tink-go-v2))
+    (home-page "https://github.com/tink-crypto/tink-go-hcvault")
+    (synopsis "Tink Go HashiCorp Vault extension")
+    (description
+     "This is an extension to the @url{https://github.com/tink-crypto/tink-go,
+Tink Go} library that provides support for HashiCorp Vault.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-tj-go-elastic
   (package
     (name "go-github-com-tj-go-elastic")
