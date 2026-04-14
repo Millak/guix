@@ -167,6 +167,46 @@
   #:use-module (guix utils)
   #:use-module (srfi srfi-1))
 
+(define-public python-aioboto3
+  (package
+    (name "python-aioboto3")
+    (version "15.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/terricain/aioboto3")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05644x17f9sl8mv9bp8l0rjcmw5x2ssyd5z1v3xmgcspk5qs6qn8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;XXX: all tests faild
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("aiobotocore\\[boto3\\]==2.25.1")
+                 "aiobotocore >= 2.25.1")))))))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-aiobotocore
+           python-aiofiles
+           ;; [optional]
+           python-boto3
+           python-cryptography))
+    (home-page "https://github.com/terricain/aioboto3")
+    (synopsis "Async boto3 wrapper")
+    (description
+     "This package is mostly just a wrapper combining the great work of boto3
+and aiobotocore.")
+    (license license:asl2.0)))
+
 (define-public python-aiocoap
   (package
     (name "python-aiocoap")
