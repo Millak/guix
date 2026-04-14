@@ -6749,7 +6749,7 @@ in-window at 640x480 resolution or fullscreen.")
 (define-public warzone2100
   (package
     (name "warzone2100")
-    (version "4.6.1")
+    (version "4.6.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/warzone2100/releases/"
@@ -6765,7 +6765,7 @@ in-window at 640x480 resolution or fullscreen.")
                                  "inih" "re2" "utf8proc" "utfcpp")))))
               (sha256
                 (base32
-                  "02x5ihkpfkpjxwvh00d8yqzd796af7d684nk96hzhhq28qw5bb16"))))
+                  "0fmiy0pm56yy69c0nhynjdiaslwlfg8cdvfl5s78g5pzdi1y47s3"))))
     (build-system cmake-build-system)
     (arguments (list #:configure-flags #~'("-GNinja"
                                            "-DWZ_DISTRIBUTOR=Guix"
@@ -6802,7 +6802,7 @@ in-window at 640x480 resolution or fullscreen.")
                   opusfile
                   physfs
                   re2
-                  sdl2
+                  sdl3
                   sqlite
                   utf8proc
                   utfcpp

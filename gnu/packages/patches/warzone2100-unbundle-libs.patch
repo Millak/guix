@@ -37,7 +37,7 @@ diff -ru a/3rdparty/CMakeLists.txt b/3rdparty/CMakeLists.txt
 -add_subdirectory(fmt EXCLUDE_FROM_ALL)
 -set_property(TARGET fmt PROPERTY FOLDER "3rdparty")
 -# Define a custom inline namespace for the fmt used by WZ, to prevent ODR violations if static linking to any libraries that themselves embed (a different version of) fmt
--target_compile_definitions(fmt PUBLIC "FMT_BEGIN_NAMESPACE=namespace fmt { inline namespace v11_wz2100 {")
+-target_compile_definitions(fmt PUBLIC "FMT_BEGIN_NAMESPACE=namespace fmt { inline namespace v12_wz2100 {")
 -target_compile_definitions(fmt PUBLIC "FMT_END_NAMESPACE=}}")
 -
 +pkg_check_modules(FMT REQUIRED fmt)
@@ -238,12 +238,12 @@ diff -ru a/3rdparty/CMakeLists.txt b/3rdparty/CMakeLists.txt
  	include(FetchContent)
  	FetchContent_Declare(
 diff -ru a/lib/framework/wzstring.cpp b/lib/framework/wzstring.cpp
---- a/lib/framework/wzstring.cpp	2025-09-16 11:41:32.000000000 -0500
-+++ b/lib/framework/wzstring.cpp	2025-09-18 13:37:23.686668245 -0500
-@@ -24,8 +24,8 @@
- #include <sstream>
- #include <iomanip>
- #include <limits>
+--- a/lib/framework/wzstring.cpp
++++ b/lib/framework/wzstring.cpp
+@@ -29,8 +29,8 @@
+ // "By default, Visual Studio always returns the value 199711L for the __cplusplus preprocessor macro."
+ #define UTF_CPP_CPLUSPLUS 201703L
+ #endif
 -#include <utfcpp/source/utf8.h>
 -#include <utf8proc/utf8proc.h>
 +#include <utf8cpp/utf8.h>
