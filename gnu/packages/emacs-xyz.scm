@@ -32046,6 +32046,31 @@ leverages the Parinfer Rust Emacs library to do most of the heavy lifting.")
 bookmarks and history.")
     (license license:gpl3+)))
 
+(define-public emacs-shr-syntax-highlight
+  (package
+    (name "emacs-shr-syntax-highlight")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/coopi/emacs-shr-syntax-highlight")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04ax8svpw2s0085pp93dsz5xhhbqr58ghkr1ab2g38pczlsbz18s"))))
+    (build-system emacs-build-system)
+    (home-page "https://codeberg.org/coopi/emacs-shr-syntax-highlight")
+    (synopsis "Syntax highlighting for code blocks rendered by shr")
+    (description
+     "This package adds syntax highlighting to @code{<pre>} code blocks
+rendered by @acronym{@code{shr}, Simple @acronym{HTML, HyperText Markup
+Language} Renderer}, used by @acronym{EWW, Emacs Web Wowser} and similar
+interfaces.  It reads @acronym{CSS, Cascading Style Sheets} class annotations
+such as @code{language-python} and fontifies block contents using the
+corresponding Emacs major mode.")
+    (license license:agpl3+)))
+
 (define-public emacs-stumpwm-mode
     (let ((commit "920f8fc1488f7953f205e1dda4c2ecbbbda56d6")
         (revision "3"))
