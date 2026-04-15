@@ -208,6 +208,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/cobol.scm			\
   %D%/packages/code.scm				\
   %D%/packages/commencement.scm			\
+  %D%/packages/compiler-tools.scm		\
   %D%/packages/compression.scm			\
   %D%/packages/compton.scm 			\
   %D%/packages/computer-architecture.scm	\

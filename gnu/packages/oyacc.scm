@@ -17,36 +17,8 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages oyacc)
-  #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages)
-  #:use-module (guix gexp)
-  #:use-module (guix git-download)
-  #:use-module (guix build-system gnu))
+  #:use-module (gnu packages compiler-tools)
+  #:use-module (guix deprecation))
 
-(define-public oyacc
-  (package
-    (name "oyacc")
-    (version "6.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/ibara/yacc")
-              (commit (string-append name "-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1a2nyg2nnh1las40klnp037sapaaph86kjx258cpqcwnk4cv3rnx"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:test-target "test"
-      #:make-flags
-      #~(list (string-append "BINDIR=" #$output "/bin")
-              (string-append "MANDIR=" #$output "/share/man/man1"))))
-    (synopsis "Portable YACC from OpenBSD")
-    (description
-     "@command{oyacc} is a portable version of the OpenBSD's
-@acronym{yacc, Yet Another Compiler Compiler} program, with no dependencies
-besides libc.")
-    (home-page "https://github.com/ibara/yacc")
-    (license license:bsd-2)))
+(define-deprecated/public-alias oyacc
+  (@ (gnu packages compiler-tools) oyacc))

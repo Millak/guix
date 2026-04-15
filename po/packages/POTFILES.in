@@ -70,6 +70,7 @@ gnu/packages/cmake.scm
 gnu/packages/cobol.scm
 gnu/packages/code.scm
 gnu/packages/commencement.scm
+gnu/packages/compiler-tools.scm
 gnu/packages/compression.scm
 gnu/packages/compton.scm
 gnu/packages/computer-architecture.scm
@@ -562,7 +563,6 @@ gnu/packages/xdisorg.scm
 gnu/packages/zig-xyz.scm
 gnu/packages/zile.scm
 gnu/packages/fluidplug.scm
-gnu/packages/oyacc.scm
 gnu/packages/wxwidgets.scm
 gnu/packages/xfig.scm
 gnu/packages/xorg.scm

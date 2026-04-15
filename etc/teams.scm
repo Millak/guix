@@ -514,6 +514,7 @@ of Rebar and Mix build systems and Hex.pm importer."
                       "gnu/packages/autogen.scm"
                       "gnu/packages/autotools.scm"
                       "gnu/packages/bison.scm"
+                      "gnu/packages/compiler-tools.scm"
                       "gnu/packages/m4.scm"
                       "gnu/packages/oyacc.scm"
                       "gnu/packages/re2c.scm")))

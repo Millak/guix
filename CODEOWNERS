@@ -32,6 +32,7 @@ gnu/packages/assembly\.scm                         @guix/build-tools
 gnu/packages/autogen\.scm                          @guix/build-tools
 gnu/packages/autotools\.scm                        @guix/build-tools
 gnu/packages/bison\.scm                            @guix/build-tools
+gnu/packages/compiler-tools\.scm                   @guix/build-tools
 gnu/packages/m4\.scm                               @guix/build-tools
 gnu/packages/oyacc\.scm                            @guix/build-tools
 gnu/packages/re2c\.scm                             @guix/build-tools
