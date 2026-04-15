@@ -5790,7 +5790,7 @@ processing filters.")
 (define-public guile-pnm
   (package
     (name "guile-pnm")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -5799,7 +5799,7 @@ processing filters.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yvsni4hll20g99zq4wl734f9i8gpjr1sqsnk3a93k2dd7b6ymac"))))
+        (base32 "06kgp1gh8hdj1j6w7i981prx93wfjpayrnjlydlzs7l5j04l4m3a"))))
     (build-system gnu-build-system)
     (arguments
      (list
