@@ -2873,7 +2873,7 @@ package.")
 (define-public go-github-com-refraction-networking-utls
   (package
     (name "go-github-com-refraction-networking-utls")
-    (version "1.6.0")
+    (version "1.8.2")
     (source
      (origin
        (method git-fetch)
@@ -2882,7 +2882,7 @@ package.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iywar5vqsml4b177k2nkcxmjm8mw92g3p112yjsrpmikiwpwpyw"))))
+        (base32 "03kgwxdm2lg28fn2w5q7ql2szsiwj2xjdf477h1g3a4a9y9j6zk0"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/refraction-networking/utls"
