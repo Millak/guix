@@ -12172,7 +12172,7 @@ See related paper
 (define-public tenmon
   (package
     (name "tenmon")
-    (version "20260217")
+    (version "20260412")
     (source
      (origin
        (method git-fetch)
@@ -12181,7 +12181,7 @@ See related paper
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07hiqr6jxmbw2dasbmyvcjmfxw4hjsn7xp269irjgfijsf8ga68n"))))
+        (base32 "0ba7hnkskmr2rydy9rvf3c5cs401bv80qhs32sw5r43kdlpvlaxx"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -12209,6 +12209,7 @@ See related paper
            qtbase
            qtcharts
            qtdeclarative
+           qtsvg
            qtwayland
            wcslib
            zstd
