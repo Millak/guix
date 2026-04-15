@@ -751,7 +751,7 @@ analysis.")
 (define-public cpl
   (package
     (name "cpl")
-    (version "7.3.2")
+    (version "7.3.4")
     (source
      (origin
        (method url-fetch)
@@ -759,7 +759,7 @@ analysis.")
              "https://ftp.eso.org/pub/dfs/pipelines/libraries/cpl/cpl-"
              version ".tar.gz"))
        (sha256
-        (base32 "083ppsa6ifc52m0s4ww4l9cajnh2f0y3s5bxaq31drihhrd2c355"))))
+        (base32 "090xp9scg34z60iiklf8w7gmbjbja3sdv7xk97pn8llklvks8xgi"))))
     (build-system gnu-build-system)
     (arguments
      ;; pycpl expects to find a lib/esopipes-plugins directory.  This is
