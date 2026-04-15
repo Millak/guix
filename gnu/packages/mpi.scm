@@ -76,7 +76,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
 
-(define-public hwloc-2
+(define-public hwloc
   (package
     (name "hwloc")
     (version "2.13.0")
@@ -185,10 +185,6 @@ hwloc may display the topology in multiple convenient formats.  It also offers
 a powerful programming interface to gather information about the hardware,
 bind processes, and much more.")
     (license license:bsd-3)))
-
-(define-public hwloc
-  ;; The latest stable series of hwloc.
-  hwloc-2)
 
 (define-public openmpi-4
   (package
