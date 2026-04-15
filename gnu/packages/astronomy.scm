@@ -2031,29 +2031,32 @@ model-fitting photometry or morphological analyses.")
 (define-public python-aiapy
   (package
     (name "python-aiapy")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "aiapy" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/LM-SAL/aiapy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "11hjqk8840y7dwny0r8apqf0a0kb0lyn7kr1syzqhp87zjslna5q"))))
+        (base32 "0b5zvqnjxpdx8830s2f5pziyjqh8isy4y4b7j0xg5rh4vm7zqfhm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 47 passed, 76 skipped
-      #:test-flags
-      ;; Remove data is required: ValueError: Did not find any files
-      ;; at https:/github.com/sunpy/data/blob/main/aiapy/aia_lev1_\
-      ;; 193a_2013_03_15t12_01_06_84z_image_lev1.fits?raw=true
-      #~(list (string-append "--deselect=aiapy/calibrate/tests/test_meta.py"
-                             "::test_fix_pointing_missing_value"))
+      ;; tests: 47 passed, 82 skipped, 133 warnings
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'set-home
+          (add-after 'unpack 'include-package-data
             (lambda _
-              ;; E PermissionError: [Errno 13] Permission denied:
-              ;; '/homeless-shelter'
+              ;; See: <https://github.com/LM-SAL/aiapy/pull/396>.
+              (substitute* "pyproject.toml"
+                (("include-package-data = true.*" all)
+                 (string-append all
+                                "\n[tool.setuptools.package-data]
+aiapy = ['*.rst']")))))
+          (add-before 'check 'set-HOME
+            (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list nss-certs-for-test
