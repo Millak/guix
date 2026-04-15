@@ -254,7 +254,7 @@ when jobs finish.")
     (inputs
      (append
        (list freeipmi
-             `(,hwloc-2 "lib")
+             `(,hwloc "lib")
              json-c
              linux-pam)
        (if (supported-package? openpmix-4)
