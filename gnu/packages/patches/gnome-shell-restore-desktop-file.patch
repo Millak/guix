@@ -1,0 +1,79 @@
+From 7618e53c3193bc44da5ecb81bcad12f104d36262 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?No=C3=A9=20Lopez?= <noelopez@free.fr>
+Date: Wed, 15 Apr 2026 08:31:05 +0200
+Subject: [PATCH] Revert "data: Drop org.gnome.Shell.desktop"
+
+This reverts commit f3911151da7b0e3c630011cb26bd85f719e531d2.
+---
+ data/meson.build                                    | 13 ++++++++++++-
+ ....in => org.gnome.Shell.Extensions.desktop.in.in} |  0
+ ...n => org.gnome.Shell.PortalHelper.desktop.in.in} |  0
+ data/org.gnome.Shell.desktop.in.in                  | 13 +++++++++++++
+ 4 files changed, 25 insertions(+), 1 deletion(-)
+ rename data/{org.gnome.Shell.Extensions.desktop.in => org.gnome.Shell.Extensions.desktop.in.in} (100%)
+ rename data/{org.gnome.Shell.PortalHelper.desktop.in => org.gnome.Shell.PortalHelper.desktop.in.in} (100%)
+ create mode 100644 data/org.gnome.Shell.desktop.in.in
+
+diff --git a/data/meson.build b/data/meson.build
+index bc1c6ab2d..2fa16b97b 100644
+--- a/data/meson.build
++++ b/data/meson.build
+@@ -1,6 +1,7 @@
+ data_builddir = meson.current_build_dir()
+ 
+ desktop_files = [
++  'org.gnome.Shell.desktop',
+   'org.gnome.Shell.Extensions.desktop',
+ ]
+ service_files = []
+@@ -10,9 +11,19 @@ if have_portal_helper
+   service_files += 'org.gnome.Shell.PortalHelper.service'
+ endif
+ 
++desktopconf = configuration_data()
++# We substitute in bindir so it works as an autostart
++# file when built in a non-system prefix
++desktopconf.set('bindir', bindir)
++desktopconf.set('systemd_hidden', have_systemd ? 'true' : 'false')
++
+ foreach desktop_file : desktop_files
+   i18n.merge_file(
+-    input: desktop_file + '.in',
++    input: configure_file(
++      input: desktop_file + '.in.in',
++      output: desktop_file + '.in',
++      configuration: desktopconf
++    ),
+     output: desktop_file,
+     po_dir: po_dir,
+     install: true,
+diff --git a/data/org.gnome.Shell.Extensions.desktop.in b/data/org.gnome.Shell.Extensions.desktop.in.in
+similarity index 100%
+rename from data/org.gnome.Shell.Extensions.desktop.in
+rename to data/org.gnome.Shell.Extensions.desktop.in.in
+diff --git a/data/org.gnome.Shell.PortalHelper.desktop.in b/data/org.gnome.Shell.PortalHelper.desktop.in.in
+similarity index 100%
+rename from data/org.gnome.Shell.PortalHelper.desktop.in
+rename to data/org.gnome.Shell.PortalHelper.desktop.in.in
+diff --git a/data/org.gnome.Shell.desktop.in.in b/data/org.gnome.Shell.desktop.in.in
+new file mode 100644
+index 000000000..59d1cd2fe
+--- /dev/null
++++ b/data/org.gnome.Shell.desktop.in.in
+@@ -0,0 +1,13 @@
++[Desktop Entry]
++Type=Application
++Name=GNOME Shell
++Comment=Window management and application launching
++Exec=@bindir@/gnome-shell
++Categories=GNOME;GTK;Core;
++OnlyShowIn=GNOME;
++NoDisplay=true
++X-GNOME-Autostart-Phase=DisplayServer
++X-GNOME-Provides=panel;windowmanager;
++X-GNOME-Autostart-Notify=true
++X-GNOME-AutoRestart=false
++X-GNOME-HiddenUnderSystemd=@systemd_hidden@
+-- 
+2.52.0
+
