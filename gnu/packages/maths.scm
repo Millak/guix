@@ -10771,6 +10771,31 @@ when an application performs repeated divisions by the same divisor.")
 half-precision floating point formats.")
       (license license:expat))))
 
+(define-public fparser
+  (package
+    (name "fparser")
+    (version "4.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thliebig/fparser")
+             (commit "e625e262620036a52d1dc9abc122d2bf67397e40")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11gkdqcbk26bwrn5si6vmbd0gsni5kg56j32jhmp2j4h1jrww54k"))))
+    (arguments
+     (list
+      #:tests? #f)) ;No tests
+    (build-system cmake-build-system)
+    (home-page "http://warp.povusers.org/FunctionParser/")
+    (synopsis "Function parser library for C++")
+    (description
+     "FunctionParser is a C++ library for parsing and evaluating mathematical expressions.
+This package is based on a maintained fork of
+@url{http://warp.povusers.org/FunctionParser/, the original project}.")
+    (license license:lgpl3)))
+
 (define-public soplex
   (package
     (name "soplex")
