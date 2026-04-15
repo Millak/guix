@@ -31,6 +31,7 @@
 ;;; Copyright © 2025 Arthur Rodrigues <arthurhdrodrigues@proton.me>
 ;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
 ;;; Copyright © 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2026 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3639,6 +3640,39 @@ ssh-agent process using the sample server.")
 algorithm described in @url{https://rfc-editor.org/rfc/rfc2898.html,RFC 2898}
 and @url{https://rfc-editor.org/rfc/rfc8018.html,RFC 8018}.")
     (license license:asl2.0)))
+
+(define-public go-github-com-xtls-reality
+  (package
+    (name "go-github-com-xtls-reality")
+    (version "0.0.0-20260322125925-9234c772ba8f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/xtls/reality")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wncy5aph6nmq4814xjhj6b5p1wm2fyrqn83dw0xlyxvq2z6iqfs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/xtls/reality"))
+    (propagated-inputs
+     (list go-github-com-cloudflare-circl
+           go-github-com-juju-ratelimit
+           go-github-com-pires-go-proxyproto
+           go-github-com-refraction-networking-utls
+           go-golang-org-x-crypto
+           go-golang-org-x-sys))
+    (home-page "https://github.com/xtls/reality")
+    (synopsis "Implementation of REALITY protocol")
+    (description
+     "This package provides an implementation of REALITY protocol, which is
+intented to eliminate the detectable TLS fingerprint on the server side, while
+still maintain the secrecy.  It achieves full real TLS that is
+undistingwishable with the specified SNI to the middleman.")
+    (license (list license:bsd-3 license:mpl2.0))))
 
 (define-public go-github-com-youmark-pkcs8
   (package
