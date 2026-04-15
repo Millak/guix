@@ -306,7 +306,7 @@ bind processes, and much more.")
                                (package-supported-systems package)))
                   (list package)
                   '()))))
-       (append (list `(,hwloc-2 "lib")
+       (append (list `(,hwloc "lib")
                      gfortran
                      libfabric-1                  ;fails to build with 2.3
                      libevent
