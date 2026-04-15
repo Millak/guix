@@ -1196,7 +1196,7 @@ programs for the manipulation and analysis of astronomical data.")
 (define-public gpredict
   (package
     (name "gpredict")
-    (version "2.4")
+    (version "2.5.1")
     (source
      (origin
        (method git-fetch)
@@ -1205,7 +1205,7 @@ programs for the manipulation and analysis of astronomical data.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dfwb6h7bkhx782pj78xw4c1h1r6kd3md7xjz1jvxapsx0iypclw"))))
+        (base32 "1bcy50g1hkdwdadr5lb2fs3ry261qcp10kf3cc0kif9y8im91zwl"))))
     (build-system gnu-build-system)
     (arguments
      (list
