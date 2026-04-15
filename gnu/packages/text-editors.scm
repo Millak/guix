@@ -2051,7 +2051,10 @@ colours), kitty keyboard protocol, editorconfig support, amongst other features.
                         "zed-0.225.10-fix-workspace-race.patch"
                         "zed-0.225.10-keep-regular-file-workspaces.patch"
                         "zed-0.225.10-remove-patch-crates-io.patch"
-                        "zed-0.225.10-use-mock-livekit-on-linux.patch"))))
+                        "zed-0.225.10-use-mock-livekit-on-linux.patch"))
+       (snippet
+        #~(begin (delete-file
+                   "crates/zed/resources/windows/bin/x64/OpenConsole.exe")))))
     (build-system cargo-build-system)
     (arguments
      (list #:install-source? #f
