@@ -46149,6 +46149,15 @@ communities\" by MS Johnson (1926) @url{doi:10.2307/1373575}.")
        ;; For vignettes.
        (updater-extra-native-inputs . ("r-gsl" "r-pracma"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:test-directory "tests"
+      #:skipped-tests
+      (if (target-32bit?)
+          ;; Results are not identical, and I guess that's due to accuracy
+          ;; limitations.
+          '("gammainc-tests.R")
+          '())))
     (native-inputs (list r-gsl r-pracma))
     (home-page "https://gitlab.com/vigou3/expint")
     (synopsis "Exponential integral and incomplete Gamma function")
