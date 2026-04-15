@@ -13518,8 +13518,8 @@ for compilation, debugging, documentation lookup, and so on.")
     (license (list license:gpl2+ license:public-domain))))
 
 (define-public emacs-sliver
-  (let ((commit "d08d41947bb943f25ee2de9573459a6c720e027f")
-        (revision "0"))
+  (let ((commit "b4cb9cd2a810ba59c946e2592c4a4d56060a8d22")
+        (revision "1"))
     (package
       (name "emacs-sliver")
       ;; No tagged releases. Version comes from source code.
@@ -13532,7 +13532,7 @@ for compilation, debugging, documentation lookup, and so on.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "08qycim0mxyiqbik9hjlmzpdggl506bcsv1q1icxzd05bm73sh6n"))))
+          (base32 "1wddivmp5f4m6fdib96vfylqp4kgcw3ipdsi4b9w50dqzvrqrfjh"))))
       (build-system emacs-build-system)
       (arguments
        (list
