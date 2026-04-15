@@ -16000,7 +16000,7 @@ dispersal.  Its output can be processed by treeannotator (from the
     (inputs
      (list boost-for-mysql
            cereal
-           cgal
+           cgal-5
            gsl
            hdf5
            fftw

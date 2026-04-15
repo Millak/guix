@@ -1058,28 +1058,29 @@ output, ambient occlusion lighting, and support for various triangle mesh and
 volumetric texture formats beneficial for molecular visualization.")
     (license license:bsd-3)))
 
-(define-public cgal
+(define-public cgal-5
   (package
     (name "cgal")
     (version "5.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/CGAL/cgal/releases/download/v" version
-                    "/CGAL-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0dsqvnyd2ic50pr28gfz34bpnyx3i2csf1rikmc661hywdz5xcfd"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/CGAL/cgal")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rym0xi4kh4nv2pdj178gygkalvrwgx38v13b0zm3jl0v1af9bhv"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
        ;; Prevent two mostly-duplicate directories.  Use Guix's versioned
        ;; default for licences instead of CGAL's unversioned one.
        (list (string-append "-DCGAL_INSTALL_DOC_DIR=share/doc/"
-                            ,name "-" ,version))
-       #:tests? #f))                    ; no test target
-    (inputs
-     (list mpfr gmp boost))
+                            ,name "-"
+                            ,version))
+       #:tests? #f)) ;no test target
+    (inputs (list mpfr gmp boost))
     (home-page "https://www.cgal.org/")
     (synopsis "Computational geometry algorithms library")
     (description
@@ -1095,6 +1096,21 @@ many more.")
     ;; The 'LICENSE' file explains that a subset is available under more
     ;; permissive licenses.
     (license license:gpl3+)))
+
+(define-public cgal
+  (package
+    (inherit cgal-5)
+    (name "cgal")
+    (version "6.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/CGAL/cgal")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cbrqa9h8vx31fw0rp7fn00ndmcgip0xmcc303ycjjc8rirnsz9j"))))))
 
 (define-public geomcpp
   ;; XXX: No releases.

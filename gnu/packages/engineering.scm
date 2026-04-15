@@ -4086,7 +4086,7 @@ G-codes to binary and vice versa.")
      (list bash-minimal
            boost-1.83
            cereal
-           cgal
+           cgal-5
            curl
            dbus
            eigen

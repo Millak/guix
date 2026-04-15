@@ -927,7 +927,7 @@ transformed into common image formats for display or printing.")
     (inputs
      (list boost-1.83
            cairomm-1.14
-           cgal
+           cgal-5
            expat
            gmp
            gtk+
