@@ -5905,7 +5905,8 @@ services for numerous locations.")
        (sha256
         (base32
          "1hf1dip78sjfsi28w80wkh6i51glprwl2j29gc9bkhwi9zy5g69a"))
-       (patches (search-patches "gnome-settings-daemon-gc.patch"))))
+       (patches (search-patches "gnome-settings-daemon-gc.patch"
+                                "gnome-settings-daemon-restore-desktop-files.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
