@@ -699,7 +699,7 @@ arrays) that expose a buffer interface.")
     (build-system gnu-build-system)
     (inputs
      `(,zlib
-       (,hwloc-2 "lib")
+       (,hwloc "lib")
        ,slurm
        ,@(if (and (not (%current-target-system))
                   (member (%current-system) (package-supported-systems ucx)))
