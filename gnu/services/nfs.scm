@@ -895,16 +895,18 @@ requirements.
 If @var{config} contains SMB mounts, adds samba-nmbd and samba-winbindd to the
 service requirements.
 "
-  (delete-duplicates
-   (fold
-    (lambda (fs-type acc)
-      (cond
-       ((string= "nfs" fs-type)
-        (append acc '(rpc.statd)))
-       ((string= "smb" fs-type)
-        (append acc '(samba-nmbd samba-winbindd)))))
-    '()
-    (map autofs-map-entry-type (autofs-configuration->raw-entries config)))))
+  (fold
+   (lambda (fs-type acc)
+     (cond
+      ((string= "nfs" fs-type)
+       (append acc '(rpc.statd)))
+      ((string= "smb" fs-type)
+       (append acc '(samba-nmbd samba-winbindd)))
+      (else acc)))
+   '()
+   (delete-duplicates
+    (map autofs-map-entry-type
+         (autofs-configuration->raw-entries config)))))
 
 (define (autofs-shepherd-service config)
   (match-record config <autofs-configuration> (autofs timeout)
