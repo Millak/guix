@@ -105,11 +105,13 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graph)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages java)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libffi)
@@ -442,6 +444,62 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
      "@code{ciel} downloads and installs open-source PDKs which are used for
 chip design and @acronym{EDA, Electronic Design Automation}.")
     (license license:asl2.0)))
+
+(define-public csxcad
+  (package
+    (name "csxcad")
+    (version "0.6.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thliebig/CSXCAD")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c383zsv4fp40kmpawamfi9zg3b8x3d4m091ldwk15mii3467hp3"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; No tests.
+      #:configure-flags
+      #~(list
+         (string-append "-DFPARSER_ROOT_DIR=" #$(this-package-input "fparser")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cmake-and-sources
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("  system\n")
+                 "")
+                (("find_package\\(HDF5 1.8 COMPONENTS C HL REQUIRED\\)")
+                 "find_package(HDF5 REQUIRED COMPONENTS C HL)"))
+              ;; Fix missing `std::`.
+              ;; This is fixed in upstream already but not tagged.
+              (substitute* "src/CSPropDiscMaterial.cpp"
+                (("\tcout ")
+                 "\tstd::cout ")))))))
+    (inputs (list boost
+                  cgal
+                  eigen
+                  fparser
+                  hdf5
+                  gmp
+                  libjpeg-turbo
+                  libpng
+                  libtiff
+                  lz4
+                  mpfr
+                  openmpi
+                  tinyxml
+                  vtk
+                  zlib))
+    (home-page "https://github.com/thliebig/CSXCAD")
+    (synopsis "3D geometry library for C++")
+    (description
+     "@code{csxcad} is a C++ library to describe geometrical objects
+and their physical or non-physical properties for electromagnetics simulations.")
+    (license license:lgpl3+)))
 
 (define-public comedilib
   (package
