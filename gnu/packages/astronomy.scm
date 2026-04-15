@@ -12266,7 +12266,7 @@ traveling to a star 100 light years away looks like.")
 (define-public wcslib
   (package
     (name "wcslib")
-    (version "8.5")
+    (version "8.6")
     (source
      (origin
        (method url-fetch)
@@ -12274,7 +12274,7 @@ traveling to a star 100 light years away looks like.")
                            "wcslib-releases/"
                            "wcslib-" version ".tar.bz2"))
        (sha256
-        (base32 "1kpacbh6zrci44qab0jllkn3a9z3b465w17qcfivvfpxzdw1pzgi"))
+        (base32 "0nndcz82qvfx3hhhw0bylyrydnc23a8bqhp71w4yz6d10lv44c70"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "C/flexed")))))
