@@ -11804,7 +11804,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
 (define-public stellarium
   (package
     (name "stellarium")
-    (version "25.4")
+    (version "26.1")
     (source
      (origin
        (method git-fetch)
@@ -11813,16 +11813,12 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "085ip706z3jsjgyp114h9x8sl7g947mrfrhgckrk86fmajwia3hc"))))
+        (base32 "05c36v2cyvxdvh4wyapdgc642khnldnbpzad76ql738894ga5djk"))))
     (build-system qt-build-system)
-    ;; TODO: Complete documentation build and split into dedicated outputs.
     (arguments
      (list
-      ;; FIXME: Tests keep failing on 100% when preparing test-suit for INDI.
-      #:tests? #f
       #:configure-flags
-      #~(list "-DENABLE_GPS=1"
-              "-DENABLE_TESTING=0"
+      #~(list "-DENABLE_TESTING=ON"
               (string-append "-DCMAKE_CXX_FLAGS=-isystem "
                              #$(this-package-input "qtpositioning") "/include/qt6"
                              " -isystem "
@@ -11849,6 +11845,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
            qtmultimedia
            qtpositioning
            qtserialport
+           qtsvg
            qttranslations
            qtwayland
            qtwebengine
@@ -11863,12 +11860,11 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
            python-wrapper
            qttools))
     (home-page "https://stellarium.org/")
-    (synopsis "3D sky viewer")
+    (synopsis "Planetarium and 3D sky viewer")
     (description
-     "Stellarium is a planetarium.  It shows a realistic sky in
-3D, just like what you see with the naked eye, binoculars, or a telescope.  It
-can be used to control telescopes over a serial port for tracking celestial
-objects.")
+     "Stellarium shows a realistic sky in 3D, just like what you see with the
+naked eye, binoculars, or a telescope.  It can be used to control telescopes
+over a serial port for tracking celestial objects.")
     (license license:gpl2+)))
 
 (define-public stiff
