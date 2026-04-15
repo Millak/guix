@@ -18,6 +18,7 @@
 
 (define-module (gnu packages compiler-tools)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system trivial)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -50,3 +51,23 @@
 @acronym{yacc, Yet Another Compiler Compiler} program, with no dependencies
 besides libc.")
     (license license:bsd-2)))
+
+(define-public oyacc-as-yacc-wrapper
+  (package/inherit oyacc
+    (name "oyacc-as-yacc-wrapper")
+    (build-system trivial-build-system)
+    (arguments
+     (list
+      #:builder
+      (with-imported-modules '((guix build utils))
+        #~(begin
+            (use-modules (guix build utils))
+            (let ((bindir (string-append #$output "/bin"))
+                  (oyacc (string-append #$(this-package-input "oyacc")
+                                        "/bin/oyacc")))
+              (mkdir-p bindir)
+              (symlink oyacc (string-append bindir "/yacc")))))))
+    (inputs (list oyacc))
+    (description
+     "This package provides the @command{yacc} command, implemented as a
+symbolic link to the @command{oyacc} command from the same-named package.")))
