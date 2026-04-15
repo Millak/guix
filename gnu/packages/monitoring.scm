@@ -1,11 +1,16 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2015 Siniša Biđin <sinisa@bidin.eu>
+;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2021, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2021 Stefan Reichör <stefan@xsteve.at>
-;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2017, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2018-2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018, 2019, 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
+;;; Copyright © 2019, 2023 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2020 Alex ter Weele <alex.ter.weele@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2021, 2022 Marius Bakke <marius@gnu.org>
@@ -19,9 +24,6 @@
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2025 Christian Birk Sørensen <chrbirks@gmail.com>
-;;; Copyright © 2015 Siniša Biđin <sinisa@bidin.eu>
-;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019, 2023 Vasile Dumitrascu <va511e@yahoo.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,6 +72,7 @@
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages mail)
@@ -409,6 +412,37 @@ retrieval of all your quantified self data.")
      "Conky is a lightweight system monitor for X that displays operating
 system statistics (CPU, disk, and memory usage, etc.) and more on the
 desktop.")
+    (license license:gpl3+)))
+
+(define-public gkrellm
+  (package
+    (name "gkrellm")
+    (version "2.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://gkrellm.srcbox.net/releases/gkrellm-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32 "0qvy2xmwmfy5f0g09yn9lr262shnx82ba04r5il2wj4qscg3r7h8"))))
+    (build-system gnu-build-system)
+    (inputs (list gtk+-2 libsm))
+    (native-inputs (list gettext-minimal pkg-config))
+    (arguments
+     (list
+      #:tests? #f ;there is no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)) ;no configure script
+      #:make-flags
+      #~(list (string-append "INSTALLROOT=" #$output)
+              (string-append "CC=" #$(cc-for-target)))))
+    (home-page "https://gkrellm.srcbox.net/")
+    (synopsis "System monitors")
+    (description
+     "GKrellM is a single process stack of system monitors which supports
+applying themes to match its appearance to your window manager, Gtk, or any
+other theme.")
     (license license:gpl3+)))
 
 (define-public glances
