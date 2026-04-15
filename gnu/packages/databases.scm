@@ -70,6 +70,7 @@
 ;;; Copyright © 2025 bdunahu <bdunahu@operationnull.com>
 ;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2026 Peter Polidoro <peter@polidoro.io>
+;;; Copyright © 2026 Josep Bigorra <jjbigorra@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -126,6 +127,7 @@
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages language)
@@ -198,6 +200,7 @@
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
@@ -5045,6 +5048,54 @@ postgresql = postgresql://nixbld@/yoyo_test~%")))
      "Yoyo is a database schema migration tool.  Migrations are written as SQL
 files or Python scripts that define a list of migration steps.")
     (license license:asl2.0)))
+
+(define-public mutastructura
+  (package
+    (name "mutastructura")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/jjba23/mutastructura")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08vzlc5imavqf3bdzgbh70c7z44xjhf05gr7i2g5ksl49lv39gzh"))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:source-directory "src"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'install-program-files
+            (lambda _
+              (let* ((bin (string-append #$output "/bin"))
+                     (share (string-append #$output "/share")))
+                (copy-recursively "resources"
+                                  (string-append share "/resources"))
+                (install-file "scripts/mutastructura" bin)
+                (install-file "scripts/log.bash"
+                              (string-append share "/scripts/"))
+                (chmod (string-append bin "/mutastructura") #o755)))))))
+    (native-inputs (list guile-3.0))
+    (propagated-inputs (list guile-dbi
+                             guile-dbd-mysql
+                             guile-dbd-sqlite3
+                             guile-dbd-postgresql
+                             guile-gcrypt))
+    (inputs (list guile-3.0 bash-minimal))
+    (home-page "https://codeberg.org/jjba23/mutastructura")
+    (synopsis "Relational database schema migrations powered by Guile Scheme")
+    (description
+     "Mutastructura provides a familiar, declarative and transactional
+approach to managing database states. It exposes a user-friendly 
+@acronym{CLI, command-line interface} and has support for PostgreSQL, MySQL, and SQLite.
+It also exposes library functions and can be imported and used directly from other Guile code.
+
+Features include executing migrations transactionally and computing SHA256
+checksums to track schema evolution in a @code{migrations_history} table.")
+    (license license:agpl3+)))
 
 (define-public python-mysqlclient
   (package
