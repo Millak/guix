@@ -2730,7 +2730,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
 (define-public freecad
   (package
     (name "freecad")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
@@ -2740,7 +2740,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
              (recursive? #t)))          ;needed for the AddonManager
        (file-name (git-file-name name version))
        (sha256
-        (base32 "029ndw1dypx0xhs4fyiinf7gpk8am0vm9b24idvdsx9x7ghrqz4j"))
+        (base32 "05dx7ifx33705mxb0vc82j0mzzkazakgadfgq5bws30qrxp49xgg"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
