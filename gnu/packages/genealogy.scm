@@ -44,7 +44,7 @@
 (define-public gramps
   (package
     (name "gramps")
-    (version "5.2.3")
+    (version "6.0.8")
     (source
      (origin
        (method git-fetch)
@@ -53,7 +53,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gzhi5hxpgc6pxs40xsxf67hndjifnfhm89s3ly68c70x83qmwhd"))))
+        (base32 "06kdcf6h9rqdcsx097a3n2z4q8yvln20ja7ajwrna1i133591bra"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -68,6 +68,11 @@
         (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'build 'fix-gexiv2-dependency
+            (lambda _
+              ;; Use our own version
+              (substitute* (find-files "." ".*\\.py$")
+                (("\"GExiv2\", \"0.10\"") "\"GExiv2\", \"0.16\""))))
           (add-before 'check 'prepare-tests
             (lambda _
               (setenv "HOME" (getenv "TMPDIR"))
@@ -113,6 +118,7 @@
            python-bsddb3
            python-jsonschema
            python-lxml
+           python-orjson
            python-pillow
            python-pycairo
            python-pygobject
