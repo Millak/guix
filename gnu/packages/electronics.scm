@@ -2616,6 +2616,66 @@ such as:
 @end itemize")
     (license license:expat)))
 
+(define-public openems
+  (package
+    (name "openems")
+    (version "0.0.36")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thliebig/openEMS")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vxlknnji7kha0kabpjqh48i4r0rqlla9gcxhn69d0gcw76albmw"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "-DCSXCAD_ROOT_DIR="
+                             #$(this-package-input "csxcad"))
+              (string-append "-DFPARSER_ROOT_DIR="
+                             #$(this-package-input "fparser")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cmake
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("  system\n") "")
+                (("find_package\\(HDF5 1.8 COMPONENTS C HL REQUIRED\\)")
+                 "find_package(HDF5 1.8 REQUIRED)"))))
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? source inputs #:allow-other-keys)
+              (when tests?
+                (let* ((testsuite (string-append source "/TESTSUITE"))
+                       (testsuite-tmp "/tmp/openEMS-TESTSUITE"))
+                  ;; Testsuite directory needs to be writable.
+                  (copy-recursively testsuite testsuite-tmp)
+                  (invoke "octave" "--no-gui" "--eval"
+                          (string-append
+                            "addpath('" #$output "/share/openEMS/matlab');"
+                            "addpath('"
+                            (search-input-directory inputs "share/CSXCAD/matlab")
+                            "');"
+                            ;; Work around bug in test script.
+                            "addpath('" testsuite-tmp "/helperscripts');"
+                            "run('" testsuite-tmp "/run_testsuite.m');")))))))))
+    (native-inputs (list cmake-minimal octave pkg-config))
+    (inputs (list boost
+                  csxcad
+                  fparser
+                  hdf5
+                  openmpi
+                  tinyxml
+                  vtk))
+    (home-page "https://www.openems.de")
+    (synopsis "Electromagnetic field solver")
+    (description "@code{OpenEMS} is an electromagnetic field solver using
+the @acronym{FDTD, Finite-Difference Time-Domain} method.")
+    (license license:gpl3+)))
+
 (define-public pcb-rnd
   (package
     (name "pcb-rnd")
