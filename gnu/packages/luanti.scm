@@ -57,7 +57,7 @@
 (define-public luanti
   (package
     (name "luanti")
-    (version "5.15.1")
+    (version "5.15.2")
     (source
      (origin
        (method git-fetch)
@@ -66,7 +66,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07g41ljv117pmw6402mqznccwl1hd9jp2l8wkb4l211cbm4c6vv9"))
+        (base32 "1mcbsgf549y2jg9qds95wwgd1699mkk4byv9ls4lpg43bd829dhk"))
        (modules '((guix build utils)
                   (srfi srfi-26)
                   (ice-9 ftw)))
