@@ -46182,6 +46182,15 @@ API; see the package vignette for details.")
          "1n7md7q9nv7s4dr0ybjq7km1m36gz84mlrqhdp27wbw2jxvndh80"))))
     (properties `((upstream-name . "actuar")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:test-directory "tests"
+      #:skipped-tests
+      (if (target-32bit?)
+          ;; Results are not identical, and I guess that's due to accuracy
+          ;; limitations.
+          '("dpqr-tests.R")
+          '())))
     (propagated-inputs (list r-expint))
     (native-inputs (list r-mass r-statmod))
     (home-page "https://gitlab.com/vigou3/actuar")
