@@ -580,7 +580,7 @@ stored with user-specified precision.")
            python-sphinx))
     (inputs
      (list fftwf
-           `(,hwloc-2 "lib")
+           `(,hwloc "lib")
            libtirpc
            lmfit
            muparser
