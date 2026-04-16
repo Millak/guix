@@ -913,7 +913,7 @@ suite native in R.")
 (define-public r-bpcells
   (package
     (name "r-bpcells")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -922,7 +922,7 @@ suite native in R.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12h1di45fg06nhsliii7v0h1z567pkpis1xm4ar1qr8ns1n8iljw"))
+        (base32 "0yqgcajq83g25mznwcngaw7pi6vcqxqdnynpgb95yci57k3wrp6j"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "r/src/vendor/highway"))))
@@ -933,11 +933,7 @@ suite native in R.")
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'chdir
-           (lambda _
-             (substitute* "r/configure"
-               (("tools/hwy-test.cpp" m)
-                (string-append m " $HWY_LIBS $HWY_CFLAGS")))
-             (chdir "r"))))))
+           (lambda _ (chdir "r"))))))
     (propagated-inputs
      (list r-dplyr
            r-ggplot2
