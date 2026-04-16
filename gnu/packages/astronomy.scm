@@ -2238,18 +2238,19 @@ Astropy objects.")
 (define-public python-asdf-bootstrap
   (hidden-package
    (package/inherit python-asdf
+     (name "python-asdf-bootstrap")
      (arguments
-      (list #:tests? #f
-            #:phases #~(modify-phases %standard-phases
-                         (delete 'sanity-check))))
+      (substitute-keyword-arguments arguments
+        ((#:tests? #t #t) #f)))
      (native-inputs
       (list python-setuptools
             python-setuptools-scm))
-    (propagated-inputs
-     (list python-importlib-metadata
-           python-numpy
-           python-pyyaml
-           python-semantic-version)))))
+     (propagated-inputs
+      (modify-inputs propagated-inputs
+        (replace "python-asdf-standard"
+          python-asdf-standard-bootstrap)
+        (replace "python-asdf-transform-schemas"
+          python-asdf-transform-schemas-bootstrap))))))
 
 (define-public python-asdf-compression
   (package
@@ -2350,6 +2351,16 @@ and use.  Unlike FITS, the metadata is highly structured and is designed
 up-front for extensibility.")
     (license license:bsd-3)))
 
+(define-public python-asdf-standard-bootstrap
+  (hidden-package
+   (package/inherit python-asdf-standard
+     (name "python-asdf-standard-bootstrap")
+     (arguments
+      (list #:tests? #f))
+     (native-inputs
+      (list python-setuptools
+            python-setuptools-scm)))))
+
 (define-public python-asdf-transform-schemas
   (package
     (name "python-asdf-transform-schemas")
@@ -2380,6 +2391,18 @@ up-front for extensibility.")
 Users should not need to install this directly; instead, install an
 implementation package such as asdf-astropy.")
     (license license:bsd-3)))
+
+(define-public python-asdf-transform-schemas-bootstrap
+  (hidden-package
+   (package/inherit python-asdf-transform-schemas
+     (name "python-asdf-transform-schemas-bootstrap")
+     (arguments
+      (list #:tests? #f))
+     (native-inputs
+      (list python-setuptools
+            python-setuptools-scm))
+    (propagated-inputs
+     (list python-asdf-standard-bootstrap)))))
 
 (define-public python-asdf-wcs-schemas
   (package
