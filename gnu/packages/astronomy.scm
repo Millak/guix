@@ -11353,6 +11353,64 @@ in @code{SWIFT} snapshots to enable efficient reading of sub-regions.")
     (license (list license:lgpl3+
                    license:gpl3+))))
 
+(define-public python-swiftsimsoap
+  (package
+    ;; XXX: The project is called SOAP, and it is not present on PyPI, name
+    ;; package as swiftsimsoap to prevent collusion.
+    (name "python-swiftsimsoap")
+    ;; There is not correct version tag or PyPI release, use the latest commit
+    ;; from master HEAD.
+    (properties '((commit . "7006a49e15ac3dc1118e754f2d9917662f52c077")
+                  (revision . "0")))
+    (version (git-version "1.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/SWIFTSIM/SOAP")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00w7ga4nnjs0vzj3s7l2jhmnq3m86j2d9v85zjbddv5h2i7pfj91"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Tests need wget, potentially to download remove data.
+      #~(list "--ignore=tests/test_read_vr.py"
+              "--ignore=tests/test_subhalo_rank.py"
+              ;; KeyError: 'BirthHaloCatalogueIndex'
+              (string-append "--deselect=tests/test_aperture_properties.py"
+                             "::test_aperture_properties")
+              (string-append "--deselect=tests/test_subhalo_properties.py"
+                             "::test_subhalo_properties"))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-astropy
+           python-h5py
+           python-matplotlib
+           python-mpi4py
+           python-numpy
+           python-psutil
+           python-scipy
+           python-unyt
+           python-virgodc))
+    (home-page "https://github.com/SWIFTSIM/SOAP")
+    (synopsis "Spherical Overdensity Aperture Processor")
+    (description
+     "This repository contains programs which can be used to compute
+properties of halos in spherical apertures in
+@url{https://swift.strw.leidenuniv.nl/, SWIFT} snapshots.  The resulting
+output halo catalogues can be read using the
+@url{https://swiftsimio.readthedocs.io/en/latest/, swiftsimio} Python
+package.")
+    (license (list license:lgpl3+
+                   license:gpl3+))))
+
 (define-public python-synphot
   (package
     (name "python-synphot")
