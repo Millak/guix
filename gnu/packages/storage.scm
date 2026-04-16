@@ -536,7 +536,7 @@ applications.")
 (define-public garage
   (package
     (name "garage")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -545,7 +545,7 @@ applications.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nqda782by02ybqv44lpjagn3aqsgpaszvqbicg9iz3lymj8g9ai"))
+        (base32 "12zigcvnv662lk31gh30hg37ljnclkgmrfxaivivyp50a5lxr88a"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "doc")))))
