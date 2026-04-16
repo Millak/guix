@@ -4016,7 +4016,7 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
 (define-public python-cobaya
   (package
     (name "python-cobaya")
-    (version "3.6.1")
+    (version "3.6.2")
     (source
      (origin
        (method git-fetch)
@@ -4025,11 +4025,11 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y2nyqxrp9yd8yrpgpw79z72h60yzxzczn1yybg1cww18ll79pr5"))))
+        (base32 "06g6yz3r1xfmxi4rnxc6549i4lby7h9h8f17id8m1k2px1hyh628"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 76 passed, 3 skipped, 94 xfailed, 2 warnings
+      ;; tests: 77 passed, 3 skipped, 94 xfailed, 2 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               "--skip-not-installed"
