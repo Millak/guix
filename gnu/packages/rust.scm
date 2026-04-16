@@ -126,11 +126,12 @@
     (arguments
      (substitute-keyword-arguments (package-arguments base-rust)
        ((#:disallowed-references _ '())
-        (list (this-package-native-input "rustc-bootstrap")))))
+        (list (this-package-native-input "rust")))))
     (native-inputs
-     (modify-inputs native-inputs
-       (replace "rustc-bootstrap" base-rust)
-       (replace "cargo-bootstrap" (list base-rust "cargo"))))))
+     (list pkg-config
+           python-minimal-wrapper
+           base-rust
+           `(,base-rust "cargo")))))
 
 ;;; Note: mrustc's only purpose is to be able to bootstrap Rust; it's designed
 ;;; to be used in source form.
@@ -599,40 +600,33 @@ safety and thread safety guarantees.")
              (setenv "PATH" (string-append "/tmp/bin:" (getenv "PATH")))))
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (gcc (assoc-ref inputs "gcc"))
-                    (python (assoc-ref inputs "python"))
-                    (binutils (assoc-ref inputs "binutils"))
-                    (rustc (assoc-ref inputs "rustc-bootstrap"))
-                    (cargo (assoc-ref inputs "cargo-bootstrap"))
-                    (llvm (assoc-ref inputs "llvm")))
-               (call-with-output-file "config.toml"
-                 (lambda (port)
-                   (display (string-append "
+             (call-with-output-file "config.toml"
+               (lambda (port)
+                 (display (string-append "
 [llvm]
 [build]
-cargo = \"" cargo "/bin/cargo" "\"
-rustc = \"" rustc "/bin/rustc" "\"
+cargo = \"" (search-input-file inputs "bin/cargo") "\"
+rustc = \"" (search-input-file inputs "bin/rustc") "\"
 docs = false
-python = \"" python "/bin/python" "\"
+python = \"" (search-input-file inputs "bin/python") "\"
 vendor = true
 submodules = false
 [install]
-prefix = \"" out "\"
+prefix = \"" (assoc-ref outputs "out") "\"
 sysconfdir = \"etc\"
 [rust]
 debug=false
 jemalloc=false
-default-linker = \"" gcc "/bin/gcc" "\"
+default-linker = \"" (search-input-file inputs "bin/gcc") "\"
 channel = \"stable\"
 rpath = true
 [target." ,(platform-rust-target (lookup-platform-by-system (%current-system))) "]
-llvm-config = \"" llvm "/bin/llvm-config" "\"
-cc = \"" gcc "/bin/gcc" "\"
-cxx = \"" gcc "/bin/g++" "\"
-ar = \"" binutils "/bin/ar" "\"
+llvm-config = \"" (search-input-file inputs "bin/llvm-config") "\"
+cc = \"" (search-input-file inputs "bin/gcc") "\"
+cxx = \"" (search-input-file inputs "bin/g++") "\"
+ar = \"" (search-input-file inputs "bin/ar") "\"
 [dist]
-") port))))))
+") port)))))
          (replace 'build
            ;; The standard library source location moved in this release.
            (lambda* (#:key parallel-build? #:allow-other-keys)
@@ -693,14 +687,14 @@ ar = \"" binutils "/bin/ar" "\"
                  `("LIBRARY_PATH" ":"
                    suffix (,(string-append libc "/lib"))))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python" ,python-minimal-wrapper)
-       ("rustc-bootstrap" ,rust-bootstrap-1.54)
-       ("cargo-bootstrap" ,rust-bootstrap-1.54 "cargo")))
+     (list pkg-config
+           python-minimal-wrapper
+           rust-bootstrap-1.54
+           `(,rust-bootstrap-1.54 "cargo")))
     (inputs
-     `(("bash" ,bash-minimal)
-       ("llvm" ,llvm-13)
-       ("openssl" ,openssl)))
+     (list bash-minimal
+           llvm-13
+           openssl))
     ;; rustc invokes gcc, so we need to set its search paths accordingly.
     (native-search-paths
      %gcc-search-paths)
@@ -1153,9 +1147,10 @@ safety and thread safety guarantees.")
            (package-arguments base-rust)))
       (native-inputs
        (if (supported-package? rust-bootstrap-1.74)
-           (modify-inputs native-inputs
-             (replace "cargo-bootstrap" (list rust-bootstrap-1.74 "cargo"))
-             (replace "rustc-bootstrap" rust-bootstrap-1.74))
+           (list pkg-config
+                 python-minimal-wrapper
+                 rust-bootstrap-1.74
+                 (list rust-bootstrap-1.74 "cargo"))
            (package-native-inputs base-rust)))
       (inputs (modify-inputs inputs
                 (replace "llvm" llvm-17))))))
@@ -1941,10 +1936,9 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
          (strip-keyword-arguments '(#:tests?)
                                   (package-arguments base-rust))
          ((#:disallowed-references _ '())
-          (list (this-package-native-input "rustc-bootstrap")
-                ;; Refer to cargo-bootstrap as #$rustc-bootstrap:cargo.
-                (gexp-input (this-package-native-input "rustc-bootstrap")
-                            "cargo")))
+          (list (this-package-native-input "rust")
+                ;; Refer to cargo as #$rust:cargo.
+                (gexp-input (this-package-native-input "rust") "cargo")))
          ((#:modules modules)
           (cons '(srfi srfi-26) modules))
          ((#:phases phases)
