@@ -2209,23 +2209,34 @@ implementation of the ASDF Standard.")
 (define-public python-asdf-astropy
   (package
     (name "python-asdf-astropy")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "asdf_astropy" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/astropy/asdf-astropy")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0kkz771h6i05ldy3ddq3gvgyiwbv268zhjxckrkmzahjn187qz6j"))))
+        (base32 "1a2ly230c6rrizv78mgzfcdysn2fhp1lfcc1004igr98adabwy3l"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 4435 passed, 1 skipped
+      ;; tests: 4438 passed, 2 skipped
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'set-home-env
-            (lambda _ (setenv "HOME" "/tmp"))))))
+          (add-after 'install 'include-package-data
+            ;; XXX: Check why resources stopped being copied with setuptools
+            ;; in 0.11.0 version.
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (copy-recursively "asdf_astropy/resources"
+                                (string-append (site-packages inputs outputs)
+                                               "/asdf_astropy/resources"))))
+          (add-before 'check 'set-HOME
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-pytest
            python-pytest-asdf-plugin
