@@ -3818,7 +3818,7 @@ bad pixel tracking throughout the reduction process.")
 (define-public python-cdflib
   (package
     (name "python-cdflib")
-    (version "1.3.8")
+    (version "1.3.9")
     (source
      (origin
        (method git-fetch)
@@ -3827,11 +3827,11 @@ bad pixel tracking throughout the reduction process.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13hh8mc6qcxyiz3wli9v91irllh7bmjsh05d5p4cy9wsbzv62728"))))
+        (base32 "0ifdrjpy75109pp4k2vppz7xbx5bdw4q678rhbxpa231lm7344wy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 71 passed, 1 skipped, 25 deselected, 17 warnings
+      ;; tests: 75 passed, 1 skipped, 25 deselected, 17 warnings
       #:test-flags
       #~(list "-m" "not remote_data")
       #:phases
@@ -3840,9 +3840,9 @@ bad pixel tracking throughout the reduction process.")
             (lambda _
               (substitute* "pyproject.toml"
                 ((" --cov=cdflib --cov-report=xml") ""))))
-          (add-before 'check 'set-home-env
+          (add-before 'check 'set-HOME
             (lambda _
-              (setenv "HOME" (getcwd)))))))
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-astropy-minimal
            python-pytest
