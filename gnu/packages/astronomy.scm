@@ -2140,19 +2140,31 @@ Main features:
 (define-public python-asdf
   (package
     (name "python-asdf")
-    (version "5.1.0")
+    (version "5.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "asdf" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/asdf-format/asdf")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1m0j8lbyhblpj8sjnc6ffb8lplffnj17pwyw8i08kp2rfbaarg10"))))
+        (base32 "00y7hp0iw3ryirkpj053irvc2y7bgckplrw2jjzxf80pp6c9vnsa"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1986 passed, 13 skipped, 2 xfailed
+      ;; tests: 1999 passed, 1 skipped, 2 xfailed
       #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'include-package-data
+            ;; XXX: Check why schemas stoped coppied with setuptools in 5.2.0
+            ;; version.
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (copy-recursively "asdf/_jsonschema/schemas"
+                                (string-append (site-packages inputs outputs)
+                                               "/asdf/_jsonschema/schemas")))))))
     (native-inputs
      (list python-psutil
            python-pytest
@@ -2162,7 +2174,6 @@ Main features:
            python-setuptools-scm))
     (propagated-inputs
      (list python-asdf-standard
-           python-asdf-transform-schemas
            python-attrs ;; for vendorized jsonschema
            python-importlib-metadata
            python-jmespath
@@ -2190,7 +2201,10 @@ implementation of the ASDF Standard.")
        (method url-fetch)
        (uri (pypi-uri "asdf" version))
        (sha256
-        (base32 "0scnw5y4x5k3vyfylq0w612b662xlccx3gsscaw082zlv2yxfyh4"))))))
+        (base32 "0scnw5y4x5k3vyfylq0w612b662xlccx3gsscaw082zlv2yxfyh4"))))
+    (propagated-inputs
+     (modify-inputs propagated-inputs
+       (prepend python-asdf-transform-schemas)))))
 
 (define-public python-asdf-astropy
   (package
@@ -2248,9 +2262,7 @@ Astropy objects.")
      (propagated-inputs
       (modify-inputs propagated-inputs
         (replace "python-asdf-standard"
-          python-asdf-standard-bootstrap)
-        (replace "python-asdf-transform-schemas"
-          python-asdf-transform-schemas-bootstrap))))))
+          python-asdf-standard-bootstrap))))))
 
 (define-public python-asdf-compression
   (package
