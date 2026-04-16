@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2014-2019, 2021, 2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2022 Marius Bakke <marius@gnu.org>
@@ -226,6 +226,18 @@ JNI.")
              (setenv "JAVACMD" (search-input-file inputs "/bin/jamvm"))
              (setenv "JAVAC" (search-input-file inputs "/bin/jikes"))
              (setenv "CLASSPATH" (search-input-file inputs "/lib/rt.jar"))))
+         ,@(if (target-x86-32?)
+               ;; XXX: On i686 isFile() always seems to return true.  Patching
+               ;; this here is very ugly, but the effects are limited.  None
+               ;; of these changes remain by the time we've built Icedtea and
+               ;; the other JDKs.
+               '((add-after 'unpack 'disable-isFile-checks
+                   (lambda _
+                     (substitute* "src/main/org/apache/tools/ant/util/ResourceUtils.java"
+                       (("destFile = \\(\\(FileProvider\\).*") ""))
+                     (substitute* "src/main/org/apache/tools/ant/taskdefs/Mkdir.java"
+                       (("dir.isFile\\(\\)") "false")))))
+               '())
          (replace 'build
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Ant complains if this file doesn't exist.
