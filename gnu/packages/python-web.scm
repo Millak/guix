@@ -7883,7 +7883,7 @@ basic TCP/IP protocols.")
 (define-public python-geventhttpclient
   (package
     (name "python-geventhttpclient")
-    (version "2.3.3")
+    (version "2.3.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7893,7 +7893,7 @@ basic TCP/IP protocols.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ya0i0fbx054mfx5d1k75fcf64xzp7vva8lkwwzan41xbnc56nyj"))))
+                "1diq6n9sr92rsqbpxlbhbn1d22hrlzp6swykz9bfzh7sxpywa6j8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
