@@ -1041,7 +1041,6 @@ FFC is part of the FEniCS Project.")
                   eigen
                   hdf5-parallel-openmpi
                   libxml2
-                  openmpi
                   python-3
                   pt-scotch32
                   suitesparse

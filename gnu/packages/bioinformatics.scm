@@ -6666,7 +6666,6 @@ other types of unwanted sequence from high-throughput sequencing reads.")
              hdf5-parallel-openmpi
              libjpeg-turbo
              libpng
-             openmpi
              fftw
              n2p2
              gsl
@@ -6728,8 +6727,7 @@ meso, or continuum scale.")
     (inputs
      (modify-inputs inputs
        (delete "pnetcdf")
-       (replace "hdf5-parallel-openmpi" hdf5)
-       (delete "openmpi")))))
+       (replace "hdf5-parallel-openmpi" hdf5)))))
 
 (define-public libbigwig
   (package

@@ -2311,6 +2311,8 @@ Interface to wrap the HDF5 library, which is implemented in C.")
                                     "bin/h5cc"))
                   (("/gnu/store/[a-z0-9]*-gcc-[0-9.]*/bin/")
                    ""))))))))
+    (propagated-inputs
+       (list openmpi))
     (synopsis "Management suite for data with parallel IO support")))
 
 (define-public hdf5-blosc
@@ -2702,7 +2704,6 @@ scientific data storage.")
     (name "netcdf-cxx4-parallel-openmpi")
     (synopsis "NetCDF C++ interface (with MPI support)")
     (inputs (modify-inputs inputs
-              (prepend openmpi)
               (replace "hdf5" hdf5-parallel-openmpi)))
     (propagated-inputs (modify-inputs propagated-inputs
               (replace "netcdf" netcdf-parallel-openmpi)))))
@@ -4209,7 +4210,6 @@ scientific applications modeled by partial differential equations.")
                 hypre-openmpi
                 metis
                 mumps-openmpi
-                openmpi
                 scalapack
                 pt-scotch32
                 `(,pt-scotch32 "metis"))))

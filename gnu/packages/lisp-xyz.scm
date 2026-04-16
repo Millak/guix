@@ -4341,8 +4341,7 @@ Lisp expressions in multiple implementations.")
           (base32 "1dg8wkc2bv66lykr2fjgn91jw7aa9xnpk20h0g8pp2xr6981gfl9"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
-       (list openmpi ;; for hdf-cffi
-             pkg-config
+       (list pkg-config
              sbcl-cl-fad))
       (inputs
        (list gsl
