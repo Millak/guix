@@ -270,6 +270,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages monitoring)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
@@ -6440,46 +6441,58 @@ library.")
     (license license:bsd-3)))
 
 (define-public python-h5py
+  ;; TODO: Move to (gnu packages python-science) or maths, prevent import mpi
+  ;; module here.
   (package
     (name "python-h5py")
-    (version "3.15.1")
+    (version "3.16.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "h5py" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/h5py/h5py")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0sbbw9100f2763czngbpg1jxisp5r5pkpa2swm6mcws4bka3wvn8"))))
+        (base32 "1s5nqhylp7daizljnwr8bwwsxd92kqgz2106vi9q1c1q920ihsyy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 800 passed, 18 skipped, 4 deselected, 12 warnings
+      ;; tests: 849 passed, 50 skipped
       #:test-flags
-      ;; Tests requiring the build with  MPI.
-      #~(list "-k" (string-append "not test_mpio"
-                                  " and not test_mpio_append"
-                                  " and not test_mpi_atomic"
-                                  " and not test_close_multiple_mpio_driver"))
+      #~(list "--pyargs" "h5py")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-hdf5-paths
+          (add-after 'unpack 'set-hdf5-options
+            ;; For custom installation with Parallel HDF5 see:
+            ;; <https://docs.h5py.org/en/latest/build.html#custom-installation>.
             (lambda _
-              (setenv "HDF5_DIR" #$(this-package-input "hdf5"))))
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (setenv "H5PY_TEST_CHECK_FILTERS" "1")
-                (with-directory-excursion #$output
-                  (apply invoke "pytest" "-vv" test-flags))))))))
+              ;; XXX: Check if we need this:
+              ;; <https://github.com/h5py/h5py/issues/2560>.
+              ;; (setenv "H5PY_SETUP_REQUIRES" "0")
+              ;;
+              ;; Project is part of h5py, but availalbe at
+              ;; <https://oldhome.schmorp.de/marc/liblzf.html>, version 3.6
+              ;; was released on 2019.
+              ;; (setenv "H5PY_SYSTEM_LZF" "1")
+              (setenv "HDF5_DIR" #$(this-package-input "hdf5-parallel-openmpi"))
+              (setenv "HDF5_MPI" "ON")))
+          (add-before 'check 'pre-check
+            (lambda _
+             (setenv "H5PY_TEST_CHECK_FILTERS" "1")
+              (delete-file-recursively "h5py"))))))
     (native-inputs
      (list pkg-config
            python-cython
            python-pkgconfig
            python-pytest
+           python-pytest-mpi
            python-setuptools))
     (inputs
-     (list hdf5))
+     (list hdf5-parallel-openmpi))
     (propagated-inputs
-     (list python-numpy))
+     (list python-mpi4py
+           python-numpy))
     (home-page "https://www.h5py.org/")
     (synopsis "Read and write HDF5 files from Python")
     (description
