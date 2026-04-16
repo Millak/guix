@@ -8515,23 +8515,22 @@ channels
     (version "0.6.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "radiospectra" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sunpy/radiospectra")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "14p4hp9yncyjsrbys0yjq7jbj0n9wf0x5sy67kilqrw14d1xvzch"))))
+        (base32 "0xm8jsxs3xf2zgavp9r2ym3xjspb7bv75f74y9qajzsz7dfb8w53"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: It fails to check SunPy's optional inputs versions.
-          (delete 'sanity-check)
-          (add-before 'check 'set-home-env
+          (add-before 'check 'set-HOME
             (lambda _
-              ;; Tests require HOME to be set.
-              ;;  Permission denied: '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-pytest
@@ -8540,8 +8539,7 @@ channels
            python-pytest-xdist
            python-setuptools
            python-setuptools-scm
-           python-sunpy-soar
-           python-wheel))
+           python-sunpy-soar))
     (propagated-inputs
      (list python-cdflib
            python-matplotlib
