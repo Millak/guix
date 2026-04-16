@@ -656,6 +656,29 @@ supported algorithm is chosen to ensure interoperability with
 Emacs Lisp.")
     (license license:gpl3)))
 
+(define-public emacs-org-arbeitszeit
+  (package
+    (name "emacs-org-arbeitszeit")
+    (version "0.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bkaestner/org-arbeitszeit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0krxainwpn7bnnvbrrhivmh302i9dyfixs6l5wb7xw7qpjgwqzc8"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/bkaestner/org-arbeitszeit")
+    (synopsis "Calculate your worktime")
+    (description
+     "This package provides a new dynamic block for Org called \"arbeitszeit\"
+(German for \"working hours\").  The dynamic block collects all clocked hours and
+provides a weekly table to quickly see your accumulated overtime.  To insert a
+new block, use @samp{M-x org-dynamic-block-insert-dblock}.")
+    (license license:gpl3)))
+
 (define-public emacs-perl-doc
   (package
     (name "emacs-perl-doc")
