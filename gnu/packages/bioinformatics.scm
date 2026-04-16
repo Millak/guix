@@ -931,9 +931,15 @@ suite native in R.")
     (arguments
      (list
       #:phases
-      '(modify-phases %standard-phases
+      `(modify-phases %standard-phases
          (add-after 'unpack 'chdir
-           (lambda _ (chdir "r"))))))
+           (lambda _ (chdir "r")))
+         ,@(if (target-x86-32?)
+               '((add-after 'chdir 'require-sse2
+                   ;; This avoids falling back to the scalar backend in
+                   ;; highway, which fails to build.
+                   (lambda _ (setenv "CFLAGS" "-msse2"))))
+               '()))))
     (propagated-inputs
      (list r-dplyr
            r-ggplot2
