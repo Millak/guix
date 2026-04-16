@@ -97,6 +97,7 @@
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
@@ -11494,6 +11495,63 @@ cosmological simulations.")
 @url{https://vires.services, Swarm} and VirES for
 @url{https://aeolus.services, Aeolus}")
     (license license:expat)))
+
+(define-public python-virgodc
+  (package
+    (name "python-virgodc")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jchelly/VirgoDC")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01h8n2pg6q8fwfxclx4hj0f56fcndnnvjnl0jhivmwqp2bm1gbgq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list #$@(map (lambda (test) (string-append "--deselect=virgo/mpi/"
+                                                    "test_parallel_hdf5.py::"
+                                                    test))
+                      ;; ValueError: h5py was built without MPI support, can't
+                      ;; use mpio driver
+                      ;; See: <https://codeberg.org/guix/guix/issues/7638>.
+                      (list "test_collective_read_1d"
+                            "test_collective_read_2d"
+                            "test_collective_read_empty"
+                            "test_collective_read_small_chunks_1d"
+                            "test_collective_read_small_chunks_2d"
+                            "test_collective_write_1d"
+                            "test_collective_write_2d"
+                            "test_collective_write_empty"
+                            "test_collective_write_small_chunks_1d"
+                            "test_collective_write_small_chunks_2d")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir-python
+            (lambda _
+              (chdir "python"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-h5py
+           python-mpi4py
+           python-numpy))
+    (home-page "https://github.com/jchelly/VirgoDC")
+    (synopsis "Read routines and examples for the Virgo Data Centre")
+    (description
+     "This package provides facilities for reading various formats used to
+store snapshots, group catalogues and merger trees in Virgo Consortium
+simulations, including older binary formats which can otherwise be difficult
+to deal with.
+
+It also provides a collection of MPI parallel algorithms which can be useful
+for dealing with particle data and a few related utility functions.")
+    (license license:gpl3)))
 
 (define-public python-wiimatch
   (package
