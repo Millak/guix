@@ -93,7 +93,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.2.0232")
+    (version "9.2.0333")
     (source
      (origin
        (method git-fetch)
@@ -102,7 +102,7 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z5b77qq5rmddf42f8sqd4sbf81y1r8d9i9f0naczb9bz762wx0r"))))
+        (base32 "15qmligkgrzsp8c88i8cmji6vjvq5wmf3hjw2g8lz7dh9i901xdx"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -169,6 +169,7 @@
                              "sh_15.sh"
                              "sh_bash.bash"
                              "sh_bash_alias.sh"
+                             "sh_functions_bash.sh"
                              "sh_sundrous.bash")))))
            (add-before 'install 'fix-installman.sh
              (lambda _
