@@ -9943,7 +9943,7 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
 (define-public python-stpipe
   (package
     (name "python-stpipe")
-    (version "0.11.1")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)
@@ -9952,42 +9952,36 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13vg3fjk9sqyyi4gwa3m5a2kzqh87vh36px07lbb0kx4fby5cnam"))
+        (base32 "0ncws9fqdpl89dpl28dr67m2plik9xad47s7ayqdkyckn8kn36xz"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Replace reference to external configobj.
-           (substitute* (find-files "." "\\.py$")
-             (("from astropy.extern import configobj") "import configobj")
-             (("from astropy.extern.configobj import validate") "import validate")
-             (("from astropy.extern.configobj.configobj import ") "from configobj import ")
-             (("from astropy.extern.configobj.validate import ") "from validate import "))))))
+        #~(begin
+            ;; Replace reference to external configobj.
+            (substitute* (find-files "." "\\.py$")
+              (("from astropy.extern import configobj")
+               "import configobj")
+              (("from astropy.extern.configobj import validate")
+               "import validate")
+              (("from astropy.extern.configobj.configobj import ")
+               "from configobj import ")
+              (("from astropy.extern.configobj.validate import ")
+               "from validate import "))))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 261 passed, 1 skipped, 6 deselected, 1 warning
+      ;; tests: 270 passed, 1 skipped, 5 deselected
       #:test-flags
-      ;; XXX: These tests faileur might be something to investigate deeper,
-      ;; the project was released on <2025-09-26>.
       #~(list #$@(map (lambda (test)
-                        (string-append "--deselect=tests/" test))
-                      ;; ModuleNotFoundError: No module named
-                      ;; 'roman_datamodels.maker_utils'
-                      (list "test_abstract_datamodel.py::test_roman_datamodel"
-                            ;; FileNotFoundError: Unable to fetch schema from
-                            ;; non-file URL:
-                            ;; http://stsci.edu/schemas/stpipe/step_config-1.0.0
-                            "test_step.py::test_build_config_pipe_config_file"
-                            "test_step.py::test_build_config_pipe_kwarg"
-                            "test_step.py::test_build_config_step_config_file"
-                            "test_step.py::test_build_config_step_kwarg"
-                            "test_step.py::test_step_list_args")))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                      #$(version-major+minor+point version)))))))
+                        (string-append "--deselect=tests/test_step.py::"
+                                       test))
+                      ;; FileNotFoundError: Unable to fetch schema from
+                      ;; non-file URL:
+                      ;; http://stsci.edu/schemas/stpipe/step_config-1.0.0
+                      (list "test_build_config_pipe_config_file"
+                            "test_build_config_pipe_kwarg"
+                            "test_build_config_step_config_file"
+                            "test_build_config_step_kwarg"
+                            "test_step_list_args")))))
     (native-inputs
      (list python-pytest
            python-pytest-doctestplus
@@ -9997,6 +9991,7 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
      (list python-asdf
            python-astropy
            python-crds
+           python-importlib-metadata
            python-pyyaml))
     (home-page "https://github.com/spacetelescope/stpipe")
     (synopsis "STScI framework for calibration pipeline software")
