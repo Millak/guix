@@ -13508,8 +13508,8 @@ rules to solve permissions issues.")
 
 (define-public steam-devices-udev-rules
   ;; Last release from 2019-04-10
-  (let ((commit "13443480a64fe8f10676606bd57da6de89f8ccb1")
-        (revision "1"))
+  (let ((commit "7dde9ecb3c386363ecd9bd0a3b77e4756d200704")
+        (revision "2"))
     (package
       (name "steam-devices-udev-rules")
       (version (git-version "1.0.0.61" revision commit))
@@ -13521,7 +13521,7 @@ rules to solve permissions issues.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0i086gmnk93q76sw1laa9br6b7zj2r6nrrw7d64y4q9wcrlxw2bi"))))
+                  "0w0xkgi9fpvdbpl57f8fy2nwy2icm6iag39b8ifpkijlxgclx1p3"))))
       (build-system copy-build-system)
       (arguments
        '(#:install-plan '(("./" "lib/udev/rules.d"
