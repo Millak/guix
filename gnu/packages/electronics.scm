@@ -1069,7 +1069,7 @@ characterization result in a liberty library file.")
 (define-public kicad
   (package
     (name "kicad")
-    (version "10.0.0")
+    (version "10.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1077,7 +1077,7 @@ characterization result in a liberty library file.")
                     (commit version)))
               (sha256
                (base32
-                "1470x1276yvd8li3w25zjg73fkpl2qp4dsx7adanafq5c4l47rmc"))
+                "1mnlv8fyz03pfg8pkqwdl5gjz6vsk98c6414lf3wkvrkb85ljaav"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1185,7 +1185,9 @@ characterization result in a liberty library file.")
      "Kicad is a program for the formation of printed circuit
 boards and electrical circuits.  The software has a number of programs that
 perform specific functions, for example, pcbnew (Editing PCB), eeschema (editing
-electrical diagrams), gerbview (viewing Gerber files) and others.")
+electrical diagrams), gerbview (viewing Gerber files) and others.  To use
+SQLite-backed database libraries, install the optional @code{sqliteodbc}
+package.")
     (license license:gpl3+)))
 
 (define-public kicad-doc
@@ -1200,7 +1202,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k0ayxsy0nnv9qxkii9yrxs7jx9y3wfjpsv5yl9wql3vdg3qay69"))))
+                "1c0vn13rp0z12rlqhl321pk2gj9577dyky6xj3i6hb040i3v7zrr"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html"
@@ -1232,7 +1234,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0khfnln0f2zsz5hy31nw2rr0nflb2z3s9n9f7g41g03m9l3s43v2"))))
+                "0iz4lb33wdsw4f82a0ln8ycgaf39gjws03mvl2j1q9npwj6xl1cm"))))
     (build-system cmake-build-system)
     (native-inputs (list python-wrapper))
     (arguments
@@ -1262,7 +1264,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ymmd1rzrczpvcqzw1mld9x8xhbka0vvjy3kdqwysg4ri97f5wrm"))))
+                "0jqgyi1yb2zc6w56ba7xama0wnhrqwbbnf2fqvr47xihvdcvs87v"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1279,7 +1281,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0k91iw661fpzb7saryjxdcdvk1kis7dhbcpzp7xzjk84i4jvxrp5"))))
+                "0jr70ry6inzc2fy3s300z0zlmihbq95ba1zckyd1wwbpplaj1gbl"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
