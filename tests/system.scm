@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2018, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2018, 2022, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -19,11 +19,17 @@
 
 (define-module (test-system)
   #:use-module (gnu)
+  #:use-module ((gnu packages linux) #:select (util-linux))
   #:use-module ((gnu services) #:select (service-value))
+  #:use-module ((guix derivations) #:select (derivation-file-name))
   #:use-module (guix store)
   #:use-module (guix monads)
   #:use-module ((guix gexp) #:select (lower-object))
   #:use-module ((guix utils) #:select (%current-system))
+  #:use-module ((guix combinators) #:select (given))
+  #:use-module ((guix transformations) #:select (options->transformation))
+  #:use-module (guix packages)
+  #:use-module ((guix tests) #:select (test-assertm))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64))
 
@@ -157,5 +163,47 @@
                   (run-with-store store
                     (lower-object %os "aarch64-linux"))))))
     (eq? drv1 drv2)))
+
+(test-assertm "transformation, no effect"
+  (mlet %store-monad ((drv1 (operating-system-derivation %os))
+                      (drv2 (operating-system-derivation
+                             (operating-system
+                               (inherit %os)
+                               (transformation
+                                (options->transformation
+                                 '((with-input
+                                    . "libreoffice=abiword"))))))))
+    (return (string=? (derivation-file-name drv1)
+                      (derivation-file-name drv2)))))
+
+(test-assertm "transformation, package-input-rewriting"
+  (mlet* %store-monad ((coreutils -> (canonical-package coreutils))
+                       (my-coreutils -> (package
+                                          (inherit coreutils)
+                                          (name "my-coreutils")
+                                          (version "42.0")))
+                       (drv1 (operating-system-derivation %os))
+                       (drv2 (operating-system-derivation
+                              (operating-system
+                                (inherit %os)
+                                (host-name "transformed")
+                                (privileged-programs '())
+                                (transformation
+                                 (given
+                                  package?
+                                  (package-input-rewriting
+                                   `((,coreutils
+                                      . ,my-coreutils))))))))
+                       (old (lower-object coreutils))
+                       (new (lower-object my-coreutils))
+                       (requisites -> (store-lift requisites))
+                       (req1 (requisites (list (derivation-file-name drv1))))
+                       (req2 (requisites (list (derivation-file-name drv2)))))
+    (let ((old (derivation-file-name old))
+          (new (derivation-file-name new)))
+      ;; The transformed OS is expected to not contain any reference to the
+      ;; original 'coreutils' derivation.
+      (return (and (member old req1) (not (member new req1))
+                   (member new req2) (not (member old req2)))))))
 
 (test-end)

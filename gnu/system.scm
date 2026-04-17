@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022, 2024-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022, 2024-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
@@ -145,6 +145,7 @@
             operating-system-sudoers-file
             operating-system-swap-devices
             operating-system-kernel-loadable-modules
+            operating-system-transformation
             operating-system-location
 
             operating-system-derivation
@@ -325,6 +326,8 @@ VERSION is the target version of the boot-parameters record."
 
   (sudoers-file operating-system-sudoers-file     ; file-like
                 (default %sudoers-specification))
+  (transformation operating-system-transformation ; one-argument procedure
+                  (default identity))
 
   (location operating-system-location             ; <location>
             (default (and=> (current-source-location)
@@ -1361,10 +1364,11 @@ we're running in the final root."
 
 (define* (operating-system-derivation os)
   "Return a derivation that builds OS."
-  (let* ((services (operating-system-services os))
-         (system   (fold-services services)))
-    ;; SYSTEM contains the derivation as a monadic value.
-    (service-value system)))
+  (with-transformation (operating-system-transformation os)
+    (let* ((services (operating-system-services os))
+           (system   (fold-services services)))
+      ;; SYSTEM contains the derivation as a monadic value.
+      (service-value system))))
 
 (define* (operating-system-profile os)
   "Return a derivation that builds the system profile of OS."

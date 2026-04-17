@@ -2,7 +2,7 @@
 ;; This is an operating system configuration template
 ;; for a "bare bones" setup, with no X11 display server.
 
-(use-modules (gnu))
+(use-modules (gnu) (guix transformations))
 (use-service-modules networking ssh)
 (use-package-modules screen ssh)
 
@@ -44,6 +44,11 @@
 
   ;; Globally-installed packages.
   (packages (cons screen %base-packages))
+
+  ;; Optionally, transform every package referred to by this operating system
+  ;; by its Skylake-optimized variant, where applicable.
+  (transformation (options->transformation '((tune . "skylake"))
+                                           #:warn? #f))
 
   ;; Add services to the baseline: a DHCP client and an SSH
   ;; server.  You may wish to add an NTP service here.

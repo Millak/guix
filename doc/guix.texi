@@ -14837,6 +14837,10 @@ in your manifest, or how to write your own package transformation?
 @xref{Defining Package Variants}, for an overview of the programming
 interfaces available.
 
+To use package transformations at the level of the entire system,
+@pxref{operating-system-transformation, the @code{transformation} field
+of @code{operating-system}}.
+
 @node Additional Build Options
 @subsection Additional Build Options
 
@@ -19428,7 +19432,86 @@ they are allowed to do, and what privileges they may gain.  The default
 is that only @code{root} and members of the @code{wheel} group may use
 @code{sudo}.
 
+@anchor{operating-system-transformation}
+@cindex transformation, of operating systems
+@cindex operating system transformation
+@cindex customization, of operating system packages
+@item @code{transformation} (default: @code{identity})
+A one-argument procedure that, when passed a file-like object, returns
+another file-like object (@pxref{G-Expressions}, for more on file-like
+objects).
+
+This procedure is called for every file-like object---including but not
+limited to packages---that appears while lowering the operating system
+to a derivation, be it as part of a service definition, in an activation
+snippet, in the system profile, or anything else.  It is thus in a key
+position to customize what goes in your operating system.
+
+For example, here is how you would replace the @code{coreutils} package
+by its minimal variant:
+
+@lisp
+(use-modules (gnu packages base))  ;for 'coreutils'
+
+(operating-system
+  ;; @dots{}
+  (transformation (lambda (p)
+                    (if (eq? p coreutils)
+                        coreutils-minimal
+                        p))))
+@end lisp
+
+Note that this simple transformation does not propagate to package
+dependencies, nor does it change variants of @code{coreutils} that may
+appear in the operating system.
+
+To address this, you can resort to the more generic @dfn{package
+transformation procedures}---@pxref{Package Transformation Options}.
+For example, here is how you would replace any @code{openssl} package
+with another version thereof in the entire dependency graph of every
+package that appears on the system:
+
+@lisp
+(use-modules (guix transformations)
+             (guix combinators)  ;for 'assuming'
+             (gnu packages tls))
+
+
+(operating-system
+  ;; @dots{}
+  (transformation
+    ;; The procedure returned by 'package-input-rewriting/spec'
+    ;; expects a package, so call it only under the assumption
+    ;; that it is given a package; otherwise the file-like
+    ;; object is returned as is.
+    (given package?
+           (package-input-rewriting/spec
+             `(("openssl" . ,openssl-3.5))))))
+@end lisp
+
+@cindex optimizing, for a CPU micro-architecture
+@cindex CPU micro-architecture tuning, for the system
+Likewise, here is how you would tune every package in the system for the
+@code{x86-64-v4} micro-architecture group:
+
+@lisp
+(use-modules (guix transformations))
+
+(operating-system
+  ;; @dots{}
+  (transformation
+    (options->transformation '((tune . "x86-64-v4"))
+                             ;; Don't warn about non-tunable
+                             ;; packages.
+                             #:warn? #f)))
+@end lisp
+
+Note that, when an operating system embeds another operating sytem
+configuration---e.g., @i{via} @code{virtual-build-machine-service-type}
+or @code{hurd-vm-service-type}---, the embedded operating system has its
+own @code{transformation} field, unaffected by the containing one.
 @end table
+@end deftp
 
 @defmac this-operating-system
 When used in the @emph{lexical scope} of an operating system field definition,
@@ -19450,7 +19533,6 @@ It is an error to refer to @code{this-operating-system} outside an operating
 system definition.
 @end defmac
 
-@end deftp
 
 @node File Systems
 @section File Systems
