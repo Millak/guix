@@ -7941,7 +7941,7 @@ N-Chilada and RAMSES AMR outputs.")
 (define-public python-pypeit
   (package
     (name "python-pypeit")
-    (version "2.0.0")
+    (version "2.0.1")
     (source
      (origin
        (method git-fetch)
@@ -7950,7 +7950,7 @@ N-Chilada and RAMSES AMR outputs.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nw96iiqswmj6ia48v6p6nxfpj54zlih7d4psm7b7vgma0prxk98"))))
+        (base32 "14szspwxmf7mks6lr4n7l0nlfcipf9w2fzg4643c64x6lhy36qpf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
