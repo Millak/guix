@@ -9883,17 +9883,17 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "4.1.0")
+    (version "5.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stdatamodels" version))
        (sha256
-        (base32 "1gwa7gh2hyv3770sv514w51c5s7c8zwjr3scx2b240z4c9pbgmq0"))))
+        (base32 "1pl6d3a7gssj7a6pkhfpxz10qjp9kr6l88y6l9g2mmv4iv738i8j"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; 1571 passed
+      ;; tests: 1904 passed
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; Disable tests requiring access to CRDS servers to download
@@ -9905,8 +9905,7 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list nss-certs-for-test
-           python-crds-minimal
+     (list python-crds-minimal
            python-psutil
            python-pytest
            python-pytest-asdf-plugin
@@ -9917,9 +9916,10 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
            python-setuptools-scm))
     (propagated-inputs
      (list python-asdf
-           python-asdf-transform-schemas
            python-asdf-astropy
+           python-asdf-transform-schemas
            python-astropy
+           python-gwcs
            python-numpy))
     (home-page "https://github.com/spacetelescope/stdatamodels")
     (synopsis "STScI DataModel classes used in calibration pipelines")
