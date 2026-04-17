@@ -8424,13 +8424,13 @@ Virtual observatory (VO) using Python.")
 (define-public python-pyxsim
   (package
     (name "python-pyxsim")
-    (version "4.4.3")
+    (version "4.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyxsim" version))
        (sha256
-        (base32 "04wpy3gvwcw09grdqad4w4pziqhfczizcdmgsqdd52xfalb92765"))))
+        (base32 "1y6m8g1n9cky12avmpaqxqym8n5kwrs3m6r7wzcms9779r3sfla5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
