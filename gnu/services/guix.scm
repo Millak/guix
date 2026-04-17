@@ -303,9 +303,6 @@
                       (guix-build-coordinator build-allocator)
                       (guix-build-coordinator coordinator))
 
-         (setvbuf (current-output-port) 'line)
-         (setvbuf (current-error-port) 'line)
-
          (simple-format #t "starting the guix-build-coordinator:\n  ~A\n"
                         (current-filename))
          (let* ((hooks
