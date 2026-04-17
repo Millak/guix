@@ -23089,6 +23089,36 @@ command, but the keys you type appear in the buffer until you complete a
 registered sequence, at which point the template triggers.")
       (license license:gpl3+))))
 
+(define-public emacs-laas
+  ;; 1.1 is from 2022.
+  (let ((commit "f5fb180ab23b7eb0695ade84c9077aa701f47bbf")
+        (revision "0"))
+    (package
+      (name "emacs-laas")
+      (version (git-version "1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/tecosaur/LaTeX-auto-activating-snippets")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1pkm1qkfsps51rbj5vb0xl7vsqndy719kdw7gai5lmb702q47qmp"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
+      (propagated-inputs
+       (list emacs-aas emacs-auctex emacs-math-symbol-lists))
+      (home-page "https://github.com/tecosaur/LaTeX-auto-activating-snippets")
+      (synopsis "LaTeX templates for the auto-activating-snippets engine")
+      (description "The LaTeX Auto Activating Snippets (@file{laas.el})
+package is a collection of LaTeX templates for the auto-activating-snippets
+engine. Shorthands for many cumbersome-to-input LaTeX macros are
+implemented. Expansion directly to Unicode code points can be configured to
+enable use outside LaTeX source.")
+      (license license:gpl3+))))
+
 (define-public emacs-yasnippet
   (let ((commit "dd570a6b22364212fff9769cbf4376bdbd7a63c5"))
     (package
