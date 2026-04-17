@@ -4535,6 +4535,52 @@ Telescopes developed for @acronym{CTAO, Cherenkov Telescope Array
 Observatory}.")
     (license license:bsd-3)))
 
+(define-public python-ctaplot
+  (package
+    (name "python-ctaplot")
+    (version "0.6.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cta-observatory/ctaplot")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dpcrc0svj0a498fsgw2jayj522h816bzzck41l7qfbrh23gmyv4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              ;; See: <https://github.com/cta-observatory/ctaplot/pull/213>.
+              (substitute* "setup.py"
+                ((".*ipympl.*") "")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list jupyter
+           python-astropy
+           python-ipywidgets
+           python-matplotlib
+           python-numpy
+           python-pandas
+           python-pyyaml
+           python-scikit-learn
+           python-scipy
+           python-tables
+           python-tqdm))
+    (home-page "https://github.com/cta-observatory/ctaplot")
+    (synopsis "Plotting library for CTA and other IACT")
+    (description
+     "@code{ctaplot} provides low-level reconstruction quality-checks metrics
+computation and vizualisation for Imaging Atmospheric Cherenkov Telescopes
+such as CTA.")
+    (license license:expat)))
+
 (define-public python-czml3
   (package
     (name "python-czml3")
