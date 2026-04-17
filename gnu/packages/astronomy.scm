@@ -6155,13 +6155,16 @@ milliarcsecond).")
 (define-public python-jwst
   (package
     (name "python-jwst")
-    (version "1.20.2")
+    (version "2.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "jwst" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacetelescope/jwst")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1kpv46fl3x3ygq3vzprv0c30x6m95ka4fp5c9cd9p0rhydm6apm3"))
+        (base32 "0jsw02s5gw471i2cr01jq7n74v1zkaqkf0pj3jyjna236ds5fklr"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -6183,15 +6186,10 @@ milliarcsecond).")
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               ;; drizzle>=2.1.1,<2.2.0
-               ((">=2.1.1,<2.2.0") ">=2.1.1")
-               ;; gwcs>=0.26.0,<0.27.0
-               ((">=0.26.0,<0.27.0") ">=0.26.0")
-               ;; stcal>=1.15.2,<1.16.0
-               ((">=1.15.2,<1.16.0") ">=1.15.2")))))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("photutils>=2.1.0,<3") "photutils>=2.1.0")))))))
     (native-inputs
      (list python-ci-watson
            python-pysiaf
