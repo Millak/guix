@@ -1139,9 +1139,6 @@ ca-certificates.crt file in the system profile."
            (use-modules (bffe)
                         (bffe manage-builds))
 
-           (setvbuf (current-output-port) 'line)
-           (setvbuf (current-error-port) 'line)
-
            (simple-format #t "starting the bffe:\n  ~A\n"
                           (current-filename))
 
