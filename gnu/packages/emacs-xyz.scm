@@ -45173,6 +45173,30 @@ Features:
 test cases in a simplified form.")
     (license license:gpl3+)))
 
+(define-public emacs-exemplify-eval
+  (package
+    (name "emacs-exemplify-eval")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~flandrew/exemplify-eval")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f2rfgjcmpw45y0ayx8ww9d9q86y0jwkb46ixp1qd7782qxpa5lg"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f))                ;no tests
+    (home-page "https://git.sr.ht/~flandrew/exemplify-eval")
+    (synopsis "Create arrowified examples from sexps")
+    (description
+     "This Emacs package is an extension to @code{ert}, and creates
+@code{emacs-exemplify-ert}–like examples.  It aims at writing test cases in a
+simplified form.")
+    (license license:gpl3+)))
+
 (define-public emacs-pcmpl-args
   (package
     (name "emacs-pcmpl-args")
