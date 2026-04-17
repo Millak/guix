@@ -4079,11 +4079,11 @@ with Docker/Shifter and Singularity).")
 (define-public python-colossus
   ;; There is no source distribution in PyPI and no version tags, use the
   ;; latest commit from the master HEAD.
-  (let ((commit "6a9888889e72566bdc909514d395f60ae7a1bede")
+  (let ((commit "fef83117a5d83a79116a64398d3e76b97f9c26f9")
         (revision "0"))
     (package
       (name "python-colossus")
-      (version (git-version "1.3.15" revision commit))
+      (version (git-version "1.3.17" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -4092,7 +4092,7 @@ with Docker/Shifter and Singularity).")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "153hw5xfi7fssy3jx0z46ha2flp09czx5769zg3g2ph859jpf98p"))))
+          (base32 "19kz4pyhdlk96ix0izwnwy3zgd4086jfxhfjsbbd51x9k2jfqv64"))))
       (build-system pyproject-build-system)
       (arguments
        (list
