@@ -2045,15 +2045,13 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                (lambda* (#:key inputs #:allow-other-keys)
                  (mkdir-p "src/llvm-project/compiler-rt")
                  (copy-recursively
-                  (string-append (assoc-ref inputs "clang-source")
-                                 "/compiler-rt")
+                  (search-input-directory inputs "/compiler-rt")
                   "src/llvm-project/compiler-rt")))
              (add-after 'unpack 'unpack-libunwind
                (lambda* (#:key inputs #:allow-other-keys)
                  (mkdir-p "src/llvm-project/libunwind")
                  (copy-recursively
-                  (string-append (assoc-ref inputs "clang-source")
-                                 "/libunwind")
+                  (search-input-directory inputs "/libunwind")
                   "src/llvm-project/libunwind")))
              (replace 'patch-cargo-checksums
                (lambda _
@@ -2185,14 +2183,15 @@ exec -a \"$0\" \"~a\" \"$@\""
                                               "/lib/rustlib/src/rust/library")
                                (string-append bin "/.rust-analyzer-real"))))
                    (chmod (string-append bin "/rust-analyzer") #o755))))))))
-      (native-inputs (cons*
-                      ;; Keep in sync with the llvm used to build rust.
-                      `("clang-source" ,(package-source clang-runtime-21))
-                      ;; Add test inputs.
-                      `("gdb" ,gdb/pinned)
-                      `("git-minimal" ,git-minimal/pinned)
-                      `("procps" ,procps)
-                      (package-native-inputs base-rust)))
+      (native-inputs
+       (modify-inputs (package-native-inputs base-rust)
+        (prepend
+          ;; Keep in sync with the llvm used to build rust.
+          (package-source clang-runtime-21)
+          ;; Add test inputs.
+          gdb/pinned
+          git-minimal/pinned
+          procps)))
       (native-search-paths
        (cons*
          ;; For HTTPS access, Cargo reads from a single-file certificate
