@@ -41453,7 +41453,17 @@ Lisp's (relatively new) EIEIO object oriented libraries.")
        (sha256
         (base32 "1y3k82q5iii7ddm6yj7397x2jscbcnvapd04zc5wjkqdr50cay3l"))))
     (build-system emacs-build-system)
-    (arguments (list #:tests? #f))      ;depends on exemplify-ert
+    (arguments
+     (list
+      #:test-command #~(list "make" "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-cask
+            (lambda _
+              (substitute* "Makefile"
+                (("cask ") "")))))))
+    (native-inputs
+     (list emacs-el-mock emacs-exemplify-ert emacs-exemplify-eval))
     (propagated-inputs (list emacs-fedi emacs-magit emacs-tp emacs-transient))
     (home-page "https://codeberg.org/martianh/fj.el")
     (synopsis "Client for Forgejo instances")
