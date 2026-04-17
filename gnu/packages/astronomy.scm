@@ -4359,22 +4359,125 @@ files and provide related services.")
 (define-public python-ctapipe
   (package
     (name "python-ctapipe")
-    (version "0.29.0")
+    (version "0.30.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ctapipe" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cta-observatory/ctapipe/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "063j4xdqj93i00pbsc406iz1rj0qjmqwd46jrd8s7nqnks4f0y2m"))))
+        (base32 "0ii9iyxbm22bqvgwp7gqs0m7n1vy3jyhgs85dikdz0y2vc7irizr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; TODO: The most of the tests require external data, check if it may be
-      ;; packaged of some portion of unit test may be run without it.
-      #:tests? #f))
+      ;; tests: 165 passed, 14 warnings
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              "--pyargs" "ctapipe"
+              "-m" "not vizier"
+              "--durations=20"
+              "--timeout=10")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-test-files
+            ;; XXX: Tests require remote data and can't be ignored with
+            ;; --ignore or --ignore-glob option when --pyargs is provided.
+            ;; Check if the test data may be included to enable more.
+            (lambda _
+              (with-directory-excursion "src/ctapipe"
+                (for-each delete-file
+                          (list "coordinates/tests/test_coordinates.py"
+                                "calib/camera/tests/test_calibrator.py"
+                                "coordinates/tests/test_impact_distance.py"
+                                "coordinates/tests/test_utils.py"
+                                "core/tests/test_component.py"
+                                "core/tests/test_feature_generator.py"
+                                "core/tests/test_provenance.py"
+                                "core/tests/test_telescope_component.py"
+                                "core/tests/test_tool.py"
+                                "core/tests/test_traits.py"
+                                "image/muon/tests/test_intensity_fit.py"
+                                "image/muon/tests/test_processor.py"
+                                "image/muon/tests/test_ring_fitter.py"
+                                "image/tests/test_cleaning.py"
+                                "image/tests/test_concentration.py"
+                                "image/tests/test_extractor.py"
+                                "image/tests/test_hillas.py"
+                                "image/tests/test_image_cleaner_component.py"
+                                "image/tests/test_image_processor.py"
+                                "image/tests/test_invalid_pixels.py"
+                                "image/tests/test_leakage.py"
+                                "image/tests/test_modifications.py"
+                                "image/tests/test_morphology.py"
+                                "image/tests/test_reducer.py"
+                                "image/tests/test_timing_parameters.py"
+                                "image/tests/test_toy.py"
+                                "instrument/camera/tests/test_description.py"
+                                "instrument/camera/tests/test_geometry.py"
+                                "instrument/camera/tests/test_image_conversion.py"
+                                "instrument/camera/tests/test_readout.py"
+                                "instrument/tests/test_optics.py"
+                                "instrument/tests/test_psf_model.py"
+                                "instrument/tests/test_subarray.py"
+                                "instrument/tests/test_telescope.py"
+                                "instrument/tests/test_trigger.py"
+                                "io/tests/test_datawriter.py"
+                                "io/tests/test_event_source.py"
+                                "io/tests/test_eventseeker.py"
+                                "io/tests/test_hdf5.py"
+                                "io/tests/test_hdf5eventsource.py"
+                                "io/tests/test_hdf5monitoringsource.py"
+                                "io/tests/test_merge.py"
+                                "io/tests/test_plugin.py"
+                                "io/tests/test_preprocessing.py"
+                                "io/tests/test_prod2.py"
+                                "io/tests/test_simteleventsource.py"
+                                "io/tests/test_table_loader.py"
+                                "io/tests/test_toysource.py"
+                                "irf/tests/test_benchmarks.py"
+                                "irf/tests/test_optimize.py"
+                                "monitoring/tests/test_calculator.py"
+                                "monitoring/tests/test_interpolator.py"
+                                "monitoring/tests/test_outlier.py"
+                                "reco/tests/test_HillasReconstructor.py"
+                                "reco/tests/test_ImPACT.py"
+                                "reco/tests/test_hillas_intersection.py"
+                                "reco/tests/test_preprocessing.py"
+                                "reco/tests/test_reconstruction_methods.py"
+                                "reco/tests/test_reconstructor.py"
+                                "reco/tests/test_shower_processor.py"
+                                "reco/tests/test_sklearn.py"
+                                "reco/tests/test_telescope_event_handling.py"
+                                "tests/test_atmosphere.py"
+                                "tools/tests/test_apply_models.py"
+                                "tools/tests/test_astropy_cache.py"
+                                "tools/tests/test_calculate_pixel_stats.py"
+                                "tools/tests/test_compute_irf.py"
+                                "tools/tests/test_merge.py"
+                                "tools/tests/test_optimize_event_selection.py"
+                                "tools/tests/test_process.py"
+                                "tools/tests/test_process_ml.py"
+                                "tools/tests/test_tools.py"
+                                "tools/tests/test_train.py"
+                                "visualization/tests/test_bokeh.py"
+                                "visualization/tests/test_mpl.py"
+                                "utils/tests/test_datasets.py")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (delete-file-recursively "src"))))))
     (native-inputs
-     (list python-setuptools
-           python-setuptools-scm))
+     (list nss-certs-for-test
+           python-h5py
+           python-pytest
+           python-pytest-timeout
+           python-pytest-astropy-header
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm
+           python-tomli))
     (propagated-inputs
      (list python-astropy
            python-docutils
