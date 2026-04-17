@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013,2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
@@ -206,6 +206,7 @@
    (eval . (put 'with-imported-modules 'scheme-indent-function 1))
    (eval . (put 'with-extensions 'scheme-indent-function 1))
    (eval . (put 'with-parameters 'scheme-indent-function 1))
+   (eval . (put 'with-transformation 'scheme-indent-function 1))
    (eval . (put 'let-system 'scheme-indent-function 1))
    (eval . (put 'with-build-variables 'scheme-indent-function 2))
 

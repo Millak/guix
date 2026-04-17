@@ -1803,6 +1803,58 @@ importing.* \\(guix config\\) from the host"
                    (not (member (derivation-file-name native) refs))
                    (member (derivation-file-name cross) refs))))))
 
+(test-assertm "lower-object, with-transformation"
+  (mlet* %store-monad ((file -> (computed-file "coreutils-transformed"
+                                               #~(symlink #$coreutils
+                                                          #$output)
+                                               #:guile %bootstrap-guile))
+                       (drv (with-transformation (lambda (obj)
+                                                   (if (eq? obj coreutils)
+                                                       grep
+                                                       obj))
+                              (lower-object file)))
+                       (bad (lower-object coreutils))
+                       (good (lower-object grep))
+                       (refs (references* (derivation-file-name drv))))
+    (return (and (member (derivation-file-name good) refs)
+                 (not (member (derivation-file-name bad) refs))))))
+
+(test-assertm "lower-object, with-transformation, file-append"
+  (mlet* %store-monad ((file -> (computed-file "coreutils-transformed"
+                                               #~(symlink
+                                                  #$(file-append coreutils
+                                                                 "/bin/true")
+                                                  #$output)
+                                               #:guile %bootstrap-guile))
+                       (drv1 (with-transformation (lambda (obj)
+                                                    (if (eq? obj coreutils)
+                                                        coreutils-minimal
+                                                        obj))
+                               (lower-object file)))
+                       (drv2 (lower-object file)) ;cache must be invalidated
+                       (bad (lower-object coreutils))
+                       (good (lower-object coreutils-minimal))
+                       (refs (references* (derivation-file-name drv1))))
+    (return (and (member (derivation-file-name good) refs)
+                 (not (member (derivation-file-name bad) refs))))))
+
+(test-assertm "lower-object, with-transformation, list"
+  (mlet* %store-monad ((file -> (computed-file "coreutils-transformed"
+                                               #~(symlink
+                                                  (car '#$(list coreutils))
+                                                  #$output)
+                                               #:guile %bootstrap-guile))
+                       (drv (with-transformation (lambda (obj)
+                                                   (if (eq? obj coreutils)
+                                                       grep
+                                                       obj))
+                              (lower-object file)))
+                       (bad (lower-object coreutils))
+                       (good (lower-object grep))
+                       (refs (references* (derivation-file-name drv))))
+    (return (and (member (derivation-file-name good) refs)
+                 (not (member (derivation-file-name bad) refs))))))
+
 (test-assertm "references-file"
   (let* ((exp      #~(symlink #$%bootstrap-guile #$output))
          (computed (computed-file "computed" exp

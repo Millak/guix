@@ -47,6 +47,7 @@
   #:use-module (guix utils)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
+  #:use-module ((guix memoization) #:select (mlambdaq))
   #:use-module (rnrs bytevectors)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
@@ -129,6 +130,7 @@
             lowered-gexp-guile
             lowered-gexp-load-path
             lowered-gexp-load-compiled-path
+            with-transformation
 
             with-build-variables
             input-tuples->gexp
@@ -284,6 +286,37 @@ procedure to expand it; otherwise return #f."
   (and=> (hashq-ref %gexp-compilers (struct-vtable object))
          gexp-compiler-expand))
 
+(define current-transformation
+  ;; Object-to-object transformation procedure.  This procedure is invoked for
+  ;; every file-like object that is lowered.
+  (make-parameter identity
+    (lambda (proc)
+      ;; Memoize PROC to avoid repeated calls.
+      (if (eq? proc identity)
+          identity
+          (mlambdaq (obj) (proc obj))))))
+
+(define (transform obj)
+  "Invoke the current transformation on OBJ."
+  ((current-transformation) obj))
+
+(define (with-transformation proc mval)
+  "Install PROC as a file-like transformation procedure, and return MVAL, a
+value in the store monad, in this context.  PROC is passed any file-like that
+gets lowered and must return another file-like object.  A typical use case is
+to replace one package by another."
+  ;; The object cache might contain associations that the new transformation
+  ;; invalidates.  For example, when replacing 'coreutils' by something else,
+  ;; a cached mapping for (file-append coreutils "/bin/env") becomes stale.
+  ;; Not exposing 'current-transformation' also avoids headaches related to
+  ;; dynamic scoping and dynamic-monadic scoping.
+  (state-parameterize ((current-transformation proc))
+    (clear-object-cache)
+    (mlet %store-monad ((val mval))
+      (mbegin %store-monad
+        (clear-object-cache)
+        (return val)))))
+
 (define* (lower-object obj
                        #:optional (system (%current-system))
                        #:key (target 'current))
@@ -296,21 +329,22 @@ OBJ must be an object that has an associated gexp compiler, such as a
                                   (return target)))
                       (graft? (grafting?)))
     (let loop ((obj obj))
-      (match (lookup-compiler obj)
-        (#f
-         (raise (condition (&gexp-input-error (input obj)))))
-        (lower
-         ;; Cache in STORE the result of lowering OBJ.  If OBJ is a
-         ;; derivation, bypass the cache.
-         (if (derivation? obj)
-             (return obj)
-             (mcached (mlet %store-monad ((lowered (lower obj system target)))
-                        (if (and (struct? lowered)
-                                 (not (derivation? lowered)))
-                            (loop lowered)
-                            (return lowered)))
-                      obj
-                      system target graft?)))))))
+      (let ((obj (transform obj)))
+        (match (lookup-compiler obj)
+          (#f
+           (raise (condition (&gexp-input-error (input obj)))))
+          (lower
+           ;; Cache in STORE the result of lowering OBJ.  If OBJ is a
+           ;; derivation, bypass the cache.
+           (if (derivation? obj)
+               (return obj)
+               (mcached (mlet %store-monad ((lowered (lower obj system target)))
+                          (if (and (struct? lowered)
+                                   (not (derivation? lowered)))
+                              (loop lowered)
+                              (return lowered)))
+                        obj
+                        system target graft?))))))))
 
 (define* (lower+expand-object obj
                               #:optional (system (%current-system))
@@ -318,28 +352,29 @@ OBJ must be an object that has an associated gexp compiler, such as a
   "Return as a value in %STORE-MONAD the output of object OBJ expands to for
 SYSTEM and TARGET.  Object such as <package>, <file-append>, or <plain-file>
 expand to file names, but it's possible to expand to a plain data type."
-  (let loop ((obj obj)
-             (expand (and (struct? obj) (lookup-expander obj))))
-    (match (lookup-compiler obj)
-      (#f
-       (raise (condition (&gexp-input-error (input obj)))))
-      (lower
-       (mlet* %store-monad ((graft?  (grafting?))
-                            (lowered (if (derivation? obj)
-                                         (return obj)
-                                         (mcached (lower obj system target)
-                                                  obj
-                                                  system target graft?))))
-         ;; LOWER might return something that needs to be further
-         ;; lowered.
-         (if (struct? lowered)
-             ;; If we lack an expander, delegate to that of LOWERED.
-             (if (not expand)
-                 (loop lowered (lookup-expander lowered))
-                 (return (expand obj lowered output)))
-             (if (not expand)                     ;self-quoting
-                 (return lowered)
-                 (return (expand obj lowered output)))))))))
+  (let loop ((obj obj))
+    (let* ((obj (transform obj))
+           (expand (and (struct? obj) (lookup-expander obj))))
+      (match (lookup-compiler obj)
+        (#f
+         (raise (condition (&gexp-input-error (input obj)))))
+        (lower
+         (mlet* %store-monad ((graft?  (grafting?))
+                              (lowered (if (derivation? obj)
+                                           (return obj)
+                                           (mcached (lower obj system target)
+                                                    obj
+                                                    system target graft?))))
+           ;; LOWER might return something that needs to be further
+           ;; lowered.
+           (if (struct? lowered)
+               ;; If we lack an expander, delegate to that of LOWERED.
+               (if (not expand)
+                   (loop lowered)
+                   (return (expand obj lowered output)))
+               (if (not expand)                     ;self-quoting
+                   (return lowered)
+                   (return (expand obj lowered output))))))))))
 
 (define-syntax define-gexp-compiler
   (syntax-rules (=> compiler expander)

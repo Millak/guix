@@ -13741,6 +13741,36 @@ The example above returns an object that corresponds to the i686 build
 of Coreutils, regardless of the current value of @code{%current-system}.
 @end defmac
 
+@cindex transformation, on gexps
+@cindex customization, via gexp transformation
+@deffn {Procedure} with-transformation @var{proc} @var{mval}
+Install @var{proc} as a file-like transformation procedure, and return
+@var{mval}, a value in the store monad, in this context.  @var{proc} is
+passed any file-like that gets lowered and must return another file-like
+object.  A typical use case is to replace one package by another.
+
+For example, one might replace occurrences of @code{coreutils} with
+@code{coreutils-minimal} in an operating system by doing something like
+this:
+
+@lisp
+(with-transformation (lambda (p)
+                       (if (eq? p coreutils)
+                           coreutils-minimal
+                           p))
+  (lower-object (operating-system @dots{})))
+@end lisp
+
+To modify not just the ``surface'' of things but also entire package
+dependency graph, one might instead resort to procedures like
+@code{options->transformation} as the transformation procedure
+(@pxref{Package Transformation Options}).
+
+The @code{with-transformation} procedure is the ultimate customization
+mechanism since it gets to ``see'' every file-like object that makes up
+the bigger object being lowered.
+@end deffn
+
 @defmac delayed-object @var{exp}
 This macro delays the evaluation of @var{exp} until the returned object
 is lowered to a derivation or store item.
