@@ -5170,29 +5170,26 @@ CFITSIO library.  Among other things, it can
 (define-public python-gammapy
   (package
     (name "python-gammapy")
-    (version "2.0.1")
+    (version "2.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "gammapy" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gammapy/gammapy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0b3gy005zjp1cj5l6ba130r650a1c05krma6vxp902pqvpbyiz8f"))))
+        (base32 "1kgnmp65a3d1h7hd69clhvsfkcj5ishgx63k2vx15xh2ssc45ckz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1830 passed, 800 skipped, 9 xfailed, 1 xpassed, 479 warnings
+      ;; tests: 1892 passed, 831 skipped, 9 xfailed, 1 xpassed, 264 warnings
       #:test-flags
-      #~(list "--pyargs" "gammapy"
+      #~(list "--durations=20"
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              ;; AttributeError: 'TableLoc' object has no attribute 'with_index'
-              "--deselect=data/tests/test_obs_table.py::test_basics")
+              "--pyargs" "gammapy")
       #:phases
       #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               ;; "matplotlib>=3.8,<3.10",
-               ((">=3.8,<3.10") ">=3.8"))))
           (add-before 'build 'set-home-env
             (lambda _
               (setenv "HOME" "/tmp")))
@@ -5229,14 +5226,14 @@ CFITSIO library.  Among other things, it can
     (home-page "https://gammapy.org")
     (synopsis "Gamma-ray astronomy in Python")
     (description
-     "Gammapy is an Python package for gamma-ray astronomy built on Numpy, Scipy and
-Astropy.  It is used as core library for the Science Analysis tools of the
-Cherenkov Telescope Array (CTA), recommended by the H.E.S.S. collaboration to
-be used for Science publications, and is already widely used in the analysis
-of existing gamma-ray instruments, such as @acronym{MAGIC, Major Atmospheric
-Gamma Imaging Cherenkov Telescopes} @acronym{VERITAS, Very Energetic Radiation
-Imaging Telescope Array System} and @acronym{HAWC, The High-Altitude Water
-Cherenkov Gamma-Ray Observatory}.")
+     "Gammapy is an Python package for gamma-ray astronomy built on Numpy,
+Scipy and Astropy.  It is used as core library for the Science Analysis tools
+of the Cherenkov Telescope Array (CTA), recommended by the
+H.E.S.S. collaboration to be used for Science publications, and is already
+widely used in the analysis of existing gamma-ray instruments, such as
+@acronym{MAGIC, Major Atmospheric Gamma Imaging Cherenkov Telescopes}
+@acronym{VERITAS, Very Energetic Radiation Imaging Telescope Array System} and
+@acronym{HAWC, The High-Altitude Water Cherenkov Gamma-Ray Observatory}.")
     (license license:bsd-3)))
 
 (define-public python-gatspy
