@@ -105,7 +105,7 @@ counts forward or for just showing the current time.")
 (define-public time
   (package
     (name "time")
-    (version "1.9")
+    (version "1.10")
     (source
      (origin
        (method url-fetch)
@@ -113,7 +113,7 @@ counts forward or for just showing the current time.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "07jj7cz6lc13iqrpgn81ivqh8rkm73p4rnivwgrrshk23v4g1b7v"))))
+         "1hq9vvam1bi8xz9d09xgj2fdxbmq1psii1hywiw897armfs9zhp8"))))
     (build-system gnu-build-system)
     (home-page "https://www.gnu.org/software/time/")
     (synopsis "Run a command, then display its resource usage")
@@ -562,7 +562,7 @@ time, a duration, a timezone, but not a range or interval.")
     (arguments
      (list
       ;; tests: 106 passed, 1 deselected
-      ;; 
+      ;;
       ;; TODO: Guix has lower python-pytz than required in the latest
       ;; version:  pytz.exceptions.UnknownTimeZoneError:
       ;; 'America/Ciudad_Juarez'

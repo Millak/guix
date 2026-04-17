@@ -347,7 +347,7 @@ test "`guix build superseded -d`" = "`guix build bar -d`"
 
 # Parsing package names and versions.
 guix build -n time		# PASS
-guix build -n time@1.9		# PASS, version found
+guix build -n time@1.10	# PASS, version found
 guix build -n time@3.2 && false	# FAIL, version not found
 guix build -n something-that-will-never-exist && false	# FAIL
 
