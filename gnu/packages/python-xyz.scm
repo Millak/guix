@@ -16973,13 +16973,13 @@ the @code{sendfile(2)} system call.")
 (define-public python-pyftpdlib
   (package
     (name "python-pyftpdlib")
-    (version "1.5.7")
+    (version "1.5.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyftpdlib" version))
        (sha256
-        (base32 "0vk5gcx4svjrpm014ykwxmijqihgb4ha17kb3yphk0nv6x0wx8vy"))))
+        (base32 "0a3i1253d3qp9rqb64wdq908a05bn7yizqys92vjzfmw2l9fpgcd"))))
     (build-system pyproject-build-system)
     ;; Using Pytest instead of the Makefile causes the command line tests to
     ;; fail on unknown Pytest arguments.
