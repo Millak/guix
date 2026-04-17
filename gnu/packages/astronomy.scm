@@ -7518,7 +7518,7 @@ position-frequency slice.")
 (define-public python-pyastronomy
   (package
     (name "python-pyastronomy")
-    (version "0.24.0")
+    (version "0.25.0")
     (source
      (origin
        (method git-fetch)
@@ -7528,7 +7528,7 @@ position-frequency slice.")
                        "v_" (string-replace-substring version "." "-")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01gpcvm6nw2arhnsicv983qbqi74plfxn1bqn325fffdw8qnfbhx"))))
+        (base32 "1kf7mi22m1pm7h41kbc9wpj6xv650zm3bj3qbh8as9a55pvkwpcv"))))
     (build-system pyproject-build-system)
     (arguments
      ;; See: <https://github.com/sczesla/PyAstronomy/issues/64>.
