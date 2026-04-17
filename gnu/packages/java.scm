@@ -1285,7 +1285,13 @@ new Date();"))))
                 ;; It looks like the "--disable-warnings-as-errors" option of
                 ;; the 'configure' phase is not working.
                 (substitute* "make/autoconf/generated-configure.sh"
-                  (("-Werror") ""))))))
+                  (("-Werror") ""))))
+            #$@(if (target-x86-32?)
+                   ;; On i686 the C2 compiler sometimes crashes when importing
+                   ;; certificates.
+                   #~((add-before 'install-keystore 'disable-C2-compiler
+                        (lambda _ (setenv "_JAVA_OPTIONS" "-XX:TieredStopAtLevel=1"))))
+                   #~())))
        ((#:disallowed-references refs '())
         (cons* (this-package-native-input "openjdk")
                (gexp-input (this-package-native-input "openjdk") "jdk")
