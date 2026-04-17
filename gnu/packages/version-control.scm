@@ -3522,21 +3522,18 @@ modification time.")
     (license license:bsd-2)))
 
 (define-public libfossil
-  (let ((ci "914ed6dcaff13bf7209c9f27ccfb77c2d8fdf36b8d2133aa1590258b0708f035")
-        (revision "0"))
     (package
       (name "libfossil")
-      (version (fossil-version "0.6.0" revision ci))
+      (version "0.6.0")
       (source
        (origin
          (method fossil-fetch)
          (uri (fossil-reference
                (uri "https://fossil.wanderinghorse.net/r/libfossil")
-               (check-in ci)))
+               (check-in version)))
          (file-name (fossil-file-name name version))
          (sha256
-          (base32 "0a0ycnnba2izmiqjj8hgvjgjdwhpn0x36lhy3vmw4j7bhny0df52"))
-         (patches (search-patches "libfossil-skip-amalgamation.patch"))
+          (base32 "0haaczpjnjpkiikf0q70nfabm2csdk6dl9rh80j0sh90wfvkyqwm"))
          (modules '((guix build utils)
                     (ice-9 ftw)
                     (srfi srfi-26)))
@@ -3587,7 +3584,7 @@ modification time.")
        "@code{libfossil} is an alternative interface into Fossil repositories,
 as opposed to a replacement for the core fossil application,
 intended for new ways to access and manipulate fossil repositories.")
-      (license license:bsd-2))))
+      (license license:bsd-2)))
 
 (define-public fnc
   (package
