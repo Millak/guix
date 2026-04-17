@@ -60,6 +60,7 @@
 ;;; Copyright © 2025 Andy Tai <atai@atai.org>
 ;;; Copyright © 2025 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2026 Matt Wette <matt.wette@gmail.com>
+;;; Copyright © 2026 Dzianis Jackievič <mail@miesta.by>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6398,6 +6399,87 @@ as signed sessions, multipart message support, etc.")
      (list guile-2.2))
     (propagated-inputs
      (list guile2.2-irregex guile2.2-gcrypt))))
+
+(define-public guile-compose
+  (package
+    (name "guile-compose")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/jadzi/guile-compose.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g68gczs96nrb0vf1hv4n07zsp2516gpiwq1wwlhcq4rzynhf12h"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~'("GUILE_AUTO_COMPILE=0")))
+    (inputs (list guile-3.0))
+    (native-inputs (list autoconf-2.72 automake pkg-config guile-3.0 texinfo))
+    (synopsis "Procedure composition utilities for Guile Scheme")
+    (description
+     "This tiny package provides some procedures and macros to extend
+Guile Scheme procedure composition facilities.  For example, there is
+a @code{compose-top}, a reverse-order analog to native @code{compose}
+procedure.  The @code{compose-cont} is a macro, utilizing some power of
+continuations to build really flexible flows.
+
+This library is intended to stay basic and small, so it has no any
+external dependencies and can be a good base for other packages, like e.g.
+@code{guile-web-middleware}.")
+    (license (list license:lgpl3+))
+    (home-page "https://jadzi.codeberg.page/guile-compose")))
+
+(define-public guile-web-middleware
+  (package
+    (name "guile-web-middleware")
+    (version "0.11.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/jadzi/guile-web-middleware.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01wb8v0lszphdv08ly4aqv59qm5h8yw2fgm025vkn61djspsq4j9"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~'("GUILE_AUTO_COMPILE=0")))
+    (inputs (list guile-3.0 guile-compose))
+    (native-inputs (list autoconf-2.72 automake pkg-config guile-3.0 texinfo))
+    (synopsis "Web application middleware composition for Guile Scheme")
+    (description
+     "This package provides means to compose a web application by
+chaining procedures, a.k.a. middlewares.  By those means, composed
+procedures form a standard request handler for any Guile's web server
+implementation.
+
+Each middleware has its own limited responsibility in request
+processing.  Also, middlewares are simple Scheme procedures, so they
+can be easily tested and shared among web applications.
+
+Out of the box, this package provides several procedures for commonly
+required tasks.  Among them:
+
+@itemize
+@item Error handling with customizable page contents.
+@item Request filtering.
+@item Request logging.
+@item Serving static files, file URL generation.
+@item Request routing, handling parameters, route URL generation.
+@item Middleware nesting, composing whole apps.
+@end itemize
+
+This package relies on @code{guile-compose} package as its only dependency.")
+    (license (list license:lgpl3+))
+    (home-page "https://jadzi.codeberg.page/guile-web-middleware")))
 
 (define-public guile-web-driver-ng
   (package
