@@ -1307,12 +1307,11 @@ to that transformation."
      (fold (match-lambda*
              (((name value transform) obj)
               (let ((new (transform obj)))
-                (when (eq? new obj)
+                (when (and (eq? new obj)
+                           (package? obj))
                   (warning (G_ "transformation '~a' had no effect on ~a~%")
                            name
-                           (if (package? obj)
-                               (package-full-name obj)
-                               obj)))
+                           (package-full-name obj)))
                 new)))
            obj
            applicable))))
