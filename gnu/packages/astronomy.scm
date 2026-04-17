@@ -7742,7 +7742,7 @@ Function} and Sensitivities.")
 (define-public python-pynbody
   (package
     (name "python-pynbody")
-    (version "2.4.1")
+    (version "2.4.2")
     (source
      (origin
        (method git-fetch)
@@ -7751,7 +7751,7 @@ Function} and Sensitivities.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jh83xp2grln58p4pr2d0627f7ldsqwib1ipjkg1snpb4vw9hfag"))
+        (base32 "03gzqxkk8cj3riba7ssnq16ww70ll7rlxpdvppq0g4m65rd93mrn"))
        (modules '((guix build utils)))
        (snippet
         ;; Symlink goes to not existing directory.
@@ -7836,7 +7836,7 @@ Function} and Sensitivities.")
            python-osfclient
            python-scipy))
     (home-page "https://pynbody.readthedocs.io/latest/")
-    (synopsis "Light-weight astronomical N-body/SPH analysis for python")
+    (synopsis "Light-weight astronomical N-body/SPH analysis for Python")
     (description
      "@code{Pynbody} is an analysis framework for N-body and hydrodynamic
 astrophysical simulations supporting PKDGRAV/Gasoline, Gadget, Gadget4/Arepo,
