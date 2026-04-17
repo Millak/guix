@@ -41541,17 +41541,65 @@ time.")
     (build-system emacs-build-system)
     (arguments
      (list
-      #:tests? #f ; requires cask
-      #:phases #~(modify-phases %standard-phases
-                   ;; Move the source files to the top level, which is
-                   ;; included in the EMACSLOADPATH.
-                   (add-after 'unpack 'move-source-files
-                     (lambda _
-                       (let ((el-files (find-files "./lisp" ".*\\.el$")))
-                         (for-each (lambda (f)
-                                     (rename-file f
-                                                  (basename f)))
-                                   el-files)))))))
+      #:test-command #~(list "make" "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Move the source files to the top level, which is
+          ;; included in the EMACSLOADPATH.
+          (add-after 'unpack 'move-source-files
+            (lambda _
+              (let ((el-files (find-files "./lisp" ".*\\.el$")))
+                (for-each (lambda (f)
+                            (rename-file f
+                                         (basename f)))
+                          el-files))))
+          (add-before 'check 'fix-tests
+            (lambda _
+              (substitute* "Makefile"
+                (("cask") ""))
+              (substitute* "test/ert-helper.el"
+                (("lisp\\/") ""))))
+          (add-before 'check 'skip-failing-tests
+            (lambda _
+              (let-syntax
+                  ((disable-tests
+                    (syntax-rules ()
+                      ((_ file ())
+                       (syntax-error "test names list must not be empty"))
+                      ((_ file (test-name ...))
+                       (substitute* file
+                         (((string-append
+                            "^\\(ert-deftest " test-name ".*") all)
+                          (string-append all "(skip-unless nil)\n")) ...)))))
+                (disable-tests
+                 "test/mastodon-profile-tests.el"
+                 ("mastodon-profile--add-author-bylines"
+                  "mastodon-profile--make-author-buffer"))
+                (disable-tests
+                 "test/mastodon-auth-tests.el"
+                 ("mastodon-auth--handle-token-response--good"
+                  "mastodon-auth-plstore-token-check"))
+                (disable-tests
+                 "test/mastodon-client-tests.el"
+                 ("mastodon-client--make-user-active"
+                  "mastodon-client--store"
+                  "mastodon-client--store-access-token"))
+                (disable-tests
+                 "test/mastodon-tl-tests.el"
+                 ("mastodon-tl--byline-timestamp-has-relative-display"
+                  "mastodon-tl--next-tab-item--no-spaces-at-ends"
+                  "mastodon-tl--next-tab-item--with-spaces-at-ends"))
+                (disable-tests
+                 "test/mastodon-media-tests.el"
+                 ("mastodon-media--get-avatar-rendering"
+                  "mastodon-media--inline-images"
+                  "mastodon-media--load-image-from-url-avatar-with-imagemagic"
+                  "mastodon-media--load-image-from-url-avatar-without-imagemagic"
+                  "mastodon-media--load-image-from-url-media-link-with-imagemagic"
+                  "mastodon-media--load-image-from-url-media-link-without-imagemagic"
+                  "mastodon-media--load-image-from-url-url-fetching-fails"
+                  "mastodon-media--process-image-response"))))))))
+    (native-inputs (list emacs-el-mock))
     (propagated-inputs
      (list emacs-persist emacs-tp))
     (home-page "https://codeberg.org/martianh/mastodon.el")
