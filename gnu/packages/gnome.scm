@@ -10628,7 +10628,6 @@ playing media, scanning, and much more.")
            cheese
            decibels
            epiphany
-           evince
            file-roller
            gnome-calculator
            gnome-calendar
@@ -10648,6 +10647,7 @@ playing media, scanning, and much more.")
            localsearch
            loupe
            nautilus
+           papers
            simple-scan
            showtime
            xdg-desktop-portal-gnome
