@@ -23060,6 +23060,35 @@ the Emacs Tempo library.  You may also write your templates in Lisp.")
 the Emacs TempEl package.")
       (license license:gpl3+))))
 
+(define-public emacs-aas
+  ;; This revision provides two commits past 1.2; one bug fix and
+  ;; improvements to the documentation.
+  (let ((commit "ddc2b7a58a2234477006af348b30e970f73bc2c1")
+        (revision "0"))
+    (package
+      (name "emacs-aas")
+      (version (git-version "1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/ymarco/auto-activating-snippets")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "03rqj11xdkspxcx2zjd71fnk7lpcjr0lws0i729qhsi1nr98jjn4"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
+      (home-page "https://github.com/ymarco/auto-activating-snippets")
+      (synopsis "As-you-type template expansions")
+      (description "The Auto Activating Snippets package is an engine for
+auto-expanding templates. @file{aas.el} tracks input by character along a tree
+until it reaches a registered key sequence. It’s like running a long prefix
+command, but the keys you type appear in the buffer until you complete a
+registered sequence, at which point the template triggers.")
+      (license license:gpl3+))))
+
 (define-public emacs-yasnippet
   (let ((commit "dd570a6b22364212fff9769cbf4376bdbd7a63c5"))
     (package
