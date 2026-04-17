@@ -8131,25 +8131,20 @@ natively in Siril.")
 (define-public python-pysm3
   (package
     (name "python-pysm3")
-    ;; NumPy2 support was added after 3.4.4 was released.
-    (properties '((commit . "060913e7af72e12aba4bcc94b7f3d2d7a2bc878f")
-                  (revision . "1")))
-    (version (git-version "3.4.3"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "3.4.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/galsci/pysm")
-              (commit (assoc-ref properties 'commit))))
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qip5iwn6lb5xwzglxjjcznqc9vhgrfbsri1xwma6g4ffhnqxgbx"))))
+        (base32 "1sig5h9v9xw1c5rk0891yh7pxx68ckjwkg59cbzvd8skcqvmmwh8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 73 passed, 2 skipped, 98 deselected, 3 warnings
+      ;; tests: 73 passed, 2 skipped, 98 deselected, 1 warning
       #:test-flags
       ;; XXX: Tests requiring additional FITS files, check if they may be
       ;; packages:
