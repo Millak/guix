@@ -9833,17 +9833,20 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.17.0")
+    (version "1.18.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "stcal" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacetelescope/stcal")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1897nclhw98gqg1krjky13nbfmbi0q1qa8dfzh96lq8d8yfgrix5"))))
+        (base32 "05p0pljqd6dpp45vgkirn0qa0r691bdjjb1n19qlqjpbd0jsqv76"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 676 passed, 12 warnings
+      ;; tests: 683 passed, 12 warnings
       #:test-flags
       #~(list "--pyargs" "stcal"
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
