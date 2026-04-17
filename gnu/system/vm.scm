@@ -189,9 +189,9 @@ environment with the store shared with the host.  MAPPINGS is a list of
                            (kernel-version
                              (package-version (operating-system-kernel os)))
                            (cirrus-module
-                             (if (string< kernel-version "6.14")
-                               "cirrus"
-                               "cirrus-qemu")))
+                             (if (version>=? kernel-version "6.14")
+                               "cirrus-qemu"
+                               "cirrus")))
                       (if (member cirrus-module modules)
                           modules
                           (cons cirrus-module modules))))
