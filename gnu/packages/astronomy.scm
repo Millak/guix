@@ -7741,34 +7741,17 @@ using the PyCPL Python API.")
 (define-public python-pyhalo
   (package
     (name "python-pyhalo")
-    (version "1.4.3")
+    (version "1.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyhalo" version))
        (sha256
-        (base32 "1yh5acjiwkfm4sjiydksg9187k3lwsads1p9zy0ck7wb6jwxrj81"))))
+        (base32 "0gwlcsgd4pd9smy8wx1bqk77bmd475plmqshj7r7czm8vh0w9lqr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 194 passed, 3 deselected, 22922 warnings
-      #:test-flags
-      ;; See: <https://github.com/dangilman/pyHalo/issues/73>.
-      #~(list #$@(map (lambda (ls) (string-append "--deselect=tests/"
-                                                  (string-join ls "::")))
-                      ;; Arrays are not almost equal to 7 decimals
-                      ;; ACTUAL: 14.246936385951503
-                      ;; DESIRED: 14.247120064947586
-                      '(("test_halos/test_concentrations.py"
-                         "TestConcentration"
-                         "test_concentration_diemer_joyce")
-                        ;; ValueError: The truth value of an array with more
-                        ;; than one element is ambiguous. Use a.any() or
-                        ;; a.all()
-                        ("test_halos/test_nfw_halo.py" "TestNFWHalos"
-                         "test_vmax")
-                        ("test_halos/test_tnfw_halo.py" "TestTNFWHalos"
-                         "test_vmax"))))
+      ;; tests: 219 passed, 22679 warnings
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-setupup.py
