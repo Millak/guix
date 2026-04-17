@@ -27921,9 +27921,9 @@ included within Emacs.  See @code{esxml-to-xml} for a concise description of
 the format.")
     (license license:gpl3+)))
 
-(define-public emacs-nov-el
+(define-public emacs-nov
   (package
-    (name "emacs-nov-el")
+    (name "emacs-nov")
     (version "0.5.0")
     (source
      (origin
@@ -27951,6 +27951,9 @@ the format.")
     (description
      "@code{nov.el} provides a major mode for reading EPUB documents.")
     (license license:gpl3+)))
+
+(define-deprecated-package emacs-nov-el
+  emacs-nov)
 
 (define-public epipe
   (package
@@ -41044,7 +41047,7 @@ text-property translator.")
     (native-inputs (list emacs-buttercup
                          emacs-djvu
                          emacs-log4e
-                         emacs-nov-el
+                         emacs-nov
                          emacs-org-roam
                          emacs-pdf-tools
                          emacs-with-simulated-input))
