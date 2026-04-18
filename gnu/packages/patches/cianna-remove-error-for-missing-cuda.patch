@@ -1,0 +1,32 @@
+From 5eed2d2ca7c13c08ca7eb92fc4a78c30ca4b6b3d Mon Sep 17 00:00:00 2001
+From: Hellseher <sharlatanus@gmail.com>
+Date: Sat, 18 Apr 2026 08:26:29 +0000
+Subject: [PATCH] Remove CUDA error handling from network.c
+
+Removed error handling for CUDA compilation check.
+
+Fixes: https://github.com/Deyht/CIANNA/issues/4
+---
+ src/network.c | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/src/network.c b/src/network.c
+index d454f64..5a9497c 100644
+--- a/src/network.c
++++ b/src/network.c
+@@ -155,15 +155,6 @@ CIANNA V-1.0.1.2 stable build (04/2026), by D.Cornu\n\
+ 		init_cuda(networks[network_number]);
+ 	#endif
+ 	
+-	#ifndef CUDA
+-	if(comp_int == C_CUDA)
+-	{
+-		printf("\n ERROR: compute method set to CUDA while CIANNA was not compiled for it.\n");
+-		printf(" Install Nvidia CUDA and recompile CIANNA with the appropriate option.\n\n");
+-		exit(EXIT_FAILURE);
+-	}
+-	#endif
+-	
+ 	#ifndef BLAS
+ 	if(comp_int == C_BLAS)
+ 	{

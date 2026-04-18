@@ -705,59 +705,40 @@ in FITS files.")
 (define-public cianna
   (package
     (name "cianna")
-    (version "1.0.0")
+    ;; Project does not publish regular releases, see:
+    ;; <https://github.com/Deyht/CIANNA/issues/3>.
+    (properties '((commit . "c9aa934a931ed77663997f0f20172ee7f63b068a")
+                  (revision . "0")))
+    (version (git-version "1.0.1.2"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/Deyht/CIANNA")
-              (commit (string-append "V-" version ".0"))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i7czicyiy9lldsrarsh9lpjm4znx3gnsi1kqqyhiafxjxsji35k"))))
-    (build-system gnu-build-system)
+        (base32 "1xdm5sfk2w49sg8bpalw5yy2nmfmrmlbyf5bshhg9621rzp5r6p7"))
+       (patches
+        ;; XXX: See: <https://github.com/Deyht/CIANNA/issues/4>.
+        (search-patches "cianna-remove-error-for-missing-cuda.patch"))))
+    (build-system cmake-build-system)
     (arguments
      (list
+      #:tests? #f        ;no tests
+      #:build-type "Release"
+      #:configure-flags
+      #~(list "-DUSE_BLAS=ON" "-DBUILD_MODULE=OFF" "-DUSE_CUDA=OFF")
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'configure) ; no configure
-          (delete 'check)     ; no tests
-          (add-after 'unpack 'fix-paths
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let* ((blas #$(this-package-input "openblas")))
-                (substitute* "compile.cp"
-                  (("/usr/bin/gcc")
-                   #$(cc-for-target))
-                  (("/opt/OpenBLAS/include/")
-                   (string-append blas "/include/"))
-                  (("/opt/OpenBLAS/lib")
-                   (string-append blas "/lib")))
-                (substitute* "src/python_module_setup.py"
-                  (("/opt/OpenBLAS/include")
-                   (string-append blas "/include"))
-                  (("/opt/OpenBLAS/lib")
-                   (string-append blas "/lib"))))))
-          (replace 'build
-            (lambda* _
-                (substitute* "compile.cp"
-                  (("-Wno-unknown-pragmas")
-                   "-Wno-unknown-pragmas -Wno-error=maybe-uninitialized"))
-              (invoke "./compile.cp" "BLAS" "OPEN_MP" "LPTHREAD" "PY_INTERF")))
-          (replace 'install
+          (replace 'install             ;no install rule
             (lambda _
-              (rename-file "main" "cianna-cpu")
-              (install-file "cianna-cpu" (string-append #$output "/bin"))))
-          (add-after 'install 'install-python
-            (lambda _
-              (with-directory-excursion "src"
-                (invoke "python" "python_module_setup.py" "install"
-                        "--root=/"
-                        (string-append "--prefix=" #$output))))))))
-    (native-inputs
-     (list python-wrapper
-           python-numpy
-           python-setuptools))
-    (inputs (list openblas))
+              (let ((bin (string-append #$output "/bin")))
+                (install-file "cianna" bin)))))))
+    (inputs
+     (list openblas))
     (home-page "https://github.com/Deyht/CIANNA")
     (synopsis "Deep learning framework for astronomical data analysis")
     (description
