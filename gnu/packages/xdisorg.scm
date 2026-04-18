@@ -76,6 +76,7 @@
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Untrusem <mysticmoksh@riseup.net>
 ;;; Copyright © 2026 VnPower <vnpower@loang.net>
+;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3199,7 +3200,7 @@ introspection files (Python, Vala, etc, see using the library below).")
 (define-public wl-color-picker
   (package
     (name "wl-color-picker")
-    (version "1.3")
+    (version "1.4")
     (home-page "https://github.com/jgmdev/wl-color-picker")
     (source (origin
               (method git-fetch)
@@ -3209,7 +3210,7 @@ introspection files (Python, Vala, etc, see using the library below).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0h5b8qfwri7a1invk8dran3436ac37x6r8fic3l5cxqj5rgnky4n"))))
+                "0z0pmfk99zicny9308zf4b4aygrb6r6c6zc8296l080zjhxiwkmv"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan '(("wl-color-picker.sh" "bin/wl-color-picker")
@@ -3218,17 +3219,25 @@ introspection files (Python, Vala, etc, see using the library below).")
                          "share/icons/hicolor/scalable/apps/")
                         ("wl-color-picker.desktop" "share/applications/"))
        #:phases (modify-phases %standard-phases
-                  (add-after 'install 'wrap-script
+                  (add-after 'install 'wrap-program
                     (lambda* (#:key outputs #:allow-other-keys)
                       (wrap-program (string-append (assoc-ref outputs "out")
                                                    "/bin/wl-color-picker")
                                     `("PATH" =
-                                      (,(getenv "PATH")))))))))
-    (inputs (list coreutils-minimal
-                  bash-minimal
+                                      (,(dirname (which "convert"))
+                                       ,(dirname (which "cut"))
+                                       ,(dirname (which "grep"))
+                                       ,(dirname (which "grim"))
+                                       ,(dirname (which "notify-send"))
+                                       ,(dirname (which "slurp"))
+                                       ,(dirname (which "wl-copy"))
+                                       ,(dirname (which "zenity"))))))))))
+    (inputs (list bash-minimal
+                  coreutils-minimal
                   grim
                   hicolor-icon-theme
                   imagemagick
+                  libnotify
                   slurp
                   wl-clipboard
                   zenity))
