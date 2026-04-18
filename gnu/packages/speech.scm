@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2024 Sébastien Lerique <sl@eauchat.org>
+;;; Copyright © 2026 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -643,7 +644,7 @@ recognition engine.")
 (define-public ekho
   (package
     (name "ekho")
-    (version "8.6")
+    (version "9.0")
     (source
      (origin
        (method url-fetch)
@@ -651,12 +652,34 @@ recognition engine.")
         (string-append "mirror://sourceforge/e-guidedog/Ekho/"
                        version "/ekho-" version ".tar.xz"))
        (sha256
-        (base32 "1hxdh8bs4zs83w19z897wb4n8n0kyv0ycjfwbi5w0j7mcxsqwh27"))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list alsa-lib espeak-ng libsndfile pulseaudio))
+        (base32 "04wcz9g8cbpq3x0ymxwg2kyd82pjbk620b6hm11285283k1z13px"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-configure-script
+            ;; Trigger the rebuild of configure script
+            (lambda _
+              (delete-file "configure")))
+          (add-before 'configure 'set-cxxflag-utf8cpp
+            (lambda _
+              (setenv "CXXFLAGS"
+                      (string-append "-I"
+                                     #$(this-package-input "utfcpp")
+                                     "/include/utf8cpp")))))))
+    (inputs
+     (list alsa-lib
+           espeak-ng
+           libsndfile
+           pulseaudio
+           sonic
+           utfcpp))
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           pkg-config))
     (native-search-paths
      (list (search-path-specification
             (variable "EKHO_DATA_PATH")
@@ -664,7 +687,7 @@ recognition engine.")
     (home-page "https://eguidedog.net/ekho.php")
     (synopsis "Chinese text-to-speech software")
     (description
-     "Ehko is a Text-To-Speech (TTS) software.  It supports Cantonese,
+     "Ehko is a @acronym{TTS, Text-To-Speak} software.  It supports Cantonese,
 Mandarin, Toisanese, Zhaoan Hakka, Tibetan, Ngangien and Korean (in trial).
 It can also speak English through eSpeak or Festival.")
     (license (list license:gpl2+
