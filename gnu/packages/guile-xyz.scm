@@ -7938,14 +7938,16 @@ This module implements this interface by use of Guile's dynamic FFI.")
 (define-public guile-bstructs
   (package
     (name "guile-bstructs")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://files.dthompson.us/releases"
-                           "/guile-bstructs/guile-bstructs-" version ".tar.gz"))
-       (sha256
-        (base32 "0f847aiyzhrlvd2jmckyqrkrvi7i9mg8rmyhbh7fs1vzykcf67wb"))))
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.dthompson.us/guile-bstructs.git")
+               (commit (string-append "v" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "18dwhcsbcjix61hy32ckjyvgmg1r9smq2krp2m1yc6sinlszh0f2"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake guile-3.0 pkg-config texinfo))
     (inputs (list guile-3.0))
