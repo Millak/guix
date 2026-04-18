@@ -276,7 +276,7 @@ Ed448-Goldilocks and Curve448, using the Decaf encoding.")
 (define-public libsodium
   (package
     (name "libsodium")
-    (version "1.0.21")
+    (version "1.0.22")
     (source
      (origin
        (method git-fetch)
@@ -286,7 +286,7 @@ Ed448-Goldilocks and Curve448, using the Decaf encoding.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1l6pc3m8zl1sip9ib91bjsb2z2zr7xa7bhblwwmyn9x4nkwqj17n"))))
+         "05lqdn6nzldsia5mv5a9xfvc5k0kybh9snwv7qsb135gva4bpjwk"))))
     (build-system gnu-build-system)
     (synopsis "Portable NaCl-based crypto library")
     (description
