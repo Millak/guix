@@ -180,7 +180,7 @@ supported by Canonical since 2009.")
        (list libapparmor))
       ;; Python module `readline' needed
       (native-inputs
-       (list bison flex gettext-minimal perl python which))
+       (list bison flex gettext-minimal perl python python-setuptools which))
       (license license:gpl2))))
 
 (define-public pam-apparmor
