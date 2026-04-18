@@ -1081,7 +1081,7 @@ Noto Sans, Space Mono and Ubuntu families.")
 (define-public python-pymupdf
   (package
     (name "python-pymupdf")
-    (version "1.26.7")
+    (version "1.27.2.2")
     (source
      (origin
        (method git-fetch)
@@ -1091,7 +1091,7 @@ Noto Sans, Space Mono and Ubuntu families.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1h11kd4kd63p0jlhhm0ppb9k8p6l4bp0cdx425xhqa5pw569vs7c"))))
+         "00mdx8vz8zf6fckhyzaydfnqvs281245pvnddzz3b3mqmqqhigd3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1156,6 +1156,7 @@ Noto Sans, Space Mono and Ubuntu families.")
                              python-pymupdf-fonts))
     (native-inputs (list python-codespell
                          python-flake8
+                         python-mypy    ;for tests
                          python-psutil  ;for tests
                          python-pylint
                          python-pytest
