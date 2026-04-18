@@ -2466,21 +2466,28 @@ install an implementation package such as gwcs.")
 (define-public python-asdf-zarr
   (package
     (name "python-asdf-zarr")
-    (version "0.0.4")
+    ;; To support latest ASDF.
+    (properties '((commit . "df31d9008b07d2a2c0f47df2d550a0bbd4151bb5")
+                  (revision . "0")))
+    (version (git-version "0.0.4"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "asdf_zarr" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/asdf-format/asdf-zarr")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0xddz4hnsypyvqxhi43alaqh2vl1ripcl4p63qn6dk2v90lra8c0"))))
+        (base32 "09ba9740wf0vlmyql2pv6ll8vf76p2w6nc28m8dnpmbyqib7cx2v"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-asdf-3
+     (list python-asdf
            python-fsspec
            python-zarr))
     (home-page "https://github.com/asdf-format/asdf-zarr")
