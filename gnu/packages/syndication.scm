@@ -10,6 +10,7 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,7 @@
 (define-module (gnu packages syndication)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
+  #:use-module (guix fossil-download)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -74,6 +76,33 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (srfi srfi-1))
+
+(define-public fead
+  (package
+    (name "fead")
+    (version "1.0.1")
+    (source
+     (origin
+       (method fossil-fetch)
+       (uri (fossil-reference
+             (uri "https://chim.loan/fead")
+             (check-in version)))
+       (sha256
+        (base32 "0fzxabmxpyd04v5ym20xhjcnh0vqdwc6z1xjrq676d2k0hr2rzz2"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure))))
+    (inputs (list python))
+    (native-inputs (list help2man))
+    (home-page "https://chim.loan/fead")
+    (synopsis "Advert generator from web feeds")
+    (description "Fead a tool for advertising other blogs you like on your own
+by embedding the summary of their latest posts extracted from their web feed.")
+    (license license:agpl3+)))
 
 (define-public giara
   (package
