@@ -37,6 +37,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
@@ -209,10 +210,17 @@ framework.  It builds XMPP clients complying with the XMPP Compliance Suites
            (add-before 'check 'set-home
              (lambda _
                ;; Tests need write permission in $HOME.
-               (setenv "HOME" "/tmp"))))))
+               (setenv "HOME" "/tmp")))
+           (add-after 'install 'wrap-program
+             (lambda _
+               (let ((gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                 (wrap-program (string-append #$output "/bin/kaidan")
+                   `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
     (native-inputs (list extra-cmake-modules
                          pkg-config))
-    (inputs (list gstreamer
+    (inputs (list bash-minimal
+                  gst-plugins-good-qt
+                  gstreamer
                   icu4c
                   kcrash
                   kdsingleapplication
