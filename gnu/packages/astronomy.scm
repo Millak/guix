@@ -9138,7 +9138,7 @@ orbits described in TLE files.")
 (define-public python-sirilic
   (package
     (name "python-sirilic")
-    (version "2.0.9")
+    (version "2.0.10")
     (source
      (origin
        (method git-fetch)
@@ -9147,7 +9147,7 @@ orbits described in TLE files.")
               (commit (string-append "V." version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ij6jsza57ahhyg3ljizc877s4kb66is455md5jll9540k20kz0a"))))
+        (base32 "14agijhy85162rrnnxdvlfwpps1jl7ar0mkmvllzc208naxma61m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
