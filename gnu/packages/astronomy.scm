@@ -4012,6 +4012,19 @@ data in the CHIANTI database.")
      "This package contains a helper functionality to test ROMAN and JWST.")
     (license license:bsd-3)))
 
+(define-public python-cianna
+  (package
+    (inherit cianna)
+    (name "python-cianna")
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))
+    (native-inputs
+     (list cmake-minimal
+           python-numpy
+           python-setuptools))
+    (synopsis "Python bindings for CIANNA")))
+
 (define-public python-cmyt
   (package
     (name "python-cmyt")
