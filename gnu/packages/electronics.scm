@@ -295,6 +295,47 @@ formal verification.")
 formal verification.  This is the Yosyshq fork of ABC.")
     (license (license:non-copyleft "file:///copyright.txt"))))
 
+(define-public appcsxcad
+  (package
+    (name "appcsxcad")
+    (version "0.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thliebig/AppCSXCAD")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "145awcsg4vl2xmrh5yf9fcasmghrai3x6ivgdxmrm1w3v9gyaccf"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:qtbase qtbase ;for Qt 6
+      #:tests? #f)) ;No tests.
+    (inputs (list boost
+                  cgal
+                  csxcad
+                  eigen
+                  expat
+                  freetype
+                  gmp
+                  hdf5
+                  libjpeg-turbo
+                  libpng
+                  libtiff
+                  lz4
+                  openmpi
+                  qcsxcad
+                  tinyxml
+                  vtk))
+    (home-page "https://github.com/thliebig/AppCSXCAD")
+    (synopsis "Minimal GUI application for the @code{qcsxcad} library")
+    (description
+     "A minimal application for the @code{qcsxcad} library which is used to
+    describe geometrical objects and their physical and non-physical properties.")
+    (license license:gpl3)))
+
 (define-public apycula
   (package
     (name "apycula")
