@@ -44,7 +44,7 @@
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
-;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025, 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Romain Garbage <romain.garbage@inria.fr>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -3360,7 +3360,7 @@ which can evaluate Jsonnet files and expressions.")))
 (define-public simdjson
   (package
     (name "simdjson")
-    (version "3.13.0")
+    (version "4.6.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3369,7 +3369,7 @@ which can evaluate Jsonnet files and expressions.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "005yli56nrkvlyx9g9cq8dczk42r9a18l162i2s5k81lj3y7mcrp"))))
+                "0729mxnc2wjb94gr4znwlzfmgw5w2v9kd8glvn3vnjhkdnd87zry"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ; tests require downloading dependencies
