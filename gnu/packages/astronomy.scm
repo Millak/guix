@@ -8845,8 +8845,8 @@ pipelines.")
   (package
     (name "python-romancal")
     ;; To support "spherical-geometry>=1.3.3,<1.5"
-    (properties '((commit . "cbdb56a32058a02ee5a42959d2d301fc526e65be")
-                  (revision . "0")))
+    (properties '((commit . "fb49640377b93d1c66456dc5bb7a6d1fa355eea1")
+                  (revision . "1")))
     (version (git-version "0.22.0"
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
@@ -8858,11 +8858,11 @@ pipelines.")
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pdlhgz3pl5lzgy918vgxyyisz5h3s0qd00yjg3q36n6mis3jna6"))))
+        (base32 "1l6c1w9i9ml2nvfiphrvkl1qpi6q56ljwa2759w40mx17h7a1xgp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 415 passed, 323 skipped, 18 deselected, 2 warnings
+      ;; tests: 433 passed, 323 skipped, 18 deselected, 10 warnings
       #:test-flags
       #~(list "--color=no"
               ;; Tests requiring calibration data.
