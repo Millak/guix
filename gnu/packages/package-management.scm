@@ -32,6 +32,7 @@
 ;;; Copyright © 2025-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2025 unwox <me@unwox.com>
+;;; Copyright © 2026 Owen T. Heisler <writer@owenh.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2744,6 +2745,8 @@ cp -r /tmp/locale/*/en_US.*")))
     (propagated-inputs (list glib-networking
                              gnupg
                              gsettings-desktop-schemas
+                             ;; Required for flatpak-validate-icon SVG validation.
+                             (librsvg-for-system)
                              ;; The following are listed in Requires.private of
                              ;; `flatpak.pc'.
                              curl
