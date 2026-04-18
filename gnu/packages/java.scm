@@ -1861,7 +1861,39 @@ blacklisted.certs.pem"
 (define-public openjdk25
   (make-openjdk
    openjdk24 "25.0.2"
-   "03aa34lscr3qbdl6qz3gqyp0nzkqfj02362mzmpkiq3y2g5xdnrj"))
+   "03aa34lscr3qbdl6qz3gqyp0nzkqfj02362mzmpkiq3y2g5xdnrj"
+   (arguments
+    (substitute-keyword-arguments (package-arguments base)
+      ((#:configure-flags flags #~(list))
+       (if (target-x86-32?)
+           ;; Full builds on 32-bit x86 architectures are not supported as of
+           ;; this version.  Best we can do is to build with the "zero" variant.
+           #~(cons* "--with-jvm-variants=zero"
+                    "--disable-precompiled-headers"
+                    #$flags)
+           flags))
+      ((#:phases phases #~%standard-phases)
+       (if (target-x86-32?)
+           #~(modify-phases #$phases
+               (replace 'install
+                 (lambda _
+                   (let ((images (car (find-files "build" "-zero-release"
+                                                  #:directories? #t))))
+                     (copy-recursively (string-append images "/images/jdk")
+                                       #$output:jdk)
+                     (copy-recursively (string-append images "/images/jre")
+                                       #$output)
+                     (copy-recursively (string-append images "/images/docs")
+                                       #$output:doc))))
+               (replace 'install-libjvm
+                 (lambda _
+                   (let ((lib-out (string-append #$output "/lib"))
+                         (lib-jdk (string-append #$output:jdk "/lib")))
+                     (symlink (string-append lib-jdk "/zero/libjvm.so")
+                              (string-append lib-jdk "/libjvm.so"))
+                     (symlink (string-append lib-out "/zero/libjvm.so")
+                              (string-append lib-out "/libjvm.so"))))))
+           phases))))))
 
 ;;; Convenience alias to point to the latest version of OpenJDK.
 (define-public openjdk openjdk25)
