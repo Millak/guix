@@ -8426,17 +8426,17 @@ wiggles are caused by resampling noise or aliasing artifacts.")
 (define-public python-rad
   (package
     (name "python-rad")
-    (version "0.30.0")
+    (version "0.31.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rad" version))
        (sha256
-        (base32 "14zij7jbvpzc0i3h22n35b432j2a8dw5mrg4da1ph3c69hxs6cqq"))))
+        (base32 "0aji0j8wgqxqan09xiwjgcdd4f6s8z4n2ji438rs4asjcrj87drr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 5253 passed, 159 skipped, 21 xfailed
+      ;; tests: 5153 passed, 156 skipped, 21 xfailed
       #:test-flags
       ;; Tests try to detec version by Git tag.
       #~(list "--ignore=tests/test_versioning.py")))
@@ -8445,13 +8445,15 @@ wiggles are caused by resampling noise or aliasing artifacts.")
            python-crds-minimal
            python-pytest-asdf-plugin
            python-pytest-doctestplus
-           python-deepdiff
-           python-semantic-version
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
      (list python-asdf
-           python-asdf-astropy))
+           python-asdf-astropy
+           python-asdf-standard
+           python-deepdiff
+           python-pyyaml
+           python-semantic-version))
     (home-page "https://github.com/spacetelescope/rad")
     (synopsis "Roman Attribute Dictionary")
     (description
