@@ -4144,6 +4144,71 @@ automated testing of HDL code.")
     ;; subdirectories are under ASL.
     (license (list license:mpl2.0 license:asl2.0))))
 
+(define-public qcsxcad
+  (package
+    (name "qcsxcad")
+    (version "0.6.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thliebig/QCSXCAD")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ag1shyhsmfsvqm35fi2kfnbcngmln8rjsv88f97gyx9wiqc808y"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f ;No tests.
+      #:qtbase qtbase ;For Qt 6
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-sources
+            ;; Fix missing `std::`-prefix and missing include.
+            ;; This is fixed in upstream but not tagged with a version.
+            (lambda _
+              (substitute* "vtkInteractorStyleRubberBand2DPlane.cpp"
+                (("#include \"vtkCamera.h\"")
+                 "#include <iostream>\n#include \"vtkCamera.h\"")
+                (("\tcerr ")
+                 "\tstd::cerr "))
+              (substitute* "VTKPrimitives.cpp"
+                (("#include \"VTKPrimitives.h\"")
+                 "#include <iostream>\n#include \"VTKPrimitives.h\"")
+                (("\tcerr ")
+                 "\tstd::cerr ")
+                (("\tcout ")
+                 "\tstd::cout "))
+              (substitute* "QVTKStructure.cpp"
+                (("#include \"QVTKStructure.h\"")
+                 "#include <iostream>\n#include \"QVTKStructure.h\"")
+                (("\tcerr ")
+                 "\tstd::cerr ")
+                (("\tcout ")
+                 "\tstd::cout ")))))))
+    (inputs (list boost
+                  cgal
+                  csxcad
+                  eigen
+                  freetype
+                  gmp
+                  libjpeg-turbo
+                  libpng
+                  libtiff
+                  lz4
+                  openmpi
+                  qt5compat
+                  tinyxml
+                  vtk))
+    (home-page "https://github.com/thliebig/QCSXCAD")
+    (synopsis "GUI library for @code{csxcad}")
+    (description
+     "GUI library for @code{csxcad} --- a library for describing geometrical
+    objects and their properties.  This library is used in @code{appcsxcad}
+    which provides a standalone graphical frontend to @{csxcad}.")
+    (license license:lgpl3+)))
+
 (define-public qrouter
   (package
     (name "qrouter")
