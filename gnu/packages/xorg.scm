@@ -7189,7 +7189,7 @@ direct replacement for @command{xvfb-run} specifically.
 (define-public xwayland-satellite
   (package
     (name "xwayland-satellite")
-    (version "0.8")
+    (version "0.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7198,12 +7198,15 @@ direct replacement for @command{xvfb-run} specifically.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10m99vjms9wbx9p9qcq7sjcspxllmp82ddyiw4rpmhjscyy5cga3"))))
+                "0w1ihmr20ayqc72qwc4sq4gsrikzwdrmag3mmgin686bg3a3hh85"))
+              (modules '((guix build utils)))
+              (snippet '(delete-file "OpenSans-Regular.ttf"))))
     (build-system cargo-build-system)
     (arguments
      (list #:install-source? #f
            #:tests? #f                  ;Requires running display server.
            #:cargo-install-paths ''(".")
+           #:features ''("fontconfig")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-paths
@@ -7211,10 +7214,22 @@ direct replacement for @command{xvfb-run} specifically.
                    (substitute* "src/lib.rs"
                      (("\"Xwayland\"")
                       (format #f "~s"
-                              (search-input-file inputs "bin/Xwayland")))))))))
+                              (search-input-file inputs "bin/Xwayland"))))))
+               (add-after 'unpack 'set-version
+                 (lambda _
+                   (setenv "VERGEN_GIT_DESCRIBE"
+                           #$(package-version this-package))))
+               (add-after 'install 'install-manpage
+                 (lambda _
+                   (let ((src "xwayland-satellite.man")
+                         (dst (in-vicinity
+                               #$output "share/man/man1/xwayland-satellite.1")))
+                     (mkdir-p (dirname dst))
+                     (copy-file src dst)))))))
     (native-inputs (list pkg-config))
     (inputs
      (cons* clang
+            fontconfig
             xcb-util-cursor
             xorg-server-xwayland
             (cargo-inputs 'xwayland-satellite)))
