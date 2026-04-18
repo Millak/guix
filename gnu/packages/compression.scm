@@ -241,6 +241,33 @@ the @code{zlib} source.")
 @code{jar} utility.  Instead of being written in Java, FastJar is written in C.")
    (license license:gpl2+)))
 
+(define-public liblzf
+  (package
+    (name "liblzf")
+    (version "3.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://dist.schmorp.de/liblzf/liblzf-"
+                           version ".tar.gz" ))
+       (sha256
+        (base32 "0smlkyw09pffg70n1lindk08d6gcmfkjd7b17w6f9jlwgcgy0pcw"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests
+    (home-page "https://oldhome.schmorp.de/marc/liblzf.html")
+    (synopsis "Very small data compression library")
+    (description
+     "LibLZF is a very small data compression library.  It consists of only
+two .c and two .h files and is very easy to incorporate into your own
+programs.  The compression algorithm is very, very fast, yet still written in
+portable C.
+
+Last not least, it is freely usable, unlike most other compression libraries
+which are under the GPL, this library uses a BSD-type license, so you can
+include it in your programs without worrying.")
+    (license license:gpl2)))
+
 (define-public libtar
   (package
    (name "libtar")
