@@ -2288,9 +2288,10 @@ Interface to wrap the HDF5 library, which is implemented in C.")
                                  (string-prefix? "-DHDF5_BUILD_CPP_LIB" flag)
                                  (string-prefix? "-DALLOW_UNSUPPORTED" flag))))
                           #$flags)
-                  (list "-DHDF5_ENABLE_THREADSAFE=OFF"
+                  (list "-DBUILD_SHARED_LIBS=ON"
+                        "-DHDF5_BUILD_CPP_LIB=OFF"
                         "-DHDF5_ENABLE_PARALLEL=ON"
-                        "-DHDF5_BUILD_CPP_LIB=OFF" )))
+                        "-DHDF5_ENABLE_THREADSAFE=OFF")))
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'build 'mpi-setup
