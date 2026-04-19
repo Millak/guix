@@ -1136,7 +1136,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/clog-fix-shared-build.patch		\
   %D%/packages/patches/clucene-gcc-14.patch			\
   %D%/packages/patches/clucene-pkgconfig.patch			\
-  %D%/packages/patches/coda-use-system-libs.patch		\
   %D%/packages/patches/codex-acp-0.11.1-disable-code-mode.patch \
   %D%/packages/patches/codex-acp-0.11.1-remove-patch-sections.patch \
   %D%/packages/patches/codex-0.98.0-remove-patch-sections.patch    \

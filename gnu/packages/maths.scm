@@ -408,36 +408,44 @@ matrices.")
 (define-public coda
   (package
     (name "coda")
-    (version "2.19")
+    (version "2.25.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/stcorp/coda/releases/download/"
-                           version "/coda-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stcorp/coda")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1fbxd2afm7dshd92p10yy8dwbr9gc1h1fmnnnmr7d0c5lnw80245"))
-       (patches (search-patches "coda-use-system-libs.patch"))
+        (base32 "1876bx0cpxb6di5r08wxwjrxl50zhh5f8d740xgjsfmw9s7kk4j5"))
        (modules '((guix build utils)))
        (snippet
         ;; Make sure we don't use the bundled software.
-        '(begin
-           (for-each (lambda (d)
-                       (delete-file-recursively (string-append "libcoda/" d)))
-                     '("zlib" "pcre" "expat"))
-           #t))))
-    (native-inputs
-     `(("fortran" ,gfortran)
-       ("python" ,python)
-       ("python-numpy" ,python-numpy-1)))
-    (inputs
-     `(("zlib" ,zlib)
-       ("pcre" ,pcre)
-       ("expat" ,expat)
-       ("hdf5" ,hdf5)))
+        #~(begin
+            (substitute* "Makefile.am"
+              (("libexpat_internal\\.la libpcre2_internal\\.la libz_internal\\.la")
+               ""))
+            (with-directory-excursion "libcoda"
+              (for-each delete-file-recursively '("zlib" "pcre2" "expat")))))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--with-hdf5" "--enable-python"
-                           "LIBS= -lz -lpcre -lexpat")))
+     (list #:configure-flags #~(list "--with-hdf5" "--enable-python"
+                                     "LIBS= -lz -lpcre2-posix -lexpat")))
+    (native-inputs
+     (list autoconf
+           automake
+           bison
+           flex
+           gfortran
+           libtool
+           python
+           python-numpy))
+    (inputs
+     (list zlib
+           pcre
+           pcre2
+           expat
+           hdf5))
     (synopsis "Common interface to various earth observation data formats")
     (description
      "The Common Data Access toolbox (CODA) provides a set of interfaces for
