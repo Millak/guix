@@ -359,7 +359,7 @@ MTP, and much more.")
 (define-public perl-image-exiftool
   (package
     (name "perl-image-exiftool")
-    (version "12.70")
+    (version "13.55")
     (source
      (origin
        (method url-fetch)
@@ -371,7 +371,7 @@ MTP, and much more.")
                             "Image-ExifTool-" version ".tar.gz")))
        (sha256
         (base32
-         "1zmg5jsdqmr9mnmxg614brdgr9ddmspcc11rs4xkygnc8lj55cjc"))))
+         "0rv6hiqd44npnjzcn5ig5d0rnpgbzkdp5bbi526561nl9b9q2k2z"))))
     (build-system perl-build-system)
     (arguments
      (list #:phases
