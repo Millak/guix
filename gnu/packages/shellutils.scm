@@ -573,22 +573,14 @@ POSIX Shell}, @url{https://www.gnu.org/software/bash/, Bash}, and
            '())
        (list git-minimal)))
     (home-page "https://starship.rs")
-    (synopsis
-     "The minimal, blazing-fast, and infinitely customizable prompt for any shell!")
+    (synopsis "Fast and customizable shell prompt")
     (description
-     "This package provides The minimal, blazing-fast, and infinitely customizable
-prompt for any shell!
+     "Starship is a shell prompt that is fast and configurable, and works on
+most common shells. It shows information from various sources in a way easy to
+grasp at a glance, including but not limited to: the hostname/username/cwd trio,
+git, project language and runtime.
 
-@itemize
-@item Fast: it's fast - *really really* fast :rocket:
-@item Customizable: configure every aspect of your prompt
-@item Universal: works on any shell, on any operating system
-@item Intelligent: shows relevant information at a glance
-@item Feature rich: support for all your favorite tools
-@item Easy: quick to install - start using it in minutes
-@end itemize
-
-Note: users must have a nerd font installed and enabled in their terminal")
+Note: Users must have a nerd font installed and enabled in their terminal.")
     (license license:isc)))
 
 (define-public envstore
