@@ -98,6 +98,7 @@
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2026 Nikita Alkhovik <forgoty13@gmail.com>
+;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4056,6 +4057,59 @@ that beneath its ruins lay buried an ancient evil.")
 the depths below Angband, seeking riches, fighting monsters, and preparing to
 fight Morgoth, the Lord of Darkness.")
     (license license:gpl2)))
+
+(define-public angband-sdl2
+  (package
+    (inherit angband)
+    (name "angband-sdl2")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments angband)
+       ((#:configure-flags flags)
+        #~(cons* "--enable-sdl2" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'disable-graphics-and-sounds)
+            (add-after 'unpack 'patch-sdl-wrapper-headers
+              (lambda _
+                (with-directory-excursion "src"
+                  (substitute* '("snd-sdl.c"
+                                 "main-sdl2.c"
+                                 "sdl2/pui-win.h")
+                    (("\"SDL_image.h\"") "\"SDL2/SDL_image.h\"")
+                    (("\"SDL_mixer.h\"") "\"SDL2/SDL_mixer.h\"")
+                    (("\"SDL_ttf.h\"") "\"SDL2/SDL_ttf.h\"")))))
+            (add-after 'unpack 'patch-desktop-file
+              (lambda* (#:key outputs #:allow-other-keys)
+                 (let ((out (assoc-ref outputs "out")))
+                   (substitute* "lib/icons/angband-sdl2.desktop"
+                     (("Exec=angband" _)
+                      (string-append "Exec=" #$output "/bin/angband-sdl2"))))))
+            (add-after 'install 'rename-binary
+              (lambda _
+                (with-directory-excursion #$output
+                  ;; allows parallel installation with angband
+                  (rename-file "bin/angband"
+                               "bin/angband-sdl2"))))))))
+    (inputs
+     (modify-inputs inputs
+       (prepend sdl2
+                sdl2-image
+                sdl2-mixer
+                sdl2-ttf)))
+    (description "Angband is a Classic dungeon exploration roguelike.  Explore
+the depths below Angband, seeking riches, fighting monsters, and preparing to
+fight Morgoth, the Lord of Darkness.
+
+This version includes the SDL2 frontend, providing tilesets and sounds which
+can be enabled through in-game options.")
+    ;; XXX: fonts and adam bolt tileset are free but being clarified:
+    ;; https://github.com/angband/angband/issues/6608
+    ;; For the rest, see:
+    ;; https://github.com/angband/angband/blob/master/docs/copying.rst
+    (license (list license:gpl2            ;code, nomad+old tilesets
+                   license:cc-by-sa3.0     ;david gervais tileset
+                   license:cc-by-sa4.0)))) ;sounds
 
 (define-public pingus
   ;; Latest release is from 2021-12-24.
