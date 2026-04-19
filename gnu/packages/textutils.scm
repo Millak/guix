@@ -87,6 +87,7 @@
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages java)
   #:use-module (gnu packages julia)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages pcre)
@@ -139,17 +140,17 @@ to DOS format and vice versa.")
 (define-public recode
   (package
     (name "recode")
-    (version "3.7.6")
+    (version "3.7.15")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/rrthomas/recode/releases/"
                            "download/v" version "/recode-" version ".tar.gz"))
        (sha256
-        (base32 "0m59sd1ca0zw1aydpc3m8sw03nc885knmccqryg7byzmqs585ia6"))))
+        (base32 "01lq8cq5w36gv17rb3rsr1gg049iwcz37h9zjx8v7b8vqmzl147m"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list python python-cython))
+     (list help2man python python-cython python-setuptools))
     (home-page "https://github.com/rrthomas/recode")
     (synopsis "Text encoding converter")
     (description "The Recode library converts files between character sets and
