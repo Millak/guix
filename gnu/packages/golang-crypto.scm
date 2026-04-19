@@ -775,7 +775,14 @@ The package include Go source library and @code{redoctober} command.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/cloudwego/base64x"))
+      #:import-path "github.com/cloudwego/base64x"
+      ;; 'base64x.go' references 'b64encode' and 'b64decode',
+      ;; which are defined only in 'native_amd64.go' (restricted
+      ;; to amd64 by its filename), so compilation fails on
+      ;; non-x86-64.
+      #:skip-build? (not (target-x86-64?))
+      #:tests? (and (not (%current-target-system))
+                    (target-x86-64?))))
     (native-inputs
      (list go-github-com-davecgh-go-spew
            go-github-com-stretchr-testify))
