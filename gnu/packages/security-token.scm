@@ -1273,7 +1273,8 @@ contactless (RFID) and contact USB chipcard readers.")
        (sha256
         (base32 "1by4jnr3sx4s8sxv1iw8ja9iln3aw6k583kdl3r92cbcdfasm7xj"))
        (patches (search-patches "qdigidoc-bundle-config-files.patch"
-                                "qdigidoc-bundle-tsl-files.patch"))))
+                                "qdigidoc-bundle-tsl-files.patch"
+                                "qdigidoc-fix-icon.patch"))))
     (build-system qt-build-system)
     (arguments
      (list

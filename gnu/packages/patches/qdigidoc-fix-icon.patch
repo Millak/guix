@@ -1,0 +1,14 @@
+Upstream-status: https://github.com/open-eid/DigiDoc4-Client/pull/1398
+
+diff --git a/client/Application.cpp b/client/Application.cpp
+index c979020..dac13d9 100644
+--- a/client/Application.cpp
++++ b/client/Application.cpp
+@@ -307,6 +307,7 @@ Application::Application( int &argc, char **argv )
+ {
+ 	setApplicationName(QStringLiteral("qdigidoc4"));
+ 	setApplicationVersion(QStringLiteral(VERSION_STR));
++	setDesktopFileName("ee.ria.qdigidoc4");
+ 	setOrganizationDomain(QStringLiteral("ria.ee"));
+ 	setOrganizationName(QStringLiteral("RIA"));
+ 	setWindowIcon(QIcon(QStringLiteral(":/images/Icon.svg")));

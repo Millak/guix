@@ -2258,6 +2258,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-werkzeug-tests.patch		\
   %D%/packages/patches/qdigidoc-bundle-config-files.patch       \
   %D%/packages/patches/qdigidoc-bundle-tsl-files.patch          \
+  %D%/packages/patches/qdigidoc-fix-icon.patch                  \
   %D%/packages/patches/qemu-build-info-manual.patch		\
   %D%/packages/patches/qemu-fix-agent-paths.patch 		\
   %D%/packages/patches/qemu-fix-test-virtio-version.patch       \
