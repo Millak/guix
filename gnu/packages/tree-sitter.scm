@@ -416,8 +416,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-c
   (tree-sitter-grammar
    "c" "C"
-   "1vw7jd3wrb4vnigfllfmqxa8fwcpvgp1invswizz0grxv249piza"
-   "0.23.5"))
+   "19yc4g5fdibfqbn49ggywk9k2by78s8lrsjp1cx2lagb1dvxnv42"
+   "0.24.1"))
 
 (define-public tree-sitter-cairo
   (tree-sitter-grammar
