@@ -4440,7 +4440,17 @@ using JIT and SIMD approaches.")
     (arguments
      (list
       #:import-path "github.com/bytedance/sonic/loader"
-      #:unpack-path "github.com/bytedance/sonic"))
+      #:unpack-path "github.com/bytedance/sonic"
+      ;; internal/abi/abi.go references PtrSize and ReservedRegs,
+      ;; which are defined only in amd64-specific files; compilation
+      ;; of the root package fails on non-x86-64.
+      #:skip-build? (not (target-x86-64?))
+      ;; On other architectures, restrict testing to the arch-neutral
+      ;; internal/iasm/expr subpackage.
+      #:test-subdirs (if (target-x86-64?)
+                         #~(list "...")
+                         #~(list "internal/iasm/expr"))
+      #:tests? (not (%current-target-system))))
     (native-inputs
      (list go-github-com-davecgh-go-spew
            go-github-com-stretchr-testify))
