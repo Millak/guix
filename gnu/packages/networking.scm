@@ -150,6 +150,7 @@
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages openldap)
+  #:use-module (gnu packages messaging)
   #:use-module (gnu packages password-utils)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
@@ -882,12 +883,14 @@ SCTP-aware kernel (most are).")
 (define-public kismet
   (package
     (name "kismet")
-    (version "2022-02")
+    (version "2025.09.R1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://www.kismetwireless.net/git/kismet.git")
-                    (commit (string-append "kismet-" version "-R1"))))
+                    (commit (string-join (cons* "kismet"
+                                                (string-split version #\.))
+                                         "-"))))
               (file-name (git-file-name name version))
               (patches (search-patches "kismet-unbundle-boost.patch"))
               (modules '((guix build utils)))
@@ -896,10 +899,11 @@ SCTP-aware kernel (most are).")
                           (delete-file-recursively "boost")))
               (sha256
                (base32
-                "01q86hrgpai433sc65dlnqy91qd26w5dwyp37adszqxfb6d2an1r"))))
+                "0kjxzlcfb01fhny94x27d48bsx2db3nhdmmcs5g5hgxrhq21w23g"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;no test suite
+           #:configure-flags #~(list "--disable-librtlsdr")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-install
@@ -908,11 +912,13 @@ SCTP-aware kernel (most are).")
                      (("-o \\$\\(INSTUSR\\) -g \\$\\(SUIDGROUP\\)") "")
                      (("-o \\$\\(INSTUSR\\) -g \\$\\(INSTGRP\\)") "")))))))
     (home-page "https://www.kismetwireless.net/")
-    (native-inputs (list perl pkg-config python python-2))
-    (inputs (list boost-1.83
+    (native-inputs (list perl pkg-config python))
+    (inputs (list boost
                   libusb
                   libpcap
                   libwebsockets
+                  (list lm-sensors "lib")
+                  mosquitto
                   openssl
                   protobuf
                   protobuf-c
