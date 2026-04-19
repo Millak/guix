@@ -1820,6 +1820,11 @@ reusable library for parsing, manipulating, and generating URIs.")
               "ldaptor")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'python-3.12-patch
+            (lambda _
+              (substitute* "ldaptor/config.py"
+                (("SafeConfigParser")
+                 "ConfigParser"))))
           (add-before 'check 'disable-failing-tests
             (lambda _
               ;; Testing with Twisted 22.4 results in infinite loop creating
