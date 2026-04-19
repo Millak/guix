@@ -28,6 +28,7 @@
 (define-module (gnu packages sync)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -688,7 +689,13 @@ Feature:
               ;; As seen in Makefile
               (setenv "RCLONE_CONFIG" "/notfound"))))))
     (native-inputs
-     (list go-bazil-org-fuse
+     (append
+      ;; On aarch64-linux, Go passes '-fuse-ld=gold' when invoking
+      ;; the external linker; provide ld.gold via binutils-gold.
+      (if (target-aarch64?)
+          (list binutils-gold)
+          '())
+      (list go-bazil-org-fuse
            go-github-com-a1ex3-zstd-seekable-format-go-pkg
            go-github-com-a8m-tree
            go-github-com-aalpar-deheap
@@ -788,7 +795,7 @@ Feature:
            go-gopkg-in-natefinch-lumberjack-v2
            go-gopkg-in-validator-v2
            go-gopkg-in-yaml-v3
-           go-storj-io-uplink))
+           go-storj-io-uplink)))
     (synopsis "@code{rsync} for cloud storage")
     (description "@code{Rclone} is a command line program to sync files and
 directories to and from different cloud storage providers.
