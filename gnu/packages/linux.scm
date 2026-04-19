@@ -12155,7 +12155,7 @@ that avoids the usage of older system-wide @file{/sys} interface.")
 (define-public libtracefs
   (package
     (name "libtracefs")
-    (version "1.7.0")
+    (version "1.8.3")
     (source
      (origin
        (method git-fetch)
@@ -12164,25 +12164,16 @@ that avoids the usage of older system-wide @file{/sys} interface.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v896n3q0df0nxx5drbwyaqhrqiyxl06rvrdw3gp2r37awa9g1zb"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            (substitute* (list "Makefile" "scripts/utils.mk")
-              (("/bin/(pwd)" _ command) command))))))
-    (build-system gnu-build-system)
+        (base32 "1bc4mwf488nlja64zawjznvb6640vchjb25xa02v53x6qfb1mpmq"))))
+    (build-system meson-build-system)
     (arguments
      (list
-      #:tests? #f                       ; no test suite
-      #:make-flags
-      #~(list
-         (string-append "CC=" #$(cc-for-target))
-         (string-append "pkgconfig_dir=" #$output "/lib/pkgconfig")
-         (string-append "prefix=" #$output))
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure))))        ; no configure script
-    (native-inputs (list pkg-config))
+      #:configure-flags
+      #~(list "-Ddoc=false")))
+    (native-inputs
+     (list bison
+           flex
+           pkg-config))
     (inputs (list libtraceevent))
     (home-page "https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/")
     (synopsis "Linux kernel trace file system library")
