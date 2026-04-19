@@ -126,7 +126,9 @@
     (arguments
      (substitute-keyword-arguments (package-arguments base-rust)
        ((#:disallowed-references _ '())
-        (list (this-package-native-input "rust")))))
+        (list (this-package-native-input "rust")
+              ;; Refer to cargo as #$rustc:cargo.
+              (gexp-input (this-package-native-input "rust") "cargo")))))
     (native-inputs
      (list pkg-config
            python-minimal-wrapper
@@ -1935,10 +1937,6 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
        (substitute-keyword-arguments
          (strip-keyword-arguments '(#:tests?)
                                   (package-arguments base-rust))
-         ((#:disallowed-references _ '())
-          (list (this-package-native-input "rust")
-                ;; Refer to cargo as #$rust:cargo.
-                (gexp-input (this-package-native-input "rust") "cargo")))
          ((#:modules modules)
           (cons '(srfi srfi-26) modules))
          ((#:phases phases)
