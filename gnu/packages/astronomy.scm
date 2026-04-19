@@ -4439,17 +4439,25 @@ Cesium.")
 (define-public python-dkist
   (package
     (name "python-dkist")
-    (version "1.17.0")
+    ;; To support latest ASDF.
+    (properties '((commit . "4369dd7830b29c6bf29f9053852d150eef37d971")
+                  (revision . "0")))
+    (version (git-version "1.17.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "dkist" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/DKISTDC/dkist")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1i1pyliz1yjgm0c6v8lwl9nc1b5ihmkjn8syydg2am5l4lgsn5pz"))))
+        (base32 "0xy5b7h1dcxqxyxg8rzly7q2k6095f8jwdn3pd8541znkcwmahrg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 455 passed, 7 skipped
+      ;; tests: 492 passed, 7 skipped
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; When python-pytest-benchmark is added: Benchmarks are
