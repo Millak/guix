@@ -190,16 +190,17 @@ framework.  It builds XMPP clients complying with the XMPP Compliance Suites
   (package
     (name "kaidan")
     (version "0.15.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/unstable/kaidan/" version
-                                  "/kaidan-" version ".tar.xz"))
-              (modules '((guix build utils)))
-              (snippet
-               #~(begin
-                   (delete-file-recursively "3rdparty")))
-              (sha256
-               (base32 "11g4lifji6gh9zmpgyx4dnmxyzzwkhhj84j2w9r4bvgqm2pxdhnd"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/unstable/kaidan/" version
+                           "/kaidan-" version ".tar.xz"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file-recursively "3rdparty")))
+       (sha256
+        (base32 "11g4lifji6gh9zmpgyx4dnmxyzzwkhhj84j2w9r4bvgqm2pxdhnd"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -215,7 +216,8 @@ framework.  It builds XMPP clients complying with the XMPP Compliance Suites
              (lambda _
                (let ((gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
                  (wrap-program (string-append #$output "/bin/kaidan")
-                   `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
+                   `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
+                     (,gst-plugin-path)))))))))
     (native-inputs (list extra-cmake-modules
                          pkg-config))
     (inputs (list bash-minimal
