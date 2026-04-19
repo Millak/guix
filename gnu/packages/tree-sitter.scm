@@ -1237,8 +1237,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-markdown
   (tree-sitter-grammar
    "markdown" "Markdown (CommonMark Spec v0.30)"
-   "0r8jlmyr1bnyqqipmpmxxw4qw81c9n0l29xdfkz2n2zmjqps5v9r"
-   "0.4.1"
+   "0vz9r1dbbdj8vwf45izmbajhjbl98ww2dvlk1faqy33kx7plsiar"
+   "0.5.3"
    #:repository-url "https://github.com/MDeiml/tree-sitter-markdown"
    #:grammar-directories '("tree-sitter-markdown"
                            "tree-sitter-markdown-inline")
