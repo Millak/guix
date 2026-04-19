@@ -4393,7 +4393,16 @@ offerings such as Boost, Better std, Cloud tools.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/bytedance/sonic"))
+      #:import-path "github.com/bytedance/sonic"
+      ;; 'go test ./...' fails to compile on non-x86-64: the
+      ;; tests in internal/jit reference helpers defined only in
+      ;; arch_amd64.go, and the assembly stubs in
+      ;; internal/native/{avx2,sse} import 'sonic/loader', whose
+      ;; internal/abi is amd64-only.  The root package itself
+      ;; has arch-guarded fallback code, so keep testing it.
+      #:test-subdirs (if (target-x86-64?)
+                         #~(list "...")
+                         #~(list ""))))
     (native-inputs
      (list go-github-com-davecgh-go-spew
            go-github-com-stretchr-testify))
