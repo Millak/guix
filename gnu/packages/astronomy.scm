@@ -7074,27 +7074,34 @@ photometry, segmentations, Petrosian profiling, and Sérsic fitting.")
 (define-public python-photutils
   (package
     (name "python-photutils")
-    (version "2.3.0")
+    (version "3.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "photutils" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/astropy/photutils")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1xyrnf0ynh8l3dad8s93dyqk3m9gvmxgvrji1nb9yillfzvjfxcl"))))
+        (base32 "1azwm65lb84r19c0ippq6mdp6vhrk02fs6j5fkmz6sqhj3g85ycd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1843 passed, 22 skipped
+      ;; tests: 3361 passed, 23 skipped
       #:test-flags
       #~(list "--pyargs" "photutils"
               "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion "/tmp"
-                  (apply invoke "pytest" "-vv" test-flags))))))))
+          (add-after 'unpack 'add-missing-import
+            ;; See: <https://github.com/astropy/photutils/pull/2260>
+            (lambda _
+              (substitute* "photutils/isophote/ellipse_model.pyx"
+                (("    double sqrt\\(double x\\)" all)
+                 (string-append all "\n\nfrom cpython cimport bool")))))
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "photutils"))))))
     (native-inputs
      (list python-cython
            python-extension-helpers
