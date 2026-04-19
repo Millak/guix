@@ -812,7 +812,7 @@ configured correctly.
 
 Serverspec tests your servers’ actual state by executing command locally, via
 SSH, via WinRM, via Docker API and so on.  So you don’t need to install any
-agent softwares on your servers and can use any configuration management
+agent software on your servers and can use any configuration management
 tools, Puppet, Ansible, CFEngine, Itamae and so on.
 
 But the true aim of Serverspec is to help refactoring infrastructure code.")
@@ -2888,7 +2888,7 @@ extensions.")
       #~(modify-phases %standard-phases
           ;; tests: 393 runs, 42523 assertions, 0 failures, 0 errors, 20 skips
           ;;
-          ;; TODO: Impliment #:test-flags in ruby-build-system and figure out
+          ;; TODO: Implement #:test-flags in ruby-build-system and figure out
           ;; how to skip tests more elegant.
           (add-after 'unpack 'skip-failing-tests
             (lambda _
@@ -9477,7 +9477,7 @@ variable length integers (varint) in Ruby Protocol Buffers.")
     (native-inputs (list ruby-rspec ruby-rspec-block-is-expected))
     (synopsis "Improved @code{Version} module for Ruby")
     (description "VersionGem aims to provide introspection of a @code{Version}
-module based on a @code{Version::VERSION} constant string wile not interfering
+module based on a @code{Version::VERSION} constant string while not interfering
 with gemspec parsing where the @code{VERSION} string is traditionally used.")
     (home-page "https://gitlab.com/oauth-xx/version_gem")
     (license license:expat)))
@@ -11902,7 +11902,7 @@ part of the Prawn PDF generator.")
                 ;; zombie process reaping (see:
                 ;; https://issues.guix.gnu.org/30948).
                 ;; Many of these tests seem to only fail on the 'cli' portion
-                ;; due to something causing them to hang indefinately
+                ;; due to something causing them to hang indefinitely
                 (skip-tests "test/test_plugin.rb"
                             "test_plugin")
                 (skip-tests "test/test_plugin_systemd.rb"

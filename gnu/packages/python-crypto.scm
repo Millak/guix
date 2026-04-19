@@ -263,7 +263,7 @@ Python interface around SSH networking concepts.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Test failes with error: AssertionError: KeyboardInterrupt not raised.
+      ;; Test fails with error: AssertionError: KeyboardInterrupt not raised.
       #:test-flags #~(list "-k" "not test_multithreading_with_interrupts")))
     (native-inputs
      (list openssl
@@ -1840,7 +1840,7 @@ interacting with a U2F device over USB.")
     (synopsis "Stateless OpenPGP Command-Line Interface")
     (description
      "The Stateless OpenPGP Command-Line Interface (or sop) is a
-specification that encourages OpenPGP implementors to provide a common,
+specification that encourages OpenPGP implementers to provide a common,
 relatively simple command-line API for purposes of object security.
 
 This Python module helps implementers build such a CLI from any implementation

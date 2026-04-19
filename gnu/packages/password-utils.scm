@@ -1798,7 +1798,7 @@ is the community-enhanced, \"jumbo\" version of John the Ripper.")
     (home-page "https://github.com/hashcat/maskprocessor")
     (synopsis "High-Performance word generator")
     (description "Maskprocessor is a high-performance word generator with a
-per-position configureable charset.")
+per-position configurable charset.")
     (license (list license:expat))))
 
 (define-public fpm2

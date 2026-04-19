@@ -446,7 +446,7 @@ Prometheus metrics.")
       #:import-path "github.com/prometheus/common"
       #:test-subdirs
       #~(list
-         ;; Skipp, as it requires
+         ;; Skip, as it requires
          ;; <github.com/prometheus/client_golang/prometheus>, which introduces
          ;; cycle.
          ;; "./config/..."

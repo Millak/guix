@@ -242,7 +242,7 @@ and in-process/in-memory compilation.")
      (list rocm-comgr rocminfo))
     (synopsis "ROCm HIP Runtime")
     (description "HIP language runtime, allowing execution of HIP kernels
-on AMD harware, with library support for in-process/in-memory
+on AMD hardware, with library support for in-process/in-memory
 compilation (hipclr) of HIP kernel code, and its execution on AMD hardware.")
     (license license:expat)))
 
@@ -425,7 +425,7 @@ particular CPU vendor or architecture.")
                 (("find_program\\(LD_LLD_PATH ld\\.lld\\)")
                  "#find_program(LD_LLD_PATH ld.lld)"))))
           ;; This is just cosmetic and removes superfluous rpath entries
-          ;; involving a nonexistant relative llvm/lib path.
+          ;; involving a nonexistent relative llvm/lib path.
           ;; XXX: RUNPATH checks are okay with $ORIGIN, but it looks like
           ;; other packages are removing it altogether -- what to do?
           (add-after 'unpack 'remove-dubious-rpath

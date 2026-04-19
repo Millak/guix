@@ -974,7 +974,7 @@ provides handling of symlinks, and exception management.")
        (sha256
         (base32 "0rj182i2d7d2bz067zrk39s19j09xsxkzprl82fqql8ji9c5fwd0"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))       ;TODO: Tests requrie extra packaging
+    (arguments (list #:tests? #f))       ;TODO: Tests require extra packaging
     (native-inputs
      (list ;; python-big-o
            ;; python-coherent-licensed

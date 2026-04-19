@@ -256,7 +256,7 @@ Turtle/N3 and read them in SPARQL XML, RDF/XML and Turtle/N3.")
     (license license:lgpl2.1+))) ; or any choice of gpl2+ or asl2.0
 
 (define-public redland
-  ;; XXX: No tags for the last release, altough it's clear from
+  ;; XXX: No tags for the last release, although it's clear from
   ;; Github and logs a new release has been made.
   (let ((commit "3ec9bda623107f9b1c86c0a3f261ffd3f8a40965")
         (revision "0"))

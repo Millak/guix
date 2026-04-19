@@ -1807,7 +1807,7 @@ HTTP @code{multipart/form-data} parsers and generators.")
      (list
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
-              ;; It tries to download hatchling and install aditional test
+              ;; It tries to download hatchling and install additional test
               ;; dependencies.
               "--ignore=mypy/test/testpep561.py")
       #:phases
@@ -3032,7 +3032,7 @@ sub-package.")
 
 (define-public python-pytest-fixture-config
   ;; TODO: Master branch has removed all Python 2 support such Six, consider
-  ;; to update and drop python-six from closure in the next update cyle.
+  ;; to update and drop python-six from closure in the next update cycle.
   (package
     (name "python-pytest-fixture-config")
     (version "1.8.0")
@@ -3121,7 +3121,7 @@ compliance.")
     (home-page "https://github.com/dropbox/pytest-flakefinder")
     (synopsis "Pytest plugin for finding flaky tests")
     (description "This package provides a Pytest plugin to run tests multiple
-times and detect flakyness.")
+times and detect flakiness.")
     (license license:asl2.0)))
 
 (define-public python-pytest-flask
@@ -3706,7 +3706,7 @@ interaction, like key presses and mouse clicks.")
       ;; tests: 23 passed, 13 deselected
       #:test-flags
       #~(list "-p" "no:randomly"
-              ;; Skip tests requireing python-factory-boy, python-faker,
+              ;; Skip tests requiring python-factory-boy, python-faker,
               ;; python-numpy, and python-pytest-xdist to reduce closure size.
               "-k" (string-join
                     (list "not test_entrypoint_injection"

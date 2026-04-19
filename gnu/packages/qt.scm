@@ -4366,7 +4366,7 @@ linux/libcurl_wrapper.h"
               (substitute* "src/3rdparty/chromium/device/udev_linux/udev1_loader.cc"
                 (("libudev.so.1")
                  (search-input-file inputs "lib/libudev.so.1")))
-              ;; Patch the location of the X11 keywoard layouts.
+              ;; Patch the location of the X11 keyboard layouts.
               (substitute* "src/3rdparty/chromium/ui/events/ozone/layout/xkb\
 /xkb_keyboard_layout_engine.cc"
                 (("/usr/share/X11/xkb")
@@ -5028,7 +5028,7 @@ top of the PyQt bindings for Qt.  PyQt-builder is used to build PyQt itself.")
                 (("--cov-report=term-missing") "")
                 (("--cov-report=xml") "")))))))
     ;; XXX: Do not include, even supported: Qt5, PySide2 PySide6, only test
-    ;; agains Qt6 to reduce closure size..
+    ;; against Qt6 to reduce closure size..
     (native-inputs
      (list python-pyqt-6
            python-pytest
@@ -5085,7 +5085,7 @@ bindings (PySide, PySide2, PyQt4 and PyQt5).")
 @item Multi-handle slider for float values
 @item Spinbox with arbitrarily large integers
 @item Magnitude combined with unit dropdown
-@item Label that willl elide text
+@item Label that will elide text
 @item Searchable ComboBox populated from Enum
 @item Searchable List
 @item Searchable Tree

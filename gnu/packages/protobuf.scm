@@ -524,7 +524,7 @@ from protobuf specification files.")
             (lambda _
               (copy-file "extra/poetry/pyproject.toml" "pyproject.toml")
               (delete-file "build.py")
-              ;; Mimick extra/poetry/poetry_build.sh.
+              ;; Mimic extra/poetry/poetry_build.sh.
               (mkdir "nanopb")
               (copy-recursively "generator" "nanopb/generator")
               (invoke "touch" "nanopb/__init__.py"

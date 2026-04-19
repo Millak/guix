@@ -461,7 +461,7 @@ user.")
     (home-page "https://github.com/fastapi/annotated-doc")
     (synopsis "Annotated for some Python objects")
     (description
-     "This package implements a funtionality for document parameters, class
+     "This package implements a functionality for document parameters, class
 attributes, return types, and variables inline, with
 Annotated.")
     (license license:expat)))
@@ -704,7 +704,7 @@ line drawing algorithm}.")
            python-matplotlib python-pygments python-rich))
     (home-page "https://github.com/catppuccin/python")
     (synopsis "Pastel palette for Python libraries")
-    (description "Catppuccin for Python is a soothing pastel pallete for Python
+    (description "Catppuccin for Python is a soothing pastel palette for Python
 libraries.  It aims to be the middle ground between low and high contrast
 themes.  It also includes themes for IPython, Matplotlib, Pygments and Rich.")
     (license license:expat)))
@@ -1154,7 +1154,7 @@ implemented in pure Python, and most of them are also implemented in C.")
     (home-page "https://github.com/domdfcoding/domdf_python_tools")
     (synopsis "Helpful functions for Python")
     (description
-     "This package provide helpfull functions for Python's testing and
+     "This package provide helpful functions for Python's testing and
 packaging tasks.")
     (license license:expat)))
 
@@ -5560,7 +5560,7 @@ concepts.")
     (license license:bsd-3)))
 
 (define-public python-hdf5storage
-  ;; XXX: Use the latest commit containing compatability with Pytest and Python
+  ;; XXX: Use the latest commit containing compatibility with Pytest and Python
   ;; 3.11, see: <https://github.com/frejanordsiek/hdf5storage/issues/135>.
   ;;
   ;; This package probably is sun setting, consider to remove when stops
@@ -5618,7 +5618,7 @@ untrusted sources, pickling is avoided in this package.")
                     (substitute* "test_prctl.py"
                       ;; actual suffix used in cpython build output dir name
                       (("sys.version\\[0:3\\]") "sys.implementation.cache_tag")
-                      ;; test_no_new_privs assumes existance of /bin/ping, but
+                      ;; test_no_new_privs assumes existence of /bin/ping, but
                       ;; can never run anyway due to it requiring setuid ping.
                       ;; just short circuit it instead.
                       (("os.stat\\('/bin/ping'\\)\\.st_mode") "0")))))))
@@ -6270,7 +6270,7 @@ other machines, such as over the network.")
         (base32 "1xwqp37ii9kql49agmkipawjbndwxg6y8sxax1wc4l6kkaxvk9ap"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f))        ;requir dated inputs
+     (list #:tests? #f))        ;require dated inputs
     (native-inputs
      (list python-setuptools-scm))
     (propagated-inputs
@@ -6854,7 +6854,7 @@ files are easily readable and they work nicely with version control systems.")
          "0hi5rl17rj9gay7yw7ikrkyp5qhyw5bzp4ig1sj6ahzclsia8y1h"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; It requres additional modules for integration tests.
+     ;; It requires additional modules for integration tests.
      (list #:test-flags #~(list "--ignore=tests/modules/")))
     (native-inputs
      (list python-pytest
@@ -9974,8 +9974,8 @@ naturally be used also by other projects.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                ;; TODO: Some acceptance faile and took near 30min to
-                ;; complete: 6765 tests, 6745 passed, 20 failed; findout how
+                ;; TODO: Some acceptance failed and took near 30min to
+                ;; complete: 6765 tests, 6745 passed, 20 failed; find out how
                 ;; to skip failing ones.
                 (format #t "Running unit tests...~%")
                 (invoke "utest/run.py")))))))
@@ -13582,7 +13582,7 @@ that requires its specific capabilities.")
     (license license:bsd-3)))
 
 (define-public python-ffmpeg-python
-  ;; The latest release (0.2.0) is old and its test suite crashs on Python 3.10.
+  ;; The latest release (0.2.0) is old and its test suite crashes on Python 3.10.
   (package
     (name "python-ffmpeg-python")
     (properties '((commit . "df129c7ba30aaa9ffffb81a48f53aa7253b0b4e6")
@@ -13643,7 +13643,7 @@ arguments.  It handles arbitrarily large (directed-acyclic) signal graphs.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f       ;XXX: tests requrie network access to get FFmpeg data
+      #:tests? #f       ;XXX: tests require network access to get FFmpeg data
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'hardcode-ffmpeg
@@ -13730,7 +13730,7 @@ data, and scientific formats.")
       (synopsis "Generate pseudorandom numbers by using algebra")
       (description
        "The @code{pyudorandom} module lets you iterate over a list
-in a non-succsessive, yet deterministic way based on interger modulo.
+in a non-succsessive, yet deterministic way based on integer modulo.
 It comes in handy when you want to mix up the items, but don't need
 any guarantees of randomness.  It might be slow on small data,
 but shall be significantly faster than @code{random.shuffle}
@@ -16694,9 +16694,9 @@ markdown_py is also provided to convert Markdown files to HTML.")
             (lambda _
               (chdir "test"))))))
     (native-inputs
-     (list ;; python-pygments      ;optinal, tests fail when added
-           ;; python-wavedrom      ;optinal, not packaged
-           ;; python-latex2mathml  ;optinal, not packaged
+     (list ;; python-pygments      ;optional, tests fail when added
+           ;; python-wavedrom      ;optional, not packaged
+           ;; python-latex2mathml  ;optional, not packaged
            python-setuptools))
     (home-page "https://github.com/trentm/python-markdown2")
     (synopsis "Fast and complete Python implementation of Markdown")
@@ -17011,7 +17011,7 @@ It has a flexible system of @samp{authorizers} able to manage both
     (propagated-inputs
      (list python-appdirs
            python-pytz
-           python-six))         ;still hard itegrated
+           python-six))         ;still hard integrated
     (home-page "https://github.com/PyFilesystem/pyfilesystem2/")
     (synopsis "File system abstraction layer for Python")
     (description
@@ -17731,7 +17731,7 @@ implementations of ASN.1-based codecs and protocols.")
       #:test-flags
       #~(list "-k" (string-join
                     ;; Tests fail with error: IndexError: string index out of
-                    ;; range.  It may be some incompatability wit pyparsing,
+                    ;; range.  It may be some incompatibility with pyparsing,
                     ;; see <https://github.com/eerimoq/asn1tools/issues/167>.
                     (list "not test_c_source"
                           "test_command_line_generate_c_source_oer"
@@ -19391,7 +19391,7 @@ explicit subcommand name.")
        (sha256
         (base32 "03ay7j57mfh4sa8vh9qwid1ggwdc0lasyw3ycsmgv5r6z2j63an7"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f)) ;no tests in PyPI archvie
+    (arguments (list #:tests? #f)) ;no tests in PyPI archive
     (native-inputs
      (list python-hatch-vcs
            python-hatchling))
@@ -21595,7 +21595,7 @@ and makes it easier to build concurrent applications.")
         (sha256
           (base32 "18qx113g9bi1ac4indd5phma82zcdq601lxncp3vjn43m2mc3iq0"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f)) ;XXX: not tests in PyPI archvie, there are in Git
+    (arguments (list #:tests? #f)) ;XXX: not tests in PyPI archive, there are in Git
     (native-inputs
      (list python-setuptools
            python-wheel))
@@ -23971,7 +23971,7 @@ protocols written in pure Python.")
       #~(list "-k" "not test__version__from_git__shallow")
       #:phases
       #~(modify-phases %standard-phases
-          ;; These steps are taked from NixOS package definition:
+          ;; These steps are taken from NixOS package definition:
           ;; nixpkgs/pkgs/development/python-modules/dunamai/default.nix
           (add-before 'check 'pre-check
             (lambda _
@@ -25553,7 +25553,7 @@ created by running @code{python setup.py develop}).")
     (license license:expat)))
 
 ;; XXX: This project was archived by the owner on Oct 4, 2023. It is now
-;; read-only.  Consider to remvoe when nothing depends on it.
+;; read-only.  Consider to remove when nothing depends on it.
 (define-public python-ratelimiter
   ;; From https://github.com/RazerM/ratelimiter/pull/11
   (let ((commit "59a0827c434706d62b89e16a220e4ae12e618858")
@@ -25718,7 +25718,7 @@ Git.")
         (base32 "1h3nbg1nlshzrqy7vz4q4g9wbz85dqkn6385p0ad7kjj48ww9avx"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f))        ;tests rquire Cargo
+     (list #:tests? #f))        ;tests require Cargo
     (propagated-inputs
      (list python-semantic-version
            python-setuptools))
@@ -27371,7 +27371,7 @@ validation testing and application logic.")
     (license license:expat)))
 
 ;; Make sure to upgrade python-llvmlite in (gnu packages llvm) together with
-;; python-numba.  They have a very unflexible relationship.
+;; python-numba.  They have a very inflexible relationship.
 (define-public python-numba
   (package
     (name "python-numba")
@@ -27836,7 +27836,7 @@ values.  Partd excels at shuffling operations.")
       #:test-flags
       #~(list "--ignore=fsspec/implementations/tests/test_github.py"
               "-k" (string-join
-                    ;; Test requirs nentwork access
+                    ;; Test requires nentwork access
                     (list "not test_async_cat_file_ranges"
                           "test_gist_public_all_files"
                           "test_gist_public_missing_file"
@@ -32230,7 +32230,7 @@ syllables, and sentences.")
      (list python-chardet
            python-cssselect
            python-lxml
-           python-lxml-html-clean))    ;XXX: it sould be part of python-lxml lib
+           python-lxml-html-clean))    ;XXX: it should be part of python-lxml lib
     (home-page "http://github.com/buriy/python-readability")
     (synopsis "HTML to text parser")
     (description
@@ -33682,7 +33682,7 @@ It implements advanced Python dictionaries with dot notation access.")
                            python-wheel))
       (home-page "https://python-fields.readthedocs.io/")
       (synopsis "Python container class boilerplate killer")
-      (description "Avoid repetetive boilerplate code in Python classes.")
+      (description "Avoid repetitive boilerplate code in Python classes.")
       (license license:bsd-3))))
 
 (define-public python-aspectlib
@@ -34841,7 +34841,7 @@ parsing.")
 
 (define-public python-flatten-json
   ;; The latest version was not tagged on GitHub, PyPI provides no tests, use
-  ;; the commit assosiated with 0.1.14 version.
+  ;; the commit associated with 0.1.14 version.
   (let ((commit "900c4feebcfcd831ddb6143c4b246024ecf911ec")
         (revision "0"))
     (package
@@ -35327,7 +35327,7 @@ colors.")
            #~(modify-phases %standard-phases
                ;; This package requires python-packaging~=23.1 which is not yet
                ;; updated to. As per pyproject.toml, it is required to provide
-               ;; a nice version_info opbject.
+               ;; a nice version_info object.
                ;; TODO: After updating python-packaging, fix this.
                (delete 'sanity-check))))
     (propagated-inputs (list python-importlib-metadata python-packaging))
@@ -36798,7 +36798,7 @@ as possible in order to be comprehensible and easily extensible.")
 (define-public python-tables
   (package
     (name "python-tables")
-    ;; XXX: Compatability fix for numexpr 2.13.0, see:
+    ;; XXX: Compatibility fix for numexpr 2.13.0, see:
     ;; <https://github.com/PyTables/PyTables/pull/1256>.
     (properties '((commit . "aad9079c80ce3ae7f385d00af760d171dcc10535")
                   (revision . "0")))
@@ -37725,7 +37725,7 @@ to TIFF, BigTIFF, and ImageJ hyperstack compatible files.")
     (license license:expat)))
 
 (define-public python-timeout-decorator
-  ;; TODO: Remove when python-requests-caches releses a fresh version dropping
+  ;; TODO: Remove when python-requests-caches releases a fresh version dropping
   ;; it, see, <https://github.com/requests-cache/requests-cache/pull/1111>.
   (package
     (name "python-timeout-decorator")
@@ -39645,7 +39645,7 @@ features useful for text console applications.")
   python-urwid)            ;may be removed after 2025-11-12
 
 (define-public python-urwid-for-zulip-term
-  ;; zulip-term@0.7.0 requires exact 2.1.2 version otherewise some tests fail
+  ;; zulip-term@0.7.0 requires exact 2.1.2 version otherwise some tests fail
   ;; to pass, remove when no longer required.
   (hidden-package
    (package
@@ -39979,7 +39979,7 @@ store, forked from redis-py.")
          "16z10sm78jd7ca3jbkgc3q5i8a8q7y1h21q1li21yy3rlhbhrrns"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f))        ;no tests in PyPI archvie
+     (list #:tests? #f))        ;no tests in PyPI archive
     (native-inputs
      (list python-setuptools))
     (home-page "https://github.com/habnabit/vcversioner")

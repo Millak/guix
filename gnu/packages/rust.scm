@@ -132,7 +132,7 @@
        (replace "rustc-bootstrap" base-rust)
        (replace "cargo-bootstrap" (list base-rust "cargo"))))))
 
-;;; Note: mrustc's only purpose is to be able to bootstap Rust; it's designed
+;;; Note: mrustc's only purpose is to be able to bootstrap Rust; it's designed
 ;;; to be used in source form.
 (define %mrustc-commit "06b87d1af49d2db3bd850fdee8888055dd540dd1")
 (define %mrustc-source

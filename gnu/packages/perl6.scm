@@ -510,7 +510,7 @@ of the same class using @code{JSON::Unmarshal}.")
 @code{JSON::Unmarshal} in order to save duplication, it is intended to store a
 separate JSON name for an attribute where the name of the JSON attribute might be
 changed, either for aesthetic reasons or the name is not a valid Perl identifier.
-It will of course also be needed in classes thar are going to use
+It will of course also be needed in classes that are going to use
 @code{JSON::Marshal} or @code{JSON::Unmarshal} for serialization/deserialization.")
     (license license:artistic2.0)))
 

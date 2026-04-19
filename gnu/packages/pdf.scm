@@ -1892,7 +1892,7 @@ presentation.  The input files processed by pdfpc are PDF documents.")
     (license license:gpl3+)))
 
 (define-public paps
-  ;; Fails to build in lastest release.
+  ;; Fails to build in latest release.
   (let ((commit "199b478ca3884df4c0786948aae09c7928c6498f")
         (revision "0"))
     (package

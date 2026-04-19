@@ -6153,7 +6153,7 @@ serializers and deserializers from type definitions.")
     (build-system dune-build-system)
     (propagated-inputs (list ocaml-yojson))
     (properties `((upstream-name . "ppx_yojson_conv_lib")))
-    (synopsis "Runtime library used by ocaml PPX yojson convertor")
+    (synopsis "Runtime library used by ocaml PPX yojson converter")
     (description "Ppx_yojson_conv_lib is the runtime library used by
 ppx_yojson_conv, a ppx rewriter that can be used to convert ocaml types
 to a Yojson.Safe value.")

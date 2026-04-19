@@ -103,7 +103,7 @@
 ;; development.)
 ;;
 ;; The top-level 'Makefile' is more like a directory of scripts: it has
-;; convienience targets for developing Racket, and it cooperates with the
+;; convenience targets for developing Racket, and it cooperates with the
 ;; 'distro-build' package to assemble custom Racket distributions. (Again,
 ;; the makefile just delegates to Zuo.) It is not part of Racket source
 ;; distributions: the root of a source distribution is basically 'racket/src'
@@ -178,7 +178,7 @@
 ;; README file applies to all such subsystems:
 ;;
 ;;     The Racket version must be practically the same as the current Racket
-;;     verson, although it can be the Racket BC implementation (instead of
+;;     version, although it can be the Racket BC implementation (instead of
 ;;     the Racket CS implementation).
 ;;
 ;;     Unlike Chez Scheme boot files, the files generated in "schemified"
@@ -197,7 +197,7 @@
 ;; Zuo is notably *not* a problem for bootstrapping. The implementation is a
 ;; single hand-written C file designed to build with just `cc -o zuo zuo.c`,
 ;; even with very old or limited compilers. (We use the Autoconf support for
-;; convienience.) As of Zuo 1.8, Zuo has tagged releases in its own repository
+;; convenience.) As of Zuo 1.8, Zuo has tagged releases in its own repository
 ;; independent of the Racket release cycle.
 ;;
 ;; CODE:

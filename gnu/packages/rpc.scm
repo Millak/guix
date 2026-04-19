@@ -268,7 +268,7 @@ HTTP/2-based RPC framework gRPC.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f       ;XXX: no tests in PyPI, try to bulid from Git
+      #:tests? #f       ;XXX: no tests in PyPI, try to build from Git
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'configure

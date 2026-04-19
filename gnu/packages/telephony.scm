@@ -822,7 +822,7 @@ your calls and messages.")
               (substitute* "self-test.mak"
                 ;; Fails with: pjlib-util-test-x86_64-unknown-linux-gnu:
                 ;; ../src/pjlib-util-test/resolver_test.c:1501: action2_1:
-                ;; Assertio n `pj_strcmp2(&pkt->q[0].name, "_sip._udp."
+                ;; Assertion `pj_strcmp2(&pkt->q[0].name, "_sip._udp."
                 ;; "domain2.com")==0' failed.
                 ((" pjlib_util_test ") ""))
               (substitute* "pjsip/src/test/test.h"

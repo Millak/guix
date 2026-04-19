@@ -1499,7 +1499,7 @@ manage (install/update) them for you.")
               "--ignore=tests/trust/test_signature_verification.py"
               "-k" (string-join
                     ;; XXX: Issues salad: network access, can't detect Conda
-                    ;; environemnt, assertion failed; review if they may be
+                    ;; environment, assertion failed; review if they may be
                     ;; fixed.
                     ;;
                     ;; test_info_all: Fails due to parallel test interference.

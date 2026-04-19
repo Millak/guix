@@ -91,7 +91,7 @@
          "--with-nologin=/run/apcupsd"
          "--with-pwrfail-dir=/run/apcupsd"
 
-         ;; Configure requires these, but we do not use the genenerated
+         ;; Configure requires these, but we do not use the generated
          ;; apcupsd.conf, so in order to reduce dependencies of the package,
          ;; provide fake values.
          (string-append "ac_cv_path_SHUTDOWN=/nope")

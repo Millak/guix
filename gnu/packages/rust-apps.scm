@@ -2863,7 +2863,7 @@ touchscreen devices.")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'set-cc
-              ;; Tests assume `cc' is avaliable in PATH, but Guix does not
+              ;; Tests assume `cc' is available in PATH, but Guix does not
               ;; provide that with the `gcc' or `clang' packages.
               (lambda _
                 (substitute* '("tests/integration/build_description_tests.rs"

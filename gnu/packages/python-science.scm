@@ -1862,7 +1862,7 @@ density maps, both for interactive and non-interactive use.")
       (home-page "https://github.com/jararias/mpsplines")
       (synopsis "Mean preserving interpolation with splines")
       (description
-       "Thi package implements a functionality for mean-preserving
+       "This package implements a functionality for mean-preserving
 interpolation of 1D data (for example, time series) with splines.")
       (license license:bsd-3))))
 
@@ -2067,7 +2067,7 @@ indices of @code{ndarrays}.")
                                   ;; AttributeError: 'Series' object has no
                                   ;; attribute 'iteritems'
                                   " and not test_kde_plot_df"
-                                  ;; Test is not determenistic and fails with
+                                  ;; Test is not deterministic and fails with
                                   ;; assertion not equal for DF array.
                                   " and not test_summary_df"))
       #:phases
@@ -3421,7 +3421,7 @@ cross-validation.")
               "--numprocesses" (number->string (min 4 (parallel-job-count)))
               "--pyargs" "scipy"
               "-k" (string-join
-                    ;; Network access is requied.
+                    ;; Network access is required.
                     (list "not test_ascent"
                           "test_electrocardiogram"
                           "test_existence_all"
@@ -3468,7 +3468,7 @@ cross-validation.")
             (lambda* (#:key test-flags tests? #:allow-other-keys)
               (when tests?
                 ;; Step out of the source directory to avoid interference.
-                ;; See: <.github/workflows/linux.yml> for any other posible
+                ;; See: <.github/workflows/linux.yml> for any other possible
                 ;; tests setup.
                 (with-directory-excursion "/tmp"
                   (setenv "HOME" "/tmp")
@@ -3818,7 +3818,7 @@ depends on @code{scipy.sparse} for some computations.")
          "--deselect=tdda/test_tdda.py::TestPandasDataFrames::test_types_match")
       #:phases
       #~(modify-phases %standard-phases
-          ;; "datetime.UTC" is not availalbe in Python 3.10 but in
+          ;; "datetime.UTC" is not available in Python 3.10 but in
           ;; 3.11 it's present
           ;; <https://docs.python.org/3/library/datetime.html#datetime.UTC>.
           (add-after 'unpack 'fix-Python3.11-datetime.UTC
@@ -4263,7 +4263,7 @@ idea of the remaining amount of computation to be done.")
               "--ignore=tests/pyspark"
               ;; E ModuleNotFoundError: No module named 'sphinx'
               "--ignore=tests/pandas/test_docs_setting_column_widths.py"
-              ;; Nework access is required.
+              ;; Network access is required.
               "--ignore=tests/fastapi/test_app.py"
               ;; TypeError: __class__ assignment: 'GeoDataFrame' object layout
               ;; differs from 'DataFrame'
@@ -4271,7 +4271,7 @@ idea of the remaining amount of computation to be done.")
                     (list "not test_schema_model[data0-True]"
                           "test_schema_from_dataframe[data1-True]"
                           "test_schema_no_geometry"
-                          ;; The most of the tests from this goup XFAIL or fail.
+                          ;; The most of the tests from this group XFAIL or fail.
                           "test_pandas_stubs_false_positives")
                     " and not "))))
     (native-inputs
@@ -4797,7 +4797,7 @@ readable.")
     (arguments
      (list
       ;; TODO: Require vaex.server and others, which require vaex-core;
-      ;; implement bootsrapping.
+      ;; implement bootstrapping.
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
@@ -5223,7 +5223,7 @@ objects.")
                              python-numba
                              python-numpy
                              python-scipy
-                             ;; [optinal]
+                             ;; [optional]
                              ;; python-jaxlib
                              ;; python-jax
                              #;python-llvmlite))

@@ -75,7 +75,7 @@
           (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "setup.py"
-                ;; Relax hard requirment of PIP.
+                ;; Relax hard requirement of PIP.
                 ((".*pip>=18.0.*") ""))))
           (add-before 'check 'pre-check
             (lambda _

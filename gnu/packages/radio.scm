@@ -2013,7 +2013,7 @@ operators.")
          ;; kernel specific headers.
          "-DBUILD_DRIVERS_LIMEPCIE=false"
          ;; Specify the udev rules installation path into
-         ;; the ouput profile.
+         ;; the output profile.
          (string-append "-DUDEV_RULES_INSTALL_PATH="
                         #$output "/lib/udev/rules.d")
          ;; Do not reload udev rules after build.

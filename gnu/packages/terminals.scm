@@ -406,7 +406,7 @@ multi-seat support, a replacement for @command{mingetty}, and more.")
                                %supported-systems))))
 
 ;;; INFO: kmscon-8 is a dependency of Guix System installer. When upgrading,
-;;; remeber to test it; you can fire a VM by following the procedure below:
+;;; remember to test it; you can fire a VM by following the procedure below:
 ;;;
 ;;; 1. Manually change `(gnu system install)' module so that in procedure
 ;;;    `%installation-services' the key `guix-for-system' refers to `guix'

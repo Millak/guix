@@ -311,7 +311,7 @@
                  ;; This test fails on most architectures.
                  "sapi/cli/tests/upload_2G.phpt"))
 
-              ;; Accomodate two extra openssl errors flanking the expected one:
+              ;; Accommodate two extra openssl errors flanking the expected one:
               ;; random number generator:RAND_{load,write}_file:Cannot open file
               ;; This is due to an invalid $HOME, but changing it in the test
               ;; still prints the first one & changing it globally is overkill.

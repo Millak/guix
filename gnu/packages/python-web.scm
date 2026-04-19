@@ -870,7 +870,7 @@ caching server.")
     (home-page "https://github.com/ImagingDataCommons/dicomweb-client")
     (synopsis "Python client for DICOMweb RESTful services")
     (description
-     "@code{dicomweb_client} provides client intefaces for DICOMweb RESTful
+     "@code{dicomweb_client} provides client interfaces for DICOMweb RESTful
 services QIDO-RS, WADO-RS and STOW-RS to search, retrieve and store
 DICOM objects over the web, respectively.")
     (license license:expat)))
@@ -1322,7 +1322,7 @@ Rate limits can be configured at different levels such as:
     (synopsis "Google Drive Public File/Folder Downloader")
     (description
      "This package implements a functionality to download large files
-recursivly from Google Drive with option to filter them by file
+recursively from Google Drive with option to filter them by file
 formats (PDF/XML/CSV).")
     (license license:expat)))
 
@@ -2653,7 +2653,7 @@ comes with a SOCKS proxy client.")
     (version "0.7.0")
     (source
      (origin
-       (method git-fetch)        ;no tests in PyPI archvie
+       (method git-fetch)        ;no tests in PyPI archive
        (uri (git-reference
               (url "https://github.com/vxgmichel/aiostream")
               (commit (string-append "v" version))))
@@ -3441,7 +3441,7 @@ classes
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: The last commit's tests are uncompatible with the more recent
+      ;; XXX: The last commit's tests are incompatible with the more recent
       ;; version of python-falcon.
       #:tests? #f))
     (native-inputs
@@ -4150,7 +4150,7 @@ Python HTTP implementation.")
 (define-public python-slixmpp
   (package
     (name "python-slixmpp")
-    (version "1.8.6") ; XXX: The latest version which does not requrie Rust
+    (version "1.8.6") ; XXX: The latest version which does not require Rust
     (source
      (origin
        (method git-fetch)
@@ -4393,7 +4393,7 @@ storage.")
         (base32 "0vqlhk0hgbsfkh7ybmby93xhlx8dq6pr5blf356ka3z2c41b9rdj"))))
     (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f))    ;tests depent on dated pytest-expect
+     '(#:tests? #f))    ;tests depend on dated pytest-expect
     (native-inputs
      (list python-setuptools))
     (propagated-inputs
@@ -4744,7 +4744,7 @@ the Trio framework}.")
 
 (define-public python-txacme
   ;; 0.9.3 tag was placed in 2020 and there a lot of changes providing
-  ;; compatibility wit twisted, use the latest commit from trunk branch.
+  ;; compatibility with twisted, use the latest commit from trunk branch.
   ;;
   ;;See: <https://github.com/twisted/txacme/issues/165>.
   (let ((commit "ac18f92f6dde971a6b38f2ecfae44665815db583")
@@ -8631,7 +8631,7 @@ this it tries to be opinion-free and very extendable.")
     (version "1.1.4")
     (source
      (origin
-       (method git-fetch)       ;no tests in PyPI archvie
+       (method git-fetch)       ;no tests in PyPI archive
        (uri (git-reference
               (url "https://github.com/Yelp/ephemeral-port-reserve")
               (commit (string-append "v" version))))
@@ -10778,7 +10778,7 @@ request/response web apps to larger, grown applications.")
     (license license:repoze)))
 
 (define-public python-pyramid-chameleon
-  ;; PyPI lacks a fresh release, use the latest commit assosiated with
+  ;; PyPI lacks a fresh release, use the latest commit associated with
   ;; unrleased version, see:
   ;; <https://github.com/Pylons/pyramid_chameleon/issues/27>
   (let ((commit "956c77ba37120c430e871c834d3cd4ed5ac8dccf")
@@ -10887,7 +10887,7 @@ Pyramid web framework.")
     (license license:repoze)))
 
 (define-public python-pyramid-mako
-  ;; 1.1.0 was released in 2019, there a lot of compatability changes on
+  ;; 1.1.0 was released in 2019, there a lot of compatibility changes on
   ;; master, us the latest commit for now.
   (let ((commit "1a6f4c00c7134530d2975f34d904b64a41b28b21")
         (revision "0"))
@@ -13486,7 +13486,7 @@ services until one succeeds.")
     (name "python-whitenoise")
     (version "6.9.0")
     (source (origin
-              (method git-fetch) ; PyPI missing test failes
+              (method git-fetch) ; PyPI missing test fails
               (uri (git-reference
                     (url "https://github.com/evansd/whitenoise")
                     (commit version)))
