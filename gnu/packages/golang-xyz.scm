@@ -25796,15 +25796,22 @@ sensors).")
     (arguments
      (list
       #:import-path "github.com/shirou/gopsutil/v4"
-      ;; Three tests fail:
       ;; [1] error open /var/run/utmp: no such file or directory
       ;; [2] PlatformInformation() returns empty
       ;; [3] Could not get temperature
-      #:test-flags #~(list "-skip" (string-join
-                                    (list "TestUsers"               ;1
-                                          "TestPlatformInformation" ;2
-                                          "TestTemperatures")       ;3
-                                    "|"))))))
+      ;; [4] TestCounts and TestInfo read /proc/cpuinfo fields that
+      ;;     are absent on non-x86 Linux.
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (append
+                (list "TestUsers"               ;1
+                      "TestPlatformInformation" ;2
+                      "TestTemperatures")       ;3
+                (if #$(target-x86?)             ;4
+                    '()
+                    (list "TestCounts" "TestInfo")))
+               "|"))))))
 
 (define-public go-github-com-shurcool-sanitized-anchor-name
   (package
