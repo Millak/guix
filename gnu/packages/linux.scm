@@ -12139,23 +12139,12 @@ that avoids the usage of older system-wide @file{/sys} interface.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10fklw4znjhm8mlg6hwlipdyk7v3053lnrc5bpqifnsc8gwqbaz0"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            (substitute* (list "Makefile" "scripts/utils.mk")
-              (("/bin/(pwd)" _ command) command))))))
-    (build-system gnu-build-system)
+        (base32 "10fklw4znjhm8mlg6hwlipdyk7v3053lnrc5bpqifnsc8gwqbaz0"))))
+    (build-system meson-build-system)
     (arguments
      (list
-      #:tests? #f                       ; no test suite
-      #:make-flags
-      #~(list
-         (string-append "pkgconfig_dir=" #$output "/lib/pkgconfig")
-         (string-append "prefix=" #$output))
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure))))        ; no configure script
+      #:configure-flags
+      #~(list "-Ddoc=false")))
     (home-page "https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/")
     (synopsis "Linux kernel trace event library")
     (description
