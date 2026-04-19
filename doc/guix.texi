@@ -2658,12 +2658,13 @@ bootloaders.
 
 Once you are done partitioning the target hard disk drive, you have to
 create a file system on the relevant partition(s)@footnote{Currently
-Guix System supports only ext4, btrfs, bcachefs, JFS, F2FS, and XFS
-file systems.  In particular, code that reads file system UUIDs and
-labels works only for these file system types.  For bcachefs, also add
-the @code{bcachefs-linux-module} to your @code{operating-system}'s
-@code{initrd-modules}.}.  For the ESP, if you have one and assuming it is
-@file{/dev/sda1}, run:
+Guix System can mount only ext4, btrfs, JFS, F2FS, and XFS file systems
+at boot time.  In particular, code that reads file system UUIDs and
+labels works only for these file system types.  The code for bcachefs is
+in place, but support for loading out-of-tree kernel modules in the
+initrd is not.}.
+
+For the ESP, if you have one and assuming it is @file{/dev/sda1}, run:
 
 @example
 mkfs.fat -F32 /dev/sda1
