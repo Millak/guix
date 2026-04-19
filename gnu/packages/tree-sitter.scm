@@ -2087,8 +2087,8 @@ files.")))
 (define-public tree-sitter-vim
   (tree-sitter-grammar "vim"
    "Vimscript"
-   "0wr0sijh3vpka0gysbf0ki8zkvwfg8r5lvhi3xbwmkbyszjzgrqw"
-   "0.7.0"
+   "1myz19yimx179gzd6w64zyshfb4hbxp7qfrdf6nvf9a2w8bc2wij"
+   "0.8.1"
    #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-vim"))
 
 (define-public tree-sitter-vimdoc
