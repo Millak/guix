@@ -1249,6 +1249,11 @@ the \"texlive\" importer."
                        "jonsger")
   mozilla)
 
+(define-member (person "Denis Carikli"
+                       "GNUtoo@cyberdimension.org"
+                       "GNUtoo")
+  embedded)
+
 (define-member (person "Ludovic Courtès"
                        "ludo@gnu.org"
                        "civodul")
