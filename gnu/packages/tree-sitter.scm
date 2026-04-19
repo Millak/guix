@@ -1599,8 +1599,8 @@ which will be used as a snippet in origin."
   (package
     (inherit (tree-sitter-grammar "query"
      "Query"
-     "0fbqwg7km4yqjq8p2fkj9hpy0sfnijnf1hsk34wsirlp3af3hc67"
-     "0.7.0"
+     "1m7w05228ky26ph4k9vfwjwkhghppnpvci2i45iwncjanrni6byk"
+     "0.8.0"
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-query"))
     (synopsis "Tree-sitter grammar for Tree-sitter's query language")
