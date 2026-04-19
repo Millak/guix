@@ -819,6 +819,7 @@ def contents() -> str:
                                     " test_multiprocessing_main_handling"
                                     " test_pdb "
                                     " test_regrtest"
+                                    " test_ssl" ;; Fails with openssl 3.5
                                     " test_sqlite")
                                   '())
                             ,@(if (system-hurd64?)
