@@ -1148,11 +1148,24 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/benwilliamgraham/tree-sitter-llvm")))
 
-(define-public tree-sitter-lua
+(define-public tree-sitter-lua-0.4
   (tree-sitter-grammar
    "lua" "Lua"
    "082hc274h96sa98n3vxicjmjvnbdhrpjaimxsh002xl69rdl80jm"
    "0.4.0"
+   #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-lua"
+   #:get-cleanup-snippet
+   (lambda (grammar-directories)
+     #~(begin
+         (use-modules (guix build utils))
+         (delete-file-recursively "test/highlight") ;FIXME
+         #$(tree-sitter-delete-generated-files grammar-directories)))))
+
+(define-public tree-sitter-lua
+  (tree-sitter-grammar
+   "lua" "Lua"
+   "1mhlwpj4ajqajgjw99l9xhiqnyg9hwn7zdgvdw037vk3k8vrldjp"
+   "0.5.0"
    #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-lua"
    #:get-cleanup-snippet
    (lambda (grammar-directories)
@@ -1192,7 +1205,7 @@ which will be used as a snippet in origin."
    "1.2.0"
    #:repository-url
    "https://github.com/tree-sitter-grammars/tree-sitter-luau"
-   #:inputs (list tree-sitter-lua)
+   #:inputs (list tree-sitter-lua-0.4)
    #:get-cleanup-snippet
    (lambda (grammar-directories)
      #~(begin
