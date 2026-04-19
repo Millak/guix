@@ -566,6 +566,10 @@ applications.")
                         "syslog"
                         "telemetry-otlp")
       #:install-source? #f
+      #:modules
+      '((guix build cargo-build-system)
+        (guix build utils)
+        (ice-9 match))
       #:phases
       #~(modify-phases %standard-phases
            ;; The 'check phase doesn't honor #:features
@@ -592,10 +596,31 @@ applications.")
                            "--features" (string-join features)))
                  (if (null? cargo-install-paths)
                      '(".")
-                     cargo-install-paths)))))))
-    (native-inputs (list nss-certs-for-test
-                         pkg-config
-                         protobuf))
+                     cargo-install-paths))))
+           (add-after 'install 'install-completions
+             (lambda* (#:key native-inputs #:allow-other-keys)
+               (for-each
+                (match-lambda
+                  ((shell . path)
+                   (mkdir-p (in-vicinity #$output (dirname path)))
+                   (let ((binary
+                          (if #$(%current-target-system)
+                              (search-input-file native-inputs "bin/garage")
+                              (in-vicinity #$output "bin/garage"))))
+                     (with-output-to-file (in-vicinity #$output path)
+                       (lambda _
+                         (invoke binary "completions" shell))))))
+                '(("bash"   . "share/bash-completion/completions/garage")
+                  ("elvish" . "share/elvish/lib/garage")
+                  ("fish"   . "share/fish/vendor_completions.d/garage.fish")
+                  ("zsh"    . "share/zsh/site-functions/_garage"))))))))
+    (native-inputs
+     (append (if (%current-target-system)
+                 (list this-package)
+                 '())
+             (list nss-certs-for-test
+                   pkg-config
+                   protobuf)))
     (inputs
      (cons* libsodium
             lmdb
