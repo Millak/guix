@@ -1006,6 +1006,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/alure-dumb-2.patch			\
   %D%/packages/patches/amd-smi-newer-libdrm.patch		\
   %D%/packages/patches/amd-smi-python.patch			\
+  %D%/packages/patches/angband-remove-nonfree-tile-options.patch	\
   %D%/packages/patches/ibus-anthy-fix-tests.patch		\
   %D%/packages/patches/ibus-table-paths.patch			\
   %D%/packages/patches/antiword-CVE-2014-8123.patch			\

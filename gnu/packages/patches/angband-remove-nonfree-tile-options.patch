@@ -1,0 +1,26 @@
+Remove nonfree tile data.
+
+Note this does not remove the directories; ensure they are snippeted out separately.
+
+Patch by bdunahu <bdunahu@operationnull.com>.
+
+diff --git a/lib/tiles/list.txt b/lib/tiles/list.txt
+index 3677ba45e..eb2592c9f 100644
+--- a/lib/tiles/list.txt
++++ b/lib/tiles/list.txt
+@@ -54,15 +48,3 @@
+ size:16:16:8x16.png
+ pref:graf-nmd.prf
+ extra:0:0:0
+-
+-name:5:Shockbolt Dark
+-directory:shockbolt
+-size:64:64:64x64.png
+-pref:graf-shb-dark.prf
+-extra:1:27:31
+-
+-name:6:Shockbolt Light
+-directory:shockbolt
+-size:64:64:64x64.png
+-pref:graf-shb-light.prf
+-extra:1:27:31

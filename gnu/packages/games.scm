@@ -3988,27 +3988,26 @@ that beneath its ruins lay buried an ancient evil.")
         (base32 "0hgzdvlh0j42w4q9kch9xvhnbvcrypac01xhpksw35gj9my887cp"))
        (modules '((guix build utils)))
        (snippet
-        ;; So, some of the sounds/graphics/tilesets are under different
-        ;; licenses... some of them even nonfree!  This is a console-only
-        ;; version of this package so we just remove them.
-        ;; In the future, if someone tries to make a graphical variant of
-        ;; this package, they can deal with that mess themselves. :)
         '(begin
-           (for-each (lambda (subdir)
-                       (let ((lib-subdir (string-append "lib/" subdir)))
-                         (delete-file-recursively lib-subdir)))
-                     '("fonts" "icons" "sounds" "tiles"))
-           (substitute* "lib/Makefile"
-             ;; And don't try to invoke makefiles in the directories we removed.
-             (("gamedata customize help screens fonts tiles sounds icons user")
-              "gamedata customize help screens user"))
-           ;; Remove nonfree .dll files too.
-           (delete-file-recursively "src/win")))))
+           (for-each delete-file-recursively
+                     '("lib/tiles/shockbolt" ;nonfree
+                       "src/win"))      ;contains .dlls!
+           ;; Don't build the shockbolt directory either.
+           (substitute* "lib/tiles/Makefile"
+             (("shockbolt") ""))))
+       (patches (search-patches "angband-remove-nonfree-tile-options.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list (string-append "--bindir=" %output "/bin"))
+     `(#:configure-flags (list (string-append "--bindir=" %output "/bin")
+                               "--disable-x11")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'disable-graphics-and-sounds
+           (lambda _
+             (substitute* "lib/Makefile"
+               ;; Do not build any graphics for this version.
+               (("gamedata customize help screens fonts tiles sounds icons user")
+                "gamedata customize help screens user"))))
          (add-before 'build 'fix-infinite-loop-on-sighup
            ;; XXX Release 4.2.6 has a major bug where sending the process a
            ;; SIGHUP when closing the terminal causes it to infinite loop
