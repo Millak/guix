@@ -3124,7 +3124,7 @@ GNU/Linux, DOS or Microsoft Windows.")
 (define-public xen
   (package
     (name "xen")
-    (version "4.19.0")               ; please update the mini-os input as well
+    (version "4.21.1")               ; please update the mini-os input as well
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3133,7 +3133,7 @@ GNU/Linux, DOS or Microsoft Windows.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r33ak7j6czcjxf5zxswfkppnv0w1n6hi262x9rk08bqyvcpxb23"))))
+                "0y7qqyxx8iwhw2b7yd8y8fwmnyj1wyahbjspd02dfvcmlaifq03d"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3299,14 +3299,15 @@ GNU/Linux, DOS or Microsoft Windows.")
                ;; at time of packaging, but upstream has unfortunately modified
                ;; existing tags in the past.  Also, not all Xen releases get a
                ;; new tag.  See <https://xenbits.xen.org/gitweb/?p=mini-os.git>.
-               (commit "8b038c7411ae7e823eaf6d15d5efbe037a07197a")))
+               (commit "6732fd42d8eb8d0af9f5eb54aca17f4c250213a8")))
          (sha256
-          (base32 "1xgazvvhy5m9nabbmlwslynhk73k9a8wnzrjwjplj52f0cm10fjq"))
+          (base32 "1v4hhdp0zq93mvwi6w6jmmsmkff439hb41w5qmp5k3g5wr1b786w"))
          (file-name (string-append name "-" version "-mini-os-git-checkout")))
        perl
        ;; TODO: markdown.
        pkg-config
        python
+       python-setuptools
        wget
        (cross-gcc "i686-linux-gnu"
                   #:xbinutils (cross-binutils "i686-linux-gnu")
