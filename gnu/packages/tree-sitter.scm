@@ -2094,8 +2094,8 @@ files.")))
 (define-public tree-sitter-vimdoc
   (tree-sitter-grammar "vimdoc"
    "Vimdoc"
-   "1gi16hmh4vk9hdfkg9kvwxd7m4rq8r6vymk7fgxqqrbyrks9f0mw"
-   "4.0.0"
+   "18f1dr3j79axg6yqrvm0fc2w4cil403al9xifc4h4vkkp6hg6y9b"
+   "4.1.0"
    #:repository-url
    "https://github.com/neovim/tree-sitter-vimdoc"
    #:license license:expat))
