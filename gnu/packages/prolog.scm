@@ -302,13 +302,13 @@ interpreter with ISO Prolog aspirations.")
 (define-public logtalk
   (package
     (name "logtalk")
-    (version "3.80.0")
+    (version "3.99.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://logtalk.org/files/logtalk-"
                            version ".tar.bz2"))
-       (sha256 (base32 "0g4cc0qv921234548k3rkv1sdayicaa6zzh15vgn82ri9apwm3nh"))))
+       (sha256 (base32 "04namz3lj2j1j741bb41qy5c172b9zawp1li148i7pd2s0jiwjjr"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;no tests
