@@ -3437,14 +3437,14 @@ notifications.")
 (define-public pounce
   (package
     (name "pounce")
-    (version "3.1")
+    (version "3.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://git.causal.agency/pounce/snapshot/pounce-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0kk0jrfiwfaybr0i5xih3b0yd4i6v3bz866a7xal1j8wddalbwlp"))
+        (base32 "1i0s76mip9kfmi85bfk10p4k1kg5wkq1gm4l9gadnq9ssxnvzvjs"))
        (patches (search-patches "pounce-readable-checks.patch"))))
     (outputs '("out" "debug"))
     (build-system gnu-build-system)
