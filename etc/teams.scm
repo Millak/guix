@@ -16,6 +16,7 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2025 jgart <jgart@dismail.de>
+;;; Copyright © 2026 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -690,6 +691,7 @@ ecosystem."
   (team 'embedded
         #:name "Embedded"
         #:scope (list "gnu/packages/bootloaders.scm"
+                      "gnu/packages/coreboot.scm"
                       "gnu/packages/firmware.scm")))
 
 (define-team games
