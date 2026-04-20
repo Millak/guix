@@ -1151,7 +1151,7 @@ simultaneously and therefore appear under the same nickname on IRC.")
 (define-public python-nbxmpp
   (package
     (name "python-nbxmpp")
-    (version "7.1.0")
+    (version "7.2.0")
     (source
      (origin
        (method git-fetch)
@@ -1160,7 +1160,7 @@ simultaneously and therefore appear under the same nickname on IRC.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n7b6yv2k89hsmhmx9pi7m8l3aq97xppaz3hm7mvqgvxnlw0c1kr"))))
+        (base32 "1dyf4jh76ffbl45x4cpk6rsn1r4wck54b3d8wfd2swxaqq4p7lis"))))
     (build-system pyproject-build-system)
     (arguments (list #:test-backend #~'unittest))
     (propagated-inputs
