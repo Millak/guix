@@ -14476,17 +14476,24 @@ mixture models.")
 (define-public r-detectseparation
   (package
     (name "r-detectseparation")
-    (version "0.3")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "detectseparation" version))
        (sha256
-        (base32 "05z3p1z5mhmdj5qdknz1b8f6fwbghzckl88pv79v59cfwpbvgmz8"))))
+        (base32 "1pjrbbrvjb30w75s686nsnq077k8rs72lb414rl4cd2rff24779k"))))
     (properties `((upstream-name . "detectseparation")))
     (build-system r-build-system)
-    (propagated-inputs (list r-lpsolveapi r-pkgload r-roi r-roi-plugin-lpsolve))
-    (native-inputs (list r-knitr))
+    (propagated-inputs (list r-lpsolveapi
+                             r-pkgload
+                             r-roi
+                             r-roi-plugin-alabama
+                             r-roi-plugin-ecos
+                             r-roi-plugin-glpk
+                             r-roi-plugin-lpsolve
+                             r-roi-plugin-neos))
+    (native-inputs (list r-knitr r-tinytest))
     (home-page "https://github.com/ikosmidis/detectseparation")
     (synopsis
      "Detect and check for separation and infinite maximum likelihood estimates")
