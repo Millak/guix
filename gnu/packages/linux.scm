@@ -2917,31 +2917,6 @@ registers of the @acronym{EC, Embedded Controller} supported by the
 detection of security vulnerability exploits against the kernel.")
     (license license:gpl2)))
 
-(define-public vhba-module
-  (package
-    (name "vhba-module")
-    (version "20211218")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "http://downloads.sourceforge.net/cdemu/vhba-module/vhba-module-"
-             version ".tar.xz"))
-       (sha256
-        (base32 "1dkprnnya0i8121p7ip4g8cww99drk7fzbwcxx65x02jqk0siibj"))))
-    (build-system linux-module-build-system)
-    (arguments
-     (list #:tests? #f))                ; no test suite
-    (home-page "https://cdemu.sourceforge.io/")
-    (synopsis "Linux kernel module that emulates SCSI devices")
-    (description
-     "The @acronym{VHBA, Virtual SCSI Host Bus Adapter} module is the link
-between the CDemu user-space daemon and the kernel Linux.  It acts as a
-low-level SCSI driver that emulates a virtual SCSI adapter which can have
-multiple virtual devices attached to it.  Its typical use with CDEmu is to
-emulate optical devices such as DVD and CD-ROM drives.")
-    (license license:gpl2+)))
-
 (define-public bbswitch-module
   ;; Use "develop" branch since stable release does not build on Linux >= 5.6.
   ;; See https://github.com/Bumblebee-Project/bbswitch/issues/205.
