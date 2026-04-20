@@ -1203,7 +1203,8 @@ OPAM.")
     (inputs '())
     (propagated-inputs (list ocaml-opam-format
                              ocaml-mccs
-                             ocaml-dose3))
+                             ocaml-dose3
+                             ocaml-opam-0install-cudf))
     (arguments `(#:package "opam-solver"
                  ;; tests are run with the opam package
                  #:tests? #f
