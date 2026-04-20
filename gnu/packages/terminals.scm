@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2021, 2023-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2021, 2023-2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Mckinley Olsen <mck.olsen@gmail.com>
 ;;; Copyright © 2016, 2017, 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -1479,7 +1479,7 @@ basic input/output.")
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.16.1")
+    (version "0.17.0")
     (source
      (origin
        ;; XXX: The crate at "crates.io" contains only the alacritty subproject
@@ -1491,7 +1491,7 @@ basic input/output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0swxzcqsaqi9shkr0v4pww6wgysq612j9wcqijfrv4gsksff3qr0"))))
+        (base32 "1aw5v127f0jr3jq5cclsbvbvf82g6s195dh1vjlcwjpbc0gl56w9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
@@ -1523,8 +1523,6 @@ basic input/output.")
                 (search-input-file inputs (string-append "lib/" all)))
 
                ;; There are several libwayland libraries.
-               (("libwayland\\.so" all)
-                (search-input-file inputs (string-append "lib/" all)))
                (("libwayland-[[:alpha:]]*\\.so" all)
                 (search-input-file inputs (string-append "lib/" all)))
                (("libxkbcommon-x11\\.so")
@@ -1546,6 +1544,7 @@ basic input/output.")
                ;; Install man pages.
                (mkdir-p (string-append man "/man1"))
                (mkdir-p (string-append man "/man5"))
+               (mkdir-p (string-append man "/man7"))
                (define (create-manpage manpage)
                  (let ((mandir (string-append
                                  "/man" (string-take-right manpage 1) "/")))
@@ -1557,7 +1556,8 @@ basic input/output.")
                  (for-each create-manpage '("alacritty.1"
                                             "alacritty-msg.1"
                                             "alacritty.5"
-                                            "alacritty-bindings.5")))
+                                            "alacritty-bindings.5"
+                                            "alacritty-escapes.7")))
                ;; Install desktop file.
                (install-file "extra/linux/Alacritty.desktop"
                              (string-append share "/applications"))
