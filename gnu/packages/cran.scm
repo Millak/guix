@@ -41888,6 +41888,28 @@ files in R.  It is built on top of the libxml2 C library.")
 @code{XPath}, and is easier to manipulate in general.")
     (license license:expat)))
 
+(define-public r-xmlrpc2
+  (package
+    (name "r-xmlrpc2")
+    (version "1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "xmlrpc2" version))
+       (sha256
+        (base32 "0adrq6r5kp3cx4mnpsa1dzaznj843fkmzch2z4j5l592x9zzywad"))))
+    (properties `((upstream-name . "xmlrpc2")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-base64enc r-curl r-xml2))
+    (home-page "https://cran.r-project.org/package=xmlrpc2")
+    (synopsis
+     "Implementation of the Remote Procedure Call Protocol (XML-RPC)")
+    (description
+     "XML-RPC is a remote procedure call protocol based on XML.  The xmlrpc2
+package is inspired by the XMLRPC package but uses the @code{curl} and
+@code{xml2} packages instead of @code{RCurl} and @code{XML}'.")
+    (license license:gpl3)))
+
 (define-public r-cyclocomp
   (package
     (name "r-cyclocomp")
