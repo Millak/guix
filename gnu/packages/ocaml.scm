@@ -797,30 +797,29 @@ describing upgrade scenarios in package-based software distributions.")
 (define-public ocaml-mccs
   (package
     (name "ocaml-mccs")
-    (version "1.1+14")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/AltGr/ocaml-mccs")
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "17bvm0jhhs8h3p5sbb65asj53a8sxl634cc0kvcivpams74837zq"))))
+    (version "1.1+19")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/AltGr/ocaml-mccs")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x1y5rhj4f0xakbgfn9f90a9xy09v99p8mc42pbnam5kghyjmxy6"))))
     (build-system dune-build-system)
     (propagated-inputs (list ocaml-cudf))
     (home-page "https://www.i3s.unice.fr/~cpjm/misc/")
     (synopsis "Upgrade path problem solver")
-    (description "Mccs (Multi Criteria CUDF Solver) is a CUDF problem solver.
+    (description
+     "Mccs (Multi Criteria CUDF Solver) is a CUDF problem solver.
 Mccs take as input a CUDF problem and computes the best solution according to
 a set of criteria.  It relies on a Integer Programming solver or a
 Pseudo Boolean solver to achieve its task.  Mccs can use a wide set of
 underlying solvers like Cplex, Gurobi, Lpsolver, Glpk, CbC, SCIP or WBO.")
-    (license (list
-               license:bsd-3
-               license:gpl3+
-               ;; With static-linking exception
-               license:lgpl2.1+))))
+    (license (list license:bsd-3 license:gpl3+
+                   ;; With static-linking exception
+                   license:lgpl2.1+))))
 
 (define-public ocaml-dose3
   (package
