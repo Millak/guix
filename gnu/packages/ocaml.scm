@@ -1193,7 +1193,7 @@ OPAM.")
                             (string-append "add_sys_mounts "
                                            (%store-directory)
                                            " /run/current-system /usr")))))))))
-    (inputs (list bubblewrap))
+    (inputs (list bubblewrap ocaml-spdx-licenses))
     (propagated-inputs (list ocaml-opam-repository))))
 
 (define ocaml-opam-solver
