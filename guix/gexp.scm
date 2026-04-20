@@ -7,6 +7,7 @@
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2026 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -122,9 +123,15 @@
             load-path-expression
             gexp-modules
 
+            environment-variable
+            environment-variable?
+            environment-variable-name
+            environment-variable-exp
+
             lower-gexp
             lowered-gexp?
             lowered-gexp-sexp
+            lowered-gexp-environment
             lowered-gexp-inputs
             lowered-gexp-sources
             lowered-gexp-guile
@@ -159,7 +166,10 @@
             gexp-error?
             &gexp-input-error
             gexp-input-error?
-            gexp-error-invalid-input))
+            gexp-error-invalid-input
+            &gexp-duplicate-environment-variable-error
+            gexp-duplicate-environment-variable-error?
+            gexp-duplicate-environment-variable-error-variable))
 
 ;; "G expressions".
 (define-record-type <gexp>
@@ -247,6 +257,11 @@ returned by 'gexp->sexp'."
 (define-condition-type &gexp-input-error &gexp-error
   gexp-input-error?
   (input gexp-error-invalid-input))
+
+(define-condition-type &gexp-duplicate-environment-variable-error
+  &gexp-error
+  gexp-duplicate-environment-variable-error?
+  (variable gexp-duplicate-environment-variable-error-variable))
 
 
 (define %gexp-compilers
@@ -992,6 +1007,9 @@ list."
     (one-of symbol? string? keyword? pair? null? array?
             number? boolean? char?)))
 
+(define filterm
+  (lift1 (cut filter ->bool <>) %store-monad))
+
 (define (lower-inputs inputs system target)
   "Turn any object from INPUTS into a derivation input for SYSTEM or a store
 item (a \"source\"); return the corresponding input list as a monadic value.
@@ -999,14 +1017,13 @@ When TARGET is true, use it as the cross-compilation target triplet."
   (define (store-item? obj)
     (and (string? obj) (store-path? obj)))
 
-  (define filterm
-    (lift1 (cut filter ->bool <>) %store-monad))
-
   (with-monad %store-monad
     (>>= (mapm/accumulate-builds
           (match-lambda
             (($ <gexp-input> (? store-item? item))
              (return item))
+            (($ <gexp-input> (? environment-variable?))
+             (return #f))
             (($ <gexp-input> thing output native?)
              (mlet %store-monad ((obj (lower-object thing system
                                                     #:target
@@ -1077,12 +1094,44 @@ names and file names suitable for the #:allowed-references argument to
     (lambda (system)
       ((force proc) system))))
 
+;; Object that teaks an expression and extracts it as an environment variable.
+;; For example:
+;;
+;; #~#$(environment-variable "#:coreutils" coreutils)
+;;
+;; Expands to:
+;;
+;; ((@ (guile) call-with-input-string)
+;;  ((@ (guile) getenv) "#:coreutils")
+;;  (@ (guile) read))
+;;
+;; This is an abstraction that allows build-system builders to share a common
+;; script where the different expressions are retrieved from the '.drv' files
+;; environment field.
+(define-record-type <environment-variable>
+  (environment-variable name exp)
+  environment-variable?
+  (name   environment-variable-name)
+  (exp    environment-variable-exp))
+
+(define (write-environment-variable variable port)
+  (match variable
+    (($ <environment-variable> name (? file-like? file))
+     (format port "#<environment-variable ~s ~a ~x>"
+             name file (object-address file)))
+    (($ <environment-variable> name exp)
+     (format port "#<environment-variable ~s ~20@y ~x>"
+             name exp (object-address variable)))))
+
+(set-record-type-printer! <environment-variable> write-environment-variable)
+
 ;; Representation of a gexp instantiated for a given target and system.
 ;; It's an intermediate representation between <gexp> and <derivation>.
 (define-record-type <lowered-gexp>
-  (lowered-gexp sexp inputs sources guile load-path load-compiled-path)
+  (lowered-gexp sexp environment inputs sources guile load-path load-compiled-path)
   lowered-gexp?
   (sexp                lowered-gexp-sexp)         ;sexp
+  (environment         lowered-gexp-environment)  ;environment
   (inputs              lowered-gexp-inputs)       ;list of <derivation-input>
   (sources             lowered-gexp-sources)      ;list of store items
   (guile               lowered-gexp-guile)        ;<derivation-input> | #f
@@ -1162,7 +1211,9 @@ derivations--e.g., code evaluated for its side effects."
                                   suffix))
                  extensions)))
 
-  (mlet* %store-monad ( ;; The following binding forces '%current-system' and
+  (assert-no-duplicated-environment-variables exp)
+
+  (mlet* %store-monad (;; The following binding forces '%current-system' and
                        ;; '%current-target-system' to be looked up at >>=
                        ;; time.
                        (graft?    (set-grafting graft?))
@@ -1174,6 +1225,8 @@ derivations--e.g., code evaluated for its side effects."
                        (guile     (if guile-for-build
                                       (return guile-for-build)
                                       (default-guile-derivation system)))
+                       (environment (lower-environment-variables
+                                     exp system target))
                        (inputs   (lower-inputs (gexp-inputs exp)
                                                system target))
                        (sexp     (gexp->sexp exp system target))
@@ -1204,6 +1257,7 @@ derivations--e.g., code evaluated for its side effects."
     (mbegin %store-monad
       (set-grafting graft?)                       ;restore the initial setting
       (return (lowered-gexp sexp
+                            environment
                             `(,@(if (derivation? modules)
                                     (list (derivation-input modules))
                                     '())
@@ -1333,6 +1387,7 @@ The other arguments are as for 'derivation'."
                                                          #:target target)
                                        (return #f)))
                        (guile -> (lowered-gexp-guile lowered))
+                       (environment -> (lowered-gexp-environment lowered))
                        (builder  (text-file script-name
                                             (sexp->string
                                              (lowered-gexp-sexp lowered)))))
@@ -1350,7 +1405,7 @@ The other arguments are as for 'derivation'."
                                       (lowered-gexp-load-compiled-path lowered))
                         ,builder)
                       #:outputs outputs
-                      #:env-vars env-vars
+                      #:env-vars (append environment env-vars)
                       #:system system
                       #:inputs `(,guile
                                  ,@(lowered-gexp-inputs lowered)
@@ -1410,6 +1465,25 @@ The other arguments are as for 'derivation'."
        (if (direct-store-path? str)
            (cons ref result)
            result))
+      ;; For <environment-variable>, return all the inputs it references, as
+      ;; well as itself.
+      (($ <gexp-input> ($ <environment-variable> name (? gexp? exp)) _ n?)
+       (cons ref
+             (append
+              (map (match-lambda
+                     (($ <gexp-input> thing output native?)
+                      (gexp-input thing output #:native? (or n? native?))))
+                   (gexp-inputs exp))
+              result)))
+      (($ <gexp-input> ($ <environment-variable> name (? file-like? file)) _ n?)
+       (cons* ref
+              (gexp-input file #:native? n?)
+              result))
+      ;; If this expression is reached, it means that 'thing' is a
+      ;; self-quoting object (number, string, etc.), therefore we just need to
+      ;; register <environment-variable> as an input.
+      (($ <gexp-input> ($ <environment-variable> name thing) _ n?)
+       (cons* ref result))
       (($ <gexp-input> (? struct? thing) output n?)
        (if (lookup-compiler thing)
            ;; THING is a derivation, or a package, or an origin, etc.
@@ -1463,6 +1537,46 @@ The other arguments are as for 'derivation'."
   (delete-duplicates
    (fold add-reference-output '() (gexp-references exp))))
 
+(define (assert-no-duplicated-environment-variables exp)
+  "Check that EXP does not contain two or more environment variable with the
+same name."
+  (fold-right
+   (lambda (input result)
+     (match input
+       (($ <gexp-input> (and variable ($ <environment-variable> name _)))
+        (if (member name result)
+            (raise (condition (&gexp-duplicate-environment-variable-error (variable variable))
+                              (&error-location (location (gexp-location exp)))))
+            (cons name result)))
+       (_ result)))
+   '()
+   (gexp-inputs exp)))
+
+(define (lower-environment-variables exp system target)
+  "Lower <environment-variable> from EXP into a <lowered-gexp> environment
+alist.
+
+The alist will be adjusted for SYSTEM, cross-compiling for TARGET."
+  (with-monad %store-monad
+    (>>=
+     (mapm %store-monad
+           (match-lambda
+             (($ <gexp-input> ($ <environment-variable> name exp) _ native?)
+              (mlet %store-monad
+                  ((sexp (cond
+                          ((gexp? exp)
+                           (gexp->sexp exp system (if native? #f target)))
+                          ((file-like? exp)
+                           (apply lower+expand-object exp system
+                                  (if native?
+                                      '() `(#:target ,target))))
+                          (else (return exp)))))
+                (return (cons name
+                              (sexp->string sexp)))))
+             (_ (return #f)))
+           (gexp-inputs exp))
+     filterm)))
+
 (define (gexp->sexp exp system target)
   "Return (monadically) the sexp corresponding to EXP for the given OUTPUT,
 and in the current monad setting (system type, etc.)"
@@ -1474,6 +1588,9 @@ and in the current monad setting (system type, etc.)"
          ;; an environment variable for each of them at build time, so use
          ;; that trick.
          (return `((@ (guile) getenv) ,output)))
+        (($ <gexp-input> ($ <environment-variable> name _))
+         (return `((@ (guile) call-with-input-string) ((@ (guile) getenv) ,name)
+                   (@ (guile) read))))
         (($ <gexp-input> (? gexp? exp) output n?)
          (gexp->sexp exp
                      system (if (or n? native?) #f target)))

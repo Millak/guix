@@ -13283,6 +13283,14 @@ dependencies are added to those of the containing gexp.
 
 If @var{obj} is another kind of object, it is inserted as is.
 
+A special kind of object that can appear inside a gexp is
+@dfn{environment variables}.  Those are produced using the
+`environment-variable` procedure which does two things: define the
+environment variable and its value, and produce code to retrieve its
+value.  The value of an environment variable can be either a file-like
+object (as discussed above) or a gexp.  @xref{environment-variable, the
+@code{environment-variable} reference below}.
+
 @item #$@var{obj}:@var{output}
 @itemx (ungexp @var{obj} @var{output})
 This is like the form above, but referring explicitly to the
@@ -13698,6 +13706,53 @@ There is one difference though: in the @code{file-append} case, the
 resulting script contains the absolute file name as a string, whereas in
 the second case, the resulting script contains a @code{(string-append
 @dots{})} expression to construct the file name @emph{at run time}.
+@end deffn
+
+@anchor{environment-variable}
+@deffn {Procedure} environment-variable name expression
+Return an object representing an environment variable definition and
+reference that retrieves the value of @var{expression} stored in an
+environment variable named @var{name}.
+
+As an example, consider this gexp:
+
+@lisp
+(use-modules (guix gexp) (gnu packages base))
+
+(gexp->script "run-uname"
+              #~(system* #$(environment-variable
+                            "UNAME" (file-append coreutils "/bin/uname"))))
+@end lisp
+
+Expands to:
+
+@lisp
+(run-with-store (open-connection)
+  (gexp->sexp #~(system* #$(environment-variable
+                            "UNAME" (file-append coreutils "/bin/uname")))
+              (%current-system) (%current-target-system)))
+=>
+
+(system* ((@ (guile) call-with-input-string)
+          ((@ (guile) getenv) "UNAME")
+          (@ (guile) read)))
+@end lisp
+
+One can reference a specific output of a package by using a
+@code{gexp-input}.  @xref{gexp-input, the @code{gexp-input} reference
+below}.
+
+For example, one could reference the bin output of @code{libevent} like
+this:
+
+@lisp
+(run-with-store (open-connection)
+  (gexp->script "run-event_rcpgen"
+                #~(system* #$(environment-variable
+                              "LIBEVENT:debug"
+                              (file-append (gexp-input libevent "bin")
+                                           "/bin/event_rpcgen.py")))))
+@end lisp
 @end deffn
 
 @defmac let-system system body@dots{}

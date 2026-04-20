@@ -20,6 +20,7 @@
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -924,6 +925,11 @@ evaluating the tests and bodies of CLAUSES."
                 (leave (and (error-location? c) (error-location c))
                        (G_ "~s: invalid G-expression input~%")
                        (gexp-error-invalid-input c))))
+             ((gexp-duplicate-environment-variable-error? c)
+              (let ((variable (gexp-duplicate-environment-variable-error-variable c)))
+                (leave (and (error-location? c) (error-location c))
+                       (G_ "~s: duplicated environment variable name~%")
+                       variable)))
              ((profile-not-found-error? c)
               (leave (G_ "profile '~a' does not exist~%")
                      (profile-error-profile c)))

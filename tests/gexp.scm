@@ -2,6 +2,7 @@
 ;;; Copyright © 2014-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021-2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2026 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -868,12 +869,51 @@
                  (string=? (derivation->output-path drv0)
                            (derivation->output-path drv1*))))))
 
+(test-assertm "gexp->derivation vs. grafts (environment-variable)"
+  (mlet* %store-monad ((graft?  (set-grafting #f))
+                       (p0 ->   (dummy-package "dummy"
+                                               (arguments
+                                                '(#:implicit-inputs? #f))))
+                       (r  ->   (package (inherit p0) (name "DuMMY")))
+                       (p1 ->   (package (inherit p0) (replacement r)))
+                       (exp0 -> (gexp (frob (ungexp (environment-variable "var" p0))
+                                            (ungexp output))))
+                       (exp1 -> (gexp (frob (ungexp (environment-variable "var" p1))
+                                            (ungexp output))))
+                       (void    (set-guile-for-build %bootstrap-guile))
+                       (drv0    (gexp->derivation "t" exp0 #:graft? #t))
+                       (drv1    (gexp->derivation "t" exp1 #:graft? #t))
+                       (drv1*   (gexp->derivation "t" exp1 #:graft? #f))
+                       (_       (set-grafting graft?)))
+    (return (and (not (string=? (derivation->output-path drv0)
+                                (derivation->output-path drv1)))
+                 (string=? (derivation->output-path drv0)
+                           (derivation->output-path drv1*))))))
+
 (test-assertm "gexp->derivation, composed gexps"
   (mlet* %store-monad ((exp0 -> (gexp (begin
                                         (mkdir (ungexp output))
                                         (chdir (ungexp output)))))
                        (exp1 -> (gexp (symlink
                                        (string-append (ungexp %bootstrap-guile)
+                                                      "/bin/guile")
+                                       "foo")))
+                       (exp  -> (gexp (begin (ungexp exp0) (ungexp exp1))))
+                       (drv     (gexp->derivation "foo" exp))
+                       (out ->  (derivation->output-path drv))
+                       (done    (built-derivations (list drv)))
+                       (guile   (package-file %bootstrap-guile "bin/guile")))
+    (return (string=? (readlink (string-append out "/foo"))
+                      guile))))
+
+(test-assertm "gexp->derivation, composed gexps (environment-variable)"
+  (mlet* %store-monad ((exp0 -> (gexp (begin
+                                        (mkdir (ungexp output))
+                                        (chdir (ungexp output)))))
+                       (exp1 -> (gexp (symlink
+                                       (string-append (ungexp (environment-variable
+                                                               "%bootstrap-guile"
+                                                               %bootstrap-guile))
                                                       "/bin/guile")
                                        "foo")))
                        (exp  -> (gexp (begin (ungexp exp0) (ungexp exp1))))
@@ -909,9 +949,56 @@
       (return (string=? (readlink (derivation->output-path drv))
                         intd)))))
 
+(test-assertm "gexp->derivation, local-file (environment-variable)"
+  (mlet* %store-monad ((file ->  (search-path %load-path "guix.scm"))
+                       (intd     (interned-file file #:recursive? #f))
+                       (local -> (local-file file))
+                       (exp ->   (gexp (begin
+                                         (stat (ungexp (environment-variable
+                                                        "local" local)))
+                                         (symlink (ungexp (environment-variable
+                                                        "local" local))
+                                                  (ungexp output)))))
+                       (drv      (gexp->derivation "local-file" exp)))
+    (mbegin %store-monad
+      (built-derivations (list drv))
+      (return (string=? (readlink (derivation->output-path drv))
+                        intd)))))
+
+(test-assertm "gexp->derivation, file-append (environment-variable)"
+  (mlet* %store-monad ((name -> "UNAME")
+                       (relative-path -> "/bin/uname")
+                       (pkg  -> coreutils)
+                       (file -> (file-append pkg relative-path))
+                       (exp  -> (gexp (system* (ungexp
+                                                (environment-variable
+                                                 name file)))))
+                       (drv     (package->derivation pkg))
+                       (drv-out -> (derivation->output-path drv))
+                       (lexp    (lower-gexp
+                                 exp
+                                 #:effective-version
+                                 (bootstrap-guile-effective-version))))
+    (return (equal? `((,name . ,(string-append "\"" drv-out relative-path "\"")))
+                    (lowered-gexp-environment lexp)))))
+
 (test-assertm "gexp->derivation, cross-compilation"
   (mlet* %store-monad ((target -> "mips64el-linux-gnu")
                        (exp    -> (gexp (list (ungexp coreutils)
+                                              (ungexp output))))
+                       (xdrv      (gexp->derivation "foo" exp
+                                                    #:target target))
+                       (refs      (references*
+                                   (derivation-file-name xdrv)))
+                       (xcu       (package->cross-derivation coreutils
+                                                             target))
+                       (cu        (package->derivation coreutils)))
+    (return (and (member (derivation-file-name xcu) refs)
+                 (not (member (derivation-file-name cu) refs))))))
+
+(test-assertm "gexp->derivation, cross-compilation (environment-variable)"
+  (mlet* %store-monad ((target -> "mips64el-linux-gnu")
+                       (exp    -> (gexp (list (ungexp (environment-variable "coreutils" coreutils))
                                               (ungexp output))))
                        (xdrv      (gexp->derivation "foo" exp
                                                     #:target target))
@@ -933,6 +1020,18 @@
     (return (string=? (derivation-file-name drv)
                       (derivation-file-name xdrv)))))
 
+(test-assertm "gexp->derivation, ungexp-native (environment-variable)"
+  (mlet* %store-monad ((target -> "mips64el-linux-gnu")
+                       (exp    -> (gexp (list (ungexp-native
+                                               (environment-variable
+                                                "coreutils" coreutils))
+                                              (ungexp output))))
+                       (xdrv      (gexp->derivation "foo" exp
+                                                    #:target target))
+                       (drv       (gexp->derivation "foo" exp)))
+    (return (string=? (derivation-file-name drv)
+                      (derivation-file-name xdrv)))))
+
 (test-assertm "gexp->derivation, ungexp + ungexp-native"
   (mlet* %store-monad ((target -> "mips64el-linux-gnu")
                        (exp    -> (gexp (list (ungexp-native coreutils)
@@ -947,10 +1046,40 @@
     (return (and (member (derivation-file-name cu) refs)
                  (member (derivation-file-name xglibc) refs)))))
 
+(test-assertm "gexp->derivation, ungexp + ungexp-native (environment-variable)"
+  (mlet* %store-monad ((target -> "mips64el-linux-gnu")
+                       (exp    -> (gexp (list (ungexp-native
+                                               (environment-variable
+                                                "coreutils" coreutils))
+                                              (ungexp
+                                               (environment-variable
+                                                "glibc" glibc))
+                                              (ungexp output))))
+                       (xdrv      (gexp->derivation "foo" exp
+                                                    #:target target))
+                       (refs      (references*
+                                   (derivation-file-name xdrv)))
+                       (xglibc    (package->cross-derivation glibc target))
+                       (cu        (package->derivation coreutils)))
+    (return (and (member (derivation-file-name cu) refs)
+                 (member (derivation-file-name xglibc) refs)))))
+
 (test-assertm "gexp->derivation, ungexp-native + composed gexps"
   (mlet* %store-monad ((target -> "mips64el-linux-gnu")
                        (exp0   -> (gexp (list 1 2
                                               (ungexp coreutils))))
+                       (exp    -> (gexp (list 0 (ungexp-native exp0))))
+                       (xdrv      (gexp->derivation "foo" exp
+                                                    #:target target))
+                       (drv       (gexp->derivation "foo" exp)))
+    (return (string=? (derivation-file-name drv)
+                      (derivation-file-name xdrv)))))
+
+(test-assertm "gexp->derivation, ungexp-native + composed gexps (environment-variable)"
+  (mlet* %store-monad ((target -> "mips64el-linux-gnu")
+                       (exp0   -> (gexp (list 1 2
+                                              (ungexp (environment-variable
+                                                       "coreutils" coreutils)))))
                        (exp    -> (gexp (list 0 (ungexp-native exp0))))
                        (xdrv      (gexp->derivation "foo" exp
                                                     #:target target))
@@ -1304,6 +1433,69 @@ importing.* \\(guix config\\) from the host"
                  (equal? (list (derivation-file-name drv))
                          (lowered-gexp-sources lexp))
                  (null? (lowered-gexp-inputs lexp))))))
+
+(test-assertm "lower-gexp, sexp (environment-variable)"
+  (mlet* %store-monad ((name -> "three")
+                       (sexp -> '(+ 1 2))
+                       (exp  -> #~#$(environment-variable name sexp))
+                       (lexp (lower-gexp
+                              exp
+                              #:effective-version
+                              (bootstrap-guile-effective-version))))
+    (return (and (equal? `((@ (guile) call-with-input-string)
+                           ((@ (guile) getenv) ,name)
+                           (@ (guile) read))
+                         (lowered-gexp-sexp lexp))
+                 (equal? `((,name . ,((@@ (guix gexp) sexp->string) sexp)))
+                         (lowered-gexp-environment lexp))))))
+
+(test-assertm "lower-gexp, composed gexps (environment-variable)"
+  (mlet* %store-monad ((name -> "three")
+                       (sexp -> '(+ 1 2))
+                       (exp  -> #~#$(environment-variable name #~#$sexp))
+                       (lexp (lower-gexp
+                              exp
+                              #:effective-version
+                              (bootstrap-guile-effective-version))))
+    (return (and (equal? `((@ (guile) call-with-input-string)
+                           ((@ (guile) getenv) ,name)
+                           (@ (guile) read))
+                         (lowered-gexp-sexp lexp))
+                 (equal? `((,name . ,((@@ (guix gexp) sexp->string) sexp)))
+                         (lowered-gexp-environment lexp))))))
+
+(test-assertm "lower-gexp, composed gexp with package output (environment-variable)"
+  (mlet* %store-monad ((pkg -> coreutils)
+                       (out -> "debug")
+                       (name -> (string-append (package-name pkg) ":" out))
+                       (pgexp -> (gexp (ungexp pkg out)))
+                       (drv (package->derivation pkg))
+                       (drv-debug-out -> (derivation->output-path drv out))
+                       (exp  -> #~#$(environment-variable name pgexp))
+                       (lexp (lower-gexp
+                              exp
+                              #:effective-version
+                              (bootstrap-guile-effective-version))))
+    (return (and (equal? `((@ (guile) call-with-input-string)
+                           ((@ (guile) getenv) ,name)
+                           (@ (guile) read))
+                         (lowered-gexp-sexp lexp))
+                 (equal? `((,name . ,(string-append "\"" drv-debug-out "\"")))
+                         (lowered-gexp-environment lexp))))))
+
+(test-equal "lower-gexp, duplicated (environment-variable)"
+  "duplicated"
+  (guard (c ((gexp-duplicate-environment-variable-error? c)
+             (environment-variable-name
+              (gexp-duplicate-environment-variable-error-variable c))))
+    (let* ((name "duplicated")
+           (sexp '(+ 1 2))
+           (exp  #~(#$(environment-variable name sexp)
+                    #$(environment-variable name coreutils))))
+      (lower-gexp
+       exp
+       #:effective-version
+       (bootstrap-guile-effective-version)))))
 
 (test-eq "lower-gexp, non-self-quoting input"
   +
@@ -1844,6 +2036,25 @@ importing.* \\(guix config\\) from the host"
                                                   (car '#$(list coreutils))
                                                   #$output)
                                                #:guile %bootstrap-guile))
+                       (drv (with-transformation (lambda (obj)
+                                                   (if (eq? obj coreutils)
+                                                       grep
+                                                       obj))
+                              (lower-object file)))
+                       (bad (lower-object coreutils))
+                       (good (lower-object grep))
+                       (refs (references* (derivation-file-name drv))))
+    (return (and (member (derivation-file-name good) refs)
+                 (not (member (derivation-file-name bad) refs))))))
+
+(test-assertm "lower-object, with-transformation, list (environment-variable)"
+  (mlet* %store-monad ((file -> (computed-file
+                                 "coreutils-transformed"
+                                 #~(symlink
+                                    (car '#$(list #~#$(environment-variable
+                                                       "COREUTILS" coreutils)))
+                                    #$output)
+                                 #:guile %bootstrap-guile))
                        (drv (with-transformation (lambda (obj)
                                                    (if (eq? obj coreutils)
                                                        grep
