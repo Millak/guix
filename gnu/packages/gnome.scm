@@ -10674,6 +10674,7 @@ playing media, scanning, and much more.")
                             system-config-printer
                             xdg-desktop-portal
                             xdg-user-dirs
+                            xdg-user-dirs-gtk
                             yelp
                             zenity))
    (description "This package provides a list of packages required for
