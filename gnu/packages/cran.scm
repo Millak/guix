@@ -8330,6 +8330,27 @@ metrics.")
 package with the alabama solver for solving nonlinear optimization problems.")
     (license license:gpl3)))
 
+(define-public r-roi-plugin-ecos
+  (package
+    (name "r-roi-plugin-ecos")
+    (version "1.0-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ROI.plugin.ecos" version))
+       (sha256
+        (base32 "01jkc5nrsjh1g73wqs9hbm0ryl1sjadnl9z78y8m478vrr15hmvs"))))
+    (properties `((upstream-name . "ROI.plugin.ecos")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli r-ecosolver r-matrix r-roi r-slam))
+    (home-page "https://roigrp.gitlab.io")
+    (synopsis "ECOS plugin for the R Optimization Infrastructure")
+    (description
+     "This package enhances the @dfn{R Optimization Infrastructure} (ROI)
+package with the Embedded Conic Solver (ECOS) for solving conic optimization
+problems.")
+    (license license:gpl3)))
+
 (define-public r-roi-plugin-lpsolve
   (package
     (name "r-roi-plugin-lpsolve")
