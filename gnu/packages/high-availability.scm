@@ -489,11 +489,22 @@ lost.
                 "0b9d2i22ghyjarwi1c596q5mf7gj1k04k784hnmrd2d4x9hgv9ax"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:configure-flags #~(list "--with-corosync" "--disable-static"
+     (list #:configure-flags #~(list "--with-corosync"
+                                     "--disable-static"
+                                     "--localstatedir=/var"
                                      (string-append "--with-initdir="
                                                     #$output "/etc/init.d")
                                      (string-append "--with-ocfdir="
-                                                    #$output "/lib"))))
+                                                    #$output "/lib"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'pre-configure
+                 (lambda _
+                   ;; Do not attempt to install /var.
+                   (substitute* '("Makefile.am"
+                                  "daemons/schedulerd/Makefile.am")
+                     (("install-exec-local:")
+                      "install-exec-local-disabled:")))))))
     (native-inputs (list autoconf
                          automake
                          cmocka
