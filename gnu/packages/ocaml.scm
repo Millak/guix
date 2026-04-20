@@ -1002,24 +1002,56 @@ Git-friendly development workflow.")
 
 (define-public opam-installer
   (package
-    (inherit ocaml-opam-core)
     (name "opam-installer")
-    (native-inputs (list ocaml-opam-format
-                         ocaml-cmdliner))
-    (inputs '())
-    (propagated-inputs '())
-    (arguments `(#:package "opam-installer"
-                 ;; requires all of opam
-                 #:tests? #f))
+    (version "2.5.1")
+    ;; opam has some library dependencies that in turn depend on
+    ;; opam-installer (https://codeberg.org/guix/guix/issues/3588).  To break
+    ;; the cycle, we build opam-installer from a version of the release that
+    ;; vendors all dependencies. Then the remaining opam packages can be built
+    ;; in the usual way from git sources.
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/ocaml/opam/releases/download/"
+                           version "/opam-full-" version ".tar.gz"))
+       (sha256
+        (base32 "1v9k00az5lkdrlb64xb9h8xasnsz73kms0j0bz64hh2wbypvzia8"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; Tests depend on the full opam package.
+      #:tests? #f
+      #:configure-flags
+      #~'("--with-vendored-deps")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-shell-path
+            (lambda _
+              (let ((sh (which "sh")))
+                (substitute* "configure"
+                  (("/bin/sh") sh)))))
+          ;; The Makefile builds both opam and opam-installer, but we
+          ;; only want the latter.
+          (replace 'install
+            (lambda _
+              (define (install source dest-dir)
+                (install-file source
+                              (string-append #$output "/" dest-dir)))
+              (install "opam-installer" "bin")
+              (install "_build/default/doc/man/opam-installer.1"
+                       "share/man/man1"))))))
+    (native-inputs (list ocaml))
+    (home-page "https://opam.ocaml.org")
     (synopsis "Tool for installing OCaml packages")
-    (description "@var{opam-installer} is a tool for installing OCaml packages
+    (description
+     "@var{opam-installer} is a tool for installing OCaml packages
 based on @code{.install} files defined by the OPAM package manager.  It is
 useful for installing OCaml packages without requiring the entirety of
 OPAM.")
-    (properties
-     ;; opam-installer is used as a tool and not as a library, we can use the
-     ;; OCaml 4.14 compiled opam until opam is compatible with OCaml 5.0.
-     `((ocaml5.0-variant . ,(delay opam-installer))))))
+    (properties `((ocaml5.0-variant unquote
+                                    (delay opam-installer))))
+    ;; The 'LICENSE' file waives some requirements compared to LGPLv2.1.
+    (license license:lgpl2.1)))
 
 (define ocaml-opam-repository
   (package
