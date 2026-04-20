@@ -17606,7 +17606,7 @@ implementing features like:
 (define-public go-github-com-maruel-natural
   (package
     (name "go-github-com-maruel-natural")
-    (version "1.1.1")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -17615,7 +17615,7 @@ implementing features like:
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "040aikizdd7c4zm8xindb2ps16s60i0fkf8gkll2rir7lwv6q7ks"))))
+        (base32 "1nr1ai3b7yvz4wz4k0jqvjq3978hpk9yxarn7g7i3d2sxbdc0g4q"))))
     (build-system go-build-system)
     (arguments
      (list
