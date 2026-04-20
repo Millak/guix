@@ -1021,6 +1021,35 @@ Manager).  0install-solver uses a (novel?) strategy to find the optimal
 solution extremely quickly (even for a SAT-based solver).")
     (license license:lgpl2.1+)))
 
+(define-public ocaml-opam-0install-cudf
+  (package
+    (name "ocaml-opam-0install-cudf")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ocaml-opam/opam-0install-cudf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12v1bgnxcxdylgxbsjlcr90rzwcp39rjlv191cy8g2s33nyxyi2c"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-cudf ocaml-0install-solver))
+    (native-inputs (list ocaml-alcotest))
+    (home-page "https://opam.ocaml.org")
+    (synopsis "Opam solver using 0install backend using the CUDF interface")
+    (description
+     "Opam's default solver is designed to maintain a set of packages over time,
+minimising disruption when installing new programs and finding a compromise
+solution across all packages.  In many situations (e.g. CI, local roots or
+duniverse builds) this is not necessary, and we can get a solution much faster
+by using a different algorithm.  This package provides a generic solver library
+which uses 0install's solver library.  The library uses the CUDF library in
+order to interface with opam as it is the format common used to talk to all the
+supported solvers.")
+    (license license:isc)))
+
 (define ocaml-opam-core
   (package
     (name "ocaml-opam-core")
