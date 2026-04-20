@@ -1309,7 +1309,8 @@ re-executing them as necessary.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "11n01vsd51r7qraaaylhhx04hq4s6vcq0896zkz0yp1wvqfbwmm1"))))
+                "11n01vsd51r7qraaaylhhx04hq4s6vcq0896zkz0yp1wvqfbwmm1"))
+              (patches (search-patches "inetutils-drop-test.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
