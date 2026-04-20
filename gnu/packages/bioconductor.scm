@@ -16131,13 +16131,13 @@ rectangular layout tree built by ggtree with the grammar of ggplot2.")
 (define-public r-ggpicrust2
   (package
     (name "r-ggpicrust2")
-    (version "2.5.10")
+    (version "2.5.12")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggpicrust2" version))
               (sha256
                (base32
-                "19s72cfim793xx7d77ni2cb51qnsjabxq056zmdbladhkw9ipcck"))))
+                "1ffwvca8ys02zswwraaypjawmr3rly5ysbd586vmv6ycf2r4kgky"))))
     (properties
      '((upstream-name . "ggpicrust2")
        (updater-extra-native-inputs
