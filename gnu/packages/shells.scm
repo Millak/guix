@@ -156,6 +156,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
       (list gettext-minimal             ;localization support
             pkg-config
             procps                      ;for the test suite
+            python-pexpect              ;for the test suite
             ;; python-sphinx            ;for documentation TODO: cargo-xtask
             rust
             `(,rust "cargo"))
