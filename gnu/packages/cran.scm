@@ -16932,13 +16932,13 @@ in R and Shiny via the D3 visualization library.")
 (define-public r-webfakes
   (package
     (name "r-webfakes")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "webfakes" version))
        (sha256
-        (base32 "1132i5wz1y9wpkgqx3d3mkkixv74q28krfw054hgsfpzi5mj8b24"))))
+        (base32 "1w88rcqrplwvafvv2bpz05xafxr84lzdjc99z380xq2yi1fz6kwf"))))
     (properties `((upstream-name . "webfakes")))
     (build-system r-build-system)
     (arguments
