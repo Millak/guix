@@ -31,7 +31,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
-;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2025, 2026 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2025 Grigory Shepelev <shegeley@gmail.com>
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 
@@ -94,6 +94,8 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
@@ -419,6 +421,49 @@ tables, and it understands a variety of different formats.")
     (description "findimagedupes compares a list of files for visual
 similarity.")
     (license license:gpl3+)))
+
+(define-public gdu
+  (package
+    (name "gdu")
+    (version "5.35.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dundee/gdu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "051xf3wncdiavjwyl9djmni5vd2dqjgn6drkw2nm21c9l0rjfv6d"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/dundee/gdu/v5/cmd/gdu"
+      #:unpack-path "github.com/dundee/gdu/v5"))
+    (native-inputs
+     (list go-github-com-dgraph-io-badger-v4
+           go-github-com-fatih-color
+           go-github-com-gdamore-tcell-v2
+           go-github-com-h2non-filetype
+           go-github-com-maruel-natural
+           go-github-com-mattn-go-isatty
+           go-github-com-pkg-errors
+           go-github-com-rivo-tview
+           go-github-com-sirupsen-logrus
+           go-github-com-spf13-cobra
+           go-github-com-stretchr-testify
+           go-github-com-ulikunitz-xz
+           go-golang-org-x-sys
+           go-golang-org-x-text
+           go-gopkg-in-yaml-v3
+           go-modernc-org-sqlite))
+    (home-page "https://github.com/dundee/gdu")
+    (synopsis "Disk usage analyzer")
+    (description "Gdu is a disk usage analyzer written in Go.  It is intended
+primarily for SSD disks where it can fully utilize parallel processing, but it
+also works on HDDs.")
+    (license license:expat)))
 
 (define-public gpart
   ;; The latest (0.3) release is from 2015 and is missing a crash fix.
