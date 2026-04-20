@@ -39871,21 +39871,17 @@ global options, defining default values and more.")
 (define-public r-optparse
   (package
     (name "r-optparse")
-    (version "1.7.5")
+    (version "1.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "optparse" version))
        (sha256
         (base32
-         "04jp85jik1zkbb08w44m2h0hqyzd80w4pjnfp1lnwy40ax81gj8c"))))
-    (properties
-     '((updater-extra-native-inputs . ("r-stringr"))))
+         "1zwq5mcs2irbjkkrmmh8ga5i0kwy6ffpfja4w0ajigqrrqp8c798"))))
     (build-system r-build-system)
-    (propagated-inputs
-     (list r-getopt))
     (native-inputs
-     (list r-knitr r-stringr r-testthat))
+     (list r-knitr r-rmarkdown r-stringr r-testthat))
     (home-page "https://github.com/trevorld/optparse")
     (synopsis "Command line option parser")
     (description
