@@ -75,6 +75,7 @@
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2026 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2026 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8036,7 +8037,7 @@ supports concurrent serializable transactions.")
   (package
     (inherit go-github-com-dgraph-io-badger)
     (name "go-github-com-dgraph-io-badger-v4")
-    (version "4.5.2")
+    (version "4.9.1")
     (source
      (origin
        (method git-fetch)
@@ -8045,7 +8046,7 @@ supports concurrent serializable transactions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v4c69whypm3k40hrx8bw9rjrcb0swz43v056s0fadqr04j0ncwj"))))
+        (base32 "0a9lk7fw06yb89wy9rp4q50ircw5imm1cqzhyhs92d0cia5qbhh6"))))
     (arguments
      (list
       #:tests? #f ; TODO: tests hang, find out why.
@@ -8058,7 +8059,8 @@ supports concurrent serializable transactions.")
            go-github-com-klauspost-compress
            go-github-com-pkg-errors
            go-github-com-spf13-cobra
-           go-go-opencensus-io
+           go-go-opentelemetry-io-contrib-zpages
+           go-go-opentelemetry-io-otel
            go-golang-org-x-net
            go-golang-org-x-sys
            go-google-golang-org-protobuf))))
