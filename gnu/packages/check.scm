@@ -3719,30 +3719,6 @@ system.  The code under test requires no modification to work with pyfakefs.")
 directories and files.")
     (license license:expat)))
 
-(define-public python-pytest-tornado5
-  (package
-    (name "python-pytest-tornado5")
-    (version "2.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytest-tornado5" version))
-              (sha256
-               (base32
-                "0qb62jw2w0xr6y942yp0qxiy755bismjfpnxaxjjm05gy2pymr8d"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; Tests require pytest < 6
-     (list #:tests? #f))
-    (propagated-inputs (list python-pytest python-tornado))
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://github.com/vidartf/pytest-tornado")
-    (synopsis
-     "Fixtures and markers to simplify testing of Tornado applications")
-    (description
-     "This package provides a @code{py.test} plugin supplying fixtures and
-markers to simplify testing of asynchronous tornado applications.")
-    (license license:asl2.0)))
-
 (define-public guile-proba
   (package
     (name "guile-proba")
