@@ -3891,6 +3891,58 @@ provided by Pipewire.")
 cross-platform audio input/output stream library.")
     (license license:expat)))
 
+(define-public python-pyroomacoustics
+  (package
+    (name "python-pyroomacoustics")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LCAV/pyroomacoustics")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0546506lg93nrybvilc4wgrgvn317w9zxv2jwikhpfy1i0qyrnkk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; Want to download data from the internet:
+         "--ignore"
+         "pyroomacoustics/directivities/tests/test_sofa_directivities.py"
+         "--ignore"
+         "pyroomacoustics/datasets/tests/test_download_uncompress.py"
+         ;; May fail because of slight numerical imprecision.
+         "--ignore"
+         "pyroomacoustics/experimental/tests/test_measure_rt60.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-extra-include-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CPLUS_INCLUDE_PATH"
+                      (string-append
+                       (search-input-directory inputs "include/eigen3")
+                       ":"
+                       (or (getenv "CPLUS_INCLUDE_PATH") ""))))))))
+    (propagated-inputs (list python-scipy))
+    (native-inputs (list eigen
+                         pybind11
+                         python-cython
+                         python-matplotlib
+                         python-numpy
+                         python-pytest
+                         python-setuptools
+                         python-sofa))
+    (inputs (list nanoflann))
+    (home-page "https://github.com/LCAV/pyroomacoustics")
+    (synopsis "Python library for room acoustics")
+    (description "@code{pyroomacoustics} is a framework for simulating the
+acustic behaviour of rooms, such as computing the impulse response using
+different simulation methods.")
+    (license license:expat)))
+
 (define-public python-pulsectl
   (package
     (name "python-pulsectl")
