@@ -53066,14 +53066,14 @@ prediction of kriging models.")
 (define-public r-dials
   (package
     (name "r-dials")
-    (version "1.4.2")
+    (version "1.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dials" version))
        (sha256
         (base32
-         "0hnz6p29lkgjkprb5amig3x9gkimfmh8ylb6n3blphkfc4slgah8"))))
+         "0macaxdqw438xy1qzawnjn2iva5r2anf66fk4cpvrhhasp9dqhkj"))))
     (properties `((upstream-name . "dials")))
     (build-system r-build-system)
     (propagated-inputs
