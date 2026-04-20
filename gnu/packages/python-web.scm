@@ -3525,14 +3525,16 @@ other HTTP libraries.")
 (define-public python-cheroot
   (package
     (name "python-cheroot")
-    (version "10.0.1")
+    (version "11.1.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "cheroot" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cherrypy/cheroot")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0h0p3fnpa4dxi589s7ljlzb6p3mhqdivb3pc2f36pljqfrwjzf70"))))
+        (base32 "02rhci01m5fcn8mqpvq3c35rs4n28gxlfvfw2if2f85rgwrji8y8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
