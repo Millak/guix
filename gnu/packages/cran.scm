@@ -13589,6 +13589,28 @@ diagnostic tools (@code{ctlcurves} and @code{DiscrFact}).")
 flexible and easy to set up.")
     (license license:expat)))
 
+(define-public r-testthatmulti
+  (package
+    (name "r-testthatmulti")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "testthatmulti" version))
+       (sha256
+        (base32 "15pwkfya928f7xmg664x3rjwkln18hvy0m2nrrpf4z12aksak8kd"))))
+    (properties `((upstream-name . "testthatmulti")))
+    (build-system r-build-system)
+    (native-inputs (list r-testthat))
+    (home-page "https://github.com/CollinErickson/testthatmulti")
+    (synopsis "Testing for R packages with multiple attempts for noisy tests")
+    (description
+     "This package runs tests using the testthat package but allows for
+multiple attempts for a single test.  This is useful for noisy or flaky tests
+that generally pass but can fail due to occasional random errors, such as
+numeric instability or using random data.")
+    (license license:gpl3+)))
+
 (define-public r-tglkmeans
   (package
     (name "r-tglkmeans")
