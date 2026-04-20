@@ -8384,7 +8384,7 @@ operations.")
 (define-public bitwuzla
   (package
     (name "bitwuzla")
-    (version "0.8.2")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -8393,21 +8393,16 @@ operations.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nakqz29cfkn91yvx1xzsk50rlqbiihslflbjanv4lflcl2zx6mz"))))
+        (base32 "012h3fj25f5zk9qy353vqn5jpp26db45xjbxi7ns02pkhlm46f6x"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dtesting=enabled" "-Ddefault_library=shared"
-                           "-Dkissat=true")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'make-git-optional
-                    (lambda _
-                      (substitute* "src/meson.build"
-                        (("run_command\\('git',")
-                         "run_command('sh', '-c', 'git',")))))))
+                           "-Dkissat=true")))
     (native-inputs (list googletest pkg-config))
-    (inputs (list cadical
+    (inputs (list cadical-2.1
                   gmp
                   kissat
+                  mpfr
                   symfpu))
     (synopsis "SMT solver optimized for the theory of bit-vectors")
     (description
