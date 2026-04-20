@@ -176,17 +176,6 @@ a graphical user interface.  It has language bindings for Python, Perl, Ruby
 and many other languages.")
     (license (list l:lgpl2.0+ (l:fsf-free "file://doc/license.txt")))))
 
-(define-public wxwidgets-gtk2
-  (package/inherit wxwidgets
-    (name "wxwidgets-gtk2")
-    (inputs (modify-inputs inputs
-              (delete "gtk+")
-              (prepend gtk+-2)))
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:configure-flags flags #~'())
-        #~(append #$flags '("--with-gtk=2")))))))
-
 (define-public wxwidgets-sans-egl
   ;; This is needed for prusaslicer:
   ;; <https://github.com/NixOS/nixpkgs/issues/193135>.)
