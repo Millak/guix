@@ -17935,14 +17935,14 @@ colors are provided.")
 (define-public r-glue
   (package
     (name "r-glue")
-    (version "1.8.0")
+    (version "1.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "glue" version))
        (sha256
         (base32
-         "183j9gpffmi30lfifl8d9sq1l25f8dgsgqd3blpndf4rm15kcvy8"))))
+         "08m1g1a43vzc87zkhq6zci60szz930id22zbkhcmqggw7rfr0m8w"))))
     (properties
      ;; knitr depends on glue, so we can't add knitr here to build the
      ;; vignettes.  Same with testthat
