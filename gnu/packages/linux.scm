@@ -2797,41 +2797,6 @@ kernel modules to control the keyboard on most Tuxedo computers. The @code{tuxed
 module is also needed for the @code{tuxedo-control-center} (short tcc) package.")
     (license license:gpl2+)))
 
-(define-public evdi
-  (package
-    (name "evdi")
-    (version "1.14.8")                  ;inherited by libevdi
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/DisplayLink/evdi")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "18n8kk4gbbj252a2dqb7mbpscfb437x42flh1fsl4g5c8brczc77"))))
-    (build-system linux-module-build-system)
-    (arguments
-     (list #:tests? #f                  ;no test suite
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'chdir
-                          (lambda _
-                            (chdir "module"))))))
-    (home-page "https://github.com/DisplayLink/evdi")
-    (synopsis
-     "@acronym{EVDI, Extensible Virtual Display Interface} Linux kernel module")
-    (description
-     "The @acronym{EVDI, Extensible Virtual Display Interface} is a Linux kernel
-module that enables management of multiple screens, allowing user-space programs
-to take control over what happens with the image.  It is essentially a virtual
-display for which applications using the @code{libevdi} library can add, remove,
-and receive screen updates.
-
-The EVDI driver uses the standard Linux @acronym{DRM, Direct Rendering Manager}.
-Its displays can be controlled by standard tools such as @command{xrandr} and
-display settings applets in graphical environments")
-    (license license:gpl2)))
-
 (define-public ec
   (package
     (name "ec")
