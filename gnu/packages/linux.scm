@@ -2822,37 +2822,6 @@ registers of the @acronym{EC, Embedded Controller} supported by the
 @code{ec_sys} Linux driver.")
     (license license:gpl2)))
 
-(define-public lkrg
-  (package
-    (name "lkrg")
-    (version "0.9.7")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/lkrg-org/lkrg")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0k0z9caj48nqjwk3bapgfcdzi1lkizxcjj4r1dvkvwsk38mbk1c4"))))
-    (build-system linux-module-build-system)
-    (arguments
-     (list #:linux linux-libre
-           #:tests? #f
-           #:make-flags #~(list (string-append "CC="
-                                               #$(cc-for-target))
-                                (string-append "SYSSRC="
-                                               (assoc-ref %build-inputs
-                                                "linux-module-builder")
-                                               "/lib/modules/build"))))
-    (inputs (list bash-minimal))
-    (home-page "https://lkrg.org/")
-    (synopsis "Linux Kernel Runtime Guard")
-    (description
-     "This package performs runtime integrity checking of the Linux kernel and
-detection of security vulnerability exploits against the kernel.")
-    (license license:gpl2)))
-
 (define-public bbswitch-module
   ;; Use "develop" branch since stable release does not build on Linux >= 5.6.
   ;; See https://github.com/Bumblebee-Project/bbswitch/issues/205.
