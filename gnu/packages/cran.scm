@@ -1811,13 +1811,13 @@ distribution.  Methods are provided for a variety of fitted models, including
 (define-public r-colorramp2
   (package
     (name "r-colorramp2")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "colorRamp2" version))
        (sha256
-        (base32 "0b4m30s9rkhb37lf2zr6zgnfvxdj3nhm0jp5b42fxgy2y5qd5q02"))))
+        (base32 "13mkdrnjgz2wsb5ipmm44jfb6fcwjzadw2ilxx9rhzkwq89dydc2"))))
     (properties `((upstream-name . "colorRamp2")))
     (build-system r-build-system)
     (propagated-inputs (list r-colorspace))
