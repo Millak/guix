@@ -2763,6 +2763,43 @@ entire output.  It supports all Layer Shell features including popups and
 popovers.")
     (license license:expat)))
 
+(define-public xdg-user-dirs-gtk
+  (package
+    (name "xdg-user-dirs-gtk")
+    (version "0.16")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.gnome.org/GNOME/xdg-user-dirs-gtk.git")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11h1164mkajpfrp6mkky2gvx3xd7dw0c9f2785jf4lys4jmmj4c3"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-exec-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "update.c"
+                (("xdg-user-dirs-update")
+                 (search-input-file inputs "/bin/xdg-user-dirs-update"))))))))
+    (native-inputs
+     (list gettext-minimal
+           pkg-config))
+    (inputs
+     (list gtk+
+           xdg-user-dirs))
+    (home-page "https://gitlab.gnome.org/GNOME/xdg-user-dirs-gtk")
+    (synopsis "Integration of xdg-user-dirs with GTK")
+    (description "This package is a companion to @code{xdg-user-dirs} to
+integrate it with the GNOME desktop and GTK applications.  It gets run during
+login to create default GTK bookmarks files containing the user directories, and
+to rename these directories if the locale changes.")
+    (license license:gpl2+)))
+
 (define-public goocanvas
   (package
     (name "goocanvas")
