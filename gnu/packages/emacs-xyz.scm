@@ -24771,13 +24771,16 @@ conflicts.")
     (version "2.0.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://stable.melpa.org/packages/meow-tree-sitter-" version
-             ".tar"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/skissue/meow-tree-sitter")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1sxa1flngzsj3hh3sp3kccwgsxq6d40wsn8vzgv0ahrxkz2s6fxg"))))
+        (base32 "1hpq3lj8k86318ikvaybl4mr886w8axc63l9dnn2n26f67pvijg0"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f))                ; No tests.
     (propagated-inputs (list emacs-meow))
     (home-page "https://github.com/skissue/meow-tree-sitter")
     (synopsis "Tree-sitter powered motions for Meow")
