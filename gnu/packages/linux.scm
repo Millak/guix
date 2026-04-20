@@ -2767,32 +2767,6 @@ This package provides the @command{corefreqd} data collection daemon, the
     (supported-systems (list "x86_64-linux"))
     (license license:gpl2)))
 
-(define-public librem-ec-acpi-linux-module
-  (package
-    (name "librem-ec-acpi-linux-module")
-    (version "0.9.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://source.puri.sm/nicole.faerber/librem-ec-acpi-dkms")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0m8hamf0550083jnk5q4hv20l8lfiardnkxbib4hhvqghpzzbxl0"))))
-    (build-system linux-module-build-system)
-    (arguments
-     (list #:tests? #f))                ; no test suite
-    (home-page "https://source.puri.sm/nicole.faerber/librem-ec-acpi-dkms")
-    (synopsis "Linux kernel module to control the Librem Embedded Controller")
-    (description
-     "This is the Linux kernel @acronym{ACPI, Advanced Configuration and Power
-Interface} platform driver for the @acronym{EC, Embedded Controller} firmware
-on Purism Librem laptop computers.  It allows user-space control over the
-battery charging thresholds, keyboard backlight, fans and thermal monitors,
-and the notification, WiFi, and Bluetooth LED.")
-    (license license:gpl2)))
-
 (define-public tuxedo-keyboard
   (package
     (name "tuxedo-keyboard")
