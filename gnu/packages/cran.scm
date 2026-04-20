@@ -37164,14 +37164,14 @@ them in distributed compute environments.")
 (define-public r-parallelly
   (package
     (name "r-parallelly")
-    (version "1.46.1")
+    (version "1.47.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "parallelly" version))
        (sha256
         (base32
-         "0dpvf8gaynckcc88lqn56bzrv4vffn5bip7llji17n3wb2y48lq3"))))
+         "1i4pfy3y7dhzywnmx270cl442k2xlpd8ix127c6fgpvibi8z9h48"))))
     (properties `((upstream-name . "parallelly")))
     (build-system r-build-system)
     ;; Tests require SSH
