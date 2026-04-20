@@ -1494,96 +1494,87 @@ basic input/output.")
         (base32 "1aw5v127f0jr3jq5cclsbvbvf82g6s195dh1vjlcwjpbc0gl56w9"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
+     (list
+       #:imported-modules (append %copy-build-system-modules
+                                  %cargo-build-system-modules)
+       #:modules '((guix build cargo-build-system)
+                   ((guix build copy-build-system) #:prefix copy:)
+                   (guix build utils))
+       #:install-source? #f
+       #:cargo-install-paths ''("alacritty")
        #:cargo-test-flags
-       '("--"
-         ;; Changes in clap regularly break this test.
-         "--skip=cli::tests::completions")
+       ''("--"
+          ;; Changes in clap regularly break this test.
+          "--skip=cli::tests::completions")
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-xdg-open
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "alacritty/src/config/ui_config.rs"
-               (("xdg-open") (search-input-file inputs "/bin/xdg-open")))))
-         (add-after 'configure 'add-absolute-library-references
-           (lambda* (#:key inputs vendor-dir #:allow-other-keys)
-             ;; Fix dlopen()ing some libraries on pure Wayland (no $DISPLAY):
-             ;; Failed to initialize any backend! Wayland status: NoWaylandLib
-             ;; XXX We patch transitive dependencies that aren't even direct
-             ;; inputs to this package, because of the way Guix's Rust build
-             ;; system currently works.  <http://issues.guix.gnu.org/46399>
-             ;; might fix this and allow patching them directly.
-             (substitute* (find-files vendor-dir "\\.rs$")
-               (("libEGL\\.so")
-                (search-input-file inputs "lib/libEGL.so"))
-               (("libGL\\.so")
-                (search-input-file inputs "lib/libGL.so"))
-               ;; Lots of libraries from rust-x11-dl and others.
-               (("libX[[:alpha:]]*\\.so" all)
-                (search-input-file inputs (string-append "lib/" all)))
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-xdg-open
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "alacritty/src/config/ui_config.rs"
+                 (("xdg-open") (search-input-file inputs "/bin/xdg-open")))))
+           (add-after 'configure 'add-absolute-library-references
+             (lambda* (#:key inputs vendor-dir #:allow-other-keys)
+               ;; Fix dlopen()ing some libraries on pure Wayland (no $DISPLAY):
+               ;; Failed to initialize any backend! Wayland status: NoWaylandLib
+               ;; XXX We patch transitive dependencies that aren't even direct
+               ;; inputs to this package, because of the way Guix's Rust build
+               ;; system currently works.  <http://issues.guix.gnu.org/46399>
+               ;; might fix this and allow patching them directly.
+               (substitute* (find-files vendor-dir "\\.rs$")
+                 (("libEGL\\.so")
+                  (search-input-file inputs "lib/libEGL.so"))
+                 (("libGL\\.so")
+                  (search-input-file inputs "lib/libGL.so"))
+                 ;; Lots of libraries from rust-x11-dl and others.
+                 (("libX[[:alpha:]]*\\.so" all)
+                  (search-input-file inputs (string-append "lib/" all)))
 
-               ;; There are several libwayland libraries.
-               (("libwayland-[[:alpha:]]*\\.so" all)
-                (search-input-file inputs (string-append "lib/" all)))
-               (("libxkbcommon-x11\\.so")
-                (search-input-file inputs "lib/libxkbcommon-x11.so"))
-               (("libxkbcommon\\.so")
-                (search-input-file inputs "lib/libxkbcommon.so")))))
-         (replace 'install
-           ;; Upstream install script only takes care of executable.
-           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (bin   (string-append out "/bin"))
-                    (share (string-append out "/share"))
-                    (icons (string-append share "/icons/hicolor/scalable/apps"))
-                    (tic   (search-input-file (or native-inputs inputs) "/bin/tic"))
-                    (man   (string-append share "/man"))
-                    (alacritty-bin (car (find-files "target" "^alacritty$"))))
-               ;; Install the executable.
-               (install-file alacritty-bin bin)
-               ;; Install man pages.
-               (mkdir-p (string-append man "/man1"))
-               (mkdir-p (string-append man "/man5"))
-               (mkdir-p (string-append man "/man7"))
-               (define (create-manpage manpage)
-                 (let ((mandir (string-append
-                                 "/man" (string-take-right manpage 1) "/")))
-                   (with-input-from-file (string-append manpage ".scd")
+                 ;; There are several libwayland libraries.
+                 (("libwayland-[[:alpha:]]*\\.so" all)
+                  (search-input-file inputs (string-append "lib/" all)))
+                 (("libxkbcommon-x11\\.so")
+                  (search-input-file inputs "lib/libxkbcommon-x11.so"))
+                 (("libxkbcommon\\.so")
+                  (search-input-file inputs "lib/libxkbcommon.so")))))
+           (add-after 'install 'install-more
+             (lambda* (#:key native-inputs inputs #:allow-other-keys
+                       #:rest args)
+               (let ((tic (search-input-file
+                            (or native-inputs inputs) "/bin/tic"))
+                     (terminfo (string-append #$output "/share/terminfo")))
+                 (define (create-manpage manpage)
+                   (with-input-from-file manpage
                      (lambda _
-                       (with-output-to-file (string-append man mandir manpage)
-                         (lambda _ (invoke "scdoc")))))))
-               (with-directory-excursion "extra/man"
-                 (for-each create-manpage '("alacritty.1"
-                                            "alacritty-msg.1"
-                                            "alacritty.5"
-                                            "alacritty-bindings.5"
-                                            "alacritty-escapes.7")))
-               ;; Install desktop file.
-               (install-file "extra/linux/Alacritty.desktop"
-                             (string-append share "/applications"))
-               (install-file "extra/linux/org.alacritty.Alacritty.appdata.xml"
-                             (string-append share "/metainfo"))
-               ;; Install icon.
-               (mkdir-p icons)
-               (copy-file "extra/logo/alacritty-term.svg"
-                          (string-append icons "/Alacritty.svg"))
-               ;; Install terminfo.
-               (mkdir-p (string-append share "/terminfo"))
-               ;; We don't compile alacritty-common entry because
-               ;; it's being used only for inheritance.
-               (invoke tic "-x" "-e" "alacritty,alacritty-direct"
-                       "-o" (string-append share "/terminfo/")
-                       "extra/alacritty.info")
-               ;; Install completions.
-               (mkdir-p (string-append
-                         out "/share/bash-completion/completions"))
-               (copy-file "extra/completions/alacritty.bash"
-                          (string-append
-                           out "/share/bash-completion/completions/alacritty"))
-               (install-file "extra/completions/_alacritty"
-                             (string-append share "/zsh/site-functions"))
-               (install-file "extra/completions/alacritty.fish"
-                             (string-append share "/fish/vendor_completions.d"))))))))
+                       (with-output-to-file (string-drop-right manpage 4)
+                         (lambda _ (invoke "scdoc"))))))
+                 (with-directory-excursion "extra/man"
+                   (for-each create-manpage
+                             (find-files "." "^alacritty.*\\.[[:digit:]]\\.scd$")))
+                 (apply (assoc-ref copy:%standard-phases 'install)
+                        #:install-plan
+                        '(("extra/man" "share/man/man1" #:include-regexp ("\\.1$"))
+                          ("extra/man" "share/man/man5" #:include-regexp ("\\.5$"))
+                          ("extra/man" "share/man/man7" #:include-regexp ("\\.7$"))
+                          ("extra/linux/Alacritty.desktop" "share/applications/")
+                          ("extra/linux/org.alacritty.Alacritty.appdata.xml"
+                           "share/metainfo/")
+                          ("extra/logo/alacritty-term.svg"
+                           "share/icons/hicolor/scalable/apps/Alacritty.svg")
+                          ;; completions
+                          ("extra/completions/alacritty.bash"
+                           "share/bash-completion/completions/alacritty")
+                          ("extra/completions/_alacritty"
+                           "share/zsh/site-functions/")
+                          ("extra/completions/alacritty.fish"
+                           "share/fish/vendor_completions.d/"))
+                        args)
+                 ;; Install terminfo.
+                 (mkdir-p terminfo)
+                 ;; We don't compile alacritty-common entry because
+                 ;; it's being used only for inheritance.
+                 (invoke tic "-x" "-e" "alacritty,alacritty-direct"
+                         "-o" terminfo
+                         "extra/alacritty.info")))))))
     (native-inputs
      (list ncurses
            pkg-config
