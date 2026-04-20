@@ -3584,36 +3584,51 @@ other HTTP libraries.")
 (define-public python-cherrypy
   (package
     (name "python-cherrypy")
-    (version "18.10.0")
+    (properties '((commit . "1f75bc9eed8e0e385f64f368bd69f58d96fb8c2b")
+                  (revision . "0")))
+    (version (git-version "18.10.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/cherrypy/cherrypy")
-              (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mhs64z75mj3rk4rgxc3xm1yksaj253rj9czhk4632blz5yi0kbn"))))
+        (base32 "1l01a4sbfm42s5xp6ngphgqf0yb65ksqbsb27kznvybblyaxfa9p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pyproject
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"cherrypy.scaffold\",")
+                 (string-join
+                  (list "\"cherrypy.scaffold\""
+                        "\"cherrypy._private_api\""
+                        "\"cherrypy._private_api.compat\",")
+                  ",\n  "))))))
       #:test-flags
       #~(map
          (lambda (test)
            (string-append "--deselect=cherrypy/test/" test))
          (list
+          ;; Requires bumping python-flaky.
+          "test_bus.py::test_wait_publishes_periodically"
+          "test_bus.py::test_block"
+          "test_bus.py::test_start_with_callback"
+          "test_refleaks.py::ReferenceTests::test_threadlocal_garbage"
+          "test_session.py::SessionTest::test_0_Session"
+          "test_session.py::SessionTest::test_2_File_Concurrency"
+          ;; assert b'RamSession' == b'FileSession' or FileNotFoundError
+          "test_session.py::SessionTest::test_3_Redirect"
+          "test_session.py::SessionTest::test_4_File_deletion"
           ;; XXX: Unraisable exceptions.
-          "test_config_server.py::ServerConfigTests::testMaxRequestSize"
-          "test_core.py::CoreRequestHandlingTest::testRanges"
-          "test_core.py::CoreRequestHandlingTest::testRedirect"
-          "test_encoding.py::EncodingTests::\
-test_multipart_decoding_bigger_maxrambytes"
-          "test_encoding.py::EncodingTests::\
-test_test_http.py::HTTPTests::test_post_filename_with_special_characters"
-          "test_http.py::HTTPTests::test_post_multipart"
-          "test_http.py::HTTPTests::test_post_filename_with_special_characters"
-          "test_mime.py::SafeMultipartHandlingTest::test_Flash_Upload"
-          "test_tutorials.py::TutorialTest::test09Files"))))
+          "test_core.py::CoreRequestHandlingTest"))))
     (propagated-inputs
      (list python-cheroot
            python-jaraco-collections
@@ -3621,7 +3636,9 @@ test_test_http.py::HTTPTests::test_post_filename_with_special_characters"
            python-portend
            python-zc-lockfile))
     (native-inputs
-     (list python-objgraph
+     (list python-filelock
+           python-flaky
+           python-objgraph
            python-path
            python-pytest
            python-pytest-cov
@@ -3629,7 +3646,8 @@ test_test_http.py::HTTPTests::test_post_filename_with_special_characters"
            python-pytest-services
            python-pytest-sugar
            python-requests-toolbelt
-           python-setuptools))
+           python-setuptools
+           python-setuptools-scm))
     (home-page "https://www.cherrypy.dev")
     (synopsis "Object-Oriented HTTP framework")
     (description

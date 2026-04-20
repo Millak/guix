@@ -3131,7 +3131,7 @@ time by mocking the datetime module.")
 (define-public python-flaky
   (package
     (name "python-flaky")
-    (version "3.8.1")
+    (version "3.8.1")  ; On bump, remove some skipped tests in python-cherrypy.
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "flaky" version))
