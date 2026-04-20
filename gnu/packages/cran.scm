@@ -4716,6 +4716,44 @@ whether they are similar by some comparison.  Implementations include string
 distance and regular expression matching.")
     (license license:expat)))
 
+(define-public r-gaupro
+  (package
+    (name "r-gaupro")
+    (version "0.2.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "GauPro" version))
+       (sha256
+        (base32 "0w36g4ah5mazv39p8zdd30g7j7hrfbd9lx34pyv4hq04bifjd8l0"))))
+    (properties `((upstream-name . "GauPro")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2
+                             r-lbfgs
+                             r-mixopt
+                             r-numderiv
+                             r-r6
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-rmarkdown
+                             r-tidyr))
+    (native-inputs (list r-contourfunctions
+                         r-dplyr
+                         r-ggally
+                         r-knitr
+                         r-testthat
+                         r-testthatmulti))
+    (home-page "https://github.com/CollinErickson/GauPro")
+    (synopsis "Gaussian process fitting")
+    (description
+     "This package lets you fit a Gaussian process model to data.  Gaussian
+processes are commonly used in computer experiments to fit an interpolating
+model.  The model is stored as an R6 object and can be easily updated with new
+data.  There are options to run in parallel, and Rcpp has been used to speed
+up calculations.  For more info about Gaussian process software, see Erickson
+et al. (2018) <doi:10.1016/j.ejor.2017.10.002>.")
+    (license license:gpl3)))
+
 (define-public r-gdata
   (package
     (name "r-gdata")
