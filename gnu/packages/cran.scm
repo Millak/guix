@@ -8351,6 +8351,28 @@ package with the Embedded Conic Solver (ECOS) for solving conic optimization
 problems.")
     (license license:gpl3)))
 
+(define-public r-roi-plugin-glpk
+  (package
+    (name "r-roi-plugin-glpk")
+    (version "1.0-0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ROI.plugin.glpk" version))
+       (sha256
+        (base32 "0i5l0k5mk2xp2gdvpmlgxjycvzmgc83rkind68ab4x1d4bab0qdk"))))
+    (properties `((upstream-name . "ROI.plugin.glpk")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rglpk r-roi))
+    (home-page "http://roi.r-forge.r-project.org/")
+    (synopsis "ROI plug-in GLPK")
+    (description
+     "This package enhances the @dfn{R Optimization Infrastructure} (ROI)
+package by registering the GLPK solver.  It allows for solving mixed integer
+linear programming (MILP) problems as well as all variants/combinations of
+LP and IP.")
+    (license license:gpl3)))
+
 (define-public r-roi-plugin-lpsolve
   (package
     (name "r-roi-plugin-lpsolve")
