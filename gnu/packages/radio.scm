@@ -540,7 +540,7 @@ with this package.  E.g.: @code{(udev-rules-service 'airspyhf airspyhf)}")
         (base32 "19f2x0pkxvf9figa0pl6xqlcz8fblvqb19mcnj632p0l8vk6qdv2"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list python swig-4.0))
+     (list python python-setuptools swig-4.0))
     (native-search-paths
      (list (search-path-specification
             (variable "SOAPY_SDR_PLUGIN_PATH")
