@@ -53496,14 +53496,14 @@ analysis using @code{dplyr}, @code{ggplot2}, and other Tidy tools.")
 (define-public r-parsnip
   (package
     (name "r-parsnip")
-    (version "1.4.1")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "parsnip" version))
        (sha256
         (base32
-         "0wnzv4qyh26a5hvg33wd49ihca4705pnlizz5774n8vshjp5rpdc"))))
+         "1iwh7m6dm23awks4bkfqmswrmb78cjwr8h94vdkslsgifcni2cfg"))))
     (properties
      '((upstream-name . "parsnip")
        ;; We don't need them.  Do you really want a package depending on
@@ -53528,8 +53528,7 @@ analysis using @code{dplyr}, @code{ggplot2}, and other Tidy tools.")
            r-sparsevctrs
            r-tibble
            r-tidyr
-           r-vctrs
-           r-withr))
+           r-vctrs))
     (native-inputs
      (list r-bench
            r-dials
@@ -53542,6 +53541,7 @@ analysis using @code{dplyr}, @code{ggplot2}, and other Tidy tools.")
            r-rpart
            r-survival
            r-testthat
+           r-withr
            r-xgboost))
     (home-page "https://parsnip.tidymodels.org")
     (synopsis "Common API to modeling and analysis functions")
