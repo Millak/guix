@@ -1053,44 +1053,47 @@ supported solvers.")
 (define ocaml-opam-core
   (package
     (name "ocaml-opam-core")
-    (version "2.1.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/ocaml/opam")
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0ckd87rcmcz11iyhhm5qnmy27jbdffx6n1fr06hvrqqrzi00jljh"))))
+    (version "2.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ocaml/opam")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10diw6wdl6v89kbvb8x22dbfacw1ikhl63hybyp2s7560450hygc"))))
     (build-system dune-build-system)
-    (arguments `(#:package "opam-core"
-                 ;; tests are run with the opam package
-                 #:tests? #f
-                 #:phases
-                 (modify-phases %standard-phases
-                   (add-before 'build 'pre-build
-                     (lambda* (#:key inputs make-flags #:allow-other-keys)
-                       (let ((bash (assoc-ref inputs "bash"))
-                             (bwrap (search-input-file inputs "/bin/bwrap")))
-                         (substitute* "src/core/opamSystem.ml"
-                           (("\"/bin/sh\"")
-                            (string-append "\"" bash "/bin/sh\""))
-                           (("getconf")
-                            (which "getconf")))))))))
-    (propagated-inputs
-     (list ocaml-graph
-           ocaml-re
-           ocaml-cppo))
+    (arguments
+     `(#:package "opam-core"
+       ;; tests are run with the opam package
+       #:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-before 'build 'pre-build
+                    (lambda* (#:key inputs make-flags #:allow-other-keys)
+                      (let ((bash (assoc-ref inputs "bash"))
+                            (bwrap (search-input-file inputs "/bin/bwrap")))
+                        (substitute* "src/core/opamSystem.ml"
+                          (("\"/bin/sh\"")
+                           (string-append "\"" bash "/bin/sh\""))
+                          (("getconf")
+                           (which "getconf")))))))))
+    (propagated-inputs (list ocaml-graph
+                             ocaml-re
+                             ocaml-patch
+                             ocaml-uutf
+                             ocaml-swhid-core
+                             ocaml-jsonm
+                             ocaml-sha))
     (inputs (list bubblewrap))
-    (home-page "https://opam.ocamlpro.com/")
+    (home-page "https://opam.ocaml.org")
     (synopsis "Package manager for OCaml")
     (description
      "OPAM is a tool to manage OCaml packages.  It supports multiple
 simultaneous compiler installations, flexible package constraints, and a
 Git-friendly development workflow.")
-    ;; The 'LICENSE' file waives some requirements compared to LGPLv3.
-    (license license:lgpl3)))
+    ;; The 'LICENSE' file waives some requirements compared to LGPLv2.1.
+    (license license:lgpl2.1)))
 
 (define ocaml-opam-format
   (package
