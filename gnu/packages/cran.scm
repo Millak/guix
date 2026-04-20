@@ -1850,6 +1850,29 @@ circlize package.")
 and manipulating confounded and fractional factorial designs.")
     (license license:gpl2)))
 
+(define-public r-contourfunctions
+  (package
+    (name "r-contourfunctions")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ContourFunctions" version))
+       (sha256
+        (base32 "0p18zd9fq7p130b47wsbpqhgqximfmrf5pvhbzscrz2ji7rhsnmr"))))
+    (properties `((upstream-name . "ContourFunctions")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2 r-lhs r-rlang r-rmarkdown))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/CollinErickson/ContourFunctions")
+    (synopsis "Create contour plots from data or a function")
+    (description
+     "This package provides functions for making contour plots.  The contour
+plot can be created from grid data, a function, or a data set.  If non-grid
+data is given, then a Gaussian process is fit to the data and used to create
+the contour plot.")
+    (license license:gpl3)))
+
 (define-public r-celestial
   (package
     (name "r-celestial")
