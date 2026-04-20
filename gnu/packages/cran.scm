@@ -8310,6 +8310,26 @@ ROCit package provides flexibility to easily evaluate threshold-bound
 metrics.")
     (license license:gpl3)))
 
+(define-public r-roi-plugin-alabama
+  (package
+    (name "r-roi-plugin-alabama")
+    (version "1.0-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ROI.plugin.alabama" version))
+       (sha256
+        (base32 "0if6994xcc0w9dy3ph8g9lhnx0lpndgf0yzcgn558i00d21csqz7"))))
+    (properties `((upstream-name . "ROI.plugin.alabama")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-alabama r-roi))
+    (home-page "https://roigrp.gitlab.io")
+    (synopsis "Alabama plug-in for the R Optimization Infrastructure")
+    (description
+     "This package enhances the @dfn{R Optimization Infrastructure} (ROI)
+package with the alabama solver for solving nonlinear optimization problems.")
+    (license license:gpl3)))
+
 (define-public r-roi-plugin-lpsolve
   (package
     (name "r-roi-plugin-lpsolve")
