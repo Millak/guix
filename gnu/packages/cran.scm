@@ -30929,15 +30929,15 @@ emission distributions.")
 (define-public r-nleqslv
   (package
     (name "r-nleqslv")
-    (version "3.3.6")
+    (version "3.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nleqslv" version))
        (sha256
-        (base32 "153qna9r3i4fy90f9bsz93nrzvs6d1kcyrlcip5gs5i5ij9c63g2"))))
+        (base32 "0xggjchw9fgq9rvlsb4mvnv1762jpazdnmz4a9m00f4k0ijssabg"))))
     (build-system r-build-system)
-    (native-inputs (list gfortran))
+    (native-inputs (list gfortran r-testthat))
     (home-page "https://cran.r-project.org/web/packages/nleqslv/")
     (synopsis "Solve systems of nonlinear equations")
     (description
