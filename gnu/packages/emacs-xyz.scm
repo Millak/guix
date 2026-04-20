@@ -531,6 +531,31 @@ states–that is, any major mode that supports the bookmark system is
 compatible.")
     (license license:gpl3+)))
 
+(define-public emacs-activity-watch-mode
+  (package
+    (name "emacs-activity-watch-mode")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pauldub/activity-watch-mode")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09db80yirb0km0g56n72a95c0y5wr6vbq0dq4fjc2s0wj82idv5v"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; No tests upstream.
+    (propagated-inputs (list emacs-request))
+    (home-page "https://github.com/pauldub/activity-watch-mode")
+    (synopsis "Automatic time tracking extension")
+    (description
+     "This package provides a @code{ActivityWatch} mode based on
+@code{wakatime-mode}.  Enable it for the current buffer by invoking
+@code{activity-watch-mode} or activate it globally with
+@code{global-activity-watch-mode}.")
+    (license license:gpl3+)))
+
 (define-public emacs-helix
   (package
     (name "emacs-helix")
