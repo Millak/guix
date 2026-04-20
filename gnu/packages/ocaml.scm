@@ -944,6 +944,29 @@ the opam file format.")
     ;; With static-linking exception
     (license license:lgpl2.1+)))
 
+(define-public ocaml-swhid-core
+  (package
+    (name "ocaml-swhid-core")
+    (version "0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OCamlPro/swhid_core")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h3zndyk94lf2lakc3cb8b7a00jqh0y1m8xk6mg61gj2kdpdbfdq"))))
+    (build-system dune-build-system)
+    (properties `((upstream-name . "swhid_core")))
+    (home-page "https://github.com/ocamlpro/swhid_core")
+    (synopsis "OCaml library to work with swhids")
+    (description
+     "swhid_core is an OCaml library to work with Software Heritage persistent
+identifiers (swhids).  This is the core library, for most use cases you should
+use the swhid library instead.")
+    (license license:isc)))
+
 (define ocaml-opam-core
   (package
     (name "ocaml-opam-core")
