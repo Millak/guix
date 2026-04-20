@@ -1520,22 +1520,22 @@ basic input/output.")
                ;; inputs to this package, because of the way Guix's Rust build
                ;; system currently works.  <http://issues.guix.gnu.org/46399>
                ;; might fix this and allow patching them directly.
+               (define shared-library-regex
+                 ;; Using regex decreases the time it takes to run the
+                 ;; substitution over 12000 files by about 40%.
+                 (string-join
+                   (list "libEGL\\.so"              ; rust-glutin
+                         "libGL\\.so"               ; rust-x11-dl, rust-glutin
+                         "libX[[:alpha:]]*\\.so"    ; rust-x11-dl
+                         ; rust-wayland-sys, rust-wayland-backend
+                         "libwayland-[[:alpha:]]*\\.so"
+                         ;; rust-xkbcommon-dl
+                         "libxkbcommon\\.so"
+                         "libxkbcommon-x11\\.so")
+                   "|"))
                (substitute* (find-files vendor-dir "\\.rs$")
-                 (("libEGL\\.so")
-                  (search-input-file inputs "lib/libEGL.so"))
-                 (("libGL\\.so")
-                  (search-input-file inputs "lib/libGL.so"))
-                 ;; Lots of libraries from rust-x11-dl and others.
-                 (("libX[[:alpha:]]*\\.so" all)
-                  (search-input-file inputs (string-append "lib/" all)))
-
-                 ;; There are several libwayland libraries.
-                 (("libwayland-[[:alpha:]]*\\.so" all)
-                  (search-input-file inputs (string-append "lib/" all)))
-                 (("libxkbcommon-x11\\.so")
-                  (search-input-file inputs "lib/libxkbcommon-x11.so"))
-                 (("libxkbcommon\\.so")
-                  (search-input-file inputs "lib/libxkbcommon.so")))))
+                 ((shared-library-regex all)
+                  (search-input-file inputs (string-append "lib/" all))))))
            (add-after 'install 'install-more
              (lambda* (#:key native-inputs inputs #:allow-other-keys
                        #:rest args)
