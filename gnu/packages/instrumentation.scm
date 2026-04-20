@@ -339,30 +339,6 @@ coverage.")
     ;; that list in further version.
     (supported-systems (list "x86_64-linux"))))
 
-(define-public lttng-modules
-  (package
-    (name "lttng-modules")
-    (version "2.13.14")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://lttng.org/files/lttng-modules/"
-                                  "lttng-modules-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "19jx1yz1hsbr4vwfp2nr6z52a5g50iimaak962k49diay5zryi66"))))
-    (build-system linux-module-build-system)
-    (arguments
-     `(#:tests? #f ; no tests
-       #:make-flags (list "CONFIG_LTTNG=m"
-                          "CONFIG_LTTNG_CLOCK_PLUGIN_TEST=m")))
-    (home-page "https://lttng.org/")
-    (synopsis "LTTng kernel modules for the LTTng tracer toolset")
-    (description
-     "LTTng kernel modules are Linux kernel modules which make
-LTTng kernel tracing possible.  They include essential control modules and
-many probes which instrument numerous interesting parts of Linux.")
-    (license (list license:lgpl2.1 license:gpl2 license:expat))))
-
 (define-public lttng-ust
   (package
     (name "lttng-ust")
