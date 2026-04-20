@@ -50,6 +50,7 @@
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2026 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2026 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20003,6 +20004,36 @@ at
     (description
      "Package ot implements the ot-tracer-* propagator used by the default
 Tracer implementation from the @code{OpenTracing} project.")
+    (license license:asl2.0)))
+
+(define-public go-go-opentelemetry-io-contrib-zpages
+  (package
+    (name "go-go-opentelemetry-io-contrib-zpages")
+    (version "0.68.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/open-telemetry/opentelemetry-go-contrib")
+             (commit (go-version->git-ref version
+                                          #:subdir "zpages"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nh7g1zxr3drqcbhsnnkqaz2hn1rnawg8jalixng23c9hwfgqaly"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.25
+      #:import-path "go.opentelemetry.io/contrib/zpages"
+      #:unpack-path "go.opentelemetry.io/contrib"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (propagated-inputs (list go-go-opentelemetry-io-otel
+                             go-go-opentelemetry-io-otel-sdk
+                             go-go-opentelemetry-io-otel-trace))
+    (home-page "https://opentelemetry.io/")
+    (synopsis "Display telemetry stats")
+    (description "Package zPages implements a collection of HTML pages that
+display telemetry stats.")
     (license license:asl2.0)))
 
 (define-public go-go-opentelemetry-io-otel
