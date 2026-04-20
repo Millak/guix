@@ -11396,6 +11396,33 @@ and analysis of spatial point pattern data; it has been ported to R and is in
 \"maintenance mode\".")
     (license license:gpl2+)))
 
+(define-public r-splitfngr
+  (package
+    (name "r-splitfngr")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "splitfngr" version))
+       (sha256
+        (base32 "0cf9y68m72j890a732m0n784nr12ydljr6s8i80f0in6q8lmw8ls"))))
+    (properties `((upstream-name . "splitfngr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-lbfgs))
+    (home-page "https://cran.r-project.org/package=splitfngr")
+    (synopsis "Combined Evaluation and Split Access of Functions")
+    (description
+     "Some R functions, such as @code{optim()}, require a function of its
+gradient passed as separate arguments.  When these are expensive to calculate
+it may be much faster to calculate the function (@code{fn}) and
+gradient (@code{gr}) together since they often share many calculations (chain
+rule).  This package allows the user to pass in a single function that returns
+both the function and gradient, then splits (hence @code{splitfngr}) them so
+the results can be accessed separately.  The functions provided allow this to
+be done with any number of functions/values, not just for functions and
+gradients.")
+    (license license:gpl3)))
+
 (define-public r-sqlq
   (package
     (name "r-sqlq")
