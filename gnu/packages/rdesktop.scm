@@ -68,36 +68,6 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xml))
 
-(define-public rdesktop
-  (package
-    (name "rdesktop")
-    (version "1.9.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/rdesktop/rdesktop/"
-                                  "releases/download/v" version "/rdesktop-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1222f2srlq16bydhy44gph997iajg39sl774xxh9jdwi4cqjyg27"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags (list ;; XXX: optional dependencies missing
-                               "--disable-credssp"
-                               "--disable-smartcard")
-       #:tests? #f))                    ; No 'check' target
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list gnutls libx11 libxcursor nettle))
-    (home-page "https://www.rdesktop.org/")
-    (synopsis "Client for Windows Terminal Services")
-    (description
-     "rdesktop is a client for Microsoft's Windows Remote Desktop Services,
-capable of natively speaking Remote Desktop Protocol (RDP).  It allows users
-to remotely control a user's Windows desktop.")
-    (license license:gpl3+)))
-
 (define-public freerdp
   (package
     (name "freerdp")
