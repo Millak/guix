@@ -1004,7 +1004,7 @@ Guile's foreign function interface.")
        (file-name (string-append "guile-lzlib-" version ".tar.gz"))
        (sha256
         (base32
-         "1whgmwkr1v8m63p4aaqn8blwl9vcrswwhbfv4bm0aghl5a6rryd7"))
+         "1v1pfqp6hwl0rivs7swhqnfgznxlfnws9ldmn6avnhd10filfa3a"))
        (patches (search-patches "guile-lzlib-gcc-14.patch"
                                 "guile-lzlib-hurd64.patch"))))
     (build-system gnu-build-system)
