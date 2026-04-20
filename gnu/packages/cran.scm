@@ -32555,14 +32555,14 @@ repositories.")
 (define-public r-fs
   (package
     (name "r-fs")
-    (version "2.0.1")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fs" version))
        (sha256
         (base32
-         "1hp00xy895hk12nmzy4r269vnj0rfry6czwb3byicbbp93bhc5qx"))))
+         "1k99k1w781zlxpv4nw0x7cjchzqr7wr2wlsb2kmlqp6n2w8sz23h"))))
     (properties
      '((updater-ignored-native-inputs
         . ("r-testthat" "r-spelling" "r-vctrs" "r-withr"))
