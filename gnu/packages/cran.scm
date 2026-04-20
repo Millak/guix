@@ -19205,14 +19205,14 @@ introduces more meaningful reordering for a coupled heatmap visualization.")
 (define-public r-getoptlong
   (package
     (name "r-getoptlong")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "GetoptLong" version))
        (sha256
         (base32
-         "02wf2k95mg8rw433iybscbra5aflhwaqfqmjkbargqlqkvm11884"))))
+         "15n50ihlknp2q36vkl3h668jwil40i1irjf9vpqlw1v26z2q9ixz"))))
     (properties `((upstream-name . "GetoptLong")))
     (build-system r-build-system)
     (inputs
