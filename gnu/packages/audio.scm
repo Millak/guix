@@ -3995,6 +3995,40 @@ to send and receive OSC messages using a nice and simple Python API.  Also
 included are the command line utilities @code{send_osc} and @code{dump_osc}.")
     (license license:lgpl2.1+)))
 
+(define-public python-sofa
+  (package
+    (name "python-sofa")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/spatialaudio/python-sofa/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n6mdck2dawfm6napqhhxi8gjyvs6121pblcr7zjl37a8ldqvg29"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;No tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-wrong-dependency
+            (lambda _
+              (substitute* "setup.py"
+                (("'datetime'")
+                 "")))))))
+    (propagated-inputs (list python-netcdf4 python-numpy python-scipy))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/spatialaudio/python-sofa/")
+    (synopsis
+     "Python @acronym{Spatially Oriented Format for Acoustics, SOFA} API")
+    (description
+     "Python API for @acronym{Spatially Oriented Format for Acoustics, SOFA} files
+as specified in @url{https://www.sofaconventions.org, SOFA conventions}.")
+    (license license:expat)))
+
 (define-public python-soundfile
   (package
     (name "python-soundfile")
