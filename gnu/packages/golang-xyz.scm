@@ -22788,16 +22788,16 @@ it is capable of logging at some or all levels.")
 (define-public go-github-com-rivo-tview
   (package
     (name "go-github-com-rivo-tview")
-    (version "0.0.0-20241227133733-17b7edb88c57")
+    (version "0.42.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/rivo/tview")
-             (commit (go-version->git-ref version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w59vyvs8k5mzl7k39zpwcwwdgam2pbz0rnrfnnjgvkld1rh81dc"))))
+        (base32 "0jw47h92l0vp1lg6s5kng4hjv81hi8qxx9h5yilc7rzrr8l9ksd2"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/rivo/tview"))
