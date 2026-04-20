@@ -746,6 +746,54 @@ complete with events and to-dos.")
       (home-page "https://codeberg.org/dgoodmaniii/dozenal")
       (license license:gpl3+))))
 
+(define-public drat-trim
+  (package
+    (name "drat-trim")
+    (version "05.22.2023")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/marijnheule/drat-trim")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "084miqj57xr7c74y649acm5xjkddpjn4ybfh469jcbakzp8w0pdi"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:make-flags
+      #~(list (string-join
+                (list "FLAGS=-DLONGTYPE"
+                      ;; _POSIX_C_SOURCE required for getc_unlocked(3).
+                      "-D_POSIX_C_SOURCE=200809")
+                " "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'always-pass-flags
+            (lambda _
+              (substitute* "Makefile"
+                ;; Ensure that drat-trim and gapless target also respect FLAGS.
+                (("-std=c99 -O2")
+                 "-std=c99 $(FLAGS) -O2"))))
+          (delete 'configure) ;no configure script
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((bin (string-append #$output "/bin")))
+                (for-each (lambda (exec)
+                            (install-file exec bin))
+                          '("drat-trim"
+                            "lrat-check"))))))))
+    (synopsis "Proof checker for unsatisfiability of propositional formulas")
+    (description
+     "The proof checker DRAT-trim can be used to check whether a propositional
+formula in the DIMACS format is unsatisfiable.  Given a propositional formula and
+a clausal proof, DRAT-trim validates that the proof is a certificate of
+unsatisfiability of the formula.")
+    (home-page "https://www.cs.utexas.edu/~marijn/drat-trim/")
+    (license license:expat)))
+
 (define-public dsfmt
   (package
     (name "dsfmt")
