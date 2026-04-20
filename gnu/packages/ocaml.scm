@@ -1231,7 +1231,8 @@ OPAM.")
            ocaml-opam-repository
            ocaml-base64
            ocaml-re
-           ocaml-cmdliner))))
+           ocaml-cmdliner
+           ocaml-spdx-licenses))))
 
 (define-public opam
   (package
