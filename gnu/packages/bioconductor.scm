@@ -13366,14 +13366,14 @@ as well as query and modify the browser state, such as the current viewport.")
 (define-public r-samr
   (package
     (name "r-samr")
-    (version "3.0")
+    (version "3.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "samr" version))
        (sha256
         (base32
-         "01km0f7qgm73x19vbvsxl083hs1dq4dj8qm5h64cxbf20b08my15"))))
+         "1qdsm9dj4vql1ah3h12zcslx09g09hr34idc4xiqcd6q7lp2c109"))))
     (properties `((upstream-name . "samr")))
     (build-system r-build-system)
     (propagated-inputs
