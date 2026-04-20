@@ -33878,14 +33878,14 @@ features (e.g. local modes).")
 (define-public r-arm
   (package
     (name "r-arm")
-    (version "1.15-2")
+    (version "1.15-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "arm" version))
        (sha256
         (base32
-         "1x4nzdrymq5h4xxv2ag28gimdv46y1xiw84b401w711h4qcrrsk9"))))
+         "0v26a0dak65k3rd6wxra8irpav11xrpxcviknb0gclfpjc2qniwl"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-abind
