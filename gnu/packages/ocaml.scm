@@ -4261,6 +4261,32 @@ and command-line tool.")
 length of domain names are preserved throughout the module.")
     (license license:isc)))
 
+(define-public ocaml-patch
+  (package
+    (name "ocaml-patch")
+    (version "3.1.0")
+    (build-system dune-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hannesm/patch")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zg35f427ixd3jhkiwk91sil45pmf6ns7yfcgyi6gf2r0y241xn3"))))
+    (native-inputs (list ocaml-alcotest))
+    (home-page "https://github.com/hannesm/patch")
+    (synopsis "Applies unified diffs in pure OCaml")
+    (description
+     "This package applies unified diffs in pure OCaml.
+
+The loosely specified diff file format is widely used for transmitting
+differences of line-based information.  The motivating example is opam, which
+is able to validate updates being cryptographically signed (e.g. conex) by
+providing a unified diff.")
+    (license license:isc)))
+
 (define-public ocaml-macaddr
   (package
     (name "ocaml-macaddr")
