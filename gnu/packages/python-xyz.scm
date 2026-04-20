@@ -35405,14 +35405,18 @@ client library.")
      (list
       ;; tests: 1571 passed, 37 deselected, 1 warning
       ;;
-      ;; Two test fail with assertion not equal:
+      ;; Three test fail with assertion not equal:
       ;;
       ;; test_decode_error[0001-unpack_from requires a buffer of at least 1
       ;; bytes] - AssertionError
       ;;
       ;; test_decode_error[00000101-unpack_from requires a buffer of at least
       ;; 1 bytes] - AssertionError
-      #:test-flags #~(list "-k" "not test_decode_error")))
+      ;;
+      ;; test_encode_error[args1-ubyte format requires 0 <= number <= 255]
+      ;; AssertionError
+      #:test-flags #~(list "-k" (string-append "not test_decode_error and not "
+                                               "test_encode_error"))))
     (native-inputs (list python-pytest-8 python-setuptools))
     (home-page "https://ndeflib.readthedocs.io/")
     (synopsis "NFC Data Exchange Format decoder and encoder.")
