@@ -53103,14 +53103,14 @@ for creating, simulating, or validating values for such parameters.")
 (define-public r-tune
   (package
     (name "r-tune")
-    (version "2.0.1")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tune" version))
        (sha256
         (base32
-         "0xxa4dw31hxh86z76k55vks1mm8xg3p1mxwlh9zsq7wh2fg4v5v7"))))
+         "1kjj8csv1b2hbdww89fsrm57rp1q4gpbz8mdsbr1i4c73v1v1gls"))))
     (properties
      '((upstream-name . "tune")
        (updater-ignored-native-inputs . ("r-censored"))))
@@ -53119,11 +53119,12 @@ for creating, simulating, or validating values for such parameters.")
      (list r-cli
            r-dials
            r-dplyr
+           r-gaupro
            r-generics
            r-ggplot2
            r-glue
-           r-gpfit
            r-hardhat
+           r-lifecycle
            r-parsnip
            r-purrr
            r-recipes
