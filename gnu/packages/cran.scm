@@ -48623,18 +48623,18 @@ importation and recoding.")
 (define-public r-rockchalk
   (package
     (name "r-rockchalk")
-    (version "1.8.157")
+    (version "1.8.164")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rockchalk" version))
        (sha256
         (base32
-         "13g2rdnxazqfgy653d7vj6w79b2vgnd7bbz0sqn9k4qiig59jh41"))))
+         "05jdbmaqfawi4khjwdqx35kk2ahqh6barm1znhibrikwxqg0g3jw"))))
     (properties `((upstream-name . "rockchalk")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-cardata r-kutils r-lme4 r-mass))
+     (list r-cardata r-kutils r-lme4 r-mass r-reformulas))
     (home-page "https://cran.r-project.org/package=rockchalk")
     (synopsis "Regression estimation and presentation")
     (description
