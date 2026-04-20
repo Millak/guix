@@ -967,6 +967,31 @@ identifiers (swhids).  This is the core library, for most use cases you should
 use the swhid library instead.")
     (license license:isc)))
 
+(define-public ocaml-spdx-licenses
+  (package
+    (name "ocaml-spdx-licenses")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kit-ty-kate/spdx_licenses")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08vh9mfkq34f0l5ka94hhklc43kvz09wd04x1gkxkawn4786rf9z"))))
+    (build-system dune-build-system)
+    (native-inputs (list ocaml-alcotest))
+    (properties `((upstream-name . "spdx_licenses")))
+    (home-page "https://github.com/kit-ty-kate/spdx_licenses")
+    (synopsis "Strict SPDX License Expression parser")
+    (description
+     "This package provides an up-to-date and strict SPDX License Expression
+parser.  It implements the format described in:
+https://spdx.github.io/spdx-spec/v2.3/SPDX-license-expressions/
+See https://spdx.org/licenses/ for more details.")
+    (license license:expat)))
+
 (define ocaml-opam-core
   (package
     (name "ocaml-opam-core")
