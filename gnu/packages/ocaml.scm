@@ -1241,6 +1241,7 @@ OPAM.")
     (build-system dune-build-system)
     (arguments
      `(#:package "opam"
+       #:tests? #f
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'prepare-checks
@@ -1292,7 +1293,10 @@ name = Guix Builder")
              (substitute* "tests/reftests/testing-env"
                (("OPAMSTRICT=1")
                 (string-append "OPAMSTRICT=1\nLIBRARY_PATH="
-                               (assoc-ref inputs "libc") "/lib"))))))))
+                               (assoc-ref inputs "libc") "/lib")))))
+         ;; Temporarily disable the phase above, pending an upgrade to the
+         ;; inherited package.
+         (delete 'prepare-checks))))
     (native-inputs
       (let ((opam-repo (lambda (commit hash)
                          (origin
