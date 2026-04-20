@@ -13392,13 +13392,13 @@ Munsell colour system.")
 (define-public r-mvtnorm
   (package
     (name "r-mvtnorm")
-    (version "1.3-6")
+    (version "1.3-7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mvtnorm" version))
               (sha256
                (base32
-                "0mhnl172fcd0lcqfndw23vmlqp5gdgvpw6jclbhkjr5aqy81f2af"))))
+                "144fzrksgg12z7pvc0mh1kk75i2sng36j2d6py6q7msb41pfk4y3"))))
     (build-system r-build-system)
     ;; Do not build vignettes because there are weave errors in lmvnorm_src.R.
     (arguments (list #:test-types '(list "tests")))
