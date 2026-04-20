@@ -46814,13 +46814,13 @@ It also provides a small number of bug fixes to the original code.")
 (define-public r-torch
   (package
     (name "r-torch")
-    (version "0.16.3")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "torch" version))
        (sha256
-        (base32 "0gqjg9qhsrwh5cvdlk6lyqp2j1d3kr49im3m2ja4c3wkjpk9swhv"))))
+        (base32 "154a02ar5z1r7crd0wp4d76n2970f5j3dmcb3hmng01bi5iw4c47"))))
     (properties
      '((upstream-name . "torch")
        (updater-ignored-native-inputs . ("r-aten"))
