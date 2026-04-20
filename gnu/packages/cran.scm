@@ -11145,14 +11145,14 @@ cases and the content.")
 (define-public r-sendmailr
   (package
     (name "r-sendmailr")
-    (version "1.4-0")
+    (version "1.4-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sendmailR" version))
        (sha256
         (base32
-         "1balci88r2ci51xdh5zaqm3ss3vnry8pbkx2qngppc7n2gy932sv"))))
+         "1lgx1a9kn3j6f0i6lh2jyhpkcdwmpfs0g17zmjy1yza9jmv18n1b"))))
     (properties `((upstream-name . "sendmailR")))
     (build-system r-build-system)
     (propagated-inputs
