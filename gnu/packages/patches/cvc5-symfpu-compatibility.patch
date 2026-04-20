@@ -1,0 +1,165 @@
+Ensures that cvc5 is compatible with our version of SymFPU.
+
+Taken from: https://github.com/cvc5/cvc5/commit/2ed457049cf52bd0f21a6332c1be487d82bf5678
+
+diff --git a/cmake/FindSymFPU.cmake b/cmake/FindSymFPU.cmake
+index 765ee8d36..05a86e9ee 100644
+--- a/cmake/FindSymFPU.cmake
++++ b/cmake/FindSymFPU.cmake
+@@ -29,8 +29,8 @@ if(NOT SymFPU_FOUND_SYSTEM)
+   include(ExternalProject)
+   include(deps-helper)
+ 
+-  set(SymFPU_COMMIT "e6ac3af9c2c574498ea171c957425b407625448b")
+-  set(SymFPU_CHECKSUM "823aa663fcc2f6844ae5e9ea83ceda4ed393cdb3dadefce9b3c7c41cd0f4f702")
++  set(SymFPU_COMMIT "227a7246b8ce513b393cc2645d6d65d3490ea1de")
++  set(SymFPU_CHECKSUM "ff22e37dbc133120ada5760878974811737bec65b12a8883f92b1ed9e3f96e99")
+ 
+   ExternalProject_Add(
+     SymFPU-EP
+diff --git a/src/theory/fp/fp_word_blaster.cpp b/src/theory/fp/fp_word_blaster.cpp
+index 7f2086c35..3efb0eeed 100644
+--- a/src/theory/fp/fp_word_blaster.cpp
++++ b/src/theory/fp/fp_word_blaster.cpp
+@@ -119,6 +119,23 @@ CVC5_SYM_ITE_DFN(traits::ubv);
+ 
+ #undef CVC5_SYM_ITE_DFN
+ 
++#define CVC5_SYM_ITE_BOOL_DFN(T)                                   \
++  template <>                                                      \
++  struct ite<bool, T>                                              \
++  {                                                                \
++    static const T iteOp(const bool& cond, const T& l, const T& r) \
++    {                                                              \
++      return cond ? l : r;                                         \
++    }                                                              \
++  }
++
++CVC5_SYM_ITE_BOOL_DFN(traits::rm);
++CVC5_SYM_ITE_BOOL_DFN(traits::prop);
++CVC5_SYM_ITE_BOOL_DFN(traits::sbv);
++CVC5_SYM_ITE_BOOL_DFN(traits::ubv);
++
++#undef CVC5_SYM_ITE_BOOL_DFN
++
+ template <>
+ traits::ubv orderEncode<traits, traits::ubv>(const traits::ubv& b)
+ {
+@@ -564,6 +581,13 @@ symbolicBitVector<isSigned> symbolicBitVector<isSigned>::modularAdd(
+   return *this + op;
+ }
+ 
++template <bool isSigned>
++symbolicBitVector<isSigned> symbolicBitVector<isSigned>::modularSubtract(
++    const symbolicBitVector<isSigned>& op) const
++{
++  return *this - op;
++}
++
+ template <bool isSigned>
+ symbolicBitVector<isSigned> symbolicBitVector<isSigned>::modularNegate() const
+ {
+diff --git a/src/theory/fp/fp_word_blaster.h b/src/theory/fp/fp_word_blaster.h
+index 6ce365382..8179ceb32 100644
+--- a/src/theory/fp/fp_word_blaster.h
++++ b/src/theory/fp/fp_word_blaster.h
+@@ -242,6 +242,8 @@ class symbolicBitVector : public nodeWrapper
+   symbolicBitVector<isSigned> modularDecrement() const;
+   symbolicBitVector<isSigned> modularAdd(
+       const symbolicBitVector<isSigned>& op) const;
++  symbolicBitVector<isSigned> modularSubtract(
++      const symbolicBitVector<isSigned>& op) const;
+   symbolicBitVector<isSigned> modularNegate() const;
+ 
+   /*** Comparisons ***/
+diff --git a/src/util/floatingpoint_literal_symfpu_traits.cpp b/src/util/floatingpoint_literal_symfpu_traits.cpp
+index af56c2b87..181069427 100644
+--- a/src/util/floatingpoint_literal_symfpu_traits.cpp
++++ b/src/util/floatingpoint_literal_symfpu_traits.cpp
+@@ -223,6 +223,13 @@ wrappedBitVector<isSigned> wrappedBitVector<isSigned>::modularAdd(
+   return *this + op;
+ }
+ 
++template <bool isSigned>
++wrappedBitVector<isSigned> wrappedBitVector<isSigned>::modularSubtract(
++    const wrappedBitVector<isSigned>& op) const
++{
++  return *this - op;
++}
++
+ template <bool isSigned>
+ wrappedBitVector<isSigned> wrappedBitVector<isSigned>::modularNegate() const
+ {
+diff --git a/src/util/floatingpoint_literal_symfpu_traits.h b/src/util/floatingpoint_literal_symfpu_traits.h
+index 78fc69a18..b49ef3a2a 100644
+--- a/src/util/floatingpoint_literal_symfpu_traits.h
++++ b/src/util/floatingpoint_literal_symfpu_traits.h
+@@ -199,6 +199,8 @@ class wrappedBitVector : public BitVector
+   wrappedBitVector<isSigned> modularDecrement() const;
+   wrappedBitVector<isSigned> modularAdd(
+       const wrappedBitVector<isSigned>& op) const;
++  wrappedBitVector<isSigned> modularSubtract(
++      const wrappedBitVector<isSigned>& op) const;
+   wrappedBitVector<isSigned> modularNegate() const;
+ 
+   /** Bit-vector equality. */
+diff --git a/test/regress/cli/CMakeLists.txt b/test/regress/cli/CMakeLists.txt
+index 915a19e09..35ff58bc7 100644
+--- a/test/regress/cli/CMakeLists.txt
++++ b/test/regress/cli/CMakeLists.txt
+@@ -949,12 +949,15 @@ set(regress_0_tests
+   regress0/fp/issue6164.smt2
+   regress0/fp/issue7002.smt2
+   regress0/fp/issue7569.smt2
++  regress0/fp/issue9505.smt2
+   regress0/fp/issue9854.smt2
+   regress0/fp/issue9858.smt2
+   regress0/fp/issue9864.smt2
+   regress0/fp/issue9966.smt2
+   regress0/fp/issue9972.smt2
+   regress0/fp/issue9972-2.smt2
++  regress0/fp/issue11139.smt2
++  regress0/fp/issue12335.smt2
+   regress0/fp/issuepr650.smt2
+   regress0/fp/proj-issue329-prereg-context.smt2
+   regress0/fp/proj-issue477-fp-set-comprehension.smt2
+diff --git a/test/regress/cli/regress0/fp/issue11139.smt2 b/test/regress/cli/regress0/fp/issue11139.smt2
+new file mode 100644
+index 000000000..f4c00360e
+--- /dev/null
++++ b/test/regress/cli/regress0/fp/issue11139.smt2
+@@ -0,0 +1,9 @@
++; COMMAND-LINE: --check-models
++; EXPECT: sat
++(set-logic QF_FP)
++(declare-const FP_VAR_a (_ FloatingPoint 11 53))
++(declare-const FP_VAR_b (_ FloatingPoint 11 53))
++(assert ( = (fp #b0 #b00000000000 #b0000000000000000000000000000000000000000000000000000)
++(fp.div RTN (fp.fma RTP FP_VAR_a FP_VAR_a 
++(fp #b0 #b00000000000 #b0000000000000000000000000000000000000000000000000000)) FP_VAR_b)))
++(check-sat)
+diff --git a/test/regress/cli/regress0/fp/issue12335.smt2 b/test/regress/cli/regress0/fp/issue12335.smt2
+new file mode 100644
+index 000000000..bc2580a89
+--- /dev/null
++++ b/test/regress/cli/regress0/fp/issue12335.smt2
+@@ -0,0 +1,7 @@
++; EXPECT: sat
++(set-logic FP)
++(declare-const x Float32)
++(declare-const a Float32)
++(assert (forall ((V Float32) (A Float32)) (or (not (fp.lt V x)) (not (fp.eq a a)) (not (fp.gt A (fp (_ bv0 1) (_ bv0 8) (_ bv0 23)))) (not (fp.eq (fp.div RNE A V) (fp (_ bv0 1) (_ bv0 8) (_ bv0 23)))))))
++(assert (fp.geq a (fp (_ bv0 1) (_ bv0 8) (_ bv0 23))))
++(check-sat)
+diff --git a/test/regress/cli/regress0/fp/issue9505.smt2 b/test/regress/cli/regress0/fp/issue9505.smt2
+new file mode 100644
+index 000000000..05674b8ff
+--- /dev/null
++++ b/test/regress/cli/regress0/fp/issue9505.smt2
+@@ -0,0 +1,6 @@
++; COMMAND-LINE: --fp-exp
++; EXPECT: sat
++(set-logic QF_FP)
++(declare-fun m () (_ FloatingPoint 4 12))
++(assert (fp.eq (fp (_ bv0 1) (_ bv0 8) (_ bv0 23)) ((_ to_fp 8 24) roundNearestTiesToEven (fp.rem m (fp (_ bv0 1) (_     bv9 4) (_ bv1536 11))))))
++(check-sat)
