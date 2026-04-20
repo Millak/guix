@@ -165,7 +165,7 @@
   ;; <https://bitcoincore.org/en/lifecycle/#schedule>.
   (package
     (name "bitcoin-core")
-    (version "30.2")
+    (version "31.0")
     (source (origin
               (method url-fetch)
               (uri
@@ -173,7 +173,7 @@
                               version "/bitcoin-" version ".tar.gz"))
               (sha256
                (base32
-                "1jw4djh22v0nih0n7irdbknfbqavlc4l3b8176b5qgc88a60pl3g"))))
+                "1qxkcyq8nwq6sw4qi660z8n8356mqdsf4jvpq5ndkvrsx9gfz80b"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -197,9 +197,7 @@
                     "python3" "./test/functional/test_runner.py" "--timeout-factor=2"
                     (string-append "--jobs=" (number->string (parallel-job-count)))))))))
     (native-inputs
-     (list bash ; provides the sh command for system_tests
-           coreutils ; provides the cat, echo and false commands for system_tests
-           pkg-config
+     (list pkg-config
            python ; for the tests
            python-pyzmq ; for the tests
            qttools))
