@@ -51,6 +51,7 @@
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2026 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2026 Daniel Martins <email@danielfm.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -111,6 +112,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
@@ -2461,6 +2463,77 @@ specified image or color, easing the process of theme creation.")
     (description "Quickly preview local markdown files in browser with
 GitHub-like look.")
     (license license:gpl3+)))
+
+(define-public mise
+  (package
+    (name "mise")
+    (version "2026.4.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jdx/mise")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1298fxd1hx0y86xpmrmbi6ps9bvp81b4r4cgyvgqzfzicn616l2j"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (for-each delete-file-recursively
+                           '("crates/vfox/test/data"
+                             "docs"))
+                 ;; Don't try to vendor lua.
+                 (substitute* "crates/vfox/Cargo.toml"
+                   (("\"vendored-lua\", ") "")
+                   (("^vendored-lua.*") "vendored-lua = []\n"))))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f
+           #:cargo-install-paths ''(".")
+           #:parallel-tests? #f
+           ;; test_last_modified fails in the build sandbox because file
+           ;; timestamps are normalized.
+           #:cargo-test-flags ''("--" "--skip" "test_last_modified")
+           #:modules '((guix build cargo-build-system)
+                       (guix build utils)
+                       (ice-9 match))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-completions
+                 (lambda* (#:key native-inputs #:allow-other-keys)
+                   (let ((binary
+                          (if #$(%current-target-system)
+                              (search-input-file native-inputs "bin/mise")
+                              (in-vicinity #$output "bin/mise"))))
+                     (for-each
+                      (match-lambda
+                        ((args . path)
+                         (mkdir-p (in-vicinity #$output (dirname path)))
+                         (with-output-to-file (in-vicinity #$output path)
+                           (lambda _
+                             (apply invoke binary "completion" args)))))
+                      ;; Bash completions need --include-bash-completion-lib
+                      ;; to bundle the compatibility functions they rely on.
+                      '((("bash" "--include-bash-completion-lib")
+                         . "share/bash-completion/completions/mise")
+                        (("fish")
+                         . "share/fish/vendor_completions.d/mise.fish")
+                        (("zsh")
+                         . "share/zsh/site-functions/_mise")))))))))
+    (native-inputs
+     (append (if (%current-target-system)
+                 (list this-package)
+                 '())
+             (list pkg-config)))
+    (inputs (cons* lua-5.1 openssl `(,zstd "lib") (cargo-inputs 'mise)))
+    (home-page "https://mise.jdx.dev")
+    (synopsis "Polyglot version manager, task runner, and environment manager")
+    (description "Mise manages dev tool versions (e.g., Node.js, Python, Ruby,
+Go) allowing you to switch between versions per project.  It also serves as a
+task runner and manages environment variables through @file{.mise.toml}
+configuration files.  It is compatible with asdf plugins and supports
+@file{.tool-versions} files.")
+    (license license:expat)))
 
 (define-public mitm-cache
   (package
