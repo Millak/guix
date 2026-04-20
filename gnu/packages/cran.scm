@@ -13139,6 +13139,28 @@ Innovative features include support for otherwise non-exportable reference
 objects, event-driven promises, and asynchronous parallel map.")
     (license license:gpl3+)))
 
+(define-public r-mixopt
+  (package
+    (name "r-mixopt")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mixopt" version))
+       (sha256
+        (base32 "0zgdkazsfmrqn5k4qanc18mw0scjwjyfzh9jwgjrbamv36ygry6n"))))
+    (properties `((upstream-name . "mixopt")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr r-ggplot2 r-splitfngr))
+    (native-inputs (list r-numderiv r-testthat))
+    (home-page "https://github.com/CollinErickson/mixopt")
+    (synopsis "Mixed variable optimization")
+    (description
+     "This is a package for mixed variable optimization for non-linear
+functions.  It can optimize function whose inputs are a combination of
+continuous, ordered, and unordered variables.")
+    (license license:lgpl3+)))
+
 (define-public r-mixtools
   (package
     (name "r-mixtools")
