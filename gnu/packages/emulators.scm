@@ -3452,7 +3452,7 @@ This is a part of the TiLP project.")
 (define-public mame
   (package
     (name "mame")
-    (version "0.252")
+    (version "0.287")
     (source
      (origin
        (method git-fetch)
@@ -3461,16 +3461,16 @@ This is a part of the TiLP project.")
              (commit (apply string-append "mame" (string-split version #\.)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07qhcm1v47sy2wj30nx3cbhvcbgki0cl83gabr0miiw60fhgyn6j"))
+        (base32 "1p9v71gvaqiyj6sa1b0wkdksa9wnr6yr2a43ckycljjfas5s36kq"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
         '(begin
            (with-directory-excursion "3rdparty"
              (for-each delete-file-recursively
-                       '("asio" "expat" "glm" "libflac" "libjpeg" "lua"
-                         "portaudio" "portmidi" "pugixml" "rapidjson" "SDL2"
-                         "SDL2-override" "sqlite3" "utf8proc" "zlib")))))))
+                       '("asio" "expat" "glm" "flac" "libjpeg" "lua"
+                         "portaudio" "portmidi" "pugixml" "rapidjson"
+                         "sqlite3" "utf8proc" "zlib")))))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3604,7 +3604,9 @@ This is a part of the TiLP project.")
            libjpeg-turbo
            libxi
            libxinerama
-           lua
+           ;; MAME requires Lua compiled as C++ to work correctly.
+           ;; See https://www.mamedev.org/?p=523
+           lua-5.4-for-c++
            portaudio
            portmidi
            pugixml
