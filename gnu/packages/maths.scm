@@ -7862,6 +7862,35 @@ FLANN is written in C++ and contains bindings for C, Octave and Python.")
     (license (license:non-copyleft "file://COPYING"
                                 "See COPYING in the distribution."))))
 
+(define-public nanoflann
+  (package
+    (name "nanoflann")
+    (version "1.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jlblancoc/nanoflann")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cizyl30ad5ljxy0dvj4hw85222rzhsw7lsdgjp5rl6kpqqrxmqw"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DNANOFLANN_BUILD_EXAMPLES=OFF" "-DNANOFLANN_BUILD_TESTS=ON")))
+    (native-inputs (list googletest))
+    (home-page "https://github.com/jlblancoc/nanoflann")
+    (synopsis
+     "C++11 header-only library for nearest neighbor search with KD-trees")
+    (description
+     "nanoflann is a C++11 header-only library for building KD-trees of datasets
+with different topologies: R2, R3 (point clouds), SO(2) and SO(3) (2D and 3D
+rotation groups).  It is a fork of the FLANN library that replaces virtual
+methods inlined templates for improved runtime and memory efficiency.")
+    (license license:bsd-2)))
+
 (define-public wcalc
   (package
     (name "wcalc")
