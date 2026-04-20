@@ -8393,6 +8393,29 @@ LP and IP.")
 the lp_solve solver.")
     (license license:gpl3)))
 
+(define-public r-roi-plugin-neos
+  (package
+    (name "r-roi-plugin-neos")
+    (version "1.0-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ROI.plugin.neos" version))
+       (sha256
+        (base32 "15234844gnd86liw2a5a3rbfmrypdqi75xlxkjj49dfvsx7ghvd1"))))
+    (properties `((upstream-name . "ROI.plugin.neos")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-roi r-xml2 r-xmlrpc2))
+    (native-inputs (list r-cvxr r-slam))
+    (home-page "https://roigrp.gitlab.io")
+    (synopsis "NEOS plug-in for the R Optimization Interface")
+    (description
+     "This package enhances the @dfn{R Optimization Infrastructure} (ROI)
+package with a connection to the neos server.  ROI optimization problems can
+directly be sent to the neos server and solution obtained in the typical ROI
+style.")
+    (license license:gpl3)))
+
 (define-public r-rorcid
   (package
     (name "r-rorcid")
