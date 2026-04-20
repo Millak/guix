@@ -4658,46 +4658,6 @@ is a stylish type with a polished yet relaxed feel.  Its versatility makes it
 suitable for a wide range of uses.")
       (license license:silofl1.1))))
 
-(define-public font-cozette
-  (package
-    (name "font-cozette")
-    (version "1.13.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/slavfox/Cozette")
-                     (commit (string-append "v." version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "178i812n4sfsvid7jhnm683jlxqmrv4ck6qbb4nwyllhwg3gyq60"))))
-    (build-system font-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'dont-depend-on-git
-           (lambda _
-             (substitute* "build.py"
-               ;; Merely importing this module requires a git repository.
-               ;; We don't use get_changelog, so just disable the import.
-               (("from cozette_builder\\.changeloggen import get_changelog")
-                ""))))
-         (add-before 'install 'build
-           (lambda _
-             (invoke "python3" "build.py" "fonts"))))))
-    (native-inputs
-     (list fontforge
-           python
-           python-crayons
-           python-fonttools
-           python-numpy
-           python-pillow))
-    (home-page "https://github.com/slavfox/Cozette")
-    (synopsis "Bitmap programming font")
-    (description "Cozette is a 6x13px (bounding box) bitmap font based on Dina
-and heavily inspired by Creep.")
-    (license license:expat)))
-
 (define-public font-montserrat
   (package
     (name "font-montserrat")
