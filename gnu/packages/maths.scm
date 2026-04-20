@@ -9718,6 +9718,7 @@ researchers and developers alike to get started on SAT.")
          "1snimig4cp97p570nin2i38my72zvwypldyhr125i1z6cd9pa046"))))
     (build-system gnu-build-system)
     (inputs (list xz gzip lzip bzip2 p7zip))
+    (native-inputs (list drat-trim))
     (arguments
      (list
       #:test-target "test"
