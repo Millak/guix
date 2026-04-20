@@ -24085,13 +24085,13 @@ types, including factors and temporal types.")
 (define-public r-nestedcv
   (package
     (name "r-nestedcv")
-    (version "0.8.0")
+    (version "0.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nestedcv" version))
        (sha256
-        (base32 "1cymz961bcc9ga2dk2fnqi8iiz9da95fxw242l0brp3w0ymdcx4q"))))
+        (base32 "000wciqpscybm5i028vvf53jkk0v6wll2mrph3x2i3j9nvcabf1v"))))
     (properties `((upstream-name . "nestedcv")))
     (build-system r-build-system)
     (propagated-inputs (list r-caret
