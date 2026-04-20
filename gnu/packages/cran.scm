@@ -23059,14 +23059,14 @@ Several cluster validity indices are included.")
 (define-public r-dtw
   (package
     (name "r-dtw")
-    (version "1.23-1")
+    (version "1.23-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dtw" version))
        (sha256
         (base32
-         "0vc2is1hf1g0sw92kzl8mddck264qwiqgm5q2wkcwwz65fss7mkf"))))
+         "1ngd08yqik2y3dah0nw7dq7bkg25d408kgbnbmjn1x4k0sjm947f"))))
     (build-system r-build-system)
     (propagated-inputs (list r-proxy))
     (home-page "https://dtw.r-forge.r-project.org/")
