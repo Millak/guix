@@ -8325,8 +8325,11 @@ s-expression-based format.")
    (license license:gpl3+)))
 
 (define-public symfpu
-  (let ((commit "22d993d880f66b2e470c3928e0e61bdf61419702")
-        (revision "0"))
+  ;; Currently, we use the "experimental" branch of the symfpu repository.  The
+  ;; default "master" branch hasn't been updated in ~7 years and both bitwuzla
+  ;; and cvc5 require fixes from the "experimental" branch.
+  (let ((commit "aeaa3fa62730148c855f5a9e0a9b7040d48e0b7e")
+        (revision "1"))
     (package
       (name "symfpu")
       (version (git-version "0" revision commit))
@@ -8338,7 +8341,7 @@ s-expression-based format.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1h20zzkyi225290kc6mzg8i4dwkj0p1vlwfgc9ycs61snlyd8gr8"))))
+          (base32 "0wj9pwr2jiliy4rw4nvy51427dwhwj86azi14qc5vzsdb44c6fdx"))))
       (build-system copy-build-system)
       (arguments
        (list
