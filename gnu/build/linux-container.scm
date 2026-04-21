@@ -445,10 +445,14 @@ load path must be adjusted as needed."
           ;; Behave like an init process: create a sub-process that calls
           ;; THUNK, and wait for child processes.  Furthermore, forward
           ;; RELAYED-SIGNALS to the child process.
-          (match (primitive-fork)
-            (0
+          ;; We presently use `safe-clone` here due to a bug in the interaction
+          ;; between Guix and `primitive-fork` in Guile 3.0.11:
+          ;; https://codeberg.org/guix/guix/issues/7690#issuecomment-12744123
+          (safe-clone
+            SIGCHLD
+            (lambda ()
              (call-with-clean-exit thunk))
-            (pid
+            (lambda (pid)
              (install-signal-handlers pid)
              (let loop ()
                (match (wait-child-process)
