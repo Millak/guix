@@ -49708,20 +49708,20 @@ statistics and p-values of the correlation coefficients.")
 (define-public r-hrbrthemes
   (package
     (name "r-hrbrthemes")
-    (version "0.8.7")
+    (version "0.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hrbrthemes" version))
        (sha256
-        (base32 "0vwrwcx3yp5yi1fw45zb5b3rhhbhrmzkl935s5apvf9lwjz2wjas"))))
+        (base32 "17vj88vxkm43hrgdc1mlss5vza2hr384s3lmygzhs2ada9jpy7ck"))))
     (properties
      '((upstream-name . "hrbrthemes")
        (updater-extra-native-inputs . ("r-hunspell" "r-stringi"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-extrafont r-gdtools r-ggplot2 r-magrittr r-scales))
-    (native-inputs (list r-hunspell r-stringi r-testthat))
+     (list r-ggplot2 r-magrittr r-scales))
+    (native-inputs (list r-hunspell r-stringi r-testthat r-vdiffr))
     (home-page "https://github.com/hrbrmstr/hrbrthemes/")
     (synopsis "Additional themes, theme components and utilities for @code{ggplot2}")
     (description
