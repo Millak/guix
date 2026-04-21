@@ -25799,7 +25799,9 @@ sensors).")
       ;; [1] error open /var/run/utmp: no such file or directory
       ;; [2] PlatformInformation() returns empty
       ;; [3] Could not get temperature
-      ;; [4] TestCounts and TestInfo read /proc/cpuinfo fields that
+      ;; [4] TestSwapDevices reads /proc/swaps and fails when no swap
+      ;;     devices are configured on the build host.
+      ;; [5] TestCounts and TestInfo read /proc/cpuinfo fields that
       ;;     are absent on non-x86 Linux.
       #:test-flags
       #~(list "-skip"
@@ -25807,8 +25809,9 @@ sensors).")
                (append
                 (list "TestUsers"               ;1
                       "TestPlatformInformation" ;2
-                      "TestTemperatures")       ;3
-                (if #$(target-x86?)             ;4
+                      "TestTemperatures"        ;3
+                      "TestSwapDevices")        ;4
+                (if #$(target-x86?)             ;5
                     '()
                     (list "TestCounts" "TestInfo")))
                "|"))))))
