@@ -734,7 +734,7 @@ single-instruction multiple-data (SIMD) intrinsics.")
               (substitute* "src/include/pmix_config.h"
                 (("#define PMIX_CONFIGURE_CLI .*")
                  "#define PMIX_CONFIGURE_CLI \"[scrubbed]\"\n")))))))
-    (inputs (list libevent `(,hwloc "lib") zlib))
+    (inputs (list libevent `(,hwloc "lib") munge zlib))
     (native-inputs
      (list autoconf
            automake
