@@ -3751,7 +3751,7 @@ summarizes network bandwidth by process and remote host.")
 (define-public munge
   (package
     (name "munge")
-    (version "0.5.14")
+    (version "0.5.18")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/dun/munge/releases/"
@@ -3759,19 +3759,16 @@ summarizes network bandwidth by process and remote host.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0h06sghb4rqvv1ywyd6mzsmbcgh712v6ygrff0gzm440y4ca41k6"))
+                "1p1qv2pa335r1yy599g4dl7h86aibp00z8cadqhgljv0ympfrhrr"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  ;; Don't insist on write access to /var.
-                  (substitute* "src/etc/Makefile.in"
-                    (("\\$\\(INSTALL\\)(.*)localstatedir" _ middle)
-                     (string-append "-$(INSTALL)" middle "localstatedir"))
-                    (("\\$\\(MKDIR_P\\) .*(local|run)statedir.*")
-                     ""))
-                  #t))))
+               ;; Don't insist on write access to /var.
+               #~(substitute* "src/etc/Makefile.in"
+                   (("\\$\\(MKDIR_P\\) .*(local|run)statedir.*" all)
+                    (string-append ": " all))))))
     (inputs
      (list openssl libgcrypt))
+    (native-inputs (list procps))                 ;for tests
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -3787,23 +3784,25 @@ summarizes network bandwidth by process and remote host.")
                  '()))
        #:phases
        (modify-phases %standard-phases
-         ;; XXX Many test series fail.  Some might be fixable, others do no-no
-         ;; things like invoking ‘sudo’.
          (add-after 'unpack 'skip-failing-tests
            (lambda _
+             ;; Pass '--force' to 'munged'; without it, it fails with "Socket
+             ;; is inaccessible" due to the build directory not being
+             ;; world-readable.
+             (substitute* "tests/sharness.d/03-munged.sh"
+               (("--group-update-time=-1" all)
+                (string-append all " --force")))
+
+             ;; The tests below invoke 'sudo' or have special expectations
+             ;; about network interfaces.
              (for-each (lambda (test)
-                         (substitute* "t/Makefile.in"
+                         (substitute* "tests/Makefile.in"
                            (((string-append test "\\.t ")) "")))
                        (list "0100-munged-lock"
-                             "0010-basic"
-                             "0011-munged-cmdline"
-                             "0012-munge-cmdline"
-                             "0013-unmunge-cmdline"
                              "0101-munged-security-socket"
                              "0102-munged-security-keyfile"
                              "0103-munged-security-logfile"
-                             "0110-munged-origin-addr"))
-             #t)))))
+                             "0110-munged-origin-addr")))))))
     (home-page "https://dun.github.io/munge/")
     (synopsis "Cluster computing authentication service")
     (description
