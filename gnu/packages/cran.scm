@@ -40684,13 +40684,13 @@ that fills this gap.")
 (define-public r-eulerr
   (package
     (name "r-eulerr")
-    (version "7.0.4")
+    (version "7.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "eulerr" version))
               (sha256
                (base32
-                "0wnashv3hjrfg4mzzm31wsp8730j2bl00jpkmnwbdj022j646ghy"))))
+                "1azzawb2ifgx31afnncivp796rik4b24rbr0bwzgcjnyq0lsr1lj"))))
     (properties `((upstream-name . "eulerr")))
     (build-system r-build-system)
     (propagated-inputs
