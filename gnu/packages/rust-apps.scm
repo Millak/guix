@@ -508,14 +508,14 @@ choice.  Supported launchers are: dmenu, fuzzel, rofi, walker and custom.")
 (define-public c2rust
   (package
     (name "c2rust")
-    (version "0.20.0")
+    (version "0.22.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "c2rust" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "05cm423m7v30b6gwgfzizhyqn3ncnfndin5zbkhyg9ah3pqccgps"))))
+        (base32 "0frzcnyah3a1srdwyx2rcpbh7hpwy6608cvhsqz5z9hdc08z8cg3"))))
     (build-system cargo-build-system)
     (native-inputs (list clang cmake-minimal %tinycbor-source))
     (inputs (cons llvm (cargo-inputs 'c2rust)))
