@@ -125,14 +125,14 @@
   ;; ex:
   ;; tar xf /gnu/store/...-firefox-123.4.source.tar.xz -O \
   ;;     firefox-123.4/browser/locales/l10n-changesets.json | grep revision
-  (let ((commit "0245ffb160688061f0e0c67ea488bcdfdacbeca4"))
+  (let ((commit "fefe280d909d0eee8d60edd2a6db7d969df56c5b"))
     (origin
       (method git-fetch)
       (uri (git-reference
             (url "https://github.com/mozilla-l10n/firefox-l10n.git")
             (commit commit)))
       (file-name (git-file-name "firefox-l10n" commit))
-      (sha256 (base32 "0y8xdxql04yys0wj685v4yp3kmx1ivnndg6z11vam8vszh0j7ak6")))))
+      (sha256 (base32 "0z1ksvspbn4bbzxdl2w4x7bg36j4rwhaby8g37apg4393frh558i")))))
 
 (define* (make-librewolf-source #:key version firefox-hash librewolf-hash l10n)
   (let* ((ff-src (firefox-source-origin
@@ -205,7 +205,8 @@
        (search-patches
         "librewolf-compare-paths.patch"
         "librewolf-use-system-wide-dir.patch"
-        "librewolf-add-store-to-rdd-allowlist.patch"))
+        "librewolf-add-store-to-rdd-allowlist.patch"
+        "librewolf-150.0-encoding_rs-rust-fix.patch"))
       ;; Slim down the tarball by removing unbundled libraries and 75 Mo (800+
       ;; Mo uncompressed) of unused tests.
       ;; TODO: Unbundle security/nss and media/libpng.
@@ -244,17 +245,17 @@
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
 ;; or: (format-time-string "%Y%m%d%H%M%S")
-(define %librewolf-build-id "20260409162101")
+(define %librewolf-build-id "20260421153818")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "149.0.2-2")
+    (version "150.0-1")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "1kkhg3lgyakinn5ankxrlxbf39wi61mqbhwrj1l4q5l7y0n1m4va"
-      #:librewolf-hash "1bai8g2kc9snck2f724al29q6r57vkj3d7v58rf0mgzpqzvwnw5f"
+      #:firefox-hash "151rxzl80dm8jsxl6fwzgbirwq4zpms5adwwnbjcwdd1r3s3vr7v"
+      #:librewolf-hash "0iw9v3zc1fxc93yyhldqarxaypgmbndh2ylsy330kcbpb6p1gnmr"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
@@ -352,18 +353,18 @@
                              (cdr pref)))
                    `(("extensions.getAddons.search.browseURL"
                       ,(string-append
-                        "https://gnuzilla.gnu.org/mozzarella/"
+                        "https://gnuzilla.gnu.org/"
                         "search.php?q=%TERMS%"))
                      ("extensions.getAddons.get.url" .
-                      "https://gnuzilla.gnu.org/mozzarella")
+                      "https://gnuzilla.gnu.org")
                      ("extensions.getAddons.link.url" .
-                      "https://gnuzilla.gnu.org/mozzarella")
+                      "https://gnuzilla.gnu.org")
                      ("extensions.getAddons.discovery.api_url" .
-                      "https://gnuzilla.gnu.org/mozzarella")
+                      "https://gnuzilla.gnu.org")
                      ("extensions.getAddons.langpacks.url" .
-                      "https://gnuzilla.gnu.org/mozzarella")
+                      "https://gnuzilla.gnu.org")
                      ("lightweightThemes.getMoreURL" .
-                      "https://gnuzilla.gnu.org/mozzarella")))))))
+                      "https://gnuzilla.gnu.org")))))))
           (add-after 'patch-source-shebangs 'patch-cargo-checksums
             (lambda _
               (use-modules (guix build cargo-utils))
