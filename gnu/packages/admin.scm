@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015-2018, 2020-2023 Eric Bavier <bavier@posteo.net>
@@ -3753,22 +3753,27 @@ summarizes network bandwidth by process and remote host.")
     (name "munge")
     (version "0.5.18")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/dun/munge/releases/"
-                                  "download/munge-" version "/munge-"
-                                  version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/dun/munge")
+                     (commit (string-append "munge-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1p1qv2pa335r1yy599g4dl7h86aibp00z8cadqhgljv0ympfrhrr"))
+                "1b7gm680dlvmgvj9vxy7n0cqmnv1rl9n4563vasxdxx54f78j30s"))
               (modules '((guix build utils)))
               (snippet
                ;; Don't insist on write access to /var.
-               #~(substitute* "src/etc/Makefile.in"
+               #~(substitute* "src/etc/Makefile.am"
                    (("\\$\\(MKDIR_P\\) .*(local|run)statedir.*" all)
                     (string-append ": " all))))))
     (inputs
      (list openssl libgcrypt))
-    (native-inputs (list procps))                 ;for tests
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           procps))                               ;for tests
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -3784,6 +3789,9 @@ summarizes network bandwidth by process and remote host.")
                  '()))
        #:phases
        (modify-phases %standard-phases
+         (add-before 'bootstrap 'pre-bootstrap
+           (lambda _
+             (for-each patch-shebang (find-files "build-aux"))))
          (add-after 'unpack 'skip-failing-tests
            (lambda _
              ;; Pass '--force' to 'munged'; without it, it fails with "Socket
@@ -3796,7 +3804,7 @@ summarizes network bandwidth by process and remote host.")
              ;; The tests below invoke 'sudo' or have special expectations
              ;; about network interfaces.
              (for-each (lambda (test)
-                         (substitute* "tests/Makefile.in"
+                         (substitute* "tests/Makefile.am"
                            (((string-append test "\\.t ")) "")))
                        (list "0100-munged-lock"
                              "0101-munged-security-socket"
