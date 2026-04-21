@@ -1,6 +1,6 @@
 #!/usr/bin/env -S gawk -f
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2025 Efraim Flashner <efraim@flashner.co.il>
+# Copyright © 2025, 2026 Efraim Flashner <efraim@flashner.co.il>
 #
 # This file is part of GNU Guix.
 #
@@ -21,20 +21,22 @@
 # ./etc/teams/rust/audit-rust-crates ./path/to/file.scm
 # Prints the output of cargo-audit to the shell.
 
-# Make sure we have cargo-audit in our PATH
 BEGIN {
-    if (system("which cargo-audit 1> /dev/null"))
-        exit 1;
+    "which cargo-audit" | getline cargoAudit
+    close("which cargo-audit")
+    cargoAudit = cargoAudit " audit --file -"
+
     # Parse a record at a time.
     RS = "\n\n"
-    cargoAudit = "cargo-audit audit --file -"
 }
 
-# Check the crate-source origin-only inputs
+# Check the crate-source origin-only inputs, like in rust-crates.scm
 /crate-source/ {
     for(i=3; i <= NF-2; i++) {
         if($i == "(crate-source") {
-            cargoLock = cargoLock "[[package]]\nname = " $(i+1) "\nversion = " $(i+2) "\n"
+            crateName = $(i+1)
+            crateVersion = $(i+2)
+            cargoLock = cargoLock "[[package]]\nname = " crateName "\nversion = " crateVersion "\n"
             next
         }
     }
@@ -44,27 +46,64 @@ BEGIN {
 /crate-uri/ {
     for(i=3; i <= NF; i++) {
         if($i == "(version")
-           crateVersion = $(i+1)
+            crateVersion = $(i+1)
         if($i == "(crate-uri")
-           crateName = $(i+1)
+            crateName = $(i+1)
     }
     gsub(/)/, "", crateVersion)
     cargoLock = cargoLock "[[package]]\nname = " crateName "\nversion = " crateVersion "\n"
+    next
 }
 
-# The xxxx-cargo-input variables have a set style
-# TODO: Replace the last dash between the name and the version with a space!
-# This doesn't take into account swapping between "-" and "_" so we skip it.
-#( $2 ~ /-cargo-inputs/ ) {
-#    sub(/-cargo-inputs/, "", $2)
-#    gsub(/)/, "", $0)
-#    gsub(/rust-/, "", $0)
-#    #gensub(/([[:alpha:]])-([[:digit:]]+)/, "\\1 \\2", "g", $i)
-#    print "[[package]]\nname = \"" $2 "\"\nversion = \"1.0.0\"\ndependencies = ["
-#    for (i = 4; i <= NF; i++) {
-#        print "\"" $i "\","
-#    }
-#    print "]"
-#}
+# Parse the crates created from packages using 'cargo package'
+/package:rust/ {
+    pkg = $2
+    split(pkg, name_version, "-")
+    crateVersion = name_version[length(name_version)]
+    crateName = substr(pkg, 6, (length(pkg) - length(crateVersion) - 6))
+    split(crateVersion, versionDots, ".")
+    if(crateVersion && (crateVersion != "(git-version") && (length(versionDots) == 3) && crateName) {
+        cargoLock = cargoLock "[[package]]\nname = \"" crateName "\"\nversion = \"" crateVersion "\"\n"
+    } else {
+        untested++
+        #print("Unable to test " $0)
+    }
+    next
+}
 
-END { print cargoLock | cargoAudit }
+# We make an attempt to create the crate name from the package name otherwise
+/git-reference/ {
+    for(i=3; i <= NF; i++) {
+        if($i == "(version")
+            crateVersion = $(i+1)
+        if($i == "(name")
+            crateName = $(i+1)
+        if($i == "(git-file-name") {
+            crateName = $(i+1)
+            crateVersion = $(i+2)
+        }
+    }
+    gsub(/)/, "", crateVersion)
+    gsub(/)/, "", crateName)
+    sub(/rust-/, "", crateName)
+    # The crate version MUST be major.minor.patch
+    split(crateVersion, versionParts, ".")
+    if(crateVersion && (crateVersion != "(git-version") && (length(versionParts) == 3) && crateName) {
+        cargoLock = cargoLock "[[package]]\nname = " crateName "\nversion = " crateVersion "\n"
+    } else {
+        untested++
+        #print("Unable to test " $0)
+    }
+    next
+}
+
+# Note those which we were unable to parse
+/define rust/ {
+    if($3 == "#f)")
+        next
+    print("Unable to parse " $0)
+    }
+
+{ untested++ }
+
+END { print("Number of crates untested: " untested); print cargoLock | cargoAudit }
