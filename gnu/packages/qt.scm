@@ -552,10 +552,12 @@ applications on Wayland.")
      ;; Optional: lcov and cccc, both are for code coverage
      (list doxygen))
     (inputs
-     (list qtbase-5 qtdeclarative-5 qtscript-5))
-    (build-system cmake-build-system)
+     (list qtdeclarative))
+    (build-system qt-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
+     (list #:qtbase qtbase
+           #:configure-flags #~(list "-DGRANTLEE_BUILD_WITH_QT6=ON")
+           #:phases #~(modify-phases %standard-phases
                         (add-before 'check 'check-setup
                           (lambda _
                             ;; make Qt render "offscreen", required for tests
