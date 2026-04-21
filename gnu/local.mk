@@ -1468,7 +1468,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ghostscript-no-header-creationdate.patch \
   %D%/packages/patches/gimp-fix-metadata-editor.patch		\
   %D%/packages/patches/gimp-fix-tiff-load.patch			\
-  %D%/packages/patches/git-clar-path-max.patch			\
   %D%/packages/patches/git-filter-repo-generate-doc.patch	\
   %D%/packages/patches/gklib-suitesparse.patch			\
   %D%/packages/patches/glib-appinfo-watch.patch			\
