@@ -7253,18 +7253,18 @@ designed by Cynthia Brewer as described at http://colorbrewer2.org")
 (define-public r-rcpparmadillo
   (package
     (name "r-rcpparmadillo")
-    (version "15.2.4-1")
+    (version "15.2.6-1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppArmadillo" version))
               (sha256
                (base32
-                "01alhvrv3ndinywq5d7mi2jhim66lq8l84rc14zp9mb92lcpp5vw"))))
+                "07wf1rmlm7hp06vcykmxwbzy01ri28zx20vz39j1sk3w1pck5h7r"))))
     (properties `((upstream-name . "RcppArmadillo")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp))
-    (native-inputs (list r-tinytest))
+    (native-inputs (list r-rcpp r-tinytest))
     (home-page "https://github.com/RcppCore/RcppArmadillo")
     (synopsis "Rcpp integration for the Armadillo linear algebra library")
     (description
