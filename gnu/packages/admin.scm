@@ -3776,41 +3776,42 @@ summarizes network bandwidth by process and remote host.")
            procps))                               ;for tests
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--localstatedir=/var"
-             (string-append "--with-pkgconfigdir="
-                            (assoc-ref %outputs "out") "/lib/pkgconfig")
-             (string-append "--with-libgcrypt-prefix="
-                            (assoc-ref %build-inputs "libgcrypt"))
-             ,@(if (%current-target-system)
-                 ;; Assume yes on pipes when cross compiling.
-                 `("ac_cv_file__dev_spx=yes"
-                   "x_ac_cv_check_fifo_recvfd=yes")
-                 '()))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'bootstrap 'pre-bootstrap
-           (lambda _
-             (for-each patch-shebang (find-files "build-aux"))))
-         (add-after 'unpack 'skip-failing-tests
-           (lambda _
-             ;; Pass '--force' to 'munged'; without it, it fails with "Socket
-             ;; is inaccessible" due to the build directory not being
-             ;; world-readable.
-             (substitute* "tests/sharness.d/03-munged.sh"
-               (("--group-update-time=-1" all)
-                (string-append all " --force")))
+     (list #:configure-flags
+           #~(list "--localstatedir=/var"
+                   #$@(if (%current-target-system)
+                          ;; Assume yes on pipes when cross compiling.
+                          `("ac_cv_file__dev_spx=yes"
+                            "x_ac_cv_check_fifo_recvfd=yes")
+                          '())
 
-             ;; The tests below invoke 'sudo' or have special expectations
-             ;; about network interfaces.
-             (for-each (lambda (test)
-                         (substitute* "tests/Makefile.am"
-                           (((string-append test "\\.t ")) "")))
-                       (list "0100-munged-lock"
-                             "0101-munged-security-socket"
-                             "0102-munged-security-keyfile"
-                             "0103-munged-security-logfile"
-                             "0110-munged-origin-addr")))))))
+                   ;; The '.pc' file is not installed when omitting this flag.
+                   (string-append "--with-pkgconfigdir="
+                                  #$output "/lib/pkgconfig"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'bootstrap 'pre-bootstrap
+                 (lambda _
+                   (for-each patch-shebang (find-files "build-aux"))))
+               (add-after 'unpack 'skip-failing-tests
+                 (lambda _
+                   ;; Pass '--force' to 'munged'; without it, it fails with "Socket
+                   ;; is inaccessible" due to the build directory not being
+                   ;; world-readable.
+                   (substitute* "tests/sharness.d/03-munged.sh"
+                     (("--group-update-time=-1" all)
+                      (string-append all " --force")))
+
+                   ;; The tests below invoke 'sudo' or have special expectations
+                   ;; about network interfaces.
+                   (for-each (lambda (test)
+                               (substitute* "tests/Makefile.am"
+                                 (((string-append test "\\.t "))
+                                  "")))
+                             (list "0100-munged-lock"
+                                   "0101-munged-security-socket"
+                                   "0102-munged-security-keyfile"
+                                   "0103-munged-security-logfile"
+                                   "0110-munged-origin-addr")))))))
     (home-page "https://dun.github.io/munge/")
     (synopsis "Cluster computing authentication service")
     (description
