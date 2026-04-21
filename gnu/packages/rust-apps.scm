@@ -3236,7 +3236,7 @@ command.")
 (define-public wasm-bindgen-cli
   (package
     (name "wasm-bindgen-cli")
-    (version "0.2.111")
+    (version "0.2.118")
     (source
      (origin
        (method git-fetch)
@@ -3245,13 +3245,10 @@ command.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19r30f0gz56180qm8spanwb1pkg0x1k8f6mgvsjil4q4qqhfary8"))
+        (base32 "02yy57pa4p53vrhpgc8xf737dnqiifnnnjinh49yq1345kd3287j"))
        (modules '((guix build utils)))
        (snippet
         '(begin
-           (substitute* "crates/webidl/Cargo.toml"
-             (("weedle = \\{ git = \"https://github.com/wasm-bindgen/weedle.git\", rev = \"e9e131229ba0477c34f09e136ed0a89a9fb1e448\" \\}")
-              "weedle = \"0.13.0\""))
            ;; Remove examples and benchmarks from workspace; they have
            ;; unneeded git dependencies (e.g. raytracer) or bundled blobs.
            (substitute* "Cargo.toml"
@@ -3261,16 +3258,10 @@ command.")
            (delete-file-recursively "benchmarks")))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       #:cargo-build-flags '("--release" "-p" "wasm-bindgen-cli")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-               (install-file "target/release/wasm-bindgen" bin)
-               (install-file "target/release/wasm-bindgen-test-runner" bin)
-               (install-file "target/release/wasm2es6js" bin)))))))
+     (list
+       #:install-source? #f
+       #:cargo-build-flags ''("--release" "-p" "wasm-bindgen-cli")
+       #:cargo-install-paths ''("crates/cli")))
     (inputs (cargo-inputs 'wasm-bindgen-cli))
     (home-page "https://github.com/wasm-bindgen/wasm-bindgen/")
     (synopsis "Generate JavaScript bindings for Rust WASM modules")
