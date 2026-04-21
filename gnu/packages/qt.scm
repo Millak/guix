@@ -664,8 +664,7 @@ system, and the core design of Django is reused in Grantlee.")
            pkg-config
            python
            vulkan-headers
-           ;; TODO Move to ruby@3 on the next rebuild cycle.
-           ruby-2.7))
+           ruby-3.4))
     (arguments
      `(#:disallowed-references ,(list (this-package-native-input "python"))
        #:configure-flags
@@ -1196,7 +1195,11 @@ tst_qt_cmake_create.cpp"
                        ;; This test may fail non-deterministically as reported
                        ;; in Guix bug#73233 and upstream at
                        ;; https://bugreports.qt.io/browse/QTBUG-119321.
-                       "tst_qsharedmemory")
+                       "tst_qsharedmemory"
+
+                       ;; One of the finicky tests, see
+                       ;; https://codeberg.org/guix/guix/issues/7545
+                       "tst_qlatin1stringmatcher")
                       #$@(cond
                            ((target-ppc64le?)
                              #~((list
