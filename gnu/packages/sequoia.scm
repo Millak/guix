@@ -110,7 +110,7 @@
     (inputs
      (cons* nettle openssl sqlite (cargo-inputs 'sequoia-chameleon-gnupg)))
     (native-inputs
-     (list clang gnupg pkg-config sequoia-sq))
+     (list capnproto clang gnupg pkg-config sequoia-sq))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Sequoia's reimplementation of the GnuPG interface")
     (description "This package provides Sequoia's reimplementation of the
