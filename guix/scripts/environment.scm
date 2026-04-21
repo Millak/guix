@@ -1000,6 +1000,12 @@ WHILE-LIST."
             ;; Call an additional setup procedure, if provided.
             (when setup-hook
               (setup-hook profile)))
+
+          ;; Do not run the shell as PID 1 since that prevents proper signal
+          ;; handling: per `man 2 kill`, only signals for which the init process
+          ;; has explicitly installed signal handlers can be sent to it.
+          #:child-is-pid1? #f
+
           #:guest-uid uid
           #:guest-gid gid
           #:writable-root? writable-root?
