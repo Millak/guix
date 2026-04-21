@@ -4068,14 +4068,14 @@ common-sense defaults.")
 (define-public spotifyd
   (package
     (name "spotifyd")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "spotifyd" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1m0z1q35by9wskjy2imnf8g8liy4g2ljyd69z6fryvvw64j0qzd6"))))
+        (base32 "1456kqv3yy4wqqfck3qfd46rjqscrz6z7cs3iyrbh6561338mv7w"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
@@ -4085,7 +4085,7 @@ common-sense defaults.")
                         "pulseaudio_backend"
                         "rodio_backend")))
     (native-inputs (list pkg-config))
-    (inputs (cons* alsa-lib dbus pulseaudio (cargo-inputs 'spotifyd)))
+    (inputs (cons* alsa-lib dbus openssl pulseaudio (cargo-inputs 'spotifyd)))
     (home-page "https://github.com/Spotifyd/spotifyd")
     (synopsis "Spotify streaming daemon with Spotify Connect support")
     (description
