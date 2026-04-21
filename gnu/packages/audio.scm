@@ -6529,22 +6529,23 @@ on the ALSA software PCM plugin.")
 (define-public snd
   (package
     (name "snd")
-    (version "25.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "ftp://ccrma-ftp.stanford.edu/pub/Lisp/"
-                                  "snd-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0fgxqk0byxdj6059mb9d5qic2dqjabz49j0szsrn2y3c9nz6iyq4"))))
+    (version "26.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://ccrma.stanford.edu/software/snd/snd-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "1d573mjlrn9rhl9g0a3d1rkar34q60ln8mwlbibfalpn8lsz59a0"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f                       ; no tests
-      #:out-of-source? #f               ; for the 'install-doc' phase
+      #:tests? #f                       ; No tests.
+      #:out-of-source? #f               ; Required by 'install-doc'.
       #:configure-flags
-      #~(let ((docdir (string-append #$output "/share/doc/"
-                                     #$name "-" #$version)))
+      #~(let
+            ((docdir (string-append #$output "/share/doc/snd-" #$version)))
           (list "--with-alsa"
                 "--with-jack"
                 "--with-gmp"
@@ -6552,18 +6553,20 @@ on the ALSA software PCM plugin.")
                 (string-append "--with-doc-dir=" docdir)))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'install 'install-s7
+          (add-after 'install 'install-s7-h
             (lambda _
-              (install-file "s7.h" (string-append #$output "/include"))))
+              (install-file "s7.h" (string-append #$output
+                                                  "/include"))))
           (add-after 'install 'install-doc
             (lambda _
-              (let ((doc (string-append #$output "/share/doc/"
-                                        #$name "-" #$version)))
+              (let
+                  ((docdir (string-append #$output "/share/doc/snd-"
+                                          #$version)))
                 (for-each
                  (lambda (f)
-                   (install-file f doc))
+                   (install-file f docdir))
                  (find-files "." "\\.html$"))
-                (copy-recursively "pix" (string-append doc "/pix"))))))))
+                (copy-recursively "pix" (string-append docdir "/pix"))))))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -6582,13 +6585,16 @@ on the ALSA software PCM plugin.")
            timidity++
            vorbis-tools
            wavpack))
+    (home-page "https://ccrma.stanford.edu/software/snd/snd/snd.html")
     (synopsis "Sound editor")
-    (home-page "https://ccrma.stanford.edu/software/snd/")
     (description
      "Snd is a sound editor modelled loosely after Emacs.  It can be
 customized and extended using either the s7 Scheme implementation (included in
 the Snd sources), Ruby, or Forth.")
-    (license (license:non-copyleft "file://COPYING"))))
+    (license
+     ;; INFO: pkgsrc classifies this as `esdl-license', a license not included
+     ;; in OSI or FSF lists, despite being similar to ISC.
+     (license:non-copyleft "file://COPYING"))))
 
 (define-public libspecbleach
   (package
