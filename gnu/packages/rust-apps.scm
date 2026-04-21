@@ -2752,7 +2752,7 @@ search tools like The Silver Searcher, @command{ack} and @command{grep}.")
 (define-public ripgrep-all
   (package
     (name "ripgrep-all")
-    (version "0.10.9")
+    (version "0.10.10")
     (source
      (origin
        (method git-fetch)
@@ -2761,7 +2761,7 @@ search tools like The Silver Searcher, @command{ack} and @command{grep}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cks8b9z8fl1rs2xgklgsis79w9bylfmxxvns2adwsiilkpsxzxg"))))
+        (base32 "0vmdmv1np0r2khvg8j8i9z5zfy2h2ymhi93jzdhkn6wl3ns9wd3w"))))
     (build-system cargo-build-system)
     (arguments
      (list
