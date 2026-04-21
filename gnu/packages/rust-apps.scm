@@ -1498,14 +1498,14 @@ defaults for 80% of the use cases.")
 (define-public gitoxide
   (package
     (name "gitoxide")
-    (version "0.51.0")
+    (version "0.52.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gitoxide" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11w522h0hgj45089f7nj7vymzy7lz40g22a2351hkazym2y7mmja"))))
+        (base32 "0712ny094bnxcydk2v3a9wwjp315b3q2ljf36ycsrwzw3xi81dki"))))
     (build-system cargo-build-system)
     (arguments
      (list
