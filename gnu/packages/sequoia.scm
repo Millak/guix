@@ -306,7 +306,7 @@ This Guix package is built to use the nettle cryptographic library.")
 (define-public sequoia
   (package
     (name "sequoia")
-    (version "2.0.0")
+    (version "2.2.0")
     (source #f)
     (build-system trivial-build-system)
     (arguments
