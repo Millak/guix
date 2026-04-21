@@ -39,6 +39,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match))
@@ -323,7 +324,7 @@ Pascal programs.")
 (define-public lazarus
   (package
     (name "lazarus")
-    (version "2.2.6")
+    (version "4.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -336,48 +337,95 @@ Pascal programs.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0hpk6fxmy1h1q0df41jg1vnp8g8vynrg5v5ad43lv229nizfs3wj"))))
+                "1mkimvd5hiwlsxpjwqnhd7lwb0x2icnf9ks09wza7j5xaq7xjswy"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;No tests exist
            #:make-flags #~(list (string-append "INSTALL_PREFIX="
-                                               #$output))
-           #:phases #~(modify-phases %standard-phases
-                        (delete 'configure)
-                        (replace 'build
-                          (lambda* (#:key inputs outputs #:allow-other-keys)
-                            (let* ((libdirs (map (lambda (x)
-                                                   (assoc-ref inputs x))
-                                                 '("glib" "gdk-pixbuf"
-                                                   "gtk+"
-                                                   "libx11"
-                                                   "libx11"
-                                                   "pango"
-                                                   "cairo"
-                                                   "at-spi2-core")))
-                                   (libs (append (map (lambda (name)
-                                                        (string-append "-Fl"
-                                                                       name
-                                                                       "/lib"))
-                                                      libdirs)
-                                                 (map (lambda (name)
-                                                        (string-append
-                                                         "-k-rpath=" name
-                                                         "/lib")) libdirs))))
-                              (setenv "LAZARUS_LIBPATHS"
-                                      (string-join libs " "))
-                              (setenv "MAKEFLAGS"
-                                      (string-append "LHELP_OPT="
-                                                     (string-join libs "\\ "))))
-                            (invoke "make" "bigide"))))))
-    (native-inputs (list fpc pkg-config))
-    (inputs (list glib
-                  gdk-pixbuf
-                  gtk+-2
-                  libx11
-                  pango
-                  cairo
-                  at-spi2-core))
+                                               #$output)
+                                "LCL_PLATFORM=qt6")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               ;; lcl/interfaces/qt6/cbindings/ ships the C++ source of
+               ;; libQt6Pas -- the Qt6 C-ABI bridge that LCL's qt6
+               ;; widgetset calls into.  Build it with qmake6 and stage
+               ;; the library so the IDE finds it at runtime.
+               (add-before 'build 'build-qt6pas
+                 (lambda _
+                   (with-directory-excursion "lcl/interfaces/qt6/cbindings"
+                     (invoke "qmake6" "Qt6Pas.pro"
+                             (string-append "PREFIX=" #$output))
+                     (invoke "make" "-j"
+                             (number->string (parallel-job-count))))))
+               (replace 'build
+                 (lambda* (#:key inputs make-flags #:allow-other-keys)
+                   (let* ((qt6pas-build
+                           (string-append (getcwd)
+                                          "/lcl/interfaces/qt6/cbindings"))
+                          (qt6pas-runtime
+                           (string-append #$output "/lib"))
+                          (input-libs
+                           (map (lambda (x)
+                                  (string-append (assoc-ref inputs x) "/lib"))
+                                '("qtbase" "libx11")))
+                          ;; Link against the build tree so the linker
+                          ;; resolves libQt6Pas now; bake the final
+                          ;; $out/lib into RUNPATH so the installed
+                          ;; binary finds it at runtime.
+                          (fpc-args
+                           (append (map (lambda (d)
+                                          (string-append "-Fl" d))
+                                        (cons qt6pas-build input-libs))
+                                   (map (lambda (d)
+                                          (string-append "-k-rpath=" d))
+                                        (cons qt6pas-runtime input-libs)))))
+                     (setenv "LAZARUS_LIBPATHS"
+                             (string-join fpc-args " "))
+                     (setenv "MAKEFLAGS"
+                             (string-append "LHELP_OPT="
+                                            (string-join fpc-args "\\ "))))
+                   (apply invoke "make" "bigide" make-flags)))
+               (add-after 'install 'wrap-qt
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Qt6 apps load their platform plugins
+                   ;; (libqxcb.so, libqwayland.so, ...) from
+                   ;; QT_PLUGIN_PATH; each qt input has its plugins
+                   ;; under lib/qt6/plugins/.  Wrap lazarus-ide so the
+                   ;; wayland/xcb platform plugins are found at runtime.
+                   (let ((plugin-path
+                          (string-join
+                           (map (lambda (i)
+                                  (string-append (assoc-ref inputs i)
+                                                 "/lib/qt6/plugins"))
+                                '("qtbase" "qtsvg" "qtwayland"))
+                           ":")))
+                     (for-each
+                      (lambda (prog)
+                        (wrap-program (string-append #$output "/bin/" prog)
+                          `("QT_PLUGIN_PATH" ":" prefix (,plugin-path))))
+                      '("lazarus-ide" "startlazarus")))))
+               (add-after 'install 'install-qt6pas
+                 (lambda _
+                   ;; qmake's `make install' tries to copy libQt6Pas.so
+                   ;; into Qt's install prefix (read-only store path);
+                   ;; place it under $out/lib/ instead.
+                   (let ((src "lcl/interfaces/qt6/cbindings")
+                         (dst (string-append #$output "/lib")))
+                     (mkdir-p dst)
+                     (for-each
+                      (lambda (f)
+                        (let ((sf (string-append src "/" f))
+                              (df (string-append dst "/" f)))
+                          (if (eq? 'symlink (stat:type (lstat sf)))
+                              (symlink (readlink sf) df)
+                              (copy-file sf df))))
+                      '("libQt6Pas.so"
+                        "libQt6Pas.so.6"
+                        "libQt6Pas.so.6.2"
+                        "libQt6Pas.so.6.2.10"))))))))
+    (native-inputs (list fpc pkg-config qtbase qttools))
+    (inputs (list qtbase qtsvg qtwayland libx11))
     (synopsis "Integrated development environment for Pascal")
     (description "This package provides an integrated development environment
 for Pascal.")
