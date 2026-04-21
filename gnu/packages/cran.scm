@@ -43410,8 +43410,6 @@ multiple plots.")
         (base32 "05f8ccr6g5mz0n2hyna8cvk9wb3vbdmx1cdwsfyjxwagpmyvill5"))))
     (properties `((upstream-name . "patrick")))
     (build-system r-build-system)
-    ;; One test fails.
-    (arguments (list #:tests? #false))
     (propagated-inputs (list r-dplyr
                              r-glue
                              r-purrr
