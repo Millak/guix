@@ -1124,14 +1124,23 @@ argument.")))
 
 (define %gdm-accounts
   (list (user-group (name "gdm") (system? #t))
-        (user-account
-         (name "gdm")
-         (group "gdm")
-         (supplementary-groups '("video"))
-         (system? #t)
-         (comment "GNOME Display Manager user")
-         (home-directory "/var/lib/gdm")
-         (shell (file-append shadow "/sbin/nologin")))))
+         (user-account
+           (name "gdm")
+           (group "gdm")
+           (supplementary-groups '("video"))
+           (system? #t)
+           (comment "GNOME Display Manager user")
+           (home-directory "/var/lib/gdm")
+           (shell (file-append shadow "/sbin/nologin")))
+         ;; This is not needed with userdb (provided by elogind), but it acts as
+         ;; a fallback in case userdb is not available.
+         (user-account
+           (name "gdm-greeter")
+           (group "gdm")
+           (supplementary-groups '("video"))
+           (system? #t)
+           (comment "GNOME Display Manager greeter 1")
+           (home-directory "/var/lib/gdm-greeter"))))
 
 (define dbus-daemon-wrapper
   (program-file
