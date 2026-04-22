@@ -143,8 +143,8 @@ reconstruct a Plan 9 terminal-like experience from a non-Plan 9 system.")
 
 (define-public plan9port
   ;; no releases
-  (let ((commit "f8681acb374fa0d5ed1568dbedb00a4abe1ca6f1")
-        (revision "1"))
+  (let ((commit "b379c7cc9dd9a810a9873d444e9742fcad3f5997")
+        (revision "2"))
     (package
       (name "plan9port")
       (version (git-version "0.1.0" revision commit))
@@ -156,7 +156,7 @@ reconstruct a Plan 9 terminal-like experience from a non-Plan 9 system.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "01343jvn8kr63i78h8xlgscn6wihdsr44xzh1cylvhigjbqw8n2x"))
+                  "0mvchnbk9kywm9fsw0cb621g435kav4sd1facb71v0jy7xwzw1fz"))
                 (modules '((guix build utils)))
                 (snippet #~(for-each delete-file-recursively
                                      '("font/luc" ;nonfree
@@ -171,8 +171,8 @@ reconstruct a Plan 9 terminal-like experience from a non-Plan 9 system.")
                    (lambda _
                      (let ((dest (string-append #$output "/plan9")))
                        (substitute* "INSTALL"
-                         ;; Install fontsrv, which is enabled in LOCAL.config.
-                         (("rm -f bin/fontsrv") ""))
+                         ;; Pass the check for freetype to install fontsrv.
+                         (("\\[ -f a\\.out ]") "true"))
                        (delete-file "src/cmd/mk/mk.pdf")
                        ;; TODO: substitute font in src/cmd/venti/srv/graph.c
                        (substitute* "src/cmd/acme/acme.c"
@@ -201,8 +201,8 @@ reconstruct a Plan 9 terminal-like experience from a non-Plan 9 system.")
                          (("luc/unicode.6.font")
                            "fixed/unicode.6x9.font"))
                        (substitute* "bin/9c"
-                         (("which")
-                          (which "which")))
+                         (("[$][(]which uniq[)]")
+                          "uniq"))
                        (substitute* "src/cmd/fontsrv/freetyperules.sh"
                          (("'\\$i'/freetype2")
                           (string-append "-I"
@@ -210,8 +210,7 @@ reconstruct a Plan 9 terminal-like experience from a non-Plan 9 system.")
                                          "/include/freetype2")))
                        (with-output-to-file "LOCAL.config"
                          (lambda _
-                           (format #t "CC9=~a~%" #$(cc-for-target))
-                           (format #t "FONTSRV=fontsrv~%")))
+                           (format #t "CC9=~a~%" #$(cc-for-target))))
                        (setenv "X11" #$libx11)
                        (setenv "PLAN9" (getcwd))
                        (setenv "PLAN9_TARGET" dest))))
@@ -241,6 +240,7 @@ reconstruct a Plan 9 terminal-like experience from a non-Plan 9 system.")
                                    "troff"
                                    "postscript"))
                        (install-file "rcmain" dest)
+                       (install-file "config" dest)
                        (mkdir-p (string-append #$output "/bin"))
                        (symlink (string-append dest "/bin/9")
                                 (string-append #$output "/bin/9")))))
