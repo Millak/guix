@@ -995,7 +995,7 @@ of index files."
                       ;; "nginx -s stop".
                       (if (process? value)
                           (terminate-process (process-id value) SIGTERM)
-                          (#$(nginx-action "stop")))))
+                          (#$(nginx-action "-s" "stop")))))
 
             (actions
               (list
