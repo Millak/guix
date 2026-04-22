@@ -3454,7 +3454,7 @@ interfaces.")
                            (string-append (assoc-ref outputs "out")
                                           "/share/doc/" ,name)))))))
     (native-inputs
-     (list cmake-minimal pkg-config))
+     (list cmake-minimal pkg-config scdoc))
     (inputs (list elogind
                   bash-minimal
                   grim
