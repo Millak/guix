@@ -444,13 +444,13 @@ systems, web content management systems and web frameworks.")
   (package
     (inherit php-8.5)
     (home-page "https://www.php.net/")
-    (version "8.4.18")
+    (version "8.4.20")
     (source
      (origin
        (method url-fetch)
        (uri (string-append home-page "distributions/" "php-" version ".tar.xz"))
        (sha256
-        (base32 "0401yjrchg6dnq8qdd86qanzmzrv6dscm2671kp6bsd8nhcrnylm"))
+        (base32 "1xr1w82apzsscrsndnphlgqvbj78g0smrp06pcgg8hlsr3vwcm74"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "ext"
