@@ -5534,23 +5534,13 @@ falling, themeable graphics and sounds, and replays.")
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;no test target
-           #:configure-flags #~'("-DENABLE_SYSTEM_LUA=ON")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'configure 'pre-configure
-                 (lambda _
-                   ;; XXX: Our Lua doesn't have a C++ library, force C linkage.
-                   (substitute* '("src/lua/wrapper_lua.h"
-                                  "src/lua/wrapper_lualib.h"
-                                  "src/lua/wrapper_lauxlib.h")
-                     (("#include \"(lua|lualib|lauxlib)\\.h\"")
-                      "#include \"lua.hpp\"")))))))
+           #:configure-flags #~'("-DENABLE_SYSTEM_LUA=ON")))
     (inputs
      (list boost-1.83
            curl
            dbus
            libvorbis
-           lua-5.4
+           lua-5.4-for-c++
            openssl
            pango
            sdl2
