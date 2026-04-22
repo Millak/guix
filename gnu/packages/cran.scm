@@ -57533,13 +57533,13 @@ object to and from disk.")
 (define-public r-qs2
   (package
     (name "r-qs2")
-    (version "0.1.7")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "qs2" version))
        (sha256
-        (base32 "1s7y5i81fg7pxzjhfvnwgwrdssbm5jczljmq7pngmgccyqlm4gwa"))))
+        (base32 "032l4wayrpbfajzfh4z6q8p4qnj77j0bcjcryvrsrsamycqcmxr7"))))
     (properties `((upstream-name . "qs2")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp r-rcppparallel r-stringfish))
