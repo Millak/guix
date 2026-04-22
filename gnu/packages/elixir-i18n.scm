@@ -290,7 +290,7 @@ based upon the Common Locale Data Repository (CLDR).")
   (package
     (inherit elixir-ex-cldr-minimal)
     (name "elixir-ex-cldr")
-    (version "2.43.2")
+    (version "2.47.2")
     (source
      (origin
        ;; The hex.pm package ships only the en locale.
@@ -300,7 +300,7 @@ based upon the Common Locale Data Repository (CLDR).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wgwp74ya0gkvd5pk4qv9s38p85r5yw370y4wv7jywy3hrbrj9f5"))))
+        (base32 "1rivy61aq0c9zfklm4bpvvkj7lzjgy316rwxl8qz92xqp6xa292y"))))
     (arguments
      (list
       #:phases
