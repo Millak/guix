@@ -653,7 +653,10 @@ GNU@tie{}Guile.  Use the @code{(ice-9 readline)} module and call its
 (define (guile-variant-package-name prefix)
   (lambda (name)
     "Return NAME with PREFIX instead of \"guile-\", when applicable."
-    (if (string-prefix? "guile-" name)
+    (if (and (string-prefix? "guile-" name)
+
+             ;; Don't rename guile-bootstrap@2.0.
+             (not (string=? "guile-bootstrap" name)))
         (string-append prefix "-"
                        (string-drop name
                                     (string-length "guile-")))
