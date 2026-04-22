@@ -33124,14 +33124,14 @@ clusters, number of variables, number of noisy variables.")
 (define-public r-tweedie
   (package
     (name "r-tweedie")
-    (version "3.0.17")
+    (version "3.0.19")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tweedie" version))
        (sha256
         (base32
-         "1a9ykhdfgp48i55l8qrsrfffpw3xjx38h6vpfrlk39b4s3dwdrsb"))))
+         "0ywwr2rnwv5qrdmf0a46k66cfgzyfx4wwgm4wzin4kd2v6yix075"))))
     (build-system r-build-system)
     (propagated-inputs (list r-lifecycle r-statmod))
     (native-inputs (list gfortran r-knitr r-testthat))
