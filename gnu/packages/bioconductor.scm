@@ -26936,6 +26936,13 @@ family of feature/genome hypotheses.")
          "0vljk50i5xgw31dgdxdjqxl2r3cvjm6423fz3iz80xbbax039mjs"))))
     (properties `((upstream-name . "Gviz")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:skipped-tests
+      (if (target-32bit?)
+          ;; Sequence is too big
+          '(("test_Gviz-methods.R" "subseq works"))
+          '())))
     (propagated-inputs
      (list r-annotationdbi
            r-biobase
