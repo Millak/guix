@@ -5145,35 +5145,61 @@ access the technical and tag data for video and audio files.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 414 passed, 278 skipped
       #:test-flags
-      #~(list "--ignore=tests/test_memleaks.py" ; Missing python-psleak
-              "-k" (string-join
-                    ;; Permission errors.
-                    (list "not test_mtu"
-                          "test_comparisons"
-                          "test_disk_partitions_mocked"
-                          "test_serialization"
-                          "test_weird_environ"
-                          "test_who"
-                          "test_users"
-                          "test_disk_io_counters"
-                          ;; Modules not found.
-                          "test_import_all"
-                          "test_invocation"
-                          ;; assert 16363520 < 10485760
-                          "test_against_df")
-                    " and not "))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              "--dist" "loadgroup"
+              #$@(map (lambda (ls) (string-append "--deselect=tests/"
+                                                  (string-join ls "::")))
+                      ;; assert None is not None
+                      '(("test_linux.py" "TestRootFsDeviceFinder"
+                         "test_comparisons")
+                        ;; FileNotFoundError: [Errno 2] No such file or
+                        ;; directory: '/sys/class/net/lo/mtu'
+                        ("test_linux.py" "TestSystemNetIfStats" "test_mtu")
+                        ;; AssertionError: assert '/dev/root' != '/dev/root'
+                        ("test_linux.py" "TestRootFsDeviceFinder"
+                         "test_disk_partitions_mocked")
+                        ;; psutil.AccessDenied: (pid=426)
+                        ("test_process.py" "TestProcess" "test_weird_environ")
+                        ;; assert []
+                        ("test_system.py" "TestMiscAPIs" "test_users")
+                        ;; ModuleNotFoundError: No module named '_common'
+                        ("test_scripts.py" "TestSetupScript"
+                         "test_invocation")
+                        ;; AssertionError: assert ''
+                        ("test_scripts.py" "TestExampleScripts" "test_who")
+                        ;; AssertionError: no disks on this system? assert
+                        ;; None is not None
+                        ("test_system.py" "TestDiskAPIs"
+                         "test_disk_io_counters")
+                        ;; psutil.NoSuchProcess: process no longer exists
+                        ;; (pid=247))
+                        ("test_process_all.py" "TestFetchAllProcesses"
+                         "test_all")
+                        ;; ModuleNotFoundError: No module named 'pypinfo'
+                        ("test_scripts.py" "TestInternalScripts"
+                         "test_import_all")
+                        ;; FileNotFoundError: [Errno 2] No such file or
+                        ;; directory: '/sys/class/power_supply'
+                        ("test_misc.py" "TestMisc" "test_serialization"))))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'prepare-tests
+          (add-before 'check 'pre-check
             (lambda _
               (delete-file-recursively "psutil")
               (substitute* "tests/test_linux.py"
                 (("\"(free|vmstat)\"" _ cmd)
-                 (format #f "~s" (which cmd)))))))))
+                 (format #f "~s" (which cmd))))
+              (setenv "PYTHONWARNINGS" "always")
+              (setenv "PYTHONUNBUFFERED" "1")
+              (setenv "PSUTIL_DEBUG" "1")
+              (setenv "PSUTIL_TESTING" "1"))))))
     (native-inputs
      (list procps
            python-packaging
+           python-psleak
+           python-pyperf
            python-pytest
            python-pytest-instafail
            python-pytest-xdist
