@@ -3479,6 +3479,44 @@ integrated circuit Hardware Description Language} and SystemVerilog
 parser library for Python.")
     (license license:expat)))
 
+(define-public python-openems
+  (package
+    (inherit openems)
+    (name "python-openems")
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; No tests.  Check again on package upgrade.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-sources
+            ;; Check if this is still needed on upgrade.
+            (lambda _
+              (substitute* "python/openEMS/_nf2ff.pxd"
+                (("cimport cython.numeric")
+                 "import cython
+from cython cimport numeric"))))
+          (add-before 'build 'prepare-build
+            (lambda* _
+              (chdir "./python")
+              (setenv "CSXCAD_INSTALL_PATH"
+                      #$(this-package-input "csxcad"))
+              (setenv "OPENEMS_INSTALL_PATH"
+                      #$(this-package-input "openems")))))))
+    (native-inputs (list python-cython python-setuptools))
+    (inputs (list csxcad
+                  fparser
+                  openems
+                  python-csxcad
+                  python-hdf5storage
+                  python-numpy
+                  tinyxml))
+    (home-page "https://www.openems.de")
+    (synopsis "Python API for the electromagnetic field solver @code{OpenEMS}")
+    (description "@code{OpenEMS} is an electromagnetic field solver using
+the @acronym{FDTD, Finite-Difference Time-Domain} method.")
+    (license license:gpl3+)))
+
 (define-public python-pyucis
   (package
     (name "python-pyucis")
