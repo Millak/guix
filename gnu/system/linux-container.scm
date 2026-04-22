@@ -356,12 +356,17 @@ Run the container with the given options."))
                          (mappings '())
                          (mounts '())
                          (namespaces %namespaces)
-                         (guest-uid 0) (guest-gid 0))
+                         (guest-uid 0) (guest-gid 0)
+                         (child-is-pid1? #t))
   "Evaluate EXP, a gexp, in a new process executing in separate namespaces as
 listed in NAMESPACES.  Add MOUNTS, a list of <file-system>, and MAPPINGS, a
 list of <file-system-mapping>, to the set of directories visible in the
 process's mount namespace.  Inside the namespaces, run code as GUEST-UID and
 GUEST-GID.  Return the process' exit status as a monadic value.
+
+When CHILD-IS-PID1? is true, and if NAMESPACES contains 'pid', then the child
+process runs directly as PID 1. See the documentation for
+`(@@ (gnu build linux-container) call-with-container)` for further details.
 
 This is useful to implement processes that, unlike derivations, are not
 entirely pure and need to access the outside world or to perform side
@@ -406,4 +411,5 @@ effects."
                   #:populate-file-system populate-file-system
                   #:namespaces namespaces
                   #:guest-uid guest-uid
-                  #:guest-gid guest-gid))))))
+                  #:guest-gid guest-gid
+                  #:child-is-pid1? child-is-pid1?))))))
