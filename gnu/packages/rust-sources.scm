@@ -215,7 +215,7 @@
                        "gemoji")
                       (invoke "cargo" "run")))))))
      (native-inputs (list gemoji-source-for-rust-deunicode-1))
-     ;; scripts/Cargo.lock
+     ;; scripts/Cargo.toml
      (inputs (cargo-inputs 'rust-deunicode-1))
      (home-page "https://lib.rs/crates/deunicode")
      (synopsis "Convert Unicode strings to pure ASCII")
@@ -223,6 +223,30 @@
       "This package converts Unicode strings to pure ASCII by intelligently
 transliterating them.  It supports Emoji and Chinese.")
      (license license:bsd-3))))
+
+(define-public rust-deunicode-1.6.2.cfb8552
+  (let ((commit "cfb8552fbbdf6d1f3f996ee4f2e78ec5e482bcef"))
+    (hidden-package
+     (package
+       (inherit rust-deunicode-1)
+       (version "1.6.2")
+       (source (origin
+                 (inherit (package-source rust-deunicode-1))
+                 (uri (git-reference
+                       (url "https://github.com/kornelski/deunicode")
+                       (commit commit)))
+                 (file-name (git-file-name "rust-deunicode" version))
+                 ;; scripts/Cargo.toml now depends on the local deunicode
+                 ;; crate, so keep the shipped generated data long enough for
+                 ;; the generator to build before it overwrites them.
+                 (snippet '(delete-file-recursively "scripts/gemoji"))
+                 (sha256
+                  (base32
+                   "1khwjqx1qplwf9g1n6vgh2wk3j02j5gils95xx2kc4absbv20wdc"))))
+       ;; scripts/Cargo.toml now includes a local path dependency on the
+       ;; deunicode crate itself.  That self-dependency is resolved from the
+       ;; checkout and does not need a cargo input.
+       (inputs (cargo-inputs 'rust-deunicode-1.6.2.cfb8552))))))
 
 ;; Workspace dependency of zed.
 ;;
@@ -866,6 +890,39 @@ UTF-32 support.")
       (list #:skip-build? #t
             #:cargo-package-crates ''("ring"))))))
 
+(define-public rust-rust-sdks-0.0.0.e2d1d1d
+  (let ((commit "e2d1d1d230c6fc9df171ccb181423f957bb3c1f0")
+        (revision "0"))
+    (hidden-package
+     (package
+       (name "rust-sdks")
+       (version (git-version "0.0.0" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/juberti-oai/rust-sdks.git")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "00xwa6w00kdv9nd4a2206wyz3aw61al914xd1g8kj4gx9bmdhic2"))))
+       (build-system cargo-build-system)
+       (arguments
+        (list #:skip-build? #t
+              #:install-source? #t
+              ;; rust-codex patches out the libwebrtc git dependency, so only
+              ;; the remaining workspace members are currently needed here.
+              #:cargo-package-crates ''("livekit-runtime"
+                                        "livekit-protocol")
+              #:cargo-package-flags ''("--no-metadata" "--no-verify"
+                                       "--exclude-lockfile")))
+       (inputs (cargo-inputs 'rust-rust-sdks-0.0.0.e2d1d1d))
+       (home-page "https://github.com/juberti-oai/rust-sdks")
+       (synopsis "Workspace crates from rust-sdks")
+       (description
+        "This package provides the rust-sdks workspace crates used by Codex.")
+       (license license:asl2.0)))))
+
 (define-public rust-rustc-demangle-capi-0.1
   (hidden-package
    (package
@@ -1171,172 +1228,273 @@ language models.")
        (description "This package provides a Rust allocator backed by jemalloc.")
        (license (list license:expat license:asl2.0))))))
 
-(define-public rust-codex-0.0.0.785c0c43
-  (let ((commit "785c0c43df941e6997ff3a9e8a9dd48da2661f20")
-        (revision "0"))
-    (hidden-package
-     (package
-       (name "rust-codex")
-       (version (git-version "0.0.0" revision commit))
-       (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                (url "https://github.com/zed-industries/codex")
-                (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32 "0rwj1ykknng39mhzna3fw3rcl3vngynsjdcj1namgkvw91zd9dl7"))
-          (patches (search-patches "rust-codex-0.98.0-core-remove-self-dep.patch"))))
-       (build-system cargo-build-system)
-       (arguments
-        (list
-         #:skip-build? #t
-         #:cargo-package-crates
-         ;; Order matters: dependencies must come before packages that need them
-         ''("codex-async-utils"        ; No internal deps
-            "codex-client"             ; No internal deps
-            "codex-execpolicy"         ; No internal deps
-            "codex-file-search"        ; No internal deps
-            "codex-git"                ; No internal deps
-            "codex-keyring-store"      ; No internal deps
-            "codex-utils-absolute-path" ; No internal deps
-            "codex-utils-cache"        ; No internal deps
-            "codex-utils-cargo-bin"    ; No internal deps
-            "codex-utils-home-dir"     ; No internal deps
-            "codex-utils-json-to-toml" ; No internal deps
-            "codex-utils-pty"          ; No internal deps
-            "codex-utils-readiness"    ; No internal deps
-            "codex-utils-string"       ; No internal deps
-            "codex-utils-image"        ; Depends on codex-utils-cache
-            "codex-apply-patch"        ; Depends on codex-utils-cargo-bin
-            "codex-protocol"           ; Depends on codex-git, codex-utils-*
-            "codex-windows-sandbox"    ; Depends on codex-utils-absolute-path, codex-protocol
-            "codex-api"                ; Depends on codex-client, codex-protocol
-            "codex-experimental-api-macros" ; Macro crate (must come before app-server-protocol)
-            "codex-app-server-protocol" ; Depends on codex-protocol, codex-experimental-api-macros
-            "codex-rmcp-client"        ; Depends on codex-keyring-store, codex-protocol
-            "codex-otel"               ; Depends on codex-app-server-protocol, codex-api
-            "codex-state"              ; Depends on codex-protocol, codex-otel
-            "codex-core"               ; Depends on many packages above
-            "codex-linux-sandbox"      ; Depends on codex-core, codex-utils-absolute-path
-            "codex-arg0"               ; Depends on codex-apply-patch, codex-core, codex-linux-sandbox
-            "codex-lmstudio"           ; Depends on codex-core
-            "codex-login"              ; Depends on codex-core
-            "codex-ollama"             ; Depends on codex-core
-            "codex-common"             ; Depends on codex-core, codex-lmstudio, codex-ollama
-            "codex-mcp-server")         ; Depends on codex-core, codex-common
-         #:phases
-         #~(modify-phases %standard-phases
-            (add-after 'unpack 'chdir-to-workspace
-              (lambda _
-                (chdir "codex-rs")))
-            (add-after 'chdir-to-workspace 'patch-git-deps-to-vendor
-              (lambda _
-                ;; Avoid git fetches in offline builds by pointing patches
-                ;; at the vendored sources provided via cargo-inputs.
-                (substitute* "Cargo.toml"
-                  (("crossterm = \\{ git = [^}]+\\}")
-                   "crossterm = { version = \"0.28.1\" }")
-                  (("ratatui = \\{ git = [^}]+\\}")
-                   "ratatui = { version = \"0.29.0\" }")
-                  (("tokio-tungstenite = \\{ git = [^}]+\\}")
-                   "tokio-tungstenite = { version = \"0.28.0\" }")
-                  ;; Point nucleo git dependency to vendored checkout.
-                  (("nucleo = \\{ git = [^}]+\\}")
-                   "nucleo = { version = \"0.5.0\" }")
-                  ;; Point runfiles git dependency to vendored checkout.
-                  (("runfiles = \\{ git = [^}]+\\}")
-                   "runfiles = { version = \"0.1.0\" }"))))
-            (add-after 'chdir-to-workspace 'add-version-to-workspace-deps
-              (lambda _
-                ;; cargo package requires all dependencies to have versions.
-                ;; Add version = "0.0.0" to internal path dependencies.
-                (let ((cargo-files (find-files "." "^Cargo\\.toml$")))
-                  (substitute* cargo-files
-                    ;; Handle inline deps: name = { path = "..." }
-                    (("(codex-[a-z0-9-]+) = \\{ path = " all name)
-                     (string-append name " = { version = \"0.0.0\", path = "))
-                    ;; Handle inline deps with package: name = { package = "...", path = "..." }
-                    (("(codex-[a-z0-9-]+) = \\{ package = " all name)
-                     (string-append name " = { version = \"0.0.0\", package = "))
-                    ;; Handle section deps: [dependencies.X] with path = "..."
-                    (("^(path = \"\\.\\./[^\"]*\")" all path-line)
-                     (string-append path-line "\nversion = \"0.0.0\"")))))))))
-       (inputs (cargo-inputs 'rust-codex-0.0.0.785c0c43))
-       (home-page "https://github.com/zed-industries/codex")
-       (synopsis "Zed Codex workspace crates")
-       (description
-        "This package provides the workspace crates for the Zed Codex CLI
-and runtime for AI-assisted coding.")
-       (license license:asl2.0)))))
-
-(define-public rust-codex-0.98.0
+(define-public rust-codex-0.117.0
   (hidden-package
    (package
      (name "rust-codex")
-     (version "0.98.0")
+     (version "0.117.0")
      (source
       (origin
         (method git-fetch)
         (uri (git-reference
               (url "https://github.com/openai/codex")
-              (commit "82464689ce0ba8a3b2065e73a8aa0cfdf2ad0625")))
+              (commit "4c70bff480af37b1bf1a9b352b8341060fe55755")))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1mn322gbir4gn4y5jihdqg0wprjlnx771chyfmmm7ri7pnim1zmc"))
+         (base32 "0xnszwd3xhh4j64zxlk611kcphvrw4ihky1f517y4m8cl4lpqdqk"))
+        (patches (search-patches
+                  "rust-codex-0.117.0-core-remove-self-dep.patch"
+                  "codex-acp-0.11.1-disable-code-mode.patch"))))
+     (build-system cargo-build-system)
+     (arguments
+      (list
+       #:skip-build? #t
+       #:cargo-package-crates
+       ;; All workspace crates from openai/codex 0.117.0.
+       ;; Order matters: dependencies must come before packages that need them.
+       ''(;; Topologically sorted by internal dependency order.
+          "codex-utils-absolute-path"
+          "codex-git-utils"
+          "codex-experimental-api-macros"
+          "codex-execpolicy"
+          "codex-utils-cache"
+          "codex-utils-image"
+          "codex-utils-string"
+          "codex-protocol"
+          "codex-utils-cargo-bin"
+          "codex-app-server-protocol"
+          "codex-utils-rustls-provider"
+          "codex-client"
+          "codex-config"
+          "codex-keyring-store"
+          "codex-terminal-detection"
+          "codex-login"
+          "codex-utils-plugins"
+          "codex-plugin"
+          "codex-analytics"
+          "codex-ansi-escape"
+          "codex-api"
+          "codex-apply-patch"
+          "codex-async-utils"
+          "codex-code-mode"
+          "codex-connectors"
+          "codex-instructions"
+          "codex-otel"
+          "codex-skills"
+          "codex-core-skills"
+          "codex-utils-pty"
+          "codex-exec-server"
+          "codex-features"
+          "codex-hooks"
+          "codex-utils-home-dir"
+          "codex-network-proxy"
+          "codex-rmcp-client"
+          "codex-file-search"
+          "codex-state"
+          "codex-utils-path"
+          "codex-rollout"
+          "codex-sandboxing"
+          "codex-secrets"
+          "codex-shell-command"
+          "codex-shell-escalation"
+          "codex-utils-output-truncation"
+          "codex-utils-readiness"
+          "codex-utils-stream-parser"
+          "codex-utils-template"
+          "codex-windows-sandbox"
+          "codex-core"
+          "codex-linux-sandbox"
+          "codex-arg0"
+          "codex-backend-openapi-models"
+          "codex-backend-client"
+          "codex-utils-cli"
+          "codex-chatgpt"
+          "codex-cloud-requirements"
+          "codex-feedback"
+          "codex-utils-json-to-toml"
+          "codex-app-server"
+          "codex-app-server-client"
+          "codex-app-server-test-client"
+          "codex-cloud-tasks-client"
+          "codex-utils-approval-presets"
+          "codex-utils-elapsed"
+          "codex-utils-fuzzy-match"
+          "codex-lmstudio"
+          "codex-ollama"
+          "codex-utils-oss"
+          "codex-utils-sandbox-summary"
+          "codex-utils-sleep-inhibitor"
+          "codex-exec"
+          "codex-mcp-server"
+          "codex-process-hardening"
+          "codex-responses-api-proxy"
+          "codex-stdio-to-uds"
+          "codex-debug-client"
+          "codex-execpolicy-legacy")
+       #:phases
+       #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir-to-workspace
+            (lambda _
+              (chdir "codex-rs")))
+          (add-after 'chdir-to-workspace 'patch-git-deps-to-vendor
+            (lambda _
+              (substitute* "Cargo.toml"
+                (("crossterm = \\{ git = [^}]+\\}")
+                 "crossterm = { version = \"0.28.1\" }")
+                (("ratatui = \\{ git = [^}]+\\}")
+                 "ratatui = { version = \"0.29.0\" }")
+                (("tokio-tungstenite = \\{ git = [^}]+\\}")
+                 "tokio-tungstenite = { version = \"0.28.0\" }")
+                (("tungstenite = \\{ git = [^}]+\\}")
+                 "tungstenite = { version = \"0.27.0\" }")
+                (("nucleo = \\{ git = [^}]+\\}")
+                 "nucleo = { version = \"0.5.0\" }")
+                (("runfiles = \\{ git = [^}]+\\}")
+                 "runfiles = { version = \"0.1.0\" }"))
+              ;; Disable V8 runtime in codex-code-mode.
+              (substitute* "Cargo.toml"
+                (("codex-code-mode = \\{ path = \"code-mode\" \\}")
+                 "codex-code-mode = { path = \"code-mode\", default-features = false }"))))
+          (add-after 'patch-git-deps-to-vendor 'add-version-to-workspace-deps
+            (lambda _
+              ;; cargo package requires all dependencies to have versions.
+              ;; Add version = "0.117.0" to internal path dependencies.
+              (let ((cargo-files (find-files "." "^Cargo\\.toml$")))
+                (substitute* cargo-files
+                  (("(codex-[a-z0-9-]+) = \\{ path = " all name)
+                   (string-append name " = { version = \"0.117.0\", path = "))
+                  (("(codex-[a-z0-9-]+) = \\{ package = " all name)
+                   (string-append name " = { version = \"0.117.0\", package = "))
+                  (("^(path = \"\\.\\./[^\"]*\")" all path-line)
+                   (string-append path-line "\nversion = \"0.117.0\"")))))))))
+     (inputs (cargo-inputs 'rust-codex-0.0.0.785c0c43))
+     (home-page "https://github.com/openai/codex")
+     (synopsis "OpenAI Codex workspace crates (for codex-acp)")
+     (description
+      "This package provides the workspace crates from the OpenAI Codex
+repository, used as dependencies by codex-acp.")
+     (license license:asl2.0))))
+
+(define-public rust-codex-0.120.0
+  (hidden-package
+   (package
+     (name "rust-codex")
+     (version "0.120.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/openai/codex")
+              (commit "65319eb1400cbd2890c43d572263dabd25f18ba9")))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0gqzkqndb8jwvb9j5dxqgidyzk67x00ccfzhg54gdlv4adc1cgwj"))
         (modules '((guix build utils)))
         (snippet '(begin
                     ;;; These are JSON manifests with a dotslash
                     ;;; shebang that download and run pre-built
                     ;;; binaries (ripgrep, bash) at runtime.
                     (delete-file "codex-cli/bin/rg")
-                    (delete-file "codex-rs/exec-server/tests/suite/bash")
                     ;; Bundled bubblewrap source tree; includes a
                     ;; compiled BPF blob (demos/flatpak.bpf).
                     (delete-file-recursively "codex-rs/vendor/bubblewrap")))
-        (patches (search-patches "rust-codex-0.98.0-core-remove-self-dep.patch"
-                                 "rust-codex-0.98.0-windows-sandbox-protocol-version.patch"
-                                 "rust-codex-0.98.0-test-shebangs.patch"))))
+        (patches (search-patches
+                  "codex-acp-0.11.1-disable-code-mode.patch"
+                  "rust-codex-0.120.0-core-remove-self-dep.patch"
+                  "rust-codex-0.120.0-remove-libwebrtc.patch"))))
      (build-system cargo-build-system)
      (arguments
       (list
        #:skip-build? #t
        #:cargo-package-crates
        ;; Order matters: dependencies must come before packages that need them
-       ''("codex-async-utils"        ; No internal deps
-          "codex-client"             ; No internal deps
-          "codex-execpolicy"         ; No internal deps
-          "codex-file-search"        ; No internal deps
-          "codex-git"                ; No internal deps
-          "codex-keyring-store"      ; No internal deps
-          "codex-utils-absolute-path" ; No internal deps
-          "codex-utils-cache"        ; No internal deps
-          "codex-utils-cargo-bin"    ; No internal deps
-          "codex-utils-home-dir"     ; No internal deps
-          "codex-utils-json-to-toml" ; No internal deps
-          "codex-utils-pty"          ; No internal deps
-          "codex-utils-readiness"    ; No internal deps
-          "codex-utils-string"       ; No internal deps
-          "codex-utils-image"        ; Depends on codex-utils-cache
-          "codex-apply-patch"        ; Depends on codex-utils-cargo-bin
-          "codex-protocol"           ; Depends on codex-git, codex-utils-*
-          "codex-windows-sandbox"    ; Depends on codex-utils-absolute-path, codex-protocol
-          "codex-api"                ; Depends on codex-client, codex-protocol
-          "codex-experimental-api-macros" ; Macro crate (must come before app-server-protocol)
-          "codex-app-server-protocol" ; Depends on codex-protocol, codex-experimental-api-macros
-          "codex-rmcp-client"        ; Depends on codex-keyring-store, codex-protocol
-          "codex-otel"               ; Depends on codex-app-server-protocol, codex-api
-          "codex-state"              ; Depends on codex-protocol, codex-otel
-          "codex-core"               ; Depends on many packages above
-          "codex-linux-sandbox"      ; Depends on codex-core, codex-utils-absolute-path
-          "codex-arg0"               ; Depends on codex-apply-patch, codex-core, codex-linux-sandbox
-          "codex-lmstudio"           ; Depends on codex-core
-          "codex-login"              ; Depends on codex-core
-          "codex-ollama"             ; Depends on codex-core
-          "codex-common"             ; Depends on codex-core, codex-lmstudio, codex-ollama
-          "codex-mcp-server"          ; Depends on codex-core, codex-common
-          "codex-network-proxy")      ; Depends on codex-core, rama
+       ''(;; Topologically sorted by internal dependency order.
+          "codex-experimental-api-macros"
+          "codex-utils-absolute-path"
+          "codex-git-utils"
+          "codex-async-utils"
+          "codex-execpolicy"
+          "codex-utils-home-dir"
+          "codex-utils-rustls-provider"
+          "codex-network-proxy"
+          "codex-utils-cache"
+          "codex-utils-image"
+          "codex-utils-string"
+          "codex-utils-template"
+          "codex-protocol"
+          "codex-shell-command"
+          "codex-utils-cargo-bin"
+          "codex-app-server-protocol"
+          "codex-client"
+          "codex-api"
+          "codex-otel"
+          "codex-features"
+          "codex-model-provider-info"
+          "codex-config"
+          "codex-keyring-store"
+          "codex-terminal-detection"
+          "codex-login"
+          "codex-utils-plugins"
+          "codex-plugin"
+          "codex-analytics"
+          "codex-ansi-escape"
+          "codex-utils-pty"
+          "codex-exec-server"
+          "codex-apply-patch"
+          "codex-code-mode"
+          "codex-connectors"
+          "codex-instructions"
+          "codex-skills"
+          "codex-core-skills"
+          "codex-feedback"
+          "codex-hooks"
+          "codex-rmcp-client"
+          "codex-mcp"
+          "codex-collaboration-mode-templates"
+          "codex-response-debug-context"
+          "codex-utils-output-truncation"
+          "codex-models-manager"
+          "codex-file-search"
+          "codex-state"
+          "codex-utils-path"
+          "codex-rollout"
+          "codex-sandboxing"
+          "codex-secrets"
+          "codex-shell-escalation"
+          "codex-tools"
+          "codex-utils-readiness"
+          "codex-utils-stream-parser"
+          "codex-windows-sandbox"
+          "codex-core"
+          "codex-linux-sandbox"
+          "codex-arg0"
+          "codex-backend-openapi-models"
+          "codex-backend-client"
+          "codex-utils-cli"
+          "codex-chatgpt"
+          "codex-cloud-requirements"
+          "codex-utils-json-to-toml"
+          "codex-app-server"
+          "codex-app-server-client"
+          "codex-app-server-test-client"
+          "codex-cloud-tasks-client"
+          "codex-cloud-tasks-mock-client"
+          "codex-utils-approval-presets"
+          "codex-utils-elapsed"
+          "codex-utils-fuzzy-match"
+          "codex-lmstudio"
+          "codex-ollama"
+          "codex-utils-oss"
+          "codex-utils-sandbox-summary"
+          "codex-utils-sleep-inhibitor"
+          "codex-realtime-webrtc"
+          "codex-exec"
+          "codex-mcp-server"
+          "codex-process-hardening"
+          "codex-responses-api-proxy"
+          "codex-stdio-to-uds"
+          "codex-debug-client"
+          "codex-execpolicy-legacy")
        #:phases
        #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir-to-workspace
@@ -1354,19 +1512,23 @@ and runtime for AI-assisted coding.")
                 (("nucleo = \\{ git = [^}]+\\}")
                  "nucleo = { version = \"0.5.0\" }")
                 (("runfiles = \\{ git = [^}]+\\}")
-                 "runfiles = { version = \"0.1.0\" }"))))
-          (add-after 'chdir-to-workspace 'add-version-to-workspace-deps
+                 "runfiles = { version = \"0.1.0\" }"))
+              ;; Disable V8 runtime in codex-code-mode.
+              (substitute* "Cargo.toml"
+                (("codex-code-mode = \\{ path = \"code-mode\" \\}")
+                 "codex-code-mode = { path = \"code-mode\", default-features = false }"))))
+          (add-after 'patch-git-deps-to-vendor 'add-version-to-workspace-deps
             (lambda _
               ;; cargo package requires all dependencies to have versions.
-              ;; Add version = "0.98.0" to internal path dependencies.
+              ;; Add version = "0.120.0" to internal path dependencies.
               (let ((cargo-files (find-files "." "^Cargo\\.toml$")))
                 (substitute* cargo-files
                   (("(codex-[a-z0-9-]+) = \\{ path = " all name)
-                   (string-append name " = { version = \"0.98.0\", path = "))
+                   (string-append name " = { version = \"0.120.0\", path = "))
                   (("(codex-[a-z0-9-]+) = \\{ package = " all name)
-                   (string-append name " = { version = \"0.98.0\", package = "))
-                  (("(mcp-types) = \\{ path = " all name)
-                   (string-append name " = { version = \"0.98.0\", path = ")))))))))
+                   (string-append name " = { version = \"0.120.0\", package = "))
+                  (("^(path = \"\\.\\./[^\"]*\")" all path-line)
+                   (string-append path-line "\nversion = \"0.120.0\"")))))))))
      (inputs (cargo-inputs 'rust-codex-0.0.0.785c0c43))
      (home-page "https://github.com/openai/codex")
      (synopsis "OpenAI Codex workspace crates")

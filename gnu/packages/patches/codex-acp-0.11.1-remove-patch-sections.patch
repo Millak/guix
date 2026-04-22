@@ -1,0 +1,20 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-02-08
+License: ASL2.0
+
+Remove [patch.crates-io] section.
+
+This section points to git repositories which are unavailable in an
+offline build.  The vendored tokio-tungstenite and tungstenite forks
+are provided as cargo-inputs instead.
+
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -52,7 +52,3 @@
+ let-underscore = "warn"
+ rust-2018-idioms = "warn"
+ unused = "warn"
+-
+-[patch.crates-io]
+-tokio-tungstenite = { git = "https://github.com/openai-oss-forks/tokio-tungstenite", rev = "132f5b39c862e3a970f731d709608b3e6276d5f6" }
+-tungstenite = { git = "https://github.com/openai-oss-forks/tungstenite-rs", rev = "9200079d3b54a1ff51072e24d81fd354f085156f" }

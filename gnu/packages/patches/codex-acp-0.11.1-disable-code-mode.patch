@@ -1,0 +1,128 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-04-13
+License: ASL2.0
+
+Make V8 an optional dependency in codex-code-mode.
+
+The V8 engine is only needed for actually executing JavaScript in the
+code-mode sandbox.  The description helpers, tool name constants, and
+data types do not require V8.  Gate the runtime and service modules
+behind a "v8-runtime" feature so that consumers like codex-acp that
+never use code-mode can avoid the V8 build dependency.
+
+--- a/codex-rs/code-mode/Cargo.toml	2026-04-13 16:14:49.459504037 +0000
++++ codex-rs/code-mode/Cargo.toml	2026-04-13 16:14:49.466438318 +0000
+@@ -12,6 +12,10 @@
+ [lints]
+ workspace = true
+
++[features]
++default = ["v8-runtime"]
++v8-runtime = ["dep:v8"]
++
+ [dependencies]
+ async-trait = { workspace = true }
+ serde = { workspace = true, features = ["derive"] }
+@@ -19,7 +23,7 @@
+ tokio = { workspace = true, features = ["macros", "rt", "sync", "time"] }
+ tokio-util = { workspace = true, features = ["rt"] }
+ tracing = { workspace = true }
+-v8 = { workspace = true }
++v8 = { workspace = true, optional = true }
+
+ [dev-dependencies]
+ pretty_assertions = { workspace = true }
+--- a/codex-rs/code-mode/src/lib.rs	2026-04-13 16:14:49.461337956 +0000
++++ codex-rs/code-mode/src/lib.rs	2026-04-13 16:14:49.470869556 +0000
+@@ -1,6 +1,8 @@
+ mod description;
+ mod response;
++#[cfg(feature = "v8-runtime")]
+ mod runtime;
++#[cfg(feature = "v8-runtime")]
+ mod service;
+
+ pub use description::CODE_MODE_PRAGMA_PREFIX;
+@@ -16,15 +18,82 @@
+ pub use description::render_json_schema_to_typescript;
+ pub use response::FunctionCallOutputContentItem;
+ pub use response::ImageDetail;
++
++#[cfg(feature = "v8-runtime")]
+ pub use runtime::DEFAULT_EXEC_YIELD_TIME_MS;
++#[cfg(feature = "v8-runtime")]
+ pub use runtime::DEFAULT_MAX_OUTPUT_TOKENS_PER_EXEC_CALL;
++#[cfg(feature = "v8-runtime")]
+ pub use runtime::DEFAULT_WAIT_YIELD_TIME_MS;
++#[cfg(feature = "v8-runtime")]
+ pub use runtime::ExecuteRequest;
++#[cfg(feature = "v8-runtime")]
+ pub use runtime::RuntimeResponse;
++#[cfg(feature = "v8-runtime")]
+ pub use runtime::WaitRequest;
++#[cfg(feature = "v8-runtime")]
+ pub use service::CodeModeService;
++#[cfg(feature = "v8-runtime")]
+ pub use service::CodeModeTurnHost;
++#[cfg(feature = "v8-runtime")]
+ pub use service::CodeModeTurnWorker;
+
++// Stub types when V8 is not available.
++#[cfg(not(feature = "v8-runtime"))]
++pub const DEFAULT_EXEC_YIELD_TIME_MS: u64 = 10_000;
++#[cfg(not(feature = "v8-runtime"))]
++pub const DEFAULT_MAX_OUTPUT_TOKENS_PER_EXEC_CALL: usize = 10_000;
++#[cfg(not(feature = "v8-runtime"))]
++pub const DEFAULT_WAIT_YIELD_TIME_MS: u64 = 10_000;
++
++#[cfg(not(feature = "v8-runtime"))]
++pub struct ExecuteRequest {
++    pub tool_call_id: String,
++    pub enabled_tools: Vec<ToolDefinition>,
++    pub source: String,
++    pub stored_values: std::collections::HashMap<String, serde_json::Value>,
++    pub yield_time_ms: Option<u64>,
++    pub max_output_tokens: Option<usize>,
++}
++
++#[cfg(not(feature = "v8-runtime"))]
++#[derive(Clone, Debug)]
++pub struct WaitRequest {
++    pub cell_id: String,
++    pub yield_time_ms: u64,
++    pub terminate: bool,
++}
++
++#[cfg(not(feature = "v8-runtime"))]
++#[derive(Debug, PartialEq)]
++pub enum RuntimeResponse {
++    Yielded { cell_id: String, content_items: Vec<FunctionCallOutputContentItem> },
++    Terminated { cell_id: String, content_items: Vec<FunctionCallOutputContentItem> },
++    Result { cell_id: String, content_items: Vec<FunctionCallOutputContentItem>, stored_values: std::collections::HashMap<String, serde_json::Value>, error_text: Option<String> },
++}
++
++#[cfg(not(feature = "v8-runtime"))]
++#[async_trait::async_trait]
++pub trait CodeModeTurnHost: Send + Sync {
++    async fn invoke_tool(&self, tool_name: String, input: Option<serde_json::Value>, cancellation_token: tokio_util::sync::CancellationToken) -> Result<serde_json::Value, String>;
++    async fn notify(&self, call_id: String, cell_id: String, text: String) -> Result<(), String>;
++}
++
++#[cfg(not(feature = "v8-runtime"))]
++pub struct CodeModeService;
++
++#[cfg(not(feature = "v8-runtime"))]
++impl CodeModeService {
++    pub fn new() -> Self { Self }
++    pub async fn stored_values(&self) -> std::collections::HashMap<String, serde_json::Value> { Default::default() }
++    pub async fn replace_stored_values(&self, _values: std::collections::HashMap<String, serde_json::Value>) {}
++    pub async fn execute(&self, _request: ExecuteRequest) -> Result<RuntimeResponse, String> { Err("code-mode requires v8-runtime feature".into()) }
++    pub async fn wait(&self, _request: WaitRequest) -> Result<RuntimeResponse, String> { Err("code-mode requires v8-runtime feature".into()) }
++    pub fn start_turn_worker(&self, _host: std::sync::Arc<dyn CodeModeTurnHost>) -> CodeModeTurnWorker { CodeModeTurnWorker }
++}
++
++#[cfg(not(feature = "v8-runtime"))]
++pub struct CodeModeTurnWorker;
++
+ pub const PUBLIC_TOOL_NAME: &str = "exec";
+ pub const WAIT_TOOL_NAME: &str = "wait";

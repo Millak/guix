@@ -1,0 +1,26 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-04-14
+License: ASL2.0
+Subject: Fix race condition in codex-connectors cache test.
+
+ALL_CONNECTORS_CACHE is a single global Option, not a map.  When Rust's
+test runner executes tests in parallel, the
+list_all_connectors_merges_and_normalizes_directory_apps test can
+overwrite the cache entry between the two calls in
+list_all_connectors_uses_shared_cache, causing a key mismatch and a
+spurious "cache should have been used" failure.
+
+Fix by clearing the cache at the start of the cache test so it does not
+depend on execution order relative to other tests.
+
+--- a/codex-rs/connectors/src/lib.rs
++++ b/codex-rs/connectors/src/lib.rs
+@@ -441,6 +441,9 @@
+     #[tokio::test]
+     async fn list_all_connectors_uses_shared_cache() -> anyhow::Result<()> {
++        // Clear any stale cache entry left by a concurrently running test.
++        *ALL_CONNECTORS_CACHE.lock().unwrap() = None;
++
+         let calls = Arc::new(AtomicUsize::new(0));
+         let call_counter = Arc::clone(&calls);
+         let key = cache_key("shared");

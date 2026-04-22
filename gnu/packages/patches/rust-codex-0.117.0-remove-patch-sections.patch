@@ -1,0 +1,30 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-02-08
+License: ASL2.0
+Subject: Remove [patch.crates-io] and [patch.'ssh://...'] sections.
+
+The [patch] sections point to git repositories which are unavailable
+in an offline build.  The vendored crossterm, ratatui,
+tokio-tungstenite and tungstenite forks are provided as cargo-inputs
+instead.
+
+--- a/codex-rs/Cargo.toml
++++ b/codex-rs/Cargo.toml
+@@ -423,17 +423,3 @@
+ debug = 1         # Reduce debug symbol size
+ inherits = "test"
+ opt-level = 0
+-
+-[patch.crates-io]
+-# Uncomment to debug local changes.
+-# ratatui = { path = "../../ratatui" }
+-crossterm = { git = "https://github.com/nornagon/crossterm", branch = "nornagon/color-query" }
+-ratatui = { git = "https://github.com/nornagon/ratatui", branch = "nornagon-v0.29.0-patch" }
+-tokio-tungstenite = { git = "https://github.com/openai-oss-forks/tokio-tungstenite", rev = "132f5b39c862e3a970f731d709608b3e6276d5f6" }
+-tungstenite = { git = "https://github.com/openai-oss-forks/tungstenite-rs", rev = "9200079d3b54a1ff51072e24d81fd354f085156f" }
+-
+-# Uncomment to debug local changes.
+-# rmcp = { path = "../../rust-sdk/crates/rmcp" }
+-
+-[patch."ssh://git@github.com/openai-oss-forks/tungstenite-rs.git"]
+-tungstenite = { git = "https://github.com/openai-oss-forks/tungstenite-rs", rev = "9200079d3b54a1ff51072e24d81fd354f085156f" }
