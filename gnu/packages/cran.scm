@@ -15721,13 +15721,13 @@ LaTeX.")
 (define-public r-curl
   (package
     (name "r-curl")
-    (version "7.0.0")
+    (version "7.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "curl" version))
               (sha256
                (base32
-                "0ssdh8l36mdab5rj11idkwsifylkxhm4pcpm5mp7ksn0gfz365jv"))))
+                "1afqbxlpfws3yfcb6slyayv3yw05r2mdn60cwvxiik3a62v7kw3l"))))
     (properties
      `((upstream-name . "curl")
        (updater-extra-inputs . ("curl"))
