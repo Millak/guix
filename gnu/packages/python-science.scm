@@ -1171,16 +1171,26 @@ which uncovers hidden structures in categorical data")
 (define-public python-fast-histogram
   (package
     (name "python-fast-histogram")
-    (version "0.14")
+    (properties '((commit . "92ed2049a2e24b15993bb770e96a5d21f4736be3")
+                  (revision . "0")))
+    (version (git-version "0.14"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fast_histogram" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/astrofrog/fast-histogram")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1sk9xa85cgm4sylzblwv3qr2dmm0ic06zkwxqa2xlazjiawp629r"))))
+        (base32 "0iqgrnzs2w0v36iyp9782lxc8nji2v7fvs1k90pnrrf6r3w98p0v"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; XXX: Too many bins for data range.
+      #~(list "-k" "not test_1d_compare_with_numpy")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'build-extensions
