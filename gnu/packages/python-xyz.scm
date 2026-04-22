@@ -34547,20 +34547,25 @@ Python CLI apps.")
 (define-public python-pyperf
   (package
     (name "python-pyperf")
-    (version "2.3.1")
+    (version "2.10.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyperf" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/psf/pyperf")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "189qf9wdbig0fk4n3bavx8acgdbay5lllfvw48jvbfaafb7y5hja"))))
+        (base32 "1xl60vrwp2zqjwv685xxj8b5hxblshf5f4s7qmq8fmn445mg9aiw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--ignore=pyperf/tests/test_examples.py")))
-    (native-inputs (list python-psutil python-pytest python-setuptools
-                         python-wheel))
+    (native-inputs
+     (list python-psutil-bootstrap
+           python-pytest
+           python-setuptools))
     (home-page "https://github.com/psf/pyperf")
     (synopsis "Toolkit for running Python benchmarks")
     (description
