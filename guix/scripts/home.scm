@@ -372,7 +372,8 @@ immediately.  Return the exit status of the process in the container."
                     (check? #f)))
    #:mappings (append network-mappings mappings)
    #:guest-uid uid
-   #:guest-gid gid))
+   #:guest-gid gid
+   #:child-is-pid1? #f))
 
 
 ;;;
