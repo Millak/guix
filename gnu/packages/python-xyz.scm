@@ -5190,6 +5190,16 @@ top, lsof, netstat, ifconfig, who, df, kill, free, nice, ionice, iostat,
 iotop, uptime, pidof, tty, taskset, pmap.")
     (license license:bsd-3)))
 
+(define-public python-psutil-bootstrap
+  (hidden-package
+   (package/inherit python-psutil
+     (name "python-psutil-bootstrap")
+     (arguments
+      (list #:tests? #f))
+     (propagated-inputs '())
+     (native-inputs
+      (list python-setuptools)))))
+
 (define-public python-scapy
   (package
     (name "python-scapy")
