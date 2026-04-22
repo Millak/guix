@@ -15446,13 +15446,13 @@ environment.  Two RStudio Addins can be used to run selected code as a job.")
 (define-public r-jose
   (package
     (name "r-jose")
-    (version "1.2.1")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "jose" version))
        (sha256
-        (base32 "0si1mg325fwx9zgjdbqspw9v6prl5mn3iccg7vki4bpzmwhd953q"))))
+        (base32 "1qnmq1v1j0gg39xl5fhl21vm4ny46wlngm1fqlb0svbkv8yf3m14"))))
     (properties `((upstream-name . "jose")))
     (build-system r-build-system)
     (propagated-inputs (list r-jsonlite r-openssl))
