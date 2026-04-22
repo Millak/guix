@@ -2068,6 +2068,49 @@ Python file for configuration.")
 flake8 to check PEP-8 naming conventions.")
     (license license:expat)))
 
+(define-public python-psleak
+  (package
+    (name "python-psleak")
+    (version "0.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/giampaolo/psleak")
+             (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ifysg0j0qh4h06l3xqlk97kdf4sj5mlg5c9dwigakjg9ydnkdv6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            ;; Test steps are taken from project's Makefile.
+            (lambda _
+              (setenv "PYTHONWARNINGS" "always")
+              (setenv "PYTHONUNBUFFERED" "1")
+              (setenv "PYTEST_DISABLE_PLUGIN_AUTOLOAD" "1")
+              (setenv "PYTHONMALLOC" "malloc")
+              (invoke "python" "tests/build_ext.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-instafail
+           python-setuptools))
+    (propagated-inputs
+     (list python-psutil-bootstrap))
+    (home-page "https://github.com/giampaolo/psleak")
+    (synopsis "Detect memory and resource leaks in Python C extensions")
+    (description
+     "@code{psleak} is a testing framework for detecting memory leaks and
+unclosed resources created by Python functions, particularly those implemented
+in C extensions.
+
+It was originally developed as part of @code{psutil} test suite, and later
+split out into a standalone project.")
+    (license license:bsd-3)))
+
 (define-public python-pyannotate
   (package
     (name "python-pyannotate")
