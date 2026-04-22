@@ -1882,6 +1882,31 @@ management with library, schematic and board editors.")
       (license (list license:expat      ;libfst and fastlz-derived sources
                      license:bsd-2))))) ;for lz4-derived sources
 
+(define-public python-csxcad
+  (package
+    (inherit csxcad)
+    (name "python-csxcad")
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Tests are broken in v0.6.3.
+      ;; Check on update.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'prepare-build
+            (lambda _
+              (chdir "./python")
+              (setenv "CSXCAD_INSTALL_PATH"
+                      #$(this-package-input "csxcad")))))))
+    (native-inputs (list python-minimal python-cython python-numpy
+                         python-setuptools))
+    (inputs (list csxcad fparser hdf5 python-numpy tinyxml))
+    (synopsis "Python bindings for @code{csxcad}")
+    (description "Library for describing geometrical objects and their
+physical and non-physical properties.")
+    (license license:lgpl3+)))
+
 (define-public python-lln-libparse
   (package
     (name "python-lln-libparse")
