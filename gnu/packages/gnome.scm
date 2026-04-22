@@ -7973,6 +7973,7 @@ configuration program to choose applications starting on login.")
             (delete-all-but "subprojects"
                             "gobject-introspection-tests")))))
     (build-system meson-build-system)
+    (outputs '("out" "debug"))
     (arguments
      (list
       #:modules '((guix build meson-build-system)
