@@ -57444,46 +57444,22 @@ the @code{raster} package that is suitable for extracting raster values using
 (define-public r-stringfish
   (package
     (name "r-stringfish")
-    (version "0.18.0")
+    (version "0.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "stringfish" version))
        (sha256
         (base32
-         "1vrs2vqr6fzy5fmww1q0nbv7nkxq5dhzmmv2fxgf20svnqnn9pz2"))))
+         "1whs1i0rw2pr2kh3wvb4plg3jk7ncjnnx2msfckgzbc9vwvnf007"))))
     (properties
      '((upstream-name . "stringfish")
        (updater-extra-inputs . ("pcre2"))
        (updater-ignored-native-inputs . ("r-qs2"))))
     (build-system r-build-system)
-    (arguments
-     (list
-      ;; Tests require r-qs, which depends on this package.
-      #:tests? #false
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'install 'relax-gcc-14-strictness
-            (lambda _
-              ;; XXX FIXME: $HOME/.R/Makevars seems to be the only way to
-              ;; set custom CFLAGS for R?
-              (setenv "HOME" (getcwd))
-              (mkdir-p ".R")
-              (with-directory-excursion ".R"
-                (with-output-to-file "Makevars"
-                  (lambda _
-                    (display (string-append
-                              "CXXFLAGS=-g -O2"
-                              " -Wno-error=changes-meaning\n"))))))))))
     (inputs (list pcre2))
-    (propagated-inputs
-     (list r-rcpp r-rcppparallel))
-    (native-inputs
-     (list pkg-config
-           r-dplyr
-           r-knitr
-           r-rlang
-           r-stringr))
+    (propagated-inputs (list r-rcpp r-rcppparallel))
+    (native-inputs (list pkg-config r-knitr))
     (home-page "https://github.com/traversc/stringfish")
     (synopsis "Alternative string implementation")
     (description
