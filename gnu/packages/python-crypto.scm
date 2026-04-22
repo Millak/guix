@@ -185,6 +185,8 @@ Password Scheme\"} by Niels Provos and David Mazieres.")
 
 (define-public python-passlib
   (package
+    ;; TODO: Migrate to a fork as the project is not maintained.
+    ;; See: guix/guix#8068.
     (name "python-passlib")
     (version "1.7.4")
     (source
@@ -199,6 +201,19 @@ Password Scheme\"} by Niels Provos and David Mazieres.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1099 passed, 1011 skipped, 199 warnings
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; AssertionError: expected 'linux' platform would have native
+              ;; support for 'des_crypt', 'md5_crypt', 'sha256_crypt',
+              ;; 'sha512_crypt'
+              #$@(map (lambda (test)
+                        (string-append "--deselect=passlib/"
+                                       "tests/test_handlers.py::"))
+                      (list "des_crypt_os_crypt_test::test_82_crypt_support"
+                            "md5_crypt_os_crypt_test::test_82_crypt_support"
+                            "sha256_crypt_os_crypt_test::test_82_crypt_support"
+                            "sha512_crypt_os_crypt_test::test_82_crypt_support")))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-PYTHON_EGG_CACHE
@@ -206,7 +221,9 @@ Password Scheme\"} by Niels Provos and David Mazieres.")
             (lambda _
               (setenv "PYTHON_EGG_CACHE" "/tmp"))))))
     (native-inputs
-     (list python-pytest python-setuptools python-wheel))
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools))
     (propagated-inputs
      (list python-argon2-cffi python-bcrypt python-cryptography))
     (home-page "https://foss.heptapod.net/python-libs/passlib")
