@@ -7262,6 +7262,13 @@ designed by Cynthia Brewer as described at http://colorbrewer2.org")
                 "07wf1rmlm7hp06vcykmxwbzy01ri28zx20vz39j1sk3w1pck5h7r"))))
     (properties `((upstream-name . "RcppArmadillo")))
     (build-system r-build-system)
+    (arguments
+     (if (target-32bit?)
+         (list
+          #:test-directory "inst/tinytest"
+          ;; Accuracy error.
+          #:skipped-tests '("test_rmultinom.R"))
+         '()))
     (propagated-inputs
      (list r-rcpp))
     (native-inputs (list r-rcpp r-tinytest))
