@@ -15651,14 +15651,17 @@ applications.")
 (define-public r-htmltable
   (package
     (name "r-htmltable")
-    (version "2.4.3")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "htmlTable" version))
        (sha256
-        (base32 "1pgndsyml68d9qd747043m9g0dxhaa10m533dchcsg1izwdx0f9p"))))
-    (properties `((upstream-name . "htmlTable")))
+        (base32 "0a6qd099cgrx41nd43bzb8g0ml96iw62g8vzy44zrzh8fkrb0q8g"))))
+    (properties
+     '((upstream-name . "htmlTable")
+       ;; hmisc depends on htmltable.
+       (updater-ignored-native-inputs . ("r-hmisc"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -15673,7 +15676,7 @@ applications.")
       #~(modify-phases (@ (guix build r-build-system) %standard-phases)
           (add-after 'unpack 'replace-bundled-minified-JavaScript
             (lambda* (#:key inputs #:allow-other-keys)
-              (minify (assoc-ref inputs "js-jquery")
+              (minify (assoc-ref inputs "jquery-3.7.1.js")
                       #:target
                       "inst/htmlwidgets/lib/jquery/jquery.min.js"))))))
     (propagated-inputs
@@ -15685,20 +15688,24 @@ applications.")
            r-rstudioapi
            r-stringr))
     (native-inputs
-     `(("esbuild" ,esbuild)
-       ("js-jquery"
-        ,(origin
-           (method url-fetch)
-           (uri "https://code.jquery.com/jquery-3.7.1.js")
-           (sha256
-            (base32
-             "1zicjv44sx6n83vrkd2lwnlbf7qakzh3gcfjw0lhq48b5z55ma3q"))))
-       ("r-dplyr" ,r-dplyr)
-       ("r-knitr" ,r-knitr)
-       ("r-purrr" ,r-purrr)
-       ("r-testthat" ,r-testthat)
-       ("r-xml" ,r-xml)
-       ("r-xml2" ,r-xml2)))
+     (list esbuild
+           r-chron
+           r-dplyr
+           r-glue
+           r-knitr
+           r-lubridate
+           r-purrr
+           r-testthat
+           r-tibble
+           r-tidyverse
+           r-xml
+           r-xml2
+           (origin
+             (method url-fetch)
+             (uri "https://code.jquery.com/jquery-3.7.1.js")
+             (sha256
+              (base32
+               "1zicjv44sx6n83vrkd2lwnlbf7qakzh3gcfjw0lhq48b5z55ma3q")))))
     (home-page "http://gforge.se/packages/")
     (synopsis "Advanced tables for Markdown/HTML")
     (description
