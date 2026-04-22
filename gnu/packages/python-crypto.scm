@@ -1142,20 +1142,23 @@ provides drop-in compatibility with PyCrypto.")))
 (define-public python-m2crypto
   (package
     (name "python-m2crypto")
-    (version "0.38.0")
+    (version "0.47.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "M2Crypto" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/m2crypto/m2crypto")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1jyynaybncgjp8rndrwjpj5gnbrislngimf6ind9874h6052dwlr"))))
+        (base32 "090dvgnjmqidh0c318kipysiy24cn1rwbmxl4vybnqd57n65xsn8"))))
     (build-system pyproject-build-system)
     (arguments
      `(;; FIXME: Tests start failing with time due to date checks in TLS
        ;; certificates.
        #:tests? #f))
     (inputs (list openssl))
-    (native-inputs (list swig-4.0 python-setuptools python-wheel))
+    (native-inputs (list swig python-setuptools))
     (home-page "https://gitlab.com/m2crypto/m2crypto")
     (synopsis "Python crypto and TLS toolkit")
     (description "@code{M2Crypto} is a complete Python wrapper for OpenSSL
