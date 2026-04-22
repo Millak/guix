@@ -89,6 +89,7 @@
   #:use-module (gnu packages wget)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
+  #:use-module (ice-9 match)
   #:use-module ((srfi srfi-1) #:hide (zip)))
 
 (define (lua-search-paths version)
@@ -169,6 +170,22 @@ for configuration, scripting, and rapid prototyping.")
                                               "lua-5.x-search-path-helpers.patch"
                                               "lua-5.4-search-paths.patch"))))
            (native-search-paths (lua-search-paths "5.4"))))
+
+
+(define-public lua-5.4-for-c++
+  (let ((lua-pkg lua-5.4))
+    (hidden-package
+     (package/inherit lua-pkg
+       (name (string-append (package-name lua-pkg) "-for-c++"))
+       (arguments
+        (substitute-keyword-arguments (package-arguments lua-pkg)
+          ((#:make-flags old-flags)
+           (map
+            (match-lambda
+              ((string-append "CC=" _)
+               `(string-append "CC=" ,(cxx-for-target)))
+              (else else))
+            old-flags))))))))
 
 (define-public lua-5.2
   (package (inherit lua)
