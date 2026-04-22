@@ -903,8 +903,8 @@ type system, elevating types to first-class status.")
 (define-public guile-git
   (package
     (name "guile-git")
-    (version "0.11.0")
-    (home-page "https://gitlab.com/guile-git/guile-git.git")
+    (version "0.11.1")
+    (home-page "https://codeberg.org/guile-git/guile-git.git")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -913,11 +913,11 @@ type system, elevating types to first-class status.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1yjyil6z4k80pjdps8v6h6lxikwxmjxvrslf2jrmq2rrfnajschz"))))
+                "0xpzchnglddphi3chv53xqaz2x6rpq3l4s023w7r4mmndb6lgz0b"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0")       ; to prevent guild warnings
-       ;; https://gitlab.com/guile-git/guile-git/-/issues/20
+       ;; https://codeberg.org/guile-git/guile-git/issues/20
        ,@(if (target-ppc32?)
            `(#:phases
              (modify-phases %standard-phases
@@ -925,20 +925,7 @@ type system, elevating types to first-class status.")
                  (lambda _
                    (substitute* "Makefile.am"
                      ((".*tests/blob\\.scm.*") ""))))))
-           '())
-       ,@(if (system-hurd?)
-             (list
-              #:phases
-              #~(modify-phases %standard-phases
-                  (add-after 'unpack 'skip-tests/hurd
-                    (lambda _
-                      (substitute* "tests/proxy.scm"
-                        (("\\(test-begin.*" all)
-                         (string-append
-                          all
-                          "(when (string-ci= \"GNU\" (vector-ref (uname) 0))\n"
-                          "  (test-skip 1))\n")))))))
-             '())))
+           '())))
     (native-inputs
      (list pkg-config autoconf automake texinfo guile-3.0 guile-bytestructures))
     (inputs
