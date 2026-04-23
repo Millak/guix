@@ -889,28 +889,23 @@ binary booleans, @code{TRUE} and @code{FALSE} can be stored with 1 bit only.")
 (define-public r-bit64
   (package
     (name "r-bit64")
-    (version "4.6.0-1")
+    (version "4.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bit64" version))
        (sha256
         (base32
-         "1dqr2g43rhiryzgpfsjb7mb4idnz2jl31jdsvjgrlb625wacxh7v"))))
+         "0dss896kb6ks5xawp15fdv0wcvmcw8wzz4qmc5x3nrxn716b3zfj"))))
     (build-system r-build-system)
     (arguments
      (list
-      #:skipped-tests
-      (if (target-32bit?)
-          '(("test-integer64.R"
-             ;; Minor differences due to accuracy.
-             "arithmetic & basic math works"
-             ;; The array is shifted by one.
-             "Old ..dontshow\\{\\} tests in .format.integer64 continue working"))
-          '())))
+      ;; Tests require r-patrick, which ultimately depends on bit64.  We
+      ;; cannot easily patch these tests.
+      #:tests? #false))
     (propagated-inputs
      (list r-bit))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-testthat r-withr))
     (home-page "https://cran.r-project.org/web/packages/bit64")
     (synopsis "S3 class for vectors of 64 bit integers")
     (description
