@@ -165,6 +165,7 @@
 ;;; Copyright © 2025, 2026 Untrusem <mysticmoksh@riseup.net>
 ;;; Copyright © 2025 case_lambda <case_lambda@disroot.org>
 ;;; Copyright © 2026 Kenny Ballou <kb@devnulllabs.io>
+;;; Copyright © 2026 Adrien 'neox' Bourmault <neox@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2652,7 +2653,7 @@ before interacting with non-free LLMs.")
 (define-public emacs-agitjo
   (package
     (name "emacs-agitjo")
-    (version "1.0.0")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -2661,7 +2662,7 @@ before interacting with non-free LLMs.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wbhi4lbqk0vf0di86a9wljvva3a9vhb2wvsn1s44h53xslhrj0n"))))
+        (base32 "046fcrhm0fhnq2fygbswbcyl21davbjirjl9mq7cdx5cl5x4kg5q"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ;no tests
     (propagated-inputs (list emacs-magit emacs-markdown-mode emacs-transient))
