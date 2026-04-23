@@ -6152,35 +6152,18 @@ have a steep learning curve.")))
    (source
     (origin
      (method url-fetch)
-     (uri (string-append "https://github.com/OpenRCT2/title-sequences/releases/download/v"
-                         version "/title-sequence-v" version ".zip"))
+     (uri (string-append "https://github.com/OpenRCT2/title-sequences"
+                         "/releases/download/v" version
+                         "/title-sequence-v" version ".zip"))
      (file-name (string-append name "-" version ".zip"))
      (sha256
       (base32
        "0qbyxrsw8hlgaq0r5d7lx7an3idy4qbfv7yiw9byhldk763n9cfw"))))
-   (build-system trivial-build-system)
-   (native-inputs
-    `(("bash" ,bash)
-      ("coreutils" ,coreutils)
-      ("unzip" ,unzip)))
+   (build-system copy-build-system)
    (arguments
-    `(#:modules ((guix build utils))
-      #:builder
-      (begin
-        (use-modules (guix build utils))
-        (let* ((out (assoc-ref %outputs "out"))
-               (openrct2-title-sequences (string-append out
-                                         "/share/openrct2/title-sequences"))
-               (source (assoc-ref %build-inputs "source"))
-               (unzip (search-input-file %build-inputs "/bin/unzip")))
-          (copy-file source (string-append ,name "-" ,version ".zip"))
-          (invoke unzip (string-append ,name "-" ,version ".zip"))
-          (delete-file (string-append ,name "-" ,version ".zip"))
-          (mkdir-p openrct2-title-sequences)
-          (copy-recursively "."
-                            openrct2-title-sequences)
-          #t))))
-   (home-page "https://github.com/OpenRCT2/OpenRCT2")
+    (list #:install-plan #~'(("." "/share/openrct2/title-sequences"))))
+   (native-inputs (list unzip))
+   (home-page "https://openrct2.io")
    (synopsis "Title sequences for OpenRCT2")
    (description
     "openrct2-title-sequences is a set of title sequences for OpenRCT2.")
