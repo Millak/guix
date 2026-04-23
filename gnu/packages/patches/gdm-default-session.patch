@@ -82,7 +82,7 @@ index df8e377b7..e80acf7e4 100644
 -                        g_ptr_array_add (dirs_search_array, session_dir);
 -                }
 +                g_ptr_array_add (dirs_search_array,
-+                                 "/run/current-system/profile/share/wayland-sessions/");
++                                 g_strdup ("/run/current-system/profile/share/wayland-sessions/"));
          }
  #endif
  #endif
