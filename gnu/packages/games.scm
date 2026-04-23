@@ -6173,7 +6173,7 @@ have a steep learning curve.")))
 (define-public openrct2-objects
   (package
    (name "openrct2-objects")
-   (version "1.0.20")
+   (version "1.7.9")
    (source
     (origin
      (method url-fetch)
@@ -6181,7 +6181,7 @@ have a steep learning curve.")))
                          "/releases/download/v" version "/objects.zip"))
      (file-name (string-append name "-" version ".zip"))
      (sha256
-      (base32 "1q7a38kcwrfijav6app1gf253yfv8b0rljbkah8040y6i7snw9mw"))))
+      (base32 "1mpa4vpgs4m9izak8h5rkfcn80jbcm2di717k97g30kf1k91wijm"))))
    (build-system copy-build-system)
    (arguments
     ;; zip has multiple top-level directories to install.
