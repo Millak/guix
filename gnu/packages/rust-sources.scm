@@ -1439,18 +1439,18 @@ repository, used as dependencies by codex-acp.")
 (define-public rust-glycin-3
   (package
     (name "rust-glycin")
-    (version "3.0.7")
+    (version "3.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://gitlab.gnome.org/GNOME/glycin.git")
               ;; Rust library version is different from the tagged version.
-              (commit "2.0.7")))
+              (commit "2.1.1")))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0v6szxk5h8a4b28xb0lrhqrq6b4vka2ha4qgpdp35f6c49v9pdyp"))
+         "1mrv733xhbxydww4szskv7jc0hif908aavh8h4kjcxp0zgy13blf"))
        (patches (search-patches "glycin-sandbox-Adapt-bwrap-invocation.patch"))))
     (build-system cargo-build-system)
     (arguments

@@ -13136,11 +13136,9 @@ fn main() {
   (crate-source "glutin-winit" "0.5.0"
                 "13vqsdsyn9ww7sg3cx05jfgbihwn388vp3yb527p5z7qfmqcmvc5"))
 
-(define rust-glycin-3.0.7 package:rust-glycin-3)
-
-(define rust-glycin-common-1.0.3 package:rust-glycin-3)
-
-(define rust-glycin-utils-4.0.4 package:rust-glycin-3)
+(define rust-glycin-3.1.0 package:rust-glycin-3)
+(define rust-glycin-common-1.0.4 package:rust-glycin-3)
+(define rust-glycin-utils-4.1.0 package:rust-glycin-3)
 
 (define rust-gobject-sys-0.10.0
   (crate-source "gobject-sys" "0.10.0"
