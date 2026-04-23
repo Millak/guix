@@ -87,6 +87,7 @@
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2025 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2026 Simen Endsjø <contact@simendsjo.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2800,7 +2801,7 @@ module is also needed for the @code{tuxedo-control-center} (short tcc) package."
 (define-public evdi
   (package
     (name "evdi")
-    (version "1.14.8")                  ;inherited by libevdi
+    (version "1.14.15")                  ;inherited by libevdi
     (source
      (origin
        (method git-fetch)
@@ -2809,14 +2810,20 @@ module is also needed for the @code{tuxedo-control-center} (short tcc) package."
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18n8kk4gbbj252a2dqb7mbpscfb437x42flh1fsl4g5c8brczc77"))))
+        (base32 "065mfwmb4nw71s0f0ax9si8xpbr1sah1bhxvq1k81yicvi83wsxn"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f                  ;no test suite
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'chdir
                           (lambda _
-                            (chdir "module"))))))
+                            (chdir "module")))
+                        ;; Looks like the value is only there to detect RHEL
+                        ;; derivatives, so we can safely delete the include.
+                        (add-after 'unpack 'embed-/etc/os-release
+                          (lambda _
+                            (substitute* "module/Makefile"
+                              (("include /etc/os-release") "")))))))
     (home-page "https://github.com/DisplayLink/evdi")
     (synopsis
      "@acronym{EVDI, Extensible Virtual Display Interface} Linux kernel module")
@@ -2829,7 +2836,7 @@ and receive screen updates.
 
 The EVDI driver uses the standard Linux @acronym{DRM, Direct Rendering Manager}.
 Its displays can be controlled by standard tools such as @command{xrandr} and
-display settings applets in graphical environments")
+display settings applets in graphical environments.")
     (license license:gpl2)))
 
 (define-public libevdi
