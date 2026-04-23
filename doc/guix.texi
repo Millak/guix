@@ -5141,7 +5141,8 @@ This command downloads the data designated by the identifier from
 archive}; it is fully reproducible because the data it refers to is
 immutable.
 
-@xref{Invoking guix pull}, for more information.
+@xref{Invoking guix pull}, for more information, and @pxref{Invoking
+guix hash}, for info on how to compute the SWHID of a file.
 
 @item --allow-untrusted-channels[=yes|no]
 Whether to allow pulls from untrusted channels.
@@ -14834,8 +14835,32 @@ guix hash @var{option} @var{file} ...
 @end example
 
 When @var{file} is @code{-} (a hyphen), @command{guix hash} computes the
-hash of data read from standard input.  @command{guix hash} has the
-following options:
+hash of data read from standard input.
+
+Here are a few examples:
+
+@table @asis
+@item SHA256 of a file for use in an @code{origin} record:
+@example
+guix hash example.tar.gz
+@end example
+
+@item SHA256 of directory @var{checkout} for use in an @code{origin} record:
+@example
+guix hash -rx @var{checkout}
+@end example
+
+@item SHA1 hash of @var{file} like the @code{sha1sum} command:
+@example
+guix hash -H sha1 -f hex @var{file}
+@end example
+
+@cindex SWHID, computing
+@item SHA1 hash of @var{file} for a @code{swh:1:cnt} @uref{https://swhid.org, SWHID}:
+guix hash -S git -H sha1 -f hex @var{file}
+@end table
+
+@command{guix hash} has the following options:
 
 @table @code
 
