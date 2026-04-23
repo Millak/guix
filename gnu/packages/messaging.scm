@@ -1278,7 +1278,6 @@ of xmpppy.")
            glib
            glib-networking
            gsettings-desktop-schemas
-           gsound
            libspelling
            libadwaita
            gstreamer
@@ -1293,6 +1292,7 @@ of xmpppy.")
            libsoup
            libxscrnsaver
            network-manager
+           python-cryptography
            python-css-parser
            python-dbus-1.2
            python-emoji
