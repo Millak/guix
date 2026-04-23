@@ -3419,6 +3419,10 @@ diagnostics, autocompletion, documentation, and formatting.")
     (arguments
      (list
        #:install-source? #f
+       #:modules
+       '((guix build cargo-build-system)
+         (guix build utils)
+         (ice-9 match))
        #:cargo-install-paths ''(".")
        #:features '(list "external-harfbuzz")
        #:cargo-test-flags '(list "--features" "external-harfbuzz"
@@ -3430,7 +3434,24 @@ diagnostics, autocompletion, documentation, and formatting.")
              (lambda* (#:key outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
                       (doc (string-append out "/share/doc/" #$name "-" #$version)))
-                 (copy-recursively "docs/src" doc)))))))
+                 (copy-recursively "docs/src" doc))))
+           (add-after 'install 'install-completions
+             (lambda* (#:key native-inputs #:allow-other-keys)
+               (for-each
+                (match-lambda
+                  ((shell . path)
+                   (mkdir-p (in-vicinity #$output (dirname path)))
+                   (let ((binary
+                          (if #$(%current-target-system)
+                              (search-input-file native-inputs "bin/tectonic")
+                              (in-vicinity #$output "bin/tectonic"))))
+                     (with-output-to-file (in-vicinity #$output path)
+                       (lambda _
+                         (invoke binary "-X" "show" "shell-completions" shell))))))
+                '(("bash"   . "share/bash-completion/completions/tectonic")
+                  ("elvish" . "share/elvish/lib/tectonic")
+                  ("fish"   . "share/fish/vendor_completions.d/tectonic.fish")
+                  ("zsh"    . "share/zsh/site-functions/_tectonic"))))))))
     (native-inputs
      (list pkg-config))
     (inputs
