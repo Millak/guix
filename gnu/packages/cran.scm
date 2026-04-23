@@ -51877,13 +51877,13 @@ Poisson), are some of the many fast functions.")
 (define-public r-rferns
   (package
     (name "r-rferns")
-    (version "5.0.0")
+    (version "6.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rFerns" version))
        (sha256
-        (base32 "1yw3np5iamnr7f3nrd507dkyz76nxmzdpinwxncv87yw30g6gnkq"))))
+        (base32 "1j8bg02zgnkj7injgxr0fxm0qfffcy3p35kjryrap13x53b6jpnm"))))
     (properties `((upstream-name . "rFerns")))
     (build-system r-build-system)
     (home-page "https://gitlab.com/mbq/rFerns")
