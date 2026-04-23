@@ -24442,13 +24442,13 @@ planes.")
 (define-public r-s7
   (package
     (name "r-s7")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "S7" version))
        (sha256
-        (base32 "0nws32ngrv49nv528rncnzag8lc2q9p2ngj81ir161jdm89yq9ph"))))
+        (base32 "1xrasjbwwxaswzk54yqyshiqjfmw6kh7kly4n5jl5dq5vrfj8cvg"))))
     (properties `((upstream-name . "S7")))
     (build-system r-build-system)
     (native-inputs (list r-callr
