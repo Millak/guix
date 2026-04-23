@@ -4780,15 +4780,15 @@ These options are provided for convenience, but you can also specify your
 configuration in the @file{~/.config/guix/channels.scm} file or using the
 @option{--channels} option (see below).
 
-@item --channels=@var{file-or-url}
-@itemx -C @var{file-or-url}
-Read the list of channels from @var{file-or-url} instead of
+@item --channels=@var{file-or-uri}
+@itemx -C @var{file-or-uri}
+Read the list of channels from @var{file-or-uri} instead of
 @file{~/.config/guix/channels.scm} or @file{/etc/guix/channels.scm}.
-@var{file-or-url} must contain Scheme code that
+@var{file-or-uri} must contain Scheme code that
 evaluates to a list of channel objects.  @xref{Channels}, for more
 information.
 
-As you can guess, @var{file-or-url} can be a URL, in which case the
+As you can guess, @var{file-or-uri} can be a URL, in which case the
 given channels file is transparently downloaded.  In the example below,
 we pull from the latest revision of Guix that was successfully
 evaluated:
@@ -4798,10 +4798,24 @@ guix pull \
   -C https://ci.guix.gnu.org/eval/latest/channels.scm?spec=master
 @end example
 
+@cindex SWHID, for channel files
+Alternatively, you can refer to a channel file by its
+@uref{https://swhid.org,Software Hash Identifier}, or SWHID, which
+uniquely and unambiguously identifies contents, as in this example:
+
+@example
+guix pull \
+  -C swh:1:cnt:ae02d8ba3538a385ee799e61cdd0dfc5e14a8d1b
+@end example
+
+This command downloads the data designated by the given identifier from
+@uref{https://archive.softwareheritage.org, the Software Heritage
+archive}.
+
 @anchor{trusted-channels}
 @cindex trusted channels, for downloaded channel files
-This command errors out if the returned channels are not among the
-user's @dfn{trusted channels}, defined as:
+In both cases, the command errors out if the returned channels are not
+among the user's @dfn{trusted channels}, defined as:
 
 @itemize
 @item
@@ -5089,13 +5103,13 @@ Use the @code{guix} channel from the specified @var{url}, at the
 given @var{commit} (a valid Git commit ID represented as a hexadecimal
 string or the name of a tag), or @var{branch}.
 
-@item --channels=@var{file-or-url}
-@itemx -C @var{file-or-url}
-Read the list of channels from @var{file-or-url}.  @var{file-or-url}
+@item --channels=@var{file-or-uri}
+@itemx -C @var{file-or-uri}
+Read the list of channels from @var{file-or-uri}.  @var{file-or-uri}
 must contain Scheme code that evaluates to a list of channel objects.
 @xref{Channels} for more information.
 
-When @var{file-or-url} is a URL, channels are transparently downloaded.
+When @var{file-or-uri} is a URL, channels are transparently downloaded.
 In the example below, we pull from the latest revision of Guix that was
 successfully evaluated:
 
@@ -5105,10 +5119,24 @@ guix time-machine \
   -- describe
 @end example
 
+@cindex SWHID, for channel files
 Note that downloading a channel file potentially harms reproducibility:
 the file might vanish or be modified on the server behind your back.
 From a reproducibility viewpoint the safe approach is to keep channel
-files under version control.
+files under version control, or to refer to them by their
+@uref{https://swhid.org,Software Hash Identifier}, or SWHID, which
+uniquely and unambiguously identifies contents.  Here is an example:
+
+@example
+guix time-machine \
+  -C swh:1:cnt:ae02d8ba3538a385ee799e61cdd0dfc5e14a8d1b \
+  -- @dots{}
+@end example
+
+This command downloads the data designated by the identifier from
+@uref{https://archive.softwareheritage.org, the Software Heritage
+archive}; it is fully reproducible because the data it refers to is
+immutable.
 
 @xref{Invoking guix pull}, for more information.
 

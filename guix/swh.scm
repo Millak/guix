@@ -92,6 +92,7 @@
             content-data-url
             content-length
             lookup-content
+            swhid-content-data
 
             directory-entry?
             directory-entry-name
@@ -285,7 +286,8 @@ FALSE-IF-404? is true, return #f upon 404 responses."
 
          (cond ((= 200 (response-code response))
                 (let ((result (decode port)))
-                  (close-port port)
+                  (unless (eq? result port)
+                    (close-port port))
                   result))
                ((and false-if-404?
                      (= 404 (response-code response)))
@@ -447,6 +449,17 @@ FALSE-IF-404? is true, return #f upon 404 responses."
         (string-append type ":"
                        (bytevector->base16-string hash)))
   json->content)
+
+(define (swhid-content-data swhid)
+  "If SWHID is a content identifier (starting with \"swh:1:cnt:\"), return an
+input port from which its data can be read.  Otherwise return #f."
+  (define prefix
+    "swh:1:cnt:")
+  (and (string-prefix? prefix swhid)
+       (call (swh-url "/api/1/content"
+                      (string-append "sha1_git:" (string-drop swhid (string-length prefix)))
+                      "raw")
+             identity)))                          ;return the port as is
 
 (define-query (lookup-revision id)
   "Return the revision with the given ID, typically a Git commit SHA1."

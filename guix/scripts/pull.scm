@@ -33,6 +33,7 @@
   #:use-module (guix memoization)
   #:use-module (guix monads)
   #:use-module (guix channels)
+  #:autoload   (guix swh) (swhid-content-data)
   #:autoload   (guix inferior) (open-inferior
                                 inferior-available-packages
                                 close-inferior)
@@ -792,6 +793,13 @@ authenticated---i.e., have a @code{introduction} field---may be listed in that
 file."))
     (exit EXIT_FAILURE)))
 
+(define (swhid-content-data* swhid)
+  "Like 'swhid-content-data' but error out of SWHID is not a valid content
+identifier."
+  (match (swhid-content-data swhid)
+    (#f (leave (G_ "~a: invalid content SWHID~%") swhid))
+    (port port)))
+
 (define (channel-list opts)
   "Return the list of channels to use.  If OPTS specify a channel file,
 channels are read from there; otherwise, if ~/.config/guix/channels.scm
@@ -819,9 +827,11 @@ transformations specified in OPTS (resulting from '--url', '--commit', or
   (define (load-channels file)
     (let* ((url? (or (string-prefix? "https://" file)
                      (string-prefix? "http://" file)))
-           (result (load* (if url?
-                              (http-fetch file #:timeout 10)
-                              file)
+           (swhid? (string-prefix? "swh:" file))
+           (result (load* (cond
+                           (url? (http-fetch file #:timeout 10))
+                           (swhid? (swhid-content-data* file))
+                           (else file))
                           %safe-channel-bindings
                           #:isolated? isolated?)))
       (if (and (list? result) (every channel? result))
@@ -829,7 +839,8 @@ transformations specified in OPTS (resulting from '--url', '--commit', or
             ;; When downloading channels, keep going if and only if these are
             ;; channels the user trusts.
             (check-trusted-channels result
-                                    (if (and url? require-trusted-channels?)
+                                    (if (and (or url? swhid?)
+                                             require-trusted-channels?)
                                         'error
                                         'warning))
             result)
