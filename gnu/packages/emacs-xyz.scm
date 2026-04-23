@@ -56,7 +56,7 @@
 ;;; Copyright © 2019 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2019 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2019 Stephen Webber <montokapro@gmail.com>
-;;; Copyright © 2019, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2019, 2021—2026 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019 David Wilson <david@daviwil.com>
 ;;; Copyright © 2020 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2020 Robert Smith <robertsmith@posteo.net>
@@ -670,6 +670,7 @@ Emacs Lisp.")
        (sha256
         (base32 "0krxainwpn7bnnvbrrhivmh302i9dyfixs6l5wb7xw7qpjgwqzc8"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/bkaestner/org-arbeitszeit")
     (synopsis "Calculate your worktime")
     (description
@@ -677,7 +678,7 @@ Emacs Lisp.")
 (German for \"working hours\").  The dynamic block collects all clocked hours and
 provides a weekly table to quickly see your accumulated overtime.  To insert a
 new block, use @samp{M-x org-dynamic-block-insert-dblock}.")
-    (license license:gpl3)))
+    (license license:gpl3+)))
 
 (define-public emacs-perl-doc
   (package
