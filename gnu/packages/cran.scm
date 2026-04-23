@@ -17114,13 +17114,13 @@ annotation data to keep updated.")
 (define-public r-ggtangle
   (package
     (name "r-ggtangle")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggtangle" version))
        (sha256
-        (base32 "035qjraw7z7kaakjz472ag32yy8h8vn2b48l7rdfpc95s3qilpr5"))))
+        (base32 "0qsc5wmn7iqnak5z70ffmdi35k50hfkxg52ily833m36w4gf4lwr"))))
     (properties `((upstream-name . "ggtangle")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggfun
