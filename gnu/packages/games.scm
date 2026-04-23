@@ -6148,17 +6148,17 @@ have a steep learning curve.")))
 (define-public openrct2-title-sequences
   (package
    (name "openrct2-title-sequences")
-   (version "0.1.2")
+   (version "0.4.26")
    (source
     (origin
      (method url-fetch)
      (uri (string-append "https://github.com/OpenRCT2/title-sequences"
                          "/releases/download/v" version
-                         "/title-sequence-v" version ".zip"))
+                         "/title-sequences.zip"))
      (file-name (string-append name "-" version ".zip"))
      (sha256
       (base32
-       "0qbyxrsw8hlgaq0r5d7lx7an3idy4qbfv7yiw9byhldk763n9cfw"))))
+       "0n680llpcyzl22bbphp9diz4m86gz2rn97yxlky44qspn63rgfys"))))
    (build-system copy-build-system)
    (arguments
     (list #:install-plan #~'(("." "/share/openrct2/title-sequences"))))
