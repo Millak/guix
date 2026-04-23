@@ -11896,10 +11896,15 @@ Server (PLS).")
               "and not test_pandas_completion"))  ; avoid pandas
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-deps
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("autopep8>=2.0.4,<2.1.0") "autopep8"))))
           (add-before 'check 'set-HOME
             (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list python-black
+     (list python-autopep8
+           python-black
            python-docstring-to-markdown
            python-flake8
            python-jedi
