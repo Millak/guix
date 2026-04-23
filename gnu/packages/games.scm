@@ -6329,50 +6329,51 @@ that follows two aliens who come to Earth in search of a stolen artifact.")
         (base32 "01nanpbz5ycdhkyd46fjfvj18sw729l4vk7xg12600f9rjngjk76"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags (list "-DDOWNLOAD_OBJECTS=OFF"
-                               "-DDOWNLOAD_TITLE_SEQUENCES=OFF")
-       #:tests? #f                      ; tests require network access
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-usr-share-paths&add-data
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((titles (assoc-ref inputs "openrct2-title-sequences"))
-                   (objects (assoc-ref inputs "openrct2-objects")))
-               ;; Fix some references to /usr/share.
-               (substitute* "src/openrct2/platform/Platform.Linux.cpp"
-                 (("/usr/share")
-                  (string-append (assoc-ref %outputs "out") "/share")))
-               (copy-recursively
-                (string-append titles "/share/openrct2/title-sequences")
-                "data/title")
-               (copy-recursively
-                (string-append objects "/share/openrct2/objects")
-                "data/object"))))
-         (add-before 'configure 'get-rid-of-errors
-           (lambda _
-             ;; Don't treat warnings as errors.
-             (substitute* "CMakeLists.txt"
-               (("-Werror") ""))
-             #t)))))
-    (inputs `(("curl" ,curl)
-              ("duktape" ,duktape)
-              ("fontconfig" ,fontconfig)
-              ("freetype" ,freetype)
-              ("icu4c" ,icu4c)
-              ("jansson" ,jansson)
-              ("nlohmann-json" ,nlohmann-json)
-              ("libpng" ,libpng)
-              ("libzip" ,libzip)
-              ("mesa" ,mesa)
-              ("openrct2-objects" ,openrct2-objects)
-              ("openrct2-title-sequences" ,openrct2-title-sequences)
-              ("openssl" ,openssl)
-              ("sdl2" ,sdl2)
-              ("speexdsp" ,speexdsp)
-              ("zlib" ,zlib)))
+     (list
+      #:configure-flags #~(list "-DDOWNLOAD_OBJECTS=OFF"
+                                "-DDOWNLOAD_TITLE_SEQUENCES=OFF")
+      #:tests? #f                       ; tests require network access
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-usr-share-paths&add-data
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((titles (assoc-ref inputs "openrct2-title-sequences"))
+                    (objects (assoc-ref inputs "openrct2-objects")))
+                ;; Fix some references to /usr/share.
+                (substitute* "src/openrct2/platform/Platform.Linux.cpp"
+                  (("/usr/share")
+                   (string-append #$output "/share")))
+                (copy-recursively
+                 (string-append titles "/share/openrct2/title-sequences")
+                 "data/title")
+                (copy-recursively
+                 (string-append objects "/share/openrct2/objects")
+                 "data/object"))))
+          (add-before 'configure 'get-rid-of-errors
+            (lambda _
+              ;; Don't treat warnings as errors.
+              (substitute* "CMakeLists.txt"
+                (("-Werror") "")))))))
+    (inputs
+     (list curl
+           duktape
+           fontconfig
+           freetype
+           icu4c
+           jansson
+           nlohmann-json
+           libpng
+           libzip
+           mesa
+           openrct2-objects
+           openrct2-title-sequences
+           openssl
+           sdl2
+           speexdsp
+           zlib))
     (native-inputs
      (list pkg-config))
-    (home-page "https://github.com/OpenRCT2/OpenRCT2")
+    (home-page "https://openrct2.io")
     (synopsis "Free software re-implementation of RollerCoaster Tycoon 2")
     (description "OpenRCT2 is a free software re-implementation of
 RollerCoaster Tycoon 2 (RCT2).  The gameplay revolves around building and
