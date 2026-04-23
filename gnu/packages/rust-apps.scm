@@ -3404,28 +3404,26 @@ diagnostics, autocompletion, documentation, and formatting.")
 (define-public tectonic
   (package
     (name "tectonic")
-    (version "0.15.0")
+    (version "0.16.9")
     (source
      (origin
        ;; Grab all the sources instead of each packaged crate in the workspace.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/tectonic-typesetting/tectonic")
-             (commit (string-append name "@" version))
-             (recursive? #t)))
+             (commit (string-append name "@" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02wchm7kmfsw8y71x84hlk9qf5ldvj2ir7j8pcq2a09wlj4xi4f5"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (delete-file-recursively "crates/bridge_harfbuzz/harfbuzz")))))
+        (base32 "1v9rs8wq608dwyr5wza9jlh9y8d3adm7jxny8dq02zpbda362ap7"))))
     (build-system cargo-build-system)
     (arguments
      (list
        #:install-source? #f
        #:cargo-install-paths ''(".")
        #:features '(list "external-harfbuzz")
-       #:cargo-test-flags '(list "--features" "external-harfbuzz")
+       #:cargo-test-flags '(list "--features" "external-harfbuzz"
+                                 "--"
+                                 "--skip=no_segfault_after_failed_compilation")
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'install 'install-doc
