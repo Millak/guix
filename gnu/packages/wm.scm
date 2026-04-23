@@ -2220,6 +2220,65 @@ solution in their Wayland environment.")
     (license (list license:gpl3 license:expat))
     (home-page "https://github.com/kolunmi/sandbar")))
 
+(define-public sdorfehs
+  (package
+    (name "sdorfehs")
+    (version "1.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jcs/sdorfehs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ycs8x0lnsm8jaxy70z1jgrgn3xrabqp1yh54yq2zl74silsakyz"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'install 'install-xsession
+            (lambda _
+              ;; Add a .desktop file to xsessions.
+              (let ((exec-path (string-append #$output "/bin/sdorfehs"))
+                    (xsessions (string-append #$output "/share/xsessions")))
+                (make-desktop-entry-file
+                 (string-append xsessions "/sdorfehs.desktop")
+                 #:name "sdorfehs"
+                 #:exec exec-path
+                 #:try-exec exec-path
+                 #:comment #$(package-synopsis this-package))))))))
+    (inputs (list freetype
+                  libx11
+                  libxft
+                  libxrandr
+                  libxres
+                  libxtst))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/jcs/sdorfehs")
+    (synopsis "Tiling window manager descended from ratpoison")
+    (description
+     "sdorfehs is a tiling window manager descended from ratpoison (which
+itself is modeled after GNU Screen).
+
+sdorfehs divides the screen into one or more frames, each only displaying one
+window at a time but can cycle through all available windows (those which are
+not being shown in another frame).
+
+Like Screen, sdorfehs primarily uses prefixed/modal key bindings for most
+actions.  sdorfehs's command mode is entered with a configurable
+keystroke (@kbd{Control+a} by default) which then allows a number of bindings
+accessible with just a single keystroke or any other combination.  For
+example, to cycle through available windows in a frame, press @kbd{Control+a}
+then @kbd{n}.")
+    (license license:gpl2+)))
+
 (define-public sov
   (package
     (name "sov")
