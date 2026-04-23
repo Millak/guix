@@ -2293,7 +2293,8 @@ WSGIPassAuthorization On
             (actions (list (shepherd-configuration-action config-file)))
             (start #~(make-forkexec-constructor
                        (list (string-append #$sogogi "/bin/sogogi")
-                             "-config" #$config-file)))
+                             "-config" #$config-file)
+                       #:user "sogogi" #:group "sogogi"))
             (stop #~(make-kill-destructor))))))
 
 (define sogogi-account-service
