@@ -49584,7 +49584,7 @@ how to generate an image that uses the @code{grub-efi-bootloader}
 bootloader and boot it with QEMU:
 
 @example
-image=$(guix system image --image-type=qcow2 \
+image=$(guix system image --image-type=qcow2-gpt \
         gnu/system/examples/lightweight-desktop.tmpl)
 cp $image /tmp/my-image.qcow2
 chmod +w /tmp/my-image.qcow2
