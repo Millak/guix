@@ -173,7 +173,7 @@ time-stamping or reference clock, sub-microsecond accuracy is possible.")
     (native-inputs (list which pkg-config))
     (inputs (cons* guile-3.0    ; for wrap-script
                    libevent
-                   openssl
+                   openssl-3.0
                    perl
                    perl-http-tiny
                    perl-io-socket-ssl
