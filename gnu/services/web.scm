@@ -1861,7 +1861,8 @@ Whoogle."))
           (requirement '(user-processes networking))
           (start #~(make-forkexec-constructor
                      (list (string-append #$go-webdav "/bin/webdav-server")
-                           #$@args)))
+                           #$@args)
+                     #:user "go-webdav" #:group "go-webdav"))
           (stop #~(make-kill-destructor)))))
 
 (define go-webdav-account-service
