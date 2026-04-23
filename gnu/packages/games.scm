@@ -552,14 +552,14 @@ use with @code{udev-service-type}.")
 (define-public armagetronad
   (package
     (name "armagetronad")
-    (version "0.2.9.2.3")
+    (version "0.2.9.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/armagetronad/stable/"
                                   version "/armagetronad-" version ".tbz"))
               (sha256
                (base32
-                "0a6rlp2lj5bp7pg1yf8brjyb3mw7nqp3amj19wvz3xni21bbc31k"))))
+                "1q1zlbhbcimr6bw0ms1pr8hz4q850ivi3hvxn3467jfgiq22f3cy"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -576,6 +576,7 @@ use with @code{udev-service-type}.")
                      (("^install_link .*BINDIR.*") "")))))))
     (native-inputs (list pkg-config))
     (inputs (list libxml2
+                  curl
                   (sdl-union (list sdl sdl-image sdl-mixer))
                   freeglut
                   libpng
