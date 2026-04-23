@@ -2832,6 +2832,35 @@ Its displays can be controlled by standard tools such as @command{xrandr} and
 display settings applets in graphical environments")
     (license license:gpl2)))
 
+(define-public libevdi
+  (package
+    (inherit evdi)
+    (name "libevdi")
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target)))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (add-after 'unpack 'chdir
+                          (lambda _
+                            (chdir "library")))
+                        (replace 'install
+                          (lambda* _
+                            (let* ((lib (string-append #$output "/lib")))
+                              (mkdir-p lib)
+                              (install-file "libevdi.so" lib)))))))
+    (inputs (list libdrm))
+    (native-inputs (list pkg-config))
+    (synopsis
+     "@acronym{EVDI, Extensible Virtual Display Interface} user-space library")
+    (description
+     "Libevdi is a library that gives applications easy access to
+@acronym{EVDI, Extensible Virtual Display Interface} devices provided by the
+@code{evdi} driver package.")
+    (license license:lgpl2.1)))
+
 (define-public ec
   (package
     (name "ec")
