@@ -6194,34 +6194,18 @@ have a steep learning curve.")))
    (source
     (origin
      (method url-fetch)
-     (uri (string-append "https://github.com/OpenRCT2/objects/releases/download/v"
-                         version "/objects.zip"))
+     (uri (string-append "https://github.com/OpenRCT2/objects"
+                         "/releases/download/v" version "/objects.zip"))
      (file-name (string-append name "-" version ".zip"))
      (sha256
       (base32 "1q7a38kcwrfijav6app1gf253yfv8b0rljbkah8040y6i7snw9mw"))))
-   (build-system trivial-build-system)
-   (native-inputs
-    `(("bash" ,bash)
-      ("coreutils" ,coreutils)
-      ("unzip" ,unzip)))
+   (build-system copy-build-system)
    (arguments
-    `(#:modules ((guix build utils))
-      #:builder
-      (begin
-        (use-modules (guix build utils))
-        (let* ((out (assoc-ref %outputs "out"))
-               (openrct2-objects (string-append out
-                                         "/share/openrct2/objects"))
-               (source (assoc-ref %build-inputs "source"))
-               (unzip (search-input-file %build-inputs "/bin/unzip")))
-          (copy-file source (string-append ,name "-" ,version ".zip"))
-          (invoke unzip (string-append ,name "-" ,version ".zip"))
-          (delete-file (string-append ,name "-" ,version ".zip"))
-          (mkdir-p openrct2-objects)
-          (copy-recursively "."
-                            openrct2-objects)
-          #t))))
-   (home-page "https://github.com/OpenRCT2/OpenRCT2")
+    ;; zip has multiple top-level directories to install.
+    (list #:install-plan #~'((".." "/share/openrct2/objects"
+                              #:exclude ("environment-variables")))))
+   (native-inputs (list unzip))
+   (home-page "https://openrct2.io")
    (synopsis "Objects for OpenRCT2")
    (description
     "openrct2-objects is a set of objects for OpenRCT2.")
