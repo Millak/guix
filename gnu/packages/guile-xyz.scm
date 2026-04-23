@@ -6442,7 +6442,8 @@ external dependencies and can be a good base for other packages, like e.g.
      (list
       #:make-flags
       #~'("GUILE_AUTO_COMPILE=0")))
-    (inputs (list guile-3.0 guile-compose))
+    (inputs (list guile-3.0))
+    (propagated-inputs (list guile-compose))
     (native-inputs (list autoconf-2.72 automake pkg-config guile-3.0 texinfo))
     (synopsis "Web application middleware composition for Guile Scheme")
     (description
