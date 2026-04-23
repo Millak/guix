@@ -858,7 +858,7 @@ input via a small child-frame spawned at the position of the cursor.")
 (define-public emacs-arei
   (package
     (name "emacs-arei")
-    (version "0.9.6")
+    (version "0.9.7")
     (source
      (origin
        (method git-fetch)
@@ -868,10 +868,13 @@ input via a small child-frame spawned at the position of the cursor.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1m8ic5pcshz2y2maxvbgg70n4k2kgxvj98zisqal15j7djz0hzji"))))
+         "1fp4l8rzfd7cds80p8c9jgwwlb7rsw35djh0hs50g89h937w5s02"))))
     (build-system emacs-build-system)
-    (arguments (list #:tests? #f))      ; no tests
-    (propagated-inputs (list emacs-eros emacs-sesman emacs-queue))
+    (arguments
+     (list #:lisp-directory "lisp"
+           #:tests? #f))                ; no tests
+    (propagated-inputs
+     (list emacs-consult emacs-eros emacs-sesman emacs-queue))
     (home-page "https://git.sr.ht/~abcdw/emacs-arei")
     (synopsis "Asynchronous Reliable Extensible IDE")
     (description "Sleek Guile IDE for Emacs.")
