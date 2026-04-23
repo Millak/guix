@@ -5344,7 +5344,9 @@ also available.")
                    (with-directory-excursion "src"
                      (substitute* "CMakeLists.txt"
                        (("glm::glm")
-                        "glm")))))))
+                        "glm")))
+                   ;; Rename the icon to match with the executable file.
+                   (rename-file "srb2.png" "ringracers.png")))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -5354,15 +5356,30 @@ also available.")
               "-DCMAKE_CXX_FLAGS_RELWITHDEBINFO='-O3 -g -DNDEBUG'")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'install 'move-and-wrap-binary
+          (replace 'install
+            (lambda _
+              (install-file "bin/ringracers" (string-append #$output "/bin"))
+              (install-file "../source/ringracers.png"
+                            (string-append #$output "/share/pixmaps"))))
+          (add-after 'install 'wrap-program
             ;; Install executable to $out/bin.
             (lambda* (#:key inputs #:allow-other-keys)
-              (with-directory-excursion #$output
-                (mkdir "bin")
-                (rename-file "ringracers" "bin/ringracers")
-                (wrap-program "bin/ringracers"
-                  `("RINGRACERSWADDIR" =
-                    (,(assoc-ref inputs "ring-racers-data"))))))))))
+              (wrap-program "bin/ringracers"
+                `("RINGRACERSWADDIR" =
+                  (,(assoc-ref inputs "ring-racers-data"))))))
+          (add-after 'wrap-program 'create-desktop-entry
+            (lambda _
+              (let* ((datadir (string-append #$output "/share"))
+                     (appdir (string-append datadir "/applications")))
+                (mkdir-p appdir)
+                (make-desktop-entry-file (string-append appdir
+                                                        "/ringracers.desktop")
+                  #:name "Dr. Robotnik's Ring Racers"
+                  #:comment "Technical kart racing game"
+                  #:icon "ringracers"
+                  #:exec (string-append #$output "/bin/ringracers")
+                  #:startup-notify #f
+                  #:categories '("Application" "Game"))))))))
     (native-inputs (list pkg-config))
     (inputs (list glm
                   libogg
