@@ -817,7 +817,33 @@ high-performance computing} clusters.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'register-guix-extension
+          (add-after 'unpack 'set-load-paths-in-entry-point
+            (lambda _
+              (define load-path
+                (cons (string-append #$output
+                                     "/share/guile/site/"
+                                     (target-guile-effective-version))
+                      (parse-path (getenv "GUILE_LOAD_PATH"))))
+              (define load-compiled-path
+                (cons (string-append #$output
+                                     "/lib/guile/"
+                                     (target-guile-effective-version)
+                                     "/site-ccache")
+                      (parse-path (getenv "GUILE_LOAD_COMPILED_PATH"))))
+              (define search-paths-header
+                `(begin
+                   (set! %load-path
+                         (append (list ,@load-path) %load-path))
+                   (set! %load-compiled-path
+                         (append (list ,@load-compiled-path)
+                                 %load-compiled-path))))
+              (substitute* "guix/extensions/toys.scm"
+                (("^\\(define-module \\(guix extensions toys\\)")
+                 (string-append
+                  (with-output-to-string
+                    (lambda () (write search-paths-header)))
+                  "\n(define-module (guix extensions toys)")))))
+          (add-after 'set-load-paths-in-entry-point 'register-guix-extension
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((ext-path (string-append #$output "/share/guix/extensions")))
                 (mkdir-p ext-path)
