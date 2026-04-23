@@ -1538,7 +1538,7 @@ order to provide IDE functionality for Guile Scheme.")
 (define-public guile-ares-rs
   (package
     (name "guile-ares-rs")
-    (version "0.9.6")
+    (version "0.9.7")
     (source
      (origin
        (method git-fetch)
@@ -1548,35 +1548,40 @@ order to provide IDE functionality for Guile Scheme.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1vkww3vc0lsh5f8yh6fnh402rx3rsm0ss69rdkmplhzp4c7c4z1d"))))
+         "1xbznh5zjswfydgqg53g50ya7zm0hidin74g2glk849l9j45szw3"))))
     (build-system guile-build-system)
     (arguments
      (list
       #:source-directory "src/guile"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'build 'install-script
+          (add-after 'build 'install-scripts
             (lambda _
-              (let* ((bin (string-append #$output "/bin"))
-                     (oldpath (string-append
-                               #$output
-                               ;; This file will be named ares-nrepl.scm for
-                               ;; the next version.
-                               "/share/guile/site/3.0/ares/scripts/ares.scm"))
-                     (newpath (string-append bin "/ares-nrepl")))
-                (mkdir bin)
-                (symlink oldpath newpath)
-                (wrap-program newpath
-                  `("GUILE_LOAD_PATH" ":" =
-                    ,(list (string-append #$output "/share/guile/site/3.0")
-                           (getenv "GUILE_LOAD_PATH")))
-                  `("GUILE_LOAD_COMPILED_PATH" ":" =
-                    ,(list (string-append #$output "/lib/guile/3.0/site-ccache")
-                           (getenv "GUILE_LOAD_COMPILED_PATH"))))
-                ;; Not needed since the wrapper followed the symlink.
-                (delete-file (string-append bin "/.ares-nrepl-real"))))))))
-    (inputs (list bash-minimal guile-3.0))
-    (propagated-inputs (list guile-fibers guile-custom-ports))
+              (define bin (string-append #$output "/bin"))
+              (define site (string-append #$output "/share/guile/site/3.0"))
+              (define ccache
+                (string-append #$output "/lib/guile/3.0/site-ccache"))
+
+              (define (install-script name)
+                (let ((oldpath
+                       (string-append site "/ares/scripts/" name ".scm"))
+                      (newpath
+                       (string-append bin "/" name)))
+                  (symlink oldpath newpath)
+                  (wrap-program newpath
+                    `("GUILE_LOAD_PATH" ":" =
+                      ,(list site
+                             (getenv "GUILE_LOAD_PATH")))
+                    `("GUILE_LOAD_COMPILED_PATH" ":" =
+                      ,(list ccache
+                             (getenv "GUILE_LOAD_COMPILED_PATH"))))
+                  ;; Not needed since the wrapper followed the symlink.
+                  (delete-file (string-append bin "/." name "-real"))))
+
+              (mkdir bin)
+              (for-each install-script '("ares-nrepl" "ares-suitbl")))))))
+    (inputs (list bash-minimal guile-3.0-latest))
+    (propagated-inputs (list guile-fibers))
     (home-page "https://git.sr.ht/~abcdw/guile-ares-rs")
     (synopsis "Asynchronous Reliable Extensible Sleek RPC Server for Guile")
     (description "Asynchronous Reliable Extensible Sleek RPC Server for
