@@ -4730,6 +4730,10 @@ for common mesh file formats, and collision detection.")
                       (url "https://github.com/thelaui/M.A.R.S.")
                       (commit commit)))
                 (file-name (git-file-name name version))
+                (modules '((guix build utils)))
+                (snippet
+                 #~(begin
+                     (delete-file-recursively "ext_libs_for_windows")))
                 (sha256
                  (base32
                   "0bdi4ja39rark742qvqixm8khai5k8qd84z5kzim9jcjdvvwyqj9"))))
@@ -4756,7 +4760,8 @@ for common mesh file formats, and collision detection.")
 attractive physics.  Players can battle each other or computer controlled
 enemies in different game modes such as space ball, death match, team death
 match, cannon keep, and grave-itation pit.")
-      (license license:gpl3+))))
+      (license (list license:gpl3+
+                     license:cc-by-sa3.0))))) ;/data/audio/music
 
 (define-public alienblaster
   (package
