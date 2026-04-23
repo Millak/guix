@@ -1696,7 +1696,7 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
 (define-public hyperfine
   (package
     (name "hyperfine")
-    (version "1.19.0")
+    (version "1.20.0")
     (source
       (origin
         (method url-fetch)
@@ -1704,7 +1704,7 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "07pm8i71l9y50awz0d97zb231lcvp3c2hmdh98znq4m9a02xd7hv"))))
+          "0b0jhpqg7hamf8zkzw8cwim9550hj3w7cq43702d4yyxdxz6kzn5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:modules ((guix build cargo-build-system)
