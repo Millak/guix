@@ -23382,13 +23382,13 @@ constants, and control debugging of packages via environment variables.")
 (define-public r-processx
   (package
     (name "r-processx")
-    (version "3.8.7")
+    (version "3.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "processx" version))
        (sha256
-        (base32 "04lvxmqnbwc35yb2fnr1p1icf0dicv56hbyvasky5avrcfc0x68r"))))
+        (base32 "0m5kix63q8166agxrp57mcaz4mi6yr08l9ab225iv285ah1zkznd"))))
     (properties
      ;; We can't have testthat among the inputs, because that would lead to a
      ;; dependency cycle.
