@@ -6965,9 +6965,9 @@ side panel;
     (license license:gpl2+)))
 
 ;; Also update (@ (gnu packages rust-sources) rust-glycin-3) when updating this.
-(define-public glycin-loaders
+(define-public libglycin
   (package
-    (name "glycin-loaders")
+    (name "libglycin")
     (version "2.1.1")
     (source
      (origin
@@ -6984,6 +6984,10 @@ side panel;
     (build-system meson-build-system)
     (arguments
      (list
+      #:configure-flags #~(list "-Dglycin-loaders=false"
+                                "-Dglycin-thumbnailer=true"
+                                "-Dlibglycin=true"
+                                "-Dlibglycin-gtk4=true")
       #:imported-modules `(,@%meson-build-system-modules
                            ,@%cargo-build-system-modules)
       #:modules `(((guix build cargo-build-system) #:prefix cargo:)
@@ -7075,9 +7079,6 @@ side panel;
                             (base32
                              "1jvra75kjqkndxzzpmi5lb8d3q4fi3yc4hha0r1g9brdsnbhsp6f")))))
     (inputs (cons* bubblewrap
-                   libheif
-                   libjxl
-                   librsvg
                    (cargo-inputs 'glycin)))
     ;; The following inputs are 'Required' in the pkg-config files.
     (propagated-inputs (list fontconfig glib gtk lcms libseccomp))
@@ -7087,6 +7088,22 @@ side panel;
 thumbnails to display untrusted content safely.  This package provides the
 runtime image loader executables that are used inside the sandbox.")
     (license (list license:mpl2.0 license:lgpl2.1+))))
+
+(define-public glycin-loaders
+  (package/inherit libglycin
+    (name "glycin-loaders")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:configure-flags original-flags #~(list))
+        #~(list "-Dglycin-loaders=true"
+                "-Dglycin-thumbnailer=false"
+                "-Dlibglycin=false"
+                "-Dlibglycin-gtk4=false"))))
+    (inputs
+     (modify-inputs inputs
+       (prepend libheif
+                libjxl
+                librsvg)))))
 
 (define-public loupe
   (package
@@ -7158,6 +7175,7 @@ runtime image loader executables that are used inside the sandbox.")
             gtk
             lcms
             libadwaita
+            libglycin
             libgweather
             libseccomp
             (cargo-inputs 'loupe)))
@@ -10199,6 +10217,7 @@ through portals.")
            gst-plugins-base
            json-glib
            libadwaita
+           libglycin
            libportal
            libseccomp
            libselinux
