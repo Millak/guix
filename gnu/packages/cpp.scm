@@ -1434,6 +1434,9 @@ data transfer object.")
 (define-public nlohmann-json
   (package
     (name "nlohmann-json")
+    ;; XXX: Merge related package `nlohmann-json-no-char8-t' back into here when
+    ;; updating from 3.12.0, as the unique patch it applies will already be
+    ;; incorporated in.
     (version "3.12.0")
     (home-page "https://github.com/nlohmann/json")
     (source
@@ -1506,6 +1509,46 @@ intuitive syntax and trivial integration.")
 
 (define-deprecated-package json-modern-cxx
   nlohmann-json)
+
+(define-public nlohmann-json-no-char8-t
+  (package
+    ;; XXX: Version 3.12.0 does not work without char8_t support.
+    ;; OpenRCT2 compiles with -fno-char8_t, and thus requires this patch.
+    ;; See https://github.com/nlohmann/json/pull/4736
+    (inherit nlohmann-json)
+    (name "nlohmann-json-no-char8-t")
+    (version "3.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url "https://github.com/nlohmann/json")
+                           (commit (string-append "v" version))))
+       (sha256
+        (base32 "09nqq56ighr3lghhn3fs399lkllghz717j0xyp87x0giw86ayh3h"))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Delete bundled software.  Preserve doctest_compatibility.h, which
+            ;; is a wrapper library added by this package.
+            (install-file "./tests/thirdparty/doctest/doctest_compatibility.h"
+                          "/tmp")
+            (delete-file-recursively "./tests/thirdparty")
+            (install-file "/tmp/doctest_compatibility.h"
+                          "./tests/thirdparty/doctest")
+
+            ;; Adjust for the unbundled fifo_map and doctest.
+            (substitute* (find-files "./tests/" "\\.h(pp)?")
+              (("#include \"doctest\\.h\"") "#include <doctest/doctest.h>")
+              (("#include <doctest\\.h>") "#include <doctest/doctest.h>"))
+            (with-directory-excursion "tests/src"
+              (let ((files (find-files "." "\\.cpp$")))
+                (substitute* files
+                  (("#include ?\"(fifo_map.hpp)\"" all fifo-map-hpp)
+                   (string-append
+                    "#include <fifo_map/" fifo-map-hpp ">")))))))
+       (patches
+        (search-patches "nlohmann_json_fix_char8_t.patch"))))))
 
 (define-public jthread
   (let ((commit "0fa8d394254886c555d6faccd0a3de819b7d47f8")

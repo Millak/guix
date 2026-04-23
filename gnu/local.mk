@@ -1993,6 +1993,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/nhc98-c-update.patch			\
   %D%/packages/patches/nheko-0-12-1-fix-rendering-replies.patch	\
   %D%/packages/patches/nix-dont-build-html-doc.diff		\
+  %D%/packages/patches/nlohmann_json_fix_char8_t.patch		\
   %D%/packages/patches/nfs4-acl-tools-0.3.7-fixpaths.patch	\
   %D%/packages/patches/neovim-tree-sitter-grammar-path.patch	\
   %D%/packages/patches/network-manager-plugin-ownership.patch	\
