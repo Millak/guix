@@ -1707,29 +1707,31 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
           "0b0jhpqg7hamf8zkzw8cwim9550hj3w7cq43702d4yyxdxz6kzn5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:modules ((guix build cargo-build-system)
-                  (guix build utils)
-                  (srfi srfi-26))
-       #:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-        (add-after 'install 'install-more
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let* ((out   (assoc-ref outputs "out"))
-                   (share (string-append out "/share/"))
-                   (man   (string-append share "man/man1"))
-                   (bash  (string-append out "/etc/bash_completion.d/"))
-                   (fish  (string-append share "fish/vendor_completions.d"))
-                   (zsh   (string-append share "zsh/site-functions")))
-              (install-file "doc/hyperfine.1" man)
-              (for-each (cut install-file <> bash)
-                        (find-files "target" "^hyperfine.bash$"))
-              (rename-file (string-append bash "/hyperfine.bash")
-                           (string-append bash "/hyperfine"))
-              (for-each (cut install-file <> fish)
-                        (find-files "target" "^hyperfine.fish$"))
-              (for-each (cut install-file <> zsh)
-                        (find-files "target" "^_hyperfine$"))))))))
+     (list
+      #:install-source? #f
+      #:imported-modules (append %copy-build-system-modules
+                                 %cargo-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build copy-build-system) #:prefix copy:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pre-build
+            (lambda _
+              (setenv "SHELL_COMPLETIONS_DIR" (string-append (getcwd) "/target"))))
+          (add-after 'install 'install-extras
+            (lambda args
+              (apply (assoc-ref copy:%standard-phases 'install)
+                     #:install-plan
+                     '(("target/hyperfine.bash"
+                        "share/bash-completion/completions/hyperfine")
+                       ("target/hyperfine.elv"
+                        "share/elvish/lib/hyperfine")
+                       ("target/hyperfine.fish"
+                        "share/fish/vendor_completions.d/")
+                       ("target/_hyperfine"
+                        "share/zsh/site-functions/"))
+                     args))))))
     (inputs (cargo-inputs 'hyperfine))
     (home-page "https://github.com/sharkdp/hyperfine")
     (synopsis "Command-line benchmarking tool")
