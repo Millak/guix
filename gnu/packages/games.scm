@@ -5927,7 +5927,7 @@ Transport Tycoon Deluxe.")
           (add-after 'unpack 'patch-sources
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "src/music/fluidsynth.cpp"
-                (("default_sf\\[\\] = \\{" all)
+                (("_default_soundfonts\\[\\] = \\{" all)
                  (string-append all "
 \t/* Guix hardcoded :P */
 \t\"" (search-input-file inputs "/share/soundfonts/FreePatsGM.sf2") "\",
