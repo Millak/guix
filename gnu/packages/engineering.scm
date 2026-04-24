@@ -914,68 +914,65 @@ user-level language.")
 
 ;; TODO: Keep in sync with radare2.
 (define-public iaito
-  ;; Commit "Release 6.1.2"
-  (let ((commit "790878048ecb62f4d2f1b5f848948059dd5bb8fe")
-        (revision "1"))
-    (package
-      (name "iaito")
-      (version (git-version "6.1.2" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/radareorg/iaito")
-                       (commit commit)))
-                (sha256
-                 (base32
-                  "00nqn3mx2fj5higz4niwl0nx04vnjwzccw6zjx3rhwf6fj5yfamm"))
-                (file-name (git-file-name name version))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:tests? #f ;no tests
-        #:modules '((guix build gnu-build-system) (guix build qt-utils)
-                    (guix build utils))
-        #:imported-modules `((guix build qt-utils)
-                             ,@%default-gnu-imported-modules)
-        #:phases
-        #~(modify-phases %standard-phases
-            ;; The build system assumes the sdb lib is installed alongside
-            ;; radare2. We already patch the radare2 package to use a
-            ;; system-installed sdb rather than install its own, so we must
-            ;; propagate those changes here.
-            (add-before 'configure 'add-sdb-libs
-              (lambda _
-                (substitute* '("./src/lib_radare2.pri")
-                  (("pkg-config --libs r_core" all)
-                   (string-append all " sdb")))))
-            (add-after 'install 'wrap-qt
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (wrap-all-qt-programs #:outputs outputs
-                                      #:inputs inputs
-                                      #:qtbase (assoc-ref inputs "qtbase")))))))
-      (inputs
-       (list capstone
-             libuv
-             libzip
-             lz4
-             openssl
-             qtbase
-             qtsvg
-             qtwayland
-             radare2
-             sdb))
-      (native-inputs
-       (list pkg-config python-minimal-wrapper))
-      (native-search-paths (list (search-path-specification
-                                   (variable "R2_LIBR_PLUGINS")
-                                   (files (list "lib/radare2"))
-                                   (separator #f)))) ;single value
-      (home-page "https://github.com/radareorg/iaito")
-      (synopsis "Official radare2 GUI")
-      (description "Iaito is the official graphical interface for radare2, a
+  (package
+    (name "iaito")
+    (version "6.1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/radareorg/iaito")
+                     (commit version)))
+              (sha256
+               (base32
+                "16sp73k6ighjwp80nvf55lwzv0fb8p4ki76mnsc8xhl3vq7pka0w"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:modules '((guix build gnu-build-system) (guix build qt-utils)
+                  (guix build utils))
+      #:imported-modules `((guix build qt-utils)
+                           ,@%default-gnu-imported-modules)
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The build system assumes the sdb lib is installed alongside
+          ;; radare2. We already patch the radare2 package to use a
+          ;; system-installed sdb rather than install its own, so we must
+          ;; propagate those changes here.
+          (add-before 'configure 'add-sdb-libs
+            (lambda _
+              (substitute* '("./src/lib_radare2.pri")
+                (("pkg-config --libs r_core" all)
+                 (string-append all " sdb")))))
+          (add-after 'install 'wrap-qt
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-all-qt-programs #:outputs outputs
+                                    #:inputs inputs
+                                    #:qtbase (assoc-ref inputs "qtbase")))))))
+    (inputs
+     (list capstone
+           libuv
+           libzip
+           lz4
+           openssl
+           qtbase
+           qtsvg
+           qtwayland
+           radare2
+           sdb))
+    (native-inputs
+     (list pkg-config python-minimal-wrapper))
+    (native-search-paths (list (search-path-specification
+                                 (variable "R2_LIBR_PLUGINS")
+                                 (files (list "lib/radare2"))
+                                 (separator #f)))) ;single value
+    (home-page "https://github.com/radareorg/iaito")
+    (synopsis "Official radare2 GUI")
+    (description "Iaito is the official graphical interface for radare2, a
 libre reverse engineering framework.  Iaito focuses on simplicity, parity with
 commands, features, and keybindings.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public inspekt3d
   (let ((commit "703f52ccbfedad2bf5240bf8183d1b573c9d54ef")
