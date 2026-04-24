@@ -6166,7 +6166,7 @@ application's http.Handlers.")
 (define-public go-github-com-files-com-files-sdk-go-v3
   (package
     (name "go-github-com-files-com-files-sdk-go-v3")
-    (version "3.3.7")
+    (version "3.3.95")
     (source
      (origin
        (method git-fetch)
@@ -6175,7 +6175,7 @@ application's http.Handlers.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1syx75vbamwrx5x5glf4542ml8myj9kqqkig8hmy97lhzq4d4n7a"))))
+        (base32 "19mxsybv9lyq57nf5xvll41g7f6z90lq9hrdx1p4w20mj0f51wyj"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -6191,7 +6191,6 @@ application's http.Handlers.")
            go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-appscode-go-querystring
-           go-github-com-bradfitz-iter
            go-github-com-chilts-sid
            go-github-com-dustin-go-humanize
            go-github-com-hashicorp-go-retryablehttp
@@ -6201,6 +6200,7 @@ application's http.Handlers.")
            go-github-com-sabhiram-go-gitignore
            go-github-com-samber-lo
            go-github-com-winfsp-cgofuse
+           go-golang-org-x-sync
            go-golang-org-x-sys
            go-golang-org-x-text
            go-moul-io-http2curl-v2))
