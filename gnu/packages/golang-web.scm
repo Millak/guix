@@ -8568,6 +8568,61 @@ testing of the detection functions in real GCP environments.")
 send collected metrics to Google Cloud.")
     (license license:asl2.0)))
 
+(define-public go-github-com-googlecloudplatform-opentelemetry-operations-go-exporter-trace
+  (package
+    (name "go-github-com-googlecloudplatform-opentelemetry-operations-go-exporter-trace")
+    (version "1.32.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/GoogleCloudPlatform/opentelemetry-operations-go")
+              (commit (go-version->git-ref version #:subdir "exporter/trace"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nizaaydcvvi718g5v4pgx8in6d546mmkrf7h3sxhz2yyyygvms3"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "exporter" "trace")
+            (delete-all-but "." "exporter")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path
+      (string-append "github.com/GoogleCloudPlatform/"
+                     "opentelemetry-operations-go/exporter/trace")
+      #:unpack-path
+      "github.com/GoogleCloudPlatform/opentelemetry-operations-go"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-cloud-google-com-go-trace
+           go-github-com-googlecloudplatform-opentelemetry-operations-go-internal-cloudmock
+           go-github-com-googlecloudplatform-opentelemetry-operations-go-internal-resourcemapping
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-trace
+           go-golang-org-x-oauth2
+           go-google-golang-org-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/GoogleCloudPlatform/opentelemetry-operations-go")
+    (synopsis "OpenTelemetry Google Cloud Trace Exporter")
+    (description
+     "@code{OpenTelemetry} Google Cloud Trace Exporter allows the user to send
+collected traces and spans to Google Cloud.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-googlecloudplatform-opentelemetry-operations-go-internal-cloudmock
   (package
     (name "go-github-com-googlecloudplatform-opentelemetry-operations-go-internal-cloudmock")
