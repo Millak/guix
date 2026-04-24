@@ -8245,6 +8245,51 @@ Terraform by using the enterprise certificates feature.")
 for clients and servers based on @code{gRPC} and Google API conventions.")
     (license license:bsd-3)))
 
+(define-public go-github-com-googlecloudplatform-grpc-gcp-go-grpcgcp
+  (package
+    (name "go-github-com-googlecloudplatform-grpc-gcp-go-grpcgcp")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/GoogleCloudPlatform/grpc-gcp-go")
+              (commit (go-version->git-ref version #:subdir "grpcgcp"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p7zwbi6gg99mzi7albscf7jn63qxs714h6vars735an13bbvl12"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.25
+      #:import-path "github.com/GoogleCloudPlatform/grpc-gcp-go/grpcgcp"
+      #:unpack-path "github.com/GoogleCloudPlatform/grpc-gcp-go"
+      ;; gcp_multiendpoint_test.go:441: endpoint wanted "localhost:50051", got
+      ;; "127.0.0.3:50051"
+      #:test-flags #~(list "-skip" "TestGCPMultiEndpoint")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; See: <https://go.dev/blog/synctest>.
+              (setenv "GOEXPERIMENT" "synctest")
+              (setenv "GODEBUG" "asynctimerchan=0"))))))
+    (native-inputs
+     (list go-github-com-golang-mock
+           go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/GoogleCloudPlatform/grpc-gcp-go")
+    (synopsis "Grpc supports for Google Cloud APIs")
+    (description
+     "Package grpcgcp provides gRPC supports for Google Cloud APIs.  For now
+it provides connection management with affinity support.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-googlecloudplatform-opentelemetry-operations-go-detectors-gcp
   (package
     (name
