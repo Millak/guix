@@ -3522,69 +3522,69 @@ modification time.")
     (license license:bsd-2)))
 
 (define-public libfossil
-    (package
-      (name "libfossil")
-      (version "0.6.0")
-      (source
-       (origin
-         (method fossil-fetch)
-         (uri (fossil-reference
-               (uri "https://fossil.wanderinghorse.net/r/libfossil")
-               (check-in version)))
-         (file-name (fossil-file-name name version))
-         (sha256
-          (base32 "0haaczpjnjpkiikf0q70nfabm2csdk6dl9rh80j0sh90wfvkyqwm"))
-         (modules '((guix build utils)
-                    (ice-9 ftw)
-                    (srfi srfi-26)))
-         (snippet
-          #~(begin
-              (define (delete-all-but directory . preserve)
-                (with-directory-excursion directory
-                  (let* ((pred (negate (cut member <>
-                                            (cons* "." ".." preserve))))
-                         (items (scandir "." pred)))
-                    (for-each (cut delete-file-recursively <>) items))))
-              (delete-all-but "autosetup" "proj.tcl" "wh-common.tcl")
-              (delete-file-recursively "extsrc")
-              ;; Re-create Fossil check-out manifests,
-              ;; whose content does not affect in semantics.
-              (for-each
-                (lambda (file)
-                  (call-with-output-file file (const #t)))
-                '("manifest" "manifest.uuid"))))))
-      (build-system gnu-build-system)
-      (arguments
-       (list #:configure-flags
-             #~(list "--no-debug" "--no-fnc" ;TODO: C++ and Tcl binding?
-                     (string-append "--with-sqlite="
-                                    #$(this-package-input "sqlite"))
-                     (string-append "--soname=libfossil.so"))
-             #:phases
-             #~(modify-phases %standard-phases
-                 (replace 'configure
-                   (lambda* (#:key configure-flags #:allow-other-keys)
-                     (apply invoke "autosetup"
-                            (string-append "--prefix=" #$output)
-                            configure-flags)))
-                 (replace 'check
-                   (lambda* (#:key tests? #:allow-other-keys)
-                     (when tests?
-                       (substitute* "sanity-checks.sh"
-                         ;; FIXME: these tests requires a Fossil checkout.
-                         (("\\./f-sanity.*") "")
-                         (("\\./f-parseparty.*") ""))
-                       (setenv "LD_LIBRARY_PATH" (getcwd))
-                       (invoke "./sanity-checks.sh")))))))
-      (native-inputs (list autosetup))
-      (inputs (list sqlite-next zlib))
-      (home-page "https://fossil.wanderinghorse.net/r/libfossil")
-      (synopsis "Unofficial Fossil SCM Library API")
-      (description
-       "@code{libfossil} is an alternative interface into Fossil repositories,
+  (package
+    (name "libfossil")
+    (version "0.6.0")
+    (source
+     (origin
+       (method fossil-fetch)
+       (uri (fossil-reference
+             (uri "https://fossil.wanderinghorse.net/r/libfossil")
+             (check-in version)))
+       (file-name (fossil-file-name name version))
+       (sha256
+        (base32 "0haaczpjnjpkiikf0q70nfabm2csdk6dl9rh80j0sh90wfvkyqwm"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "autosetup" "proj.tcl" "wh-common.tcl")
+            (delete-file-recursively "extsrc")
+            ;; Re-create Fossil check-out manifests,
+            ;; whose content does not affect in semantics.
+            (for-each
+              (lambda (file)
+                (call-with-output-file file (const #t)))
+              '("manifest" "manifest.uuid"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--no-debug" "--no-fnc" ;TODO: C++ and Tcl binding?
+                   (string-append "--with-sqlite="
+                                  #$(this-package-input "sqlite"))
+                   (string-append "--soname=libfossil.so"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda* (#:key configure-flags #:allow-other-keys)
+                   (apply invoke "autosetup"
+                          (string-append "--prefix=" #$output)
+                          configure-flags)))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (substitute* "sanity-checks.sh"
+                       ;; FIXME: these tests requires a Fossil checkout.
+                       (("\\./f-sanity.*") "")
+                       (("\\./f-parseparty.*") ""))
+                     (setenv "LD_LIBRARY_PATH" (getcwd))
+                     (invoke "./sanity-checks.sh")))))))
+    (native-inputs (list autosetup))
+    (inputs (list sqlite-next zlib))
+    (home-page "https://fossil.wanderinghorse.net/r/libfossil")
+    (synopsis "Unofficial Fossil SCM Library API")
+    (description
+     "@code{libfossil} is an alternative interface into Fossil repositories,
 as opposed to a replacement for the core fossil application,
 intended for new ways to access and manipulate fossil repositories.")
-      (license license:bsd-2)))
+    (license license:bsd-2)))
 
 (define-public fnc
   (package
