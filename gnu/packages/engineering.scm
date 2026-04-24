@@ -1811,6 +1811,44 @@ like relocation symbols.  It is able to deal with malformed binaries, making
 it suitable for security research and analysis.")
     (license license:lgpl3)))
 
+
+(define-public ghidra-native
+  ;; Latest commit; last release (8/2025) incompatible with current r2ghidra.
+  (let ((commit "df065bad0f9e7cea233479048681f811c4f640a2")
+        (revision "1"))
+    (package
+      (name "ghidra-native")
+      (version (git-version "0.6.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/radareorg/ghidra-native")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "14bzrl856x3bsqjpks85rzxcxncfmnjwc5knv2h4lybfz4bxcn39"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no tests
+        #:make-flags #~(list "patch")
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (replace 'install           ;no install target
+              (lambda _
+                (let ((ghidra-native-patched
+                       (in-vicinity #$output "/share/ghidra-native/src")))
+                  (copy-recursively "src" ghidra-native-patched)))))))
+      (home-page "https://www.radare.org/")
+      (synopsis "Native parts of ghidra")
+      (description
+       "This package contains the native parts of ghidra, to be used from
+r2ghidra.")
+      (properties '((hidden? . #t)))    ;only provides source files
+      (license license:asl2.0))))
+
 (define-public rayforge
   (package
     (name "rayforge")
