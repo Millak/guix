@@ -781,6 +781,54 @@ balance windows (keeping them roughly the same size) whenever the window
 configuration changes, e.g. after splitting or deleting a window.")
       (license license:bsd-3))))
 
+(define-public emacs-ben
+  (package
+    (name "emacs-ben")
+    (version "0.12.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/pastor/ben.el")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0iqrk87dl567vwpwm8rmplrpva475a04s6c34rm24xfy2m7wrwk6"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-environment
+            (lambda _
+              ;; Since the testsuite uses `direnv', the build needs a home
+              ;; directory so `direnv' can allow the contents of the `.envrc`
+              ;; files generated for the different tests.
+              (setenv "HOME" "/tmp")
+              (setenv "OFFLINE" "1") ;Enable offline tests.
+              (emacs-substitute-variables "ben.el"
+                ("ben-direnv-executable"
+                 #$(file-append (this-package-input "direnv")
+                                "/bin/direnv"))))))))
+    (inputs (list direnv))
+    (propagated-inputs (list emacs-inheritenv))
+    (home-page "https://codeberg.org/pastor/ben.el")
+    (synopsis "Asynchronous buffer-local environments via @command{direnv}")
+    (description
+     "This package allows you to load environments buffer locally.  The
+package is named @command{ben}, which stands for Buffer ENvironments.
+
+The project relies on @uref{https://direnv.net, direnv} which allows setting
+per-directory environments through @file{.envrc} files.
+
+The main improvement of @command{ben} over @command{envrc} is the asynchronous
+processing of environments, which prevents Emacs from freezing.  This is
+especially useful while loading computationally heavy environments, such when
+loading @file{.envrc} files that rely on Guix.  In these cases, computations
+can take hours to complete.  This package aims to facilitate loading such
+environments in the background.")
+    (license license:gpl3+)))
+
 (define-public emacs-bookmark-plus
   (package
     (name "emacs-bookmark-plus")
