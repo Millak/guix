@@ -8568,6 +8568,55 @@ testing of the detection functions in real GCP environments.")
 send collected metrics to Google Cloud.")
     (license license:asl2.0)))
 
+(define-public go-github-com-googlecloudplatform-opentelemetry-operations-go-internal-cloudmock
+  (package
+    (name "go-github-com-googlecloudplatform-opentelemetry-operations-go-internal-cloudmock")
+    (version "0.56.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/GoogleCloudPlatform/opentelemetry-operations-go")
+              (commit (go-version->git-ref version
+                                           #:subdir "internal/cloudmock"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nizaaydcvvi718g5v4pgx8in6d546mmkrf7h3sxhz2yyyygvms3"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "internal" "cloudmock")
+            (delete-all-but "." "internal")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path
+      (string-append "github.com/GoogleCloudPlatform/"
+                     "opentelemetry-operations-go/internal/cloudmock")
+      #:unpack-path
+      "github.com/GoogleCloudPlatform/opentelemetry-operations-go"))
+    (propagated-inputs
+     (list go-cloud-google-com-go-logging
+           go-cloud-google-com-go-monitoring
+           go-cloud-google-com-go-trace
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/GoogleCloudPlatform/opentelemetry-operations-go")
+    (synopsis "OpenTelemetry Google Cloud mock library")
+    ;; XXX: There is not any documentation for this package upstrream.
+    (description
+     "This package provides OpenTelemetry Google Cloud mock Go library.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-googlecloudplatform-opentelemetry-operations-go-internal-resourcemapping
   (package
     (name "go-github-com-googlecloudplatform-opentelemetry-operations-go-internal-resourcemapping")
