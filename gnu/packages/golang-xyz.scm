@@ -4433,6 +4433,34 @@ over strings.")
 @code{https://en.wikipedia.org/wiki/WebP, WebP} images.")
     (license license:bsd-3)))
 
+(define-public go-github-com-chainguard-dev-clog
+  (package
+    (name "go-github-com-chainguard-dev-clog")
+    (version "1.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/chainguard-dev/clog")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b95vw8czs2r9lscyi85vppbyqj672zm6z2n9siy1s9yv6fkys62"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/chainguard-dev/clog"))
+    (home-page "https://github.com/chainguard-dev/clog")
+    (synopsis "Context aware slog")
+    (description
+     "This package provides a context-aware Go std lib
+@url{https://pkg.go.dev/log/slog, @code{slog}}.  The context Logger can be
+used to use Loggers from the context.  This is sometimes preferred over the
+@url{https://github.com/chainguard-dev/clog#context-handler, Context Handler},
+since this can make it easier to use different loggers in different
+contexts (e.g. testing).")
+    (license license:asl2.0)))
+
 (define-public go-github-com-charlievieth-fastwalk
   (package
     (name "go-github-com-charlievieth-fastwalk")
