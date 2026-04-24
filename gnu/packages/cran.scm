@@ -22046,13 +22046,13 @@ functions for:
 (define-public r-statsexpressions
   (package
     (name "r-statsexpressions")
-    (version "1.7.4")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "statsExpressions" version))
               (sha256
                (base32
-                "0vrrg9vam9h1mcq8bbmxgwzzm3gm2m2q001p50l2zhfb480nz8b0"))))
+                "01d685zxk9w6ikdjh617d0fc1ga3jz4v7xsynmn924n35nx04zrv"))))
     (properties `((upstream-name . "statsExpressions")))
     (build-system r-build-system)
     (propagated-inputs (list r-afex
@@ -22064,7 +22064,6 @@ functions for:
                              r-effectsize
                              r-glue
                              r-insight
-                             r-magrittr
                              r-parameters
                              r-performance
                              r-pmcmrplus
@@ -22073,8 +22072,7 @@ functions for:
                              r-rstantools
                              r-tidyr
                              r-withr
-                             r-wrs2
-                             r-zeallot))
+                             r-wrs2))
     (native-inputs (list r-datapasta
                          r-ggplot2
                          r-knitr
