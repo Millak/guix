@@ -389,6 +389,7 @@ devices.")
             ;; - cloud.google.com/go/longrunning
             ;; - cloud.google.com/go/monitoring
             ;; - cloud.google.com/go/security
+            ;; - cloud.google.com/go/spanner
             ;; - cloud.google.com/go/storage
             (for-each delete-file-recursively
                       (list "auth"
@@ -398,6 +399,7 @@ devices.")
                             "longrunning"
                             "monitoring"
                             "security"
+                            "spanner"
                             "storage"))))))
     (build-system go-build-system)
     (arguments
@@ -440,7 +442,6 @@ devices.")
               "pubsub/v2/internal/scheduler"
               "pubsub/v2/internal/testutil"
               "rpcreplay"
-              "spanner/spansql"
               "translate")))
     (propagated-inputs
      (list ;; go-cloud-google-com-go-storage
@@ -830,6 +831,78 @@ its service definition.")
     (synopsis "Google Cloud Certificate Authority API")
     (description
      "This package provides a Go Client Library for Certificate Authority API.")
+    (license license:asl2.0)))
+
+(define-public go-cloud-google-com-go-spanner
+  (package
+    (name "go-cloud-google-com-go-spanner")
+    (version "1.91.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/google-cloud-go")
+              (commit (go-version->git-ref version #:subdir "spanner"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05jgalbqb9n1whlpdkj40rvyk8lg39q5w4l463ycsj2301pmr90h"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "spanner")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "cloud.google.com/go/spanner"
+      #:unpack-path "cloud.google.com/go"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-benchmarks
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "benchmarks")))))))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           ;; XXX: Remove when cycle is fixed.
+           go-github-com-envoyproxy-go-control-plane))
+    (propagated-inputs
+     (list go-cloud-google-com-go
+           go-cloud-google-com-go-iam
+           go-cloud-google-com-go-longrunning
+           go-cloud-google-com-go-monitoring
+           go-github-com-google-uuid
+           go-github-com-googleapis-gax-go-v2
+           go-github-com-googlecloudplatform-grpc-gcp-go-grpcgcp
+           go-go-opencensus-io
+           go-go-opentelemetry-io-contrib-detectors-gcp
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-go-opentelemetry-io-otel-trace
+           go-golang-org-x-oauth2
+           go-golang-org-x-sync
+           go-google-golang-org-api
+           go-google-golang-org-genproto
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://cloud.google.com/go")
+    (synopsis "Cloud Spanner databases Go client")
+    (description
+     "Package spanner provides a client for reading and writing to Cloud
+Spanner databases.  See
+@url{https://cloud.google.com/spanner/docs/getting-started/go/} for an
+introduction to Cloud Spanner and additional help on using this API.")
     (license license:asl2.0)))
 
 (define-public go-cloud-google-com-go-storage
