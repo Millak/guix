@@ -3784,6 +3784,33 @@ differentiate between installs of Mozilla software in @code{installs.ini} and
                              "TestStructToDateTime")
                        "|"))))))
 
+(define-public go-github-com-brunoscheufler-aws-ecs-metadata-go
+  (package
+    (name "go-github-com-brunoscheufler-aws-ecs-metadata-go")
+    (version "0.0.0-20221221133751-67e37ae746cd")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/BrunoScheufler/aws-ecs-metadata-go")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x9kn49sl6793zqq4nrbsyfhqh7i3xr25syck2ybpcqkd3mmb8k6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/brunoscheufler/aws-ecs-metadata-go"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/brunoscheufler/aws-ecs-metadata-go")
+    (synopsis "Retrieve AWS ECS Task metadata")
+    (description
+     "This package provides a minimal wrapper library to fetch
+@acronym{Elastic Container Service, ECS} Task metadata from any Go service
+running in container provisioned by AWS Fargate.")
+    (license license:expat)))
+
 (define-public go-github-com-buger-jsonparser
   (package
     (name "go-github-com-buger-jsonparser")
