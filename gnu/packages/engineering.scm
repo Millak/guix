@@ -46,7 +46,7 @@
 ;;; Copyright © 2025 Matthew Elwin <elwin@northwestern.edu>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
-;;; Copyright © 2025 bdunahu <bdunahu@operationnull.com>
+;;; Copyright © 2025-2026 bdunahu <bdunahu@operationnull.com>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
@@ -1819,6 +1819,93 @@ like relocation symbols.  It is able to deal with malformed binaries, making
 it suitable for security research and analysis.")
     (license license:lgpl3)))
 
+(define-public r2ghidra
+  (package
+    (name "r2ghidra")
+    (version "6.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/radareorg/r2ghidra")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04x7vmg67zz0llkz3r3nmcky5z8c4ha31z8jzkm19dnyslw2qlxr"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Delete bundled libs and remove their references.
+        #~(begin (delete-file-recursively "subprojects")
+                 (substitute* "ghidra/deps.mk"
+                   (("ZLIB_LDFLAGS=.*") "")
+                   (("ZLIB_CFLAGS=.*") ""))
+                 (substitute* "src/Makefile"
+                   (("(all:) subprojects-zlib" _ f) f)
+                   (("PUGIXML_OBJS=.*") "")
+                   (("PUGIXML_SRCS=.*") "")
+                   (("PUGIXML_CFLAGS=.*") ""))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(let* ((zlib #$(this-package-input "zlib"))
+               (pugixml #$(this-package-input "pugixml-next")))
+          (list (string-append "CC=" #$(cc-for-target))
+                (format #f "ZLIB_LDFLAGS=-L~a/lib/ -lz" zlib)
+                (format #f "LDFLAGS=-L~a/lib/ -lpugixml" pugixml)
+                (format #f "ZLIB_CFLAGS=-I~a/include/" zlib)
+                (format #f "PUGIXML_CFLAGS=-I~a/include/" pugixml)
+                ;; Ensure this matches R2_LIBR_PLUGINS as exported
+                ;; by radare2 & iaito.
+                (format #f "PLUGDIR=~a/lib/radare2" #$output)))
+      #:tests? #f    ;no 'check' rule, test dir may require 3rd-party binaries
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-git-and-copy-ghidra
+            (lambda _
+              ;; GIT is assumed to point to the git binary, but it is
+              ;; only checked to be a file; this short-circuits the check.
+              (setenv "GIT" "configure")
+              (copy-recursively
+               (search-input-directory %build-inputs "share/ghidra-native")
+               "subprojects/ghidra-native")))
+          (add-before 'build 'set-system-sleighhome
+            ;; Helper files which try to install in radare2's path
+            ;; in the store, irrespective of PLUGDIR.  As long as
+            ;; r2ghidra knows where to find them, we can place them
+            ;; anywhere.
+            (lambda _
+              (let ((sleighhome
+                     (in-vicinity #$output "lib/radare2/sleighhome")))
+                ;; Hardcoded path to check.
+                (substitute* "src/SleighAsm.cpp"
+                  (("(path = strdup \\()[^\\)]*" _ f)
+                   (string-append f "\"" sleighhome "\"")))
+                ;; Install location.
+                (substitute* "ghidra/Makefile"
+                  (("(sleigh-install D=\")\\$\\(DD\\)" _ f)
+                   (string-append f sleighhome)))))))))
+    (inputs
+     (list capstone
+           libuv
+           libzip
+           lz4
+           openssl
+           pugixml-next
+           radare2
+           sdb
+           zlib))
+    (native-inputs
+     (list ghidra-native
+           pkg-config
+           python-minimal))
+    (home-page "https://www.radare.org/")
+    (synopsis "Native Ghidra Decompiler for radare2")
+    (description
+     "r2ghidra is a radare2 plugin which integrates the
+ @url{https://www.nsa.gov/ghidra,Ghidra} decompiler.")
+    ;; Specified lgpl3 'only' in README.
+    (license license:lgpl3)))
 
 (define-public ghidra-native
   ;; Latest commit; last release (8/2025) incompatible with current r2ghidra.
