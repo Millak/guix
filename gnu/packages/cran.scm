@@ -5295,18 +5295,19 @@ plots.")
 (define-public r-ggstatsplot
   (package
     (name "r-ggstatsplot")
-    (version "0.13.6")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggstatsplot" version))
               (sha256
                (base32
-                "0x7sfb4hr2k3vwxlj0f0140qxfhxd03bdvzr7rfwvdhxfx4yg0rz"))))
+                "19rc7g74awkf0y5ps2qjgc2vchpxiw0ra96fqkvib678ws8dsiz5"))))
     (properties `((upstream-name . "ggstatsplot")))
     (build-system r-build-system)
     (propagated-inputs (list r-correlation
                              r-datawizard
                              r-dplyr
+                             r-forcats
                              r-ggcorrplot
                              r-ggplot2
                              r-ggrepel
@@ -5314,7 +5315,6 @@ plots.")
                              r-ggsignif
                              r-glue
                              r-insight
-                             r-magrittr
                              r-paletteer
                              r-parameters
                              r-patchwork
@@ -5324,6 +5324,8 @@ plots.")
                              r-statsexpressions
                              r-tidyr))
     (native-inputs (list r-knitr
+                         r-lme4
+                         r-patrick
                          r-survival
                          r-testthat
                          r-tibble
