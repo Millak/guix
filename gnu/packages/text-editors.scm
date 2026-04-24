@@ -875,30 +875,29 @@ compiled, requires few libraries, and starts up quickly.")
 (define-public e3
   (package
     (name "e3")
-    (version "2.82")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://sites.google.com/site/e3editor/Home/"
-                                  "e3-" version ".tgz"))
-              (sha256
-               (base32
-                "0919kadkas020maqq37852isnzp053q2fnws2zh3mz81d1jiviak"))
-              (modules '((guix build utils)))
-
-              ;; Remove pre-built binaries.
-              (snippet '(begin
-                          (delete-file-recursively "bin")
-                          #t))))
+    (version "2.82.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/museoa/e3editor")
+              (commit version)))
+       (sha256
+        (base32
+         "1l57rxin3kv6iiw91rhjzl3bpk0gkfp3nrx7wmqikk1nycmkfbhm"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f
-       #:make-flags (list (string-append "PREFIX="
-                                         (assoc-ref %outputs "out")))
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure))))
+     (list
+      #:tests? #f
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
     (native-inputs
      (list nasm))
-    (home-page "https://sites.google.com/site/e3editor/")
+    (supported-systems '("x86_64-linux" "i686-linux"))
+    (home-page "https://codeberg.org/museoa/e3editor")
     (synopsis "Tiny text editor written in assembly")
     (description
      "e3 is a micro text editor with an executable code size between 3800 and
@@ -907,7 +906,6 @@ of the basic functions one expects plus built in arithmetic calculations.
 UTF-8 coding of unicode characters is supported as well.  e3 can use
 Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
 16, 32, and 64-bit CPUs.")
-    (supported-systems '("x86_64-linux" "i686-linux"))
     (license license:gpl2+)))
 
 (define-public mg
