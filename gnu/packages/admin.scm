@@ -3778,6 +3778,7 @@ summarizes network bandwidth by process and remote host.")
     (arguments
      (list #:configure-flags
            #~(list "--localstatedir=/var"
+                   "--disable-static"
                    #$@(if (%current-target-system)
                           ;; Assume yes on pipes when cross compiling.
                           `("ac_cv_file__dev_spx=yes"
