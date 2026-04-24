@@ -3590,45 +3590,45 @@ intended for new ways to access and manipulate fossil repositories.")
   (let ((check-in
          "c158d7ac2175078b4b783157be92de38aa627dc1a237febab9ec92093420cedb")
         (revision "0"))
-  (package
-    (name "fnc")
-    (version (fossil-version "0.19" revision check-in))
-    (source
-     (origin
-       (method fossil-fetch)
-       (uri (fossil-reference
-             (uri "https://fnc.sh")
-             (check-in check-in)))
-       (file-name (fossil-file-name name version))
-       (sha256
-        (base32 "09m0bgzy0yjglsgrqq03sdq4p2rwi3y8m84979j066z1c5b444iz"))
-       (modules '((guix build utils)))
-       (snippet #~(begin
-                    (delete-file-recursively "lib")
-                    (substitute* (find-files "." "\\.c$")
-                      (("^#include \"libfossil.h\"")
-                       "#include <fossil-scm/libfossil.h>"))
-                    (substitute* "fnc.bld.mk"
-                      ((" \\$\\{SQLITE_OBJS\\} \\$\\{FOSSIL_OBJS\\}") "")
-                      (("-lm -lutil -lz ") "")
-                      ;; Fix cross-compiling.
-                      (("install -s") "install"))))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:phases #~(modify-phases %standard-phases
-                   (delete 'configure))
-      #:tests? #f                       ; no tests
-      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
-                           "LDFLAGS=-lfossil -lsqlite3"
-                           (string-append "PREFIX=" #$output))))
-    (inputs (list libfossil ncurses sqlite-next))
-    (home-page "https://fnc.sh")
-    (synopsis "Interactive text-based user interface for Fossil")
-    (description "fnc uses ncurses and libfossil to create a fossil user
+    (package
+      (name "fnc")
+      (version (fossil-version "0.19" revision check-in))
+      (source
+       (origin
+         (method fossil-fetch)
+         (uri (fossil-reference
+               (uri "https://fnc.sh")
+               (check-in check-in)))
+         (file-name (fossil-file-name name version))
+         (sha256
+          (base32 "09m0bgzy0yjglsgrqq03sdq4p2rwi3y8m84979j066z1c5b444iz"))
+         (modules '((guix build utils)))
+         (snippet #~(begin
+                      (delete-file-recursively "lib")
+                      (substitute* (find-files "." "\\.c$")
+                        (("^#include \"libfossil.h\"")
+                         "#include <fossil-scm/libfossil.h>"))
+                      (substitute* "fnc.bld.mk"
+                        ((" \\$\\{SQLITE_OBJS\\} \\$\\{FOSSIL_OBJS\\}") "")
+                        (("-lm -lutil -lz ") "")
+                        ;; Fix cross-compiling.
+                        (("install -s") "install"))))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:phases #~(modify-phases %standard-phases
+                     (delete 'configure))
+        #:tests? #f                     ;no tests
+        #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                             "LDFLAGS=-lfossil -lsqlite3"
+                             (string-append "PREFIX=" #$output))))
+      (inputs (list libfossil ncurses sqlite-next))
+      (home-page "https://fnc.sh")
+      (synopsis "Interactive text-based user interface for Fossil")
+      (description "fnc uses ncurses and libfossil to create a fossil user
 interface in the terminal.  It can view local changes at the hunk level to
 prepare atomic commits.")
-    (license license:isc))))
+      (license license:isc))))
 
 (define-public myrepos
   (package
