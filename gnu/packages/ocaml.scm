@@ -313,7 +313,7 @@ functional, imperative and object-oriented styles of programming.")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "http://caml.inria.fr/pub/distrib/ocaml-"
+                    "https://caml.inria.fr/pub/distrib/ocaml-"
                     (version-major+minor version)
                     "/ocaml-" version ".tar.xz"))
               (sha256
