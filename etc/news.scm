@@ -43,6 +43,72 @@
 (channel-news
  (version 0)
 
+ (entry (commit "c9dcd203e5356f13b736d5be121fd61874be1a93")
+        (title
+         (en "@command{pull} and @command{time-machine} can download channel
+files")
+         (fr "@command{pull} et @command{time-machine} peuvent télécharger des
+fichiers canaux"))
+        (body
+         (en "The @command{guix pull} and @command{guix time-machine} can now
+be passed a URL as their @option{-C} (or @option{--channels}) option.  For
+instance, the command below pulls from the latest successfully-evaluated
+commit of the @code{master} branch:
+
+@example
+guix pull \\
+  -C https://ci.guix.gnu.org/eval/latest/channels.scm?spec=master
+@end example
+
+Alternatively, one may also specify a @uref{https://swhid.org, SWHID} that
+points to a channel file:
+
+@example
+guix time-machine \\
+  -C swh:1:cnt:ae02d8ba3538a385ee799e61cdd0dfc5e14a8d1b \\
+  -- ...
+@end example
+
+To make that possible, channel files are now evaluated in an isolated
+environment (a @dfn{sandbox}), which prevents them from evaluating arbitrary
+code; if you have existing channel files that rely on \"non-standard\"
+features, you may now need to pass @option{--unsafe-channel-evaluation} to
+evaluate them.  Furthermore, when fetching channels from a downloaded file,
+only @dfn{trusted channels} are allowed---one may specify them in
+@file{~/.config/guix/trusted-channels.scm}.
+
+See @samp{info \"(guix)Invoking guix pull\"} for more information.")
+         (fr "Les commandes @command{guix pull} et @command{guix time-machine}
+peuvent dorénavant prendre une URL pour l'option @option{-C} (ou
+@option{--channels}).  Par exemple, la commande ci-dessous tire la dernière
+révision de la branch @code{master} à avoir été évaluée avec succès :
+
+@example
+guix pull \\
+  -C https://ci.guix.gnu.org/eval/latest/channels.scm?spec=master
+@end example
+
+On peut également spécifier un @uref{https://swhid.org, SWHID} qui pointe vers
+un fichier canaux :
+
+@example
+guix time-machine \\
+  -C swh:1:cnt:ae02d8ba3538a385ee799e61cdd0dfc5e14a8d1b \\
+  -- ...
+@end example
+
+Pour permettre cela, les fichiers canaux sont maintenant évalués dans un
+environnement isolé (un @dfn{bac à sable}), ce qui les empêche d'évaluer du
+code arbitraire ; lorsqu'on a des fichiers canaux qui dépendent de
+fonctionnalités « non standard », il peut dorénavant être nécessaire de passer
+l'option @option{--unsafe-channel-evaluation} pour les évaluer.  De plus,
+lorsqu'un fichier canaux est téléchargé, seuls les @dfn{canaux de confiance}
+sont admis---on peut les énumérer dans
+@file{~/.config/guix/trusted-channels.scm}.
+
+Voir @samp{info \"(guix.fr) Invoquer guix pull\"} pour plus
+d'informations.")))
+
  (entry (commit "a7c8e68dc51144a6d3981b770aca9c4897fc7c0c")
         (title
          (en "Records can refer to inherited values of thunked fields")
