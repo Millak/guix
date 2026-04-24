@@ -6284,7 +6284,7 @@ that follows two aliens who come to Earth in search of a stolen artifact.")
 (define-public openrct2
   (package
     (name "openrct2")
-    (version "0.3.3")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -6293,19 +6293,47 @@ that follows two aliens who come to Earth in search of a stolen artifact.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01nanpbz5ycdhkyd46fjfvj18sw729l4vk7xg12600f9rjngjk76"))))
+        (base32 "0pxlk3a8akl0ghcbqqq5xw8chmxss7kwbvi52ixfqri68n46srxh"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (with-directory-excursion "src/thirdparty"
+              (for-each delete-file-recursively
+                        '("quickjs-ng" "sfl")))
+            (substitute* "src/openrct2/CMakeLists.txt"
+              ;; use sys quickjs for scripting features
+              (("if \\(ENABLE_SCRIPTING\\)") "if (false)")
+              (("add_library\\(OpenRCT2[^\n]+" all)
+               (string-join
+                `(,all
+                  "find_library(QJS_L NAMES qjs REQUIRED)"
+                  "find_path(QJS_I NAMES quickjs.h REQUIRED)"
+                  "target_link_libraries(libopenrct2 ${QJS_L})"
+                  "target_include_directories(libopenrct2 SYSTEM PRIVATE ${QJS_I})")
+                "\n")))))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags #~(list "-DDOWNLOAD_OBJECTS=OFF"
-                                "-DDOWNLOAD_TITLE_SEQUENCES=OFF")
-      #:tests? #f                       ; tests require network access
+                                "-DDOWNLOAD_TITLE_SEQUENCES=OFF"
+                                "-DDOWNLOAD_OPENSFX=OFF"
+                                "-DDOWNLOAD_OPENMUSIC=OFF"
+                                "-DDISABLE_DISCORD_RPC=ON"
+                                "-DDISABLE_VERSION_CHECKER=ON")
+      ;; many issues such as https://github.com/OpenRCT2/OpenRCT2/issues/12719
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-usr-share-paths&add-data
+            ;; TODO: OpenRCT2 can optionally use free music and sounds!
+            ;; https://github.com/OpenRCT2/OpenMusic
+            ;; https://github.com/OpenRCT2/OpenSoundEffects
+            ;; ideally we package these instead of the ones the user is supposed
+            ;; to supply.
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((titles (assoc-ref inputs "openrct2-title-sequences"))
-                    (objects (assoc-ref inputs "openrct2-objects")))
+                    (objects (assoc-ref inputs "openrct2-objects"))
+                    (sfl (assoc-ref inputs "sfl-library")))
                 ;; Fix some references to /usr/share.
                 (substitute* "src/openrct2/platform/Platform.Linux.cpp"
                   (("/usr/share")
@@ -6315,7 +6343,10 @@ that follows two aliens who come to Earth in search of a stolen artifact.")
                  "data/title")
                 (copy-recursively
                  (string-append objects "/share/openrct2/objects")
-                 "data/object"))))
+                 "data/object")
+                (copy-recursively
+                 (string-append sfl "/include")
+                 "src/thirdparty"))))
           (add-before 'configure 'get-rid-of-errors
             (lambda _
               ;; Don't treat warnings as errors.
@@ -6323,23 +6354,26 @@ that follows two aliens who come to Earth in search of a stolen artifact.")
                 (("-Werror") "")))))))
     (inputs
      (list curl
-           duktape
+           flac
            fontconfig
            freetype
            icu4c
            jansson
-           nlohmann-json
            libpng
+           libvorbis
            libzip
            mesa
+           nlohmann-json-no-char8-t
            openrct2-objects
            openrct2-title-sequences
            openssl
+           quickjs-ng
            sdl2
+           sfl-library
            speexdsp
-           zlib))
-    (native-inputs
-     (list pkg-config))
+           zlib
+           (list zstd "lib")))
+    (native-inputs (list pkg-config))
     (home-page "https://openrct2.io")
     (synopsis "Free software re-implementation of RollerCoaster Tycoon 2")
     (description "OpenRCT2 is a free software re-implementation of
@@ -6348,8 +6382,8 @@ maintaining an amusement park containing attractions, shops and facilities.
 
 Note that this package does @emph{not} provide the game assets (sounds,
 images, etc.)")
-    ;; See <https://github.com/OpenRCT2/OpenRCT2/wiki/Required-RCT2-files>
-    ;; regarding assets.
+    ;; See bottom of:
+    ;; https://github.com/OpenRCT2/OpenRCT2/blob/develop/distribution/readme.txt
     (license license:gpl3+)))
 
 (define-public openriichi
