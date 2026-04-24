@@ -1548,10 +1548,12 @@ order to provide IDE functionality for Guile Scheme.")
                   (symlink oldpath newpath)
                   (wrap-program newpath
                     `("GUILE_LOAD_PATH" ":" =
-                      ,(list site
+                      ,(list "$GUILE_LOAD_PATH"
+                             site
                              (getenv "GUILE_LOAD_PATH")))
                     `("GUILE_LOAD_COMPILED_PATH" ":" =
-                      ,(list ccache
+                      ,(list "$GUILE_LOAD_COMPILED_PATH"
+                             ccache
                              (getenv "GUILE_LOAD_COMPILED_PATH"))))
                   ;; Not needed since the wrapper followed the symlink.
                   (delete-file (string-append bin "/." name "-real"))))
