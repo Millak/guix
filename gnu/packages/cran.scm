@@ -45,6 +45,7 @@
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2026 Yarl Baudig <yarl-baudig@mailoo.org>
 ;;; Copyright © 2026 Laurent Gatto <lgatto@protonmail.ch>
+;;; Copyright © 2026 John Dawson <dawson.john.andrew@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -15647,8 +15648,11 @@ a list of p-values.")
      ;; Avoid dependency cycle
      '((updater-ignored-native-inputs . ("r-bslib" "r-shiny"))))
     (build-system r-build-system)
-    (propagated-inputs
-     (list r-base64enc r-digest r-fastmap r-rlang))
+    (propagated-inputs (list r-base64enc
+                             r-digest
+                             r-fastmap
+                             r-markdown ; for includeMarkdown
+                             r-rlang))
     (native-inputs (list r-testthat r-withr))
     (home-page "https://cran.r-project.org/web/packages/htmltools")
     (synopsis "R tools for HTML")
