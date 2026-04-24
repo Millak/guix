@@ -2981,6 +2981,38 @@ input from the terminal while not echoing the input back (similar to
 and is therefore compatible with cross-compiling.")
     (license license:expat)))
 
+(define-public go-github-com-bitfield-script
+  (package
+    (name "go-github-com-bitfield-script")
+    (version "0.24.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bitfield/script")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pzmz7n39sh9sprclzd0m0l0flf626286fh51m065yjhkqzrjw89"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bitfield/script"
+      #:test-flags #~(list "-vet=off")))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-itchyny-gojq
+           go-github-com-rogpeppe-go-internal
+           go-mvdan-cc-sh-v3))
+    (home-page "https://github.com/bitfield/script")
+    (synopsis "Making it easy to write shell-like scripts in Go")
+    (description
+     "Package script aims to make it easy to write shell-type scripts in Go,
+for general system administration purposes: reading files, counting lines,
+matching strings, and so on.")
+    (license license:expat)))
+
 (define-public go-github-com-bitly-go-hostpool
   (package
     (name "go-github-com-bitly-go-hostpool")
