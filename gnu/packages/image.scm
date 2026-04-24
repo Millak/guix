@@ -71,11 +71,12 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
-  #:use-module (gnu packages compression)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
@@ -96,10 +97,11 @@
   #:use-module (gnu packages mcrypt)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages ocr)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
-  #:use-module (gnu packages popt)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
@@ -115,7 +117,6 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
-  #:use-module (gnu packages fonts)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix gexp)
@@ -183,36 +184,81 @@ convert images in more than 100 different formats.")
 (define-public gradia
   (package
     (name "gradia")
-    (version "1.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/AlexanderVanhee/Gradia")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32 "07hal4h3kkjf7la02nqmqgw19sa6hkd130bkfmgwjimkv9zi8z2i"))))
+    (version "1.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/AlexanderVanhee/Gradia")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00s6xj9crj5gkh233q98fmq67f41y877xgrn49cycwb3kybp237n"))))
     (build-system meson-build-system)
     (arguments
-     (list #:glib-or-gtk? #t
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'skip-gtk-update-icon-cache
-                 (lambda _
-                   (substitute* "meson.build"
-                     (("gtk_update_icon_cache: true")
-                      "gtk_update_icon_cache: false")
-                     (("update_desktop_database: true")
-                      "update_desktop_database: false")))))))
-    (inputs (list gtk libadwaita python python-pygobject))
-    (native-inputs
-     (list blueprint-compiler gettext-minimal `(,glib "bin") pkg-config))
+     (list
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '((guix build meson-build-system)
+                  ((guix build pyproject-build-system)
+                   #:prefix py:)
+                  (guix build utils))
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")
+                (("update_desktop_database: true")
+                 "update_desktop_database: false"))))
+          (add-after 'unpack 'set-tesseract-and-tessdata-path
+            (lambda _
+              (let* ((tesseract #$(this-package-input "tesseract-ocr"))
+                     (tesseract-bin (string-append tesseract "/bin/tesseract"))
+                     (tessdata (string-append tesseract "/share/tessdata")))
+                (substitute* "meson.build"
+                  (("OCR_TESSERACT_CMD = '/app/bin/tesseract'")
+                   (format #f "OCR_TESSERACT_CMD = '~a'" tesseract-bin))
+                  (("OCR_ORIGINAL_TESSDATA_DIR = '/app/share/tessdata'")
+                   (format #f "OCR_ORIGINAL_TESSDATA_DIR = '~a'" tessdata))))))
+          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/gradia")
+                `("GUIX_PYTHONPATH" =
+                  (,(getenv "GUIX_PYTHONPATH") ,(py:site-packages inputs
+                                                                  outputs)))
+                `("GI_TYPELIB_PATH" =
+                  (,(getenv "GI_TYPELIB_PATH")))
+                `("GDK_PIXBUF_MODULE_FILE" =
+                  (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
+    (inputs (list bash-minimal
+                  gtk
+                  gtksourceview
+                  libadwaita
+                  libportal
+                  libsoup
+                  python
+                  python-pillow
+                  python-pycairo
+                  python-pygobject
+                  python-pytesseract
+                  tesseract-ocr
+                  webp-pixbuf-loader))
+    (native-inputs (list blueprint-compiler
+                         desktop-file-utils
+                         gettext-minimal
+                         `(,glib "bin")
+                         gobject-introspection
+                         pkg-config))
     (home-page "https://github.com/AlexanderVanhee/Gradia")
     (synopsis "Edit screenshots")
-    (description "Gradia is a GTK 4 application for enhancing and preparing
+    (description
+     "Gradia is a GTK 4 application for enhancing and preparing
 screenshots for blogs, social media, and documentation.  It supports background
 customization, annotation tools (pen, arrow, text, highlight, stamp), padding,
-cropping, and various export formats.")
+cropping, @acronym{OCR, optical character recognition} and various export formats.")
     (license license:gpl3+)))
 
 (define-public iqa
