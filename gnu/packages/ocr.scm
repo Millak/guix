@@ -31,6 +31,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -46,13 +47,16 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-science)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages scanner)
-  #:use-module (gnu packages xml)
-  #:use-module (gnu packages image))
+  #:use-module (gnu packages xml))
 
 (define-public ocrad
   (package
@@ -74,6 +78,60 @@
 feature extraction method.  It can read images in PBM, PGM or PPM formats and
 it produces text in 8-bit or UTF-8 formats.")
     (license license:gpl3+)))
+
+(define-public python-pytesseract
+  (package
+    (name "python-pytesseract")
+    (version "0.3.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/madmaze/pytesseract")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16arn7ygk7ain5j5ayjcy10y6yhwfcc090i3r8q553m89rr1w0w1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(map (lambda (name)
+               (string-append "--deselect=tests/pytesseract_test.py::" name))
+             ;; These tests cannot find generated files
+             '("test_image_to_pdf_or_hocr[pdf]"
+               "test_run_and_get_multiple_output[extensions0]"
+               "test_run_and_get_multiple_output[extensions1]"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-tesseract-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "pytesseract/pytesseract.py"
+                (("tesseract_cmd = 'tesseract'")
+                 (format #f "tesseract_cmd = '~a'"
+                         (search-input-file inputs "/bin/tesseract"))))))
+          (add-before 'check 'set-tessdata-prefix
+            (lambda _
+              (setenv "TESSDATA_PREFIX"
+                      ;; needs "fra" language
+                      (string-append #$(this-package-native-input
+                                        "tesseract-ocr-tessdata-fast")
+                                     "/share/tessdata")))))))
+    (native-inputs (list python-numpy
+                         python-packaging
+                         python-pandas
+                         python-pytest
+                         python-setuptools
+                         tesseract-ocr
+                         tesseract-ocr-tessdata-fast))
+    (inputs (list tesseract-ocr))
+    (propagated-inputs (list python-pandas python-pillow))
+    (home-page "https://github.com/madmaze/pytesseract")
+    (synopsis "Python wrapper for Google's Tesseract-OCR")
+    (description
+     "This package provides @command{pytesseract} and Python wrapper library
+for Google's Tesseract-@acronym{OCR, optical character recognition}.")
+    (license license:asl2.0)))
 
 (define-public tesseract-ocr-tessdata-fast
   (package
