@@ -592,6 +592,14 @@ mkdir -p /gnu/store
 mount --bind /mnt/tmp/gnu/store /gnu/store
 
 wget -O /tmp/guix-install.sh https://guix.gnu.org/guix-install.sh
+
+# Modify the install script to point the systemd unit of the /gnu/store
+# mountpoint to the same /mnt/tmp/gnu/store which was introduced above.
+store_fix=\"sed -i 's#Where=/gnu/store#Where=/mnt/tmp/gnu/store#'
+ ~~root/.config/guix/current/lib/systemd/system/gnu-store.mount\"
+sed -i \"s@install_unit gnu-store.mount\"\\
+\"@$(printf \"%q \" $store_fix)\\ninstall_unit gnu-store.mount@\" /tmp/guix-install.sh
+
 chmod +x /tmp/guix-install.sh
 set +o pipefail # avoid hangup on 'yes' killing this script
 yes '' | /tmp/guix-install.sh
