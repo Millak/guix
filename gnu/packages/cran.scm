@@ -54842,13 +54842,13 @@ mlr3 is loaded.")
 (define-public r-mlr3filters
   (package
     (name "r-mlr3filters")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3filters" version))
        (sha256
-        (base32 "1bqaxl3g6vyjbjgx545rf8y4mdkscpxrgqacqp3001fhn15iakg5"))))
+        (base32 "0agfv3pxggyizx6qr2xpikkb1svczxz5ixzxcjl1fmghnmd948mv"))))
     (properties
      '((upstream-name . "mlr3filters")
        (updater-extra-native-inputs . ("r-boruta" "r-rpart"))))
