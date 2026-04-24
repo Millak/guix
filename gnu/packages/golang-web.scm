@@ -391,6 +391,7 @@ devices.")
             ;; - cloud.google.com/go/security
             ;; - cloud.google.com/go/spanner
             ;; - cloud.google.com/go/storage
+            ;; - cloud.google.com/go/trace
             (for-each delete-file-recursively
                       (list "auth"
                             "compute/metadata"
@@ -400,7 +401,8 @@ devices.")
                             "monitoring"
                             "security"
                             "spanner"
-                            "storage"))))))
+                            "storage"
+                            "trace"))))))
     (build-system go-build-system)
     (arguments
      (list
@@ -968,6 +970,59 @@ introduction to Cloud Spanner and additional help on using this API.")
      "Package storage provides an easy way to work with Google Cloud Storage.
 Google Cloud Storage stores data in named objects, which are grouped into
 buckets.")
+    (license license:asl2.0)))
+
+(define-public go-cloud-google-com-go-trace
+  (package
+    (name "go-cloud-google-com-go-trace")
+    (version "1.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/google-cloud-go")
+              (commit (go-version->git-ref version #:subdir "trace"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14khzbcymknsz4p40ibc8v1zsy33b33yn7fcvkfp4rkzw69wv356"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "trace")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "cloud.google.com/go/trace"
+      #:unpack-path "cloud.google.com/go"))
+    (propagated-inputs
+     (list go-github-com-googleapis-gax-go-v2
+           go-google-golang-org-api
+           go-google-golang-org-genproto
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://cloud.google.com/go")
+    (synopsis "Go Client Library for Cloud Trace API")
+    (description
+     "This package implements the @url{https://cloud.google.com/stackdriver,
+Stackdriver} Trace API in Golang.  Stackdriver Trace is a distributed tracing
+system that collects latency data from your applications and displays it in
+the Google Cloud Platform Console.
+
+It sends application trace data to Stackdriver Trace for viewing.  Trace data
+is collected for all App Engine applications by default.  Trace data from
+other applications can be provided using this API.  This library is used to
+interact with the Trace API directly.")
     (license license:asl2.0)))
 
 (define-public go-code-gitea-io-sdk-gitea
