@@ -20051,6 +20051,55 @@ lists)
      "Package sdk provides an auto-instrumentable @code{OpenTelemetry} SDK.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-contrib-detectors-aws-ec2-v2
+  (package
+    (name "go-go-opentelemetry-io-contrib-detectors-aws-ec2-v2")
+    (version "2.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-telemetry/opentelemetry-go-contrib")
+              (commit (go-version->git-ref version
+                                           #:subdir "detectors/aws/ec2"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nh7g1zxr3drqcbhsnnkqaz2hn1rnawg8jalixng23c9hwfgqaly"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "detectors/aws" "ec2")
+            (delete-all-but "detectors" "aws")
+            (delete-all-but "." "detectors")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/contrib/detectors/aws/ec2/v2"
+      #:unpack-path "go.opentelemetry.io/contrib"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-feature-ec2-imds
+           go-github-com-aws-smithy-go
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-sdk))
+    (home-page "https://github.com/open-telemetry/opentelemetry-go-contrib")
+    (synopsis "Resource detector for EC2 instances")
+    (description
+     "Package ec2 provides a resource detector for @acronym{Amazon Elastic
+Compute Cloud, EC2} instances using @code{aws-sdk-go-v2}.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-contrib-detectors-gcp
   (package
     (name "go-go-opentelemetry-io-contrib-detectors-gcp")
