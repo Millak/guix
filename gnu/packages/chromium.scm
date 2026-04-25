@@ -400,7 +400,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "147.0.7727.55")
+(define %chromium-version "147.0.7727.116")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision (string-append "debian/" %ungoogled-revision))
 
@@ -412,7 +412,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "0l6v4wf16067igawjlh90f3d287mkw0cq4j5lvrxxy17y1skynzc"))))
+      "1vjjy0aii72sg5wxhgj353047faswzdnipyy8rrk3fzynj0lnr9j"))))
 
 (define %debian-origin
   (origin
@@ -425,7 +425,7 @@
                                 ((_ version) version))))
     (sha256
      (base32
-      "0gqarll08i7rcs1amapciv263xvzglc8p44ikavq3xd12yyvcd98"))))
+      "0zm9bqmc0y8shkwz9fdcv16shf4gxcwa4i2xjq0lngfpa8zldavg"))))
 
 (define (origin-file origin file)
   (computed-file
@@ -570,7 +570,7 @@
                                   %chromium-version "-lite.tar.xz"))
               (sha256
                (base32
-                "1salvlw5sykx3zmsbp7cgmf7y8yy6jlgb4b4zswzsbjrprk4jnap"))
+                "1fqminm19lihyk6myzbjyldxykc412z7d1n5ndah4rqv5gw77gj4"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -596,6 +596,7 @@
               "use_custom_libcxx=false" ; support for this is deprecated and to be removed.
               "optimize_webui=false"
               "webnn_use_tflite=false"
+              "build_tflite_with_xnnpack=false"
               "safe_browsing_use_unrar=false"
               "chrome_pgo_phase=0"
               "use_sysroot=false"
@@ -769,12 +770,7 @@
                    (string-append libclang "clang_base_path"))
                   (("(_rustfmt_path = \")\\$\\{rust_bindgen_root\\}" _ rustfmt)
                    (string-append rustfmt "${rust_sysroot_absolute}"))))))
-          (add-after 'patch-stuff 'include-pthreadpool
-            ;; FIXME: Somehow the build system cannot locate this header.
-            (lambda _
-              (copy-file "third_party/pthreadpool/src/include/pthreadpool.h"
-                         "pthreadpool.h")))
-          (add-after 'include-pthreadpool 'add-absolute-references
+          (add-after 'patch-stuff 'add-absolute-references
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((cups-config (search-input-file inputs "/bin/cups-config"))
                     (libnssckbi.so (search-input-file inputs
@@ -914,9 +910,9 @@
 
                 (substitute* '("chrome/app/resources/manpage.1.in"
                                "chrome/installer/linux/common/desktop.template")
-                  (("@@MENUNAME@@") "Chromium")
-                  (("@@PACKAGE@@") "chromium")
-                  (("/usr/bin/@@USR_BIN_SYMLINK_NAME@@") exe))
+                  (("@@MENUNAME") "Chromium")
+                  (("@@PACKAGE") "chromium")
+                  (("/usr/bin/@@usr_bin_symlink_name") exe))
 
                 (mkdir-p man)
                 (copy-file "chrome/app/resources/manpage.1.in"
