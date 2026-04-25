@@ -3757,14 +3757,15 @@ control module for StumpWM.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Junker/stumpwm-acpi-backlight")
-             (commit version)))
+              (url "https://github.com/Junker/stumpwm-acpi-backlight")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1dih6fzy77f3r60fwhsk0dw3qksadzj991k1i28z0da64fpshm0a"))))
     (arguments
-     '(#:asd-systems '("acpi-backlight")
-       #:tests? #f)) ; There are no tests.
+     (list
+      #:asd-systems ''("acpi-backlight")
+      #:tests? #f)) ; There are no tests.
     (build-system asdf-build-system/sbcl)
     (inputs (list stumpwm))
     (home-page "https://github.com/Junker/stumpwm-acpi-backlight")
