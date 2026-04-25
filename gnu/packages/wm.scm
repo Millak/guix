@@ -3749,6 +3749,30 @@ productive, customizable lisp based systems.")
 control module for StumpWM.")
       (license license:gpl3))))
 
+(define-public sbcl-stumpwm-acpi-backlight
+  (package
+    (name "sbcl-stumpwm-acpi-backlight")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Junker/stumpwm-acpi-backlight")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dih6fzy77f3r60fwhsk0dw3qksadzj991k1i28z0da64fpshm0a"))))
+    (arguments
+     '(#:asd-systems '("acpi-backlight")
+       #:tests? #f))
+    (build-system asdf-build-system/sbcl)
+    (inputs (list stumpwm))
+    (home-page "https://github.com/Junker/stumpwm-acpi-backlight")
+    (synopsis "ACPI backlight control module for StumpWM")
+    (description
+     "ACPI backlight control module for StumpWM.")
+    (license license:gpl3)))
+
 (define-public sbcl-stumpwm-binwarp
   (package
     (inherit stumpwm-contrib)
