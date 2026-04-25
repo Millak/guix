@@ -20100,6 +20100,52 @@ lists)
 Compute Cloud, EC2} instances using @code{aws-sdk-go-v2}.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-contrib-detectors-aws-ecs
+  (package
+    (name "go-go-opentelemetry-io-contrib-detectors-aws-ecs")
+    (version "1.43.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-telemetry/opentelemetry-go-contrib")
+              (commit (go-version->git-ref version
+                                           #:subdir "detectors/aws/ecs"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nh7g1zxr3drqcbhsnnkqaz2hn1rnawg8jalixng23c9hwfgqaly"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "detectors/aws" "ecs")
+            (delete-all-but "detectors" "aws")
+            (delete-all-but "." "detectors")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/contrib/detectors/aws/ecs"
+      #:unpack-path "go.opentelemetry.io/contrib"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-brunoscheufler-aws-ecs-metadata-go
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-sdk))
+    (home-page "https://go.opentelemetry.io/contrib")
+    (synopsis "OTLP resource detector for AWS ECS instances")
+    (description
+     "Package ecs provides a resource detector for AWS @acronym{Elastic
+Container Service, ECS} instances.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-contrib-detectors-gcp
   (package
     (name "go-go-opentelemetry-io-contrib-detectors-gcp")
