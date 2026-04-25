@@ -43480,16 +43480,17 @@ rule.")
 (define-public r-harmony
   (package
     (name "r-harmony")
-    (version "1.2.4")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "harmony" version))
        (sha256
-        (base32 "0ipkj6wqgxvgrk2617gfwf5p9wnvj7zlq6pdgim73rihd0avgp4s"))))
+        (base32 "1ll0cgg18amq4bjczsdjwvsjnrzf84i49pwm7yc6xxiq754jbrm7"))))
     (properties `((upstream-name . "harmony")))
     (build-system r-build-system)
-    (propagated-inputs (list r-cowplot
+    (propagated-inputs (list r-cli
+                             r-cowplot
                              r-dplyr
                              r-ggplot2
                              r-matrix
