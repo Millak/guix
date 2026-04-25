@@ -3792,7 +3792,7 @@ not a replacement for nmtui and/or nmcli.")
 (define-public sbcl-stumpwm-tomato
   (package
     (name "sbcl-stumpwm-tomato")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -3801,7 +3801,7 @@ not a replacement for nmtui and/or nmcli.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qq11spvhrcq74gh0dw0p4859ai2mqzbxa45gjbf599kmcybp1pa"))))
+        (base32 "0r00f8qi5kzf1sxx19fxr2lvc32bw3xlz75qrnxl5vgwsl8qafr5"))))
     (build-system asdf-build-system/sbcl)
     (inputs (list stumpwm))
     (arguments
