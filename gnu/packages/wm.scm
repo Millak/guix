@@ -3804,14 +3804,16 @@ mouse control mode for StumpWM.")
        (sha256
         (base32 "08a028r83kd66a3smiyzi9hadk3w89qdhha7hsd9ffh3gdk5s99a"))))
     (arguments
-     '(#:asd-systems '("bluetooth")
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-bin-path
-           (lambda _
-             (substitute* "bluetooth.lisp"
-               (("/usr/bin/bluetoothctl") (which "bluetoothctl"))))))))
+     (list
+      #:asd-systems ''("bluetooth")
+      #:tests? #f ; There are no tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-bin-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "bluetooth.lisp"
+                (("/usr/bin/bluetoothctl")
+                 (search-input-file inputs "bin/bluetoothctl"))))))))
     (build-system asdf-build-system/sbcl)
     (inputs (list stumpwm
                   bluez
