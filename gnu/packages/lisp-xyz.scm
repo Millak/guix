@@ -29767,7 +29767,7 @@ the Processing language and shares some of the API.")
   ;; Update together with emacs-slime.
   (package
     (name "sbcl-slime-swank")
-    (version "2.31")
+    (version "2.32")
     (source
      (origin
        (file-name (git-file-name "cl-slime-swank" version))
@@ -29776,7 +29776,7 @@ the Processing language and shares some of the API.")
              (url "https://github.com/slime/slime/")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0nv99wq2vz053p0rn9953rhmyz4g40zdl01mz7z9xbklxzbsx6x7"))
+        (base32 "0s7m7j7y1p8fb6ncpxcxdrrrxp5aw67xl7wrqy8zjjvwzljbs548"))
        (modules '((guix build utils)))
        (snippet
         ;; The doc folder drags `gawk' into the closure.  Doc is already
