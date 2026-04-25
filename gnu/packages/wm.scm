@@ -4152,23 +4152,25 @@ one in Emacs.")
        (sha256
         (base32 "1c3i5z1cmhd96xnlsb40ykgk60cyignl1m4f61i9k9vq05n83pdj"))))
     (arguments
-     '(#:asd-systems '("wpctl")
-       #:tests? #f ;there are no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-wpctl-path
-           (lambda _
-             (substitute* "wpctl.lisp"
-               (("/usr/bin/wpctl") (which "wpctl"))))))))
+     (list #:asd-systems ''("wpctl")
+           #:tests? #f ; There are no tests.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-wpctl-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "wpctl.lisp"
+                     (("/usr/bin/wpctl")
+                      (search-input-file inputs "bin/wpctl"))))))))
     (build-system asdf-build-system/sbcl)
-    (inputs (list stumpwm
-                  wireplumber-minimal
-                  sbcl-parse-float
-                  sbcl-bordeaux-threads))
+    (inputs
+     (list stumpwm
+           wireplumber-minimal
+           sbcl-parse-float
+           sbcl-bordeaux-threads))
     (home-page "https://github.com/Junker/stumpwm-wpctl")
     (synopsis "StumpWM PipeWire module")
     (description
-     "PipeWire (WirePlumber) volume and microphone control module for StumpWM")
+     "PipeWire (WirePlumber) volume and microphone control module for StumpWM.")
     (license license:gpl3)))
 
 (define-public sbcl-stumpwm-screenshot
