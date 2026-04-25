@@ -25369,8 +25369,19 @@ array-like semantic.  It also provides:
        (updater-ignored-native-inputs
         . ("r-genomicranges" "r-graph" "r-iranges" "r-shortread"))))
     (build-system r-build-system)
-    ;; Tests require r-iranges, which depends on this package.
-    (arguments (list #:tests? #false))
+    (arguments
+     (list
+      ;; Tests require r-iranges, which depends on this package.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Since R 4.6.0 some of the internal symbols are no longer exported
+         ;; unless ENABLE_LEGACY_NONAPI is defined.
+         (add-after 'unpack 'R-4.6.0-compatibility
+           (lambda _
+             (substitute* "src/S4Vectors.h"
+               (("#include \"../inst" m)
+                (string-append "#define ENABLE_LEGACY_NONAPI\n#define ENABLE_LEGACY_NONAPI_FUNS\n" m))))))))
     (propagated-inputs
      (list r-biocgenerics))
     (native-inputs (list r-knitr))
