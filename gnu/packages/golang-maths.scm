@@ -456,6 +456,29 @@ penalization.")
 FFT (Schonhage-Strassen method for multiplying integers).")
     (license license:bsd-3)))
 
+(define-public go-github-com-robinus2-golang-moving-average
+  (package
+    (name "go-github-com-robinus2-golang-moving-average")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/RobinUS2/golang-moving-average")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02z3ad29653fz7whxkjjpq820ig9j8m68xj4kay14jyazkr5in1f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/RobinUS2/golang-moving-average"))
+    (home-page "https://github.com/RobinUS2/golang-moving-average")
+    (synopsis "Moving average implementation for Go")
+    (description
+     "This package provides a moving average implementation for Go.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-shopspring-decimal
   (package
     (name "go-github-com-shopspring-decimal")
