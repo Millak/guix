@@ -3790,6 +3790,38 @@ control module for StumpWM.")
 mouse control mode for StumpWM.")
     (license (list license:gpl2+ license:gpl3+ license:bsd-2))))
 
+(define-public sbcl-stumpwm-bluetooth
+  (package
+    (name "sbcl-stumpwm-bluetooth")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Junker/stumpwm-bluetooth")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08a028r83kd66a3smiyzi9hadk3w89qdhha7hsd9ffh3gdk5s99a"))))
+    (arguments
+     '(#:asd-systems '("bluetooth")
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-bin-path
+           (lambda _
+             (substitute* "bluetooth.lisp"
+               (("/usr/bin/bluetoothctl") (which "bluetoothctl"))))))))
+    (build-system asdf-build-system/sbcl)
+    (inputs (list stumpwm
+                  bluez
+                  sbcl-bordeaux-threads))
+    (home-page "https://github.com/Junker/stumpwm-bluetooth")
+    (synopsis "StumpWM module for controlling Bluetooth devices")
+    (description
+     "StumpWM module for controlling Bluetooth devices via bluetoothctl.")
+    (license license:gpl3)))
+
 (define-public sbcl-stumpwm-stump-nm
   (package
     (inherit stumpwm-contrib)
