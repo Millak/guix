@@ -20289,7 +20289,7 @@ protobuf payloads.")
 (define-public go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
   (package
     (name "go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc")
-    (version "1.36.0")
+    (version "1.43.0")
     (source
      (origin
        (method git-fetch)
@@ -20299,15 +20299,12 @@ protobuf payloads.")
                                            #:subdir "exporters/otlp/otlptrace/otlptracegrpc"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kvfbqc56p1h9rh9cvgn37ya6k10613r0f2rhjiwrrkgs2mszk30"))
+        (base32 "0583dw99k25k07pnq8hhhb45kwqhsx30lbk9yxsh4m50ji65wl8h"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
        (snippet
         #~(begin
-            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-            ;; Consider implementing it as a reusable procedure in
-            ;; guix/build/utils or guix/build-system/go.
             (define (delete-all-but directory . preserve)
               (with-directory-excursion directory
                 (let* ((pred (negate (cut member <>
@@ -20315,23 +20312,27 @@ protobuf payloads.")
                        (items (scandir "." pred)))
                   (for-each (cut delete-file-recursively <>) items))))
             (delete-all-but "exporters/otlp/otlptrace" "otlptracegrpc")
+            (delete-all-but "exporters/otlp" "otlptrace")
             (delete-all-but "." "exporters")))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; TODO: Enable when all missing inputs are available, use as source
-      ;; only package for Boxo.
-      #:skip-build? #t
-      #:tests? #f
       #:import-path
       "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
       #:unpack-path "go.opentelemetry.io/otel"))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-stretchr-testify
+           go-go-uber-org-goleak))
     (propagated-inputs
      (list go-github-com-cenkalti-backoff-v5
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-metric-x
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-go-opentelemetry-io-otel-trace
            go-go-opentelemetry-io-proto-otlp
-           go-go-uber-org-goleak
            go-google-golang-org-genproto-googleapis-rpc
            go-google-golang-org-grpc
            go-google-golang-org-protobuf))
