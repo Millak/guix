@@ -28551,7 +28551,7 @@ unstructured, meant for quick @code{JavaScript} experiments.")
 (define-public emacs-firefox-release-notes
   (package
     (name "emacs-firefox-release-notes")
-    (version "1.7")
+    (version "1.8")
     (source
      (origin
        (method git-fetch)
@@ -28562,7 +28562,7 @@ unstructured, meant for quick @code{JavaScript} experiments.")
           (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i9ncnn0qys0v0bqw87jwx0sa2g31n1i1gfr9zqdml3hakyz8b5f"))))
+        (base32 "13ymnx4vgiq5f3cjk3zddrq4xnv6116j5zzza67v98q7rsvzl049"))))
     (build-system emacs-build-system)
     (arguments
      (list
