@@ -20646,6 +20646,50 @@ logging library.  Instead, install one of the bridges listed in the
      "Package metric provides an implementation of the metric part of the
 OpenTelemetry API.")))
 
+(define-public go-go-opentelemetry-io-otel-metric-x
+  (package
+    (name "go-go-opentelemetry-io-otel-metric-x")
+    (version "0.0.0-20260424084752-468c62dac625")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-telemetry/opentelemetry-go")
+              (commit (go-version->git-ref version #:subdir "metric/x"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16x0aw116dadi73vzh8bcwasy79sblvh6k1q7yfx8n841x48ry8r"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "metric" "x")
+            (delete-all-but "." "metric")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.opentelemetry.io/otel/metric/x"
+      #:unpack-path "go.opentelemetry.io/otel"))
+    (propagated-inputs
+     (list go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-trace))
+    (home-page "https://github.com/open-telemetry/opentelemetry-go")
+    (synopsis "Experimental Metric Options")
+    (description
+     "This package contains experimental options for the OpenTelemetry metric
+package.  These options are currently under development and not part of the
+stable API. They may be changed in backwards-incompatible ways, or removed
+entirely.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-otel-sdk
   (package
     (name "go-go-opentelemetry-io-otel-sdk")
