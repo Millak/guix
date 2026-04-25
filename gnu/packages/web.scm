@@ -584,6 +584,7 @@ the same, being completely separated from the Internet.")
       #:configure-flags
       #~(list "--with-http_ssl_module"
               "--with-http_v2_module"
+              "--with-http_v3_module"
               "--with-http_xslt_module"
               "--with-http_gzip_static_module"
               "--with-http_gunzip_module"
