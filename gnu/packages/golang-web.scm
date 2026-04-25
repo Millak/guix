@@ -18282,7 +18282,95 @@ caching protocol.  It provides support to programmatically store and retrieve
 build caches, instead of relying on the standard actions/cache YAML step.")
     (license license:expat)))
 
+(define-public go-github-com-transparency-dev-tessera
+  (package
+    (name "go-github-com-transparency-dev-tessera")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/transparency-dev/tessera")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "101y83j67g7r1bqk49qj8mwxgys88wkxz5lf7pvjp4c6b10w5gck"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/transparency-dev/tessera"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-access-to-state-tree-state
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (make-file-writable "testdata/log/.state/treeState.lock"))))
+          (add-after 'check 'remove-testdata
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "testdata")))))))
+    (native-inputs
+     (list strace
+           ;; XXX: Remove when cycle is fixed.
+           go-github-com-envoyproxy-go-control-plane))
+    (propagated-inputs
+     (list go-cloud-google-com-go-spanner
+           go-cloud-google-com-go-storage
+           go-github-com-avast-retry-go-v4
+           go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
+           go-github-com-aws-aws-sdk-go-v2-service-s3
+           go-github-com-aws-smithy-go
+           go-github-com-bitfield-script
+           go-github-com-cenkalti-backoff-v5
+           go-github-com-charmbracelet-bubbletea
+           go-github-com-charmbracelet-lipgloss
+           go-github-com-dgraph-io-badger-v4
+           go-github-com-dustin-go-humanize
+           go-github-com-gdamore-tcell-v2
+           go-github-com-go-sql-driver-mysql
+           go-github-com-google-go-cmp
+           go-github-com-googlecloudplatform-opentelemetry-operations-go-exporter-metric
+           go-github-com-googlecloudplatform-opentelemetry-operations-go-exporter-trace
+           go-github-com-hashicorp-golang-lru-v2
+           go-github-com-muesli-termenv
+           go-github-com-rivo-tview
+           go-github-com-robinus2-golang-moving-average
+           go-github-com-transparency-dev-formats
+           go-github-com-transparency-dev-merkle
+           go-go-opentelemetry-io-contrib-detectors-aws-ec2-v2
+           go-go-opentelemetry-io-contrib-detectors-aws-ecs
+           go-go-opentelemetry-io-contrib-detectors-gcp
+           go-go-opentelemetry-io-contrib-propagators-aws
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-exporters-otlp-otlpmetric-otlpmetricgrpc
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-golang-org-x-crypto
+           go-golang-org-x-exp
+           go-golang-org-x-mod
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-golang-org-x-time
+           go-google-golang-org-api
+           go-google-golang-org-grpc
+           go-k8s-io-klog-v2))
+    (home-page "https://github.com/transparency-dev/tessera")
+    (synopsis "Go library for building tile-based transparency logs (tlogs)")
+    (description
+     "Tessera is a Go library for building tile-based transparency logs (tlogs).
+ It is the logical successor to the approach
+@url{https://github.com/google/trillian, Trillian v1} takes in building and
+operating logs.  The implementation and its APIs bake-in current
+best-practices based on the lessons learned over the past decade of building
+and operating transparency logs in production environments and at scale.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-tv42-httpunix
+
   (let ((commit "2ba4b9c3382c77e7b9ea89d00746e6111d142a22")
         (revision "0"))
     (package
