@@ -16631,6 +16631,7 @@ and consumers to transparently record signed metadata to a ledger.")
       #:test-subdirs
       #~(list "internal/algorithmregistry"
               "internal/safeint"
+              "pkg/client/read"
               "pkg/client/write"
               "pkg/types/dsse"
               "pkg/types/hashedrekord"
@@ -16645,7 +16646,8 @@ and consumers to transparently record signed metadata to a ledger.")
            go-github-com-stretchr-testify
            go-sigs-k8s-io-release-utils))
     (propagated-inputs
-     (list go-cloud-google-com-go-storage
+     (list go-cloud-google-com-go-spanner
+           go-cloud-google-com-go-storage
            go-github-com-aws-aws-sdk-go-v2
            go-github-com-aws-aws-sdk-go-v2-config
            go-github-com-aws-aws-sdk-go-v2-credentials
@@ -16662,12 +16664,14 @@ and consumers to transparently record signed metadata to a ledger.")
            go-github-com-sigstore-sigstore
            ;; go-github-com-sigstore-sigstore-go                 ;cycles
            go-github-com-sigstore-sigstore-pkg-signature-kms-aws
+           go-github-com-chainguard-dev-clog
            go-github-com-sigstore-sigstore-pkg-signature-kms-gcp
            go-github-com-tink-crypto-tink-go-awskms-v2
            go-github-com-tink-crypto-tink-go-gcpkms-v2
            go-github-com-tink-crypto-tink-go-v2
            go-github-com-transparency-dev-formats
            go-github-com-transparency-dev-merkle
+           go-github-com-transparency-dev-tessera
            go-go-opentelemetry-io-otel
            go-go-opentelemetry-io-otel-exporters-prometheus
            go-go-opentelemetry-io-otel-sdk-metric
@@ -16681,9 +16685,6 @@ and consumers to transparently record signed metadata to a ledger.")
            go-k8s-io-klog-v2
 
            ;; TODO: Complete packaging.
-           ;; go-cloud-google-com-go-spanner
-           ;; go-github-com-chainguard-dev-clog
-           ;; go-github-com-transparency-dev-tessera
            #;go-go-step-sm-crypto))
     (home-page "https://github.com/sigstore/rekor-tiles")
     (synopsis "Tile-based transparency log for Sigstore")
