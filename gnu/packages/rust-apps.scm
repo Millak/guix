@@ -585,6 +585,55 @@ the palette can be injected into.")
 audit @file{Cargo.lock} for crates with security vulnerabilities.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public cargo-auditable
+  (package
+    (name "cargo-auditable")
+    (version "0.7.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rust-secure-code/cargo-auditable")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z1bi1mx4db44mlsda4pfr25sk4r5jjq02wqmvn9vdlvmfllkgdd"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-install-paths ''("cargo-auditable")
+      #:cargo-test-flags
+      '(list "--"
+             ;; error: output of --print=file-names missing
+             "--skip=test_wasm")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-cargo.lock
+            (lambda _
+              (for-each delete-file
+                        (find-files "." "Cargo\\.lock"))))
+          (add-after 'install 'install-manpage
+            (lambda _
+              (install-file "cargo-auditable/cargo-auditable.1"
+                            (string-append #$output "/share/man/man1/")))))))
+    (inputs (cargo-inputs 'cargo-auditable))
+    (home-page "https://github.com/rust-secure-code/cargo-auditable")
+    (synopsis "Make production Rust binaries auditable")
+    (description
+     "Know the exact crate versions used to build your Rust executable.  Audit
+binaries for known bugs or security vulnerabilities in production, at scale,
+with zero bookkeeping.
+
+This works by embedding data about the dependency tree in JSON format into a
+dedicated linker section of the compiled executable.
+
+The end goal is to get Cargo itself to encode this information in binaries.
+There is an RFC for an implementation within Cargo, for which this project paves
+the way: @url{https://github.com/rust-lang/rfcs/pull/2801,
+rust-lang/rfcs#2801}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public cargo-bloat
   (package
     (name "cargo-bloat")
