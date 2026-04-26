@@ -9083,6 +9083,41 @@ sub-interfaces are also provided for cases where the full Channel interface
 cannot be met (for example, @code{InChannel} for write-only channels).")
     (license license:expat)))
 
+(define-public go-github-com-eapache-go-resiliency
+  (package
+    (name "go-github-com-eapache-go-resiliency")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/eapache/go-resiliency")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07a1r3c2spd37k3riy4fxz8v8ibxiprf8a3vw788whz4mlp6gm40"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/eapache/go-resiliency"))
+    (home-page "https://github.com/eapache/go-resiliency")
+    (synopsis "Resiliency patterns for golang")
+    (description
+     "Resiliency patterns for golang.  Based in part on
+@url{https://github.com/Netflix/Hystrix, Hystrix},
+@@url{https://github.com/Shopify/semian, Semian}, and others.
+
+Currently implemented patterns include:
+@itemize
+@item circuit-breaker
+@item semaphore
+@item deadline/timeout
+@item batching
+@item retriable
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-eapache-queue
   (package
     (name "go-github-com-eapache-queue")
