@@ -19216,7 +19216,7 @@ Partitioning}, for an example.
 
 When using GRUB as the bootloader, the LUKS password is only requested
 once: GRUB passes the master key to the initial RAM disk automatically.
-@xref{Bootloader Configuration, Automatic LUKS Master Key Passing}, for
+@xref{grub-luks-root-device-key, Automatic LUKS Master Key Passing}, for
 details.
 
 @end defvar
@@ -48960,8 +48960,28 @@ This option in enabled by default.  In some cases involving the
 in RAM, it can be handy to disable the option by setting it to
 @code{#f}.
 
-@subsubheading Automatic LUKS Master Key Passing
+@item @code{extra-initrd} (default: @code{#f})
+File name of an additional initrd to load during the boot.  It may or
+may not point to a file in the store, but the main use case is for
+out-of-store files containing secrets.
 
+For any use case not involving secrets, you should use regular initrd
+(@pxref{operating-system Reference, @code{initrd}}) instead.
+
+Be careful when using this option, since pointing to a file that is not
+readable by the grub while booting will cause the boot to fail and
+require a manual edit of the initrd line in the grub menu.
+
+Currently only supported by GRUB.
+@end table
+
+@end deftp
+
+@anchor{grub-luks-root-device-key}
+@unnumberedsubsec Automatic LUKS Master Key Passing
+
+@cindex LUKS, root file system encryption
+@cindex passphrase, for LUKS-encrypted root
 When booting from a LUKS-encrypted device using GRUB, the password is
 normally requested twice: once by GRUB to access @file{/boot}, and a
 second time by the initial RAM disk to mount the root file system.
@@ -49002,22 +49022,7 @@ No configuration is required: GRUB's @code{procfs} and @code{luks}
 modules are loaded automatically when encrypted devices are declared
 via @code{luks-device-mapping} (@pxref{Mapped Devices}).
 
-@item @code{extra-initrd} (default: @code{#f})
-File name of an additional initrd to load during the boot.  It may or
-may not point to a file in the store, but the main use case is for
-out-of-store files containing secrets.
-
-For any use case not involving secrets, you should use regular initrd
-(@pxref{operating-system Reference, @code{initrd}}) instead.
-
-Be careful when using this option, since pointing to a file that is not
-readable by the grub while booting will cause the boot to fail and
-require a manual edit of the initrd line in the grub menu.
-
-Currently only supported by GRUB.
-@end table
-
-@end deftp
+@unnumberedsubsec Additional Boot Entries
 
 @cindex dual boot
 @cindex boot menu
@@ -49146,9 +49151,13 @@ example of chainloading a different GNU/Linux system.
 @end table
 @end deftp
 
+@unnumberedsubsec Themes
+
 @cindex HDPI
 @cindex HiDPI
 @cindex resolution
+@cindex themes, for GRUB
+@cindex bootloader themes
 @c FIXME: Write documentation once it's stable.
 For now only GRUB has theme support.  GRUB themes are created using
 the @code{grub-theme} form, which is not fully documented yet.
@@ -49168,7 +49177,7 @@ Return the default GRUB theme used by the operating system if no
 @code{theme} field is specified in @code{bootloader-configuration}
 record.
 
-It comes with a fancy background image displaying the GNU and Guix
+It comes with a fancy background image displaying the Guix
 logos.
 @end deffn
 
