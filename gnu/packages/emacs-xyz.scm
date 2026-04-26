@@ -41893,6 +41893,49 @@ Lisp's (relatively new) EIEIO object oriented libraries.")
      "Fj contains basic functions for interacting with a Forgejo instance.")
     (license license:gpl3+)))
 
+(define-public emacs-keymap-popup
+  (package
+    (name "emacs-keymap-popup")
+    (version "0.2.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/thanosapollo/emacs-keymap-popup")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "16f5lba7m1k7s2y80fkyf9lf4c79lhs4g0xz7y4bxz6r9x70m9zf"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f))            ;tests need a live display read-loop
+    (home-page "https://codeberg.org/thanosapollo/emacs-keymap-popup")
+    (synopsis "Elisp library to create key-driven popup menus")
+    (description "This package provides @code{keyboard-popup-define}, a macro
+to define a keymap along with popup data and documentation in one place.  It
+is similar to the @code{transient} Elisp library, but aims to be simpler to
+use.  Among its features are:
+@table @code
+@item :switch
+buffer-local toggle with [on]/[off] display
+@item :keymap
+sub-menu with stack navigation (q / C-g pops back)
+@item :stay-open
+command executes without dismissing the popup
+@item :inapt-if
+grays out and blocks entries based on a predicate
+@item :c-u
+prefix argument mode (C-u highlights eligible entries)
+@item :if
+conditionally hide entries
+@item :group
+@itemx :row
+column layout
+@item keymap-popup-annotate
+add popup descriptions to existing keymaps
+@end table")
+    (license license:gpl3+)))
+
 (define-public emacs-ebdb-i18n-chn
   (package
     (name "emacs-ebdb-i18n-chn")
