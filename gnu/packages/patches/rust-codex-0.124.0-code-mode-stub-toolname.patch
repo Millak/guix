@@ -1,0 +1,25 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2026-04-26
+License: ASL2.0
+Subject: Stub CodeModeTurnHost::invoke_tool signature uses ToolName.
+
+In codex 0.117 the upstream trait took `tool_name: String`, so the
+disable-code-mode patch's `cfg(not(feature = "v8-runtime"))` stub used
+String to match.  In codex 0.124 the upstream trait takes
+`codex_protocol::ToolName`, and core/src/tools/code_mode/mod.rs's impl
+of CodeModeTurnHost passes `ToolName`, so the stub must match the new
+signature here too.  This patch is applied only to codex 0.124+ on top
+of the shared disable-code-mode patch; codex-acp (which still pins
+rust-v0.117.0 where code-mode has no codex-protocol dep) keeps the
+String-based stub.
+
+--- a/codex-rs/code-mode/src/lib.rs
++++ b/codex-rs/code-mode/src/lib.rs
+@@ -77,7 +77,7 @@
+ #[cfg(not(feature = "v8-runtime"))]
+ #[async_trait::async_trait]
+ pub trait CodeModeTurnHost: Send + Sync {
+-    async fn invoke_tool(&self, tool_name: String, input: Option<serde_json::Value>, cancellation_token: tokio_util::sync::CancellationToken) -> Result<serde_json::Value, String>;
++    async fn invoke_tool(&self, tool_name: codex_protocol::ToolName, input: Option<serde_json::Value>, cancellation_token: tokio_util::sync::CancellationToken) -> Result<serde_json::Value, String>;
+     async fn notify(&self, call_id: String, cell_id: String, text: String) -> Result<(), String>;
+ }

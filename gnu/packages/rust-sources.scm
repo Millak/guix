@@ -1537,6 +1537,168 @@ repository, used as dependencies by codex-acp.")
 and runtime for AI-assisted coding.")
      (license license:asl2.0))))
 
+(define-public rust-codex-0.124.0
+  (hidden-package
+   (package
+     (inherit rust-codex-0.120.0)
+     (version "0.124.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/openai/codex")
+              (commit "e9fb49366c93a1478ec71cc41ecee415a197d036")))
+        (file-name (git-file-name "rust-codex" "0.124.0"))
+        (sha256
+         (base32 "06il60npjnc0h91afyp3wk725cgy3ywk3hx2sbvzdxx6037z6nb0"))
+        (modules '((guix build utils)))
+        (snippet '(begin
+                    ;;; These are JSON manifests with a dotslash
+                    ;;; shebang that download and run pre-built
+                    ;;; binaries (ripgrep, bash) at runtime.
+                    (delete-file "codex-cli/bin/rg")
+                    ;; Bundled bubblewrap source tree; includes a
+                    ;; compiled BPF blob (demos/flatpak.bpf).
+                    (delete-file-recursively "codex-rs/vendor/bubblewrap")))
+        (patches (search-patches
+                  "codex-acp-0.11.1-disable-code-mode.patch"
+                  "rust-codex-0.124.0-code-mode-stub-toolname.patch"
+                  "rust-codex-0.124.0-remove-patch-sections.patch"
+                  "rust-codex-0.120.0-remove-libwebrtc.patch"))))
+     (arguments
+      (substitute-keyword-arguments (package-arguments rust-codex-0.120.0)
+        ;; 0.124 differs from 0.120 by a single removal
+        ;; (codex-instructions) and ten additions placed at topo-correct
+        ;; positions; the order also shifts in a few spots to satisfy new
+        ;; deps (e.g. codex-utils-cargo-bin moves before codex-app-server-
+        ;; protocol).  Replace the whole list rather than computing a
+        ;; delta against the inherited one.
+        ((#:cargo-package-crates _)
+         ''(;; Topologically sorted by internal dependency order.
+            "codex-async-utils"
+            "codex-utils-absolute-path"
+            "codex-execpolicy"
+            "codex-utils-home-dir"
+            "codex-utils-rustls-provider"
+            "codex-network-proxy"
+            "codex-utils-cache"
+            "codex-utils-image"
+            "codex-utils-string"
+            "codex-utils-template"
+            "codex-protocol"
+            "codex-agent-identity"
+            "codex-experimental-api-macros"
+            "codex-shell-command"
+            "codex-utils-cargo-bin"
+            "codex-app-server-protocol"
+            "codex-client"
+            "codex-api"
+            "codex-otel"
+            "codex-features"
+            "codex-model-provider-info"
+            "codex-utils-path"
+            "codex-config"
+            "codex-sandboxing"
+            "codex-utils-pty"
+            "codex-exec-server"
+            "codex-git-utils"
+            "codex-keyring-store"
+            "codex-terminal-detection"
+            "codex-login"
+            "codex-utils-plugins"
+            "codex-plugin"
+            "codex-analytics"
+            "codex-ansi-escape"
+            "codex-apply-patch"
+            "codex-code-mode"
+            "codex-connectors"
+            "codex-skills"
+            "codex-utils-output-truncation"
+            "codex-core-skills"
+            "codex-core-plugins"
+            "codex-feedback"
+            "codex-hooks"
+            "codex-rmcp-client"
+            "codex-mcp"
+            "codex-aws-auth"
+            "codex-model-provider"
+            "codex-collaboration-mode-templates"
+            "codex-response-debug-context"
+            "codex-models-manager"
+            "codex-file-search"
+            "codex-state"
+            "codex-rollout"
+            "codex-rollout-trace"
+            "codex-secrets"
+            "codex-shell-escalation"
+            "codex-thread-store"
+            "codex-tools"
+            "codex-utils-readiness"
+            "codex-utils-stream-parser"
+            "codex-windows-sandbox"
+            "codex-core"
+            "codex-linux-sandbox"
+            "codex-arg0"
+            "codex-backend-openapi-models"
+            "codex-backend-client"
+            "codex-utils-cli"
+            "codex-chatgpt"
+            "codex-cloud-requirements"
+            "codex-device-key"
+            "codex-utils-json-to-toml"
+            "codex-app-server"
+            "codex-app-server-client"
+            "codex-app-server-test-client"
+            "codex-cloud-tasks-client"
+            "codex-cloud-tasks-mock-client"
+            "codex-install-context"
+            "codex-realtime-webrtc"
+            "codex-utils-approval-presets"
+            "codex-utils-elapsed"
+            "codex-utils-fuzzy-match"
+            "codex-lmstudio"
+            "codex-ollama"
+            "codex-utils-oss"
+            "codex-utils-sandbox-summary"
+            "codex-utils-sleep-inhibitor"
+            "codex-exec"
+            "codex-mcp-server"
+            "codex-process-hardening"
+            "codex-responses-api-proxy"
+            "codex-uds"
+            "codex-stdio-to-uds"
+            "codex-debug-client"
+            "codex-execpolicy-legacy"
+            "codex-test-binary-support"))
+        ((#:phases orig)
+         ;; Two changes from the inherited phases:
+         ;; (1) 'add-version-to-workspace-deps stamps the literal
+         ;;     0.120.0 version inside its substitute pattern, so we
+         ;;     swap the whole phase for one stamping 0.124.0 (and
+         ;;     using a regex that also matches the codex_windows_
+         ;;     sandbox underscore alias introduced in 0.124).
+         ;; (2) Add a new phase 'break-dev-dep-cycles to strip the
+         ;;     codex-test-binary-support dev-dep from exec-server and
+         ;;     core; it forms a cycle (test-binary-support -> arg0 ->
+         ;;     {exec-server,core} -> test-binary-support) that cargo
+         ;;     package --no-verify still rejects.
+         #~(modify-phases #$orig
+             (replace 'add-version-to-workspace-deps
+               (lambda _
+                 (let ((cargo-files (find-files "." "^Cargo\\.toml$")))
+                   (substitute* cargo-files
+                     (("(codex[_-][a-z0-9_-]+) = \\{ path = " all name)
+                      (string-append name " = { version = \"0.124.0\", path = "))
+                     (("(codex[_-][a-z0-9_-]+) = \\{ package = " all name)
+                      (string-append name " = { version = \"0.124.0\", package = "))
+                     (("^(path = \"\\.\\./[^\"]*\")" all path-line)
+                      (string-append path-line "\nversion = \"0.124.0\""))))))
+             (add-after 'add-version-to-workspace-deps 'break-dev-dep-cycles
+               (lambda _
+                 (substitute* '("exec-server/Cargo.toml" "core/Cargo.toml")
+                   (("^codex-test-binary-support = \\{[^}]*\\}\n") ""))))))))
+     (inputs (cargo-inputs 'rust-codex-0.124.0)))))
+
 ;; Also update (@ (gnu packages gnome) glycin-loaders) when updating this.
 (define-public rust-glycin-3
   (package

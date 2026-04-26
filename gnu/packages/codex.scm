@@ -18,10 +18,10 @@
 
 ;;; This module is separate from (gnu packages rust-apps) to avoid a
 ;;; circular module dependency: (gnu packages rust-sources), which
-;;; defines rust-codex-0.120.0, transitively loads (gnu packages
+;;; defines rust-codex-0.124.0, transitively loads (gnu packages
 ;;; rust-apps) through its #:use-module chain.  If the codex package
 ;;; lived in rust-apps.scm, loading rust-sources would trigger loading
-;;; rust-apps before rust-codex-0.120.0 is defined, causing an unbound
+;;; rust-apps before rust-codex-0.124.0 is defined, causing an unbound
 ;;; variable error.
 
 (define-module (gnu packages codex)
@@ -54,14 +54,14 @@
 (define-public codex
   (package
     (name "codex")
-    (version (package-version rust-codex-0.120.0))
+    (version (package-version rust-codex-0.124.0))
     (source
      (origin
-       (inherit (package-source rust-codex-0.120.0))
+       (inherit (package-source rust-codex-0.124.0))
        (patches (search-patches
                  "codex-acp-0.11.1-disable-code-mode.patch"
-                 "rust-codex-0.117.0-remove-patch-sections.patch"
-                 "rust-codex-0.120.0-connectors-cache-test-race.patch"
+                 "rust-codex-0.124.0-code-mode-stub-toolname.patch"
+                 "rust-codex-0.124.0-remove-patch-sections.patch"
                  "rust-codex-0.120.0-remove-libwebrtc.patch"
                  "rust-codex-0.98.0-test-shebangs.patch"
                  "rust-codex-0.120.0-test-timeout.patch"))))
@@ -69,7 +69,12 @@
     (arguments
      (list
       #:install-source? #f
-      #:cargo-install-paths '(list "cli" "exec" "exec-server"
+      ;; exec-server is library-only in 0.124 (no [[bin]] in
+      ;; exec-server/Cargo.toml); cargo install --path exec-server fails
+      ;; with "no packages found with binaries or examples".  Drop it
+      ;; from the install paths -- the library is consumed via the
+      ;; workspace by other binaries here, not installed standalone.
+      #:cargo-install-paths '(list "cli" "exec"
                                    "linux-sandbox" "mcp-server"
                                    "app-server" "tui")
       ;; schema_fixtures_match_generated (upstream fixture is stale:
@@ -317,7 +322,164 @@
                                 ;; (chatgpt.com, api.github.com) wait
                                 ;; for TCP timeout instead of failing
                                 ;; instantly at TLS, eating the budget.
-                                "--skip" "mcp_server_status_list_tools_and_auth_only_skips_slow_inventory_calls")
+                                "--skip" "mcp_server_status_list_tools_and_auth_only_skips_slow_inventory_calls"
+                                ;;; BEGIN Stack overflow in 'current_thread'
+                                ;;; tokio runtime.  The sibling tests in
+                                ;;; tracing_tests.rs use the local helper
+                                ;;; run_current_thread_test_with_stack
+                                ;;; (4 MiB) but this one uses bare
+                                ;;; #[tokio::test] on the 2 MiB default
+                                ;;; test-thread stack, and TurnStart's
+                                ;;; future graph exceeds it.  With
+                                ;;; RUST_MIN_STACK raised the overflow is
+                                ;;; gone but the test then deterministically
+                                ;;; times out waiting for a span tagged
+                                ;;; codex.op = "user_input" on the remote
+                                ;;; trace that upstream never emits on that
+                                ;;; trace in our environment.
+                                "--skip" "turn_start_jsonrpc_span_parents_core_turn_spans"
+                                ;;; END tracing test stack/timeout
+                                ;;; BEGIN The upstream loader resolves the
+                                ;;; MCP OAuth credentials store mode by
+                                ;;; calling
+                                ;;; resolve_mcp_oauth_credentials_store_mode
+                                ;;; with env!("CARGO_PKG_VERSION") -- which
+                                ;;; in the released 0.124.0 tarball is
+                                ;;; "0.124.0".  These fixture tests
+                                ;;; construct the expected Config by
+                                ;;; passing the LOCAL_DEV_BUILD_VERSION
+                                ;;; constant ("0.0.0") to the same
+                                ;;; resolver, and the resolver only returns
+                                ;;; File for "0.0.0" -- Auto otherwise.
+                                ;;; Upstream CI builds from a checkout
+                                ;;; still carrying version = "0.0.0" so the
+                                ;;; tests pass there; they cannot pass
+                                ;;; against a released tag.
+                                "--skip" "test_precedence_fixture_with_gpt3_profile"
+                                "--skip" "test_precedence_fixture_with_gpt5_profile"
+                                "--skip" "test_precedence_fixture_with_o3_profile"
+                                "--skip" "test_precedence_fixture_with_zdr_profile"
+                                ;;; END LOCAL_DEV_BUILD_VERSION fixture mismatch
+                                ;;; BEGIN Verifies that Codex's user-shell
+                                ;;; spawn produces a child where
+                                ;;; CODEX_SANDBOX_NETWORK_DISABLED is unset
+                                ;;; (asserts stdout == "not-set").  We
+                                ;;; deliberately set that env var at the
+                                ;;; check phase to trigger upstream's
+                                ;;; skip_if_no_network! guards; the var then
+                                ;;; leaks into the spawned shell and the
+                                ;;; assertion fails.  The guix skip is a
+                                ;;; direct cost of the network-gate fix --
+                                ;;; trading one broken test for two that
+                                ;;; now skip cleanly.
+                                "--skip" "user_shell_command_does_not_set_network_sandbox_env_var"
+                                ;;; END CODEX_SANDBOX_NETWORK_DISABLED leak
+                                ;;; BEGIN The exec-server/tests/file_system
+                                ;;; integration tests invoke the real
+                                ;;; system bwrap, which tries to execvp the
+                                ;;; test binary at the cargo target path
+                                ;;; under the build dir.  Same root cause
+                                ;;; as the existing
+                                ;;; sandbox_reenables_writable_subpaths_under_unreadable_parents
+                                ;;; skip: guix builds live under /tmp but
+                                ;;; bwrap's mount namespace excludes /tmp,
+                                ;;; making the binary invisible inside the
+                                ;;; namespace.
+                                "--skip" "file_system_copy_preserves_symlink_source"
+                                "--skip" "file_system_copy_rejects_symlink_escape_destination"
+                                "--skip" "file_system_copy_rejects_symlink_escape_source"
+                                "--skip" "file_system_create_directory_rejects_symlink_escape"
+                                "--skip" "file_system_read_directory_rejects_symlink_escape"
+                                "--skip" "file_system_remove_rejects_symlink_escape"
+                                "--skip" "file_system_remove_removes_symlink_not_target"
+                                "--skip" "file_system_sandboxed_read_allows_readable_root"
+                                "--skip" "file_system_sandboxed_read_rejects_symlink_escape"
+                                "--skip" "file_system_sandboxed_read_rejects_symlink_parent_dotdot_escape"
+                                "--skip" "file_system_sandboxed_write_allows_additional_write_root"
+                                "--skip" "file_system_sandboxed_write_rejects_symlink_escape"
+                                "--skip" "file_system_sandboxed_write_rejects_unwritable_path"
+                                ;;; END bwrap-cant-see-/tmp file_system tests
+                                ;;; BEGIN Landlock is unavailable on Guix,
+                                ;;; so the sandbox cannot deny network
+                                ;;; syscalls.  These tests expect
+                                ;;; SandboxErr::Denied for the nc, ping,
+                                ;;; ssh, getent, and dev_tcp_redirection
+                                ;;; commands but those commands instead
+                                ;;; block on connect() until the test's 2s
+                                ;;; timeout fires (Timeout, exit 124).
+                                ;;; Same root cause as the Landlock skips
+                                ;;; at the top of this list; new test names
+                                ;;; in 0.124.
+                                "--skip" "sandbox_blocks_nc"
+                                "--skip" "sandbox_blocks_ping"
+                                "--skip" "sandbox_blocks_dev_tcp_redirection"
+                                "--skip" "sandbox_blocks_getent"
+                                "--skip" "sandbox_blocks_ssh"
+                                ;;; END Landlock network block
+                                ;;; BEGIN Requires github.com network access.
+                                ;;; With no "extraKnownMarketplaces" entry
+                                ;;; in settings.json,
+                                ;;; collect_marketplace_import_sources
+                                ;;; inserts a fallback entry for the
+                                ;;; "claude-plugins-official" marketplace
+                                ;;; pointing at the github shorthand
+                                ;;; "anthropics/claude-plugins-official".
+                                ;;; add_marketplace -> parse_marketplace_source
+                                ;;; expands that to a github.com/.git URL
+                                ;;; and clone_git_source runs 'git clone'.
+                                ;;; The Guix build sandbox has no network,
+                                ;;; so the clone fails and the marketplace
+                                ;;; lands in failed_marketplaces.  No mock
+                                ;;; cloner is injected via
+                                ;;; ExternalAgentConfigService::new_for_test,
+                                ;;; so there is no in-tree way to satisfy
+                                ;;; the test offline.
+                                "--skip" "import_plugins_infers_claude_official_marketplace_when_missing_from_settings"
+                                ;;; END github.com network access
+                                ;;; BEGIN Async race between the rollout
+                                ;;; writer task and a direct SQLite read.
+                                ;;; The test calls
+                                ;;; update_memory_settings_with_app_server,
+                                ;;; which routes through the in-memory
+                                ;;; thread path on the app-server's
+                                ;;; ThreadMemoryModeSet handler ->
+                                ;;; Session::set_thread_memory_mode ->
+                                ;;; persist_thread_memory_mode_update,
+                                ;;; which writes a RolloutItem::SessionMeta
+                                ;;; with the new mode to the rollout file
+                                ;;; via recorder.record_items + flush.  The
+                                ;;; rollout writer task then asynchronously
+                                ;;; calls sync_thread_state_after_write,
+                                ;;; which calls state_db::apply_rollout_items
+                                ;;; to mirror the SessionMeta into SQLite.
+                                ;;; flush() only awaits the rollout-file
+                                ;;; write, not the subsequent SQLite sync.
+                                ;;; The test opens a fresh StateRuntime and
+                                ;;; reads get_thread_memory_mode
+                                ;;; immediately, so it observes the creation
+                                ;;; default of "enabled" written by
+                                ;;; upsert_thread_with_creation_memory_mode
+                                ;;; instead of the new "disabled".  Upstream
+                                ;;; CI wins this race; we lose.
+                                "--skip" "update_memory_settings_updates_current_thread_memory_mode"
+                                ;;; END memory-mode rollout/sqlite race
+                                ;;; BEGIN The Stopwatch::new constructor in
+                                ;;; codex_shell_escalation anchors
+                                ;;; T0 = Instant::now() at construction;
+                                ;;; the spawned cancellation task fires at
+                                ;;; T0 + limit.  The test captures
+                                ;;; start = Instant::now() at T1 > T0 (after
+                                ;;; cancellation_token() returns) and
+                                ;;; asserts start.elapsed() >= limit,
+                                ;;; i.e. (T0 + limit) - T1 >= limit, which
+                                ;;; is always false by the offset T1 - T0.
+                                ;;; The test only passes when scheduler
+                                ;;; jitter on the sleep wakeup happens to
+                                ;;; exceed that offset.  Upstream wins the
+                                ;;; race; we don't always.
+                                "--skip" "cancellation_receiver_fires_after_limit"
+                                ;;; END Stopwatch construction/start offset race
+                                )
       #:cargo-package-crates
       ''(;;; Tier 0: No internal deps.
          "codex-ansi-escape"
@@ -358,22 +520,31 @@
          "codex-debug-client"
          "codex-analytics"
          "codex-rollout"
+         "codex-rollout-trace"
          "codex-terminal-detection"
          "codex-utils-approval-presets"
          "codex-utils-cli"
+         "codex-uds"
+         "codex-install-context"
+         "codex-device-key"
          ;;; Tier 2.
          "codex-app-server-protocol"
          "codex-rmcp-client"
          "codex-otel"
+         "codex-thread-store"
          "codex-state"
          "codex-features"
+         "codex-model-provider"
          "codex-config"
+         "codex-agent-identity"
+         "codex-aws-auth"
          "codex-hooks"
-         "codex-instructions"
          "codex-code-mode"
          "codex-feedback"
          "codex-skills"
+         "codex-test-binary-support"
          "codex-core"
+         "codex-core-plugins"
          "codex-utils-sandbox-summary"
          "codex-linux-sandbox"
          "codex-sandboxing"
@@ -425,7 +596,7 @@
               ;; Update them to match the actual package version.
               (let ((snap-files (find-files "." "\\.snap$")))
                 (substitute* snap-files
-                  (("\\(v0\\.0\\.0\\)   ") "(v0.120.0) ")))))
+                  (("\\(v0\\.0\\.0\\)   ") "(v0.124.0) ")))))
           (add-after 'chdir-to-workspace 'patch-git-deps-to-vendor
             (lambda _
               ;; Replace git dependencies with version references so cargo
@@ -436,32 +607,55 @@
                 (("runfiles = \\{ git = [^}]+\\}")
                  "runfiles = \"0.1.0\""))
               ;; Remove workspace members that have unbuildable deps
-              ;; (libwebrtc requires git fetch, v8-poc requires V8).
+              ;; (v8-poc requires V8).  code-mode stays a workspace member
+              ;; so its codex-protocol resolves to the same local copy as
+              ;; the rest of the build; disabling its default features
+              ;; (below) avoids pulling in V8.
               (substitute* "Cargo.toml"
-                (("\"v8-poc\",") "")
-                (("\"code-mode\",") ""))
-              ;; Disable V8 runtime in codex-code-mode: remove path
-              ;; so cargo resolves it from the vendor (where it has
-              ;; optional = true on v8) and disable default features.
+                (("\"v8-poc\",") ""))
+              ;; Disable V8 runtime in codex-code-mode by turning off
+              ;; default features.  Keep path= so code-mode is resolved
+              ;; from the local source tree and shares codex-protocol
+              ;; (and other workspace crates) with the rest of the build;
+              ;; resolving it from the vendor instead introduces a
+              ;; duplicate codex-protocol and causes E0308 type
+              ;; mismatches in codex-tools.
               (substitute* "Cargo.toml"
                 (("codex-code-mode = \\{ path = \"code-mode\" \\}")
-                 "codex-code-mode = { version = \"0.120.0\", default-features = false }"))))
+                 "codex-code-mode = { path = \"code-mode\", default-features = false }"))
+              ;; cargo build at workspace root ignores per-dep
+              ;; default-features=false and builds code-mode with its
+              ;; own default features, which include v8-runtime and
+              ;; would pull in V8.  Make the default feature empty.
+              (substitute* "code-mode/Cargo.toml"
+                (("^default = \\[\"v8-runtime\"\\]") "default = []"))))
           (add-after 'patch-git-deps-to-vendor 'add-version-to-workspace-deps
             (lambda _
               ;; cargo package requires all dependencies to have versions.
-              ;; cargo package requires all dependencies to have versions.
-              ;; Add version = "0.120.0" to internal path dependencies.
+              ;; Add version = "0.124.0" to internal path dependencies.
               (let ((cargo-files (find-files "." "^Cargo\\.toml$")))
                 (substitute* cargo-files
                   ;; Handle inline deps: name = { path = "..." }
                   (("(codex-[a-z0-9-]+) = \\{ path = " all name)
-                   (string-append name " = { version = \"0.120.0\", path = "))
+                   (string-append name " = { version = \"0.124.0\", path = "))
                   ;; Handle inline deps with package: name = { package = "...", path = "..." }
                   (("(codex-[a-z0-9-]+) = \\{ package = " all name)
-                   (string-append name " = { version = \"0.120.0\", package = "))
+                   (string-append name " = { version = \"0.124.0\", package = "))
                   ;; Handle section deps: [dependencies.X] with path = "..."
                   (("^(path = \"\\.\\./[^\"]*\")" all path-line)
-                   (string-append path-line "\nversion = \"0.120.0\""))))))
+                   (string-append path-line "\nversion = \"0.124.0\""))))))
+          (add-after 'chdir-to-workspace 'use-gnu-store-in-sandbox
+            (lambda _
+              ;; LINUX_PLATFORM_DEFAULT_READ_ROOTS in linux-sandbox/src/
+              ;; bwrap.rs is the read-only baseline that codex's bwrap
+              ;; sandbox bind-mounts so commands can read /usr/bin/ls,
+              ;; libc, etc.  Upstream lists "/nix/store" for NixOS;
+              ;; Guix's equivalent is "/gnu/store".  Without this swap,
+              ;; the codex sandbox cannot locate any binaries on a Guix
+              ;; system because every "system" path resolves into
+              ;; /gnu/store/<hash>-pkg/bin/...
+              (substitute* "linux-sandbox/src/bwrap.rs"
+                (("\"/nix/store\"") "\"/gnu/store\""))))
           (add-after 'chdir-to-workspace 'patch-hardcoded-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((bash-bin (string-append
@@ -561,10 +755,12 @@
                 ;; double quotes.
                 (substitute*
                   (list "core/src/plugins/startup_sync_tests.rs"
+                        "core/src/tools/runtimes/shell/unix_escalation_tests.rs"
                         "core/tests/suite/client.rs"
                         "core/tests/suite/js_repl.rs"
                         "core/tests/suite/skill_approval.rs"
                         "core/tests/suite/user_notification.rs"
+                        "exec-server/tests/file_system.rs"
                         "login/src/auth/auth_tests.rs"
                         "models-manager/src/manager_tests.rs"
                         "sandboxing/src/bwrap_tests.rs")
@@ -613,7 +809,17 @@
               ;; ~/... and 30 snapshot tests fail.
               (setenv "HOME" "/tmp/guix-home")
               (mkdir-p "/tmp/guix-home")
-              (setenv "USER" "nixbld"))))))
+              (setenv "USER" "nixbld")
+              ;; Default libtest thread stack is 2 MiB, which is not
+              ;; enough for tokio current_thread tests that drive
+              ;; codex-core's full turn pipeline.  Upstream gates such
+              ;; tests through run_current_thread_test_with_stack (4 MiB)
+              ;; in app-server/src/message_processor/tracing_tests.rs;
+              ;; raise the global default so future additions that
+              ;; forget the wrapper still pass.
+              (setenv "RUST_MIN_STACK" "8388608")
+              ;; Disable network access.
+              (setenv "CODEX_SANDBOX_NETWORK_DISABLED" "1"))))))
     (native-inputs `(("bubblewrap" ,bubblewrap) ;tests need bwrap on PATH
                      ("clang" ,clang)
                      ("cmake-minimal" ,cmake-minimal)

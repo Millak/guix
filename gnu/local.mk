@@ -2400,6 +2400,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/rust-codex-0.120.0-connectors-cache-test-race.patch	\
   %D%/packages/patches/rust-codex-0.120.0-remove-libwebrtc.patch	\
   %D%/packages/patches/rust-codex-0.120.0-test-timeout.patch	\
+  %D%/packages/patches/rust-codex-0.124.0-code-mode-stub-toolname.patch	\
+  %D%/packages/patches/rust-codex-0.124.0-remove-patch-sections.patch	\
   %D%/packages/patches/rust-ring-0.17-ring-core.patch		\
   %D%/packages/patches/rw-igraph-0.10.patch			\
   %D%/packages/patches/rxvt-unicode-fix-cursor-position.patch	\
