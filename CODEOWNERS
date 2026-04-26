@@ -274,6 +274,7 @@ guix/build-system/ant\.scm                         @guix/java
 guix/build-system/clojure\.scm                     @guix/java
 guix/build-system/maven\.scm                       @guix/java
 
+gnu/packages/javascript\.scm                       @guix/javascript
 gnu/packages/node-xyz\.scm                         @guix/javascript
 gnu/packages/node\.scm                             @guix/javascript
 guix/build-system/node\.scm                        @guix/javascript
