@@ -67,24 +67,24 @@
   (package
     (name "plover")
     (version "5.3.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/openstenoproject/plover")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1dx5afcfqskwzkf6zfpii704f2b21z6al3d0g2h4xwza82cmknnl"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openstenoproject/plover")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dx5afcfqskwzkf6zfpii704f2b21z6al3d0g2h4xwza82cmknnl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list
-                        "-p" "pytest-qt"
-                        "-p" "xvfb"
-                        "test"
-                        ;; FIXME: Ignore failing test.
-                        "--ignore" "test/gui_qt/test_dictionaries_widget.py")
+      #:test-flags
+      #~(list "-p" "pytest-qt"
+              "-p" "xvfb"
+              ;; FIXME: Ignore failing test.
+              "--ignore" "test/gui_qt/test_dictionaries_widget.py"
+              "test")
       #:phases
       #~(modify-phases %standard-phases
           ;; FIXME: adjust after packaging pyside-6-tools.
@@ -126,12 +126,11 @@
                   (("Exec=plover")
                    (string-append "Exec=" #$output "/bin/plover"))))))
           (add-after 'install 'install-udev-rules
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (rules (string-append out "/lib/udev/rules.d")))
-                (mkdir-p rules)
-                (call-with-output-file
-                    (string-append rules "/99-plover-uinput.rules")
+            (lambda _
+              (let* ((dir (string-append #$output "/lib/udev/rules.d"))
+                     (file (string-append dir "/99-plover-uinput.rules")))
+                (mkdir-p dir)
+                (call-with-output-file file
                   (lambda (port)
                     (display
                      (string-append
@@ -178,4 +177,3 @@
 allows anyone to use stenography to write on their computer, up to
 speeds of 200WPM and beyond.")
     (license license:gpl2+)))
-
