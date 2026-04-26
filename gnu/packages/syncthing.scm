@@ -50,7 +50,7 @@
 (define-public syncthing
   (package
     (name "syncthing")
-    (version "2.0.14")
+    (version "2.0.16")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/syncthing/syncthing"
@@ -58,7 +58,7 @@
                                   "/syncthing-source-v" version ".tar.gz"))
               (sha256
                (base32
-                "00isf0j9nf0752wrn79nh4aj5ij5gapv1kvhrg8ydmmw1gi6rhzy"))))
+                "0sgij3i2mhl6m9n2d98cz86f17215kfdc3z913k8yz4n8gwkcf7r"))))
     ;; TODO: Build from git, remove vendor.
     (build-system go-build-system)
     ;; The primary Syncthing executable goes to "out", while the auxiliary
@@ -73,6 +73,7 @@
        #:import-path "github.com/syncthing/syncthing"
        ;; Check 'go.mod' in the source distribution for the required version of Go.
        ;; We don't need to install the source code for end-user applications.
+       #:go go-1.25
        #:install-source? #f
        #:phases
        #~(modify-phases %standard-phases
