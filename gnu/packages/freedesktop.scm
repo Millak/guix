@@ -3417,7 +3417,7 @@ interfaces.")
 (define-public xdg-desktop-portal-wlr
   (package
     (name "xdg-desktop-portal-wlr")
-    (version "0.7.1")
+    (version "0.8.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3426,7 +3426,7 @@ interfaces.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mbq3czka9swwmfaasnaj89y2m254p3qa522ayclh688jdwh70hq"))
+                "1jj0a9s3h3i04qsxkhcpxjzbb17hs9ngdy7wkypja09233zdz10w"))
               (patches (search-patches "xdg-desktop-portal-wlr-harcoded-length.patch"))))
     (build-system meson-build-system)
     (arguments
