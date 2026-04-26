@@ -51,7 +51,7 @@
 ;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2024 Sughosha <sughosha@disroot.org>
-;;; Copyright © 2025 Junker <dk@junkeria.club>
+;;; Copyright © 2025, 2026 Junker <dk@junkeria.club>
 ;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2025 Kjartan Oli Agustsson <kjartanoli@outlook.com>
@@ -127,6 +127,7 @@
   #:use-module (gnu packages linphone)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages logging)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
@@ -4463,6 +4464,33 @@ buffers, and audio capture.")
      "ALURE is a utility library to help manage common tasks with OpenAL applications.
 This includes device enumeration and initialization, file loading, and
 streaming.")
+    (license license:expat)))
+
+(define-public wp-notifyd
+  (package
+    (name "wp-notifyd")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/LDAP/wp-notifyd")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nkndz0li15maf0dc9x631p0dr8085wzz5358552wljv7chywrza"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:tests? #f)) ;there are no tests
+    (inputs (list libnotify
+                  wireplumber-minimal
+                  pipewire
+                  spdlog))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/LDAP/wp-notifyd")
+    (synopsis "Notification daemon for Wireplumber")
+    (description "@command{wp-notifyd} is a lightweight notification daemon for
+@dfn{WirePlumber} (the session and policy manager for PipeWire).")
     (license license:expat)))
 
 (define-public pa-notify
