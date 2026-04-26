@@ -41936,6 +41936,51 @@ add popup descriptions to existing keymaps
 @end table")
     (license license:gpl3+)))
 
+(define-public emacs-forgejo
+  (package
+    (name "emacs-forgejo")
+    (version "0.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://codeberg.org/thanosapollo/emacs-forgejo")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fcyxv4swymjqmx5dhicjjg8k84649scmpn48mfblcl0gy2hsphj"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:lisp-directory "lisp"))
+    (propagated-inputs (list emacs-keymap-popup emacs-markdown-mode))
+    (home-page "https://codeberg.org/thanosapollo/emacs-forgejo")
+    (synopsis "Emacs front-end for Forgejo instances")
+    (description "This package provides an Emacs front-end for Forgejo
+instances such as Codeberg or self-hosted servers.  It allows you to browse,
+filter, and manage issues and pull requests from Emacs.  All API responses are
+cached in a local SQLite database for fast offline re-display.  Among the
+other things it can do are:
+@itemize
+@item
+Submit and merge PRs via
+AGit-Flow (https://forgejo.org/docs/latest/user/agit-support/) push options
+@item
+Full code review workflow with threaded comments
+@item
+Watch rules with per-repo filter polling and desktop notifications
+@item
+Label, assignee, and milestone management
+@item
+SQLite cache for instant display and offline usage
+@item
+Multi-host support with per-instance token configuration
+@item
+@code{#} and @code{@@} completion in composition buffers (@code{gfm-mode})
+@item
+Repository settings editor
+@end itemize")
+    (license license:gpl3+)))
+
 (define-public emacs-ebdb-i18n-chn
   (package
     (name "emacs-ebdb-i18n-chn")
