@@ -892,13 +892,16 @@ interface to the Tk widget system.")
     (arguments
      (list #:make-flags
            #~(list
-              (string-append "DESTDIR=" #$output)
-              (string-append "PREFIX=")
+              (string-append "PREFIX=" #$output)
               (string-append "CC=" #$(cc-for-target)))
            #:test-target "test"
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure))))
+    (native-search-paths
+     (list (search-path-specification
+             (variable "JANET_PATH")
+             (files (list "lib/janet")))))
     (home-page "https://janet-lang.org/")
     (synopsis "Functional, imperative and embeddable programming language")
     (description
