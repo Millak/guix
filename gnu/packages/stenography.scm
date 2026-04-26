@@ -36,6 +36,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages wxwidgets)
@@ -65,7 +66,7 @@
 (define-public plover
   (package
     (name "plover")
-    (version "4.0.3")
+    (version "5.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -74,29 +75,56 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0d7vkxdz7g9jvlrn5wx9502yqcdyqmalk4yn7lkla0am9hzqp14l"))))
+                "1dx5afcfqskwzkf6zfpii704f2b21z6al3d0g2h4xwza82cmknnl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "-m" "pytest"
+      #:test-flags #~(list
                         "-p" "pytest-qt"
                         "-p" "xvfb"
                         "test"
                         ;; FIXME: Ignore failing test.
-                        "--ignore" "test/gui_qt/test_dictionaries_widget.py"))))
+                        "--ignore" "test/gui_qt/test_dictionaries_widget.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; FIXME: adjust after packaging pyside-6-tools.
+          (add-after 'unpack 'set-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "plover_build_utils/setup.py"
+                (("\"pyside6-(rcc|uic)\"" all prog)
+                 (simple-format #f "~s, \"-g\", \"python\""
+                   (search-input-file
+                    inputs (string-append "/lib/qt6/libexec/" prog)))))))
+          ;; FIXME: test_i18n_files_up_to_date would not pass
+          ;; if the phase is run after build.
+          (add-after 'build 'update-i18n-catalog-for-tests
+            (lambda _
+              (invoke "python" "setup.py" "extract_messages" "update_catalog")))
           ;; Ensure that icons are found at runtime.
           (add-after 'wrap 'wrap-executable
             (lambda* (#:key inputs #:allow-other-keys)
               (wrap-program (string-append #$output "/bin/plover")
                 `("QT_PLUGIN_PATH" prefix
-                  (,(search-input-directory inputs "/lib/qt5/plugins/")))
+                  (,(string-append #$(this-package-input "qtwayland")
+                                   "/lib/qt6/plugins/")
+                   ,(string-append #$(this-package-input "qtsvg")
+                                    "/lib/qt6/plugins/")
+                   ,(string-append #$(this-package-input "python-pyside-6")
+                                   "/lib/qt6/plugins/")))
                 `("LD_LIBRARY_PATH" prefix
                   (,(string-append #$(this-package-input "dbus") "/lib"))))))
+          (add-after 'install 'install-desktop
+            (lambda _
+              (install-file "plover/assets/plover.png"
+                            (string-append
+                             #$output "/share/icons/hicolor/128x128/apps"))
+              (let ((desktop
+                     (string-append
+                      #$output "/share/applications/plover.desktop")))
+                (install-file "linux/plover.desktop" (dirname desktop))
+                (substitute* desktop
+                  (("Exec=plover")
+                   (string-append "Exec=" #$output "/bin/plover"))))))
           (add-after 'install 'install-udev-rules
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
@@ -112,26 +140,37 @@
                      port)))))))))
     (native-inputs
      (list python-babel
-           python-evdev
            python-mock
            python-pytest
            python-pytest-qt
            python-pytest-xvfb
-           python-wheel))
+           python-setuptools))
     (inputs
      (list bash-minimal
            dbus
-           python-appdirs
+           qtbase
+           qtsvg
+           qtwayland
+           xhost))
+    (propagated-inputs
+     (list python-appdirs
            python-dbus-1.2
+           python-evdev
            python-hidapi
+           python-packaging
+           python-pkginfo
            python-plover-stroke
-           python-pyqt
+           python-psutil
+           python-pygments
            python-pyserial
+           python-pyside-6
+           python-readme-renderer
+           python-requests-cache
+           python-requests-futures
            python-rtf-tokenize
            python-wcwidth
-           python-xlib
-           qtsvg-5
-           xhost))
+           python-xkbcommon
+           python-xlib))
     (home-page "https://www.openstenoproject.org/plover/")
     (synopsis "Stenography engine")
     (description
