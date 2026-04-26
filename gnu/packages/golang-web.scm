@@ -10201,6 +10201,55 @@ protocol) - used to discover UPnP services on a network
  by the IBM Cloud @code{OpenAPI} SDK Generator (openapi-sdkgen).")
     (license license:asl2.0)))
 
+(define-public go-github-com-ibm-sarama
+  (package
+    (name "go-github-com-ibm-sarama")
+    (version "1.48.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/IBM/sarama")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ak07aqb9hznvhbnkw34vak30pzbwvh2aff22lww8gcba4c9qdn7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/IBM/sarama"
+      #:unpack-path "github.com/IBM/sarama"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (delete-file-recursively "examples")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-davecgh-go-spew
+           go-go-uber-org-goleak))
+    (propagated-inputs
+     (list go-github-com-eapache-go-resiliency
+           go-github-com-eapache-queue
+           go-github-com-jcmturner-gofork
+           go-github-com-jcmturner-gokrb5-v8
+           go-github-com-klauspost-compress
+           go-github-com-pierrec-lz4-v4
+           go-github-com-rcrowley-go-metrics
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-golang-org-x-sys))
+    (home-page "https://github.com/IBM/sarama")
+    (synopsis "Go library for Apache Kafka")
+    (description
+     "Package sarama is a pure Go client library for dealing with Apache Kafka
+(versions 0.8 and later).  It includes a high-level API for easily producing
+and consuming messages, and a low-level API for controlling bytes on the wire
+when the high-level API is insufficient.  Usage examples for the high-level
+APIs are provided inline with their full documentation.")
+    (license license:expat)))
+
 (define-public go-github-com-igungor-gofakes3
   (package
     (name "go-github-com-igungor-gofakes3")
@@ -23396,6 +23445,34 @@ carries no encryption keys and cannot decode the traffic that it proxies.")))
     (native-inputs (package-propagated-inputs go-storj-io-picobuf))
     (propagated-inputs '())
     (inputs '())))
+
+(define-public sarama-tools
+  (package/inherit go-github-com-ibm-sarama
+    (name "sarama-tools")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:import-path _) "github.com/IBM/sarama/tools/...")))
+    (native-inputs (package-propagated-inputs go-github-com-ibm-sarama))
+    (propagated-inputs '())
+    (inputs '())
+    (description
+     "This package contains applications that are useful for exploration of
+Kafka cluster, or instrumentation.  Some of these tools mirror tools that ship
+with Kafka, but these tools won't require installing the JVM to function.
+
+@itemize
+@item @command{kafka-console-producer}: a command line tool to produce a
+single message to your Kafka custer.
+@item @command{kafka-console-partitionconsumer}: a command line
+tool to consume a single partition of a topic on your Kafka cluster.
+@item @command{kafka-console-consumer}: a command line tool to consume
+arbitrary partitions of a topic on your Kafka cluster.
+@item @command{kafka-producer-performance}: a command line tool to performance
+test producers (sync and async) on your Kafka cluster.
+@end itemize")))
 
 (define-public snowflake-proxy
   (package/inherit
