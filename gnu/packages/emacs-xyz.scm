@@ -39910,7 +39910,7 @@ user interfaces for various built-in modes.")
 (define-public emacs-calibredb
   (package
     (name "emacs-calibredb")
-    (version "2.13.0")
+    (version "2.14.0")
     (source
      (origin
        (method git-fetch)
@@ -39919,31 +39919,40 @@ user interfaces for various built-in modes.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a4gyc3gcq18j29pw2i296d70nvx5fbzlw9fdmqwzncciqz5as6m"))))
+        (base32 "1g0jg6a6fgvxd5bsydckbqwf899d2d9732laz4k1k476mbws5dqy"))))
     (build-system emacs-build-system)
     (arguments
      (list
+      #:include #~(cons "\\.py$" %default-include)
+      #:tests? #f                       ;no tests
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
-              (make-file-writable "calibredb-core.el")
               (let ((calibredb (search-input-file inputs "/bin/calibredb"))
                     (fetch-ebook-metadata
                      (search-input-file inputs "/bin/fetch-ebook-metadata"))
                     (ebook-convert
                      (search-input-file inputs "/bin/ebook-convert"))
                     (calibre-debug
-                     (search-input-file inputs "/bin/calibre-debug")))
+                     (search-input-file inputs "/bin/calibre-debug"))
+                    (ebook-meta
+                     (search-input-file inputs "/bin/ebook-meta"))
+                    (folder-program
+                     (string-append #$output
+                                    "/share/emacs/site-lisp/calibredb-"
+                                    #$version "/calibredb-folder.py")))
                 (emacs-substitute-variables "calibredb-core.el"
                   ("calibredb-fetch-metadata-program" fetch-ebook-metadata)
                   ("calibredb-program" calibredb)
                   ("calibredb-convert-program" ebook-convert)
-                  ("calibredb-debug-program" calibre-debug))))))))
+                  ("calibredb-debug-program" calibre-debug)
+                  ("calibredb-ebook-meta-program" ebook-meta)
+                  ("calibredb-folder-program" folder-program))))))))
     (inputs
      (list calibre))
     (propagated-inputs
-     (list emacs-dash emacs-esxml emacs-s))
+     (list emacs-dash emacs-esxml emacs-request emacs-s))
     (home-page "https://github.com/chenyanming/calibredb.el")
     (synopsis "Yet another calibre client for Emacs")
     (description "This package integrates calibre into Emacs.
