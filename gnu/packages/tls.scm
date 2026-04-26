@@ -23,6 +23,7 @@
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2026 Junker <dk@junkeria.club>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,6 +68,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages docbook)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages guile)
@@ -903,6 +905,45 @@ certificates for free.")
   (package (inherit certbot)
     (name "letsencrypt")
     (properties `((superseded . ,certbot)))))
+
+(define-public uacme
+  (package
+    (name "uacme")
+    (version "1.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ndilieto/uacme/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "13s7rzcm0w1rxfr0yi7hyilj69pb0q7n56ag2id76c9vwras6a2f"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "configure.ac"
+                (((string-append
+                   "m4_esyscmd\\(\\[build-aux/git-version-gen "
+                   "\\.tarball-version\\]\\)"))
+                 #$version)))))))
+    (inputs
+     (list curl gnutls))
+    (native-inputs
+     (list asciidoc
+           autoconf
+           automake
+           pkg-config))
+    (home-page "https://github.com/ndilieto/uacme")
+    (synopsis "Minimal ACMEv2 client written in C")
+    (description "Uacme is a lightweight client for the RFC8555 ACMEv2
+protocol, written in plain C with minimal dependencies.")
+    (license license:gpl3+)))
 
 (define-public perl-net-ssleay
   (package
