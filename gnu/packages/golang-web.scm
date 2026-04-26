@@ -14076,24 +14076,24 @@ standard library.")
     (build-system go-build-system)
     (arguments
      (list
-      ;; TODO: Enable tests and build when all missing inputs are packages, use
-      ;; as source only package for Kubo.
-      #:skip-build? #t
-      #:tests? #f
-      #:import-path "github.com/openzipkin/zipkin-go"))
+      #:import-path "github.com/openzipkin/zipkin-go"
+      ;; span_test.go:56: expected valid endpoint, got error: host lookup
+      ;; failure: lookup www.google.com on [::1]:53: read udp
+      ;; [::1]:56302->[::1]:53: read: connection refused
+      #:test-flags #~(list "-skip" "TestRemoteEndpoint|TestHTTPClient")))
     (native-inputs
      (list go-github-com-onsi-ginkgo-v2
            go-github-com-onsi-gomega))
     (propagated-inputs
-     (list ;; go-github-com-ibm-sarama
-           ;; go-github-com-rabbitmq-amqp091-go
+     (list go-github-com-ibm-sarama
+           go-github-com-rabbitmq-amqp091-go
            go-google-golang-org-grpc
            go-google-golang-org-protobuf))
     (home-page "https://github.com/openzipkin/zipkin-go")
     (synopsis "Zipkin Library for Go")
     (description
      "Package zipkin implements a native Zipkin instrumentation library for
-Go.")
+Go.  @url{https://zipkin.io/, Zipkin} is a distributed tracing system.")
     (license license:asl2.0)))
 
 (define-public go-github-com-oracle-oci-go-sdk-v65
