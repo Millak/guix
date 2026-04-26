@@ -16021,6 +16021,38 @@ currently implements
 of the specification.")
       (license license:expat)))
 
+(define-public go-github-com-rabbitmq-amqp091-go
+  (package
+    (name "go-github-com-rabbitmq-amqp091-go")
+    (version "1.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rabbitmq/amqp091-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xn0ykx08l8gg66qk6jhz2md4as8n9fqm0smzcbislyqp4d3gpr8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/rabbitmq/amqp091-go"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "_examples")))))))
+    (native-inputs
+     (list go-go-uber-org-goleak))
+    (home-page "https://github.com/rabbitmq/amqp091-go")
+    (synopsis "Go RabbitMQ Client Library")
+    (description
+     "Package amqp091 is an @acronym{Advanced Message Queuing Protocol, AMQP}
+0.9.1 client with @code{RabbitMQ} extensions.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-rasky-go-xdr
   (package
     (name "go-github-com-rasky-go-xdr")
