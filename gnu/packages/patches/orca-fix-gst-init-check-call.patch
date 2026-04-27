@@ -1,0 +1,28 @@
+From 98300ecbb26fcacb0f7a722629fc50b4ec6bd1ab Mon Sep 17 00:00:00 2001
+Message-ID: <98300ecbb26fcacb0f7a722629fc50b4ec6bd1ab.1777294348.git.vivien@planete-kraus.eu>
+From: Vivien Kraus <vivien@planete-kraus.eu>
+Date: Mon, 27 Apr 2026 14:51:07 +0200
+Subject: [PATCH] Fix invalid Gst.init_check call
+
+init_check accepts a list of program arguments. An empty list works.
+
+---
+ src/orca/sound.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/orca/sound.py b/src/orca/sound.py
+index d507a371d..b1129609f 100644
+--- a/src/orca/sound.py
++++ b/src/orca/sound.py
+@@ -34,7 +34,7 @@ try:
+ except Exception:
+     _gstreamerAvailable = False
+ else:
+-    _gstreamerAvailable, args = Gst.init_check(None)
++    _gstreamerAvailable, args = Gst.init_check([])
+ 
+ from . import debug
+ from .sound_generator import Icon, Tone
+-- 
+2.52.0
+

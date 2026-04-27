@@ -11575,7 +11575,8 @@ accessibility infrastructure.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0sfs06f66dsibvnp87jshhs7n3f8shkn9x7j3ygpk8409za2n2xy"))))
+                "0sfs06f66dsibvnp87jshhs7n3f8shkn9x7j3ygpk8409za2n2xy"))
+              (patches (search-patches "orca-fix-gst-init-check-call.patch"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -11593,7 +11594,7 @@ accessibility infrastructure.")
                    (pgrep (string-append
                            (assoc-ref inputs "procps") "/bin/pgrep")))
                (substitute* "src/orca/orca_modifier_manager.py"
-                 (("'xkbcomp'") (format #f "'~a'" xkbcomp)))
+                 (("\"xkbcomp\"") (format #f "'~a'" xkbcomp)))
                (substitute* "src/orca/debug.py"
                  (("'pgrep %s'")
                   (format #f "'~a %s'" pgrep)))
@@ -11627,6 +11628,7 @@ accessibility infrastructure.")
            `(,liblouis "python")
            procps                       ; for pgrep
            python
+           python-dbus
            python-pygobject-3.50
            python-pyatspi
            speech-dispatcher
