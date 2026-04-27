@@ -2192,9 +2192,6 @@ manage, and delete Internet resources from Gandi.net such as domain names,
 virtual machines, and certificates.")
     (license license:gpl3+)))
 
-(define-deprecated-package gandi.cli
-  gandi-cli)
-
 (define-public go-sctp
   ;; docker-libnetwork-cmd-proxy requires this exact commit.
   ;; This commit is mentioned in docker-libnetwork-cmd-proxy's vendor.conf.
