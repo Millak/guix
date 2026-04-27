@@ -1,0 +1,67 @@
+From a827c9fdeb77edefe6cca81bdb9e0344bc8d3742 Mon Sep 17 00:00:00 2001
+From: Sebastian Gibb <mail@sebastiangibb.de>
+Date: Sat, 13 Dec 2025 23:06:12 +0100
+Subject: [PATCH] fix: non-API call to R: SETLENGTH by using lengthgets
+
+---
+ DESCRIPTION  |  2 +-
+ NEWS.md      |  6 ++++++
+ src/join.c   | 12 ++++--------
+ src/reduce.c |  6 ++----
+ 4 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/src/join.c b/src/join.c
+index f13a703..3849fdf 100644
+--- a/src/join.c
++++ b/src/join.c
+@@ -111,12 +111,10 @@ SEXP C_join_inner(SEXP x, SEXP y, SEXP tolerance, SEXP nomatch) {
+             ++j;
+         }
+     }
+-    SETLENGTH(rx, j);
+-    SETLENGTH(ry, j);
+     SEXP out = PROTECT(allocVector(VECSXP, 2));
+     SEXP nms = PROTECT(allocVector(STRSXP, 2));
+-    SET_VECTOR_ELT(out, 0, rx);
+-    SET_VECTOR_ELT(out, 1, ry);
++    SET_VECTOR_ELT(out, 0, lengthgets(rx, j));
++    SET_VECTOR_ELT(out, 1, lengthgets(ry, j));
+     SET_STRING_ELT(nms, 0, mkChar("x"));
+     SET_STRING_ELT(nms, 1, mkChar("y"));
+     setAttrib(out, R_NamesSymbol, nms);
+@@ -201,12 +199,10 @@ SEXP C_join_outer(SEXP x, SEXP y, SEXP tolerance, SEXP nomatch) {
+         ++i;
+     }
+ 
+-    SETLENGTH(rx, i);
+-    SETLENGTH(ry, i);
+     SEXP out = PROTECT(allocVector(VECSXP, 2));
+     SEXP nms = PROTECT(allocVector(STRSXP, 2));
+-    SET_VECTOR_ELT(out, 0, rx);
+-    SET_VECTOR_ELT(out, 1, ry);
++    SET_VECTOR_ELT(out, 0, lengthgets(rx, i));
++    SET_VECTOR_ELT(out, 1, lengthgets(ry, i));
+     SET_STRING_ELT(nms, 0, mkChar("x"));
+     SET_STRING_ELT(nms, 1, mkChar("y"));
+     setAttrib(out, R_NamesSymbol, nms);
+diff --git a/src/reduce.c b/src/reduce.c
+index 5f87966..8e48058 100644
+--- a/src/reduce.c
++++ b/src/reduce.c
+@@ -66,11 +66,9 @@ SEXP C_reduce(SEXP start, SEXP end, SEXP check) {
+         }
+     }
+ 
+-    SETLENGTH(rs, pos + 1);
+-    SETLENGTH(re, pos + 1);
+     SEXP out = PROTECT(allocVector(VECSXP, 2));
+-    SET_VECTOR_ELT(out, 0, rs);
+-    SET_VECTOR_ELT(out, 1, re);
++    SET_VECTOR_ELT(out, 0, lengthgets(rs, pos + 1));
++    SET_VECTOR_ELT(out, 1, lengthgets(re, pos + 1));
+ 
+     UNPROTECT(4);
+ 
+-- 
+2.52.0
+

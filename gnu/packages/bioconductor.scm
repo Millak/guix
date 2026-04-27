@@ -26525,7 +26525,10 @@ memory usage and processing time is minimized.")
        (uri (bioconductor-uri "MsCoreUtils" version))
        (sha256
         (base32
-         "1vrczrj854i0510y91zad51nnai1spl3wwgn2bafgk25fx8f48gl"))))
+         "1vrczrj854i0510y91zad51nnai1spl3wwgn2bafgk25fx8f48gl"))
+       (patches
+        (search-patches
+         "r-mscoreutils-0001-fix-non-API-call-to-R-SETLENGTH-by-using-lengthgets.patch"))))
     (properties
      '((upstream-name . "MsCoreUtils")
        ;; Avoid dependency cycle.
