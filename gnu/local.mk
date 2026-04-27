@@ -2356,6 +2356,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/r-snpstats-0001-fixed-non-API-except-for-IS_S4_OBJECT.patch \
   %D%/packages/patches/r-snpstats-0002-fixed-IS_S4_OBJECT.patch \
   %D%/packages/patches/r-sapa-lapack.patch			\
+  %D%/packages/patches/r-shortread-0001-ShortRead-1.69.3-Get-rid-of-non-API-calls-to-R.patch \
   %D%/packages/patches/r-sparsearray-r-4.6.0-compat.patch	\
   %D%/packages/patches/ripperx-missing-file.patch		\
   %D%/packages/patches/rpcbind-CVE-2017-8779.patch		\

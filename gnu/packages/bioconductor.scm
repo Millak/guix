@@ -14027,7 +14027,10 @@ methylation array data.  Both the 450k and EPIC array are supported.")
        (uri (bioconductor-uri "ShortRead" version))
        (sha256
         (base32
-         "16vjfqsj5mjzq8sh8px6qkcq6d9r95vnp77cgqxm80gqrqny9bj2"))))
+         "16vjfqsj5mjzq8sh8px6qkcq6d9r95vnp77cgqxm80gqrqny9bj2"))
+       (patches
+        (search-patches
+         "r-shortread-0001-ShortRead-1.69.3-Get-rid-of-non-API-calls-to-R.patch"))))
     (properties
      '((upstream-name . "ShortRead")
        (updater-ignored-native-inputs . ("r-hilbertvis"))))

@@ -1,0 +1,103 @@
+From e39852a54312bbc6ba435848890cc2a7f612357c Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Herv=C3=A9=20Pag=C3=A8s?= <hpages.on.github@gmail.com>
+Date: Fri, 6 Mar 2026 17:04:19 -0800
+Subject: [PATCH] ShortRead 1.69.3: Get rid of non-API calls to R
+
+---
+ DESCRIPTION |  2 +-
+ src/call.h  |  3 +--
+ src/io.c    | 10 +++++-----
+ 3 files changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/src/call.h b/src/call.h
+index e15bb5e..e72bbd6 100644
+--- a/src/call.h
++++ b/src/call.h
+@@ -6,8 +6,7 @@ extern "C" {
+ #endif
+ 
+ #define NEW_CALL(S, T, NAME, ENV, N)				\
+-    PROTECT((S) = (T) = allocList((N)));			\
+-    SET_TYPEOF((T), LANGSXP);                                   \
++    PROTECT((S) = (T) = LCONS(R_NilValue, allocList((N)-1)));	\
+     SETCAR((T), findFun(install((NAME)), (ENV)));               \
+     (T) = CDR((T))
+ #define CSET_CDR(T, NAME, VALUE)				\
+diff --git a/src/io.c b/src/io.c
+index 25a0111..9cf4bf8 100644
+--- a/src/io.c
++++ b/src/io.c
+@@ -46,9 +46,9 @@ SEXP write_fastq(SEXP id, SEXP sread, SEXP quality,
+                  SEXP fname, SEXP fmode, SEXP full, SEXP compress,
+                  SEXP max_width)
+ {
+-    if (!(IS_S4_OBJECT(id) && strcmp(get_classname(id), "BStringSet") == 0))
++    if (!(Rf_isS4(id) && strcmp(get_classname(id), "BStringSet") == 0))
+         Rf_error("'%s' must be '%s'", "id", "BStringSet");
+-    if (!(IS_S4_OBJECT(sread) &&
++    if (!(Rf_isS4(sread) &&
+           strcmp(get_classname(sread), "DNAStringSet") == 0))
+         Rf_error("'%s' must be '%s'", "sread", "DNAStringSet");
+     /* check in R -- C-level R_check_super... is not adequate */
+@@ -693,14 +693,14 @@ int _solexa_export_make_id(SEXP result)
+         *x = INTEGER(VECTOR_ELT(result, SLX_X)),
+         *y = INTEGER(VECTOR_ELT(result, SLX_Y)), *pairedReadNumber = NULL;
+     const SEXP
+-        * run = STRING_PTR(VECTOR_ELT(result, SLX_RUN)),
++        * run = STRING_PTR_RO(VECTOR_ELT(result, SLX_RUN)),
+         *multiplexIndex = NULL,
+-        *machine = STRING_PTR(VECTOR_ELT(result, SLX_MACHINE));
++        *machine = STRING_PTR_RO(VECTOR_ELT(result, SLX_MACHINE));
+     const Rboolean
+         withMultiplexIndex = R_NilValue != VECTOR_ELT(result, SLX_MULTIPLEX),
+         withPairedReadNumber = R_NilValue != VECTOR_ELT(result, SLX_PAIRID);
+     if (withMultiplexIndex)
+-        multiplexIndex = STRING_PTR(VECTOR_ELT(result, SLX_MULTIPLEX));
++        multiplexIndex = STRING_PTR_RO(VECTOR_ELT(result, SLX_MULTIPLEX));
+     if (withPairedReadNumber)
+         pairedReadNumber = INTEGER(VECTOR_ELT(result, SLX_PAIRID));
+ 
+-- 
+2.52.0
+
+
+From 2e3368a35e3955a0a92b7f3e2c8dface6709d135 Mon Sep 17 00:00:00 2001
+From: vjcitn <stvjc@channing.harvard.edu>
+Date: Thu, 16 Apr 2026 16:54:15 +0000
+Subject: [PATCH] fixapi
+
+---
+ src/util.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/src/util.c b/src/util.c
+index 4a10a90..59c089b 100644
+--- a/src/util.c
++++ b/src/util.c
+@@ -6,6 +6,14 @@ unsigned char _bDecode(char);
+ unsigned char _dnaDecode(char);
+ unsigned char _rnaDecode(char);
+ 
++
++#include <Rversion.h>
++
++#if R_VERSION < R_Version(4, 6, 0)
++# define R_getVar(x,y,z) findVar(x,y)
++#endif
++
++
+ /*
+  * Encode / decode XString wrappers
+  */
+@@ -80,7 +88,7 @@ SEXP _get_namespace(const char *pkg)
+ SEXP _get_strand_levels()
+ {
+     SEXP nmspc = PROTECT(_get_namespace("ShortRead"));
+-    SEXP ans = eval(findVar(install(".STRAND_LEVELS"), nmspc), nmspc);
++    SEXP ans = eval(R_getVar(install(".STRAND_LEVELS"), nmspc, TRUE), nmspc);
+     UNPROTECT(1);
+     return ans;
+ }
+-- 
+2.52.0
+
