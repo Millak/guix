@@ -232,39 +232,39 @@ with the editor vim.")))
     (inherit vim)
     (name "vim-full")
     (arguments
-     (cons*
-       #:configure-flags
-       #~(list (string-append "--with-lua-prefix="
-                              #$(this-package-input "lua"))
-               "--with-features=huge"
-               "--enable-python3interp=yes"
-               "--enable-perlinterp=yes"
-               "--enable-rubyinterp=yes"
-               "--enable-tclinterp=yes"
-               "--enable-luainterp=yes"
-               "--enable-cscope"
-               "--enable-sniff"
-               "--enable-multibyte"
-               "--enable-xim"
-               "--disable-selinux"
-               "--enable-gui")
-       (substitute-keyword-arguments arguments
-         ((#:phases phases)
-          #~(modify-phases #$phases
-              (add-before 'check 'skip-some-more-tests
-                (lambda _
-                  ;; Fontconfig can't figure out its cache directory.
-                  (substitute* "src/testdir/test_startup.vim"
-                    ((".*Test_progname.*" line)
-                     (string-append line "return\n")))))
-              ;; Some tests require an X server, but do not start one.
-              (add-before 'check 'start-xserver
-                (lambda _
-                  (setenv "DISPLAY" ":1")
-                  (zero? (system #$(file-append
-                                     (this-package-native-input
-                                       "xorg-server")
-                                     "/bin/Xvfb :1 &"))))))))))
+     (substitute-keyword-arguments arguments
+       ((#:configure-flags flags #~'())
+        #~(cons* (string-append "--with-lua-prefix="
+                                #$(this-package-input "lua"))
+                 "--with-features=huge"
+                 "--enable-python3interp=yes"
+                 "--enable-perlinterp=yes"
+                 "--enable-rubyinterp=yes"
+                 "--enable-tclinterp=yes"
+                 "--enable-luainterp=yes"
+                 "--enable-cscope"
+                 "--enable-sniff"
+                 "--enable-multibyte"
+                 "--enable-xim"
+                 "--disable-selinux"
+                 "--enable-gui"
+                 #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-before 'check 'skip-some-more-tests
+              (lambda _
+                ;; Fontconfig can't figure out its cache directory.
+                (substitute* "src/testdir/test_startup.vim"
+                  ((".*Test_progname.*" line)
+                   (string-append line "return\n")))))
+            ;; Some tests require an X server, but do not start one.
+            (add-before 'check 'start-xserver
+              (lambda _
+                (setenv "DISPLAY" ":1")
+                (zero? (system #$(file-append
+                                   (this-package-native-input
+                                     "xorg-server")
+                                   "/bin/Xvfb :1 &")))))))))
     (native-inputs
      (modify-inputs native-inputs
        (prepend pkg-config xorg-server-for-tests)))
