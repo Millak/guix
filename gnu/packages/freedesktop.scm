@@ -3418,16 +3418,16 @@ interfaces.")
   (package
     (name "xdg-desktop-portal-wlr")
     (version "0.8.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/emersion/xdg-desktop-portal-wlr")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1jj0a9s3h3i04qsxkhcpxjzbb17hs9ngdy7wkypja09233zdz10w"))
-              (patches (search-patches "xdg-desktop-portal-wlr-harcoded-length.patch"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emersion/xdg-desktop-portal-wlr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jj0a9s3h3i04qsxkhcpxjzbb17hs9ngdy7wkypja09233zdz10w"))
+       (patches (search-patches "xdg-desktop-portal-wlr-harcoded-length.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -3445,24 +3445,22 @@ interfaces.")
                                "src/screenshot/screenshot.c")
                   (("grim") grim)
                   (("slurp") slurp)
-                  (("execl\\(\"/bin/sh\", \"/bin/sh\"")
-                   (string-append "execl(\"" sh "\", \"" sh "\"")))
+                  (("/bin/sh") sh))
                 (substitute* "src/screencast/screencast.c"
                   (("execvp\\(\"sh")
-                   (string-append "execvp(\"" sh))))))
+                   (format #f "execvp(\"~a" sh))))))
           (add-after 'install 'install-documentation
             (lambda _
               (install-file "../source/README.md"
-                            (string-append #$output
-                                           "/share/doc/" #$name)))))))
-    (native-inputs
-     (list cmake-minimal pkg-config scdoc))
-    (inputs (list elogind
-                  bash-minimal
+                            (string-append #$output "/share/doc/"
+                                           #$name)))))))
+    (native-inputs (list cmake-minimal pkg-config scdoc))
+    (inputs (list bash-minimal
+                  elogind
                   grim
                   iniparser
-                  mesa
                   libinih
+                  mesa
                   pipewire
                   slurp
                   wayland
