@@ -5529,3 +5529,40 @@ and IP address registration information in JSON format over HTTP.")
      "wireproxy is a completely userspace application that connects to a
 wireguard peer, and exposes a socks5/http proxy or tunnels on the machine.")
     (license license:isc)))
+
+(define-public wireproxy-awg
+  (package
+    (name "wireproxy-awg")
+    (version "1.0.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/artem-russkikh/wireproxy-awg")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p4spqgl1yg0zqi2lmn2gi6z2szlvm955h37dmfwf9ajd82jwcm3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/artem-russkikh/wireproxy-awg/cmd/wireproxy"
+      #:unpack-path "github.com/artem-russkikh/wireproxy-awg"
+      #:test-subdirs #~(list "../../...")))
+    (native-inputs
+     (list go-github-com-akamensky-argparse
+           go-github-com-amnezia-vpn-amneziawg-go
+           go-github-com-go-ini-ini
+           go-github-com-landlock-lsm-go-landlock
+           go-github-com-makenowjust-heredoc-v2
+           go-github-com-things-go-go-socks5
+           go-golang-org-x-net
+           go-gvisor-dev-gvisor
+           go-suah-dev-protect))
+    (home-page "https://github.com/artem-russkikh/wireproxy-awg")
+    (synopsis "AmneziaWG client that exposes itself as a SOCKS5 proxy")
+    (description
+     "wireproxy-awg is a completely userspace application that connects to a
+WireGuard peer, and exposes a SOCKS5/HTTP proxy or tunnels on the machine.")
+    (license license:isc)))
