@@ -5566,3 +5566,100 @@ wireguard peer, and exposes a socks5/http proxy or tunnels on the machine.")
      "wireproxy-awg is a completely userspace application that connects to a
 WireGuard peer, and exposes a SOCKS5/HTTP proxy or tunnels on the machine.")
     (license license:isc)))
+
+(define-public zapret2
+  (package
+    (name "zapret2")
+    (version "0.9.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bol-van/zapret2")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1awl8ngh6x6sdn04az1rrsw1v7ignaz8bp4d3067li8gc9bp6cnd"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f       ;no tests
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)   ;no configure
+          (add-after 'unpack 'fix-output-path
+            (lambda _
+              (substitute* "Makefile"
+                (("TGT := binaries/my")
+                 (string-append "TGT := "
+                                #$output "/libexec/zapret2/nfq2")))))
+          (add-after 'unpack 'fix-blockcheck-file
+            (lambda _
+              (substitute* "blockcheck2.sh"
+                (("^ZAPRET_BASE=.*")
+                 (string-append "ZAPRET_BASE="
+                                #$output "/libexec/zapret2\n"))
+                (("^ZAPRET_CONFIG=.*")
+                 "ZAPRET_CONFIG=/etc/zapret2/config\n")
+                (("^ZAPRET_CONFIG_DEFAULT=.*")
+                 (string-append "ZAPRET_CONFIG_DEFAULT="
+                                #$output "/etc/zapret2/config.default\n"))
+                (("^NFQWS2=.*")
+                 (string-append "NFQWS2="
+                                #$output "/libexec/zapret2/nfq2/nfqws2\n"))
+                (("^MDIG=.*")
+                 (string-append "MDIG="
+                                #$output "/libexec/zapret2/nfq2/mdig\n")))))
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (etc-zapret2 (string-append #$output "/etc/zapret2"))
+                    (libexec (string-append #$output "/libexec/zapret2/")))
+                (mkdir-p bin)
+                (mkdir-p etc-zapret2)
+                (for-each (lambda (dir)
+                            (copy-recursively dir
+                                              (string-append libexec dir)))
+                          (list "lua" "common" "ipset" "blockcheck2.d"))
+                (install-file "init.d/sysv/functions" libexec)
+                (install-file "config.default" etc-zapret2)
+                (install-file "init.d/sysv/zapret2" bin)
+                (copy-file "blockcheck2.sh"
+                           (string-append bin "/zapret2-blockcheck")))))
+          (add-after 'install 'wrap-scripts
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/zapret2")
+                `("PATH" ":" prefix
+                  (,(dirname (search-input-file inputs "/sbin/nft")))))
+              (wrap-program (string-append #$output "/bin/zapret2-blockcheck")
+                `("PATH" ":" prefix
+                  (,(dirname (search-input-file inputs "/bin/curl"))
+                   ,(dirname (search-input-file inputs "/sbin/nft"))
+                   ,(dirname (search-input-file inputs "/bin/nslookup"))))))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list bash-minimal
+           curl
+           `(,isc-bind "utils")
+           libcap
+           libmnl
+           libnetfilter-queue
+           libnfnetlink
+           luajit
+           nftables
+           zlib))
+    (home-page "https://github.com/bol-van/zapret2")
+    (synopsis "DPI bypass platform configured in Lua")
+    (description
+     "Zapret2 is a packet manipulator primarily designed to perform various
+autonomous real-time attacks on @acronym{DPI, Deep Packet Inspection} systems.
+Its main objective is to bypass resource blocks or protocol restrictions.
+However, zapret2's capabilities are not limited to this; its architecture
+allows for other types of packet manipulation, such as bidirectional
+(client-server) protocol obfuscation to hide traffic from DPI, among other
+applications.
+
+The configuration file is read from @file{/etc/zapret2/config}.")
+    (license license:expat)))
