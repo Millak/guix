@@ -2139,59 +2139,6 @@ replies, fping will send out a ping packet and move on to the next target in a
 round-robin fashion.")
     (license license:expat)))
 
-(define-public gandi-cli
-  (package
-    (name "gandi-cli")
-    (version "1.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri name version))
-       (sha256
-        (base32 "1h36jahbp7273wn3yd747kbiwjc0bm3sja67bcxdsd54ln0vyndg"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--pyargs" "gandi.cli")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'embed-store-file-names
-            (lambda _
-              (substitute* (list "gandi/cli/modules/cert.py"
-                                 "gandi/cli/tests/commands/test_certificate.py")
-                (("openssl") (which "openssl")))))
-          (add-after 'install 'install-documentation
-            ;; The included man page may be outdated but we install it anyway,
-            ;; since it's mentioned in 'gandi --help' and better than nothing.
-            (lambda _
-              (let* ((man1 (string-append #$output "/share/man/man1")))
-                (mkdir-p man1)
-                (with-output-to-file (string-append man1 "/gandi.1")
-                  (lambda _
-                    (invoke "rst2man.py" "gandicli.man.rst")))))))))
-    (native-inputs
-     (list python-docutils-0.19
-           python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-wheel))
-    (inputs
-     (list openssl
-           python-click-7
-           python-ipy
-           python-pyyaml
-           python-requests))
-    (propagated-inputs
-     (list openssh))
-    (home-page "https://cli.gandi.net")
-    (synopsis "Command-line interface to the Gandi.net Web API")
-    (description
-     "This package provides a command-line client (@command{gandi}) to buy,
-manage, and delete Internet resources from Gandi.net such as domain names,
-virtual machines, and certificates.")
-    (license license:gpl3+)))
-
 (define-public go-sctp
   ;; docker-libnetwork-cmd-proxy requires this exact commit.
   ;; This commit is mentioned in docker-libnetwork-cmd-proxy's vendor.conf.
