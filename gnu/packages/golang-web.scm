@@ -1817,6 +1817,64 @@ result and details about the health status of each component.")
 APIs of Alibaba Cloud @acronym{OSS, Object Storage Service}.")
     (license license:expat)))
 
+(define-public go-github-com-amnezia-vpn-amneziawg-go
+  (package
+    (name "go-github-com-amnezia-vpn-amneziawg-go")
+    (version "0.2.17")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/amnezia-vpn/amneziawg-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fs4f68b0r4nfxx5w04j57vf9vnkdzd8vi12fmivbqhn72sjp3fw"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Module name has been changed upstream.
+            (substitute* (find-files "." "\\.go$")
+              (("github.com/Jigsaw-Code/outline-sdk")
+               "golang.getoutline.org/sdk"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/amnezia-vpn/amneziawg-go"
+      #:test-subdirs
+      ;; XXX: Remove when all inputs are packaged.
+      #~(list "conn"
+              "device"
+              "ratelimiter"
+              "replay"
+              "tai64n"
+              "tun")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-goccy-go-yaml
+           go-github-com-tevino-abool
+           go-go-uber-org-atomic
+           go-golang-getoutline-org-sdk
+           go-golang-getoutline-org-sdk-x
+           go-golang-org-x-crypto
+           go-golang-org-x-exp
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           ;; go-golang-zx2c4-com-wintun ;Windows only
+           go-gvisor-dev-gvisor))
+    (home-page "https://github.com/amnezia-vpn/amneziawg-go")
+    (synopsis "Go implementation of AmneziaWG")
+    (description
+     "AmneziaWG is a contemporary version of the WireGuard protocol.  It's a
+fork of @url{https://github.com/WireGuard/wireguard-go, WireGuard-Go} and
+offers protection against detection by @acronym{DPI, Deep Packet Inspection}
+systems.  At the same time, it retains the simplified architecture and high
+performance of the original.  For more information, see
+@url{https://docs.amnezia.org/documentation/amnezia-wg/}.")
+    (license license:expat)))
+
 (define-public go-github-com-anacrolix-envpprof
   (package
     (name "go-github-com-anacrolix-envpprof")
@@ -24714,6 +24772,15 @@ feature set and features are added on as the need arises.")
 ;;;
 ;;; Executables:
 ;;;
+
+(define-public amneziawg-go
+  (package/inherit go-github-com-amnezia-vpn-amneziawg-go
+    (name "amneziawg-go")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? #t #t) #f)
+       ((#:skip-build? #t #t) #f)
+       ((#:install-source? #t #t) #f)))))
 
 (define-public cfssl
   (package/inherit go-github-com-cloudflare-cfssl
