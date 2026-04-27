@@ -809,14 +809,29 @@ scatter operations.")
      (list
       #:tests? #f ; requires GPU
       #:build-type "Release"
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_INSTALL_LIBEXECDIR="
+                             #$output:bin "/lib")
+              (string-append "-DCMAKE_INSTALL_BINDIR="
+                             #$output:bin "/bin"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
+          (add-after 'unpack 'setup
             (lambda _
-              (chdir "projects/rocm-smi-lib"))))))
+              (chdir "projects/rocm-smi-lib")
+              ;; Remove relative prefix so 'CMAKE_INSTALL_LIBEXECDIR' can be
+              ;; an absolute path, that allows pointing it to a different
+              ;; output in the store, such as `#$output:bin'.
+              (substitute* "rocm_smi/CMakeLists.txt"
+                (("../(\\$\\{CMAKE_INSTALL_LIBEXECDIR\\}/\\$\\{ROCM_SMI\\}/rocm_smi.py)" _ suffix)
+                 suffix)))))))
     (native-inputs (list pkg-config))
     (inputs (list libdrm python))
     (propagated-inputs (list grep coreutils))
+    ;; The 'bin' output will store Python utilities in order to reduce the
+    ;; closure size size of the package.  That way the 'out' output will not
+    ;; depend on Python.
+    (outputs '("out" "bin"))
     (home-page %rocm-systems-url)
     (synopsis "The ROCm System Management Interface (ROCm SMI) Library")
     (description "The ROCm System Management Interface Library, or

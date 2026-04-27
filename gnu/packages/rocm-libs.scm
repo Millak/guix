@@ -430,6 +430,7 @@ troubleshooting issues impacting AMD GPUS in HPC environments.")
            msgpack-cxx
            rocm-hip-runtime
            rocm-smi-lib
+           `(,rocm-smi-lib "bin")
            rocm-toolchain
            roctracer))
     (native-inputs
