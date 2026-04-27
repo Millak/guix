@@ -1,0 +1,142 @@
+From 7fe34542bff0183c3a6a35a62df9035a71698eb2 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Herv=C3=A9=20Pag=C3=A8s?= <hpages.on.github@gmail.com>
+Date: Fri, 6 Mar 2026 15:54:23 -0800
+Subject: [PATCH] h5mread 1.3.2: Get rid of non-API calls to R
+
+---
+ DESCRIPTION                |  2 +-
+ R/H5File-class.R           | 27 ++++++++++++++++-----------
+ src/h5mread_index.c        |  5 +++--
+ src/h5mread_startscounts.c |  3 ++-
+ 4 files changed, 22 insertions(+), 15 deletions(-)
+
+diff --git a/R/H5File-class.R b/R/H5File-class.R
+index 2735166..6aeb80f 100644
+--- a/R/H5File-class.R
++++ b/R/H5File-class.R
+@@ -73,19 +73,23 @@
+     }
+ }
+ 
+-.h5openfile <- function(filepath, s3=FALSE, s3credentials=NULL, use.rhdf5=FALSE)
++.h5openfile <- function(filepath, readonly=TRUE,
++                        s3=FALSE, s3credentials=NULL, use.rhdf5=FALSE)
+ {
+     if (!isSingleString(filepath))
+         stop(wmsg("'filepath' must be a single string specifying ",
+                   "the path or URL to an HDF5 file"))
++    if (!isTRUEorFALSE(readonly))
++        stop(wmsg("'readonly' must be TRUE or FALSE"))
+     if (!isTRUEorFALSE(s3))
+         stop(wmsg("'s3' must be TRUE or FALSE"))
+-
++    if (s3 && !readonly)
++        stop(wmsg("'readonly' must be set to TRUE when 's3' is TRUE"))
+     if (s3) {
+         ID <- .h5openS3file(filepath, s3credentials=s3credentials,
+                                       use.rhdf5=use.rhdf5)
+     } else {
+-        ID <- .h5openlocalfile(filepath, readonly=TRUE, use.rhdf5=use.rhdf5)
++        ID <- .h5openlocalfile(filepath, readonly=readonly, use.rhdf5=use.rhdf5)
+     }
+     ID
+ }
+@@ -136,16 +140,16 @@
+ 
+ .ID_is_closed <- function(ID) { is.null(ID) || is.na(ID) }
+ 
+-.open_H5FileID_xp <- function(xp, filepath, s3=FALSE, s3credentials=NULL,
+-                                            use.rhdf5=FALSE)
++.open_H5FileID_xp <- function(xp, filepath, readonly=TRUE,
++                              s3=FALSE, s3credentials=NULL, use.rhdf5=FALSE)
+ {
+     ID <- .get_H5FileID_xp_ID(xp)
+     if (!.ID_is_closed(ID)) {
+         ## H5FileID object is already open.
+         return(FALSE)
+     }
+-    ID <- .h5openfile(filepath, s3=s3, s3credentials=s3credentials,
+-                                use.rhdf5=use.rhdf5)
++    ID <- .h5openfile(filepath, readonly=readonly,
++                      s3=s3, s3credentials=s3credentials, use.rhdf5=use.rhdf5)
+     .set_H5FileID_xp_ID(xp, ID)
+     TRUE
+ }
+@@ -183,10 +187,11 @@ close.H5FileID <- function(con, ...)
+     .close_H5FileID_xp(con@xp, ..., use.rhdf5=con@from_rhdf5)
+ }
+ 
+-H5FileID <- function(filepath, s3=FALSE, s3credentials=NULL, use.rhdf5=FALSE)
++H5FileID <- function(filepath, readonly=TRUE,
++                     s3=FALSE, s3credentials=NULL, use.rhdf5=FALSE)
+ {
+-    ID <- .h5openfile(filepath, s3=s3, s3credentials=s3credentials,
+-                                use.rhdf5=use.rhdf5)
++    ID <- .h5openfile(filepath, readonly=readonly,
++                      s3=s3, s3credentials=s3credentials, use.rhdf5=use.rhdf5)
+     xp <- .new_H5FileID_xp(ID)
+     reg.finalizer(xp,
+                   function(e) .close_H5FileID_xp(e, use.rhdf5=use.rhdf5),
+@@ -272,7 +277,7 @@ H5File <- function(filepath, s3=FALSE, s3credentials=NULL, .no_rhdf5_h5id=FALSE)
+         rhdf5_h5id <- new("H5FileID")
+     } else {
+         rhdf5_h5id <- H5FileID(filepath, s3=s3, s3credentials=s3credentials,
+-                                         use.rhdf5=TRUE)
++                               use.rhdf5=TRUE)
+     }
+     if (!s3)
+         filepath <- file_path_as_absolute(filepath)
+diff --git a/src/h5mread_index.c b/src/h5mread_index.c
+index 7284815..ec93c25 100644
+--- a/src/h5mread_index.c
++++ b/src/h5mread_index.c
+@@ -9,6 +9,7 @@
+ #include "h5mread_helpers.h"
+ #include "TouchedChunks.h"
+ 
++#include <R_ext/Altrep.h>  /* only for DATAPTR_RW() */
+ #include <stdlib.h>  /* for malloc, free */
+ #include <string.h>  /* for memcmp */
+ //#include <time.h>
+@@ -444,7 +445,7 @@ static int read_chunk_data_4_5(const H5DSetDescriptor *h5dset,
+ 		const size_t *Rarray_dim, SEXP Rarray,
+ 		int method, int use_H5Dread_chunk)
+ {
+-	void *out = DATAPTR(Rarray);
++	void *out = DATAPTR_RW(Rarray);
+ 	if (out == NULL)
+ 		return -1;
+ 
+@@ -874,7 +875,7 @@ static int read_data_6(const AllTChunks *all_tchunks,
+ 	size_t *inner_nchip_buf = R_alloc0_size_t_array(ndim);
+ 	LLongAEAE *inner_breakpoint_bufs = new_LLongAEAE(ndim, ndim);
+ 
+-	void *out = DATAPTR(Rarray);
++	void *out = DATAPTR_RW(Rarray);
+ 	if (out == NULL) {
+ 		_destroy_TChunkIterator(&tchunk_iter);
+ 		return -1;
+diff --git a/src/h5mread_startscounts.c b/src/h5mread_startscounts.c
+index de57fd5..959014f 100644
+--- a/src/h5mread_startscounts.c
++++ b/src/h5mread_startscounts.c
+@@ -8,6 +8,7 @@
+ #include "uaselection.h"
+ #include "h5mread_helpers.h"
+ 
++#include <R_ext/Altrep.h>  /* only for DATAPTR_RW() */
+ #include <stdlib.h>  /* for malloc, free */
+ //#include <time.h>
+ 
+@@ -402,7 +403,7 @@ SEXP _h5mread_startscounts(const H5DSetDescriptor *h5dset,
+ 	SEXP ans = PROTECT(allocVector(h5dset->h5type->Rtype, ans_len));
+ 
+ 	if (ans_len != 0) {
+-		void *mem = DATAPTR(ans);
++		void *mem = DATAPTR_RW(ans);
+ 		if (mem == NULL)
+ 			goto on_error;
+ 
+-- 
+2.52.0
+

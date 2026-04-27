@@ -2350,6 +2350,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/reposurgeon-add-missing-docbook-files.patch	\
   %D%/packages/patches/rdkit-unbundle-external-dependencies.patch	\
   %D%/packages/patches/r-biostrings-r4.6.0-compat.patch		\
+  %D%/packages/patches/r-h5mread-0001-h5mread-1.3.2-Get-rid-of-non-API-calls-to-R.patch \
   %D%/packages/patches/r-httpuv-1.6.6-unvendor-libuv.patch	\
   %D%/packages/patches/r-rsamtools-r-4.6.0-compat.patch		\
   %D%/packages/patches/r-snpstats-0001-fixed-non-API-except-for-IS_S4_OBJECT.patch \
