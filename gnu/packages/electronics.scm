@@ -2331,7 +2331,7 @@ Automation}, portable and vendor neutral FPGA place and route tool.")
 (define-public nvc
   (package
     (name "nvc")
-    (version "1.19.3")
+    (version "1.20.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2340,7 +2340,7 @@ Automation}, portable and vendor neutral FPGA place and route tool.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zizz2dafm53lzpjayy6vig5pz5ri9cszdivg0jzzh8s3ggkpy1i"))))
+                "1b38x2ch468s4p6mrq6c8s0d95vb84p6w4v8in79l4w7sfy8jnr0"))))
     (build-system gnu-build-system)
     (arguments
      (list #:out-of-source? #t
