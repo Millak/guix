@@ -458,7 +458,7 @@ precision.")
     (inputs
      ;; TODO: Unbundle "libmicropython.a".
      (list ao
-           fltk-1.3
+           fltk
            glpk
            gmp
            gsl
