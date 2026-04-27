@@ -3430,30 +3430,31 @@ interfaces.")
               (patches (search-patches "xdg-desktop-portal-wlr-harcoded-length.patch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       '("-Dsystemd=disabled"
-         "-Dsd-bus-provider=libelogind")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'hardcode-binaries
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((sh (search-input-file inputs "/bin/sh"))
-                   (grim (search-input-file inputs "/bin/grim"))
-                   (slurp (search-input-file inputs "/bin/slurp")))
-               (substitute* '("src/screencast/chooser.c"
-                              "src/screenshot/screenshot.c")
-                 (("grim") grim)
-                 (("slurp") slurp)
-                 (("execl\\(\"/bin/sh\", \"/bin/sh\"")
-                  (string-append "execl(\"" sh "\", \"" sh "\"")))
-               (substitute* "src/screencast/screencast.c"
-                 (("execvp\\(\"sh")
-                  (string-append "execvp(\"" sh))))))
-         (add-after 'install 'install-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "../source/README.md"
-                           (string-append (assoc-ref outputs "out")
-                                          "/share/doc/" ,name)))))))
+     (list
+      #:configure-flags
+      #~(list "-Dsystemd=disabled"
+              "-Dsd-bus-provider=libelogind")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'hardcode-binaries
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((sh (search-input-file inputs "/bin/sh"))
+                    (grim (search-input-file inputs "/bin/grim"))
+                    (slurp (search-input-file inputs "/bin/slurp")))
+                (substitute* '("src/screencast/chooser.c"
+                               "src/screenshot/screenshot.c")
+                  (("grim") grim)
+                  (("slurp") slurp)
+                  (("execl\\(\"/bin/sh\", \"/bin/sh\"")
+                   (string-append "execl(\"" sh "\", \"" sh "\"")))
+                (substitute* "src/screencast/screencast.c"
+                  (("execvp\\(\"sh")
+                   (string-append "execvp(\"" sh))))))
+          (add-after 'install 'install-documentation
+            (lambda _
+              (install-file "../source/README.md"
+                            (string-append #$output
+                                           "/share/doc/" #$name)))))))
     (native-inputs
      (list cmake-minimal pkg-config scdoc))
     (inputs (list elogind
