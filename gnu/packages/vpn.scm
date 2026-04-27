@@ -108,6 +108,55 @@
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xml))
 
+(define-public amneziawg-linux-kernel-module
+  (package
+    (name "amneziawg-linux-kernel-module")
+    (version "1.0.20260329")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url
+              "https://github.com/amnezia-vpn/amneziawg-linux-kernel-module")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ygy87cdmxjb7r6sipkniqi3m0952la2sssissbscnlr6sc6rjs2"))))
+    (build-system linux-module-build-system)
+    (arguments
+     (list
+      #:tests? #f ;; no test suite
+      #:modules '((guix build linux-module-build-system)
+                  (guix build utils)
+                  (ice-9 popen)
+                  (ice-9 textual-ports))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'change-directory
+            (lambda _
+              (chdir "src")))
+          (add-after 'build 'build-patch
+            (lambda _
+              (let* ((patch-builder "../kernel-tree-scripts/create-patch.sh")
+                     (port (open-input-pipe patch-builder))
+                     (str (get-string-all port)))
+                (close-pipe port)
+                (call-with-output-file "wireguard.patch"
+                  (lambda (port)
+                    (format port "~a" str))))))
+          (add-after 'install 'install-patch
+            (lambda* (#:key outputs #:allow-other-keys)
+              (install-file "wireguard.patch"
+                            (assoc-ref outputs "kernel-patch"))))
+          (add-before 'install-license-files 'reset-cwd
+            (lambda _
+              (chdir ".."))))))
+    (outputs '("out" "kernel-patch"))
+    (home-page "https://github.com/amnezia-vpn/amneziawg-linux-kernel-module")
+    (synopsis "AmneziaWG Linux kernel module")
+    (description "Linux kernel module for AmneziaWG support.")
+    (license license:gpl2)))
+
 (define-public bitmask
   (package
     (name "bitmask")
