@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2023, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -226,15 +226,19 @@ testing InfiniBand networks.")
 
                            (string-append "--with-rdmacm="
                                           #$(this-package-input "rdma-core"))
-                           (string-append "--with-rocm="
-                                          #$(this-package-input "rocr-runtime")))
+
+                           #$@(if (this-package-input "rocr-runtime")
+                                  #~((string-append "--with-rocm="
+                                                    #$(this-package-input
+                                                       "rocr-runtime")))
+                                  #~()))
 
       ;; Be verbose so that compiler flags are displayed.
       #:make-flags #~'("V=1")))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
-     (list numactl rdma-core rocr-runtime))
+     (list numactl rdma-core))
     (synopsis "Optimized communication layer for message passing in HPC")
     (description
      "Unified Communication X (UCX) provides an optimized communication layer
@@ -250,3 +254,13 @@ memory mechanisms for efficient intra-node communication.")
     ;; and x86_64 as supported.
     (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"
                          "riscv64-linux"))))
+
+;; Note: ROCm support is kept separate to avoid a significant increase in
+;; closure size: <https://codeberg.org/guix/guix/issues/7225>.
+(define-public ucx-rocm
+  (package/inherit ucx
+    (name "ucx-rocm")
+    (inputs (modify-inputs inputs
+              (append rocr-runtime)))
+    (synopsis "Optimized communication layer for message passing in HPC (with
+ROCm support)")))

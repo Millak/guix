@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2021, 2021-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2021-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
@@ -10460,7 +10460,6 @@ known as Slingshot.")
                   (cons package extra)
                   '()))))
        (append (list rdma-core libnl)
-               (if-supported rocr-runtime)
                (if-supported psm)
                (if-supported psm2)
                (if-supported libcxi curl json-c))))
@@ -10503,6 +10502,15 @@ exports the user-space API of OFI, and is typically the only software that
 applications deal with directly.  It works in conjunction with provider
 libraries, which are often integrated directly into libfabric.")
     (license (list license:bsd-2 license:gpl2)))) ;dual
+
+;; Note: ROCm support is kept separate to avoid a significant increase in
+;; closure size: <https://codeberg.org/guix/guix/issues/7225>.
+(define-public libfabric-rocm
+  (package/inherit libfabric
+    (name "libfabric-rocm")
+    (inputs (modify-inputs inputs
+              (append rocr-runtime)))
+    (synopsis "Open Fabric Interfaces (with ROCm support)")))
 
 (define-public libfabric-1                        ;needed by Open MPI 4.x
   (package

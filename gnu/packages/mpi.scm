@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2018, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2014-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
@@ -432,7 +432,7 @@ software vendors, application developers and computer science researchers.")
   (package/inherit openmpi-5
     (name "openmpi-rocm")
     (arguments
-     (substitute-keyword-arguments (package-arguments openmpi-5)
+     (substitute-keyword-arguments arguments
        ((#:configure-flags flags '())
         #~(cons* (string-append "--with-rocm="
                                 #$(this-package-input "rocm-hip-runtime"))
@@ -440,7 +440,9 @@ software vendors, application developers and computer science researchers.")
     (inputs (modify-inputs (package-inputs openmpi-5)
               ;; XXX: This might break openmpi-5 for architectures where ROCm
               ;; is not supported.
-              (append rocm-hip-runtime)))
+              (append rocm-hip-runtime)
+              (replace "ucx" ucx-rocm)
+              (replace "libfabric" libfabric-rocm)))
     (synopsis "MPI-3 implementation (with ROCm support)")))
 
 (define-public openmpi-c++
