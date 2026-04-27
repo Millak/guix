@@ -3440,7 +3440,8 @@ interfaces.")
              (let ((sh (search-input-file inputs "/bin/sh"))
                    (grim (search-input-file inputs "/bin/grim"))
                    (slurp (search-input-file inputs "/bin/slurp")))
-               (substitute* "src/screenshot/screenshot.c"
+               (substitute* '("src/screencast/chooser.c"
+                              "src/screenshot/screenshot.c")
                  (("grim") grim)
                  (("slurp") slurp)
                  (("execl\\(\"/bin/sh\", \"/bin/sh\"")
