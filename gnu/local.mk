@@ -2351,6 +2351,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/rdkit-unbundle-external-dependencies.patch	\
   %D%/packages/patches/r-biostrings-r4.6.0-compat.patch		\
   %D%/packages/patches/r-httpuv-1.6.6-unvendor-libuv.patch	\
+  %D%/packages/patches/r-snpstats-0001-fixed-non-API-except-for-IS_S4_OBJECT.patch \
+  %D%/packages/patches/r-snpstats-0002-fixed-IS_S4_OBJECT.patch \
   %D%/packages/patches/r-sapa-lapack.patch			\
   %D%/packages/patches/ripperx-missing-file.patch		\
   %D%/packages/patches/rpcbind-CVE-2017-8779.patch		\

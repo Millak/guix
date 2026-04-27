@@ -27335,7 +27335,11 @@ whole-genome and whole-exome variant data.")
        (uri (bioconductor-uri "snpStats" version))
        (sha256
         (base32
-         "0fyh1qzhfkiqdksxcwpr76mmlk13c6mi0m27kcdr5frb77kv1sq9"))))
+         "0fyh1qzhfkiqdksxcwpr76mmlk13c6mi0m27kcdr5frb77kv1sq9"))
+       (patches
+        (search-patches
+         "r-snpstats-0001-fixed-non-API-except-for-IS_S4_OBJECT.patch"
+         "r-snpstats-0002-fixed-IS_S4_OBJECT.patch"))))
     (properties `((upstream-name . "snpStats")))
     (build-system r-build-system)
     (inputs (list zlib))

@@ -1,0 +1,149 @@
+From a505297e347aa72510ecfc83e7009668693e1260 Mon Sep 17 00:00:00 2001
+From: vjcitn <stvjc@channing.harvard.edu>
+Date: Fri, 13 Mar 2026 04:06:37 -0400
+Subject: [PATCH 2/2] fixed IS_S4_OBJECT
+
+---
+ src/bind.c             | 4 ++--
+ src/fst.c              | 2 +-
+ src/glm_test_R.c       | 8 ++++----
+ src/single_snp_tests.c | 2 +-
+ src/snp_summary.c      | 6 +++---
+ src/tdt.c              | 2 +-
+ 6 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/src/bind.c b/src/bind.c
+index fa87e7c..b3ef928 100644
+--- a/src/bind.c
++++ b/src/bind.c
+@@ -22,7 +22,7 @@ SEXP snp_rbind(SEXP args) {
+       Class = R_class(This);
+     }
+     const char *cli = CHAR(STRING_ELT(Class, 0));
+-    if(!IS_S4_OBJECT(This)) {
++    if(!Rf_isS4(This)) {
+       warning("rbinding SnpMatrix object without S4 object bit");
+     }
+     int nci = ncols(This);
+@@ -151,7 +151,7 @@ SEXP snp_cbind(SEXP args) {
+       Class = R_class(This);
+     }
+     const char *cli = CHAR(STRING_ELT(Class, 0));
+-    if(!IS_S4_OBJECT(This)) {
++    if(!Rf_isS4(This)) {
+       warning("cbinding SnpMatrix object without S4 object bit");
+     }
+     SEXP Di = R_NilValue;
+diff --git a/src/fst.c b/src/fst.c
+index bbc39c0..5451a51 100644
+--- a/src/fst.c
++++ b/src/fst.c
+@@ -23,7 +23,7 @@ SEXP Fst(SEXP Snps, SEXP Group, SEXP HapMap) {
+     ifX = 0; /* to avoid warning message */
+     error("Argument error - class(Snps)");
+   }
+-  if(!IS_S4_OBJECT(Snps)) {
++  if(!Rf_isS4(Snps)) {
+     error("Argument error - Snps is not S4 object");
+   }
+ 
+diff --git a/src/glm_test_R.c b/src/glm_test_R.c
+index dc8ebef..fe9d9c8 100644
+--- a/src/glm_test_R.c
++++ b/src/glm_test_R.c
+@@ -24,7 +24,7 @@ SEXP snp_lhs_score(const SEXP Y, const SEXP X, const SEXP Stratum,
+   } else {
+     classY = CHAR(STRING_ELT(getAttrib(Y, R_ClassSymbol), 0));
+   }
+-  if(!IS_S4_OBJECT(Y)) {
++  if(!Rf_isS4(Y)) {
+     error("Y in snp_lhs_score is missing S4 Object bit");
+   }
+   int ifX = 0;
+@@ -443,7 +443,7 @@ SEXP snp_rhs_score(SEXP Y, SEXP family, SEXP link,
+     ifX = 1;
+   else 
+     error("Argument error - class(Z)");
+-  if (!IS_S4_OBJECT(Z)) {
++  if (!Rf_isS4(Z)) {
+     error("Z in snp_rhs_score is missing S4 Object bit");
+   }
+  
+@@ -1008,7 +1008,7 @@ SEXP snp_lhs_estimate(const SEXP Y, const SEXP X, const SEXP Stratum,
+   } else {
+     classY = CHAR(STRING_ELT(getAttrib(Y, R_ClassSymbol), 0));
+   }
+-  if(!IS_S4_OBJECT(Y)) {
++  if(!Rf_isS4(Y)) {
+     error("Y in snp_lhs_score is missing S4 Object bit");
+   }
+   int ifX = 0;
+@@ -1365,7 +1365,7 @@ SEXP snp_rhs_estimate(SEXP Y, SEXP family, SEXP link,
+   } else {
+     classZ = CHAR(STRING_ELT(getAttrib(Z, R_ClassSymbol), 0));
+   }
+-  if(!IS_S4_OBJECT(Z)) {
++  if(!Rf_isS4(Z)) {
+     error("Z in snp_rhs_score is missing S4 Object bit");
+   }
+   int ifX = 0;
+diff --git a/src/single_snp_tests.c b/src/single_snp_tests.c
+index 08bd098..b577300 100644
+--- a/src/single_snp_tests.c
++++ b/src/single_snp_tests.c
+@@ -67,7 +67,7 @@ SEXP score_single(const SEXP Phenotype, const SEXP Stratum, const SEXP Snps,
+     ifX = 0; /* to avoid warning message */
+     error("Argument error - class(Snps)");
+   }
+-  if(!IS_S4_OBJECT(Snps)) {
++  if(!Rf_isS4(Snps)) {
+     error("Argument error - Snps is not S4 object");
+   }
+ 
+diff --git a/src/snp_summary.c b/src/snp_summary.c
+index 6f181c9..c2f1c73 100644
+--- a/src/snp_summary.c
++++ b/src/snp_summary.c
+@@ -24,7 +24,7 @@ SEXP X_snp_summary(const SEXP Snps, const SEXP Rules, const SEXP Uncertain) {
+   if (Snps == R_NilValue) {
+     error("Argument error - Snps = NULL");
+   }
+-  if(!IS_S4_OBJECT(Snps)) {
++  if(!Rf_isS4(Snps)) {
+     error("Argument error - Snps is not S4 object");
+   }
+   const unsigned char *snps = RAW(Snps);
+@@ -298,7 +298,7 @@ SEXP snp_summary(const SEXP Snps, const SEXP Rules, const SEXP Uncertain) {
+   if (Snps == R_NilValue) {
+     error("Argument error - Snps = NULL");
+   }
+-  if(!IS_S4_OBJECT(Snps)) {
++  if(!Rf_isS4(Snps)) {
+     error("Argument error - Snps is not S4 object");
+   }
+   const unsigned char *snps = RAW(Snps);
+@@ -538,7 +538,7 @@ SEXP row_summary(const SEXP Snps) {
+   if (Snps == R_NilValue) {
+     error("Argument error - Snps = NULL");
+   }
+-  if(!IS_S4_OBJECT(Snps)) {
++  if(!Rf_isS4(Snps)) {
+     error("Argument error - Snps is not S4 object");
+   }
+   const unsigned char *snps = RAW(Snps);
+diff --git a/src/tdt.c b/src/tdt.c
+index 000d1c7..634e1b3 100644
+--- a/src/tdt.c
++++ b/src/tdt.c
+@@ -57,7 +57,7 @@ SEXP score_tdt(const SEXP Proband, const SEXP Father, const SEXP Mother,
+     ifX = 0; /* to avoid warning message */
+     error("Argument error - class(Snps)");
+   }
+-  if(!IS_S4_OBJECT(Snps)) {
++  if(!Rf_isS4(Snps)) {
+     error("Argument error - Snps is not S4 object");
+   }
+ 
+-- 
+2.52.0
+

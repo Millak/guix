@@ -1,0 +1,412 @@
+From 803cda41994a22890e0a6e379e6588084d4bc91b Mon Sep 17 00:00:00 2001
+From: vjcitn <stvjc@channing.harvard.edu>
+Date: Fri, 13 Mar 2026 04:04:59 -0400
+Subject: [PATCH 1/2] fixed non-API except for IS_S4_OBJECT
+
+---
+ src/bind.c             |  8 ++++----
+ src/glm_test_R.c       | 20 ++++++++++----------
+ src/imputation.c       |  8 ++++----
+ src/input.c            |  2 +-
+ src/plink.c            |  2 +-
+ src/read_uncertain.c   |  4 ++--
+ src/readped.c          |  2 +-
+ src/single_snp_tests.c |  8 ++++----
+ src/snp_summary.c      |  8 ++++----
+ src/snpmpy.c           |  8 ++++----
+ src/structure.c        |  4 ++--
+ src/subset.c           |  2 +-
+ src/switch.c           |  2 +-
+ src/tdt.c              |  8 ++++----
+ src/testBig.c          |  2 +-
+ 15 files changed, 44 insertions(+), 44 deletions(-)
+
+diff --git a/src/bind.c b/src/bind.c
+index 44b1536..fa87e7c 100644
+--- a/src/bind.c
++++ b/src/bind.c
+@@ -19,7 +19,7 @@ SEXP snp_rbind(SEXP args) {
+     const SEXP This = CAR(args);
+     Class = getAttrib(This, R_ClassSymbol);
+     if (TYPEOF(Class) != STRSXP) {
+-      Class = R_data_class(This, FALSE);
++      Class = R_class(This);
+     }
+     const char *cli = CHAR(STRING_ELT(Class, 0));
+     if(!IS_S4_OBJECT(This)) {
+@@ -66,7 +66,7 @@ SEXP snp_rbind(SEXP args) {
+   SEXP Result, Rnames, Dnames, Diploid = R_NilValue;
+   PROTECT(Result = allocMatrix(RAWSXP, nr, nc));
+   classgets(Result, duplicate(Class));
+-  SET_S4_OBJECT(Result);
++  Rf_asS4(Result, TRUE, 0);
+   PROTECT(Rnames = allocVector(STRSXP, nr));
+   PROTECT(Dnames = allocVector(VECSXP, 2));
+   SET_VECTOR_ELT(Dnames, 0, Rnames);
+@@ -148,7 +148,7 @@ SEXP snp_cbind(SEXP args) {
+     SEXP This = CAR(args);
+     Class = getAttrib(This, R_ClassSymbol);
+     if (TYPEOF(Class) != STRSXP) {
+-      Class = R_data_class(This, FALSE);
++      Class = R_class(This);
+     }
+     const char *cli = CHAR(STRING_ELT(Class, 0));
+     if(!IS_S4_OBJECT(This)) {
+@@ -205,7 +205,7 @@ SEXP snp_cbind(SEXP args) {
+   SEXP Result, Cnames, Dnames;
+   PROTECT(Result = allocMatrix(RAWSXP, nr, nc));
+   classgets(Result, duplicate(Class));
+-  SET_S4_OBJECT(Result);
++  Rf_asS4(Result, TRUE, 0);
+   PROTECT(Dnames = allocVector(VECSXP, 2));
+   setAttrib(Result, R_DimNamesSymbol, Dnames);
+   PROTECT(Cnames = allocVector(STRSXP, nc));
+diff --git a/src/glm_test_R.c b/src/glm_test_R.c
+index d865182..dc8ebef 100644
+--- a/src/glm_test_R.c
++++ b/src/glm_test_R.c
+@@ -19,8 +19,8 @@ SEXP snp_lhs_score(const SEXP Y, const SEXP X, const SEXP Stratum,
+ 
+   /* Y should be a SnpMatrix or an XSnpMatrix */
+   const char *classY = NULL;
+-  if (TYPEOF(R_data_class(Y, FALSE)) == STRSXP) {
+-    classY = CHAR(STRING_ELT(R_data_class(Y, FALSE), 0));
++  if (TYPEOF(R_class(Y)) == STRSXP) {
++    classY = CHAR(STRING_ELT(R_class(Y), 0));
+   } else {
+     classY = CHAR(STRING_ELT(getAttrib(Y, R_ClassSymbol), 0));
+   }
+@@ -431,8 +431,8 @@ SEXP snp_rhs_score(SEXP Y, SEXP family, SEXP link,
+   /* Z should be a SnpMatrix or an XSnpMatrix */
+ 
+   const char *classZ = NULL;
+-  if (TYPEOF(R_data_class(Z, FALSE)) == STRSXP) {
+-    classZ = CHAR(STRING_ELT(R_data_class(Z, FALSE), 0));
++  if (TYPEOF(R_class(Z)) == STRSXP) {
++    classZ = CHAR(STRING_ELT(R_class(Z), 0));
+   } else {
+     classZ = CHAR(STRING_ELT(getAttrib(Z, R_ClassSymbol), 0));
+   }
+@@ -1003,8 +1003,8 @@ SEXP snp_lhs_estimate(const SEXP Y, const SEXP X, const SEXP Stratum,
+ 
+   /* Y should be a SnpMatrix or an XSnpMatrix */
+   const char *classY = NULL;
+-  if (TYPEOF(R_data_class(Y, FALSE)) == STRSXP) {
+-    classY = CHAR(STRING_ELT(R_data_class(Y, FALSE), 0));
++  if (TYPEOF(R_class(Y)) == STRSXP) {
++    classY = CHAR(STRING_ELT(R_class(Y), 0));
+   } else {
+     classY = CHAR(STRING_ELT(getAttrib(Y, R_ClassSymbol), 0));
+   }
+@@ -1286,7 +1286,7 @@ SEXP snp_lhs_estimate(const SEXP Y, const SEXP X, const SEXP Stratum,
+   LOGICAL(Lhs)[0] = 1;
+   setAttrib(Estimates, install("snpLHS"), Lhs);
+   UNPROTECT(6);
+-  SET_S4_OBJECT(Estimates);
++  Rf_asS4(Estimates, TRUE, 0);
+   return(Estimates);
+ }
+ 
+@@ -1360,8 +1360,8 @@ SEXP snp_rhs_estimate(SEXP Y, SEXP family, SEXP link,
+ /* Z should be a SnpMatrix or an XSnpMatrix */
+ 
+   const char *classZ = NULL;
+-  if (TYPEOF(R_data_class(Z, FALSE)) == STRSXP) {
+-    classZ = CHAR(STRING_ELT(R_data_class(Z, FALSE), 0));
++  if (TYPEOF(R_class(Z)) == STRSXP) {
++    classZ = CHAR(STRING_ELT(R_class(Z), 0));
+   } else {
+     classZ = CHAR(STRING_ELT(getAttrib(Z, R_ClassSymbol), 0));
+   }
+@@ -1724,7 +1724,7 @@ SEXP snp_rhs_estimate(SEXP Y, SEXP family, SEXP link,
+ 
+   UNPROTECT(gen_names? 7: 6);
+ 
+-  SET_S4_OBJECT(Estimates);
++  Rf_asS4(Estimates, TRUE, 0);
+   return(Estimates);
+   
+ }
+diff --git a/src/imputation.c b/src/imputation.c
+index ff9403b..d796c1b 100644
+--- a/src/imputation.c
++++ b/src/imputation.c
+@@ -77,7 +77,7 @@ SEXP snp_impute(const SEXP X, const SEXP Y, const SEXP Xord, const SEXP Yord,
+   int *diploid = NULL;
+   SEXP cl = GET_CLASS(X);
+   if (TYPEOF(cl) != STRSXP) {
+-    cl = R_data_class(X, FALSE); /* S4 way of getting class attribute */
++    cl = R_class(X); /* S4 way of getting class attribute */
+   }
+   if (!strcmp(CHAR(STRING_ELT(cl, 0)), "XSnpMatrix")) {
+     SEXP Diploid = R_do_slot(X, mkString("diploid"));
+@@ -395,7 +395,7 @@ SEXP snp_impute(const SEXP X, const SEXP Y, const SEXP Xord, const SEXP Yord,
+   PROTECT(Maxpred = allocVector(INTSXP, 1));
+   INTEGER(Maxpred)[0] = maxpred;
+   setAttrib(Result, install("Max.predictors"), Maxpred);
+-  SET_S4_OBJECT(Result);
++  Rf_asS4(Result, TRUE, 0);
+ 
+   /* Tidy up */
+ 
+@@ -701,7 +701,7 @@ SEXP impute_snps(const SEXP Rules, const SEXP Snps, const SEXP Subset,
+   int *diploid_in=NULL, *diploid=NULL;
+   SEXP cl = GET_CLASS(Snps);
+   if (TYPEOF(cl) != STRSXP) {
+-    cl = R_data_class(Snps, FALSE); /* S4 way of getting class attribute */
++    cl = R_class(Snps); /* S4 way of getting class attribute */
+   }
+   if (!strcmp(CHAR(STRING_ELT(cl, 0)), "XSnpMatrix")) {
+     SEXP Diploid = R_do_slot(Snps, mkString("diploid"));
+@@ -753,7 +753,7 @@ SEXP impute_snps(const SEXP Rules, const SEXP Snps, const SEXP Subset,
+     SET_STRING_ELT(Package, 0, mkChar("snpStats"));
+     setAttrib(Class, install("package"), Package);
+     classgets(Result, Class);
+-    SET_S4_OBJECT(Result);
++    Rf_asS4(Result, TRUE, 0);
+   }
+   PROTECT(Dimnames = allocVector(VECSXP, 2));
+   SET_VECTOR_ELT(Dimnames, 0, VECTOR_ELT(names, 0));
+diff --git a/src/input.c b/src/input.c
+index 1d2a95b..60cdad8 100644
+--- a/src/input.c
++++ b/src/input.c
+@@ -330,7 +330,7 @@ SEXP insnp_new(const SEXP Filenames, const SEXP Sample_id, const SEXP Snp_id,
+   SET_STRING_ELT(Package, 0, mkChar("snpStats"));
+   setAttrib(Class, install("package"), Package);
+   classgets(Result, Class);
+-  SET_S4_OBJECT(Result);
++  Rf_asS4(Result, TRUE, 0);
+   unsigned char *result = RAW(Result);
+   memset(result, 0x00, Nsample*Nsnp);
+ 
+diff --git a/src/plink.c b/src/plink.c
+index a413440..9095c2d 100644
+--- a/src/plink.c
++++ b/src/plink.c
+@@ -59,7 +59,7 @@ SEXP readbed(SEXP Bed, SEXP Id, SEXP Snps, SEXP Rsel, SEXP Csel) {
+   SET_STRING_ELT(Package, 0, mkChar("snpStats"));
+   setAttrib(Class, install("package"), Package);
+   classgets(Result, Class);
+-  SET_S4_OBJECT(Result);
++  Rf_asS4(Result, TRUE, 0);
+   
+   unsigned char *result = RAW(Result); 
+   R_xlen_t ncell = (R_xlen_t)nrow*(R_xlen_t)ncol;
+diff --git a/src/read_uncertain.c b/src/read_uncertain.c
+index 2e3b901..fd82617 100644
+--- a/src/read_uncertain.c
++++ b/src/read_uncertain.c
+@@ -137,7 +137,7 @@ SEXP read_mach(const SEXP Filename, const SEXP Colnames, const SEXP Nsubject) {
+   SET_STRING_ELT(Package, 0, mkChar("snpStats"));
+   setAttrib(Class, install("package"), Package);
+   classgets(Result, Class);
+-  SET_S4_OBJECT(Result);
++  Rf_asS4(Result, TRUE, 0);
+   UNPROTECT(2);
+  
+   /* Read in data */
+@@ -278,7 +278,7 @@ SEXP read_impute(const SEXP Filename, const SEXP Rownames, const SEXP Nsnp,
+   SET_STRING_ELT(Package, 0, mkChar("snpStats"));
+   setAttrib(Class, install("package"), Package);
+   classgets(Result, Class);
+-  SET_S4_OBJECT(Result);
++  Rf_asS4(Result, TRUE, 0);
+   UNPROTECT(2);
+ 
+   char buffer[BUFFERSIZE];
+diff --git a/src/readped.c b/src/readped.c
+index 4e8563e..020d05f 100644
+--- a/src/readped.c
++++ b/src/readped.c
+@@ -327,7 +327,7 @@ SEXP readped(SEXP filename, SEXP snp_names, SEXP missing, SEXP X, SEXP sep) {
+   else
+     SET_STRING_ELT(SMClass, 0, mkChar("SnpMatrix"));
+   classgets(Smat, SMClass);
+-  SET_S4_OBJECT(Smat);
++  Rf_asS4(Smat, TRUE, 0);
+   PROTECT(DimNames = allocVector(VECSXP, 2));
+   SET_VECTOR_ELT(DimNames, 0, duplicate(Rnames));
+   protected += 2;
+diff --git a/src/single_snp_tests.c b/src/single_snp_tests.c
+index a242e17..08bd098 100644
+--- a/src/single_snp_tests.c
++++ b/src/single_snp_tests.c
+@@ -53,8 +53,8 @@ SEXP score_single(const SEXP Phenotype, const SEXP Stratum, const SEXP Snps,
+   /* SNPs ---- should be a SnpMatrix or an XSnpMatrix */
+ 
+   const char *classS = NULL;
+-  if (TYPEOF(R_data_class(Snps, FALSE)) == STRSXP) {
+-    classS = CHAR(STRING_ELT(R_data_class(Snps, FALSE), 0));
++  if (TYPEOF(R_class(Snps)) == STRSXP) {
++    classS = CHAR(STRING_ELT(R_class(Snps), 0));
+   } else {
+     classS = CHAR(STRING_ELT(getAttrib(Snps, R_ClassSymbol), 0));
+   }
+@@ -108,8 +108,8 @@ SEXP score_single(const SEXP Phenotype, const SEXP Stratum, const SEXP Snps,
+   index_db name_index;
+   if (!isNull(Rules)) {
+     const char *classR = NULL;
+-    if (TYPEOF(R_data_class(Rules, FALSE)) == STRSXP) {
+-      classR = CHAR(STRING_ELT(R_data_class(Rules, FALSE), 0));
++    if (TYPEOF(R_class(Rules)) == STRSXP) {
++      classR = CHAR(STRING_ELT(R_class(Rules), 0));
+     } else {
+       classR = CHAR(STRING_ELT(getAttrib(Rules, R_ClassSymbol), 0));
+     }
+diff --git a/src/snp_summary.c b/src/snp_summary.c
+index 9b53693..6f181c9 100644
+--- a/src/snp_summary.c
++++ b/src/snp_summary.c
+@@ -47,8 +47,8 @@ SEXP X_snp_summary(const SEXP Snps, const SEXP Rules, const SEXP Uncertain) {
+   SEXP ruleNames = R_NilValue;
+   if (!isNull(Rules)) {
+     const char *classR = NULL;
+-    if (TYPEOF(R_data_class(Rules, FALSE)) == STRSXP) {
+-      classR = CHAR(STRING_ELT(R_data_class(Rules, FALSE), 0));
++    if (TYPEOF(R_class(Rules)) == STRSXP) {
++      classR = CHAR(STRING_ELT(R_class(Rules), 0));
+     } else {
+       classR = CHAR(STRING_ELT(getAttrib(Rules, R_ClassSymbol), 0));
+     }
+@@ -321,8 +321,8 @@ SEXP snp_summary(const SEXP Snps, const SEXP Rules, const SEXP Uncertain) {
+   SEXP ruleNames = R_NilValue;
+   if (!isNull(Rules)) {
+     const char *classR = NULL;
+-    if (TYPEOF(R_data_class(Rules, FALSE)) == STRSXP) {
+-      classR = CHAR(STRING_ELT(R_data_class(Rules, FALSE), 0));
++    if (TYPEOF(R_class(Rules)) == STRSXP) {
++      classR = CHAR(STRING_ELT(R_class(Rules), 0));
+     } else {
+       classR = CHAR(STRING_ELT(getAttrib(Rules, R_ClassSymbol), 0));
+     }
+diff --git a/src/snpmpy.c b/src/snpmpy.c
+index 2447048..56b84d9 100644
+--- a/src/snpmpy.c
++++ b/src/snpmpy.c
+@@ -34,7 +34,7 @@ SEXP snp_pre(const SEXP Snps, const SEXP Mat, const SEXP Frequency,
+   int *ifdiploid = NULL;
+   SEXP cl = GET_CLASS(Snps);
+   if (TYPEOF(cl) != STRSXP) {
+-    cl = R_data_class(Snps, FALSE); /* S4 way of getting class attribute */
++    cl = R_class(Snps); /* S4 way of getting class attribute */
+   }
+   if (!strcmp(CHAR(STRING_ELT(cl, 0)), "XSnpMatrix")) {
+     SEXP diploid = R_do_slot(Snps, mkString("diploid"));
+@@ -55,7 +55,7 @@ SEXP snp_pre(const SEXP Snps, const SEXP Mat, const SEXP Frequency,
+ 
+   cl = GET_CLASS(Mat);
+   if (TYPEOF(cl) != STRSXP) {
+-    cl = R_data_class(Mat, FALSE); /* S4 way of getting class attribute */
++    cl = R_class(Mat); /* S4 way of getting class attribute */
+   }
+   if (strcmp(CHAR(STRING_ELT(cl, 0)), "matrix"))
+     error("Argument error - Mat wrong type");
+@@ -161,7 +161,7 @@ SEXP snp_post(const SEXP Snps, const SEXP Mat, const SEXP Frequency,
+   int *ifdiploid = NULL;
+   SEXP cl = GET_CLASS(Snps);
+   if (TYPEOF(cl) != STRSXP) {
+-    cl = R_data_class(Snps, FALSE); /* S4 way of getting class attribute */
++    cl = R_class(Snps); /* S4 way of getting class attribute */
+   }
+   if (!strcmp(CHAR(STRING_ELT(cl, 0)), "XSnpMatrix")) {
+     SEXP diploid = R_do_slot(Snps, mkString("diploid"));
+@@ -182,7 +182,7 @@ SEXP snp_post(const SEXP Snps, const SEXP Mat, const SEXP Frequency,
+ 
+   cl = GET_CLASS(Mat);
+   if (TYPEOF(cl) != STRSXP) {
+-    cl = R_data_class(Mat, FALSE); /* S4 way of getting class attribute */
++    cl = R_class(Mat); /* S4 way of getting class attribute */
+   }
+   if (strcmp(CHAR(STRING_ELT(cl, 0)), "matrix"))
+     error("Argument error - Mat wrong type");
+diff --git a/src/structure.c b/src/structure.c
+index 2a05635..1f9b62e 100644
+--- a/src/structure.c
++++ b/src/structure.c
+@@ -66,7 +66,7 @@ SEXP xxt(const SEXP Snps, const SEXP Strata, const SEXP Correct_for_missing,
+   int *ifDiploid = NULL;
+   SEXP cl = GET_CLASS(Snps);
+   if (TYPEOF(cl) != STRSXP) {
+-    cl = R_data_class(Snps, FALSE); /* S4 way of getting class attribute */
++    cl = R_class(Snps); /* S4 way of getting class attribute */
+   }
+   if (!strcmp(CHAR(STRING_ELT(cl, 0)), "XSnpMatrix")) {
+     SEXP Diploid = R_do_slot(Snps, mkString("diploid"));
+@@ -409,7 +409,7 @@ SEXP ibs_count(const SEXP Snps, const SEXP Uncertain) {
+   int *ifDiploid = NULL;
+   SEXP cl = GET_CLASS(Snps);
+   if (TYPEOF(cl) != STRSXP) {
+-    cl = R_data_class(Snps, FALSE); /* S4 way of getting class attribute */
++    cl = R_class(Snps); /* S4 way of getting class attribute */
+   }
+   if (!strcmp(CHAR(STRING_ELT(cl, 0)), "XSnpMatrix")) {
+     SEXP Diploid = R_do_slot(Snps, mkString("diploid"));
+diff --git a/src/subset.c b/src/subset.c
+index cc7992d..4c2e2c4 100644
+--- a/src/subset.c
++++ b/src/subset.c
+@@ -55,7 +55,7 @@ SEXP subset(SEXP X, SEXP Rows, SEXP Cols) {
+   SET_STRING_ELT(Package, 0, mkChar("snpStats"));
+   setAttrib(Rclass, install("package"), Package);
+   setAttrib(Result, R_ClassSymbol, Rclass);
+-  SET_S4_OBJECT(Result);
++  Rf_asS4(Result, TRUE, 0);
+   PROTECT(Rdim = allocVector(INTSXP, 2));
+   int *rdim = INTEGER(Rdim);
+   rdim[0] = nrows;
+diff --git a/src/switch.c b/src/switch.c
+index 60f7e6c..e2a3287 100644
+--- a/src/switch.c
++++ b/src/switch.c
+@@ -16,7 +16,7 @@ SEXP test_switch(const SEXP Snps, const SEXP Snps2, const SEXP Split,
+   int *female = NULL;
+   SEXP cl = GET_CLASS(Snps);
+   if (TYPEOF(cl) != STRSXP) {
+-    cl = R_data_class(Snps, FALSE); /* S4 way of getting class attribute */
++    cl = R_class(Snps); /* S4 way of getting class attribute */
+   }
+   SEXP diploid = NULL;
+   if (!strcmp(CHAR(STRING_ELT(cl, 0)), "XSnpMatrix")) {
+diff --git a/src/tdt.c b/src/tdt.c
+index cece0d9..000d1c7 100644
+--- a/src/tdt.c
++++ b/src/tdt.c
+@@ -43,8 +43,8 @@ SEXP score_tdt(const SEXP Proband, const SEXP Father, const SEXP Mother,
+   /* SNPs ---- should be a SnpMatrix or an XSnpMatrix */
+ 
+   const char *classS = NULL;
+-  if (TYPEOF(R_data_class(Snps, FALSE)) == STRSXP) {
+-    classS = CHAR(STRING_ELT(R_data_class(Snps, FALSE), 0));
++  if (TYPEOF(R_class(Snps)) == STRSXP) {
++    classS = CHAR(STRING_ELT(R_class(Snps), 0));
+   } else {
+     classS = CHAR(STRING_ELT(getAttrib(Snps, R_ClassSymbol), 0));
+   }
+@@ -84,8 +84,8 @@ SEXP score_tdt(const SEXP Proband, const SEXP Father, const SEXP Mother,
+   GTYPE **gt2ht = NULL;
+   if (!isNull(Rules)) {
+     const char *classR = NULL;
+-    if (TYPEOF(R_data_class(Rules, FALSE)) == STRSXP) {
+-      classR = CHAR(STRING_ELT(R_data_class(Rules, FALSE), 0));
++    if (TYPEOF(R_class(Rules)) == STRSXP) {
++      classR = CHAR(STRING_ELT(R_class(Rules), 0));
+     } else {
+       classR = CHAR(STRING_ELT(getAttrib(Rules, R_ClassSymbol), 0));
+     }
+diff --git a/src/testBig.c b/src/testBig.c
+index a6eb76f..3dca1da 100644
+--- a/src/testBig.c
++++ b/src/testBig.c
+@@ -18,7 +18,7 @@ SEXP snp_big(SEXP nrow, SEXP ncol) {
+   SET_STRING_ELT(Package, 0, mkChar("snpStats"));
+   setAttrib(Class, install("package"), Package);
+   classgets(Result, Class);
+-  SET_S4_OBJECT(Result);
++  Rf_asS4(Result, TRUE, 0);
+ 
+   PROTECT(Dnames = allocVector(VECSXP, 2));
+   setAttrib(Result, R_DimNamesSymbol, Dnames);
+-- 
+2.52.0
+
