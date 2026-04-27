@@ -185,7 +185,7 @@ terminals.")
     (native-inputs
      (append
        (list clisp
-             python-cython
+             python-cython-0 ;; See https://bugzilla.redhat.com/show_bug.cgi?id=2231865
              doxygen
              gettext-minimal)
        ;; icedtea doesn't build reliably on all architectures.
