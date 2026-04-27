@@ -157,6 +157,65 @@
     (description "Linux kernel module for AmneziaWG support.")
     (license license:gpl2)))
 
+(define-public amneziawg-tools
+  (package
+    (name "amneziawg-tools")
+    (version "1.0.20260223")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/amnezia-vpn/amneziawg-tools")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05jyfqdbk9km0dahmddif7dghp1zslz458yd2hf18fha456qrii6"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;test suite is meant to be run interactively
+      #:make-flags
+      #~(list "--directory=src"
+              "WITH_BASHCOMPLETION=yes"
+              "WITH_WGQUICK=yes"
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output)
+              (string-append "SYSCONFDIR=no-thanks"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)   ;no confiure
+          (add-after 'install 'install-contrib-docs
+            (lambda _
+              (copy-recursively "contrib/"
+                                (string-append #$output
+                                               "/share/doc/amneziawg-tools"))))
+          (add-after 'install 'wrap-awg-quick
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/awg-quick")
+                `("PATH" ":" prefix
+                  (,(dirname (search-input-file inputs "/sbin/ip"))
+                   ,(dirname (search-input-file inputs "/sbin/iptables"))
+                   ,(dirname (search-input-file inputs "/sbin/sysctl"))
+                   ,(dirname (search-input-file inputs "/sbin/resolvconf"))
+                   ,(dirname (search-input-file inputs "/bin/amneziawg-go"))
+                   ,(dirname (search-input-file inputs "/bin/cp"))))))))))
+    (inputs
+     (list amneziawg-go
+           bash-minimal
+           coreutils
+           iproute
+           iptables
+           openresolv
+           procps))
+    (home-page "https://github.com/amnezia-vpn/amneziawg-tools")
+    (synopsis "AmneziaWG fork of WireGuard tools")
+    (description
+     "This package provides user-space command-line tools for configuring
+AmneziaWG tunnels, a fork of @code{wireguard-tools} with support for the
+AmneziaWG protocol.  AmneziaWG extends WireGuard with protection against
+detection by @acronym{DPI, Deep Packet Inspection} systems.")
+    (license license:gpl2)))
+
 (define-public bitmask
   (package
     (name "bitmask")
