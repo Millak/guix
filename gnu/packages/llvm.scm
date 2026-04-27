@@ -1621,7 +1621,10 @@ AMDGPU code objects.")
                      ;; #$rocm-hip-runtime.
 
                      ;;(list "HIP_ROCCLR_HOME" '= (list #$rocm-hip-runtime))
-                     (list "HIP_PATH" '= (list #$output))
+
+                     ;; HACK: allow `rocm-hip-runtime' to wrap this program
+                     ;; with its own `HIP_PATH'.
+                     (list "HIP_PATH" '= (list (string-append "${HIP_PATH:-" #$output "}")))
                      (list "HIP_CLANG_PATH"
                            '=
                            (list (string-append

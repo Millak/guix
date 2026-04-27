@@ -225,7 +225,18 @@ and in-process/in-memory compilation.")
                 (("LLVM_DIR=\"\\$4\"")
                  "LLVM_DIR=\"$4\"; CLANG_DIR=\"$5\";")
                 (("\\$LLVM_DIR/bin/clang")
-                 (string-append "$CLANG_DIR/bin/clang"))))))))
+                 (string-append "$CLANG_DIR/bin/clang")))))
+          ;; Re-wrap programs taken from `rocm-hipcc' so their paths point to
+          ;; this package output.
+          (add-after 'install 'wrap-programs
+            (lambda _
+              (let ((output-bindir (string-append #$output "/bin")))
+                (for-each
+                 (lambda (file)
+                   (wrap-program (string-append output-bindir "/" file)
+                     `("HIP_PATH" = ,(list #$output))
+                     `("PATH" suffix ,(list output-bindir))))
+                 '("hipcc" "hipconfig"))))))))
     (inputs
      (list glew
            mesa
