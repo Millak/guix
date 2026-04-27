@@ -22086,7 +22086,19 @@ interact with gated cytometry data.")
            "r-ggcyto"))))
     (build-system r-build-system)
     ;; Tests need r-flowstats, which depends on this package
-    (arguments (list #:tests? #false))
+    (arguments
+     (list
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'R-4.6.0-compatibility
+           (lambda _
+             (substitute* "src/Makevars"
+               (("^PKG_LIBS.*") "\
+RHDF5_LIBS= $(shell echo 'Rhdf5lib::pkgconfig(\"PKG_CXX_LIBS\")'|\
+    \"${R_HOME}/bin/R\" --vanilla --slave)
+
+PKG_LIBS = `${R_HOME}/bin/Rscript -e \"cytolib:::cytolib_LdFlags()\"` $(RHDF5_LIBS)")))))))
     (propagated-inputs
      (list r-bh
            r-biobase
