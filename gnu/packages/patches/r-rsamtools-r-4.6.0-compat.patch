@@ -1,0 +1,114 @@
+From 57dc6579d8b53af9e633016705fa9a1cbe58c8c8 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Herv=C3=A9=20Pag=C3=A8s?= <hpages.on.github@gmail.com>
+Date: Fri, 6 Mar 2026 16:48:20 -0800
+Subject: [PATCH] Rsamtools 2.27.1: Get rid of non-API calls to R
+
+---
+ DESCRIPTION     | 2 +-
+ src/utilities.h | 3 +--
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/src/utilities.h b/src/utilities.h
+index bffb98f7..f9d5e09f 100644
+--- a/src/utilities.h
++++ b/src/utilities.h
+@@ -51,8 +51,7 @@ SEXP find_mate_within_groups(SEXP group_sizes,
+ /* call-building macros */
+ 
+ #define NEW_CALL(S, T, NAME, ENV, N)            \
+-    PROTECT(S = T = allocList(N));              \
+-    SET_TYPEOF(T, LANGSXP);                     \
++    PROTECT(S = T = LCONS(R_NilValue, allocList(N-1))); \
+     SETCAR(T, findFun(install(NAME), ENV));     \
+     T = CDR(T)
+ #define CSET_CDR(T, NAME, VALUE)                \
+
+From 8cdec143023e8348a4f8bdc310acd609d14fe493 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Herv=C3=A9=20Pag=C3=A8s?= <hpages.on.github@gmail.com>
+Date: Fri, 6 Mar 2026 16:59:42 -0800
+Subject: [PATCH] oops, forgot to also get rid of non-API call to FORMALS()
+
+---
+ src/pileupbam.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/pileupbam.c b/src/pileupbam.c
+index f3256ba..7725628 100644
+--- a/src/pileupbam.c
++++ b/src/pileupbam.c
+@@ -655,7 +655,7 @@ SEXP apply_pileups(SEXP files, SEXP names, SEXP regions, SEXP param,
+     if (R_NilValue == regions)
+         Rf_error("'NULL' regions not (yet) supported");
+     _checkparams(regions, R_NilValue, R_NilValue);
+-    if (!Rf_isFunction(callback) || 1L != Rf_length(FORMALS(callback)))
++    if (!Rf_isFunction(callback) || 1L != Rf_length(R_ClosureFormals(callback)))
+         Rf_error("'callback' must be a function of 1 argument");
+     call = PROTECT(Rf_lang2(callback, R_NilValue));
+ 
+
+From ee01a1f13f3b012b0717247d1f21580225b6f3a0 Mon Sep 17 00:00:00 2001
+From: vjcitn <stvjc@channing.harvard.edu>
+Date: Wed, 8 Apr 2026 14:04:26 -0400
+Subject: [PATCH] API solutions
+
+---
+ DESCRIPTION     |  2 +-
+ src/tabixfile.c |  4 ++++
+ src/utilities.c | 13 ++++++++++---
+ 3 files changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/src/tabixfile.c b/src/tabixfile.c
+index 230a381..6f96568 100644
+--- a/src/tabixfile.c
++++ b/src/tabixfile.c
+@@ -187,8 +187,12 @@ SEXP index_tabix(SEXP filename, SEXP format, SEXP seq, SEXP begin, SEXP end,
+         LOGICAL(zeroBased)[0] == TRUE)
+         conf.preset |= TBX_UCSC;
+ 
++/* following is deprecated in HTSLIB with no precise replacement proposed */
++/* seems unimportant */
++/*
+     if (bgzf_is_bgzf(fn) != 1)
+         Rf_error("file does not appear to be bgzip'd");
++*/
+     if (tbx_index_build(fn, 0, &conf) == -1)
+         Rf_error("index build failed");
+ 
+diff --git a/src/utilities.c b/src/utilities.c
+index e224f91..d15c1d1 100644
+--- a/src/utilities.c
++++ b/src/utilities.c
+@@ -5,6 +5,13 @@
+ #include "XVector_interface.h"
+ #include <htslib/khash.h>
+ 
++#include <Rversion.h>
++
++#if R_VERSION < R_Version(4, 6, 0)
++# define R_getVar(x,y,z) findVar(x,y)
++#endif
++
++
+ void *_Rs_Realloc_impl(void *p, size_t n, size_t t)
+ {
+     /* R_Realloc(p, 0, *) fails inappropriately */
+@@ -30,7 +37,7 @@ SEXP _get_namespace(const char *pkg)
+ void _as_strand(SEXP vec)
+ {
+     SEXP nmspc = PROTECT(_get_namespace("Rsamtools"));
+-    SEXP lvls = PROTECT(eval(findVar(install(".STRAND_LEVELS"), nmspc), nmspc));
++    SEXP lvls = PROTECT(eval(R_getVar(install(".STRAND_LEVELS"), nmspc, TRUE), nmspc));
+     _as_factor_SEXP(vec, lvls);
+     UNPROTECT(2);
+ }
+@@ -38,8 +45,8 @@ void _as_strand(SEXP vec)
+ void _as_nucleotide(SEXP vec)
+ {
+     SEXP nmspc = PROTECT(_get_namespace("Rsamtools"));
+-    SEXP lvls = PROTECT(eval(findVar(install(".PILEUP_NUCLEOTIDE_LEVELS"),
+-                                     nmspc), nmspc));
++    SEXP lvls = PROTECT(eval(R_getVar(install(".PILEUP_NUCLEOTIDE_LEVELS"),
++                                     nmspc, TRUE), nmspc));
+     _as_factor_SEXP(vec, lvls);
+     UNPROTECT(2);
+ }
