@@ -22847,16 +22847,6 @@ specification}, a toolkit for writing GUIs in Common Lisp.")
 (define-public cl-mcclim
   (sbcl-package->cl-source-package sbcl-mcclim))
 
-(define-public ecl-mcclim
-  (let ((pkg (sbcl-package->ecl-package sbcl-mcclim)))
-    (package
-      (inherit pkg)
-      (arguments
-       (substitute-keyword-arguments arguments
-         ;; Tests fail with "FUNCTION: Not a valid argument (R1
-         ;; (GENERATE-REGION))."  on ECL.
-         ((#:tests? _ #f) #f))))))
-
 (define-public sbcl-md5
   (package
     (name "sbcl-md5")
