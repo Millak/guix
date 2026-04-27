@@ -1,0 +1,259 @@
+From 633aa6e3f671e9b58b3508b3944ff0dd45f34f8a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Herv=C3=A9=20Pag=C3=A8s?= <hpages.on.github@gmail.com>
+Date: Thu, 5 Mar 2026 14:58:23 -0800
+Subject: [PATCH] SparseArray 1.11.11: Get rid of non-API calls to R
+
+From 65383c02f986832b1416c6ad39da800d8ced05df Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Herv=C3=A9=20Pag=C3=A8s?= <hpages.on.github@gmail.com>
+Date: Tue, 31 Mar 2026 11:38:20 -0700
+Subject: [PATCH] SparseArray 1.11.13: Use R_getVar() instead of findVar() when
+ R >= 4.6.0
+
+---
+ DESCRIPTION                     |  2 +-
+ src/Makevars                    |  1 +
+ src/Rvector_utils.c             | 15 ++++++++-------
+ src/SparseArray_aperm.c         |  2 +-
+ src/SparseArray_matrixStats.c   |  5 +++--
+ src/SparseArray_subassignment.c |  6 +++---
+ src/SparseVec.h                 |  3 ++-
+ src/leaf_utils.c                |  5 +++--
+ src/test.c                      |  3 +++
+ 9 files changed, 25 insertions(+), 17 deletions(-)
+
+diff --git a/src/Makevars b/src/Makevars
+index 0ee3615..1c5b86e 100644
+--- a/src/Makevars
++++ b/src/Makevars
+@@ -1,2 +1,3 @@
++## See https://cran.r-project.org/doc/manuals/r-release/R-exts.html#OpenMP-support
+ PKG_CFLAGS = $(SHLIB_OPENMP_CFLAGS)
+ PKG_LIBS = $(SHLIB_OPENMP_CFLAGS)
+diff --git a/src/Rvector_utils.c b/src/Rvector_utils.c
+index ad80168..7e61ac1 100644
+--- a/src/Rvector_utils.c
++++ b/src/Rvector_utils.c
+@@ -4,6 +4,7 @@
+  ****************************************************************************/
+ #include "Rvector_utils.h"
+ 
++#include <R_ext/Altrep.h>  /* only for DATAPTR_RW() */
+ #include <string.h>  /* for memset() and memcpy() */
+ 
+ 
+@@ -242,7 +243,7 @@ void _fill_Rvector_block_with_val(SEXP Rvector,
+ 				     (const SEXP) val);
+ 		return;
+ 	}
+-	_set_elts_to_val(TYPEOF(Rvector), DATAPTR(Rvector),
++	_set_elts_to_val(TYPEOF(Rvector), DATAPTR_RW(Rvector),
+ 			 block_offset, block_len, val);
+ }
+ 
+@@ -260,7 +261,7 @@ void _fill_Rvector_block_with_zeros(SEXP Rvector,
+ 				     R_NilValue);
+ 		return;
+ 	}
+-	_set_elts_to_zero(Rtype, DATAPTR(Rvector), block_offset, block_len);
++	_set_elts_to_zero(Rtype, DATAPTR_RW(Rvector), block_offset, block_len);
+ 	return;
+ }
+ 
+@@ -268,7 +269,7 @@ void _fill_Rvector_block_with_zeros(SEXP Rvector,
+ void _fill_Rvector_block_with_ones(SEXP Rvector,
+ 		R_xlen_t block_offset, R_xlen_t block_len)
+ {
+-	_set_elts_to_one(TYPEOF(Rvector), DATAPTR(Rvector),
++	_set_elts_to_one(TYPEOF(Rvector), DATAPTR_RW(Rvector),
+ 			 block_offset, block_len);
+ 	return;
+ }
+@@ -277,7 +278,7 @@ void _fill_Rvector_block_with_ones(SEXP Rvector,
+ void _fill_Rvector_block_with_minus_one(SEXP Rvector,
+ 		R_xlen_t block_offset, R_xlen_t block_len)
+ {
+-	_set_elts_to_minus_one(TYPEOF(Rvector), DATAPTR(Rvector),
++	_set_elts_to_minus_one(TYPEOF(Rvector), DATAPTR_RW(Rvector),
+ 			 block_offset, block_len);
+ 	return;
+ }
+@@ -293,7 +294,7 @@ void _fill_Rvector_block_with_NA(SEXP Rvector,
+ 					  NA_STRING);
+ 		return;
+ 	}
+-	_set_elts_to_NA(Rtype, DATAPTR(Rvector), block_offset, block_len);
++	_set_elts_to_NA(Rtype, DATAPTR_RW(Rvector), block_offset, block_len);
+ 	return;
+ }
+ 
+@@ -460,7 +461,7 @@ void _fill_Rvector_subset_with_zeros(SEXP Rvector,
+ 				R_NilValue);
+ 		return;
+ 	}
+-	_set_selected_elts_to_zero(Rtype, DATAPTR(Rvector),
++	_set_selected_elts_to_zero(Rtype, DATAPTR_RW(Rvector),
+ 				selection, selection_len, selection_offset);
+ 	return;
+ }
+@@ -470,7 +471,7 @@ void _fill_Rvector_subset_with_ones(SEXP Rvector,
+ 		const int *selection, int selection_len,
+ 		R_xlen_t selection_offset)
+ {
+-	_set_selected_elts_to_one(TYPEOF(Rvector), DATAPTR(Rvector),
++	_set_selected_elts_to_one(TYPEOF(Rvector), DATAPTR_RW(Rvector),
+ 				  selection, selection_len, selection_offset);
+ 	return;
+ }
+diff --git a/src/SparseArray_aperm.c b/src/SparseArray_aperm.c
+index 0bd092e..bbeaf2c 100644
+--- a/src/SparseArray_aperm.c
++++ b/src/SparseArray_aperm.c
+@@ -721,7 +721,7 @@ static SEXP REC_grow_output_tree(const int *dim, int ndim,
+ 	const type *nzvals_p = NULL;  /* -Wmaybe-uninitialized */	\
+ 	type v;								\
+ 	if (nzvals != R_NilValue) {  /* standard leaf */		\
+-		nzvals_p = (const type *) DATAPTR(nzvals);		\
++		nzvals_p = DATAPTR_RO(nzvals);				\
+ 	} else {  /* lacunar leaf */					\
+ 		v = type ## 1;						\
+ 	}								\
+diff --git a/src/SparseArray_matrixStats.c b/src/SparseArray_matrixStats.c
+index b626553..debacf6 100644
+--- a/src/SparseArray_matrixStats.c
++++ b/src/SparseArray_matrixStats.c
+@@ -16,6 +16,7 @@
+ #include "leaf_utils.h"
+ #include "SparseArray_summarization.h"
+ 
++#include <R_ext/Altrep.h>  /* only for DATAPTR_RW() */
+ #include <string.h>  /* for memcpy() and memset() */
+ 
+ 
+@@ -272,7 +273,7 @@ SEXP C_colStats_SVT(SEXP x_dim, SEXP x_dimnames, SEXP x_type,
+ 	int warn = 0;
+ 	REC_colStats_SVT(x_SVT, x_bg_is_na, INTEGER(x_dim), LENGTH(x_dim),
+ 			 &summarize_op,
+-			 DATAPTR(ans), ans_Rtype,
++			 DATAPTR_RW(ans), ans_Rtype,
+ 			 out_incs, ans_ndim, pardim,
+ 			 &warn);
+ 	if (warn)
+@@ -1175,7 +1176,7 @@ SEXP C_rowStats_SVT(SEXP x_dim, SEXP x_dimnames, SEXP x_type,
+ 		SVT_rowMinsMaxs(x_SVT, x_Rtype, x_bg_is_na,
+ 			INTEGER(x_dim), LENGTH(x_dim),
+ 			opcode, narm,
+-			DATAPTR(ans), LENGTH(ans), ans_Rtype,
++			DATAPTR_RW(ans), LENGTH(ans), ans_Rtype,
+ 			out_incs, ans_ndim, nstrata);
+ 		break;
+ 	    case SUM_OPCODE:
+diff --git a/src/SparseArray_subassignment.c b/src/SparseArray_subassignment.c
+index 4cf1c3d..c3b2d5e 100644
+--- a/src/SparseArray_subassignment.c
++++ b/src/SparseArray_subassignment.c
+@@ -966,13 +966,13 @@ static inline int next_coords0(NindexIterator *Nindex_iter)
+ 		midx_p++;
+ 		coords0_p++;
+ 	}
+-	printf("coords0: ");
++	//printf("coords0: ");
+ 	coords0_p = Nindex_iter->coords0_buf;
+ 	for (along = Nindex_iter->margin; along < Nindex_iter->ndim; along++) {
+-		printf(" %3d", *coords0_p);
++		//printf(" %3d", *coords0_p);
+ 		coords0_p++;
+ 	}
+-	printf("\n");
++	//printf("\n");
+ 	return 1;
+ }
+ 
+diff --git a/src/SparseVec.h b/src/SparseVec.h
+index 894709b..73cd841 100644
+--- a/src/SparseVec.h
++++ b/src/SparseVec.h
+@@ -5,6 +5,7 @@
+ 
+ #include "Rvector_utils.h"
+ 
++#include <R_ext/Altrep.h>  /* only for DATAPTR_RW() */
+ #include <limits.h>  /* for INT_MAX */
+ 
+ 
+@@ -122,7 +123,7 @@ static inline SparseVec toSparseVec(SEXP nzvals, SEXP nzoffs,
+ 		if (IS_STRSXP_OR_VECSXP(Rtype)) {
+ 			sv.nzvals = nzvals;
+ 		} else {
+-			sv.nzvals = DATAPTR(nzvals);
++			sv.nzvals = DATAPTR_RW(nzvals);
+ 		}
+ 	}
+ 	sv.nzoffs = INTEGER(nzoffs);
+diff --git a/src/leaf_utils.c b/src/leaf_utils.c
+index e8066c3..c5ff3aa 100644
+--- a/src/leaf_utils.c
++++ b/src/leaf_utils.c
+@@ -10,6 +10,7 @@
+ #include "SparseVec_subsetting.h"
+ #include "SparseVec_subassignment.h"
+ 
++#include <R_ext/Altrep.h>  /* only for DATAPTR_RW() */
+ #include <string.h>  /* for memcpy() */
+ 
+ 
+@@ -129,7 +130,7 @@ SEXP _make_leaf_from_two_arrays(SEXPTYPE Rtype,
+ 			return ans;
+ 		}
+ 		ans_nzvals = PROTECT(allocVector(Rtype, nzcount));
+-		memcpy(DATAPTR(ans_nzvals), nzvals_p, Rtype_size * nzcount);
++		memcpy(DATAPTR_RW(ans_nzvals), nzvals_p, Rtype_size * nzcount);
+ 	}
+ 	SEXP ans = zip_leaf(ans_nzvals, ans_nzoffs, 0);
+ 	UNPROTECT(2);
+@@ -156,7 +157,7 @@ static SEXP make_leaf_from_Rvector_subset(SEXP Rvector,
+ 
+ 	if (avoid_copy_if_all_selected &&
+ 	    selection_offset == 0 && selection_len == XLENGTH(Rvector) &&
+-	    ATTRIB(Rvector) == R_NilValue)
++	    !ANY_ATTRIB(Rvector))
+ 	{
+ 		/* The full 'Rvector' is selected so can be reused as-is
+ 		   with no need to copy the selected elements to a new SEXP. */
+diff --git a/src/test.c b/src/test.c
+index 493538f..2205fa2 100644
+--- a/src/test.c
++++ b/src/test.c
+@@ -111,6 +111,9 @@ SEXP C_simple_omp_parallel_for_loop(SEXP nloop)
+ 	for (int i = 0; i < INTEGER(nloop)[0]; i++) {
+ #ifdef _OPENMP
+ 		int thread_num = omp_get_thread_num();
++		/* Can't use Rprintf() here because it's not thread-safe (it
++		   can trigger R's garbage collector which itself is not
++		   thread-safe). */
+ 		printf("thread_num = %d\n", thread_num);
+ #endif
+ 	}
+diff --git a/src/readSparseCSV.c b/src/readSparseCSV.c
+index a3d8da0..de1cb95 100644
+--- a/src/readSparseCSV.c
++++ b/src/readSparseCSV.c
+@@ -11,6 +11,7 @@
+ #include "ExtendableJaggedArray.h"
+ 
+ #include <R_ext/Connections.h>
++#include <Rversion.h>
+ 
+ #include <string.h>  /* for memcpy() */
+ 
+@@ -111,7 +112,11 @@ static SEXP dump_env_as_list_or_R_NilValue(SEXP env, int ans_len)
+ 	is_empty = 1;
+ 	for (i = 0; i < ans_len; i++) {
+ 		key = PROTECT(idx0_to_key(i));
++#if R_VERSION < R_Version(4, 6, 0)
+ 		ans_elt = findVar(install(translateChar(key)), env);
++#else
++		ans_elt = R_getVar(install(translateChar(key)), env, FALSE);
++#endif
+ 		UNPROTECT(1);
+ 		if (ans_elt == R_UnboundValue)
+ 			continue;

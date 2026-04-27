@@ -26344,7 +26344,9 @@ variable and significantly correlated genes.")
        (method url-fetch)
        (uri (bioconductor-uri "SparseArray" version))
        (sha256
-        (base32 "19c1dfa5wizq7k53a43i5dwwaqs44prclxbf1k0i3awx5wz6qlbw"))))
+        (base32 "19c1dfa5wizq7k53a43i5dwwaqs44prclxbf1k0i3awx5wz6qlbw"))
+       (patches
+        (search-patches "r-sparsearray-r-4.6.0-compat.patch"))))
     (properties `((upstream-name . "SparseArray")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
@@ -26360,22 +26362,22 @@ variable and significantly correlated genes.")
      (list
       #:phases
       '(modify-phases %standard-phases
-        (add-after 'unpack 'relax-floating-point-tests
-          ;; Test files that are modified below contain the following
-          ;; comment:
-          ;; "Looks like using expect_identical() is too strict for some
-          ;; operations on some systems"
-          ;; then modify the tests to expect_equal for specific functions
-          ;; on speficic systems. This looks as if we are in the presence
-          ;; of floating point discrepancies, which are poorly suited for
-          ;; a strict test suite rejecting builds. Since the tests also
-          ;; fail in Guix on x86_64 with gcc@14, let us use expect_equal
-          ;; everywhere.
-          (lambda _
-            (substitute*
-              '("tests/testthat/test-NaArray-Math-methods.R"
-                "tests/testthat/test-SparseArray-Math-methods.R")
-              (("expect_identical\\(as") "expect_equal(as")))))))
+         (add-after 'unpack 'relax-floating-point-tests
+           ;; Test files that are modified below contain the following
+           ;; comment:
+           ;; "Looks like using expect_identical() is too strict for some
+           ;; operations on some systems"
+           ;; then modify the tests to expect_equal for specific functions
+           ;; on speficic systems. This looks as if we are in the presence
+           ;; of floating point discrepancies, which are poorly suited for
+           ;; a strict test suite rejecting builds. Since the tests also
+           ;; fail in Guix on x86_64 with gcc@14, let us use expect_equal
+           ;; everywhere.
+           (lambda _
+             (substitute*
+                 '("tests/testthat/test-NaArray-Math-methods.R"
+                   "tests/testthat/test-SparseArray-Math-methods.R")
+               (("expect_identical\\(as") "expect_equal(as")))))))
     (home-page "https://bioconductor.org/packages/SparseArray")
     (synopsis
      "Efficient in-memory representation of multidimensional sparse arrays")

@@ -2354,6 +2354,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/r-snpstats-0001-fixed-non-API-except-for-IS_S4_OBJECT.patch \
   %D%/packages/patches/r-snpstats-0002-fixed-IS_S4_OBJECT.patch \
   %D%/packages/patches/r-sapa-lapack.patch			\
+  %D%/packages/patches/r-sparsearray-r-4.6.0-compat.patch	\
   %D%/packages/patches/ripperx-missing-file.patch		\
   %D%/packages/patches/rpcbind-CVE-2017-8779.patch		\
   %D%/packages/patches/rtosc-0.3.1-fix-invalid-comparison-operator.patch	\
