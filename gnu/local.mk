@@ -2349,6 +2349,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/renpy-fix-integer-slots.patch			\
   %D%/packages/patches/reposurgeon-add-missing-docbook-files.patch	\
   %D%/packages/patches/rdkit-unbundle-external-dependencies.patch	\
+  %D%/packages/patches/r-biostrings-r4.6.0-compat.patch		\
   %D%/packages/patches/r-httpuv-1.6.6-unvendor-libuv.patch	\
   %D%/packages/patches/r-sapa-lapack.patch			\
   %D%/packages/patches/ripperx-missing-file.patch		\

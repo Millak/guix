@@ -1,0 +1,513 @@
+This patch shas been backported from the development version or Biostrings.
+
+From 100602242840322b5f6c267faaf8198c1a5aa2af Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Herv=C3=A9=20Pag=C3=A8s?= <hpages.on.github@gmail.com>
+Date: Thu, 5 Mar 2026 22:36:30 -0800
+Subject: [PATCH] Biostrings 2.79.5: Get rid of never-used SparseMIndex and
+ SparseList classes
+
+This also eliminates the non-API calls to R.
+---
+ DESCRIPTION                 |   3 +-
+ NAMESPACE                   |   2 -
+ R/MIndex-class.R            |  79 -------------------------
+ R/SparseList-class.R        |  80 -------------------------
+ man/Biostrings-internals.Rd |   9 ---
+ src/Biostrings.h            |  41 -------------
+ src/MIndex_class.c          |  67 ---------------------
+ src/R_init_Biostrings.c     |   1 -
+ src/SparseList_utils.c      | 113 ------------------------------------
+ 9 files changed, 1 insertion(+), 394 deletions(-)
+ delete mode 100644 R/SparseList-class.R
+ delete mode 100644 src/SparseList_utils.c
+
+diff --git a/DESCRIPTION b/DESCRIPTION
+index a5d027cc..dbc323ea 100644
+--- a/DESCRIPTION
++++ b/DESCRIPTION
+@@ -76,3 +76,3 @@ Collate: utils.R IUPAC_CODE_MAP.R AMINO_ACID_CODE.R GENETIC_CODE.R
+         injectHardMask.R padAndClip.R strsplit-methods.R misc.R
+-        SparseList-class.R MIndex-class.R lowlevel-matching.R
++        MIndex-class.R lowlevel-matching.R
+         match-utils.R matchPattern.R maskMotif.R matchLRPatterns.R
+diff --git a/NAMESPACE b/NAMESPACE
+index ba1e3bfa..cf14db67 100644
+--- a/NAMESPACE
++++ b/NAMESPACE
+@@ -206,7 +206,6 @@ exportMethods(
+ ### ==========================================================================
+ ### STRING MATCHING
+ ### --------------------------------------------------------------------------
+-###   SparseList-class.R
+ ###   MIndex-class.R
+ ###   lowlevel-matching.R
+ ###   match-utils.R
+@@ -220,7 +219,6 @@ exportMethods(
+ ###   matchPDict.R
+ 
+ exportClasses(
+-    #SparseList,
+     MIndex, ByPos_MIndex,
+     PreprocessedTB, Twobit, ACtree2,
+     PDict3Parts,
+diff --git a/R/MIndex-class.R b/R/MIndex-class.R
+index 022f6746..f50f215e 100644
+--- a/R/MIndex-class.R
++++ b/R/MIndex-class.R
+@@ -218,82 +218,3 @@ ByPos_MIndex.combine <- function(mi_list)
+     new("ByPos_MIndex", width0=ans_width0, NAMES=ans_names, ends=ans_ends)
+ }
+ 
+-
+-### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-### The "SparseMIndex" class (DISABLED FOR NOW).
+-### 
+-### Slot description:
+-###
+-###   ends_envir: a key-value list (environment) where the values are integer
+-###       vectors containing the ending positions of the pattern whose
+-###       position in the original dictionary is given by the key (the keys are
+-###       strings representing positive integers).
+-### 
+-
+-if (FALSE) {
+-
+-  setClass("SparseMIndex",
+-    contains="MIndex",
+-    representation(
+-        ends_envir="environment"
+-    )
+-  )
+-
+-  setMethod("show", "SparseMIndex",
+-    function(object)
+-    {
+-        cat("Sparse MIndex object of length ", length(object), "\n", sep="")
+-    }
+-  )
+-
+-  setMethod("[[", "SparseMIndex",
+-    function(x, i, j, ...)
+-    {
+-        i <- normalizeDoubleBracketSubscript(i, x)
+-        ans_end <- x@ends_envir[[formatC(i, width=10, format="d", flag="0")]]
+-        if (is.null(ans_end))
+-            ans_end <- integer(0)
+-        ans_width <- rep.int(x@width0[i], length(ans_end))
+-        ans_start <- ans_end - x@width0[i] + 1L
+-        new2("IRanges", start=ans_start, width=ans_width, check=FALSE)
+-    }
+-  )
+-
+-  ### An example of a SparseMIndex object of length 5 where only the
+-  ### 2nd pattern has matches:
+-  ###   > width0 <- c(9L, 10L, 8L, 4L, 10L)
+-  ###   > ends_envir <- new.env(hash=TRUE, parent=emptyenv())
+-  ###   > ends_envir[['0000000002']] <- c(199L, 402L)
+-  ###   > mindex <- new("SparseMIndex", width0=width0, NAMES=letters[1:5], ends_envir=ends_envir)
+-  ###   > mindex[[1]]
+-  ###   > mindex[[2]]
+-  ###   > mindex[[6]] # Error in mindex[[6]] : subscript out of bounds
+-  ###   > names(mindex)
+-  ###   > mindex[["a"]]
+-  ###   > mindex[["b"]]
+-  ###   > mindex[["aa"]] # Error in mindex[["aa"]] : pattern name ‘aa’ not found
+-  ###   > startIndex(mindex)
+-  ###   > endIndex(mindex)
+-  ###   > elementNROWS(mindex)
+-  ###
+-  setMethod("startIndex", "SparseMIndex",
+-    function(x)
+-    {
+-        all.names <- TRUE
+-        .Call2("SparseMIndex_endIndex",
+-              x@ends_envir, x@width0, x@NAMES, all.names,
+-              PACKAGE="Biostrings")
+-    }
+-  )
+-  setMethod("endIndex", "SparseMIndex",
+-    function(x)
+-    {
+-        all.names <- TRUE
+-        .Call2("SparseMIndex_endIndex",
+-              x@ends_envir, NULL, x@NAMES, all.names,
+-              PACKAGE="Biostrings")
+-    }
+-  )
+-
+-}
+-
+diff --git a/R/SparseList-class.R b/R/SparseList-class.R
+deleted file mode 100644
+index 8295fd0f..00000000
+--- a/R/SparseList-class.R
++++ /dev/null
+@@ -1,80 +0,0 @@
+-### =========================================================================
+-### SparseList objects
+-### -------------------------------------------------------------------------
+-###
+-
+-setClass("SparseList",
+-    representation(
+-        length="integer",
+-        env="environment"
+-    )
+-)
+-
+-### Typical use:
+-###   env <- new.env(hash=TRUE, parent=emptyenv())
+-###   key <- formatC(98L, width=10, format="d", flag="0")
+-###   value <- 3:-2
+-###   assign(key, value, envir=env)
+-###   x <- new("SparseList", length=100L, env=env)
+-###   length(x)
+-###   ls(x)
+-###   ls(x, all.names=TRUE)
+-###   as.list(x)
+-###   as.list(x, all.names=TRUE)
+-###   x[[1]]
+-###   x[[98]
+-###   x[[101]]]
+-###
+-
+-setMethod("length", "SparseList", function(x) x@length)
+-
+-### 'pos', 'envir' and 'pattern' args are ignored
+-setMethod("ls", signature(name="SparseList"),
+-    function(name, pos, envir, all.names=FALSE, pattern)
+-    {
+-        if (!all.names)
+-            return(ls(name@env, all.names=TRUE))
+-        seq_len(length(name))
+-    }
+-)
+-
+-setMethod("as.list", "SparseList",
+-    function(x, all.names=FALSE, ...)
+-    {
+-        if (!all.names)
+-            return(as.list(x@env, all.names=TRUE))
+-        ans <- vector(mode="list", length=length(x))
+-        symbols <- ls(x)
+-        for (symb in symbols)
+-            ans[[as.integer(symb)]] <- get(symb, envir=x@env)
+-        ans
+-    }
+-)
+-
+-### Supported 'i' types: character or numeric vector of length 1.
+-setMethod("[[", "SparseList",
+-    function(x, i, j, ...)
+-    {
+-        if (!missing(j) || length(list(...)) > 0)
+-            stop("invalid subsetting")
+-        if (missing(i))
+-            stop("subscript is missing")
+-        if (!is.character(i) && !is.numeric(i))
+-            stop("invalid subscript type")
+-        if (length(i) < 1L)
+-            stop("attempt to select less than one element")
+-        if (length(i) > 1L)
+-            stop("attempt to select more than one element")
+-        if (is.na(i))
+-            stop("subscript cannot be NA")
+-        if (is.character(i))
+-            return(get(i, envir=x@env))
+-        if (!is.integer(i))
+-            i <- as.integer(i)
+-        if (i < 1L || i > length(x))
+-            stop("subscript out of bounds")
+-        i <- formatC(i, width=10, format="d", flag="0")
+-        get(i, envir=x@env)
+-    }
+-)
+-
+diff --git a/man/Biostrings-internals.Rd b/man/Biostrings-internals.Rd
+index 791b0870..609b7694 100644
+--- a/man/Biostrings-internals.Rd
++++ b/man/Biostrings-internals.Rd
+@@ -26,15 +26,6 @@
+ \alias{make_XStringSet_from_strings}
+ \alias{make_XStringSet_from_strings,XStringSet-method}
+ 
+-% SparseList class and methods:
+-\alias{class:SparseList}
+-\alias{SparseList-class}
+-\alias{SparseList}
+-
+-\alias{length,SparseList-method}
+-%\alias{ls,SparseList-method}
+-\alias{as.list,SparseList-method}
+-\alias{[[,SparseList-method}
+ 
+ \title{Biostrings internals}
+ 
+diff --git a/src/Biostrings.h b/src/Biostrings.h
+index 6e725bd5..e86d0ff2 100644
+--- a/src/Biostrings.h
++++ b/src/Biostrings.h
+@@ -446,40 +446,6 @@ SEXP XStringSetList_unstrsplit(
+ );
+ 
+ 
+-/* SparseList_utils.c */
+-
+-SEXP _SparseList_int2symb(int symb_as_int);
+-
+-int _SparseList_symb2int(SEXP symbol);
+-
+-SEXP _get_val_from_env(
+-	SEXP symbol,
+-	SEXP env,
+-	int error_on_unbound_value
+-);
+-
+-SEXP _get_val_from_SparseList(
+-	int symb_as_int,
+-	SEXP env,
+-	int error_on_unbound_value
+-);
+-
+-int _get_int_from_SparseList(
+-	int symb_as_int,
+-	SEXP env
+-);
+-
+-void _set_env_from_IntAE(
+-	SEXP env,
+-	const IntAE *int_ae
+-);
+-
+-void _set_env_from_IntAEAE(
+-	SEXP env,
+-	const IntAEAE *int_aeae
+-);
+-
+-
+ /* match_reporting.c */
+ 
+ int _get_match_storing_code(const char *ms_mode);
+@@ -558,13 +524,6 @@ SEXP ByPos_MIndex_endIndex(
+ 	SEXP x_width0
+ );
+ 
+-SEXP SparseMIndex_endIndex(
+-	SEXP x_ends_envir,
+-	SEXP x_width0,
+-	SEXP x_names,
+-	SEXP all_names
+-);
+-
+ SEXP ByPos_MIndex_combine(SEXP ends_listlist);
+ 
+ 
+diff --git a/src/MIndex_class.c b/src/MIndex_class.c
+index 00212fe9..dd6ad546 100644
+--- a/src/MIndex_class.c
++++ b/src/MIndex_class.c
+@@ -157,73 +157,6 @@ SEXP ByPos_MIndex_endIndex(SEXP x_high2low, SEXP x_ends, SEXP x_width0)
+ 	return ans;
+ }
+ 
+-/*
+- * --- .Call ENTRY POINT ---
+- * All the keys in 'x_ends_envir' must be representing integers left-padded with 0s
+- * so they have the same length. This works properly:
+-     library(Biostrings)
+-     ends_envir <- new.env(parent=emptyenv())
+-     ends_envir[['0000000010']] <- -2:1
+-     ends_envir[['0000000004']] <- 9:6
+-     .Call("SparseMIndex_endIndex",
+-           ends_envir, NULL, letters[1:10], TRUE,
+-           PACKAGE="Biostrings")
+-     .Call("SparseMIndex_endIndex",
+-           ends_envir, NULL, letters[1:10], FALSE,
+-           PACKAGE="Biostrings")
+- * but this doesn't:
+-     ends_envir[['3']] <- 33L
+-     .Call("SparseMIndex_endIndex",
+-           ends_envir, NULL, letters[1:10], FALSE,
+-           PACKAGE="Biostrings")
+- */
+-SEXP SparseMIndex_endIndex(SEXP x_ends_envir, SEXP x_width0, SEXP x_names, SEXP all_names)
+-{
+-	SEXP ans, ans_elt, ans_names, symbols, end;
+-	int nelt, i, j;
+-	IntAE *poffsets, *poffsets_order;
+-
+-	PROTECT(symbols = R_lsInternal(x_ends_envir, 1));
+-	poffsets = new_IntAE_from_CHARACTER(symbols, -1);
+-	nelt = IntAE_get_nelt(poffsets);
+-	if (LOGICAL(all_names)[0]) {
+-		PROTECT(ans = NEW_LIST(LENGTH(x_names)));
+-		for (i = 0; i < nelt; i++) {
+-			j = poffsets->elts[i];
+-			end = _get_val_from_env(STRING_ELT(symbols, i), x_ends_envir, 1);
+-			PROTECT(ans_elt = duplicate(end));
+-			if (x_width0 != R_NilValue)
+-				add_val_to_INTEGER(ans_elt, 1 - INTEGER(x_width0)[j]);
+-			SET_ELEMENT(ans, j, ans_elt);
+-			UNPROTECT(1);
+-		}
+-		SET_NAMES(ans, duplicate(x_names));
+-		UNPROTECT(1);
+-	} else {
+-		//poffsets_order = new_IntAE(nelt, 0, 0);
+-		//get_order_of_int_array(poffsets->elts, nelt, 0, 0,
+-		//		       poffsets_order->elts, 0);
+-		//IntAE_set_nelt(poffsets_order) = nelt; /* = poffsets_order->_buflength */
+-		PROTECT(ans = NEW_LIST(nelt));
+-		PROTECT(ans_names = NEW_CHARACTER(nelt));
+-		for (i = 0; i < nelt; i++) {
+-			//j = poffsets_order->elts[i];
+-			j = i;
+-			end = _get_val_from_env(STRING_ELT(symbols, j), x_ends_envir, 1);
+-			PROTECT(ans_elt = duplicate(end));
+-			if (x_width0 != R_NilValue)
+-				add_val_to_INTEGER(ans_elt, 1 - INTEGER(x_width0)[i]);
+-			SET_ELEMENT(ans, i, ans_elt);
+-			UNPROTECT(1);
+-			SET_STRING_ELT(ans_names, i, duplicate(STRING_ELT(x_names, poffsets->elts[j])));
+-		}
+-		SET_NAMES(ans, ans_names);
+-		UNPROTECT(2);
+-	}
+-	UNPROTECT(1);
+-	return ans;
+-}
+-
+ /*
+  * --- .Call ENTRY POINT ---
+  */
+diff --git a/src/R_init_Biostrings.c b/src/R_init_Biostrings.c
+index 4d2943f8..c1410dbd 100644
+--- a/src/R_init_Biostrings.c
++++ b/src/R_init_Biostrings.c
+@@ -88,7 +88,6 @@ static const R_CallMethodDef callMethods[] = {
+ 
+ /* MIndex_class.c */
+ 	CALLMETHOD_DEF(ByPos_MIndex_endIndex, 3),
+-	CALLMETHOD_DEF(SparseMIndex_endIndex, 4),
+ 	CALLMETHOD_DEF(ByPos_MIndex_combine, 1),
+ 
+ /* lowlevel_matching.c */
+diff --git a/src/SparseList_utils.c b/src/SparseList_utils.c
+deleted file mode 100644
+index 18597b55..00000000
+--- a/src/SparseList_utils.c
++++ /dev/null
+@@ -1,113 +0,0 @@
+-/****************************************************************************
+- *                        Fast SparseList utilities                         *
+- *                            Author: H. Pag\`es                            *
+- ****************************************************************************/
+-#include "Biostrings.h"
+-#include "S4Vectors_interface.h"
+-
+-
+-SEXP _SparseList_int2symb(int symb_as_int)
+-{
+-	char symbbuf[11];
+-
+-	snprintf(symbbuf, sizeof(symbbuf), "%010d", symb_as_int);
+-	return mkChar(symbbuf); /* UNPROTECTED! */
+-}
+-
+-int _SparseList_symb2int(SEXP symbol)
+-{
+-	int symb_as_int;
+-
+-	sscanf(CHAR(symbol), "%d", &symb_as_int);
+-	return symb_as_int;
+-}
+-
+-/* 'symbol' must be a CHARSXP */
+-SEXP _get_val_from_env(SEXP symbol, SEXP env, int error_on_unbound_value)
+-{
+-	SEXP ans;
+-
+-	/* The following code was inspired by R's do_get() code.
+-	 * Note that do_get() doesn't use PROTECT at all and so do we...
+-	 */
+-	ans = findVar(install(translateChar(symbol)), env);
+-	if (ans == R_UnboundValue) {
+-		if (error_on_unbound_value)
+-			error("Biostrings internal error in _get_val_from_env(): "
+-			      "unbound value");
+-		return R_UnboundValue;
+-	}
+-	if (TYPEOF(ans) == PROMSXP)
+-		ans = eval(ans, env);
+-	if (ans != R_NilValue && NAMED(ans) == 0)
+-		SET_NAMED(ans, 1);
+-	return ans;
+-}
+-
+-SEXP _get_val_from_SparseList(int symb_as_int, SEXP env, int error_on_unbound_value)
+-{
+-	SEXP symbol, ans;
+-
+-	PROTECT(symbol = _SparseList_int2symb(symb_as_int));
+-	ans = _get_val_from_env(symbol, env, error_on_unbound_value);
+-	UNPROTECT(1);
+-	return ans;
+-}
+-
+-int _get_int_from_SparseList(int symb_as_int, SEXP env)
+-{
+-	SEXP value;
+-	int val;
+-
+-	value = _get_val_from_SparseList(symb_as_int, env, 0);
+-	if (value == R_UnboundValue)
+-		return NA_INTEGER;
+-	if (LENGTH(value) != 1)
+-		error("Biostrings internal error in _get_int_from_SparseList(): "
+-		      "value is not a single integer");
+-	val = INTEGER(value)[0];
+-	if (val == NA_INTEGER)
+-		error("Biostrings internal error in _get_int_from_SparseList(): "
+-		      "value is NA");
+-	return val;
+-}
+-
+-void _set_env_from_IntAE(SEXP env, const IntAE *int_ae)
+-{
+-	int nelt, symb_as_int, elt;
+-	SEXP symbol, value;
+-
+-	nelt = IntAE_get_nelt(int_ae);
+-	for (symb_as_int = 1; symb_as_int <= nelt; symb_as_int++)
+-	{
+-		elt = int_ae->elts[symb_as_int - 1];
+-		if (elt == NA_INTEGER)
+-			continue;
+-		PROTECT(symbol = _SparseList_int2symb(symb_as_int));
+-		PROTECT(value = ScalarInteger(elt));
+-		defineVar(install(translateChar(symbol)), value, env);
+-		UNPROTECT(2);
+-	}
+-	return;
+-}
+-
+-void _set_env_from_IntAEAE(SEXP env, const IntAEAE *int_aeae)
+-{
+-	int nelt, symb_as_int;
+-	IntAE *ae;
+-	SEXP symbol, value;
+-
+-	nelt = IntAEAE_get_nelt(int_aeae);
+-	for (symb_as_int = 1; symb_as_int <= nelt; symb_as_int++)
+-	{
+-		ae = int_aeae->elts[symb_as_int - 1];
+-		if (IntAE_get_nelt(ae) == 0)
+-			continue;
+-		PROTECT(symbol = _SparseList_int2symb(symb_as_int));
+-		PROTECT(value = new_INTEGER_from_IntAE(ae));
+-		defineVar(install(translateChar(symbol)), value, env);
+-		UNPROTECT(2);
+-	}
+-	return;
+-}
+-

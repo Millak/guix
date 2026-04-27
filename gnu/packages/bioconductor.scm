@@ -8779,7 +8779,9 @@ objects.")
               (uri (bioconductor-uri "Biostrings" version))
               (sha256
                (base32
-                "11fn7wiw3simgkgk2hka7aiac7n5hnzhjpjfl0ybx8820a76daxk"))))
+                "11fn7wiw3simgkgk2hka7aiac7n5hnzhjpjfl0ybx8820a76daxk"))
+              (patches
+               (search-patches "r-biostrings-r4.6.0-compat.patch"))))
     (properties
      `((upstream-name . "Biostrings")))
     (build-system r-build-system)
