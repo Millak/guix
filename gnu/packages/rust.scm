@@ -1767,8 +1767,8 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
 (define-public rust-1.93
   (let ((base-rust
          (rust-bootstrapped-package
-          rust-1.92 "1.93.0"
-          "01d7a1mvyvqmq9khyw5cbnwyngzgb4pxpdwhqgzl669j7kc2n4b9")))
+          rust-1.92 "1.93.1"
+          "07z02gq7x54sdbisbzcigk95h01qz0ckg52hz77g7jfrnd20l8sc")))
     (package
       (inherit base-rust)
       (source
