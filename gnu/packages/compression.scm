@@ -2375,7 +2375,9 @@ non-Windows systems without running the actual installer using wine.")
      (sha256
       (base32 "17k679glx05v23n8kxbg9vmbf89i2252g5xj6w3dkz19asmh1zd6"))))
    (build-system gnu-build-system)
-   (native-inputs (list autoconf automake libtool nasm))
+   (native-inputs
+    (cons* autoconf automake libtool
+           (maybe-nasm)))
    (home-page "https://github.com/intel/isa-l")
    (synopsis "Intelligent storage acceleration library")
    (description "ISA-L is a collection of optimized low-level functions
