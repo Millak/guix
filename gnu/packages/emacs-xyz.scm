@@ -42628,6 +42628,32 @@ will scroll the corresponding edit buffer.  Additionally, you can overlay
 information from the tags gathered by CEDET's semantic analyzer.)")
     (license license:gpl3+)))
 
+(define-public emacs-eshell-pure-prompt
+  (package
+    (name "emacs-eshell-pure-prompt")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/coopi/emacs-eshell-pure-prompt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11mcyyra19lhk09k50fpqwqs50rl0mxmwzv11bjrpl2bd7m2bmf2"))))
+    (build-system emacs-build-system)
+    (home-page "https://codeberg.org/coopi/emacs-eshell-pure-prompt")
+    (synopsis "Port of the Pure Zsh prompt for Eshell")
+    (description
+     "This package provides an Eshell prompt modeled after
+@uref{https://github.com/sindresorhus/pure, Sindre Sorhus' Pure Zsh prompt}.
+It displays the current working directory, Git branch and status (dirty,
+ahead/behind, stash), the active Python or Conda virtual environment, and the
+elapsed time of long-running commands.  The prompt symbol changes color on
+command failure and a @code{user@@host} prefix appears on remote TRAMP
+connections.")
+    (license license:agpl3+)))
+
 (define-public emacs-eshell-prompt-extras
   (package
     (name "emacs-eshell-prompt-extras")
