@@ -1223,6 +1223,9 @@ for multiple backends.")
        (sha256
         (base32 "0hr1176sy8xrx6wkqadmvwdjm1sv7aq8ddrw8h3ha6sn74glx8ws"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command
+                     #~(list "ert-runner" "tests")))
+    (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/xenodium/acp.el")
     (synopsis "@acronym{ACP, Agent Client Protocol} for Emacs")
     (description
