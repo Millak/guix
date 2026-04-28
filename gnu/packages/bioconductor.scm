@@ -9132,13 +9132,13 @@ self-defined annotation graphics.")
 (define-public r-conos
   (package
     (name "r-conos")
-    (version "1.5.3")
+    (version "1.5.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "conos" version))
        (sha256
-        (base32 "02rhmvdmsrcnmqwza68wy7zzazvg3d49j7wpgck3l3fdh9g2l4w7"))))
+        (base32 "16b9fi64m75xrf8bgn6yh8dj4x1d8114kh1b8wlnfdz52hdqy0dk"))))
     (properties `((upstream-name . "conos")))
     (build-system r-build-system)
     (propagated-inputs
@@ -9156,6 +9156,7 @@ self-defined annotation graphics.")
            r-magrittr
            r-matrix
            r-n2r
+           r-pagoda2
            r-r6
            r-rcpp
            r-rcpparmadillo
@@ -9165,7 +9166,7 @@ self-defined annotation graphics.")
            r-rlang
            r-rtsne
            r-sccore))
-    (native-inputs (list r-pagoda2 r-testthat))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/kharchenkolab/conos")
     (synopsis "Clustering on network of samples")
     (description
