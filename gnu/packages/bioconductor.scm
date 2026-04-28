@@ -12731,6 +12731,33 @@ batch correction and normalization.")
 proteomics packages.")
     (license license:artistic2.0)))
 
+(define-public r-ptmods
+  (package
+    (name "r-ptmods")
+    (version "0.99.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "PTMods" version))
+       (sha256
+        (base32 "0fli3mmxhzjnx8n2rj5vn4i2z96chq136rzdv3s9993k6dkq2z14"))))
+    (properties `((upstream-name . "PTMods")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:skipped-tests
+      ;; This file contains code that attempts to connect to http://www.unimod.org.
+      '("test_datasets.R"
+        ;; These tests fail with this error: object 'aminoacids' not found
+        ("test_mass.R" ".aamass" ".mass"))))
+    (native-inputs (list r-biostrings r-knitr r-testthat r-xml2))
+    (home-page "https://github.com/RforMassSpectrometry/PTMods")
+    (synopsis "Managing post-translational modifications in R")
+    (description
+     "This package provides an interface to the community supported database
+for amino acid/protein modifications using mass spectrometry.")
+    (license license:gpl3)))
+
 (define-public r-pwalign
   (package
     (name "r-pwalign")
