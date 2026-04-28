@@ -1128,8 +1128,8 @@ transaction log.
      (inherit jfsutils)
      (name "jfsutils-static")
      (inputs
-      `(("util-linux:static" ,util-linux "static")
-        ,@(package-inputs jfsutils))))))
+      (modify-inputs inputs
+        (prepend (list util-linux "static")))))))
 
 (define-public jfs_fsck/static
   (package
