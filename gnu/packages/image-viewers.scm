@@ -38,6 +38,7 @@
 ;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2025 Igorj Gorjaĉev <igor@goryachev.org>
+;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -924,15 +925,15 @@ with tiling window managers.  Features include:
            ;; That is required for testing.
            xorg-server-for-tests))
     (inputs
-     `(("imlib2" ,imlib2)
-       ("glib" ,glib)
-       ("gtk+" ,gtk+-2)
-       ("lcms" ,lcms)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libtiff" ,libtiff)
-       ("libexif" ,libexif)
-       ("libx11" ,libx11)
-       ("libxext" ,libxext)))
+     (list imlib2
+           glib
+           gtk+-2
+           lcms
+           libjpeg-turbo
+           libtiff
+           libexif
+           libx11
+           libxext))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
