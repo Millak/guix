@@ -2132,13 +2132,13 @@ Farebrother's algorithm or Liu et al.'s algorithm.")
 (define-public r-consort
   (package
     (name "r-consort")
-    (version "1.2.2")
+    (version "1.2.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "consort" version))
               (sha256
                (base32
-                "12gr1diyy2azy1fbh8z129lkm0ahwvm98j5hqxv93yp089a02l8c"))))
+                "08lsggygp06m9mwvggirx1c7f2lavryhyg5ck39qyxffs3p06628"))))
     (properties `((upstream-name . "consort")))
     (build-system r-build-system)
     (native-inputs (list r-knitr r-testthat))
