@@ -760,6 +760,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/services/authentication.scm		\
   %D%/services/file-sharing.scm			\
   %D%/services/firmware.scm			\
+  %D%/services/forgejo.scm			\
   %D%/services/games.scm			\
   %D%/services/ganeti.scm			\
   %D%/services/getmail.scm				\
@@ -874,6 +875,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/emacs.scm				\
   %D%/tests/file-sharing.scm			\
   %D%/tests/foreign.scm				\
+  %D%/tests/forgejo.scm				\
   %D%/tests/ganeti.scm				\
   %D%/tests/gdm.scm				\
   %D%/tests/guix.scm				\
