@@ -1159,10 +1159,10 @@ Executables included are:
       (native-inputs
        (append
          (list acpica
-               nasm
                perl
                python-3
                (list util-linux "lib"))
+         (maybe-nasm (string-append arch "-" arch))
          (if (not (string-prefix? arch (%current-system)))
              (if (string=? arch "armhf")
                  (list (cross-gcc "arm-linux-gnueabihf")
