@@ -108,6 +108,10 @@
             guix-data-service-host
             guix-data-service-getmail-idle-mailboxes
             guix-data-service-commits-getmail-retriever-configuration
+            guix-data-service-extra-options
+            guix-data-service-extra-process-jobs-options
+            guix-data-service-extra-environment-variables
+            guix-data-service-extra-process-jobs-environment-variables
             guix-data-service-configuration-git-repositories
             guix-data-service-configuration-build-servers
 
@@ -587,6 +591,12 @@
   (extra-process-jobs-options
    guix-data-service-extra-process-jobs-options
    (default '()))
+  (extra-environment-variables
+   guix-data-service-extra-environment-variables
+   (default '()))
+  (extra-process-jobs-environment-variables
+   guix-data-service-extra-process-jobs-environment-variables
+   (default '()))
   (git-repositories guix-data-service-configuration-git-repositories
                     (default #f))
   (build-servers    guix-data-service-configuration-build-servers
@@ -601,6 +611,8 @@ ca-certificates.crt file in the system profile."
 (define (guix-data-service-shepherd-services config)
   (match-record config <guix-data-service-configuration>
     (package user group port host extra-options extra-process-jobs-options
+             extra-environment-variables
+             extra-process-jobs-environment-variables
              git-repositories build-servers)
     (list
      (shepherd-service
@@ -626,7 +638,8 @@ ca-certificates.crt file in the system profile."
                 `(,(string-append
                     "GUIX_LOCPATH="
                     #$(libc-utf8-locales-for-target) "/lib/locale")
-                  "LC_ALL=en_US.UTF-8")
+                  "LC_ALL=en_US.UTF-8"
+                  #$@extra-environment-variables)
                 #:log-file "/var/log/guix-data-service/web.log"))
       (stop #~(make-kill-destructor)))
 
@@ -678,7 +691,8 @@ ca-certificates.crt file in the system profile."
           `(,(string-append
               "GUIX_LOCPATH="
               #$(libc-utf8-locales-for-target) "/lib/locale")
-            "LC_ALL=en_US.utf8")
+            "LC_ALL=en_US.utf8"
+            #$@extra-environment-variables)
           #:log-file "/var/log/guix-data-service/setup-database.log"))
       (auto-start? #t))
 
@@ -700,7 +714,8 @@ ca-certificates.crt file in the system profile."
                   ,(string-append
                     "GUIX_LOCPATH="
                     #$(libc-utf8-locales-for-target) "/lib/locale")
-                  "LC_ALL=en_US.UTF-8")
+                  "LC_ALL=en_US.UTF-8"
+                  #$@extra-process-jobs-environment-variables)
                 #:log-file "/var/log/guix-data-service/process-jobs.log"))
       (stop #~(make-kill-destructor))))))
 
