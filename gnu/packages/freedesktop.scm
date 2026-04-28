@@ -43,6 +43,7 @@
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 wvlab <me@wvlab.xyz>
 ;;; Copyright © 2025 jgart <jgart@dismail.de>
+;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3053,10 +3054,10 @@ useful with system integration.")
          "0zs4z7l9b57jldwz0ban77f3c2zq43ambd0dssf5qg9i216f9lmj"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("dbus-test-runner" ,dbus-test-runner)
-       ("glib:bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)
-       ("xvfb" ,xorg-server-for-tests)))
+     (list dbus-test-runner
+           (list glib "bin")
+           pkg-config
+           xorg-server-for-tests))
     (inputs
      (list gtk+ glib))
     (arguments
