@@ -2164,7 +2164,9 @@ as RetroArch.")
               (lambda _
                 (install-file "mupen64plus_next_libretro.so"
                               (string-append #$output "/lib/libretro/")))))))
-      (native-inputs (list nasm pkg-config))
+      (native-inputs
+       (cons* pkg-config
+              (maybe-nasm)))
       (inputs (list mesa libpng minizip unzip xxhash zlib))
       (home-page "https://github.com/libretro/mupen64plus-libretro-nx")
       (synopsis "Improved Mupen64Plus libretro core")
