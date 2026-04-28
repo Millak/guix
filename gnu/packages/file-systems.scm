@@ -20,6 +20,7 @@
 ;;; Copyright © 2025 45mg <45mg.writes@gmail.com>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1138,28 +1139,23 @@ transaction log.
     (source #f)
     (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils)
-                      (ice-9 ftw)
-                      (srfi srfi-26))
-         (let* ((jfsutils (assoc-ref %build-inputs "jfsutils"))
-                (fsck     "jfs_fsck")
-                (out      (assoc-ref %outputs "out"))
-                (sbin     (string-append out "/sbin")))
-           (mkdir-p sbin)
-           (with-directory-excursion sbin
-             (install-file (string-append jfsutils "/sbin/" fsck)
-                           ".")
-             (remove-store-references fsck)
-             (chmod fsck #o555))
-           #t))))
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let* ((sbin (string-append #$output "/sbin"))
+                 (fsck (string-append sbin "/jfs_fsck")))
+            (install-file (search-input-file %build-inputs "sbin/jfs_fsck")
+                          sbin)
+            (remove-store-references fsck)
+            (chmod fsck #o555)))))
     (inputs
-     `(("jfsutils" ,jfsutils/static)))
+     (list jfsutils/static))
     (home-page (package-home-page jfsutils))
     (synopsis "Statically-linked jfs_fsck command from jfsutils")
-    (description "This package provides statically-linked jfs_fsck command taken
+    (description
+     "This package provides statically-linked jfs_fsck command taken
 from the jfsutils package.  It is meant to be used in initrds.")
     (license (package-license jfsutils))))
 
