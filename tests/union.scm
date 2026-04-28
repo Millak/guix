@@ -90,14 +90,12 @@
                1))
 
 (test-assert "union-build"
-  (let* ((inputs  (map (match-lambda
-                        ((name package)
-                         `(,name ,(package-derivation %store package))))
-
+  (let* ((inputs  (map (lambda (package)
+                         (list (package-name package)
+                               (package-derivation %store package)))
                        ;; Purposefully leave duplicate entries.
-                       (filter (compose package? cadr)
-                               (append %bootstrap-inputs-for-tests
-                                       (take %bootstrap-inputs-for-tests 3)))))
+                       (append %bootstrap-inputs-for-tests
+                               (take %bootstrap-inputs-for-tests 3))))
          (builder `(begin
                      (use-modules (guix build union))
                      (union-build (assoc-ref %outputs "out")

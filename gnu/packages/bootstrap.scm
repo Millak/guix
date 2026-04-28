@@ -1010,10 +1010,9 @@ exec ~a/bin/~a -B~a/lib \
   ;; These are bootstrap inputs that are cheap to produce (no compilation
   ;; needed) and that are meant to be used for testing.  (These are those we
   ;; used before the Mes-based full-source bootstrap.)
-  `(("libc" ,%bootstrap-glibc)
-    ("gcc" ,%bootstrap-gcc)
-    ("binutils" ,%bootstrap-binutils)
-    ("coreutils&co" ,%bootstrap-coreutils&co)
-    ("bash" ,%bootstrap-coreutils&co)))
+  (list %bootstrap-glibc
+        %bootstrap-gcc
+        %bootstrap-binutils
+        %bootstrap-coreutils&co))
 
 ;;; bootstrap.scm ends here
