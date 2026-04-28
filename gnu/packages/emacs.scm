@@ -28,6 +28,7 @@
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright © 2025 John Kehayias <john@guixotic.coop>
+;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -869,7 +870,7 @@ Started in 2014 as a GSOC project, Guile-Emacs was resurrected in 2024.")
          "0vfw7z9i2s9np6nmx1d4dlsywm044rkaqarn7akffmb6bf1j6zv5"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)))
+     (list gettext-minimal))
     (arguments
      `(#:configure-flags
        (list (string-append "--with-charmaps="
