@@ -76,6 +76,9 @@
        (uri (string-append home-page "distributions/" "php-" version ".tar.xz"))
        (sha256
         (base32 "1wh27552f6vd20f1yy4l0jlvknfq0kn5hapmiq55f05xyj1c7glm"))
+       (patches
+        (search-patches "php-01-fix-expired-certificate.patch"
+                        "php-02-fix-sni-tests.patch"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "ext"
@@ -333,56 +336,7 @@
               (setenv "TEST_PHP_ARGS"
                       (format #f "-j~a" (if parallel-tests?
                                             (parallel-job-count)
-                                            1)))))
-          (add-after 'unpack 'regenerate-ssl-certs
-            (lambda _
-              ;; The X.509 certificates shipped with PHP have an expiration
-              ;; date, which causes tests to fail after that date.  Generate
-              ;; them to avoid the problem entirely.
-              (define (concat-files result . files)
-                (call-with-output-file result
-                  (lambda (out)
-                    (for-each
-                     (lambda (file)
-                       (put-string out
-                                   (call-with-input-file file
-                                     get-string-all))
-                       (newline out))
-                     files))))
-              (define* (gen-ssl-cert key cert #:optional ca-cert-key ca-cert)
-                (let ((csr (string-append cert ".csr")))
-                  (unless (file-exists? key)
-                    (invoke "openssl" "genrsa" "-out" key "2048"))
-                  (invoke "openssl" "x509" "-x509toreq" "-in" cert "-key" key "-out" csr)
-                  (if ca-cert-key
-                      (begin
-                        (invoke "openssl" "x509"
-                                "-CA" ca-cert
-                                "-CAkey" ca-cert-key
-                                "-req"
-                                "-in" csr
-                                "-days" "+1"
-                                "-CAserial" "serial"
-                                "-CAcreateserial"
-                                "-out" cert))
-                      (invoke "openssl" "x509"
-                              "-req"
-                              "-in" csr
-                              "-signkey" key
-                              "-out" cert
-                              "-days" "30"))))
-              (let ((ca-key "ext/openssl/tests/sni_server_ca.key")
-                    (ca-cert "ext/openssl/tests/sni_server_ca.pem"))
-                (gen-ssl-cert ca-key ca-cert)
-                (for-each
-                 (lambda (suffix)
-                   (let ((key-name (string-append "ext/openssl/tests/sni_server_" suffix "_key.pem"))
-                         (cert-name (string-append "ext/openssl/tests/sni_server_" suffix "_cert.pem"))
-                         (result (string-append "ext/openssl/tests/sni_server_" suffix ".pem")))
-                     (gen-ssl-cert key-name cert-name
-                                   ca-key ca-cert)
-                     (concat-files result key-name cert-name)))
-                 '("cs" "us" "uk"))))))
+                                            1))))))
       #:test-target "test"))
     (inputs
      (list aspell
@@ -451,6 +405,9 @@ systems, web content management systems and web frameworks.")
        (uri (string-append home-page "distributions/" "php-" version ".tar.xz"))
        (sha256
         (base32 "1xr1w82apzsscrsndnphlgqvbj78g0smrp06pcgg8hlsr3vwcm74"))
+       (patches
+        (search-patches "php-01-fix-expired-certificate.patch"
+                        "php-02-fix-sni-tests.patch"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "ext"

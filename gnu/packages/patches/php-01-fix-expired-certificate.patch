@@ -1,0 +1,773 @@
+From 0f38bfdef2d9e5ccbb266658b29bd576e36ed8a8 Mon Sep 17 00:00:00 2001
+From: Jakub Zelenka <bukka@php.net>
+Date: Fri, 3 Apr 2026 21:49:54 +0200
+Subject: [PATCH] Fix GH-21617: sni_server self signed certifcate expired
+
+It changes the SNI tests to use certificate generator like other TLS
+tests.
+
+Closes GH-21628
+
+Upstream-Status: Merged in master.
+---
+ ext/openssl/tests/gh9310.phpt                 | 59 +++++++++++------
+ .../openssl_x509_checkpurpose_basic.phpt      |  2 +-
+ .../openssl_x509_export_to_file_leak.phpt     |  2 +-
+ .../{sni_server_uk.pem => sni_server.pem}     |  0
+ ext/openssl/tests/sni_server.phpt             | 29 +++++++--
+ ext/openssl/tests/sni_server_ca.pem           | 63 -------------------
+ ext/openssl/tests/sni_server_cs.pem           | 57 -----------------
+ ext/openssl/tests/sni_server_cs_cert.pem      | 30 ---------
+ ext/openssl/tests/sni_server_cs_key.pem       | 27 --------
+ ext/openssl/tests/sni_server_key_cert.phpt    | 45 ++++++++++---
+ ext/openssl/tests/sni_server_uk_cert.pem      | 30 ---------
+ ext/openssl/tests/sni_server_uk_key.pem       | 27 --------
+ ext/openssl/tests/sni_server_us.pem           | 57 -----------------
+ ext/openssl/tests/sni_server_us_cert.pem      | 30 ---------
+ ext/openssl/tests/sni_server_us_key.pem       | 27 --------
+ 15 files changed, 106 insertions(+), 379 deletions(-)
+ rename ext/openssl/tests/{sni_server_uk.pem => sni_server.pem} (100%)
+ delete mode 100644 ext/openssl/tests/sni_server_ca.pem
+ delete mode 100644 ext/openssl/tests/sni_server_cs.pem
+ delete mode 100644 ext/openssl/tests/sni_server_cs_cert.pem
+ delete mode 100644 ext/openssl/tests/sni_server_cs_key.pem
+ delete mode 100644 ext/openssl/tests/sni_server_uk_cert.pem
+ delete mode 100644 ext/openssl/tests/sni_server_uk_key.pem
+ delete mode 100644 ext/openssl/tests/sni_server_us.pem
+ delete mode 100644 ext/openssl/tests/sni_server_us_cert.pem
+ delete mode 100644 ext/openssl/tests/sni_server_us_key.pem
+
+diff --git a/ext/openssl/tests/gh9310.phpt b/ext/openssl/tests/gh9310.phpt
+index 07a7d442cec..874ed4c781d 100644
+--- a/ext/openssl/tests/gh9310.phpt
++++ b/ext/openssl/tests/gh9310.phpt
+@@ -23,7 +23,21 @@
+ 
+ copy($certFile, $baseDirCertFile);
+ copy($pkFile, $baseDirPkFile);
+-copy(__DIR__ . '/sni_server_uk_cert.pem', $baseDir . '/sni_server_uk_cert.pem');
++
++$sniCaFile = __DIR__ . '/gh9310_sni_ca.pem.tmp';
++$sniCsFile = __DIR__ . '/gh9310_sni_cs.pem.tmp';
++$sniUkCertFile = __DIR__ . '/gh9310_sni_uk_cert.pem.tmp';
++$sniUkKeyFile = __DIR__ . '/gh9310_sni_uk_key.pem.tmp';
++$sniUsCertFile = __DIR__ . '/gh9310_sni_us_cert.pem.tmp';
++$sniUsKeyFile = __DIR__ . '/gh9310_sni_us_key.pem.tmp';
++$baseDirSniUkCertFile = $baseDir . '/sni_uk_cert.pem';
++
++$certificateGenerator->saveCaCert($sniCaFile);
++$certificateGenerator->saveNewCertAsFileWithKey('cs.php.net', $sniCsFile);
++$certificateGenerator->saveNewCertAndKey('uk.php.net', $sniUkCertFile, $sniUkKeyFile);
++$certificateGenerator->saveNewCertAndKey('us.php.net', $sniUsCertFile, $sniUsKeyFile);
++
++copy($sniUkCertFile, $baseDirSniUkCertFile);
+ 
+ 
+ $serverCodeTemplate = <<<'CODE'
+@@ -60,7 +74,7 @@
+     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;
+     $ctx = stream_context_create(['ssl' => [
+         'SNI_server_certs' => [
+-            "cs.php.net" => __DIR__ . "/sni_server_cs.pem",
++            "cs.php.net" => '%s',
+         ]
+     ]]);
+ 
+@@ -69,6 +83,7 @@
+ 
+     stream_socket_accept($server);
+ CODE;
++$sniServerCodeV1 = sprintf($sniServerCodeV1, $sniCsFile);
+ 
+ $sniServerCodeV2 = <<<'CODE'
+     ini_set('log_errors', 'On');
+@@ -77,8 +92,8 @@
+     $ctx = stream_context_create(['ssl' => [
+         'SNI_server_certs' => [
+             "uk.php.net" => [
+-                'local_cert' => __DIR__ . '/gh9310/sni_server_uk_cert.pem',
+-                'local_pk' => __DIR__ . '/sni_server_uk_key.pem',
++                'local_cert' => '%s',
++                'local_pk' => '%s',
+             ]
+         ]
+     ]]);
+@@ -88,6 +103,7 @@
+ 
+     stream_socket_accept($server);
+ CODE;
++$sniServerCodeV2 = sprintf($sniServerCodeV2, $baseDirSniUkCertFile, $sniUkKeyFile);
+ 
+ $sniServerCodeV3 = <<<'CODE'
+     ini_set('log_errors', 'On');
+@@ -96,8 +112,8 @@
+     $ctx = stream_context_create(['ssl' => [
+         'SNI_server_certs' => [
+             "us.php.net" => [
+-                'local_cert' => __DIR__ . '/sni_server_us_cert.pem',
+-                'local_pk' => __DIR__ . '/sni_server_us_key.pem',
++                'local_cert' => '%s',
++                'local_pk' => '%s',
+             ]
+         ]
+     ]]);
+@@ -107,14 +123,15 @@
+ 
+     stream_socket_accept($server);
+ CODE;
++$sniServerCodeV3 = sprintf($sniServerCodeV3, $sniUsCertFile, $sniUsKeyFile);
+ 
+ $sniClientCodeTemplate = <<<'CODE'
+     $flags = STREAM_CLIENT_CONNECT;
+     $ctxArr = [
+-        'cafile' => __DIR__ . '/sni_server_ca.pem',
++        'cafile' => '%s',
++        'peer_name' => '%s',
+     ];
+ 
+-    $ctxArr['peer_name'] = '%s';
+     $ctx = stream_context_create(['ssl' => $ctxArr]);
+     @stream_socket_client("tls://{{ ADDR }}", $errno, $errstr, 1, $flags, $ctx);
+ CODE;
+@@ -131,13 +148,13 @@
+ $serverCode = sprintf($serverCodeTemplate, $baseDirCertFile, $pkFile);
+ ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
+ 
+-$sniClientCode = sprintf($sniClientCodeTemplate, 'cs.php.net');
++$sniClientCode = sprintf($sniClientCodeTemplate, $sniCaFile, 'cs.php.net');
+ ServerClientTestCase::getInstance()->run($sniClientCode, $sniServerCodeV1);
+ 
+-$sniClientCode = sprintf($sniClientCodeTemplate, 'uk.php.net');
++$sniClientCode = sprintf($sniClientCodeTemplate, $sniCaFile, 'uk.php.net');
+ ServerClientTestCase::getInstance()->run($sniClientCode, $sniServerCodeV2);
+ 
+-$sniClientCode = sprintf($sniClientCodeTemplate, 'us.php.net');
++$sniClientCode = sprintf($sniClientCodeTemplate, $sniCaFile, 'us.php.net');
+ ServerClientTestCase::getInstance()->run($sniClientCode, $sniServerCodeV3);
+ 
+ ?>
+@@ -149,7 +166,13 @@
+ @unlink(__DIR__ . '/gh9310.key');
+ @unlink($baseDir . '/cert.crt');
+ @unlink($baseDir . '/private.key');
+-@unlink($baseDir . '/sni_server_uk_cert.pem');
++@unlink($baseDir . '/sni_uk_cert.pem');
++@unlink(__DIR__ . '/gh9310_sni_ca.pem.tmp');
++@unlink(__DIR__ . '/gh9310_sni_cs.pem.tmp');
++@unlink(__DIR__ . '/gh9310_sni_uk_cert.pem.tmp');
++@unlink(__DIR__ . '/gh9310_sni_uk_key.pem.tmp');
++@unlink(__DIR__ . '/gh9310_sni_us_cert.pem.tmp');
++@unlink(__DIR__ . '/gh9310_sni_us_key.pem.tmp');
+ @rmdir($baseDir);
+ ?>
+ --EXPECTF--
+@@ -169,15 +192,15 @@
+ PHP Warning:  stream_socket_accept(): Unable to get real path of private key file `%sgh9310.key' in %s
+ PHP Warning:  stream_socket_accept(): Failed to enable crypto in %s
+ PHP Warning:  stream_socket_accept(): Accept failed: %s
+-PHP Warning:  stream_socket_accept(): open_basedir restriction in effect. File(%ssni_server_cs.pem) is not within the allowed path(s): (%sgh9310) in %s
+-PHP Warning:  stream_socket_accept(): Failed setting local cert chain file `%ssni_server_cs.pem'; file not found in %s
++PHP Warning:  stream_socket_accept(): open_basedir restriction in effect. File(%sgh9310_sni_cs.pem.tmp) is not within the allowed path(s): (%sgh9310) in %s
++PHP Warning:  stream_socket_accept(): Failed setting local cert chain file `%sgh9310_sni_cs.pem.tmp'; file not found in %s
+ PHP Warning:  stream_socket_accept(): Failed to enable crypto in %s
+ PHP Warning:  stream_socket_accept(): Accept failed: %s
+-PHP Warning:  stream_socket_accept(): open_basedir restriction in effect. File(%ssni_server_uk_key.pem) is not within the allowed path(s): (%sgh9310) in %s
+-PHP Warning:  stream_socket_accept(): Failed setting local private key file `%ssni_server_uk_key.pem';  could not open file in %s
++PHP Warning:  stream_socket_accept(): open_basedir restriction in effect. File(%sgh9310_sni_uk_key.pem.tmp) is not within the allowed path(s): (%sgh9310) in %s
++PHP Warning:  stream_socket_accept(): Failed setting local private key file `%sgh9310_sni_uk_key.pem.tmp';  could not open file in %s
+ PHP Warning:  stream_socket_accept(): Failed to enable crypto in %s
+ PHP Warning:  stream_socket_accept(): Accept failed: %s
+-PHP Warning:  stream_socket_accept(): open_basedir restriction in effect. File(%ssni_server_us_cert.pem) is not within the allowed path(s): (%sgh9310) in %s
+-PHP Warning:  stream_socket_accept(): Failed setting local cert chain file `%ssni_server_us_cert.pem'; could not open file in %s
++PHP Warning:  stream_socket_accept(): open_basedir restriction in effect. File(%sgh9310_sni_us_cert.pem.tmp) is not within the allowed path(s): (%sgh9310) in %s
++PHP Warning:  stream_socket_accept(): Failed setting local cert chain file `%sgh9310_sni_us_cert.pem.tmp'; could not open file in %s
+ PHP Warning:  stream_socket_accept(): Failed to enable crypto in %s
+ PHP Warning:  stream_socket_accept(): Accept failed: %s
+diff --git a/ext/openssl/tests/openssl_x509_checkpurpose_basic.phpt b/ext/openssl/tests/openssl_x509_checkpurpose_basic.phpt
+index d09317b1d22..c1dba964bc6 100644
+--- a/ext/openssl/tests/openssl_x509_checkpurpose_basic.phpt
++++ b/ext/openssl/tests/openssl_x509_checkpurpose_basic.phpt
+@@ -17,7 +17,7 @@
+ $bert = "file://" . __DIR__ . "/bug41033.pem";
+ $sert = "file://" . __DIR__ . "/san-cert.pem";
+ $cpca = __DIR__ . "/san-cert.pem";
+-$utfl = __DIR__ . "/sni_server_uk.pem";
++$utfl = __DIR__ . "/sni_server.pem";
+ $rcrt = openssl_x509_read($cert);
+ 
+ /*  int openssl_x509_checkpurpose ( mixed $x509cert , int $purpose);   */
+diff --git a/ext/openssl/tests/openssl_x509_export_to_file_leak.phpt b/ext/openssl/tests/openssl_x509_export_to_file_leak.phpt
+index 5775c2597c3..59a942d6a67 100644
+--- a/ext/openssl/tests/openssl_x509_export_to_file_leak.phpt
++++ b/ext/openssl/tests/openssl_x509_export_to_file_leak.phpt
+@@ -5,7 +5,7 @@
+ --FILE--
+ <?php
+ 
+-$path = "file://" . __DIR__ . "/sni_server_ca.pem";
++$path = "file://" . __DIR__ . "/cert.crt";
+ var_dump(openssl_x509_export_to_file($path, str_repeat("a", 10000)));
+ 
+ ?>
+diff --git a/ext/openssl/tests/sni_server_uk.pem b/ext/openssl/tests/sni_server.pem
+similarity index 100%
+rename from ext/openssl/tests/sni_server_uk.pem
+rename to ext/openssl/tests/sni_server.pem
+diff --git a/ext/openssl/tests/sni_server.phpt b/ext/openssl/tests/sni_server.phpt
+index 7f9a4e82872..db0b0190dab 100644
+--- a/ext/openssl/tests/sni_server.phpt
++++ b/ext/openssl/tests/sni_server.phpt
+@@ -8,13 +8,25 @@
+ ?>
+ --FILE--
+ <?php
++$caFile = __DIR__ . DIRECTORY_SEPARATOR . 'sni_server_ca.pem.tmp';
++$csFile = __DIR__ . DIRECTORY_SEPARATOR . 'sni_server_cs.pem.tmp';
++$ukFile = __DIR__ . DIRECTORY_SEPARATOR . 'sni_server_uk.pem.tmp';
++$usFile = __DIR__ . DIRECTORY_SEPARATOR . 'sni_server_us.pem.tmp';
++
++include 'CertificateGenerator.inc';
++$certificateGenerator = new CertificateGenerator();
++$certificateGenerator->saveCaCert($caFile);
++$certificateGenerator->saveNewCertAsFileWithKey('cs.php.net', $csFile);
++$certificateGenerator->saveNewCertAsFileWithKey('uk.php.net', $ukFile);
++$certificateGenerator->saveNewCertAsFileWithKey('us.php.net', $usFile);
++
+ $serverCode = <<<'CODE'
+     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;
+     $ctx = stream_context_create(['ssl' => [
+         'SNI_server_certs' => [
+-            "cs.php.net" => __DIR__ . "/sni_server_cs.pem",
+-            "uk.php.net" => __DIR__ . "/sni_server_uk.pem",
+-            "us.php.net" => __DIR__ . "/sni_server_us.pem"
++            "cs.php.net" => '%s',
++            "uk.php.net" => '%s',
++            "us.php.net" => '%s',
+         ]
+     ]]);
+ 
+@@ -25,11 +37,12 @@
+         @stream_socket_accept($server, 3);
+     }
+ CODE;
++$serverCode = sprintf($serverCode, $csFile, $ukFile, $usFile);
+ 
+ $clientCode = <<<'CODE'
+     $flags = STREAM_CLIENT_CONNECT;
+     $ctxArr = [
+-        'cafile' => __DIR__ . '/sni_server_ca.pem',
++        'cafile' => '%s',
+         'capture_peer_cert' => true
+     ];
+ 
+@@ -51,10 +64,18 @@
+     $cert = stream_context_get_options($ctx)['ssl']['peer_certificate'];
+     var_dump(openssl_x509_parse($cert)['subject']['CN']);
+ CODE;
++$clientCode = sprintf($clientCode, $caFile);
+ 
+ include 'ServerClientTestCase.inc';
+ ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
+ ?>
++--CLEAN--
++<?php
++@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'sni_server_ca.pem.tmp');
++@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'sni_server_cs.pem.tmp');
++@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'sni_server_uk.pem.tmp');
++@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'sni_server_us.pem.tmp');
++?>
+ --EXPECTF--
+ string(%d) "cs.php.net"
+ string(%d) "uk.php.net"
+diff --git a/ext/openssl/tests/sni_server_ca.pem b/ext/openssl/tests/sni_server_ca.pem
+deleted file mode 100644
+index b2522884565..00000000000
+--- a/ext/openssl/tests/sni_server_ca.pem
++++ /dev/null
+@@ -1,63 +0,0 @@
+------BEGIN CERTIFICATE-----
+-MIIFejCCA2KgAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwQzELMAkGA1UEBhMCR0Ix
+-EDAOBgNVBAgMB0VuZ2xhbmQxEDAOBgNVBAoMB1BIUC5uZXQxEDAOBgNVBAMMB3Bo
+-cC5uZXQwHhcNMTcxMTIyMTQyODIzWhcNMjcxMTIwMTQyODIzWjBVMQswCQYDVQQG
+-EwJHQjEQMA4GA1UECAwHRW5nbGFuZDEQMA4GA1UECgwHUEhQLm5ldDEQMA4GA1UE
+-CwwHb3BlbnNzbDEQMA4GA1UEAwwHcGhwLm5ldDCCAiIwDQYJKoZIhvcNAQEBBQAD
+-ggIPADCCAgoCggIBAMeENPus84HfIaypUVybbn5ZZyu1gXSYZAnDYYHhOlHu5kFh
+-26ohnHnoheapXVRbUtDZgUW5BztA+vDhKkM5G3U4p+YsqcSA/IkF2JQBkJH1jrxs
+-XMDtXIA4/MzYAVtyySqoMsrbkSCDzvI8imsbZI9O1x02VgaqoaQ9JZvglt1nhTIY
+-YpTbTKGCzMmrnFGHITeBsVose1ACFIAtqKqvUaA6TxcCtVcrENY3T3N/vEmoHHBg
+-O7j9+UvYN/WRPNcv0aIOlro83O9xQuJdRCygPmcv/jkqWRKm2Pu0lEkvbMCvOJr/
+-Fz/kQg/6EVmIMsR/dgOMIjWjmpeTx24UJaNHUdNCeUbxIyTIyl9ISLWLM0Ipoq3L
+-95ygH6FSESAOpc8rVE2A5YZCtKlwvogMx3C/tMH1gWwMlfxn0CopP4Jx6lngw3yn
+-IpP0hnuCauQikBkyhsGu4J0Lbx5BsyDWQLwjiq4s8EcEy0vTdAvhDMRUGvpnjWaa
+-zBDVVrzHaRFvp6ueh35xf+dYieGL5UTICyrrQX9wwSafHV90a87y6XU+RwA25Dmc
+-V/kTn8/xkFv/4CbZp+0yArKpwXjqBMsQFbkFjT+Ky9MN+nedoFUMl7slgjpBs6RI
+-T08Hoa7/kMZGtLCiGcRXlwiIhB00gDz2avUvFTxwik9ssjDqBJGzNbBvZGb/AgMB
+-AAGjZjBkMB0GA1UdDgQWBBTjyuOBGnHnb+x20diIHG3sPuJFGjAfBgNVHSMEGDAW
+-gBQ0s99BNsV4Dszph6PArogA8HP4TDASBgNVHRMBAf8ECDAGAQH/AgEAMA4GA1Ud
+-DwEB/wQEAwIBhjANBgkqhkiG9w0BAQsFAAOCAgEAFrQMmCoSe8uJbJLqPGMPW4ZE
+-0U81WWboc9FrSfezBYkTKuCjMTjQFv8oLp4pnuWZw22mHrOiz9izjNnXcR/rdVbG
+-Cip/JSHlTzHd3gnxSSd2diXvVrSb4zuLyN6WIficlsj3QdIP4Cdfv1pdHBTsRPbW
+-vuHpwYqqjxPBjqvoVZyZRyRM1pqpxLCvxOt4S3z4uZXyIH2UI7yWxI6MvdHBZg5m
+-TwiVi1gEQuRnYRy4sK9qJlBo5jERvzDr46W1e9Yz5sNMPfwWb64Hkkys3GqJt5am
+-OKxvgF3lvIK90vBjenGDfYEENP+0qdmdpHQkxGM2cl9iPqW8iyRGBVjdbzTIeRgB
+-u+CEbffSKWCpbm1Zcszv3FHMlsU4Px2pUTdLwEMgBQUPW/ngBMdRgVZE01GI7D1k
+-AM3hO347eehQTWoyuHgsnB2uaANEeR/XFBGDFmbs5ggAzxxRsH1FxoHXrv3iDIPW
+-9lKnSow+OZGcPKgaY5Nsregt4jO+pQqhzxlMa2QMfrMoGkEvrKNcDqeEI6KQa1SI
+-Zbq7sjf2w+VL0oQcse+gtg4q771dKy9V/XcfnPbiBAXfQqGj/v0LmZRn3ZRrkgzl
+-CaZocqVRJZbqu7/iu/p9pDRMR03vhBWPn7iM8VqzkhKjAlD0rolnQqvOAXyPpd/O
+-qYuYP+6Ymt/rUWXGVh0=
+------END CERTIFICATE-----
+------BEGIN CERTIFICATE-----
+-MIIFbDCCA1SgAwIBAgIJAJcrLHeFQrGEMA0GCSqGSIb3DQEBCwUAMEMxCzAJBgNV
+-BAYTAkdCMRAwDgYDVQQIDAdFbmdsYW5kMRAwDgYDVQQKDAdQSFAubmV0MRAwDgYD
+-VQQDDAdwaHAubmV0MB4XDTE3MTExNTE5MTEwMVoXDTM4MDUyOTE5MTEwMVowQzEL
+-MAkGA1UEBhMCR0IxEDAOBgNVBAgMB0VuZ2xhbmQxEDAOBgNVBAoMB1BIUC5uZXQx
+-EDAOBgNVBAMMB3BocC5uZXQwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoIC
+-AQC4bIXbh+e+OCbLum2FYB8i6ZnOShp1teWNEE/8A4ot20wkPxLeXFSU1Egn+3BG
+-fxHKrWxV/FOiL7bims/SfwptFkgNZkwE52HVk49zgQevG38smsnIGuBMXMKebLPT
+-wlsIWRqCmZqEmh1wNcC9+qwoHoYjvJvMYfFvofiSc7qkTFsjoBVe+ho90vjYMznr
+-Bs9DlD88iXO0kKN0Bsu2igz68JWkUsoNeD6UKSir16SmQZxdFPCM0O0gxmOyz4NZ
+-w8pJ5XGDJyS82fVp13tYCOBFhK0QBvvzaz/gN6De5arefm6cer9TX0HE+VvGhx4T
+-2lqydFLfAVKTTNoZHOQk2mFVUm7dlMzLvsgNKdEZH6wAa12eBImCea+CyJNkbGLC
+-nrN6a93iGqTft75sbDyvzRk/BdnxadkAPlOxgK1qGrOgeS0+7chPMh24MRoKj5bU
+-lYGdcp7Y9qIW1hZXFfgPJO0yMOug/7J14jybp+YhymBIBTZYi1zbGqGNXdLPyp77
+-9KTfyJE9KkbGegBvwqJmZTW8QoUDllopDjr1zaIqHWJqfAK7vGivu0iLVJHBRbRs
+-w9c48RCjfIh7AkvFKsdIDt9SMdZOdm9D8SXosYPM1zMFQsFFRPh/nKyl9QnhWbwd
+-Vs1tIFDrb10Z2sn0pF/V0F0gubR5rvYs+3h/dLciLVFobQIDAQABo2MwYTAdBgNV
+-HQ4EFgQUNLPfQTbFeA7M6YejwK6IAPBz+EwwHwYDVR0jBBgwFoAUNLPfQTbFeA7M
+-6YejwK6IAPBz+EwwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAYYwDQYJ
+-KoZIhvcNAQELBQADggIBAIkctDRCNcNVs2qP/O3zZsVZ1cqlqYNjcHIVHqNZRvVb
+-bPtInZ/i/6BbwA5QM/giKpl2aMwetUnezjHVD+7/m24Mfs1FWyPD3joCMIANj7hR
+-MNbmX1LQBMt/bD3E5trq9S9rZ++/ny4gn/z2jH3x+lzDMBDiam/wXbvSmyIUPUX6
+-V8FFpkTBNERpurUvX1NEFLuiilWKrI7/u1qS11PGBcX3pNQNfhKNMtuFz74hAE7C
+-RE8756CGu2bZzydYCarUXSNTXqNm5ly2J0UN6Al4myFwj/6XnLnDhXDAI8CaqDMD
+-MwmxUzJvzuphNS085ZIntrSgPJESGozevEsf9bGD8GyoBQN/cSqOJCFfnJqxtKHb
+-wNa2F78SXYsiWkRb5EzoyCeon+0tygG6gLBouVY8ouCerExkH9qzRLLzFInxmCm2
+-ill7c8Xmml4H2BxJE33dz/Qh7PM3eF2A2VriioLDj4+HOiWq/1BjdW6/Xiwx5iP2
+-nC6Cex+lBt6HkP9WIiJbGxVeamF5jxNWWvLoUkrjFhpukjb5BPR9zFt7mAty9J/T
+-iQt26yylP4ucmL9KB6lv4ISW4Ri8mhMcYh6nF3tIYWZMCSQKqkyvymhKdLMZa20A
+-IME2oxnfZcmsfMpM6BYsN4XDfGBeYctqqt2AFRNLkI4wFkFFdPTMcTi1q0iRH2Xk
+------END CERTIFICATE-----
+diff --git a/ext/openssl/tests/sni_server_cs.pem b/ext/openssl/tests/sni_server_cs.pem
+deleted file mode 100644
+index 9f5a201b26d..00000000000
+--- a/ext/openssl/tests/sni_server_cs.pem
++++ /dev/null
+@@ -1,57 +0,0 @@
+------BEGIN RSA PRIVATE KEY-----
+-MIIEpQIBAAKCAQEAvy5NhzktzEdsHTbGB6vqYANms5rn1zXFmTJrGlWCwoIsNmTf
+-ahvZkrC1cCXTZ7fbPB8XQbpAtz2ZSU7OcwBW9B8okYUPo9zi/ptwcrgsQsN0hrcD
+-8MBRUccevwime5fLvg8E9RJ/68y9y3BnRcVWYO2sAK9juTfidNjETU3Bb05oXv8D
+-SD/6onXQu4uXDgsQ3cRXeld9UB0xazmQXyyiIqXc/cpTAnaEVYzn28aj7NlUbzNq
+-511UXMXY44x9EcXWpPVZ7heNcJNzY5DCNzmtXKrt9yiMpWQcPXEzsESVxAMqib9u
+-TFOlvVX17LIPxBG656PjTD9J1h6kBbMCUxzs7wIDAQABAoIBAQC85lBeY0X4ST3v
+-I7bJz7kWQ2YP4uhfAdeLhoDDFWjNLffniwYhfwEc6xNri0R2f/jUT9gX7qORKwEx
+-qPdeNCC2t67LElGg1FlJv2Z9Q7MgCKYzkdQH5s6y4e9kTHTLO/JpiceZKz1QTQ3f
+-XOH9032E6nIAf0wmr6xHTgOwajrN8VI5BuPEMVmEwIw3AtYeqVuPCNKyGR4HUVkC
+-2bAydnGngbRJRnNzmKcWJancxpHDGBSFqPyuXMFC7Jgo3ZmyCbGp99vuXVk/sW9x
+-5aj94M9nRE0guk05ivH2/JZao2uLYkIgjFWlhNxKdWgWRk8DEuN4djC8mKS9YH1q
+-crYRToMhAoGBAOspUTtKP54mpZmyhxuDqj02JaJRzNTskPHsiF1UhtXuw7uT+ryV
+-ekUFLNXoFmn9mbx1WVaUvGH4qjilvQOxz7u++lz0ApqJEfyM3jc/cC40Y5zcuGSu
+-Etbg+SyDoytlgMCIydJyrS7NNALSo5p5oG6XY2f8yd/DCAmo8LzypaHRAoGBANAf
+-R1SlBMc/bOsi6GrJxcBVSCFMiKYiO5woL5aUKa9yM+UQuQ/6xbQ7Q+sOlt0FH3xo
+-AJ2L60qTdjyXVtjOdtXs5ZC4l+C6AfnCx6yLr+fNc4SOYXEfqS4LZylgwKd9KyVB
+-asspIW9Idbgebmi6vPyt9LDkIp0h1VuFGjkvQJK/AoGBAI4pbS0dprXyARyYW6sb
+-fpgAmuG099IkrT9DUfCx/81myTclr2fAKal+BmvOIXaz0/OlMXvw8K19iVIzh7+r
+-B70lJ+93p/dKM/BsLI5TsHqOO0YB/QsIXOVAHgJ2FfdPJnW+e9vYba+kZ/Po6PSi
+-4ITaykJ8BIJcQgis89QWEGFxAoGBAJhQO+jzuDKF9ZWEf6ofrw0anOZZ16wWY5/e
+-PS2rk3JmVxpuibHrKqPDt+ogTELHDAsFJmYmz3VNxHuFmrajK49Wh4/JuMVr/CQo
+-6+8YcA1qa/94IFIlBLDBAafjujsZvOjQHnM+z8xcsGKmStF00Pjv6qNG4xoyd646
+-FD4DmfOLAoGAWXehpopZKXE9gRAni881ucK6WqxPPBoofbozi09D0MmfarIVaSkv
+-jNVVHBfLWd7IEXTjiipPBeUqq6Jc3pscN1Vp4rrl8jTmVTdazEv0LuzpdUFqmNo2
+-M+xw17uz9D9Q32/aW1Lar0PdIaL/wGEDEyzEBFwrGppcENLilPz8gzU=
+------END RSA PRIVATE KEY-----
+------BEGIN CERTIFICATE-----
+-MIIFIjCCAwqgAwIBAgICEAIwDQYJKoZIhvcNAQELBQAwVTELMAkGA1UEBhMCR0Ix
+-EDAOBgNVBAgMB0VuZ2xhbmQxEDAOBgNVBAoMB1BIUC5uZXQxEDAOBgNVBAsMB29w
+-ZW5zc2wxEDAOBgNVBAMMB3BocC5uZXQwHhcNMTgwMTE0MTgzNjEyWhcNMjYwNDAy
+-MTgzNjEyWjBGMQswCQYDVQQGEwJHQjEQMA4GA1UECAwHRW5nbGFuZDEQMA4GA1UE
+-CgwHUEhQLm5ldDETMBEGA1UEAwwKY3MucGhwLm5ldDCCASIwDQYJKoZIhvcNAQEB
+-BQADggEPADCCAQoCggEBAL8uTYc5LcxHbB02xger6mADZrOa59c1xZkyaxpVgsKC
+-LDZk32ob2ZKwtXAl02e32zwfF0G6QLc9mUlOznMAVvQfKJGFD6Pc4v6bcHK4LELD
+-dIa3A/DAUVHHHr8IpnuXy74PBPUSf+vMvctwZ0XFVmDtrACvY7k34nTYxE1NwW9O
+-aF7/A0g/+qJ10LuLlw4LEN3EV3pXfVAdMWs5kF8soiKl3P3KUwJ2hFWM59vGo+zZ
+-VG8zauddVFzF2OOMfRHF1qT1We4XjXCTc2OQwjc5rVyq7fcojKVkHD1xM7BElcQD
+-Kom/bkxTpb1V9eyyD8QRuuej40w/SdYepAWzAlMc7O8CAwEAAaOCAQkwggEFMAkG
+-A1UdEwQCMAAwEQYJYIZIAYb4QgEBBAQDAgZAMDMGCWCGSAGG+EIBDQQmFiRPcGVu
+-U1NMIEdlbmVyYXRlZCBTZXJ2ZXIgQ2VydGlmaWNhdGUwHQYDVR0OBBYEFHPfd8dK
+-Lz1R0Ck4WV1B9AWXd5DSMGwGA1UdIwRlMGOAFOPK44Eacedv7HbR2Igcbew+4kUa
+-oUekRTBDMQswCQYDVQQGEwJHQjEQMA4GA1UECAwHRW5nbGFuZDEQMA4GA1UECgwH
+-UEhQLm5ldDEQMA4GA1UEAwwHcGhwLm5ldIICEAAwDgYDVR0PAQH/BAQDAgWgMBMG
+-A1UdJQQMMAoGCCsGAQUFBwMBMA0GCSqGSIb3DQEBCwUAA4ICAQB6WSIHEyDXLZxH
+-hZjqSNQOA7Wc9Z2FCAiD29xYkGTL8WuPVGGP1mu4B92ytj+PMWwqSReDa7eTGLE7
+-O7ozw9l+c+gNmHFNikSsGjlV2E8CToQOFMny+jAQYMSXf8UbTp9xDfgG02t/71hv
+-SLWqdeHMLcR0xi0nBQH0vDOkwUbuWYqFa3jejHieGhykHM6CkIk6lqnyOEO+ooIF
+-ZsLprrg1ss/mXCPI6niP0hze55ERKdxI7Rk8sZ4pVkf2SUWqZrUS0aJ+Ymmwi6Xd
+-2V7izq5N30PkJS8MtqII4FAjRBIkwPh0sy8PmW/DzkYU+lYQnDfYLKDFKcj8xJK/
+-o8oZUBsQltrSj0KlM9QuqxCTCBCy1nXZ9WHOhq+jdLiTc1Oi60uEHcUMrLK8aYc4
+-HqIvZS6C2iwMI0d1OP3VxmAbMQ9yqRi+FbLYavJ3H40jrU9SYqdxa0BrTaz8MJNE
+-6AEwgQDPChczSghvHME+Fs4mtGCY3TesbNZKVahQRjaFIhMZIZ4RP4CRc0bJOBG+
+-8Me4+KHNsD2ki5b03wAN6C1P2QrMzI+gH9fXLZYp761ciDAsX6YIzrhHHYLxYpJH
+-BkQKKs8dCQWE5IzgVrdlvC3Z1/l9om66wHqqx7nKnPfYs/Sfnwe9MpCD6xJrXiTm
+-WS7NM6fbQpO9APNr7o0ZOjbbWFzlNw==
+------END CERTIFICATE-----
+diff --git a/ext/openssl/tests/sni_server_cs_cert.pem b/ext/openssl/tests/sni_server_cs_cert.pem
+deleted file mode 100644
+index b77c7b83e2a..00000000000
+--- a/ext/openssl/tests/sni_server_cs_cert.pem
++++ /dev/null
+@@ -1,30 +0,0 @@
+------BEGIN CERTIFICATE-----
+-MIIFIjCCAwqgAwIBAgICEAIwDQYJKoZIhvcNAQELBQAwVTELMAkGA1UEBhMCR0Ix
+-EDAOBgNVBAgMB0VuZ2xhbmQxEDAOBgNVBAoMB1BIUC5uZXQxEDAOBgNVBAsMB29w
+-ZW5zc2wxEDAOBgNVBAMMB3BocC5uZXQwHhcNMTgwMTE0MTgzNjEyWhcNMjYwNDAy
+-MTgzNjEyWjBGMQswCQYDVQQGEwJHQjEQMA4GA1UECAwHRW5nbGFuZDEQMA4GA1UE
+-CgwHUEhQLm5ldDETMBEGA1UEAwwKY3MucGhwLm5ldDCCASIwDQYJKoZIhvcNAQEB
+-BQADggEPADCCAQoCggEBAL8uTYc5LcxHbB02xger6mADZrOa59c1xZkyaxpVgsKC
+-LDZk32ob2ZKwtXAl02e32zwfF0G6QLc9mUlOznMAVvQfKJGFD6Pc4v6bcHK4LELD
+-dIa3A/DAUVHHHr8IpnuXy74PBPUSf+vMvctwZ0XFVmDtrACvY7k34nTYxE1NwW9O
+-aF7/A0g/+qJ10LuLlw4LEN3EV3pXfVAdMWs5kF8soiKl3P3KUwJ2hFWM59vGo+zZ
+-VG8zauddVFzF2OOMfRHF1qT1We4XjXCTc2OQwjc5rVyq7fcojKVkHD1xM7BElcQD
+-Kom/bkxTpb1V9eyyD8QRuuej40w/SdYepAWzAlMc7O8CAwEAAaOCAQkwggEFMAkG
+-A1UdEwQCMAAwEQYJYIZIAYb4QgEBBAQDAgZAMDMGCWCGSAGG+EIBDQQmFiRPcGVu
+-U1NMIEdlbmVyYXRlZCBTZXJ2ZXIgQ2VydGlmaWNhdGUwHQYDVR0OBBYEFHPfd8dK
+-Lz1R0Ck4WV1B9AWXd5DSMGwGA1UdIwRlMGOAFOPK44Eacedv7HbR2Igcbew+4kUa
+-oUekRTBDMQswCQYDVQQGEwJHQjEQMA4GA1UECAwHRW5nbGFuZDEQMA4GA1UECgwH
+-UEhQLm5ldDEQMA4GA1UEAwwHcGhwLm5ldIICEAAwDgYDVR0PAQH/BAQDAgWgMBMG
+-A1UdJQQMMAoGCCsGAQUFBwMBMA0GCSqGSIb3DQEBCwUAA4ICAQB6WSIHEyDXLZxH
+-hZjqSNQOA7Wc9Z2FCAiD29xYkGTL8WuPVGGP1mu4B92ytj+PMWwqSReDa7eTGLE7
+-O7ozw9l+c+gNmHFNikSsGjlV2E8CToQOFMny+jAQYMSXf8UbTp9xDfgG02t/71hv
+-SLWqdeHMLcR0xi0nBQH0vDOkwUbuWYqFa3jejHieGhykHM6CkIk6lqnyOEO+ooIF
+-ZsLprrg1ss/mXCPI6niP0hze55ERKdxI7Rk8sZ4pVkf2SUWqZrUS0aJ+Ymmwi6Xd
+-2V7izq5N30PkJS8MtqII4FAjRBIkwPh0sy8PmW/DzkYU+lYQnDfYLKDFKcj8xJK/
+-o8oZUBsQltrSj0KlM9QuqxCTCBCy1nXZ9WHOhq+jdLiTc1Oi60uEHcUMrLK8aYc4
+-HqIvZS6C2iwMI0d1OP3VxmAbMQ9yqRi+FbLYavJ3H40jrU9SYqdxa0BrTaz8MJNE
+-6AEwgQDPChczSghvHME+Fs4mtGCY3TesbNZKVahQRjaFIhMZIZ4RP4CRc0bJOBG+
+-8Me4+KHNsD2ki5b03wAN6C1P2QrMzI+gH9fXLZYp761ciDAsX6YIzrhHHYLxYpJH
+-BkQKKs8dCQWE5IzgVrdlvC3Z1/l9om66wHqqx7nKnPfYs/Sfnwe9MpCD6xJrXiTm
+-WS7NM6fbQpO9APNr7o0ZOjbbWFzlNw==
+------END CERTIFICATE-----
+diff --git a/ext/openssl/tests/sni_server_cs_key.pem b/ext/openssl/tests/sni_server_cs_key.pem
+deleted file mode 100644
+index bf1e9f25193..00000000000
+--- a/ext/openssl/tests/sni_server_cs_key.pem
++++ /dev/null
+@@ -1,27 +0,0 @@
+------BEGIN RSA PRIVATE KEY-----
+-MIIEpQIBAAKCAQEAvy5NhzktzEdsHTbGB6vqYANms5rn1zXFmTJrGlWCwoIsNmTf
+-ahvZkrC1cCXTZ7fbPB8XQbpAtz2ZSU7OcwBW9B8okYUPo9zi/ptwcrgsQsN0hrcD
+-8MBRUccevwime5fLvg8E9RJ/68y9y3BnRcVWYO2sAK9juTfidNjETU3Bb05oXv8D
+-SD/6onXQu4uXDgsQ3cRXeld9UB0xazmQXyyiIqXc/cpTAnaEVYzn28aj7NlUbzNq
+-511UXMXY44x9EcXWpPVZ7heNcJNzY5DCNzmtXKrt9yiMpWQcPXEzsESVxAMqib9u
+-TFOlvVX17LIPxBG656PjTD9J1h6kBbMCUxzs7wIDAQABAoIBAQC85lBeY0X4ST3v
+-I7bJz7kWQ2YP4uhfAdeLhoDDFWjNLffniwYhfwEc6xNri0R2f/jUT9gX7qORKwEx
+-qPdeNCC2t67LElGg1FlJv2Z9Q7MgCKYzkdQH5s6y4e9kTHTLO/JpiceZKz1QTQ3f
+-XOH9032E6nIAf0wmr6xHTgOwajrN8VI5BuPEMVmEwIw3AtYeqVuPCNKyGR4HUVkC
+-2bAydnGngbRJRnNzmKcWJancxpHDGBSFqPyuXMFC7Jgo3ZmyCbGp99vuXVk/sW9x
+-5aj94M9nRE0guk05ivH2/JZao2uLYkIgjFWlhNxKdWgWRk8DEuN4djC8mKS9YH1q
+-crYRToMhAoGBAOspUTtKP54mpZmyhxuDqj02JaJRzNTskPHsiF1UhtXuw7uT+ryV
+-ekUFLNXoFmn9mbx1WVaUvGH4qjilvQOxz7u++lz0ApqJEfyM3jc/cC40Y5zcuGSu
+-Etbg+SyDoytlgMCIydJyrS7NNALSo5p5oG6XY2f8yd/DCAmo8LzypaHRAoGBANAf
+-R1SlBMc/bOsi6GrJxcBVSCFMiKYiO5woL5aUKa9yM+UQuQ/6xbQ7Q+sOlt0FH3xo
+-AJ2L60qTdjyXVtjOdtXs5ZC4l+C6AfnCx6yLr+fNc4SOYXEfqS4LZylgwKd9KyVB
+-asspIW9Idbgebmi6vPyt9LDkIp0h1VuFGjkvQJK/AoGBAI4pbS0dprXyARyYW6sb
+-fpgAmuG099IkrT9DUfCx/81myTclr2fAKal+BmvOIXaz0/OlMXvw8K19iVIzh7+r
+-B70lJ+93p/dKM/BsLI5TsHqOO0YB/QsIXOVAHgJ2FfdPJnW+e9vYba+kZ/Po6PSi
+-4ITaykJ8BIJcQgis89QWEGFxAoGBAJhQO+jzuDKF9ZWEf6ofrw0anOZZ16wWY5/e
+-PS2rk3JmVxpuibHrKqPDt+ogTELHDAsFJmYmz3VNxHuFmrajK49Wh4/JuMVr/CQo
+-6+8YcA1qa/94IFIlBLDBAafjujsZvOjQHnM+z8xcsGKmStF00Pjv6qNG4xoyd646
+-FD4DmfOLAoGAWXehpopZKXE9gRAni881ucK6WqxPPBoofbozi09D0MmfarIVaSkv
+-jNVVHBfLWd7IEXTjiipPBeUqq6Jc3pscN1Vp4rrl8jTmVTdazEv0LuzpdUFqmNo2
+-M+xw17uz9D9Q32/aW1Lar0PdIaL/wGEDEyzEBFwrGppcENLilPz8gzU=
+------END RSA PRIVATE KEY-----
+diff --git a/ext/openssl/tests/sni_server_key_cert.phpt b/ext/openssl/tests/sni_server_key_cert.phpt
+index 49ed6aa5328..878f97c1e35 100644
+--- a/ext/openssl/tests/sni_server_key_cert.phpt
++++ b/ext/openssl/tests/sni_server_key_cert.phpt
+@@ -8,21 +8,36 @@
+ ?>
+ --FILE--
+ <?php
++$caFile = __DIR__ . DIRECTORY_SEPARATOR . 'sni_server_ca_kc.pem.tmp';
++$csCertFile = __DIR__ . DIRECTORY_SEPARATOR . 'sni_server_cs_cert.pem.tmp';
++$csKeyFile = __DIR__ . DIRECTORY_SEPARATOR . 'sni_server_cs_key.pem.tmp';
++$ukCertFile = __DIR__ . DIRECTORY_SEPARATOR . 'sni_server_uk_cert.pem.tmp';
++$ukKeyFile = __DIR__ . DIRECTORY_SEPARATOR . 'sni_server_uk_key.pem.tmp';
++$usCertFile = __DIR__ . DIRECTORY_SEPARATOR . 'sni_server_us_cert.pem.tmp';
++$usKeyFile = __DIR__ . DIRECTORY_SEPARATOR . 'sni_server_us_key.pem.tmp';
++
++include 'CertificateGenerator.inc';
++$certificateGenerator = new CertificateGenerator();
++$certificateGenerator->saveCaCert($caFile);
++$certificateGenerator->saveNewCertAndKey('cs.php.net', $csCertFile, $csKeyFile);
++$certificateGenerator->saveNewCertAndKey('uk.php.net', $ukCertFile, $ukKeyFile);
++$certificateGenerator->saveNewCertAndKey('us.php.net', $usCertFile, $usKeyFile);
++
+ $serverCode = <<<'CODE'
+     $flags = STREAM_SERVER_BIND|STREAM_SERVER_LISTEN;
+     $ctx = stream_context_create(['ssl' => [
+         'SNI_server_certs' => [
+             "cs.php.net" => [
+-                'local_cert' => __DIR__ . "/sni_server_cs_cert.pem",
+-                'local_pk' => __DIR__ . "/sni_server_cs_key.pem"
++                'local_cert' => '%s',
++                'local_pk' => '%s',
+             ],
+             "uk.php.net" => [
+-                'local_cert' => __DIR__ . "/sni_server_uk_cert.pem",
+-                'local_pk' => __DIR__ . "/sni_server_uk_key.pem"
++                'local_cert' => '%s',
++                'local_pk' => '%s',
+             ],
+             "us.php.net" => [
+-                'local_cert' => __DIR__ . "/sni_server_us_cert.pem",
+-                'local_pk' => __DIR__ . "/sni_server_us_key.pem"
++                'local_cert' => '%s',
++                'local_pk' => '%s',
+             ],
+         ]
+     ]]);
+@@ -34,11 +49,16 @@
+         @stream_socket_accept($server, 3);
+     }
+ CODE;
++$serverCode = sprintf($serverCode,
++        $csCertFile, $csKeyFile,
++        $ukCertFile, $ukKeyFile,
++        $usCertFile, $usKeyFile
++);
+ 
+ $clientCode = <<<'CODE'
+     $flags = STREAM_CLIENT_CONNECT;
+     $ctxArr = [
+-        'cafile' => __DIR__ . '/sni_server_ca.pem',
++        'cafile' => '%s',
+         'capture_peer_cert' => true
+     ];
+ 
+@@ -60,10 +80,21 @@
+     $cert = stream_context_get_options($ctx)['ssl']['peer_certificate'];
+     var_dump(openssl_x509_parse($cert)['subject']['CN']);
+ CODE;
++$clientCode = sprintf($clientCode, $caFile);
+ 
+ include 'ServerClientTestCase.inc';
+ ServerClientTestCase::getInstance()->run($clientCode, $serverCode);
+ ?>
++--CLEAN--
++<?php
++@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'sni_server_ca_kc.pem.tmp');
++@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'sni_server_cs_cert.pem.tmp');
++@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'sni_server_cs_key.pem.tmp');
++@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'sni_server_uk_cert.pem.tmp');
++@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'sni_server_uk_key.pem.tmp');
++@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'sni_server_us_cert.pem.tmp');
++@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'sni_server_us_key.pem.tmp');
++?>
+ --EXPECTF--
+ string(%d) "cs.php.net"
+ string(%d) "uk.php.net"
+diff --git a/ext/openssl/tests/sni_server_uk_cert.pem b/ext/openssl/tests/sni_server_uk_cert.pem
+deleted file mode 100644
+index 57663855e59..00000000000
+--- a/ext/openssl/tests/sni_server_uk_cert.pem
++++ /dev/null
+@@ -1,30 +0,0 @@
+------BEGIN CERTIFICATE-----
+-MIIFIjCCAwqgAwIBAgICEAMwDQYJKoZIhvcNAQELBQAwVTELMAkGA1UEBhMCR0Ix
+-EDAOBgNVBAgMB0VuZ2xhbmQxEDAOBgNVBAoMB1BIUC5uZXQxEDAOBgNVBAsMB29w
+-ZW5zc2wxEDAOBgNVBAMMB3BocC5uZXQwHhcNMTgwMTE0MTgzNjMyWhcNMjYwNDAy
+-MTgzNjMyWjBGMQswCQYDVQQGEwJHQjEQMA4GA1UECAwHRW5nbGFuZDEQMA4GA1UE
+-CgwHUEhQLm5ldDETMBEGA1UEAwwKdWsucGhwLm5ldDCCASIwDQYJKoZIhvcNAQEB
+-BQADggEPADCCAQoCggEBAKzKRXj0jVBzRwolFn7Ej0MR2kE6Q36IBCEiDLhquSYR
+-Lh1spR0XudSVmRot/Wvz2PawApX4P6qj57scBQ6KL4ULKvSndCZ7F1tdQjEqogYp
+-n/L8oBhP1dgyDonsewG/PucxC+3Aqzcl3w5Pg7qE+zad42khP7t9TjFAMxc+PxC+
+-2as5ZCDJBwfxksCyCQfFWx7eB7p39vGy63k3Izv+UKTZEhbSdT721kb91oXkecpE
+-EFhihfVYMGMEtC7u2JLSxdkRhWYSMqVCvI2syYsLAUUNH2kgqQF00j2Iddhg3oMA
+-IiqhpC/n2slHVhp56WE1TsrGC/JgqIvQK9AT4LRxFb8CAwEAAaOCAQkwggEFMAkG
+-A1UdEwQCMAAwEQYJYIZIAYb4QgEBBAQDAgZAMDMGCWCGSAGG+EIBDQQmFiRPcGVu
+-U1NMIEdlbmVyYXRlZCBTZXJ2ZXIgQ2VydGlmaWNhdGUwHQYDVR0OBBYEFJK58uJe
+-Lv8WDOR8TTLUcSxO1zCyMGwGA1UdIwRlMGOAFOPK44Eacedv7HbR2Igcbew+4kUa
+-oUekRTBDMQswCQYDVQQGEwJHQjEQMA4GA1UECAwHRW5nbGFuZDEQMA4GA1UECgwH
+-UEhQLm5ldDEQMA4GA1UEAwwHcGhwLm5ldIICEAAwDgYDVR0PAQH/BAQDAgWgMBMG
+-A1UdJQQMMAoGCCsGAQUFBwMBMA0GCSqGSIb3DQEBCwUAA4ICAQDHayU795hFnQNj
+-fuYV21sEmkSjgtp6X4rV9JfoCp8U2gieL4mizoCPx9Q8HYaAf98hPYTofGUaCSd+
+-Xlzd8lhLt9GCU+BsCxGtJocrjOQDhyhkioN8iirQRTtJpRVC6a4RCBGpenOD7Z7C
+-Z32uGXohzFuigP/J8/SXBdHrlpNSa03iEkkisPR46mbGj06lFVOFHJDNKA3CnQwM
+-3VfqvZt0ksZi/gAOol8dtrAd3k5JBfJ2BtqsPbycEGAhsGrTK/MeqiFcO8QZiXpN
+-qf0wZzOMFZJ4HqTiHs4TMMQaDK8c4qfR0l1OE224ijcB5NlqMjGAZabMfHgNZcl7
+-fYPX+POsOMaqubv98uoC0PCK8NCTyfB4V/el72EEoVfwKYOxm3eYXBEE2ZNyIci6
+-YKYhNa9e2k+cFueYMztV06HTGgkcHcSJATP+3ISTRx3tj1BPmc4O4WAMEMx1E0gg
+-PaVrBVAylGzt8kaMaOQMBImpsALSfutq6+KtQiu0OTGS3yVUGamV4AyRjuwF1/ZA
+-kZbjmNEGsf9d2rzS89ckds24QUx0zrfJ56p7lRvyVK/pML7iadv8dUH3fKDDDerD
+-oocLjOjNxFGN9Woz+kfidA8Siu0zsfQ6CLPlaQrVAVQH4iMuCZraqMc3TqAiUKRj
+-iHKp6FFrRZmY8W8HEKHv98uGofn+3g==
+------END CERTIFICATE-----
+diff --git a/ext/openssl/tests/sni_server_uk_key.pem b/ext/openssl/tests/sni_server_uk_key.pem
+deleted file mode 100644
+index 3baa6efd776..00000000000
+--- a/ext/openssl/tests/sni_server_uk_key.pem
++++ /dev/null
+@@ -1,27 +0,0 @@
+------BEGIN RSA PRIVATE KEY-----
+-MIIEowIBAAKCAQEArMpFePSNUHNHCiUWfsSPQxHaQTpDfogEISIMuGq5JhEuHWyl
+-HRe51JWZGi39a/PY9rAClfg/qqPnuxwFDoovhQsq9Kd0JnsXW11CMSqiBimf8vyg
+-GE/V2DIOiex7Ab8+5zEL7cCrNyXfDk+DuoT7Np3jaSE/u31OMUAzFz4/EL7Zqzlk
+-IMkHB/GSwLIJB8VbHt4Hunf28bLreTcjO/5QpNkSFtJ1PvbWRv3WheR5ykQQWGKF
+-9VgwYwS0Lu7YktLF2RGFZhIypUK8jazJiwsBRQ0faSCpAXTSPYh12GDegwAiKqGk
+-L+fayUdWGnnpYTVOysYL8mCoi9Ar0BPgtHEVvwIDAQABAoIBAGpg7XyWMxpAno/k
+-XYEWSo0kRJa75CnWW5R6fhJbwjlpglajONQ8czAqGeRARDFeI0lc+3qRJ8FKv7Q2
+-f/Z/pNnoEj4liiDWz350X/gdIztgDRVv6rCNFj7QMps/eEuPDo8PZySs5bxCGJ2a
+-3qLKlE7/za4/xhkMAEPaHppEvFb15dpomqP2Fjqei9afp8tD+xJv9BGtkFIy9acw
+-94AWQi974kgW7ZzfEf8RqHM0ExKiESCc26knbcBu0tQ892YHggMccUMk/UrVgR5d
+-vuGOBurlYGLBstSDSKCCe6la4N/FX3FiC3WhVNescnuTZPXcX3zebh7roGjgrTdd
+-6UJYBIECgYEA09XYihdwW66G9Y09OatzlzBh1Rvzjv2Vl5NmWHHb6vh38H4PcOof
+-S1pT0JvRzpt8uEs4i+Eda5PyQyp4iGtD+DQ07Dxh2jiixsE3PRFRG2wg2QCgDHnS
+-6vgV1VOqA/A4on4nhxLZXxhX4YvHaJYlm1bZ+amG+j5XiI/NtHJm9k8CgYEA0NB9
+-bAoaZnc06+T8rMaO45boX5SvYsCZbtY3VRl75SrbMal0IKfnXHELVHuei12LmlMs
+-LuFgG8jGO3+ncxUqMytoGvrmk/cM9tCNbDKVHtFbqz0qt9lkDAwLsBougKnVsNDW
+-Aae/tz/wYXJct86unfLh0xtvkx5Iz1we4cS1fZECgYA8YR+vfK7R8xUUuIVTAsOX
+-vHqmO6lYgH87DRCG9S0x9FB7g/LyxEjXOY/aTg+nTDpobUhY1nmESE8tRdXFTI27
+-GWZcT3m0sZ/z9u6/wUfVAST7tWnpJHAx+TR/8bDsHnSGHF836O98Y3vpFeZosSNW
+-+5J1zxRiD5LzocmIPXOLkQKBgEgHApxXx898YwbTj8zRGMysay89DFpV8RboUWHL
+-To83/y/cMbBp+kZKwAu+MGwGMndjJSRunUY4NRik6c+qh0nrORfFX+++Efy4529g
+-60scEDC7Apc0J2x4Yze1cED1VD6PaqJbiKffKD2UwyKr6lOVSgwVtKDcm2Tbc9OQ
+-lMHhAoGBAIPwYVxzWM6I6pr8x2TucpBZZReLytz7uzybMNvbKCrwlETbNNXubnfp
+-nPuPKzpeRI0y26pIIAbijzFW0MXq+kIu3H7we8TaImsJ1AaQCTYeoLWBVcr6RISk
+-3d4i7iT35aWCuhPVve0FNIv/u3jrqX2H2C2MXMiLOsw1GFxPvpi4
+------END RSA PRIVATE KEY-----
+diff --git a/ext/openssl/tests/sni_server_us.pem b/ext/openssl/tests/sni_server_us.pem
+deleted file mode 100644
+index 170a8a96e75..00000000000
+--- a/ext/openssl/tests/sni_server_us.pem
++++ /dev/null
+@@ -1,57 +0,0 @@
+------BEGIN RSA PRIVATE KEY-----
+-MIIEpQIBAAKCAQEA1QkC3tiNYDY+ZxMmPbagYUbMpzuXo9mVBvYh86bYZaeB7bts
+-QCBK+6VD4D2LjR3RszpzmOzhJXjm8j0t+GeRS3OMIM75/BKAnixXicRSIb8zdIPz
+-JP992vvMq8p46/XftAfBhAMOaCqcD85zpyX4PhfC9733nOyN4yqx58O4UhVTKih6
+-W9/ldp3uwSYAW+HyoINnHls/bFO8vv60K5VIhkxK30LHnC5PvByGfuHOgrscEThs
+-jW0ESqO0+9l88KhGdmLgzvbBlGxNziCMfn0LcFH6p2ITc3foD4LSzGEFtJ92OZi3
+-buCOfbFsN7vWHTsEi89fRcCnWGtMwLUx0TCluQIDAQABAoIBAQCnsUQ1Lrl6trhA
+-Yu6DPbLZX+XQ7jPbonaQ2Ea5iOhmfIjmHdaEU+cyV1EqvseO+Z4MO0KraiuAV79T
+-h50cIEpa3kW7vbFCHz5nQ/hUVdlg/yT93rASu5rSOctOnz64Xv8Ms948kDtS+9eF
+-Cbo4JMdX+VRbt4mmWP8HhqAsFACPexEoWxJcIxwFcI24GTGzySjemNjQzbmcVhzM
+-a4k6n8DolCL1cRS54C5Aaf5g4+IFDgyydcgZXp1lnX3MnqivSNkejnPnY55NcmrH
+-X3ZWPlAi9GHOJE33uy8bGWnip7Tn4iTt6tJvjz/yP82TGACDg1B8XsKrqsuQLsoU
+-cNBVGcQBAoGBAPteCgNmuNOpo4SRA1UVRw1WgnE8YtnNA6vYyVcTLSpqabq33UaD
+-03L9CQsbHtj88U+E8OH24Iqj3U9x7QJfH8DVmWuBrlwez80JsKGnLdViHydjKcAz
+-H2Cbv+SiWeaWXkFCkN4Jf7k3q0Ew4SG2LOq5PVUy/NB4bilbJD2ExKpZAoGBANj2
+-Hpwo35IQ4XfSSsGaCdn+8ajMcNUMMGZ6YkZqmVO4kogqobyrPL/2KE9ol/hlacw6
+-U/6Digox5/wqruYfqyM8lqGOq2/0Xf7c4XfiOTS9Na4JN3OGzlyqPvcn2zdqhYFY
+-iHPu2RqpA+LhCHW9Zs8C1Bp/KAEPdRP6OabqVaphAoGACLrHVj7nBFLL3vq6RuYq
+-RYhPl2cld7LrAbjRpTiBRQvVCCsCgERrv36SJdSXSanfJ4fSZcaRHb97HBs0w/RR
+-wfypC1bBm2lmhhRkEfkgWlzCADgtZwNff5dpHqOUw7FNLK8HIO7rhJ8uT2FHMEiH
+-Xs94FdFjfknwaXdE1u4ZdmECgYEAgxfbkQHFbO2UPqErGGXp0/WOsS6ucpyF1jXW
+-kbOxZ3vb1jjkNyrEbzzeSHTrdmRYk9UekWeLjfNvt9dWjKfP8V+XqJCbF+9wqCFw
+-fs6LQEmfWMQq5DwtDqKznwVPGOHdPzVuZZaJSemb9oeAZBwINccAv+3bDyD23hZQ
+-pYFsN6ECgYEA33QYDNG/spki4D8rlxyxZ+1MdB/efnrGBhO8FsJpG5+AtmYhWgD9
+-sl29+3aiRkmDznoy36z+hoeZePILEAKMcbHyXOymixOHPuaZJ95hbvq6sqd6WMAe
+-w5tHnxlfEuu11zatolk6WiAmTmG3sZpN5Tqloq0Ye4dvlhVKNV3Bn3E=
+------END RSA PRIVATE KEY-----
+------BEGIN CERTIFICATE-----
+-MIIFIjCCAwqgAwIBAgICEAQwDQYJKoZIhvcNAQELBQAwVTELMAkGA1UEBhMCR0Ix
+-EDAOBgNVBAgMB0VuZ2xhbmQxEDAOBgNVBAoMB1BIUC5uZXQxEDAOBgNVBAsMB29w
+-ZW5zc2wxEDAOBgNVBAMMB3BocC5uZXQwHhcNMTgwMTE0MTgzNjQ0WhcNMjYwNDAy
+-MTgzNjQ0WjBGMQswCQYDVQQGEwJHQjEQMA4GA1UECAwHRW5nbGFuZDEQMA4GA1UE
+-CgwHUEhQLm5ldDETMBEGA1UEAwwKdXMucGhwLm5ldDCCASIwDQYJKoZIhvcNAQEB
+-BQADggEPADCCAQoCggEBANUJAt7YjWA2PmcTJj22oGFGzKc7l6PZlQb2IfOm2GWn
+-ge27bEAgSvulQ+A9i40d0bM6c5js4SV45vI9LfhnkUtzjCDO+fwSgJ4sV4nEUiG/
+-M3SD8yT/fdr7zKvKeOv137QHwYQDDmgqnA/Oc6cl+D4Xwve995zsjeMqsefDuFIV
+-Uyooelvf5Xad7sEmAFvh8qCDZx5bP2xTvL7+tCuVSIZMSt9Cx5wuT7wchn7hzoK7
+-HBE4bI1tBEqjtPvZfPCoRnZi4M72wZRsTc4gjH59C3BR+qdiE3N36A+C0sxhBbSf
+-djmYt27gjn2xbDe71h07BIvPX0XAp1hrTMC1MdEwpbkCAwEAAaOCAQkwggEFMAkG
+-A1UdEwQCMAAwEQYJYIZIAYb4QgEBBAQDAgZAMDMGCWCGSAGG+EIBDQQmFiRPcGVu
+-U1NMIEdlbmVyYXRlZCBTZXJ2ZXIgQ2VydGlmaWNhdGUwHQYDVR0OBBYEFOXnUeNs
+-grKQb+EvG36DXjjDDmsFMGwGA1UdIwRlMGOAFOPK44Eacedv7HbR2Igcbew+4kUa
+-oUekRTBDMQswCQYDVQQGEwJHQjEQMA4GA1UECAwHRW5nbGFuZDEQMA4GA1UECgwH
+-UEhQLm5ldDEQMA4GA1UEAwwHcGhwLm5ldIICEAAwDgYDVR0PAQH/BAQDAgWgMBMG
+-A1UdJQQMMAoGCCsGAQUFBwMBMA0GCSqGSIb3DQEBCwUAA4ICAQBDLwuLbx75ACSU
+-5cF2L/D17JEnhlna62MgKNdpNLJSpaofK2Lk2BqsmnQf5JdkrXWMUN/DsmXZc9pq
+-25XmprfABUP9Cx18KPVqLQ43Z9o+R9xI1Ospt5mrpxGp6l2BHSs/4G69nuPFpcIJ
+-iabnLYdUk2Z+64lPe4EMBrZH+pj4xn3JA59BACJYNYn0nLaw45DIAyzyLJ0vVSwc
+-0JtjsztXQov4UqdWXxLRFfe2nEGoK8ZkTJ8ELcCYu6sNSBjw9Ech78uXN1BQOBTK
+-lhAgN3FKqOp3hqf0umqf35gDvmWwLB/eptUYZ96gBYT0tbPA0P+YsW+iZmamxXma
+-Odgg8iRcPxKl9bVPt57NLaDy/RQhOxTGXQs1Q2jp7UhzqoZDClwVSDxd6DEppAFA
+-OZAY+Rsrm7VoCwVQ/1KbcJHmJ/79tArvaWJk3KHLGMpdZq4KwrC3hM8/QxYtyX/6
+-cfnXvShBYCdfTGgNlj3t/mNAgp1ZB3s9ClGqRBR/P0Db+ryv5DuxYM6nzEB3Od0y
+-kT5tHbXDQY+1HCExjOMi7Al0cmC2r3+oxDA4UjGv+npgcfeoxQhXmm/SQRiPdKlb
+-vT0D594sLoB23jqA9bMehpxEyI7eGjfFUmXwMeu0tJhipvpJI3ogJoM+SCFTyLkc
+-12cPiz/sR/ALhvhUJXTeUH8wxPjzbA==
+------END CERTIFICATE-----
+diff --git a/ext/openssl/tests/sni_server_us_cert.pem b/ext/openssl/tests/sni_server_us_cert.pem
+deleted file mode 100644
+index 4452e3c6cfb..00000000000
+--- a/ext/openssl/tests/sni_server_us_cert.pem
++++ /dev/null
+@@ -1,30 +0,0 @@
+------BEGIN CERTIFICATE-----
+-MIIFIjCCAwqgAwIBAgICEAQwDQYJKoZIhvcNAQELBQAwVTELMAkGA1UEBhMCR0Ix
+-EDAOBgNVBAgMB0VuZ2xhbmQxEDAOBgNVBAoMB1BIUC5uZXQxEDAOBgNVBAsMB29w
+-ZW5zc2wxEDAOBgNVBAMMB3BocC5uZXQwHhcNMTgwMTE0MTgzNjQ0WhcNMjYwNDAy
+-MTgzNjQ0WjBGMQswCQYDVQQGEwJHQjEQMA4GA1UECAwHRW5nbGFuZDEQMA4GA1UE
+-CgwHUEhQLm5ldDETMBEGA1UEAwwKdXMucGhwLm5ldDCCASIwDQYJKoZIhvcNAQEB
+-BQADggEPADCCAQoCggEBANUJAt7YjWA2PmcTJj22oGFGzKc7l6PZlQb2IfOm2GWn
+-ge27bEAgSvulQ+A9i40d0bM6c5js4SV45vI9LfhnkUtzjCDO+fwSgJ4sV4nEUiG/
+-M3SD8yT/fdr7zKvKeOv137QHwYQDDmgqnA/Oc6cl+D4Xwve995zsjeMqsefDuFIV
+-Uyooelvf5Xad7sEmAFvh8qCDZx5bP2xTvL7+tCuVSIZMSt9Cx5wuT7wchn7hzoK7
+-HBE4bI1tBEqjtPvZfPCoRnZi4M72wZRsTc4gjH59C3BR+qdiE3N36A+C0sxhBbSf
+-djmYt27gjn2xbDe71h07BIvPX0XAp1hrTMC1MdEwpbkCAwEAAaOCAQkwggEFMAkG
+-A1UdEwQCMAAwEQYJYIZIAYb4QgEBBAQDAgZAMDMGCWCGSAGG+EIBDQQmFiRPcGVu
+-U1NMIEdlbmVyYXRlZCBTZXJ2ZXIgQ2VydGlmaWNhdGUwHQYDVR0OBBYEFOXnUeNs
+-grKQb+EvG36DXjjDDmsFMGwGA1UdIwRlMGOAFOPK44Eacedv7HbR2Igcbew+4kUa
+-oUekRTBDMQswCQYDVQQGEwJHQjEQMA4GA1UECAwHRW5nbGFuZDEQMA4GA1UECgwH
+-UEhQLm5ldDEQMA4GA1UEAwwHcGhwLm5ldIICEAAwDgYDVR0PAQH/BAQDAgWgMBMG
+-A1UdJQQMMAoGCCsGAQUFBwMBMA0GCSqGSIb3DQEBCwUAA4ICAQBDLwuLbx75ACSU
+-5cF2L/D17JEnhlna62MgKNdpNLJSpaofK2Lk2BqsmnQf5JdkrXWMUN/DsmXZc9pq
+-25XmprfABUP9Cx18KPVqLQ43Z9o+R9xI1Ospt5mrpxGp6l2BHSs/4G69nuPFpcIJ
+-iabnLYdUk2Z+64lPe4EMBrZH+pj4xn3JA59BACJYNYn0nLaw45DIAyzyLJ0vVSwc
+-0JtjsztXQov4UqdWXxLRFfe2nEGoK8ZkTJ8ELcCYu6sNSBjw9Ech78uXN1BQOBTK
+-lhAgN3FKqOp3hqf0umqf35gDvmWwLB/eptUYZ96gBYT0tbPA0P+YsW+iZmamxXma
+-Odgg8iRcPxKl9bVPt57NLaDy/RQhOxTGXQs1Q2jp7UhzqoZDClwVSDxd6DEppAFA
+-OZAY+Rsrm7VoCwVQ/1KbcJHmJ/79tArvaWJk3KHLGMpdZq4KwrC3hM8/QxYtyX/6
+-cfnXvShBYCdfTGgNlj3t/mNAgp1ZB3s9ClGqRBR/P0Db+ryv5DuxYM6nzEB3Od0y
+-kT5tHbXDQY+1HCExjOMi7Al0cmC2r3+oxDA4UjGv+npgcfeoxQhXmm/SQRiPdKlb
+-vT0D594sLoB23jqA9bMehpxEyI7eGjfFUmXwMeu0tJhipvpJI3ogJoM+SCFTyLkc
+-12cPiz/sR/ALhvhUJXTeUH8wxPjzbA==
+------END CERTIFICATE-----
+diff --git a/ext/openssl/tests/sni_server_us_key.pem b/ext/openssl/tests/sni_server_us_key.pem
+deleted file mode 100644
+index 8b0d73d7d63..00000000000
+--- a/ext/openssl/tests/sni_server_us_key.pem
++++ /dev/null
+@@ -1,27 +0,0 @@
+------BEGIN RSA PRIVATE KEY-----
+-MIIEpQIBAAKCAQEA1QkC3tiNYDY+ZxMmPbagYUbMpzuXo9mVBvYh86bYZaeB7bts
+-QCBK+6VD4D2LjR3RszpzmOzhJXjm8j0t+GeRS3OMIM75/BKAnixXicRSIb8zdIPz
+-JP992vvMq8p46/XftAfBhAMOaCqcD85zpyX4PhfC9733nOyN4yqx58O4UhVTKih6
+-W9/ldp3uwSYAW+HyoINnHls/bFO8vv60K5VIhkxK30LHnC5PvByGfuHOgrscEThs
+-jW0ESqO0+9l88KhGdmLgzvbBlGxNziCMfn0LcFH6p2ITc3foD4LSzGEFtJ92OZi3
+-buCOfbFsN7vWHTsEi89fRcCnWGtMwLUx0TCluQIDAQABAoIBAQCnsUQ1Lrl6trhA
+-Yu6DPbLZX+XQ7jPbonaQ2Ea5iOhmfIjmHdaEU+cyV1EqvseO+Z4MO0KraiuAV79T
+-h50cIEpa3kW7vbFCHz5nQ/hUVdlg/yT93rASu5rSOctOnz64Xv8Ms948kDtS+9eF
+-Cbo4JMdX+VRbt4mmWP8HhqAsFACPexEoWxJcIxwFcI24GTGzySjemNjQzbmcVhzM
+-a4k6n8DolCL1cRS54C5Aaf5g4+IFDgyydcgZXp1lnX3MnqivSNkejnPnY55NcmrH
+-X3ZWPlAi9GHOJE33uy8bGWnip7Tn4iTt6tJvjz/yP82TGACDg1B8XsKrqsuQLsoU
+-cNBVGcQBAoGBAPteCgNmuNOpo4SRA1UVRw1WgnE8YtnNA6vYyVcTLSpqabq33UaD
+-03L9CQsbHtj88U+E8OH24Iqj3U9x7QJfH8DVmWuBrlwez80JsKGnLdViHydjKcAz
+-H2Cbv+SiWeaWXkFCkN4Jf7k3q0Ew4SG2LOq5PVUy/NB4bilbJD2ExKpZAoGBANj2
+-Hpwo35IQ4XfSSsGaCdn+8ajMcNUMMGZ6YkZqmVO4kogqobyrPL/2KE9ol/hlacw6
+-U/6Digox5/wqruYfqyM8lqGOq2/0Xf7c4XfiOTS9Na4JN3OGzlyqPvcn2zdqhYFY
+-iHPu2RqpA+LhCHW9Zs8C1Bp/KAEPdRP6OabqVaphAoGACLrHVj7nBFLL3vq6RuYq
+-RYhPl2cld7LrAbjRpTiBRQvVCCsCgERrv36SJdSXSanfJ4fSZcaRHb97HBs0w/RR
+-wfypC1bBm2lmhhRkEfkgWlzCADgtZwNff5dpHqOUw7FNLK8HIO7rhJ8uT2FHMEiH
+-Xs94FdFjfknwaXdE1u4ZdmECgYEAgxfbkQHFbO2UPqErGGXp0/WOsS6ucpyF1jXW
+-kbOxZ3vb1jjkNyrEbzzeSHTrdmRYk9UekWeLjfNvt9dWjKfP8V+XqJCbF+9wqCFw
+-fs6LQEmfWMQq5DwtDqKznwVPGOHdPzVuZZaJSemb9oeAZBwINccAv+3bDyD23hZQ
+-pYFsN6ECgYEA33QYDNG/spki4D8rlxyxZ+1MdB/efnrGBhO8FsJpG5+AtmYhWgD9
+-sl29+3aiRkmDznoy36z+hoeZePILEAKMcbHyXOymixOHPuaZJ95hbvq6sqd6WMAe
+-w5tHnxlfEuu11zatolk6WiAmTmG3sZpN5Tqloq0Ye4dvlhVKNV3Bn3E=
+------END RSA PRIVATE KEY-----
+-- 
+2.52.0
+

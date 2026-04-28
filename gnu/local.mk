@@ -2182,6 +2182,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/perl-www-curl-remove-symbol.patch	\
   %D%/packages/patches/perl-xml-libxml-fix-function-prototypes.patch	\
   %D%/packages/patches/phoronix-test-suite-fsdg.patch		\
+  %D%/packages/patches/php-01-fix-expired-certificate.patch	\
+  %D%/packages/patches/php-02-fix-sni-tests.patch		\
   %D%/packages/patches/picprog-non-intel-support.patch		\
   %D%/packages/patches/pidgin-add-search-path.patch		\
   %D%/packages/patches/pinball-system-ltdl.patch		\
