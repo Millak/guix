@@ -18,6 +18,7 @@
 ;;; Copyright © 2024 Christian Miller <christian.miller@dadoes.de>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
+;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -421,8 +422,8 @@ using a mouse.  It is customizable and extensible with plugins and scripts.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/SrainApp/srain")
-             (commit version)))
+              (url "https://github.com/SrainApp/srain")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "105z2kbj9ar6zk6i1qrbysrp9vbz692kbl2dwdxcwly0yh4cbd0p"))))
@@ -433,11 +434,11 @@ using a mouse.  It is customizable and extensible with plugins and scripts.")
       #:tests? #f ;there are no tests
       #:glib-or-gtk? #t))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("python-sphinx" ,python-sphinx)))
+     (list gettext-minimal
+           `(,glib "bin")
+           pkg-config
+           python-wrapper
+           python-sphinx))
     (inputs
      (list glib-networking
            gsettings-desktop-schemas
