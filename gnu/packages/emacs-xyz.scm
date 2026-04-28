@@ -11380,7 +11380,11 @@ the speedbar window.")
                 "06ibxnb765sjcxjv2w923cnjr9664qp2pf7w3wxdp8vrbxg1s670"))))
     (build-system emacs-build-system)
     (arguments
-     (list #:tests? #f ; There are no tests.
+     (list #:test-command
+           #~(list "ert-runner" "tests"
+                   "-l" "tests/markdown-overlays-blocks-tests.el"
+                   "-l" "tests/markdown-overlays-images-tests.el"
+                   "-l" "tests/shell-maker-history-tests.el")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-curl
@@ -11388,6 +11392,7 @@ the speedbar window.")
                    (emacs-substitute-variables "shell-maker.el"
                      ("shell-maker-curl-executable"
                       (search-input-file inputs "/bin/curl"))))))))
+    (native-inputs (list emacs-ert-runner))
     (inputs (list curl))
     (home-page "https://github.com/xenodium/shell-maker")
     (synopsis "Create Emacs shells")
