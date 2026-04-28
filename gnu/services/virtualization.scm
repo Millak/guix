@@ -532,7 +532,16 @@ avoid potential infinite waits blocking libvirt."))
                       (string-append
                        "LINUX_MODULE_DIRECTORY="
                        "/run/booted-system/kernel/lib/modules"))))
-           (stop #~(make-kill-destructor))))))
+           (stop #~(make-kill-destructor))
+           (actions
+            (list (shepherd-signal-action
+                   'reload SIGHUP
+                   #:documentation "Send a @code{SIGHUP} signal
+to @command{libvirtd} to reload its configuration (both its configuration file,
+and the content of @file{/etc/libvirtd}, in which live the XML files
+that define e.g. the VMs and their network)."
+                   #:message "Service libvirtd has been asked \
+to reload its configuration.")))))))
 
 (define (/etc/qemu/firmware config)
   (let ((firmwares (libvirt-configuration-firmwares config)))
