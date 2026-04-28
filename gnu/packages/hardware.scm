@@ -23,6 +23,7 @@
 ;;; Copyright © 2025 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2025 James Smith <jsubuntuxp@disroot.org>
+;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1000,22 +1001,21 @@ information can be viewed in real time and/or logged to a file.")
     (source
      (origin
        (method git-fetch)
-       (uri
-        (git-reference
-         (url (string-append "https://github.com/dell/" name))
-         (commit (string-append "v" version))))
+       (uri (git-reference
+              (url "https://github.com/dell/libsmbios")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0krwwydyvb9224r884y1mlmzyxhlfrcqw73vi1j8787rl0gl5a2i"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("perl" ,perl)
-       ("python" ,python)))
+     (list autoconf
+           automake
+           gettext-minimal
+           libtool
+           pkg-config
+           perl
+           python))
     (inputs
      (list libxml2))
     (arguments
