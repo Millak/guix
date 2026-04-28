@@ -3090,6 +3090,65 @@ language known as SASS.")
                                                     "0830pjcvhzxh6yixj82x5k5r1xnadjqzi16kp53213icbly0r9ma")))))))
     (properties '((hidden? . #t)))))
 
+(define-public guile-safsaf
+  (let ((commit "d0cb074ed19e9dc64b2b11e332c64577ff45018b")
+        (revision "1"))
+    (package
+    (name "guile-safsaf")
+    (version (git-version "0.1" revision commit))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://forge.cbaines.net/cbaines/safsaf.git")
+                    (commit commit)))
+              (sha256
+               (base32
+                "008nyyrf93hhjazmvn6cpvkcx59ps3356fb3vxr4anwxi6dyqyn4"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list pkg-config
+           autoconf
+           automake
+           guile-3.0-latest
+           guile-lib
+           guile-fibers
+           guile-knots
+           guile-webutils
+           guile-documenta
+           guile-json-4
+           guile-gcrypt))
+    (inputs
+     (list guile-3.0-latest))
+    (propagated-inputs
+     (list guile-fibers
+           guile-knots
+           guile-webutils
+           guile-json-4
+           guile-gcrypt))
+    (home-page "https://cbaines.codeberg.page/safsaf/")
+    (synopsis "Web framework for GNU Guile")
+    (description
+     "Safsaf is a web framework for GNU Guile, built on Guile Fibers using the
+Guile Knots web server.  It features include:
+@itemize
+@item Request routing
+@item Middleware for logging, CORS, CSRF protection, sessions (signed
+cookies), security headers, trailing-slash normalization, exception handling
+@item Request helpers for form body parsing, multipart parsing, query strings,
+cookies
+@item Response helpers for HTML/SXML, JSON, redirects, plain text, static
+files with Last-Modified / Cache-Control
+@item Server-Sent Events (SSE): streaming text/event-stream responses with
+keepalives and Last-Event-ID replay
+@item Declarative parameter parsing with built-in processors, CSRF
+integration, and error inspection
+@item Internationalisation: gettext-style t / tn helpers backed by an
+in-Scheme catalog loaded from .po files, with a locale handler wrapper that
+selects per-request from route params, cookie, or Accept-Language
+@end itemize")
+    (license license:lgpl3+))))
+
 
 (define-public perl-apache-logformat-compiler
   (package
