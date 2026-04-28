@@ -13703,14 +13703,14 @@ integrated with the tidymodels framework.")
 (define-public r-tclust
   (package
     (name "r-tclust")
-    (version "2.1-2")
+    (version "2.2-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tclust" version))
        (sha256
         (base32
-         "0x5rgxjlll9552bb59jf59mv7040rb0l14j3sh8vylwv6wpbnc85"))))
+         "1q6q8bzwv81xy8r2n6fanjdlzvqqchpjl63vl54764x333c0g2b4"))))
     (properties
      '((updater-extra-native-inputs . ("r-cluster" "r-mclust" "r-sn"))))
     (build-system r-build-system)
