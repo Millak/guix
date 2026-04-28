@@ -21490,6 +21490,31 @@ in English as you type.  It primarily detects \"weasel words\" and abuse of
 passive voice.")
     (license license:gpl3+)))
 
+(define-public emacs-neocities
+  (package
+    (name "emacs-neocities")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/coopi/emacs-neocities")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zvmbb780yh9jpapi9z6pvban48lnhc49xrz7s8d367nprvrjyy0"))))
+    (build-system emacs-build-system)
+    (home-page "https://codeberg.org/coopi/emacs-neocities")
+    (synopsis "Client library for the Neocities API")
+    (description
+     "This package provides an Emacs Lisp client for the
+@url{https://neocities.org/api, Neocities API}.  It supports uploading and
+deleting files, listing site contents, and querying site information.
+Requests are synchronous by default but can be made asynchronous via a
+callback.  Authentication uses @acronym{API, Application Programming
+Interface} keys, obtainable with @code{neocities-fetch-api-key}.")
+    (license license:agpl3+)))
+
 (define-public emacs-writefreely
   (let ((commit "cfbba9c3a34f580f39c0796966ea76b0cf98a23e")
         (revision "0"))
