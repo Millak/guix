@@ -2,7 +2,7 @@
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2013, 2015 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2020, 2021, 2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2020, 2021, 2025, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Guy Fleury Iteriteka <hoonandon@gmail.com>
 ;;; Copyright © 2019, 2022, 2024 Andy Tai <atai@atai.org>
@@ -43,6 +43,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
@@ -247,6 +248,16 @@ is designed to be simple and easy to understand, similar to Intel's but less
 complex.  It supports all currently known x86 architectural extensions, and
 has strong support for macros.")
     (license license:bsd-2)))
+
+(define* (maybe-nasm #:optional
+                     (system (or (%current-target-system)
+                                 (%current-system))))
+  ;; For some packages nasm is only needed when compiling to/for x86/x86_64.
+  (if (target-x86? system)
+      (list nasm)
+      '()))
+
+(export maybe-nasm)
 
 (define-public yasm
   (package
