@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2023 Advanced Micro Devices, Inc.
 ;;;
 ;;; This file is part of GNU Guix.
@@ -41,6 +42,7 @@
   #:use-module (guix amd-gpu)
   #:use-module (guix search-paths)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
@@ -730,7 +732,7 @@ and options.  With careful benchmarking, different hardware can be compared.")
 (define-public kdiskmark
   (package
     (name "kdiskmark")
-    (version "3.1.4")
+    (version "3.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -739,14 +741,13 @@ and options.  With careful benchmarking, different hardware can be compared.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1x8vd6swmf0i7f6m6wl2154n6plx8jkmcqfq6zxbdy255f1da74c"))))
-    (build-system cmake-build-system)
+                "161yyy4fcy5bnzhbcd7p90nlcslcsfp7n3m3bz9bygch7bdjw46g"))))
+    (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:configure-flags
-      ;; Drop runtime dependency on KDE's KFAuth.
-      #~(list "-DPERFORM_PAGECACHE_CLEARING_USING_KF5AUTH=no"
-              (string-append "-DPOLKITQT-1_INSTALL_DIR=" #$output))
+      #~(list (string-append "-DPOLKITQT-1_INSTALL_DIR=" #$output))
       #:tests? #f                       ;no test suite
       #:phases
       #~(modify-phases %standard-phases
@@ -759,10 +760,10 @@ and options.  With careful benchmarking, different hardware can be compared.")
             (lambda _
               (rmdir "src/singleapplication")
               (symlink #$(package-source
-                          (this-package-input "single-application-qt5"))
+                          (this-package-input "single-application"))
                        "src/singleapplication"))))))
-    (native-inputs (list extra-cmake-modules qttools-5))
-    (inputs (list fio polkit-qt qtbase-5 single-application-qt5))
+    (native-inputs (list extra-cmake-modules qttools))
+    (inputs (list fio polkit-qt6 single-application qtwayland))
     (home-page "https://github.com/JonMagon/KDiskMark")
     (synopsis "Simple disk benchmark tool")
     (description "KDiskMark is an HDD and SSD benchmark tool.  KDiskMark
