@@ -52,6 +52,7 @@
 ;;; Copyright © 2025 Philippe Swartvagher <phil.swart@gmx.fr>
 ;;; Copyright © 2025 Murilo <murilo@disroot.org>
 ;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3192,8 +3193,7 @@ pointers, containers, compiler building blocks, etc.")
     (native-inputs
      (list build))
     (inputs
-     `(("libcutl" ,libcutl)
-       ("libxerces-c" ,xerces-c)))
+     (list libcutl xerces-c))
     (synopsis "XSD Front-end")
     (description "@code{libxsd-frontend} is a compiler frontend for the W3C
 XML Schema definition language.  It includes a parser, semantic graph types
