@@ -76,6 +76,7 @@
 ;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2026 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2026 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -12721,11 +12722,10 @@ single @code{Tree} implementation, optimized for sparse nodes.")
      (list
       #:import-path "github.com/hashicorp/go-immutable-radix/v2"))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs
-                     go-github-com-hashicorp-go-immutable-radix)
+     (modify-inputs propagated-inputs
        (prepend go-golang-org-x-exp)
        (replace "go-github-com-hashicorp-golang-lru"
-         go-github-com-hashicorp-golang-lru-v2)))))
+                go-github-com-hashicorp-golang-lru-v2)))))
 
 (define-public go-github-com-hashicorp-go-memdb
   (package
