@@ -31,6 +31,7 @@
 ;;; Copyright © 2024 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2025 Jussi Timperi <jussi.timperi@iki.fi>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1611,41 +1612,41 @@ information for every pixel as the input.")
                 "0f242mix20rgsqz1llibhsz4r2pbvx6k32rmky0zjvnbaqaw1dwm"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-FHS-file-names
-           (lambda _
-             (substitute* "mk/Autoconf.mk"
-               (("/bin/echo") "echo")
-               (("/sbin/ldconfig -p") "echo lib")) #t))
-         (add-before 'build 'set-fcommon
-           (lambda _
-             (setenv "CFLAGS" "-fcommon")))
-         (delete 'configure))
-        #:tests? #f
-        #:make-flags
-        (list (string-append "CC=" ,(cc-for-target))
-              (string-append "prefix=" (assoc-ref %outputs "out")))))
-    (inputs `(("libjpeg" ,libjpeg-turbo)
-              ("curl" ,curl)
-              ("libtiff" ,libtiff)
-              ("libudev" ,eudev)
-              ("libwebp" ,libwebp)
-              ("libdrm" ,libdrm)
-              ("giflib" ,giflib)
-              ("glib" ,glib)
-              ("cairo-xcb" ,cairo-xcb)
-              ("freetype" ,freetype)
-              ("fontconfig" ,fontconfig)
-              ("libexif" ,libexif)
-              ("mesa" ,mesa)
-              ("libepoxy" ,libepoxy)
-              ("libpng" ,libpng)
-              ("poppler" ,poppler)))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-FHS-file-names
+                     (lambda _
+                       (substitute* "mk/Autoconf.mk"
+                         (("/bin/echo") "echo")
+                         (("/sbin/ldconfig -p") "echo lib"))))
+                   (add-before 'build 'set-fcommon
+                     (lambda _
+                       (setenv "CFLAGS" "-fcommon")))
+                   (delete 'configure))
+      #:tests? #f
+      #:make-flags #~(list (string-append "CC=" #+(cc-for-target))
+                           (string-append "prefix=" #$output))))
+    (inputs
+     (list cairo-xcb
+           curl
+           eudev
+           fontconfig
+           freetype
+           giflib
+           glib
+           libdrm
+           libepoxy
+           libexif
+           libjpeg-turbo
+           libpng
+           libtiff
+           libwebp
+           mesa
+           poppler))
     (native-inputs (list pkg-config))
     (synopsis "Framebuffer and drm-based image viewer")
     (description
-      "fbida contains a few applications for viewing and editing images on
+     "fbida contains a few applications for viewing and editing images on
 the framebuffer.")
     (license license:gpl2+)))
 
