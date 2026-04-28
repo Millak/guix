@@ -26,6 +26,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
+;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -971,10 +972,8 @@ passphrase when @code{gpg} is run and needs it.")))
            (lambda _
              (invoke "sh" "autogen.sh"))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ,@(package-native-inputs pinentry-tty)))
+     (modify-inputs native-inputs
+       (prepend autoconf automake gettext-minimal)))
     (inputs
      (modify-inputs inputs
        (prepend efl)))
