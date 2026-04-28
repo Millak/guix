@@ -1015,8 +1015,8 @@ It supports the @code{wayland}, @code{wayland-protocols}, and some external
 extensions, such as @code{wlr-protocols} and @code{plasma-wayland-protocols}.")
        (license license:expat)))))
 
-(define-public rust-smithay-0.7.0.20d2dac
-  (let ((commit "20d2dacd71394b5f96f6ace0a70a6f20dc62c0c6"))
+(define-public rust-smithay-0.7.0.ff5fa7d
+  (let ((commit "ff5fa7df392cecfba049ffed55cdaa4e98a8e7ef"))
     (hidden-package
      (package
        (inherit rust-smithay-0.6.0.ede2707)
@@ -1031,8 +1031,8 @@ extensions, such as @code{wlr-protocols} and @code{plasma-wayland-protocols}.")
           (file-name (git-file-name name version))
           (sha256
            (base32
-            "0h1q1jgyg76axr8h95nv8sg29l15iqnyfr5qfl5rk2wc7iw04avl"))))
-       (inputs (cargo-inputs 'rust-smithay-0.7.0.20d2dac))))))
+            "1dfksva7hizx675vh128ibrbf6ggjh2a01jm41qgb0dgyi6wcpsd"))))
+       (inputs (cargo-inputs 'rust-smithay-0.7.0.ff5fa7d))))))
 
 (define inspired-github-color-scheme-for-rust-syntect-5
   (let ((version "1.3.0"))

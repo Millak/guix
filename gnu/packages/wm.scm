@@ -2510,16 +2510,16 @@ built on dwl — crafted for speed, flexibility, and a customizable desktop expe
 (define-public niri
   (package
    (name "niri")
-   (version "25.11")
+   (version "26.04")
    (source (origin
              (method git-fetch)
              (uri (git-reference
-                   (url "https://github.com/YaLTeR/niri")
+                   (url "https://github.com/niri-wm/niri")
                    (commit (string-append "v" version))))
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0752qm245wc2gak0jhp0fnr0rdj3z54m2h97k3cxbjym9pcn658n"))))
+               "05h9pahlmlfahif7cby3742cxgqi5nv7p3xyz9n9gpfhsdzgih94"))))
    (build-system cargo-build-system)
    (arguments
     (list #:install-source? #f
@@ -2533,11 +2533,13 @@ built on dwl — crafted for speed, flexibility, and a customizable desktop expe
               (add-after 'unpack 'use-guix-vendored-dependencies
                 (lambda _
                   (substitute* "Cargo.toml"
-                    (("# version =.*")
-                     "version = \"*\"")
+                    (("# version =.*\n")
+                     "version = \"*\"\n")
                     (("git.*optional")
                      "version = \"*\", optional")
-                    (("^git = .*")
+                    (("^git = .*\n")
+                     "")
+                    (("^rev = .*\n")
                      ""))))
               (add-after 'unpack 'patch-references
                 (lambda* (#:key inputs #:allow-other-keys)
@@ -2603,7 +2605,7 @@ built on dwl — crafted for speed, flexibility, and a customizable desktop expe
            pipewire
            wayland
            (cargo-inputs 'niri)))
-   (home-page "https://github.com/YaLTeR/niri")
+   (home-page "https://github.com/niri-wm/niri")
    (synopsis "Scrollable-tiling Wayland compositor")
    (description
     "Niri is a scrollable-tiling Wayland compositor which arranges windows in a
