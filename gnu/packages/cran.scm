@@ -29174,14 +29174,14 @@ Venn diagram, heatmap).")
 (define-public r-getopt
   (package
     (name "r-getopt")
-    (version "1.20.4")
+    (version "1.21.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "getopt" version))
        (sha256
         (base32
-         "12qy48adnibfi9rpv5qd8k3hipbc4q85514dsz0xnhdsdnz6rlw7"))))
+         "18cdbcixk58bda5l08h76bljqydjdccy3qyy02al4lzi002kj6r9"))))
     (build-system r-build-system)
     (native-inputs (list r-testthat))
     (home-page "https://github.com/trevorld/getopt")
