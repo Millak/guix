@@ -439,10 +439,8 @@ que 6.15 não é mais suportada pelo fornecedor.")))
 
  (entry (commit "1618ca7aa2ee8b6519ee9fd0b965e15eca2bfe45")
         (title
-         (en "New @command{guix-daemon} privilege escalation vulnerability
-fixed")
-         (de "Weitere Schwachstelle in @command{guix-daemon} zur
-Rechteausweitung behoben")
+         (en "New @command{guix-daemon} privilege escalation vulnerability fixed")
+         (de "Weitere Schwachstelle in @command{guix-daemon} zur Rechteausweitung behoben")
          (pt "Nova vulnerabilidade de escalação de privilégio em @command{guix-daemon} consertada"))
         (body
          (en "A new vulnerability was identified and fixed in the build
@@ -621,12 +619,9 @@ sistema de construção semelhantemente a outros como @code{asdf-build-system/ec
 
  (entry (commit "30a5d140aa5a789a362749d057754783fea83dde")
         (title
-         (en "@command{guix-daemon} privilege escalation vulnerabilities
-fixed (CVE-2025-46415, CVE-2025-46416)")
-         (de "Schwachstellen in @command{guix-daemon} zur Rechteausweitung
-behoben (CVE-2025-46415, CVE-2025-46416)")
-         (pt "Vulnerabilidades de escalação de privilégios no
-@command{guix-daemon} consertadas (CVE-2025-46415, CVE-2025-46416)"))
+         (en "@command{guix-daemon} privilege escalation vulnerabilities fixed (CVE-2025-46415, CVE-2025-46416)")
+         (de "Schwachstellen in @command{guix-daemon} zur Rechteausweitung behoben (CVE-2025-46415, CVE-2025-46416)")
+         (pt "Vulnerabilidades de escalação de privilégios no @command{guix-daemon} consertadas (CVE-2025-46415, CVE-2025-46416)"))
         (body
          (en "Vulnerabilities in the build daemon, @command{guix-daemon}, were
 identified and fixed.  One vulnerability would allow any user on the system
@@ -872,8 +867,7 @@ Guix 共识文档 (Guix Consensus Document，GCD) 002 记录了此次迁移至 C
  (entry (commit "271a8fc2499135c3f0198bf69c9f2a60f1961bf1")
         (title
          (en "@samp{guix refresh} can now target partial versions")
-         (de "@samp{guix refresh} kann jetzt unvollständige Versionen als Ziel
-nehmen")
+         (de "@samp{guix refresh} kann jetzt unvollständige Versionen als Ziel nehmen")
          (pt "@samp{guix refresh} pode agora alvejar versões parciais"))
         (body
          (en "While it had been possible for some time to use the
@@ -1303,10 +1297,8 @@ lançamentos 6.13.")))
 
  (entry (commit "0753a17ddf6f4fab98b93c25f1a93b97ff9e46bb")
         (title
-         (en "The @command{guix deploy} command now supports the Hetzner Cloud
-service")
-         (de "Der Befehl @command{guix deploy} unterstützt jetzt den
-Hetzner-Clouddienst")
+         (en "The @command{guix deploy} command now supports the Hetzner Cloud service")
+         (de "Der Befehl @command{guix deploy} unterstützt jetzt den Hetzner-Clouddienst")
          (pt "O comando @command{guix deploy} agora suporta o serviço de nuvem Hetzner Cloud"))
         (body
          (en "In addition to deploying machines over SSH and on the Digital
@@ -1463,8 +1455,7 @@ serviço de rotação de registros fornecido pela versão 1.0 do Shepherd.")))
         (title
          (en "Rottlog service replaced by new log rotation service")
          (de "Rottlog-Dienst ersetzt durch neuen Dienst zur Protokollrotation")
-         (fr "Service Rottlog remplacé par un nouveau service de rotation des
-journaux")
+         (fr "Service Rottlog remplacé par un nouveau service de rotation des journaux")
          (pt "Serviço rottlog substituído pelo novo serviço de rotação de registro"))
         (body
          (en "A noticeable change was made that impacts all Guix System users:
@@ -1694,10 +1685,11 @@ Veja @command{info \"(guix.pt_BR) Invocando guix pack\"} para mais
 informação.")))
 
  (entry (commit "b93434e656eba4260df82158a96c295000d3ff44")
-        (title (en "PostgreSQL service upgrade")
-               (de "PostgreSQL-Dienst aktualisiert")
-               (fr "Mise à jour du service PostgreSQL")
-               (pt "Atualização do serviço PostgreSQL"))
+        (title
+         (en "PostgreSQL service upgrade")
+         (de "PostgreSQL-Dienst aktualisiert")
+         (fr "Mise à jour du service PostgreSQL")
+         (pt "Atualização do serviço PostgreSQL"))
         (body
          (en "\
 This news entry concerns users of the @code{postgresql-service-type}.
@@ -3853,10 +3845,11 @@ Isto vem com um novo sistema de construção para pacotes Elm --- execute
 @command{info \"(guix) Build Systems\"} para detalhes.")))
 
  (entry (commit "b6b2de2a0d52530bc1ee128c61580bed662ee15c")
-        (title (en "Linux-libre kernel updated to 5.17")
-               (de "Linux-libre-Kernel wird auf 5.17 aktualisiert")
-               (fr "Le noyau linux-libre est mis à jour vers la 5.17")
-               (pt "Kernel linux-libre atualizado para 5.17"))
+        (title
+         (en "Linux-libre kernel updated to 5.17")
+         (de "Linux-libre-Kernel wird auf 5.17 aktualisiert")
+         (fr "Le noyau linux-libre est mis à jour vers la 5.17")
+         (pt "Kernel linux-libre atualizado para 5.17"))
         (body
          (en "The default version of the linux-libre kernel has been
               updated to the 5.17 release series.")
@@ -4006,7 +3999,7 @@ informação.")))
          (nl "Meer beknopte @samp{guix pull --news}")
          (pt "@samp{guix pull --news} mais compacto"))
         (body
-          (en "The output of @samp{guix pull --news} has been shortened to
+         (en "The output of @samp{guix pull --news} has been shortened to
 display only fresh news items such as this one.  It no longer includes the
 partial selection of new and updated packages, which was often long enough to
 be distracting whilst being too short to be useful.
@@ -5539,10 +5532,11 @@ Execute @command{info \"(guix.pt_BR) Invocando guix package\"} para mais
 info.")))
 
  (entry (commit "9ab817b2a4601b4a6755983590ed7d93ebdc8d09")
-        (title (en "New @option{--with-latest} package transformation option")
-               (de "Neue Paketumwandlungsoption @option{--with-latest}")
-               (fr "Nouvelle option de transformation @option{--with-latest}")
-               (pt "Nova opção de transformação de pacote @option{--with-latest}"))
+        (title
+         (en "New @option{--with-latest} package transformation option")
+         (de "Neue Paketumwandlungsoption @option{--with-latest}")
+         (fr "Nouvelle option de transformation @option{--with-latest}")
+         (pt "Nova opção de transformação de pacote @option{--with-latest}"))
         (body
          (en "The new @option{--with-latest} package transformation option
 gets the latest release of a package, as would be identified by @command{guix
@@ -5599,10 +5593,11 @@ Execute @command{info \"(guix.pt_BR) Opções de transformação de pacote\"} pa
 mais info.")))
 
  (entry (commit "a879e35116043d5daf3d9d175b697d10b9177fd5")
-        (title (en "Substitutes can now be compressed with zstd")
-               (de "Substitute können nun mit zstd komprimiert werden")
-               (fr "Les substituts peuvent maintenant être compressés avec zstd")
-               (pt "Substitutos já podem ser comprimidos com zstd"))
+        (title
+         (en "Substitutes can now be compressed with zstd")
+         (de "Substitute können nun mit zstd komprimiert werden")
+         (fr "Les substituts peuvent maintenant être compressés avec zstd")
+         (pt "Substitutos já podem ser comprimidos com zstd"))
         (body
          (en "The @command{guix publish} command now supports substitute
 compression with zstd and @command{guix-daemon} can now fetch and decompress
@@ -5669,10 +5664,11 @@ Execute @command{info \"(guix.pt_BR) Atualizando o Guix\"} para aprender como
 fazer isso.")))
 
  (entry (commit "e38d90d497e19e00263fa28961c688a433154386")
-        (title (en "New @option{--with-patch} package transformation option")
-               (de "Neue Paketumwandlungsoption @option{--with-patch}")
-               (fr "Nouvelle option de transformation @option{--with-patch}")
-               (pt "Nova opção de transformação de pacotes @option{--with-patch}"))
+        (title
+         (en "New @option{--with-patch} package transformation option")
+         (de "Neue Paketumwandlungsoption @option{--with-patch}")
+         (fr "Nouvelle option de transformation @option{--with-patch}")
+         (pt "Nova opção de transformação de pacotes @option{--with-patch}"))
         (body
          (en "The new @option{--with-patch} package transformation option
 applies patches to the specified packages before building them.  The example
@@ -5718,11 +5714,12 @@ Execute @command{info \"(guix.pt_BR) Opções de transformação de pacote\"} pa
 mais info.")))
 
  (entry (commit "79f9dee3c4c0e6d21066f142116a537207ae7ba4")
-        (title (en "Local substitute servers discovery is now supported")
-               (de "Substitutserver können jetzt im lokalen Netz erkannt werden")
-               (es "Los servidores de sustituciones se pueden descubrir localmente")
-               (fr "La découverte des serveurs de substituts locaux est désormais supportée")
-               (pt "Descoberta de servidores de substitutos locais já é suportada"))
+        (title
+         (en "Local substitute servers discovery is now supported")
+         (de "Substitutserver können jetzt im lokalen Netz erkannt werden")
+         (es "Los servidores de sustituciones se pueden descubrir localmente")
+         (fr "La découverte des serveurs de substituts locaux est désormais supportée")
+         (pt "Descoberta de servidores de substitutos locais já é suportada"))
         (body
          (en "The @command{guix-daemon} can now discover local substitute
 servers when the @option{--discover} option is passed.  Only the substitute
@@ -5754,11 +5751,12 @@ descobertos.  A descoberta de rede é baseada nos protocolos mDNS e DNS-SD,
 usando a biblioteca Guile-Avahi por ora.")))
 
  (entry (commit "a9a2fdaabcc78e7a54d9a6bcfa4ee3de308e9a90")
-        (title (en "Logical Volume Manager (LVM) now supported on Guix System")
-               (de "Logical Volume Manager (LVM) wird jetzt auf Guix System unterstützt")
-               (es "El sistema Guix ahora implementa también volúmenes lógicos LVM")
-               (fr "Le gestionnaire de volumes logiques (LVM) est maintenant pris en charge par le système Guix")
-               (pt "@acronym{LVM, Logical Volume Manager} já é suportado no Sistema Guix"))
+        (title
+         (en "Logical Volume Manager (LVM) now supported on Guix System")
+         (de "Logical Volume Manager (LVM) wird jetzt auf Guix System unterstützt")
+         (es "El sistema Guix ahora implementa también volúmenes lógicos LVM")
+         (fr "Le gestionnaire de volumes logiques (LVM) est maintenant pris en charge par le système Guix")
+         (pt "@acronym{LVM, Logical Volume Manager} já é suportado no Sistema Guix"))
         (body
          (en "On Guix System, the new @code{lvm-device-mapping} variable
 allows you to declare ``mapped devices'' for LVM, the Linux Logical Volume
@@ -5830,11 +5828,12 @@ Veja @command{info \"(guix.pt_BR) Dispositivos mapeados\"} para mais
 informação.")))
 
  (entry (commit "3b6e4e5fd05e72b8a32ff1a2d5e21464260e21e6")
-        (title (en "List of substitute keys is now declarative on Guix System")
-               (de "Liste der Substitutschlüssel auf Guix System ist jetzt deklarativ")
-               (es "Claves para sustituciones del sistema Guix en formato declarativo")
-               (fr "Liste des clefs de substituts désormais déclarative sur Guix System")
-               (pt "Lista de chaves de substitutos agora é declarativa no Sistema Guix"))
+        (title
+         (en "List of substitute keys is now declarative on Guix System")
+         (de "Liste der Substitutschlüssel auf Guix System ist jetzt deklarativ")
+         (es "Claves para sustituciones del sistema Guix en formato declarativo")
+         (fr "Liste des clefs de substituts désormais déclarative sur Guix System")
+         (pt "Lista de chaves de substitutos agora é declarativa no Sistema Guix"))
         (body
          (en "The list of authorized substitute keys, available in
 @file{/etc/guix/acl}, is now built by default in a purely declarative fashion
@@ -5918,11 +5917,12 @@ Alternativamente, você pode definir o campo @code{authorize-key?} de
 anterior.")))
 
  (entry (commit "6aeda81602555fbeac0c0a209e74f5262093b513")
-        (title (en "New @option{--with-debug-info} package transformation option")
-               (de "Neue Paketumwandlungsoption @option{--with-debug-info}")
-               (es "Nueva opción de transformación @option{--with-debug-info}")
-               (fr "Nouvelle option de transformation @option{--with-debug-info}")
-               (pt "Nova opção de transformação de pacote @option{--with-debug-info}"))
+        (title
+         (en "New @option{--with-debug-info} package transformation option")
+         (de "Neue Paketumwandlungsoption @option{--with-debug-info}")
+         (es "Nueva opción de transformación @option{--with-debug-info}")
+         (fr "Nouvelle option de transformation @option{--with-debug-info}")
+         (pt "Nova opção de transformação de pacote @option{--with-debug-info}"))
         (body
          (en "The new @option{--with-debug-info} option builds a variant of a
 package that includes debug info and grafts it onto the application you want
@@ -6006,11 +6006,12 @@ Execute @command{info \"(guix.pt_BR) Opções de transformação de pacote\"} pa
 mais info.")))
 
  (entry (commit "abd7a474615353149a44f4504f0b4b248dcc0716")
-        (title (en "New @option{--with-c-toolchain} package transformation option")
-               (de "Neue Paketumwandlungsoption @option{--with-c-toolchain}")
-               (es "Nueva opción de transformación @option{--with-c-toolchain}")
-               (fr "Nouvelle option de transformation @option{--with-c-toolchain}")
-               (pt "Nova opção de transformação de pacote @option{--with-c-toolchain}"))
+        (title
+         (en "New @option{--with-c-toolchain} package transformation option")
+         (de "Neue Paketumwandlungsoption @option{--with-c-toolchain}")
+         (es "Nueva opción de transformación @option{--with-c-toolchain}")
+         (fr "Nouvelle option de transformation @option{--with-c-toolchain}")
+         (pt "Nova opção de transformação de pacote @option{--with-c-toolchain}"))
         (body
          (en "The new @option{--with-c-toolchain} package transformation
 options provides an easy way for developers to rebuild their favorite packages
@@ -6101,12 +6102,12 @@ Execute @command{info \"(guix.pt_BR) Opções de transformação de pacote\"} pa
 mais info.")))
 
  (entry (commit "8e1907a72430aa989125b053573ef0897c480697")
-        (title (en "Package transformation options now recorded in profiles")
-               (es "Las opciones de transformación de paquetes ahora se
-quedan registradas en el perfil")
-               (de "Paketumwandlungsoptionen werden nun in Profilen gesichert")
-               (fr "Options de transformation sauvegardées dans les profils")
-               (pt "Opções de transformação de pacotes agora salvas nos perfis"))
+        (title
+         (en "Package transformation options now recorded in profiles")
+         (es "Las opciones de transformación de paquetes ahora se quedan registradas en el perfil")
+         (de "Paketumwandlungsoptionen werden nun in Profilen gesichert")
+         (fr "Options de transformation sauvegardées dans les profils")
+         (pt "Opções de transformação de pacotes agora salvas nos perfis"))
         (body
          (en "When installing packages in a profile, package transformation
 options such as @option{--with-input} are now recorded in the profile.  When
@@ -6145,11 +6146,12 @@ Execute @command{info \"(guix.pt_BR) Opções de transformação de pacote\"} pa
 mais info.")))
 
  (entry (commit "313f492657f1d0863c641fa5ee7f5b7028e27c94")
-        (title (en "New @option{--image-type} option for @command{guix system disk-image}.")
-               (es "Nueva opción @option{--image-type} para @command{guix system disk-image}.")
-               (de "Neue Option @option{--image-type} für @command{guix system disk-image}.")
-               (fr "Nouvelle option @option{--image-type} pour @command{guix system disk-image}.")
-               (pt "Nova opção @option{--image-type} para @command{guix system disk-image}."))
+        (title
+         (en "New @option{--image-type} option for @command{guix system disk-image}.")
+         (es "Nueva opción @option{--image-type} para @command{guix system disk-image}.")
+         (de "Neue Option @option{--image-type} für @command{guix system disk-image}.")
+         (fr "Nouvelle option @option{--image-type} pour @command{guix system disk-image}.")
+         (pt "Nova opção @option{--image-type} para @command{guix system disk-image}."))
         (body
          (en "The @option{--file-system-type} option for @command{guix system
 disk-image} command has been replaced by the new @option{--image-type} option.
@@ -6194,13 +6196,12 @@ A opção @option{--list-image-types} lista todos os tipos de imagem
 disponíveis.")))
 
  (entry (commit "8819551c8d2a12cd4e84e09b51e434d05a012c9d")
-        (title (en "Package transformations now apply to implicit inputs")
-               (es "Las transformaciones de paquetes ahora afectan también
-a las dependencias implícitas")
-               (de "Paketumwandlungen betreffen jetzt auch implizite Eingaben")
-               (fr "Les transformations de paquets s'appliquent aux
-dépendances implicites")
-               (pt "Transformações de pacotes agora se aplicam a entradas implícitas"))
+        (title
+         (en "Package transformations now apply to implicit inputs")
+         (es "Las transformaciones de paquetes ahora afectan también a las dependencias implícitas")
+         (de "Paketumwandlungen betreffen jetzt auch implizite Eingaben")
+         (fr "Les transformations de paquets s'appliquent aux dépendances implicites")
+         (pt "Transformações de pacotes agora se aplicam a entradas implícitas"))
         (body
          (en "Package transformation options such as @option{--with-branch},
 @option{--with-input}, and so on now apply to implicit inputs---previously
@@ -6305,11 +6306,12 @@ Execute @command{info \"(guix.pt_BR) Opções de transformação de pacote\"} pa
 mais info.")))
 
  (entry (commit "f458cfbcc54ed87b1a87dd9e150ea276f17eab74")
-        (title (en "New @option{--without-tests} transformation option")
-               (es "Nueva opción de transformación @option{--without-tests}")
-               (de "Neue Paketumwandlungsoption @option{--without-tests}")
-               (fr "Nouvelle option de transformation @option{--without-tests}")
-               (pt "Nova opção de transformação @option{--without-tests}"))
+        (title
+         (en "New @option{--without-tests} transformation option")
+         (es "Nueva opción de transformación @option{--without-tests}")
+         (de "Neue Paketumwandlungsoption @option{--without-tests}")
+         (fr "Nouvelle option de transformation @option{--without-tests}")
+         (pt "Nova opção de transformação @option{--without-tests}"))
         (body
          (en "The new @option{--without-tests} package transformation option
 instructs Guix to skip the test suite of a given package.  In the example
@@ -6385,11 +6387,12 @@ pode esconder problemas reais, então use isto com cautela.  Execute
 info.")))
 
  (entry (commit "a98712785e0b042a290420fd74e5a4a5da4fc68f")
-        (title (en "New @command{guix git authenticate} command")
-               (es "Nueva orden @command{guix git authenticate}")
-               (de "Neuer Befehl @command{guix git authenticate}")
-               (fr "Nouvelle commande @command{guix git authenticate}")
-               (pt "Novo comando @command{guix git authenticate}"))
+        (title
+         (en "New @command{guix git authenticate} command")
+         (es "Nueva orden @command{guix git authenticate}")
+         (de "Neuer Befehl @command{guix git authenticate}")
+         (fr "Nouvelle commande @command{guix git authenticate}")
+         (pt "Novo comando @command{guix git authenticate}"))
         (body
          (en "The new @command{guix git authenticate} command authenticates a
 Git repository by verifying commit signatures and ensuring they all come from
@@ -6467,11 +6470,12 @@ mais info, e veja @uref{https://guix.gnu.org/blog/2020/securing-updates/} para
 detalhes sobre estes mecanismos.")))
 
  (entry (commit "43badf261f4688c8a7a7a9004a4bff8acb205835")
-        (title (en "@command{guix pull} authenticates channels")
-               (es "@command{guix pull} verifica los canales")
-               (de "@command{guix pull} authentifiziert Kanäle")
-               (fr "@command{guix pull} authentifie les canaux")
-               (pt "@command{guix pull} autentica canais"))
+        (title
+         (en "@command{guix pull} authenticates channels")
+         (es "@command{guix pull} verifica los canales")
+         (de "@command{guix pull} authentifiziert Kanäle")
+         (fr "@command{guix pull} authentifie les canaux")
+         (pt "@command{guix pull} autentica canais"))
         (body
          (en "The @command{guix pull} and @command{guix time-machine} commands
 now authenticate the source code that they pull, unless the new
@@ -6524,11 +6528,12 @@ Este recurso está atualmente limitado ao canal @code{guix} mas logo estará
 disponível a autores de canais de terceiros.")))
 
  (entry (commit "c924e541390f9595d819edc33c19d979917c15ec")
-        (title (en "@command{guix repl} adds support for running Guile scripts")
-               (es "@command{guix repl} puede ejecutar guiones de Guile")
-               (de "@command{guix repl} kann Guile-Skripte ausführen")
-               (fr "@command{guix repl} permet d'exécuter des scripts en langage Guile")
-               (pt "@command{guix repl} adiciona suporte à execução de scripts Guile"))
+        (title
+         (en "@command{guix repl} adds support for running Guile scripts")
+         (es "@command{guix repl} puede ejecutar guiones de Guile")
+         (de "@command{guix repl} kann Guile-Skripte ausführen")
+         (fr "@command{guix repl} permet d'exécuter des scripts en langage Guile")
+         (pt "@command{guix repl} adiciona suporte à execução de scripts Guile"))
         (body
          (en "The @command{guix repl} command can now be used to run
 Guile scripts.  Compared to just launching the @command{guile} command,
@@ -6588,13 +6593,13 @@ Execute @command{info \"(guix.pt_BR) Invocando guix repl\"} para mais
 informação.")))
 
  (entry (commit "b460ba7992a0b4af2ddb5927dcf062784539ef7b")
-        (title (en "Add support to boot from a Btrfs subvolume")
-               (es "Implementado el arranque desde un subvolumen de Btrfs")
-               (de "Unterstützung für Systemstart von einem
-Btrfs-Unterlaufwerk hinzugefügt")
-               (fr "Ajout du support pour démarrer depuis un sous-volume Btrfs")
-               (nl "Nieuwe ondersteuning voor het opstarten vanaf een Btrfs-subvolume")
-               (pt "Adiciona suporte à inicialização a partir de um subvolume Btrfs"))
+        (title
+         (en "Add support to boot from a Btrfs subvolume")
+         (es "Implementado el arranque desde un subvolumen de Btrfs")
+         (de "Unterstützung für Systemstart von einem Btrfs-Unterlaufwerk hinzugefügt")
+         (fr "Ajout du support pour démarrer depuis un sous-volume Btrfs")
+         (nl "Nieuwe ondersteuning voor het opstarten vanaf een Btrfs-subvolume")
+         (pt "Adiciona suporte à inicialização a partir de um subvolume Btrfs"))
         (body
          (en "The generation of the GRUB configuration file produced from an
 operating system declaration now takes into account the use of a Btrfs
@@ -6628,15 +6633,12 @@ Btrfs para a partição que abriga @file{/gnu/store}.  Execute o comando
 e exemplos.")))
 
  (entry (commit "6456232164890dbf5aa20394ee24637feb4b7b9e")
-        (title (en "@command{guix pack -RR} introduces a new execution
-engine")
-               (es "@command{guix pack -RR} introduce un nuevo motor
-de ejecución")
-               (de "@command{guix pack -RR} führt neuen Ausführungstreiber
-ein")
-               (fr "@command{guix pack -RR} introduit un nouveau moteur d'exécution")
-               (pt "@command{guix pack -RR} introduz um novo motor de
-execução"))
+        (title
+         (en "@command{guix pack -RR} introduces a new execution engine")
+         (es "@command{guix pack -RR} introduce un nuevo motor de ejecución")
+         (de "@command{guix pack -RR} führt neuen Ausführungstreiber ein")
+         (fr "@command{guix pack -RR} introduit un nouveau moteur d'exécution")
+         (pt "@command{guix pack -RR} introduz um novo motor de execução"))
         (body
          (en "The @command{guix pack -RR} command allows you to create a
 tarball containing @dfn{relocatable binaries}.  Until now, those would rely
@@ -6733,11 +6735,12 @@ Execute @command{info \"(guix.pt_BR) Invocando guix pack\"} para mais
 informação.")))
 
  (entry (commit "88a96c568c47c97d05d883ada5afbc4e1200b10f")
-        (title (en "New @option{--path} option for @command{guix graph}")
-               (es "Nueva opción @option{--path} para @command{guix graph}")
-               (de "Neue Option @option{--path} für @command{guix graph}")
-               (fr "Nouvelle option @option{--path} pour @command{guix graph}")
-               (pt "Nova opção @option{--path} para @command{guix graph}"))
+        (title
+         (en "New @option{--path} option for @command{guix graph}")
+         (es "Nueva opción @option{--path} para @command{guix graph}")
+         (de "Neue Option @option{--path} für @command{guix graph}")
+         (fr "Nouvelle option @option{--path} pour @command{guix graph}")
+         (pt "Nova opção @option{--path} para @command{guix graph}"))
         (body
          (en "The @command{guix graph} command has a new @option{--path}
 option that instructs it to display the shortest path between two packages,
@@ -6797,12 +6800,13 @@ Execute @code{info \"(guix.pt_BR) Invocando guix graph\"} para mais
 informação.")))
 
  (entry (commit "a33eac038a811603c8b9ed106ae405a5f80a0e9d")
-        (title (en "GNU C Library upgraded")
-               (de "GNU-C-Bibliothek aktualisiert")
-               (es "Actualización de la biblioteca C de GNU")
-               (fr "Mise à jour de la bibliothèque C de GNU")
-               (nl "GNU C-bibliotheek bijgewerkt")
-               (pt "Biblioteca C da GNU atualizada"))
+        (title
+         (en "GNU C Library upgraded")
+         (de "GNU-C-Bibliothek aktualisiert")
+         (es "Actualización de la biblioteca C de GNU")
+         (fr "Mise à jour de la bibliothèque C de GNU")
+         (nl "GNU C-bibliotheek bijgewerkt")
+         (pt "Biblioteca C da GNU atualizada"))
         (body
          (en "The GNU C Library (glibc) has been upgraded to version 2.31.  To
 run previously-installed programs linked against glibc 2.29, you need to
@@ -6877,12 +6881,14 @@ No Sistema Guix, você pode ajustar o campo @code{locale-libcs} de sua forma
 para mais informações.")))
 
  (entry (commit "e1e6491226347d9fb93ff484d78cef98848a510a")
-        (title (en "Guix Cookbook now available as Info")
-               (de "Guix-Kochbuch jetzt als Info-Dokument verfügbar")
-               (pt "Guix Cookbook já está disponível como Info"))
+        (title
+         (en "Guix Cookbook now available as Info")
+         (de "Guix-Kochbuch jetzt als Info-Dokument verfügbar")
+         (pt "Guix Cookbook já está disponível como Info"))
         ;; TRANSLATORS: Adjust the URL and the 'info' command to refer to the
         ;; translated manual if it's available.
-        (body (en "The new Guix Cookbook is now fetched by @command{guix pull}
+        (body
+         (en "The new Guix Cookbook is now fetched by @command{guix pull}
 and thus readily available in the Info format.  It aims to provide tutorials
 and detailed examples covering a variety of use cases.  You can access it by
 typing:
@@ -6896,7 +6902,7 @@ it @uref{https://guix.gnu.org/cookbook/en/, on-line}.
 
 Your contributions are welcome: @uref{https://guix.gnu.org/contact/, get in
 touch with the developers} to share your recipes!")
-              (de "Das neue Guix-Kochbuch wird nun von @command{guix pull}
+         (de "Das neue Guix-Kochbuch wird nun von @command{guix pull}
 geladen und steht dann im Info-Format zur Verfügung.  Darin sollen Anleitungen
 und detaillierte Beispiele gezeigt werden, die eine breite Spanne an
 Anwendungsfällen abdecken.  Um darauf zuzugreifen, geben Sie dies ein:
@@ -6911,7 +6917,7 @@ auch @uref{https://guix.gnu.org/cookbook/de/, online} darauf zugreifen.
 Ihre Beiträge werden gerne gesehen.  Bitte
 @uref{https://guix.gnu.org/contact/, kontaktieren Sie die Entwickler}, um Ihre
 Rezepte mit uns zu teilen!")
-              (pt "O novo Livro de Receitas Guix já pode ser buscado via
+         (pt "O novo Livro de Receitas Guix já pode ser buscado via
 @command{guix pull} e portanto prontamente disponível em formato Info.  Ele
 pretende fornecer tutoriais e exemplos detalhados cobrindo uma variedade de
 casos de uso.  Você pode acessá-lo via:
@@ -6928,10 +6934,11 @@ Suas contribuições são bem vindas: @uref{https://guix.gnu.org/contact/, entre
 em contato com os desenvolvedores} para compartilhar suas receitas!")))
 
  (entry (commit "2ca7af43fe17d9acf082dce85d137a27a8ac4887")
-        (title (en "Further reduced binary seed bootstrap")
-               (de "Bootstrapping jetzt mit noch kleinerem Seed")
-               (fr "Le bootstrap binaire est encore plus réduit")
-               (pt "Semente binária de inicialização ainda mais reduzida"))
+        (title
+         (en "Further reduced binary seed bootstrap")
+         (de "Bootstrapping jetzt mit noch kleinerem Seed")
+         (fr "Le bootstrap binaire est encore plus réduit")
+         (pt "Semente binária de inicialização ainda mais reduzida"))
         (body
          (en "The package graph on x86_64 and i686 is now rooted in a further
 @dfn{reduced set of binary seeds}.  The initial set of binaries from which
@@ -6958,27 +6965,29 @@ aproximadamente 60 MiB, um quarto do que costumava ser.  Execute @code{info
 @uref{https://fosdem.org/2020/schedule/event/gnumes/}.")))
 
  (entry (commit "0468455e7d279c89ea3ad1b51935efb2b785ec47")
-        (title (en "Rottlog service added to @code{%base-services}")
-               (de "Rottlog-Dienst ist nun Teil der @code{%base-services}")
-               (fr "Le service rottlog a été ajouté à @code{%base-services}")
-               (pt "Serviço rottlog adicionado a @code{%base-services}"))
-        (body (en "An instance of @code{rottlog-service-type}, the system
+        (title
+         (en "Rottlog service added to @code{%base-services}")
+         (de "Rottlog-Dienst ist nun Teil der @code{%base-services}")
+         (fr "Le service rottlog a été ajouté à @code{%base-services}")
+         (pt "Serviço rottlog adicionado a @code{%base-services}"))
+        (body
+         (en "An instance of @code{rottlog-service-type}, the system
 service responsible for log rotation, has been added to @code{%base-services}.
 If your operating system configuration for Guix System is explicitly adding
 @code{rottlog-service-type} to the services, you should now remove it.  See
 the ``Log Rotation'' section of the manual for more information.")
-              (de "Eine Instanz des @code{rottlog-service-type} für
+         (de "Eine Instanz des @code{rottlog-service-type} für
 Log-Rotation wurde zu den @code{%base-services} hinzugefügt.  Wenn der
 Systemdienst bereits in Ihrer Konfiguration für Guix System ausdrücklich
 genannt wurde, sollten Sie ihn jetzt daraus entfernen.  Siehe den Abschnitt
 „Log-Rotation“ im Handbuch für weitere Informationen.")
-              (fr "Une instance de @code{rottlog-service-type}, le service
+         (fr "Une instance de @code{rottlog-service-type}, le service
 système responsable de la rotation des journaux, a été ajoutée à
 @code{%base-services}.  Si votre configuration de système d'exploitation Guix
 System ajoute @code{rottlog-service-type} explicitement, vous devriez maintenant
 le supprimer.  Voir la section « Rotation des journaux » dans le manuel
 pour en savoir plus.")
-              (pt "Uma instância de @code{rottlog-service-type}, o serviço de
+         (pt "Uma instância de @code{rottlog-service-type}, o serviço de
 sistema responsável por rotação de registros (@i{log}), foi adicionado a
 @code{%base-services}.  Se sua configuração para o Sistema Guix está
 explicitamente adicionando @code{rottlog-service-type} aos serviços, você deve
@@ -6986,94 +6995,95 @@ agora removê-lo.  Veja a seção de rotação de log do manual para mais
 informação.")))
 
  (entry (commit "b6bee63bed4f013064c0d902e7c8b83ed7514ade")
-        (title (en "@code{guile} package now refers to version 3.0")
-               (de "Das @code{guile}-Paket bezeichnet jetzt Version 3.0")
-               (fr "Le paquet @code{guile} se réfère maintenant à la version 3.0")
-               (pt "O pacote @code{guile} agora refere-se à versão 3.0"))
-        (body (en "The @code{guile} package has been upgraded to version 3.0
+        (title
+         (en "@code{guile} package now refers to version 3.0")
+         (de "Das @code{guile}-Paket bezeichnet jetzt Version 3.0")
+         (fr "Le paquet @code{guile} se réfère maintenant à la version 3.0")
+         (pt "O pacote @code{guile} agora refere-se à versão 3.0"))
+        (body
+         (en "The @code{guile} package has been upgraded to version 3.0
  (instead of 2.2).  The @code{guile3.0-} packages have been renamed to their
 original name, and @code{guile2.2-} variants of these packages have been
 defined.  Additionally, derivations are now all built with Guile 3.0, and
 system services also run on 3.0.")
-              (de "Das @code{guile}-Paket wurde auf Version 3.0
+         (de "Das @code{guile}-Paket wurde auf Version 3.0
  (statt 2.2) aktualisiert. Die Pakete, deren Namen mit @code{guile3.0-}
 beginnen, wurden umbenannt, so dass sie nun den unveränderten Namen tragen,
 während ihre Varianten mit @code{guile2.2-} hinzugefügt wurden.  Des Weiteren
 werden jetzt alle Ableitungen mit Guile 3.0 erstellt und die Systemdienste
 laufen auch auf 3.0.")
-              (fr "Le paquet @code{guile} a été mis à jour vers la version 3.0
+         (fr "Le paquet @code{guile} a été mis à jour vers la version 3.0
 (au lieu de la 2.2).  Les paquets @code{guile3.0-} ont été renommés en leur
 nom d'origine et les variantes @code{guile2.2-} de ces paquets ont été définis.
 En plus, les dérivation sont maintenant construites avec Guile 3.0, et les
 services systèmes utilisent aussi la 3.0.")
-              (pt "O pacote @code{guile} foi atualizado para a versão 3.0 (em
+         (pt "O pacote @code{guile} foi atualizado para a versão 3.0 (em
 vez da 2.2).  Os pacotes @code{guile3.0-} foram renomeados para seus nomes
 originais, e as variantes @code{guile2.2-} destes pacotes foram definidas.
 Adicionalmente, as derivações agora são todas construídas com Guile 3.0, e os
 serviços de sistema também rodam no 3.0.")))
 
  (entry (commit "e3e1a7ba08af2d58c47264c543617e499c239444")
-        (title (en "@command{guix pull} now supports SSH authenticated
-repositories")
-               (de "@command{guix pull} unterstützt nun SSH-authentifizierte
-Repositorys")
-               (fr "@command{guix pull} prend maintenant en charge
-l'authentification en SSH pour les dépôts.")
-               (nl "@command{guix pull} ondersteunt nu SSH-geauthenticeerde
-repository's.")
-               (pt "@command{guix pull} agora suporta repositórios autenticados
-via SSH"))
-        (body (en "The @command{guix pull} command now supports SSH
+        (title
+         (en "@command{guix pull} now supports SSH authenticated repositories")
+         (de "@command{guix pull} unterstützt nun SSH-authentifizierte Repositorys")
+         (fr "@command{guix pull} prend maintenant en charge l'authentification en SSH pour les dépôts.")
+         (nl "@command{guix pull} ondersteunt nu SSH-geauthenticeerde repository's.")
+         (pt "@command{guix pull} agora suporta repositórios autenticados via SSH"))
+        (body
+         (en "The @command{guix pull} command now supports SSH
 authenticated repositories as argument of @option{--url} and in custom
 channels definitions.  The authentication requires that an @command{ssh-agent}
 is running.")
-              (de "Der Befehl @command{guix pull} unterstützt nun über SSH
+         (de "Der Befehl @command{guix pull} unterstützt nun über SSH
 authentifizierte Repositorys als Argument von @option{--url} und in
 selbstgeschriebenen Kanaldefinitionen. Zur Authentisierung muss ein
 @command{ssh-agent} laufen.")
-              (fr "La commande @command{guix pull} prend maintenant en
+         (fr "La commande @command{guix pull} prend maintenant en
 charge l'authentification SSH pour les dépôts dans l'argument @option{--url}
 et dans le définitions de canaux personnalisés.  L'authentification
 nécessite qu'un @command{ssh-agent} soit lancé.")
-              (nl "Het @command{guix pull}-commando ondersteunt nu
+         (nl "Het @command{guix pull}-commando ondersteunt nu
 SSH-geauthenticeerde opslag als argument na @option{--url} en bij het
 schrijven van eigen kanaaldefinities.  Hiervoor moet een @command{ssh-agent}
 gestart zijn.")
-              (pt "O comando @command{guix pull} agora suporta repositórios
+         (pt "O comando @command{guix pull} agora suporta repositórios
 autenticados via @acronym{SSH, Secure Shell Protocol} como argumento para
 @option{--url} em em definições customizadas de canais.  A autenticação exige
 que um @command{ssh-agent} esteja em execução.")))
 
  (entry (commit "8234fe653e61d0090138cbd4c48d877568355439")
-        (title (en "Guix now runs on Guile 3.0")
-               (de "Guix läuft jetzt auf Guile 3.0")
-               (fr "Guix tourne maintenant sous Guile 3.0")
-               (nl "Guix draait nu op Guile 3.0")
-               (pt "Guix agora roda no Guile 3.0"))
-        (body (en "The Guix revision you just pulled runs on version 3.0 of
+        (title
+         (en "Guix now runs on Guile 3.0")
+         (de "Guix läuft jetzt auf Guile 3.0")
+         (fr "Guix tourne maintenant sous Guile 3.0")
+         (nl "Guix draait nu op Guile 3.0")
+         (pt "Guix agora roda no Guile 3.0"))
+        (body
+         (en "The Guix revision you just pulled runs on version 3.0 of
 GNU@tie{}Guile (previously it would run on version 2.2).  Guile 3.0 improves
 performance through the use of just-in-time (JIT) native code generation.  The
 switch should be entirely transparent to you.  See
 @uref{https://gnu.org/software/guile} for more information on Guile 3.0.")
-              (de "Die Guix-Version, die Sie gerade gepullt haben, läuft auf
+         (de "Die Guix-Version, die Sie gerade gepullt haben, läuft auf
 Version 3.0 von GNU@tie{}Guile (und nicht mehr auf Version 2.2).  Guile 3.0
 verbessert die Rechenleistung, indem native Maschinenbefehle „just in time“
 erzeugt werden (JIT-Kompilierung).  Der Wechsel sollte für Sie völlig
 transparent sein und Guix verhält sich gleich.  Siehe
 @uref{https://gnu.org/software/guile} für weitere Informationen zu Guile
 3.0.")
-              (fr "La révision de Guix que tu viens de récupérer tourne sous
+         (fr "La révision de Guix que tu viens de récupérer tourne sous
 la version 3.0 de GNU@tie{}Guile (Guix tournait avant sous la version 2.2).
 Guile 3.0 améliore la performance en générant du code natif à la volée (JIT).
 Le changement devrait être totalement transparent pour toi.  Voir
 @uref{https://gnu.org/software/guile} pour plus d'information sur Guile 3.0.")
-              (nl "De Guix die u net heeft gepulld gebruikt versie 3.0 van
+         (nl "De Guix die u net heeft gepulld gebruikt versie 3.0 van
 GNU@tie{}Guile (voorheen was dat versie 2.2).  Guile@tie{}3.0 draait dezelfde
 programma's doorgaans sneller door ze ‘just-in-time’ (JIT) te vertalen naar
 machine-instructies.  De omschakeling zou voor u volledig naadloos moeten
 zijn.  Lees @uref{https://gnu.org/software/guile} voor meer informatie over
 Guile@tie{}3.0.")
-              (pt "A revisão do Guix que você acabou de inserir roda na versão
+         (pt "A revisão do Guix que você acabou de inserir roda na versão
 3.0 do GNU@tie{}Guile (anteriormente rodava na versão 2.2).  Guile 3.0 melhora
 o desempenho mediante o uso de geração nativa de código em tempo de
 execução (@acronym{JIT, just-in-time}).  A mudança deve ser inteiramente
@@ -7081,25 +7091,27 @@ transparente para você.  Veja @uref{https://gnu.org/software/guile} para mais
 informação sobre o Guile 3.0.")))
 
  (entry (commit "828a39da68a9169ef1d9f9ff02a1c66b1bcbe884")
-        (title (en "New @option{--diff} option for @command{guix challenge}")
-               (de "Neue @option{--diff}-Option für @command{guix challenge}")
-               (fr "Nouvelle option @option{--diff} sur @command{guix challenge}")
-               (pt "Nova opção @option{--diff} para @command{guix challenge}"))
-        (body (en "The @command{guix challenge} command, which compares
+        (title
+         (en "New @option{--diff} option for @command{guix challenge}")
+         (de "Neue @option{--diff}-Option für @command{guix challenge}")
+         (fr "Nouvelle option @option{--diff} sur @command{guix challenge}")
+         (pt "Nova opção @option{--diff} para @command{guix challenge}"))
+        (body
+         (en "The @command{guix challenge} command, which compares
 binaries provided by different substitute servers as well as those built
 locally, has a new @option{--diff} option.  With @option{--diff=simple} (the
 default), @command{guix challenge} automatically downloads binaries and
 reports the list of differing files; @option{--diff=diffoscope} instructs it
 to pass them to @command{diffoscope}, which simplifies the comparison process.
 Run @command{info \"(guix) Invoking guix challenge\"}, for more info.")
-              (fr "La commande @command{guix challenge} qui compare les binaires
+         (fr "La commande @command{guix challenge} qui compare les binaires
 fournis par différents serveurs de substituts aux contsructions locales a une
 nouvelle option @option{--diff}.  Avec @option{--diff=simple} (par défaut),
 @command{guix challenge} télécharge automatiquement les binaires et rapporte
 la liste des fichiers différents@tie{}; @option{--diff=diffoscope} lui dit
 de les passer à @command{diffoscope} qui simplifie le processus de comparaison.
 Lance @command{info \"(guix.fr) Invoquer guix challenge\"} pour plus d'info.")
-              (de "Der Befehl @command{guix challenge}, mit dem Binärdateien
+         (de "Der Befehl @command{guix challenge}, mit dem Binärdateien
 von unterschiedlichen Substitut-Servern oder lokale Erstellungen miteinander
 verglichen werden können, hat eine neue Befehlszeilenoption @option{--diff}
 bekommen.  Bei @option{--diff=simple} (der Voreinstellung) lädt @command{guix
@@ -7108,7 +7120,7 @@ Dateien auf; wird @option{--diff=diffoscope} angegeben, werden sie an
 @command{diffoscope} geschickt, was deren Vergleich erleichtert.  Führen Sie
 @command{info \"(guix.de) Aufruf von guix challenge\"} aus, um nähere
 Informationen zu erhalten.")
-              (pt "O comando @command{guix challenge}, que compara binários
+         (pt "O comando @command{guix challenge}, que compara binários
 fornecidos por diferentes servidores de substituição bem como aqueles
 construídos localmente, tem uma nova opção @option{--diff}.  Com
 @option{--diff=simple} (o padrão), @command{guix challenge} automaticamente
@@ -7118,36 +7130,37 @@ o que simplifica o processo de comparação.  Execute @command{info
 \"(guix.pt_BR) Invocando guix challenge\"} para mais informações.")))
 
  (entry (commit "f675f8dec73d02e319e607559ed2316c299ae8c7")
-        (title (en "New command @command{guix time-machine}")
-               (de "Neuer Befehl @command{guix time-machine}")
-               (fr "Nouvelle commande @command{guix time-machine}")
-               (pt "Novo comando @command{guix time-machine}"))
-        (body (en "The new command @command{guix time-machine} facilitates
+        (title
+         (en "New command @command{guix time-machine}")
+         (de "Neuer Befehl @command{guix time-machine}")
+         (fr "Nouvelle commande @command{guix time-machine}")
+         (pt "Novo comando @command{guix time-machine}"))
+        (body
+         (en "The new command @command{guix time-machine} facilitates
 access to older or newer revisions of Guix than the one that is installed.
 It can be used to install different versions of packages, and to
 re-create computational environments exactly as used in the past.")
-              (de "Der neue Befehl @command{guix time-machine} vereinfacht
+         (de "Der neue Befehl @command{guix time-machine} vereinfacht
 den Zugriff auf ältere oder neuere Guix-Versionen als die installierte.
 Er kann zur Installation bestimmter Paketversionen verwendet werden, aber
 auch zur Wiederherstellung von Entwicklungsumgebungen, wie sie in der
 Vergangenheit verwendet wurden.")
-              (fr "La nouvelle commande @command{guix time-machine}
+         (fr "La nouvelle commande @command{guix time-machine}
 facilite l'accès à des versions antérieures ou postérieures par rapport
 à la version installée.  Elle sert à installer des versions spécifiques
 de paquets, ainsi à la restauration d'environnements dans un état
 historique.")
-              (pt "O novo comando @command{guix time-machine} facilita o
+         (pt "O novo comando @command{guix time-machine} facilita o
 acesso a revisões mais antigas ou mais novas do Guix que aquela instalada.
 Ele pode ser utilizado opara instalar versões diferentes de pacotes, e para
 recriar ambientes computacionaius exatamente como usados no passado.")))
 
  (entry (commit "3e962e59d849e4300e447d94487684102d9d412e")
-        (title (en "@command{guix graph} now supports package
-transformations")
-               (de "@command{guix graph} unterstützt nun Paketumwandlungen")
-               (fr "@command{guix graph} prend maintenant en charge les
-transformations de paquets")
-               (pt "@command{guix graph} agora suporta transformações de pacotes"))
+        (title
+         (en "@command{guix graph} now supports package transformations")
+         (de "@command{guix graph} unterstützt nun Paketumwandlungen")
+         (fr "@command{guix graph} prend maintenant en charge les transformations de paquets")
+         (pt "@command{guix graph} agora suporta transformações de pacotes"))
         (body
          (en "The @command{guix graph} command now supports the common package
 transformation options (see @command{info \"(guix) Package Transformation
@@ -7173,15 +7186,12 @@ transformação de pacote\"}). Isto é útil em particular para observar o efeit
 da opção @option{--with-input} de reescrita de dependência de grafo.")))
 
  (entry (commit "49af34cfac89d384c46269bfd9388b2c73b1220a")
-        (title (en "@command{guix pull} now honors
-@file{/etc/guix/channels.scm}")
-               (de "@command{guix pull} berücksichtigt nun
-@file{/etc/guix/channels.scm}")
-               (es "Ahora @command{guix pull} tiene en cuenta
-@file{/etc/guix/channels.scm}")
-               (fr "@command{guix pull} lit maintenant
-@file{/etc/guix/channels.scm}")
-               (pt "@command{guix pull} agora leva em conta @file{/etc/guix/channels.scm}"))
+        (title
+         (en "@command{guix pull} now honors @file{/etc/guix/channels.scm}")
+         (de "@command{guix pull} berücksichtigt nun @file{/etc/guix/channels.scm}")
+         (es "Ahora @command{guix pull} tiene en cuenta @file{/etc/guix/channels.scm}")
+         (fr "@command{guix pull} lit maintenant @file{/etc/guix/channels.scm}")
+         (pt "@command{guix pull} agora leva em conta @file{/etc/guix/channels.scm}"))
         (body
          (en "The @command{guix pull} command will now read the
 @file{/etc/guix/channels.scm} file if it exists and if the per-user
@@ -7209,12 +7219,13 @@ adiministradores de sistemas multiusuário a definir padrões globais de
 sistema.")))
 
  (entry (commit "81c580c8664bfeeb767e2c47ea343004e88223c7")
-        (title (en "Insecure @file{/var/guix/profiles/per-user} permissions (CVE-2019-18192)")
-               (de "Sicherheitslücke in @file{/var/guix/profiles/per-user}-Berechtigungen (CVE-2019-18192)")
-               (es "Vulnerabilidad en los permisos de @file{/var/guix/profiles/per-user} (CVE-2019-18192)")
-               (fr "Permissions laxistes pour @file{/var/guix/profiles/per-user} (CVE-2019-18192)")
-               (nl "Onveilige @file{/var/guix/profiles/per-user}-rechten (CVE-2019-18192)")
-               (pt "Vulnerabilidade de permissões em @file{/var/guix/profiles/per-user} (CVE-2019-18192)"))
+        (title
+         (en "Insecure @file{/var/guix/profiles/per-user} permissions (CVE-2019-18192)")
+         (de "Sicherheitslücke in @file{/var/guix/profiles/per-user}-Berechtigungen (CVE-2019-18192)")
+         (es "Vulnerabilidad en los permisos de @file{/var/guix/profiles/per-user} (CVE-2019-18192)")
+         (fr "Permissions laxistes pour @file{/var/guix/profiles/per-user} (CVE-2019-18192)")
+         (nl "Onveilige @file{/var/guix/profiles/per-user}-rechten (CVE-2019-18192)")
+         (pt "Vulnerabilidade de permissões em @file{/var/guix/profiles/per-user} (CVE-2019-18192)"))
         (body
          (en "The default user profile, @file{~/.guix-profile}, points to
 @file{/var/guix/profiles/per-user/$USER}.  Until now,
@@ -7335,12 +7346,13 @@ reiniciar o serviço logo depois, usando @code{herd} ou @code{systemctl} ou
 equivalente.")))
 
  (entry (commit "5f3f70391809f8791c55c05bd1646bc58508fa2c")
-        (title (en "GNU C Library upgraded")
-               (de "GNU-C-Bibliothek aktualisiert")
-               (es "Actualización de la biblioteca C de GNU")
-               (fr "Mise à jour de la bibliothèque C de GNU")
-               (nl "GNU C-bibliotheek bijgewerkt")
-               (pt "Biblioteca GNU C atualizada"))
+        (title
+         (en "GNU C Library upgraded")
+         (de "GNU-C-Bibliothek aktualisiert")
+         (es "Actualización de la biblioteca C de GNU")
+         (fr "Mise à jour de la bibliothèque C de GNU")
+         (nl "GNU C-bibliotheek bijgewerkt")
+         (pt "Biblioteca GNU C atualizada"))
         (body
          (en "The GNU C Library (glibc) has been upgraded to version 2.29.  To
 run previously-installed programs linked against glibc 2.28, you need to
@@ -7415,12 +7427,13 @@ No Sistema Guix, você pode ajustar o campo @code{locale-libcs} de sua forma
 informações.")))
 
  (entry (commit "cdd3bcf03883d129581a79e6d6611b2afd3b277b")
-        (title (en "New reduced binary seed bootstrap")
-               (de "Neues Bootstrapping mit kleinerem Seed")
-               (es "Nueva reducción de la semilla binaria para el lanzamiento inicial")
-               (fr "Nouvel ensemble de binaires de bootstrap réduit")
-               (nl "Nieuwe bootstrap met verkleinde binaire kiem")
-               (pt "Nova e reduzida semente binária de inicialização"))
+        (title
+         (en "New reduced binary seed bootstrap")
+         (de "Neues Bootstrapping mit kleinerem Seed")
+         (es "Nueva reducción de la semilla binaria para el lanzamiento inicial")
+         (fr "Nouvel ensemble de binaires de bootstrap réduit")
+         (nl "Nieuwe bootstrap met verkleinde binaire kiem")
+         (pt "Nova e reduzida semente binária de inicialização"))
         (body
          (en "The package graph on x86_64 and i686 is now rooted in a
 @dfn{reduced set of binary seeds}.  The initial set of binaries from which
@@ -7459,12 +7472,13 @@ aproximadamente 130 MiB, metade do que costumava ser. Execute @code{info
 @uref{https://archive.fosdem.org/2019/schedule/event/gnumes/}.")))
 
  (entry (commit "dcc90d15581189dbc30e201db2b807273d6484f0")
-        (title (en "New channel news mechanism")
-               (de "Neuer Mechanismus, um Neuigkeiten über Kanäle anzuzeigen.")
-               (es "Nuevo mecanismo de noticias de los canales")
-               (fr "Nouveau mécanisme d'information sur les canaux")
-               (nl "Nieuw mechanisme voor nieuwsberichten per kanaal")
-               (pt "Novo mecanismo de notícias para canais"))
+        (title
+         (en "New channel news mechanism")
+         (de "Neuer Mechanismus, um Neuigkeiten über Kanäle anzuzeigen.")
+         (es "Nuevo mecanismo de noticias de los canales")
+         (fr "Nouveau mécanisme d'information sur les canaux")
+         (nl "Nieuw mechanisme voor nieuwsberichten per kanaal")
+         (pt "Novo mecanismo de notícias para canais"))
         (body
          (en "You are reading this message through the new channel news
 mechanism, congratulations!  This mechanism allows channel authors to provide
