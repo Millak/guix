@@ -45047,14 +45047,14 @@ See e.g. Gentle (2003) @url{doi:10.1007/b97336}.")
 (define-public r-lhs
   (package
     (name "r-lhs")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lhs" version))
        (sha256
         (base32
-         "0g7265yln00ylf0i8sfiynv3aq48v4j034v72rli9b9qhxrmqn3a"))))
+         "0xldgascaf3gi5ndbg0k7m2sg7yc4a1srzkg1x2212m97l6i8858"))))
     (properties `((upstream-name . "lhs")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
