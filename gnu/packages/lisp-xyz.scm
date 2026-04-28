@@ -12982,8 +12982,8 @@ score.  When evaluated, the musical score is rendered to an image.")
   (sbcl-package->ecl-package sbcl-cmn))
 
 (define-public sbcl-coalton
-  (let ((commit "bf475c8c53e02a2e0cb29deab4d101d25743bfca")
-        (revision "5"))
+  (let ((commit "14ed6dc733f8c23c1a345ceb11d3f75ee47f7525")
+        (revision "6"))
     (package
       (name "sbcl-coalton")
       (version (git-version "0.0.1" revision commit))
@@ -12995,12 +12995,16 @@ score.  When evaluated, the musical score is rendered to an image.")
                (commit commit)))
          (file-name (git-file-name "cl-coalton" version))
          (sha256
-          (base32 "0zrp2s82n2mxx7knbnbsdj64zar21nnnf8iwzrqzs4g3v6xpyz9z"))))
+          (base32 "024n72lxi8nycy012lqy6zx19lv7jh2ngs1mf559rw8kgwh3k54c"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
-       (list sbcl-fiasco))
+       (list sbcl-fiasco
+             sbcl-html-entities
+             sbcl-spinneret
+             sbcl-yason))
       (inputs
        (list sbcl-alexandria
+             sbcl-computable-reals
              sbcl-concrete-syntax-tree
              sbcl-eclector
              sbcl-float-features
