@@ -801,7 +801,9 @@ port=" (number->string port) "
     (list (service-extension account-service-type
                              (const %mysql-accounts))
           (service-extension shepherd-root-service-type
-                             mysql-shepherd-services)))
+                             mysql-shepherd-services)
+          (service-extension profile-service-type
+                             (compose list mysql-configuration-mysql))))
    (default-value (mysql-configuration))
    (description "Run the MySQL or MariaDB database server,
 @command{mysqld}.")))
