@@ -13556,10 +13556,10 @@ place outside with-notes.
   (sbcl-package->ecl-package sbcl-compiler-macro-notes))
 
 (define-public sbcl-computable-reals
-  (let ((commit "fdc73d75e79d0a4ce6d01c822c950ae2eb137d39"))
+  (let ((commit "607a5d5b95387c06f92a661aa5562a7be0f5cad8"))
     (package
       (name "sbcl-computable-reals")
-      (version (git-version "1.1.0" "1" commit))
+      (version (git-version "1.1.0" "2" commit))
       (source
        (origin
          (method git-fetch)
@@ -13568,7 +13568,7 @@ place outside with-notes.
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0f12axi53x14l12dgf4a1lfq3p1fx7fh7sjfc0db3lk88ph9qfwl"))))
+          (base32 "1x8kkdyjil0zzg8fq9b76z12kmfrqwhsxnr6qqnlrg0c8c5bzz9c"))))
       (build-system asdf-build-system/sbcl)
       (home-page "https://github.com/stylewarning/computable-reals")
       (synopsis "Arbitrary-precision, re-computing real-numbers in Common Lisp")
