@@ -71,6 +71,7 @@
 ;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2026 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2026 Josep Bigorra <jjbigorra@gmail.com>
+;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4159,8 +4160,8 @@ programmatically or as a standalone CLI application.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
-     `(("libcrypto" ,openssl)
-       ("libtcl8.6" ,tcl))) ; required for running the tests
+     (list openssl
+           tcl))                        ;for tests
     (native-inputs
      (list tcl))
     (arguments
