@@ -485,11 +485,23 @@ to camera devices supported by @code{libgphoto2} using
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kate-" version ".tar.xz"))
        (sha256
-        (base32 "0ah6cy92yir68z25460ccl48i5nrfqswpzil9a7l69h3qxspsk88"))))
+        (base32 "0ah6cy92yir68z25460ccl48i5nrfqswpzil9a7l69h3qxspsk88"))
+       (modules '((guix build utils)))
+       ;; Unbundle SingleApplication.
+       (snippet
+        '(begin
+           (delete-file-recursively "3rdparty/SingleApplication")
+           (with-directory-excursion "apps/kate"
+             (substitute* "CMakeLists.txt"
+               ((".*3rdparty.*") "")
+               ((" -DQAPPLICATION_CLASS=FreeStandingSingleApplication") ""))
+             (substitute* "main.cpp"
+               (("(#include )\"SingleApplication\\/SingleApplication\"" _ keep)
+                (string-append keep "<SingleApplication>"))))))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools xorg-server-for-tests))
-    ;; TODO: Unbundle rapidjson and SingleApplication.
+    ;; TODO: Unbundle rapidjson.
     (inputs
      (list breeze-icons ;; default icon set
            karchive
@@ -515,11 +527,20 @@ to camera devices supported by @code{libgphoto2} using
            libxkbcommon
            plasma-activities
            qtsvg
-           qtwayland))
+           qtwayland
+           single-application))
     (arguments
      (list #:qtbase qtbase
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'link-single-application
+                 (lambda _
+                   (substitute* "apps/kate/CMakeLists.txt"
+                     (("target_link_libraries\\(kate-bin PRIVATE kateprivate"
+                       all)
+                      (string-append all " "
+                                     #$(this-package-input "single-application")
+                                     "/lib/libSingleApplication.a")))))
                (add-after 'unpack 'patch-tests
                  (lambda* (#:key inputs #:allow-other-keys)
                    ;; This test requires a 'bin' diretory under '/usr'.
