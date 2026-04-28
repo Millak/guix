@@ -53828,14 +53828,14 @@ package also provides functions to visualize the observed data and the MLE.")
 (define-public r-metafor
   (package
     (name "r-metafor")
-    (version "4.8-0")
+    (version "5.0-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "metafor" version))
        (sha256
         (base32
-         "0i06y1aw2vf86aaj9ck1ksx4wqca0dwyghxmfjafgqszn5s0cw9b"))))
+         "067yzgrb97k55m4hqw1jzsrryscb9nk1jy4g34hpsfj5plvir62l"))))
     (properties
      `((upstream-name . "metafor")
        (updater-extra-native-inputs
@@ -53848,9 +53848,6 @@ package also provides functions to visualize the observed data and the MLE.")
     (build-system r-build-system)
     (arguments
      (list
-      #:skipped-tests
-      ;; Requires r-dfoptim.
-      '("test_misc_rma_mv.r")
       #:phases
       '(modify-phases %standard-phases
          ;; When there is no HOME directory, this package will fail to find
@@ -53870,9 +53867,8 @@ package also provides functions to visualize the observed data and the MLE.")
            r-clubsandwich
            r-emmeans
            r-gsl
-           r-lme4
-           r-minqa
            r-multcomp
+           r-mumin
            r-mvtnorm
            r-r-rsp
            r-rsolnp
