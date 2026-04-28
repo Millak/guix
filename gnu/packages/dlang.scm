@@ -10,6 +10,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Esther Flashner <esther@flashner.co.il>
 ;;; Copyright © 2025-2026 Jonas Meeuws <jonas.meeuws@gmail.com>
+;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -320,11 +321,11 @@ integration tests...\n")
                                  "|core.thread.osthread-debug-shared")))
                            (#t `("")))))))))))))
     (native-inputs
-     (append (delete "llvm"
-                     (alist-replace "ldc" (list ldc-bootstrap)
-                                    (package-native-inputs ldc-bootstrap)))
-         `(("clang" ,clang-17)          ;propagates llvm and clang-runtime
-           ("python-lit" ,python-lit))))
+     (modify-inputs native-inputs
+       (delete "llvm")
+       (replace "ldc" ldc-bootstrap)
+       (append clang-17                 ;propagates llvm and clang-runtime
+               python-lit)))
     (properties
      (alist-delete 'hidden? (package-properties ldc-bootstrap)))))
 
