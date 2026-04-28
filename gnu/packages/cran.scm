@@ -2726,14 +2726,14 @@ and fast file reading.")
 (define-public r-datawizard
   (package
     (name "r-datawizard")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "datawizard" version))
        (sha256
         (base32
-         "1mnp2cb20bckhj4makpv93lwx12bdpya8qaa5y1v2an0zqg0wrxp"))))
+         "139cmlakr5ixv5sx3xnyyyx9hkdhnh1davv4r4lbmd6hgcrnj541"))))
     (properties
      `((upstream-name . "datawizard")
        (updater-ignored-native-inputs
@@ -2751,11 +2751,13 @@ and fast file reading.")
     (native-inputs
      (list r-brms
            r-dplyr
+           r-fixest
            r-ggplot2
            r-haven
            r-httr
            r-knitr
            r-mediation
+           r-openssl
            r-poorman
            r-psych
            r-testthat
