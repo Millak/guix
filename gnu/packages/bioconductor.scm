@@ -7657,6 +7657,37 @@ will serve as the basis of future immune receptor sequence
 functions/packages/models compatible with the @code{scRepertoire} ecosystem.")
     (license license:expat)))
 
+(define-public r-immreferent
+  (package
+    (name "r-immreferent")
+    (version "0.99.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "immReferent" version))
+       (sha256
+        (base32 "16w74ga9kq00l8irnqmzcj7wr2551nvcjiamxjg700qkqhj71a4i"))))
+    (properties `((upstream-name . "immReferent")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biostrings
+                             r-httr
+                             r-jsonlite
+                             r-rvest
+                             r-tibble
+                             r-yaml))
+    (native-inputs (list r-knitr r-spelling r-testthat r-withr))
+    (home-page "https://github.com/BorchLab/immReferent/")
+    (synopsis "Interface for immune receptor and HLA gene reference data")
+    (description
+     "This package provides a consistent interface for downloading, storing,
+and accessing immune receptor (TCR/BCR) and HLA sequences from IMGT,
+IPD-IMGT/HLA, and OGRDB (AIRR-C).  It supports export to popular analysis
+tools including @code{MiXCR}, TRUST4, Cell Ranger, and @code{IgBLAST}.  This
+package serves as a core dependency for immunogenomics packages, ensuring
+reliable and high-quality sequence access with local caching for
+reproducibility.")
+    (license license:expat)))
+
 (define-public r-infercnv
   (package
     (name "r-infercnv")
