@@ -36512,23 +36512,32 @@ stdin/stdout/stderr.")
     (license license:expat)))
 
 (define-public python-stem
+  ;; python-stem is mostly unmaintained, but still has occasional commits
+  ;; added.
   (package
     (name "python-stem")
-    (version "1.8.2")
+    (version "1.8.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "stem" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.torproject.org/tpo/network-health/stem.git")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "10mm9qw4xv7d18086ivy38iaz04z72018186q03j5y69skzikyw3"))))
+         "0f8qrp6fz6l3s5dmvkx2zl7nsqs8qsx2yc5qc2ahy4c6jdvfbbhl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases #~(modify-phases %standard-phases
-                   (replace 'check
-                     (lambda _
-                       (invoke "./run_tests.py" "--unit"))))))
+      #:test-backend #~'custom
+      #:test-flags #~(list "run_tests.py" "--unit")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-python-312
+            (lambda _
+              (substitute* (find-files "." "\\.py$")
+                (("assertRaisesRegexp") "assertRaisesRegex")))))))
     (native-inputs
      (list python-setuptools
            python-wheel))
