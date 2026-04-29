@@ -6688,30 +6688,35 @@ tasks rather than a standard compliant master implementation.")
 (define-public python-diskcache
   (package
     (name "python-diskcache")
-    (version "5.6.3")
+    ;; 5.6.3 (2023-08-31), the latest commit has some comparability with
+    ;; Django fixing failing tests.
+    (properties '((commit . "ebfa37cd99d7ef716ec452ad8af4b4276a8e2233")
+                  (revision . "0")))
+    (version (git-version "5.6.3"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/grantjenks/python-diskcache")
-             (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0mird2yj3xbh71g325admxpif9h20w0xgp9hw6ss2bdbzxsykh6m"))))
+        (base32 "0i669n76hi8c4p6fl9hkm40gpi817bn27kxnfhcrsd60ynfgbrbc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      #~(list
-         ;; Ignore flaky tests.
-         ;; AssertionError: assert None == 100
-         "--deselect=tests/test_core.py::test_incr_update_keyerror")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; Prevent full threads utilization.
+              (substitute* "tox.ini"
+                (("-n auto") "")))))))
     (native-inputs
      (list python-django
-           python-matplotlib
            python-pytest
-           python-pytest-xdist
            python-setuptools))
     (home-page "https://www.grantjenks.com/docs/diskcache/")
     (synopsis "Disk and file backed cache library")
