@@ -7826,25 +7826,50 @@ syntax.")
   (package
     (name "python-parsley")
     (version "1.3")
-    (source (origin
-              ;; The source distributed on PyPI is outdated.
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pyga/parsley")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0550rw65ygqzbjc8a66hs355pzbx727kbn20dssdb6ls846gw2qs"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pyga/parsley")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0550rw65ygqzbjc8a66hs355pzbx727kbn20dssdb6ls846gw2qs"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "ometa/test" "terml/test")))
+      ;; tests: 294 passed, 8 skipped, 7 deselected
+      #:test-flags
+      #~(list #$@(map (lambda (ls)
+                        (string-append "--deselect=ometa/test/"
+                                       (string-join ls "::")))
+                      ;; AttributeError: 'PythonWriterTests' object has no
+                      ;; attribute 'assert_'. Did you mean: 'assertIn'?
+                      '(("test_builder.py" "PythonWriterTests"
+                         "test_markAsTree")
+                        ("test_protocol.py" "ParserProtocolTestCase"
+                         "test_connectionEstablishes")
+                        ("test_protocol.py" "ParserProtocolTestCase"
+                         "test_dataIgnoredAfterDisconnection")
+                        ;; AttributeError: 'ParserProtocolTestCase' object has
+                        ;; no attribute 'failIfEqual'
+                        ("test_protocol.py" "ParserProtocolTestCase"
+                         "test_exceptionsRaisedFromReceiver")
+                        ("test_protocol.py" "ParserProtocolTestCase"
+                         "test_parseFailure")
+                        ;; AttributeError: 'RuntimeTests' object has no
+                        ;; attribute 'assertEquals'. Did you mean:
+                        ;; 'assertEqual'?
+                        ("test_pymeta.py" "MakeGrammarTest"
+                         "test_brokenGrammar")
+                        ("test_runtime.py" "RuntimeTests"
+                         "test_exactlyFail")))
+              "ometa/test"
+              "terml/test")))
     (native-inputs
      (list python-pytest
            python-twisted
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://launchpad.net/parsley")
     (synopsis "Parsing and pattern matching Python library")
     (description
