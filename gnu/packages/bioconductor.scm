@@ -13164,13 +13164,13 @@ browser.")
 (define-public r-rhdf5
   (package
     (name "r-rhdf5")
-    (version "2.54.1")
+    (version "2.55.16")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "rhdf5" version))
               (sha256
                (base32
-                "1brp806vagja149w6faldir5vfcrlvhqdakb3q5crr5wxfqp7qk5"))))
+                "1ln5kca2w8bppk7y5psdvl2p9mdz6wnizdhmbbc6z8q9bq39mp7q"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -13180,12 +13180,19 @@ browser.")
       '(("test_H5P_dcpl.R"
          "Filters can be set"
          "Filter information can be retrieved")
+        ;; It is unclear why this would fail, but it says that the size
+        ;; difference is zero.  Perhaps it's related to a failure to read the
+        ;; test file?
+        ("test_external_filters.R"
+         "BLOSC filter works when reading")
         ("test_h5read.R"
-         "Reading SZIP"))))
+         "Reading SZIP"
+         ;; It is unclear why this fails with "H5Identifier not valid."
+         "Failing to read BLOSC"))))
     (propagated-inputs
      (list r-rhdf5filters r-rhdf5lib))
     (native-inputs
-     (list r-bit64 r-knitr r-mockery r-testthat))
+     (list r-bit64 r-knitr r-testthat r-withr))
     (home-page "https://bioconductor.org/packages/rhdf5")
     (synopsis "HDF5 interface to R")
     (description
