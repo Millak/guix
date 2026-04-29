@@ -1991,12 +1991,22 @@ model-fitting photometry or morphological analyses.")
        (sha256
         (base32 "156y3zp0nm77976rwsxjjdh7yvggas8s6m0nm523khvn4lq8f9n0"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Assertion errors:
+      ;;
+      ;; You are lazy loading attributes via 'bibtex', and so are making
+      ;; multiple calls to the API. This will impact your overall rate
+      ;; limits. bibtex should be queried with ads.ExportQuery(); You will hit
+      ;; API ratelimits very quickly otherwise.
+      #~(list (string-append "--deselect=ads/tests/test_search.py"
+                             "::TestArticle::test_get_field_bibtex"))))
     (native-inputs
      (list nss-certs-for-test
            python-httpretty
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-mock
            python-requests
