@@ -7621,27 +7621,34 @@ arbitrary genomic intervals along chromosomal ideogram.")
 (define-public r-immapex
   (package
     (name "r-immapex")
-    (version "1.4.3")
+    (version "1.5.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "immApex" version))
        (sha256
-        (base32 "0hv342gn73y6rzdjmzyv1kwp8gbazqbcnzwh8iz69x57kx94mmvj"))))
+        (base32 "0jcnizjja19d1qfpv3a7d64bhykw488x2dfwrvmdx77anyk0q89d"))))
     (properties `((upstream-name . "immApex")))
     (build-system r-build-system)
     (arguments
      (list
       #:skipped-tests
-      '(("test-sequenceDecoder.R"
+      '(("test-getIMGT.R"
+         ;; TRBV_human_aa is NULL
+         "getIMGT returns expected structure for amino acid sequences"
+         ;; TRBJ_mouse_nt is NULL
+         "getIMGT works with different regions and species"
+         ;; IGHV_rat_nt is NULL
+         "getIMGT works with nucleotide sequences"
+         ;; TRBV_rabbit_aa is NULL
+         "getIMGT works with additional species")
+        ("test-sequenceDecoder.R"
          ;; XXX: fails because "kideraFactors" is an unknown property.
          ".propertyDecoder decodes standard sequences correctly"))))
-    (propagated-inputs (list r-hash
-                             r-httr
+    (propagated-inputs (list r-immreferent
                              r-matrix
                              r-matrixstats
                              r-rcpp
-                             r-rvest
                              r-singlecellexperiment
                              r-stringr))
     (native-inputs (list r-knitr r-spelling r-testthat))
