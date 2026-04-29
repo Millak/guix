@@ -4521,7 +4521,7 @@ instances.")
 (define-public single-application
   (package
     (name "single-application")
-    (version "3.5.2")
+    (version "3.5.4")
     (source
      (origin
        (method git-fetch)
@@ -4532,7 +4532,7 @@ instances.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "069aww3aww6968hmipzfbj57a5vw6jxj1mr20nsb1yh98n5c01rv"))))
+         "0cj3rgsscpm5y5lp0hfsfkfdnm1h5msqw90baqj3zxmh9fh8h9nv"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4567,7 +4567,7 @@ Qt6.
 It keeps the Primary Instance of your Application and kills each subsequent
 instances.  It can (if enabled) spawn secondary (non-related to the primary)
 instances and can send data to the primary instance from secondary instances.")
-      (license license:expat)))
+      (license (license:non-copyleft "file:///LICENSE"))))
 
 (define-public pyotherside
   (package
