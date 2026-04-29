@@ -1428,7 +1428,7 @@ commit date (an integer)."
                               (string-append #$output "/en/html_node")))))))))
 
 (define %guile-manual-base-url
-  "https://www.gnu.org/software/guile/manual")
+  "https://doc.guix.gnu.org/guile/latest/en")
 
 (define (for-all-languages index)
   (map (lambda (language)
