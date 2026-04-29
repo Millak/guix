@@ -20586,6 +20586,28 @@ goodness-of-fit estimation (MGE) methods (available only for non-censored
 data).  Weighted versions of MLE, MME and QME are available.")
     (license license:gpl2+)))
 
+(define-public r-ecodive
+  (package
+    (name "r-ecodive")
+    (version "2.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ecodive" version))
+       (sha256
+        (base32 "1nkiaxhr29j663kvwy0mvwkknrmsy2qqx48dvr4cwg5nqcivayb6"))))
+    (properties `((upstream-name . "ecodive")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://cmmr.github.io/ecodive/")
+    (synopsis "Parallel and memory-efficient ecological diversity metrics")
+    (description
+     "This package computes alpha and beta diversity metrics using concurrent
+C threads.  Metrics include UniFrac, Faith's phylogenetic diversity,
+Bray-Curtis dissimilarity, Shannon diversity index, and many others.  Also
+parses newick trees into phylo objects and rarefies feature tables.")
+    (license license:expat)))
+
 (define-public r-energy
   (package
     (name "r-energy")
