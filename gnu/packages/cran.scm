@@ -3114,6 +3114,7 @@ functions borrowed from contributed R packages as well.")
       '(("test-reload.R" "reload works")
         ("test-vignettes.R"
          "Rmarkdown vignettes copied into doc"
+         "Sweave vignettes copied into doc"
          "extra files copied and removed"
          ".gitignore updated when building vignettes")
         ("test-uninstall.R"
