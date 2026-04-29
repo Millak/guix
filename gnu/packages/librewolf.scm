@@ -205,8 +205,7 @@
        (search-patches
         "librewolf-compare-paths.patch"
         "librewolf-use-system-wide-dir.patch"
-        "librewolf-add-store-to-rdd-allowlist.patch"
-        "librewolf-150.0-encoding_rs-rust-fix.patch"))
+        "librewolf-add-store-to-rdd-allowlist.patch"))
       ;; Slim down the tarball by removing unbundled libraries and 75 Mo (800+
       ;; Mo uncompressed) of unused tests.
       ;; TODO: Unbundle security/nss and media/libpng.
@@ -239,23 +238,23 @@
 ;;; but since in Guix only the latest packaged Rust is officially supported,
 ;;; it is a tradeoff worth making.
 ;;; 0: https://firefox-source-docs.mozilla.org/writing-rust-code/update-policy.html
-(define rust-librewolf rust-1.93)
+(define rust-librewolf rust-1.94)
 
 ;; Update this id with every update to its release date.
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
 ;; or: (format-time-string "%Y%m%d%H%M%S")
-(define %librewolf-build-id "20260421153818")
+(define %librewolf-build-id "20260428201413")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "150.0-1")
+    (version "150.0.1-1")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "151rxzl80dm8jsxl6fwzgbirwq4zpms5adwwnbjcwdd1r3s3vr7v"
-      #:librewolf-hash "0iw9v3zc1fxc93yyhldqarxaypgmbndh2ylsy330kcbpb6p1gnmr"
+      #:firefox-hash "1v3fbwvd0khm3xwsgwcp6wpwmkz0v6fyk37hxj0mqkwjimqgmkra"
+      #:librewolf-hash "0294lsiyvfh93id04xki4bhs8d84vmysqviivxiif0xfzqv65qzp"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments

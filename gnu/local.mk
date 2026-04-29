@@ -1715,7 +1715,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/libretro-dolphin-emu-libusb-assert.patch \
   %D%/packages/patches/libretro-dolphin-emu-vulkan-headers.patch        \
   %D%/packages/patches/libretranslate-use-flasgger.patch	\
-  %D%/packages/patches/librewolf-150.0-encoding_rs-rust-fix.patch       \
   %D%/packages/patches/librewolf-add-store-to-rdd-allowlist.patch       \
   %D%/packages/patches/librewolf-compare-paths.patch		\
   %D%/packages/patches/librewolf-neuter-locale-download.patch	\
