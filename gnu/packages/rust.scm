@@ -1885,7 +1885,34 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                             "vendor/tempfile-3.23.0/Cargo.toml"
                             "vendor/tempfile-3.24.0/Cargo.toml")
                (("features = \\[\"fs\"" all)
-                (string-append all ", \"use-libc\""))))))))))
+                (string-append all ", \"use-libc\"")))))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (replace 'install
+               ;; Cannot use './x.py install' as it runs generate-copyright
+               ;; which fails due to patched cargo checksums.
+               ;; In this version we don't delete the .rmeta files; they are
+               ;; now needed in order to build the next rust version.
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (let* ((out (assoc-ref outputs "out"))
+                        (cargo-out (assoc-ref outputs "cargo"))
+                        (build (string-append "build/"
+                                 ,(platform-rust-target
+                                    (lookup-platform-by-target-or-system
+                                     (or (%current-target-system)
+                                         (%current-system)))))))
+                   (with-directory-excursion build
+                     (install-file "stage2/bin/rustc"
+                                   (string-append out "/bin"))
+                     (install-file "stage2-tools-bin/cargo"
+                                   (string-append cargo-out "/bin"))
+                     (for-each delete-file
+                               (find-files "stage2/lib/rustlib"
+                                           "^librustc_driver.*\\.so$"))
+                     (copy-recursively "stage2/lib"
+                                       (string-append out "/lib")))))))))))))
 
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
