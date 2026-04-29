@@ -7086,13 +7086,13 @@ bases such as COSMIC.")
 (define-public r-degreport
   (package
     (name "r-degreport")
-    (version "1.46.0")
+    (version "1.47.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DEGreport" version))
               (sha256
                (base32
-                "0hy8g1v296pjvvgczxkflxhza66fj4x265vljfqsa91zljwcr9lr"))
+                "0c3wkf853micyqv2nrdi0jhlp7dymjfd297ixiqi2mz6yfy2nl1x"))
               (snippet
                '(delete-file "docs/jquery.sticky-kit.min.js"))))
     (properties `((upstream-name . "DEGreport")))
@@ -7104,7 +7104,7 @@ bases such as COSMIC.")
          (add-after 'unpack 'process-javascript
            (lambda* (#:key inputs #:allow-other-keys)
              (invoke "esbuild"
-                     (assoc-ref inputs "js-jquery-sticky-kit")
+                     (assoc-ref inputs "jquery.sticky-kit.js")
                      "--minify"
                      "--outfile=docs/jquery.sticky-kit.min.js"))))))
     (propagated-inputs (list r-biobase
@@ -7137,17 +7137,16 @@ bases such as COSMIC.")
                              r-tibble
                              r-tidyr))
     (native-inputs
-     `(("esbuild" ,esbuild)
-       ("r-knitr" ,r-knitr)
-       ("r-testthat" ,r-testthat)
-       ("js-jquery-sticky-kit"
-        ,(origin
-           (method url-fetch)
-           (uri "https://raw.githubusercontent.com/leafo/sticky-kit/\
+     (list esbuild
+           r-knitr
+           r-testthat
+           (origin
+             (method url-fetch)
+             (uri "https://raw.githubusercontent.com/leafo/sticky-kit/\
 v1.1.2/jquery.sticky-kit.js")
-           (sha256
-            (base32
-             "17c3a1hqc3ybwj7hpw8prazajp2x98aq7nyfn71h6lzjvblq297g"))))))
+             (sha256
+              (base32
+               "17c3a1hqc3ybwj7hpw8prazajp2x98aq7nyfn71h6lzjvblq297g")))))
     (home-page "https://lpantano.github.io/DEGreport/")
     (synopsis "Report of DEG analysis")
     (description
