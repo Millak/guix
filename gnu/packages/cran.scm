@@ -6842,6 +6842,28 @@ conducting these operations as well as calibration tools and conformal
 inference techniques for regression models.")
     (license license:expat)))
 
+(define-public r-prompter
+  (package
+    (name "r-prompter")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "prompter" version))
+       (sha256
+        (base32 "1zm1sj22k78f5m1s20b440pgb5w9fjbmyvkcz491h8w2kx728nhp"))))
+    (properties `((upstream-name . "prompter")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-shiny))
+    (native-inputs (list r-htmltools r-spelling r-testthat))
+    (home-page "https://prompter.etiennebacher.com")
+    (synopsis "Add tooltips in Shiny apps with Hint.css")
+    (description
+     "In Shiny apps, it is sometimes useful to store information on a
+particular item in a tooltip.  Prompter allows you to easily create such
+tooltips, using Hint.css.")
+    (license license:expat)))
+
 (define-public r-propcis
   (package
     (name "r-propcis")
