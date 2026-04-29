@@ -802,7 +802,7 @@ high-performance computing} clusters.")
 (define-public toys
   (package
     (name "toys")
-    (version "0.1.0")
+    (version "0.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -811,7 +811,7 @@ high-performance computing} clusters.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "169jxh5knp5f2y9wbnc454jjdvvyqb5r0ydv3qkpm332vr0cl6p9"))))
+                "05zkvjs3wkwdswl4irkqaxgdassiji5pq8qaqcrzscvp24vkjjja"))))
     (build-system guile-build-system)
     (arguments
      (list
@@ -838,11 +838,8 @@ high-performance computing} clusters.")
                          (append (list ,@load-compiled-path)
                                  %load-compiled-path))))
               (substitute* "guix/extensions/toys.scm"
-                (("^\\(define-module \\(guix extensions toys\\)")
-                 (string-append
-                  (with-output-to-string
-                    (lambda () (write search-paths-header)))
-                  "\n(define-module (guix extensions toys)")))))
+                ((";;@load-paths@")
+                 (with-output-to-string (lambda () (write search-paths-header)))))))
           (add-after 'set-load-paths-in-entry-point 'register-guix-extension
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((ext-path (string-append #$output "/share/guix/extensions")))
