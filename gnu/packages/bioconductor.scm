@@ -13120,14 +13120,14 @@ the available RAM.")
 (define-public r-rhdf5filters
   (package
     (name "r-rhdf5filters")
-    (version "1.22.0")
+    (version "1.23.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "rhdf5filters" version))
        (sha256
         (base32
-         "0idr4l0byd039hdw74zq3ay9yjy6dd579l68r8bfh1q2884y2zsz"))))
+         "1v9y7c8zg1nx0hl6qz3jkh0cbzaagpfvr9q76v5shrv8va1sai6i"))))
     (properties
      '((upstream-name . "rhdf5filters")
        (updater-extra-inputs
@@ -13138,7 +13138,23 @@ the available RAM.")
       ;; Tests require r-rhdf5, which depends on this package.
       #:tests? #false
       #:configure-flags
-      '(list "--without-bundled-libs")))
+      '(list "--without-bundled-libraries")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-build-system
+           (lambda _
+             (substitute* "src/lzf/lzf/Makefile"
+               ;; Use the default rules for building .o from .c
+               (("	\\$\\(CC\\) .*") ""))
+             (substitute* "src/vbz/vbz/Makefile.in"
+               ;; Use the default rules for building .o from .c
+               (("	$(CXX) $(FLAGS).*") "")
+               ;; Remove PKG_CPPFLAGS which clears the header search path.
+               (("\\$\\(PKG_CPPFLAGS\\)") ""))
+             ;; Remove PKG_CPPFLAGS which clears the header search path.
+             (substitute* '("src/lzf/Makefile"
+                            "src/vbz/Makefile.in")
+               (("\\$\\(PKG_CPPFLAGS\\)") "")))))))
     (propagated-inputs
      (list r-rhdf5lib))
     (inputs
