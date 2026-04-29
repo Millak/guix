@@ -28342,19 +28342,20 @@ separate published packages.")
 (define-public r-biomformat
   (package
     (name "r-biomformat")
-    (version "1.38.3")
+    (version "1.39.17")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biomformat" version))
        (sha256
         (base32
-         "0b0w0mfx448ph8fla3nb4i50mvpnv498kxip7rnh14xwas9rhdd7"))))
+         "0bz6cdrpylbj2j68x72q80vbiv561hk7j2wpbqx4myywigizyc42"))))
     (properties `((upstream-name . "biomformat")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-jsonlite r-matrix r-rhdf5))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-s4vectors r-summarizedexperiment r-testthat
+                         r-tibble))
     (home-page "https://github.com/joey711/biomformat/")
     (synopsis "Interface package for the BIOM file format")
     (description
