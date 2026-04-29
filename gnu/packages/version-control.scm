@@ -643,7 +643,7 @@ optimized for version control systems.")
     (inputs
      (list bash-minimal
            coreutils-minimal
-           curl                         ;for HTTP(S) access
+           curl-minimal                 ;for HTTP(S) access
            expat                        ;for 'git push' over HTTP(S)
            openssl
            perl
@@ -861,7 +861,9 @@ everything from small to very large projects with speed and efficiency.")
                xmlto)))
     (inputs
      (modify-inputs inputs
+       (delete "curl" "curl-minimal")   ;replace with real curl below
        (append bash-minimal             ;for wrap-program
+               curl
                python                   ;for git-p4
 
                ;; For PCRE support in git grep (USE_LIBPCRE2).

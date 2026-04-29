@@ -181,6 +181,17 @@ tunneling, and so on.")
     (license (license:non-copyleft "file://COPYING"
                                    "See COPYING in the distribution."))))
 
+(define-public curl-minimal
+  (hidden-package
+   (package
+     (inherit curl)
+     (name "curl-minimal")
+     ;; Drop nghttp2.
+     (native-inputs (list perl pkg-config))
+     (inputs (list gnutls libidn libpsl mit-krb5 zlib))
+     ;; Disable tests to avoid circular dependencies.
+     (arguments (ensure-keyword-arguments arguments '(#:tests? #f))))))
+
 (define-public curl-ssh
   (package/inherit curl
     (arguments
