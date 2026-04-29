@@ -25714,21 +25714,17 @@ block processing.")
 (define-public r-rhdf5lib
   (package
     (name "r-rhdf5lib")
-    (version "1.32.0")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Rhdf5lib" version))
        (sha256
         (base32
-         "1i0g82j7q6j1hp9c8vc6sv50ph1n028hpc8wfsifx4cc1w5hhvmy"))
+         "10hzw4fasxrrhrnjpbfvpi9ldv6q28sc9pimkiynkjjadx9x7b56"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Delete bundled binaries
-           (delete-file-recursively "src/wininclude/")
-           (delete-file-recursively "src/winlib/")
-           (delete-file "src/hdf5small_cxx_hl_1.10.7.tar.gz")))))
+        '(delete-file-recursively "vendor"))))
     (properties
      '((upstream-name . "Rhdf5lib")
        (updater-extra-propagated-inputs
@@ -25738,70 +25734,38 @@ block processing.")
     (build-system r-build-system)
     (arguments
      (list
+      #:test-directory "inst/tinytest"
+      #:skipped-tests
+      ;; We don't link with a bundled static library, so these tests fail.
+      '("test_link_flags.R")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'do-not-use-bundled-hdf5
             (lambda* (#:key inputs #:allow-other-keys)
-              (for-each delete-file '("configure" "configure.ac"))
+              (for-each delete-file '("configure" "configure.win"))
+              (substitute* "DESCRIPTION"
+                (("LinkingTo: biocmake.*") ""))
               (substitute* "R/zzz.R"
-                (("return\\(links\\)") "return(\" -lz\")"))
-              (with-directory-excursion "src"
-                (invoke "tar" "xvf" (assoc-ref inputs "hdf5-source"))
-                (rename-file (string-append "hdf5-" #$(package-version hdf5-1.10))
-                             "hdf5")
-                ;; Remove timestamp and host system information to make
-                ;; the build reproducible.
-                (substitute* "hdf5/src/libhdf5.settings.in"
-                  (("Configured on: @CONFIG_DATE@")
-                   "Configured on: Guix")
-                  (("Uname information:.*")
-                   "Uname information: Linux\n")
-                  ;; Remove unnecessary store reference.
-                  (("C Compiler:.*")
-                   "C Compiler: GCC\n"))
-                (rename-file "hdf5/src/libhdf5.settings.in"
-                             "hdf5/src/libhdf5.settings")
-                (rename-file "Makevars.in" "Makevars")
-                (substitute* "Makevars"
-                  (("@BUILD_HDF5@") "")
-                  (("@COPY_SZIP@") "")
-                  (("HDF5_CXX_LIB=.*")
-                   (string-append "HDF5_CXX_LIB="
-                                  #$(this-package-input "hdf5") "/lib/libhdf5_cpp.a\n"))
-                  (("HDF5_LIB=.*")
-                   (string-append "HDF5_LIB="
-                                  #$(this-package-input "hdf5") "/lib/libhdf5.a\n"))
-                  (("HDF5_CXX_INCLUDE=.*") "HDF5_CXX_INCLUDE=./hdf5/c++/src\n")
-                  (("HDF5_INCLUDE=.*") "HDF5_INCLUDE=./hdf5/src\n")
-                  (("HDF5_HL_INCLUDE=.*") "HDF5_HL_INCLUDE=./hdf5/hl/src\n")
-                  (("HDF5_HL_CXX_INCLUDE=.*") "HDF5_HL_CXX_INCLUDE=./hdf5/hl/c++/src\n")
-                  (("HDF5_HL_LIB=.*")
-                   (string-append "HDF5_HL_LIB="
-                                  #$(this-package-input "hdf5")
-                                  "/lib/libhdf5_hl.a\n"))
-                  (("HDF5_HL_CXX_LIB=.*")
-                   (string-append "HDF5_HL_CXX_LIB="
-                                  #$(this-package-input "hdf5")
-                                  "/lib/libhdf5_hl_cpp.a\n"))
-                  (("@ZLIB_LIB_PATH@") "-lz")
-                  (("@ZLIB_INCLUDE_PATH@") "")
-
-                  ;; szip is non-free software
-                  (("cp \"\\$\\{SZIP_LIB\\}.*") "")
-                  (("PKG_LIBS =.*") "PKG_LIBS = -lz -lhdf5\n")))))
-          (add-after 'unpack 'fix-bad-test
-            (lambda _
-              ;; This tests for a specific minor version of HDF5.
-              (substitute* "inst/tinytest/test_library_version.R"
-                (("1.10.7")
-                 #$(package-version (this-package-input "hdf5")))))))))
+                (("libhdf5_cpp.a") "libhdf5_cpp.so")
+                (("libhdf5.a") "libhdf5.so")
+                (("libhdf5_hl.a") "libhdf5_hl.so")
+                (("libhdf5_hl_cpp.a") "libhdf5_hl_cpp.so")
+                (("system.file\\(\"lib\", package=\"Rhdf5lib\", mustWork=TRUE\\)")
+                 (string-append "\"" #$(this-package-input "hdf5") "/lib/\"\n"))
+                (("system.file\\(\"lib\", \"libhdf5.settings\",.*")
+                 (string-append "\""
+                                (search-input-file inputs "lib/libhdf5.settings")
+                                "\"\n"))
+                (("file.path\\(path, \"libhdf5.settings\"\\)")
+                 (string-append "\""
+                                (search-input-file inputs "lib/libhdf5.settings")
+                                "\"\n"))))))))
     (propagated-inputs
-     (list hdf5-1.10 zlib))
+     (list hdf5 zlib))
     (native-inputs
-     `(("hdf5-source" ,(package-source hdf5-1.10))
-       ("r-knitr" ,r-knitr)
-       ("r-mockery" ,r-mockery)
-       ("r-tinytest" ,r-tinytest)))
+     (list r-knitr
+           r-mockery
+           r-tinytest))
     (home-page "https://bioconductor.org/packages/Rhdf5lib")
     (synopsis "HDF5 library as an R package")
     (description "This package provides C and C++ HDF5 libraries for use in R
