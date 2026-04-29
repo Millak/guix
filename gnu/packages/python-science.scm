@@ -6665,7 +6665,6 @@ Python style, together with a fast and comfortable execution environment.")
 
 (define-public snakemake-6
   (package
-    (inherit snakemake-5)
     (name "snakemake")
     (version "6.15.5")
     (source
@@ -6740,7 +6739,14 @@ Python style, together with a fast and comfortable execution environment.")
            python-pandas
            python-requests-mock
            python-setuptools
-           python-versioneer))))
+           python-versioneer))
+    (home-page "https://snakemake.readthedocs.io")
+    (synopsis "Python-based execution environment for make-like workflows")
+    (description
+     "Snakemake aims to reduce the complexity of creating workflows by
+providing a clean and modern domain specific specification language (DSL) in
+Python style, together with a fast and comfortable execution environment.")
+    (license license:expat)))
 
 (define-public snakemake-7
   (package
