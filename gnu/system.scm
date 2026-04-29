@@ -1033,7 +1033,7 @@ LOGO=guix-icon
 HOME_URL=\"https://guix.gnu.org\"
 DOCUMENTATION_URL=\"https://guix.gnu.org/en/manual\"
 SUPPORT_URL=\"https://guix.gnu.org/en/help\"
-BUG_REPORT_URL=\"https://lists.gnu.org/mailman/listinfo/bug-guix\"
+BUG_REPORT_URL=\"https://codeberg.org/guix/guix/issues\"
 "))
 
 (define* (operating-system-etc-service os)
