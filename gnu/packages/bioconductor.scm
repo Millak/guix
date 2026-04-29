@@ -11194,6 +11194,50 @@ study designs, including cross-sectional and longitudinal, and offers a variety
 of data exploration, normalization, and transformation methods.")
     (license license:expat)))
 
+(define-public r-maaslin3
+  (package
+    (name "r-maaslin3")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "maaslin3" version))
+       (sha256
+        (base32 "13q1i6c08ypdid3kwmy2zgaxm658lb94pripdlmsl41hic1hki4w"))))
+    (properties `((upstream-name . "maaslin3")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-collapse
+                             r-data-table
+                             r-ggnewscale
+                             r-ggplot2
+                             r-lme4
+                             r-lmertest
+                             r-logging
+                             r-mirai
+                             r-multcomp
+                             r-optparse
+                             r-patchwork
+                             r-rcolorbrewer
+                             r-reformulas
+                             r-rlang
+                             r-scales
+                             r-survival))
+    (native-inputs (list r-dplyr r-knitr r-plyr r-summarizedexperiment
+                         r-testthat))
+    (home-page "http://huttenhower.sph.harvard.edu/maaslin3")
+    (synopsis
+     "Refine multivariate linear models for meta-omic association discovery")
+    (description
+     "@code{MaAsLin} 3 refines and extends generalized multivariate linear
+models for meta-omicron association discovery.  It finds abundance and
+prevalence associations between microbiome meta-omics features and complex
+metadata in population-scale epidemiological studies.  The software includes
+multiple analysis methods (including support for multiple covariates, repeated
+measures, and ordered predictors), filtering, normalization, and transform
+options to customize analysis for your specific study.")
+    (license license:expat)))
+
 (define-public r-made4
   (package
     (name "r-made4")
