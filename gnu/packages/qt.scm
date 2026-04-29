@@ -4533,7 +4533,7 @@ instances.")
       (license license:expat))))
 
 (define-public single-application
-  (package/inherit single-application-qt5
+  (package
     (name "single-application")
     (version "3.5.2")
     (source
@@ -4547,11 +4547,41 @@ instances.")
        (sha256
         (base32
          "069aww3aww6968hmipzfbj57a5vw6jxj1mr20nsb1yh98n5c01rv"))))
+    (build-system cmake-build-system)
     (arguments
-     (substitute-keyword-arguments arguments
-       ((#:configure-flags flags)
-        #~(cons "-DQT_DEFAULT_MAJOR_VERSION=6" #$flags))))
-    (inputs (list qtbase))))
+     (list
+      #:tests? #f                     ; no check target
+      #:configure-flags
+      #~(list "-DQT_DEFAULT_MAJOR_VERSION=6"
+              ;; Projects can decide how to build this library.  You might need
+              ;; to override this flag (QApplication, QGuiApplication or
+              ;; QCoreApplication).
+              "-DQAPPLICATION_CLASS=QApplication")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; No install target, install things manually
+          (replace 'install
+            (lambda* (#:key source #:allow-other-keys)
+              (install-file
+               "libSingleApplication.a" (string-append #$output "/lib"))
+              (for-each
+               (lambda (file)
+                 (install-file (string-append source "/" file)
+                               (string-append #$output "/include")))
+               '("SingleApplication"
+                 "singleapplication.h"
+                 "singleapplication_p.h")))))))
+    (inputs (list qtbase))
+    (home-page "https://github.com/itay-grudev/SingleApplication")
+    (synopsis "Replacement of QtSingleApplication for Qt5 and Qt6")
+    (description
+     "SingleApplication is a replacement of the QtSingleApplication for Qt5 and
+Qt6.
+
+It keeps the Primary Instance of your Application and kills each subsequent
+instances.  It can (if enabled) spawn secondary (non-related to the primary)
+instances and can send data to the primary instance from secondary instances.")
+      (license license:expat)))
 
 (define-public pyotherside
   (package
