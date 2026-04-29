@@ -270,6 +270,49 @@ predictions on how animals should adjust their flight behaviour and wingbeat
 kinematics to varying flight conditions.")
     (license license:gpl3+)))
 
+(define-public r-aisdk
+  (package
+    (name "r-aisdk")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "aisdk" version))
+       (sha256
+        (base32 "17c45bad45ldanmkjx2naxc5d1rq5qllyrb9cxgkz6rvfxzbgv67"))))
+    (properties `((upstream-name . "aisdk")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-base64enc
+                             r-callr
+                             r-curl
+                             r-digest
+                             r-httr2
+                             r-jsonlite
+                             r-memoise
+                             r-openssl
+                             r-processx
+                             r-r6
+                             r-rlang
+                             r-yaml))
+    (native-inputs (list r-cli
+                         r-dbi
+                         r-devtools
+                         r-httptest2
+                         r-rsqlite
+                         r-testthat
+                         r-withr))
+    (home-page "https://github.com/YuLab-SMU/aisdk")
+    (synopsis "Unified interface for AI model providers")
+    (description
+     "This package provides a production-grade AI toolkit for R featuring a
+layered architecture (Specification, Utilities, Providers, Core), request
+interception support, robust error handling with exponential retry delays,
+support for multiple AI model providers (OpenAI, Anthropic, etc.), local small
+language model inference, distributed MCP ecosystem, multi-agent
+orchestration, progressive knowledge loading through skills, and a global
+skill store for sharing AI capabilities.")
+    (license license:expat)))
+
 (define-public r-aod
   (package
     (name "r-aod")
