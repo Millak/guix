@@ -20614,6 +20614,32 @@ non-parametric analysis of structured data, and other energy
 statistics/methods are implemented.")
     (license license:gpl2+)))
 
+(define-public r-enrichit
+  (package
+    (name "r-enrichit")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "enrichit" version))
+       (sha256
+        (base32 "1s7ddxpmi1x79216ib0lflkqcdc4dlcxf2s63n2i7hbjgppn1ncv"))))
+    (properties `((upstream-name . "enrichit")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp r-yulab-utils))
+    (native-inputs (list r-gson r-quarto r-testthat))
+    (home-page "https://cran.r-project.org/package=enrichit")
+    (synopsis "C++ implementations of functional enrichment analysis")
+    (description
+     "This package provides fast implementations of functional enrichment
+analysis methods using C++ via Rcpp.  It currently provides
+@dfn{Over-Representation Analysis} (ORA) and @dfn{Gene Set Enrichment
+Analysis} (GSEA).  The multilevel GSEA algorithm is derived from the fgsea
+package.  Methods are described in Subramanian et al. (2005)
+<doi:10.1073/pnas.0506580102> and Korotkevich et al. (2021)
+<doi:10.1101/060012>.")
+    (license license:artistic2.0)))
+
 (define-public r-envstats
   (package
     (name "r-envstats")
