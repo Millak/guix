@@ -392,8 +392,9 @@ servers from Python programs.")
            gettext-minimal
            httpd
            libtool
-           rsync
-           pkg-config))
+           pkg-config
+           python-setuptools
+           rsync))
     (home-page "https://directory.fedoraproject.org")
     (synopsis "Enterprise-class LDAP server")
     (description "389ds is an enterprise-class LDAP server.  It is hardened by
