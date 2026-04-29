@@ -33223,7 +33223,7 @@ needed and registers the function with its annotations.")
 (define-public python-logical-unification
   (package
     (name "python-logical-unification")
-    (version "0.4.6")
+    (version "0.4.7")
     (source
      (origin
        (method git-fetch)
@@ -33232,14 +33232,13 @@ needed and registers the function with its annotations.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pciaw3vd7awcnszkqda7l17y3gdzb8ca2cr4p5j0x3b8r28izx8"))))
+        (base32 "0y6caigbx32jq2i2hac87vr78j3jxdgpxncyw6lghvw6cgnh2p4v"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
            python-pytest-benchmark
            python-setuptools
-           python-versioneer
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-multipledispatch
            python-toolz))
