@@ -4858,6 +4858,33 @@ including:
 and to generate base64 encoded string from raster matrix.")
     (license license:gpl3)))
 
+(define-public r-genio
+  (package
+    (name "r-genio")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "genio" version))
+       (sha256
+        (base32 "0izx8yv8mvnfxdqnqpnp2ldw1hzs6ggxi7jgmjlgxkgmm4vngbgl"))))
+    (properties `((upstream-name . "genio")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr r-rcpp r-readr r-tibble))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/OchoaLab/genio")
+    (synopsis "Genetics input/output functions")
+    (description
+     "This package implements readers and writers for file formats associated
+with genetics data.  Reading and writing Plink BED/BIM/FAM and GCTA binary GRM
+formats is fully supported, including a lightning-fast BED reader and writer
+implementations.  Other functions are readr wrappers that are more
+constrained, user-friendly, and efficient for these particular applications;
+handles Plink and Eigenstrat tables (FAM, BIM, IND, and SNP files).  There are
+also make functions for FAM and BIM tables with default values to go with
+simulated genotype data.")
+    (license license:gpl3)))
+
 (define-public r-gfonts
   (package
     (name "r-gfonts")
