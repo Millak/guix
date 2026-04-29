@@ -23920,8 +23920,46 @@ vectors.")
         (base32
          "0gklyckh5s3654m3b3j7z74d86y7n56z5pjzxcc16pxxbxmmr18f"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:test-directory "tests"
+      #:skipped-tests
+      '("test-ci/test-install.R")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list r-xfun))
+     (list ghostscript
+           r-xfun
+           ;; Not all these packages are strictly needed by tinytex, but they
+           ;; are needed by r-biocstyle.  It is easier to just provide them
+           ;; here.
+           (texlive-local-tree
+            (list texlive-bera
+                  texlive-caption
+                  texlive-changepage
+                  texlive-enumitem
+                  texlive-footmisc
+                  texlive-framed
+                  texlive-helvetic
+                  texlive-latex-uni8
+                  texlive-luatex85
+                  texlive-marginfix
+                  texlive-mathtools
+                  texlive-metapost
+                  texlive-nowidow
+                  texlive-parnotes
+                  texlive-parskip
+                  texlive-pdfcrop
+                  texlive-placeins
+                  texlive-preprint
+                  texlive-scheme-small
+                  texlive-soul
+                  texlive-standalone
+                  texlive-titlesec
+                  texlive-titling
+                  texlive-xstring))))
     (native-inputs (list r-testit))
     (home-page "https://github.com/yihui/tinytex")
     (synopsis "Helper functions for TeX Live and compiling LaTeX documents")
