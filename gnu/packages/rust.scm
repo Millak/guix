@@ -1992,7 +1992,7 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.94))
+  (let ((base-rust rust-1.95))
     (package
       (inherit base-rust)
       (properties (append
