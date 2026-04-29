@@ -33850,21 +33850,20 @@ simple mock/record and a complete capture/replay framework.")
 (define-public python-ijson
   (package
     (name "python-ijson")
-    (version "3.1.4")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ijson" version))
        (sha256
-        (base32 "1sp463ywj4jv5cp6hsv2qwiima30d09xsabxb2dyq5b17jp0640x"))))
+        (base32 "0cbg4h29aysf4mq3iyrqzd2s1yb70b9vhg0vfc954gqff9h8fs4l"))))
     (inputs
      ;; yajl is optional, but compiling with it makes faster
      ;; backends available to ijson:
      (list yajl))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (build-system pyproject-build-system)
     (home-page "https://github.com/ICRAR/ijson")
     (synopsis "Iterative JSON parser with Python iterator interfaces")
