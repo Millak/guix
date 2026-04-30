@@ -160,6 +160,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages openldap)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -3992,6 +3993,31 @@ on the fly.  Both programs are written in C and are very fast.")
     (description
      "Stalwart is an mail and collaboration server with JMAP, IMAP4, POP3, SMTP,
 CalDAV, CardDAV and WebDAV support and a wide range of modern features.")
+    (license license:agpl3)))
+
+(define-public stalwart-cli
+  (package
+    (name "stalwart-cli")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stalwartlabs/cli")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rbhzd8m48fm5q8vlzkla5zxrypkbvsi8i1bplkm1ndp0bwiqdvz"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f))
+    (native-inputs (list nss-certs-for-test))
+    (inputs (cargo-inputs 'stalwart-cli))
+    (home-page "https://stalw.art")
+    (synopsis "Stalwart Command Line Interface")
+    (description
+     "A schema-driven command line tool for administering Stalwart Mail and
+Collaboration Server over its JMAP API.")
     (license license:agpl3)))
 
 (define-public swaks
