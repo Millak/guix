@@ -328,15 +328,15 @@ with the @uref{https://keepassxc.org, KeePassXC} password manager.")
 (define noscript
   (package
     (name "noscript")
-    (version "13.2.2")
+    (version "13.6.18.1984")
     (source (origin
               (method url-fetch/zipbomb)
               (uri (string-append
-                    "https://noscript.net/download/releases/noscript-" version
-                    ".xpi"))
+                    "https://archive.torproject.org/tor-package-archive/torbrowser/noscript/noscript-"
+                    version ".xpi"))
               (sha256
                (base32
-                "0w2w0a76dk01bkh83mqwgs9ky02rjqk15z5sxg4a6mw0hpr81bpm"))))
+                "0assv8v89hhg302q81vvv7ln3q8k9m6rzjkbprv2j05ghb23kkvm"))))
     (build-system copy-build-system)
     (properties '((addon-id . "{73a6fe31-595d-460b-a920-fcc0f8843232}")))
     (arguments
