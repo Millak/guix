@@ -148,7 +148,7 @@ of parts of the Windows API.")
   (package
     (inherit freerdp)
     (name "freerdp")
-    (version "3.20.0")
+    (version "3.25.0")
     (source
      (origin
        (method git-fetch)
@@ -157,11 +157,11 @@ of parts of the Windows API.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fknj2ysm3nj7kz5k8wvxpny0a7bjbi290z9cs7fwrk3yqv454w4"))))
+        (base32 "1plynfsr0hbp8f1mmshx2ab1c90vhamgirk0cdqwibm8y4kgc63y"))))
     (inputs
      (modify-inputs inputs
        (replace "ffmpeg" ffmpeg)
-       (prepend fuse icu4c mit-krb5 sdl3 sdl3-gfx sdl3-ttf)))
+       (prepend fuse icu4c mit-krb5 sdl3 sdl3-gfx sdl3-ttf v4l-utils)))
     (arguments
      (list #:build-type "Release"
            #:test-exclude "TestFreeRDPCodecInterleaved|TestClientRdpFile"
@@ -175,6 +175,7 @@ of parts of the Windows API.")
               "-DWITH_PULSE=ON"
               "-DWITH_CAIRO=ON"
               "-DWITH_CUPS=ON"
+              "-DCHANNEL_RDPECAM_CLIENT=ON" ;webcam support
               "-DBUILD_TESTING=ON"
               "-DWITH_SERVER=ON" ;build servers
               "-DWITH_SHADOW=ON" ;build shadow server
