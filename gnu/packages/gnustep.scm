@@ -297,6 +297,72 @@ as buttons, text fields, popup lists, browser lists, and windows; there
 pasteboards and images.")
     (license (list license:gpl3+ license:lgpl2.1+))))
 
+(define-public gnustep-back
+  (package
+    (name "gnustep-back")
+    (version "0.32.0")
+    (source (origin
+              (method url-fetch)
+              (uri (list
+                    (string-append "https://ftp.gnustep.org/pub/gnustep/core/"
+                                   name "-" version ".tar.gz")
+                    (string-append "ftp://ftp.gnustep.org/pub/gnustep/core/"
+                                   name "-" version ".tar.gz")))
+              (sha256
+               (base32
+                "1391g1j710sib8fym0arm80gs4g0f5f5la71yr2xii9a06ai05yf"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~'("--with-installation-domain=SYSTEM")
+      #:make-flags #~`("messages=yes"
+                       "GNUSTEP_TZ=UTC"
+                       "GNUSTEP_INSTALLATION_DOMAIN=SYSTEM"
+                       ,@#$(make-gnustep-make-flags '(assoc-ref %outputs "out")))
+      #:modules `((ice-9 popen)
+                  (ice-9 rdelim)
+                  ,@%default-gnu-modules)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-GNUSTEP_MAKEFILES
+            ;; Ref https://github.com/gnustep/libs-back/issues/54
+            (lambda _
+              (let* ((port  (open-input-pipe "gnustep-config --variable=GNUSTEP_MAKEFILES"))
+                     (makefiles (read-line port)))
+                (close-pipe port)
+                (setenv "GNUSTEP_MAKEFILES" makefiles))))
+          (add-after 'install 'install-doc
+            (lambda args
+              (with-directory-excursion "Documentation"
+                (apply (assoc-ref %standard-phases 'install) args)))))))
+    (native-inputs
+     (list gnustep-make
+           pkg-config
+           which
+           texinfo))
+    (inputs
+     (list cairo
+           freetype
+           gnustep-base
+           gnustep-gui
+
+           libxt
+           libxrandr
+           libxmu
+           libxft))
+    (home-page "https://gnustep.org")
+    (synopsis "Back-end library for drawing GNUstep GUIs")
+    (description "Back-end component for the GNUstep GUI Library. The
+implementation of the GNUstep GUI Library is designed in two parts. The
+first part is the front-end component which is independent of platform
+and display system. This front-end is combined with a back-end
+component which handles all of the display system dependent such as
+specific calls to the X Window System. This design allows the GNUstep
+applications to have the \"look and feel\" of the underlying display
+system without any changes to the application, and the library can be
+easily ported to other display systems.")
+    (license (list license:gpl3+ license:lgpl2.1+))))
+
 (define-public libobjc2
   (package
     (name "libobjc2")
