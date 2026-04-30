@@ -4763,7 +4763,7 @@ module provides support functions to the automatically generated code.")
                       "--bindir" (string-append #$output "/bin")
                       "--destdir" (py:site-packages inputs outputs)
                       "--incdir" (string-append #$output "/include")))))))
-    (native-inputs (list python-wrapper))
+    (native-inputs (list python-setuptools python-wrapper))
     (propagated-inputs (list))
     (license license:gpl3)))
 
