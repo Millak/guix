@@ -2109,6 +2109,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-3.11-fix-tests.patch		\
   %D%/packages/patches/python-3.12-fix-tests.patch		\
   %D%/packages/patches/python-anyio-unuse-exceptiongroup-in-test.patch	\
+  %D%/packages/patches/python-beangulp-click-8.2-compat.patch	\
   %D%/packages/patches/python-bed-reader-use-store-samples.patch	\
   %D%/packages/patches/python-chai-drop-python2.patch		\
   %D%/packages/patches/python-clarabel-blas.patch		\

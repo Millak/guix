@@ -2100,7 +2100,10 @@ it can easily generate custom reports specific to accounting purposes.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zlanw88dq7czgsdvqwz2fgxamyrfnx15ymv4d7fnjrj04glpg47"))))
+        (base32 "0zlanw88dq7czgsdvqwz2fgxamyrfnx15ymv4d7fnjrj04glpg47"))
+       ;; TODO: Remove in the next release:
+       ;; https://github.com/beancount/beangulp/commit/254bfb38ffed
+       (patches (search-patches "python-beangulp-click-8.2-compat.patch"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list beancount

@@ -1,0 +1,24 @@
+From 254bfb38ffed049ef8f3041bfaf01b3f5a8aa771 Mon Sep 17 00:00:00 2001
+From: Daniele Nicolodi <daniele@grinta.net>
+Date: Thu, 12 Jun 2025 23:27:59 +0200
+Subject: [PATCH] tests: Adapt to click version 8.2.0 and later
+
+This version of click changes the exit code from 0 to 2 when the
+help is shown if no argument is passed to a command group.
+---
+ beangulp/tests/testing.rst | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/beangulp/tests/testing.rst b/beangulp/tests/testing.rst
+index 180ab115..fab63547 100644
+--- a/beangulp/tests/testing.rst
++++ b/beangulp/tests/testing.rst
+@@ -27,8 +27,6 @@ Tests
+ Check the basics:
+ 
+   >>> r = run()
+-  >>> r.exit_code
+-  0
+   >>> print(r.output)
+   Usage: beangulp [OPTIONS] COMMAND [ARGS]...
+ 
