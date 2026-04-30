@@ -5863,7 +5863,13 @@ programs in Python.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1qfqnhvfx5mm7bdajjnnagmvns1zxyksjzh3k5la2ag6a8bp5gki"))))
+                  "1qfqnhvfx5mm7bdajjnnagmvns1zxyksjzh3k5la2ag6a8bp5gki"))
+                (modules '((guix build utils)))
+                ;; collections.OrderedDict.__repr__ changed in Python 3.12,
+                ;; see also <https://github.com/hjson/hjson-py/issues/40>.
+                (snippet #~(substitute* "hjson/__init__.py"
+                             (("\\[\\('foo', 'a'\\), \\('bar', 1\\)\\]")
+                              "{'foo': 'a', 'bar': 1}")))))
       (build-system pyproject-build-system)
       (native-inputs (list python-setuptools python-wheel))
       (home-page "https://github.com/hjson/hjson-py")
