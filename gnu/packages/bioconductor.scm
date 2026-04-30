@@ -17282,13 +17282,13 @@ multiplication.")
 (define-public r-scrapper
   (package
     (name "r-scrapper")
-    (version "1.4.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scrapper" version))
        (sha256
-        (base32 "16lvbwby98zinykh6ybxwiswyv7072pmk9lv8sbi7mfqlh0agzfz"))))
+        (base32 "1hq5cpxzqbx8zsvw9l07y7nwspqnq8rj68kk6gdp6skrzh2gqilv"))))
     (properties
      '((upstream-name . "scrapper")
        (updater-ignored-native-inputs . ("r-rigraphlib"))
@@ -17300,9 +17300,6 @@ multiplication.")
     (build-system r-build-system)
     (arguments
      (list
-      #:skipped-tests
-      ;; This attempts to fetch datasets from the Internet.
-      '("test-analyze.R")
       #:phases
       '(modify-phases %standard-phases
          ;; I really don't like the trend on Bioconductor to repackage
@@ -17313,7 +17310,7 @@ multiplication.")
          (add-after 'unpack 'just-use-igraph
            (lambda _
              (substitute* "DESCRIPTION"
-               (("Rigraphlib, ") ""))
+               (("^ *Rigraphlib.*") ""))
              (substitute* "src/Makevars"
                (("^RIGRAPH_FLAGS.*")
                 "RIGRAPH_FLAGS=`pkg-config --cflags igraph`\n")
@@ -17324,15 +17321,17 @@ multiplication.")
                              r-beachmat
                              r-biocneighbors
                              r-delayedarray
-                             r-rcpp))
+                             r-rcpp
+                             r-s4vectors
+                             r-sparsearray))
     (native-inputs (list pkg-config
                          r-delayedmatrixstats
                          r-igraph
                          r-knitr
                          r-matrix
-                         r-matrixgenerics
-                         r-scrnaseq
+                         r-singlecellexperiment
                          r-sparsematrixstats
+                         r-summarizedexperiment
                          r-testthat))
     (home-page "https://bioconductor.org/packages/scrapper")
     (synopsis "Bindings to C++ libraries for Single-Cell analysis")
