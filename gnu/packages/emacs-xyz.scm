@@ -35590,7 +35590,7 @@ and comments.")
 (define-public emacs-yeetube
   (package
     (name "emacs-yeetube")
-    (version "2.1.12")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -35599,7 +35599,7 @@ and comments.")
               (commit version)))
        (sha256
         (base32
-         "0zvbfwxq3dx14ynpafpvv1swg7hbg3k9avir9b7cymf4r5hrjnx3"))
+         "0phlcmf54f2wih7rksazf8k2jz4i31siqzd4gb7x3d6zddk2rs97"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
@@ -35614,7 +35614,7 @@ and comments.")
                  (format #f "~s" (search-input-file inputs
                                             (string-append "/bin/" program))))))))))
     (inputs (list mpv torsocks yt-dlp))
-    (propagated-inputs (list emacs-compat))
+    (propagated-inputs (list emacs-compat emacs-keymap-popup))
     (home-page "https://thanosapollo.org/projects/yeetube/")
     (synopsis "Youtube front-end for Emacs")
     (description
