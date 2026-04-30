@@ -1296,6 +1296,18 @@ basic geometries.")
 (define-public lib2geom
   (package
     (inherit lib2geom/pinned)
+    (name "lib2geom")
+    (version "1.4")
+    (source
+     (origin
+       (inherit (package-source lib2geom/pinned))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/inkscape/lib2geom")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gfgzwm5s50caj5s6l7irgmlifpmypd0fnm6ckzli1fdziwjgdwi"))))
     (properties '((hidden? . #f)))))
 
 (define-public python-booleanoperations
