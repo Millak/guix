@@ -22802,6 +22802,25 @@ counter, concurrent hash table, multiple concurrent queues and @code{mutex}.")
      (list
       #:import-path "github.com/puzpuzpuz/xsync/v3"))))
 
+(define-public go-github-com-puzpuzpuz-xsync-v4
+  (package
+    (inherit go-github-com-puzpuzpuz-xsync-v3)
+    (name "go-github-com-puzpuzpuz-xsync-v4")
+    (version "4.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/puzpuzpuz/xsync")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04caylbphjgq1qbpd09cg0b8h84y4zznsdfhi20w4f1628fq7077"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/puzpuzpuz/xsync/v4"))))
+
 (define-public go-github-com-quasilyte-go-ruleguard-dsl
   (package
     (name "go-github-com-quasilyte-go-ruleguard-dsl")
