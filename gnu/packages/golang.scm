@@ -1120,7 +1120,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.24)
     (name "go")
-    (version "1.26.1")
+    (version "1.26.2")
     (source
      (origin
        (method git-fetch)
@@ -1129,9 +1129,9 @@ in the style of communicating sequential processes (@dfn{CSP}).")
              (commit (string-append "go" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1blfc89jxlr7n35j77i523k8rsxvz16f44qzd0h65c940zrrmf77"))))
+        (base32 "01dgshhn38dgxmbn02knnvddirmkwgvr3v003dml5q87qibzvg30"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments go-1.24)
+     (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
             ;; There is no real discussion on the issue among humans, a lot
