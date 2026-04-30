@@ -2,6 +2,7 @@
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2025 Owen T. Heisler <writer@owenh.net>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,6 +57,7 @@
   #:use-module (ice-9 string-fun)
   #:use-module (ice-9 textual-ports)
   #:use-module (json)
+  #:use-module ((rnrs base) #:select (assert))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-34)
@@ -240,6 +242,11 @@ Have you run 'guix archive --generate-key'?")
 ;;; Hetzner configuration.
 ;;;
 
+;;; This parameter overrides the value returned by
+;;; `hetzner-configuration-ssh-key'.
+(define %hetzner-ssh-key-file
+  (make-parameter #f))
+
 (define-record-type* <hetzner-configuration> hetzner-configuration
   make-hetzner-configuration hetzner-configuration? this-hetzner-configuration
   (allow-downgrades? hetzner-configuration-allow-downgrades? ; boolean
@@ -262,28 +269,39 @@ Have you run 'guix archive --generate-key'?")
         (default #t))
   (ipv6 hetzner-configuration-ipv6      ; boolean | string
         (default #t))
-  (ssh-public-key hetzner-configuration-ssh-public-key ; public-key | string
+  (ssh-public-key hetzner-configuration-ssh-public-key* ; #f | public-key | string
                   (thunked)
-                  (default (public-key-from-file (hetzner-configuration-ssh-key this-hetzner-configuration)))
-                  (sanitize
-                   (lambda (value)
-                     (if (string? value) (public-key-from-file value) value))))
-  (ssh-key hetzner-configuration-ssh-key
-           (default #f))                ; #f | string
-  (user hetzner-configuration-user
-        (default "root")))              ;string
+                  (default (and=> (hetzner-configuration-ssh-key
+                                   this-hetzner-configuration)
+                                  public-key-from-file))
+                  (sanitize (lambda (value)
+                              (if (string? value)
+                                  (public-key-from-file value)
+                                  value))))
+  (ssh-key hetzner-configuration-ssh-key* ; #f | string
+           (default #f))
+  (user hetzner-configuration-user      ;string
+        (default "root")))
 
-(define (hetzner-configuration-ssh-key-fingerprint config)
-  "Return the SSH public key fingerprint of CONFIG as a string."
-  (and-let* ((pubkey (hetzner-configuration-ssh-public-key config))
-             (hash (get-public-key-hash pubkey 'md5)))
+(define (hetzner-configuration-ssh-key config)
+  (or (%hetzner-ssh-key-file)
+      (hetzner-configuration-ssh-key* config)))
+
+(define (hetzner-configuration-ssh-public-key config)
+  (or (and=> (%hetzner-ssh-key-file) public-key-from-file)
+      (hetzner-configuration-ssh-public-key* config)))
+
+(define (public-key->fingerprint public-key)
+  "Return the SSH public key fingerprint of PUBLIC-KEY, a Guile-SSH public key
+object, in the expected format for the Hetzner API."
+  (let ((hash (get-public-key-hash public-key 'md5)))
     (bytevector->hex-string hash)))
 
-(define (hetzner-configuration-ssh-key-public config)
-  "Return the SSH public key of CONFIG as a string."
-  (let ((public-key (hetzner-configuration-ssh-public-key config)))
-    (format #f "ssh-~a ~a" (get-key-type public-key)
-            (public-key->string public-key))))
+(define (public-key->string-with-type public-key)
+  "Return the SSH public key string of PUBLIC-KEY, a Guile-SSH public key
+object, in the expected format for the Hetzner API."
+  (format #f "ssh-~a ~a" (get-key-type public-key)
+          (public-key->string public-key)))
 
 
 ;;;
@@ -477,8 +495,9 @@ values: list of output lines returned by CMD and its exit code."
 
 (define (hetzner-machine-ssh-key machine)
   "Find the SSH key for MACHINE on the Hetzner API."
-  (let* ((config (machine-configuration machine))
-         (expected (hetzner-configuration-ssh-key-fingerprint config)))
+  (and-let* ((config (machine-configuration machine))
+             (public-key (hetzner-configuration-ssh-public-key config))
+             (expected (public-key->fingerprint public-key)))
     (find (lambda (ssh-key)
             (equal? expected (hetzner-ssh-key-fingerprint ssh-key)))
           (hetzner-api-ssh-keys
@@ -491,10 +510,12 @@ values: list of output lines returned by CMD and its exit code."
     (format #t "creating ssh key for '~a'...\n" name)
     (let* ((config (machine-configuration machine))
            (api (hetzner-configuration-api config))
+           (pubkey (hetzner-configuration-ssh-public-key config))
+           (_ (assert pubkey))
            (ssh-key (hetzner-api-ssh-key-create
-                     (hetzner-configuration-api config)
-                     (hetzner-configuration-ssh-key-fingerprint config)
-                     (hetzner-configuration-ssh-key-public config)
+                     api
+                     (public-key->fingerprint pubkey)
+                     (public-key->string-with-type pubkey)
                      #:labels (hetzner-configuration-labels config))))
       (format #t "successfully created ssh key for '~a'\n" name)
       ssh-key)))
@@ -520,6 +541,16 @@ values: list of output lines returned by CMD and its exit code."
     (formatted-message (G_ "primary ip '~a' does not exist.")
                        name))))
 
+(define temporary-ssh-key-file
+  (let ((ssh-key-file (port-filename (mkstemp "/tmp/hetzner-key-XXXXXX")))
+        (ssh-key #f))
+    (lambda ()
+      "Return a dynamically created, temporary private SSH key."
+      (unless ssh-key
+        (set! ssh-key (make-keypair 'ed25519))
+        (private-key-to-file ssh-key ssh-key-file))
+      ssh-key-file)))
+
 (define (hetzner-machine-create-server machine)
   "Create the Hetzner server for MACHINE."
   (let* ((config (machine-configuration machine))
@@ -527,13 +558,14 @@ values: list of output lines returned by CMD and its exit code."
          (server-type (hetzner-configuration-server-type config)))
     (format #t "creating '~a' server for '~a'...\n" server-type name)
     (let* ((ssh-key (hetzner-machine-ssh-key machine))
+           (_ (assert ssh-key))         ;required during provisioning
            (ipv4 (hetzner-configuration-ipv4 config))
            (ipv6 (hetzner-configuration-ipv6 config))
            (api (hetzner-configuration-api config))
            (server (hetzner-api-server-create
                     api
                     (machine-display-name machine)
-                    (list ssh-key)
+                    #:ssh-keys (list ssh-key)
                     #:ipv4 (if (string? ipv4)
                                (hetzner-primary-ip-id (hetzner-resolve-ip api ipv4))
                                ipv4)
@@ -581,13 +613,15 @@ values: list of output lines returned by CMD and its exit code."
     (write-known-host! ssh-session)))
 
 (define (hetzner-machine-enable-rescue-system machine server)
-  "Enable the rescue system on the Hetzner SERVER for MACHINE."
+  "Enable the rescue system on the Hetzner SERVER for MACHINE, provisioning it
+with the configured SSH key, or a dynamically created temporary one."
   (let* ((name (machine-display-name machine))
          (config (machine-configuration machine))
          (api (hetzner-configuration-api config))
-         (ssh-keys (list (hetzner-machine-ssh-key machine))))
+         (ssh-keys (and=> (hetzner-machine-ssh-key machine) list)))
     (format #t "enabling rescue system on '~a'...\n" name)
-    (let ((action (hetzner-api-server-enable-rescue-system api server ssh-keys)))
+    (let ((action (hetzner-api-server-enable-rescue-system
+                   api server #:ssh-keys ssh-keys)))
       (format #t "successfully enabled rescue system on '~a'\n" name)
       action)))
 
@@ -623,6 +657,7 @@ values: list of output lines returned by CMD and its exit code."
 (set! hetzner-machine-ssh-run-script hetzner-machine-ssh-run-script)
 
 (define (hetzner-machine-rescue-install-os machine ssh-session server)
+  "Init a minimal Guix System to bootstrap from."
   (let ((name (machine-display-name machine))
         (os (hetzner-machine-bootstrap-os-form machine server)))
     (format #t "installing guix operating system on '~a'...\n" name)
@@ -719,7 +754,8 @@ apt-get install cloud-initramfs-growroot uidmap --assume-yes"))
       action)))
 
 (define (hetzner-machine-provision machine)
-  "Provision a server for MACHINE on the Hetzner Cloud service."
+  "Provision a Guix System bootstrap server for MACHINE on the Hetzner Cloud
+service."
   (with-exception-handler
       (lambda (exception)
         (let ((config (machine-configuration machine))
@@ -734,12 +770,10 @@ apt-get install cloud-initramfs-growroot uidmap --assume-yes"))
         (let ((ssh-session (hetzner-machine-wait-for-ssh machine server)))
           (hetzner-machine-rescue-install-packages machine ssh-session)
           (hetzner-machine-rescue-partition machine ssh-session)
-          (hetzner-machine-rescue-install-os machine ssh-session server)
-          (hetzner-machine-reboot machine server)
-          (sleep 5)
-          (hetzner-machine-authenticate-host machine server)
-          server)))
-    #:unwind? #t))
+          (hetzner-machine-rescue-install-os machine ssh-session server))
+        (hetzner-machine-reboot machine server)
+        (hetzner-machine-authenticate-host machine server)
+        server))))
 
 (define (machine-not-provisioned machine)
   (formatted-message
@@ -765,16 +799,47 @@ an environment type of 'hetzner-environment-type'."
 ;;; System deployment.
 ;;;
 
+(define (cleanup-temporary-ssh-key/maybe api ssh-key)
+  "Delete the temporary SSH private key file from the file system and the
+Hetzner API, if one was created used."
+  (when (%hetzner-ssh-key-file)
+    (format #t "cleaning up temporary ssh key~%")
+    (delete-file (%hetzner-ssh-key-file))
+    (%hetzner-ssh-key-file #f)
+    (hetzner-api-ssh-key-delete api ssh-key)))
+
 (define (deploy-hetzner machine)
   "Internal implementation of 'deploy-machine' for 'machine' instances with an
 environment type of 'hetzner-environment-type'."
   (hetzner-machine-validate machine)
-  (unless (hetzner-machine-ssh-key machine)
-    (hetzner-machine-ssh-key-create machine))
-  (let ((server (or (hetzner-machine-server machine)
-                    (hetzner-machine-provision machine))))
-    (deploy-machine (hetzner-machine-delegate machine server))))
 
+  (define server (hetzner-machine-server machine))
+  (define config (machine-configuration machine))
+  (define api (hetzner-configuration-api config))
+  (define ssh-key #f)                   ;hetzner API key
+
+  ;; Provisioning requires uploading an SSH key via the Hetzner API to
+  ;; authenticate non-interactively with the newly created server.
+  (unless server                        ;provisioning?
+    (unless (hetzner-configuration-ssh-public-key config)
+      (format #t "using a temporary ssh key for provisioning~%")
+      (%hetzner-ssh-key-file (temporary-ssh-key-file)))
+    (set! ssh-key (or (hetzner-machine-ssh-key machine)
+                      (hetzner-machine-ssh-key-create machine))))
+
+  ;; Cleaning-up here is a bit tricky, as `deploy-machine' returns a monadic
+  ;; value immediately, to be executed later; this means the clean-up must be
+  ;; delayed until monadic evaluation time.
+  (let* ((server (or server (hetzner-machine-provision machine)))
+         (delegate-machine (hetzner-machine-delegate machine server)))
+    ;; FIXME: The clean-up in the guard does not run even when
+    ;; `deploy-machine' fails.
+    (guard (c (#t (cleanup-temporary-ssh-key/maybe api ssh-key)
+                  (raise c)))
+      (mlet %store-monad
+          ((value (deploy-machine delegate-machine)))
+        (cleanup-temporary-ssh-key/maybe api ssh-key)
+        (return value)))))
 
 
 ;;;

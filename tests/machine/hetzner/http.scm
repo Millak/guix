@@ -286,7 +286,8 @@
    #:labels labels))
 
 (define* (create-server api ssh-key #:key (labels %labels))
-  (hetzner-api-server-create api %server-name (list ssh-key)
+  (hetzner-api-server-create api %server-name
+                             #:ssh-keys (list ssh-key)
                              #:labels labels
                              #:server-type "cpx31"))
 
@@ -384,7 +385,8 @@
               (body `(("actions" . ,(vector (cons `("status" . "success")
                                                   action-create-server-alist)))
                       ("meta" . ,meta-page-alist))))))))
-        (hetzner-api-server-create (hetzner-api) %server-name (list ssh-key-root))))
+        (hetzner-api-server-create (hetzner-api) %server-name
+                                   #:ssh-keys (list ssh-key-root))))
 
 (test-equal "hetzner-api-server-delete-unit"
   (make-hetzner-action
@@ -425,7 +427,8 @@
               (body `(("actions" . ,(vector (cons `("status" . "success")
                                                   action-enable-rescue-alist)))
                       ("meta" . ,meta-page-alist))))))))
-        (hetzner-api-server-enable-rescue-system (hetzner-api) server-x86 (list ssh-key-root))))
+        (hetzner-api-server-enable-rescue-system
+         (hetzner-api) server-x86 #:ssh-keys (list ssh-key-root))))
 
 (test-equal "hetzner-api-server-power-on-unit"
   action-power-on
@@ -557,7 +560,8 @@
   (with-cleanup-api (api (hetzner-api))
     (let* ((ssh-key (create-ssh-key api %ssh-key))
            (server (create-server api ssh-key))
-           (action (hetzner-api-server-enable-rescue-system api server (list ssh-key))))
+           (action (hetzner-api-server-enable-rescue-system
+                    api server #:ssh-keys (list ssh-key))))
       (member action (hetzner-api-actions api (list (hetzner-action-id action)))))))
 
 (test-skip %when-no-token)
@@ -595,7 +599,8 @@
   (with-cleanup-api (api (hetzner-api))
     (let* ((ssh-key (create-ssh-key api %ssh-key))
            (server (create-server api ssh-key))
-           (action (hetzner-api-server-enable-rescue-system api server (list ssh-key))))
+           (action (hetzner-api-server-enable-rescue-system
+                    api server #:ssh-keys (list ssh-key))))
       (and (hetzner-action? action)
            (equal? "enable_rescue"
                    (hetzner-action-command action))))))

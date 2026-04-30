@@ -234,11 +234,11 @@
              (lambda* (api . options)
                servers))
             ((gnu machine hetzner http) hetzner-api-server-create
-             (lambda* (api name ssh-keys . options)
+             (lambda* (api name #:key ssh-keys #:allow-other-keys)
                (set! servers (list (mock-server machine)))
                (car servers)))
             ((gnu machine hetzner http) hetzner-api-server-enable-rescue-system
-             (lambda (api server ssh-keys)
+             (lambda* (api server #:key ssh-keys #:allow-other-keys)
                (mock-action "enable_rescue")))
             ((gnu machine hetzner http) hetzner-api-server-power-on
              (lambda (api server)

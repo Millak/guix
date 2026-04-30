@@ -50346,6 +50346,8 @@ accepts store items it receives from the coordinator:
 # guix archive --authorize < coordinator-public-key.txt
 @end example
 
+@cindex @command{guix deploy, sudo configuration}
+@anchor{guix-deploy-via-sudo}
 @code{user}, in this example, specifies the name of the user account to log in
 as to perform the deployment.  Its default value is @code{root}, but root
 login over SSH may be forbidden in some cases.  To work around this,
@@ -50562,7 +50564,17 @@ small to bootstrap a Guix system from.
 
 @item @code{ssh-key} (default: @code{#f})
 If specified, the file name of the SSH private key to use to
-authenticate with the remote host.
+authenticate with the remote host.  If left unspecified, a temporary SSH
+key is used during the early provisioning of the machine, after which
+the authentication with the final machine is handled by your SSH client
+or agent.  It's a good idea to have your public SSH key authorized
+declaratively in the @code{operating-system} specification provided, via
+the @code{authorized-keys} field of the @code{openssh-configuration}
+record.  To be able to run @samp{guix deploy} after the initial
+provisioning is done, an SSH connection to the root account or a
+password-less sudo configuration is needed (@pxref{guix-deploy-via-sudo,
+Invoking guix deploy}).  For the later, you must also explicitly specify
+the @code{user} field, which otherwise defaults to @code{"root"}.
 
 @item @code{ssh-public-key} (default: extracted from @code{ssh-key})
 If specified, either a public key as returned by

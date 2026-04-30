@@ -598,8 +598,8 @@
   (apply hetzner-api-list api "/locations" "locations" json->hetzner-location options))
 
 (define* (hetzner-api-server-create
-          api name ssh-keys
-          #:key
+          api name #:key
+          ssh-keys
           (ipv4 #f)
           (ipv6 #f)
           (image %hetzner-default-server-image)
@@ -620,7 +620,11 @@
                           ,@(if (integer? ipv6) `(("ipv6" . ,ipv6)) '())))
                         ("location" . ,location)
                         ("server_type" . ,server-type)
-                        ("ssh_keys" . ,(apply vector (map hetzner-ssh-key-id ssh-keys)))
+                        ,@(if ssh-keys
+                              `(("ssh_keys" .
+                                 ,(apply vector (map hetzner-ssh-key-id
+                                                     ssh-keys))))
+                              '())
                         ("start_after_create" . ,start-after-create?)))))
     (hetzner-api-action-wait api (hetzner-api-body-action body))
     (json->hetzner-server (assoc-ref body "server"))))
@@ -631,12 +635,15 @@
     (hetzner-api-action-wait api (hetzner-api-body-action body))))
 
 (define* (hetzner-api-server-enable-rescue-system
-          api server ssh-keys #:key (type "linux64"))
+          api server #:key ssh-keys (type "linux64"))
   "Enable the rescue system for SERVER with the Hetzner API."
-  (let* ((ssh-keys (apply vector (map hetzner-ssh-key-id ssh-keys)))
+  (let* ((ssh-keys (and ssh-keys
+                        (apply vector (map hetzner-ssh-key-id ssh-keys))))
          (body (hetzner-api-post
                 api (hetzner-server-path server "/actions/enable_rescue")
-                #:body `(("ssh_keys" . ,ssh-keys)
+                #:body `(,@(if ssh-keys
+                               `(("ssh_keys" . ,ssh-keys))
+                               '())
                          ("type" . ,type)))))
     (hetzner-api-action-wait api (hetzner-api-body-action body))))
 
