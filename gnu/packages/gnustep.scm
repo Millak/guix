@@ -32,15 +32,21 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages libffcall)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages fontutils)
@@ -76,6 +82,25 @@ Maker supporting browser mode and list mode.  This version is a fork of
 FSViewer.app originally written by George Clernon (1998-99) and later
 maintained by Guido Scholz (2002-07).")
     (license license:gpl2)))
+
+(define gnustep-dirmap
+  ''(("GNUSTEP_SYSTEM_APPS"        . "lib/GNUstep/Applications")
+     ("GNUSTEP_SYSTEM_ADMIN_APPS"  . "lib/GNUstep/Applications")
+     ("GNUSTEP_SYSTEM_WEB_APPS"    . "lib/GNUstep/WebApplications")
+     ("GNUSTEP_SYSTEM_TOOLS"       . "bin")
+     ("GNUSTEP_SYSTEM_ADMIN_TOOLS" . "sbin")
+     ("GNUSTEP_SYSTEM_LIBRARY"     . "lib/GNUstep")
+     ("GNUSTEP_SYSTEM_HEADERS"     . "include")
+     ("GNUSTEP_SYSTEM_LIBRARIES"   . "lib")
+     ("GNUSTEP_SYSTEM_DOC"         . "share/GNUstep/Documentation")
+     ("GNUSTEP_SYSTEM_DOC_MAN"     . "share/man")
+     ("GNUSTEP_SYSTEM_DOC_INFO"    . "share/info")))
+
+(define-public (make-gnustep-make-flags out)
+  `(map
+    (lambda (dir)
+      (string-append (car dir) "=" ,out "/" (cdr dir)))
+    ,gnustep-dirmap))
 
 (define-public gnustep-make
   (package
@@ -131,6 +156,89 @@ project without having to deal with the complex issues associated with
 configuration, building, installation, and packaging.  It also allows the user
 to easily create cross-compiled binaries.")
     (license license:gpl3+)))
+
+(define-public gnustep-base
+  (package
+    (name "gnustep-base")
+    (version "1.31.1")
+    (source (origin
+              (method url-fetch)
+              (uri (list
+                    (string-append "https://ftp.gnustep.org/pub/gnustep/core/"
+                                   name "-" version ".tar.gz")
+                    (string-append "ftp://ftp.gnustep.org/pub/gnustep/core/"
+                                   name "-" version ".tar.gz")))
+              (sha256
+               (base32
+                "1ka50m36ld2ggd4h8j2snhf947m6jh0kcflmfsv7az4ajwf6ym77"))
+              (patches
+               (search-patches
+                "gnustep-base-autogsdoc-reproducibility.patch"
+                "gnustep-base-tzdir.patch"
+                "gnustep-base-search-paths.patch"
+                "gnustep-base-no-builtin-tz.patch"
+                "gnustep-base-disable-network-tests.patch"
+                "gnustep-base-chroot-tests.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~`("--with-installation-domain=SYSTEM"
+                            ,(string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+      #:make-flags #~`("messages=yes"
+                       "GNUSTEP_TZ=UTC"
+                       "GNUSTEP_INSTALLATION_DOMAIN=SYSTEM"
+                       ;; override config from gnustep-make
+                       ,@#$(make-gnustep-make-flags '(assoc-ref %outputs "out")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-makefile
+            ;; install fails because it wants to install into gnustep-make
+            (lambda _
+              (substitute* "Makefile.postamble"
+                (("\\$\\(GNUSTEP_MAKEFILES\\)")
+                 (string-append #$output "/share/GNUstep/Makefiles")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (substitute* "Tests/base/NSURL/basic.m"
+                ;; Use a path that exists
+                (("/usr") "/tmp"))))
+          (add-after 'install 'install-doc
+            (lambda args
+              (with-directory-excursion "Documentation"
+                (apply (assoc-ref %standard-phases 'install) args)))))))
+    (native-inputs
+     (list gnustep-make which pkg-config
+           texinfo
+           tzdata-for-tests))
+    (inputs
+     (list curl
+           gmp
+           gnutls
+           icu4c
+           libxml2
+           libxslt
+           libffi
+           `(,zstd "lib")
+           zlib))
+    (native-search-paths
+     (map
+      (lambda (dir)
+        (search-path-specification
+          (variable (string-append "GUIX_" (car dir)))
+          (files (list (cdr dir)))))
+      (cadr gnustep-dirmap)))
+    (home-page "https://gnustep.org")
+    (synopsis "Library of general-purpose, Objective C objects for GNUstep")
+    (description "The GNUstep Base Library is a library of general-purpose,
+ non-graphical Objective C objects. For example, it includes classes for
+strings, object collections, byte streams, typed coders, invocations,
+notifications, notification dispatchers, moments in time, network ports,
+remote object messaging support (distributed objects), and event loops.
+
+It provides functionality that aims to implement the non-graphical
+portion of the Apple's Cocoa frameworks (the Foundation library)
+which came from the OpenStep standard.")
+    (license (list license:gpl3+ license:lgpl2.1+))))
 
 (define-public libobjc2
   (package

@@ -1,0 +1,84 @@
+Description: Set as hopeful some networking tests.
+ - Set as hopeFul some tests that inevitably fail
+   if networking is disabled.
+Author: Eric Heintzmann <heintzmann.eric@free.fr>
+Forwarded: not-needed
+Last-Update: 2025-02-12
+---
+
+--- gnustep-base.orig/Tests/base/NSStream/socket.m
++++ gnustep-base/Tests/base/NSStream/socket.m
+@@ -137,7 +137,9 @@
+ 
+   // I cannot verify the content at www.google.com,
+   // so as long as it has something, that is PASSing
++  testHopeful = YES;
+   PASS(byteCount>0, "read www.google.com");
++  testHopeful = NO;
+   [defaultInput setDelegate: nil];
+   [defaultOutput setDelegate: nil];
+ #endif
+@@ -170,7 +172,9 @@
+ 	[rl runMode: NSDefaultRunLoopMode beforeDate: d];
+       }
+ 
++    testHopeful = YES;
+     PASS(byteCount>0, "read www.google.com https");
++    testHopeful = NO;
+     [defaultInput setDelegate: nil];
+     [defaultOutput setDelegate: nil];
+   END_SET("NSStream SSL")
+--- gnustep-base.orig/Tests/base/NSURLConnection/basic.m
++++ gnustep-base/Tests/base/NSURLConnection/basic.m
+@@ -40,10 +40,12 @@
+   data = [NSURLConnection sendSynchronousRequest: mutable
+                                returningResponse: &response
+                                            error: &error];
++  testHopeful = YES;
+   PASS(data != nil && [data length] > 0,
+     "NSURLConnection synchronously load data from an http URL");
+   PASS(response != nil && [(NSHTTPURLResponse*)response statusCode] > 0,
+     "NSURLConnection synchronous load returns a response");
++  testHopeful = NO;
+ 
+ #if defined(_WIN32)
+ testHopeful = NO;
+@@ -66,8 +68,10 @@
+                                returningResponse: &response
+                                            error: &error];
+ 
++  testHopeful = YES;
+   PASS(nil == error, "https://www.google.com/ does not return an error")
+   PASS(nil != data, "https://www.google.com/ returns data")
++  testHopeful = NO;
+ 
+   [arp release]; arp = nil;
+   return 0;
+--- gnustep-base.orig/Tests/base/GSXML/basic.m
++++ gnustep-base/Tests/base/GSXML/basic.m
+@@ -178,6 +178,7 @@
+   PASS(str != nil && [str rangeOfString: @"MAKEFILES"].length > 0,
+     "external entity is resolved")
+ 
++  testHopeful = YES;
+   xml = @"<!DOCTYPE plist PUBLIC \"-//GNUstep//DTD plist 0.9//EN\""
+     @" \"http://www.gnustep.org/plist-0_9.xml\">\n"
+     @"<plist></plist>";
+@@ -197,6 +198,7 @@
+   [parser resolveEntities: YES];
+   [parser doValidityChecking: YES];
+   PASS([parser parse] == YES, "plist containing string is valid")
++  testHopeful = NO;
+ 
+   PASS_EQUAL([[[[[parser document] root] firstChild] firstChild] content],
+     @"xxx", "root/plist/string is parsed")
+--- gnustep-base.orig/Tests/base/NSURLHandle/test00.m
++++ gnustep-base/Tests/base/NSURLHandle/test00.m
+@@ -128,6 +128,7 @@
+   [handle writeData: m];
+   [handle setReturnAll: YES];
+   [handle loadInBackground];
++  testHopeful = YES;
+   PASS([self status] == URLHandleClientDidBeginLoading,
+     "URLHandleClientDidBeginLoading called");
+ 

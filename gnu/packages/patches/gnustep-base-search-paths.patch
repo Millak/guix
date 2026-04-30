@@ -1,0 +1,418 @@
+Support guix style search pathes for gnustep directories
+
+Based on https://github.com/NixOS/nixpkgs/blob/nixos-25.11/pkgs/by-name/gn/gnustep-base/fixup-paths.patch
+
+It adds the searchpaths for
+
+GUIX_GNUSTEP_SYSTEM_APPS
+GUIX_GNUSTEP_SYSTEM_ADMIN_APPS
+GUIX_GNUSTEP_SYSTEM_WEB_APPS
+GUIX_GNUSTEP_SYSTEM_TOOLS
+GUIX_GNUSTEP_SYSTEM_ADMIN_TOOLS
+GUIX_GNUSTEP_SYSTEM_LIBRARY
+GUIX_GNUSTEP_SYSTEM_HEADERS
+GUIX_GNUSTEP_SYSTEM_LIBRARIES
+GUIX_GNUSTEP_SYSTEM_DOC
+GUIX_GNUSTEP_SYSTEM_DOC_MAN
+GUIX_GNUSTEP_SYSTEM_DOC_INFO
+
+boths as a variable in GNUStep.conf or via environment variables.
+
+Index: gnustep-base-1.31.1/Source/NSPathUtilities.m
+===================================================================
+--- gnustep-base-1.31.1.orig/Source/NSPathUtilities.m
++++ gnustep-base-1.31.1/Source/NSPathUtilities.m
+@@ -81,6 +81,7 @@
+ NSMutableDictionary* GNUstepConfig(NSDictionary *newConfig);
+ 
+ void GNUstepUserConfig(NSMutableDictionary *config, NSString *userName);
++void GNUstepGuixConfigFromEnv();
+ 
+ /* The global configuration file. The real value is read from config.h */
+ #ifndef GNUSTEP_TARGET_CONFIG_FILE
+@@ -150,16 +151,27 @@ static NSString *gnustepNetworkUsersDir
+ static NSString *gnustepLocalUsersDir = nil;
+ 
+ static NSString *gnustepSystemApps = nil;
++static NSArray *gnustepSystemAppsGuix = nil;
+ static NSString *gnustepSystemAdminApps = nil;
++static NSArray *gnustepSystemAdminAppsGuix = nil;
+ static NSString *gnustepSystemWebApps = nil;
++static NSArray *gnustepSystemWebAppsGuix = nil;
+ static NSString *gnustepSystemTools = nil;
++static NSArray *gnustepSystemToolsGuix = nil;
+ static NSString *gnustepSystemAdminTools = nil;
++static NSArray *gnustepSystemAdminToolsGuix = nil;
+ static NSString *gnustepSystemLibrary = nil;
++static NSArray *gnustepSystemLibraryGuix = nil;
+ static NSString *gnustepSystemLibraries = nil;
++static NSArray *gnustepSystemLibrariesGuix = nil;
+ static NSString *gnustepSystemHeaders = nil;
++static NSArray *gnustepSystemHeadersGuix = nil;
+ static NSString *gnustepSystemDocumentation = nil;
++static NSArray *gnustepSystemDocumentationGuix = nil;
+ static NSString *gnustepSystemDocumentationInfo = nil;
++static NSArray *gnustepSystemDocumentationInfoGuix = nil;
+ static NSString *gnustepSystemDocumentationMan = nil;
++static NSArray *gnustepSystemDocumentationManGuix = nil;
+ 
+ static NSString *gnustepNetworkApps = nil;
+ static NSString *gnustepNetworkAdminApps = nil;
+@@ -255,6 +267,30 @@ static void ShutdownPathUtilities(void);
+     }\
+ })
+ 
++/* Like ASSIGN_PATH, but permits multiple components in a path
++ */
++#define ASSIGN_PATH_GUIX(var, dictionary, key) ({\
++  id val = getPathConfigGuix(dictionary, key);\
++  if (val != nil)\
++    {\
++      RELEASE(var);\
++      var = RETAIN(val);\
++      [dictionary removeObjectForKey: key];\
++    }\
++})
++
++/* Like ASSIGN_PATH_GUIX but copies the result instead of removing
++ */
++#define ASSIGN_PATH_GUIX_COPY(var, dictionary, key) ({\
++  id val = getPathConfigGuix(dictionary, key);\
++  if (val != nil)\
++    {\
++      val = [val copy];\
++      RELEASE(var);\
++      var = RETAIN(val);\
++    }\
++})
++
+ /* Like ASSIGN_PATH(), but permits the result to be a relative path as that
+  * is what we normally use (the path is within the user's home directory).
+  */
+@@ -380,6 +416,32 @@ getPath(NSString *path)
+   return path;
+ }
+ 
++static inline NSArray *
++getPathConfigGuix(NSDictionary *dict, NSString *key)
++{
++  NSArray *res = nil;
++  NSString *path;
++#if defined(__MINGW_)
++  NSString *sep = @";";
++#else
++  NSString *sep = @":";
++#endif
++
++  path = [dict objectForKey: key];
++  if (path != nil)
++    {
++      if ([path rangeOfString:sep].location != NSNotFound)
++	{
++	  res = [path componentsSeparatedByString:sep];
++	}
++      else
++	{
++	  res = [[NSArray alloc] initWithObjects:path, nil];
++	}
++    }
++  return res;
++}
++
+ /* Get a full path string from a dictionary */
+ static inline NSString *
+ getPathConfig(NSDictionary *dict, NSString *key)
+@@ -467,6 +529,29 @@ static void ExtractValuesFromConfig(NSDi
+   ASSIGN_PATH(gnustepSystemDocumentationInfo, c,
+     @"GNUSTEP_SYSTEM_DOC_INFO");
+ 
++  ASSIGN_PATH_GUIX(gnustepSystemAppsGuix, c,
++    @"GUIX_GNUSTEP_SYSTEM_APPS");
++  ASSIGN_PATH_GUIX(gnustepSystemAdminAppsGuix, c,
++    @"GUIX_GNUSTEP_SYSTEM_ADMIN_APPS");
++  ASSIGN_PATH_GUIX(gnustepSystemWebAppsGuix, c,
++    @"GUIX_GNUSTEP_SYSTEM_WEB_APPS");
++  ASSIGN_PATH_GUIX(gnustepSystemToolsGuix, c,
++    @"GUIX_GNUSTEP_SYSTEM_TOOLS");
++  ASSIGN_PATH_GUIX(gnustepSystemAdminToolsGuix, c,
++    @"GUIX_GNUSTEP_SYSTEM_ADMIN_TOOLS");
++  ASSIGN_PATH_GUIX(gnustepSystemLibraryGuix, c,
++    @"GUIX_GNUSTEP_SYSTEM_LIBRARY");
++  ASSIGN_PATH_GUIX(gnustepSystemLibrariesGuix, c,
++    @"GUIX_GNUSTEP_SYSTEM_LIBRARIES");
++  ASSIGN_PATH_GUIX(gnustepSystemHeadersGuix, c,
++    @"GUIX_GNUSTEP_SYSTEM_HEADERS");
++  ASSIGN_PATH_GUIX(gnustepSystemDocumentationGuix, c,
++    @"GUIX_GNUSTEP_SYSTEM_DOC");
++  ASSIGN_PATH_GUIX(gnustepSystemDocumentationManGuix, c,
++    @"GUIX_GNUSTEP_SYSTEM_DOC_MAN");
++  ASSIGN_PATH_GUIX(gnustepSystemDocumentationInfoGuix, c,
++    @"GUIX_GNUSTEP_SYSTEM_DOC_INFO");
++
+   ASSIGN_PATH(gnustepNetworkApps, c,
+     @"GNUSTEP_NETWORK_APPS");
+   ASSIGN_PATH(gnustepNetworkAdminApps, c,
+@@ -1125,6 +1210,35 @@ GNUstepUserConfig(NSMutableDictionary *c
+     }
+ }
+ 
++GS_DECLARE void
++GNUstepGuixConfigFromEnv()
++{
++  NSDictionary	*env;
++  env = [[NSProcessInfo processInfo] environment];
++
++  ASSIGN_PATH_GUIX_COPY(gnustepSystemAppsGuix, env,
++    @"GUIX_GNUSTEP_SYSTEM_APPS");
++  ASSIGN_PATH_GUIX_COPY(gnustepSystemAdminAppsGuix, env,
++    @"GUIX_GNUSTEP_SYSTEM_ADMIN_APPS");
++  ASSIGN_PATH_GUIX_COPY(gnustepSystemWebAppsGuix, env,
++    @"GUIX_GNUSTEP_SYSTEM_WEB_APPS");
++  ASSIGN_PATH_GUIX_COPY(gnustepSystemToolsGuix, env,
++    @"GUIX_GNUSTEP_SYSTEM_TOOLS");
++  ASSIGN_PATH_GUIX_COPY(gnustepSystemAdminToolsGuix, env,
++    @"GUIX_GNUSTEP_SYSTEM_ADMIN_TOOLS");
++  ASSIGN_PATH_GUIX_COPY(gnustepSystemLibraryGuix, env,
++    @"GUIX_GNUSTEP_SYSTEM_LIBRARY");
++  ASSIGN_PATH_GUIX_COPY(gnustepSystemLibrariesGuix, env,
++    @"GUIX_GNUSTEP_SYSTEM_LIBRARIES");
++  ASSIGN_PATH_GUIX_COPY(gnustepSystemHeadersGuix, env,
++    @"GUIX_GNUSTEP_SYSTEM_HEADERS");
++  ASSIGN_PATH_GUIX_COPY(gnustepSystemDocumentationGuix, env,
++    @"GUIX_GNUSTEP_SYSTEM_DOC");
++  ASSIGN_PATH_GUIX_COPY(gnustepSystemDocumentationManGuix, env,
++    @"GUIX_GNUSTEP_SYSTEM_DOC_MAN");
++  ASSIGN_PATH_GUIX_COPY(gnustepSystemDocumentationInfoGuix, env,
++    @"GUIX_GNUSTEP_SYSTEM_DOC_INFO");
++}
+ /* Initialise all things required by this module */
+ static void InitialisePathUtilities(void)
+ {
+@@ -1189,6 +1303,7 @@ static void InitialisePathUtilities(void
+ #else
+       gnustepUserID = [[NSString alloc] initWithFormat: @"%ld", (long)getuid()];
+ #endif
++      GNUstepGuixConfigFromEnv();
+       config = GNUstepConfig(nil);
+       GNUstepUserConfig(config, gnustepUserName);
+       gnustepUserHome = [NSHomeDirectoryForUser(gnustepUserName) copy];
+@@ -1233,6 +1348,18 @@ static void ShutdownPathUtilities(void)
+   DESTROY(gnustepSystemDocumentationMan);
+   DESTROY(gnustepSystemDocumentationInfo);
+ 
++  DESTROY(gnustepSystemAppsGuix);
++  DESTROY(gnustepSystemAdminAppsGuix);
++  DESTROY(gnustepSystemWebAppsGuix);
++  DESTROY(gnustepSystemToolsGuix);
++  DESTROY(gnustepSystemAdminToolsGuix);
++  DESTROY(gnustepSystemLibraryGuix);
++  DESTROY(gnustepSystemLibrariesGuix);
++  DESTROY(gnustepSystemHeadersGuix);
++  DESTROY(gnustepSystemDocumentationGuix);
++  DESTROY(gnustepSystemDocumentationManGuix);
++  DESTROY(gnustepSystemDocumentationInfoGuix);
++
+   DESTROY(gnustepNetworkApps);
+   DESTROY(gnustepNetworkAdminApps);
+   DESTROY(gnustepNetworkWebApps);
+@@ -2220,6 +2347,27 @@ if (domainMask & mask) \
+   if ([add_dir length] > 0 && [paths containsObject: add_dir] == NO) \
+     [paths addObject: add_dir]; \
+ }
++#define ADD_PATH_GUIX(mask, base_dirs, add_dir) \
++if ((domainMask & mask) && (base_dirs != nil)) \
++{ \
++  NSEnumerator *e = [base_dirs objectEnumerator]; \
++  NSString *dir = nil; \
++  while ((dir = [e nextObject])) { \
++    path = [dir stringByAppendingPathComponent: add_dir]; \
++    if ([path length] > 0 && [paths containsObject: path] == NO) \
++      [paths addObject: path]; \
++  } \
++}
++#define ADD_PLATFORM_PATH_GUIX(mask, add_dirs) \
++if ((domainMask & mask) && (add_dirs != nil)) \
++{ \
++  NSEnumerator *e = [add_dirs objectEnumerator]; \
++  NSString *dir = nil; \
++  while ((dir = [e nextObject])) { \
++    if ([dir length] > 0 && [paths containsObject: dir] == NO) \
++      [paths addObject:dir]; \
++  } \
++}
+ 
+   switch (directoryKey)
+     {
+@@ -2228,11 +2376,13 @@ if (domainMask & mask) \
+ 	  ADD_PLATFORM_PATH(NSUserDomainMask, gnustepUserApps);
+ 	  ADD_PLATFORM_PATH(NSLocalDomainMask, gnustepLocalApps);
+ 	  ADD_PLATFORM_PATH(NSNetworkDomainMask, gnustepNetworkApps);
++	  ADD_PLATFORM_PATH_GUIX(NSSystemDomainMask, gnustepSystemAppsGuix);
+ 	  ADD_PLATFORM_PATH(NSSystemDomainMask, gnustepSystemApps);
+ 
+ 	  ADD_PLATFORM_PATH(NSUserDomainMask, gnustepUserAdminApps);
+ 	  ADD_PLATFORM_PATH(NSLocalDomainMask, gnustepLocalAdminApps);
+ 	  ADD_PLATFORM_PATH(NSNetworkDomainMask, gnustepNetworkAdminApps);
++	  ADD_PLATFORM_PATH_GUIX(NSSystemDomainMask, gnustepSystemAdminAppsGuix);
+ 	  ADD_PLATFORM_PATH(NSSystemDomainMask, gnustepSystemAdminApps);
+ 	}
+ 	break;
+@@ -2242,6 +2392,7 @@ if (domainMask & mask) \
+ 	  ADD_PLATFORM_PATH(NSUserDomainMask, gnustepUserApps);
+ 	  ADD_PLATFORM_PATH(NSLocalDomainMask, gnustepLocalApps);
+ 	  ADD_PLATFORM_PATH(NSNetworkDomainMask, gnustepNetworkApps);
++	  ADD_PLATFORM_PATH_GUIX(NSSystemDomainMask, gnustepSystemAppsGuix);
+ 	  ADD_PLATFORM_PATH(NSSystemDomainMask, gnustepSystemApps);
+ 	}
+ 	break;
+@@ -2251,6 +2402,7 @@ if (domainMask & mask) \
+ 	  ADD_PLATFORM_PATH(NSUserDomainMask, gnustepUserApps);
+ 	  ADD_PLATFORM_PATH(NSLocalDomainMask, gnustepLocalApps);
+ 	  ADD_PLATFORM_PATH(NSNetworkDomainMask, gnustepNetworkApps);
++	  ADD_PLATFORM_PATH_GUIX(NSSystemDomainMask, gnustepSystemAppsGuix);
+ 	  ADD_PLATFORM_PATH(NSSystemDomainMask, gnustepSystemApps);
+ 
+ 	  /* I imagine if ever wanted a separate Demo directory, the
+@@ -2268,6 +2420,7 @@ if (domainMask & mask) \
+ 
+       case NSCoreServicesDirectory:
+ 	{
++	  ADD_PATH_GUIX(NSSystemDomainMask, gnustepSystemLibraryGuix, @"CoreServices");
+ 	  ADD_PATH(NSSystemDomainMask, gnustepSystemLibrary, @"CoreServices");
+ 	}
+ 	break;
+@@ -2285,6 +2438,7 @@ if (domainMask & mask) \
+ 	  ADD_PLATFORM_PATH(NSUserDomainMask, gnustepUserApps);
+ 	  ADD_PLATFORM_PATH(NSLocalDomainMask, gnustepLocalApps);
+ 	  ADD_PLATFORM_PATH(NSNetworkDomainMask, gnustepNetworkApps);
++	  ADD_PLATFORM_PATH_GUIX(NSSystemDomainMask, gnustepSystemAppsGuix);
+ 	  ADD_PLATFORM_PATH(NSSystemDomainMask, gnustepSystemApps);
+ 	}
+ 	break;
+@@ -2294,6 +2448,7 @@ if (domainMask & mask) \
+ 	  ADD_PLATFORM_PATH(NSUserDomainMask, gnustepUserAdminApps);
+ 	  ADD_PLATFORM_PATH(NSLocalDomainMask, gnustepLocalAdminApps);
+ 	  ADD_PLATFORM_PATH(NSNetworkDomainMask, gnustepNetworkAdminApps);
++	  ADD_PLATFORM_PATH_GUIX(NSSystemDomainMask, gnustepSystemAdminAppsGuix);
+ 	  ADD_PLATFORM_PATH(NSSystemDomainMask, gnustepSystemAdminApps);
+ 	}
+ 	break;
+@@ -2303,6 +2458,7 @@ if (domainMask & mask) \
+ 	  ADD_PLATFORM_PATH(NSUserDomainMask, gnustepUserLibrary);
+ 	  ADD_PLATFORM_PATH(NSLocalDomainMask, gnustepLocalLibrary);
+ 	  ADD_PLATFORM_PATH(NSNetworkDomainMask, gnustepNetworkLibrary);
++	  ADD_PLATFORM_PATH_GUIX(NSSystemDomainMask, gnustepSystemLibraryGuix);
+ 	  ADD_PLATFORM_PATH(NSSystemDomainMask, gnustepSystemLibrary);
+ 	}
+ 	break;
+@@ -2318,6 +2474,7 @@ if (domainMask & mask) \
+ 	  ADD_PLATFORM_PATH(NSUserDomainMask, gnustepUserLibrary);
+ 	  ADD_PLATFORM_PATH(NSLocalDomainMask, gnustepLocalLibrary);
+ 	  ADD_PLATFORM_PATH(NSNetworkDomainMask, gnustepNetworkLibrary);
++	  ADD_PLATFORM_PATH_GUIX(NSSystemDomainMask, gnustepSystemLibraryGuix);
+ 	  ADD_PLATFORM_PATH(NSSystemDomainMask, gnustepSystemLibrary);
+ 	}
+ 	break;
+@@ -2456,6 +2613,7 @@ L"SOFTWARE\\Microsoft\\Windows\\CurrentV
+ 	  ADD_PLATFORM_PATH(NSUserDomainMask, gnustepUserDocumentation);
+ 	  ADD_PLATFORM_PATH(NSLocalDomainMask, gnustepLocalDocumentation);
+ 	  ADD_PLATFORM_PATH(NSNetworkDomainMask, gnustepNetworkDocumentation);
++	  ADD_PLATFORM_PATH_GUIX(NSSystemDomainMask, gnustepSystemDocumentationGuix);
+ 	  ADD_PLATFORM_PATH(NSSystemDomainMask, gnustepSystemDocumentation);
+ 	}
+ 	break;
+@@ -2513,6 +2671,7 @@ L"SOFTWARE\\Microsoft\\Windows\\CurrentV
+ #endif
+ 	  ADD_PATH(NSLocalDomainMask, gnustepLocalLibrary, @"Caches");
+ 	  ADD_PATH(NSNetworkDomainMask, gnustepNetworkLibrary, @"Caches");
++	  ADD_PATH_GUIX(NSSystemDomainMask, gnustepSystemLibraryGuix, @"Caches");
+ 	  ADD_PATH(NSSystemDomainMask, gnustepSystemLibrary, @"Caches");
+ 	}
+ 	break;
+@@ -2524,6 +2683,8 @@ L"SOFTWARE\\Microsoft\\Windows\\CurrentV
+ 	    @"ApplicationSupport");
+ 	  ADD_PATH(NSNetworkDomainMask, gnustepNetworkLibrary,
+ 	    @"ApplicationSupport");
++	  ADD_PATH_GUIX(NSSystemDomainMask, gnustepSystemLibraryGuix,
++            @"ApplicationSupport");
+ 	  ADD_PATH(NSSystemDomainMask, gnustepSystemLibrary,
+ 	    @"ApplicationSupport");
+ 	}
+@@ -2535,6 +2696,7 @@ L"SOFTWARE\\Microsoft\\Windows\\CurrentV
+ 	  ADD_PATH(NSUserDomainMask, gnustepUserLibrary, @"Frameworks");
+ 	  ADD_PATH(NSLocalDomainMask, gnustepLocalLibrary, @"Frameworks");
+ 	  ADD_PATH(NSNetworkDomainMask, gnustepNetworkLibrary, @"Frameworks");
++	  ADD_PATH_GUIX(NSSystemDomainMask, gnustepSystemLibraryGuix, @"Frameworks");
+ 	  ADD_PATH(NSSystemDomainMask, gnustepSystemLibrary, @"Frameworks");
+ 	}
+ 	break;
+@@ -2544,6 +2706,7 @@ L"SOFTWARE\\Microsoft\\Windows\\CurrentV
+ 	  ADD_PATH(NSUserDomainMask, gnustepUserLibrary, @"Fonts");
+ 	  ADD_PATH(NSLocalDomainMask, gnustepLocalLibrary, @"Fonts");
+ 	  ADD_PATH(NSNetworkDomainMask, gnustepNetworkLibrary, @"Fonts");
++	  ADD_PATH_GUIX(NSSystemDomainMask, gnustepSystemLibraryGuix, @"Fonts");
+ 	  ADD_PATH(NSSystemDomainMask, gnustepSystemLibrary, @"Fonts");
+ 	}
+ 	break;
+@@ -2582,6 +2745,12 @@ L"SOFTWARE\\Microsoft\\Windows\\CurrentV
+ 	  if (part)
+ 	    ADD_PATH(NSNetworkDomainMask, gnustepNetworkLibraries, part);
+ 
++	  ADD_PLATFORM_PATH_GUIX(NSSystemDomainMask, gnustepSystemLibrariesGuix);
++	  if (full)
++	    ADD_PATH_GUIX(NSSystemDomainMask, gnustepSystemLibrariesGuix, full);
++	  if (part)
++	    ADD_PATH_GUIX(NSSystemDomainMask, gnustepSystemLibrariesGuix, part);
++
+ 	  ADD_PLATFORM_PATH(NSSystemDomainMask, gnustepSystemLibraries);
+ 	  if (full)
+ 	    ADD_PATH(NSSystemDomainMask, gnustepSystemLibraries, full);
+@@ -2624,6 +2793,12 @@ L"SOFTWARE\\Microsoft\\Windows\\CurrentV
+ 	  if (part)
+ 	    ADD_PATH(NSNetworkDomainMask, gnustepNetworkTools, part);
+ 
++	  ADD_PLATFORM_PATH_GUIX(NSSystemDomainMask, gnustepSystemToolsGuix);
++	  if (full)
++	    ADD_PATH_GUIX(NSSystemDomainMask, gnustepSystemToolsGuix, full);
++	  if (part)
++	    ADD_PATH_GUIX(NSSystemDomainMask, gnustepSystemToolsGuix, part);
++
+ 	  ADD_PLATFORM_PATH(NSSystemDomainMask, gnustepSystemTools);
+ 	  if (full)
+ 	    ADD_PATH(NSSystemDomainMask, gnustepSystemTools, full);
+@@ -2666,6 +2841,18 @@ L"SOFTWARE\\Microsoft\\Windows\\CurrentV
+ 	  if (part)
+ 	    ADD_PATH(NSNetworkDomainMask, gnustepNetworkAdminTools, part);
+ 
++	  ADD_PLATFORM_PATH_GUIX(NSSystemDomainMask, gnustepSystemAdminToolsGuix);
++	  if (full)
++	    ADD_PATH_GUIX(NSSystemDomainMask, gnustepSystemAdminToolsGuix, full);
++	  if (part)
++	    ADD_PATH_GUIX(NSSystemDomainMask, gnustepSystemAdminToolsGuix, part);
++
++	  ADD_PLATFORM_PATH_GUIX(NSSystemDomainMask, gnustepSystemAdminToolsGuix);
++	  if (full)
++	    ADD_PATH_GUIX(NSSystemDomainMask, gnustepSystemAdminToolsGuix, full);
++	  if (part)
++	    ADD_PATH_GUIX(NSSystemDomainMask, gnustepSystemAdminToolsGuix, part);
++
+ 	  ADD_PLATFORM_PATH(NSSystemDomainMask, gnustepSystemAdminTools);
+ 	  if (full)
+ 	    ADD_PATH(NSSystemDomainMask, gnustepSystemAdminTools, full);
+@@ -2679,6 +2866,7 @@ L"SOFTWARE\\Microsoft\\Windows\\CurrentV
+ 	  ADD_PLATFORM_PATH(NSUserDomainMask, gnustepUserWebApps);
+ 	  ADD_PLATFORM_PATH(NSLocalDomainMask, gnustepLocalWebApps);
+ 	  ADD_PLATFORM_PATH(NSNetworkDomainMask, gnustepNetworkWebApps);
++	  ADD_PLATFORM_PATH_GUIX(NSSystemDomainMask, gnustepSystemWebAppsGuix);
+ 	  ADD_PLATFORM_PATH(NSSystemDomainMask, gnustepSystemWebApps);
+ 	}
+ 	break;
+@@ -2686,6 +2874,8 @@ L"SOFTWARE\\Microsoft\\Windows\\CurrentV
+ 
+ #undef ADD_PATH
+ #undef ADD_PLATFORM_PATH
++#undef ADD_PATH_GUIX
++#undef ADD_PLATFORM_PATH_GUIX
+ 
+   count = [paths count];
+   for (i = 0; i < count; i++)

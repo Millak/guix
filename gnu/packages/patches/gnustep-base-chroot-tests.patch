@@ -1,0 +1,38 @@
+Skip tests that don't work in the chroot:
+
+root user does not exist so ~root expands to ~root
+The home directory of the builder is / so the test confuses
+the home with /.
+
+Index: gnustep-base-1.31.1/Tests/base/NSString/test02.m
+===================================================================
+--- gnustep-base-1.31.1.orig/Tests/base/NSString/test02.m
++++ gnustep-base-1.31.1/Tests/base/NSString/test02.m
+@@ -207,9 +207,11 @@ NSLog(@"Developer: %@", NSSearchPathForD
+       "'~user' stringByExpandingTildeInPath: != '~user'");
+   }
+ #else
++  testHopeful = YES;
+   PASS(![[@"~root" stringByExpandingTildeInPath] 
+ 				isEqual: @"~root"],
+       "'~root' stringByExpandingTildeInPath: != '~root'");
++  testHopeful = NO;
+ #endif
+   
+ #ifdef	GNUSTEP_BASE_LIBRARY
+Index: gnustep-base-1.31.1/Tests/base/NSString/tilde.m
+===================================================================
+--- gnustep-base-1.31.1.orig/Tests/base/NSString/tilde.m
++++ gnustep-base-1.31.1/Tests/base/NSString/tilde.m
+@@ -43,9 +43,11 @@ int main()
+     "multiple slashes removed");
+ #endif
+ 
++  testHopeful = YES;
+   PASS_EQUAL([@"//////Documents///" stringByAbbreviatingWithTildeInPath],
+     @"/Documents",
+     "multiple slashes removed without tilde replacement");
++  testHopeful = NO;
+ 
+   PASS_EQUAL([@".//////Documents///" stringByAbbreviatingWithTildeInPath],
+     @"./Documents",

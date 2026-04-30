@@ -1544,6 +1544,12 @@ dist_patch_DATA =						\
   %D%/packages/patches/gnulib-bootstrap.patch			\
   %D%/packages/patches/gnumach-version.patch			\
   %D%/packages/patches/gnupg-default-pinentry.patch		\
+  %D%/packages/patches/gnustep-base-autogsdoc-reproducibility.patch	\
+  %D%/packages/patches/gnustep-base-chroot-tests.patch		\
+  %D%/packages/patches/gnustep-base-disable-network-tests.patch	\
+  %D%/packages/patches/gnustep-base-no-builtin-tz.patch		\
+  %D%/packages/patches/gnustep-base-search-paths.patch		\
+  %D%/packages/patches/gnustep-base-tzdir.patch 		\
   %D%/packages/patches/gnustep-make-makefiles-search-path.patch	\
   %D%/packages/patches/gnustep-make-no-temp.patch		\
   %D%/packages/patches/gobject-introspection-absolute-shlib-path.patch \
