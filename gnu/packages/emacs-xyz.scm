@@ -25363,7 +25363,7 @@ with Eglot.")
 (define-public emacs-jabber
   (package
     (name "emacs-jabber")
-    (version "0.10.3")
+    (version "0.10.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -25372,7 +25372,7 @@ with Eglot.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v1a09h6ndqhkwyn44cnx1b0l4p155a09mfjrfmg62li50hvw1zm"))))
+                "0d0rl5rhx73safq95212c4qlmds3sa1mc79ji4p2v974m43x9d89"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -25394,16 +25394,6 @@ with Eglot.")
                "../src/picomemo")
               (invoke "chmod" "--recursive" "u+w"
                       "../src/picomemo")))
-          (add-after 'unpack 'fix-test-runner
-            (lambda _
-              ;; Replace grep -oP (Perl regex) with a
-              ;; POSIX-compatible alternative so the test
-              ;; runner counts results correctly.
-              (substitute* "../Makefile"
-                (("grep -oP '\\^Ran \\\\K\\[0-9\\]\\+'")
-                 (string-append
-                  "grep -o 'Ran [0-9]*'"
-                  " | grep -o '[0-9]*'")))))
           (add-after 'unpack 'disable-failing-tests
             (lambda _
               ;; These 4 tests pass outside the build
@@ -25439,7 +25429,7 @@ with Eglot.")
               (base32
                "044xd1gn9lpd5yrb3c1lmvqsc1chbkhd3vnh7800hxn23a0hxbzj")))))
     (inputs (list mbedtls))
-    (propagated-inputs (list emacs-fsm))
+    (propagated-inputs (list emacs-fsm emacs-keymap-popup))
     (home-page "https://thanosapollo.org/projects/jabber/")
     (synopsis "XMPP (Jabber) client for Emacs")
     (description
