@@ -400,7 +400,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "147.0.7727.116")
+(define %chromium-version "147.0.7727.137")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision (string-append "debian/" %ungoogled-revision))
 
@@ -412,7 +412,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "1vjjy0aii72sg5wxhgj353047faswzdnipyy8rrk3fzynj0lnr9j"))))
+      "1ha84j3zckdv2l8dpicqhmr6a8mq3bqwalw0bmgamvlmns9i7nrj"))))
 
 (define %debian-origin
   (origin
@@ -425,7 +425,7 @@
                                 ((_ version) version))))
     (sha256
      (base32
-      "0zm9bqmc0y8shkwz9fdcv16shf4gxcwa4i2xjq0lngfpa8zldavg"))))
+      "04lqbclkvn9nsksgjpjilh78a8y17mwwq4pmhr6h8gvpp2y3bhhc"))))
 
 (define (origin-file origin file)
   (computed-file
@@ -570,7 +570,7 @@
                                   %chromium-version "-lite.tar.xz"))
               (sha256
                (base32
-                "1fqminm19lihyk6myzbjyldxykc412z7d1n5ndah4rqv5gw77gj4"))
+                "1m22whg5n9lw9gqhalm95jwfm45lqp4a7cs3mn3f4n8w0rvr0r5j"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -689,7 +689,7 @@
               "use_gnome_keyring=false" ;deprecated by libsecret
               "use_pulseaudio=true"
               "link_pulseaudio=true"
-              "icu_use_data_file=false"
+              "icu_use_data_file=true"
 
               ;; VA-API acceleration is currently only supported on x86_64-linux.
               #$@(if (string-prefix? "x86_64" (or (%current-target-system)
@@ -895,6 +895,7 @@
                                        "resources.pak"
                                        "v8_context_snapshot.bin"
                                        "chrome_crashpad_handler"
+                                       "icudtl.dat"
 
                                        ;; Swiftshader ICD.
                                        "libvk_swiftshader.so"
@@ -919,7 +920,9 @@
                                "chrome/installer/linux/common/desktop.template")
                   (("@@MENUNAME") "Chromium")
                   (("@@PACKAGE") "chromium")
-                  (("/usr/bin/@@usr_bin_symlink_name") exe))
+                  (("/usr/bin/@@usr_bin_symlink_name") exe)
+                  (("@@uri_scheme") "x-scheme-handler/chromium")
+                  (("@@extra_desktop_entries") ""))
 
                 (mkdir-p man)
                 (copy-file "chrome/app/resources/manpage.1.in"
