@@ -22764,6 +22764,25 @@ provides the following concurrent data structures for Go: a concurrent
 counter, concurrent hash table, multiple concurrent queues and @code{mutex}.")
     (license license:expat)))
 
+(define-public go-github-com-puzpuzpuz-xsync-v2
+  (package
+    (inherit go-github-com-puzpuzpuz-xsync)
+    (name "go-github-com-puzpuzpuz-xsync-v2")
+    (version "2.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/puzpuzpuz/xsync")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1almmzvkhyvhdwyhv9jphbhcm5yv45cmv9v39r3rcbkvl212igmz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/puzpuzpuz/xsync/v2"))))
+
 (define-public go-github-com-quasilyte-go-ruleguard-dsl
   (package
     (name "go-github-com-quasilyte-go-ruleguard-dsl")
