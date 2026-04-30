@@ -26369,6 +26369,8 @@ interpreter. bpython's main features are
                 (("#!/usr/bin/env python") "")))))))
     (native-inputs
      (list python-setuptools))
+    (propagated-inputs
+     (list python-pyasyncore))
     (home-page "https://github.com/seb-m/pyinotify")
     (synopsis "Python library for monitoring inotify events")
     (description
