@@ -121,7 +121,13 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages specifications)
   #:use-module (gnu packages xdisorg)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xorg)
+
+  ;; TODO: Remove when go-github-com-containerd-containerd is moved to (gnu
+  ;; packages containers)
+  #:use-module (gnu packages docker)
+  #:use-module (gnu packages prometheus)
+  #:use-module (gnu packages kubernetes))
 
 ;;; Commentary:
 ;;;
@@ -6156,6 +6162,7 @@ dependencies and a simple API.")
     (license license:asl2.0)))
 
 (define-public go-github-com-containerd-containerd
+  ;; TODO: Move to (gnu packages containers).
   (package
     (name "go-github-com-containerd-containerd")
     (version "1.7.22")
@@ -6163,110 +6170,156 @@ dependencies and a simple API.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/containerd/containerd")
-             (commit (string-append "v" version))))
+              (url "https://github.com/containerd/containerd")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1yfda4qnygy4lcqb6cqc7v7h2lf0gl64xhvkp39zngmqm0lw30gh"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
-            (delete-file-recursively "vendor")))))
+            (delete-file-recursively "vendor")
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/containerd/containerd/api
+            (delete-file-recursively "api")))))
     (build-system go-build-system)
-
-    ;; For the forgejo-runner build, we only need the pkg/userns module which
-    ;; doesn't require the massive dependency tree for all of containerd, so
-    ;; we cheat and skip the build and avoid having to package a large number
-    ;; of additional dependencies.
     (arguments
      (list
       #:import-path "github.com/containerd/containerd"
       #:skip-build? #t
-      #:tests? #f))
-    ;; (propagated-inputs
-    ;;  (list go-tags-cncf-io-container-device-interface
-    ;;        go-k8s-io-utils
-    ;;        go-k8s-io-klog-v2
-    ;;        go-k8s-io-cri-api
-    ;;        go-k8s-io-component-base
-    ;;        go-k8s-io-client-go
-    ;;        go-k8s-io-apiserver
-    ;;        go-k8s-io-apimachinery
-    ;;        go-k8s-io-api
-    ;;        go-google-golang-org-protobuf
-    ;;        go-google-golang-org-grpc
-    ;;        go-google-golang-org-genproto-googleapis-rpc
-    ;;        go-google-golang-org-genproto
-    ;;        go-golang-org-x-sys
-    ;;        go-golang-org-x-sync
-    ;;        go-golang-org-x-net
-    ;;        go-go-opentelemetry-io-otel-trace
-    ;;        go-go-opentelemetry-io-otel-sdk
-    ;;        go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracehttp
-    ;;        go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
-    ;;        go-go-opentelemetry-io-otel-exporters-otlp-otlptrace
-    ;;        go-go-opentelemetry-io-otel
-    ;;        go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
-    ;;        go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
-    ;;        go-go-etcd-io-bbolt
-    ;;        go-github-com-vishvananda-netlink
-    ;;        go-github-com-urfave-cli
-    ;;        go-github-com-tchap-go-patricia-v2
-    ;;        go-github-com-stretchr-testify
-    ;;        go-github-com-sirupsen-logrus
-    ;;        go-github-com-prometheus-client-golang
-    ;;        go-github-com-pelletier-go-toml
-    ;;        go-github-com-opencontainers-selinux
-    ;;        go-github-com-opencontainers-runtime-tools
-    ;;        go-github-com-opencontainers-runtime-spec
-    ;;        go-github-com-opencontainers-image-spec
-    ;;        go-github-com-opencontainers-go-digest
-    ;;        go-github-com-moby-sys-userns
-    ;;        go-github-com-moby-sys-user
-    ;;        go-github-com-moby-sys-symlink
-    ;;        go-github-com-moby-sys-signal
-    ;;        go-github-com-moby-sys-sequential
-    ;;        go-github-com-moby-sys-mountinfo
-    ;;        go-github-com-moby-locker
-    ;;        go-github-com-minio-sha256-simd
-    ;;        go-github-com-klauspost-compress
-    ;;        go-github-com-intel-goresctrl
-    ;;        go-github-com-grpc-ecosystem-go-grpc-prometheus
-    ;;        go-github-com-grpc-ecosystem-go-grpc-middleware
-    ;;        go-github-com-google-uuid
-    ;;        go-github-com-google-go-cmp
-    ;;        go-github-com-fsnotify-fsnotify
-    ;;        go-github-com-emicklei-go-restful-v3
-    ;;        go-github-com-docker-go-units
-    ;;        go-github-com-docker-go-metrics
-    ;;        go-github-com-docker-go-events
-    ;;        go-github-com-distribution-reference
-    ;;        go-github-com-davecgh-go-spew
-    ;;        go-github-com-coreos-go-systemd-v22
-    ;;        go-github-com-containernetworking-plugins
-    ;;        go-github-com-containernetworking-cni
-    ;;        go-github-com-containerd-zfs
-    ;;        go-github-com-containerd-typeurl-v2
-    ;;        go-github-com-containerd-ttrpc
-    ;;        go-github-com-containerd-platforms
-    ;;        go-github-com-containerd-nri
-    ;;        go-github-com-containerd-log
-    ;;        go-github-com-containerd-imgcrypt
-    ;;        go-github-com-containerd-go-runc
-    ;;        go-github-com-containerd-go-cni
-    ;;        go-github-com-containerd-fifo
-    ;;        go-github-com-containerd-errdefs
-    ;;        go-github-com-containerd-continuity
-    ;;        go-github-com-containerd-containerd-api
-    ;;        go-github-com-containerd-console
-    ;;        go-github-com-containerd-cgroups-v3
-    ;;        go-github-com-containerd-btrfs-v2
-    ;;        go-github-com-containerd-aufs
-    ;;        go-github-com-microsoft-hcsshim
-    ;;        go-github-com-microsoft-go-winio
-    ;;        go-github-com-adamkorcz-go-118-fuzz-build
-    ;;        go-github-com-adalogics-go-fuzz-headers
-    ;;        go-dario-cat-mergo))
+      #:test-subdirs
+      ;; XXX: Remove when all inputs are packaged.
+      #~(list "archive/compression"
+              "cio"
+              "content"
+              "content/local"
+              "contrib/apparmor"
+              "contrib/seccomp/kernelversion"
+              "diff/apply"
+              "events/exchange"
+              "gc"
+              "gc/scheduler"
+              "identifiers"
+              "images"
+              "labels"
+              "leases"
+              "mount"
+              "namespaces"
+              "pkg/atomic"
+              "pkg/atomicfile"
+              "pkg/cap"
+              "pkg/cleanup"
+              "pkg/cri/io"
+              "pkg/cri/store/label"
+              "pkg/cri/store/snapshot"
+              "pkg/cri/streaming/internal/wsstream"
+              "pkg/cri/util"
+              "pkg/epoch"
+              "pkg/failpoint"
+              "pkg/ioutil"
+              "pkg/kmutex"
+              "pkg/registrar"
+              "pkg/snapshotters"
+              "pkg/transfer/image"
+              "pkg/transfer/streaming"
+              "plugin"
+              "protobuf"
+              "reference"
+              "remotes"
+              "remotes/docker/auth"
+              "remotes/docker/config"
+              "runtime/v2/shim"
+              "services/server/config"
+              "snapshots/benchsuite"
+              "snapshots/devmapper/dmsetup"
+              "snapshots/overlay/overlayutils"
+              "snapshots/storage")))
+    (native-inputs
+     (list go-github-com-davecgh-go-spew
+           go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-dario-cat-mergo
+           go-github-com-adalogics-go-fuzz-headers
+           go-github-com-adamkorcz-go-118-fuzz-build
+           go-github-com-containerd-btrfs-v2
+           go-github-com-containerd-cgroups-v3
+           go-github-com-containerd-console
+           go-github-com-containerd-containerd-api
+           go-github-com-containerd-continuity
+           go-github-com-containerd-errdefs
+           go-github-com-containerd-fifo
+           go-github-com-containerd-go-cni
+           go-github-com-containerd-go-runc
+           go-github-com-containerd-log
+           go-github-com-containerd-nri
+           go-github-com-containerd-platforms
+           go-github-com-containerd-ttrpc
+           go-github-com-containerd-typeurl-v2
+           go-github-com-containernetworking-cni
+           go-github-com-containernetworking-plugins
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-distribution-reference
+           go-github-com-docker-go-events
+           go-github-com-docker-go-metrics
+           go-github-com-docker-go-units
+           go-github-com-emicklei-go-restful-v3
+           go-github-com-fsnotify-fsnotify
+           go-github-com-google-uuid
+           go-github-com-grpc-ecosystem-go-grpc-middleware
+           go-github-com-grpc-ecosystem-go-grpc-prometheus
+           go-github-com-intel-goresctrl
+           go-github-com-klauspost-compress
+           go-github-com-minio-sha256-simd
+           go-github-com-moby-locker
+           go-github-com-moby-sys-mountinfo
+           go-github-com-moby-sys-sequential
+           go-github-com-moby-sys-signal
+           go-github-com-moby-sys-symlink
+           go-github-com-moby-sys-user
+           go-github-com-moby-sys-userns
+           go-github-com-opencontainers-go-digest
+           go-github-com-opencontainers-image-spec
+           go-github-com-opencontainers-runtime-spec
+           go-github-com-opencontainers-runtime-tools
+           go-github-com-opencontainers-selinux
+           go-github-com-pelletier-go-toml
+           go-github-com-prometheus-client-golang
+           go-github-com-sirupsen-logrus
+           go-github-com-tchap-go-patricia-v2
+           go-github-com-urfave-cli
+           go-github-com-vishvananda-netlink
+           go-go-etcd-io-bbolt
+           go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracehttp
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-trace
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-google-golang-org-genproto
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-k8s-io-api
+           go-k8s-io-apimachinery
+           go-k8s-io-apiserver
+           go-k8s-io-client-go
+           go-k8s-io-component-base
+           go-k8s-io-cri-api
+           go-k8s-io-klog-v2
+           go-k8s-io-utils
+           go-tags-cncf-io-container-device-interface
+
+           ;; TODO: Complete packaging.
+           ;; go-github-com-containerd-aufs
+           ;; go-github-com-containerd-imgcrypt
+           #;go-github-com-containerd-zfs))
     (home-page "https://github.com/containerd/containerd")
     (synopsis "Container runtime support daemon")
     (description
@@ -6275,9 +6328,7 @@ robustness, and portability.  It is available as a daemon, which can manage
 the complete container lifecycle of its host system: image transfer and
 storage, container execution and supervision, low-level storage and network
 attachments, etc.")
-    (license license:asl2.0)
-    ;; Don't expose since it's a partial package.
-    (properties '((hidden? . #t)))))
+    (license license:asl2.0)))
 
 (define-public go-github-com-containerd-continuity
   (package
