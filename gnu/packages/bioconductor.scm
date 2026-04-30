@@ -18057,14 +18057,14 @@ the numbers of cells across batches.")
 (define-public r-mast
   (package
     (name "r-mast")
-    (version "1.36.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MAST" version))
        (sha256
         (base32
-         "1q0r9288k7jz3brsprmdc3a2h6x2nji4x7pdbd5vsrz32xrjcydw"))
+         "175yqh6zirii85qfxv11x0bf2iw03v16wqq6ha7r8bp1slym29p5"))
        (snippet
         '(delete-file "docs/jquery.sticky-kit.min.js"))))
     (properties `((upstream-name . "MAST")))
@@ -18076,7 +18076,7 @@ the numbers of cells across batches.")
          (add-after 'unpack 'process-javascript
            (lambda* (#:key inputs #:allow-other-keys)
              (invoke "esbuild"
-                     (assoc-ref inputs "js-jquery-sticky-kit")
+                     (assoc-ref inputs "jquery.sticky-kit.js")
                      "--minify"
                      "--outfile=docs/jquery.sticky-kit.min.js"))))))
     (propagated-inputs
@@ -18094,19 +18094,14 @@ the numbers of cells across batches.")
            r-stringr
            r-summarizedexperiment))
     (native-inputs
-     `(("esbuild" ,esbuild)
-       ("js-jquery-sticky-kit"
-        ,(origin
-           (method url-fetch)
-           (uri
-            "https://cdn.jsdelivr.net/gh/leafo/sticky-kit@v1.1.2/jquery.sticky-kit.js")
-           (sha256
-            (base32
-             "17c3a1hqc3ybwj7hpw8prazajp2x98aq7nyfn71h6lzjvblq297g"))))
-       ("r-car" ,r-car)
-       ("r-knitr" ,r-knitr)
-       ("r-reshape" ,r-reshape)
-       ("r-testthat" ,r-testthat)))
+     (list esbuild r-car r-knitr r-reshape r-testthat
+           (origin
+             (method url-fetch)
+             (uri
+              "https://cdn.jsdelivr.net/gh/leafo/sticky-kit@v1.1.2/jquery.sticky-kit.js")
+             (sha256
+              (base32
+               "17c3a1hqc3ybwj7hpw8prazajp2x98aq7nyfn71h6lzjvblq297g")))))
     (home-page "https://github.com/RGLab/MAST/")
     (synopsis "Model-based analysis of single cell transcriptomics")
     (description
