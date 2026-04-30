@@ -28363,15 +28363,17 @@ separate published packages.")
 (define-public r-biomformat
   (package
     (name "r-biomformat")
-    (version "1.39.17")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biomformat" version))
        (sha256
         (base32
-         "0bz6cdrpylbj2j68x72q80vbiv561hk7j2wpbqx4myywigizyc42"))))
-    (properties `((upstream-name . "biomformat")))
+         "1hrfhgffhy70j3i620mk1l6b7n9wg7xqisn53cz23v650yyi1lha"))))
+    (properties
+     `((upstream-name . "biomformat")
+       (updater-extra-propagated-inputs . ("r-rhdf5"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-jsonlite r-matrix r-rhdf5))
