@@ -2171,12 +2171,18 @@ software Beancount with a focus on features and usability.")
        (sha256
         (base32 "18kdic6rg9qizam6cgd2ljpapwiqh2dc3s6wsaz46kjc1yhhwjqy"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests
     (propagated-inputs (list fava))
     (native-inputs (list python-pdm-backend))
     (home-page "https://github.com/stenius/fava-envelope-airmail")
     (synopsis "Envelope budgeting for Fava/Beancount")
-    (description "Envelope budgeting for Fava/Beancount with stats, scheduled
-transactions, and color-coded UI.")
+    (description
+     "Envelope budgeting for Fava/Beancount with stats, scheduled
+transactions, and color-coded UI.  It's a fork of
+@url{https://github.com/memst/fava-envelope} (itself a fork of
+@url{https://github.com/polarmutex/fava-envelope}) that adds several
+enhancements for envelope budgeting.")
     (license license:expat)))
 
 (define-public emacs-beancount
