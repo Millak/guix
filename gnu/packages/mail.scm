@@ -3918,7 +3918,7 @@ on the fly.  Both programs are written in C and are very fast.")
 (define-public stalwart
   (package
     (name "stalwart")
-    (version "0.15.5")
+    (version "0.16.1")
     (source
      (let ((upstream-source
              (origin
@@ -3929,7 +3929,7 @@ on the fly.  Both programs are written in C and are very fast.")
                (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "1b21whr8qjjq2r8jgrhs3ifj0g1cx5nxwa2sajhgab0bckwfvdsg")))))
+                 "1vfgn6jd6gi7b0ilivl4wy6m8bd9hbg919csfndb3h553w153hzy")))))
        (origin
          (method computed-origin-method)
          (file-name (git-file-name name version))
@@ -3948,7 +3948,10 @@ on the fly.  Both programs are written in C and are very fast.")
                     (invoke "python3" "resources/scripts/ossify.py" "crates")
                     (substitute* "crates/main/Cargo.toml"
                       ((", \"enterprise\"")
-                       "")))
+                       ""))
+                    (substitute* "crates/common/Cargo.toml"
+                      (("git =.*/opentelemetry-rust\"")
+                       "version = \"0.31.0\"")))
                   (copy-recursively "upstream-source" #$output))))))))
     (build-system cargo-build-system)
     (arguments
@@ -3958,6 +3961,7 @@ on the fly.  Both programs are written in C and are very fast.")
       ;; the foundationdb library. However, we haven't packaged it yet,
       ;; so for now, skip tests.
       #:tests? #f
+      #:features ''("s3" "postgres" "rocks" "sqlite")
       #:cargo-install-paths ''("crates/main")
       #:phases
       #~(modify-phases %standard-phases

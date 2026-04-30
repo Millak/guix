@@ -331,6 +331,39 @@ transliterating them.  It supports Emoji and Chinese.")
      (description "@code{hypher} is a Rust library for syllabification.")
      (license (list license:expat license:asl2.0)))))
 
+(define-public rust-opentelemetry-for-stalwart
+  (let ((commit "274b4d324794280ce6f4def095a3428197a9e6e3")
+        (revision "0"))
+    (hidden-package
+     (package
+       (name "rust-opentelemetry")
+       (version (git-version "0.31.0" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://github.com/stalwartlabs/opentelemetry-rust")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "1k6mkvzbznnjzf38rl5xvzvdgp9kvd1xyk0zykwjzmh1hzcfgpws"))))
+       (build-system cargo-build-system)
+       (arguments (list #:skip-build? #t
+                        #:cargo-package-crates
+                        ''("opentelemetry"
+                           "opentelemetry-http"
+                           "opentelemetry_sdk"
+                           "opentelemetry-proto"
+                           "opentelemetry-otlp"
+                           "opentelemetry-jaeger-propagator"
+                           "opentelemetry-semantic-conventions")))
+
+       (inputs (cargo-inputs 'rust-opentelemetry-for-stalwart))
+       (home-page "https://github.com/stalwartlabs/opentelemetry-rust")
+       (synopsis "The Rust OpenTelemetry implementation")
+       (description "This package provides a Rust OpenTelemetry implementation.")
+       (license license:asl2.0)))))
+
 ;; Workspace dependency of zed.
 ;;
 ;; Cargo side: Cargo unifies dependency versions across zed's
