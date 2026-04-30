@@ -1794,6 +1794,10 @@ bootloader in Espressif ESP8266 & ESP32 series chips.")
     (propagated-inputs
      ;; In the Libs: section of r_hash.pc.
      (list xxhash))
+    (native-search-paths (list (search-path-specification
+                                 (variable "R2_LIBR_PLUGINS")
+                                 (files (list "lib/radare2"))
+                                 (separator #f)))) ;single value
     (home-page "https://radare.org/")
     (synopsis "Reverse engineering framework")
     (description
