@@ -55,6 +55,8 @@
   #:use-module (guix upstream)
   #:use-module (guix packages)
   #:use-module (guix sets)
+  #:use-module ((web client) #:select (http-head))
+  #:use-module ((web response) #:select (response-headers))
   #:export (%input-style
 
             download
@@ -240,6 +242,22 @@ bioconductor package NAME, or #F if the package is unknown."
                  (string=? (assoc-ref meta "Package") name))
                (bioconductor-packages-list type))
          (cut assoc-ref <> "Version")))
+
+;; We use this to avoid downloading Bioconductor data packages with
+;; excessively large source tarballs.
+(define %max-source-size
+  (make-parameter (* 512 1024 1024))) ;512 MiB
+
+(define (source-size-too-big? url)
+  "Check the size of the download behind URL and abort if it exceeds
+the threshold.  Return the size if the source is too big."
+  (let* ((first-url (match url
+                      ((? string?) url)
+                      ((url . more) url)))
+         (size (let ((response body (http-head first-url)))
+                 (assoc-ref (response-headers response)
+                            'content-length))))
+    (and (> size (%max-source-size)) size)))
 
 ;; Little helper to download URLs only once.
 (define download
@@ -843,7 +861,7 @@ of package names for all input packages."
           (list)
           rules)))
 
-(define (maybe-arguments inputs)
+(define (maybe-arguments inputs substitutable?)
   "Generate a list for the arguments field that can be spliced into a package
 S-expression."
   (let ((input-names (map upstream-input-name inputs))
@@ -856,10 +874,15 @@ S-expression."
                            `(,@%r-build-system-modules
                              (guix build minify-build-system)))))
     (match (phases-for-inputs input-names)
-      (() '())
+      (() (if (not substitutable?)
+              '((arguments (list #:substitutable? #false)))
+              '()))
       (phases
        `((arguments
           (list
+           ,@(if (not substitutable?)
+                 '(#:substitutable? #false)
+                 '())
            ,@(if (member "esbuild" input-names)
                  esbuild-modules '())
            #:phases
@@ -867,7 +890,8 @@ S-expression."
               ,@phases))))))))
 
 (define* (description->package repository meta #:key (license-prefix identity)
-                               (download-source download))
+                               (download-source download)
+                               (substitutable? #true))
   "Return the `package' s-expression for an R package published on REPOSITORY
 from the alist META, which was derived from the R package's DESCRIPTION file."
   (let* ((base-url   (case repository
@@ -902,6 +926,8 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
          (uri-helper (uri-helper repository))
          (inputs     (cran-package-inputs meta repository
                                           #:download-source download-source))
+         (substitutable? (and substitutable? (not git?) (not hg?)
+                              (not (source-size-too-big? source-url))))
          (package
            `(package
               (name ,(cran-guix-name name))
@@ -947,7 +973,7 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
                     `((properties ,`(,'quasiquote ((,'upstream-name . ,name)))))
                     '())
               (build-system r-build-system)
-              ,@(maybe-arguments inputs)
+              ,@(maybe-arguments inputs substitutable?)
               ,@(maybe-inputs (filter (upstream-input-type-predicate 'regular)
                                       inputs)
                               'inputs)
