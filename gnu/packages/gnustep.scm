@@ -30,9 +30,11 @@
   #:use-module (guix build-system cmake)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
+  #:use-module (gnu packages aspell)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages icu4c)
@@ -238,6 +240,61 @@ remote object messaging support (distributed objects), and event loops.
 It provides functionality that aims to implement the non-graphical
 portion of the Apple's Cocoa frameworks (the Foundation library)
 which came from the OpenStep standard.")
+    (license (list license:gpl3+ license:lgpl2.1+))))
+
+(define-public gnustep-gui
+  (package
+    (name "gnustep-gui")
+    (version "0.32.0")
+    (source (origin
+              (method url-fetch)
+              (uri (list
+                    (string-append "https://ftp.gnustep.org/pub/gnustep/core/"
+                                   name "-" version ".tar.gz")
+                    (string-append "ftp://ftp.gnustep.org/pub/gnustep/core/"
+                                   name "-" version ".tar.gz")))
+              (sha256
+               (base32
+                "1xm1z6kwz9y3dqqf8k4s88kynxqz14jviz2qxj9dbarv66va20qc"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~`("--with-installation-domain=SYSTEM"
+                            ,(string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+      #:make-flags #~`("messages=yes" "doc=yes"
+                       "GNUSTEP_TZ=UTC"
+                       "GNUSTEP_INSTALLATION_DOMAIN=SYSTEM"
+                       ,@#$(make-gnustep-make-flags '(assoc-ref %outputs "out")))
+      #:validate-runpath? #f ;; bundles are dlopened and lack rpath
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-makefile
+            ;; install fails because it wants to install into gnustep-make
+            (lambda _
+              (substitute* "GNUmakefile.postamble"
+                (("\\$\\(GNUSTEP_MAKEFILES\\)")
+                 (string-append #$output "/share/GNUstep/Makefiles"))))))))
+    (native-inputs
+     (list gnustep-make pkg-config
+           texinfo which))
+    (inputs
+     (list gnustep-base
+           aspell
+           ;; cups
+           giflib  ;; or libungif
+           icu4c
+           libjpeg-turbo
+           libpng
+           libtiff))
+    (home-page "https://gnustep.org")
+    (synopsis "Graphical user interface class library for GNUstep")
+    (description "The GNUstep gui library is a library of graphical
+ user interface classes written completely in the Objective-C language;
+the classes are based upon Apple's Cocoa framwork (which came from the
+OpenStep specification). These classes include graphical objects such
+as buttons, text fields, popup lists, browser lists, and windows; there
+ are also many associated classes for handling events, colors, fonts,
+pasteboards and images.")
     (license (list license:gpl3+ license:lgpl2.1+))))
 
 (define-public libobjc2
