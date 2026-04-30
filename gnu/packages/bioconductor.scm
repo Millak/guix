@@ -24953,14 +24953,14 @@ gene selection, testing relationships, and so on.")
 (define-public r-biocpkgtools
   (package
     (name "r-biocpkgtools")
-    (version "1.28.3")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocPkgTools" version))
        (sha256
         (base32
-         "0mxhsj3ah6qfq3lr3jz9bfjgfdzl9763aa3j5n3a0im36rz68960"))
+         "0nv6vq5zkaavbmcbhn4lmgsa6kps6zr38hl1m2h2zrwpzkv368kg"))
        (snippet
         '(for-each delete-file
                    '("inst/htmlwidgets/lib/bioc_explore/bootstrap.min.js"
@@ -24984,11 +24984,11 @@ gene selection, testing relationships, and so on.")
                (call-with-values
                    (lambda ()
                      (unzip2
-                      `((,(assoc-ref inputs "js-bootstrap")
+                      `((,(assoc-ref inputs "bootstrap.js")
                          "bootstrap.min.js")
-                        (,(assoc-ref inputs "js-d3")
+                        (,(assoc-ref inputs "d3.v3.js")
                          "d3.v3.min.js")
-                        (,(assoc-ref inputs "js-jquery")
+                        (,(assoc-ref inputs "jquery-2.2.4.js")
                          "jquery-2.2.4.min.js")
                         (,(search-input-file inputs "/underscore.js")
                          "underscore-min.js"))))
@@ -25027,42 +25027,36 @@ gene selection, testing relationships, and so on.")
            r-xml2
            r-yaml))
     (native-inputs
-     `(("esbuild" ,esbuild)
-       ("r-knitr" ,r-knitr)
-       ("r-testthat" ,r-testthat)
-       ("js-bootstrap"
-        ,(origin
-           (method url-fetch)
-           (uri
-            "https://raw.githubusercontent.com/twbs/bootstrap/v3.3.6/dist/js/bootstrap.js")
-           (sha256
-            (base32
-             "07fm28xbkb7a5n7zgmfxgbl2g5j010r4gvc54y79v1f119s3kz6y"))))
-       ;; 3.5.17
-       ("js-d3"
-        ,(origin
-           (method url-fetch)
-           (uri "https://d3js.org/d3.v3.js")
-           (sha256
-            (base32
-             "1arr7sr08vy7wh0nvip2mi7dpyjw4576vf3bm45rp4g5lc1k1x41"))))
-       ("js-jquery"
-        ,(origin
-           (method url-fetch)
-           (uri "https://code.jquery.com/jquery-2.2.4.js")
-           (sha256
-            (base32
-             "18m6qmmsm3knvybf6gpwmwiasi05y98gcpb364if8qh94gv90gl9"))))
-       ("js-underscore"
-        ,(origin
-           (method git-fetch)
-           (uri (git-reference
-                 (url "https://github.com/jashkenas/underscore")
-                 (commit "1.8.3")))
-           (file-name (git-file-name "underscorejs" "1.8.3"))
-           (sha256
-            (base32
-             "1r54smxpl3c6jg6py29xjc2l1z49rlm1h48vr9i57wvnkbnbl0h3"))))))
+     (list esbuild r-knitr r-testthat
+           (origin
+             (method url-fetch)
+             (uri
+              "https://raw.githubusercontent.com/twbs/bootstrap/v3.3.6/dist/js/bootstrap.js")
+             (sha256
+              (base32
+               "07fm28xbkb7a5n7zgmfxgbl2g5j010r4gvc54y79v1f119s3kz6y")))
+           ;; 3.5.17
+           (origin
+             (method url-fetch)
+             (uri "https://d3js.org/d3.v3.js")
+             (sha256
+              (base32
+               "1arr7sr08vy7wh0nvip2mi7dpyjw4576vf3bm45rp4g5lc1k1x41")))
+           (origin
+             (method url-fetch)
+             (uri "https://code.jquery.com/jquery-2.2.4.js")
+             (sha256
+              (base32
+               "18m6qmmsm3knvybf6gpwmwiasi05y98gcpb364if8qh94gv90gl9")))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/jashkenas/underscore")
+                    (commit "1.8.3")))
+             (file-name (git-file-name "underscorejs" "1.8.3"))
+             (sha256
+              (base32
+               "1r54smxpl3c6jg6py29xjc2l1z49rlm1h48vr9i57wvnkbnbl0h3")))))
     (home-page "https://github.com/seandavi/BiocPkgTools")
     (synopsis "Collection of tools for learning about Bioconductor packages")
     (description
