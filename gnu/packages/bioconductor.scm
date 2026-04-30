@@ -26612,17 +26612,14 @@ memory usage and processing time is minimized.")
 (define-public r-mscoreutils
   (package
     (name "r-mscoreutils")
-    (version "1.22.1")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MsCoreUtils" version))
        (sha256
         (base32
-         "1vrczrj854i0510y91zad51nnai1spl3wwgn2bafgk25fx8f48gl"))
-       (patches
-        (search-patches
-         "r-mscoreutils-0001-fix-non-API-call-to-R-SETLENGTH-by-using-lengthgets.patch"))))
+         "15zqp2cvlmm0dz6yw633zvh29kvw0xr3p1rksk2dik0h7xhc38qv"))))
     (properties
      '((upstream-name . "MsCoreUtils")
        ;; Avoid dependency cycle.
@@ -26647,6 +26644,7 @@ memory usage and processing time is minimized.")
            r-norm
            r-pcamethods
            r-preprocesscore
+           r-rlang
            r-testthat
            r-vsn))
     (home-page "https://github.com/RforMassSpectrometry/MsCoreUtils")
