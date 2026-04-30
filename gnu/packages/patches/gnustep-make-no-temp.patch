@@ -1,0 +1,27 @@
+From 97b568f19c4165827979348951066622f75ef6e5 Mon Sep 17 00:00:00 2001
+From: rfm <richardfrithmacdonald@gmail.com>
+Date: Tue, 5 May 2026 10:45:39 +0100
+Subject: [PATCH] Don't use TEMP as that may conflict with environment variable
+ on some systems
+
+---
+ TestFramework/gnustep-tests.in | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/TestFramework/gnustep-tests.in b/TestFramework/gnustep-tests.in
+index 1b76663f..c0e9330f 100755
+--- a/TestFramework/gnustep-tests.in
++++ b/TestFramework/gnustep-tests.in
+@@ -291,10 +291,10 @@ else
+   NONAME=no
+ fi
+ 
+-TEMP=`echo *`
++# Check for all possible test directories in the current directory.
+ TESTS=
+ TESTDIRS=
+-for file in $TEMP
++for file in `echo *`
+ do
+   if test -d $file -a $file != CVS -a $file != obj
+   then

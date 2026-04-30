@@ -4,6 +4,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022, 2025 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2026 Dariqq <dariqq@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -79,20 +80,50 @@ maintained by Guido Scholz (2002-07).")
 (define-public gnustep-make
   (package
     (name "gnustep-make")
-    (version "2.7.0")
+    (version "2.9.3")
     (source (origin
               (method url-fetch)
-              (uri (string-append "ftp://ftp.gnustep.org/pub/gnustep/core/"
-                                  name "-" version ".tar.gz"))
+              (uri (list
+                    (string-append "https://ftp.gnustep.org/pub/gnustep/core/"
+                                   name "-" version ".tar.gz")
+                    (string-append "ftp://ftp.gnustep.org/pub/gnustep/core/"
+                                   name "-" version ".tar.gz")))
               (sha256
                (base32
-                "1khiygfkz0zhh9b5nybn40g0xnnjxchk24n49hff1bwanszir84h"))))
+                "092cy3clchx381qrc8s7gxabqarz9jfsh3bnag5fnyb2f05k5jlk"))
+              (patches
+               (search-patches
+                "gnustep-make-makefiles-search-path.patch"
+                "gnustep-make-no-temp.patch"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f)) ; no check target
+     (list
+      #:configure-flags #~'("-with-layout=fhs-system")
+      #:make-flags #~'("GNUSTEP_INSTALLATION_DOMAIN=SYSTEM"
+                       ;; Don't build pdf documentation.
+                       "LATEX_FILES=")
+      #:tests? #f ;; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-common-makefile
+            (lambda _
+              (patch-makefile-SHELL "common.make")))
+          (add-after 'install 'install-doc
+            (lambda args
+              (with-directory-excursion "Documentation"
+                (apply (assoc-ref %standard-phases 'install) args)))))))
     (native-inputs
-     (list which))
-    (home-page "http://gnustep.org")
+     (list which
+           texinfo))
+    (native-search-paths
+     (list
+      (search-path-specification
+        (variable "GUIX_GNUSTEP_MAKEFILES_ADDITIONAL")
+        (file-type 'regular)
+        (file-pattern "^.*\\.make$")
+        (files
+         (list "share/GNUstep/Makefiles/Additional")))))
+    (home-page "https://gnustep.org")
     (synopsis "GNUstep make package")
     (description "The makefile package is a simple, powerful and extensible way
 to write makefiles for a GNUstep-based project.  It allows the user to write a
