@@ -14,7 +14,7 @@
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2023 David Pflug <david@pflug.io>
-;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
@@ -674,14 +674,14 @@ document and bibtex retrieval.")
 (define-public ugrep
   (package
     (name "ugrep")
-    (version "7.5.0")
+    (version "7.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/Genivia/ugrep")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "0vfap67jfbcx6h72728il93sxy2dvvrsla8fzszgja3swddrrvyb"))
+               (base32 "0968cws0bvfgip7yh9vkhxfmr70dl1jr681yzgzhpn0xdv6iqg94"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))
               (snippet
