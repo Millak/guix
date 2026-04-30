@@ -22674,7 +22674,7 @@ are common in Chromium-derived projects.")
 (define-public emacs-gnosis
   (package
     (name "emacs-gnosis")
-    (version "0.10.3")
+    (version "0.10.4")
     (source
      (origin
        (method git-fetch)
@@ -22683,7 +22683,7 @@ are common in Chromium-derived projects.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kpzc2jw51sklz15v0d0vzm5ck05n3d90l02la4nxn8r85jb1f53"))))
+        (base32 "06ps2hnz03pmy0v768w8ky447aam68r7d86rnh25rhka7x9flipk"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -22703,7 +22703,7 @@ are common in Chromium-derived projects.")
             (lambda _
               (invoke "make" "doc" "GUIX_SHELL="))))))
     (native-inputs (list texinfo))
-    (propagated-inputs (list emacs-transient))
+    (propagated-inputs (list emacs-keymap-popup))
     (home-page "https://thanosapollo.org/projects/gnosis/")
     (synopsis "Personal knowledge system for GNU Emacs")
     (description
