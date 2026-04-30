@@ -13291,15 +13291,13 @@ transcriptional age calculation based on GTEx RNASeq data.")
 (define-public r-rsamtools
   (package
     (name "r-rsamtools")
-    (version "2.26.0")
+    (version "2.28.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Rsamtools" version))
               (sha256
                (base32
-                "1sbb95xknaj2jks0wlcj1zr43i23l27j5mjsihyk9q1kxybhmnlw"))
-              (patches
-               (search-patches "r-rsamtools-r-4.6.0-compat.patch"))))
+                "0c5pdxihnxwzybainlz2nlm3mr9d29jp4r2lixh5bgqqa01z2h2q"))))
     (properties
      `((upstream-name . "Rsamtools")))
     (build-system r-build-system)
