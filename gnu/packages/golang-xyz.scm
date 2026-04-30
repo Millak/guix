@@ -30155,49 +30155,25 @@ organization}.")
        (list
         #:skip-build? #t
         #:import-path "go4.org"
-        #:test-subdirs
-        #~(list "bytereplacer/..."
-                ;; "cloud/..." ; missing packages
-                "ctxutil/..."
-                "errorutil/..."
-                "fault/..."
-                "jsonconfig/..."
-                "legal/..."
-                "lock/..."
-                "media/..."
-                "must/..."
-                "net/..."
-                "net/throttle/..."
-                "oauthutil/..."
-                "osutil/..."
-                "readerutil/..."
-                "reflectutil/..."
-                "rollsum/..."
-                "sort/..."
-                "strutil/..."
-                "syncutil/..."
-                "testing/..."
-                "testing/functest/..."
-                "types/..."
-                ;; "wkfs/..." ; missing packages
-                "writerutil/..."
-                "xdgdir/...")
+        #:test-flags #~(list "-vet=off")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'remove-examples
               (lambda* (#:key import-path #:allow-other-keys)
                 (with-directory-excursion (string-append "src/" import-path)
                   (for-each delete-file
-                            (find-files "." "example.*_test\\.go$"))))))
-        #:test-flags #~(list "-vet=off")))
+                            (find-files "." "example.*_test\\.go$"))))))))
+      (native-inputs
+       ;; XXX: Remove when cycle is fixed.
+       (list go-github-com-envoyproxy-go-control-plane))
       (propagated-inputs
-       (list ;; go-cloud-google-com-go
-             ;; go-cloud-google-com-go-storage
+       (list go-cloud-google-com-go
+             go-cloud-google-com-go-storage
              go-github-com-rwcarlsen-goexif
              go-golang-org-x-net
              go-golang-org-x-oauth2
              go-golang-org-x-sys
-             #; go-google-golang-org-api))
+             go-google-golang-org-api))
       (home-page "https://github.com/go4org/go4")
       (synopsis "Collection of packages for Go programmers")
       (description
