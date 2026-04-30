@@ -4676,7 +4676,19 @@ it mimics the functionality and signatures of the standard `os` package.")
                                            #:subdir "api"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06pl08p1f86z70hy9si5h7p2bgassqjsy625pvzxazxix35ggq6x"))))
+        (base32 "06pl08p1f86z70hy9si5h7p2bgassqjsy625pvzxazxix35ggq6x"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "api")))))
     (build-system go-build-system)
     (arguments
      (list
