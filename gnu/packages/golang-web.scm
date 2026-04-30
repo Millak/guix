@@ -21405,25 +21405,41 @@ for production use.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/open-telemetry/opentelemetry-go")
-             (commit (go-version->git-ref version
-                                          #:subdir
-                                          "exporters/stdout/stdouttrace"))))
+              (url "https://github.com/open-telemetry/opentelemetry-go")
+              (commit (go-version->git-ref version
+                                           #:subdir
+                                           "exporters/stdout/stdouttrace"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kvfbqc56p1h9rh9cvgn37ya6k10613r0f2rhjiwrrkgs2mszk30"))))
+        (base32 "1kvfbqc56p1h9rh9cvgn37ya6k10613r0f2rhjiwrrkgs2mszk30"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "exporters/stdout" "stdouttrace")
+            (delete-all-but "exporters" "stdout")
+            (delete-all-but "." "exporters")))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; TODO: Enable when all missing inputs are available, use as source
-      ;; only package for Boxo.
-      #:skip-build? #t
-      #:tests? #f
       #:import-path "go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
       #:unpack-path "go.opentelemetry.io/otel"))
-    (propagated-inputs (list go-github-com-stretchr-testify))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-trace
+           go-go-opentelemetry-io-otel-metric))
     (home-page "https://go.opentelemetry.io/otel")
-    (synopsis "STDOUT Trace Exporter")
+    (synopsis "OTLP STDOUT Trace Exporter")
     (description
      "Package stdouttrace contains an @code{OpenTelemetry} exporter for tracing
 telemetry to be written to an output destination as JSON.")
