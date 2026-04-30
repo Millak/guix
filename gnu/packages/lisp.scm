@@ -109,6 +109,7 @@
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages stb)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
@@ -1000,6 +1001,78 @@ assembler, PEG) is less than 1MB.")
      "@code{jpm} is the Janet Project Manager tool.  It is a build
 tool and its main uses are installing dependencies, compiling C/C++ to native
 libraries, and other management tasks for Janet projects.")
+    (license license:expat)))
+
+(define-public janet-spork
+  (package
+    (name "janet-spork")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/janet-lang/spork")
+              (commit (string-append "v" version))))
+       (modules '((guix build utils)))
+       (snippet #~(for-each
+                   delete-file-recursively
+                   '("deps/miniz" "deps/stb")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c9f54wl8g7zazrqk5f6nhp9lp38pymkxmcipagrip915i8ks0v8"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'check)
+          (add-after 'unpack 'fixes
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("test/suite-cjanet.janet")
+                (("\\(end-jit\\)" all)
+                 (simple-format #f "(setdyn :cc ~s)\n~a"
+                   #$(cc-for-target) all)))
+              (substitute* '("src/zip.c")
+                (("\"\\.\\./deps/miniz/miniz\\.h\"") "<miniz/miniz.h>"))
+              (let ((stb (dirname (search-input-file inputs "stb_image.h"))))
+                (substitute* '("project.janet")
+                  (("\"deps/miniz/miniz\\.c\"") "")
+                  ((":headers @\\[\"deps/miniz/miniz\\.h\"\\]")
+                   ":ldflags @[\"-lminiz\"]")
+                  (("\"-Ideps/stb\"") (string-append "\"-I" stb "\""))))))
+          (replace 'build
+            (lambda _
+              (invoke "janet" "-l" "./bundle" "-e" "(build)")))
+          (replace 'install
+            (lambda _
+              (let* ((janet-path (string-append #$output "/lib/janet")))
+                (mkdir-p janet-path)
+                (setenv "JANET_PATH" janet-path))
+              (invoke "janet" "--install" ".")))
+          (add-after 'install 'fix-output
+            (lambda _
+              (let* ((inc (string-append #$output "/include/janet/spork"))
+                     (bin (string-append #$output "/lib/janet/bin"))
+                     (man (string-append #$output "/lib/janet/man")))
+                (mkdir-p inc)
+                (rename-file
+                 (string-append #$output "/lib/janet/tarray.h")
+                 (string-append inc "/tarray.h"))
+                (rename-file bin (string-append #$output "/bin"))
+                (mkdir-p (string-append #$output "/share"))
+                (rename-file man (string-append #$output "/share/man")))))
+          (add-after 'fix-output 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "janet" "-l" "./bundle" "-e" "(check)")))))))
+    (inputs (list janet miniz stb))
+    (home-page "https://github.com/janet-lang/spork")
+    (synopsis "Extended standard library for Janet")
+    (description
+     "Spork is a utility library for Janet.  It contains small modules
+that should be useful for general programming in Janet but are not included
+in the standard library.")
     (license license:expat)))
 
 (define-public lisp-repl-core-dumper
