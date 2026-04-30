@@ -1695,7 +1695,7 @@ program.")
 (define-public pass-git-helper
   (package
     (name "pass-git-helper")
-    (version "4.1.0")
+    (version "4.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1705,7 +1705,7 @@ program.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "01m5vinl9qz5r4iaqj9z0jx9q13i17mkj3lax4kba2jdh5h57j40"))))
+         "018kbpgffynhbxq79897m43cvxi7g688ycadmw92k68ilvrz26pw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1715,7 +1715,9 @@ program.")
             (lambda _
               (setenv "HOME" (getcwd)))))))
     (native-inputs
-     (list python-pytest-mock python-setuptools))
+     (list python-pytest
+           python-pytest-mock
+           python-setuptools))
     (inputs
      (list password-store python-pyxdg))
     (home-page "https://github.com/languitar/pass-git-helper")
