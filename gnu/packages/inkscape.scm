@@ -342,12 +342,12 @@ as the native format.")
 
 ;;; The Inkscape release year used in the about dialog.  Please keep it sync
 ;;; when updating the package!
-(define %inkscape-release-year 2023)
+(define %inkscape-release-year 2025)
 (define-public inkscape
   (package
     (inherit inkscape/pinned)
     (name "inkscape")
-    (version "1.3.2")
+    (version "1.4.3")
     (source
      (origin
        (inherit (package-source inkscape/pinned))
@@ -355,8 +355,9 @@ as the native format.")
        (uri (string-append "https://media.inkscape.org/dl/"
                            "resources/file/"
                            "inkscape-" version ".tar.xz"))
+       (patches '())
        (sha256
-        (base32 "0sq81smxwypgnp7r3wgza8w25dsz9qa8ga79sc85xzj3qi6q9lfv"))))
+        (base32 "1lfi1rqr32kwjdkka4sbsxmkyyw3k1qgxk0gzyhwbdkhnlyjqfp8"))))
     (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments inkscape/pinned)
@@ -390,7 +391,8 @@ as the native format.")
                     (,(getenv "GDK_PIXBUF_MODULE_FILE"))))))))))
     (inputs (modify-inputs (package-inputs inkscape/pinned)
               (replace "lib2geom" lib2geom)
-              (append imagemagick)))    ;for libMagickCore and libMagickWand
+              (append imagemagick       ;for libMagickCore and libMagickWand
+                      python-tinycss2)))
     (native-inputs
      (modify-inputs (package-native-inputs inkscape/pinned)
                     ;; Only use 1 imagemagick across the package build.
