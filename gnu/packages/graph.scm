@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017-2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017-2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021, 2022, 2024 Efraim Flashner <efraim@flashner.co.il>
@@ -227,7 +227,7 @@ more.")
    (package
      (inherit igraph)
      (name "igraph")
-     (version "0.10.15")
+     (version "1.0.1")
      (source
       (origin
         (inherit (package-source igraph))
@@ -239,7 +239,39 @@ more.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0z9jqvl65j4z6brrjlfyykba2bs10az6dx6m8g41snlfnx21a82d")))))))
+          "01mynhbl2ph0gkc0zr5klwqvczwcimfs2kdn6didwg4k8gsrcxlr"))
+        (modules '((guix build utils)
+                   (ice-9 ftw)
+                   (srfi srfi-26)))
+        ;; We need the vendored versions of qhull and cxsparse.
+        (snippet '(begin
+                    (delete-file-recursively "src/isomorphism/bliss")
+                    (substitute* '("src/CMakeLists.txt"
+                                   "etc/cmake/benchmark_helpers.cmake")
+                      ;; Remove extraneous bundling related variables.
+                      ((".*_IS_VENDORED.*") "")
+                      ((".*add_sub.*isomorphism/bliss.*") "")
+                      (("(.*TARGETS.*)bliss(.*)pcg(.*)"
+                        _ part1 part2 part3)
+                       (string-append part1 part2 part3))
+                      ((" pcg ") " pcg_random "))))))
+     (arguments
+      (substitute-keyword-arguments (package-arguments igraph)
+        ((#:phases phases '%standard-phases)
+         #~(modify-phases #$phases
+             ;; We have to use the bundled version because it has been
+             ;; modified from upstream.
+             (delete 'patch-suitesparse)))
+        ((#:configure-flags flags)
+         #~(list "-DBUILD_SHARED_LIBS=ON"
+                 "-DIGRAPH_INFOMAP_SUPPORT=OFF"
+                 "-DCMAKE_C_FLAGS=-Wno-error=incompatible-pointer-types"
+                 ;; Use the same integer width as suitesparse-cxsparse, which
+                 ;; uses int64_t in SuiteSparse v6.0.0 and later.
+                 "-DIGRAPH_INTEGER_SIZE=64"))))
+     (inputs
+      (modify-inputs (package-inputs igraph)
+        (delete "suitesparse-cxsparse"))))))
 
 (define-public python-igraph
   (package
