@@ -34,6 +34,7 @@
 ;;; Copyright © 2025, 2026 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2025 Grigory Shepelev <shegeley@gmail.com>
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
+;;; Copyright © 2026 Murilo <murilo@disroot.org>
 
 ;;;
 ;;; This file is part of GNU Guix.
@@ -53,6 +54,7 @@
 
 (define-module (gnu packages disk)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
@@ -102,8 +104,10 @@
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages perl)
@@ -117,6 +121,8 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages regex)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
@@ -1628,6 +1634,104 @@ Go.  It is heavily inspired by @code{ranger} with some missing and extra
 features.  Some of the missing features are deliberately omitted since they
 are better handled by external tools.")
     (license license:expat)))
+
+(define-public yazi
+  (package
+    (name "yazi")
+    (version "26.5.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sxyazi/yazi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08zjkj5vj5qimjcj8n8pzdm84qirkxjykpckhd9z1yfv09ksmmmi"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin ;; Don't try to vendor lua.
+                 ;; We substitute on each individual Cargo.toml
+                 ;; because new features might get added in
+                 ;; the future, makes updating the package easier.
+                 (substitute* '("yazi-actor/Cargo.toml"
+                                "yazi-runner/Cargo.toml"
+                                "yazi-scheduler/Cargo.toml"
+                                "yazi-core/Cargo.toml"
+                                "yazi-binding/Cargo.toml"
+                                "yazi-dds/Cargo.toml"
+                                "yazi-parser/Cargo.toml"
+                                "yazi-fm/Cargo.toml"
+                                "yazi-widgets/Cargo.toml"
+                                "yazi-shim/Cargo.toml"
+                                "yazi-plugin/Cargo.toml")
+                   (("\"vendored-lua\", ") "")
+                   (("^vendored-lua.*") "vendored-lua = []\n"))))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:rust rust-1.95
+      #:cargo-install-paths ''("yazi-cli"
+                               "yazi-fm")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'configure 'generate-completions
+            (lambda _
+              (setenv "YAZI_GEN_COMPLETIONS" "1")))
+          (add-after 'generate-completions 'override-jemalloc
+            (lambda _
+              ;; This flag is needed when not using the bundled jemalloc.
+              ;; https://github.com/tikv/jemallocator/issues/19
+              (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS"
+               "1")
+              ;; Override jemalloc
+              (setenv "JEMALLOC_OVERRIDE"
+                      (string-append #$(this-package-input "jemalloc")
+                                     "/lib/libjemalloc.so"))))
+          (add-after 'install 'install-extra
+            (lambda _
+              (let* ((share (string-append #$output "/share"))
+                     (applications (string-append share "/applications"))
+                     (bash-completions-dir
+                       (string-append share "/bash-completion/completions"))
+                     (elv-completions-dir
+                       (string-append share "/elvish/lib"))
+                     (fish-completions-dir
+                       (string-append share "/fish/vendor_completions.d"))
+                     (nu-completions-dir
+                       (string-append share "/nushell/vendor/autoload")))
+                (install-file "assets/yazi.desktop" applications)
+                (for-each mkdir-p (list bash-completions-dir
+                                        elv-completions-dir
+                                        fish-completions-dir
+                                        nu-completions-dir))
+                (copy-file "yazi-boot/completions/yazi.bash"
+                           (string-append bash-completions-dir "/yazi"))
+                (copy-file "yazi-boot/completions/yazi.elv"
+                           (string-append elv-completions-dir "/yazi"))
+                (copy-file "yazi-boot/completions/yazi.fish"
+                           (string-append fish-completions-dir "/yazi.fish"))
+                (copy-file "yazi-boot/completions/yazi.nu"
+                           (string-append nu-completions-dir "/yazi.nu")))))
+          (add-after 'install-extra 'wrap-required
+            (lambda _
+              (wrap-program (string-append #$output "/bin/yazi")
+                `("PATH" ":" prefix
+                  (,(string-append #$(this-package-input "file") "/bin")))))))))
+    (native-inputs (list pkg-config))
+    (inputs (cons* file
+                   jemalloc
+                   lua-5.5
+                   oniguruma
+                   (cargo-inputs 'yazi)))
+    (home-page "https://yazi-rs.github.io")
+    (synopsis "Terminal file manager based on async I/O")
+    (description
+     "Yazi (duck in Chinese) is a terminal file manager based on non-blocking
+async I/O.  It aims to provide an efficient, user-friendly, and customizable
+file management experience.")
+    (license (list license:expat))))
 
 (define-public xfe
   (package
