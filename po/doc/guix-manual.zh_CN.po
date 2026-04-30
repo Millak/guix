@@ -30,16 +30,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.0.1-pre1\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-03-15 03:18+0000\n"
-"PO-Revision-Date: 2026-03-26 17:03+0000\n"
-"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
+"POT-Creation-Date: 2026-04-24 03:18+0000\n"
+"PO-Revision-Date: 2026-04-19 10:57+0000\n"
+"Last-Translator: jensky4224 <jensky4224@noreply.codeberg.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://translate.codeberg.org/projects/guix/documentation-manual/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.16.2\n"
+"X-Generator: Weblate 5.17\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -210,6 +210,9 @@ msgstr "@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS}（@pxref{Guile Pre
 msgid "@uref{https://codeberg.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, version 0.1.0 or later;"
 msgstr "@uref{https://codeberg.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, 版本 0.1.0 或更新；"
 
+msgid "@uref{https://codeberg.org/guile-compression/guile-zlib, Guile-zlib},"
+msgstr "@uref{https://codeberg.org/guile-compression/guile-zlib, Guile-zlib},"
+
 msgid "version 0.1.0 or later;"
 msgstr "版本 0.1.0 或更新；"
 
@@ -239,6 +242,9 @@ msgstr "这些依赖是可选的："
 
 msgid "Support for build offloading (@pxref{Daemon Offload Setup}) and @command{guix copy} (@pxref{Invoking guix copy}) depends on @uref{https://github.com/artyom-poptsov/guile-ssh, Guile-SSH}, version 0.13.0 or later."
 msgstr "对构建下发（@pxref{Daemon Offload Setup}）和 @command{guix copy} （@pxref{Invoking guix copy}）的支持依赖于 @uref{https://github.com/artyom-poptsov/guile-ssh, Guile-SSH}，版本 0.13.0 或更新。"
+
+msgid "@uref{https://codeberg.org/guile-compression/guile-zstd, Guile-zstd}, for zstd compression and decompression in @command{guix publish} and for substitutes (@pxref{Invoking guix publish})."
+msgstr "@uref{https://codeberg.org/guile-compression/guile-zstd, Guile-zstd}，用于在 @command{guix publish} 中进行 zstd 压缩和解压缩，以及用于 substitutes (@pxref{Invoking guix publish})."
 
 msgid "@uref{https://ngyro.com/software/guile-semver.html, Guile-Semver} for the @code{crate} importer (@pxref{Invoking guix import})."
 msgstr "@uref{https://ngyro.com/software/guile-semver.html, Guile-Semver} 用于 @code{crate} 导入器（@pxref{Invoking guix import}）。"
@@ -310,6 +316,9 @@ msgstr ""
 
 msgid "If @option{-C} (short for @option{--container}) is not supported on your system, try @command{--pure} instead of @option{-CPW}.  @xref{Invoking guix shell}, for more information on that command."
 msgstr "如果 @option{-C}（@option{--container} 的缩写）在你的系统上不被支持，请尝试使用 @command{--pure} 来代替 @option{-CPW}。有关该命令的更多信息见 @xref{Invoking guix shell}."
+
+msgid "Most of the test suite runs without an internet connection. The @option{-N} (short for @option{--network}) can be added to the @code{guix shell} command to run the tests that require internet access."
+msgstr "大部分的测试集不需要网络连接。将@option{-N} (即 @option{--network}) 添加到 @code{guix shell} 中可以运行需要网络的测试。"
 
 msgid "If you are unable to use Guix when building Guix from a checkout, the following are the required packages in addition to those mentioned in the installation instructions (@pxref{Requirements})."
 msgstr "如果在从检出中构建 Guix 时无法使用 Guix，则除了安装说明中提到的 软件包（@pxref{Requirements}）外，以下是所需的软件包。"
@@ -618,6 +627,12 @@ msgstr "这仅仅是一个提示，你可以安全地忽略它，可以通过运
 
 msgid "You can run @command{make} automatically as you work using @command{watchexec} from the @code{watchexec} package.  For example, to build again each time you update a package file, run @samp{watchexec -w gnu/packages -- make -j4}."
 msgstr "你可以使用 @code{watchexec} 包中的 @command{watchexec} 在你干活时自动运行 @command{make}。例如，若要在每次更新一个包文件后都再次构建，运行@samp{watchexec -w gnu/packages -- make -j4}."
+
+msgid "Scheme code editing"
+msgstr "编辑Scheme代码"
+
+msgid "syntax highlighting, so that keywords are visually distinguishable."
+msgstr "语法高亮，使关键词在视觉上易于区分。"
 
 msgid "Guile Studio"
 msgstr "Guile Studio"
@@ -3909,9 +3924,6 @@ msgstr "grub-efi-bootloader"
 
 msgid "Unsure whether to use EFI- or BIOS-based GRUB? If the directory @file{/sys/firmware/efi} exists in the installation image, then you should probably perform an EFI installation, using @code{grub-efi-bootloader}.  Otherwise you should use the BIOS-based GRUB, known as @code{grub-bootloader}.  @xref{Bootloader Configuration}, for more info on bootloaders."
 msgstr "不确定使用 EFI 还是基于 BIOS 的 GRUB？如果安装映像中存在目录 @file{/sys/firmware/efi}，那么您可能应该执行 EFI 安装，使用 @code{grub-efi-bootloader}。否则，您应该使用基于 BIOS 的 GRUB，称为 @code{grub-bootloader}。有关引导加载器的更多信息，请参见 @xref{Bootloader Configuration}。"
-
-msgid "Once you are done partitioning the target hard disk drive, you have to create a file system on the relevant partition(s)@footnote{Currently Guix System only supports ext4, btrfs, JFS, F2FS, and XFS file systems.  In particular, code that reads file system UUIDs and labels only works for these file system types.}.  For the ESP, if you have one and assuming it is @file{/dev/sda1}, run:"
-msgstr "完成目标硬盘驱动器的分区后，您必须在相关分区上创建文件系统@footnote{目前 Guix 系统仅支持 ext4、btrfs、JFS、F2FS 和 XFS 文件系统。特别是，读取文件系统 UUID 和标签的代码仅适用于这些文件系统类型。}。对于 ESP，如果您有一个，并假设它是 @file{/dev/sda1}，请运行："
 
 msgid "mkfs.fat -F32 /dev/sda1\n"
 msgstr "mkfs.fat -F32 /dev/sda1\n"
@@ -7808,13 +7820,6 @@ msgstr "rootfstype=@var{type}"
 
 msgid "rootflags=@var{options}"
 msgstr "rootflags=@var{options}"
-
-msgid ""
-"echo /key-file.bin | cpio -oH newc >/key-file.cpio\n"
-"chmod 0000 /key-file.cpio\n"
-msgstr ""
-"echo /key-file.bin | cpio -oH newc >/key-file.cpio\n"
-"chmod 0000 /key-file.cpio\n"
 
 msgid "\"(hd0,msdos1)/boot/vmlinuz\"\n"
 msgstr "\"(hd0,msdos1)/boot/vmlinuz\"\n"

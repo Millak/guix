@@ -60,8 +60,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-03-15 03:18+0000\n"
-"PO-Revision-Date: 2026-03-29 11:50+0000\n"
+"POT-Creation-Date: 2026-04-24 03:18+0000\n"
+"PO-Revision-Date: 2026-04-29 22:43+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Spanish <https://translate.codeberg.org/projects/guix/documentation-manual/es/>\n"
 "Language: es\n"
@@ -69,7 +69,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.16.2\n"
+"X-Generator: Weblate 5.17\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -1993,7 +1993,7 @@ msgid "version.texi"
 msgstr "version-es.texi"
 
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license is included in the section entitled ``GNU Free Documentation License''."
-msgstr "Se garantiza el permiso de copia, distribución y/o modificación de este documento bajo los términos de la licencia de documentación libre de GNU (GNU Free Documentation License), versión 1.3 o cualquier versión posterior publicada por la Free Software Foundation; sin secciones invariantes, sin textos de cubierta delantera ni trasera. Una copia de la licencia está incluida en la sección titulada ``GNU Free Documentation License''."
+msgstr "Se garantiza el permiso de copia, distribución y/o modificación de este documento bajo los términos de la licencia de documentación libre de GNU, versión 1.3 o cualquier versión posterior publicada por la Free Software Foundation; sin secciones invariantes, sin textos de cubierta delantera ni trasera. Una copia de la licencia está incluida en la sección titulada ``GNU Free Documentation License''."
 
 msgid "System administration"
 msgstr "Administración del sistema"
@@ -6349,6 +6349,9 @@ msgstr ""
 "        (url \"https://example.org/otro-guix.git\")\n"
 "        (branch \"super-hacks\")))\n"
 
+msgid "guix describe -f channels > channels.scm\n"
+msgstr "guix describe -f channels > channels.scm\n"
+
 msgid "The resulting @file{channels.scm} file can be passed to the @option{-C} option of @command{guix pull} (@pxref{Invoking guix pull}) or @command{guix time-machine} (@pxref{Invoking guix time-machine}), as in this example:"
 msgstr "El archivo resultante @file{channels.scm} puede ser aprobado para la opción @option{-C} de @command{guix pull} (@pxref{Invoking guix pull}) o @command{guix time-machine} (@pxref{Invoking guix time-machine}), como en este ejemplo:"
 
@@ -6400,6 +6403,9 @@ msgstr "canales, para paquetes personales"
 
 msgid "As a channel author, consider bundling authentication material with your channel so that users can authenticate it.  @xref{Channel Authentication}, and @ref{Specifying Channel Authorizations}, for info on how to do it."
 msgstr "Como autora de un canal, considere adjuntar el material para la identificación a su canal de modo que las usuarias puedan verificarlo.  @xref{Channel Authentication}, y @ref{Specifying Channel Authorizations}, para obtener información sobre cómo hacerlo."
+
+msgid "Voilà!"
+msgstr "Voilà!"
 
 msgid "Before publishing a channel, please consider contributing your package definitions to Guix proper (@pxref{Contributing}).  Guix as a project is open to free software of all sorts, and packages in Guix proper are readily available to all Guix users and benefit from the project's quality assurance process."
 msgstr "Antes de publicar un canal, por favor considere contribuir sus definiciones de paquete al propio Guix (@pxref{Contributing}). Guix como proyecto es abierto a software libre de todo tipo, y los paquetes en el propio Guix están disponibles para todas las usuarias de Guix y se benefician del proceso de gestión de calidad del proyecto."
@@ -6640,6 +6646,9 @@ msgstr "entorno, entorno de construcción de paquetes"
 
 msgid "Sometimes an interactive shell session is not desired.  An arbitrary command may be invoked by placing the @code{--} token to separate the command from the rest of the arguments."
 msgstr "A veces no se desea una sesión interactiva de shell. Una orden arbitraria se puede invocar usando el valor @code{--} para separar la orden del resto de los parámetros."
+
+msgid "guix shell\n"
+msgstr "guix shell\n"
 
 msgid "shares network access with the host"
 msgstr "comparte acceso de red con el host"
@@ -12637,6 +12646,9 @@ msgstr "Esto invoca automáticamente @command{diffoscope}, que muestra informaci
 
 msgid "Alternatively, we can do something along these lines (@pxref{Invoking guix archive}):"
 msgstr "De manera alternativa, se puede hacer algo parecido a esto (@pxref{Invoking guix archive}):"
+
+msgid "This command shows the difference between the files resulting from the local build, and the files resulting from the build on @code{@value{SUBSTITUTE-SERVER-1}} (@pxref{Overview, Comparing and Merging Files,, diffutils, Comparing and Merging Files}).  The @command{diff} command works great for text files.  When binary files differ, a better option is @uref{https://diffoscope.org/, Diffoscope}, a tool that helps visualize differences for all kinds of files."
+msgstr "Esta orden muestra la diferencia entre los archivos resultantes de la construcción local y los archivos resultantes de la construcción en @code{@value{SUBSTITUTE-SERVER-1}} (@pxref{Overview, Comparing and Merging Files,, diffutils, Comparing and Merging Files}). La orden @command{diff} funciona muy bien en archivos de texto. Cuando son binarios los archivos diferentes, una opción mejor es @uref{https://diffoscope.org/,Diffoscope}, una herramienta que ayuda en la visualización de diferencias en todo tipo de archivos."
 
 msgid "Once you have done that work, you can tell whether the differences are due to a non-deterministic build process or to a malicious server.  We try hard to remove sources of non-determinism in packages to make it easier to verify substitutes, but of course, this is a process that involves not just Guix, but a large part of the free software community.  In the meantime, @command{guix challenge} is one tool to help address the problem."
 msgstr "Una vez haya realizado este trabajo, puede determinar si las diferencias son debidas a un procedimiento de construcción no-determinista o a un servidor con intenciones ocultas. Intentamos duramente eliminar las fuentes de indeterminismo en los paquetes para facilitar la verificación de sustituciones, pero por supuesto es un proceso que implica no solo a Guix, sino a una gran parte de la comunidad del software libre. Entre tanto, @command{guix challenge} es una herramienta para ayudar a afrontar el problema."
@@ -23259,11 +23271,6 @@ msgstr "El generadores de avatares de gato es un servicio simple para demostrar 
 msgid "{Procedure} cat-avatar-generator-service @"
 msgstr "{Procedimiento} cat-avatar-generator-service @"
 
-msgid "[#:cache-dir \"/var/cache/cat-avatar-generator\"] @ [#:package cat-avatar-generator] @ [#:configuration (nginx-server-configuration)] Returns an nginx-server-configuration that inherits @code{configuration}.  It extends the nginx configuration to add a server block that serves @code{package}, a version of cat-avatar-generator.  During execution, cat-avatar-generator will be able to use @code{cache-dir} as its cache directory."
-msgstr ""
-"[#:cache-dir \"/var/cache/cat-avatar-generator\"] @ [#:package cat-avatar-generator] @ [#:configuration (nginx-server-configuration)]\n"
-"Devuelve una configuración de nginx-server-configuration que hereda de @code{configuration}.  Extiende la configuración de nginx para añadir un bloque de servidor que proporciona @code{package}, una versión de cat-avatar-generator. Durante su ejecución, cat-avatar-generator podrá usar @code{cache-dir} como su directorio de caché."
-
 msgid "A simple setup for cat-avatar-generator can look like this:"
 msgstr "Una configuración simple para cat-avatar-generator puede ser más o menos así:"
 
@@ -28587,9 +28594,6 @@ msgstr "Este es el tipo de datos que representa un servicio de nombres real y la
 msgid "A string denoting the name service (@pxref{Services in the NSS configuration,,, libc, The GNU C Library Reference Manual})."
 msgstr "Una cadena que denota el nombre de servicio (@pxref{Services in the NSS configuration,,, libc, The GNU C Library Reference Manual})."
 
-msgid "Note that name services listed here must be visible to nscd.  This is achieved by passing the @code{#:name-services} argument to @code{nscd-service} the list of packages providing the needed name services (@pxref{Base Services, @code{nscd-service}})."
-msgstr "Fíjese que los servicios de nombres enumerados aquí deben ser visibles para nscd. Esto se consigue mediante la adición del parámetro @code{#:name-services} a @code{nscd-service} con la lista de paquetes que proporcionan los servicios de nombres necesarios (@pxref{Base Services, @code{nscd-service}})."
-
 msgid "reaction"
 msgstr "reaction"
 
@@ -28822,6 +28826,18 @@ msgstr "@code{serial-speed} (predeterminada: @code{#f})"
 msgid "The speed of the serial interface, as an integer.  For GRUB, the default value is chosen at run-time; currently GRUB chooses 9600@tie{}bps (@pxref{Serial terminal,,, grub,GNU GRUB manual})."
 msgstr "La velocidad de la interfaz serie, como un entero. Para GRUB, el valor predeterminado se selecciona en tiempo de ejecución, actualmente GRUB selecciona 9600@tie{}bps (@pxref{Serial terminal,,, grub,GNU GRUB manual})."
 
+msgid "passphrase, for LUKS-encrypted root"
+msgstr "frase de contraseña, para el directorio raíz cifrado con LUKS"
+
+msgid "When booting from a LUKS-encrypted device using GRUB, the password is normally requested twice: once by GRUB to access @file{/boot}, and a second time by the initial RAM disk to mount the root file system."
+msgstr "Al arrancar desde un dispositivo cifrado con LUKS utilizando GRUB, normalmente se solicita la contraseña dos veces: una vez por parte de GRUB para acceder a @file{/boot}, y una segunda vez por parte del disco RAM inicial para montar el sistema de archivos raíz."
+
+msgid "When GRUB's @code{cryptomount} command unlocks a LUKS device, GRUB retains the volume's master key in memory.  The @code{cryptodisk} module exposes these master keys via a GRUB-internal virtual file system called @dfn{procfs}, accessible as @code{(proc)/luks_script}.  Each line of this virtual file has the form:"
+msgstr "Cuando el comando @code{cryptomount} de GRUB desbloquea un dispositivo LUKS, GRUB conserva la clave maestra del volumen en la memoria. El módulo @code{cryptodisk} expone estas claves maestras a través de un sistema de archivos virtual interno de GRUB denominado @dfn{procfs}, al que se puede acceder como @code{(proc)/luks_script}. Cada línea de este archivo virtual tiene el siguiente formato:"
+
+msgid "Additional Boot Entries"
+msgstr "Entradas de arranque adicionales"
+
 msgid "dual boot"
 msgstr "arranque dual"
 
@@ -28924,6 +28940,9 @@ msgstr ""
 "      (list (file-append libc \"/lib/ld.so.1\") \"exec\"\n"
 "             @dots{}))\n"
 
+msgid "Themes"
+msgstr "Temas"
+
 msgid "HDPI"
 msgstr "HDPI"
 
@@ -28933,8 +28952,14 @@ msgstr "HiDPI"
 msgid "resolution"
 msgstr "resolución"
 
+msgid "themes, for GRUB"
+msgstr "temas, para GRUB"
+
+msgid "bootloader themes"
+msgstr "Temas para el gestor de arranque"
+
 msgid "For now only GRUB has theme support.  GRUB themes are created using the @code{grub-theme} form, which is not fully documented yet."
-msgstr "De momento únicamente GRUB permite el uso de temas. Los temas de GRUB se crean mediante el uso de @code{grub-theme}, todavía no documentado completamente."
+msgstr "Por el momento, solo GRUB permite personalizar su aspecto mediante temas. Los temas de GRUB se crean con la forma @code{grub-theme}, que aún no está completamente documentada aquí."
 
 msgid "{Data Type} grub-theme"
 msgstr "{Tipo de datos} grub-theme"
@@ -28954,8 +28979,8 @@ msgstr "{Procedimiento} grub-theme"
 msgid "Return the default GRUB theme used by the operating system if no @code{theme} field is specified in @code{bootloader-configuration} record."
 msgstr "Devuelve el tema predeterminado de GRUB que usa el sistema operativo si no se especifica el campo @code{theme} en el registro @code{bootloader-configuration}."
 
-msgid "It comes with a fancy background image displaying the GNU and Guix logos."
-msgstr "Viene con una bonita imagen de fondo que muestra los logos de GNU y Guix."
+msgid "It comes with a fancy background image displaying the Guix logos."
+msgstr "Incluye una elegante imagen de fondo con los logotipos de Guix."
 
 msgid "For example, to override the default resolution, you may use something like"
 msgstr "Por ejemplo, para usar una resolución distinta de la predeterminada, puede usar algo como esto:"

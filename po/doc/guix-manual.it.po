@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-03-15 03:18+0000\n"
+"POT-Creation-Date: 2026-04-24 03:18+0000\n"
 "PO-Revision-Date: 2026-03-29 11:50+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Italian <https://translate.codeberg.org/projects/guix/documentation-manual/it/>\n"
@@ -2176,9 +2176,6 @@ msgstr "presa di decisioni"
 
 msgid "consensus seeking"
 msgstr "ricerca del consenso"
-
-msgid "It is expected from all contributors, and even more so from committers, to help build consensus and make decisions based on consensus.  By using consensus, we are committed to finding solutions that everyone can live with.  It implies that no decision is made against significant concerns and these concerns are actively resolved with proposals that work for everyone."
-msgstr "È previsto da tutti i contributori, e ancor più dai committer, aiutare a costruire il consenso e prendere decisioni basate sul consenso. Usando il consenso, ci impegniamo a trovare soluzioni con cui tutti possano convivere. Ciò implica che nessuna decisione è presa contro preoccupazioni significative e queste preoccupazioni sono attivamente risolte con proposte che funzionano per tutti."
 
 msgid "A contributor (who may or may not have commit access) wishing to block a proposal bears a special responsibility for finding alternatives, proposing ideas/code or explain the rationale for the status quo to resolve the deadlock.  To learn what consensus decision making means and understand its finer details, you are encouraged to read @url{https://www.seedsforchange.org.uk/consensus}."
 msgstr "Un contributore (che potrebbe o meno avere accesso in commit) che desidera bloccare una proposta ha una responsabilità speciale nel trovare alternative, proporre idee/codice o spiegare la logica dello status quo per risolvere l'impasse. Per imparare cosa significa la presa di decisioni per consenso e capirne i dettagli più fini, ti incoraggiamo a leggere @url{https://www.seedsforchange.org.uk/consensus}."

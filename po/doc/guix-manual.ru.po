@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre2\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-03-15 03:18+0000\n"
+"POT-Creation-Date: 2026-04-24 03:18+0000\n"
 "PO-Revision-Date: 2026-03-26 08:57+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Russian <https://translate.codeberg.org/projects/guix/documentation-manual/ru/>\n"
@@ -4366,9 +4366,6 @@ msgstr "grub-efi-bootloader"
 
 msgid "Unsure whether to use EFI- or BIOS-based GRUB? If the directory @file{/sys/firmware/efi} exists in the installation image, then you should probably perform an EFI installation, using @code{grub-efi-bootloader}.  Otherwise you should use the BIOS-based GRUB, known as @code{grub-bootloader}.  @xref{Bootloader Configuration}, for more info on bootloaders."
 msgstr "Не уверенны, что выбрать: GRUB, взаимодействующий с EFI или BIOS? Если существует директория @file{/sys/firmware/efi} в установочом образе, тогда вам следует использовать установку EFI и @code{grub-efi-bootloader}. В противном случае нужно использовать GRUB, работающий с BIOS, называемый @code{grub-bootloader}. Смотрите @xref{Bootloader Configuration} для большей информации о загрузчиках."
-
-msgid "Once you are done partitioning the target hard disk drive, you have to create a file system on the relevant partition(s)@footnote{Currently Guix System only supports ext4, btrfs, JFS, F2FS, and XFS file systems.  In particular, code that reads file system UUIDs and labels only works for these file system types.}.  For the ESP, if you have one and assuming it is @file{/dev/sda1}, run:"
-msgstr "Когда разметка целевого диска выполнена, нужно создать файловую систему на соответствующем(-их) разделе(-ах)@footnote{В данный момент система Guix поддерживает только файловые системы ext4, btrfs, JFS, F2FS и XFS. По факту, код, читающий UUID и метки файлвых систем, работает только для этих типов файловых систем.}. В случае ESP, если у вас раздел @file{/dev/sda1}, выполните:"
 
 msgid "mkfs.fat -F32 /dev/sda1\n"
 msgstr "mkfs.fat -F32 /dev/sda1\n"

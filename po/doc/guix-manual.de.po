@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-03-15 03:18+0000\n"
-"PO-Revision-Date: 2026-03-30 15:58+0000\n"
+"POT-Creation-Date: 2026-04-24 03:18+0000\n"
+"PO-Revision-Date: 2026-04-29 22:43+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/documentation-manual/de/>\n"
 "Language: de\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.16.2\n"
+"X-Generator: Weblate 5.17\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -2236,9 +2236,6 @@ msgstr ""
 
 msgid "consensus seeking"
 msgstr "Konsensfindung"
-
-msgid "It is expected from all contributors, and even more so from committers, to help build consensus and make decisions based on consensus.  By using consensus, we are committed to finding solutions that everyone can live with.  It implies that no decision is made against significant concerns and these concerns are actively resolved with proposals that work for everyone."
-msgstr "Von allen Mitwirkenden wird erwartet, und erst recht von Committern, zu einer Konsensbildung beizutragen und Entscheidungen mit Konsens zu treffen. Weil wir Konsens wollen, haben wir das Ziel, Lösungen zu finden, mit denen jeder leben kann. Es bedeutet, dass wir keine Entscheidung gegen größere Bedenken fällen und wir solche Bedenken aktiv mit Vorschlägen angehen, die alle gut finden."
 
 msgid "A contributor (who may or may not have commit access) wishing to block a proposal bears a special responsibility for finding alternatives, proposing ideas/code or explain the rationale for the status quo to resolve the deadlock.  To learn what consensus decision making means and understand its finer details, you are encouraged to read @url{https://www.seedsforchange.org.uk/consensus}."
 msgstr "Wenn ein Mitwirkender (mit oder ohne Commit-Zugriff) sich gegen einen Vorschlag sperren möchte, geht auch damit besondere Verantwortung einher, andere Möglichkeiten zu finden und Ideen oder Code einzubringen bzw.@: den Grund darzulegen, weshalb es so bleiben sollte, wie es ist. Vorschläge sollen @emph{nicht} stecken bleiben. Wir ermutigen Sie dazu, @url{https://www.seedsforchange.org.uk/consensus} zu lesen, um ein Verständnis für Konsensentscheidungen zu entwickeln und Einzelheiten zu meistern."
@@ -5989,9 +5986,6 @@ msgstr "grub-efi-bootloader"
 
 msgid "Unsure whether to use EFI- or BIOS-based GRUB? If the directory @file{/sys/firmware/efi} exists in the installation image, then you should probably perform an EFI installation, using @code{grub-efi-bootloader}.  Otherwise you should use the BIOS-based GRUB, known as @code{grub-bootloader}.  @xref{Bootloader Configuration}, for more info on bootloaders."
 msgstr "Falls Sie nicht wissen, ob Sie einen EFI- oder BIOS-basierten GRUB installieren möchten: Wenn bei Ihnen das Verzeichnis @file{/sys/firmware/efi} im Dateisystem existiert, möchten Sie vermutlich eine EFI-Installation durchführen, wozu Sie in Ihrer Konfiguration @code{grub-efi-bootloader} benutzen. Ansonsten sollten Sie den BIOS-basierten GRUB benutzen, der mit @code{grub-bootloader} bezeichnet wird.  Siehe @ref{Bootloader Configuration}, wenn Sie mehr Informationen über Bootloader brauchen."
-
-msgid "Once you are done partitioning the target hard disk drive, you have to create a file system on the relevant partition(s)@footnote{Currently Guix System only supports ext4, btrfs, JFS, F2FS, and XFS file systems.  In particular, code that reads file system UUIDs and labels only works for these file system types.}.  For the ESP, if you have one and assuming it is @file{/dev/sda1}, run:"
-msgstr "Sobald Sie die Platte fertig partitioniert haben, auf die Sie installieren möchten, müssen Sie ein Dateisystem auf Ihrer oder Ihren für Guix System vorgesehenen Partition(en) erzeugen@footnote{Derzeit unterstützt Guix System nur die Dateisystemtypen ext4, btrfs, JFS, F2FS und XFS@. Insbesondere funktioniert Guix-Code, der Dateisystem-UUIDs und -Bezeichnungen ausliest, nur auf diesen Dateisystemtypen.}. Wenn Sie eine ESP brauchen und dafür die Partition @file{/dev/sda1} vorgesehen haben, müssen Sie diesen Befehl ausführen:"
 
 msgid "mkfs.fat -F32 /dev/sda1\n"
 msgstr "mkfs.fat -F32 /dev/sda1\n"
@@ -11332,22 +11326,6 @@ msgid ""
 msgstr ""
 "(use-modules (gnu packages gdb))   ;für „gdb“\n"
 "\n"
-
-msgid ""
-"(define gdb-sans-guile\n"
-"  (package\n"
-"    (inherit gdb)\n"
-"    (inputs (modify-inputs inputs\n"
-"              (delete \"guile\")))))\n"
-msgstr ""
-"(define gdb-sans-guile\n"
-"  (package\n"
-"    (inherit gdb)\n"
-"    (inputs (modify-inputs inputs\n"
-"              (delete \"guile\")))))\n"
-
-msgid "In the body of the @code{inputs} field above, @code{inputs} is bound to the inherited value.  Thus, the @code{modify-inputs} form above removes the @code{\"guile\"} package from the @code{inputs} field of @code{gdb}.  The @code{modify-inputs} macro is a helper that can prove useful anytime you want to remove, add, or replace package inputs."
-msgstr "Im Rumpf des @code{inputs}-Felds oben ist @code{inputs} an den geerbten Wert gebunden. Mit obiger @code{modify-inputs}-Form wird das @code{\"guile\"}-Paket aus den Eingaben im @code{inputs}-Feld von @code{gdb} entfernt. Das @code{modify-inputs}-Makro hilft Ihnen, wann immer Sie etwas aus den Paketeingaben entfernen, hinzufügen oder ersetzen möchten."
 
 msgid "modify-inputs inputs clauses"
 msgstr "modify-inputs Eingaben Klauseln"
@@ -17346,9 +17324,6 @@ msgstr ""
 
 msgid "partial version specification, guix refresh"
 msgstr "unvollständige Versionsangabe, guix refresh"
-
-msgid "A per-package equivalent to --target-version is made available by prefixing the version specification with the @samp{~} (tilde) character.  For example:"
-msgstr "Genauso wie --target-version können Sie für jedes Paket einzeln ein solches Präfix für die Paketversionsangabe mit einem vorangestellten Tildezeichen @samp{~} angeben. Zum Beispiel:"
 
 msgid ""
 "$ guix refresh bash=~5 guile=~3\n"
@@ -24114,7 +24089,7 @@ msgid "The actual IP address and network mask, in @uref{https://en.wikipedia.org
 msgstr "Die eigentliche IP-Adresse und Netzwerkmaske in @uref{https://de.wikipedia.org/wiki/Classless_Inter-Domain_Routing, CIDR-Notation} als Zeichenkette."
 
 msgid "For example, @code{\"10.0.2.15/24\"} denotes IPv4 address 10.0.2.15 on a 24-bit sub-network---all 10.0.2.@var{x} addresses are on the same local network."
-msgstr "Zum Beispiel bezeichnet @code{\"10.0.2.15/24\"} die IPv4-Adresse 10.0.2.15 auf einem Subnetzwerk, dessen erste 24 Bit gleich sind@tie{}– alle 10.0.2.@var{x}-Adressen befinden sich im selben lokalen Netzwerk"
+msgstr "Zum Beispiel bezeichnet @code{\"10.0.2.15/24\"} die IPv4-Adresse 10.0.2.15 auf einem Subnetzwerk, dessen erste 24 Bit gleich sind@tie{}– alle 10.0.2.@var{x}-Adressen befinden sich im selben lokalen Netzwerk."
 
 msgid "ipv6?"
 msgstr "ipv6?"
@@ -24157,6 +24132,42 @@ msgstr "@code{gateway} (Vorgabe: @code{#f})"
 
 msgid "IP address (a string) through which traffic is routed."
 msgstr "Die IP-Adresse des Netzwerkzugangs (als Zeichenkette), über die der Netzwerkverkehr geleitet wird."
+
+msgid "@code{scope} (default: @code{'universe})"
+msgstr "@code{scope} (Vorgabe: @code{'universe})"
+
+msgid "Scope of the route, as a symbol:"
+msgstr "Das „Scope“, d.h.@: die Netzwerkebene, auf der die Route greift, als ein Symbol:"
+
+msgid "universe"
+msgstr "universe"
+
+msgid "global route;"
+msgstr "eine globale Route,"
+
+msgid "site"
+msgstr "site"
+
+msgid "route within the local autonomous system;"
+msgstr "Route innerhalb des eigenen autonomen Systems,"
+
+msgid "link"
+msgstr "link"
+
+msgid "route on this link;"
+msgstr "Route auf diesem Link,"
+
+msgid "host"
+msgstr "host"
+
+msgid "route on the local host;"
+msgstr "Route am lokalen Rechner,"
+
+msgid "nowhere"
+msgstr "nowhere"
+
+msgid "means the destination does not exist."
+msgstr "bedeutet, das Ziel existiert nicht."
 
 msgid "{Data Type} network-link"
 msgstr "{Datentyp} network-link"
@@ -36770,13 +36781,6 @@ msgstr "Der Cat Avatar Generator („Katzenavatargenerator“) ist ein einfacher
 msgid "{Procedure} cat-avatar-generator-service @"
 msgstr "{Prozedur} cat-avatar-generator-service @"
 
-msgid "[#:cache-dir \"/var/cache/cat-avatar-generator\"] @ [#:package cat-avatar-generator] @ [#:configuration (nginx-server-configuration)] Returns an nginx-server-configuration that inherits @code{configuration}.  It extends the nginx configuration to add a server block that serves @code{package}, a version of cat-avatar-generator.  During execution, cat-avatar-generator will be able to use @code{cache-dir} as its cache directory."
-msgstr ""
-"[#:cache-dir \"/var/cache/cat-avatar-generator\"] @\n"
-"[#:package cat-avatar-generator] @\n"
-"[#:configuration (nginx-server-configuration)]\n"
-"Liefert ein nginx-server-configuration-Objekt, das von der in @code{configuration} angegebenen Konfiguration erbt. Es erweitert die Nginx-Konfiguration, indem es einen Server-Block hinzufügt, der die in @code{package} angegebene Version vom cat-avatar-generator anbietet. Bei der Ausführung wird dem cat-avatar-generator Zugriff auf sein in @code{cache-dir} angegebenes Zwischenspeicherverzeichnis gewährt."
-
 msgid "A simple setup for cat-avatar-generator can look like this:"
 msgstr "Eine einfache Konfiguration des cat-avatar-generator kann so aussehen:"
 
@@ -46325,9 +46329,6 @@ msgstr "Der einen eigentlichen Namensdienst repräsentierende Datentyp zusammen 
 msgid "A string denoting the name service (@pxref{Services in the NSS configuration,,, libc, The GNU C Library Reference Manual})."
 msgstr "Eine Zeichenkette, die den Namensdienst bezeichnet (siehe @ref{Services in the NSS configuration,,, libc, Referenzhandbuch der GNU-C-Bibliothek})."
 
-msgid "Note that name services listed here must be visible to nscd.  This is achieved by passing the @code{#:name-services} argument to @code{nscd-service} the list of packages providing the needed name services (@pxref{Base Services, @code{nscd-service}})."
-msgstr "Beachten Sie, dass hier aufgeführte Namensdienste für den nscd sichtbar sein müssen. Dazu übergeben Sie im Argument @code{#:name-services} des @code{nscd-service} die Liste der Pakete, die die entsprechenden Namensdienste anbieten (siehe @ref{Base Services, @code{nscd-service}})."
-
 msgid "reaction"
 msgstr "reaction"
 
@@ -46684,19 +46685,6 @@ msgstr "Ein Dateiname einer weiteren initrd, die beim Booten geladen werden soll
 msgid "For any use case not involving secrets, you should use regular initrd (@pxref{operating-system Reference, @code{initrd}}) instead."
 msgstr "Wenn Sie allerdings etwas tun möchten, was nichts mit Geheimnissen zu tun hat, sind Sie mit einer normalen initrd besser bedient (siehe @ref{operating-system Reference, @code{initrd}})."
 
-msgid "Suitable image can be created for example like this:"
-msgstr "Ein für diesen Zweck geeignetes Abbild können Sie zum Beispiel so anlegen:"
-
-msgid ""
-"echo /key-file.bin | cpio -oH newc >/key-file.cpio\n"
-"chmod 0000 /key-file.cpio\n"
-msgstr ""
-"echo /key-file.bin | cpio -oH newc >/key-file.cpio\n"
-"chmod 0000 /key-file.cpio\n"
-
-msgid "After it is created, you can use it in this manner:"
-msgstr "Nachdem Sie es angelegt haben, können Sie es so benutzen:"
-
 msgid "Be careful when using this option, since pointing to a file that is not readable by the grub while booting will cause the boot to fail and require a manual edit of the initrd line in the grub menu."
 msgstr "Passen Sie auf, wenn Sie diese Option einrichten, denn wenn die Datei, auf die Sie verweisen, von GRUB nicht gelesen werden kann, wird GRUB nicht in der Lage sein, das System zu booten, bis Sie die initrd-Zeile manuell mit einem Texteditor aus dem GRUB-Menü wieder entfernen."
 
@@ -46879,9 +46867,6 @@ msgstr "{Prozedur} grub-theme"
 
 msgid "Return the default GRUB theme used by the operating system if no @code{theme} field is specified in @code{bootloader-configuration} record."
 msgstr "Liefert das vorgegebene GRUB-Thema, das vom Betriebssystem benutzt wird, wenn kein @code{theme}-Feld im @code{bootloader-configuration}-Verbundsobjekt angegeben wurde."
-
-msgid "It comes with a fancy background image displaying the GNU and Guix logos."
-msgstr "Es wird von einem feschen Hintergrundbild begleitet, das die Logos von GNU und Guix zeigt."
 
 msgid "For example, to override the default resolution, you may use something like"
 msgstr "Um zum Beispiel eine andere Auflösung als vorgegeben zu verwenden, würden Sie so etwas schreiben:"

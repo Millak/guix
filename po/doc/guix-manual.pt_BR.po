@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-03-15 03:18+0000\n"
+"POT-Creation-Date: 2026-04-24 03:18+0000\n"
 "PO-Revision-Date: 2026-03-29 11:50+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.codeberg.org/projects/guix/documentation-manual/pt_BR/>\n"
@@ -2387,9 +2387,6 @@ msgstr "tomando uma decisão"
 
 msgid "consensus seeking"
 msgstr "busca de consenso"
-
-msgid "It is expected from all contributors, and even more so from committers, to help build consensus and make decisions based on consensus.  By using consensus, we are committed to finding solutions that everyone can live with.  It implies that no decision is made against significant concerns and these concerns are actively resolved with proposals that work for everyone."
-msgstr "Espera-se de todos os contribuidores, e ainda mais dos committers, que ajudem a construir consenso e tomar decisões com base no consenso. Ao usar o consenso, estamos comprometidos em encontrar soluções com as quais todos possam conviver. Isso implica que nenhuma decisão é tomada contra preocupações significativas e essas preocupações são ativamente resolvidas com propostas que funcionam para todos."
 
 msgid "A contributor (who may or may not have commit access) wishing to block a proposal bears a special responsibility for finding alternatives, proposing ideas/code or explain the rationale for the status quo to resolve the deadlock.  To learn what consensus decision making means and understand its finer details, you are encouraged to read @url{https://www.seedsforchange.org.uk/consensus}."
 msgstr "Um colaborador (que pode ou não ter acesso de commit) que deseja bloquear uma proposta tem uma responsabilidade especial de encontrar alternativas, propor ideias/código ou explicar a lógica do status quo para resolver o impasse. Para aprender o que significa tomada de decisão por consenso e entender seus detalhes mais sutis, você é encorajado a ler @url{https://www.seedsforchange.org.uk/consensus}."
@@ -5710,9 +5707,6 @@ msgstr "grub-efi-bootloader"
 
 msgid "Unsure whether to use EFI- or BIOS-based GRUB? If the directory @file{/sys/firmware/efi} exists in the installation image, then you should probably perform an EFI installation, using @code{grub-efi-bootloader}.  Otherwise you should use the BIOS-based GRUB, known as @code{grub-bootloader}.  @xref{Bootloader Configuration}, for more info on bootloaders."
 msgstr "Não tem certeza se deve usar o GRUB baseado em EFI ou BIOS? Se o diretório @file{/sys/firmware/efi} existir na imagem de instalação, então você provavelmente deve executar uma instalação EFI, usando @code{grub-efi-bootloader}. Caso contrário, você deve usar o GRUB baseado em BIOS, conhecido como @code{grub-bootloader}. @xref{Bootloader Configuration}, para mais informações sobre bootloaders."
-
-msgid "Once you are done partitioning the target hard disk drive, you have to create a file system on the relevant partition(s)@footnote{Currently Guix System only supports ext4, btrfs, JFS, F2FS, and XFS file systems.  In particular, code that reads file system UUIDs and labels only works for these file system types.}.  For the ESP, if you have one and assuming it is @file{/dev/sda1}, run:"
-msgstr "Depois de terminar de particionar o disco rígido de destino, você precisa criar um sistema de arquivos na(s) partição(ões) relevante(s)@footnote{Atualmente, o Guix System suporta apenas sistemas de arquivos ext4, btrfs, JFS, F2FS e XFS. Em particular, o código que lê UUIDs e rótulos do sistema de arquivos funciona apenas para esses tipos de sistema de arquivos.}. Para o ESP, se você tiver um e presumindo que seja @file{/dev/sda1}, execute:"
 
 msgid "mkfs.fat -F32 /dev/sda1\n"
 msgstr "mkfs.fat -F32 /dev/sda1\n"

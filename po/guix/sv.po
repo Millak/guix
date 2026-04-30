@@ -13,16 +13,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.2.0-pre2\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-02-28 03:18+0000\n"
-"PO-Revision-Date: 2026-02-28 12:33+0000\n"
-"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
+"POT-Creation-Date: 2026-04-28 03:18+0000\n"
+"PO-Revision-Date: 2026-04-03 10:38+0000\n"
+"Last-Translator: Umeaman <umeaman@noreply.codeberg.org>\n"
 "Language-Team: Swedish <https://translate.codeberg.org/projects/guix/guix/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 5.16.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -70,32 +70,32 @@ msgstr "Prova att lägga till @code{(use-service-modules ~a)}."
 msgid "~a: patch not found"
 msgstr "~a: programfix hittades inte"
 
-#: gnu/packages.scm:515 gnu/packages.scm:556
+#: gnu/packages.scm:515 gnu/packages.scm:557
 #, scheme-format
 msgid "ambiguous package specification `~a'~%"
 msgstr "tvetydig paketspecifikation ”~a”~%"
 
-#: gnu/packages.scm:516 gnu/packages.scm:557
+#: gnu/packages.scm:516 gnu/packages.scm:558
 #, scheme-format
 msgid "choosing ~a@~a from ~a~%"
 msgstr "väljer ~a@~a från ~a~%"
 
-#: gnu/packages.scm:521 guix/scripts/package.scm:224
+#: gnu/packages.scm:522 guix/scripts/package.scm:224
 #, scheme-format
 msgid "package '~a' has been superseded by '~a'~%"
 msgstr "paket ”~a” har ersatts av ”~a”~%"
 
-#: gnu/packages.scm:528 gnu/packages.scm:545
+#: gnu/packages.scm:529 gnu/packages.scm:546
 #, scheme-format
 msgid "~A: package not found for version ~a~%"
 msgstr "~A: paket hittades inte för version ~a~%"
 
-#: gnu/packages.scm:529 gnu/packages.scm:546
+#: gnu/packages.scm:530 gnu/packages.scm:547
 #, scheme-format
 msgid "~A: unknown package~%"
 msgstr "~A: okänt paket~%"
 
-#: gnu/packages.scm:585
+#: gnu/packages.scm:586
 #, scheme-format
 msgid "package `~a' lacks output `~a'~%"
 msgstr "paket ”~a” saknar utdata ”~a”~%"
@@ -169,11 +169,12 @@ msgstr ""
 "@command{guix system reconfigure} avslutas."
 
 #: gnu/services.scm:859
-#, fuzzy
 msgid ""
 "This service creates an @file{rc} script in the\n"
 "system; that script is responsible for booting the Hurd."
-msgstr "Denna tjänst skapar ett @file{rc}-skript i systemet; det skriptet ansvarar för att starta Hurd."
+msgstr ""
+"Denna tjänst skapar ett @file{rc}-skript i \n"
+"systemet; det skriptet ansvarar för att starta Hurd."
 
 #: gnu/services.scm:877
 msgid ""
@@ -193,20 +194,24 @@ msgid "Populate the @file{/etc} directory."
 msgstr "Populera katalogen @file{/etc}."
 
 #: gnu/services.scm:992
-#, fuzzy
 msgid ""
 "A service for populating @file{/etc/profile.d/} with POSIX\n"
 "scripts having the @file{.sh} file extension, to be sourced when users\n"
 "log in."
-msgstr "En tjänst för att fylla @file{/etc/profile.d/} med POSIX-skript med filändelsen @file{.sh}, som ska hämtas när användare loggar in."
+msgstr ""
+"En tjänst för att populera @file{/etc/profile.d/} med POSIX-\n"
+"skript som har filändelsen @file{.sh}, som ska anskaffas när användare \n"
+"loggar in."
 
 #: gnu/services.scm:1027
-#, fuzzy
 msgid ""
 "A service for populating @file{/etc/bashrc.d/} with Bash\n"
 "scripts having the @file{.sh} file extension, to be sourced by interactive\n"
 "Bash shells."
-msgstr "En tjänst för att fylla @file{/etc/bashrc.d/} med Bash-skript som har filändelsen @file{.sh}, som ska hämtas av interaktiva Bash-skal."
+msgstr ""
+"En tjänst för att populera @file{/etc/bashrc.d/} med Bash- \n"
+"skript som har filändelsen @file{.sh}, som ska anskaffas av interaktiva \n"
+"Bash-skal."
 
 #: gnu/services.scm:1041
 #, fuzzy
@@ -222,7 +227,6 @@ msgid "so-called privileged-program ~s lacks any privilege~%"
 msgstr "så kallade privilegierade program ~s saknar alla privilegier~%"
 
 #: gnu/services.scm:1090
-#, fuzzy
 msgid ""
 "Copy the specified executables to @file{/run/privileged/bin}\n"
 "and apply special privileges like setuid and/or setgid.\n"
@@ -230,7 +234,13 @@ msgid ""
 "The deprecated @file{/run/setuid-programs} directory is also populated with\n"
 "symbolic links to their @file{/run/privileged/bin} counterpart.  It will be\n"
 "removed in a future Guix release."
-msgstr "Kopiera de angivna körbara filerna till @file{/run/privileged/bin} och tillämpa särskilda privilegier som setuid och/eller setgid. Den föråldrade katalogen @file{/run/setuid-programs} fylls också med symboliska länkar till motsvarande @file{/run/privileged/bin}. Den kommer att tas bort i en framtida version av Guix."
+msgstr ""
+"Kopiera de angivna körbara filerna till @file{/run/privileged/bin} \n"
+"och tillämpa särskilda privilegier såsom setuid och/eller setgid. \n"
+"\n"
+"Den föråldrade katalogen @file{/run/setuid-programs} populeras också med \n"
+"symboliska länkar till deras motpart @file{/run/privileged/bin}.  Den kommer att \n"
+"tas bort i en framtida utgåva av Guix."
 
 #: gnu/services.scm:1125
 msgid ""
@@ -301,32 +311,32 @@ msgstr "tjänst av typ ”~a” hittades inte"
 msgid "'services' field must contain a list of services"
 msgstr "Fältet \"services\" måste innehålla en lista över tjänster"
 
-#: gnu/system.scm:236
+#: gnu/system.scm:235
 #, fuzzy, scheme-format
 msgid "the 'hosts-file' field is deprecated, please use 'hosts-service-type' instead~%"
 msgstr "Fältet \"hosts-file\" är föråldrat. Använd istället \"hosts-service-type\"~%"
 
-#: gnu/system.scm:355
+#: gnu/system.scm:354
 #, fuzzy, scheme-format
 msgid "multiple 'nss-certs' packages found; 'nss-certs' is now included by default in '%base-packages'; ensure it is not explicitly listed in the operating system 'packages' field~%"
 msgstr "Flera paket med namnet \"nss-certs\" har hittats. \"nss-certs\" ingår nu som standard i \"%base-packages\". Se till att det inte finns med explicit i fältet \"packages\" i operativsystemet."
 
-#: gnu/system.scm:450
+#: gnu/system.scm:449
 #, scheme-format
 msgid "unrecognized uuid ~a at '~a'~%"
 msgstr "okänd uuid ”~a” vid ”~a”~%"
 
-#: gnu/system.scm:538
+#: gnu/system.scm:537
 #, scheme-format
 msgid "unrecognized crypto-devices ~S at '~a'~%"
 msgstr "okänd kryptoapparat ~S vid ”~a”~%"
 
-#: gnu/system.scm:558
+#: gnu/system.scm:557
 #, scheme-format
 msgid "unrecognized boot parameters at '~a'~%"
 msgstr "okänd startparameter vid ”~a”~%"
 
-#: gnu/system.scm:561
+#: gnu/system.scm:560
 #, scheme-format
 msgid ""
 "This probably means that this version\n"
@@ -345,82 +355,75 @@ msgstr ""
 "guix pull\n"
 "@end example"
 
-#: gnu/system.scm:698
+#: gnu/system.scm:697
 #, fuzzy, scheme-format
-#| msgid "mapped-device '~a' may not be mounted by the bootloader.~%"
 msgid "mapped device '~a' may be ignored by bootloader~%"
 msgstr "mappad enhet '~a' kan ignoreras av bootloader~%"
 
-#: gnu/system.scm:718
+#: gnu/system.scm:717
 #, scheme-format
 msgid "List elements of the field 'swap-devices' should now use the <swap-space> record, as the old method is deprecated. See \"(guix) operating-system Reference\" for more details.~%"
 msgstr "Komponenter av listan av ”swap-devices” fältet ska nu använda <swap-space> strukturen, då den gamla metoden är föråldrad. Se \"(guix) operating-system Reference” för fler detajler.~%"
 
-#: gnu/system.scm:1217
+#: gnu/system.scm:1216
 #, scheme-format
 msgid "using a string for file '~a' is deprecated; use 'plain-file' instead~%"
 msgstr "användning av sträng för fil ”~a” är föråldrat; använd ”plain-file” istället~%"
 
-#: gnu/system.scm:1233
+#: gnu/system.scm:1232
 #, scheme-format
 msgid "using a monadic value for '~a' is deprecated; use 'plain-file' instead~%"
 msgstr "användning av ett monadiskt värdet för ”~a” är föråldrat; använd ”plain-file” istället~%"
 
-#: gnu/system.scm:1366
+#: gnu/system.scm:1365
 msgid "missing root file system"
 msgstr "rotfilsystem saknas"
 
-#: gnu/system.scm:1442
+#: gnu/system.scm:1441
 #, scheme-format
 msgid "~a: invalid locale name"
 msgstr "~a: ogiltigt lokalnamn"
 
 #: gnu/services/audio.scm:223
 #, fuzzy, scheme-format
-#| msgid "using a monadic value for '~a' is deprecated; use 'plain-file' instead~%"
 msgid "string value for '~a' is deprecated, use integer instead~%"
 msgstr "strängvärdet för '~a' är föråldrat, använd istället heltal~%"
 
 #: gnu/services/audio.scm:234
 #, fuzzy, scheme-format
-#| msgid "using a monadic value for '~a' is deprecated; use 'plain-file' instead~%"
 msgid "string value for 'user' is deprecated, use user-account instead~%"
 msgstr "Strängvärdet för \"user\" är föråldrat, använd istället user-account~%"
 
 #: gnu/services/audio.scm:245
 #, fuzzy, scheme-format
-#| msgid "using a monadic value for '~a' is deprecated; use 'plain-file' instead~%"
 msgid "string value for 'group' is deprecated, use user-group instead~%"
 msgstr "Strängvärdet för \"group\" är föråldrat, använd istället user-group~%"
 
 #: gnu/services/audio.scm:373
 #, fuzzy, scheme-format
-#| msgid "using a monadic value for '~a' is deprecated; use 'plain-file' instead~%"
 msgid "symbol value for 'mixer-type' is deprecated, use string instead~%"
 msgstr "Symbolvärdet för \"mixer-type\" är föråldrat, använd istället strängen ~%"
 
-#: gnu/services/audio.scm:663
+#: gnu/services/audio.scm:655
 msgid "Run the Music Player Daemon (MPD)."
 msgstr "Kör Music Player Daemon (MPD)."
 
-#: gnu/services/audio.scm:710
+#: gnu/services/audio.scm:702
 #, fuzzy, scheme-format
-#| msgid "using a monadic value for '~a' is deprecated; use 'plain-file' instead~%"
 msgid "string value for 'user' is not supported, use user-account instead~%"
 msgstr "Strängvärdet för \"user\" stöds inte, använd istället användarkonto~%"
 
-#: gnu/services/audio.scm:721
+#: gnu/services/audio.scm:713
 #, fuzzy, scheme-format
-#| msgid "using a monadic value for '~a' is deprecated; use 'plain-file' instead~%"
 msgid "string value for 'group' is not supported, use user-group instead~%"
 msgstr "Strängvärdet för 'group' stöds inte, använd istället user-group~%"
 
-#: gnu/services/audio.scm:732
+#: gnu/services/audio.scm:724
 #, fuzzy, scheme-format
 msgid "syslog symbol value for 'log-to' is deprecated~%"
 msgstr "syslog-symbolvärdet för 'log-to' är föråldrat~%"
 
-#: gnu/services/audio.scm:954
+#: gnu/services/audio.scm:946
 #, fuzzy
 msgid "Run myMPD, a frontend for MPD. (Music Player Daemon)"
 msgstr "Kör myMPD, ett gränssnitt för MPD. (Music Player Daemon)"
@@ -468,7 +471,6 @@ msgstr "värdnamnet '~a' innehåller ogiltiga tecken"
 
 #: gnu/services/base.scm:817
 #, fuzzy
-#| msgid "Populate the @file{/etc} directory."
 msgid "Populate the @file{/etc/hosts} file."
 msgstr "Fyll i filen @file{/etc/hosts}."
 
@@ -534,53 +536,43 @@ msgid ""
 "Service Switch}, for an example."
 msgstr "Kör libc:s @dfn{namntjänstcache-daemon} (nscd) med den angivna konfigurationen – ett @code{<nscd-configuration>}-objekt. @xref{Namntjänstväxel}, till exempel."
 
-#: gnu/services/base.scm:1719
-#, fuzzy
-msgid "Service syslog has been asked to reload its settings file."
-msgstr "Service syslog har ombetts att ladda om sin inställningsfil."
-
-#: gnu/services/base.scm:1721
-#, fuzzy
-msgid "Service syslog is not running."
-msgstr "Tjänsten syslog körs inte."
-
-#: gnu/services/base.scm:1748
+#: gnu/services/base.scm:1742
 #, fuzzy
 msgid ""
 "Run the syslog daemon, @command{syslogd}, which is\n"
 "responsible for logging system messages."
 msgstr "Kör syslog-daemonen, @command{syslogd}, som ansvarar för att logga systemmeddelanden."
 
-#: gnu/services/base.scm:1786
+#: gnu/services/base.scm:1780
 #, fuzzy, scheme-format
 msgid "Using file-like value for 'pam-limits-service-type' is deprecated~%"
 msgstr "Användning av fil-liknande värde för 'pam-limits-service-type' är föråldrat~%"
 
-#: gnu/services/base.scm:1795
+#: gnu/services/base.scm:1789
 #, scheme-format
 msgid "invalid input for 'pam-limits-service-type'~%"
 msgstr "ogiltig inmatning för 'pam-limits-service-type'~%"
 
-#: gnu/services/base.scm:1806
+#: gnu/services/base.scm:1800
 #, fuzzy
 msgid ""
 "Use the @code{pam_limits} authentication module to set the specified\n"
 "resource usage limits."
 msgstr "Använd autentiseringsmodulen @code{pam_limits} för att ställa in angivna gränser för resursanvändning."
 
-#: gnu/services/base.scm:2504
+#: gnu/services/base.scm:2498
 #, fuzzy
 msgid "Run the build daemon of GNU@tie{}Guix, aka. @command{guix-daemon}."
 msgstr "Kör byggdemonen för GNU@tie{}Guix, även känd som @command{guix-daemon}."
 
-#: gnu/services/base.scm:2653
+#: gnu/services/base.scm:2647
 #, fuzzy
 msgid ""
 "Add a Shepherd service running @command{guix publish}, a\n"
 "command that allows you to share pre-built binaries with others over HTTP."
 msgstr "Lägg till en Shepherd-tjänst som kör @command{guix publish}, ett kommando som gör att du kan dela förkompilerade binärer med andra via HTTP."
 
-#: gnu/services/base.scm:2893
+#: gnu/services/base.scm:2887
 #, fuzzy
 msgid ""
 "Run @command{udev}, which populates the @file{/dev}\n"
@@ -588,22 +580,22 @@ msgid ""
 "@code{rules} field of its value, @code{udev-configuration} object."
 msgstr "Kör @command{udev}, som fyller katalogen @file{/dev} dynamiskt. Hämta ytterligare regler från paketen som anges i fältet @code{rules} i dess värde, @code{udev-configuration}-objektet."
 
-#: gnu/services/base.scm:2922
+#: gnu/services/base.scm:2916
 #, fuzzy
 msgid "This service adds udev rules."
 msgstr "Denna tjänst lägger till udev-regler."
 
-#: gnu/services/base.scm:2935
+#: gnu/services/base.scm:2929
 #, fuzzy
 msgid "This service adds udev hardware files."
 msgstr "Denna tjänst lägger till udev-hårdvarufiler."
 
-#: gnu/services/base.scm:3030
+#: gnu/services/base.scm:3024
 #, fuzzy
 msgid "Turn on the virtual memory swap area."
 msgstr "Aktivera det virtuella minnets swap-område."
 
-#: gnu/services/base.scm:3072
+#: gnu/services/base.scm:3066
 #, fuzzy
 msgid ""
 "Run GPM, the general-purpose mouse daemon, with the given\n"
@@ -612,53 +604,49 @@ msgid ""
 "@code{ps2} protocol, which works for both USB and PS/2 mice."
 msgstr "Kör GPM, den allmänna musdemonen, med angivna kommandoradsalternativ. GPM gör det möjligt för användare att använda musen i konsolen, framför allt för att markera, kopiera och klistra in text. Standardalternativen använder protokollet @code{ps2}, som fungerar för både USB- och PS/2-möss."
 
-#: gnu/services/base.scm:3153
+#: gnu/services/base.scm:3147
 #, fuzzy
 msgid ""
 "Start the @command{kmscon} virtual terminal emulator for the\n"
 "Linux @dfn{kernel mode setting} (KMS)."
 msgstr "Starta den virtuella terminalemulatorn @command{kmscon} för Linux @dfn{kernel mode setting} (KMS)."
 
-#: gnu/services/base.scm:3170
+#: gnu/services/base.scm:3164
 #, fuzzy, scheme-format
 msgid "address '~a' lacks a network mask"
 msgstr "adressen '~a' saknar nätverksmask"
 
-#: gnu/services/base.scm:3176
+#: gnu/services/base.scm:3170
 #, fuzzy, scheme-format
 msgid "Write, say, @samp{\"~a/24\"} for a 24-bit network mask."
 msgstr "Skriv, till exempel, @samp{\"~a/24\"} för en 24-bitars nätverksmask."
 
-#: gnu/services/base.scm:3192
+#: gnu/services/base.scm:3186
 #, fuzzy, scheme-format
-#| msgid "~a: invalid locale name"
 msgid "~s: invalid MAC address"
 msgstr "~s: ogiltigt adressfamiljevärde"
 
-#: gnu/services/base.scm:3204
+#: gnu/services/base.scm:3198
 #, fuzzy, scheme-format
-#| msgid "~a: invalid sorting key~%"
 msgid "~s: invalid link type"
 msgstr "~a: ogiltig sorteringsnyckel~%"
 
-#: gnu/services/base.scm:3213
+#: gnu/services/base.scm:3207
 #, fuzzy, scheme-format
-#| msgid "~a: invalid number~%"
 msgid "~s: invalid network scope"
 msgstr "~a: ogiltigt nummer~%"
 
-#: gnu/services/base.scm:3302
+#: gnu/services/base.scm:3296
 #, fuzzy, scheme-format
 msgid "network links are currently ignored on GNU/Hurd~%"
 msgstr "nätverkslänkar ignoreras för närvarande på GNU/Hurd~%"
 
-#: gnu/services/base.scm:3327
+#: gnu/services/base.scm:3321
 #, fuzzy, scheme-format
-#| msgid "importing file or directory '~a'...~%"
 msgid "ignoring network route for '~a'~%"
 msgstr "ignorerar nätverksväg för '~a'~%"
 
-#: gnu/services/base.scm:3623
+#: gnu/services/base.scm:3617
 #, fuzzy
 msgid ""
 "Turn up the specified network interfaces upon startup,\n"
@@ -667,7 +655,7 @@ msgid ""
 "network interface."
 msgstr "Aktivera de angivna nätverksgränssnitten vid start, med angiven IP-adress, gateway, nätmask osv. Värdet för tjänster av denna typ är en lista med @code{static-networking}-objekt, ett per nätverksgränssnitt."
 
-#: gnu/services/base.scm:4225
+#: gnu/services/base.scm:4219
 #, fuzzy
 msgid ""
 "Provides necessary infrastructure for logging into the\n"
@@ -703,7 +691,7 @@ msgstr "specificera serializers efter dokumentation är föråldrad, använd (se
 msgid "The GRAMMAR value must be 'infix or 'suffix, but ~a provided."
 msgstr "GRAMMAR-värdet måste vara 'infix eller 'suffix, men ~a måste anges."
 
-#: gnu/services/desktop.scm:342
+#: gnu/services/desktop.scm:355
 #, fuzzy
 msgid ""
 "Run @command{upowerd}, a system-wide monitor for power\n"
@@ -712,7 +700,7 @@ msgid ""
 "used by GNOME."
 msgstr "Kör @command{upowerd}, en systemomfattande monitor för strömförbrukning och batterinivåer, med de angivna konfigurationsinställningarna. Den implementerar @code{org.freedesktop.UPower} D-Bus-gränssnittet och används framför allt av GNOME."
 
-#: gnu/services/desktop.scm:452
+#: gnu/services/desktop.scm:465
 #, fuzzy
 msgid ""
 "Run the @command{geoclue} location service.\n"
@@ -721,21 +709,21 @@ msgid ""
 "online location databases."
 msgstr "Kör plats-tjänsten @command{geoclue}. Denna tjänst tillhandahåller ett D-Bus-gränssnitt som gör det möjligt för program att begära åtkomst till en användares fysiska plats och, om så önskas, lägga till information i online-platsdatabaser."
 
-#: gnu/services/desktop.scm:529
+#: gnu/services/desktop.scm:542
 #, fuzzy
 msgid ""
 "Run the @command{iio-sensor-proxy} daemon, which provides IIO sensors data\n"
 "through a D-Bus interface."
 msgstr "Kör @command{iio-sensor-proxy}-daemon, som tillhandahåller IIO-sensordata via ett D-Bus-gränssnitt."
 
-#: gnu/services/desktop.scm:952
+#: gnu/services/desktop.scm:965
 #, fuzzy
 msgid ""
 "Run the @command{bluetoothd} daemon, which manages all the\n"
 "Bluetooth devices and provides a number of D-Bus interfaces."
 msgstr "Kör @command{bluetoothd}-daemon, som hanterar alla Bluetooth-enheter och tillhandahåller ett antal D-Bus-gränssnitt."
 
-#: gnu/services/desktop.scm:1009
+#: gnu/services/desktop.scm:1022
 #, fuzzy
 msgid ""
 "Run @command{colord}, a system service with a D-Bus\n"
@@ -743,7 +731,13 @@ msgid ""
 "screens and scanners."
 msgstr "Kör @command{colord}, en systemtjänst med ett D-Bus-gränssnitt för att hantera färgprofiler för in- och utmatningsenheter såsom skärmar och skannrar."
 
-#: gnu/services/desktop.scm:1050
+#: gnu/services/desktop.scm:1066
+msgid ""
+"Run the @command{kmonad} daemon, which allows customizing\n"
+"and extending the functionalities of different keyboards."
+msgstr ""
+
+#: gnu/services/desktop.scm:1106
 #, fuzzy
 msgid ""
 "Run UDisks, a @dfn{disk management} daemon\n"
@@ -752,14 +746,14 @@ msgid ""
 "part of UDisks, and GNOME Disks."
 msgstr "Kör UDisks, en @dfn{diskhanterings}daemon som tillhandahåller användargränssnitt med aviseringar och sätt att montera/avmontera diskar. Program som kommunicerar med UDisks inkluderar kommandot @command{udisksctl}, som är en del av UDisks, och GNOME Disks."
 
-#: gnu/services/desktop.scm:1085
+#: gnu/services/desktop.scm:1141
 #, fuzzy
 msgid ""
 "Make GVfs virtual file systems (Trash, SFTP, SMB, HTTP,\n"
 "and many other) available for GIO applications."
 msgstr "Gör GVfs virtuella filsystem (Trash, SFTP, SMB, HTTP och många andra) tillgängliga för GIO-applikationer."
 
-#: gnu/services/desktop.scm:1629
+#: gnu/services/desktop.scm:1682
 #, fuzzy
 msgid ""
 "Run the @command{elogind} login and seat\n"
@@ -769,7 +763,16 @@ msgid ""
 "after users when they log out."
 msgstr "Kör @command{elogind} inloggnings- och platshanteringstjänsten. @command{elogind}-tjänsten integreras med PAM så att andra systemkomponenter kan se vilka användare som är inloggade och vilken typ av session de har (grafisk, konsol, fjärrstyrd etc.). Den kan också rensa efter användarna när de loggar ut."
 
-#: gnu/services/desktop.scm:1699
+#: gnu/services/desktop.scm:1718
+msgid ""
+"This service provides gardenhostd, a partial\n"
+"implementation of the systemd-hostnamed daemon.  It provides the\n"
+"org.freedesktop.hostname1 D-Bus interface, which helps applications\n"
+"like gnome-control-center retrieve and modify the system’s hostname,\n"
+"as well as set a pretty hostname for display."
+msgstr ""
+
+#: gnu/services/desktop.scm:1779
 #, fuzzy
 msgid ""
 "Run AccountsService, a system service available\n"
@@ -778,24 +781,24 @@ msgid ""
 "acquire the capability to modify their system configuration."
 msgstr "Kör AccountsService, en systemtjänst tillgänglig via D-Bus som kan lista tillgängliga konton, ändra deras lösenord och så vidare. AccountsService integreras med PolicyKit för att göra det möjligt för icke-privilegierade användare att få möjlighet att ändra sin systemkonfiguration."
 
-#: gnu/services/desktop.scm:1724
+#: gnu/services/desktop.scm:1804
 #, fuzzy
 msgid "PolicyKit helper to configure CUPS with fine-grained privileges."
 msgstr "PolicyKit-hjälpmedel för att konfigurera CUPS med detaljerade behörigheter."
 
-#: gnu/services/desktop.scm:1763
+#: gnu/services/desktop.scm:1843
 #, fuzzy, scheme-format
 msgid "'sane' service now expects a 'sane-configuration' record~%"
 msgstr "'sane'-tjänsten förväntar sig nu en 'sane-configuration'-post~%"
 
-#: gnu/services/desktop.scm:1766
+#: gnu/services/desktop.scm:1846
 #, fuzzy, scheme-format
 msgid ""
 "'sane-backends' does not include 'hplip' backend anymore. Add it\n"
 "explicitly when needed.~%"
 msgstr "'sane-backends' inkluderar inte längre 'hplip'-backend. Lägg till det uttryckligen när det behövs.~%"
 
-#: gnu/services/desktop.scm:1775
+#: gnu/services/desktop.scm:1855
 #, fuzzy
 msgid ""
 "This service provides access to scanners @i{via}\n"
@@ -803,7 +806,7 @@ msgid ""
 "rules."
 msgstr "Denna tjänst ger åtkomst till skannrar @i{via} @uref{http://www.sane-project.org, SANE} genom att installera nödvändiga udev-regler."
 
-#: gnu/services/desktop.scm:1846
+#: gnu/services/desktop.scm:1926
 #, fuzzy
 msgid ""
 "Return a service, that extends PAM with entries using\n"
@@ -811,36 +814,34 @@ msgid ""
 "or setting its password with passwd."
 msgstr "Returnera en tjänst som utökar PAM med poster som använder @code{pam_gnome_keyring.so}, låser upp en användares inloggningsnyckelring när de loggar in eller ställer in lösenordet med passwd."
 
-#: gnu/services/desktop.scm:1981
+#: gnu/services/desktop.scm:2061
 #, fuzzy, scheme-format
 msgid "Using a meta-package for gnome-desktop is discouraged.~%"
 msgstr "Det rekommenderas inte att använda ett metapaket för gnome-desktop.~%"
 
-#: gnu/services/desktop.scm:2033
+#: gnu/services/desktop.scm:2113
 msgid "Run the GNOME desktop environment."
 msgstr "Kör skrivbordsmiljön GNOME."
 
-#: gnu/services/desktop.scm:2066
+#: gnu/services/desktop.scm:2146
 msgid "Run the MATE desktop environment."
 msgstr "Kör skrivbordsmiljön MATE."
 
-#: gnu/services/desktop.scm:2104
+#: gnu/services/desktop.scm:2184
 msgid "Run the Xfce desktop environment."
 msgstr "Kör skrivbordsmiljön Xfce."
 
-#: gnu/services/desktop.scm:2134
+#: gnu/services/desktop.scm:2214
 #, fuzzy
-#| msgid "Desktop environment"
 msgid "Run LXQt desktop environment."
 msgstr "Kör LXQt-skrivbordsmiljö."
 
-#: gnu/services/desktop.scm:2166
+#: gnu/services/desktop.scm:2246
 #, fuzzy
-#| msgid "Desktop environment"
 msgid "Run the Sugar desktop environment."
 msgstr "Kör skrivbordsmiljön Sugar."
 
-#: gnu/services/desktop.scm:2194
+#: gnu/services/desktop.scm:2274
 #, fuzzy
 msgid ""
 "Create @file{/tmp/.X11-unix} for XWayland.  When using X11, libxcb\n"
@@ -848,7 +849,7 @@ msgid ""
 "need to create it beforehand."
 msgstr "Skapa @file{/tmp/.X11-unix} för XWayland. När du använder X11 sköter libxcb skapandet av den katalogen, men när du använder XWayland måste du skapa den i förväg."
 
-#: gnu/services/desktop.scm:2250
+#: gnu/services/desktop.scm:2330
 #, fuzzy
 msgid ""
 "Return a service that adds the @code{enlightenment} package to the system\n"
@@ -857,7 +858,7 @@ msgid ""
 "as expected."
 msgstr "Returnera en tjänst som lägger till paketet @code{enlightenment} till systemprofilen och utökar dbus med möjligheten för @code{efl} att generera miniatyrbilder och privilegierar de program som enlightenment behöver för att fungera som förväntat."
 
-#: gnu/services/desktop.scm:2308
+#: gnu/services/desktop.scm:2388
 #, fuzzy
 msgid ""
 "Return a service that extends PAM with entries using\n"
@@ -865,24 +866,23 @@ msgid ""
 "setting its password with @command{passwd}."
 msgstr "Returnera en tjänst som utökar PAM med poster som använder @code{pam_kwallet5.so}, låser upp användarens inloggningsnyckelring när de loggar in eller ställer in lösenordet med @command{passwd}."
 
-#: gnu/services/desktop.scm:2370
+#: gnu/services/desktop.scm:2463
 msgid "Run the KDE Plasma desktop environment."
 msgstr "Kör skrivbordsmiljön KDE Plasma."
 
-#: gnu/services/desktop.scm:2427
+#: gnu/services/desktop.scm:2522
 #, fuzzy
 msgid ""
 "Return a service that runs inputattach on a device and\n"
 "dispatches events from it."
 msgstr "Returnera en tjänst som kör inputattach på en enhet och skickar händelser från den."
 
-#: gnu/services/desktop.scm:2458
+#: gnu/services/desktop.scm:2553
 #, fuzzy, scheme-format
-#| msgid "'~a' is not a valid URI~%"
 msgid "seatd: '~a' is not a valid group~%"
 msgstr "seatd: '~a' är inte en giltig grupp~%"
 
-#: gnu/services/desktop.scm:2500
+#: gnu/services/desktop.scm:2595
 #, fuzzy
 msgid ""
 "Seat management takes care of mediating access\n"
@@ -924,17 +924,7 @@ msgstr "Denna tjänst möjliggör hantering av OCI-containrar som Shepherd-tjän
 msgid "salt value must be a string of ~d characters"
 msgstr "saltvärdet måste vara en sträng med ~d tecken"
 
-#: gnu/services/file-sharing.scm:666
-#, fuzzy
-msgid "Service transmission-daemon has been asked to reload its settings file."
-msgstr "Tjänsten transmission-daemon har ombetts att ladda om sin inställningsfil."
-
-#: gnu/services/file-sharing.scm:668
-#, fuzzy
-msgid "Service transmission-daemon is not running."
-msgstr "Tjänsten transmission-daemon körs inte."
-
-#: gnu/services/file-sharing.scm:766
+#: gnu/services/file-sharing.scm:760
 #, fuzzy
 msgid "Share files using the BitTorrent protocol."
 msgstr "Dela filer med hjälp av BitTorrent-protokollet."
@@ -954,73 +944,122 @@ msgstr "ingen välkomstfunktion konfigurerad för välkomstsessioner: ~a~%"
 msgid "Run @code{lightdm}, the LightDM graphical login manager."
 msgstr "Kör @code{lightdm}, den grafiska inloggningshanteraren LightDM."
 
-#: gnu/services/linux.scm:196
+#: gnu/services/linux.scm:246
 #, fuzzy
 msgid ""
 "Run @command{earlyoom}, a daemon that quickly responds to\n"
 "@acronym{OOM, out-of-memory} conditions by terminating relevant processes."
 msgstr "Kör @command{earlyoom}, en daemon som snabbt reagerar på @acronym{OOM, out-of-memory} genom att avsluta relevanta processer."
 
-#: gnu/services/linux.scm:284
+#: gnu/services/linux.scm:334
 #, fuzzy
 msgid "Discard unused blocks from file systems."
 msgstr "Kassera oanvända block från filsystem."
 
-#: gnu/services/linux.scm:327
+#: gnu/services/linux.scm:377
 msgid "Load kernel modules."
 msgstr "Laddar kärnmoduler."
 
-#: gnu/services/linux.scm:500
+#: gnu/services/linux.scm:550
 #, fuzzy
 msgid ""
 "Run the file system cache daemon @command{cachefilesd}, which relies on\n"
 "the Linux @code{cachefiles} module."
 msgstr "Kör filsystemets cache-daemon @command{cachefilesd}, som är beroende av Linux @code{cachefiles}-modulen."
 
-#: gnu/services/linux.scm:550
+#: gnu/services/linux.scm:600
 msgid "Run @command{rasdaemon}, the RAS monitor"
 msgstr "Kör @command{rasdaemon}, RAS-monitorn"
 
-#: gnu/services/linux.scm:576
+#: gnu/services/linux.scm:632
+#, fuzzy, scheme-format
+msgid ""
+"pair members must contain only strings, gexps or file-like objects\n"
+"but ~a was found"
+msgstr ""
+"parmedlemmar får endast innehålla strängar, gexps eller filliknande objekt\n"
+"men ~a hittades"
+
+#: gnu/services/linux.scm:654
+#, fuzzy, scheme-format
+msgid ""
+"members must be either strings or pairs but ~a was\n"
+"found!"
+msgstr ""
+"medlemmar måste vara antingen strängar eller par\n"
+"men ~a hittades!"
+
+#: gnu/services/linux.scm:768
+#, fuzzy, scheme-format
+msgid ""
+"tuned-settings profile-dirs members must be either a string\n"
+"or a file-like object but ~a was found!"
+msgstr ""
+"tuned-settings profile-dirs medlemmar måste vara antingen en sträng\n"
+"eller ett filliknande objekt men ~a hittades!"
+
+#: gnu/services/linux.scm:855
+#, fuzzy, scheme-format
+msgid ""
+"tuned-configuration profiles members must be lists with two\n"
+"elements, the first being a string and the second a file-like object, but ~a was\n"
+"found!"
+msgstr ""
+"tuned-konfigurationsprofiler måste medlemmarna vara listor med två\n"
+"element, där det första är en sträng och det andra ett filliknande objekt, men ~a\n"
+"hittades!"
+
+#: gnu/services/linux.scm:996
+#, fuzzy
+msgid ""
+"Run the TuneD daemon.  It is daemon that tunes system settings\n"
+"dynamically.  It does so by monitoring the usage of several system components\n"
+"periodically."
+msgstr ""
+"Kör TuneD-daemon. Det är en daemon som anpassar systeminställningarna\n"
+"dynamiskt. Det gör den genom att övervaka användningen av flera systemkomponenter\n"
+"med jämna mellanrum."
+
+#: gnu/services/linux.scm:1024
 #, fuzzy, scheme-format
 msgid "using -1 for zram priority is deprecated~%"
 msgstr "att använda -1 för zram-prioritet är föråldrat~%"
 
-#: gnu/services/linux.scm:577
+#: gnu/services/linux.scm:1025
 #, fuzzy
 msgid "Use #f or leave as default instead (@pxref{Linux Services})."
 msgstr "Använd #f eller behåll standardinställningen (@pxref{Linux Services})."
 
-#: gnu/services/linux.scm:635
+#: gnu/services/linux.scm:1083
 #, fuzzy
 msgid "Creates a zram swap device."
 msgstr "Skapar en zram-swap-enhet."
 
-#: gnu/services/linux.scm:791
+#: gnu/services/linux.scm:1239
 #, fuzzy
 msgid "Share or expose a file name under a different name."
 msgstr "Dela eller visa ett filnamn under ett annat namn."
 
-#: gnu/services/monitoring.scm:153
+#: gnu/services/monitoring.scm:210
 #, fuzzy
 msgid ""
 "Run @command{darkstat} to serve network traffic statistics reports over\n"
 "HTTP."
 msgstr "Kör @command{darkstat} för att leverera rapporter om nätverkstrafikstatistik via HTTP."
 
-#: gnu/services/monitoring.scm:230
+#: gnu/services/monitoring.scm:287
 #, fuzzy
 msgid ""
 "Run @command{node_exporter} to serve hardware and OS metrics to\n"
 "Prometheus."
 msgstr "Kör @command{node_exporter} för att leverera hårdvaru- och OS-mätvärden till Prometheus."
 
-#: gnu/services/monitoring.scm:663
+#: gnu/services/monitoring.scm:712
 #, fuzzy
 msgid "vnStat network-traffic monitor service."
 msgstr "vnStat nätverkstrafikövervakningstjänst."
 
-#: gnu/services/monitoring.scm:895
+#: gnu/services/monitoring.scm:944
 #, fuzzy
 msgid ""
 "Run the Zabbix server, a high-performance monitoring system\n"
@@ -1028,14 +1067,14 @@ msgid ""
 "results in a Web interface."
 msgstr "Kör Zabbix-servern, ett högpresterande övervakningssystem som kan samla in data om maskiner från olika källor och presentera resultaten i ett webbgränssnitt."
 
-#: gnu/services/monitoring.scm:1034
+#: gnu/services/monitoring.scm:1083
 #, fuzzy
 msgid ""
 "Run the Zabbix agent, @command{zabbix_agentd}, which gathers\n"
 "information about the running system for the Zabbix monitoring server."
 msgstr "Kör Zabbix-agenten, @command{zabbix_agentd}, som samlar in information om det körande systemet för Zabbix-övervakningsservern."
 
-#: gnu/services/monitoring.scm:1137
+#: gnu/services/monitoring.scm:1186
 #, fuzzy, scheme-format
 msgid ""
 "~a:~a:~a: ~a:\n"
@@ -1043,12 +1082,16 @@ msgid ""
 "security."
 msgstr "~a:~a:~a: ~a: Överväg att använda @code{db-secret-file} istället för @code{db-password} för bättre säkerhet."
 
-#: gnu/services/monitoring.scm:1189
+#: gnu/services/monitoring.scm:1238
 #, fuzzy
 msgid ""
 "Run the zabbix-front-end web interface, which allows users to interact\n"
 "with Zabbix server."
 msgstr "Kör webbgränssnittet zabbix-front-end, som gör det möjligt för användare att interagera med Zabbix-servern."
+
+#: gnu/services/monitoring.scm:1734
+msgid "Run collectd"
+msgstr "Kör collectd"
 
 #: gnu/services/networking.scm:365
 #, fuzzy
@@ -1191,7 +1234,6 @@ msgstr "Kör WPA Supplicant-daemon, en tjänst som implementerar autentisering, 
 
 #: gnu/services/networking.scm:2374
 #, fuzzy
-#| msgid "Connman network connection manager"
 msgid ""
 "Run the iNet Wireless Daemon,\n"
 "@url{https://iwd.wiki.kernel.org/,iwd}, a network connection manager."
@@ -1249,11 +1291,12 @@ msgid ""
 msgstr "Kör @command{ipfs daemon}, referensimplementeringen av IPFS peer-to-peer-lagringsnätverk."
 
 #: gnu/services/networking.scm:3045
-#, fuzzy
 msgid ""
 "Run @uref{https://www.keepalived.org/, Keepalived}\n"
 "routing software."
-msgstr "Kör @uref{https://www.keepalived.org/, Keepalived} routingprogramvara."
+msgstr ""
+"Kör @uref{https://www.keepalived.org/, Keepalived} \n"
+"routing-programvara."
 
 #: gnu/services/rsync.scm:63
 #, fuzzy, scheme-format
@@ -1284,13 +1327,11 @@ msgstr "Webbtjänstupptäckningsdaemon"
 
 #: gnu/services/security.scm:109
 #, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
 msgid "fail2ban: '~a' is not a supported backend~%"
 msgstr "fail2ban: '~a' är inte en stödd backend~%"
 
 #: gnu/services/security.scm:117
 #, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
 msgid "fail2ban: '~a' is not a supported log encoding~%"
 msgstr "fail2ban: '~a' är inte en loggkodning som stöds~%"
 
@@ -1298,7 +1339,7 @@ msgstr "fail2ban: '~a' är inte en loggkodning som stöds~%"
 msgid "Run the fail2ban server."
 msgstr "Kör servern för fail2ban."
 
-#: gnu/services/shepherd.scm:167
+#: gnu/services/shepherd.scm:168
 msgid ""
 "Run the GNU Shepherd as PID 1---i.e., the operating system's first\n"
 "process.  The Shepherd takes care of managing services such as daemons by\n"
@@ -1308,22 +1349,22 @@ msgstr ""
 "process.  Shepherden tar hand om hanteringen av tjänster som demoner genom att \n"
 "see till att de har blivit startade  och stoppade i rätt ordning."
 
-#: gnu/services/shepherd.scm:218
+#: gnu/services/shepherd.scm:219
 #, fuzzy
 msgid "'provision' must be a non-empty list of symbols"
 msgstr "'provision' måste vara en icke-tom lista med symboler"
 
-#: gnu/services/shepherd.scm:303
+#: gnu/services/shepherd.scm:304
 #, scheme-format
 msgid "service '~a' provided more than once"
 msgstr "tjänst ”~a” erbjud mer än en gång"
 
-#: gnu/services/shepherd.scm:318
+#: gnu/services/shepherd.scm:319
 #, scheme-format
 msgid "service '~a' requires '~a', which is not provided by any service"
 msgstr "tjänst ”~a” kräver ”~a”, vilken inte erbjuds av någon tjänst"
 
-#: gnu/services/shepherd.scm:652
+#: gnu/services/shepherd.scm:673
 msgid ""
 "The @code{user-processes} service is responsible for\n"
 "terminating all the processes so that the root file system can be re-mounted\n"
@@ -1337,7 +1378,7 @@ msgstr ""
 "sekunder efter att @code{SIGTERM} blivit skickat avslutas med\n"
 "@code{SIGKILL}."
 
-#: gnu/services/shepherd.scm:675
+#: gnu/services/shepherd.scm:696
 #, fuzzy
 msgid ""
 "The Shepherd @code{timer} service lets you schedule commands\n"
@@ -1352,7 +1393,7 @@ msgid ""
 "It does exactly what you would expect."
 msgstr "Med tjänsten Shepherd @code{timer} kan du schemalägga kommandon dynamiskt, på samma sätt som kommandot @code{at} som dina farföräldrar skulle använda på den Slackware-version de fick på en diskett. Titta till exempel på det här kommandot: @example herd schedule timer at 07:00 -- mpg123 Music/alarm.mp3 @end example Det gör precis vad du förväntar dig."
 
-#: gnu/services/shepherd.scm:698
+#: gnu/services/shepherd.scm:719
 #, fuzzy
 msgid ""
 "The Shepherd @code{transient} service lets you run commands\n"
@@ -1371,7 +1412,7 @@ msgstr ""
 "\n"
 "Detta kör @command{rsync} i bakgrunden, som en tjänst som du kan inspektera med @command{herd status} och stoppa med @command{herd stop}."
 
-#: gnu/services/shepherd.scm:792
+#: gnu/services/shepherd.scm:813
 #, fuzzy
 msgid ""
 "The Shepherd's @code{system-log} service plays the role of traditional\n"
@@ -1380,30 +1421,30 @@ msgid ""
 "dispatching rules."
 msgstr "Shepherds @code{system-log}-tjänst fungerar som ett traditionellt @command{syslogd}-program, som läser data som loggats av daemoner till @file{/dev/log} och skriver den till flera filer i @file{/var/log} enligt användardefinierade regler."
 
-#: gnu/services/sound.scm:136
+#: gnu/services/sound.scm:183
 #, fuzzy
 msgid "Configure low-level Linux sound support, ALSA."
 msgstr "Konfigurera låg nivå Linux ljudstöd, ALSA."
 
-#: gnu/services/sound.scm:188
+#: gnu/services/sound.scm:238
 #, fuzzy, scheme-format
 msgid "~a is not a local-file, plain-file or computed-file object~%"
 msgstr "~a är inte ett lokalt fil-, vanligt fil- eller beräknat filobjekt~%"
 
-#: gnu/services/sound.scm:193
+#: gnu/services/sound.scm:243
 #, fuzzy, scheme-format
 msgid "`~a' lacks the required `.pa' file name extension~%"
 msgstr "`~a' saknar den nödvändiga filnamnstillägget `.pa'~%"
 
-#: gnu/services/sound.scm:249
+#: gnu/services/sound.scm:324
 msgid "Configure PulseAudio sound support."
 msgstr "Konfigurera ljudstöd för PulseAudio."
 
-#: gnu/services/sound.scm:277
+#: gnu/services/sound.scm:352
 msgid "Configure LADSPA plugins."
 msgstr "Konfigurera insticksprogram för LADSPA."
 
-#: gnu/services/sound.scm:359
+#: gnu/services/sound.scm:434
 #, fuzzy
 msgid ""
 "Run @command{speakersafetyd}, a user space daemon that\n"
@@ -1413,7 +1454,6 @@ msgstr "Kör @command{speakersafetyd}, en användarutrymmesdaemon som implemente
 
 #: gnu/services/ssh.scm:427
 #, fuzzy
-#| msgid "OpenSSH secure shell daemon (sshd)"
 msgid "Run the OpenSSH secure shell (SSH) server, @command{sshd}."
 msgstr "Kör OpenSSH Secure Shell (SSH)-servern, @command{sshd}."
 
@@ -1455,14 +1495,14 @@ msgstr "Kör Jami-daemon (@command{jamid}). Denna tjänst är avsedd för använ
 msgid "Run the Mumble voice-over-IP (VoIP) server."
 msgstr "Kör Mumble Voice-over-IP (VoIP)-servern."
 
-#: gnu/services/version-control.scm:195
+#: gnu/services/version-control.scm:235
 #, fuzzy
 msgid ""
 "Expose Git repositories over the insecure @code{git://} TCP-based\n"
 "protocol."
 msgstr "Exponera Git-arkiv via det osäkra @code{git://} TCP-baserade protokollet."
 
-#: gnu/services/version-control.scm:486
+#: gnu/services/version-control.scm:526
 #, fuzzy
 msgid ""
 "Set up @command{gitolite}, a Git hosting tool providing access over SSH.\n"
@@ -1471,50 +1511,61 @@ msgid ""
 "provide a web interface to view selected repositories."
 msgstr "Konfigurera @command{gitolite}, ett Git-värdverktyg som ger åtkomst via SSH. Som standard används användaren @code{git}, men detta kan konfigureras. Dessutom kan Gitolite integreras med verktyg som gitweb eller cgit för att tillhandahålla ett webbgränssnitt för att visa valda arkiv."
 
-#: gnu/services/version-control.scm:597
+#: gnu/services/version-control.scm:637
 #, fuzzy
 msgid ""
 "Run Gitile, a small Git forge.  Expose public repositories\n"
 "on the web."
 msgstr "Kör Gitile, en liten Git-forge. Exponera offentliga repositorier på webben."
 
-#: gnu/services/vpn.scm:104
+#: gnu/services/version-control.scm:858
+#, fuzzy
+msgid ""
+"Run the HTTP server for the Fossil software configuration management\n"
+"system.  In addition to distributed version control, Fossil also supports\n"
+"bug tracking, wiki, forum, email alerts, chat, and technotes."
+msgstr ""
+"Kör HTTP-servern för konfigurationshanteringssystemet för Fossil-programvaran.\n"
+"system. Förutom distribuerad versionskontroll stöder Fossil även\n"
+"buggspårning, wiki, forum, e-postaviseringar, chatt och technotes."
+
+#: gnu/services/vpn.scm:106
 #, fuzzy
 msgid "Setup the @uref{https://bitmask.net, Bitmask} VPN application."
 msgstr "Konfigurera VPN-applikationen @uref{https://bitmask.net, Bitmask}."
 
-#: gnu/services/vpn.scm:533
+#: gnu/services/vpn.scm:535
 #, fuzzy
 msgid ""
 "Run the OpenVPN server, which allows you to\n"
 "@emph{host} a @acronym{VPN, virtual private network}."
 msgstr "Kör OpenVPN-servern, som gör det möjligt att @emph{host} en @acronym{VPN, virtuellt privat nätverk}."
 
-#: gnu/services/vpn.scm:547
+#: gnu/services/vpn.scm:549
 #, fuzzy
 msgid ""
 "Run the OpenVPN client service, which allows you to connect\n"
 "to an existing @acronym{VPN, virtual private network}."
 msgstr "Kör OpenVPN-klienttjänsten, som gör att du kan ansluta till ett befintligt @acronym{VPN, virtuellt privat nätverk}."
 
-#: gnu/services/vpn.scm:681
+#: gnu/services/vpn.scm:683
 #, fuzzy
 msgid "strongSwan ipsec-conf and ipsec-secrets must both be (un)set"
 msgstr "strongSwan ipsec-conf och ipsec-secrets måste båda vara (av)aktiverade"
 
-#: gnu/services/vpn.scm:706
+#: gnu/services/vpn.scm:708
 #, fuzzy
 msgid ""
 "Connect to an IPsec @acronym{VPN, Virtual Private Network} with\n"
 "strongSwan."
 msgstr "Anslut till ett IPsec @akronym{VPN, virtuellt privat nätverk} med strongSwan."
 
-#: gnu/services/vpn.scm:915
+#: gnu/services/vpn.scm:917
 #, fuzzy, scheme-format
 msgid "'monitor-ips?' is #t but no host name to monitor~%"
 msgstr "'monitor-ips?' är #t men inget värdnamn att övervaka~%"
 
-#: gnu/services/vpn.scm:1031
+#: gnu/services/vpn.scm:1033
 #, fuzzy
 msgid ""
 "Set up Wireguard @acronym{VPN, Virtual Private Network}\n"
@@ -1523,10 +1574,6 @@ msgstr "Konfigurera Wireguard @akronym{VPN, virtuellt privat nätverk} tunnlar."
 
 #: gnu/home/services.scm:157
 #, fuzzy
-#| msgid ""
-#| "Build the operating system top-level directory, which in\n"
-#| "turn refers to everything the operating system needs: its kernel, initrd,\n"
-#| "system profile, boot script, and so on."
 msgid ""
 "Build the home environment top-level directory,\n"
 "which in turn refers to everything the home environment needs: its\n"
@@ -1553,7 +1600,6 @@ msgstr "Ställa in miljövariabler."
 
 #: gnu/home/services.scm:362
 #, fuzzy, scheme-format
-#| msgid "duplicate '~a' entry for /etc"
 msgid "duplicate '~a' entry for files/"
 msgstr "duplicera '~a'-posten för filer/"
 
@@ -1652,10 +1698,6 @@ msgstr "G-uttryck som ska köras om de angivna filerna har ändrats sedan den se
 
 #: gnu/home/services.scm:754
 #, fuzzy
-#| msgid ""
-#| "Store provenance information about the system in the system\n"
-#| "itself: the channels used when building the system, and its configuration\n"
-#| "file, when available."
 msgid ""
 "Store provenance information about the home environment in the home\n"
 "environment itself: the channels used when building the home\n"
@@ -1708,14 +1750,14 @@ msgid ""
 "$XDG_DATA_DIRS/light-mode.d/ when sunrise."
 msgstr "Kör @code{darkman}-daemon, som kommer att anropa skript i $XDG_DATA_DIRS/dark-mode.d/ vid solnedgång och anropa skript i $XDG_DATA_DIRS/light-mode.d/ vid soluppgång."
 
-#: gnu/home/services/dotfiles.scm:59
+#: gnu/home/services/dotfiles.scm:61
 #, fuzzy, scheme-format
 msgid ""
 "layout field of home-dotfiles-configuration should be either 'plain\n"
 "or 'stow, but ~a was found."
 msgstr "layoutfältet i home-dotfiles-configuration ska vara antingen 'plain eller 'stow, men ~a hittades."
 
-#: gnu/home/services/dotfiles.scm:173
+#: gnu/home/services/dotfiles.scm:175
 #, fuzzy
 msgid ""
 "Files that will be put in the user's home directory\n"
@@ -1729,7 +1771,7 @@ msgid ""
 "fc-* utilities aware of font packages installed in Guix Home's profile."
 msgstr "Tillhandahåller konfigurationsfil för fontconfig och gör fc-*-verktygen medvetna om teckensnittspaket som är installerade i Guix Homes profil."
 
-#: gnu/home/services/gnupg.scm:171
+#: gnu/home/services/gnupg.scm:180
 #, fuzzy
 msgid ""
 "Configure GnuPG's agent, @command{gpg-agent}, which is responsible for\n"
@@ -1738,7 +1780,7 @@ msgid ""
 "@command{ssh-agent}."
 msgstr "Konfigurera GnuPG:s agent, @command{gpg-agent}, som ansvarar för hanteringen av OpenPGP och eventuellt SSH-privata nycklar. När SSH-stöd är aktiverat fungerar @command{gpg-agent} som en direkt ersättning för OpenSSH:s @command{ssh-agent}."
 
-#: gnu/home/services/gnupg.scm:239
+#: gnu/home/services/gnupg.scm:248
 #, fuzzy
 msgid "Incrementally refresh GnuPG keyrings over Tor."
 msgstr "Uppdatera GnuPG-nyckelringar stegvis via Tor."
@@ -1748,12 +1790,16 @@ msgstr "Uppdatera GnuPG-nyckelringar stegvis via Tor."
 msgid "Manages the per-user Guix channels specification."
 msgstr "Hantera specifikationen för Guix-kanaler per användare."
 
-#: gnu/home/services/media.scm:67
+#: gnu/home/services/media.scm:74
 #, fuzzy
 msgid ""
 "Install and configure the Kodi media center so that it runs as a Shepherd\n"
 "service."
 msgstr "Installera och konfigurera Kodi Media Center så att det körs som en Shepherd-tjänst."
+
+#: gnu/home/services/media.scm:112
+msgid "Run Jellyfin MPV Shim."
+msgstr ""
 
 #: gnu/home/services/messaging.scm:70
 #, fuzzy
@@ -1803,14 +1849,14 @@ msgstr "Konfigurera och installera Shepherd i användarmiljön."
 msgid "Start essential PipeWire services."
 msgstr "Starta essentiella PipeWire-tjänster."
 
-#: gnu/home/services/sound.scm:225
+#: gnu/home/services/sound.scm:227
 #, fuzzy
 msgid ""
 "Define a PulseAudio sink to broadcast audio output over RTP, which can\n"
 "then by played by another PulseAudio instance."
 msgstr "Definiera en PulseAudio-sink för att sända ljudutgång via RTP, som sedan kan spelas upp av en annan PulseAudio-instans."
 
-#: gnu/home/services/sound.scm:260
+#: gnu/home/services/sound.scm:262
 #, fuzzy
 msgid ""
 "Define a PulseAudio source to receive audio broadcasted over RTP by\n"
@@ -1819,7 +1865,6 @@ msgstr "Definiera en PulseAudio-källa för att ta emot ljud som sänds via RTP 
 
 #: gnu/home/services/ssh.scm:112
 #, fuzzy, scheme-format
-#| msgid "~a: invalid locale name"
 msgid "~s: invalid address family value"
 msgstr "~s: ogiltigt adressfamiljevärde"
 
@@ -1835,7 +1880,6 @@ msgstr "definiera antingen 'namn' eller 'matchningskriterier' en gång"
 
 #: gnu/home/services/ssh.scm:342
 #, fuzzy, scheme-format
-#| msgid "~a: invalid locale name"
 msgid "~s: invalid 'add-keys-to-agent' value"
 msgstr "~s: ogiltigt värde för 'add-keys-to-agent'"
 
@@ -1854,7 +1898,6 @@ msgstr "Installera och konfigurera @command{ssh-agent} som en Shepherd-tjänst."
 
 #: gnu/home/services/symlink-manager.scm:118
 #, fuzzy, scheme-format
-#| msgid "building ~a..."
 msgid "Backing up ~a..."
 msgstr "Säkerhetskopiera ~a..."
 
@@ -1886,7 +1929,6 @@ msgstr "Borttagen ~a.\n"
 
 #: gnu/home/services/symlink-manager.scm:171
 #, fuzzy, scheme-format
-#| msgid "building fonts directory..."
 msgid "Skipping ~a (not an empty directory)... done\n"
 msgstr "Hoppar över ~a (inte en tom katalog)... klart\n"
 
@@ -1910,7 +1952,6 @@ msgstr "Symlänkar ~a-> ~a..."
 
 #: gnu/home/services/symlink-manager.scm:228
 #, fuzzy, scheme-format
-#| msgid "failed to create GC root `~a': ~a~%"
 msgid "failed to create directory ~a: ~s~%"
 msgstr "Det gick inte att skapa katalogen ~a: ~s~%"
 
@@ -1986,7 +2027,6 @@ msgstr "bilden saknar en partition med flaggan \"boot\""
 
 #: gnu/system/image.scm:444
 #, fuzzy, scheme-format
-#| msgid "Unsupported image type ~a~%."
 msgid "unsupported image type: ~a"
 msgstr "icke-stödd bildtyp: ~a"
 
@@ -2002,7 +2042,6 @@ msgstr "EFI-bootloader krävs med GPT-partitionering"
 
 #: gnu/system/image.scm:1135
 #, fuzzy, scheme-format
-#| msgid "unsupported manifest format"
 msgid "~a: unsupported image format"
 msgstr "~a: bildformat som inte stöds"
 
@@ -2049,10 +2088,6 @@ msgstr ""
 
 #: gnu/system/linux-container.scm:255
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -m, --manifest=FILE    create a new profile generation with the manifest\n"
-#| "                         from FILE"
 msgid ""
 "\n"
 "      --pid-file=FILE    write the process ID of the container's PID 1\n"
@@ -2065,19 +2100,19 @@ msgstr ""
 #: guix/scripts/download.scm:204 guix/scripts/package.scm:497
 #: guix/scripts/install.scm:44 guix/scripts/remove.scm:41
 #: guix/scripts/upgrade.scm:48 guix/scripts/search.scm:36
-#: guix/scripts/show.scm:35 guix/scripts/gc.scm:96 guix/scripts/git.scm:34
+#: guix/scripts/show.scm:35 guix/scripts/gc.scm:97 guix/scripts/git.scm:34
 #: guix/scripts/git/authenticate.scm:282 guix/scripts/hash.scm:94
 #: guix/scripts/pull.scm:131 guix/scripts/substitute.scm:212
 #: guix/scripts/system.scm:1084 guix/scripts/system/installer.scm:52
 #: guix/scripts/lint.scm:117 guix/scripts/publish.scm:114
 #: guix/scripts/edit.scm:53 guix/scripts/size.scm:246
 #: guix/scripts/graph.scm:537 guix/scripts/challenge.scm:464
-#: guix/scripts/copy.scm:126 guix/scripts/pack.scm:1679
+#: guix/scripts/copy.scm:126 guix/scripts/pack.scm:1689
 #: guix/scripts/weather.scm:384 guix/scripts/describe.scm:97
 #: guix/scripts/processes.scm:301 guix/scripts/deploy.scm:58
 #: guix/scripts/container.scm:35 guix/scripts/container/exec.scm:43
 #: guix/scripts/archive.scm:104 guix/scripts/shell.scm:86
-#: guix/scripts/environment.scm:165 guix/scripts/style.scm:710
+#: guix/scripts/environment.scm:165 guix/scripts/style.scm:725
 #: guix/scripts/home.scm:159 guix/scripts/time-machine.scm:79
 #: guix/scripts/import.scm:81 guix/scripts/import/cpan.scm:44
 #: guix/scripts/import/cran.scm:49 guix/scripts/import/crate.scm:59
@@ -2155,12 +2190,12 @@ msgstr ""
 "Om du tror att denna diagnostik är felaktig, använd flaggan\n"
 "@option{--skip-checks} med @command{guix system}.\n"
 
-#: gnu/system/mapped-devices.scm:285
+#: gnu/system/mapped-devices.scm:389
 #, fuzzy, scheme-format
 msgid "invalid value ~s for #:extra-options argument of `open-luks-device'"
 msgstr "ogiltigt värde ~s för argumentet #:extra-options i `open-luks-device'"
 
-#: gnu/system/mapped-devices.scm:296
+#: gnu/system/mapped-devices.scm:400
 #, scheme-format
 msgid "no LUKS partition with UUID '~a'"
 msgstr "ingen LUKS-partition med UUID ”~a”"
@@ -2334,7 +2369,6 @@ msgstr "Kunde inte hitta förväntat reguljärt uttryck."
 #. and name of a PCI device.
 #: gnu/installer/hardware.scm:88
 #, fuzzy, scheme-format
-#| msgid "Network service"
 msgid "~a ~a (networking device)"
 msgstr "~a ~a (nätverksenhet)"
 
@@ -2349,7 +2383,6 @@ msgstr "Tryck <F1> för installationsparametrar."
 
 #: gnu/installer/newt.scm:73
 #, fuzzy
-#| msgid "The installer has encountered an unexpected problem. The backtrace is displayed below. Please report it by email to <~a>."
 msgid "The installer has encountered an unexpected problem. The backtrace is displayed below. You may choose to exit or create a dump archive."
 msgstr "Installationsprogrammet har stött på ett oväntat problem. Backtrace visas nedan. Du kan välja att avsluta eller skapa ett dumparkiv."
 
@@ -2509,12 +2542,14 @@ msgstr "Mata in systemets värdnamn."
 
 #. TRANSLATORS: "Hurd" is a proper noun and must not be translated.
 #: gnu/installer/newt/kernel.scm:27
+#, fuzzy
 msgid "Hurd 32-bit (experimental)"
-msgstr ""
+msgstr "Hurd 32-bitars (experimentell)"
 
 #: gnu/installer/newt/kernel.scm:28
+#, fuzzy
 msgid "Hurd 64-bit (highly experimental!)"
-msgstr ""
+msgstr "Hurd 64-bitars (mycket experimentell!)"
 
 #. TRANSLATORS: "Hurd" is a proper noun and must not be translated.
 #. TRANSLATORS: "Linux Libre" is a literal and must not be translated.
@@ -2651,7 +2686,6 @@ msgstr ""
 
 #: gnu/installer/newt/network.scm:188
 #, fuzzy
-#| msgid "do not use substitutes"
 msgid "Checking substitutes"
 msgstr "Kontrollera ersättare"
 
@@ -2999,7 +3033,6 @@ msgstr "Nätverkstjänst"
 
 #: gnu/installer/newt/services.scm:85
 #, fuzzy
-#| msgid "You can now select other services to run on your system."
 msgid "You can now select the CUPS printing service to run on your system."
 msgstr "Du kan nu välja CUPS-utskriftstjänsten som ska köras på ditt system."
 
@@ -3009,13 +3042,11 @@ msgstr "Utskrift och dokumentationstjänster"
 
 #: gnu/installer/newt/services.scm:104
 #, fuzzy
-#| msgid "No service"
 msgid "Console services"
 msgstr "Konsoltjänster"
 
 #: gnu/installer/newt/services.scm:105
 #, fuzzy
-#| msgid "You can now select networking services to run on your system."
 msgid "Select miscellaneous services to run on your non-graphical system."
 msgstr "Välj diverse tjänster som ska köras på ditt icke-grafiska system."
 
@@ -3339,7 +3370,6 @@ msgstr "DHCP-klient (dynamisk IP-adresstilldelning)"
 
 #: gnu/installer/services.scm:163
 #, fuzzy
-#| msgid "Network service"
 msgid "Static networking service."
 msgstr "Statisk nätverkstjänst."
 
@@ -3361,8 +3391,9 @@ msgid "CUPS printing system (no Web interface by default)"
 msgstr "CUPS-utskrivningssystem (ingen webb-interface som standard)"
 
 #: gnu/installer/services.scm:202
+#, fuzzy
 msgid ";; Fonts to cover all languages.\n"
-msgstr ""
+msgstr ";; Typsnitt för att täcka alla språk.\n"
 
 #: gnu/installer/services.scm:237
 #, fuzzy
@@ -3425,7 +3456,6 @@ msgstr "Tryck på RETUR för att fortsätta.~%"
 
 #: gnu/installer/utils.scm:203
 #, fuzzy, scheme-format
-#| msgid "Command failed with exit code ~a.~%"
 msgid "Command ~s exited with value ~a"
 msgstr "Kommandot ~s avslutades med värdet ~a"
 
@@ -3455,7 +3485,6 @@ msgstr "ingen signeringsnyckel '~a'. Har du kört 'guix archive --generate-key'?
 
 #: gnu/machine/hetzner.scm:177
 #, fuzzy
-#| msgid "Could not determine the state of connman."
 msgid "could not determine root file system type"
 msgstr "kunde inte fastställa typen av rotfilsystem"
 
@@ -3481,7 +3510,6 @@ msgstr "serverplats '~a' stöds inte~%~%Atillgängliga platser:~%~%~a~%~%Fför m
 
 #: gnu/machine/hetzner.scm:466
 #, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
 msgid "primary ip '~a' does not exist."
 msgstr "primär ip '~a' finns inte."
 
@@ -3524,7 +3552,6 @@ msgstr "förväntade minst ett åtgärds-id, men fick '~a'"
 
 #: gnu/machine/hetzner/http.scm:584
 #, fuzzy, scheme-format
-#| msgid "service of type '~a' not found"
 msgid "server action '~a' not found"
 msgstr "serveråtgärd '~a' hittades inte"
 
@@ -3543,7 +3570,7 @@ msgstr "~a: ogiltig systemtyp; måste vara en sträng"
 msgid "~a: unknown system type"
 msgstr "~a: okänd systemtyp"
 
-#: gnu/machine/ssh.scm:137 guix/ui.scm:2346
+#: gnu/machine/ssh.scm:137 guix/ui.scm:2349
 #, scheme-format
 msgid "Did you mean @code{~a}?"
 msgstr "Menade du @code{~a}?"
@@ -3590,13 +3617,11 @@ msgstr "Ett fel uppstod vid uppgradering av tjänster på '~a':~%~{~s ~}~%"
 
 #: gnu/machine/ssh.scm:557
 #, fuzzy, scheme-format
-#| msgid "failed to load '~a': ~a~%"
 msgid "failed to load system of '~a' for kexec reboot:~%~{~s~^ ~}~%"
 msgstr "Det gick inte att ladda systemet för '~a' för kexec-omstart:~%~{~s~^ ~}~%"
 
 #: gnu/machine/ssh.scm:565
 #, fuzzy, scheme-format
-#| msgid "failed to load '~a': ~a~%"
 msgid "failed to install bootloader on '~a':~%~{~s ~}~%"
 msgstr "misslyckades med att installera bootloader på '~a':~%~{~s ~}~%"
 
@@ -3619,31 +3644,31 @@ msgid ""
 "for environment of type '~a'"
 msgstr "Icke-stödd maskinkonfiguration '~a' för miljö av typ '~a'"
 
-#: gnu/packages/bootstrap.scm:197
+#: gnu/packages/bootstrap.scm:198
 #, scheme-format
 msgid "could not find bootstrap binary '~a' for system '~a'"
 msgstr "kunde inte hitta uppstartsbinär ”~a” för system ”~a”"
 
-#: gnu/packages/bootstrap.scm:595
+#: gnu/packages/bootstrap.scm:602
 #, fuzzy
 msgid "Raw build system with direct store access"
 msgstr "Rått byggsystem med direkt åtkomst till lagret"
 
-#: gnu/packages/bootstrap.scm:602
+#: gnu/packages/bootstrap.scm:609
 msgid "Bootstrap Guile"
 msgstr "Bootstrapa Guile"
 
-#: gnu/packages/bootstrap.scm:603
+#: gnu/packages/bootstrap.scm:610
 #, fuzzy
 msgid "Pre-built Guile for bootstrapping purposes."
 msgstr "Förkonfigurerad Guile för bootstrapping-ändamål."
 
-#: gnu/packages/bootstrap.scm:855
+#: gnu/packages/bootstrap.scm:862
 #, fuzzy
 msgid "Bootstrap binaries and headers of the GNU C Library"
 msgstr "Bootstrap-binärer och rubriker från GNU C-biblioteket"
 
-#: gnu/packages/bootstrap.scm:983
+#: gnu/packages/bootstrap.scm:990
 #, fuzzy
 msgid "Bootstrap binaries of the GNU Compiler Collection"
 msgstr "Bootstrap-binärfiler från GNU Compiler Collection"
@@ -3683,7 +3708,7 @@ msgstr "förlängda kommandon"
 msgid "invalid argument: ~a~%"
 msgstr "ogiltigt argument: ~a~%"
 
-#: guix/scripts.scm:170 guix/scripts/system.scm:1474
+#: guix/scripts.scm:170 guix/scripts/system.scm:1490
 #: guix/scripts/system/edit.scm:42 guix/scripts/home/edit.scm:43
 #: guix/scripts/import.scm:116
 #, scheme-format
@@ -3740,7 +3765,7 @@ msgstr "misslyckades med att skapa GC-rot ”~a”: ~a~%"
 #: guix/scripts/build.scm:161 guix/scripts/search.scm:41
 #: guix/scripts/show.scm:40 guix/scripts/lint.scm:114 guix/scripts/edit.scm:50
 #: guix/scripts/size.scm:243 guix/scripts/graph.scm:532
-#: guix/scripts/style.scm:695 guix/scripts/refresh.scm:202
+#: guix/scripts/style.scm:710 guix/scripts/refresh.scm:202
 #: guix/scripts/repl.scm:90
 msgid ""
 "\n"
@@ -3877,9 +3902,6 @@ msgstr ""
 
 #: guix/scripts/build.scm:197
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --target=TRIPLET   cross-build for TRIPLET--e.g., \"armel-linux-gnu\""
 msgid ""
 "\n"
 "      --target=TRIPLET   cross-build for TRIPLET--e.g., \"aarch64-linux-gnu\""
@@ -3929,7 +3951,6 @@ msgstr "De tillgängliga målen är:\n"
 
 #: guix/scripts/build.scm:378
 #, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
 msgid "'~a' is not a supported cross-compilation target~%"
 msgstr "'~a' är inte ett stödd mål för korskompilering~%"
 
@@ -3947,7 +3968,6 @@ msgstr "Prova @option{--list-targets} för att visa tillgängliga mål.~%"
 
 #: guix/scripts/build.scm:405
 #, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
 msgid "'~a' is not a supported system~%"
 msgstr "'~a' är inte ett system som stöds~%"
 
@@ -4001,9 +4021,6 @@ msgstr ""
 
 #: guix/scripts/build.scm:445
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -d, --derivations      return the derivation paths of the given packages"
 msgid ""
 "\n"
 "  -D, --development      build the inputs of the following package"
@@ -4063,7 +4080,7 @@ msgstr ""
 "\n"
 "      --repair           reparera angivna objekt"
 
-#: guix/scripts/build.scm:461 guix/scripts/pack.scm:1669
+#: guix/scripts/build.scm:461 guix/scripts/pack.scm:1679
 #: guix/scripts/environment.scm:106
 msgid ""
 "\n"
@@ -4078,7 +4095,7 @@ msgstr ""
 #: guix/scripts/install.scm:37 guix/scripts/remove.scm:36
 #: guix/scripts/upgrade.scm:39 guix/scripts/pull.scm:122
 #: guix/scripts/system.scm:1066 guix/scripts/copy.scm:121
-#: guix/scripts/pack.scm:1674 guix/scripts/deploy.scm:71
+#: guix/scripts/pack.scm:1684 guix/scripts/deploy.scm:71
 #: guix/scripts/archive.scm:93 guix/scripts/environment.scm:137
 #: guix/scripts/home.scm:148
 msgid ""
@@ -4107,7 +4124,7 @@ msgstr ""
 #: guix/scripts/build.scm:481 guix/scripts/download.scm:206
 #: guix/scripts/package.scm:499 guix/scripts/install.scm:46
 #: guix/scripts/remove.scm:43 guix/scripts/upgrade.scm:50
-#: guix/scripts/search.scm:38 guix/scripts/show.scm:37 guix/scripts/gc.scm:98
+#: guix/scripts/search.scm:38 guix/scripts/show.scm:37 guix/scripts/gc.scm:99
 #: guix/scripts/git.scm:36 guix/scripts/git/authenticate.scm:284
 #: guix/scripts/hash.scm:96 guix/scripts/pull.scm:133
 #: guix/scripts/substitute.scm:214 guix/scripts/system.scm:1086
@@ -4115,12 +4132,12 @@ msgstr ""
 #: guix/scripts/publish.scm:116 guix/scripts/edit.scm:55
 #: guix/scripts/size.scm:248 guix/scripts/graph.scm:539
 #: guix/scripts/challenge.scm:466 guix/scripts/copy.scm:128
-#: guix/scripts/pack.scm:1681 guix/scripts/weather.scm:386
+#: guix/scripts/pack.scm:1691 guix/scripts/weather.scm:386
 #: guix/scripts/describe.scm:99 guix/scripts/processes.scm:303
 #: guix/scripts/deploy.scm:60 guix/scripts/container.scm:37
 #: guix/scripts/container/exec.scm:45 guix/scripts/archive.scm:106
 #: guix/scripts/shell.scm:88 guix/scripts/environment.scm:167
-#: guix/scripts/style.scm:712 guix/scripts/home.scm:161
+#: guix/scripts/style.scm:727 guix/scripts/home.scm:161
 #: guix/scripts/time-machine.scm:81 guix/scripts/import.scm:85
 #: guix/scripts/import/cpan.scm:48 guix/scripts/import/cran.scm:58
 #: guix/scripts/import/crate.scm:61 guix/scripts/import/egg.scm:49
@@ -4181,7 +4198,6 @@ msgstr "Om du bygger från en fil, se till att det sista Scheme-uttrycket return
 
 #: guix/scripts/build.scm:636
 #, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
 msgid "file '~a' does not return a manifest"
 msgstr "filen '~a' returnerar inte ett manifest"
 
@@ -4222,7 +4238,6 @@ msgstr "kunde inte fastställa aktuella ersättnings-URL:er; använder standardv
 
 #: gnu/bootloader.scm:123
 #, fuzzy, scheme-format
-#| msgid "invalid number: ~a~%"
 msgid "invalid menu-entry: ~a"
 msgstr "ogiltig menypost: ~a"
 
@@ -4246,7 +4261,6 @@ msgstr "Fältet \"target\" är föråldrat, använd istället \"targets\"~%"
 
 #: gnu/bootloader.scm:326
 #, fuzzy, scheme-format
-#| msgid "~a: no such image type"
 msgid "~a: no such bootloader~%"
 msgstr "~a: ingen sådan bootloader~%"
 
@@ -4258,15 +4272,16 @@ msgid ""
 msgstr "Eftersom swap-prioritet ~a är negativ, är standardvärdet 0.~%"
 
 #: gnu/build/file-systems.scm:332
-#, fuzzy, scheme-format
+#, scheme-format
 msgid ""
 "Limiting swap priority ~a to\n"
 "~a.~%"
-msgstr "Begränsa swap-prioritet ~a till ~a.~%"
+msgstr ""
+"Begränsa swap-prioritet ~a till \n"
+"~a.~%"
 
 #: gnu/compression.scm:70
 #, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
 msgid "~a: compressor not found~%"
 msgstr "~a: kompressor hittades inte~%"
 
@@ -4277,13 +4292,11 @@ msgstr "kunde inte hitta tillgängliga ersättare till ~a~%"
 
 #: guix/cve.scm:182
 #, fuzzy, scheme-format
-#| msgid "unsupported hash format: ~a~%"
 msgid "unsupported CVE format: '~a'"
 msgstr "CVE-format som inte stöds: '~a'"
 
 #: guix/cve.scm:188
 #, fuzzy, scheme-format
-#| msgid "unsupported hash format: ~a~%"
 msgid "unsupported CVE data version: '~a'"
 msgstr "ej stödd CVE-dataversion: '~a'"
 
@@ -4316,48 +4329,47 @@ msgstr "Filen '~a' hittades inte i laddningsvägen."
 msgid "cannot access `~a': ~a~%"
 msgstr "kan inte komma åt ”~a”: ~a~%"
 
-#: guix/git-authenticate.scm:127
+#: guix/git-authenticate.scm:126
 #, fuzzy, scheme-format
-#| msgid "imported file lacks a signature"
 msgid "commit ~a lacks a signature"
 msgstr "commit ~a saknar signatur"
 
-#: guix/git-authenticate.scm:135
+#: guix/git-authenticate.scm:134
 #, fuzzy, scheme-format
 msgid "commit ~a has a ~a signature, which is not permitted"
 msgstr "commit ~a har en ~a-signatur, vilket inte är tillåtet"
 
-#: guix/git-authenticate.scm:153
+#: guix/git-authenticate.scm:152
 #, fuzzy, scheme-format
 msgid "signature verification failed for commit ~a"
 msgstr "Signaturverifieringen misslyckades för commit ~a"
 
-#: guix/git-authenticate.scm:160
+#: guix/git-authenticate.scm:159
 #, fuzzy, scheme-format
 msgid "could not authenticate commit ~a: key ~a is missing"
 msgstr "kunde inte autentisera commit ~a: nyckel ~a saknas"
 
-#: guix/git-authenticate.scm:200
+#: guix/git-authenticate.scm:196
 #, fuzzy, scheme-format
 msgid "commit ~a attempts to remove '.guix-authorizations' file"
 msgstr "commit ~a försöker ta bort filen '.guix-authorizations'"
 
-#: guix/git-authenticate.scm:255
+#: guix/git-authenticate.scm:251
 #, fuzzy, scheme-format
 msgid "commit ~a not signed by an authorized key: ~a"
 msgstr "commit ~a inte signerad med en auktoriserad nyckel: ~a"
 
-#: guix/git-authenticate.scm:276
+#: guix/git-authenticate.scm:272
 #, fuzzy, scheme-format
 msgid "malformed ASCII-armored key in ~a (blob ~a)"
 msgstr "felaktig ASCII-skyddad nyckel i ~a (blob ~a)"
 
-#: guix/git-authenticate.scm:391
+#: guix/git-authenticate.scm:387
 #, fuzzy, scheme-format
 msgid "initial commit ~a is signed by '~a' instead of '~a'"
 msgstr "initial commit ~a är signerad av '~a' istället för '~a'"
 
-#: guix/git-authenticate.scm:460
+#: guix/git-authenticate.scm:456
 #, fuzzy, scheme-format
 msgid "commit ~a is not a descendant of introductory commit ~a"
 msgstr "commit ~a är inte en efterföljare till den inledande commit ~a"
@@ -4369,7 +4381,6 @@ msgstr "kan inte använda interaktiv policy utan TTY-inmatning"
 
 #: guix/gnupg.scm:235
 #, fuzzy, scheme-format
-#| msgid "invalid number: ~a~%"
 msgid "invalid key-download policy: ~a"
 msgstr "ogiltig nyckel-nedladdningspolicy: ~a"
 
@@ -4380,7 +4391,6 @@ msgstr "Vill du lägga till den här nyckeln till nyckelringen '~a'?~%"
 
 #: guix/graph.scm:456
 #, fuzzy, scheme-format
-#| msgid "~A: unknown package~%"
 msgid "~a: unknown graph backend"
 msgstr "~a: okänd grafisk backend"
 
@@ -4393,7 +4403,6 @@ msgstr "felaktigt samtal till ‘modify-phases’"
 #. TRANSLATORS: See ‘modify-phases’ in the manual.
 #: guix/lint.scm:238
 #, fuzzy
-#| msgid "invalid hash"
 msgid "invalid phase clause"
 msgstr "ogiltig fas-klausul"
 
@@ -4467,201 +4476,202 @@ msgstr "beskrivningen innehåller inledande blanksteg"
 msgid "description contains trailing whitespace"
 msgstr "beskrivningen innehåller efterföljande blanksteg"
 
-#: guix/lint.scm:555
+#: guix/lint.scm:557
 #, scheme-format
 msgid "invalid description: ~s"
 msgstr "ogiltig beskrivning: ~s"
 
-#: guix/lint.scm:625
+#: guix/lint.scm:651
 #, fuzzy, scheme-format
 msgid "'~a' should probably be a native input"
 msgstr "'~a' bör förmodligen vara en inbyggd inmatning"
 
-#: guix/lint.scm:643
+#: guix/lint.scm:670
 #, fuzzy, scheme-format
 msgid "'~a' should probably not be an input at all"
 msgstr "'~a' bör förmodligen inte vara en inmatning alls"
 
-#: guix/lint.scm:659
+#: guix/lint.scm:686
 #, fuzzy, scheme-format
 msgid "'~a' should probably be switched for its minimal variant"
 msgstr "'~a' bör antagligen bytas ut mot dess minimala variant."
 
-#: guix/lint.scm:670
+#: guix/lint.scm:697
 #, fuzzy, scheme-format
 msgid "label '~a' does not match package name '~a'"
 msgstr "etiketten '~a' stämmer inte överens med paketnamnet '~a'"
 
-#: guix/lint.scm:700
+#: guix/lint.scm:727
 #, fuzzy, scheme-format
 msgid "\"bash-minimal\" should be in 'inputs' when '~a' is used"
 msgstr "\"bash-minimal\" bör finnas i \"inputs\" när \"~a\" används."
 
-#: guix/lint.scm:751
+#: guix/lint.scm:778
 #, fuzzy
 msgid "no period allowed at the end of the synopsis"
 msgstr "ingen punkt tillåts i slutet av sammanfattningen"
 
-#: guix/lint.scm:765
+#: guix/lint.scm:792
 #, fuzzy
 msgid "no article allowed at the beginning of the synopsis"
 msgstr "Ingen artikel tillåten i början av sammanfattningen."
 
-#: guix/lint.scm:774
+#: guix/lint.scm:801
 #, fuzzy
 msgid "synopsis should be less than 80 characters long"
 msgstr "Synopsis bör vara kortare än 80 tecken."
 
-#: guix/lint.scm:784
+#: guix/lint.scm:811
 #, fuzzy
 msgid "synopsis should start with an upper-case letter or digit"
 msgstr "Synopsis ska börja med en versal eller siffra."
 
-#: guix/lint.scm:792
+#: guix/lint.scm:819
 #, fuzzy
 msgid "synopsis should not start with the package name"
 msgstr "Synopsis bör inte börja med paketnamnet."
 
-#: guix/lint.scm:806
+#: guix/lint.scm:833
 #, fuzzy
 msgid "Texinfo markup in synopsis is invalid"
 msgstr "Texinfo-markeringen i synopsis är ogiltig"
 
-#: guix/lint.scm:814
+#: guix/lint.scm:841
 msgid "synopsis contains trailing whitespace"
 msgstr "sammanfattningen innehåller efterföljande mellanslag"
 
-#: guix/lint.scm:831
+#: guix/lint.scm:858
 #, fuzzy
 msgid "synopsis should not be empty"
 msgstr "Synopsis bör inte vara tom."
 
-#: guix/lint.scm:841
+#: guix/lint.scm:868
 #, scheme-format
 msgid "invalid synopsis: ~s"
 msgstr "ogiltig sammanfattning: ~s"
 
-#: guix/lint.scm:947
+#: guix/lint.scm:974
 #, fuzzy, scheme-format
 msgid "~a: HTTP GET error for ~a: ~a (~s)~%"
 msgstr "~a: HTTP GET-fel för ~a: ~a (~s)~%"
 
-#: guix/lint.scm:957
+#: guix/lint.scm:984
 #, fuzzy, scheme-format
 msgid "~a: host lookup failure: ~a~%"
 msgstr "~a: värdsökning misslyckades: ~a~%"
 
-#: guix/lint.scm:962
+#: guix/lint.scm:989
 #, scheme-format
 msgid "~a: TLS certificate error: ~a"
 msgstr "~a: TLS-certifikatfel: ~a"
 
-#: guix/lint.scm:967
+#: guix/lint.scm:994
 #, scheme-format
 msgid "~a: TLS error in '~a': ~a~%"
 msgstr "~a: TLS-fel i '~a': ~a~%"
 
-#: guix/lint.scm:978 guix/ui.scm:918 guix/scripts/offload.scm:194
+#: guix/lint.scm:1005 guix/ui.scm:919 guix/remote.scm:90
+#: guix/scripts/offload.scm:194
 #, scheme-format
 msgid "~a: ~a~%"
 msgstr "~a: ~a~%"
 
-#: guix/lint.scm:1009
+#: guix/lint.scm:1036
 #, fuzzy, scheme-format
 msgid "URI ~a returned suspiciously small file (~a bytes)"
 msgstr "URI ~a returnerade en misstänkt liten fil (~a byte)"
 
-#: guix/lint.scm:1018
+#: guix/lint.scm:1045
 #, fuzzy, scheme-format
 msgid "permanent redirect from ~a to ~a"
 msgstr "permanent omdirigering från ~a till ~a"
 
-#: guix/lint.scm:1024
+#: guix/lint.scm:1051
 #, fuzzy, scheme-format
 msgid "invalid permanent redirect from ~a"
 msgstr "ogiltig permanent omdirigering från ~a"
 
-#: guix/lint.scm:1030 guix/lint.scm:1040
+#: guix/lint.scm:1057 guix/lint.scm:1067
 #, fuzzy, scheme-format
 msgid "URI ~a not reachable: ~a (~s)"
 msgstr "URI ~a inte nåbar: ~a (~s)"
 
-#: guix/lint.scm:1046
+#: guix/lint.scm:1073
 #, fuzzy, scheme-format
 msgid "URI ~a domain not found: ~a"
 msgstr "URI ~en domän hittades inte: ~a"
 
-#: guix/lint.scm:1052
+#: guix/lint.scm:1079
 #, scheme-format
 msgid "URI ~a unreachable: ~a"
 msgstr "URI ~a kunde inte nås: ~a"
 
-#: guix/lint.scm:1060
+#: guix/lint.scm:1087
 #, scheme-format
 msgid "TLS certificate error: ~a"
 msgstr "Fel på TLS-certifikatet: ~a"
 
-#: guix/lint.scm:1087
+#: guix/lint.scm:1114
 #, fuzzy
 msgid "invalid value for home page"
 msgstr "ogiltigt värde för startsidan"
 
-#: guix/lint.scm:1092
+#: guix/lint.scm:1119
 #, fuzzy, scheme-format
 msgid "invalid home page URL: ~s"
 msgstr "ogiltig hemsidesadress: ~s"
 
-#: guix/lint.scm:1129
+#: guix/lint.scm:1156
 #, fuzzy
 msgid "file names of patches should start with the package name"
 msgstr "filnamnen på patcharna ska börja med paketnamnet"
 
-#: guix/lint.scm:1149
+#: guix/lint.scm:1176
 #, fuzzy, scheme-format
 msgid "~a: file name is too long, which may break 'make dist'"
 msgstr "~a: filnamnet är för långt, vilket kan förstöra 'make dist'"
 
-#: guix/lint.scm:1170
+#: guix/lint.scm:1197
 #, scheme-format
 msgid "~a: empty patch"
 msgstr "~a: tom patch"
 
-#: guix/lint.scm:1179
+#: guix/lint.scm:1206
 #, fuzzy, scheme-format
 msgid "~a: patch lacks comment and upstream status"
 msgstr "~a: patch saknar kommentar och uppströmsstatus"
 
-#: guix/lint.scm:1240
+#: guix/lint.scm:1260
 #, scheme-format
 msgid "proposed synopsis: ~s~%"
 msgstr "föreslagen sammanfattning: ~s~%"
 
-#: guix/lint.scm:1254
+#: guix/lint.scm:1274
 #, scheme-format
 msgid "proposed description:~%     \"~a\"~%"
 msgstr "föreslagen beskrivning:~%     \"~a\"~%"
 
-#: guix/lint.scm:1339
+#: guix/lint.scm:1359
 #, fuzzy
 msgid "all the source URIs are unreachable:"
 msgstr "alla käll-URI:er är oåtkomliga:"
 
-#: guix/lint.scm:1374
+#: guix/lint.scm:1394
 #, fuzzy
 msgid "the source file name should contain the package name"
 msgstr "källfilens namn ska innehålla paketets namn"
 
-#: guix/lint.scm:1386
+#: guix/lint.scm:1406
 #, fuzzy
 msgid "the source URI should not be an autogenerated tarball"
 msgstr "käll-URI:n bör inte vara en automatiskt genererad tarball"
 
-#: guix/lint.scm:1404 guix/lint.scm:1449
+#: guix/lint.scm:1424 guix/lint.scm:1469
 #, scheme-format
 msgid "URL should be '~a'"
 msgstr "URL bör vara '~a'"
 
-#: guix/lint.scm:1442
+#: guix/lint.scm:1462
 #, fuzzy, scheme-format
 msgid "while accessing '~a'"
 msgstr "vid åtkomst till '~a'"
@@ -4669,81 +4679,80 @@ msgstr "vid åtkomst till '~a'"
 #. TRANSLATORS: check and #:tests? are a
 #. Scheme symbol and keyword respectively
 #. and should not be translated.
-#: guix/lint.scm:1477
+#: guix/lint.scm:1497
 #, fuzzy
 msgid "the 'check' phase should respect #:tests?"
 msgstr "\"Kontrollfasen\" bör respektera #:tests?"
 
-#: guix/lint.scm:1499 guix/lint.scm:1510 guix/lint.scm:1518 guix/lint.scm:1522
+#: guix/lint.scm:1519 guix/lint.scm:1530 guix/lint.scm:1538 guix/lint.scm:1542
 #, fuzzy, scheme-format
 msgid "failed to create ~a derivation: ~a"
 msgstr "misslyckades med att skapa ~en härledning: ~a"
 
-#: guix/lint.scm:1504
+#: guix/lint.scm:1524
 #, fuzzy, scheme-format
 msgid "failed to create ~a derivation: ~s"
 msgstr "misslyckades med att skapa ~en härledning: ~s"
 
-#: guix/lint.scm:1560
+#: guix/lint.scm:1580
 #, fuzzy, scheme-format
 msgid "propagated inputs ~a and ~a collide"
 msgstr "spridda ingångar ~a och ~a kolliderar"
 
-#: guix/lint.scm:1584
+#: guix/lint.scm:1604
 msgid "invalid license field"
 msgstr "ogiltigt licensfält"
 
-#: guix/lint.scm:1591
+#: guix/lint.scm:1611
 msgid "while retrieving CVE vulnerabilities"
 msgstr "vid inhämtning av CVE-sårbarheter"
 
-#: guix/lint.scm:1594
+#: guix/lint.scm:1614
 #, fuzzy, scheme-format
-#| msgid "failed to retrieve list of packages from ~a: ~a (~a)~%"
 msgid "failed to get list of CVE vulnerabilities from '~a': ~a (~a)~%"
 msgstr "Det gick inte att hämta listan över CVE-sårbarheter från '~a': ~a (~a)~%"
 
-#: guix/lint.scm:1651
+#: guix/lint.scm:1671
 #, scheme-format
 msgid "probably vulnerable to ~a"
 msgstr "förmodligen sårbar för ~a"
 
-#: guix/lint.scm:1670
+#: guix/lint.scm:1690
 #, fuzzy, scheme-format
 msgid "'~a' should be set with the '~a' flag"
 msgstr "'~a' ska ställas in med flaggan '~a'"
 
-#: guix/lint.scm:1716
+#: guix/lint.scm:1736
 #, fuzzy, scheme-format
 msgid "no updater for ~a"
 msgstr "ingen uppdaterare för ~a"
 
-#: guix/lint.scm:1721 guix/lint.scm:1943
+#: guix/lint.scm:1741 guix/lint.scm:1963
 #, fuzzy, scheme-format
 msgid "while retrieving upstream info for '~a'"
 msgstr "vid hämtning av uppströmsinformation för '~a'"
 
-#: guix/lint.scm:1730
+#: guix/lint.scm:1750
 #, fuzzy, scheme-format
 msgid "can be upgraded to ~a"
 msgstr "kan uppgraderas till ~a"
 
-#: guix/lint.scm:1736
+#: guix/lint.scm:1756
 #, fuzzy, scheme-format
 msgid "updater '~a' failed to find upstream releases"
 msgstr "uppdateraren '~a' kunde inte hitta uppströmsversioner"
 
-#: guix/lint.scm:1763
+#: guix/lint.scm:1783
 #, fuzzy, scheme-format
 msgid "failed to access Disarchive database at ~a"
 msgstr "kunde inte komma åt Disarchive-databasen på ~a"
 
-#: guix/lint.scm:1784
+#: guix/lint.scm:1804
 #, fuzzy
 msgid "Software Heritage rate limit reached; try again later"
 msgstr "Software Heritage-gränsen har nåtts; försök igen senare"
 
-#: guix/lint.scm:1788
+#: guix/lint.scm:1808
 #, scheme-format
 msgid "'~a' returned ~a"
 msgstr "'~a' gav som svar ~a"
@@ -4751,206 +4760,206 @@ msgstr "'~a' gav som svar ~a"
 #. TRANSLATORS: "Software Heritage" is a proper noun that
 #. must remain untranslated.  See
 #. <https://www.softwareheritage.org>.
-#: guix/lint.scm:1823
+#: guix/lint.scm:1843
 #, fuzzy
 msgid "scheduled Software Heritage archival"
 msgstr "planerad arkivering av Software Heritage"
 
-#: guix/lint.scm:1829
+#: guix/lint.scm:1849
 #, fuzzy
 msgid "archival rate limit exceeded; try again later"
 msgstr "arkiveringsgränsen överskriden; försök igen senare"
 
-#: guix/lint.scm:1839
+#: guix/lint.scm:1859
 #, fuzzy
 msgid "source code cannot be archived"
 msgstr "källkoden kan inte arkiveras"
 
-#: guix/lint.scm:1902
+#: guix/lint.scm:1922
 #, fuzzy
 msgid "source not archived on Software Heritage and missing from the Disarchive database"
 msgstr "källan är inte arkiverad på Software Heritage och saknas i Disarchive-databasen"
 
-#: guix/lint.scm:1912
+#: guix/lint.scm:1932
 #, fuzzy, scheme-format
 msgid "Disarchive entry refers to non-existent SWH directory '~a'"
 msgstr "Disarchive-posten hänvisar till den icke-existerande SWH-katalogen '~a'"
 
-#: guix/lint.scm:1925
+#: guix/lint.scm:1945
 #, fuzzy
 msgid "source is not an origin, it cannot be archived"
 msgstr "källan är inte ett ursprung, den kan inte arkiveras"
 
-#: guix/lint.scm:1935
+#: guix/lint.scm:1955
 #, fuzzy
 msgid "while connecting to Software Heritage"
 msgstr "vid anslutning till Software Heritage"
 
-#: guix/lint.scm:1952
+#: guix/lint.scm:1972
 #, fuzzy, scheme-format
 msgid "ahead of Stackage LTS version ~a"
 msgstr "före Stackage LTS-versionen ~a"
 
-#: guix/lint.scm:1969
+#: guix/lint.scm:1989
 #, fuzzy, scheme-format
 msgid "tabulation on line ~a, column ~a"
 msgstr "tabellering på rad ~a, kolumn ~a"
 
-#: guix/lint.scm:1981
+#: guix/lint.scm:2001
 #, fuzzy, scheme-format
 msgid "trailing white space on line ~a"
 msgstr "efterföljande blanksteg på rad ~a"
 
-#: guix/lint.scm:1995
+#: guix/lint.scm:2015
 #, fuzzy, scheme-format
 msgid "line ~a is way too long (~a characters)"
 msgstr "raden ~a är alldeles för lång (~a tecken)"
 
-#: guix/lint.scm:2009
+#: guix/lint.scm:2029
 #, fuzzy
 msgid "parentheses feel lonely, move to the previous or next line"
 msgstr "parenteser känns ensamma, flytta till föregående eller nästa rad"
 
-#: guix/lint.scm:2087
+#: guix/lint.scm:2107
 msgid "source file not found"
 msgstr "källfilen hittades inte"
 
-#: guix/lint.scm:2099
+#: guix/lint.scm:2119
 msgid "Validate package names"
 msgstr "Validera paketnamn"
 
-#: guix/lint.scm:2103
+#: guix/lint.scm:2123
 #, fuzzy
 msgid "Check if tests are explicitly enabled"
 msgstr "Kontrollera om testerna är uttryckligen aktiverade"
 
-#: guix/lint.scm:2107
+#: guix/lint.scm:2127
 #, fuzzy
 msgid "Check that cross-compilers are used when cross-compiling"
 msgstr "Kontrollera att korskompilatorer används vid korskompilering."
 
-#: guix/lint.scm:2111
+#: guix/lint.scm:2131
 msgid "Validate package descriptions"
 msgstr "Validera paketbeskrivningar"
 
-#: guix/lint.scm:2115
+#: guix/lint.scm:2135
 #, fuzzy
 msgid "Identify inputs that should be native inputs"
 msgstr "Identifiera ingångar som bör vara inbyggda ingångar"
 
-#: guix/lint.scm:2119
+#: guix/lint.scm:2139
 #, fuzzy
 msgid "Identify inputs that shouldn't be inputs at all"
 msgstr "Identifiera ingångar som inte borde vara ingångar alls"
 
-#: guix/lint.scm:2123
+#: guix/lint.scm:2143
 #, fuzzy
 msgid "Identify inputs that should use their minimal variant"
 msgstr "Identifiera ingångar som bör använda sin minimala variant"
 
-#: guix/lint.scm:2127
+#: guix/lint.scm:2147
 #, fuzzy
 msgid "Identify input labels that do not match package names"
 msgstr "Identifiera ingångsetiketter som inte stämmer överens med paketnamn"
 
-#: guix/lint.scm:2131
+#: guix/lint.scm:2151
 #, fuzzy
 msgid "Make sure 'wrap-program' can find its interpreter."
 msgstr "Se till att 'wrap-program' kan hitta sin tolk."
 
 #. TRANSLATORS: <license> is the name of a data type and must not be
 #. translated.
-#: guix/lint.scm:2137
+#: guix/lint.scm:2157
 #, fuzzy
 msgid "Make sure the 'license' field is a <license> or a list thereof"
 msgstr "Se till att fältet \"licens\" är en <license> eller en lista över sådana."
 
-#: guix/lint.scm:2142
+#: guix/lint.scm:2162
 #, fuzzy
 msgid "Make sure tests are only run when requested"
 msgstr "Se till att tester endast körs när de begärs"
 
-#: guix/lint.scm:2146
+#: guix/lint.scm:2166
 msgid "Suggest 'mirror://' URLs"
 msgstr "Föreslå 'mirror://'-URL:er"
 
-#: guix/lint.scm:2150
+#: guix/lint.scm:2170
 #, fuzzy
 msgid "Validate file names of sources"
 msgstr "Validera filnamn på källor"
 
-#: guix/lint.scm:2154
+#: guix/lint.scm:2174
 msgid "Check for autogenerated tarballs"
 msgstr "Sök efter autogenererade tarball-arkiv"
 
-#: guix/lint.scm:2158
+#: guix/lint.scm:2178
 #, fuzzy
 msgid "Check for misplaced flags"
 msgstr "Kontrollera om flaggorna är felplacerade"
 
-#: guix/lint.scm:2162
+#: guix/lint.scm:2182
 #, fuzzy
 msgid "Report failure to compile a package to a derivation"
 msgstr "Rapportera misslyckande med att kompilera ett paket till en härledning"
 
-#: guix/lint.scm:2167
+#: guix/lint.scm:2187
 #, fuzzy
 msgid "Report collisions that would occur due to propagated inputs"
 msgstr "Rapportera kollisioner som skulle uppstå på grund av spridda ingångar"
 
-#: guix/lint.scm:2172
+#: guix/lint.scm:2192
 #, fuzzy
 msgid "Validate file names and availability of patches"
 msgstr "Validera filnamn och tillgänglighet av patchar"
 
-#: guix/lint.scm:2176
+#: guix/lint.scm:2196
 #, fuzzy
 msgid "Validate patch headers"
 msgstr "Validera patch-rubriker"
 
-#: guix/lint.scm:2180
+#: guix/lint.scm:2200
 #, fuzzy
 msgid "Look for formatting issues in the source"
 msgstr "Leta efter formateringsproblem i källan"
 
-#: guix/lint.scm:2187
+#: guix/lint.scm:2207
 msgid "Validate package synopses"
 msgstr "Validera sammanfattningarna för paketen"
 
-#: guix/lint.scm:2191
+#: guix/lint.scm:2211
 #, fuzzy
 msgid "Validate synopsis & description of GNU packages"
 msgstr "Validera sammanfattning och beskrivning av GNU-paket"
 
-#: guix/lint.scm:2195
+#: guix/lint.scm:2215
 #, fuzzy
 msgid "Validate home-page URLs"
 msgstr "Validera URL-adresser till hemsidor"
 
-#: guix/lint.scm:2199
+#: guix/lint.scm:2219
 msgid "Validate source URLs"
 msgstr "Validera källans URL:er"
 
-#: guix/lint.scm:2203
+#: guix/lint.scm:2223
 msgid "Suggest GitHub URLs"
 msgstr "Föreslå GitHubens URL:er"
 
-#: guix/lint.scm:2207
+#: guix/lint.scm:2227
 #, fuzzy
 msgid "Check the Common Vulnerabilities and Exposures (CVE) database"
 msgstr "Kontrollera databasen Common Vulnerabilities and Exposures (CVE)"
 
-#: guix/lint.scm:2212
+#: guix/lint.scm:2232
 #, fuzzy
 msgid "Check the package for new upstream releases"
 msgstr "Kontrollera paketet för nya uppströmsversioner"
 
-#: guix/lint.scm:2216
+#: guix/lint.scm:2236
 #, fuzzy
 msgid "Ensure source code archival on Software Heritage"
 msgstr "Säkerställ arkivering av källkod på Software Heritage"
 
-#: guix/lint.scm:2220
+#: guix/lint.scm:2240
 #, fuzzy
 msgid "Ensure Haskell packages use Stackage LTS versions"
 msgstr "Se till att Haskell-paket använder Stackage LTS-versioner"
@@ -5009,10 +5018,6 @@ msgstr ""
 
 #: guix/scripts/download.scm:190
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -r, --root=FILE        make FILE a symlink to the result, and register it\n"
-#| "                         as a garbage collector root"
 msgid ""
 "\n"
 "  -g, --git              download the default branch's latest commit of the\n"
@@ -5023,11 +5028,6 @@ msgstr ""
 
 #: guix/scripts/download.scm:193
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -f, --install-from-file=FILE\n"
-#| "                         install the package that the code within FILE\n"
-#| "                         evaluates to"
 msgid ""
 "\n"
 "      --commit=COMMIT-OR-TAG\n"
@@ -5072,7 +5072,7 @@ msgid "download a file to the store and print its hash"
 msgstr "ladda ner en fil till lagret och skriv ut dess hash"
 
 #: guix/scripts/download.scm:315 guix/scripts/package.scm:1074
-#: guix/scripts/pull.scm:809 guix/scripts/publish.scm:1249
+#: guix/scripts/pull.scm:809 guix/scripts/publish.scm:1256
 #: guix/scripts/discover.scm:136 guix/scripts/time-machine.scm:142
 #, scheme-format
 msgid "~A: extraneous argument~%"
@@ -5411,14 +5411,11 @@ msgstr "kan inte växla till generation ”~a”~%"
 
 #: guix/scripts/package.scm:1046
 #, fuzzy, scheme-format
-#| msgid "nothing to be done~%"
 msgid "nothing to do~%"
 msgstr "ingenting att göra~%"
 
 #: guix/scripts/package.scm:1068
 #, fuzzy
-#| msgid "~a package in profile~%"
-#| msgid_plural "~a packages in profile~%"
 msgid "manage packages and profiles"
 msgstr "hantera paket och profiler"
 
@@ -5514,14 +5511,14 @@ msgstr "visa information om paketen"
 msgid "missing arguments: no package to show~%"
 msgstr "saknade argument: inget paket att visa~%"
 
-#: guix/scripts/gc.scm:51
+#: guix/scripts/gc.scm:52
 #, fuzzy
 msgid ""
 "Usage: guix gc [OPTION]... PATHS...\n"
 "Invoke the garbage collector.\n"
 msgstr "Användning: guix gc [FLAGGA]... PATHS... Starta sophanteraren.\n"
 
-#: guix/scripts/gc.scm:53
+#: guix/scripts/gc.scm:54
 #, fuzzy
 msgid ""
 "\n"
@@ -5531,7 +5528,7 @@ msgstr ""
 "\n"
 "  -C, --collect-garbage[=MIN] samla in minst MIN byte skräp"
 
-#: guix/scripts/gc.scm:56
+#: guix/scripts/gc.scm:57
 #, fuzzy
 msgid ""
 "\n"
@@ -5540,7 +5537,7 @@ msgstr ""
 "\n"
 "  -F, --free-space=FREE försök att nå FREE tillgängligt utrymme i lagret"
 
-#: guix/scripts/gc.scm:58
+#: guix/scripts/gc.scm:59
 #, fuzzy
 msgid ""
 "\n"
@@ -5550,7 +5547,7 @@ msgstr ""
 "\n"
 "  -d, --delete-generations[=PATTERN] ta bort profilgenerationer som matchar PATTERN"
 
-#: guix/scripts/gc.scm:61
+#: guix/scripts/gc.scm:62
 #, fuzzy
 msgid ""
 "\n"
@@ -5559,7 +5556,7 @@ msgstr ""
 "\n"
 "  -D, --delete försök att ta bort PATHS"
 
-#: guix/scripts/gc.scm:63
+#: guix/scripts/gc.scm:64
 #, fuzzy
 msgid ""
 "\n"
@@ -5568,7 +5565,7 @@ msgstr ""
 "\n"
 "      --list-roots lista användarens sophanteringsrot"
 
-#: guix/scripts/gc.scm:65
+#: guix/scripts/gc.scm:66
 #, fuzzy
 msgid ""
 "\n"
@@ -5577,7 +5574,7 @@ msgstr ""
 "\n"
 "      --list-busy lista över objekt som används av aktiva processer"
 
-#: guix/scripts/gc.scm:67
+#: guix/scripts/gc.scm:68
 #, fuzzy
 msgid ""
 "\n"
@@ -5586,7 +5583,7 @@ msgstr ""
 "\n"
 "      --optimize optimera lagret genom att deduplicera identiska filer"
 
-#: guix/scripts/gc.scm:69
+#: guix/scripts/gc.scm:70
 #, fuzzy
 msgid ""
 "\n"
@@ -5595,7 +5592,7 @@ msgstr ""
 "\n"
 "      --list-dead lista döda sökvägar"
 
-#: guix/scripts/gc.scm:71
+#: guix/scripts/gc.scm:72
 #, fuzzy
 msgid ""
 "\n"
@@ -5604,7 +5601,7 @@ msgstr ""
 "\n"
 "      --list-live lista live-vägar"
 
-#: guix/scripts/gc.scm:74
+#: guix/scripts/gc.scm:75
 #, fuzzy
 msgid ""
 "\n"
@@ -5613,7 +5610,7 @@ msgstr ""
 "\n"
 "      --referenser listar referenser till PATHS"
 
-#: guix/scripts/gc.scm:76
+#: guix/scripts/gc.scm:77
 #, fuzzy
 msgid ""
 "\n"
@@ -5622,7 +5619,7 @@ msgstr ""
 "\n"
 "  -R, --requisites listar kraven för PATHS"
 
-#: guix/scripts/gc.scm:78
+#: guix/scripts/gc.scm:79
 #, fuzzy
 msgid ""
 "\n"
@@ -5631,7 +5628,7 @@ msgstr ""
 "\n"
 "      --referrers listar referrers för PATHS"
 
-#: guix/scripts/gc.scm:80
+#: guix/scripts/gc.scm:81
 #, fuzzy
 msgid ""
 "\n"
@@ -5640,7 +5637,7 @@ msgstr ""
 "\n"
 "      --derivers listar derivers för PATHS"
 
-#: guix/scripts/gc.scm:83
+#: guix/scripts/gc.scm:84
 #, fuzzy
 msgid ""
 "\n"
@@ -5651,7 +5648,7 @@ msgstr ""
 "\n"
 "      --verify[=OPTS] verifiera integriteten hos lagringsplatsen; OPTS är en kommaseparerad kombination av 'repair' och 'contents'"
 
-#: guix/scripts/gc.scm:87
+#: guix/scripts/gc.scm:88
 #, fuzzy
 msgid ""
 "\n"
@@ -5660,7 +5657,7 @@ msgstr ""
 "\n"
 "      --list-failures lista cachade byggfel"
 
-#: guix/scripts/gc.scm:89
+#: guix/scripts/gc.scm:90
 #, fuzzy
 msgid ""
 "\n"
@@ -5669,7 +5666,7 @@ msgstr ""
 "\n"
 "      --clear-failures ta bort PATHS från uppsättningen cachade fel"
 
-#: guix/scripts/gc.scm:92
+#: guix/scripts/gc.scm:93
 #, fuzzy
 msgid ""
 "\n"
@@ -5679,50 +5676,53 @@ msgstr ""
 "\n"
 "      --vacuum-database packa om sqlite-databasen som spårar butiken med mindre utrymme"
 
-#: guix/scripts/gc.scm:107
+#: guix/scripts/gc.scm:108
 #, scheme-format
 msgid "~a: invalid '--verify' option~%"
 msgstr "~a: ogiltigt alternativ för '--verify'~%"
 
-#: guix/scripts/gc.scm:155
+#: guix/scripts/gc.scm:146
+#, scheme-format
+msgid "vacuuming the database can only be used by root~%"
+msgstr ""
+
+#: guix/scripts/gc.scm:159
 #, fuzzy, scheme-format
 msgid "invalid amount of storage: ~a~%"
 msgstr "ogiltig lagringsmängd: ~a~%"
 
-#: guix/scripts/gc.scm:169
+#: guix/scripts/gc.scm:173
 #, scheme-format
 msgid "'-d' as an alias for '--delete' is deprecated; use '-D'~%"
 msgstr "”-d” som ett alias för ”--delete” är föråldrat; använd ”-D”~%"
 
-#: guix/scripts/gc.scm:176
+#: guix/scripts/gc.scm:180
 #, fuzzy, scheme-format
 msgid "~s does not denote a duration~%"
 msgstr "~s anger inte en varaktighet~%"
 
-#: guix/scripts/gc.scm:237
+#: guix/scripts/gc.scm:241
 #, fuzzy
 msgid "invoke the garbage collector"
 msgstr "anropa sophanteraren"
 
-#: guix/scripts/gc.scm:264
+#: guix/scripts/gc.scm:268
 #, fuzzy, scheme-format
 msgid "already ~a available on ~a, nothing to do~%"
 msgstr "redan ~a tillgänglig på ~a, inget att göra~%"
 
-#: guix/scripts/gc.scm:267
+#: guix/scripts/gc.scm:271
 #, fuzzy, scheme-format
-#| msgid "deleting ~a~%"
 msgid "freeing ~a~%"
 msgstr "befriande ~a~%"
 
-#: guix/scripts/gc.scm:306
+#: guix/scripts/gc.scm:310
 #, fuzzy, scheme-format
 msgid "extraneous arguments: ~{~a ~}~%"
 msgstr "irrelevanta argument: ~{~a ~}~%"
 
-#: guix/scripts/gc.scm:332 guix/scripts/gc.scm:335
+#: guix/scripts/gc.scm:336 guix/scripts/gc.scm:339
 #, fuzzy, scheme-format
-#| msgid "~a for ~a~%"
 msgid "freed ~a~%"
 msgstr "befriad ~a~%"
 
@@ -5746,7 +5746,6 @@ msgstr "   autentisera, verifiera, bekräfta signaturer och auktoriseringar\n"
 
 #: guix/scripts/git.scm:51
 #, fuzzy
-#| msgid "Updater for packages hosted on Git repositories"
 msgid "operate on Git repositories"
 msgstr "arbeta med Git-arkiv"
 
@@ -5790,7 +5789,6 @@ msgstr "installerade krokarna '~a' och '~a'~%"
 
 #: guix/scripts/git/authenticate.scm:234
 #, fuzzy, scheme-format
-#| msgid "updating submodule '~a'...~%"
 msgid "upgrading hook '~a'~%"
 msgstr "uppgradering av krok '~a'~%"
 
@@ -5854,18 +5852,17 @@ msgstr ""
 "      --cache-key=KEY cachar autentiserade commit under KEY"
 
 #: guix/scripts/git/authenticate.scm:278
-#, fuzzy
 msgid ""
 "\n"
 "      --historical-authorizations=FILE\n"
 "                         read historical authorizations from FILE"
 msgstr ""
 "\n"
-"      --historical-authorizations=FILE läser historiska behörigheter från FILE"
+"      --historical-authorizations=FILE \n"
+"                         läs historiska autentiseringar från FIL"
 
 #: guix/scripts/git/authenticate.scm:312
 #, fuzzy, scheme-format
-#| msgid "~s: invalid G-expression input~%"
 msgid "~a: invalid OpenPGP fingerprint~%"
 msgstr "~a: ogiltigt OpenPGP-fingeravtryck~%"
 
@@ -5935,13 +5932,11 @@ msgstr "beräkna den kryptografiska hashvärdet för en fil"
 
 #: guix/scripts/hash.scm:198
 #, fuzzy, scheme-format
-#| msgid "~a: ~a~%"
 msgid "~a ~a~%"
 msgstr "~a ~a~%"
 
 #: guix/scripts/hash.scm:207
 #, fuzzy, scheme-format
-#| msgid "no command specified~%"
 msgid "no arguments specified~%"
 msgstr "inga argument angivna~%"
 
@@ -6038,9 +6033,6 @@ msgstr ""
 
 #: guix/scripts/pull.scm:110
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --roll-back        roll back to the previous generation"
 msgid ""
 "\n"
 "      --details          show details when listing generations"
@@ -6114,7 +6106,6 @@ msgstr[1] "  ~kanaler borttagna:~%"
 
 #: guix/scripts/pull.scm:446
 #, fuzzy, scheme-format
-#| msgid "cannot switch to generation '~a'~%"
 msgid "no channel news since generation ~a~%"
 msgstr "inga nyheter sedan generation ~a~%"
 
@@ -6127,7 +6118,6 @@ msgstr "Kör @command{guix pull -l} för att se nyheterna för tidigare generati
 
 #: guix/scripts/pull.scm:449
 #, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
 msgid "profile ~a does not have a previous generation~%"
 msgstr "profil ~a har inte en tidigare generation~%"
 
@@ -6174,7 +6164,6 @@ msgstr "Miljövariabeln 'GUIX_PULL_URL' är föråldrad. Använd istället '~/.c
 
 #: guix/scripts/pull.scm:795
 #, fuzzy, scheme-format
-#| msgid "directory `~a' is not owned by you"
 msgid "directory '~a' is not owned by user ~a"
 msgstr "katalogen '~a' ägs inte av användaren ~a"
 
@@ -6405,27 +6394,27 @@ msgstr "tjänsternas DAG"
 msgid "the dependency graph of shepherd services"
 msgstr "beroendediagrammet för shepherd-tjänster"
 
-#: guix/scripts/system.scm:497 guix/scripts/home.scm:803
+#: guix/scripts/system.scm:497 guix/scripts/home.scm:804
 #, fuzzy, scheme-format
 msgid "      repository URL: ~a~%"
 msgstr "      arkiv-URL: ~a~%"
 
-#: guix/scripts/system.scm:499 guix/scripts/home.scm:805
+#: guix/scripts/system.scm:499 guix/scripts/home.scm:806
 #, scheme-format
 msgid "      branch: ~a~%"
 msgstr "      gren: ~a~%"
 
-#: guix/scripts/system.scm:500 guix/scripts/home.scm:806
+#: guix/scripts/system.scm:500 guix/scripts/home.scm:807
 #, scheme-format
 msgid "      commit: ~a~%"
 msgstr "      ändring: ~a~%"
 
-#: guix/scripts/system.scm:520 guix/scripts/home.scm:819
+#: guix/scripts/system.scm:520 guix/scripts/home.scm:820
 #, scheme-format
 msgid "  file name: ~a~%"
 msgstr "  filnamn: ~a~%"
 
-#: guix/scripts/system.scm:521 guix/scripts/home.scm:820
+#: guix/scripts/system.scm:521 guix/scripts/home.scm:821
 #, scheme-format
 msgid "  canonical file name: ~a~%"
 msgstr "  filnamn för canonical: ~a~%"
@@ -6466,17 +6455,17 @@ msgstr "  multiboot: ~a~%"
 
 #. TRANSLATORS: Here "channel" is the same terminology as used in
 #. "guix describe" and "guix pull --channels".
-#: guix/scripts/system.scm:551 guix/scripts/home.scm:826
+#: guix/scripts/system.scm:551 guix/scripts/home.scm:827
 #, scheme-format
 msgid "  channels:~%"
 msgstr "  kanaler:~%"
 
-#: guix/scripts/system.scm:554 guix/scripts/home.scm:829
+#: guix/scripts/system.scm:554 guix/scripts/home.scm:830
 #, scheme-format
 msgid "  configuration file: ~a~%"
 msgstr "  konfigurationsfil: ~a~%"
 
-#: guix/scripts/system.scm:559 guix/scripts/home.scm:834
+#: guix/scripts/system.scm:559 guix/scripts/home.scm:835
 msgid "  packages:\n"
 msgstr "  paket:\n"
 
@@ -6767,7 +6756,7 @@ msgstr ""
 "\n"
 "      --label=LABEL för 'image', märk diskavbildningen med LABEL"
 
-#: guix/scripts/system.scm:1046 guix/scripts/pack.scm:1662
+#: guix/scripts/system.scm:1046 guix/scripts/pack.scm:1672
 #, fuzzy
 msgid ""
 "\n"
@@ -6855,10 +6844,6 @@ msgstr ""
 
 #: guix/scripts/system.scm:1073
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -I, --list-installed[=REGEXP]\n"
-#| "                         list installed packages matching REGEXP"
 msgid ""
 "\n"
 "  -I, --list-installed[=REGEXP]\n"
@@ -6878,81 +6863,81 @@ msgstr ""
 "      --help-docker-format lista alternativ som är specifika för docker-bildtypen."
 
 #: guix/scripts/system.scm:1234
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --with-git-url=PACKAGE=URL\n"
-#| "                         build PACKAGE from the repository at URL"
 msgid ""
 "\n"
 "      --max-layers=N\n"
 "                         Number of image layers"
 msgstr ""
 "\n"
-"      --max-layers=N Antal bildlager"
+"      --max-layers=N \n"
+"                         Antalet bildlager"
 
-#: guix/scripts/system.scm:1260
+#: guix/scripts/system.scm:1268
 #, fuzzy, scheme-format
 msgid "'~a' does not return an operating system or an image~%"
 msgstr "'~a' returnerar inte ett operativsystem eller en bild~%"
 
-#: guix/scripts/system.scm:1284 guix/scripts/home.scm:532
+#: guix/scripts/system.scm:1291
+#, scheme-format
+msgid "'--save-provenance' has no effect~%"
+msgstr ""
+
+#: guix/scripts/system.scm:1300 guix/scripts/home.scm:533
 #, fuzzy, scheme-format
 msgid "both file and expression cannot be specified~%"
 msgstr "Både fil och uttryck kan inte anges~%"
 
-#: guix/scripts/system.scm:1291 guix/scripts/home.scm:539
+#: guix/scripts/system.scm:1307 guix/scripts/home.scm:540
 #, scheme-format
 msgid "no configuration specified~%"
 msgstr "ingen konfiguration angavs~%"
 
-#: guix/scripts/system.scm:1323
+#: guix/scripts/system.scm:1339
 msgid "image lacks an operating-system"
 msgstr "avbilden saknar ett operativsystem"
 
-#: guix/scripts/system.scm:1409 guix/scripts/system.scm:1438
-#: guix/scripts/system.scm:1445 guix/scripts/system.scm:1451
-#: guix/scripts/home.scm:601 guix/scripts/home.scm:626
-#: guix/scripts/home.scm:631 guix/scripts/home.scm:637
-#: guix/scripts/home.scm:644 guix/scripts/import/gnu.scm:100
+#: guix/scripts/system.scm:1425 guix/scripts/system.scm:1454
+#: guix/scripts/system.scm:1461 guix/scripts/system.scm:1467
+#: guix/scripts/home.scm:602 guix/scripts/home.scm:627
+#: guix/scripts/home.scm:632 guix/scripts/home.scm:638
+#: guix/scripts/home.scm:645 guix/scripts/import/gnu.scm:100
 #: guix/scripts/offload.scm:851 guix/scripts/offload.scm:863
 #, scheme-format
 msgid "wrong number of arguments~%"
 msgstr "fel antal argument~%"
 
-#: guix/scripts/system.scm:1421
+#: guix/scripts/system.scm:1437
 #, fuzzy, scheme-format
 msgid "no system generation, nothing to describe~%"
 msgstr "ingen systemgenerering, inget att beskriva~%"
 
-#: guix/scripts/system.scm:1459
+#: guix/scripts/system.scm:1475
 #, fuzzy
 msgid "build and deploy full operating systems"
 msgstr "bygga och distribuera fullständiga operativsystem"
 
-#: guix/scripts/system.scm:1472 guix/scripts/home.scm:667
+#: guix/scripts/system.scm:1488 guix/scripts/home.scm:668
 #, scheme-format
 msgid "~a: unknown action~%"
 msgstr "~a: okänd åtgärd~%"
 
-#: guix/scripts/system.scm:1491 guix/scripts/home.scm:683
+#: guix/scripts/system.scm:1507 guix/scripts/home.scm:684
 #, fuzzy, scheme-format
 msgid "wrong number of arguments for action '~a'~%"
 msgstr "fel antal argument för åtgärden '~a'~%"
 
-#: guix/scripts/system.scm:1496
+#: guix/scripts/system.scm:1512
 #, fuzzy, scheme-format
 msgid "guix system: missing command name~%"
 msgstr "guix-system: saknat kommandonamn~%"
 
-#: guix/scripts/system.scm:1498
+#: guix/scripts/system.scm:1514
 #, scheme-format
 msgid "Try 'guix system --help' for more information.~%"
 msgstr "Prova 'guix system --help' för mer information.~%"
 
 #: guix/scripts/system/edit.scm:32 guix/scripts/home/edit.scm:33
 #, fuzzy, scheme-format
-#| msgid "~a: no such image type"
 msgid "~a: no such service type~%"
 msgstr "~a: ingen sådan tjänstetyp~%"
 
@@ -6978,9 +6963,6 @@ msgstr ""
 
 #: guix/scripts/system/installer.scm:50
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -n, --dry-run          do not build the derivations"
 msgid ""
 "\n"
 "  -n, --dry-run          skip network setup, partitioning, and actual install"
@@ -6992,13 +6974,12 @@ msgstr ""
 msgid "run the graphical installer program"
 msgstr "kör det grafiska installationsprogrammet"
 
-#: guix/scripts/system/search.scm:107 guix/ui.scm:1677 guix/ui.scm:1695
+#: guix/scripts/system/search.scm:107 guix/ui.scm:1680 guix/ui.scm:1698
 msgid "unknown"
 msgstr "okänt"
 
 #: guix/scripts/system/reconfigure.scm:260
 #, fuzzy, scheme-format
-#| msgid "failed to load '~a': ~a~%"
 msgid "failed to load operating system for kexec: ~a~%"
 msgstr "Det gick inte att ladda operativsystemet för kexec: ~a~%"
 
@@ -7007,12 +6988,13 @@ msgstr "Det gick inte att ladda operativsystemet för kexec: ~a~%"
 msgid "aborting reconfiguration because commit ~a of channel '~a' is not a descendant of ~a"
 msgstr "avbryter omkonfigurering eftersom commit ~a av kanal '~a' inte är en efterföljare till ~a"
 
-#: guix/scripts/system/reconfigure.scm:384 guix/channels.scm:497
-#, fuzzy
+#: guix/scripts/system/reconfigure.scm:384 guix/channels.scm:493
 msgid ""
 "Use @option{--allow-downgrades} to force\n"
 "this downgrade."
-msgstr "Använd @option{--allow-downgrades} för att tvinga fram denna nedgradering."
+msgstr ""
+"Använd @option{--allow-downgrades} för att påtvinga \n"
+"den här nedgraderingen."
 
 #: guix/scripts/system/reconfigure.scm:439
 #, fuzzy, scheme-format
@@ -7053,14 +7035,14 @@ msgstr ""
 "  -c, --checkers=CHECKER1,CHECKER2... kör endast de angivna kontrollerna"
 
 #: guix/scripts/lint.scm:106
-#, fuzzy
 msgid ""
 "\n"
 "  -x, --exclude=CHECKER1,CHECKER2...\n"
 "                         exclude the specified checkers"
 msgstr ""
 "\n"
-"  -x, --exclude=CHECKER1,CHECKER2... utesluter angivna kontrollprogram"
+"  -x, exclude=KONTROLL1,KONTROLL2... \n"
+"                         exkludera de angivna kontrollerna"
 
 #: guix/scripts/lint.scm:109
 #, fuzzy
@@ -7072,7 +7054,7 @@ msgstr ""
 "  -n, --no-network kör endast kontrollprogram som inte använder nätverket"
 
 #: guix/scripts/lint.scm:111 guix/scripts/graph.scm:529
-#: guix/scripts/pack.scm:1651 guix/scripts/style.scm:697
+#: guix/scripts/pack.scm:1661 guix/scripts/style.scm:712
 #: guix/scripts/refresh.scm:160
 #, fuzzy
 msgid ""
@@ -7124,7 +7106,6 @@ msgstr "databasens storlek: ~9h MiB~%"
 
 #: guix/scripts/locate.scm:389
 #, fuzzy
-#| msgid "Installation parameters"
 msgid "indexing ~h packages"
 msgstr "indexering av ~h-paket"
 
@@ -7217,13 +7198,11 @@ msgstr "~a: okänd indexeringsmetod~%"
 
 #: guix/scripts/locate.scm:604
 #, fuzzy
-#| msgid "Updater for GNU packages"
 msgid "search for packages providing a given file"
 msgstr "sök efter paket som tillhandahåller en viss fil"
 
 #: guix/scripts/locate.scm:657
 #, fuzzy, scheme-format
-#| msgid "building XDG MIME database..."
 msgid "clearing database...~%"
 msgstr "Rensar databasen...~%"
 
@@ -7400,8 +7379,9 @@ msgid "~a: invalid duration~%"
 msgstr "~a: ogiltig varaktighet~%"
 
 #: guix/scripts/publish.scm:1183
-#, scheme-format
-msgid "Advertising ~a~%."
+#, fuzzy, scheme-format
+#| msgid "Advertising ~a~%."
+msgid "advertising '~a'~%"
 msgstr "Annonserar ~a~%."
 
 #: guix/scripts/publish.scm:1218
@@ -7414,27 +7394,32 @@ msgstr "~a: oväntat antal startfilbeskrivare"
 msgid "user '~a' not found: ~a~%"
 msgstr "Användaren '~a' hittades inte: ~a~%"
 
-#: guix/scripts/publish.scm:1242
+#: guix/scripts/publish.scm:1249
 #, fuzzy
 msgid "publish build results over HTTP"
 msgstr "publicera byggresultat via HTTP"
 
-#: guix/scripts/publish.scm:1295
+#: guix/scripts/publish.scm:1302
 #, fuzzy, scheme-format
 msgid "server running as root; consider using the '--user' option!~%"
 msgstr "server som körs som root; överväg att använda alternativet '--user'!~%"
 
-#: guix/scripts/publish.scm:1304
+#: guix/scripts/publish.scm:1307
+#, scheme-format
+msgid "ignoring '--advertise' because service is listening to localhost~%"
+msgstr ""
+
+#: guix/scripts/publish.scm:1316
 #, fuzzy, scheme-format
 msgid "publishing (started via socket activation)~%"
 msgstr "publicering (startad via socketaktivering)~%"
 
-#: guix/scripts/publish.scm:1305
+#: guix/scripts/publish.scm:1317
 #, fuzzy, scheme-format
 msgid "publishing ~a on ~a, port ~d~%"
 msgstr "publicering ~a på ~a, port ~d~%"
 
-#: guix/scripts/publish.scm:1311
+#: guix/scripts/publish.scm:1323
 #, fuzzy, scheme-format
 msgid "using '~a' compression method, level ~a~%"
 msgstr "med komprimeringsmetoden '~a', nivå ~a~%"
@@ -7715,7 +7700,6 @@ msgstr[1] "  olika filer:~%"
 
 #: guix/scripts/challenge.scm:329
 #, fuzzy, scheme-format
-#| msgid "failed to load '~a': ~a~%"
 msgid "failed to delete '~a': ~a~%"
 msgstr "kunde inte ta bort '~a': ~a~%"
 
@@ -7870,12 +7854,12 @@ msgstr "kopiera butiksartiklar på distans via SSH"
 msgid "use '--to' or '--from'~%"
 msgstr "använd '--to' eller '--from'~%"
 
-#: guix/scripts/pack.scm:198
+#: guix/scripts/pack.scm:200
 #, fuzzy, scheme-format
 msgid "symlink target is absolute: '~a'~%"
 msgstr "symlink-målet är absolut: '~a'~%"
 
-#: guix/scripts/pack.scm:200
+#: guix/scripts/pack.scm:202
 #, fuzzy
 msgid ""
 "The target of the symlink must be\n"
@@ -7888,45 +7872,45 @@ msgid ""
 "@end example"
 msgstr "Målet för symlänken måste vara relativt snarare än absolut, eftersom det är relativt till den skapade profilen. Kanske har käll- och målkomponenterna i symlänkspecifikationen inverterats? Nedan följer ett giltigt exempel, där den symboliska länken @file{/usr/bin/env} ska peka på profilens @file{bin/env}-fil: @example --symlink=/usr/bin/env=bin/env @end example"
 
-#: guix/scripts/pack.scm:213
+#: guix/scripts/pack.scm:215
 #, fuzzy, scheme-format
 msgid "~a: invalid symlink specification~%"
 msgstr "~a: ogiltig symlänkspecifikation~%"
 
-#: guix/scripts/pack.scm:263 guix/scripts/pack.scm:666
-#: guix/scripts/pack.scm:839
+#: guix/scripts/pack.scm:265 guix/scripts/pack.scm:668
+#: guix/scripts/pack.scm:842
 #, fuzzy, scheme-format
 msgid "entry point not supported in the '~a' format~%"
 msgstr "ingångspunkt stöds inte i formatet '~a'~%"
 
-#: guix/scripts/pack.scm:662
+#: guix/scripts/pack.scm:664
 #, fuzzy, scheme-format
 msgid "~a is not a valid Debian archive compressor.  Valid compressors are: ~a~%"
 msgstr "~a är inte en giltig komprimeringsalgoritm för Debian-arkivet. Giltiga komprimeringsalgoritmer är: ~a~%"
 
-#: guix/scripts/pack.scm:994
+#: guix/scripts/pack.scm:997
 #, fuzzy, scheme-format
 msgid "entry-point must be provided in the '~a' format~%"
 msgstr "ingångspunkten måste anges i formatet '~a'~%"
 
-#: guix/scripts/pack.scm:998
+#: guix/scripts/pack.scm:1001
 #, fuzzy, scheme-format
 msgid "AppImages should be built with the --relocatable flag~%"
 msgstr "AppImages bör byggas med flaggan --relocatable~%"
 
-#: guix/scripts/pack.scm:1006
+#: guix/scripts/pack.scm:1009
 #, fuzzy, scheme-format
 msgid ""
 "~a is not a valid squashfs archive compressor used in\n"
 "generating the AppImage.  Valid compressors are: ~a~%"
 msgstr "~a är inte en giltig squashfs-arkivkompressor som används för att generera AppImage. Giltiga kompressorer är: ~a~%"
 
-#: guix/scripts/pack.scm:1433
+#: guix/scripts/pack.scm:1443
 #, fuzzy
 msgid "The supported formats for 'guix pack' are:"
 msgstr "De format som stöds för 'guix pack' är:"
 
-#: guix/scripts/pack.scm:1435
+#: guix/scripts/pack.scm:1445
 msgid ""
 "\n"
 "  tarball       Self-contained tarball, ready to run on another machine"
@@ -7934,7 +7918,7 @@ msgstr ""
 "\n"
 "  tarball       Självständig tarboll, redo att köras på en annan maskin"
 
-#: guix/scripts/pack.scm:1437
+#: guix/scripts/pack.scm:1447
 msgid ""
 "\n"
 "  squashfs      Squashfs image suitable for Singularity"
@@ -7942,7 +7926,7 @@ msgstr ""
 "\n"
 "  squashfs      Squashfs-avbildning lämplig för Singularity"
 
-#: guix/scripts/pack.scm:1439
+#: guix/scripts/pack.scm:1449
 msgid ""
 "\n"
 "  docker        Tarball ready for 'docker load'"
@@ -7950,7 +7934,7 @@ msgstr ""
 "\n"
 "  docker        Tarboll redo för \"docker load\""
 
-#: guix/scripts/pack.scm:1441
+#: guix/scripts/pack.scm:1451
 msgid ""
 "\n"
 "  deb           Debian archive installable via dpkg/apt"
@@ -7958,7 +7942,7 @@ msgstr ""
 "\n"
 "  deb           Debian-arkiv som kan installeras via dpkg/apt"
 
-#: guix/scripts/pack.scm:1443
+#: guix/scripts/pack.scm:1453
 msgid ""
 "\n"
 "  rpm           RPM archive installable via rpm/yum"
@@ -7966,7 +7950,7 @@ msgstr ""
 "\n"
 "  rpm           RPM-arkiv som kan installeras via rpm/yum"
 
-#: guix/scripts/pack.scm:1445
+#: guix/scripts/pack.scm:1455
 msgid ""
 "\n"
 "  appimage      AppImage self-contained and executable format"
@@ -7974,7 +7958,7 @@ msgstr ""
 "\n"
 "  appimage      AppImage självständigt och körbart format"
 
-#: guix/scripts/pack.scm:1467
+#: guix/scripts/pack.scm:1477
 #, fuzzy
 msgid ""
 "\n"
@@ -7983,7 +7967,7 @@ msgstr ""
 "\n"
 "      --help-docker-format lista alternativ som är specifika för docker-formatet"
 
-#: guix/scripts/pack.scm:1471
+#: guix/scripts/pack.scm:1481
 #, fuzzy
 msgid ""
 "\n"
@@ -8002,7 +7986,7 @@ msgstr ""
 "      --image-tag=NAME Använd det angivna NAMNET för Docker-bildförvaret -A, --entry-point-argument=COMMAND/PARAMETER Värde(n) som ska användas för Docker ENTRYPOINT-argument.\n"
 "                         Flera instanser accepteras. Detta är endast giltigt i kombination med alternativet --entry-point --max-layers=N Antal bildlager"
 
-#: guix/scripts/pack.scm:1491
+#: guix/scripts/pack.scm:1501
 #, fuzzy
 msgid ""
 "\n"
@@ -8011,22 +7995,18 @@ msgstr ""
 "\n"
 "      --help-deb-format lista över alternativ som är specifika för deb-formatet"
 
-#: guix/scripts/pack.scm:1495
-#, fuzzy
+#: guix/scripts/pack.scm:1505
 msgid ""
 "\n"
 "      --control-file=FILE\n"
 "                         Embed the provided control FILE"
 msgstr ""
 "\n"
-"      --control-file=FIL Bädda in den angivna kontrollfilen FIL"
+"      --control-file=FIL \n"
+"                         Bädda in den angivna kontroll-filen FIL"
 
-#: guix/scripts/pack.scm:1498
+#: guix/scripts/pack.scm:1508
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --with-git-url=PACKAGE=URL\n"
-#| "                         build PACKAGE from the repository at URL"
 msgid ""
 "\n"
 "      --postinst-file=FILE\n"
@@ -8035,7 +8015,7 @@ msgstr ""
 "\n"
 "      --postinst-file=FIL Bädda in det medföljande postinst-skriptet"
 
-#: guix/scripts/pack.scm:1501
+#: guix/scripts/pack.scm:1511
 #, fuzzy
 msgid ""
 "\n"
@@ -8045,7 +8025,7 @@ msgstr ""
 "\n"
 "      --triggers-file=FIL Bädda in den angivna triggern FIL"
 
-#: guix/scripts/pack.scm:1514
+#: guix/scripts/pack.scm:1524
 #, fuzzy
 msgid ""
 "\n"
@@ -8054,12 +8034,8 @@ msgstr ""
 "\n"
 "      --help-rpm-format lista över alternativ som är specifika för RPM-formatet"
 
-#: guix/scripts/pack.scm:1518
+#: guix/scripts/pack.scm:1528
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --with-git-url=PACKAGE=URL\n"
-#| "                         build PACKAGE from the repository at URL"
 msgid ""
 "\n"
 "      --prein-file=FILE\n"
@@ -8068,12 +8044,8 @@ msgstr ""
 "\n"
 "      --prein-file=FIL Bädda in det medföljande prein-skriptet"
 
-#: guix/scripts/pack.scm:1521
+#: guix/scripts/pack.scm:1531
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --with-git-url=PACKAGE=URL\n"
-#| "                         build PACKAGE from the repository at URL"
 msgid ""
 "\n"
 "      --postin-file=FILE\n"
@@ -8082,12 +8054,8 @@ msgstr ""
 "\n"
 "      --postin-file=FIL Bädda in det medföljande postin-skriptet"
 
-#: guix/scripts/pack.scm:1524
+#: guix/scripts/pack.scm:1534
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --with-git-url=PACKAGE=URL\n"
-#| "                         build PACKAGE from the repository at URL"
 msgid ""
 "\n"
 "      --preun-file=FILE\n"
@@ -8096,12 +8064,8 @@ msgstr ""
 "\n"
 "      --preun-file=FIL Bädda in det medföljande preun-skriptet"
 
-#: guix/scripts/pack.scm:1527
+#: guix/scripts/pack.scm:1537
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --with-git-url=PACKAGE=URL\n"
-#| "                         build PACKAGE from the repository at URL"
 msgid ""
 "\n"
 "      --postun-file=FILE\n"
@@ -8110,19 +8074,19 @@ msgstr ""
 "\n"
 "      --postun-file=FIL Bädda in det medföljande postun-skriptet"
 
-#: guix/scripts/pack.scm:1594
+#: guix/scripts/pack.scm:1604
 #, fuzzy, scheme-format
 msgid "~a: unsupported profile name~%"
 msgstr "~a: profilnamn stöds inte~%"
 
-#: guix/scripts/pack.scm:1629
+#: guix/scripts/pack.scm:1639
 #, fuzzy
 msgid ""
 "Usage: guix pack [OPTION]... PACKAGE...\n"
 "Create a bundle of PACKAGE.\n"
 msgstr "Användning: guix pack [FLAGGA]... PAKET... Skapa ett paket av PAKET.\n"
 
-#: guix/scripts/pack.scm:1643
+#: guix/scripts/pack.scm:1653
 #, fuzzy
 msgid ""
 "\n"
@@ -8131,7 +8095,7 @@ msgstr ""
 "\n"
 "      --file=FORMAT bygg ett paket koden i FILE utvärderas till"
 
-#: guix/scripts/pack.scm:1645
+#: guix/scripts/pack.scm:1655
 #, fuzzy
 msgid ""
 "\n"
@@ -8140,7 +8104,7 @@ msgstr ""
 "\n"
 "  -f, --format=FORMAT skapa ett paket i angivet FORMAT"
 
-#: guix/scripts/pack.scm:1647
+#: guix/scripts/pack.scm:1657
 #, fuzzy
 msgid ""
 "\n"
@@ -8149,7 +8113,7 @@ msgstr ""
 "\n"
 "      --list-formats lista tillgängliga format"
 
-#: guix/scripts/pack.scm:1649
+#: guix/scripts/pack.scm:1659
 #, fuzzy
 msgid ""
 "\n"
@@ -8158,7 +8122,7 @@ msgstr ""
 "\n"
 "  -R, --relocatable skapar flyttbara körbara filer"
 
-#: guix/scripts/pack.scm:1653
+#: guix/scripts/pack.scm:1663
 #, fuzzy
 msgid ""
 "\n"
@@ -8167,7 +8131,7 @@ msgstr ""
 "\n"
 "  -C, --compression=TOOL komprimera med TOOL--t.ex. \"lzip\""
 
-#: guix/scripts/pack.scm:1655
+#: guix/scripts/pack.scm:1665
 #, fuzzy
 msgid ""
 "\n"
@@ -8176,7 +8140,7 @@ msgstr ""
 "\n"
 "  -S, --symlink=SPEC skapa symlänkar till profilen enligt SPEC"
 
-#: guix/scripts/pack.scm:1657
+#: guix/scripts/pack.scm:1667
 #, fuzzy
 msgid ""
 "\n"
@@ -8185,7 +8149,7 @@ msgstr ""
 "\n"
 "  -m, --manifest=FIL skapa ett paket med manifestet från FIL"
 
-#: guix/scripts/pack.scm:1659
+#: guix/scripts/pack.scm:1669
 #, fuzzy
 msgid ""
 "\n"
@@ -8195,7 +8159,7 @@ msgstr ""
 "\n"
 "      --entry-point=PROGRAM använd PROGRAM som startpunkt för paketet"
 
-#: guix/scripts/pack.scm:1664
+#: guix/scripts/pack.scm:1674
 #, fuzzy
 msgid ""
 "\n"
@@ -8204,7 +8168,7 @@ msgstr ""
 "\n"
 "      --localstatedir inkludera /var/guix i det resulterande paketet"
 
-#: guix/scripts/pack.scm:1666
+#: guix/scripts/pack.scm:1676
 msgid ""
 "\n"
 "      --profile-name=NAME\n"
@@ -8214,7 +8178,7 @@ msgstr ""
 "      --profile-name=NAMN\n"
 "                         fyll i /var/guix/profiles/.../NAMN"
 
-#: guix/scripts/pack.scm:1672
+#: guix/scripts/pack.scm:1682
 #, fuzzy
 msgid ""
 "\n"
@@ -8223,7 +8187,7 @@ msgstr ""
 "\n"
 "  -d, --derivation returnerar härledningen av paketet"
 
-#: guix/scripts/pack.scm:1676
+#: guix/scripts/pack.scm:1686
 #, fuzzy
 msgid ""
 "\n"
@@ -8232,43 +8196,42 @@ msgstr ""
 "\n"
 "      --bootstrap använder bootstrap-binärerna för att bygga paketet"
 
-#: guix/scripts/pack.scm:1693
+#: guix/scripts/pack.scm:1703
 #, fuzzy
 msgid "create application bundles"
 msgstr "skapa applikationspaket"
 
-#: guix/scripts/pack.scm:1736
+#: guix/scripts/pack.scm:1746
 #, fuzzy, scheme-format
 msgid "could not determine provenance of package ~a~%"
 msgstr "kunde inte fastställa paketets ursprung ~a~%"
 
-#: guix/scripts/pack.scm:1745
+#: guix/scripts/pack.scm:1755
 #, fuzzy, scheme-format
 msgid "both a manifest and a package list were given~%"
 msgstr "både ett manifest och en paketlista angavs~%"
 
-#: guix/scripts/pack.scm:1765
+#: guix/scripts/pack.scm:1775
 #, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
 msgid "file provided with option ~a does not exist: ~a~%"
 msgstr "Filen som tillhandahålls med alternativet ~a finns inte: ~a~%"
 
-#: guix/scripts/pack.scm:1844
+#: guix/scripts/pack.scm:1852
 #, scheme-format
 msgid "~a: unknown pack format~%"
 msgstr "~a: okänt paket-format~%"
 
-#: guix/scripts/pack.scm:1871
+#: guix/scripts/pack.scm:1879
 #, fuzzy, scheme-format
 msgid "no packages specified; building an empty pack~%"
 msgstr "inga paket angivna; skapar ett tomt paket~%"
 
-#: guix/scripts/pack.scm:1875
+#: guix/scripts/pack.scm:1883
 #, fuzzy, scheme-format
 msgid "Singularity requires you to provide a shell~%"
 msgstr "Singularity kräver att du tillhandahåller ett skal~%"
 
-#: guix/scripts/pack.scm:1876
+#: guix/scripts/pack.scm:1884
 #, fuzzy
 msgid "Add @code{bash} or @code{bash-minimal} to your package list."
 msgstr "Lägg till @code{bash} eller @code{bash-minimal} till din paketlista."
@@ -8280,7 +8243,6 @@ msgstr "beräkning av ~h-paketderivationer för ~a...~%"
 
 #: guix/scripts/weather.scm:182
 #, fuzzy, scheme-format
-#| msgid "failed to load '~a': ~a~%"
 msgid "could not read '~a': ~a~%"
 msgstr "kunde inte läsa '~a': ~a~%"
 
@@ -8436,9 +8398,6 @@ msgstr ""
 
 #: guix/scripts/weather.scm:375
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -e, --expression=EXPR  build the package or derivation EXPR evaluates to"
 msgid ""
 "\n"
 "  -e, --expression=EXPR  look up substitutes for the package EXPR evaluates to"
@@ -8635,9 +8594,6 @@ msgstr ""
 
 #: guix/scripts/deploy.scm:63
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -e, --expression=EXPR  build the package or derivation EXPR evaluates to"
 msgid ""
 "\n"
 "  -e, --expression=EXPR  deploy the list of machines EXPR evaluates to"
@@ -8647,9 +8603,6 @@ msgstr ""
 
 #: guix/scripts/deploy.scm:66
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --roll-back        roll back to the previous generation"
 msgid ""
 "\n"
 "  -r, --roll-back        switch to the previous operating system configuration"
@@ -8659,7 +8612,6 @@ msgstr ""
 
 #: guix/scripts/deploy.scm:68
 #, fuzzy
-#| msgid "   exec            execute a command inside of an existing container\n"
 msgid ""
 "\n"
 "  -x, --execute          execute the following command on all the machines"
@@ -8717,7 +8669,6 @@ msgstr "framgångsrikt implementerat ~a~%"
 
 #: guix/scripts/deploy.scm:210 guix/scripts/deploy.scm:214
 #, fuzzy, scheme-format
-#| msgid "failed to load '~a': ~a~%"
 msgid "failed to roll back ~a: ~a~%"
 msgstr "misslyckades med att återställa ~a: ~a~%"
 
@@ -8728,19 +8679,16 @@ msgstr "återställdes framgångsrikt ~a~%"
 
 #: guix/scripts/deploy.scm:273
 #, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
 msgid "~a: command succeeded~%"
 msgstr "~a: kommandot lyckades~%"
 
 #: guix/scripts/deploy.scm:276
 #, fuzzy, scheme-format
-#| msgid "Command failed with exit code ~a.~%"
 msgid "~a: command exited with code ~a~%"
 msgstr "~a: kommandot avslutades med kod ~a~%"
 
 #: guix/scripts/deploy.scm:279
 #, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
 msgid "~a: command stopped with signal ~a~%"
 msgstr "~a: kommandot avbröts med signal ~a~%"
 
@@ -8751,7 +8699,6 @@ msgstr "~a: kommandot avslutades med signal ~a~%"
 
 #: guix/scripts/deploy.scm:286
 #, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
 msgid "command output on ~a:~%"
 msgstr "kommandoutdata på ~a:~%"
 
@@ -8785,65 +8732,63 @@ msgstr "'-x' angivet men inget kommando angivet~%"
 msgid "resolving '~a' relative to current directory~%"
 msgstr "löser '~a' relativt till aktuell katalog~%"
 
-#: guix/gexp.scm:927
+#: guix/gexp.scm:929
 #, fuzzy, scheme-format
 msgid "importing module~{ ~a~} from the host~%"
 msgid_plural "importing modules~{ ~a~} from the host~%"
 msgstr[0] "importera modul~{ ~a~} från värden~%"
 msgstr[1] "importera moduler~{ ~a~} från värden~%"
 
-#: guix/gnu-maintenance.scm:303
+#: guix/gnu-maintenance.scm:310
 #, fuzzy, scheme-format
-#| msgid "~a: invalid '--verify' option~%"
 msgid "~a: invalid 'release-file-regexp' property~%"
 msgstr "~a: ogiltig egenskap 'release-file-regexp'~%"
 
-#: guix/gnu-maintenance.scm:315
+#: guix/gnu-maintenance.scm:322
 #, fuzzy, scheme-format
 msgid "release file regexp ~s has ~a subexpression (expected one for the version string)~%"
 msgid_plural "release file regexp ~s has ~a subexpressions (expected one for the version string)~%"
 msgstr[0] "release file regexp ~s har ~en underuttryck (förväntad för versionssträngen)~%"
 msgstr[1] "release file regexp ~s har ~a underuttryck (förväntat ett för versionssträngen)~%"
 
-#: guix/gnu-maintenance.scm:555
+#: guix/gnu-maintenance.scm:562
 #, fuzzy, scheme-format
-#| msgid "failed to load '~a': ~a~%"
 msgid "failed to download '~a': ~a (~a)~%"
 msgstr "misslyckades med att ladda ner '~a': ~a (~a)~%"
 
-#: guix/gnu-maintenance.scm:941
+#: guix/gnu-maintenance.scm:948
 msgid "Updating to a specific version is not yet implemented for SourceForge."
 msgstr "Uppdatering till en specifik version är ännu inte implementerad för SourceForge."
 
-#: guix/gnu-maintenance.scm:945
+#: guix/gnu-maintenance.scm:952
 msgid "Updating to a partial version is not yet implemented for SourceForge."
 msgstr "Uppdatering till en partiell version är ännu inte implementerad för SourceForge."
 
-#: guix/gnu-maintenance.scm:1099
+#: guix/gnu-maintenance.scm:1106
 msgid "Updater for GNU packages"
 msgstr "Uppdaterar för GNU-paket"
 
-#: guix/gnu-maintenance.scm:1112
+#: guix/gnu-maintenance.scm:1119
 msgid "Updater for GNU packages only available via FTP"
 msgstr "Uppdaterare för GNU-paket som bara är tillgängliga via FTP"
 
-#: guix/gnu-maintenance.scm:1123
+#: guix/gnu-maintenance.scm:1130
 msgid "Updater for packages hosted on savannah.gnu.org"
 msgstr "Uppdaterare för paket som finns på savannah.gnu.org"
 
-#: guix/gnu-maintenance.scm:1130
+#: guix/gnu-maintenance.scm:1137
 msgid "Updater for packages hosted on sourceforge.net"
 msgstr "Uppdaterare för paket som finns på sourceforge.net"
 
-#: guix/gnu-maintenance.scm:1137
+#: guix/gnu-maintenance.scm:1144
 msgid "Updater for X.org packages"
 msgstr "Uppdaterare för X.org-paket"
 
-#: guix/gnu-maintenance.scm:1144
+#: guix/gnu-maintenance.scm:1151
 msgid "Updater for packages hosted on kernel.org"
 msgstr "Uppdaterare för paket som finns på kernel.org"
 
-#: guix/gnu-maintenance.scm:1151
+#: guix/gnu-maintenance.scm:1158
 msgid "Updater that crawls HTML pages."
 msgstr "Uppdaterare som genomsöker HTML-sidor."
 
@@ -8902,21 +8847,18 @@ msgstr "inget kommando angivet~%"
 msgid "no such process ~d~%"
 msgstr "ingen sådan process ~d~%"
 
-#: guix/scripts/container/exec.scm:108 guix/scripts/home.scm:476
+#: guix/scripts/container/exec.scm:108 guix/scripts/home.scm:477
 #, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
 msgid "process terminated with signal ~a~%"
 msgstr "processen avslutades med signal ~a~%"
 
-#: guix/scripts/container/exec.scm:110 guix/scripts/home.scm:478
+#: guix/scripts/container/exec.scm:110 guix/scripts/home.scm:479
 #, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
 msgid "process stopped with signal ~a~%"
 msgstr "processen stoppad med signal ~a~%"
 
 #: guix/scripts/container/exec.scm:113
 #, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
 msgid "process exited with status ~d~%"
 msgstr "processen avslutades med status ~d~%"
 
@@ -8952,7 +8894,6 @@ msgstr "kunde inte avgöra vilken kompilator som används"
 
 #: guix/transformations.scm:607
 #, fuzzy, scheme-format
-#| msgid "failed to determine latest release of GNU ~a"
 msgid "failed to determine whether ~a supports ~a"
 msgstr "kunde inte avgöra om ~a stöder ~a"
 
@@ -8981,14 +8922,13 @@ msgstr "Kompilatorn ~a stöder följande ~a-mikroarkitekturer: @citat ~a @slut c
 
 #: guix/transformations.scm:687
 #, fuzzy, scheme-format
-#| msgid "~a for ~a~%"
 msgid "tuning ~a for CPU ~a~%"
 msgstr "inställning ~a för CPU ~a~%"
 
 #: guix/transformations.scm:732
-#, scheme-format
+#, fuzzy, scheme-format
 msgid "~a: no ROCm compiler was found among the inputs"
-msgstr ""
+msgstr "~a: ingen ROCm-kompilator hittades bland inmatningarna"
 
 #: guix/transformations.scm:744
 #, fuzzy, scheme-format
@@ -9008,7 +8948,6 @@ msgstr "Kompilatorn ~a stöder följande ~a-mikroarkitekturer: @citat ~a @slut c
 
 #: guix/transformations.scm:777
 #, fuzzy, scheme-format
-#| msgid "~a for ~a~%"
 msgid "compiling ~a for AMD GPU~{ ~a~}~%"
 msgid_plural "compiling ~a for these AMD GPUs:~{ ~a~}~%"
 msgstr[0] "inställning ~a för CPU ~a~%"
@@ -9026,7 +8965,6 @@ msgstr "~a: ogiltig specifikation för paketpatch"
 
 #: guix/transformations.scm:1005
 #, fuzzy, scheme-format
-#| msgid "could not find bootstrap binary '~a' for system '~a'"
 msgid "could not find version ~a of '~a' upstream~%"
 msgstr "kunde inte hitta version ~a av '~a' uppströms~%"
 
@@ -9238,44 +9176,42 @@ msgstr "saknad offentlig nyckel ~a för '~a'~%"
 msgid "failed to fetch source from '~a'"
 msgstr "misslyckades med att hämta källan från '~a'"
 
-#: guix/upstream.scm:536
+#: guix/upstream.scm:545
 #, scheme-format
 msgid "cannot download for this method: ~s"
 msgstr "kan inte hämta med denna metod: ~s"
 
-#: guix/upstream.scm:558
+#: guix/upstream.scm:567
 #, fuzzy, scheme-format
 msgid "downgrading '~a' from ~a to ~a~%"
 msgstr "nedgradering av '~a' från ~a till ~a~%"
 
-#: guix/upstream.scm:568
+#: guix/upstream.scm:577
 #, fuzzy, scheme-format
-#| msgid "failed to determine latest release of GNU ~a"
 msgid "updater failed to find release ~a@~a~%"
 msgstr "Uppdateraren kunde inte hitta versionen ~a@~a~%"
 
-#: guix/upstream.scm:570
+#: guix/upstream.scm:579
 #, fuzzy, scheme-format
-#| msgid "failed to determine latest release of GNU ~a"
 msgid "updater failed to determine available releases for ~a~%"
 msgstr "Uppdateraren kunde inte fastställa tillgängliga versioner för ~a~%."
 
-#: guix/upstream.scm:606
+#: guix/upstream.scm:615
 #, fuzzy, scheme-format
 msgid "~a: '~a' field not found; leaving it unchanged~%"
 msgstr "~a: Fältet '~a' hittades inte; lämnar det oförändrat~%"
 
-#: guix/upstream.scm:609
+#: guix/upstream.scm:618
 #, fuzzy, scheme-format
 msgid "~a: expected '~a' value: ~s~%"
 msgstr "~a: förväntat värde för '~a': ~s~%"
 
-#: guix/upstream.scm:754
+#: guix/upstream.scm:769
 #, fuzzy, scheme-format
 msgid "~a: no `version' field in source; skipping~%"
 msgstr "~a: inget fält för \"version\" i källkoden; hoppar över~%"
 
-#: guix/upstream.scm:758
+#: guix/upstream.scm:773
 #, scheme-format
 msgid "~a: could not locate source file"
 msgstr "~a: kunde inte hitta källfil"
@@ -9334,7 +9270,6 @@ msgstr "~asaknar avslutande parentes~%"
 
 #: guix/ui.scm:421
 #, fuzzy, scheme-format
-#| msgid "failed to load '~a': ~a~%"
 msgid "read error while loading '~a': ~a~%"
 msgstr "läsfel vid laddning av '~a': ~a~%"
 
@@ -9343,13 +9278,13 @@ msgstr "läsfel vid laddning av '~a': ~a~%"
 msgid "~s: ~a~%"
 msgstr "~s: ~a~%"
 
-#: guix/ui.scm:433 guix/ui.scm:464 guix/ui.scm:875 guix/ui.scm:925
-#: guix/ui.scm:981
+#: guix/ui.scm:433 guix/ui.scm:464 guix/ui.scm:876 guix/ui.scm:926
+#: guix/ui.scm:982
 #, scheme-format
 msgid "~a~%"
 msgstr "~a~%"
 
-#: guix/ui.scm:441 guix/ui.scm:990
+#: guix/ui.scm:441 guix/ui.scm:991
 #, scheme-format
 msgid "exception thrown: ~s~%"
 msgstr "kastat undantag: ~s~%"
@@ -9498,108 +9433,105 @@ msgstr "~a: ~a: stöder inte målet `~a'~%"
 
 #: guix/ui.scm:806
 #, fuzzy, scheme-format
-#| msgid "~a: ~a: build system `~a' does not support cross builds~%"
 msgid "the `~a' build system: does not support target `~a'~%"
 msgstr "byggsystemet `~a': stöder inte målet `~a'~%"
 
-#: guix/ui.scm:811
+#: guix/ui.scm:812
 #, scheme-format
 msgid "~s: invalid G-expression input~%"
 msgstr "~s: ogiltig inmatning för G-uttryck~%"
 
-#: guix/ui.scm:814
+#: guix/ui.scm:815
 #, scheme-format
 msgid "profile '~a' does not exist~%"
 msgstr "profil ”~a” existerar inte~%"
 
-#: guix/ui.scm:817
+#: guix/ui.scm:818
 #, scheme-format
 msgid "generation ~a of profile '~a' does not exist~%"
 msgstr "generation ~a av profil ”~a” existerar inte~%"
 
-#: guix/ui.scm:822
+#: guix/ui.scm:823
 #, scheme-format
 msgid "package '~a~@[@~a~]~@[:~a~]' not found in profile~%"
 msgstr "paket ”~a~@[@~a~]~@[:~a~]” hittades inte i profil~%"
 
-#: guix/ui.scm:834
+#: guix/ui.scm:835
 #, scheme-format
 msgid "   ... propagated from ~a@~a~%"
 msgstr "   … propagerad från ~a@~a~%"
 
-#: guix/ui.scm:844
+#: guix/ui.scm:845
 #, scheme-format
 msgid "profile contains conflicting entries for ~a~a~%"
 msgstr "profil innehåller poster som står i konflikt för ~a~a~%"
 
-#: guix/ui.scm:847
+#: guix/ui.scm:848
 #, scheme-format
 msgid "  first entry: ~a@~a~a ~a~%"
 msgstr "  första post: ~a@~a~a ~a~%"
 
-#: guix/ui.scm:853
+#: guix/ui.scm:854
 #, scheme-format
 msgid "  second entry: ~a@~a~a ~a~%"
 msgstr "  andra post: ~a@~a~a ~a~%"
 
-#: guix/ui.scm:865
+#: guix/ui.scm:866
 #, scheme-format
 msgid "corrupt input while restoring '~a' from ~s~%"
 msgstr "korrupt inmatning under återställning av ”~a” från ~s~%"
 
-#: guix/ui.scm:867
+#: guix/ui.scm:868
 #, scheme-format
 msgid "corrupt input while restoring archive from ~s~%"
 msgstr "korrupt inmatning under återställning av arkiv från ~s~%"
 
-#: guix/ui.scm:870
+#: guix/ui.scm:871
 #, scheme-format
 msgid "failed to connect to `~a': ~a~%"
 msgstr "misslyckades med att ansluta till ”~a”: ~a~%"
 
-#: guix/ui.scm:878
+#: guix/ui.scm:879
 #, scheme-format
 msgid "reference to invalid output '~a' of derivation '~a'~%"
 msgstr "referens till ogiltig utmatning ”~a” från härledning ”~a”~%"
 
-#: guix/ui.scm:882
+#: guix/ui.scm:883
 #, scheme-format
 msgid "file '~a' could not be found in these directories:~{ ~a~}~%"
 msgstr "fil ”~a” kunde inte hittas bland dessa kataloger:~{ ~a~}~%"
 
-#: guix/ui.scm:887
+#: guix/ui.scm:888
 #, scheme-format
 msgid "program exited~@[ with non-zero exit status ~a~]~@[ terminated by signal ~a~]~@[ stopped by signal ~a~]: ~s~%"
 msgstr "program avslutades~@[ med icke-noll avslutningsstatus ~a~]~@[ avslutades av signal ~a~]~@[ stoppades av signal ~a~]: ~s~%"
 
-#: guix/ui.scm:967
+#: guix/ui.scm:968
 #, scheme-format
 msgid "failed to read expression ~s: ~s~%"
 msgstr "misslyckades med att läsa uttryck ~s: ~s~%"
 
-#: guix/ui.scm:975
+#: guix/ui.scm:976
 #, scheme-format
 msgid "failed to evaluate expression '~a':~%"
 msgstr "misslyckades med att utvärdera uttryck ”~a”:~%"
 
-#: guix/ui.scm:978
+#: guix/ui.scm:979
 #, scheme-format
 msgid "syntax error: ~a~%"
 msgstr "syntaxfel: ~a~%"
 
-#: guix/ui.scm:1014
+#: guix/ui.scm:1015
 #, scheme-format
 msgid "expression ~s does not evaluate to a package~%"
 msgstr "uttryck ~s utvärderas inte till ett paket~%"
 
-#: guix/ui.scm:1041
+#: guix/ui.scm:1042
 msgid "at least ~,1h MB needed but only ~,1h MB available in ~a~%"
 msgstr "åtminstone ~,1h MB behövs men endast ~,1h MB tillgängligt i ~a~%"
 
-#: guix/ui.scm:1151
+#: guix/ui.scm:1152
 #, fuzzy, scheme-format
-#| msgid "~:[The following derivation would be built:~%~{   ~a~%~}~;~]"
-#| msgid_plural "~:[The following derivations would be built:~%~{   ~a~%~}~;~]"
 msgid "The following derivation would be built:~%"
 msgid_plural "The following derivations would be built:~%"
 msgstr[0] "Följande härledning skulle byggas:~%"
@@ -9608,28 +9540,26 @@ msgstr[1] "Följande härledningar skulle byggas:~%"
 #. TRANSLATORS: "MB" is for "megabyte"; it
 #. should be translated to the corresponding
 #. abbreviation.
-#: guix/ui.scm:1164
+#: guix/ui.scm:1165
 #, fuzzy
 msgid "~:[~,1h MB would be downloaded:~%~;~]"
 msgstr "~:[~,1h MB skulle laddas ner:~%~;~]"
 
-#: guix/ui.scm:1173
+#: guix/ui.scm:1174
 #, fuzzy, scheme-format
-#| msgid "~:[The following file would be downloaded:~%~{   ~a~%~}~;~]"
-#| msgid_plural "~:[The following files would be downloaded:~%~{   ~a~%~}~;~]"
 msgid "~:[The following file would be downloaded:~%~;~]"
 msgid_plural "~:[The following files would be downloaded:~%~;~]"
 msgstr[0] "~:[Följande fil skulle laddas ner:~%~;~]"
 msgstr[1] "~:[Följande filer skulle laddas ner:~%~;~]"
 
-#: guix/ui.scm:1181
+#: guix/ui.scm:1182
 #, scheme-format
 msgid "~:[The following graft would be made:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following grafts would be made:~%~{   ~a~%~}~;~]"
 msgstr[0] "~:[Följande ympning skulle göras:~%~{   ~a~%~}~;~]"
 msgstr[1] "~:[Följande ympningar skulle göras:~%~{   ~a~%~}~;~]"
 
-#: guix/ui.scm:1186
+#: guix/ui.scm:1187
 #, scheme-format
 msgid "~:[The following profile hook would be built:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following profile hooks would be built:~%~{   ~a~%~}~;~]"
@@ -9638,22 +9568,20 @@ msgstr[1] "~:[Följande profilkrokar skulle byggas:~%~{   ~a~%~}~;~]"
 
 #. TRANSLATORS: "MB" is for "megabyte"; it should be
 #. translated to the corresponding abbreviation.
-#: guix/ui.scm:1198
+#: guix/ui.scm:1199
 #, fuzzy
 msgid "~:[~,1h MB would be downloaded~%~;~]"
 msgstr "~:[~,1h MB skulle laddas ner~%~;~]"
 
-#: guix/ui.scm:1202
+#: guix/ui.scm:1203
 #, fuzzy
 msgid "~:[~h item would be downloaded~%~;~]"
 msgid_plural "~:[~h items would be downloaded~%~;~]"
 msgstr[0] "~:[~h objekt skulle laddas ner~%~;~]"
 msgstr[1] "~:[~h objekt skulle laddas ner~%~;~]"
 
-#: guix/ui.scm:1211
+#: guix/ui.scm:1212
 #, fuzzy, scheme-format
-#| msgid "~:[The following derivation will be built:~%~{   ~a~%~}~;~]"
-#| msgid_plural "~:[The following derivations will be built:~%~{   ~a~%~}~;~]"
 msgid "The following derivation will be built:~%"
 msgid_plural "The following derivations will be built:~%"
 msgstr[0] "Följande härledning kommer att byggas:~%"
@@ -9662,28 +9590,26 @@ msgstr[1] "Följande härledningar kommer att byggas:~%"
 #. TRANSLATORS: "MB" is for "megabyte"; it
 #. should be translated to the corresponding
 #. abbreviation.
-#: guix/ui.scm:1224
+#: guix/ui.scm:1225
 #, fuzzy
 msgid "~:[~,1h MB will be downloaded:~%~;~]"
 msgstr "~:[~,1h MB kommer att laddas ner:~%~;~]"
 
-#: guix/ui.scm:1233
+#: guix/ui.scm:1234
 #, fuzzy, scheme-format
-#| msgid "~:[The following file will be downloaded:~%~{   ~a~%~}~;~]"
-#| msgid_plural "~:[The following files will be downloaded:~%~{   ~a~%~}~;~]"
 msgid "~:[The following file will be downloaded:~%~;~]"
 msgid_plural "~:[The following files will be downloaded:~%~;~]"
 msgstr[0] "~:[Följande fil kommer att laddas ner:~%~;~]"
 msgstr[1] "~:[Följande filer kommer att laddas ner:~%~;~]"
 
-#: guix/ui.scm:1241
+#: guix/ui.scm:1242
 #, scheme-format
 msgid "~:[The following graft will be made:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following grafts will be made:~%~{   ~a~%~}~;~]"
 msgstr[0] "~:[Följande ympning kommer att göras:~%~{   ~a~%~}~;~]"
 msgstr[1] "~:[Följande ympningar kommer att göras:~%~{   ~a~%~}~;~]"
 
-#: guix/ui.scm:1246
+#: guix/ui.scm:1247
 #, scheme-format
 msgid "~:[The following profile hook will be built:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following profile hooks will be built:~%~{   ~a~%~}~;~]"
@@ -9692,124 +9618,123 @@ msgstr[1] "~:[Följande profilkrokar kommer att byggas:~%~{   ~a~%~}~;~]"
 
 #. TRANSLATORS: "MB" is for "megabyte"; it should be
 #. translated to the corresponding abbreviation.
-#: guix/ui.scm:1258
+#: guix/ui.scm:1259
 #, fuzzy
 msgid "~:[~,1h MB will be downloaded~%~;~]"
 msgstr "~:[~,1h MB kommer att laddas ner~%~;~]"
 
-#: guix/ui.scm:1262
+#: guix/ui.scm:1263
 #, fuzzy
 msgid "~:[~h item will be downloaded~%~;~]"
 msgid_plural "~:[~h items will be downloaded~%~;~]"
 msgstr[0] "~:[~h objekt kommer att laddas ner~%~;~]"
 msgstr[1] "~:[~h objekt kommer att laddas ner~%~;~]"
 
-#: guix/ui.scm:1381
+#: guix/ui.scm:1384
 #, fuzzy
 msgid "(dependencies or package changed)"
 msgstr "(beroenden eller paket ändrade)"
 
-#: guix/ui.scm:1400
+#: guix/ui.scm:1403
 #, scheme-format
 msgid "The following package would be removed:~%~{~a~%~}~%"
 msgid_plural "The following packages would be removed:~%~{~a~%~}~%"
 msgstr[0] "Följande paket skulle tas bort:~%~{~a~%~}~%"
 msgstr[1] "Följande paket skulle tas bort:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1405
+#: guix/ui.scm:1408
 #, scheme-format
 msgid "The following package will be removed:~%~{~a~%~}~%"
 msgid_plural "The following packages will be removed:~%~{~a~%~}~%"
 msgstr[0] "Följande paket kommer att tas bort:~%~{~a~%~}~%"
 msgstr[1] "Följande paket kommer att tas bort:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1418
+#: guix/ui.scm:1421
 #, scheme-format
 msgid "The following package would be downgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages would be downgraded:~%~{~a~%~}~%"
 msgstr[0] "Följande paket skulle nedgraderas:~%~{~a~%~}~%"
 msgstr[1] "Följande paket skulle nedgraderas:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1423
+#: guix/ui.scm:1426
 #, scheme-format
 msgid "The following package will be downgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages will be downgraded:~%~{~a~%~}~%"
 msgstr[0] "Följande paket kommer att nedgraderas:~%~{~a~%~}~%"
 msgstr[1] "Följande paket kommer att nedgraderas:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1436
+#: guix/ui.scm:1439
 #, scheme-format
 msgid "The following package would be upgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages would be upgraded:~%~{~a~%~}~%"
 msgstr[0] "Följande paket skulle uppgraderas:~%~{~a~%~}~%"
 msgstr[1] "Följande paket skulle uppgraderas:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1441
+#: guix/ui.scm:1444
 #, scheme-format
 msgid "The following package will be upgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages will be upgraded:~%~{~a~%~}~%"
 msgstr[0] "Följande paket kommer att uppgraderas:~%~{~a~%~}~%"
 msgstr[1] "Följande paket kommer att uppgraderas:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1452
+#: guix/ui.scm:1455
 #, scheme-format
 msgid "The following package would be installed:~%~{~a~%~}~%"
 msgid_plural "The following packages would be installed:~%~{~a~%~}~%"
 msgstr[0] "Följande paket skulle installeras:~%~{~a~%~}~%"
 msgstr[1] "Följande paket skulle installeras:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1457
+#: guix/ui.scm:1460
 #, scheme-format
 msgid "The following package will be installed:~%~{~a~%~}~%"
 msgid_plural "The following packages will be installed:~%~{~a~%~}~%"
 msgstr[0] "Följande paket kommer att installeras:~%~{~a~%~}~%"
 msgstr[1] "Följande paket kommer att installeras:~%~{~a~%~}~%"
 
-#: guix/ui.scm:1561
+#: guix/ui.scm:1564
 #, fuzzy, scheme-format
-#| msgid "~a: invalid number~%"
 msgid "~a: invalid Texinfo markup~%"
 msgstr "~a: ogiltig Texinfo-markering~%"
 
-#: guix/ui.scm:1620
+#: guix/ui.scm:1623
 #, fuzzy
 msgid "executable programs and scripts"
 msgstr "körbara program och skript"
 
-#: guix/ui.scm:1621
+#: guix/ui.scm:1624
 msgid "debug information"
 msgstr "felsökningsinformation"
 
-#: guix/ui.scm:1622
+#: guix/ui.scm:1625
 msgid "documentation"
 msgstr "dokumentation"
 
-#: guix/ui.scm:1623
+#: guix/ui.scm:1626
 msgid "shared libraries"
 msgstr "delade bibliotek"
 
-#: guix/ui.scm:1624
+#: guix/ui.scm:1627
 msgid "static libraries"
 msgstr "statiska bibliotek"
 
-#: guix/ui.scm:1625
+#: guix/ui.scm:1628
 msgid "everything else"
 msgstr "allting annat"
 
-#: guix/ui.scm:1639
+#: guix/ui.scm:1642
 msgid "[description missing]"
 msgstr "[beskrivning saknas]"
 
-#: guix/ui.scm:1661
+#: guix/ui.scm:1664
 msgid "everything"
 msgstr "allting"
 
-#: guix/ui.scm:2045
+#: guix/ui.scm:2048
 #, scheme-format
 msgid "invalid syntax: ~a~%"
 msgstr "ogiltig syntax: ~a~%"
 
-#: guix/ui.scm:2054
+#: guix/ui.scm:2057
 #, scheme-format
 msgid "Generation ~a\t~a"
 msgstr "Generation ~a\t~a"
@@ -9819,7 +9744,7 @@ msgstr "Generation ~a\t~a"
 #. usual way of presenting dates in your locale.
 #. See https://www.gnu.org/software/guile/manual/html_node/SRFI_002d19-Date-to-string.html
 #. for details.
-#: guix/ui.scm:2066
+#: guix/ui.scm:2069
 #, scheme-format
 msgid "~b ~d ~Y ~T"
 msgstr "~d ~b ~Y ~T"
@@ -9827,47 +9752,44 @@ msgstr "~d ~b ~Y ~T"
 #. TRANSLATORS: The word "current" here is an adjective for
 #. "Generation", as in "current generation".  Use the appropriate
 #. gender where applicable.
-#: guix/ui.scm:2072
+#: guix/ui.scm:2075
 #, scheme-format
 msgid "~a\t(current)~%"
 msgstr "~a\t(aktuell)~%"
 
-#: guix/ui.scm:2106
+#: guix/ui.scm:2109
 #, fuzzy, scheme-format
 msgid "cannot lock profile ~a: ~a~%"
 msgstr "kan inte låsa profil ~a: ~a~%"
 
-#: guix/ui.scm:2108
+#: guix/ui.scm:2111
 #, fuzzy, scheme-format
 msgid "profile ~a is locked by another process~%"
 msgstr "profilen ~a är låst av en annan process~%"
 
-#: guix/ui.scm:2137
+#: guix/ui.scm:2140
 #, scheme-format
 msgid "switched from generation ~a to ~a~%"
 msgstr "växlade från generation ~a till ~a~%"
 
-#: guix/ui.scm:2153
+#: guix/ui.scm:2156
 #, scheme-format
 msgid "deleting ~a~%"
 msgstr "tar bort ~a~%"
 
-#: guix/ui.scm:2184
+#: guix/ui.scm:2187
 #, scheme-format
 msgid "Try `guix --help' for more information.~%"
 msgstr "Prova ”guix --help” för mer information.~%"
 
-#: guix/ui.scm:2292
+#: guix/ui.scm:2295
 #, fuzzy
-#| msgid ""
-#| "Usage: guix COMMAND ARGS...\n"
-#| "Run COMMAND with ARGS.\n"
 msgid ""
 "Usage: guix OPTION | COMMAND ARGS...\n"
 "Run COMMAND with ARGS, if given.\n"
 msgstr "Användning: guix OPTION | COMMAND ARGS... Kör COMMAND med ARGS, om angivet.\n"
 
-#: guix/ui.scm:2295
+#: guix/ui.scm:2298
 msgid ""
 "\n"
 "  -h, --help             display this helpful text again and exit"
@@ -9875,7 +9797,7 @@ msgstr ""
 "\n"
 "  -h, --help             visa denna hjälpsamma text igen och avsluta"
 
-#: guix/ui.scm:2297
+#: guix/ui.scm:2300
 msgid ""
 "\n"
 "  -V, --version          display version and copyright information and exit"
@@ -9883,21 +9805,21 @@ msgstr ""
 "\n"
 "  -V, --version          visa versions- och upphovsrättsinformation och avsluta"
 
-#: guix/ui.scm:2302
+#: guix/ui.scm:2305
 msgid "COMMAND must be one of the sub-commands listed below:\n"
 msgstr "KOMMANDO måste vara ett av underkommandona som listas nedan:\n"
 
-#: guix/ui.scm:2344
+#: guix/ui.scm:2347
 #, scheme-format
 msgid "guix: ~a: command not found~%"
 msgstr "guix: ~a: kommando hittades inte~%"
 
-#: guix/ui.scm:2383
+#: guix/ui.scm:2386
 #, scheme-format
 msgid "guix: missing command name~%"
 msgstr "guix: saknar kommandonamn~%"
 
-#: guix/ui.scm:2391
+#: guix/ui.scm:2394
 #, scheme-format
 msgid "guix: unrecognized option '~a'~%"
 msgstr "guix: okänd flagga ”~a”~%"
@@ -9929,7 +9851,6 @@ msgstr "listar Emacs-underkataloger..."
 
 #: guix/status.scm:397
 #, fuzzy
-#| msgid "generating GLib schema cache..."
 msgid "generating GdkPixbuf loaders cache..."
 msgstr "genererar GdkPixbuf-laddare cache..."
 
@@ -9959,7 +9880,6 @@ msgstr "bygger fontkatalog…"
 
 #: guix/status.scm:411
 #, fuzzy
-#| msgid "building TeX Live configuration..."
 msgid "building TeX Live font maps..."
 msgstr "skapa TeX Live-teckensnittskartor..."
 
@@ -10150,37 +10070,37 @@ msgstr "signaturen är inte en giltig s-uttryck: ~s~%"
 msgid "invalid format of the signature field: ~a~%"
 msgstr "ogiltigt format för signaturfältet: ~a~%"
 
-#: guix/channels.scm:268
+#: guix/channels.scm:264
 #, fuzzy
 msgid "channel dependency has an invalid introduction field"
 msgstr "kanalberoendet har ett ogiltigt introduktionsfält"
 
-#: guix/channels.scm:311
+#: guix/channels.scm:307
 msgid "unsupported '.guix-channel' version"
 msgstr "'.guix-channel'-versionen stöds inte"
 
-#: guix/channels.scm:317
+#: guix/channels.scm:313
 msgid "invalid '.guix-channel' file"
 msgstr "ogiltig '.guix-channel' fil"
 
-#: guix/channels.scm:373
+#: guix/channels.scm:369
 #, fuzzy
 msgid "Authenticating channel '~a', commits ~a to ~a (~h new commit)...~%"
 msgid_plural "Authenticating channel '~a', commits ~a to ~a (~h new commits)...~%"
 msgstr[0] "Autentiserar kanal '~a', bekräftar ~a till ~a (~h ny bekräftelse)...~%"
 msgstr[1] "Autentiserar kanal '~a', bekräftar ~a till ~a (~h nya bekräftelser)...~%"
 
-#: guix/channels.scm:444
+#: guix/channels.scm:440
 #, fuzzy, scheme-format
 msgid "channel '~a' lacks 'introduction' field but '.guix-authorizations' found\n"
 msgstr "kanalen '~a' saknar fältet 'introduction' men '.guix-authorizations' hittades\n"
 
-#: guix/channels.scm:452
+#: guix/channels.scm:448
 #, fuzzy, scheme-format
 msgid "channel '~a' lacks an introduction and cannot be authenticated~%"
 msgstr "kanalen '~a' saknar introduktion och kan inte autentiseras~%"
 
-#: guix/channels.scm:457
+#: guix/channels.scm:453
 #, fuzzy
 msgid ""
 "Add the missing introduction to your\n"
@@ -10189,17 +10109,17 @@ msgid ""
 "thus potentially malicious code."
 msgstr "Lägg till den saknade introduktionen till din kanalfiler för att lösa problemet. Alternativt kan du skicka @option{--disable-authentication}, med risken att köra oautentiserad och därmed potentiellt skadlig kod."
 
-#: guix/channels.scm:461
+#: guix/channels.scm:457
 #, scheme-format
 msgid "channel authentication disabled~%"
 msgstr "autentiseringen för kanalen är avstängd~%"
 
-#: guix/channels.scm:486
+#: guix/channels.scm:482
 #, fuzzy, scheme-format
 msgid "aborting update of channel '~a' to commit ~a, which is not a descendant of ~a"
 msgstr "Avbryter uppdatering av kanal '~a' för att bekräfta ~a, som inte är en efterföljare till ~a."
 
-#: guix/channels.scm:501
+#: guix/channels.scm:497
 #, fuzzy
 msgid ""
 "This could indicate that the channel has\n"
@@ -10208,45 +10128,44 @@ msgid ""
 "allow non-forward updates."
 msgstr "Detta kan tyda på att kanalen har manipulerats och försöker tvinga fram en återgång, vilket hindrar dig från att få de senaste uppdateringarna. Om du tror att detta inte är fallet, tillåt uttryckligen icke-vidarebefordrade uppdateringar."
 
-#: guix/channels.scm:566
+#: guix/channels.scm:562
 #, scheme-format
 msgid "Updating channel '~a' from Git repository at '~a'...~%"
 msgstr "Uppdaterar kanal ”~a” från ett Git-arkiv vid ”~a”…~%"
 
-#: guix/channels.scm:589
+#: guix/channels.scm:585
 #, fuzzy, scheme-format
 msgid "pulled channel '~a' from a mirror of ~a, which might be stale~%"
 msgstr "drog kanalen '~a' från en spegel av ~a, som kan vara inaktuell~%"
 
-#: guix/channels.scm:860
+#: guix/channels.scm:877
 msgid "'guix' channel is lacking"
 msgstr "”guix”-kanal saknas"
 
-#: guix/channels.scm:862
+#: guix/channels.scm:879
 #, fuzzy
 msgid ""
 "Make sure your list of channels\n"
 "contains one channel named @code{guix} providing the core of Guix."
 msgstr "Se till att din kanallista innehåller en kanal med namnet @code{guix} som tillhandahåller kärnan i Guix."
 
-#: guix/channels.scm:1181
+#: guix/channels.scm:1198
 #, fuzzy
 msgid "invalid channel news entry"
 msgstr "ogiltig nyhetspost"
 
-#: guix/channels.scm:1199
+#: guix/channels.scm:1216
 #, fuzzy
 msgid "syntactically invalid channel news file"
 msgstr "syntaktiskt ogiltig kanalnyhetsfil"
 
-#: guix/channels.scm:1202
+#: guix/channels.scm:1219
 #, fuzzy
 msgid "invalid channel news file"
 msgstr "ogiltig kanalnyhetsfil"
 
 #: guix/packages.scm:608
 #, fuzzy, scheme-format
-#| msgid "~a: invalid locale name"
 msgid "~s: invalid package license~%"
 msgstr "~s: ogiltig paketlicens~%"
 
@@ -10264,27 +10183,27 @@ msgstr "ogiltig upprepad post i profilen: ~s"
 msgid "unsupported manifest format"
 msgstr "manifestformat stöds inte"
 
-#: guix/profiles.scm:2018
+#: guix/profiles.scm:2026
 #, fuzzy, scheme-format
 msgid "package ~a does not support ~a"
 msgstr "paketet ~a stöder inte ~a"
 
-#: guix/profiles.scm:2397
+#: guix/profiles.scm:2405
 #, scheme-format
 msgid "while creating directory `~a': ~a"
 msgstr "vid skapande av katalog ”~a”: ~a"
 
-#: guix/profiles.scm:2402
+#: guix/profiles.scm:2410
 #, scheme-format
 msgid "Please create the @file{~a} directory, with you as the owner."
 msgstr "Skapa katalogen @file{~a}, med dig själv som ägare."
 
-#: guix/profiles.scm:2411
+#: guix/profiles.scm:2419
 #, scheme-format
 msgid "directory `~a' is not owned by you"
 msgstr "katalog ”~a” ägs inte av dig"
 
-#: guix/profiles.scm:2415
+#: guix/profiles.scm:2423
 #, scheme-format
 msgid "Please change the owner of @file{~a} to user ~s."
 msgstr "Ändra ägare av @file{~a} till användare ~s."
@@ -10300,13 +10219,11 @@ msgstr "oväntat slut på filen"
 
 #: guix/read-print.scm:174
 #, fuzzy
-#| msgid "~amissing closing parenthesis~%"
 msgid "Did you forget a closing parenthesis?"
 msgstr "Har du glömt en avslutande parentes?"
 
-#: guix/remote.scm:71 guix/ssh.scm:199
+#: guix/remote.scm:73 guix/ssh.scm:199
 #, fuzzy, scheme-format
-#| msgid "exec failed with status ~d~%"
 msgid "remote command '~{~a~^ ~}' failed with status ~a"
 msgstr "Fjärrkommandot '~{~a~^ ~}' misslyckades med status ~a"
 
@@ -10332,7 +10249,6 @@ msgstr "SSH-autentisering misslyckades för '~a@~a': ~a~%"
 
 #: guix/ssh.scm:185
 #, fuzzy, scheme-format
-#| msgid "~a: download failed~%"
 msgid "SSH connection to '~a' port ~a failed: ~a~%"
 msgstr "SSH-anslutning till porten '~a' misslyckades: ~a~%"
 
@@ -10415,7 +10331,6 @@ msgstr "indexerar objekt"
 
 #: guix/git.scm:190
 #, fuzzy, scheme-format
-#| msgid "invalid number: ~a~%"
 msgid "ignoring invalid certificate for '~a'~%"
 msgstr "ignorerar ogiltigt certifikat för '~a'~%"
 
@@ -10436,7 +10351,6 @@ msgstr "Revision ~a av ~a kunde inte hämtas från Software Heritage~%"
 
 #: guix/git.scm:525
 #, fuzzy, scheme-format
-#| msgid "Updating channel '~a' from Git repository at '~a'...~%"
 msgid "compressing cached Git repository at '~a'...~%"
 msgstr "komprimerar cachat Git-arkiv på '~a'...~%"
 
@@ -10457,31 +10371,26 @@ msgstr "Git-fel vid hämtning av ~a: ~a"
 
 #: guix/substitutes.scm:114
 #, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
 msgid "'~a' does not name a store item~%"
 msgstr "'~a' betecknar inte en butiksartikel~%"
 
 #: guix/substitutes.scm:159
 #, fuzzy, scheme-format
-#| msgid "~a: patch not found"
 msgid "~a: host not found: ~a~%"
 msgstr "~a: värd hittades inte: ~a~%"
 
 #: guix/substitutes.scm:165
 #, fuzzy, scheme-format
-#| msgid "~a: download failed~%"
 msgid "~a: connection failed: ~a~%"
 msgstr "~a: anslutningen misslyckades: ~a~%"
 
 #: guix/substitutes.scm:174
 #, fuzzy, scheme-format
-#| msgid "~a: download failed~%"
 msgid "~a: TLS connection failed: in ~a: ~a~%"
 msgstr "~a: TLS-anslutningen misslyckades: i ~a: ~a~%"
 
 #: guix/substitutes.scm:293
 #, fuzzy, scheme-format
-#| msgid "~a: unsupported kind of search path~%"
 msgid "~s: unsupported server URI scheme~%"
 msgstr "~s: icke-stödd server-URI-schema~%"
 
@@ -10512,7 +10421,6 @@ msgstr "Hämtar ~a...~%"
 
 #: guix/substitutes.scm:550
 #, fuzzy, scheme-format
-#| msgid "found valid signature for '~a'~%"
 msgid "no valid nar URLs for ~a at ~a~%"
 msgstr "inga giltiga nar-URL:er för ~a vid ~a~%"
 
@@ -10539,7 +10447,7 @@ msgstr "'~a' är föråldrat~%"
 
 #. TRANSLATORS: 'derivation' must not be translated; it refers to the
 #. 'derivation' procedure.
-#: guix/derivations.scm:794
+#: guix/derivations.scm:795
 #, fuzzy, scheme-format
 msgid "in '~a': deprecated 'derivation' calling convention used~%"
 msgstr "i '~a': föråldrad 'derivation' anropskonvention används~%"
@@ -10752,9 +10660,6 @@ msgstr "Användning: guix shell [FLAGGA] PACKAGES... [-- COMMAND...] Skapa en mi
 
 #: guix/scripts/shell.scm:63
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -d, --derivations      return the derivation paths of the given packages"
 msgid ""
 "\n"
 "  -D, --development      include the development inputs of the next package"
@@ -10810,18 +10715,16 @@ msgstr ""
 
 #: guix/scripts/shell.scm:236
 #, fuzzy, scheme-format
-#| msgid "invalid number: ~a~%"
 msgid "ignoring invalid file name: '~a'~%"
 msgstr "ignorerar ogiltigt filnamn: '~a'~%"
 
-#: guix/scripts/shell.scm:300 guix/scripts/environment.scm:1210
+#: guix/scripts/shell.scm:300 guix/scripts/environment.scm:1216
 #, fuzzy, scheme-format
 msgid "no packages specified; creating an empty environment~%"
 msgstr "inga paket angivna; skapar en tom miljö~%"
 
 #: guix/scripts/shell.scm:305
 #, fuzzy, scheme-format
-#| msgid "following redirection to `~a'...~%"
 msgid "loading environment from '~a'...~%"
 msgstr "laddar miljö från '~a'...~%"
 
@@ -11076,7 +10979,6 @@ msgstr "kunde inte lägga till aktuell Guix till profilen~%"
 
 #: guix/scripts/environment.scm:546
 #, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
 msgid "~a: command not found~%"
 msgstr "~a: kommandot hittades inte~%"
 
@@ -11097,13 +10999,11 @@ msgstr "Variabeln '~a' saknas i skalets miljö~%"
 
 #: guix/scripts/environment.scm:642
 #, fuzzy, scheme-format
-#| msgid "package '~a' has been superseded by '~a'~%"
 msgid "variable '~a' has unexpected suffix '~a'~%"
 msgstr "variabeln '~a' har oväntat suffix '~a'~%"
 
 #: guix/scripts/environment.scm:648
 #, fuzzy, scheme-format
-#| msgid "package '~a' has been superseded by '~a'~%"
 msgid "variable '~a' is clobbered: '~a'~%"
 msgstr "variabeln '~a' är överkörd: '~a'~%"
 
@@ -11174,94 +11074,93 @@ msgstr "Allt är bra! Skalet får korrekta miljövariabler.~%"
 msgid "Did you mean '~a'?~%"
 msgstr "Menade du '~a'?~%"
 
-#: guix/scripts/environment.scm:1051
+#: guix/scripts/environment.scm:1057
 #, fuzzy, scheme-format
 msgid "cannot link profile: '~a' already exists within container~%"
 msgstr "Kan inte länka profil: '~a' finns redan i behållaren~%"
 
-#: guix/scripts/environment.scm:1089
+#: guix/scripts/environment.scm:1095
 #, fuzzy
 msgid "cannot create container: user namespaces unavailable\n"
 msgstr "Kan inte skapa behållare: användarnamnrymder är inte tillgängliga.\n"
 
-#: guix/scripts/environment.scm:1090
+#: guix/scripts/environment.scm:1096
 #, fuzzy
 msgid "is your kernel version < 3.10?\n"
 msgstr "Är din kärnversion < 3.10?\n"
 
-#: guix/scripts/environment.scm:1093
+#: guix/scripts/environment.scm:1099
 #, fuzzy
 msgid "cannot create container: unprivileged user cannot create user namespaces\n"
 msgstr "kan inte skapa behållare: användare utan behörighet kan inte skapa användarnamnrymder\n"
 
-#: guix/scripts/environment.scm:1094
+#: guix/scripts/environment.scm:1100
 #, fuzzy
 msgid "please set /proc/sys/kernel/unprivileged_userns_clone to \"1\"\n"
 msgstr "ställ in /proc/sys/kernel/unprivileged_userns_clone till \"1\"\n"
 
-#: guix/scripts/environment.scm:1097
+#: guix/scripts/environment.scm:1103
 #, fuzzy
 msgid "cannot create container: /proc/self/setgroups does not exist\n"
 msgstr "Kan inte skapa behållare: /proc/self/setgroups finns inte\n"
 
-#: guix/scripts/environment.scm:1098
+#: guix/scripts/environment.scm:1104
 #, fuzzy
 msgid "is your kernel version < 3.19?\n"
 msgstr "Är din kärnversion < 3.19?\n"
 
-#: guix/scripts/environment.scm:1124
+#: guix/scripts/environment.scm:1130
 #, fuzzy
 msgid "spawn one-off software environments (deprecated)"
 msgstr "skapa engångsmiljöer för programvara (föråldrat)"
 
-#: guix/scripts/environment.scm:1181
+#: guix/scripts/environment.scm:1187
 #, fuzzy, scheme-format
 msgid "'--link-profile' cannot be used without '--container'~%"
 msgstr "'--link-profile' kan inte användas utan '--container'~%"
 
-#: guix/scripts/environment.scm:1183
+#: guix/scripts/environment.scm:1189
 #, fuzzy, scheme-format
 msgid "'--user' cannot be used without '--container'~%"
 msgstr "'--user' kan inte användas utan '--container'~%"
 
-#: guix/scripts/environment.scm:1185
+#: guix/scripts/environment.scm:1191
 #, fuzzy, scheme-format
 msgid "--no-cwd cannot be used without '--container'~%"
 msgstr "--no-cwd kan inte användas utan '--container'~%"
 
-#: guix/scripts/environment.scm:1187
+#: guix/scripts/environment.scm:1193
 #, fuzzy, scheme-format
 msgid "'--writable-root' cannot be used without '--container'~%"
 msgstr "'--writable-root' kan inte användas utan '--container'~%"
 
-#: guix/scripts/environment.scm:1189
+#: guix/scripts/environment.scm:1195
 #, fuzzy, scheme-format
 msgid "'--emulate-fhs' cannot be used without '--container'~%"
 msgstr "'--emulate-fhs' kan inte användas utan '--container'~%"
 
-#: guix/scripts/environment.scm:1191
+#: guix/scripts/environment.scm:1197
 #, fuzzy, scheme-format
 msgid "'--nesting' cannot be used without '--container'~%"
 msgstr "'--nesting' kan inte användas utan '--container'~%"
 
-#: guix/scripts/environment.scm:1193
+#: guix/scripts/environment.scm:1199
 #, fuzzy, scheme-format
 msgid "'--symlink' cannot be used without '--container'~%"
 msgstr "'--symlink' kan inte användas utan '--container'~%"
 
-#: guix/scripts/environment.scm:1207
+#: guix/scripts/environment.scm:1213
 #, fuzzy, scheme-format
 msgid "'--profile' cannot be used with package options~%"
 msgstr "'--profile' kan inte användas med paketalternativ~%"
 
-#: guix/scripts/environment.scm:1251
+#: guix/scripts/environment.scm:1257
 #, fuzzy, scheme-format
 msgid "'--check' is unnecessary when using '--container'; doing nothing~%"
 msgstr "'--check' är onödigt när '--container' används; gör ingenting~%"
 
 #: guix/scripts/style.scm:85
 #, fuzzy, scheme-format
-#| msgid "~s: invalid G-expression input~%"
 msgid "~a: complex expression, bailing out~%"
 msgstr "~a: komplex uttryck, räddning~%"
 
@@ -11277,13 +11176,11 @@ msgstr "~a: icke-trivial inmatning, räddning~%"
 
 #: guix/scripts/style.scm:132
 #, fuzzy, scheme-format
-#| msgid "~s: invalid G-expression input~%"
 msgid "~a: input expression is too short~%"
 msgstr "~a: inmatningsuttrycket är för kort~%"
 
 #: guix/scripts/style.scm:224
 #, fuzzy, scheme-format
-#| msgid "~a: unsupported kind of search path~%"
 msgid "~a: unsupported input style, bailing out~%"
 msgstr "~a: icke-stödd inmatningsstil, avbryter~%"
 
@@ -11294,13 +11191,11 @@ msgstr "skulle bli redigerad~%"
 
 #: guix/scripts/style.scm:448
 #, fuzzy, scheme-format
-#| msgid "~a: unsupported kind of search path~%"
 msgid "unsupported argument style; bailing out~%"
 msgstr "icke-stödd argumentstil; bailing out~%"
 
 #: guix/scripts/style.scm:454
 #, fuzzy, scheme-format
-#| msgid "~a: unsupported kind of search path~%"
 msgid "unsupported argument field; bailing out~%"
 msgstr "icke-stött argumentfält; avbryter~%"
 
@@ -11309,47 +11204,47 @@ msgstr "icke-stött argumentfält; avbryter~%"
 msgid "no definition location for package ~a~%"
 msgstr "ingen definitionsplats för paketet ~a~%"
 
-#: guix/scripts/style.scm:606
+#: guix/scripts/style.scm:612
 #, fuzzy, scheme-format
-msgid "transforming source from url-fetch to git-fetch~%"
-msgstr "omvandla källan från url-fetch till git-fetch~%"
+msgid "~a: changing source to 'git-fetch'~%"
+msgstr "~a: ändring av källa till 'git-fetch'~%"
 
-#: guix/scripts/style.scm:654
+#: guix/scripts/style.scm:669
 #, fuzzy, scheme-format
 msgid "~a: unknown styling~%"
 msgstr "~a: okänd stil~%"
 
-#: guix/scripts/style.scm:661
+#: guix/scripts/style.scm:676
 #, fuzzy, scheme-format
 msgid "~a: invalid input simplification policy~%"
 msgstr "~a: ogiltig policy för förenkling av inmatning~%"
 
-#: guix/scripts/style.scm:679
+#: guix/scripts/style.scm:694
 #, fuzzy
 msgid "Available styling rules:\n"
 msgstr "Tillgängliga stilregler:\n"
 
-#: guix/scripts/style.scm:680
+#: guix/scripts/style.scm:695
 #, fuzzy
 msgid "- format: Format the given package definition(s)\n"
 msgstr "- format: Formatera den eller de angivna paketdefinitionerna.\n"
 
-#: guix/scripts/style.scm:681
+#: guix/scripts/style.scm:696
 #, fuzzy
 msgid "- inputs: Rewrite package inputs to the “new style”\n"
 msgstr "- ingångar: Skriv om paketets ingångar till den ”nya stilen”\n"
 
-#: guix/scripts/style.scm:682
+#: guix/scripts/style.scm:697
 #, fuzzy
 msgid "- arguments: Rewrite package arguments to G-expressions\n"
 msgstr "- argument: Skriv om paketargument till G-uttryck\n"
 
-#: guix/scripts/style.scm:683
+#: guix/scripts/style.scm:698
 #, fuzzy
 msgid "- git-source: Rewrite source fetch method to Git.\n"
 msgstr "- git-source: Skriv om källhämtningsmetoden till Git.\n"
 
-#: guix/scripts/style.scm:686
+#: guix/scripts/style.scm:701
 msgid ""
 "Usage: guix style [OPTION]... [PACKAGE]...\n"
 "Update package definitions to the latest style.\n"
@@ -11357,7 +11252,7 @@ msgstr ""
 "Användning: guix style [FLAGGA]... [PAKET]...\n"
 "Uppdatera paketdefinitioner till den senaste stilen.\n"
 
-#: guix/scripts/style.scm:688
+#: guix/scripts/style.scm:703
 #, fuzzy
 msgid ""
 "\n"
@@ -11366,7 +11261,7 @@ msgstr ""
 "\n"
 "  -S, --styling=RULE tillämpa RULE, en stilregel"
 
-#: guix/scripts/style.scm:690
+#: guix/scripts/style.scm:705
 #, fuzzy
 msgid ""
 "\n"
@@ -11375,11 +11270,8 @@ msgstr ""
 "\n"
 "  -l, --list-stylings visar listan över tillgängliga stilregler"
 
-#: guix/scripts/style.scm:693
+#: guix/scripts/style.scm:708
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -n, --dry-run          do not build the derivations"
 msgid ""
 "\n"
 "  -n, --dry-run          display files that would be edited but do nothing"
@@ -11387,7 +11279,7 @@ msgstr ""
 "\n"
 "  -n, --dry-run visa filer som skulle redigeras men inte göra något"
 
-#: guix/scripts/style.scm:699
+#: guix/scripts/style.scm:714
 #, fuzzy
 msgid ""
 "\n"
@@ -11398,11 +11290,8 @@ msgstr ""
 "\n"
 "      --input-simplification=POLICY följ POLICY för förenkling av paketinmatning, ett av 'silent', 'safe' eller 'always'"
 
-#: guix/scripts/style.scm:704
+#: guix/scripts/style.scm:719
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --log-file         return the log file names for the given derivations"
 msgid ""
 "\n"
 "  -f, --whole-file       format the entire contents of the given file(s)"
@@ -11410,7 +11299,7 @@ msgstr ""
 "\n"
 "  -f, --whole-file formatera hela innehållet i den eller de angivna filerna"
 
-#: guix/scripts/style.scm:706
+#: guix/scripts/style.scm:721
 #, fuzzy
 msgid ""
 "\n"
@@ -11420,18 +11309,17 @@ msgstr ""
 "\n"
 "  -A, --alphabetical-sort placera innehållet i alfabetisk ordning också"
 
-#: guix/scripts/style.scm:729
+#: guix/scripts/style.scm:744
 msgid "update the style of package definitions"
 msgstr "uppdatera stilen för paketdefinitioner"
 
-#: guix/scripts/style.scm:749
+#: guix/scripts/style.scm:764
 #, fuzzy, scheme-format
 msgid "'--styling' option has no effect in whole-file mode~%"
 msgstr "Alternativet '--styling' har ingen effekt i hela-fil-läget~%"
 
-#: guix/scripts/style.scm:751
+#: guix/scripts/style.scm:766
 #, fuzzy, scheme-format
-#| msgid "no pid specified~%"
 msgid "no files specified, nothing to do~%"
 msgstr "inga filer angivna, inget att göra~%"
 
@@ -11494,9 +11382,6 @@ msgstr "   konfigurera om växeln till en ny hemmiljökonfiguration\n"
 
 #: guix/scripts/home.scm:112
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --roll-back        roll back to the previous generation"
 msgid "   roll-back          switch to the previous home environment configuration\n"
 msgstr "   återställningsknapp för att återgå till tidigare hemkonfiguration\n"
 
@@ -11552,10 +11437,6 @@ msgstr ""
 
 #: guix/scripts/home.scm:154
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -I, --list-installed[=REGEXP]\n"
-#| "                         list installed packages matching REGEXP"
 msgid ""
 "\n"
 "  -I, --list-installed[=REGEXP]\n"
@@ -11565,60 +11446,55 @@ msgstr ""
 "\n"
 "  -I, --list-installed[=REGEXP] för 'describe' eller 'list-generations', lista installerade paket som matchar REGEXP"
 
-#: guix/scripts/home.scm:510
+#: guix/scripts/home.scm:511
 #, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
 msgid "'~a' does not contain a home environment for user '~a'~%"
 msgstr "'~a' innehåller inte en hemmiljö för användaren '~a'~%"
 
-#: guix/scripts/home.scm:512
+#: guix/scripts/home.scm:513
 #, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
 msgid "'~a' does not return a home environment~%"
 msgstr "'~a' returnerar inte en hemmiljö~%"
 
-#: guix/scripts/home.scm:607
+#: guix/scripts/home.scm:608
 #, fuzzy, scheme-format
 msgid "'~a' populated with all the Home configuration files~%"
 msgstr "'~a' fylld med alla hemkonfigurationsfiler~%"
 
-#: guix/scripts/home.scm:609
+#: guix/scripts/home.scm:610
 #, fuzzy, scheme-format
 msgid ""
 "Run @command{guix home reconfigure ~a/home-configuration.scm} to effectively\n"
 "deploy the home environment described by these files.\n"
 msgstr "Kör @command{guix home reconfigure ~a/home-configuration.scm} för att effektivt distribuera den hemmiljö som beskrivs i dessa filer.\n"
 
-#: guix/scripts/home.scm:617
+#: guix/scripts/home.scm:618
 #, fuzzy, scheme-format
 msgid "no home environment generation, nothing to describe~%"
 msgstr "ingen hemmiljö, inget att beskriva~%"
 
-#: guix/scripts/home.scm:651
+#: guix/scripts/home.scm:652
 #, fuzzy
 msgid "build and deploy home environments"
 msgstr "bygga och distribuera hemmiljöer"
 
-#: guix/scripts/home.scm:688
+#: guix/scripts/home.scm:689
 #, fuzzy, scheme-format
-#| msgid "guix: missing command name~%"
 msgid "guix home: missing command name~%"
 msgstr "guix home: saknat kommandonamn~%"
 
-#: guix/scripts/home.scm:690
+#: guix/scripts/home.scm:691
 #, scheme-format
 msgid "Try 'guix home --help' for more information.~%"
 msgstr "Prova 'guix home --help' för mer information.~%"
 
-#: guix/scripts/home.scm:720
+#: guix/scripts/home.scm:721
 #, fuzzy, scheme-format
-#| msgid "~a: extraneous argument~%"
 msgid "~a: extraneous command~%"
 msgstr "~a: irrelevant kommando~%"
 
-#: guix/scripts/home.scm:890
+#: guix/scripts/home.scm:891
 #, fuzzy, scheme-format
-#| msgid "cannot switch to generation '~a'~%"
 msgid "cannot switch to home environment generation '~a'~%"
 msgstr "kan inte växla till hemmiljögenerering '~a'~%"
 
@@ -11663,7 +11539,6 @@ msgstr ""
 
 #: guix/scripts/time-machine.scm:171
 #, fuzzy, scheme-format
-#| msgid "cannot fetch commit ~a from ~a: ~a"
 msgid "cannot travel past commit `~a' from May 1st, 2019"
 msgstr "kan inte passera commit `~a' från 1 maj 2019"
 
@@ -11674,7 +11549,6 @@ msgstr "kör kommandon från en annan revision"
 
 #: guix/scripts/import.scm:54 guix/scripts/import/crate.scm:82
 #, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
 msgid "file '~a' does not exist~%"
 msgstr "filen '~a' finns inte~%"
 
@@ -11719,25 +11593,23 @@ msgstr "importera en paketdefinition från ett externt arkiv"
 msgid "guix import: missing importer name~%"
 msgstr "guix import: saknat importörsnamn~%"
 
-#: guix/import/utils.scm:254
+#: guix/import/utils.scm:290
 #, fuzzy, scheme-format
-#| msgid "failed to fetch Git repository for ~a~%"
 msgid "failed to download Git repository ~a: ~a~%"
 msgstr "Det gick inte att ladda ner Git-arkivet ~a: ~a~%"
 
-#: guix/import/utils.scm:450
+#: guix/import/utils.scm:486
 #, fuzzy
 msgid "This package lacks a description.  Run \"info '(guix) Synopses and Descriptions'\" for more information."
 msgstr "Det här paketet saknar beskrivning. Kör \"info '(guix) Synopses and Descriptions'\" för mer information."
 
-#: guix/import/utils.scm:534
+#: guix/import/utils.scm:570
 #, fuzzy
 msgid "This package lacks a synopsis.  Run \"info '(guix) Synopses and Descriptions'\" for more information."
 msgstr "Det här paketet saknar en sammanfattning. Kör \"info '(guix) Synopses and Descriptions'\" för mer information."
 
 #: guix/import/composer.scm:236 guix/import/stackage.scm:158
 #, fuzzy, scheme-format
-#| msgid "~a: failed to parse URI~%"
 msgid "failed to parse ~a~%"
 msgstr "kunde inte tolka ~a~%"
 
@@ -11793,18 +11665,18 @@ msgstr "för få argument~%"
 msgid "too many arguments~%"
 msgstr "för många argument~%"
 
-#: guix/import/cpan.scm:334 guix/import/elpa.scm:418 guix/import/opam.scm:425
+#: guix/import/cpan.scm:335 guix/import/elpa.scm:454 guix/import/opam.scm:425
 #: guix/import/stackage.scm:151
 #, fuzzy, scheme-format
 msgid "~a updater doesn't support updating to a specific version, sorry."
 msgstr "~En uppdaterare stöder inte uppdatering till en specifik version, tyvärr."
 
-#: guix/import/cpan.scm:353
+#: guix/import/cpan.scm:354
 #, scheme-format
 msgid "input '~a' of ~a is in Perl core~%"
 msgstr "inmatning ”~a” av ~a finns i Perl core~%"
 
-#: guix/import/cpan.scm:372
+#: guix/import/cpan.scm:373
 msgid "Updater for CPAN packages"
 msgstr "Uppdaterare för CPAN-paketer"
 
@@ -11846,10 +11718,6 @@ msgstr ""
 
 #: guix/scripts/import/cran.scm:55
 #, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --with-git-url=PACKAGE=URL\n"
-#| "                         build PACKAGE from the repository at URL"
 msgid ""
 "\n"
 "  -p, --license-prefix=PREFIX\n"
@@ -11878,16 +11746,16 @@ msgstr "~A: hg hämtning misslyckades~%"
 msgid "failed to retrieve package information from ~a: ~a (~a)~%"
 msgstr "lyckades inte hämta paketinformation från ~a: ~a (~a)~%"
 
-#: guix/import/cran.scm:1054 guix/import/cran.scm:1077
+#: guix/import/cran.scm:1053 guix/import/cran.scm:1076
 #, fuzzy, scheme-format
 msgid "~a provides only the latest version of each package, sorry."
 msgstr "~a tillhandahåller endast den senaste versionen av varje paket, tyvärr."
 
-#: guix/import/cran.scm:1147
+#: guix/import/cran.scm:1146
 msgid "Updater for CRAN packages"
 msgstr "Uppdaterare för OPAM-paket"
 
-#: guix/import/cran.scm:1154
+#: guix/import/cran.scm:1153
 msgid "Updater for Bioconductor packages"
 msgstr "Uppdaterare för Bioconductor-paketer"
 
@@ -12007,23 +11875,44 @@ msgstr "Argumentet till --archive ska vara ett av dessa symboler, t.ex. gnu (sta
 msgid "this importer does not consider the version~%"
 msgstr "denna importör tar inte hänsyn till versionen~%"
 
-#: guix/import/elpa.scm:108
+#: guix/import/elpa.scm:111
 #, scheme-format
 msgid "~A: currently not supported~%"
 msgstr "~A: stöds för närvarande inte~%"
 
-#: guix/import/elpa.scm:120
+#: guix/import/elpa.scm:123
 #, scheme-format
 msgid "~A: download failed~%"
 msgstr "~A: hämtning misslyckades~%"
 
-#: guix/import/elpa.scm:258
+#: guix/import/elpa.scm:168
+#, scheme-format
+msgid "Trying to figure out version using ~s.~%"
+msgstr "Försöker luska ut versionen genom att använda ~s.~%"
+
+#: guix/import/elpa.scm:180
 #, fuzzy, scheme-format
-#| msgid "Unsupported MELPA fetcher: ~a, falling back to unstable MELPA source.~%"
+#| msgid "failed to read expression ~s: ~s~%"
+msgid "Failed to get version for ~s.~%"
+msgstr "misslyckades med att läsa uttryck ~s: ~s~%"
+
+#: guix/import/elpa.scm:196
+#, fuzzy, scheme-format
+#| msgid "invalid value ~s for field '~a'"
+msgid "invalid ELPA package version ~s for '~a'"
+msgstr "ogiltigt värde ~s för fält '~a'"
+
+#: guix/import/elpa.scm:199
+#, scheme-format
+msgid "invalid ELPA package version ~s for '~a' in repository '~a'"
+msgstr "ogiltig ELPA-paketversion ~s för '~a' i arkivet '~a'"
+
+#: guix/import/elpa.scm:294
+#, fuzzy, scheme-format
 msgid "unsupported MELPA fetcher: ~a, falling back to unstable MELPA source~%"
 msgstr "ej stödd MELPA-hämtare: ~a, faller tillbaka till instabil MELPA-källa~%"
 
-#: guix/import/elpa.scm:466
+#: guix/import/elpa.scm:502
 msgid "Updater for ELPA packages"
 msgstr "Uppdaterare för OPAM-paket"
 
@@ -12098,7 +11987,6 @@ msgstr "Uppdaterar för GNU-paket"
 
 #: guix/import/gnome.scm:96
 #, fuzzy, scheme-format
-#| msgid "failed to load '~a': ~a~%"
 msgid "failed to download from '~a': ~a (~s)~%"
 msgstr "misslyckades med att ladda ner från '~a': ~a (~s)~%"
 
@@ -12239,10 +12127,6 @@ msgstr ""
 
 #: guix/import/go.scm:731 guix/import/go.scm:740
 #, fuzzy, scheme-format
-#| msgid ""
-#| "Failed to import package ~s.\n"
-#| "reason: ~s could not be fetched: HTTP error ~a (~s).\n"
-#| "This package and its dependencies won't be imported.~%"
 msgid ""
 "Failed to import package ~s.\n"
 "reason: ~a\n"
@@ -12401,42 +12285,41 @@ msgid ""
 "Import and convert the PyPI package for PACKAGE-NAME.\n"
 msgstr "Användning: guix import pypi PAKET-NAME Importera och konvertera PyPI-paketet för PAKET-NAME.\n"
 
-#: guix/import/pypi.scm:282
+#: guix/import/pypi.scm:283
 msgid "Could not extract requirement name in spec:"
 msgstr "Kunde inte extrahera krav-namn i specifikation:"
 
-#: guix/import/pypi.scm:359
+#: guix/import/pypi.scm:360
 #, scheme-format
 msgid "parse-requires.txt reached an unexpected condition on line ~a~%"
 msgstr "parse-requires.txt nådde ett oväntat villkor på linje ~a~%"
 
-#: guix/import/pypi.scm:424
+#: guix/import/pypi.scm:425
 #, scheme-format
 msgid "Failed to extract file: ~a from wheel.~%"
 msgstr "Misslyckades med att extrahera fil: ~a från wheel.~%"
 
-#: guix/import/pypi.scm:442
+#: guix/import/pypi.scm:443
 #, fuzzy, scheme-format
-#| msgid "Cannot guess requirements from source archive: no requires.txt file found.~%"
 msgid "Cannot guess requirements from pyproject.toml file, because it does not exist.~%"
 msgstr "Kan inte gissa kraven från filen pyproject.toml, eftersom den inte finns.~%"
 
-#: guix/import/pypi.scm:466
+#: guix/import/pypi.scm:467
 #, scheme-format
 msgid "Cannot guess requirements from source archive: no requires.txt file found.~%"
 msgstr "Kan inte gissa krav från källarkiv: ingen requires.txt fil hittades.~%"
 
-#: guix/import/pypi.scm:484
+#: guix/import/pypi.scm:485
 #, scheme-format
 msgid "Unsupported archive format; cannot determine package dependencies from source archive: ~a~%"
 msgstr "Icke-stöd arkivformat; kan inte bestämma paketberoenden från källarkiv: ~a~%"
 
-#: guix/import/pypi.scm:565
+#: guix/import/pypi.scm:566
 #, fuzzy, scheme-format
 msgid "project name ~a does not appear verbatim in the PyPI URI~%"
 msgstr "projektnamn ~a visas inte ordagrant i PyPI URI~%"
 
-#: guix/import/pypi.scm:568
+#: guix/import/pypi.scm:569
 #, fuzzy, scheme-format
 msgid ""
 "The PyPI URI is: @url{~a}.  You should review the\n"
@@ -12444,12 +12327,12 @@ msgid ""
 "a substring of the PyPI URI that identifies the package."
 msgstr "PyPI-URI är: @url{~a}. Du bör granska pypi-uri-deklarationen i det genererade paketet. Du kan behöva ersätta ~s med en delsträng av PyPI-URI som identifierar paketet."
 
-#: guix/import/pypi.scm:691
+#: guix/import/pypi.scm:692
 #, scheme-format
 msgid "no source release for pypi package ~a ~a~%"
 msgstr "ingen källsläppning för pypi-paket ~a ~a~%"
 
-#: guix/import/pypi.scm:699
+#: guix/import/pypi.scm:700
 #, fuzzy, scheme-format
 msgid ""
 "This indicates that the\n"
@@ -12458,7 +12341,7 @@ msgid ""
 "@uref{~a}."
 msgstr "Detta indikerar att paketet är tillgängligt på PyPI, men endast som ett \"wheel\" som innehåller binärfiler, inte källkod. För att bygga det från källkod, se uppströmsrepositoriet på @uref{~a}."
 
-#: guix/import/pypi.scm:757
+#: guix/import/pypi.scm:758
 msgid "Updater for PyPI packages"
 msgstr "Uppdaterare för PyPI-paketer"
 
@@ -12486,7 +12369,6 @@ msgstr "LTS-versionen hittades inte: ~a"
 
 #: guix/import/stackage.scm:126
 #, fuzzy, scheme-format
-#| msgid "opam: package '~a' not found~%"
 msgid "~a: Stackage package not found"
 msgstr "~a: Stackage-paketet hittades inte"
 
@@ -12506,7 +12388,7 @@ msgstr "Användning: guix import texlive PAKET-NAME Importera och konvertera Tex
 msgid "failed to run command: '~a'"
 msgstr "misslyckades med att köra kommando: '~a'"
 
-#: guix/import/texlive.scm:816
+#: guix/import/texlive.scm:834
 msgid "Updater for TeX Live packages"
 msgstr "Uppdaterare för TeX Live-paket"
 
@@ -12676,7 +12558,6 @@ msgstr "ogiltiga argument: ~{~s ~}~%"
 
 #: guix/scripts/perform-download.scm:103
 #, fuzzy, scheme-format
-#| msgid "profile '~a' does not exist~%"
 msgid "~S is not in the store~%"
 msgstr "~S finns inte i butiken~%"
 
@@ -12702,7 +12583,6 @@ msgstr "~a: saknad Git-URL~%"
 
 #: guix/scripts/perform-download.scm:204
 #, fuzzy, scheme-format
-#| msgid "guix: missing command name~%"
 msgid "~a: missing Git commit~%"
 msgstr "~a: saknad Git-commit~%"
 
@@ -12941,7 +12821,6 @@ msgstr "~a är större än den senaste kända versionen av ~a (~a)~%"
 
 #: guix/scripts/refresh.scm:457
 #, fuzzy, scheme-format
-#| msgid "failed to determine latest release of GNU ~a"
 msgid "'~a' updater failed to find version ~a of '~a'~%"
 msgstr "'~a' uppdateraren kunde inte hitta version ~a av '~a'~%"
 
@@ -13211,6 +13090,22 @@ msgid "socket-activated with {} socket"
 msgid_plural "socket-activated with {} sockets"
 msgstr[0] "uttagsaktiverad med {} uttag"
 msgstr[1] "uttagsaktiverad med {} uttag"
+
+#, fuzzy
+#~ msgid "Service syslog has been asked to reload its settings file."
+#~ msgstr "Service syslog har ombetts att ladda om sin inställningsfil."
+
+#, fuzzy
+#~ msgid "Service syslog is not running."
+#~ msgstr "Tjänsten syslog körs inte."
+
+#, fuzzy
+#~ msgid "Service transmission-daemon has been asked to reload its settings file."
+#~ msgstr "Tjänsten transmission-daemon har ombetts att ladda om sin inställningsfil."
+
+#, fuzzy
+#~ msgid "Service transmission-daemon is not running."
+#~ msgstr "Tjänsten transmission-daemon körs inte."
 
 #, fuzzy, scheme-format
 #~ msgid "Value (~S) is not a valid mac address.~%"
