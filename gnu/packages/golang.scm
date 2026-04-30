@@ -25,7 +25,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021-2025 Sharlatan Hellseher <sharlatanus@mgail.com>
+;;; Copyright © 2021-2026 Sharlatan Hellseher <sharlatanus@mgail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
@@ -95,6 +95,18 @@
 ;; go-1.18.  Starting with go-1.5 go cannot be built without an existing
 ;; installation of go, so we need to use go-1.4 or gccgo.  For architectures which
 ;; are not supported with go-1.4 we use a version of gccgo to bootstrap them.
+;;
+;; The minimum version of Go required depends on the target version of Go:
+;;
+;;     Go <= 1.4: a C toolchain.
+;;     1.5 <= Go <= 1.19: a Go 1.4 compiler.
+;;     1.20 <= Go <= 1.21: a Go 1.17 compiler.
+;;     1.22 <= Go <= 1.23: a Go 1.20 compiler.
+;;
+;; Going forward, Go version 1.N will require a Go 1.M compiler, where M is
+;; N-2 rounded down to an even number.
+;; Example: Go 1.24 and 1.25 require Go 1.22.
+;; See: <https://go.dev/doc/install/source>.
 
 (define-public go-1.4
   (package
