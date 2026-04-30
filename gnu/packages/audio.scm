@@ -1210,7 +1210,7 @@ PulseAudio clients, featuring:
 (define-public ardour
   (package
     (name "ardour")
-    (version "9.1")
+    (version "9.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1227,7 +1227,7 @@ PulseAudio clients, featuring:
 namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \"\"; }")))))
               (sha256
                (base32
-                "00bramm8dq0ihr376n7l9rg0mjzxmzw6lxvsbsdlrdsimfwsy16p"))
+                "14s6cq3x7l7b682ah9k8cdr6plfirlgm882dc2nm51lxwl91zcfd"))
               (file-name (git-file-name name version))))
     (build-system waf-build-system)
     (arguments
