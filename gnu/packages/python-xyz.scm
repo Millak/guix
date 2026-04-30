@@ -26481,6 +26481,7 @@ using regular expressions.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f                       ;no test
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-paths
