@@ -1,0 +1,60 @@
+From 5ea38d6eaaa5c0d452b5dd73699486f79641b870 Mon Sep 17 00:00:00 2001
+From: Ioannis Tziakos <mail@itziakos.gr>
+Date: Sat, 17 Aug 2024 12:18:04 +0100
+Subject: [PATCH] Fix LeanZipFile support for Python 3.12
+
+---
+ zipfile2/_lean_zipfile.py | 10 +++++++---
+ zipfile2/common.py        |  3 +++
+ 2 files changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/zipfile2/_lean_zipfile.py b/zipfile2/_lean_zipfile.py
+index 0a6e1c4..e9af3bd 100644
+--- a/zipfile2/_lean_zipfile.py
++++ b/zipfile2/_lean_zipfile.py
+@@ -62,9 +62,10 @@
+         stringFileHeader,
+         structCentralDir,
+         structFileHeader,
++        crc32
+     )
+ 
+-from .common import TooManyFiles
++from .common import TooManyFiles, PY312
+ 
+ _UTF8_EXTENSION_FLAG = 0x800
+ 
+@@ -164,6 +165,7 @@ def get_zip_infos(self, *filenames):
+             if centdir[_CD_SIGNATURE] != stringCentralDir:
+                 raise BadZipFile("Bad magic number for central directory")
+             filename = fp.read(centdir[_CD_FILENAME_LENGTH])
++            orig_filename_crc = crc32(filename)
+             flags = centdir[5]
+             if flags & _UTF8_EXTENSION_FLAG:
+                 # UTF-8 file names extension
+@@ -187,8 +189,10 @@ def get_zip_infos(self, *filenames):
+             x._raw_time = t
+             x.date_time = ((d >> 9) + 1980, (d >> 5) & 0xF, d & 0x1F,
+                            t >> 11, (t >> 5) & 0x3F, (t & 0x1F) * 2)
+-
+-            x._decodeExtra()
++            if PY312:
++                x._decodeExtra(orig_filename_crc)
++            else:
++                x._decodeExtra()
+             x.header_offset = x.header_offset + concat
+ 
+             # update total bytes read from central directory
+diff --git a/zipfile2/common.py b/zipfile2/common.py
+index 7dbaea0..a25645a 100644
+--- a/zipfile2/common.py
++++ b/zipfile2/common.py
+@@ -1,5 +1,8 @@
+ import zipfile
++import platform
+ 
++PYTHON_VERSION = tuple(map(int, platform.python_version_tuple()))
++PY312 = PYTHON_VERSION >= (3, 12, 0)
+ 
+ class TooManyFiles(zipfile.BadZipfile):
+     pass

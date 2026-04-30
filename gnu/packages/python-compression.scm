@@ -944,7 +944,10 @@ Python.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hmq33r3ffrrvm5nggsp69cjdbgjbwn6zbcrs2rhmb8pds0h81q7"))))
+        (base32 "1hmq33r3ffrrvm5nggsp69cjdbgjbwn6zbcrs2rhmb8pds0h81q7"))
+       ;; TODO: Remove in the next release:
+       ;; https://github.com/itziakos/zipfile2/commit/5ea38d6eaaa5
+       (patches (search-patches "python-zipfile2-python-3.12-support.patch"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
