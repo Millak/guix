@@ -8965,6 +8965,7 @@ interact with distribution components.")
     (license license:asl2.0)))
 
 (define-public go-github-com-docker-docker
+  ;; TODO: Move to (gnu packages docker).
   (package
     (name "go-github-com-docker-docker")
     (version "25.0.7")
@@ -8985,7 +8986,47 @@ interact with distribution components.")
      (list
       #:import-path "github.com/docker/docker"
       #:skip-build? #t
-      #:tests? #f))
+      #:test-subdirs
+      ;; XXX: Remove when all inputs are packaged.
+      #~(list "api/types/strslice"
+              "api/types/time"
+              "api/types/versions"
+              "builder/remotecontext/urlutil"
+              "cli/debug"
+              "daemon/links"
+              "daemon/network"
+              "errdefs"
+              "integration/plugin"
+              "integration/plugin/logging/cmd/discard"
+              "internal/mod"
+              "libnetwork/bitmap"
+              "libnetwork/etchosts"
+              "libnetwork/internal/caller"
+              "libnetwork/ipbits"
+              "libnetwork/options"
+              "libnetwork/portallocator"
+              "pkg/broadcaster"
+              "pkg/capabilities"
+              "pkg/directory"
+              "pkg/dmesg"
+              "pkg/fileutils"
+              "pkg/homedir"
+              "pkg/ioutils"
+              "pkg/longpath"
+              "pkg/meminfo"
+              "pkg/namesgenerator"
+              "pkg/parsers"
+              "pkg/parsers/kernel"
+              "pkg/pidfile"
+              "pkg/plugins/pluginrpc-gen"
+              "pkg/process"
+              "pkg/progress"
+              "pkg/stdcopy"
+              "pkg/stringid"
+              "pkg/useragent"
+              "plugin/v2"
+              "restartmanager"
+              "volume/drivers")))
     (propagated-inputs
      (list go-github-com-containerd-containerd
            go-github-com-containerd-log
