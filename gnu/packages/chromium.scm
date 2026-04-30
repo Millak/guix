@@ -697,6 +697,13 @@
                      '("use_vaapi=true")
                      '())
 
+              #$@(if (string-prefix? "aarch64" (or (%current-target-system)
+                                                   (%current-system)))
+                     '("use_v4l2_codec=true"
+                       "use_vaapi=false"
+                       "use_av1_hw_decoder=true")
+                     '())
+
               ;; Do not artificially restrict formats supported by system ffmpeg.
               "proprietary_codecs=true"
               "ffmpeg_branding=\"Chrome\""
