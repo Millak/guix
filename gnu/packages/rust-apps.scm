@@ -3799,14 +3799,14 @@ PNG and JPEG) into vector graphics (SVG).")
 (define-public watchexec
   (package
     (name "watchexec")
-    (version "2.3.2")
+    (version "2.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "watchexec-cli" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04qm50br5swck9sqvl9qhaa7cfh6z2y12ipj9729biczmzaw1avx"))))
+        (base32 "1p74v8m23ykvxyjgzz675vahpkwjjgbkqq9wfh0wap0aya22d5qz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
