@@ -48,6 +48,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages emacs)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -272,13 +273,24 @@ efficiency through the use of a compact vector representation of n-grams.")
                            ;; Disable support for proprietary TTS engines.
                            "--with-voxin=no" "--with-ibmtts=no"
                            "--with-kali=no" "--with-baratinoo=no")
+       #:imported-modules ,%pyproject-build-system-modules
+       #:modules ((guix build gnu-build-system)
+                  ((guix build pyproject-build-system)
+                   #:prefix python:)
+                  (guix build utils))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-bin-bash
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "src/modules/generic.c"
                (("/bin/bash")
-                (search-input-file inputs "/bin/bash"))))))))
+                (search-input-file inputs "/bin/bash")))))
+         (add-after 'install 'wrap-spd-conf
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (wrap-program (search-input-file outputs "bin/spd-conf")
+               `("GUIX_PYTHONPATH" =
+                 (,(getenv "GUIX_PYTHONPATH")
+                  ,(python:site-packages inputs outputs)))))))))
     (native-inputs
      (list autoconf
            automake
@@ -297,7 +309,7 @@ efficiency through the use of a compact vector representation of n-grams.")
            pipewire
            pulseaudio
            python
-           python-xdg-base-dirs))
+           python-pyxdg))
     (synopsis "Common interface to speech synthesizers")
     (description "The Speech Dispatcher project provides a high-level
 device independent layer for access to speech synthesis through a simple,
