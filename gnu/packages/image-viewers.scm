@@ -306,7 +306,7 @@ actions.")
 (define-public geeqie
   (package
     (name "geeqie")
-    (version "2.6.1")
+    (version "2.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -314,11 +314,12 @@ actions.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "08yr8jqli33rn1zvj9mjvinyzjp2myakxgf8wqqq8yidmm0vvn1p"))
+                "139ffzqqq79d3k5q99r8i1jr9v9vfwv89dkh6vvw1mdnv6b3s9n8"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
      (list
+      #:glib-or-gtk? #t
       #:phases
       #~(modify-phases %standard-phases
           ;; Disable test which requires binaries not present
@@ -347,6 +348,7 @@ actions.")
            libwebp))
     (native-inputs
      (list `(,glib "bin") ; glib-gettextize
+           gsettings-desktop-schemas
            intltool
            pkg-config
            python         ; for tests
