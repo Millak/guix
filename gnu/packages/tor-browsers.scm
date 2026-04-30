@@ -115,16 +115,16 @@ Firefox locales.")
 
 ;; We copy the official build id, which is defined at
 ;; tor-browser-build/rbm.conf (browser_release_date).
-(define %torbrowser-build-date "20260420133000")
+(define %torbrowser-build-date "20260427173000")
 
 ;; To find the last version, look at https://www.torproject.org/download/.
-(define %torbrowser-version "15.0.10")
+(define %torbrowser-version "15.0.11")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/torbrowser/<%torbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-tor-browser-".
-(define %torbrowser-firefox-version "140.10.0esr-15.0-1-build2")
+(define %torbrowser-firefox-version "140.10.1esr-15.0-1-build1")
 
 ;; See tor-browser-build/rbm.conf for the list.
 (define %torbrowser-locales (list "ar" "be" "bg" "ca" "cs" "da" "de" "el" "es-ES" "fa"
@@ -139,11 +139,11 @@ Firefox locales.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "b09d79a755bda88aa22580243e335b7187099aef")))
+          (commit "1f76c1fa38583ae3f911e00a3bb170d73a329fac")))
     (file-name "translation-base-browser")
     (sha256
      (base32
-      "1rafwbb27z9bscsqzb3n4bfda0k1x4mhwnnl0cy6hkk5av0wjq27"))))
+      "1plf0pcijid8lhrfzkbppf67q46783wxxqsjxi327d4xp0zxfq9g"))))
 
 ;; See tor-browser-build/projects/translation/config.
 (define torbrowser-translation-specific
@@ -151,11 +151,11 @@ Firefox locales.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "acc7524bf476d29487aa85641c68b99e28c47e7d")))
+          (commit "7ba943dc4c2b8675a38e09a4bdbf35692662f0c5")))
     (file-name "translation-tor-browser")
     (sha256
      (base32
-      "1ic4cqi35qycli6j7k0dm760npi7bp9m9sgdzjj7aid83bp5kb4j"))))
+      "08xj969xlkca7icc5azcm4lni3i2nxa4w9kdbl09jzfj66iwj4qk"))))
 
 (define torbrowser-assets
   ;; This is a prebuilt Torbrowser from which we take the assets we need.
@@ -171,7 +171,7 @@ Firefox locales.")
          version "/tor-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "1vmax8ynwmrcgjr55xggrrs7dpkx9j1q505plgb84cmn4f9s6l9y"))))
+         "0vhgrnwbq82wncl9a8l9rncc5792gc1cir2db3va7ak4qljnjmpv"))))
     (arguments
      (list
       #:install-plan
@@ -212,7 +212,7 @@ Browser.")
          ".tar.xz"))
        (sha256
         (base32
-         "0q059g1aj14403ixs3drw4z3w8q8w34w01cy92zzmq2cnxjhqglj"))))
+         "0wxwa0w1v2fksy6qq8vpvxahbsad5w6lkjrz88yz2qjny7bs0j2v"))))
     (build-system mozilla-build-system)
     (inputs
      (list lyrebird
