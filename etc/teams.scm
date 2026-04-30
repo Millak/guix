@@ -1638,7 +1638,7 @@ the \"texlive\" importer."
 (define-member (person "Thanos Apollo"
                        "public@thanosapollo.org"
                        "thanosapollo")
-  vcs)
+  vcs emacs)
 
 (define-member (person "Ashish SHUKLA"
                        "ashish.is@lostca.se"
