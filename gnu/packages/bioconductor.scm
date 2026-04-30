@@ -27680,14 +27680,14 @@ real numbers.")
 (define-public r-bgeecall
   (package
     (name "r-bgeecall")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BgeeCall" version))
        (sha256
         (base32
-         "1ql6id4l1qchavywbarj0c5vc8j7ars34br9wb4s66is68bb688p"))))
+         "0ix45fpl87gzrnpaisddy2nqf5ail5di5mn06lfhy3hdhai1yz4c"))))
     (properties
      '((upstream-name . "BgeeCall")
        (updater-extra-propagated-inputs . ("kallisto"))))
@@ -27712,7 +27712,6 @@ real numbers.")
            r-rsqlite
            r-rtracklayer
            r-scales
-           r-sjmisc
            r-sjmisc
            r-spatstat-univar
            r-stringr
