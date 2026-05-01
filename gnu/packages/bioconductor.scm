@@ -2162,14 +2162,14 @@ example with the @code{biotmle} R package.")
 (define-public r-bodymaprat
   (package
     (name "r-bodymaprat")
-    (version "1.26.0")
+    (version "1.27.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bodymapRat" version
                               'experiment))
        (sha256
-        (base32 "0w48mxlpp8wa0jiqi6ig4x6dgxyaq9ng8fjr8xhiad7yxr29wifp"))))
+        (base32 "075znhv3n82bmkgbxj5fbx9zz8h2qmqihqsf7fbnwg6kp0p3if35"))))
     (properties `((upstream-name . "bodymapRat")))
     (build-system r-build-system)
     (arguments
