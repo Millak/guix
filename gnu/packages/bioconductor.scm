@@ -28360,14 +28360,14 @@ the Bioconductor project.")
 (define-public r-biodb
   (package
     (name "r-biodb")
-    (version "1.18.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biodb" version))
        (sha256
         (base32
-         "0462420y1pz1h09kd3bgwz9jazaqd4yzwz5815x438lfsdj5vxvv"))))
+         "0gmkjjv1nyrymc70lwqyh7yz8h97k7fq04ayaw7xqzzimhz76fv8"))))
     (properties `((upstream-name . "biodb")))
     (build-system r-build-system)
     ;; 83 tests fail; 1025 pass.  Some of the failing tests attempt to
