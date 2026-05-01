@@ -3551,7 +3551,7 @@ theme but now takes more inspiration from the Nano theme.")
 (define-public emacs-treepy
   (package
     (name "emacs-treepy")
-    (version "0.1.2")
+    (version "0.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3560,7 +3560,7 @@ theme but now takes more inspiration from the Nano theme.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pmrpij80m5kgcr8bw36r8wllgppasw08vn3ghwvis9srpaq75cn"))))
+                "0z91vd12gikgb6207sz45fhcmhkl5hqbxjbzcaqpkznfgsq95f7j"))))
     (build-system emacs-build-system)
     (home-page
      "https://github.com/volrath/treepy.el")
