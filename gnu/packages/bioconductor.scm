@@ -8421,13 +8421,13 @@ microarrays.")
 (define-public r-annotationdbi
   (package
     (name "r-annotationdbi")
-    (version "1.72.0")
+    (version "1.74.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AnnotationDbi" version))
               (sha256
                (base32
-                "0vzrkx8x060281zmk13k8ajrfl8g6sx361563yw4aymvjdrdax37"))))
+                "0l0k9jym9yb1l070vh1h8q6h05iisp4fqrd9q444f1ivj4nhhlan"))))
     (properties
      '((upstream-name . "AnnotationDbi")
        (updater-ignored-native-inputs
@@ -8453,7 +8453,7 @@ microarrays.")
            r-rsqlite
            r-s4vectors))
     (native-inputs
-     (list r-knitr r-runit))
+     (list r-biocstyle r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/AnnotationDbi")
     (synopsis "Annotation database interface")
     (description
