@@ -16362,7 +16362,7 @@ for Perl programming, and a tutorial for novices to start using Emacs.")
 (define-public emacs-perspective
   (package
     (name "emacs-perspective")
-    (version "2.20")
+    (version "2.21")
     (source
      (origin
        (method git-fetch)
@@ -16371,7 +16371,7 @@ for Perl programming, and a tutorial for novices to start using Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "108n8xgyxf0mxv6l0mbqb9s0v20bdnj4xcd2mi0zbl46r48cq6gp"))))
+        (base32 "1v22m3l7p89wsdy0ydv0w91v0h9wjl1v33gim756dz8zcx8m1p8y"))))
     (build-system emacs-build-system)
     (arguments
      `(#:test-command '("emacs" "-Q" "-batch" "-L" "."
