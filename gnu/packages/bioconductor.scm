@@ -5147,13 +5147,13 @@ network fusion.")
 (define-public r-annmap
   (package
     (name "r-annmap")
-    (version "1.52.0")
+    (version "1.54.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "annmap" version))
               (sha256
                (base32
-                "0s5shla97scq17zc336l4mjmshrj63jcawcy3c06p8msbjgay5y8"))))
+                "0k1n6125rd5f60lkldiq0vc54nyrx1fx6xc684ikfnb7a4cn60x8"))))
     (properties `((upstream-name . "annmap")))
     (build-system r-build-system)
     (arguments
