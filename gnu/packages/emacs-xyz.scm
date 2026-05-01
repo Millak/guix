@@ -23726,14 +23726,14 @@ information via a consistent and well-integrated user interface.")
 (define-public emacs-adaptive-wrap
   (package
     (name "emacs-adaptive-wrap")
-    (version "0.8")
+    (version "0.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "adaptive-wrap-" version ".tar"))
        (sha256
-        (base32 "1dz5mi21v2wqh969m3xggxbzq3qf78hps418rzl73bb57l837qp8"))))
+        (base32 "1i1g14h6yyq6fswyb3wf0y9zna0icp64484x7qd6wdqj438r87va"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/adaptive-wrap.html")
     (synopsis "Smart line-wrapping with wrap-prefix")
