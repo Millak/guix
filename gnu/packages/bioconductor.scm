@@ -2410,14 +2410,14 @@ format and is used for examples in other packages.")
 (define-public r-faahko
   (package
     (name "r-faahko")
-    (version "1.50.0")
+    (version "1.51.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "faahKO" version
                               'experiment))
        (sha256
-        (base32 "11p66b0m6ng19dl8r3vsdfmfxax573yp0mx960idhip2a0b3w5zx"))))
+        (base32 "0zn2q9npcjy7p4qd5lnpb7n4ql6xm3vvk4afbbc1nxv7nqilq589"))))
     (properties `((upstream-name . "faahKO")))
     (build-system r-build-system)
     (propagated-inputs (list r-xcms))
