@@ -21486,16 +21486,17 @@ and data files used across sessions.")
 (define-public r-iclusterplus
   (package
     (name "r-iclusterplus")
-    (version "1.46.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "iClusterPlus" version))
        (sha256
         (base32
-         "1bqi0hckfphs7ixb0mh67a8q9q43fxs3n36bvgrhgpari4gl9axz"))))
+         "19zyji2kknc23ja79frc1rcsz85pdhqsp315va9xiqdqvqpn1hsk"))))
     (properties `((upstream-name . "iClusterPlus")))
     (build-system r-build-system)
+    (propagated-inputs (list r-irlba))
     (native-inputs (list gfortran r-biocgenerics r-runit))
     (home-page "https://bioconductor.org/packages/iClusterPlus/")
     (synopsis "Integrative clustering of multi-type genomic data")
