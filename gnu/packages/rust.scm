@@ -55,6 +55,7 @@
   #:use-module (gnu packages mingw)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
@@ -695,6 +696,7 @@ ar = \"" binutils "/bin/ar" "\"
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("python" ,python-minimal-wrapper)
+       ("python-setuptools" ,python-setuptools-bootstrap)
        ("rustc-bootstrap" ,rust-bootstrap-1.54)
        ("cargo-bootstrap" ,rust-bootstrap-1.54 "cargo")))
     (inputs
