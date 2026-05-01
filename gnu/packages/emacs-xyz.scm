@@ -560,7 +560,7 @@ compatible.")
 (define-public emacs-helix
   (package
     (name "emacs-helix")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -569,7 +569,7 @@ compatible.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12frkqmv0qbs4rqxdazki6xvhdb6ykr4xsrzk8ljlj19dniawhd8"))))
+        (base32 "0rbchgcg3xkmia8qxh7v3mf0ijpzs7jx3g76dcc1zcpzj2kx46h5"))))
     (build-system emacs-build-system)
     (arguments
      (list
