@@ -17883,14 +17883,14 @@ coordinates.")
 (define-public r-lpsymphony
   (package
     (name "r-lpsymphony")
-    (version "1.38.0")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "lpsymphony" version))
        (sha256
         (base32
-         "0l3zf7f9agkwcm4xbnws7ld77w7fiqx26qjh5rzyvvzprb65xiax"))))
+         "1lh6fsjrmadary2pwrzq7118n9wqnyb6l90hcgd4zdsvl8xg62jr"))))
     (properties
      '((updater-extra-native-inputs . ("gfortran"))))
     (build-system r-build-system)
@@ -17923,7 +17923,7 @@ coordinates.")
      (list zlib))
     (native-inputs
      (append
-      (list gfortran pkg-config r-knitr r-testthat)
+      (list gfortran pkg-config r-biocstyle r-knitr r-testthat)
       (if (or (target-aarch64?)
               (target-riscv64?))
           (list config)
