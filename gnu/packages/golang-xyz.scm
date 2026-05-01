@@ -26572,7 +26572,8 @@ suffix comparison, rather than the string-based or tree-based approaches.")
     (synopsis "File system event notification library")
     (description
      "This package provides @code{notify}, a file system event notification
-library in Go.")
+library in Go.  It's an alternative fork of
+@url{https://github.com/rjeczalik/notify}.")
     (license license:expat)))
 
 (define-public go-github-com-syndtr-gocapability
