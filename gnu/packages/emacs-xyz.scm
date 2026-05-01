@@ -31240,7 +31240,7 @@ powerful Org contents.")
 (define-public emacs-org-re-reveal
   (package
     (name "emacs-org-re-reveal")
-    (version "3.38.0")
+    (version "3.39.0")
     (source
      (origin
        (method git-fetch)
@@ -31249,7 +31249,7 @@ powerful Org contents.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "057gva3l54jkfddni8haiaf6pkkd9czfygnw8mfb2xs53cg3m1n8"))
+        (base32 "12qnr5k4y51q83y8fqrfn8ha7mrmdvv1blp9prrdrbqhhlcjq6q4"))
        (modules '((guix build utils)))
        (snippet #~(begin (delete-file "cort-test.el")
                          (substitute* "org-re-reveal-tests.el"
