@@ -4886,7 +4886,7 @@ terminals.")
 (define-public emacs-rbs-mode
   (package
     (name "emacs-rbs-mode")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method git-fetch)
@@ -4895,7 +4895,7 @@ terminals.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ibn8246q0yqdnf3qdww9rvzac9gla7gzjj0n5j5x08brgj5ll2h"))))
+        (base32 "12ax8c7az9wlq7qhhf40vwrhng16wx9hjq7pr3fngmksma6cckk8"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/ybiquitous/rbs-mode")
     (synopsis "Major mode for Ruby type signature")
