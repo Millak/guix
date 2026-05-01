@@ -7834,42 +7834,25 @@ syntax.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0550rw65ygqzbjc8a66hs355pzbx727kbn20dssdb6ls846gw2qs"))))
+        (base32 "0550rw65ygqzbjc8a66hs355pzbx727kbn20dssdb6ls846gw2qs"))
+       (patches
+        (list
+         (origin
+           (method url-fetch)
+           (uri
+            (string-append "https://github.com/pyga/parsley/commit/"
+                           "f0ad2f6c0c7ce15336f6a3adc3708f4a5a9757c6.patch"))
+           (sha256
+            (base32
+             "0q90vg9pi4vs4kqxa1dzck16iqrszcw36c3im8p514p7zj439fca")))))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 294 passed, 8 skipped, 7 deselected
-      #:test-flags
-      #~(list #$@(map (lambda (ls)
-                        (string-append "--deselect=ometa/test/"
-                                       (string-join ls "::")))
-                      ;; AttributeError: 'PythonWriterTests' object has no
-                      ;; attribute 'assert_'. Did you mean: 'assertIn'?
-                      '(("test_builder.py" "PythonWriterTests"
-                         "test_markAsTree")
-                        ("test_protocol.py" "ParserProtocolTestCase"
-                         "test_connectionEstablishes")
-                        ("test_protocol.py" "ParserProtocolTestCase"
-                         "test_dataIgnoredAfterDisconnection")
-                        ;; AttributeError: 'ParserProtocolTestCase' object has
-                        ;; no attribute 'failIfEqual'
-                        ("test_protocol.py" "ParserProtocolTestCase"
-                         "test_exceptionsRaisedFromReceiver")
-                        ("test_protocol.py" "ParserProtocolTestCase"
-                         "test_parseFailure")
-                        ;; AttributeError: 'RuntimeTests' object has no
-                        ;; attribute 'assertEquals'. Did you mean:
-                        ;; 'assertEqual'?
-                        ("test_pymeta.py" "MakeGrammarTest"
-                         "test_brokenGrammar")
-                        ("test_runtime.py" "RuntimeTests"
-                         "test_exactlyFail")))
-              "ometa/test"
-              "terml/test")))
+      #:test-flags #~(list "ometa/test" "terml/test")))
     (native-inputs
      (list python-pytest
-           python-twisted
-           python-setuptools))
+           python-setuptools
+           python-twisted))
     (home-page "https://launchpad.net/parsley")
     (synopsis "Parsing and pattern matching Python library")
     (description
