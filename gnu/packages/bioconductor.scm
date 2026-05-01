@@ -18218,13 +18218,13 @@ qPCR data, but could be used with other types as well.")
 (define-public r-sangerseqr
   (package
     (name "r-sangerseqr")
-    (version "1.46.0")
+    (version "1.48.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "sangerseqR" version))
               (sha256
                (base32
-                "1hjadhr64qk91byd5cswsjvqggjczjz8cprjiarmf389bfcf0786"))))
+                "0bz9zpdwqvzkyvc83qh1b2pccskyf2h12phwbqkznk5ci6v7w9ii"))))
     (properties `((upstream-name . "sangerseqR")))
     (build-system r-build-system)
     (propagated-inputs (list r-biostrings r-pwalign r-shiny r-stringr))
