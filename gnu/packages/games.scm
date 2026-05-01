@@ -227,6 +227,7 @@
   #:use-module (gnu packages shells)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages squirrel)
+  #:use-module (gnu packages stb)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
@@ -5348,27 +5349,70 @@ also available.")
        (sha256
         (base32 "05aj09rm50xb6910zx6imarj8k728x9bpvpa7ydwgb4sj1nypil8"))
        (modules '((guix build utils)))
-       (snippet '(begin
-                   (with-directory-excursion "thirdparty"
-                     (delete-file-recursively "glm")
-                     (substitute* "CMakeLists.txt"
-                       (("add_subdirectory\\(glm\\)")
-                        "find_package(glm REQUIRED)")))
-                   (with-directory-excursion "src"
-                     (substitute* "CMakeLists.txt"
-                       (("glm::glm")
-                        "glm")))
-                   ;; Rename the icon to match with the executable file.
-                   (rename-file "srb2.png" "ringracers.png")))))
+       (snippet
+        '(begin
+          (with-directory-excursion "thirdparty"
+            ;; Delete third party ibraries, except these libraries:
+            ;; glad: header file is not available in the system glad package.
+            ;; imgui: configured with "srb2_imconfig.h".
+            ;; libwebm: Not available in Guix.
+            ;; renamenoise: Not available in Guix.
+            ;; tracy: header files are not available in the system tracy
+            ;; package.
+            (for-each delete-file-recursively
+                      '("discord-rpc"
+                        "glm"
+                        "nlohmann-json"
+                        "overlay-ports/libyuv"
+                        "tcbrindle_span"
+                        "vma"
+                        "volk"
+                        "vulkan-headers"
+                        "xmp-lite"))
+            ;; Unbundle stb.
+            (with-directory-excursion "stb"
+              (for-each delete-file
+                        '("include/stb_rect_pack.h"
+                          "stb_vorbis.c"))
+              (substitute* "stb_rect_pack.c"
+                (("\"include\\/stb_rect_pack\\.h\"") "<stb_rect_pack.h>"))
+              (substitute* "CMakeLists.txt"
+                (("include\\/stb_rect_pack\\.h ") "")))
+            ;; Find third party libraries from the system and do not add the
+            ;; deleted directories.
+            (substitute* "CMakeLists.txt"
+              (("add_subdirectory\\((glm|discord-rpc|xmp-lite|fmt|volk)\\)"
+                _ keep)
+               (string-append "find_package(" keep " REQUIRED)"))
+              (("xmp-lite") "libxmp")
+              ((".*nlohmann-json.*") "")
+              ((".*tcbrindle_span.*") "")
+              ((".*vulkan-headers.*") "")
+              ((".*vma.*") "")))
+          (with-directory-excursion "src"
+            ;; Link the system libraries instead of the unbundled ones.
+            (substitute* "CMakeLists.txt"
+              ((".*tcbrindle::span.*") "")
+              (("glm::glm") "glm")
+              (("xmp-lite::xmp-lite") "xmp")
+              (("fmt::fmt-header-only") "fmt")
+              ((".*nlohmann_json::nlohmann_json.*") "")))
+          ;; Rename the icon to match with the executable file.
+          (rename-file "srb2.png" "ringracers.png")))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:tests? #f ;There are no tests.
       #:configure-flags
-      #~(list "-DCMAKE_C_FLAGS_RELWITHDEBINFO='-O3 -g -DNDEBUG'"
+      #~(list "-DSRB2_CONFIG_ENABLE_DISCORDRPC=OFF"
+              "-DCMAKE_C_FLAGS_RELWITHDEBINFO='-O3 -g -DNDEBUG'"
               "-DCMAKE_CXX_FLAGS_RELWITHDEBINFO='-O3 -g -DNDEBUG'")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-stb_vorbis.c
+            (lambda* (#:key inputs #:allow-other-keys)
+              (install-file (search-input-file inputs "/stb_vorbis.c")
+                            "thirdparty/stb")))
           (replace 'install
             (lambda _
               (install-file "bin/ringracers" (string-append #$output "/bin"))
@@ -5392,18 +5436,28 @@ also available.")
                   #:exec (string-append #$output "/bin/ringracers")
                   #:startup-notify #f
                   #:categories '("Application" "Game"))))))))
-    (native-inputs (list pkg-config))
+    (native-inputs
+     (list pkg-config
+           (package-source stb)))
     (inputs (list bash-minimal
                   curl
+                  fmt
                   glm
                   libogg
                   libpng
                   libvorbis
                   libvpx
+                  libxmp
                   libyuv
+                  nlohmann-json
                   opus
                   ring-racers-data
                   sdl2
+                  stb-rect-pack
+                  tcbrindle-span
+                  vulkan-headers
+                  vulkan-memory-allocator
+                  vulkan-volk
                   zlib))
     (home-page "https://www.kartkrew.org/")
     (synopsis "Technical kart racing game")
