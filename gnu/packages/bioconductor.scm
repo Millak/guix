@@ -11421,13 +11421,13 @@ mixes commonly used in MS experiments.")
 (define-public r-metagenomeseq
   (package
     (name "r-metagenomeseq")
-    (version "1.52.0")
+    (version "1.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "metagenomeSeq" version))
        (sha256
-        (base32 "0bkgf6kyh7j767cynxcxqm9xxrqxfq0zzps82hj168n27agx5m30"))))
+        (base32 "0wbr5kp0m5diihra2q2mzxhcsadigbdjqnaqb1bfa24crpjqi51y"))))
     (properties `((upstream-name . "metagenomeSeq")))
     (build-system r-build-system)
     (propagated-inputs
@@ -11440,7 +11440,7 @@ mixes commonly used in MS experiments.")
            r-matrixstats
            r-rcolorbrewer
            r-wrench))
-    (native-inputs (list r-biomformat r-gss r-knitr r-testthat))
+    (native-inputs (list r-annotate r-biomformat r-gss r-knitr r-testthat))
     (home-page "https://github.com/HCBravoLab/metagenomeSeq")
     (synopsis "Statistical analysis for sparse high-throughput sequencing")
     (description
