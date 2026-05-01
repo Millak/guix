@@ -9051,13 +9051,13 @@ regions and to highlight copy number alterations.")
 (define-public r-chipseeker
   (package
     (name "r-chipseeker")
-    (version "1.46.1")
+    (version "1.48.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ChIPseeker" version))
               (sha256
                (base32
-                "1dzvqn4rdj2qdnjl8qr1vk74mky9li4xnljwk4ymbxv5d7dsrq15"))))
+                "1h4sc5jk9qszv9f9fj9bxwjlb54v2r5vcb8mxq8ap19wj19l0dkb"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr r-testthat r-txdb-hsapiens-ucsc-hg38-knowngene))
