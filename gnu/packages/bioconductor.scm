@@ -4606,13 +4606,13 @@ to understand their data better and discover new insights.")
 (define-public r-anndatar
   (package
     (name "r-anndatar")
-    (version "1.0.2")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "anndataR" version))
        (sha256
-        (base32 "1gn1yyfs08a77zrl4cidahxim3kgcvpbsrgfxxnhhrka57xcylld"))))
+        (base32 "0dqizs3mgjz3fr87ji2fippavaryq9xkf3gjlavi47dbnkjrmiwn"))))
     (properties `((upstream-name . "anndataR")))
     (build-system r-build-system)
     (arguments
@@ -4633,6 +4633,7 @@ to understand their data better and discover new insights.")
                   python-anndata))
     (native-inputs (list r-knitr
                          r-processx
+                         r-rarr
                          r-rhdf5
                          r-s4vectors
                          r-seurat
