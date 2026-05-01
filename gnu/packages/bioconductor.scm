@@ -7673,13 +7673,13 @@ functions/packages/models compatible with the @code{scRepertoire} ecosystem.")
 (define-public r-immreferent
   (package
     (name "r-immreferent")
-    (version "0.99.7")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "immReferent" version))
        (sha256
-        (base32 "16w74ga9kq00l8irnqmzcj7wr2551nvcjiamxjg700qkqhj71a4i"))))
+        (base32 "194z5bnc2ksja22caf1dk64hp7d8hc521d2pzigk4kkr7wd3s3p8"))))
     (properties `((upstream-name . "immReferent")))
     (build-system r-build-system)
     (propagated-inputs (list r-biostrings
