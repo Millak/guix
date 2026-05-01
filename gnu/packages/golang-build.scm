@@ -1074,7 +1074,7 @@ loading algorithms.")
 (define-public go-golang-org-x-net
   (package
     (name "go-golang-org-x-net")
-    (version "0.50.0")
+    (version "0.53.0")
     (source
      (origin
        (method git-fetch)
@@ -1083,7 +1083,7 @@ loading algorithms.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0azrbdpydjdjg63rj51blwjlqaplwbd5yi9dy4fyxd38wm36yyq3"))))
+        (base32 "0rdyfdlaifmi0vz5phn98fhzllk2zsjk9gcdax4ajzwsdhp0mn0v"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1098,7 +1098,14 @@ loading algorithms.")
                              ;; test fails with error: ThreadSanitizer:
                              ;; unsupported VMA range.
                              #$@(if (target-arm?) '("TestRace") '()))
-                       "|"))))
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              ;; See: <https://go.dev/blog/synctest>.
+              (setenv "GOEXPERIMENT" "synctest")
+              (setenv "GODEBUG" "asynctimerchan=0"))))))
     (propagated-inputs
      (list go-golang-org-x-crypto
            go-golang-org-x-sys
