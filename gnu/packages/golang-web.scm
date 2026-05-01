@@ -16451,6 +16451,10 @@ implementation in the Go standard library}.")
     (build-system go-build-system)
     (arguments
      (list
+      ;; Remove when a fresh version is released.
+      ;; See: <https://github.com/quic-go/quic-go/issues/5623>,
+      ;; <https://github.com/quic-go/quic-go/issues/5286>.
+      #:go go-1.24
       #:import-path "github.com/quic-go/quic-go"
       #:test-flags
       ;; [1] Error: Should NOT be empty, but was []
