@@ -2278,20 +2278,22 @@ package in Rust.")
 (define-public go-github-com-minio-highwayhash
   (package
     (name "go-github-com-minio-highwayhash")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/minio/highwayhash")
-             (commit (string-append "v" version))))
+              (url "https://github.com/minio/highwayhash")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14g2x266h8sxs0yynmcl2r2mnhx55rfzgykw4hygm7i1vpfrikg4"))))
+        (base32 "0ypa82c75ksgl7apmkyng6jl1j8y27q6mhgaa3hslqkbz2nn4vhr"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/minio/highwayhash"))
-    (propagated-inputs (list go-golang-org-x-sys))
+     (list
+      #:import-path "github.com/minio/highwayhash"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
     (home-page "https://github.com/minio/highwayhash")
     (synopsis "HighwayHash library for Go")
     (description
