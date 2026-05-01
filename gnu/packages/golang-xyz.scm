@@ -12154,6 +12154,35 @@ the D-Bus message bus system.")
        ((#:import-path _ "github.com/godbus/dbus")
         "github.com/godbus/dbus/v5")))))
 
+(define-public go-github-com-gofiber-utils-v2
+  (package
+    (name "go-github-com-gofiber-utils-v2")
+    (version "2.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gofiber/utils")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19arvlyx32fmd27152p3m5d24wk78zwscllw5272l5ynrs3yb50w"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gofiber/utils/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-fxamacker-cbor-v2
+           go-github-com-google-uuid
+           go-github-com-shamaton-msgpack-v3))
+    (home-page "https://github.com/gofiber/utils")
+    (synopsis "Fiber Utils")
+    (description
+     "This package provides a collection of common functions for
+@url{https://github.com/gofiber/fiber, Fiber} web framework.")
+    (license license:expat)))
 
 (define-public go-github-com-gofrs-flock
   (package
