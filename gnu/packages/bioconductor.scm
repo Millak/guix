@@ -4341,13 +4341,13 @@ can enrich this metadata with context-specific properties.")
 (define-public r-amountain
   (package
     (name "r-amountain")
-    (version "1.36.0")
+    (version "1.38.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AMOUNTAIN" version))
               (sha256
                (base32
-                "14xmkjysv3ydhqvzc43ld5kl8rl2j08dyykmh4jvi78lm4lwgifs"))))
+                "1ds3qjgglvkmmkwljkxhr0bcah38c1jvcysb5k0b6jamh8j81sa9"))))
     (properties `((upstream-name . "AMOUNTAIN")))
     (build-system r-build-system)
     (inputs (list gsl))
