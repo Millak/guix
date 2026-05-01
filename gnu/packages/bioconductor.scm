@@ -9459,13 +9459,13 @@ originally made available by Holmes, Harris, and Quince, 2012, PLoS ONE 7(2):
 (define-public r-dittoseq
   (package
     (name "r-dittoseq")
-    (version "1.22.0")
+    (version "1.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "dittoSeq" version))
               (sha256
                (base32
-                "0fb5c78r3qi8px398fcwqkisxdx5cz6afz1plrgr3z1fdcxnspqz"))))
+                "0kj52cz71kg0zvj4bdqsw35zmm3rbq7xa1q5cslmhcg92d4jf22w"))))
     (properties
      '((upstream-name . "dittoSeq")
        (updater-extra-native-inputs
