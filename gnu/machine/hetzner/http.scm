@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
+;;; Copyright © 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,6 +20,7 @@
 (define-module (gnu machine hetzner http)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
+  #:use-module (guix memoization)
   #:use-module (guix records)
   #:use-module (ice-9 iconv)
   #:use-module (ice-9 match)
@@ -51,6 +53,7 @@
             hetzner-api-action-wait
             hetzner-api-actions
             hetzner-api-create-ssh-key
+            hetzner-api-images
             hetzner-api-locations
             hetzner-api-primary-ips
             hetzner-api-request-body
@@ -81,6 +84,23 @@
             hetzner-error-code
             hetzner-error-message
             hetzner-error?
+            hetzner-image?
+            hetzner-image-id
+            hetzner-image-type
+            hetzner-image-status
+            hetzner-image-name
+            hetzner-image-description
+            hetzner-image-disk-size
+            hetzner-image-created
+            hetzner-image-created-from
+            hetzner-image-bound-to
+            hetzner-image-os-flavor
+            hetzner-image-os-version
+            hetzner-image-rapid-deploy
+            hetzner-image-protection
+            hetzner-image-deprecated
+            hetzner-image-deleted
+            hetzner-image-architecture
             hetzner-ipv4-blocked?
             hetzner-ipv4-dns-ptr
             hetzner-ipv4-id
@@ -148,6 +168,7 @@
             hetzner-ssh-key?
             make-hetzner-action
             make-hetzner-error
+            make-hetzner-image
             make-hetzner-ipv4
             make-hetzner-ipv6
             make-hetzner-location
@@ -168,7 +189,19 @@
   (make-parameter (getenv "GUIX_HETZNER_API_TOKEN")))
 
 ;; Ideally this would be a Guix image. Maybe one day.
-(define %hetzner-default-server-image "debian-11")
+(define %hetzner-default-server-image
+  (mlambda (api)
+    "Return the latest Debian image available.  This image gets used for the
+initial system provisioning phase, before Guix System takes over."
+    (let ((debian-images (filter (lambda (image)
+                                   (string=? "debian"
+                                             (hetzner-image-os-flavor image)))
+                                 (hetzner-api-images api))))
+      (hetzner-image-name
+       (last (sort debian-images
+                   (lambda (x y)
+                     (< (string->number (hetzner-image-os-version x))
+                        (string->number (hetzner-image-os-version y))))))))))
 
 ;; Falkenstein, Germany
 (define %hetzner-default-server-location "fsn1")
@@ -289,6 +322,43 @@
   (rescue-enabled? hetzner-server-rescue-enabled? "rescue_enabled") ; boolean
   (server-type hetzner-server-type "server_type"
                json->hetzner-server-type)) ; <hetzner-server-type>
+
+(define-json-mapping <hetzner-image>
+  make-hetzner-image hetzner-image? json->hetzner-image
+  (id hetzner-image-id)                             ;integer
+  (type hetzner-image-type)                         ;string
+  (status hetzner-image-status)                     ;string
+  (name hetzner-image-name "name" (null-or identity)) ;string | null
+  (description hetzner-image-description)           ;string
+  (image-size hetzner-image-size "image_size"       ;number | null (GiB)
+              (null-or identity))
+  (disk-size hetzner-image-disk-size "disk_size")         ;number (GiB)
+  (created hetzner-image-created)                         ;string (date)
+  (created-from hetzner-image-created-from "created_from" ;object | null
+                (null-or json->hetzner-image-created-from))
+  (bound-to hetzner-image-bound-to "bound_to" (null-or identity)) ;integer | null
+  (os-flavor hetzner-image-os-flavor "os_flavor")               ;string
+  (os-version hetzner-image-os-version "os_version"             ;string | null
+              (null-or identity))
+  (rapid-deploy hetzner-image-rapid-deploy "rapid_deploy") ;boolean
+  (protection hetzner-image-protection "protection"        ;object
+              json->hetzner-image-protection)
+  (deprecated hetzner-image-deprecated)      ;string
+  (deleted hetzner-image-deleted "deleted" (null-or identity)) ;null | string
+  (architecture hetzner-image-architecture)) ;string
+
+(define (null-or parser)
+  (lambda (value)
+    (if (eq? 'null value)
+        *unspecified*
+	(parser value))))
+
+(define-json-type <hetzner-image-created-from>
+  (id)                                  ;integer
+  (name))                               ;string
+
+(define-json-type <hetzner-image-protection>
+  (delete))                             ;boolean
 
 (define-json-mapping <hetzner-server-type>
   make-hetzner-server-type hetzner-server-type? json->hetzner-server-type
@@ -602,7 +672,7 @@
           ssh-keys
           (ipv4 #f)
           (ipv6 #f)
-          (image %hetzner-default-server-image)
+          (image (%hetzner-default-server-image api))
           (labels '())
           (location %hetzner-default-server-location)
           (server-type %hetzner-default-server-type)
@@ -694,3 +764,8 @@
   "Get server types from the Hetzner API."
   (apply hetzner-api-list api "/server_types" "server_types"
          json->hetzner-server-type options))
+
+(define* (hetzner-api-images api . options)
+  "Get image types from the Hetzner API."
+  (apply hetzner-api-list api "/images" "images"
+         json->hetzner-image options))
