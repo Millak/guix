@@ -10386,13 +10386,13 @@ manner.")
 (define-public r-gypsum
   (package
     (name "r-gypsum")
-    (version "1.6.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "gypsum" version))
        (sha256
-        (base32 "0wn6mxdkr1msys9n3799qplmvpr9b8qjzhw1magahndidsylz8pf"))))
+        (base32 "00zz8n0rcb09qxgz0iac2jcw1rvmb11m4iq4aivkalf39amqn1ba"))))
     (properties `((upstream-name . "gypsum")))
     (build-system r-build-system)
     ;; Some tests need internet access.
