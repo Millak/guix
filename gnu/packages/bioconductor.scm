@@ -12219,14 +12219,14 @@ specific parser.")
 (define-public r-mzr
   (package
     (name "r-mzr")
-    (version "2.44.0")
+    (version "2.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "mzR" version))
        (sha256
         (base32
-         "049mvigh03bdiic82ryw7cwqmgzm8ivhdv5pfs6rggaaba3awc42"))
+         "0q9sfjzivrhvlavxdwy1pb6l3zx2jv25dy9jy23s3f67ccb8kkf1"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "src/boost"))))
@@ -12235,8 +12235,12 @@ specific parser.")
        (updater-extra-inputs . ("boost"))))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      ;; Almost all tests now depend on ExperimentHub data files and so they
+      ;; attempt to download files off the Internet.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
          ;; For unknown reasons, the libxml2 features are misreported without
          ;; this call prior to running BiocGenerics:::testPackage("mzR").
          (add-after 'unpack 'ensure-libxml2-works
@@ -12264,7 +12268,7 @@ specific parser.")
            r-rcpp
            r-rhdf5lib))
     (native-inputs
-     (list r-knitr r-msdata r-mzid r-runit r-xml))
+     (list r-knitr r-msdatahub r-mzid r-runit r-xml))
     (home-page "https://github.com/sneumann/mzR/")
     (synopsis "Parser for mass spectrometry data files")
     (description
