@@ -1131,13 +1131,13 @@ ID and species.  It is used by functions in the GenomeInfoDb package.")
 (define-public r-go-db
   (package
     (name "r-go-db")
-    (version "3.22.0")
+    (version "3.23.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GO.db" version 'annotation))
               (sha256
                (base32
-                "1liyl1ic2d08an0h6yxllggkv9n8vyp1bfjwvqzk5ana17lzmimf"))))
+                "0ays2n3jivigpr7m3y3rba8gjyqr7g3qxdslppww0z0zzm4m808z"))))
     (properties
      `((upstream-name . "GO.db")))
     (build-system r-build-system)
