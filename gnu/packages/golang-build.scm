@@ -1350,7 +1350,7 @@ terminals, as commonly found on Unix systems.")
 (define-public go-golang-org-x-text
   (package
     (name "go-golang-org-x-text")
-    (version "0.34.0")
+    (version "0.36.0")
     (source
      (origin
        (method git-fetch)
@@ -1359,7 +1359,7 @@ terminals, as commonly found on Unix systems.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10qhscx7zdack9b5ynjiiyk2pl2c5jfamvwgjfhpnnhxgp6jr8rc"))))
+        (base32 "1hhkamc8450y1jmrhw59v1v6l8icihmjdzbnrqpg947z3dlbk3nd"))))
     (build-system go-build-system)
     (arguments
      (list
