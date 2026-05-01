@@ -162,7 +162,7 @@ etc/guix-%.service: etc/guix-%.service.in	\
 etc/guix-gc.timer: etc/guix-gc.timer.in	\
 			 $(top_builddir)/config.status
 	$(AM_V_GEN)$(MKDIR_P) "`dirname $@`";	\
-	cp "$@.in" "$@"
+	cp "$<" "$@"
 
 # The service script for sysvinit.
 sysvinitservicedir = $(sysconfdir)/init.d

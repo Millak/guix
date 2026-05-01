@@ -30,7 +30,7 @@ COOKBOOK_LANGUAGES = de es fr it ko pt_BR ru sk sv ta zh_CN
 
 # Arg1: A list of languages codes.
 # Arg2: The file name stem.
-lang_to_texinfo = $(foreach lang,$(1),%D%/$(2).$(lang).texi)
+lang_to_texinfo = $(foreach lang,$(1),$(srcdir)/%D%/$(2).$(lang).texi)
 
 # Automake does not understand GNU Make non-standard extensions,
 # unfortunately, so we cannot use the above patsubst-based function here.
@@ -104,7 +104,7 @@ MAINTAINERCLEANFILES  = $(OS_CONFIG_EXAMPLES_TEXI) $(TRANSLATED_INFO)
 # reference is not translated, which means it references a section that does not
 # exist.
 define xref_command
-$(top_srcdir)/pre-inst-env $(GUILE) --no-auto-compile	\
+$(top_builddir)/pre-inst-env $(GUILE) --no-auto-compile	\
   "$(top_srcdir)/build-aux/convert-xref.scm"		\
   $@.tmp $<
 endef
@@ -116,21 +116,21 @@ dummy_pot = $(shell mktemp --suffix=.pot)
 $(srcdir)/%D%/guix.%.texi: po/doc/guix-manual.%.po $(srcdir)/%D%/contributing.%.texi guix/build/po.go
 	-$(AM_V_PO4A)$(PO4A) --no-update			\
 	    --variable localized="$@.tmp"			\
-	    --variable master="%D%/guix.texi"			\
+	    --variable master="$(srcdir)/%D%/guix.texi"		\
 	    --variable po="$<"					\
 	    --variable pot=$(dummy_pot)			\
-	    po/doc/po4a.cfg
+	    $(srcdir)/po/doc/po4a.cfg
 	-sed -i "s|guix\.info|$$(basename "$@" | sed 's|texi$$|info|')|" "$@.tmp"
 	-$(AM_V_POXREF)LC_ALL=en_US.UTF-8 $(xref_command)
 	-mv "$@.tmp" "$@"
 
 $(srcdir)/%D%/guix-cookbook.%.texi: po/doc/guix-cookbook.%.po guix/build/po.go
-	-$(AM_V_PO4A)$(PO4A) --no-update			\
-	    --variable localized="$@.tmp"			\
-	    --variable master="%D%/guix-cookbook.texi"		\
-	    --variable po="$<"					\
+	-$(AM_V_PO4A)$(PO4A) --no-update				\
+	    --variable localized="$@.tmp"				\
+	    --variable master="$(srcdir)/%D%/guix-cookbook.texi"	\
+	    --variable po="$<"						\
 	    --variable pot=$(dummy_pot)			\
-	    po/doc/po4a.cfg
+	    $(srcdir)/po/doc/po4a.cfg
 	-sed -i "s|guix-cookbook\.info|$$(basename "$@" | sed 's|texi$$|info|')|" "$@.tmp"
 	-$(AM_V_POXREF)LC_ALL=en_US.UTF-8 $(xref_command)
 	-mv "$@.tmp" "$@"
@@ -138,10 +138,10 @@ $(srcdir)/%D%/guix-cookbook.%.texi: po/doc/guix-cookbook.%.po guix/build/po.go
 $(srcdir)/%D%/contributing.%.texi: po/doc/guix-manual.%.po guix/build/po.go
 	-$(AM_V_PO4A)$(PO4A) --no-update			\
 	    --variable localized="$@.tmp"			\
-	    --variable master="%D%/contributing.texi"		\
+	    --variable master="$(srcdir)/%D%/contributing.texi"		\
 	    --variable po="$<"					\
 	    --variable pot=$(dummy_pot)			\
-	    po/doc/po4a.cfg
+	    $(srcdir)/po/doc/po4a.cfg
 	-$(AM_V_POXREF)LC_ALL=en_US.UTF-8 $(xref_command)
 	-mv "$@.tmp" "$@"
 
