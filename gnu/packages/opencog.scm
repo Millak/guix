@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2026 Daniel Patrick Fahey <dpf@helmcontrol.ltd>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,8 +38,8 @@
 (define-public cogutil
   ;; The last release was in 2016.  Other OpenCog packages require a later
   ;; version.
-  (let ((commit "b07b41b2eaf01627c78b27f1f28bb09ef7086f8e")
-        (revision "1"))
+  (let ((commit "64dca9083dcfa485dcb70fd6fe7ba1f80e0f4082")
+        (revision "2"))
     (package
       (name "cogutil")
       (version (git-version "2.0.3" revision commit))
@@ -50,10 +51,13 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ymmcrinp0prlxsmxmwdjjl4kgaj7wzq39d5b1q2apgg94yfdhqb"))))
+                  "01rr39sq9wakw1wnfzg7m4zl7g8qh3d35ww6q39irx19d6nq66h9"))))
       (build-system cmake-build-system)
       (arguments
        (list
+        ;; Skip ldconfig, which requires root and is unnecessary in Guix.
+        #:configure-flags
+        #~(list "-DSKIP_LDCONF=ON")
         #:modules '((guix build cmake-build-system)
                     ((guix build gnu-build-system) #:prefix gnu:)
                     (guix build utils))
@@ -69,7 +73,7 @@
                      (invoke file))
                    (find-files "tests" "UTest$"))))))))
       (inputs
-       (list boost-1.83))
+       (list boost))
       (native-inputs
        `(("cxxtest" ,cxxtest)
          ("python" ,python-minimal)
