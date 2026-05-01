@@ -2304,13 +2304,13 @@ single-cell data or deconvolution of bulk RNA-seq.")
 (define-public r-champdata
   (package
     (name "r-champdata")
-    (version "2.42.0")
+    (version "2.43.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ChAMPdata" version 'experiment))
               (sha256
                (base32
-                "03x2p6kq4vyr6vg08nymzarjk4dxgsyazcbjf3yf0ryhnfbah8xf"))))
+                "1qqfb5607jf6wzni5yz2xi5q38xzmxq9bpl47d32rpnray7m4aww"))))
     (properties `((upstream-name . "ChAMPdata")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics r-genomicranges))
