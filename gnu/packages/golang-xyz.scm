@@ -4415,7 +4415,7 @@ using JIT and SIMD approaches.")
 (define-public go-github-com-bytedance-sonic-loader
   (package
     (name "go-github-com-bytedance-sonic-loader")
-    (version "0.2.4")
+    (version "0.5.1")
     (source
      (origin
        (method git-fetch)
@@ -4425,16 +4425,15 @@ using JIT and SIMD approaches.")
                                           #:subdir "loader"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09a7jka6a74802i6a6lgxlc3vp0jnb69hy1l5s772260q1zgnkds"))))
+        (base32 "05wxi0asqvdsdh2m0cs9f1hlxj90acfca0z5mq7bp6da5mzq16rp"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/bytedance/sonic/loader"
       #:unpack-path "github.com/bytedance/sonic"))
     (native-inputs
-     (list go-github-com-stretchr-testify))
-    (propagated-inputs
-     (list go-github-com-cloudwego-iasm))
+     (list go-github-com-davecgh-go-spew
+           go-github-com-stretchr-testify))
     (home-page "https://github.com/bytedance/sonic")
     (synopsis "Function loader for Sonic Golang library")
     (description
