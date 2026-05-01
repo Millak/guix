@@ -6324,13 +6324,13 @@ enrichment in single cell data.")
 (define-public r-chihaya
   (package
     (name "r-chihaya")
-    (version "1.10.0")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "chihaya" version))
        (sha256
-        (base32 "1wc4bj9vsp6h06b0rwsswzsv4zx81j17pnx77hjigbcd03j9xv7l"))))
+        (base32 "0jsm4rlg2zig954lxl7qhrrp5rbrfwgqi71d2pmwbxjj54l5mlw8"))))
     (properties `((upstream-name . "chihaya")))
     (build-system r-build-system)
     (propagated-inputs (list r-delayedarray
