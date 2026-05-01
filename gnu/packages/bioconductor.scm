@@ -17262,20 +17262,20 @@ samples.")
 (define-public r-biocneighbors
   (package
     (name "r-biocneighbors")
-    (version "2.4.0")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocNeighbors" version))
        (sha256
         (base32
-         "1yx09x4rg254gl34kqzx1hqky7y3waxbmcqhnvss6n3wrbswfrvk"))))
+         "13gr8p35accgxfi7iwxfsnbzbyzsmpgywxs31irpfxw7yzivlv9a"))))
     (properties `((upstream-name . "BiocNeighbors")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-assorthead r-rcpp))
+     (list r-assorthead r-beachmat r-rcpp))
     (native-inputs
-     (list r-biocparallel r-knitr r-testthat))
+     (list r-biocparallel r-delayedarray r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/BiocNeighbors")
     (synopsis "Nearest Neighbor Detection for Bioconductor packages")
     (description
