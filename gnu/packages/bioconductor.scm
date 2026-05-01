@@ -24503,14 +24503,14 @@ available bioactivity data.")
 (define-public r-biobroom
   (package
     (name "r-biobroom")
-    (version "1.42.0")
+    (version "1.43.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biobroom" version))
        (sha256
         (base32
-         "0d4c9qqwd5zm5y9xcskfjashqkdiy0ri3gsj1kmfb5zmv8i8666s"))))
+         "01kz5qwygwl5ycw02sjwdabcklvm0dc3j98akyjx29z381pmnd9q"))))
     (properties `((upstream-name . "biobroom")))
     (build-system r-build-system)
     (arguments
@@ -24522,7 +24522,7 @@ available bioactivity data.")
              (substitute* "R/utilities.R"
                (("dplyr::tbl_df") "tibble::as_tibble")))))))
     (propagated-inputs
-     (list r-biobase r-broom r-dplyr r-tibble r-tidyr))
+     (list r-biobase r-broom r-dplyr r-tidyr))
     (native-inputs
      (list r-deseq2 r-edger r-knitr r-magrittr r-testthat))
     (home-page "https://github.com/StoreyLab/biobroom")
