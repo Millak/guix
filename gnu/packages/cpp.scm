@@ -4494,6 +4494,47 @@ meta data function.")
     ;; or the CECILL-C license:
     (license (list license:lgpl3 license:cecill-c))))
 
+(define-public tcbrindle-span
+  (let ((commit "836dc6a0efd9849cb194e88e4aa2387436bb079b")
+        (revision "0"))
+    (package
+      (name "tcbrindle-span")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tcbrindle/span")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1v3x1mj4if8jrr7cmrcbhv8n8ygla0liqb0dic6g6ji7px2pr6jf"))
+         (modules '((guix build utils)))
+         ;; Unbundle catch.
+         (snippet
+          '(with-directory-excursion "test"
+             (delete-file "catch.hpp")
+             (substitute* (find-files "." "\\.cpp$")
+               (("\"catch\\.hpp\"") "<catch.hpp>"))))))
+      (build-system cmake-build-system)
+      (native-inputs (list catch-framework))
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'install
+              (lambda _
+                (mkdir-p (string-append #$output))
+                (copy-recursively "../source/include"
+                                  (string-append #$output "/include")))))))
+      (home-page "https://github.com/tcbrindle/span")
+      (synopsis "Implementation of C++20's @code{std::span} for older compilers")
+      (description
+       "This package provides a single-header implementation of C++20's
+@code{std::span}, conforming to the C++20 committee draft.  It is compatible
+with C++11, but will use newer language features if they are available.")
+    (license license:boost1.0))))
+
 (define-public tsl-hopscotch-map
   (package
     (name "tsl-hopscotch-map")
