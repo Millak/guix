@@ -12847,13 +12847,13 @@ proteomics packages.")
 (define-public r-ptmods
   (package
     (name "r-ptmods")
-    (version "0.99.6")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "PTMods" version))
        (sha256
-        (base32 "0fli3mmxhzjnx8n2rj5vn4i2z96chq136rzdv3s9993k6dkq2z14"))))
+        (base32 "131a483r9jrmr7f7pbm0dl6h69zg5p2fjw0d6ab1w9gfxs0myj0w"))))
     (properties `((upstream-name . "PTMods")))
     (build-system r-build-system)
     (arguments
