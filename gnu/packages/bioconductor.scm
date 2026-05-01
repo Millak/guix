@@ -13606,13 +13606,13 @@ transcripts in groups of interest.")
 (define-public r-scannotatr
   (package
     (name "r-scannotatr")
-    (version "1.16.1")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scAnnotatR" version))
        (sha256
-        (base32 "08bpyzi43qbkmgqxp1aqi4fv7859gqpgj0bg39ycf5zlp7gpkjh5"))))
+        (base32 "0pw907bdpfb79r61kzgf08s3849rdg4i96p5siywrzz3hwwrsqqk"))))
     (properties `((upstream-name . "scAnnotatR")))
     (build-system r-build-system)
     ;; 6 tests require connecting to a database over the Internet.
