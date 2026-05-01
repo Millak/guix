@@ -11491,13 +11491,13 @@ profiles than cells of different types.")
 (define-public r-methylaid
   (package
     (name "r-methylaid")
-    (version "1.44.0")
+    (version "1.46.0")
     (source
     (origin
       (method url-fetch)
       (uri (bioconductor-uri "MethylAid" version))
       (sha256
-        (base32 "1gg6wy7g583i348mvd9qww5pnjkn8g0ckkdkwf463kgs12483n2n"))))
+        (base32 "1d87j2ijhwdbbz0iz5xi91p40cfmkarh699wh77b1y7j7irhjjy5"))))
     (properties
      `((upstream-name . "MethylAid")
        (updater-ignored-native-inputs . ("r-methylaiddata"))))
@@ -11514,7 +11514,8 @@ profiles than cells of different types.")
            r-rcolorbrewer
            r-shiny
            r-summarizedexperiment))
-    (native-inputs (list r-geoquery
+    (native-inputs (list r-biocstyle
+                         r-geoquery
                          r-knitr
                          r-minfidata
                          r-minfidataepic
