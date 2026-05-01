@@ -28003,13 +28003,13 @@ pre-specified groups of cells.")
 (define-public r-basicstarrseq
   (package
     (name "r-basicstarrseq")
-    (version "1.38.0")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BasicSTARRseq" version))
        (sha256
-        (base32 "06yxawx34bfr1112kkrd1g7n27qfxrnxq699ap18469vxypz2dw8"))))
+        (base32 "1907n76jgl849zcmvp65yy86qlkviqhh2spvfh9f1kyd8fjvcb1g"))))
     (properties `((upstream-name . "BasicSTARRseq")))
     (build-system r-build-system)
     (propagated-inputs
