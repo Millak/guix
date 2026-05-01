@@ -4890,13 +4890,13 @@ generated as HTML or PDF files, or as Shiny applications.")
 (define-public r-alphabeta
   (package
     (name "r-alphabeta")
-    (version "1.24.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AlphaBeta" version))
               (sha256
                (base32
-                "0s550vmcsnm2ih1vajyah8kqvk7y4bgyrwm1fddzvqsizn3w61x1"))))
+                "1c6l6r5mb8dqi0g7p6ipaimclj68mhm007hb82labh21s9cf4kqf"))))
     (properties `((upstream-name . "AlphaBeta")))
     (build-system r-build-system)
     (propagated-inputs
