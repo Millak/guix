@@ -45075,7 +45075,7 @@ that pre-populates cache and returns true names while minimizing calls to
 (define-public emacs-org-mem
   (package
     (name "emacs-org-mem")
-    (version "0.27.1")
+    (version "0.34.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -45084,18 +45084,12 @@ that pre-populates cache and returns true names while minimizing calls to
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jlc65qfv1sjca6r0ysrx9rq8a3gddsdhm55dk6y7xbss41wbl6m"))))
+                "1gpx6saj433kc2ibfvdxl0cws96z6b7bspq4y17dgnzg73kfsjpa"))))
     (build-system emacs-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'move-source-files
-            (lambda _
-              (let ((el-files (find-files "./lisp" ".*\\.el$")))
-                (for-each (lambda (f)
-                            (rename-file f (basename f)))
-                          el-files))))
           (add-after 'unpack 'disable-failing-tests
             (lambda _
               (substitute* (find-files "test/" "\\.el$")
@@ -45105,7 +45099,7 @@ that pre-populates cache and returns true names while minimizing calls to
                  (string-append all "(skip-unless nil)\n"))))))))
     (native-inputs (list emacs-ert-runner))
     (propagated-inputs
-     (list emacs-el-job emacs-llama))
+     (list emacs-el-job emacs-llama emacs-truename-cache))
     (synopsis "Org structure cache")
     (description "This package provides a cache of metadata about the
 structure of all your Org files – headings, links and so on..")
