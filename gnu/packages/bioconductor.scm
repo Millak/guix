@@ -25908,14 +25908,14 @@ packages.")
 (define-public r-beachmat
   (package
     (name "r-beachmat")
-    (version "2.26.0")
+    (version "2.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "beachmat" version))
        (sha256
         (base32
-         "1s2v4d49yc1r1cla1p54zkcw14bazgz8fmzb1khqngbi26apmk0p"))))
+         "0fs5qhwkkcwiqlrki0f3dbic9bjjs6iq2spj56csvvsxk6206cib"))))
     (build-system r-build-system)
     (arguments
      (list
