@@ -7522,13 +7522,13 @@ dynamic documents and vignettes.")
 (define-public r-escape
   (package
     (name "r-escape")
-    (version "2.6.2")
+    (version "2.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "escape" version))
        (sha256
-        (base32 "1siimy3qsyjw6in2x2kf07ilyglamcq79n9lcysq755k1g2pz689"))))
+        (base32 "0c4wpfaw08zi11vi5dpb5spgba2hzbhlcxscnxkcjxy5h0pg92i8"))))
     (properties
      '((upstream-name . "escape")
        (updater-extra-native-inputs
