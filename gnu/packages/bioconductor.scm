@@ -11884,13 +11884,13 @@ in SNV base substitution data.")
 (define-public r-msa
   (package
     (name "r-msa")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "msa" version))
               (sha256
                (base32
-                "0ch5ghyg2wswsywwnrxjcn7dayvm9mxfnww9l38k458r6iw8s7a5"))))
+                "0w1kl3p3skf3y7p99qvpmlfqqq197cf0chwazjm5nfbk72cj55kh"))))
     (properties `((upstream-name . "msa")))
     (build-system r-build-system)
     (propagated-inputs
@@ -11899,7 +11899,7 @@ in SNV base substitution data.")
            r-iranges
            r-rcpp
            r-s4vectors))
-    (native-inputs (list r-ape r-knitr r-pwalign r-seqinr))
+    (native-inputs (list r-ape r-biocmanager r-knitr r-pwalign r-seqinr))
     (home-page "http://www.bioinf.jku.at/software/msa/")
     (synopsis "Multiple sequence alignment")
     (description
