@@ -32688,7 +32688,7 @@ current upstream.")
 (define-public emacs-ultra-scroll
   (package
     (name "emacs-ultra-scroll")
-    (version "0.5")
+    (version "0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -32697,7 +32697,7 @@ current upstream.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "041jfjfck7lkf3zcbm3gkz8v0w8r3bbw0incvriskbl2iws0ap9i"))))
+                "0a3m1aapcrbf2b78712xh0lx4bblq3jx3n0bnhm9m9qs8889w7ir"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ;no tests
     (home-page "https://github.com/jdtsmith/ultra-scroll")
