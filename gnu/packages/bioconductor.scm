@@ -4494,20 +4494,19 @@ analysis, modelling, and visualization of spike-in controls.")
 (define-public r-ancombc
   (package
     (name "r-ancombc")
-    (version "2.12.0")
+    (version "2.14.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ANCOMBC" version))
               (sha256
                (base32
-                "1pba6ls61184dx8dyf2lfxcabpnj3av5s60w86104addygnj9y78"))))
+                "18mcllrnjmyym412m35m6wbavhi3wk6bnzqk2fgvilkqz897d7n0"))))
     (properties
      '((upstream-name . "ANCOMBC")
        (updater-extra-native-inputs . ("r-microbiome"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-cvxr
-           r-desctools
+     (list r-desctools
            r-doparallel
            r-dorng
            r-energy
@@ -4520,6 +4519,7 @@ analysis, modelling, and visualization of spike-in controls.")
            r-matrix
            r-multcomp
            r-nloptr
+           r-quadprog
            r-rdpack))
     (native-inputs (list r-knitr r-microbiome r-phyloseq r-testthat))
     (home-page "https://github.com/FrederickHuangLin/ANCOMBC")
