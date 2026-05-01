@@ -3186,13 +3186,13 @@ package @code{affy}.")
 (define-public r-gagedata
   (package
     (name "r-gagedata")
-    (version "2.48.0")
+    (version "2.49.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "gageData" version 'experiment))
        (sha256
-        (base32 "1l449mnb2r5ssiyzq92z5q2sdshwgi05a0ydhr44p30hq1bsxb3k"))))
+        (base32 "0qbhqrg8wmg8683785vwmlrcliapiinfr2dmyzglmjxdkq63v9j1"))))
     (properties `((upstream-name . "gageData")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/gageData")
