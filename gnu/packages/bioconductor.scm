@@ -2324,14 +2324,14 @@ and blood controls for CNA analysis.")
 (define-public r-chipexoqualexample
   (package
     (name "r-chipexoqualexample")
-    (version "1.34.0")
+    (version "1.35.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ChIPexoQualExample" version
                               'experiment))
        (sha256
-        (base32 "17kyrrnl47fajdwmdilmmgyzcpc7qr20c7v71c71bqwl5pvf97hs"))))
+        (base32 "00cf2i1qr5gvrbb17hspfhgqss1vy7p7qrw6hpcxg7shaabddy8s"))))
     (properties `((upstream-name . "ChIPexoQualExample")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
