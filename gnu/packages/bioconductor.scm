@@ -24900,14 +24900,14 @@ db and resource files to AWS S3 buckets.")
 (define-public r-grohmm
   (package
     (name "r-grohmm")
-    (version "1.44.0")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "groHMM" version))
        (sha256
         (base32
-         "0xdma6zx4sdkqfbs4v8ipxa38xywmdlgbdmihl0zysp6nxmm1jvg"))))
+         "0psz9rz9qmp9pni03cs1i14565fslq19y8xcnz9ppnqfvdrj7xq9"))))
     (properties `((upstream-name . "groHMM")))
     (build-system r-build-system)
     (propagated-inputs
