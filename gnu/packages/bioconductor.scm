@@ -26434,14 +26434,14 @@ quality control.")
 (define-public r-scran
   (package
     (name "r-scran")
-    (version "1.38.1")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scran" version))
        (sha256
         (base32
-         "1p2lkhvfpg0v320l6mavdfv70dzkiw0pc6im1qd8a52wycy21i88"))))
+         "0vblargck4yx5lwiasigpqbkcshyrx3igajnjw0vr2jxvg5zxni3"))))
     (properties
      '((updater-extra-native-inputs
         . ("r-dynamictreecut"
