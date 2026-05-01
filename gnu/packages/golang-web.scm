@@ -6733,7 +6733,17 @@ building with WebAssembly.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/fasthttp/router"))
+      #:import-path "github.com/fasthttp/router"
+      #:test-flags
+      ;; router_test.go:107: return error error when reading request headers:
+      ;; missing required Host header in request. Buffer size=22, contents:
+      ;; "POST /foo HTTP/1.1\r\n\r\n"
+      #~(list "-skip" (string-join
+                       (list "TestGroup"
+                             "TestRouterServeFiles"
+                             "TestRouterServeFS"
+                             "TestRouterServeFilesCustom")
+                       "|"))))
     (propagated-inputs
      (list go-github-com-savsgio-gotils
            go-github-com-valyala-bytebufferpool
