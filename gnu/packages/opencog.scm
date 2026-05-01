@@ -148,6 +148,55 @@ ordinary distributed (graph) databases, providing a large variety of advanced
 features not otherwise available.")
       (license license:agpl3))))
 
+(define-public atomspace-storage
+  ;; Storage backends for AtomSpace.
+  (let ((commit "ecd88d673258e51f65cc0605400003affdf4d694")
+        (revision "0"))
+    (package
+      (name "atomspace-storage")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/opencog/atomspace-storage")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "12ssnc313cm5n8bc6zw53dkjm9crrry90lpsknzxafnm61mzcgx3"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DSKIP_LDCONF=ON"
+                (string-append "-DGUILE_INCLUDE_DIR=" #$guile-3.0.11
+                               "/include/guile/3.0/")
+                (string-append "-DGUILE_SITE_DIR=" #$output
+                               "/share/guile/site/3.0/")
+                (string-append "-DGUILE_CCACHE_DIR=" #$output
+                               "/lib/guile/3.0/site-ccache"))
+        #:modules '((guix build cmake-build-system)
+                    ((guix build gnu-build-system) #:prefix gnu:)
+                    (guix build utils))
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys #:rest args)
+                (when tests?
+                  (apply (assoc-ref gnu:%standard-phases 'check)
+                         #:tests? tests? #:test-target "tests" args)
+                  (for-each invoke
+                            (find-files "tests" "UTest$"))))))))
+      (inputs
+       (list atomspace boost cogutil gmp guile-3.0-latest))
+      (native-inputs
+       (list cxxtest pkg-config python-minimal))
+      (home-page "https://github.com/opencog/atomspace-storage")
+      (synopsis "Storage backends for AtomSpace")
+      (description "AtomSpace-Storage provides various storage backends
+for the AtomSpace hypergraph database.")
+      (license license:agpl3))))
+
 (define-public cogserver
   ;; There are no releases.
   (let ((commit "ec5f3b9590db0f6a085b5d0320f5d3710e0f1635")
