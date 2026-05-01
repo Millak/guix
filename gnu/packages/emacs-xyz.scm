@@ -1212,7 +1212,7 @@ for multiple backends.")
 (define-public emacs-acp
   (package
     (name "emacs-acp")
-    (version "0.9.1")
+    (version "0.11.3")
     (source
      (origin
        (method git-fetch)
@@ -1221,7 +1221,7 @@ for multiple backends.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vq0b22zf9nwhyl7vspn95cq3xwy6y5f5a6b42r3f34wvx3jay14"))))
+        (base32 "0hr1176sy8xrx6wkqadmvwdjm1sv7aq8ddrw8h3ha6sn74glx8ws"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/xenodium/acp.el")
     (synopsis "@acronym{ACP, Agent Client Protocol} for Emacs")
