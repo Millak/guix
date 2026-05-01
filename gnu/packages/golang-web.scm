@@ -11898,7 +11898,7 @@ webhooks in Golang.")
 (define-public go-github-com-labstack-echo-v4
   (package
     (name "go-github-com-labstack-echo-v4")
-    (version "4.13.3")
+    (version "4.15.2")
     (source
      (origin
        (method git-fetch)
@@ -11907,7 +11907,7 @@ webhooks in Golang.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i4w36f1k17bykc24dzr2ng5zpsyysfg5bzfvlbrphxxzhsngxdy"))))
+        (base32 "0dnnvafgi4vdfzfvfhyka78c6cbl2sq69jl0gj29slhdamy7f1yc"))))
     (build-system go-build-system)
     (arguments
      (list
