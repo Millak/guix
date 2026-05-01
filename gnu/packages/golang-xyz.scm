@@ -11432,7 +11432,7 @@ logging.")
 (define-public go-github-com-go-logr-logr
   (package
     (name "go-github-com-go-logr-logr")
-    (version "1.4.2")
+    (version "1.4.3")
     (source
      (origin
        (method git-fetch)
@@ -11441,7 +11441,7 @@ logging.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03agibg7i25ppjak1yv4qzvbrv871qnfkmfy17did0h9ml7xh2nx"))))
+        (base32 "1m9v04wkrbm89vhlzfm99vxg3lnjsqqsqp871zv3r2sa92x38a88"))))
     (build-system go-build-system)
     (arguments
      (list
