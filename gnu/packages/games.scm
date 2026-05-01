@@ -5375,9 +5375,8 @@ also available.")
               (install-file "../source/ringracers.png"
                             (string-append #$output "/share/pixmaps"))))
           (add-after 'install 'wrap-program
-            ;; Install executable to $out/bin.
             (lambda* (#:key inputs #:allow-other-keys)
-              (wrap-program "bin/ringracers"
+              (wrap-program (string-append #$output "/bin/ringracers")
                 `("RINGRACERSWADDIR" =
                   (,(assoc-ref inputs "ring-racers-data"))))))
           (add-after 'wrap-program 'create-desktop-entry
