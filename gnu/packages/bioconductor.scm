@@ -11783,39 +11783,35 @@ throughput genetic sequencing data sets using regression methods.")
 (define-public r-muscat
   (package
     (name "r-muscat")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "muscat" version))
        (sha256
         (base32
-         "0nv0qrw3cvzf6j4li2ln4xw2afdlzlpy7fn5b9cpf9g8cyn6qcqj"))))
+         "1k34hs05l4x36ycr2cwyb4rw0s9y9rmga9z7sxggbzhl89sqyaar"))))
     (properties `((upstream-name . "muscat")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocparallel
            r-blme
            r-complexheatmap
-           r-data-table
-           r-deseq2
            r-dplyr
            r-edger
            r-ggplot2
            r-glmmtmb
-           r-ihw
            r-limma
            r-lme4
            r-lmertest
            r-matrix
+           r-matrixgenerics
            r-matrixstats
            r-progress
-           r-purrr
            r-rlang
            r-s4vectors
            r-scales
            r-scater
-           r-sctransform
            r-scuttle
            r-singlecellexperiment
            r-summarizedexperiment
