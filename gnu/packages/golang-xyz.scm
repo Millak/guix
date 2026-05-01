@@ -31348,7 +31348,7 @@ organization}.")
   (package
     (inherit go-go-yaml-in-yaml-v3)
     (name "go-go-yaml-in-yaml-v4")
-    (version "4.0.0-rc.3")
+    (version "4.0.0-rc.4")
     (source
      (origin
        (method git-fetch)
@@ -31357,7 +31357,7 @@ organization}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r2mc5vk5pvmdv9lr1p6s2i1nfmari398qqmp29g7d2wncbhrh9c"))))
+        (base32 "160zapg7d69v2rkspp3cb4xg72y22ycsdygvj03jbsqhc10dd402"))))
     (arguments
      (list
       #:import-path "go.yaml.in/yaml/v4"
