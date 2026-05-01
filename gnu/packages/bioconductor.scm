@@ -6745,13 +6745,13 @@ knowledge can achieve semi-supervised deconvolution of mixtures.")
 (define-public r-decipher
   (package
     (name "r-decipher")
-    (version "3.6.0")
+    (version "3.8.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DECIPHER" version))
               (sha256
                (base32
-                "0f344kiriy9q6hnji35fxhvcamb6ac40vwsw250qcj267ldj76wk"))))
+                "00ymkfa828wgm8hiqan4jipwpi02g41fvs0dwcyn5kg0jp12vlxf"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biostrings r-dbi r-iranges r-s4vectors r-xvector))
