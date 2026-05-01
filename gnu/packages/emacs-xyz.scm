@@ -47943,7 +47943,7 @@ reconciliation and layouts, rendered using native Emacs widgets.")
 (define-public emacs-vulpea
   (package
     (name "emacs-vulpea")
-    (version "2.0.1")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
@@ -47952,7 +47952,7 @@ reconciliation and layouts, rendered using native Emacs widgets.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m40d5pxyypkh1c056mp5kbjfnfjlbfmw5c8c06fkf089r278liw"))))
+        (base32 "01vq47y9sr62b1nb8dr5aq499kvgca8dswrxn3bpnzxfx5sfdq3b"))))
     (build-system emacs-build-system)
     (arguments
      (list
