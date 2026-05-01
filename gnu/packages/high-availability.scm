@@ -297,7 +297,7 @@ applications.")
 (define-public nats-server
   (package
     (name "nats-server")
-    (version "2.12.1")
+    (version "2.14.1")
     (source
      (origin
        (method git-fetch)
@@ -306,7 +306,7 @@ applications.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04dza8jqw4lhnqj1ip05jx47g9frb00x9s0yy1863qf88bvszv8z"))))
+        (base32 "1bnp17ddvpx0n8r7p4spfnhwhwwzff3f9w2h54pss8qvrsv0xy2a"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -320,7 +320,7 @@ applications.")
                        (list "TestHTTPHost"
                              "TestSysLogger"
                              "TestLogMaxArchives")
-                       "|") )
+                       "|"))
       #:test-subdirs
       #~(list "conf/..." "internal/..." "logger/..." "test/...")))
     (inputs
@@ -332,7 +332,6 @@ applications.")
            go-github-com-nats-io-nats-go
            go-github-com-nats-io-nkeys
            go-github-com-nats-io-nuid
-           go-go-uber-org-automaxprocs
            go-golang-org-x-crypto
            go-golang-org-x-sys
            go-golang-org-x-time))
