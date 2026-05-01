@@ -17127,13 +17127,13 @@ genes or proteins in these datasets.")
 (define-public r-plyranges
   (package
     (name "r-plyranges")
-    (version "1.30.1")
+    (version "1.32.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "plyranges" version))
               (sha256
                (base32
-                "1s2r33jisiqcfk7avn8hhk281nbm4skq3956di3d6xv4n3qxfcy8"))))
+                "16yvz5m42c9sqlq1da3w3ss9sf1gfi180pzk27wfn6awba46akad"))))
     (properties
      '((upstream-name . "plyranges")
        (updater-extra-native-inputs . ("r-helloranges"))))
