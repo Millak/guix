@@ -62,7 +62,7 @@ as bold, underscore or italic.")
 (define-public emacs-buttercup
   (package
     (name "emacs-buttercup")
-    (version "1.38")
+    (version "1.40")
     (source
      (origin
        (method git-fetch)
@@ -72,9 +72,7 @@ as bold, underscore or italic.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "09n8skr5wi8bs7x81d5bi6z89dd8s1zi9a5f4r2qadaz69slncxq"))
-       (patches
-        (search-patches "emacs-buttercup-1.38-native-comp-spy-on-trampoline-scope.patch"))))
+         "1b55cfh4wr40max2c42crvaa6wid7a83g28yximsin98i32q5f5r"))))
     (build-system emacs-build-system)
     (arguments
      (list
