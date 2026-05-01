@@ -13070,14 +13070,14 @@ described at
 (define-public r-regioner
   (package
     (name "r-regioner")
-    (version "1.42.0")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "regioneR" version))
        (sha256
         (base32
-         "1s96qn8b4g4bk52d2jpyk1m4nw87ay2zhy6xf4scaqs4gd227196"))))
+         "0ksvzj0aawsx7wgdm5npcmhkj5cpk0cxpkyfm96i52jrslh0fkmq"))))
     (properties `((upstream-name . "regioneR")))
     (build-system r-build-system)
     (arguments
