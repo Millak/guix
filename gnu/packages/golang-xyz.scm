@@ -4329,6 +4329,40 @@ strings into words like a POSIX or Windows shell would.")
 similar to Go's standard library @code{json} and @code{xml} package.")
     (license license:expat)))
 
+(define-public go-github-com-bytedance-gopkg
+  (package
+    (name "go-github-com-bytedance-gopkg")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bytedance/gopkg")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09nv48zcvb6lp04a5sqh67xwrgbf4s4pds6xljd4pg46r6ql6gyl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/bytedance/gopkg"
+      #:test-flags
+      ;; 1. channel_test.go:126: expected 1, got 0
+      ;; 2. channel_test.go:29: [2026-05-01 13:00:21.776437502 +0000 UTC]
+      ;; channel finished; channel_test.go:155: expected 6, got 5
+      ;;              [1]              [2]
+      #~(list "-skip" "TestChannelClose|TestChannelGCClose")))
+    (propagated-inputs
+     (list go-golang-org-x-sync
+           go-golang-org-x-sys))
+    (home-page "https://github.com/bytedance/gopkg")
+    (synopsis "Universal utilities for Go")
+    (description
+     "@code{gopkg} is a universal utility collection for Go, it complements
+offerings such as Boost, Better std, Cloud tools.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-bytedance-sonic
   (package
     (name "go-github-com-bytedance-sonic")
