@@ -32,6 +32,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
@@ -333,6 +334,7 @@ and inhibition of alerts.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.24
       #:skip-build? #t
       ;; XXX: Check if the most of the tests may be enabled:
       ;; api/prometheus/v1/api_test.go:1063:23: cannot use 1634644800304
