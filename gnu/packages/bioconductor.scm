@@ -26912,14 +26912,14 @@ by Ernst and Kellis.")
 (define-public r-ggbio
   (package
     (name "r-ggbio")
-    (version "1.58.0")
+    (version "1.60.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ggbio" version))
        (sha256
         (base32
-         "0wnscz1r9khbh6lha55025s5wkvs2i3z4v1cjz0v3gkgkva545ff"))))
+         "119hzv17zykkp1mx2as3cf489yk9fdpcg58pcywjkhn2rwq42ia9"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
@@ -26960,10 +26960,12 @@ by Ernst and Kellis.")
            r-summarizedexperiment
            r-variantannotation))
     (native-inputs
-     (list r-bsgenome-hsapiens-ucsc-hg19
+     (list r-biocstyle
+           r-bsgenome-hsapiens-ucsc-hg19
            r-ensdb-hsapiens-v75
            r-homo-sapiens
            r-knitr
+           r-rcolorbrewer
            r-testthat
            r-txdb-hsapiens-ucsc-hg19-knowngene))
     (home-page "http://www.tengfei.name/ggbio/")
