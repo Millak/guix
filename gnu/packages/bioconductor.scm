@@ -22696,14 +22696,14 @@ standard to exchange gated cytometry data with other software platforms.")
 (define-public r-flowsom
   (package
     (name "r-flowsom")
-    (version "2.18.0")
+    (version "2.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "FlowSOM" version))
        (sha256
         (base32
-         "09a3s5aqp9kfvckf2mw8lj0q74b3wmbg1qnphrggdcilhhh107di"))))
+         "176mi6msrmqm8w1mdz8mn0f8wng5lw6583wwd8790dx4cvm2qlan"))))
     (properties `((upstream-name . "FlowSOM")))
     (build-system r-build-system)
     (propagated-inputs
@@ -22722,7 +22722,7 @@ standard to exchange gated cytometry data with other software platforms.")
            r-rtsne
            r-tidyr
            r-xml))
-    (native-inputs (list))
+    (native-inputs (list r-biocmanager r-biocstyle r-flowworkspace))
     (home-page "https://bioconductor.org/packages/FlowSOM/")
     (synopsis "Visualize and interpret cytometry data")
     (description
