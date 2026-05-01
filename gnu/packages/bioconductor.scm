@@ -19831,14 +19831,14 @@ expression data sets.")
 (define-public r-mlinterfaces
   (package
     (name "r-mlinterfaces")
-    (version "1.90.0")
+    (version "1.92.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MLInterfaces" version))
        (sha256
         (base32
-         "055ppz9d1f5l2ab11zqf1v47d1mvhb97j45wyrr89d822085nml1"))))
+         "0vzixaicm3rmirgpbknzxg2fvl93svx0yyy4159hq9l5xk8m1k1j"))))
     (properties
      '((upstream-name . "MLInterfaces")
        (updater-extra-native-inputs . ("r-e1071"))))
