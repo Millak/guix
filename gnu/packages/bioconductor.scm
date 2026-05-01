@@ -7056,13 +7056,13 @@ targeted by a kinase.")
 (define-public r-deepsnv
   (package
     (name "r-deepsnv")
-    (version "1.56.0")
+    (version "1.58.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "deepSNV" version))
               (sha256
                (base32
-                "0dl4d5w2s25j8gfrrbc6gm2jz8jss89dcs6k0w2lwfh88m6h6lr4"))))
+                "0z49mh844c4xzp4bafwcc6swpcyhifmy8dvzax62j78xiqpzjm23"))))
     (properties `((upstream-name . "deepSNV")))
     (build-system r-build-system)
     (propagated-inputs
