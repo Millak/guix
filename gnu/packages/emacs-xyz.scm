@@ -18279,7 +18279,7 @@ programming language.")
 (define-public emacs-julia-repl
   (package
     (name "emacs-julia-repl")
-    (version "1.3.0")
+    (version "1.5.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -18288,7 +18288,7 @@ programming language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11vpqqnxqj9nxh8kccj4y6h3f8lib6jxnsk6vxc2j2fqw6alnafm"))))
+                "0xq9cg7l4v85h9xwnss38k8j665zzn0kwf4zq8mkn6xxvcf2wq53"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/tpapp/julia-repl")
     (synopsis "Minor mode for interacting with a Julia REPL")
