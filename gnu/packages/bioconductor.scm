@@ -10788,13 +10788,13 @@ identify shared and dataset-specific factors.")
 (define-public r-rnbeads
   (package
     (name "r-rnbeads")
-    (version "2.28.0")
+    (version "2.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RnBeads" version))
        (sha256
-        (base32 "00vfljydr8f9y1d4vh08v2ziwyr7gb36kqzc5xc0nb3f2w66f80d"))
+        (base32 "0alcapsh99z7h81i71c4mlschkkckig59pgg6awkxv5z4zbl674r"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "inst/bin"))))
@@ -10841,6 +10841,7 @@ identify shared and dataset-specific factors.")
     (inputs (list kentutils))
     (native-inputs
      (list ghostscript
+           r-biocmanager
            r-doparallel
            r-impute
            r-missmethyl
