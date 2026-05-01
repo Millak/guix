@@ -17013,13 +17013,13 @@ information.")
 (define-public r-glmgampoi
   (package
     (name "r-glmgampoi")
-    (version "1.22.0")
+    (version "1.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "glmGamPoi" version))
               (sha256
                (base32
-                "1i9sy6a47ynb3lghi2mghk6mvgbr3kny6c3n208lxqb4b7si1f1z"))))
+                "14kl3sd8hm5nlfw4lzbyl3ss4kgjabrqsn67ans6qjp8x28pzwgs"))))
     (properties
      '((upstream-name . "glmGamPoi")
        (updater-ignored-native-inputs
