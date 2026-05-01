@@ -910,7 +910,6 @@ is like a time machine for your data.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:install-source? #f
       #:import-path "github.com/restic/restic/cmd/restic"
       #:unpack-path "github.com/restic/restic"

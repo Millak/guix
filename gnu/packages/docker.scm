@@ -216,7 +216,6 @@ projects.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:embed-files #~(list ".*\\.json")
       #:import-path "github.com/moby/policy-helpers"))
     (native-inputs

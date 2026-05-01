@@ -73,7 +73,6 @@
        #:import-path "github.com/syncthing/syncthing"
        ;; Check 'go.mod' in the source distribution for the required version of Go.
        ;; We don't need to install the source code for end-user applications.
-       #:go go-1.25
        #:install-source? #f
        #:phases
        #~(modify-phases %standard-phases

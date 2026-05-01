@@ -1090,7 +1090,6 @@ the date of the most recent commit that modified them
     (arguments
      (list
       #:import-path "go.abhg.dev/gs"
-      #:go go-1.25
       #:install-source? #f
       #:build-flags
       #~(list (string-append "-ldflags=-X main._version=" #$version))

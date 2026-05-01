@@ -7344,7 +7344,6 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:test-flags
       #~(list "-skip" "TestSynctestMarshal")
       #:import-path "github.com/go-json-experiment/json"))
@@ -8881,7 +8880,6 @@ Terraform by using the enterprise certificates feature.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:skip-build? #t
       #:import-path "github.com/googleapis/gax-go/v2"
       #:unpack-path "github.com/googleapis/gax-go"
@@ -8922,7 +8920,6 @@ for clients and servers based on @code{gRPC} and Google API conventions.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:import-path "github.com/GoogleCloudPlatform/grpc-gcp-go/grpcgcp"
       #:unpack-path "github.com/GoogleCloudPlatform/grpc-gcp-go"
       ;; gcp_multiendpoint_test.go:441: endpoint wanted "localhost:50051", got
@@ -16457,7 +16454,6 @@ protocol.")
       (build-system go-build-system)
       (arguments
        (list
-        #:go go-1.25
         #:import-path "github.com/quic-go/webtransport-go"
         #:phases
         #~(modify-phases %standard-phases
@@ -17811,7 +17807,6 @@ It is part of the Sigstore project for software supply chain security.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:skip-build? #t
       #:import-path "github.com/sigstore/sigstore"
       #:test-flags
@@ -18562,7 +18557,6 @@ side of the connection, using various OS-specific facilities.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:skip-build? #t
       #:test-subdirs
       ;; XXX: Remove when all inputs are packaged.
@@ -21497,7 +21491,6 @@ Tracer implementation from the @code{OpenTracing} project.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:import-path "go.opentelemetry.io/contrib/zpages"
       #:unpack-path "go.opentelemetry.io/contrib"))
     (native-inputs (list go-github-com-stretchr-testify))
@@ -21548,7 +21541,6 @@ display telemetry stats.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:tests? #f ;; TODO: Tests require additional dependencies
       #:import-path "go.opentelemetry.io/otel"
       ;; Error: Both arguments must be pointers.
@@ -22129,7 +22121,6 @@ logging library.  Instead, install one of the bridges listed in the
     (name "go-go-opentelemetry-io-otel-metric")
     (arguments
      (list
-      #:go go-1.25
       #:import-path "go.opentelemetry.io/otel/metric"
       #:unpack-path "go.opentelemetry.io/otel"))
     (synopsis "OpenTelemetry Metric API")
@@ -22896,7 +22887,6 @@ interacting with Google's @code{gRPC} APIs.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:import-path "google.golang.org/genproto/googleapis/bytestream"
       #:unpack-path "google.golang.org/genproto"))
     (propagated-inputs
@@ -24114,7 +24104,6 @@ that can use multiple signing keys
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:build-flags #~(list (string-append "-ldflags="
                                            "-X main.lyrebirdVersion="
                                            #$version " -s -w"))

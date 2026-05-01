@@ -5193,7 +5193,6 @@ daemon.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:install-source? #f
       #:import-path "github.com/slackhq/nebula"
       #:build-flags

@@ -532,7 +532,6 @@ go-datastore}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:import-path "github.com/ipfs/go-dsqueue"
       #:phases
       #~(modify-phases %standard-phases
@@ -2326,7 +2325,6 @@ types.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:install-source? #f
       #:embed-files #~(list "sorted-network-list.bin" ".*\\.css" ".*\\.html")
       #:unpack-path "github.com/ipfs/kubo"

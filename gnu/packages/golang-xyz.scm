@@ -7519,7 +7519,6 @@ struct values.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:skip-build? #t
       #:test-flags
       #~(list "-skip" (string-join
@@ -7580,7 +7579,6 @@ Utilities:
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:import-path "github.com/creachadair/msync"
       #:phases
       #~(modify-phases %standard-phases
@@ -7616,7 +7614,6 @@ variable.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:import-path "github.com/creachadair/taskgroup"
       #:phases
       #~(modify-phases %standard-phases
@@ -12903,7 +12900,6 @@ configuration.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:import-path "github.com/goreleaser/nfpm/v2"
       #:unpack-path "github.com/goreleaser/nfpm/v2"
       ;; Tests fail due to read-only filesystem when trying to manipulate mode
@@ -27163,7 +27159,6 @@ managing TUF repositories and clients for securely downloading updates.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:skip-build? #t
       #:import-path "github.com/theupdateframework/go-tuf/v2"
       #:test-flags
@@ -32291,7 +32286,6 @@ by the Kubernetes API server.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.25
       #:embed-files #~(list "swagger.json")
       #:import-path "k8s.io/apimachinery"
       #:test-flags
