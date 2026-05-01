@@ -1784,7 +1784,10 @@ fn main() {
               '(("cairo"      ("cairo" "pixman-1"))
                 ("fontconfig" ("fontconfig"))
                 ("freetype"   ("freetype" "png" "z"))
-                ("harfbuzz"   ("harfbuzz"))))))))
+                ("harfbuzz"   ("harfbuzz"))))
+             ;; Don't try to vendor lua.
+             (substitute* "config/Cargo.toml"
+               (("\"vendored\", ") ""))))))
       (build-system cargo-build-system)
       (arguments
        (list
@@ -1908,6 +1911,7 @@ fn main() {
               libx11
               libxcb
               libxkbcommon
+              lua-5.4
               mesa
               openssl
               sqlite
