@@ -27669,7 +27669,7 @@ Features:
 (define-public emacs-evil-matchit
   (package
     (name "emacs-evil-matchit")
-    (version "4.0.1")
+    (version "4.1.0")
     (source
      (origin
        (method git-fetch)
@@ -27678,7 +27678,7 @@ Features:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06ayyw8nim5fi819hr30x54wx2ba6aqvlh7r0vld06xc0zsjdhm3"))))
+        (base32 "13pkx03h9qip09dfyngl7r54mjmd7lxxkqzjzggqrp7kyx7ngsrw"))))
     (build-system emacs-build-system)
     (arguments (list #:test-command #~(list "make" "test")
                      #:phases
@@ -27693,7 +27693,8 @@ Features:
                                ((" deps") "")))))))
     (propagated-inputs
      (list emacs-evil))
-    (native-inputs (list emacs-lua-mode
+    (native-inputs (list emacs-julia-mode
+                         emacs-lua-mode
                          emacs-markdown-mode
                          emacs-tuareg
                          emacs-yaml-mode))
