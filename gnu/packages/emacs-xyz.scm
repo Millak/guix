@@ -24209,26 +24209,24 @@ configuration of Chinese fonts.")
     (license license:gpl2+)))
 
 (define-public emacs-cal-china-x
-  (let ((revision "0")
-        (commit  "94005e678a1d2522b7a00299779f40c5c77286b8"))
-    (package
-      (name "emacs-cal-china-x")
-      (version (git-version "2.6b" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri
-          (git-reference
-           (url "https://github.com/xwl/cal-china-x")
-           (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0dy9awy5y990wz925rdn95gn23ywarwbvkqq0l0xms1br1v8kxc6"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/xwl/cal-china-x")
-      (synopsis "Chinese localization, lunar/horoscope/zodiac info and more")
-      (description
-       "Cal-China-X provides additional features for Emacs' Cal-China package:
+  (package
+    (name "emacs-cal-china-x")
+    (version "2.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+          (url "https://github.com/xwl/cal-china-x")
+          (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y662hvbbs745yy72ppicdp9ifcz5a9xj1qp3jsifiyhs138zklf"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/xwl/cal-china-x")
+    (synopsis "Chinese localization, lunar/horoscope/zodiac info and more")
+    (description
+     "Cal-China-X provides additional features for Emacs' Cal-China package:
 
 @itemize
 @item Chinese localizations.
@@ -24238,7 +24236,7 @@ configuration of Chinese fonts.")
 @item Add cal-china-x-chinese-holidays, cal-china-x-japanese-holidays.
 @item custom week diary (like weeks in school).
 @end itemize")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-boon
   (package
