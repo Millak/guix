@@ -19475,14 +19475,14 @@ sets of GO terms, gene products and gene clusters.")
 (define-public r-anota
   (package
     (name "r-anota")
-    (version "1.58.0")
+    (version "1.60.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "anota" version))
        (sha256
         (base32
-         "15lyasxjsf812gx3ylhl4ajsvbpl8l685wp18gln97qq77l9ldcr"))))
+         "0kq566k3wky66pyz6ypbw91x04djcw1v27zgxfiy3xbpahccij9m"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-multtest r-qvalue))
