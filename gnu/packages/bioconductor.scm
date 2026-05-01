@@ -15911,13 +15911,13 @@ problems in genomics, brain imaging, astrophysics, and data mining.")
 (define-public r-apcomplex
   (package
     (name "r-apcomplex")
-    (version "2.76.0")
+    (version "2.78.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "apComplex" version))
        (sha256
-        (base32 "0x2ylr3fv0p88ydnibnzdaz4388vl9af893cc0rq1brrcccsdwhl"))))
+        (base32 "1zrwcvzp6wm466nxxqwjnmmcznrhwj40wa21i54hvxyws21sgjcz"))))
     (properties `((upstream-name . "apComplex")))
     (build-system r-build-system)
     (propagated-inputs
