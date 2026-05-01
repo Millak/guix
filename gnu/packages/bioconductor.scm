@@ -12439,17 +12439,17 @@ the fact that each of these packages implements a select methods.")
 (define-public r-oscope
   (package
     (name "r-oscope")
-    (version "1.40.0")
+    (version "1.42.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Oscope" version))
               (sha256
                (base32
-                "1z1ghy7ix9gk613ilwqrmij91qych3slyrwp68vdhclkx5bs917b"))))
+                "1aq2zblqd096flhzpijh55qmnr6zz4jf8vs3zc5sksmil3914z6c"))))
     (properties `((upstream-name . "Oscope")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocparallel r-cluster r-ebseq))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-biocstyle r-testthat))
     (home-page "https://bioconductor.org/packages/Oscope")
     (synopsis
      "Oscillatory genes identifier in unsynchronized single cell RNA-seq")
