@@ -3164,13 +3164,13 @@ the form of an @code{exprSet} object.")
 (define-public r-affydata
   (package
     (name "r-affydata")
-    (version "1.58.0")
+    (version "1.59.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "affydata" version 'experiment))
        (sha256
-        (base32 "1kyn382a7hx1w0gk54yln35canlr6adnghi2x63qsqjxaxd5hcby"))))
+        (base32 "1ss81nl0kq559idi26a6rrl15csh1bxyp00z6zh4c7isaq7fpvc7"))))
     (properties `((upstream-name . "affydata")))
     (build-system r-build-system)
     (propagated-inputs
