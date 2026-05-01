@@ -24381,14 +24381,14 @@ add-on package rather than used directly.")
 (define-public r-chemminer
   (package
     (name "r-chemminer")
-    (version "3.62.0")
+    (version "3.64.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ChemmineR" version))
        (sha256
         (base32
-         "0yvf72nz3s151hsclwk8ch0rypsm7a4z3w49ds7rnqd92q1h0rx5"))))
+         "1m0x66c454zii8176yifqbqdam05cf7zzlhqiifm42jysxa7jlxh"))))
     (properties
      '((upstream-name . "ChemmineR")
        ;; Needed for tests.
@@ -24414,7 +24414,9 @@ add-on package rather than used directly.")
            r-rsvg
            r-stringi))
     (native-inputs
-     (list r-chemmineob
+     (list r-biocmanager
+           r-biocstyle
+           r-chemmineob
            r-gplots
            r-knitr
            r-rgl
