@@ -17567,14 +17567,14 @@ possible, parallelization is achieved using the BiocParallel framework.")
 (define-public r-destiny
   (package
     (name "r-destiny")
-    (version "3.24.0")
+    (version "3.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "destiny" version))
        (sha256
         (base32
-         "18yrw149zqi7zdjzqp25yr207d5m7y9fgrigjgq89mwly39rn9lb"))))
+         "1qik33fm9mqnnw7idfxp666lmwpm0vbzf01nnnx2hl82s4559ll8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
@@ -17595,7 +17595,6 @@ possible, parallelization is achieved using the BiocParallel framework.")
            r-scales
            r-scatterplot3d
            r-singlecellexperiment
-           r-smoother
            r-summarizedexperiment
            r-tidyr
            r-tidyselect
