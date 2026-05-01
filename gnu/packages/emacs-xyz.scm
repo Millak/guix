@@ -25415,7 +25415,7 @@ more information.  It supports OMEMO end-to-end encryption via picomemo.")
 (define-public emacs-jarchive
   (package
     (name "emacs-jarchive")
-    (version "0.11.0")
+    (version "0.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -25424,7 +25424,7 @@ more information.  It supports OMEMO end-to-end encryption via picomemo.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v8a2bbjgkn95pxq8x9251znj03m5n0f6bngbf4a63pxa2il3r8n"))))
+                "0k63zm7hpm1h8vzfggmg1s4b83rpsz3bqqqf9sqdmqq8di7v3rwz"))))
     (build-system emacs-build-system)
     (home-page "https://sr.ht/~dannyfreeman/jarchive")
     (synopsis "Jarchive teaches Emacs how to navigate to files inside JARs")
