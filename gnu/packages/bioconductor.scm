@@ -8386,14 +8386,14 @@ structure.")
 (define-public r-annotate
   (package
     (name "r-annotate")
-    (version "1.88.0")
+    (version "1.90.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "annotate" version))
        (sha256
         (base32
-         "1ry6111qca2cx2fav5rk6sdwcng64lv2ahjhggixzflmag4gjqnq"))))
+         "0d3v2nzng87ygkf60daw3hzv3i4781wiakggg334bvicc7dk4wsk"))))
     (properties
      '((updater-ignored-native-inputs
         . ("r-hgu95av2-db"
