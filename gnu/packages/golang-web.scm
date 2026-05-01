@@ -19535,26 +19535,25 @@ tiny,non-intrusive, and encourages use of @code{net/http} Handlers.")
 (define-public go-github-com-valyala-fasthttp
   (package
     (name "go-github-com-valyala-fasthttp")
-    (version "1.58.0")
+    (version "1.70.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/valyala/fasthttp")
-             (commit (string-append "v" version))))
+              (url "https://github.com/valyala/fasthttp")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r823fikgyhnmcn322anhs3ivkbzhdgbywvwi81v9kvfhi35plli"))))
+        (base32 "0wr440zsm0jw1f4xy3mpsidp3fivzs37279r1akxdqghfj3xzw07"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/valyala/fasthttp"
       #:test-flags
-      #~(list "-skip" (string-join
-                       ;; Network set up is required.
-                       (list "TestClientConfigureClientFailed"
-                             "TestDialer_GetDialFunc")
-                       "|"))
+      #~(list "-shuffle=on"
+              ;; dialer_test.go:231: lookup github.com on [::1]:53: read udp
+              ;; [::1]:52547->[::1]:53: read: connection refused
+             "-skip" "TestDialer_GetDialFunc")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
@@ -19567,16 +19566,15 @@ tiny,non-intrusive, and encourages use of @code{net/http} Handlers.")
      (list go-github-com-andybalholm-brotli
            go-github-com-klauspost-compress
            go-github-com-valyala-bytebufferpool
-           go-github-com-valyala-tcplisten
            go-golang-org-x-crypto
            go-golang-org-x-net
-           go-golang-org-x-sys
-           go-golang-org-x-text))
+           go-golang-org-x-sys))
     (home-page "https://github.com/valyala/fasthttp")
     (synopsis "Provides fast HTTP server and client API")
     (description
      "This package provides a Go module @code{fasthttp} which may be used as
-replacement for native @code{net/http} module.")
+replacement for native @code{net/http} module.  It is optimized for high
+performance with zero memory allocations in hot paths.")
     (license license:expat)))
 
 (define-public go-github-com-valyala-tcplisten
