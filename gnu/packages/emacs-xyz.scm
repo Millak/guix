@@ -17596,7 +17596,7 @@ allowing unprefixed keys to insert their respective characters as expected.")
 (define-public emacs-claude-code
   (package
     (name "emacs-claude-code")
-    (version "0.7.1")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
@@ -17606,7 +17606,7 @@ allowing unprefixed keys to insert their respective characters as expected.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0hvmvp5yq0pidb5mry68pc0lirz3b61cyh25am60432xdkq2pv74"))))
+         "08l8pg2v7gi25nvijbxfazqw9syqkkjbrqld3hz5h7w1nyiwp35q"))))
     (build-system emacs-build-system)
     (arguments
      (list
