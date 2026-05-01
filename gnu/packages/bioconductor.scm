@@ -2029,14 +2029,14 @@ albumin} (HSA).")
 (define-public r-airway
   (package
     (name "r-airway")
-    (version "1.30.0")
+    (version "1.31.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "airway" version
                               'experiment))
        (sha256
-        (base32 "1lfaf74357ij6albfqjxhk81135mj9pj6xh88pai6cwq4ndigwkq"))))
+        (base32 "1xcw4ji9rq0cjyy1jm4w9s2fpp1lrylcx7ldjn0qxjqavjl6bz8f"))))
     (properties `((upstream-name . "airway")))
     (build-system r-build-system)
     (propagated-inputs (list r-summarizedexperiment))
