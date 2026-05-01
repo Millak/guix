@@ -11670,13 +11670,13 @@ It has function interfaces for:
 (define-public r-modstrings
   (package
     (name "r-modstrings")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Modstrings" version))
        (sha256
-        (base32 "1apgx7jf02y7v3rd36y3r3fsl41pg2ajxq9cmi4nrnpf0s1jq1f2"))))
+        (base32 "0qxglvznsqb64h253xn6nq9dbk1xfigbyfx7skvpw2yygybbi24l"))))
     (properties `((upstream-name . "Modstrings")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
