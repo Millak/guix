@@ -6404,13 +6404,13 @@ objects.")
 (define-public r-coregx
   (package
     (name "r-coregx")
-    (version "2.14.0")
+    (version "2.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "CoreGx" version))
        (sha256
-        (base32 "189akh4lpbp0dzgflb3nb3vi94bhmsj7qkcl597dnnzxqz00hsb2"))))
+        (base32 "0p8hiqhi7r3k5c172z1sgdsd8x6razxsvxpmg86njkyadks1vcy1"))))
     (properties `((upstream-name . "CoreGx")))
     (build-system r-build-system)
     (propagated-inputs
