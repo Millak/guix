@@ -9952,13 +9952,13 @@ names in their natural, rather than lexicographic, order.")
 (define-public r-genomicalignments
   (package
     (name "r-genomicalignments")
-    (version "1.46.0")
+    (version "1.48.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicAlignments" version))
               (sha256
                (base32
-                "18s65wfkb568fiqqxbg50qpjv2x1ryrj3zrmafqqsp7xv6da6zzj"))))
+                "0gjh7ka4b9v8z3zm9xjbard0yh5kg3b5vabvi1xr077gmb2ggh58"))))
     (properties
      `((upstream-name . "GenomicAlignments")
        (updater-extra-native-inputs . ("r-runit"))
@@ -9983,8 +9983,7 @@ names in their natural, rather than lexicographic, order.")
            r-s4vectors
            r-seqinfo
            r-summarizedexperiment))
-    (native-inputs (list r-knitr
-                         r-pasillabamsubset
+    (native-inputs (list r-biocmanager r-biocstyle r-knitr r-pasillabamsubset
                          r-runit))
     (home-page "https://bioconductor.org/packages/GenomicAlignments")
     (synopsis "Representation and manipulation of short genomic alignments")
