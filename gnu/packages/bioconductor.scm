@@ -14360,13 +14360,13 @@ and comparing the clusterings.")
 (define-public r-singscore
   (package
     (name "r-singscore")
-    (version "1.30.0")
+    (version "1.32.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "singscore" version))
               (sha256
                (base32
-                "1cyfhwwwq77ww5zdav17qzwh171h40dzi2plrzxqly808c5xxlqx"))))
+                "0npxk2189myjmgmnlv67y9zm20msxdyg9g2rh6f9pjay475wpzxl"))))
     (properties
      '((upstream-name . "singscore")
        (updater-extra-native-inputs . ("r-hexbin"))))
