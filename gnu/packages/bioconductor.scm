@@ -14469,13 +14469,13 @@ identifier translation via the GDC API.")
 (define-public r-toast
   (package
     (name "r-toast")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "TOAST" version))
        (sha256
-        (base32 "1cmi1avi7ypy20r0vqyid72zfsas8ch4b2li6s9h9acbi98flzz9"))))
+        (base32 "1r9qr9lxfdb314g0p3a66lsx2k796ams3r0bwvymxb4am20r6k6b"))))
     (properties `((upstream-name . "TOAST")))
     (build-system r-build-system)
     (propagated-inputs (list r-corpcor
