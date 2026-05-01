@@ -16193,14 +16193,14 @@ the batches considered.")
 (define-public r-multtest
   (package
     (name "r-multtest")
-    (version "2.66.0")
+    (version "2.68.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "multtest" version))
        (sha256
         (base32
-         "1jc5q1amr2q980xpa7ysp7vg9ihmypv16ph4p8jgpj4jdr1dl71h"))))
+         "1lizrqcsljranjnd6a9n43nz8gnw8h677bffz08b09hy84a59fpf"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase r-biocgenerics r-mass r-survival))
