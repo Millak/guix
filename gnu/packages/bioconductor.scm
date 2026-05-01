@@ -18611,13 +18611,13 @@ studies.")
 (define-public r-bumpymatrix
   (package
     (name "r-bumpymatrix")
-    (version "1.18.0")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BumpyMatrix" version))
               (sha256
                (base32
-                "0xz9yqycp91k5m9rf58lp2fvbx44k5lf9wpanrid4v50j82hyipx"))))
+                "139vgz85lj6hmkzpqbvgx2al38v2wi2jbzj0zcxn94i0xr13hg12"))))
     (properties `((upstream-name . "BumpyMatrix")))
     (build-system r-build-system)
     (propagated-inputs (list r-iranges r-matrix r-s4vectors))
