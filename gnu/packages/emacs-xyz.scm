@@ -17684,7 +17684,7 @@ commands such as xref and imenu.")
 (define-public emacs-clojure-mode
   (package
     (name "emacs-clojure-mode")
-    (version "5.20.0")
+    (version "5.23.0")
     (source
      (origin
        (method git-fetch)
@@ -17693,7 +17693,7 @@ commands such as xref and imenu.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "123x8rwv4nb30h1rz7avshvr00xjfjjsmzrqsyxhgdm3f0rhac5w"))))
+        (base32 "1nl51qmm50n2l4wmwbm35lhpjy3k56nji2ncb9iz67hlivncvb5h"))))
     (build-system emacs-build-system)
     (native-inputs
      (list emacs-buttercup emacs-dash emacs-paredit emacs-s))
