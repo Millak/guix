@@ -3398,14 +3398,14 @@ minute sample amounts.")
 (define-public r-sesamedata
   (package
     (name "r-sesamedata")
-    (version "1.28.0")
+    (version "1.29.10")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "sesameData" version
                                      'experiment))
               (sha256
                (base32
-                "1vlb8hb7fvijlxqnrqqd46iy0ph75pd8xnfgsbp6n6q3xs1vxv79"))))
+                "1mcxyhzcav3qnsmfdhsdx6l2gwrl30c3ks0sjhb71vpv4dpjqf9l"))))
     (properties
      `((upstream-name . "sesameData")
        ;; Avoid dependency cycle.
