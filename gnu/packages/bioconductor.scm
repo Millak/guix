@@ -12901,14 +12901,14 @@ matrix for a set of strings.")
 (define-public r-rbgl
   (package
     (name "r-rbgl")
-    (version "1.86.0")
+    (version "1.88.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RBGL" version))
        (sha256
         (base32
-         "083gm7biwq5z0jibr3wbdkjs50kqphwjkh571awk8rhlniqwpi1f"))))
+         "0cmya6wncfi1b6yafrp67r8kz15flhn75485z2vjfysy6w5zhkpq"))))
     (properties `((upstream-name . "RBGL")))
     (build-system r-build-system)
     (propagated-inputs
