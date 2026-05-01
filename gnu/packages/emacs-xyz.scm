@@ -5460,7 +5460,7 @@ Selectrum.")
 (define-public emacs-empv
   (package
     (name "emacs-empv")
-    (version "6.1.0")
+    (version "6.2.0")
     (source
      (origin
        (method git-fetch)
@@ -5470,7 +5470,7 @@ Selectrum.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "159s9hyn8z35ja3f297lb2335ihjyp60zkk7lsz8r3jc4vv0kgqs"))))
+         "1r6hchdchfpici44dynxa0ivhmmc3hrj1qdvgjvaysqymn1hbz1y"))))
     (build-system emacs-build-system)
     (arguments
      (list
