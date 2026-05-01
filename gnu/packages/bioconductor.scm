@@ -10528,13 +10528,13 @@ the Human Protein Atlas project.")
 (define-public r-r3cseq
   (package
     (name "r-r3cseq")
-    (version "1.56.0")
+    (version "1.58.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "r3Cseq" version))
        (sha256
-        (base32 "0h6viyf8g6bgx14y25i8s1xx8jh5dx4lh5ddfq566zp3y93wp78c"))))
+        (base32 "1jw08rhd3bs4fpxsi44wn7dayjj9a58jawfi35bjch8sfnly9qqy"))))
     (properties `((upstream-name . "r3Cseq")))
     (build-system r-build-system)
     (propagated-inputs
