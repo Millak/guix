@@ -14096,13 +14096,13 @@ Stephens (1990).")
 (define-public r-seqpattern
   (package
     (name "r-seqpattern")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "seqPattern" version))
               (sha256
                (base32
-                "107l52mv68bpmjrhfgjm94wqxc3bqz1vhr2hd8rn6jzlwbn6bijj"))))
+                "11wx63wfnmcsbfdpdx32f5hwmgf3jwk88qn36h1hhhjg2hp3mlx8"))))
     (properties
      `((upstream-name . "seqPattern")
        (updater-extra-native-inputs . ("r-biocstyle"))))
