@@ -6502,13 +6502,13 @@ developed by the UCSC Genome Browser group.")
 (define-public r-csaw
   (package
     (name "r-csaw")
-    (version "1.44.0")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "csaw" version))
        (sha256
-        (base32 "10pk3lmjjmdyfp10fcnjbgfcxzlkd1fbjvh0h53ycq37p6sa49qb"))))
+        (base32 "1cq9dycwv76g7v9gq84b5s8sqxiggw6gb9sgx5pp4w8kf1v56dcd"))))
     (properties `((upstream-name . "csaw")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
