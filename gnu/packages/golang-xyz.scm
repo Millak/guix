@@ -10868,7 +10868,14 @@ Differentiation between text and binary files}.
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/gammazero/chanqueue"))
+      #:import-path "github.com/gammazero/chanqueue"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              ;; See: <https://go.dev/blog/synctest>.
+              (setenv "GOEXPERIMENT" "synctest")
+              (setenv "GODEBUG" "asynctimerchan=0"))))))
     (native-inputs
      (list go-go-uber-org-goleak))
     (propagated-inputs
