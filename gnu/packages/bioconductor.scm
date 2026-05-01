@@ -16281,13 +16281,13 @@ fitting of some classes of graphical Markov models.")
 (define-public r-ggtreeextra
   (package
     (name "r-ggtreeextra")
-    (version "1.20.1")
+    (version "1.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ggtreeExtra" version))
               (sha256
                (base32
-                "03qdh2q6bd0452ygk3la825ixw54vm997r21s38qivxraam5cjd7"))))
+                "196hz0xxaqmipqkv51q4w3fsv8rc6yxn6svgyzxxq6zn1wlwhqwn"))))
     (properties `((upstream-name . "ggtreeExtra")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
