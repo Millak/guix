@@ -9347,14 +9347,14 @@ distribution.")
 (define-public r-dexseq
   (package
     (name "r-dexseq")
-    (version "1.56.0")
+    (version "1.58.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DEXSeq" version))
        (sha256
         (base32
-         "1pjy9yxw3w9689bdd5lc3qbxa9820vjdc5dls5jd23c90mmphsyh"))))
+         "1lq10na1c24s9vj1zs5zpspcwf1pc42wkyzrpb4w9z8p3fi7mnib"))))
     (properties `((upstream-name . "DEXSeq")))
     (build-system r-build-system)
     ;; Tests require r-pasilla, which depends on this package.
@@ -9371,7 +9371,6 @@ distribution.")
            r-genomicranges
            r-hwriter
            r-iranges
-           r-rcolorbrewer
            r-rsamtools
            r-s4vectors
            r-statmod
