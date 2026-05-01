@@ -10662,21 +10662,17 @@ rectangular dataset.")
 (define-public r-rarr
   (package
     (name "r-rarr")
-    (version "1.10.1")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Rarr" version))
        (sha256
-        (base32 "1j7zpz0fb996yywvrqbnw67p8a2m4y77kx6ijq7wgald6qg0y1v1"))))
+        (base32 "1mygyari0xinmw7kiwb258z4f3qjkm4bvhjqm9hl89jc7qx356s0"))))
     (properties `((upstream-name . "Rarr")))
     (build-system r-build-system)
     (inputs (list zlib))
-    (propagated-inputs (list r-biocgenerics
-                             r-curl
-                             r-delayedarray
-                             r-jsonlite
-                             r-paws-storage
+    (propagated-inputs (list r-curl r-jsonlite r-lifecycle r-paws-storage
                              r-r-utils))
     (native-inputs (list r-knitr r-testthat r-withr))
     (home-page "https://huber-group-embl.github.io/Rarr/")
