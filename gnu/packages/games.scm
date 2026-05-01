@@ -4173,9 +4173,11 @@ a C library, so they can easily be integrated into other programs.")
     (home-page "https://taisei-project.org/")
     (synopsis "Shoot'em up fangame and libre clone of Touhou Project")
     (description
-     "The player controls a character (one of three: Good, Bad, and Dead),
-dodges the missiles (lots of it cover the screen, but the character's hitbox
-is very small), and shoot at the adversaries that keep appear on the screen.")
+     "Taisei is a vertical shoot'em up game, in which the player controls
+one of three characters.  While moving through stages, a large number of
+enemies and even larger amounts of bullets appear that require careful
+maneuvers to dodge.  By shooting the enemies, players receive powerups
+for their characters, allowing them to shoot even more.")
     (license (list
               ;; game
               license:expat
