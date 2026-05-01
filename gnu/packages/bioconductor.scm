@@ -5241,13 +5241,13 @@ structures: @code{ExpressionSet}, @code{AffyBatch}, @code{NChannelSet}.")
 (define-public r-arrayqualitymetrics
   (package
     (name "r-arrayqualitymetrics")
-    (version "3.66.0")
+    (version "3.68.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "arrayQualityMetrics" version))
               (sha256
                (base32
-                "0y9k81vwqq74zfdrc2hvx7mg0l7572hvrsby00m20z034j7f9pmi"))))
+                "1j44zj6pivygzvvd394jrc907bd3pf289n3fkfms3i5sn8g2bvvs"))))
     (properties
      '((upstream-name . "arrayQualityMetrics")
        ;; We don't need these.
@@ -5261,6 +5261,7 @@ structures: @code{ExpressionSet}, @code{AffyBatch}, @code{NChannelSet}.")
                              r-gridsvg
                              r-hmisc
                              r-hwriter
+                             r-jsonlite
                              r-lattice
                              r-latticeextra
                              r-limma
@@ -5269,7 +5270,7 @@ structures: @code{ExpressionSet}, @code{AffyBatch}, @code{NChannelSet}.")
                              r-svglite
                              r-vsn
                              r-xml))
-    (native-inputs (list r-biocstyle r-knitr))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/arrayQualityMetrics")
     (synopsis "Quality metrics report for microarray data sets")
     (description
