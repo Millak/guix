@@ -25173,14 +25173,14 @@ accessing web references for elements/sets are also available in BiocSet.")
 (define-public r-biocworkflowtools
   (package
     (name "r-biocworkflowtools")
-    (version "1.36.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocWorkflowTools" version))
        (sha256
         (base32
-         "1jnch9vbfg4qw912wki4fs60gwjmwia3zksc75lk65wr6q57ibq4"))))
+         "051nj8dz78h15jz4gmgrwcykgsq390hc2k98wybs57bhcfdmhjc2"))))
     (properties
      `((upstream-name . "BiocWorkflowTools")))
     (build-system r-build-system)
