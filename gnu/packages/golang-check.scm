@@ -2504,24 +2504,20 @@ can be used in test code as a mock of the interface.")
 (define-public go-github-com-maxatome-go-testdeep
   (package
     (name "go-github-com-maxatome-go-testdeep")
-    (version "1.14.0")
+    (version "1.15.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/maxatome/go-testdeep")
-             (commit (string-append "v" version))))
+              (url "https://github.com/maxatome/go-testdeep")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r9w79qm6j080gbqhrd5gwjzsnkmrcihy4yniw77g0wkspxxdjww"))))
+        (base32 "14i64h4kd9b2adhvxn7r2jhp0ci6vla7y7n76yg49wm61ddbw9df"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/maxatome/go-testdeep"
-      ;; Structure comparison not equal.
-      #:test-flags #~(list "-skip" "TestFatalTrace")))
-    (propagated-inputs
-     (list go-github-com-davecgh-go-spew))
+      #:import-path "github.com/maxatome/go-testdeep"))
     (home-page "https://github.com/maxatome/go-testdeep")
     (synopsis "Extended HTTP API testing framework")
     (description
