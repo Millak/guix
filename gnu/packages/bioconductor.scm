@@ -5451,13 +5451,13 @@ the spectra of the library with a sparse penalty.")
 (define-public r-aspli
   (package
     (name "r-aspli")
-    (version "2.20.0")
+    (version "2.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ASpli" version))
               (sha256
                (base32
-                "16m8v29f22bwlbz1v5fxhg8rmp2wxaxr9ywl35hpi9jzgbmgpcz5"))))
+                "0fnisaglavwkx5qkm3ssf9bky3dgni2zlv32xlzicg6y75s7fgsa"))))
     (properties `((upstream-name . "ASpli")))
     (build-system r-build-system)
     (propagated-inputs
