@@ -15009,13 +15009,13 @@ involving two separate genomic loci encoded as GRanges objects.")
 (define-public r-summarizedexperiment
   (package
     (name "r-summarizedexperiment")
-    (version "1.40.0")
+    (version "1.42.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "SummarizedExperiment" version))
               (sha256
                (base32
-                "1xmlfrdhzlbsd23warfdm5iscm61r29jxridv8krv16b95l4axk9"))))
+                "06m74i539gnrssifq0yrrzzmr7m7fsd39b68mliixr34pf6hn4a0"))))
     (properties
      `((upstream-name . "SummarizedExperiment")
        (updater-extra-native-inputs . ("r-runit"))))
