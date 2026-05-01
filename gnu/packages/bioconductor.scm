@@ -18637,13 +18637,13 @@ data in a format that is compatible with two-dimensional containers like the
 (define-public r-mia
   (package
     (name "r-mia")
-    (version "1.18.0")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "mia" version))
               (sha256
                (base32
-                "0rn8y72mlyqk1ss52phg02sj1j6159la8b86hjc83cavrwy9gczn"))))
+                "117j9rmamd8khsb3mq4prmal1w2x3kb9bjwa5nc4z569npzm7zab"))))
     (properties
      '((upstream-name . "mia")
        (updater-ignored-native-inputs
@@ -18664,16 +18664,15 @@ data in a format that is compatible with two-dimensional containers like the
            r-delayedmatrixstats
            r-dirichletmultinomial
            r-dplyr
+           r-ecodive
            r-iranges
            r-mass
            r-matrixgenerics
            r-multiassayexperiment
-           r-rbiom
            r-rcpp
            r-rlang
            r-s4vectors
            r-scater
-           r-scuttle
            r-singlecellexperiment
            r-stringr
            r-summarizedexperiment
@@ -18689,6 +18688,7 @@ data in a format that is compatible with two-dimensional containers like the
                          r-nmf
                          r-phyloseq
                          r-reldist
+                         r-scuttle
                          r-testthat
                          r-topicmodels))
     (home-page "https://github.com/microbiome/mia")
