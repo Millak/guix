@@ -14661,14 +14661,14 @@ structures to hold pseudotime inference results.")
 (define-public r-trna
   (package
     (name "r-trna")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "tRNA" version))
        (sha256
         (base32
-         "1c8q4i0xmbl3dl7ylid6wzw46l961pnrfb5pbv2jn31k1qc3ikif"))))
+         "0vaap0lk4zfv8qsaxnsr056wblkgyf4wvq14xc30k7s3jys7vzz0"))))
     (properties
      `((upstream-name . "tRNA")))
     (build-system r-build-system)
