@@ -6248,7 +6248,7 @@ is set.")
 (define-public emacs-ctrlf
   (package
     (name "emacs-ctrlf")
-    (version "1.6")
+    (version "1.6.1")
     (source
      (origin
        (method git-fetch)
@@ -6257,7 +6257,7 @@ is set.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "061id540spjycgy2xshj8kwgdngkjinznhx2qp5pmqzzx7z7rpfb"))))
+        (base32 "05s1ardblrfj3jbwrini0v7b7ww5q6gzvgrx9jgncgvi4xci046s"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/raxod502/ctrlf/")
