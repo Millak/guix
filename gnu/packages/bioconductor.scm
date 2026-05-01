@@ -28991,14 +28991,14 @@ for ligand activity prediction from transcriptomics data.")
 (define-public r-biscuiteer
   (package
     (name "r-biscuiteer")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biscuiteer" version))
        (sha256
         (base32
-         "074gqvjcl8y30a6s0ivjrdf1lcyafj6l5krdd88q0ldlsik1z7fk"))))
+         "1nabxdb3dii8drmnfy7137dq551hhd9s0vj1rv8ixbp7i82swmh6"))))
     (properties `((upstream-name . "biscuiteer")))
     (build-system r-build-system)
     (propagated-inputs
