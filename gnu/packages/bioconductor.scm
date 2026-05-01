@@ -7211,13 +7211,13 @@ array-like objects like @code{DataFrame} objects (typically with Rle columns),
 (define-public r-densvis
   (package
     (name "r-densvis")
-    (version "1.20.1")
+    (version "1.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "densvis" version))
               (sha256
                (base32
-                "0kxwm0409svz2r5fkmm9cgsfzqymhxhv375rp0qj65a11q4hmpp4"))))
+                "1p4ig0jq6y4d5gn5d87g4ipwh600h5cv10abaayqz9f12205527i"))))
     (properties `((upstream-name . "densvis")))
     (build-system r-build-system)
     ;; Due to the use of Basilisk, which forcibly installs a Conda environment
