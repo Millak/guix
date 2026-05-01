@@ -48114,7 +48114,7 @@ should pop up.")
 (define-public emacs-hare-mode
   (package
     (name "emacs-hare-mode")
-    (version "0.2.0")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -48123,7 +48123,7 @@ should pop up.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l31q53h3spw5g5fwa238dryxs563644gzgv1gcpshjda8dnmibf"))))
+                "0ga7wxl1mlfmnpfgqazjifp65126lnw0q55zz071n6ljcvvs0wgk"))))
     (build-system emacs-build-system)
     (home-page "https://git.sr.ht/~grafov/hare-mode")
     (synopsis "Hare major mode for Emacs")
