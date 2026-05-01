@@ -23402,16 +23402,16 @@ bits.")
 (define-public go-github-com-philhofer-fwd
   (package
     (name "go-github-com-philhofer-fwd")
-    (version "1.1.2")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/philhofer/fwd")
-             (commit (string-append "v" version))))
+              (url "https://github.com/philhofer/fwd")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "083zlvna3mz37p91r4h8r7yvjqcvsgr9l5p0zidmk3ajq6gxds1p"))))
+        (base32 "1lnxzxdcxpdh4yza7jc5sv616kcrhnlvk6c164x2wsqh8kzpcv3h"))))
     (build-system go-build-system)
     (arguments
      (list
