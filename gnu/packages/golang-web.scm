@@ -5589,7 +5589,7 @@ Features:
 (define-public go-github-com-danielgtaylor-huma-v2
   (package
     (name "go-github-com-danielgtaylor-huma-v2")
-    (version "2.34.1")
+    (version "2.37.3")
     (source
      (origin
        (method git-fetch)
@@ -5598,7 +5598,7 @@ Features:
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rwmyxihrdznfn6iqxrb4lmlfijblapnpxavmcgavylixwigyrdk"))))
+        (base32 "0xgsb6ihwgv1x35bmrwbknwzl4yzcws6s1p1yfr1ppk09ghwgiss"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -5613,7 +5613,9 @@ Features:
               (with-directory-excursion (string-append "src/" import-path)
                 (delete-file-recursively "examples")))))))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-stretchr-testify
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag))
     (propagated-inputs
      (list go-github-com-danielgtaylor-shorthand-v2
            go-github-com-evanphx-json-patch-v5
@@ -5625,8 +5627,6 @@ Features:
            go-github-com-gorilla-mux
            go-github-com-julienschmidt-httprouter
            go-github-com-labstack-echo-v4
-           go-github-com-spf13-cobra
-           go-github-com-spf13-pflag
            go-github-com-uptrace-bunrouter))
     (home-page "https://github.com/danielgtaylor/huma")
     (synopsis "REST/HTTP API Framework for Golang")
