@@ -26177,14 +26177,14 @@ customizable visualzations with minimal effort.")
 (define-public r-motifmatchr
   (package
     (name "r-motifmatchr")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "motifmatchr" version))
        (sha256
         (base32
-         "16crqy7y6iad4b29mgxisf7gp06snf7bxgkm3y06f66y8faajlyk"))))
+         "0xpd4ahgyp1qdn6n2idi425yhm6jg8rrf5bsj8dyw5bmvjnfqi79"))))
     (properties
      '((upstream-name . "motifmatchr")
        (updater-extra-native-inputs . ("r-bsgenome-hsapiens-ucsc-hg19"))))
