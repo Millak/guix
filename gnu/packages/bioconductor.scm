@@ -11971,17 +11971,19 @@ experiments.")
 (define-public r-msexperiment
   (package
     (name "r-msexperiment")
-    (version "1.12.0")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MsExperiment" version))
        (sha256
-        (base32 "1braagzs450sxbh29rdh0dck7pwi49wd45rx3j36fw4720hgcilb"))))
+        (base32 "1shraa2lh9b26anz4mzsg0glxdq2y1r9lk4mppx8dd4d3wjjyplp"))))
     (properties
      `((upstream-name . "MsExperiment")
        (updater-extra-native-inputs . ("r-mzr"))))
     (build-system r-build-system)
+    ;; Thanks to r-msdatahub the tests need Internet access.
+    (arguments (list #:tests? #false))
     (propagated-inputs (list r-biocgenerics
                              r-dbi
                              r-iranges
@@ -11992,7 +11994,7 @@ experiments.")
                              r-summarizedexperiment))
     (native-inputs (list r-knitr
                          r-msbackendsql
-                         r-msdata
+                         r-msdatahub
                          r-mzr
                          r-rsqlite
                          r-testthat))
