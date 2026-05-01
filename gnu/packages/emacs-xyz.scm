@@ -44024,13 +44024,13 @@ example code.")
 (define-public emacs-boxy
   (package
     (name "emacs-boxy")
-    (version "2.0.0")
+    (version "2.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/boxy-"
                                   version ".tar"))
               (sha256
-               (base32 "1vfgwgk3vzzp2cy7n0qwhn7hzjxbp9vzxp1al1pkynv9hfs503gb"))))
+               (base32 "02hn7n5l74gwj6jqqhr3jpwrcxmky1qc6qgvzbb7mw0v135p6vdj"))))
     (build-system emacs-build-system)
     (home-page "https://gitlab.com/grinn.amy/boxy")
     (synopsis "A boxy layout framework for Emacs")
