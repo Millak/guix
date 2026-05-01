@@ -7297,13 +7297,13 @@ The DER Finder approach can also be used to identify differentially bounded
 (define-public r-derfinderhelper
   (package
     (name "r-derfinderhelper")
-    (version "1.44.0")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "derfinderHelper" version))
        (sha256
-        (base32 "0ppgqsrrkizxzkq0bycx05wdmf3j6l3hmyp8x4is0k36s3x5x7kn"))))
+        (base32 "1968l7fsig714l2vj8zkz9jdkpmj57jqxj5nsggv29w5j9prjlap"))))
     (properties `((upstream-name . "derfinderHelper")))
     (build-system r-build-system)
     (propagated-inputs
