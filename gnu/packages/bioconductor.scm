@@ -17944,14 +17944,14 @@ to install interface to SYMPHONY.")
 (define-public r-ihw
   (package
     (name "r-ihw")
-    (version "1.38.0")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "IHW" version))
        (sha256
         (base32
-         "02ni484hfw9r76shdq1hchlr11i6h6c5p620ybqfw6vk0cr6nb6g"))))
+         "01ap2ishmsbv3w3b14qsbg79669w5an67yvzlmsjmbywlgasfrvq"))))
     (properties
      '((upstream-name . "IHW")
        (updater-extra-native-inputs . ("r-ggplot2" "r-scales"))))
