@@ -6224,13 +6224,13 @@ stochastic dropout events as well as systematic allelic imbalance is used.")
 (define-public r-ccfindr
   (package
     (name "r-ccfindr")
-    (version "1.30.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ccfindR" version))
        (sha256
-        (base32 "1rxfy8dnxg047v65d27k30gnixbhzfq0fg7fx5y5adljnj352i4b"))))
+        (base32 "1dwy6kxc3gnx13482ndc244m7wna35p61jb0i0ivpqj9bc7ivnrl"))))
     (properties
      `((upstream-name . "ccfindR")
        (updater-extra-inputs . ("gsl"))))
