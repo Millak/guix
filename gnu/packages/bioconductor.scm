@@ -28034,14 +28034,14 @@ input.")
 (define-public r-basilisk-utils
   (package
     (name "r-basilisk-utils")
-    (version "1.22.0")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "basilisk.utils" version))
        (sha256
         (base32
-         "1pqdkfg7jifl52ada9d70xhbhknm54g9wzxsnca0q9plgpiddmz9"))))
+         "0z4gsack303d6lll1nyc6h2rl08yv4nyv3zwzbpj2a7gfipj4z9p"))))
     (properties
      '((upstream-name . "basilisk.utils")
        (updater-ignored-native-inputs . ("r-expiry"))))
