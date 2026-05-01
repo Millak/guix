@@ -45006,6 +45006,37 @@ as a plug-and-play solution for anyone already using Org mode for their
 personal wiki.")
     (license license:gpl3+)))
 
+(define-public emacs-truename-cache
+  (package
+    (name "emacs-truename-cache")
+    (version "0.3.7")
+    (source (origin
+	      (method git-fetch)
+	      (uri (git-reference
+		     (url "https://github.com/meedstrom/truename-cache")
+		     (commit version)))
+	      (file-name (git-file-name name version))
+	      (sha256
+	       (base32
+		"09xjwyy388gc8bg3jvr21jaahfapfrr9jjiclq8qqx93pxz4lvfz"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f			;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'makeinfo
+            (lambda _ (emacs-makeinfo))))))
+    (native-inputs
+     (list texinfo))
+    (home-page "https://github.com/meedstrom/truename-cache")
+    (synopsis "Efficiently de-dup filenames")
+    (description "This library provides a caching alternative to
+@code{file-truename} and an alternative to @code{directory-files-recursively}
+that pre-populates cache and returns true names while minimizing calls to
+@code{file-truename}.")
+    (license license:gpl3+)))
+
 (define-public emacs-org-mem
   (package
     (name "emacs-org-mem")
