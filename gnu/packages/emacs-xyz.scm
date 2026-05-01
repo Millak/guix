@@ -33557,14 +33557,14 @@ using XML-RPC methods fairly transparent to the Lisp code.")
 (define-public emacs-do-at-point
   (package
     (name "emacs-do-at-point")
-    (version "0.1.2")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/do-at-point-"
                            version ".tar"))
        (sha256
-        (base32 "0kirhg78ra6311hx1f1kpqhpxjxxg61gnzsh9j6id10f92h6m5gz"))))
+        (base32 "028vpz6xss6k5wh3p6pigd47r5vrpl8fgai0spmz22ldawy61dfg"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/do-at-point.html")
     (synopsis "Generic context-sensitive action dispatcher")
