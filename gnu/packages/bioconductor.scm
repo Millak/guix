@@ -4655,13 +4655,13 @@ directly access various slots (e.g. X, obs, var), or convert the data into
 (define-public r-annotationhubdata
   (package
     (name "r-annotationhubdata")
-    (version "1.40.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AnnotationHubData" version))
        (sha256
-        (base32 "1ix1mnl0ai16160rfghcn6apckdicm2hnafch8b0yf50iz5sg5fk"))))
+        (base32 "1w9q9n5fwd23f2vdw6gjcs9g7zq21hkfhikz9cx2qiv5g5h113yz"))))
     (properties `((upstream-name . "AnnotationHubData")))
     (build-system r-build-system)
     (arguments
