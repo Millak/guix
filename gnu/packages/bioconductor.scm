@@ -6152,13 +6152,13 @@ packages.")
 (define-public r-breakpointr
   (package
     (name "r-breakpointr")
-    (version "1.28.0")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "breakpointR" version))
               (sha256
                (base32
-                "0wmrbm1qssv9njxs3m40kag1v0xf1zrskb38vlzb2q3669gpjr9q"))))
+                "0pnvg417fi2vjfzhi0vxxiax0kp9g7qff12sqgkif215wrlx8hh4"))))
     (properties `((upstream-name . "breakpointR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6175,7 +6175,7 @@ packages.")
            r-iranges
            r-rsamtools
            r-s4vectors))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-biocstyle r-knitr r-testthat))
     (home-page "https://github.com/daewoooo/BreakPointR")
     (synopsis "Find breakpoints in Strand-seq data")
     (description
