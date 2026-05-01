@@ -12874,13 +12874,13 @@ for amino acid/protein modifications using mass spectrometry.")
 (define-public r-pwalign
   (package
     (name "r-pwalign")
-    (version "1.6.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "pwalign" version))
        (sha256
-        (base32 "1f5py5xip1nd2qpa9fhfkxz9sznq8j3pcjpcaq8pydz7psy2jpin"))))
+        (base32 "11940saxi8j056k424xcrmbn4dvvix2kz0dw8k55hmhppbf7vnal"))))
     (properties
      '((upstream-name . "pwalign")
        (updater-extra-native-inputs . ("r-runit"))))
