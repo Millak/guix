@@ -19152,16 +19152,19 @@ evaluation of DEG analysis methods.")
 (define-public r-ioniser
   (package
     (name "r-ioniser")
-    (version "2.34.0")
+    (version "2.35.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "IONiseR" version))
        (sha256
         (base32
-         "1zz8sfjbimdmjq3dv6jpsvw8yf8yig8656rdmp30xh4407ks4br6"))))
+         "1ga6i8g9sbwpli9lyjcfmcnd329dqmkaf5mmcg6ks87zx32cqmax"))))
     (properties `((upstream-name . "IONiseR")))
     (build-system r-build-system)
+    (arguments
+     ;; This test uses dplyr's summarise_each(), which has been removed.
+     (list #:skipped-tests '("test_plotting.R")))
     (propagated-inputs
      (list r-biocgenerics
            r-biocparallel
