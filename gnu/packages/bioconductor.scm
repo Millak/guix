@@ -19252,13 +19252,13 @@ published results; and a routine for graphical display.")
 (define-public r-tradeseq
   (package
    (name "r-tradeseq")
-   (version "1.24.0")
+   (version "1.26.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "tradeSeq" version))
             (sha256
              (base32
-              "1lyy5irrq4bqah9v8sff2mgfs5xa6sm62kxkbq0i0clnad9zhvj9"))))
+              "151yrskr8v3h8pa5lq8wl4951nq7nk6ws60lkyh4lxnf03r1a2ip"))))
    (properties
     '((updater-extra-native-inputs
        . ("r-clusterexperiment" "r-delayedmatrixstats"))))
