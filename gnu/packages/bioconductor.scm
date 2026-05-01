@@ -27444,13 +27444,13 @@ large-scale and fully automated analysis.")
 (define-public r-snprelate
   (package
     (name "r-snprelate")
-    (version "1.44.0")
+    (version "1.46.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "SNPRelate" version))
               (sha256
                (base32
-                "1xzvrasba81a51wc48gdh82qga9a43hjx79cdw7jgb9vsn6w4iha"))))
+                "17sq3x00zvkgqmib02n34cx81f4lzkqbf7kkrh23p8nyid19hi6a"))))
     (properties
      '((upstream-name . "SNPRelate")
        (updater-extra-native-inputs . ("r-matrix"))))
