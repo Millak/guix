@@ -14400,13 +14400,13 @@ level.")
 (define-public r-tcgautils
   (package
     (name "r-tcgautils")
-    (version "1.30.3")
+    (version "1.32.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "TCGAutils" version))
               (sha256
                (base32
-                "1nppp70675y3ds76jf61rhfis2lgkxqjhz48b367qa55g3q2ah61"))))
+                "1skm8rlsrc9k95z0zglc82622sjjxq19wxwm55vyq7450gnw2n0k"))))
     (properties `((upstream-name . "TCGAutils")))
     (build-system r-build-system)
     (arguments
@@ -14425,6 +14425,7 @@ level.")
                              r-genomicdatacommons
                              r-genomicfeatures
                              r-genomicranges
+                             r-glue
                              r-iranges
                              r-multiassayexperiment
                              r-raggedexperiment
