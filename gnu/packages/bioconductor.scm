@@ -19397,13 +19397,13 @@ information about samples and features can be added to the plot.")
 (define-public r-helloranges
   (package
     (name "r-helloranges")
-    (version "1.36.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "HelloRanges" version))
        (sha256
-        (base32 "1az2pvxi9jnbsjk9xva85mbwq95h0wpsp3w9a3cylwwjwmflrg4n"))))
+        (base32 "1mh1cmwxfccv2j7mk7cgb4mlr1jywiral0k691fp66df1wy7z35f"))))
     (properties
      '((upstream-name . "HelloRanges")
        (updater-extra-native-inputs . ("r-biocstyle" "r-runit"))))
