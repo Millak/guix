@@ -25943,13 +25943,13 @@ matrices.")
 (define-public r-beachmat-hdf5
   (package
     (name "r-beachmat-hdf5")
-    (version "1.8.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "beachmat.hdf5" version))
        (sha256
-        (base32 "0dp8p111ar64syvh4x7s4rwjj4vhil1c09r5am48c0cg789qx49y"))))
+        (base32 "0p6pl69px5a4npfn3dxm116jzb1a0wnv3ag7xxj8w8qhx85pjkja"))))
     (properties `((upstream-name . "beachmat.hdf5")))
     (build-system r-build-system)
     (propagated-inputs (list r-assorthead
