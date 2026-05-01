@@ -8249,6 +8249,40 @@ Go.  Designed to ease things up for fast development with zero memory
 allocation and performance in mind.")
     (license license:expat)))
 
+(define-public go-github-com-gofiber-fiber-v3
+  (package
+    (inherit go-github-com-gofiber-fiber-v2)
+    (name "go-github-com-gofiber-fiber-v3")
+    (version "3.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gofiber/fiber")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1186zazs2pgib0rj0fxjg83vk314p4wz00xlizx3njm16drzf57b"))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "github.com/gofiber/fiber/v3")))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-shamaton-msgpack-v3))
+    (propagated-inputs
+     (list go-github-com-fxamacker-cbor-v2
+           go-github-com-gofiber-schema
+           go-github-com-gofiber-utils-v2
+           go-github-com-google-uuid
+           go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-isatty
+           go-github-com-tinylib-msgp
+           go-github-com-valyala-bytebufferpool
+           go-github-com-valyala-fasthttp
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-text))))
+
 (define-public go-github-com-gogo-googleapis
   (package
     (name "go-github-com-gogo-googleapis")
