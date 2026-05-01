@@ -21100,14 +21100,14 @@ based on @dfn{Continuous Wavelet Transform} (CWT).")
 (define-public r-xcms
   (package
     (name "r-xcms")
-    (version "4.8.0")
+    (version "4.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "xcms" version))
        (sha256
         (base32
-         "1d2p1hxa36423209cajl6b62rn7d1j0hf8s32p88yfxfv2rbswb8"))))
+         "0hawwzr1115c4k8hf9i5m5pajpr195zpc26cv9hc1cp23qr5pyz4"))))
     (properties
      '((upstream-name . "xcms")
        ;; Avoid dependency cycle.
@@ -21136,7 +21136,7 @@ based on @dfn{Continuous Wavelet Transform} (CWT).")
            r-spectra
            r-summarizedexperiment))
     (native-inputs
-     (list r-knitr r-msdata r-rhdf5 r-testthat))
+     (list r-knitr r-msdatahub r-rhdf5 r-testthat))
     (home-page "https://bioconductor.org/packages/xcms/")
     (synopsis "LC/MS and GC/MS mass spectrometry data analysis")
     (description
