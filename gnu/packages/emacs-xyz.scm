@@ -36042,17 +36042,19 @@ type.")
 (define-public emacs-wttrin
   (package
     (name "emacs-wttrin")
-    (version "0.2.4")
+    (version "0.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/cjennings/emacs-wttrin")
-                    (commit (string-append "v" version))))
+                     (url "https://github.com/cjennings/emacs-wttrin")
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "180amp1n0qdn6m6vlzg0ddfxfqf37fjaswfxdxn03298j0jgzw14"))))
+                "02wkqjyap6gxbi2mcrzpbdjz40igsmf1cbqqr7iw0mgp4ray7zxd"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "make" "test")))
     (propagated-inputs
      (list emacs-xterm-color))
     (home-page "https://github.com/bcbcarl/emacs-wttrin")
