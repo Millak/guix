@@ -1199,17 +1199,6 @@ cancellation for groups of goroutines working on subtasks of a common task
 low-level interaction with the operating system.")
     (license license:bsd-3)))
 
-(define-public go-golang-org-x-sys-bootstrap
-  (hidden-package
-   (package
-     (inherit go-golang-org-x-sys)
-     (arguments
-      (list #:skip-build? #t
-            #:tests? #f
-            #:import-path "golang.org/x/sys"))
-     (native-inputs '())
-     (propagated-inputs '()))))
-
 ;; This is the only one dependency for esbuild, which is the main tool to
 ;; produce all Node packages, keep it away from other golang.
 (define-public go-golang-org-x-sys-for-esbuild
