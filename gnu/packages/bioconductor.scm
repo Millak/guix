@@ -8336,14 +8336,14 @@ to streamline the more common analyses that a Biostatistician might see.")
 (define-public r-affyio
   (package
     (name "r-affyio")
-    (version "1.80.0")
+    (version "1.82.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "affyio" version))
        (sha256
         (base32
-         "1qnxxixskak3259rs1smpc7w51ycilb510rlqas4wq53ckwbmhql"))))
+         "06va62dq065ka5xnfc51fylm5mdm39yh09nh86rs70ln3d1mlr3y"))))
     (build-system r-build-system)
     (inputs
      (list zlib))
