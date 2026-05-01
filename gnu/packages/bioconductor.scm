@@ -10126,13 +10126,13 @@ provide added flexibility for data combination and manipulation.")
 (define-public r-genomicranges
   (package
     (name "r-genomicranges")
-    (version "1.62.1")
+    (version "1.64.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicRanges" version))
               (sha256
                (base32
-                "1mf5gcd33i65blgmihd1m48y32x14l8jxmihps2763i8vivipz30"))))
+                "0xpp8hfvcri1qnlfj97adnws3agy70i0lnx3ix6gbqhbnraybzh9"))))
     (properties
      `((upstream-name . "GenomicRanges")
        (updater-extra-native-inputs . ("r-runit"))
@@ -10163,6 +10163,7 @@ provide added flexibility for data combination and manipulation.")
      (list r-biocgenerics r-iranges r-s4vectors r-seqinfo))
     (native-inputs
      (list r-annotationhub
+           r-biocstyle
            r-biostrings
            r-knitr
            r-runit))
