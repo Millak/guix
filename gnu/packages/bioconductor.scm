@@ -4712,13 +4712,13 @@ for use in Bioconductor’s AnnotationHub.")
 (define-public r-anvil
   (package
     (name "r-anvil")
-    (version "1.22.5")
+    (version "1.23.12")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AnVIL" version))
               (sha256
                (base32
-                "07fsyifchcwic2vax6bgz401is7c24y88pjambs5k9r4rfy0snh6"))))
+                "1g7rmbpq1j60aqvd9gfxw72agc90da4q2va9ixkjr262ackdfsy9"))))
     (properties `((upstream-name . "AnVIL")))
     (build-system r-build-system)
     ;; Tests require Internet access.
@@ -4726,6 +4726,7 @@ for use in Bioconductor’s AnnotationHub.")
     (propagated-inputs
      (list r-anvilbase
            r-biocbaseutils
+           r-digest
            r-dplyr
            r-dt
            r-futile-logger
@@ -4733,6 +4734,7 @@ for use in Bioconductor’s AnnotationHub.")
            r-htmltools
            r-httr
            r-jsonlite
+           r-keyring
            r-miniui
            r-rapiclient
            r-shiny
