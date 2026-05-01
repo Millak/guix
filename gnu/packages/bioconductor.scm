@@ -12575,13 +12575,13 @@ domain isotypes from pfam data.")
 (define-public r-piano
   (package
     (name "r-piano")
-    (version "2.26.0")
+    (version "2.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "piano" version))
        (sha256
-        (base32 "0z0dikcqcpd9fw5id4yvgx1kcri3n111zwizrgc80zybcr58s0w2"))))
+        (base32 "0rcqdiwv58s4h9j0mzkam2d4bkaw8582k1ry22s4zs6whs1zd3l4"))))
     (properties `((upstream-name . "piano")))
     (build-system r-build-system)
     (propagated-inputs
@@ -12599,7 +12599,7 @@ domain isotypes from pfam data.")
            r-shinydashboard
            r-shinyjs
            r-visnetwork))
-    (native-inputs (list r-biomart r-knitr))
+    (native-inputs (list r-biocmanager r-biomart r-knitr))
     (home-page "https://varemo.github.io/piano/")
     (synopsis "Platform for integrative analysis of omics data")
     (description
