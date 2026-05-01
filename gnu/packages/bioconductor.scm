@@ -13862,13 +13862,13 @@ for downstream analysis and data visualization.")
 (define-public r-screpertoire
   (package
     (name "r-screpertoire")
-    (version "2.6.2")
+    (version "2.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scRepertoire" version))
        (sha256
-        (base32 "1n8vdia8bsxikl3vfsnafz1i04qn4kqcrchjrbkzrskbl28mkzq5"))))
+        (base32 "0swz9ww8h57k04jm1lz12w1pz5dhm0zm4fy2jrc7w4d1k4j5dl6f"))))
     (properties
      '((upstream-name . "scRepertoire")))
     (build-system r-build-system)
