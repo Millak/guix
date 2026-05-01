@@ -10688,13 +10688,13 @@ libraries.")
 (define-public r-rdisop
   (package
     (name "r-rdisop")
-    (version "1.70.0")
+    (version "1.72.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Rdisop" version))
               (sha256
                (base32
-                "0jkm610772hyg63q5wmvrbwcbbyfzryii6ab37fv79qy7k56l8wn"))))
+                "1v4limw5i69ivyzxxplpn9m8sndlhscqgzf1zrhyx4srh4j3f631"))))
     (properties `((upstream-name . "Rdisop")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
