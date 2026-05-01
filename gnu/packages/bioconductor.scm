@@ -11257,13 +11257,13 @@ options to customize analysis for your specific study.")
 (define-public r-made4
   (package
     (name "r-made4")
-    (version "1.84.0")
+    (version "1.86.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "made4" version))
               (sha256
                (base32
-                "16lcqxwafjmsslydxn6jd4jyvapbky8alsqdnc7bh3lmlmz3kv8v"))))
+                "14x7f3j0d0wif59pmyfnd97zdnfy2hh11189ls7b1y2qyz5mxmh2"))))
     (properties `((upstream-name . "made4")))
     (build-system r-build-system)
     (propagated-inputs
