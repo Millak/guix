@@ -3557,13 +3557,13 @@ into folders according to the analysis settings used.")
 (define-public r-absseq
   (package
     (name "r-absseq")
-    (version "1.64.0")
+    (version "1.66.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ABSSeq" version))
               (sha256
                (base32
-                "0cvq7n71i784agdyl2l4fxmla5sd04nqb6z35pc8k0lqh6319bh4"))))
+                "1knrgj3lqzds0vpwxa30d28ng3jwcwng3lykgq8gp9p32glzlwaa"))))
     (properties `((upstream-name . "ABSSeq")))
     (build-system r-build-system)
     (propagated-inputs (list r-limma r-locfit))
