@@ -4288,13 +4288,13 @@ can enrich this metadata with context-specific properties.")
 (define-public r-alabaster-schemas
   (package
     (name "r-alabaster-schemas")
-    (version "1.10.0")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "alabaster.schemas" version))
        (sha256
-        (base32 "1zg72g6krc1jf4izghqg3shn2zdrvsqljdbhvifismca7bqqn80a"))))
+        (base32 "0g5wk9vjdv22anwg8ra02wq029xya9zng187lbq2zy6wzsk5vkxm"))))
     (properties `((upstream-name . "alabaster.schemas")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
