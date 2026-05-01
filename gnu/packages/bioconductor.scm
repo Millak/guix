@@ -8489,14 +8489,14 @@ used by @code{ensembldb}, @code{Organism.dplyr}, and other packages.")
 (define-public r-annotationforge
   (package
     (name "r-annotationforge")
-    (version "1.52.0")
+    (version "1.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AnnotationForge" version))
        (sha256
         (base32
-         "0idd80w57yd4gxv5k15mzwmny18bsv2aphx7zkk250nbhj9qb7l7"))))
+         "059ymad55nzl1b4jh9ysmqvb07jsczlyvv7766s32j002g6ydh99"))))
     (properties
      '((upstream-name . "AnnotationForge")
        (updater-extra-native-inputs . ("r-go-db" "r-runit"))
@@ -8516,7 +8516,9 @@ used by @code{ensembldb}, @code{Organism.dplyr}, and other packages.")
            r-s4vectors
            r-xml))
     (native-inputs
-     (list r-biocmanager
+     (list r-biocfilecache
+           r-biocmanager
+           r-biocstyle
            r-biostrings
            r-go-db
            r-knitr
