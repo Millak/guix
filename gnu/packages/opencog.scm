@@ -260,64 +260,6 @@ for the AtomSpace hypergraph database.")
 OpenCog framework.")
       (license license:agpl3))))
 
-(define-public attention
-  ;; There are no releases.
-  (let ((commit "87d43679280ce486cd6757765d2e1df6d502991d")
-        (revision "1"))
-    (package
-      (name "attention")
-      (version (git-version "0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/opencog/attention")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0sndslphicv6w9qpag168rqkxq5sf71l5qbfx6zhsd5bzlf5fhwv"))))
-      (build-system cmake-build-system)
-      (arguments
-       (list
-        #:configure-flags
-        #~(list (string-append "-DGUILE_INCLUDE_DIR=" #$guile-2.2
-                               "/include/guile/2.2/")
-                (string-append "-DGUILE_SITE_DIR=" #$output
-                               "/share/guile/site/2.2/"))
-        #:modules '((guix build cmake-build-system)
-                    ((guix build gnu-build-system) #:prefix gnu:)
-                    (guix build utils))
-        #:phases
-        #~(modify-phases %standard-phases
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys #:rest args)
-                (when tests?
-                  (apply (assoc-ref gnu:%standard-phases 'check)
-                         #:tests? tests? #:test-target "tests" args)
-                  ;; Failing tests.
-                  (for-each delete-file
-                            '("tests/attention/AttentionParamQueryUTest"
-                              "tests/attention/HebbianCreationModuleUTest"
-                              "tests/attention/ImportanceDiffusionUTest"))
-                  (for-each invoke
-                            (find-files "tests" "UTest$"))))))))
-      (inputs
-       (list atomspace
-             boost
-             cogserver
-             cogutil
-             gmp
-             guile-2.2))
-      (native-inputs
-       `(("cxxtest" ,cxxtest)
-         ("python" ,python-minimal)
-         ("pkg-config" ,pkg-config)))
-      (home-page "https://github.com/opencog/attention/")
-      (synopsis "OpenCog attention allocation subsystem")
-      (description "Attention Allocation is an OpenCog subsystem meant to
-control the application of processing and memory resources to specific
-tasks.")
-      (license license:agpl3))))
 
 (define-public agi-bio
   ;; There are no releases.
