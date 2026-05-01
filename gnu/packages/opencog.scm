@@ -19,6 +19,7 @@
 
 (define-module (gnu packages opencog)
   #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages databases)
@@ -26,9 +27,12 @@
   #:use-module (gnu packages language)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages serialization)
+  #:use-module (gnu packages tls)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix gexp)
@@ -199,8 +203,8 @@ for the AtomSpace hypergraph database.")
 
 (define-public cogserver
   ;; There are no releases.
-  (let ((commit "ec5f3b9590db0f6a085b5d0320f5d3710e0f1635")
-        (revision "2"))
+  (let ((commit "3c4da0bd786262bd69a8306f9da88b13f0add1f2")
+        (revision "3"))
     (package
       (name "cogserver")
       (version (git-version "0" revision commit))
@@ -212,15 +216,21 @@ for the AtomSpace hypergraph database.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1h0vcxb6n5dc654xqinqcxc7dxwcs6bsywgir8rhrqiykk760mzl"))))
+                  "0hfz9z44wpzrabs9fgxhv02jzn0i40di2ncbiizn03g7gccawds5"))))
       (build-system cmake-build-system)
       (arguments
        (list
+        #:tests? #f ;tests start network server and hang
         #:configure-flags
-        #~(list (string-append "-DGUILE_INCLUDE_DIR=" #$guile-2.2
-                               "/include/guile/2.2/")
+        #~(list "-DSKIP_LDCONF=ON"
+                (string-append "-DGUILE_INCLUDE_DIR=" #$guile-3.0.11
+                               "/include/guile/3.0/")
                 (string-append "-DGUILE_SITE_DIR=" #$output
-                               "/share/guile/site/2.2/"))
+                               "/share/guile/site/3.0/")
+                (string-append "-DGUILE_CCACHE_DIR=" #$output
+                               "/lib/guile/3.0/site-ccache")
+                (string-append "-DPYTHON_INSTALL_PREFIX=" #$output
+                               "/lib/python3.11/site-packages"))
         #:modules '((guix build cmake-build-system)
                     ((guix build gnu-build-system) #:prefix gnu:)
                     (guix build utils))
@@ -236,10 +246,13 @@ for the AtomSpace hypergraph database.")
                   (for-each invoke
                             (find-files "tests" "UTest$"))))))))
       (inputs
-       (list atomspace boost cogutil gmp guile-2.2))
+       (list asio atomspace atomspace-storage boost cogutil
+             gmp guile-3.0-latest jsoncpp openssl))
       (native-inputs
        `(("cxxtest" ,cxxtest)
-         ("python" ,python-minimal)
+         ("netcat" ,netcat-openbsd)
+         ("python" ,python)
+         ("python-cython" ,python-cython)
          ("pkg-config" ,pkg-config)))
       (home-page "https://github.com/opencog/cogserver/")
       (synopsis "OpenCog network server")
