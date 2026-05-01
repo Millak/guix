@@ -27778,14 +27778,14 @@ all RNA-Seq libraries of each species integrated in Bgee.")
 (define-public r-bgeedb
   (package
     (name "r-bgeedb")
-    (version "2.36.0")
+    (version "2.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BgeeDB" version))
        (sha256
         (base32
-         "0a0ldkaibca8iipnyhy8h55za3acii4vchssk497bl0788gybbsc"))))
+         "0czd73pa9c3pkrzidkhh1vaqlylxzmy7wbd4zqiaaza8cbl38h2p"))))
     (properties `((upstream-name . "BgeeDB")))
     (build-system r-build-system)
     ;; Tests require Internet access.
