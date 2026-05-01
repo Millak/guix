@@ -11117,19 +11117,19 @@ scale with the dimensions of large data sets.")
 (define-public r-lfa
   (package
     (name "r-lfa")
-    (version "2.10.0")
+    (version "2.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "lfa" version))
        (sha256
-        (base32 "0hfagl99sf92000ng0wcn88sblzb64mr8b7kfi4zz2q79n9l8b49"))))
+        (base32 "0sfyphvadhf3w741sjdxy4m94mkax6qv5xqfzw2wcljjqjp3f70i"))))
     (properties
      '((upstream-name . "lfa")
        (updater-ignored-native-inputs . ("r-genio"))))
     (build-system r-build-system)
-    (propagated-inputs (list r-corpcor r-rspectra))
-    (native-inputs (list r-ggplot2 r-knitr r-testthat))
+    (propagated-inputs (list r-bedmatrix r-corpcor r-genio r-rspectra))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/StoreyLab/lfa")
     (synopsis "Logistic Factor Analysis for categorical data")
     (description
