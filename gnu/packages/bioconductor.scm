@@ -1400,13 +1400,13 @@ based on mapping using Entrez Gene identifiers.")
 (define-public r-org-hs-eg-db
   (package
     (name "r-org-hs-eg-db")
-    (version "3.22.0")
+    (version "3.23.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "org.Hs.eg.db" version 'annotation))
               (sha256
                (base32
-                "0bia1ppxnyjpw4p3rk19q1l8rrcraccpz4w69f3ja0q0im0xrgfi"))))
+                "1zlwsk1hq40xi8xd7wc974jp8gky6x7icc9788ch77glbik201j7"))))
     (properties
      `((upstream-name . "org.Hs.eg.db")
        (updater-extra-native-inputs . ("r-runit"))))
