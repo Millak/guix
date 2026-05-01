@@ -40479,20 +40479,21 @@ and act on tunnels.")
 (define-public emacs-eacl
   (package
     (name "emacs-eacl")
-    (version "2.2.0")
+    (version "2.2.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/redguardtoo/eacl")
-             (commit version)))
+              (url "https://github.com/redguardtoo/eacl")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d2krw9x1mw6jn1q07nbq2qi92fms85q3i9wa2q5drs3368l55vr"))))
+        (base32 "08fdsnh0jxpnihqmv9vbrv8hxiw2dd4y66h67w6lw6yxlglw9p0d"))))
     (build-system emacs-build-system)
-    (arguments (list #:test-command #~(list "make" "test")))
-    (propagated-inputs
-     (list emacs-ivy))
+    (arguments (list #:test-command #~(list "emacs" "--batch"
+                                            "-l" "eacl.el"
+                                            "-l" "tests/eacl-tests.el"
+                                            "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://github.com/redguardtoo/eacl")
     (synopsis "Auto-complete lines by using @code{grep} on a project")
     (description "This package provides auto-completion commands for single
