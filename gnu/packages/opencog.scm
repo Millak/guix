@@ -368,8 +368,8 @@ combination.")
 
 (define-public agi-bio
   ;; There are no releases.
-  (let ((commit "b5c6f3d99e8cca3798bf0cdf2c32f4bdb8098efb")
-        (revision "1"))
+  (let ((commit "2f723ad79afc38df9dce73d340ee24c38efb2199")
+        (revision "2"))
     (package
       (name "agi-bio")
       (version (git-version "0" revision commit))
@@ -381,7 +381,7 @@ combination.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0c3q0nhmd03nvqm1ih10y28n596cjvfhkcfvzw2fmz1sn3ywdah4"))))
+                  "1gqmwjbqdjr0qz4wpsxh0k8wam59fvd3pnjxhfswdpvapcl9syk0"))))
       (build-system cmake-build-system)
       (arguments
        `(#:tests? #f ; there are none
@@ -389,10 +389,10 @@ combination.")
          (list
           (string-append "-DGUILE_INCLUDE_DIR="
                          (assoc-ref %build-inputs "guile")
-                         "/include/guile/2.2/")
+                         "/include/guile/3.0/")
           (string-append "-DGUILE_SITE_DIR="
                          (assoc-ref %outputs "out")
-                         "/share/guile/site/2.2/"))
+                         "/share/guile/site/3.0/"))
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-unqualified-load
@@ -401,10 +401,9 @@ combination.")
                  (("\\(load \"bioscience/types/bioscience_types.scm\"\\)")
                   (format #f "(load \"~a/bioscience/types/bioscience_types.scm\")"
                           (string-append (assoc-ref outputs "out")
-                                         "/share/guile/site/2.2/opencog"))))
-               #t)))))
+                                         "/share/guile/site/3.0/opencog")))))))))
       (inputs
-       (list atomspace cogutil gmp guile-2.2))
+       (list atomspace cogutil gmp guile-3.0-latest))
       (native-inputs
        `(("cxxtest" ,cxxtest)
          ("python" ,python-minimal)
