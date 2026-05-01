@@ -30128,7 +30128,7 @@ subscription.")
 (define-public emacs-pulsar
   (package
     (name "emacs-pulsar")
-    (version "1.3.2")
+    (version "1.3.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -30137,11 +30137,12 @@ subscription.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nl0jnrf6rfz7p3wm9cgn9mqv3dnfrwanzaz4bk2qdykc2damz01"))))
+                "0p3vd7qglq5hzgccjv5xg0yghpd0h61d3zn7nf36xfglrvywsixg"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
      (list
+      #:tests? #false                   ;no tests
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'install 'makeinfo
