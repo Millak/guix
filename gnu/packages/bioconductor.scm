@@ -10493,14 +10493,14 @@ matrix to solve the memory problem.")
 (define-public r-hpar
   (package
     (name "r-hpar")
-    (version "1.52.0")
+    (version "1.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "hpar" version))
        (sha256
         (base32
-         "1png19c1dr2banwc07azwz0rxrkw9820vkj8362syv4dryphx3c5"))))
+         "04jq9j7w720dsbgh3slp33i4jz6672gx4wipnp67kqlah5i1p8zh"))))
     (build-system r-build-system)
     (arguments
      (list
