@@ -11942,6 +11942,27 @@ Features:
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-labstack-echo-v5
+  (package
+    (inherit go-github-com-labstack-echo-v4)
+    (name "go-github-com-labstack-echo-v5")
+    (version "5.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/labstack/echo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a7d9cmn6kchzl79cdldxxhanqqjpml1vvaw5ak6cwan6cn9gb5i"))))
+    (arguments
+     (list
+      #:import-path "github.com/labstack/echo/v5"))
+    (propagated-inputs
+     (list go-golang-org-x-net
+           go-golang-org-x-time))))
+
 (define-public go-github-com-lestrrat-go-httpcc
   (package
     (name "go-github-com-lestrrat-go-httpcc")
