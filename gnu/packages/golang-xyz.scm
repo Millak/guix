@@ -25536,6 +25536,30 @@ synchronizing plain text:
      "Go-Daemon is a library for writing system daemons in Go.")
     (license license:expat)))
 
+(define-public go-github-com-shamaton-msgpack-v3
+  (package
+    (name "go-github-com-shamaton-msgpack-v3")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/shamaton/msgpack")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b469b4jnvb6as3krxgy7n6zav93pkxg4yfg92q4cxcj8s0flfai"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shamaton/msgpack/v3"))
+    (home-page "https://github.com/shamaton/msgpack")
+    (synopsis "MessagePack for Golang")
+    (description
+     "This package provides @url{https://msgpack.org/, MessagePack}
+implementation in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-shibumi-go-pathspec
   (package
     (name "go-github-com-shibumi-go-pathspec")
