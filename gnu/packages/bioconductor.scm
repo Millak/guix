@@ -23725,14 +23725,14 @@ data.")
 (define-public r-universalmotif
   (package
     (name "r-universalmotif")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "universalmotif" version))
        (sha256
         (base32
-         "1vx95g37kw4nf297dgrbw7n83d94zzcjpy2bqs2c5wgi3bh3rfa6"))))
+         "11kn2jjbm6bj1xd5v2fx0sg3ms39p2hq7z2vcr643vpsgh00lhgk"))))
     (properties
      '((upstream-name . "universalmotif")
        (updater-extra-native-inputs . ("r-ape" "r-ggtree"))))
