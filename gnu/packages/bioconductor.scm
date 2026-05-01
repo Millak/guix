@@ -5028,13 +5028,13 @@ data.  Efficient plotting with 1-D data is also available.  Basic reading of
 (define-public r-altcdfenvs
   (package
     (name "r-altcdfenvs")
-    (version "2.72.0")
+    (version "2.74.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "altcdfenvs" version))
               (sha256
                (base32
-                "0b0cak4dk33h1nqi81xyz7b7hdmkd30zg2lnbrm9bdml0sm5c15c"))))
+                "0bj50m6hafqwi5c80ni2dmy5qrgqsdvskq016scv7y6i6wdjjp0k"))))
     (properties `((upstream-name . "altcdfenvs")))
     (build-system r-build-system)
     (propagated-inputs
