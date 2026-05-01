@@ -953,6 +953,10 @@ user-level language.")
              sdb))
       (native-inputs
        (list pkg-config python-minimal-wrapper))
+      (native-search-paths (list (search-path-specification
+                                   (variable "R2_LIBR_PLUGINS")
+                                   (files (list "lib/radare2"))
+                                   (separator #f)))) ;single value
       (home-page "https://github.com/radareorg/iaito")
       (synopsis "Official radare2 GUI")
       (description "Iaito is the official graphical interface for radare2, a
