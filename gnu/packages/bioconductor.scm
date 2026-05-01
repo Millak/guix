@@ -3816,13 +3816,13 @@ expression values are known.")
 (define-public r-affyilm
   (package
     (name "r-affyilm")
-    (version "1.62.0")
+    (version "1.64.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "affyILM" version))
        (sha256
-        (base32 "1z0ppsd26frcshxbqwwrf5k79zhicc7cg8qfcyhqj3k696dviaxm"))))
+        (base32 "16xck7day4xqzaqkw5p2xd5j9jgjmlwdjsplm7m08a8946n74l0w"))))
     (properties `((upstream-name . "affyILM")))
     (build-system r-build-system)
     (propagated-inputs
