@@ -7627,13 +7627,13 @@ arbitrary genomic intervals along chromosomal ideogram.")
 (define-public r-immapex
   (package
     (name "r-immapex")
-    (version "1.5.4")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "immApex" version))
        (sha256
-        (base32 "0jcnizjja19d1qfpv3a7d64bhykw488x2dfwrvmdx77anyk0q89d"))))
+        (base32 "1x3i6n6rlp2hg6fdwia34z80a0j25067l2n2s53sjzfd2j9w15nf"))))
     (properties `((upstream-name . "immApex")))
     (build-system r-build-system)
     (arguments
