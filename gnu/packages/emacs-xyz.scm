@@ -5692,7 +5692,7 @@ both byte-compiled and native-compiled.")
 (define-public emacs-auto-sudoedit
   (package
     (name "emacs-auto-sudoedit")
-    (version "1.1.0")
+    (version "1.1.2")
     (source
      (origin
        (method git-fetch)
@@ -5701,7 +5701,7 @@ both byte-compiled and native-compiled.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rhdvrj2rjbvl7vkb0wcp6krqxcaigl7jk9z8yvhx6s4cm2qli6q"))))
+        (base32 "1d9hkgy19kwcwh7s1gspab6nrnj7s4d0ja0bqdldi5s0whd7iidp"))))
     (propagated-inputs
      (list emacs-f))
     (build-system emacs-build-system)
