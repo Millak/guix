@@ -9796,13 +9796,13 @@ analysis using other methods.")
 (define-public r-gcptools
   (package
     (name "r-gcptools")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GCPtools" version))
        (sha256
-        (base32 "1m4ljd33vg5ari4xq8x1qsmdp0232w8f7x140mdh1gvg545rjjf4"))))
+        (base32 "1ajb8awl6l6af37dpn2zn8yi6wgc5kg61i3vx59jq2s8xvxwnf5r"))))
     (properties `((upstream-name . "GCPtools")))
     (build-system r-build-system)
     (propagated-inputs (list r-anvilbase
