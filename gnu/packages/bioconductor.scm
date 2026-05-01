@@ -14573,13 +14573,13 @@ methylation data.")
 (define-public r-transcriptr
   (package
     (name "r-transcriptr")
-    (version "1.38.3")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "transcriptR" version))
        (sha256
-        (base32 "08m2wdxwv0d9np40hg7p1bnx9lw6944hyjf2a72k5jd6d26d7qgj"))))
+        (base32 "077vnbpx6yhgwp8jima0jnvp81i15d7mb1m0pavhqi1hw3fxrvg3"))))
     (properties
      '((upstream-name . "transcriptR")
        (updater-ignored-native-inputs
