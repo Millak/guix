@@ -18953,14 +18953,14 @@ into account multi-gene associated probes.")
 (define-public r-methylumi
   (package
     (name "r-methylumi")
-    (version "2.56.0")
+    (version "2.58.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "methylumi" version))
        (sha256
         (base32
-         "0wxyy8wiz85x3ls29gm3s64p1vqhfi3av1j6zzm8xwxi8fjlnv1y"))))
+         "0lwb99ijybs9hjif2ii5mdiw8hwlmv7bhs7bs2n5kfvwmlza6wy0"))))
     (properties
      '((updater-ignored-native-inputs
         . ("r-tcgamethylation450k" "r-lumi"))))
