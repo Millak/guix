@@ -14073,14 +14073,14 @@ packages.")
 (define-public r-seqlogo
   (package
     (name "r-seqlogo")
-    (version "1.76.0")
+    (version "1.78.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "seqLogo" version))
        (sha256
         (base32
-         "189zhnm7rx0lya1xsn89as2c6awkidv641rri7w39ds0kygcy8x4"))))
+         "1kglbwfw6jkdkjf06181m1yyajxkvlkf58c68qpysm87pcdzjpj4"))))
     (properties `((upstream-name . "seqLogo")))
     (build-system r-build-system)
     (native-inputs
