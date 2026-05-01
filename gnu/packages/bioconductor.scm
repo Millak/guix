@@ -13026,13 +13026,13 @@ with a single RCy3 function.")
 (define-public r-recount
   (package
     (name "r-recount")
-    (version "1.36.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "recount" version))
        (sha256
-        (base32 "16n2wsxl857v25wzzy0v0j1sycm7a1wcg07qdxnfp9nf53fn2v2l"))))
+        (base32 "1xkrw7brfr4xiabh5cd7dznv2y15kjvig85wzhmlxm6jyq2cvd79"))))
     (properties `((upstream-name . "recount")))
     (build-system r-build-system)
     ;; 3 tests attempt to download data.
