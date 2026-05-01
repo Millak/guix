@@ -29137,13 +29137,13 @@ reproducibility.")
 (define-public r-phyloseq
   (package
     (name "r-phyloseq")
-    (version "1.54.2")
+    (version "1.56.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "phyloseq" version))
        (sha256
-        (base32 "106zwzzwzvb5x0lz9i68wshh2nsa2rf5rmkqjqsvr4smxq6hknlj"))))
+        (base32 "1avfzqlak080xnkaia8q5kf3r0313r2igrm8gda0km6ga6ap1c2c"))))
     (properties `((upstream-name . "phyloseq")))
     (build-system r-build-system)
     (propagated-inputs
@@ -29164,7 +29164,7 @@ reproducibility.")
            r-scales
            r-vegan))
     (native-inputs
-     (list r-genefilter r-knitr r-testthat))
+     (list r-genefilter r-knitr r-sparsearray r-testthat))
     (home-page "https://github.com/joey711/phyloseq")
     (synopsis "Handling and analysis of high-throughput microbiome census data")
     (description
