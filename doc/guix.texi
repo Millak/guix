@@ -51317,7 +51317,7 @@ after receiving @code{SIGHUP}.
 
 After adding
 @lisp
-(shepherd-signal-action 'reload SIGHUP))
+(shepherd-signal-action 'reload SIGHUP)
 @end lisp
 
 the @code{reload} action will be available and can be used with
