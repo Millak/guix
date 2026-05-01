@@ -22781,14 +22781,14 @@ delete entire rows with missing data.")
 (define-public r-depecher
   (package                              ;Source/Weave error
     (name "r-depecher")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DepecheR" version))
        (sha256
         (base32
-         "063jx19fs7gx84ivsmfs47lw5i79037v4c31k50jfzbxnwb1bnnc"))))
+         "15nr1qmzsqilawrpyva47ixd4z9p7n5qq12l0pn851a5kn2m41vf"))))
     (properties `((upstream-name . "DepecheR")))
     (build-system r-build-system)
     (propagated-inputs
