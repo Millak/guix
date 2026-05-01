@@ -18041,14 +18041,14 @@ multiplication and calculation of row/column sums or means.")
 (define-public r-batchelor
   (package
     (name "r-batchelor")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "batchelor" version))
        (sha256
         (base32
-         "0s991n072s7vbcj2ad5zh079iwwcqx92m6h0wmif3wma0qpw16g2"))))
+         "0y4rjpwzknzaz811ag8nxx7as05a7jb4rbg23hfn759gd48lp491"))))
     (properties `((upstream-name . "batchelor")))
     (build-system r-build-system)
     (arguments
