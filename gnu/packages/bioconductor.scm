@@ -3212,13 +3212,13 @@ yeast are also included.")
 (define-public r-curatedtcgadata
   (package
     (name "r-curatedtcgadata")
-    (version "1.32.1")
+    (version "1.33.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "curatedTCGAData" version 'experiment))
        (sha256
-        (base32 "12643ypyvzz565p28h3vaqak85pnwbf1vw5xml0xf250916xy6nl"))))
+        (base32 "0xqa2il474py5f39k0sx2lqw4wn95ik11w01ma8fma7w65rm1k0p"))))
     (properties
      `((upstream-name . "curatedTCGAData")))
     (build-system r-build-system)
