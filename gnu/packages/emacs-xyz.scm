@@ -28812,7 +28812,7 @@ match your personal coding style.")
 (define-public emacs-epkg
   (package
     (name "emacs-epkg")
-    (version "4.1.2")
+    (version "4.2.0")
     (source
      (origin
        (method git-fetch)
@@ -28821,7 +28821,7 @@ match your personal coding style.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hm6f73lwqsrn89f3s7dx79nc67qvqs8v1jb3wbyq7wdify5mja0"))))
+        (base32 "1dbzmm9cl4khfi6a518mfpmrn4663a150604d2z0rpvdvpbf4mri"))))
     (build-system emacs-build-system)
     (arguments
      `(#:lisp-directory "lisp"
