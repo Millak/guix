@@ -12154,6 +12154,33 @@ the D-Bus message bus system.")
        ((#:import-path _ "github.com/godbus/dbus")
         "github.com/godbus/dbus/v5")))))
 
+(define-public go-github-com-gofiber-schema
+  (package
+    (name "go-github-com-gofiber-schema")
+    (version "1.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gofiber/schema")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zslqfcaw7j4rdzmj02228fcmqn8syz0xvmi79qhdsr15b8iy9gc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gofiber/schema"))
+    (propagated-inputs
+     (list go-github-com-gofiber-utils-v2))
+    (home-page "https://github.com/gofiber/schema")
+    (synopsis "Fills a struct with form values")
+    (description
+     "This package implements a functionality to fills a struct with form
+values.
+It's an alternative fork of @url{https://github.com/gorilla/schema}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-gofiber-utils-v2
   (package
     (name "go-github-com-gofiber-utils-v2")
