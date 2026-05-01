@@ -10321,21 +10321,32 @@ Enrichment Analysis} (GSEA).")
 (define-public r-gsva
   (package
     (name "r-gsva")
-    (version "2.4.9")
+    (version "2.6.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GSVA" version))
               (sha256
                (base32
-                "19lqsqvvxka233gc886fdg2f5vfiddlsp515p9yq3mnlcjwqbqyi"))))
+                "1gycpv4fx4lpp0f12k9hq1jn36hy95prf2jkwpf4b57gns7zn5z2"))))
     (properties `((upstream-name . "GSVA")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:test-directory "inst/unitTests"
+      #:skipped-tests
+      ;; These all fail with: "no method for coercing this S4 class to a vector"
+      '("test_genesets.R"
+        "test_gsvaRanks.R"
+        "test_inputdatacontainers.R"
+        "test_ranksserialization.R"
+        "test_spatial.R")))
     (propagated-inputs (list r-biobase
                              r-biocgenerics
                              r-biocparallel
                              r-biocsingular
                              r-cli
                              r-delayedarray
+                             r-delayedmatrixstats
                              r-gseabase
                              r-hdf5array
                              r-iranges
