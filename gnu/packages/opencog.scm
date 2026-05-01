@@ -28,6 +28,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix gexp)
@@ -86,9 +87,9 @@ utilities use for typical programming tasks in multiple OpenCog projects.")
       (license (list license:agpl3 license:asl2.0)))))
 
 (define-public atomspace
-  ;; The last release was in 2016 and doesn't build with our Boost package.
-  (let ((commit "86c848dfc7135b3c47deb581f8da54a60f6711c9")
-        (revision "1"))
+  ;; The last release was in 2016.
+  (let ((commit "c8d633bf272b838c2132c21b7c8ddf169a18dd22")
+        (revision "2"))
     (package
       (name "atomspace")
       (version (git-version "5.0.3" revision commit))
@@ -100,15 +101,20 @@ utilities use for typical programming tasks in multiple OpenCog projects.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0vxzhszb0z8081li38hid07a5axzxyflsmq1mcn4b1k4z1j8ggch"))))
+                  "0fdqmskjh9d7363ldwmh3zhwal847shm15nhb2nan4g4aqdmckrz"))))
       (build-system cmake-build-system)
       (arguments
        (list
         #:configure-flags
-        #~(list (string-append "-DGUILE_INCLUDE_DIR=" #$guile-2.2
-                               "/include/guile/2.2/")
+        #~(list "-DSKIP_LDCONF=ON"
+                (string-append "-DGUILE_INCLUDE_DIR=" #$guile-3.0.11
+                               "/include/guile/3.0/")
                 (string-append "-DGUILE_SITE_DIR=" #$output
-                               "/share/guile/site/2.2/"))
+                               "/share/guile/site/3.0/")
+                (string-append "-DGUILE_CCACHE_DIR=" #$output
+                               "/lib/guile/3.0/site-ccache")
+                (string-append "-DPYTHON_INSTALL_PREFIX=" #$output
+                               "/lib/python3.11/site-packages"))
         #:modules '((guix build cmake-build-system)
                     ((guix build gnu-build-system) #:prefix gnu:)
                     (guix build utils))
@@ -121,15 +127,15 @@ utilities use for typical programming tasks in multiple OpenCog projects.")
                          #:tests? tests? #:test-target "tests" args)
                   ;; Failing tests.
                   (for-each delete-file
-                            '("tests/matrix/VectorAPIUTest"
-                              "tests/scm/MultiAtomSpaceUTest"))
+                            '("tests/scm/MultiAtomSpaceUTest"))
                   (setenv "GUILE_LOAD_PATH" ".:opencog/scm")
                   (for-each invoke
                             (find-files "tests" "UTest$"))))))))
       (inputs
-       (list boost cogutil gmp guile-2.2 postgresql))
+       (list boost cogutil gmp guile-3.0-latest postgresql))
       (native-inputs
        `(("cxxtest" ,cxxtest)
+         ("python-cython" ,python-cython)
          ("python" ,python-minimal)
          ("pkg-config" ,pkg-config)))
       (home-page "https://github.com/opencog/atomspace/")
