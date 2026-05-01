@@ -27485,28 +27485,59 @@ use case however with a higher level interface for common uses of BoltDB.")
 (define-public go-github-com-tinylib-msgp
   (package
     (name "go-github-com-tinylib-msgp")
-    (version "1.2.1")
+    (version "1.6.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/tinylib/msgp")
-             (commit (string-append "v" version))))
+              (url "https://github.com/tinylib/msgp")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mplb420i9cmf40qwsqzd1plln52nl0x0b7nkxffyr0pdh9za79a"))))
+        (base32 "01yyn0q82s0fbjky9spysaxxizfjvqfblai14jpmaxv80g74rd51"))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; Tests require alternative Golang compiler
-      ;; <https://github.com/tinygo-org/tinygo>.
-      #:tests? #f
+      #:skip-build? #t
       #:import-path "github.com/tinylib/msgp"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Tests require alternative Golang compiler
+                       ;; <https://github.com/tinygo-org/tinygo>.
+                       (list "TestEmptyBuild"
+                             "TestEmptyRun"
+                             "TestRoundtripRun"
+                             "TestRoundtripBuild"
+                             "TestSimpleBytesAppendBuild"
+                             "TestSimpleBytesAppendRun"
+                             "TestSimpleBytesReadBuild"
+                             "TestSimpleBytesReadRun"
+                             "TestSimpleMarshalBuild"
+                             "TestSimpleMarshalRun"
+                             "TestSimpleRoundtripBuild"
+                             "TestSimpleRoundtripRun"
+                             "TestSimpleUnmarshalBuild"
+                             "TestSimpleUnmarshalRun")
+                       "|"))
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'build))))
+          (add-after 'unpack 'go-generate
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (invoke "go" "generate" "-v" "-n" "./msgp")
+                (invoke "go" "generate" "-v" "-n" "./_generated"))))
+          (add-after 'unpack 'remove-test-file
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; They try to write a large file to /tmp, but compilation is
+                ;; failed with error: cannot use data (variable of slice type
+                ;; Blobs) as msgp.MarshalSizer value in argument to
+                ;; msgp.WriteFile: Blobs does not implement msgp.MarshalSizer
+                ;; (missing method MarshalMsg)
+                (delete-file "msgp/file_test.go")))))))
     (propagated-inputs
-     (list go-golang-org-x-tools go-github-com-philhofer-fwd))
+     (list go-github-com-philhofer-fwd
+           go-golang-org-x-tools))
     (home-page "http://msgpack.org/")
     (synopsis "MessagePack Code Generator")
     (description
@@ -27514,7 +27545,6 @@ use case however with a higher level interface for common uses of BoltDB.")
 serialize and de-serialize Go data structures to and from data interchange
 format - @url{https://en.wikipedia.org/wiki/MessagePack,MessagePack}.")
     (license license:expat)))
-
 
 (define-public go-github-com-tj-go-buffer
   (package
