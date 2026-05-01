@@ -1746,7 +1746,7 @@ running;
       (source
        (origin
          (method git-fetch)
-         (file-name "wezterm")
+         (file-name (git-file-name name version))
          (uri (git-reference
                 (url "https://github.com/wezterm/wezterm")
                 (commit commit)))
