@@ -42183,7 +42183,7 @@ deployment scripts via Tramp.")
 (define-public emacs-super-save
   (package
     (name "emacs-super-save")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -42193,7 +42193,7 @@ deployment scripts via Tramp.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1nypbklgfxyrp55f0dazg9hm7gkqibijd6k4nlb0b0f1rhcm989b"))))
+         "08mvmp87bx5blpc8l89dwxs7kcz9vql1mlzj7jr1hfh9ds1vd602"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/bbatsov/super-save")
     (synopsis "Auto-save buffers, based on your activity")
