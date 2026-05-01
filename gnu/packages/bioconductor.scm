@@ -11582,13 +11582,13 @@ TAB-Seq.")
 (define-public r-mfuzz
   (package
     (name "r-mfuzz")
-    (version "2.70.0")
+    (version "2.72.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Mfuzz" version))
               (sha256
                (base32
-                "0fjdfhj340fbv9m18a5hlsd8g7n9zdrn4h6h4fsa3pmzmj06x7l5"))))
+                "11xs6cprfpmk3zwffpc2q5yfb063fvdy1ck51qkxh28pr9gv5ysv"))))
     (properties `((upstream-name . "Mfuzz")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-e1071 r-tkwidgets))
