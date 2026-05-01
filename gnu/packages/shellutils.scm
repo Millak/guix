@@ -511,14 +511,14 @@ POSIX Shell}, @url{https://www.gnu.org/software/bash/, Bash}, and
 (define-public starship
   (package
     (name "starship")
-    (version "1.25.0")
+    (version "1.25.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "starship" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0l0104a7f0ad636fzhybssjl76c5axkx241qq0f7f051kg34l5nj"))))
+        (base32 "022bnq9lq0kq0zxs34li0j653rhlh4y2garc3mvcr90pddjhp4wg"))))
     (build-system cargo-build-system)
     (arguments
      (list
