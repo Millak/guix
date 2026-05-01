@@ -1648,7 +1648,7 @@ Common Lisp or Smalltalk, but for Emacs Lisp.")
 (define-public emacs-treebundel
   (package
     (name "emacs-treebundel")
-    (version "0.3.0")
+    (version "0.3.2")
     (source
      (origin
        (method git-fetch)
@@ -1657,7 +1657,7 @@ Common Lisp or Smalltalk, but for Emacs Lisp.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fpmm3jb95lksamxqz9850x2vcmcvq6bx29sn0fci6ny4cvpnq5k"))))
+        (base32 "1ipypcrc2xgyrvwv6hk3hvwrkamsf4rrpnm13xczz19bqp1svjqp"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat))
