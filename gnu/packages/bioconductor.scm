@@ -24974,14 +24974,14 @@ rownames.")
 (define-public r-biocor
   (package
     (name "r-biocor")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioCor" version))
        (sha256
         (base32
-         "04bfi8mmff5ykxim1rzpfgglbcdy6aj1ha9l86cb6pp40ssp8rn5"))))
+         "1m8pc8hx5hldhvfbccw1yk2l4irblhc0z9qs2gsjlhwa0lhcba29"))))
     (properties `((upstream-name . "BioCor")))
     (build-system r-build-system)
     (propagated-inputs
