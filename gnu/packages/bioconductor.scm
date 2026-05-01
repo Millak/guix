@@ -25072,14 +25072,14 @@ analytics on packages.")
 (define-public r-biocset
   (package
     (name "r-biocset")
-    (version "1.24.0")
+    (version "1.25.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocSet" version))
        (sha256
         (base32
-         "06mjk88gm562rmnzb3bj56s5cc4griwlisvv5x4f3av9xlks7mam"))))
+         "1dgwdn9q4gll0drxlfr4ibmw7q6zfvm53g6dq4x1gsca8n1za73n"))))
     (properties
      '((upstream-name . "BiocSet")
        (updater-extra-native-inputs . ("r-gseabase"))))
@@ -25095,7 +25095,9 @@ analytics on packages.")
          "'summarise.BiocSet\\(\\)' works"
          ;; Expected `es_elementset(es2)$element` to equal
          ;; `sort(es_elementset(es)$element)`.
-         "'arrange.BiocSet\\(\\)' works")
+         "'arrange.BiocSet\\(\\)' works"
+         ;; Actual comparison: 17900 < 18105
+         "'as.list.BiocSet\\(\\)' works")
         ("test_tbl_elementset_base-class.R"
          ;; `set` must be size 1, not 52.
          "'summarise.tbl_elementset_base\\(\\)' works"))))
