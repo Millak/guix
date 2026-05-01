@@ -27226,13 +27226,13 @@ annotation, and functions for GWAS data cleaning and analysis.")
 (define-public r-kegggraph
   (package
     (name "r-kegggraph")
-    (version "1.70.0")
+    (version "1.72.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "KEGGgraph" version))
        (sha256
-        (base32 "1d97w3q3rbnrcv0bqgns61sxxy2yynd6ibd14g4mjlfapyfa005z"))))
+        (base32 "1d6l1q9f887gd8kidbr31ycv8a8hsf0p5gg6zlidj4d0bcpx4ymi"))))
     (properties `((upstream-name . "KEGGgraph")))
     (build-system r-build-system)
     ;; Vignettes require connection to the internet.
