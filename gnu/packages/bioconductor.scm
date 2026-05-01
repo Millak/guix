@@ -15699,14 +15699,14 @@ saving AnnData objects to disk.")
 (define-public r-oligoclasses
   (package
     (name "r-oligoclasses")
-    (version "1.72.0")
+    (version "1.74.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "oligoClasses" version))
        (sha256
         (base32
-         "11sy2zpjj8h2wf5qjmfxq07b5bk8y58vbqr06dr9ymk3bgwwp0c8"))))
+         "07fk31gmz6cqlkxlmgh8igz732ma8ryzxh5qffcvgmh1zkh5vxkx"))))
     (properties `((upstream-name . "oligoClasses")))
     (build-system r-build-system)
     ;; Some tests need pd.mapping50k.hind240, which needs this package.
