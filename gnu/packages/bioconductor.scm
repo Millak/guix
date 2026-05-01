@@ -28270,13 +28270,13 @@ included in the plots.")
 (define-public r-bcrank
   (package
     (name "r-bcrank")
-    (version "1.72.0")
+    (version "1.74.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BCRANK" version))
        (sha256
-        (base32 "0snryc43qkhcgaaymdxrfviyg700zvq32s7y3pl649l4qnvr0y4p"))))
+        (base32 "0m6xwyfz710h8yfgp9a02vlacd1mqgjipdj9y8532ryqcnq622bn"))))
     (properties `((upstream-name . "BCRANK")))
     (build-system r-build-system)
     (propagated-inputs (list r-biostrings))
