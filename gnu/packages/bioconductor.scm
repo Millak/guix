@@ -5319,13 +5319,13 @@ fixed Type I error rate.")
 (define-public r-arrayquality
   (package
     (name "r-arrayquality")
-    (version "1.88.0")
+    (version "1.90.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "arrayQuality" version))
        (sha256
-        (base32 "1nkq6ys02jjinprbphikm9pym17bvvh7d5wrpl0jyj7x9jabw443"))))
+        (base32 "0y9bzvd8wskvbfmz89ipmg3gs78cf8kk3jdbam5kywg5dvcz8kgy"))))
     (properties `((upstream-name . "arrayQuality")))
     (build-system r-build-system)
     (propagated-inputs
