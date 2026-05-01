@@ -21519,7 +21519,7 @@ federated blogging platform WriteFreely.")
 (define-public emacs-org
   (package
     (name "emacs-org")
-    (version "9.7.39")
+    (version "9.8.3")
     (source
      (origin
        (method git-fetch)
@@ -21528,7 +21528,7 @@ federated blogging platform WriteFreely.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bq4k37iax3zyhr6g335g9p9ja316yhj9a2jbh2d1mfw3rykfy2b"))))
+        (base32 "0vv3pkr9kk9j9f45nkmkk4jbwghbqi2qffdv9v7gjjinn6fx0l3q"))))
     (build-system emacs-build-system)
     (outputs (list "out" "test"))
     (arguments
@@ -21579,6 +21579,8 @@ federated blogging platform WriteFreely.")
               ;; XXX: Skip failing tests.
               (substitute* "testing/lisp/test-ob-shell.el"
                 (("ob-shell/remote-with-stdin-or-cmdline .*" all)
+                 (string-append all "  (skip-unless nil)\n"))
+                (("ob-shell/cmdline .*" all)
                  (string-append all "  (skip-unless nil)\n")))))
           (replace 'build
             (lambda args
