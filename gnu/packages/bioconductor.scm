@@ -3930,13 +3930,13 @@ of samples that are affected by RNA degradation.")
 (define-public r-agdex
   (package
     (name "r-agdex")
-    (version "1.58.0")
+    (version "1.60.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AGDEX" version))
               (sha256
                (base32
-                "0xwlm7nay7ns5nnvi6zrl2ygrbkj6lq14yph6rasy08cdjll74l2"))))
+                "1lyji0svcn75ymjgagzam3v5876byqlrw0yyqdq1awcr3b0ma835"))))
     (properties `((upstream-name . "AGDEX")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-gseabase))
