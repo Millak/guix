@@ -19674,18 +19674,20 @@ correspondence between different data sources.")
 (define-public r-enrichplot
   (package
     (name "r-enrichplot")
-    (version "1.30.5")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "enrichplot" version))
        (sha256
         (base32
-         "12c6xwp29mmalvxp3asliv2hlha5vv8l37prmmcgpdi4nghfic3b"))))
+         "0jlkqhh29w57ssay97n3n8dzfl8gvscjvfjbq3hlzrffyzc1wyxq"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-aplot
            r-dose
+           r-dplyr
+           r-enrichit
            r-ggfun
            r-ggnewscale
            r-ggplot2
@@ -19694,7 +19696,6 @@ correspondence between different data sources.")
            r-ggtree
            r-gosemsim
            r-igraph
-           r-plyr
            r-purrr
            r-rcolorbrewer
            r-reshape2
@@ -19703,7 +19704,7 @@ correspondence between different data sources.")
            r-tidydr
            r-yulab-utils))
     (native-inputs
-     (list r-knitr))
+     (list r-quarto))
     (home-page "https://github.com/GuangchuangYu/enrichplot")
     (synopsis "Visualization of functional enrichment result")
     (description
