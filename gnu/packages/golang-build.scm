@@ -1314,7 +1314,7 @@ telemetry uploads: GOOS, GOARCH, Go version, and per-program counters.")
 (define-public go-golang-org-x-term
   (package
     (name "go-golang-org-x-term")
-    (version "0.40.0")
+    (version "0.42.0")
     (source
      (origin
        (method git-fetch)
@@ -1323,7 +1323,7 @@ telemetry uploads: GOOS, GOARCH, Go version, and per-program counters.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x6m4cxk8h88gacxjc6vsaj585zwc8dzpgxwgbq6fwg6l1519vxn"))))
+        (base32 "0ms3xm3m17ba2y7vk1mhyqjgzf15qn00v8hb340xivga0yy86a0l"))))
     (build-system go-build-system)
     (arguments
      (list
