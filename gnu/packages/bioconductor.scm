@@ -25667,13 +25667,13 @@ objects from the @code{graph} package.")
 (define-public r-fishpond
   (package
     (name "r-fishpond")
-    (version "2.16.0")
+    (version "2.18.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "fishpond" version))
               (sha256
                (base32
-                "0bqbsciq0yxldc8zdjj829n11pn2r4qrc4wsnarm2dp49dy4ipp3"))))
+                "1ibq2hi3k7gbvmc343ymkm28gjhz0dczm3zisgrzsh67ki647lsl"))))
     (properties
      '((upstream-name . "fishpond")
        (updater-extra-native-inputs . ("r-samr" "r-tximportdata"))))
