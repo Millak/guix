@@ -15051,13 +15051,13 @@ samples.")
 (define-public r-survcomp
   (package
     (name "r-survcomp")
-    (version "1.60.1")
+    (version "1.62.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "survcomp" version))
               (sha256
                (base32
-                "0in0wlhjkqfc18rp6r73q4672ks7xzdjmkc6fcjl998rcn4n70dz"))))
+                "0ga480z0775v8g9bj4haaxs5wyvnxc891rn70j26scig6411x2x7"))))
     (properties `((upstream-name . "survcomp")))
     (build-system r-build-system)
     (propagated-inputs (list r-bootstrap
