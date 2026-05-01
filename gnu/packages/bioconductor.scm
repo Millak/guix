@@ -6356,13 +6356,13 @@ languages and analysis frameworks.")
 (define-public r-cigarillo
   (package
     (name "r-cigarillo")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "cigarillo" version))
        (sha256
-        (base32 "07ayin3ydibhbv5qxi1bapdw2yf759k3azj57kqvmdpqsdwz1nm9"))))
+        (base32 "0zs2s4zd7rqy6fvrlrmpbqcbi8x6g0s6s0nlqlv99sxk15pv33kr"))))
     (properties `((upstream-name . "cigarillo")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics r-biostrings r-iranges r-s4vectors))
