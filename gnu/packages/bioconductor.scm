@@ -7363,13 +7363,13 @@ possibly confounded by SNPs and cross-hybridisation.  It includes
 (define-public r-drimseq
   (package
     (name "r-drimseq")
-    (version "1.38.0")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DRIMSeq" version))
        (sha256
-        (base32 "0ga00qvrlccawq9nl0vdpsd9gbqx1xcafdxflp7vpi85s04bmg48"))))
+        (base32 "09nzw4b1adyc1lyp4pv9zrbvh4dmfqg7ybwvyly3abni6yrrjy42"))))
     (properties
      '((upstream-name . "DRIMSeq")
        (updater-ignored-native-inputs
@@ -7387,7 +7387,7 @@ possibly confounded by SNPs and cross-hybridisation.  It includes
            r-mass
            r-reshape2
            r-s4vectors))
-    (native-inputs (list r-knitr r-stager r-testthat))
+    (native-inputs (list r-biocstyle r-knitr r-stager r-testthat))
     (home-page "https://bioconductor.org/packages/DRIMSeq")
     (synopsis "Differential transcript usage and tuQTL analyses with Dirichlet-multinomial model in RNA-seq")
     (description
