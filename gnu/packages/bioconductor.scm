@@ -10037,13 +10037,13 @@ Commons RESTful service.")
 (define-public r-genomicfeatures
   (package
     (name "r-genomicfeatures")
-    (version "1.62.0")
+    (version "1.64.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicFeatures" version))
               (sha256
                (base32
-                "0rszhpmfsvn5iz3gzr3z07r7ykpmk4cbmfnjf9k2z59knnn1x9gp"))))
+                "19j1xps0y3391gicjh8wwgnv88v6al3hmhiv4iqlq0r2zk8k6cn3"))))
     (properties
      `((upstream-name . "GenomicFeatures")
        (updater-ignored-native-inputs
