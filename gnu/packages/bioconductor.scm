@@ -21418,14 +21418,14 @@ rapid adapter trimming, identification, and read merging.")
 (define-public r-progeny
   (package
     (name "r-progeny")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "progeny" version))
        (sha256
         (base32
-         "0hlibwsk7b15n83qpwlk5ahlrqvi8qvwahwv5bs8ydkfkgaywhr4"))))
+         "1lcifxsskzyyiq0r2p1qpnl8l6mqw3py928h99z5hkpjxqkfk3ry"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
