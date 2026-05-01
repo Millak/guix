@@ -14038,13 +14038,13 @@ data access using the R programming language.")
 (define-public r-seqinfo
   (package
     (name "r-seqinfo")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Seqinfo" version))
        (sha256
-        (base32 "10jd4f4qvk4f2z4x9x6663fanh1mb0sxk9xs8giwbw1yb6jrab6p"))))
+        (base32 "0wx0ldp3ap5g61iz057yj0vfasr5d06h8h63g57xq97zjvyr6rpq"))))
     (properties
      '((upstream-name . "Seqinfo")
        (updater-extra-native-inputs . ("r-runit"))
