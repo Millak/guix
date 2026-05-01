@@ -22061,7 +22061,7 @@ extensibility.")
 (define-public emacs-auto-dark
   (package
     (name "emacs-auto-dark")
-    (version "0.13.7")
+    (version "0.13.10")
     (source
      (origin
        (method git-fetch)
@@ -22071,7 +22071,7 @@ extensibility.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1jmh27fkf1pivavv0qwwbb1fhdaycj3gpbbgsd917flsp6pfw55x"))))
+         "0kvjvvabhawix12aj5d973917m2cwc1slhn3jgb6m2nzalr49gi6"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/LionyxML/auto-dark-emacs")
     (synopsis "Dark/light automatic Emacs theme switcher")
