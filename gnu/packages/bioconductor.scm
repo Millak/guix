@@ -12711,31 +12711,41 @@ chromosome.  Both tumor-normal paired and tumor-only analyses are supported.")
 (define-public r-psmatch
   (package
     (name "r-psmatch")
-    (version "1.14.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "PSMatch" version))
        (sha256
-        (base32 "021axxxc4590m350mcs14glyygzsy4m7x6zg3isfxn1rhsva351r"))))
+        (base32 "1gp4w65j2jn09mwvhy4chk0awj7ziiv0kn48lpk830d1j5q05ndh"))))
     (properties
      '((upstream-name . "PSMatch")
        (updater-extra-native-inputs . ("r-mzid" "r-mzr"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:skipped-tests
+      ;; These tests attempt to connect to the Internet to download databases.
+      '("test_PSM.R"
+        ("test_adjacencyMatrix.R"
+         "plotAdjacencyMatrix\\(\\) attributes work"
+         "plotAdjacencyMatrix\\(\\) works"
+         "makeAjacendyMatrix\\(\\) works on PSM data \\(2\\)"))))
     (propagated-inputs (list r-biocgenerics
                              r-biocparallel
                              r-igraph
-                             r-iranges
                              r-matrix
                              r-mscoreutils
                              r-protgenerics
+                             r-ptmods
                              r-qfeatures
                              r-s4vectors
                              r-spectra))
     (native-inputs
      (list r-devtools
+           r-iranges
            r-knitr
-           r-msdata
+           r-msdatahub
            r-mzid
            r-mzr
            r-testthat
