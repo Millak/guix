@@ -6385,13 +6385,13 @@ packages @code{GenomicAlignments} and igblastr.")
 (define-public r-convert
   (package
     (name "r-convert")
-    (version "1.86.0")
+    (version "1.88.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "convert" version))
        (sha256
-        (base32 "0y3932nyp4fdp4yjnzskg1cg4rsg0yc36cl5qqrj2svxh5d4s7b8"))))
+        (base32 "1bhb5gvrpbmks38hb1yb1cadmr1wlq0kq3dhnjz25adzhvbwgjzb"))))
     (properties `((upstream-name . "convert")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-limma r-marray))
