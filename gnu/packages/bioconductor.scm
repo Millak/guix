@@ -8668,13 +8668,13 @@ on Bioconductor or which replace R functions.")
 (define-public r-biomart
   (package
     (name "r-biomart")
-    (version "2.66.2")
+    (version "2.68.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "biomaRt" version))
               (sha256
                (base32
-                "1awsfklcs35vrmjkc12bk5ys9w7ib0799i3d0k138y44a0837pph"))))
+                "05dbv2mx2rj74fk0mqwxa7cambdn30w8v0aynl5kycass783nd0s"))))
     (properties
      `((upstream-name . "biomaRt")))
     (build-system r-build-system)
@@ -8705,7 +8705,7 @@ on Bioconductor or which replace R functions.")
            r-stringr
            r-xml2))
     (native-inputs
-     (list r-httptest2 r-knitr r-mockery r-testthat))
+     (list r-httptest2 r-knitr r-mockery r-testthat r-withr))
     (home-page "https://bioconductor.org/packages/biomaRt")
     (synopsis "Interface to BioMart databases")
     (description
