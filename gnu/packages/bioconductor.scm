@@ -4780,13 +4780,13 @@ for interacting with other cloud providers.")
 (define-public r-anvilgcp
   (package
     (name "r-anvilgcp")
-    (version "1.4.1")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AnVILGCP" version))
        (sha256
-        (base32 "0bdw99m3gmg4m0qg3y0j8sps45s2xyc8bki6l97bdill1pmlqg4k"))))
+        (base32 "1z4nmvx0sjpby2m1z3a9mw8sg74xw5nihhcjq6dsfxkn997qd3j4"))))
     (properties `((upstream-name . "AnVILGCP")))
     (build-system r-build-system)
     (propagated-inputs (list r-anvilbase
