@@ -26336,21 +26336,22 @@ cell types to infer the cell of origin of each single cell independently.")
 (define-public r-scuttle
   (package
     (name "r-scuttle")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scuttle" version))
        (sha256
         (base32
-         "1m235brp8blyzx1z0j3acqgmssjhp2jnpb72i3a3c1f7nd225qaj"))))
+         "143v7n2i6rw6qy2krfbl8ky950c3lk74zwr49rxj4srqsci9xhxh"))))
     (properties
      '((upstream-name . "scuttle")
        (updater-extra-native-inputs
         . ("r-delayedmatrixstats" "r-sparsematrixstats"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-beachmat
+     (list r-assorthead
+           r-beachmat
            r-biocgenerics
            r-biocparallel
            r-delayedarray
