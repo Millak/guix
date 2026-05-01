@@ -21985,13 +21985,13 @@ and to both short and long sequence reads.")
 (define-public r-flames
   (package
     (name "r-flames")
-    (version "2.4.2")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "FLAMES" version))
        (sha256
-        (base32 "1w9z79w3jm6piijyhqfgx7m7zldq9f6q161h92idxn5aw3my1c18"))
+        (base32 "081f52cs92slr4b644dgpyy2b0rkiggygvpnfvz16yv2cyvd715h"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "src/submodule/minimap2"))))
@@ -22033,7 +22033,6 @@ and to both short and long sequence reads.")
            r-genomicalignments
            r-genomicfeatures
            r-genomicranges
-           r-ggbio
            r-ggplot2
            r-gridextra
            r-igraph
@@ -22056,6 +22055,7 @@ and to both short and long sequence reads.")
            r-scater
            r-scatterpie
            r-scran
+           r-scrapper
            r-scuttle
            r-seqinfo
            r-shortread
