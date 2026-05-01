@@ -27185,13 +27185,13 @@ EMBL-EBI GWAS catalog.")
 (define-public r-gwastools
   (package
     (name "r-gwastools")
-    (version "1.56.0")
+    (version "1.58.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GWASTools" version))
               (sha256
                (base32
-                "0lkv2ccibjh7mw3p4j17ir5c0kp96q6086wh6h9ida33mbbbjw7k"))))
+                "0mcbwgiv1zh4smg0h5146cdb6lr2ngxf1a505dj52vzaq0fhld7m"))))
     (properties
      '((upstream-name . "GWASTools")
        (updater-ignored-native-inputs . ("r-gwasdata"))))
