@@ -24540,14 +24540,14 @@ visualize bioinformatics analyses.")
 (define-public r-graphite
   (package
     (name "r-graphite")
-    (version "1.56.0")
+    (version "1.58.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "graphite" version))
        (sha256
         (base32
-         "0481mc4h33n8kky5qph2isjibfclcc694k8pxlf6aijq6hbqxc78"))))
+         "0c11dlv2mmh6mg8pdcy1d9kj66mgyib0p8i7isf87ffzypk38xbb"))))
     (properties `((upstream-name . "graphite")))
     (build-system r-build-system)
     ;; Tests need internet access.
@@ -24563,6 +24563,7 @@ visualize bioinformatics analyses.")
            r-rlang))
     (native-inputs (list r-a4preproc
                          r-all
+                         r-biocstyle
                          r-checkmate
                          r-hgu133plus2-db
                          r-r-rsp
