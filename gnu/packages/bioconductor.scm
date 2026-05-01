@@ -16564,12 +16564,12 @@ normalization and quality checking.")
 (define-public r-cghbase
   (package
    (name "r-cghbase")
-   (version "1.70.0")
+   (version "1.72.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "CGHbase" version))
             (sha256
-             (base32 "0hkbm2q24qaga6py5gvdcirrb0paspdb9s7nkvgi7fdrdw8r7lg0"))))
+             (base32 "1wbp0laymizn937plvwrmi9hzxc69chbvcrygzpfqvwy0q90slcp"))))
    (properties `((upstream-name . "CGHbase")))
    (build-system r-build-system)
    (propagated-inputs
