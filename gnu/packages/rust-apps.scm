@@ -4786,15 +4786,15 @@ policies, and so on.
 (define-public radicle
   (package
     (name "radicle")
-    (version "1.7.1")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch/tarbomb)
        (uri (string-append
-             "https://files.radicle.xyz/releases/"
+             "https://files.radicle.dev/releases/"
              version "/heartwood-" version ".tar.gz"))
        (sha256
-        (base32 "1a2iv0whkfhsmkigam296mid9ikyjinlqs7di4jcqqh88yg22qrj"))
+        (base32 "15w0jijwfbvrfwpn89qbcf2mlxnjyhrcjhjymjgwdqcswpz89pn1"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -4844,7 +4844,7 @@ policies, and so on.
             ;; for test
             git-minimal/pinned)))
     (inputs (cons* libgit2-1.9 sqlite-next (cargo-inputs 'radicle)))
-    (home-page "https://radicle.xyz/")
+    (home-page "https://radicle.dev/")
     (synopsis "Peer-to-peer code collaboration stack")
     (description
      "Radicle is a peer-to-peer code collaboration stack built on Git.  Unlike
