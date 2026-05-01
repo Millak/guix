@@ -22581,7 +22581,7 @@ separately from it.")
   (let ((commit "c3f4583b0767e7f8c38c83ed29af40af8ba3bdfa")) ;version bump
     (package
       (name "emacs-beframe")
-      (version "1.4.0")
+      (version "1.5.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
