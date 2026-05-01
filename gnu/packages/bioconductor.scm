@@ -24613,14 +24613,14 @@ enrichment analysis and several functions for visualization.")
 (define-public r-ebarrays
   (package
     (name "r-ebarrays")
-    (version "2.74.0")
+    (version "2.76.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "EBarrays" version))
        (sha256
         (base32
-         "12x2c3qvybiick7pk5cl9i3ndg1vgwkv08i6dgd8gqf83dvwylk1"))))
+         "0dd9l3ca2am4734a2gw0vbbc10h1c0mnhlvm0dnxay0dcy3dvqwf"))))
     (properties `((upstream-name . "EBarrays")))
     (build-system r-build-system)
     (propagated-inputs
