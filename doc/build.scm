@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
@@ -324,17 +324,31 @@ actual file name."
                     ((('span ('@ ('class "category")) ;raw Texinfo 6.8
                              (? string-or-entity?) ...) rest ...)
                      #t)
-                    ((('span ('@ ('class "symbol-definition-category"))
-                             (? string-or-entity?) ...) rest ...)
+                    ((('span                      ;Texinfo 6, post-processed
+                       ('@ ('class "symbol-definition-category"))
+                       (? string-or-entity?) ...) rest ...)
+                     #t)
+                    ((('span                      ;Texinfo 7
+                       ('@ ('class "category-def")) _ ...)
+                      ('span ('strong ('@ ('class "def-name")) _ ...)
+                             _ ...)
+                      rest ...)
                      #t)
                     (x
                      #f))))
+
+              (define (definition-class? class)
+                ;; Return true for "deffn def-line", "deftp def-line", etc.
+                (string-suffix? " def-line" class))
 
               (let ((shtml (call-with-input-file file html->shtml)))
                 (let loop ((shtml shtml)
                            (anchors anchors))
                   (match shtml
-                    (('dt ('@ ('id id) _ ...) rest ...)
+                    ((or ('dt ('@ ('id id) _ ...) rest ...)      ;Texinfo 6
+                         ('dt ('@ ('class (? definition-class?)) ;Texinfo 7
+                                  ('id id))
+                              rest ...))
                      (if (and (string-prefix? "index-" id)
                               (worthy-entry? rest))
                          (alist-cons (anchor-id->key id)
@@ -505,10 +519,16 @@ its <pre class=\"lisp\"> blocks (as produced by 'makeinfo --html')."
                    (loop rest (cons str strings)))
                   ((('*ENTITY* "additional" entity) . rest)
                    (loop rest (cons (entity->string entity) strings)))
+                  ((('*ENTITY* "additional-char" entity) . rest)
+                   (loop rest (cons (string
+                                     (integer->char (string->number entity)))
+                                    strings)))
                   ((('span _ lst ...) . rest)     ;for <span class="roman">
                    (loop (append lst rest) strings))
-                  ((('var name) . rest)           ;for @var{name} within @lisp
+                  ((('var ('@ _) name) . rest)    ;for @var{name} within @lisp
                    (loop rest (cons name strings))) ;XXX: losing formatting
+                  ((('var name) . rest)           ;likewise (Texinfo 6)
+                   (loop rest (cons name strings)))
                   (something
                    (pk 'unsupported-code-snippet something)
                    (primitive-exit 1)))))
@@ -537,7 +557,10 @@ its <pre class=\"lisp\"> blocks (as produced by 'makeinfo --html')."
                           (link (@ (rel "stylesheet")
                                    (type "text/css")
                                    (href #$syntax-css-url)))))
-                  (('pre ('@ ('class "lisp")) code-snippet ...)
+                  ((or ('pre ('@ ('class "lisp")) ;Texinfo 6
+                             code-snippet ...)
+                       ('pre ('@ ('class "lisp-preformatted"))
+                             code-snippet ...))
                    `(pre (@ (class "lisp"))
                          ,@(highlights->sxml*
                             (pair-open/close
@@ -545,14 +568,16 @@ its <pre class=\"lisp\"> blocks (as produced by 'makeinfo --html')."
                                         (concatenate-snippets code-snippet)))
                             anchors)))
 
-                  ;; Replace the ugly <strong> used for @deffn etc., which
-                  ;; translate to <dt>, with more stylable markup.
+                  ;; For Texinfo 6: Replace the ugly <strong> used for @deffn
+                  ;; etc., which translate to <dt>, with more stylable
+                  ;; markup.  No such post-processing is needed for @deffn
+                  ;; with Texinfo 7.
                   (('dt ('@ ('id id))             ;raw Texinfo 6.8
                         ('span ('@ ('class "category")) category ...)
                         ('span ('strong thing)
                                anchor))
                    (highlight-definition id category thing '()))
-                  (('dt (@ ('id id))
+                  (('dt ('@ ('id id))             ;ditto
                         ('span ('@ ('class "category")) category ...)
                         ('span ('strong thing)
                                (? space?) ('em args ...)
@@ -808,16 +833,9 @@ in SOURCE."
                 (match sxml
                   (('*TOP* decl body ...)
                    `(*TOP* ,decl ,@(map loop body)))
-                  (('head elements ...)
-                   ;; Add reference to our own manual CSS, which provides
-                   ;; support for the language menu.
-                   `(head ,@elements
-                          (link (@ (rel "stylesheet")
-                                   (type "text/css")
-                                   (href #$manual-css-url)))))
-                  (('body ('@ attributes ...) elements ...)
-                   `(body (@ ,@attributes)
-                          ,(navigation-bar
+                  ((or ('body ('@ _) elements ...)
+                       ('body elements ...))
+                   `(body ,(navigation-bar
                             ;; TODO: Add "Contribute" menu, to report
                             ;; errors, etc.
                             (list (menu-dropdown
@@ -952,12 +970,12 @@ makeinfo OPTIONS."
                         (mkdir-p (string-append #$output "/"
                                                 (normalize language)))
                         (setenv "LANGUAGE" language)
-                        (apply invoke #$(file-append texinfo "/bin/makeinfo")
+                        (apply invoke #$(file-append texinfo-7 "/bin/makeinfo")
                                "-o" (string-append #$output "/"
                                                    (normalize language)
                                                    "/html_node")
                                opts)
-                        (apply invoke #$(file-append texinfo "/bin/makeinfo")
+                        (apply invoke #$(file-append texinfo-7 "/bin/makeinfo")
                                "--no-split"
                                "-o"
                                (string-append #$output "/"
@@ -1409,7 +1427,7 @@ commit date (an integer)."
                                  (string-append #+tar "/bin:"
                                                 #+xz "/bin:"
                                                 #+zstd "/bin:"
-                                                #+texinfo "/bin"))
+                                                #+texinfo-7 "/bin"))
                          (invoke "tar" "xf" #$(package-source guile))
                          (mkdir-p (string-append #$output "/en/html_node"))
 
