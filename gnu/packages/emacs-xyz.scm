@@ -17258,7 +17258,7 @@ highlighted.  Pressing that character will switch to that window.")
 (define-public emacs-spatial-window
   (package
     (name "emacs-spatial-window")
-    (version "0.9.2")
+    (version "0.9.3")
     (source
      (origin
        (method git-fetch)
@@ -17267,7 +17267,7 @@ highlighted.  Pressing that character will switch to that window.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19whlw6p2q6ma20ifkr6iyrhj5l99vj1hv06s7j6j6pvgah27lm4"))))
+        (base32 "19nfqxhm3kh8x89z2pwwq7z2izi6wjlmgxqgk7l3m2mww1vphari"))))
     (build-system emacs-build-system)
     (arguments
      (list
