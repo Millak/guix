@@ -6080,13 +6080,13 @@ retrieval analyses, or similar technologies.")
 (define-public r-biocmake
   (package
     (name "r-biocmake")
-    (version "1.2.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biocmake" version))
        (sha256
-        (base32 "1f5xbdfdg0nwlv3csszjyqb3s34369fifazd7hzys15z6y4mhqnc"))))
+        (base32 "0391ag380ac0da0rk397s60f0qg1zfhk4ksw9vkvbafwcpymk30m"))))
     (properties
      '((upstream-name . "biocmake")
        (updater-extra-propagated-inputs . ("cmake"))))
