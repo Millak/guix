@@ -23371,7 +23371,7 @@ information inside the Dired buffer.")
 (define-public emacs-dired-quick-sort
   (package
     (name "emacs-dired-quick-sort")
-    (version "0.3")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -23381,7 +23381,7 @@ information inside the Dired buffer.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0wk29rqaczlz1r42xygphpyvhfcrkzilrz9xd4ps0qjybnx9dsgq"))))
+         "19v208kxlj1b1d9qkkjhwp3bc97r975plphnfvxh9193ax81ffcd"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-hydra))
     (home-page "https://gitlab.com/xuhdev/dired-quick-sort/")
