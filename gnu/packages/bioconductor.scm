@@ -19743,28 +19743,31 @@ attempts to assess their statistical significance.")
 (define-public r-clusterprofiler
   (package
     (name "r-clusterprofiler")
-    (version "4.18.4")
+    (version "4.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "clusterProfiler" version))
        (sha256
         (base32
-         "00kd5zmzd9pm0mxd2r95l7j4mvqgnbbkaqs2rb5fh06r3rk2c14p"))))
+         "0y7f3a6ww0ba7zanzpmhd4vxvdg1yklz33q3xf8syi8im5p4jl04"))))
     (properties
      '((upstream-name . "clusterProfiler")
        (updater-extra-native-inputs . ("r-org-hs-eg-db"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-annotationdbi
-           r-dose
+     (list r-aisdk
+           r-annotationdbi
            r-dplyr
+           r-enrichit
            r-enrichplot
+           r-ggplot2
            r-go-db
            r-gosemsim
            r-gson
            r-httr
            r-igraph
+           r-jsonlite
            r-magrittr
            r-plyr
            r-qvalue
