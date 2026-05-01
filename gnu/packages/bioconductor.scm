@@ -19505,13 +19505,13 @@ the data set is suitable for such analysis.")
 (define-public r-anota2seq
   (package
     (name "r-anota2seq")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "anota2seq" version))
        (sha256
-        (base32 "0kx8jfidm763rw3zhyr18995k3hrgn701k71awwymghagymm2w8n"))))
+        (base32 "1y3qnx98jml8956vy94kyvc7kgn27226jxl4716wp7rgs9bkni68"))))
     (properties `((upstream-name . "anota2seq")))
     (build-system r-build-system)
     (propagated-inputs
@@ -19522,7 +19522,7 @@ the data set is suitable for such analysis.")
            r-qvalue
            r-rcolorbrewer
            r-summarizedexperiment))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-biocstyle r-knitr))
     (home-page "https://bioconductor.org/packages/anota2seq")
     (synopsis "Transcriptome-wide analysis of translational efficiency")
     (description
