@@ -2827,18 +2827,18 @@ in Nature Genetics, January 2018.")
 (define-public r-methylaiddata
   (package
     (name "r-methylaiddata")
-    (version "1.42.0")
+    (version "1.43.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MethylAidData" version
                               'experiment))
        (sha256
-        (base32 "0mv2ymq13n463i0q77473rn75m8x4yx9kp8s3h1nyq2dq163pbdz"))))
+        (base32 "0lmld6d8ab38bxx80rjn27953hri3har02plgzbpxg8z82bdallx"))))
     (properties `((upstream-name . "MethylAidData")))
     (build-system r-build-system)
     (propagated-inputs (list r-methylaid))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-biocstyle r-knitr))
     (home-page "https://bioconductor.org/packages/MethylAidData")
     (synopsis
      "MethylAid-summarized data for 2800 Illumina 450k array samples and 2620 EPIC array samples")
