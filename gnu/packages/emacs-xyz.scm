@@ -28187,7 +28187,7 @@ functionality is inherited from @code{hcl-mode}.")
 (define-public emacs-exec-path-from-shell
   (package
     (name "emacs-exec-path-from-shell")
-    (version "2.2")
+    (version "2.3")
     (source
      (origin
        (method git-fetch)
@@ -28197,7 +28197,7 @@ functionality is inherited from @code{hcl-mode}.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "15cjwvfv5xdhbym4ms71zdkng4381d3hsdk3kvvx2kycxff52rih"))))
+         "1sdhrwg2yjhsxaanrvf92ywywcn977pj3n1hpmg3k9qxcz2j56kv"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/purcell/exec-path-from-shell")
