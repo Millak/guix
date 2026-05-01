@@ -11256,6 +11256,9 @@ Call}.")
     (build-system go-build-system)
     (arguments
      (list
+      ;; Remove when a fresh version is released.
+      ;; See: <https://github.com/jellydator/ttlcache/issues/207>.
+      #:go go-1.24
       #:import-path "github.com/jellydator/ttlcache/v3"
       #:phases
       #~(modify-phases %standard-phases
