@@ -15523,13 +15523,13 @@ transcriptomic data).")
 (define-public r-xmapbridge
   (package
     (name "r-xmapbridge")
-    (version "1.68.0")
+    (version "1.70.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "xmapbridge" version))
        (sha256
-        (base32 "19f6wc6z42c978rd0pgg5kfs4b1bnnb0ywyc517wby6mqmhlgwai"))))
+        (base32 "1bhp69d8rfxgnyvbhbvyyj723pfqqyz01h3cr9vqzwq7lmzwfb11"))))
     (properties
      '((upstream-name . "xmapbridge")
        (updater-extra-native-inputs . ("r-rcolorbrewer"))))
