@@ -13814,13 +13814,13 @@ different experiment.")
 (define-public r-scp
   (package
     (name "r-scp")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scp" version))
        (sha256
-        (base32 "0ah2zy4mi5h1ihrv02s6z5q814rbyx37zcgj11iy5ss5j9zqhli4"))))
+        (base32 "1b2279xvkq7xgl30rkmnnp6wpycjn64wwrnks8r8vvhgi967y0zz"))))
     (properties
      '((upstream-name . "scp")
        (updater-extra-native-inputs . ("r-preprocesscore" "r-vsn"))))
