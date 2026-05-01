@@ -17079,18 +17079,18 @@ experiments.")
 (define-public r-rots
   (package
     (name "r-rots")
-    (version "2.2.0")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ROTS" version))
        (sha256
         (base32
-         "0nw0g72hl519k6d7zwxrpzwbw792w6m0wva0c2cnmk7wz3f4sss9"))))
+         "11455j8h4772pn2giz6x8rc69mlk7rvb677zw3b6901mfilm04g8"))))
     (properties `((upstream-name . "ROTS")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biobase r-biocparallel r-lme4 r-rcpp))
+     (list r-biobase r-biocparallel r-lme4 r-rcpp r-survival))
     (native-inputs (list r-testthat))
     (home-page "https://bioconductor.org/packages/ROTS/")
     (synopsis "Reproducibility-Optimized Test Statistic")
