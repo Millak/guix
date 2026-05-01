@@ -11213,13 +11213,13 @@ of data exploration, normalization, and transformation methods.")
 (define-public r-maaslin3
   (package
     (name "r-maaslin3")
-    (version "1.3.1")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "maaslin3" version))
        (sha256
-        (base32 "13q1i6c08ypdid3kwmy2zgaxm658lb94pripdlmsl41hic1hki4w"))))
+        (base32 "1k4ifhc1y0cm1b2frv56ya7i3vz0kq8085d4p02p08znkxg4vjw6"))))
     (properties `((upstream-name . "maaslin3")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
