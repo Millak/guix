@@ -37585,7 +37585,7 @@ Later you can insert it into an Org buffer using the command
 (define-public emacs-orgit-forge
   (package
     (name "emacs-orgit-forge")
-    (version "1.1.1")
+    (version "1.1.2")
     (home-page "https://github.com/magit/orgit-forge")
     (source
      (origin
@@ -37595,7 +37595,7 @@ Later you can insert it into an Org buffer using the command
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02cka68jrxcdzm12j7912zfgjj5ayw9avm6r59j59nc2kin3khmc"))))
+        (base32 "0fawwd2yys89kyp1q03xng9azgmbdai067m60x0agahrpvgdrysm"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))       ; no tests
     (propagated-inputs
