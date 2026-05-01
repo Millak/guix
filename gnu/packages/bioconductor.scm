@@ -29043,13 +29043,13 @@ estimates, etc.")
 (define-public r-tcgabiolinks
   (package
     (name "r-tcgabiolinks")
-    (version "2.38.0")
+    (version "2.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "TCGAbiolinks" version))
        (sha256
-        (base32 "1ysxy8jc06szqysw54j8hznc2vy0w3m1cr822cy6g4pfbdsqflp9"))))
+        (base32 "0piv9g4zz2w119d98qai605w9h7g5l74ypl6jc8cs8jy9fhglv4x"))))
     (properties
      '((upstream-name . "TCGAbiolinks")
        (updater-extra-native-inputs . ("r-edaseq" "r-edger" "r-survminer"))))
