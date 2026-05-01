@@ -1234,7 +1234,7 @@ communicating with LLM agents.")
 (define-public emacs-agent-shell
   (package
     (name "emacs-agent-shell")
-    (version "0.34.1")
+    (version "0.50.1")
     (source
      (origin
        (method git-fetch)
@@ -1243,7 +1243,7 @@ communicating with LLM agents.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kadndp62f05ph7x1achn8nggajyja2f7g3zvfy7hngfhxhnr0xf"))))
+        (base32 "0njajpz51pbz4hqaq7lcvwaypilq1c9sdxsk6sdxgk1xpivqlxfb"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-shell-maker emacs-acp))
     (home-page "https://github.com/xenodium/agent-shell")
