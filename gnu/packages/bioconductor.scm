@@ -9872,13 +9872,13 @@ and visualize the results.")
 (define-public r-genomation
   (package
     (name "r-genomation")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "genomation" version))
               (sha256
                (base32
-                "1v0zq82cg4vixmsa4plcjf0zp1zvw1m4g54micazkzjkyxsfcfvh"))))
+                "0pka23n8qvjnkb323xndx6n18mgl84fbpz39hp4qw65pcmg42vj4"))))
     (properties
      '((updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
