@@ -26812,14 +26812,14 @@ relevant, and the minimum expression of the most abundant condition.")
 (define-public r-catalyst
   (package
     (name "r-catalyst")
-    (version "1.34.1")
+    (version "1.36.0")
     (source
       (origin
         (method url-fetch)
         (uri (bioconductor-uri "CATALYST" version))
         (sha256
           (base32
-            "13bwm4dfdsfc2l2cf0r5px0ppkf25fifb5z6303mihs0bdi6g792"))))
+            "088236cg5i7hqipyh60ymzvsl1d3mwf074gqsfg1wkxc2wv9qfgn"))))
     (properties `((upstream-name . "CATALYST")))
     (build-system r-build-system)
     (propagated-inputs
@@ -26827,7 +26827,6 @@ relevant, and the minimum expression of the most abundant condition.")
             r-complexheatmap
             r-consensusclusterplus
             r-cowplot
-            r-data-table
             r-dplyr
             r-drc
             r-flowcore
@@ -26839,7 +26838,6 @@ relevant, and the minimum expression of the most abundant condition.")
             r-matrix
             r-matrixstats
             r-nnls
-            r-purrr
             r-rcolorbrewer
             r-reshape2
             r-rtsne
