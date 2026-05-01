@@ -7704,14 +7704,14 @@ reproducibility.")
 (define-public r-infercnv
   (package
     (name "r-infercnv")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "infercnv" version))
        (sha256
         (base32
-         "1gkgvkj06kpqwl573d5l8d9bsdp7nq61m688ma9d2fx6wg4a9r7l"))))
+         "0wfxrb30bhvmvair8yawbwwhkx6xkh78dickj8x1q00w5mdwjya0"))))
     (properties
      `((upstream-name . "infercnv")
        (updater-extra-inputs . ("python"))))
