@@ -22,7 +22,7 @@
 ;;; Copyright © 2017, 2019, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Dave Love <me@fx@gnu.org>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018-2022, 2024-2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Nadya Voronova <voronovank@gmail.com>
 ;;; Copyright © 2018 Adam Massmann <massmannak@gmail.com>
@@ -8795,7 +8795,7 @@ reduction.")
 (define-public mcrl2
   (package
     (name "mcrl2")
-    (version "202307.1")
+    (version "202507.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8803,9 +8803,9 @@ reduction.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "147002dl3gq2jsk5gcmvw7hj3mfxrpgxwcfda5mfrj26rcxw48fc"))))
+                "08w7v2dx1s164q3vc5lzf864nlxrf8s0kgsa26mmkgfqfqcwdgjj"))))
     (inputs
-     (list boost glu mesa qtbase-5))
+     (list boost glu mesa qtbase))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f))
     (synopsis "Toolset for the mCRL2 formal specification language")
