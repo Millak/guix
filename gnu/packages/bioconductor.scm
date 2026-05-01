@@ -19877,14 +19877,14 @@ data in R and Bioconductor containers.")
 (define-public r-annaffy
   (package
     (name "r-annaffy")
-    (version "1.82.0")
+    (version "1.84.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "annaffy" version))
        (sha256
         (base32
-         "0rn29k1ywsnblqn8zkfqg4x719ghz7i6h6k730yypba38h929h51"))))
+         "07phh7wn77lvvlr4pm1g0rbj6lwlc15p4ijkyfirp96hfmrq59yq"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
