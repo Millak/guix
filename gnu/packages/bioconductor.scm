@@ -20458,14 +20458,14 @@ footprints.")
 (define-public r-gofuncr
   (package
     (name "r-gofuncr")
-    (version "1.30.0")
+    (version "1.31.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GOfuncR" version))
        (sha256
         (base32
-         "1rvvzj3maa6xvvs0r9l994zk5pjbxgfmflg8waqqm6d6rd4ls4dv"))))
+         "1ff3micf0pnrx6za3zyrx3b42ah4q0k306wsdimn3a6i2lfyl1cf"))))
     (properties `((upstream-name . "GOfuncR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -20477,7 +20477,7 @@ footprints.")
            r-rcpp
            r-vioplot))
     (native-inputs
-     (list r-homo-sapiens r-knitr r-testthat))
+     (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/GOfuncR/")
     (synopsis "Gene ontology enrichment using FUNC")
     (description
