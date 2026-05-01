@@ -4366,7 +4366,7 @@ offerings such as Boost, Better std, Cloud tools.")
 (define-public go-github-com-bytedance-sonic
   (package
     (name "go-github-com-bytedance-sonic")
-    (version "1.13.3")
+    (version "1.15.1")
     (source
      (origin
        (method git-fetch)
@@ -4375,7 +4375,7 @@ offerings such as Boost, Better std, Cloud tools.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sh7xmf0sivxbl344ns4i35fijcq259wcz5fn2xb5pkacxffclgg"))
+        (base32 "00830kk5rkbsgj3ygfh79mx79a4gj36mfr2par57nf97aqgazkj3"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -4398,7 +4398,8 @@ offerings such as Boost, Better std, Cloud tools.")
      (list go-github-com-davecgh-go-spew
            go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-bytedance-sonic-loader
+     (list go-github-com-bytedance-gopkg
+           go-github-com-bytedance-sonic-loader
            go-github-com-cloudwego-base64x
            go-github-com-klauspost-cpuid-v2
            go-github-com-twitchyliquid64-golang-asm
