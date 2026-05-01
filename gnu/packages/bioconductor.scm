@@ -6978,13 +6978,13 @@ make mapping WGBS data to their probe IDs easier.")
 (define-public r-decoupler
   (package
     (name "r-decoupler")
-    (version "2.16.0")
+    (version "2.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "decoupleR" version))
        (sha256
-        (base32 "1wg6nkjzj30lddhz95d1mlmdlr3fvpwkamzyil23wzm2yz6yw4i4"))))
+        (base32 "1jpdh7iq91fqbmahx95ba3w8yvz75794vvk6098gh61z151lwahx"))))
     (properties
      '((upstream-name . "decoupleR")
        (updater-extra-native-inputs . ("r-aucell"
@@ -7000,6 +7000,8 @@ make mapping WGBS data to their probe IDs easier.")
       ;; viper is non-free software; this test tries to load it.
       '(("test-decoupleR-decouple.R"
          "decouple same results as independent functions")
+        ;; Differences in p values.
+        ("test-statistic-fgsea.R" "test run_fgsea")
         ;; These tests require Internet access.
         ("test-omnipath.R"
          "test show_resources"
