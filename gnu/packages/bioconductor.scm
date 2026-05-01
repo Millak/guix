@@ -15042,17 +15042,19 @@ of risk prediction (survival) models.")
 (define-public r-sva
   (package
     (name "r-sva")
-    (version "3.58.0")
+    (version "3.59.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "sva" version))
        (sha256
         (base32
-         "0q2j31lf4bm9karlj0fnd04rxbi6h0dk5n3rcjcb4vd69aj05bfg"))))
+         "1kxcpzm5zgcrfdvcq226mv2s95amss1j3bl173wnzi49jijgrkhf"))))
     (properties
      '((updater-extra-native-inputs . ("r-biocstyle"))))
     (build-system r-build-system)
+    ;; Vignettes fail with: could not find function "topTableF"
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
      (list r-biocparallel
            r-edger
