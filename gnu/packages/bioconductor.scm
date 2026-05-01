@@ -26760,14 +26760,14 @@ as well as local access.  Developers can register a file extension, e.g.,
 (define-public r-msmseda
   (package
     (name "r-msmseda")
-    (version "1.48.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "msmsEDA" version))
        (sha256
         (base32
-         "1pvqw3py9hajk2dx7bwbpw4lqb0m0p9ir6l8wp7hmi0w1gv5grl4"))))
+         "0gg4qx52axv6bjag0gq0j0h73l30x8jwgs64bgs0wzd383rl9hwg"))))
     (properties `((upstream-name . "msmsEDA")))
     (build-system r-build-system)
     (propagated-inputs
