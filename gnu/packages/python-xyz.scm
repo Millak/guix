@@ -26171,6 +26171,10 @@ user's @file{~/Trash} directory.")
                    "import collections")
                   (("collections_abc")
                    "collections.abc"))))
+            (add-after 'unpack 'python-3.12-compatibility
+              (lambda _
+                (substitute* "pylib/gyp/input_test.py"
+                  (("assertEquals") "assertEqual"))))
             (add-before 'check 'configure-tests
               (lambda _
                 (setenv "PYTHONPATH"
