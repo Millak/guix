@@ -9277,16 +9277,24 @@ given signature.  It was largely inspired by @code{python-decorator} and
 (define-public python-markdown-it-py
   (package
     (name "python-markdown-it-py")
-    (version "3.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "markdown-it-py" version))
-              (sha256
-               (base32
-                "1swgvyiavak0nmfb31lq5zck5chwhmyf6qb6qwpcav86zaa0mxp3"))))
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/executablebooks/markdown-it-py")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ayx5pjm1wa1g6v0b9c013xn6g6055b1ng41iqr3rnxdr1q7sqpp"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;pypi source does not contains tests
-    (native-inputs (list python-flit-core))
+    (arguments (list #:test-flags #~(list "--benchmark-disable")))
+    (native-inputs
+     (list python-flit-core
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-regressions
+           python-requests))
     (propagated-inputs
      (list python-commonmark
            python-linkify-it-py
@@ -9295,7 +9303,6 @@ given signature.  It was largely inspired by @code{python-decorator} and
            python-mistletoe
            python-mistune
            python-panflute
-           python-psutil
            python-pyyaml))
     (home-page "https://github.com/executablebooks/markdown-it-py")
     (synopsis "Python port of markdown-it")
