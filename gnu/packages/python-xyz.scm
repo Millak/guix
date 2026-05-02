@@ -31718,21 +31718,27 @@ environment.")
 (define-public python-logutils
   (package
     (name "python-logutils")
-    (version "0.3.5")
+    (properties '((commit . "c032f726c36d4f932b5a902fdb048f9f07c40d0d")
+                  (revision . "0")))
+    (version (git-version "0.3.5"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "logutils" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://bitbucket.org/vinay.sajip/logutils")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "10lsi5wv5ysnvf9ya4ncbix6mmipnv5067sf2cglc2f2sljql1dw"))))
+        (base32 "188hbcyg95ibjwx4qgbd2qi9vm1h8pq2sllkm847146zcahab3a2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       ;; XXX: Unclear why this test fails.
-      #~(list "--deselect=tests/test_adapter.py::AdapterTest::test_hashandlers"
-              "--ignore=tests/test_redis.py")))
+      #~(list "--deselect=tests/test_adapter.py::\
+AdapterTest::test_hashandlers")))
     (native-inputs (list python-pytest python-setuptools))
     (home-page "https://bitbucket.org/vinay.sajip/logutils/")
     (synopsis "Logging utilities")
