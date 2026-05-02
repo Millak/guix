@@ -59490,13 +59490,13 @@ with alternating row colors) in LaTeX and HTML formats easily from
 (define-public r-metadat
   (package
     (name "r-metadat")
-    (version "1.4-0")
+    (version "1.6-0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "metadat" version))
               (sha256
                (base32
-                "019zxxq138mzpkx2hl61as7jyccrxmc61yq3bjy2khrw0pp6sp9a"))))
+                "01g3qrabb5xh45km94s9i3qq89kkav43ic0pds3ysh92bljbpwpm"))))
     (properties `((upstream-name . "metadat")))
     (build-system r-build-system)
     (propagated-inputs (list r-mathjaxr))
