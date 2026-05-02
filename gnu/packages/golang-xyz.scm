@@ -19047,7 +19047,7 @@ to handle ANSI color escapes on Windows.")
 (define-public go-github-com-mattn-go-isatty
   (package
     (name "go-github-com-mattn-go-isatty")
-    (version "0.0.20")
+    (version "0.0.22")
     (source
      (origin
        (method git-fetch)
@@ -19056,7 +19056,7 @@ to handle ANSI color escapes on Windows.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g63n9wpb991qnq9mn2kvd8jk1glrp6gnd851kvwz2wmzdkggiga"))))
+        (base32 "1f9zfs41wnpyniykx0rxxza7z1yxb0j2pf1b385cs9b49mxvy8fp"))))
     (build-system go-build-system)
     (arguments
      (list
