@@ -12740,7 +12740,7 @@ termios translations, readCh, reading passwords, etc.")
 (define-public go-github-com-google-jsonschema-go
   (package
     (name "go-github-com-google-jsonschema-go")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method git-fetch)
@@ -12749,7 +12749,7 @@ termios translations, readCh, reading passwords, etc.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sbhlwxg4fgyv3l0rnymw6is590n55qva9ylxsv29y08y19k3lch"))))
+        (base32 "0ki1r736vvj1sa3i12pz04bgx3ljy1h1r3zrscav9m9xjvlz3400"))))
     (build-system go-build-system)
     (arguments
      (list
