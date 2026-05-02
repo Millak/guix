@@ -22587,7 +22587,7 @@ the standard @code{context} package to store request-scoped values.")
 (define-public go-golang-org-x-oauth2
   (package
     (name "go-golang-org-x-oauth2")
-    (version "0.23.0")
+    (version "0.36.0")
     (source
      (origin
        (method git-fetch)
@@ -22596,14 +22596,13 @@ the standard @code{context} package to store request-scoped values.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00r6qryh9nfnfq8q8h12hvqp0mhflhl68qyknrmzmw5ww52ghm9b"))))
+        (base32 "0k7n299v6m0k0bkynfvwjclx56hbd5hvaaipk4khm9ib8ddbpx3s"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "golang.org/x/oauth2"))
     (propagated-inputs
-     (list go-cloud-google-com-go-compute-metadata
-           go-github-com-google-go-cmp))
+     (list go-cloud-google-com-go-compute-metadata))
     (home-page "https://go.googlesource.com/oauth2")
     (synopsis "Client implementation of the OAuth 2.0 spec")
     (description
