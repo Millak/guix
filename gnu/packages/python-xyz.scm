@@ -21927,22 +21927,8 @@ some PySol games.")
        (sha256
         (base32 "0cq77dmq21laqk8fhl61m33lbckymzk312r263x2mv93mccf8jrm"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key test-flags tests? #:allow-other-keys)
-              (when tests?
-                (apply invoke
-                       "python"
-                       "-m"
-                       "unittest"
-                       "discover"
-                       "tests"
-                       test-flags)))))))
     (propagated-inputs (list python-cffi))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://pypi.org/project/freecell-solver/")
     (synopsis "Freecell Solver bindings")
     (description
