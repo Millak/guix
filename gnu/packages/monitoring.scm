@@ -888,51 +888,55 @@ historical data.")
     (license license:asl2.0)))
 
 (define-public python-carbon
-  (package
-    (name "python-carbon")
-    (version "1.1.10")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/graphite-project/carbon")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0rnvn0hh4wmr7wn1p7aw1zajgi2r9bxfc1abqazk2k9r6nk5aqmw"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list
-         ;; XXX: cannot import name 'WhisperDatabase' from 'carbon.database'
-         "--ignore=lib/carbon/tests/test_database.py"
-         "--ignore=lib/carbon/tests/test_storage.py"
-         "-k" (string-join
-               (list "not testBasic" ; requires murmurhash3.
-                     ;; XXX: python-mock incompatibility.
-                     "test_decode_pickle"
-                     "test_invalid_pickle"
-                     "test_invalid_types")
-               " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Don't install to /opt
-          (add-after 'unpack 'do-not-install-to-/opt
-            (lambda _
-              (setenv "GRAPHITE_NO_PREFIX" "1"))))))
-    (native-inputs
-     (list python-mock python-protobuf python-pytest python-setuptools))
-    (propagated-inputs
-     (list python-cachetools python-twisted python-txamqp python-urllib3))
-    (home-page "https://graphiteapp.org/")
-    (synopsis "Backend data caching and persistence daemon for Graphite")
-    (description
-     "Carbon is a backend data caching and persistence daemon for Graphite.
+  ;; 1.1.10 (2022-05-22), the latest changes provide support for Python 3.12+;
+  ;; move back to git tag when released.
+  (let ((commit "697bc3b0060ab245225dc5b90a0f4966b4ec7eef")
+        (revision "0"))
+    (package
+      (name "python-carbon")
+      (version (git-version "1.1.10" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/graphite-project/carbon")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1i5ydnzv53b1pigrqqi9nhivxjmlnswg9pd7vznvg34d7281gx19"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        #~(list
+           ;; XXX: cannot import name 'WhisperDatabase' from 'carbon.database'
+           "--ignore=lib/carbon/tests/test_database.py"
+           "--ignore=lib/carbon/tests/test_storage.py"
+           "-k" (string-join
+                 (list "not testBasic" ; requires murmurhash3.
+                       ;; XXX: python-mock incompatibility.
+                       "test_decode_pickle"
+                       "test_invalid_pickle"
+                       "test_invalid_types")
+                 " and not "))
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; Don't install to /opt
+            (add-after 'unpack 'do-not-install-to-/opt
+              (lambda _
+                (setenv "GRAPHITE_NO_PREFIX" "1"))))))
+      (native-inputs
+       (list python-mock python-protobuf python-pytest python-setuptools))
+      (propagated-inputs
+       (list python-cachetools python-twisted python-txamqp python-urllib3))
+      (home-page "https://graphiteapp.org/")
+      (synopsis "Backend data caching and persistence daemon for Graphite")
+      (description
+       "Carbon is a backend data caching and persistence daemon for Graphite.
 Carbon is responsible for receiving metrics over the network, caching them in
 memory for \"hot queries\" from the Graphite-Web application, and persisting
 them to disk using the Whisper time-series library.")
-    (license license:asl2.0)))
+      (license license:asl2.0))))
 
 (define-public python-prometheus-client
   (package
