@@ -1392,13 +1392,13 @@ Trisquel's @code{apt}.")
 (define-public poetry
   (package
     (name "poetry")
-    (version "2.1.3")
+    (version "2.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "poetry" version))
        (sha256
-        (base32 "1505snny5sgz9zf0wx1zqw6kqly3pi9lbsl8dnbpb55ij1kvvjgj"))))
+        (base32 "1bz3ilj0smxllm8x83jki4mlsh4v1jcadjnpg463csb56qnmg4xj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1452,29 +1452,25 @@ Trisquel's @code{apt}.")
     (native-inputs
      (list nss-certs-for-test
            python-deepdiff
-           python-httpretty
            python-pytest
            python-pytest-mock
            python-pytest-randomly
-           python-pytest-xdist))
+           python-pytest-xdist
+           python-responses))
     (propagated-inputs
      (list python-cachecontrol
            python-cleo
-           python-crashtest
-           python-dulwich-0.24
-           python-entrypoints
+           python-dulwich
            python-fastjsonschema
            python-findpython
            python-installer
            python-keyring
            python-packaging
            python-pbs-installer
-           python-pexpect
-           python-pip
+           python-pendulum
            python-pkginfo
            python-platformdirs
            python-poetry-core
-           python-poetry-plugin-export
            python-pypa-build
            python-pyproject-hooks
            python-requests
