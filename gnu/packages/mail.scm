@@ -3919,7 +3919,7 @@ on the fly.  Both programs are written in C and are very fast.")
 (define-public stalwart
   (package
     (name "stalwart")
-    (version "0.16.1")
+    (version "0.16.3")
     (source
      (let ((upstream-source
              (origin
@@ -3930,7 +3930,7 @@ on the fly.  Both programs are written in C and are very fast.")
                (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "1vfgn6jd6gi7b0ilivl4wy6m8bd9hbg919csfndb3h553w153hzy")))))
+                 "1wcs9inwv8iv4qrayp9730wzmmpp4bna6jnpdz29ygb5c0lf2b29")))))
        (origin
          (method computed-origin-method)
          (file-name (git-file-name name version))
