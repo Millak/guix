@@ -8677,25 +8677,19 @@ GitHub API v3.")
     (version "36.0.0")
     (source
      (origin
+       (inherit (package-source go-github-com-google-go-github-v31))
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/google/go-github")
-             (commit (string-append "v" version))))
+              (url "https://github.com/google/go-github")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "041a1rmi7pipimxiwjnsd0dngzb4djmcz8a8x4xv53d3373szaj6"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - github.com/google/go-github/scrape
-            (delete-file-recursively "scrape")
-            (delete-file-recursively "update-urls")))))
+        (base32 "041a1rmi7pipimxiwjnsd0dngzb4djmcz8a8x4xv53d3373szaj6"))))
     (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-github-com-google-go-github-v31)
-       ((#:import-path _) "github.com/google/go-github/v36")))))
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "github.com/google/go-github/v36")))
+    (native-inputs
+     (list go-github-com-google-go-cmp))))
 
 (define-public go-github-com-google-go-github-v50
   (package
