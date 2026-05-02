@@ -25381,6 +25381,15 @@ and integration into other projects.")
        (sha256
         (base32 "1wjygci60nmcdrgrhb0vwqmhspzdv3g69x2b92vjxq709ifrpgqp"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (substitute* "tests/test_parse.py"
+                (("ni:///")
+                 "ni:")))))))
     (native-inputs (list python-pytest python-setuptools))
     (home-page "https://arcp.readthedocs.io/")
     (synopsis "Archive and Package URI parser and generator")
