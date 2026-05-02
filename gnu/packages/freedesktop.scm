@@ -2821,7 +2821,7 @@ applications define in those files.")
 (define-public perl-file-mimeinfo
   (package
     (name "perl-file-mimeinfo")
-    (version "0.33")
+    (version "0.37")
     (source
      (origin
        (method url-fetch)
@@ -2829,13 +2829,13 @@ applications define in those files.")
                            "File-MimeInfo-" version ".tar.gz"))
        (sha256
         (base32
-         "1i5iw6ri0w9clwpqf40xmsh4isc8xvx2lyf2r5g34886i6rsdgpn"))))
+         "0syhn8cq54xznrvnb410j0ilfa9icyq4ma8ki4csza3dsgyvpr8k"))))
     (build-system perl-build-system)
     (inputs (list bash-minimal))        ;for wrap-program
     ;; If the tests are fixed, add perl-test-pod, perl-test-pod-coverage, and
     ;; perl-test-tiny as native-inputs.
     (propagated-inputs
-     (list shared-mime-info perl-file-desktopentry))
+     (list shared-mime-info perl-encode-locale perl-file-desktopentry))
     (arguments
      ;; Some tests fail due to requiring the mimetype of perl files to be
      ;; text/plain when they are actually application/x-perl.
