@@ -1074,16 +1074,19 @@ order to make bootstrapping easier.")
 (define-public python-poetry-core
   (package
     (name "python-poetry-core")
-    (version "2.1.3")
+    (version "2.3.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "poetry_core" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/python-poetry/poetry-core")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "194nwaig8zkbj2ig4zwf1k7cl4vqlmvs8mmdkb425mky8was08h5"))))
+        (base32 "07n64i2wal2d6ca74vkl7x8wsks6bi0njii8pv8rmfragc48kzj6"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))                      ;disabled to avoid extra dependencies
+     (list #:tests? #f))                ;disabled to avoid extra dependencies
     (home-page "https://github.com/python-poetry/poetry-core")
     (synopsis "Poetry PEP 517 build back-end")
     (description
