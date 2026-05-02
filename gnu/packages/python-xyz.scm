@@ -24963,20 +24963,24 @@ while only declaring the test-specific fields.")
 (define-public python-gtts
   (package
     (name "python-gtts")
-    (version "2.3.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "gTTS" version))
-              (sha256
-               (base32
-                "1jsg1prpzr7gj5sn385mkv2v1i8xfc83ycm87hvsi2j0y366plps"))))
+    (version "2.5.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pndurette/gTTS")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s1039c94lpijxidiprb8hq8v6z8zqf19xls3xlyy30jq7nx295g"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Disable tests that require internet.
      (list #:test-flags '(list "-k" "not net")))
     (native-inputs
-     (list python-pytest python-testfixtures python-click python-requests
-           python-setuptools python-wheel))
+     (list python-pytest python-setuptools python-testfixtures))
+    (propagated-inputs
+     (list python-click-8.1 python-requests))
     (home-page "https://github.com/pndurette/gTTS")
     (synopsis "Google Translate text-to-speech interface")
     (description
