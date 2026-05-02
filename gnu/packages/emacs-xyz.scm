@@ -41252,6 +41252,39 @@ work.")
 text-property translator.")
     (license license:bsd-2)))
 
+(define-public emacs-kkp
+  ;; No tags.
+  (let ((commit "73957230ffdd3dedf16f4436f61471bd1365abf6")
+        (revision "0"))
+    (package
+      (name "emacs-kkp")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/benotn/kkp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1j5igiys8asjg0v18flc7p71xjynqi7v8s06qgkac8djvjamd4lh"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command
+        #~(list "emacs" "--batch" "-L" "." "-l" "kkp-tests.el"
+                "-f" "ert-run-tests-batch-and-exit")))
+      (propagated-inputs (list emacs-compat))
+      (home-page "https://github.com/benotn/kkp")
+      (synopsis "Kitty Keyboard Protocol input support")
+      (description
+       "@file{kkp.el} implements support for the
+@url{https://sw.kovidgoyal.net/kitty/keyboard-protocol, Kitty Keyboard
+Protocol} in Emacs.  It provides an alternative, improved way to transmit
+keyboard input from a terminal to Emacs running in that terminal.  For
+debugging key translation, see @file{kkp-debug.el}.")
+      (license license:gpl3+))))
+
 (define-public emacs-org-noter
   (package
     (name "emacs-org-noter")
