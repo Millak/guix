@@ -1433,11 +1433,15 @@ It also supports IPython/Jupyter.")
     (version "1.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "hatch_argparse_manpage" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/damonlynch/hatch-argparse-manpage")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1zbbww9akz1lca3br67zik80ql774xpfg22njxdxjiw4kpz5alb6"))))
+        (base32 "1zhh3q7xfz9mvwdihjprw89g0ffl0m5xc6v24cskrm4j35wgmq25"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests upstream.
     (native-inputs (list python-hatchling))
     (propagated-inputs (list python-argparse-manpage python-rich))
     (home-page "https://github.com/damonlynch/hatch-argparse-manpage")
