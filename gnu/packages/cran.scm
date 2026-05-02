@@ -3165,13 +3165,13 @@ functions borrowed from contributed R packages as well.")
 (define-public r-devtools
   (package
     (name "r-devtools")
-    (version "2.5.1")
+    (version "2.5.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "devtools" version))
               (sha256
                (base32
-                "1apr211igjd56dnhbxs2c50giaj8m1k1r0fwy3prffr8clryw0yc"))))
+                "18hp4gsczmksgi8zbd3nbfcf4s2nnjdvmpwfh62223kza9yxsxzn"))))
     (build-system r-build-system)
     (arguments
      (list
