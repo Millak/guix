@@ -32061,6 +32061,14 @@ a simple-array ensuring that the resulting array is still a simple-array.")
      (arguments
       `(#:phases
         (modify-phases %standard-phases
+          ;; sbcl 2.6.4 is too smart, and figures out the test will trigger a
+          ;; division by zero at compile time and refuse to compile the file. It
+          ;; looks like the test already tries to avoid compile time checks, so
+          ;; we go a step further and EVAL parts of the expression.
+          (add-after 'unpack 'circumvent-compile-time-check
+             (lambda _
+               (substitute* "test/tests.lisp"
+                 (("\\(expt 1024 0\\)") "(eval '(expt 1024 0))"))))
           (add-after 'check 'delete-test-results
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((test-results (string-append (assoc-ref outputs "out")
