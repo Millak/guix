@@ -2985,7 +2985,10 @@ Covariance Matrix Adaptation Evolution Strategy (CMA-ES) for Python.")
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-hatchling python-pytest python-pytest-xdist))
+     (list python-hatchling
+           python-pytest
+           python-pytest-cov ; This package has a custom way of running tests.
+           python-pytest-xdist))
     (propagated-inputs
      (list python-future
            python-numpy))
