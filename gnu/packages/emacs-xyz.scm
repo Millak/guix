@@ -2864,6 +2864,31 @@ process, passing on the arguments as command line arguments.")
      "Magit-annex adds a few git-annex operations to the Magit interface.")
     (license license:gpl3+)))
 
+(define-public emacs-magit-lfs
+  ;; Last tag is from 2021 and missing changes adjusting to transient.el
+  ;; deprecations.
+  (let ((commit "cd9f46e1840270be27e2c2d9dcf036ff0781f66d")
+        (revision "0"))
+    (package
+      (name "emacs-magit-lfs")
+      (version (git-version "0.4.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Ailrun/magit-lfs")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0psnyxrc7fy2vng81mak0ji7kw58ly01frzr5z2xpj08hxx16b3c"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
+      (propagated-inputs (list emacs-magit emacs-transient emacs-dash))
+      (home-page "https://github.com/Ailrun/magit-lfs")
+      (synopsis "Git LFS support for Magit")
+      (description "@code{magit-lfs} provides Magit integration for git-lfs.")
+      (license license:gpl3+))))
+
 (define-public emacs-magit-tbdiff
   (package
     (name "emacs-magit-tbdiff")
