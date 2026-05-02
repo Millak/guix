@@ -3921,7 +3921,7 @@ that best match text queries.")
 (define-public python-mdit-py-plugins
   (package
     (name "python-mdit-py-plugins")
-    (version "0.4.2")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -3930,7 +3930,7 @@ that best match text queries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lyv8k3sdm9i9am47z6zx96l9bbd9g8xp06yf2alafkmp0q873b9"))))
+                "1l3g3686lh2w1bmfd8n2qxsn4ipa7byyd57556d63caaiyxkl19i"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-markdown-it-py
