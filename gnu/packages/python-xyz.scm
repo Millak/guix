@@ -26134,61 +26134,6 @@ user's @file{~/Trash} directory.")
      "@code{pyfavicon} is an async favicon fetcher.")
     (license license:expat)))
 
-(define-public python-gyp
-  ;; Google does not release versions.
-  (let ((commit "1615ec326858f8c2bd8f30b3a86ea71830409ce4")
-        (revision "2"))
-    (package
-      (name "python-gyp")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://chromium.googlesource.com/external/gyp")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "02rnmw7k2r33x5nbb5xb8kk170hk0s1wmwfqpsx4cij1wbi4bqhk"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:test-flags
-        #~(list "--ignore-glob=test/win/**/*.py")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'remove-six-requirements
-              (lambda _
-                (substitute* "pylib/gyp/generator/ninja.py"
-                  (("six\\.ensure_binary\\(outputs\\[0\\]\\)")
-                   "outputs[0].encode('utf-8')")
-                  (("import six")
-                   ""))
-                (substitute* '("pylib/gyp/common.py"
-                               "pylib/gyp/msvs_emulation.py"
-                               "test/lib/TestGyp.py")
-                  (("from six\\.moves import collections_abc")
-                   "import collections")
-                  (("collections_abc")
-                   "collections.abc"))))
-            (add-after 'unpack 'python-3.12-compatibility
-              (lambda _
-                (substitute* "pylib/gyp/input_test.py"
-                  (("assertEquals") "assertEqual"))))
-            (add-before 'check 'configure-tests
-              (lambda _
-                (setenv "PYTHONPATH"
-                        (string-append (getcwd) "/test/lib:"
-                                       (getenv "GUIX_PYTHONPATH"))))))))
-      (native-inputs (list python-pytest python-setuptools))
-      (home-page "https://gyp.gsrc.io/")
-      (synopsis "GYP is a Meta-Build system")
-      (description
-       "GYP builds build systems for large, cross platform applications.
-It can be used to generate XCode projects, Visual Studio projects, Ninja build
-files, and Makefiles.")
-      (license license:bsd-3))))
-
 (define-public python-funcy
   (package
     (name "python-funcy")
