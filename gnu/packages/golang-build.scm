@@ -1229,7 +1229,7 @@ low-level interaction with the operating system.")
     (name "go-golang-org-x-telemetry")
     ;; Beware: the updater gets this wrong.  Use the latest commit and its
     ;; matching date.
-    (version "0.0.0-20260209163413-e7419c687ee4")
+    (version "0.0.0-20260428171046-76f71b9afea0")
     (source
      (origin
        (method git-fetch)
@@ -1238,7 +1238,7 @@ low-level interaction with the operating system.")
               (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wr4b40lwzpac2n9ipz5lmq6p973g5mr2im38dy3816lbg84rp38"))
+        (base32 "13z9sgs9lsaj2shv5hbv7i63pjjcw68r1vw7j5jkkqwcz5kkdwkp"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -1281,10 +1281,10 @@ low-level interaction with the operating system.")
            go-golang-org-x-sync
            go-golang-org-x-sys))
     (home-page "https://go.googlesource.com/telemetry")
-    (synopsis "Go Telemetry")
+    (synopsis "Go Telemetry library")
     (description
-     "This repository holds the Go Telemetry server code and libraries, used
-for hosting @url{https://telemetry.go.dev,telemetry.go.dev} and instrumenting
+     "This package provides the Go Telemetry server code and libraries, used
+for hosting @url{https://telemetry.go.dev, telemetry.go.dev} and instrumenting
 Go toolchain programs with opt-in telemetry.")
     (license license:bsd-3)))
 
