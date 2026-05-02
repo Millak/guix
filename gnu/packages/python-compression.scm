@@ -911,20 +911,19 @@ files (.Z), such as the ones created by Unix's shell tool compress.")
     (version "0.2.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "unix_ar" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/getninjas/unix_ar")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0kicwxsh28x8r34a7cgzv2i65gsd4qjw2vf29pwq4fpsf3n2i4xz"))))
+        (base32 "0bdxm7y0r7xz3d2iglxwmf1290pi3h05x3gjc0f0af01pl2j2pqn"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; These tests have timestamp-related issues.
-     (list #:test-flags
-           #~(list "-m" "unittest" "-k" "not test_add and not test_addfile")
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? test-flags #:allow-other-keys)
-                   (apply invoke "python" test-flags))))))
+     (list
+      #:test-flags
+      ;; These tests have timestamp-related issues.
+      #~(list "tests.py" "-k" "not test_add and not test_addfile")))
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/getninjas/unix_ar")
     (synopsis "AR file handling in Python")
