@@ -2929,16 +2929,12 @@ routes using HTTP Digest Authentication.")
               "tests")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              ;; Drop test coverage requirements.
-              (substitute* "pytest.ini"
-                ((".*addopts.*") ""))))
           (add-before 'check 'pre-check
             (lambda _
               (setenv "AWS_DEFAULT_REGION" "eu-west-3"))))))
     (native-inputs
      (list python-pytest
+           python-pytest-rerunfailures
            python-pytest-xdist
            python-parameterized
            python-pyyaml
