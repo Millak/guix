@@ -36818,15 +36818,16 @@ in Rust, with a nice Python API provided on top.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bvk7v5f3sr7awcacdmw5lfzsnn6j52q45va9xpc71n5qxydqbfn"))))
+        (base32 "1bvk7v5f3sr7awcacdmw5lfzsnn6j52q45va9xpc71n5qxydqbfn"))
+       (snippet #~(delete-file "versioneer.py"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:test-flags
-      #~(list "--ignore=doc/")))
+     (list #:test-flags #~(list "tests")))
     (native-inputs
      (list python-pytest
-           python-setuptools))
+           python-pytest-pylint
+           python-setuptools
+           python-versioneer))
     (home-page "https://github.com/irgeek/StrEnum")
     (synopsis "Enum that inherits from str")
     (description "StrEnum is a Python @code{enum.Enum} that inherits from
