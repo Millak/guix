@@ -17222,58 +17222,6 @@ It has a flexible system of @samp{authorizers} able to manage both
 @end itemize")
     (license license:expat)))
 
-(define-public python-fs
-  (package
-    (name "python-fs")
-    (version "2.4.16")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/PyFilesystem/pyfilesystem2/")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1wrkhsv57kv4jcadn7w330mgbjjsimgzfvicni8cka6y1a8chbjs"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 1995 passed, 21 skipped, 411 deselected, 14 warnings
-      #:test-flags #~(list "-m" "not slow")
-      #:tests? (and (not (%current-target-system))
-                    (->bool (this-package-native-input "python-pytest")))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (append
-      (list python-setuptools)
-      ;; 'python-pyftpdlib' is needed for tests but it indirectly depends Rust,
-      ;; which is currently unavailable on aarch64-linux.  Remove all the test
-      ;; dependencies in that case.
-      (if (and (not (%current-target-system))
-               (supported-package? python-pyftpdlib))
-          (list python-mock
-                python-parameterized
-                python-pyftpdlib
-                python-pytest)
-          '())))
-    (propagated-inputs
-     (list python-appdirs
-           python-pytz
-           python-six))         ;still hard integrated
-    (home-page "https://github.com/PyFilesystem/pyfilesystem2/")
-    (synopsis "File system abstraction layer for Python")
-    (description
-     "PyFilesystem's @code{FS} object is a file system abstraction sharing
-similarities with Python's own @code{file} object for single files.  It allows
-opening all the files under a given directory recursively, as a single
-@code{FS} object.  This enables, for example, counting the combined number of
-lines in the contained files easily.")
-    (license license:expat)))
-
 (define-public python-fonttools
   (package
     (name "python-fonttools")
