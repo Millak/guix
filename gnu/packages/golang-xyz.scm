@@ -11944,7 +11944,7 @@ the library more lightweight.")
 (define-public go-github-com-go-viper-mapstructure-v2
   (package
     (name "go-github-com-go-viper-mapstructure-v2")
-    (version "2.2.1")
+    (version "2.5.0")
     (source
      (origin
        (method git-fetch)
@@ -11953,7 +11953,7 @@ the library more lightweight.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x13x2s0vkikmn5wcarxskhr6c90s64nkbsgjsh7g9sh4v31n5yw"))))
+        (base32 "1df3afqg0ydq55awwsgrja4fpfkksxm0jd43yd4bb9j10c2c5fid"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -11963,7 +11963,8 @@ the library more lightweight.")
     (description
      "Package mapstructure exposes functionality to convert one arbitrary Go
 type into another, typically to convert a @code{map[string]interface{}} into a
-native Go structure.")
+native Go structure.  It's an alternative fork of not maintained
+@url{https://github.com/mitchellh/mapstructure} project.")
     (license license:expat)))
 
 (define-public go-github-com-go-yaml-yaml
