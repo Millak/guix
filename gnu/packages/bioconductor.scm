@@ -5719,13 +5719,13 @@ meta-pattern.")
 (define-public r-awst
   (package
     (name "r-awst")
-    (version "1.19.0")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "awst" version))
               (sha256
                (base32
-                "0wcf9qahj2gxxwvn9idc03fvhqifhhwb4pmb4gfz0ys41w9aqjn4"))))
+                "1qggpn4wkc3m1b8d3jiaj4bljalqgmhrhg7kb2kgx1wx3hlsg1pa"))))
     (properties
      '((upstream-name . "awst")
        (updater-extra-native-inputs . ("r-edaseq"))))
