@@ -54101,14 +54101,14 @@ statistics to carry out gene-based meta-analysis for rare variants.")
 (define-public r-altmeta
   (package
     (name "r-altmeta")
-    (version "4.3")
+    (version "4.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "altmeta" version))
        (sha256
         (base32
-         "0chfv8x9k22ywjqvkd2z0wq44y0nw0nyg4z8rasj5pdgr980a66v"))))
+         "0q34016815zidj4la0p05jircwandsln7wyc70z9gpahjdr7adqy"))))
     (properties `((upstream-name . "altmeta")))
     (build-system r-build-system)
     (propagated-inputs
