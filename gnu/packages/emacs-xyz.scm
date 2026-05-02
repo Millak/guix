@@ -2078,8 +2078,8 @@ when typing parentheses directly or commenting out code line by line.")
 
 (define-public emacs-puni
   ;; No tagged release upstream
-  (let ((commit "f430f5b0a14c608176e3376058eb380ab0824621")
-        (revision "3"))
+  (let ((commit "fe132f803868f325cf6f162139e327b76df9e4c1")
+        (revision "4"))
     (package
       (name "emacs-puni")
       (version (git-version "0" revision commit))
@@ -2091,7 +2091,7 @@ when typing parentheses directly or commenting out code line by line.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0kvxll2yx4lh5x04cigdizncp2kbva1iidz9fjnbi8qqfm6pq5qq"))))
+                  "0ffjpb0ilhcng1wwmnl1lx7h8v1z0bgsq6wb7x4x2rwsrvqjv9hm"))))
       (build-system emacs-build-system)
       (arguments (list #:tests? #f))    ; no actual tests
       (propagated-inputs (list emacs-with-editor))
