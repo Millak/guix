@@ -39108,14 +39108,14 @@ barplots or heatmaps.")
 (define-public r-seqinr
   (package
     (name "r-seqinr")
-    (version "4.2-36")
+    (version "4.2-44")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "seqinr" version))
        (sha256
         (base32
-         "09dj2k5mi6xylsihnwbmdd8f4qg855gyh7yvz9gamam7j6h646lk"))))
+         "06gxxc7k3pyy51dhfclvy8c0ia9kcfgisrizpz21fcy2qg4lbp09"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ade4 r-segmented))
