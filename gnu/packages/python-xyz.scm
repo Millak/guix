@@ -180,6 +180,7 @@
 ;;; Copyright © 2025 Isidor Zeuner <guix@quidecco.pl>
 ;;; Copyright © 2025 Andy Tai <atai@atai.org>
 ;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
+;;; Copyright © 2026 Akiyoshi Suda <code@akiyoshisuda.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2599,6 +2600,74 @@ well-formed Roman numerals.")
      "This package provides is a small collection of algorithms that can be
 reused when throttling user interactions with a resource (e.g., an API).")
     (license license:expat)))
+
+(define-public python-rustworkx
+  (package
+    (name "python-rustworkx")
+    (version "0.17.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Qiskit/rustworkx")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sr0wrfb9wzxcljhb7swwgk2hdxqjfmcfj785jq624mx14kqc4k8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--test-path" "tests")
+      #:imported-modules (append %cargo-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system)
+                   #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet) args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Delete the source directory to avoid interference.
+              (delete-file-recursively "rustworkx")
+              ;; Matplotlib needs to be able to write its configuration file
+              ;; somewhere.
+              (setenv "MPLCONFIGDIR" "/tmp")
+              ;; For fontconfig.
+              (setenv "XDG_CACHE_HOME" "/tmp"))))))
+    (propagated-inputs (list python-numpy))
+    (native-inputs
+     (append (list graphviz
+                   python-matplotlib
+                   python-networkx
+                   python-pillow
+                   python-setuptools
+                   python-setuptools-rust
+                   python-stestr
+                   rust
+                   `(,rust "cargo"))
+             (or (and=> (%current-target-system)
+                        (compose list make-rust-sysroot))
+                 '())))
+    (inputs (cargo-inputs 'python-rustworkx))
+    (home-page "https://www.rustworkx.org")
+    (synopsis "High performance graph library for Python")
+    (description
+     "@code{rustworkx} is a Python package for working with graphs and complex
+networks.  It enables the creation, interaction with, and study of graphs and
+networks.")
+    (license license:asl2.0)))
 
 (define-public python-safety-schemas
   (package
