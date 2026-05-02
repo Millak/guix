@@ -4606,17 +4606,23 @@ to understand their data better and discover new insights.")
 (define-public r-anndatar
   (package
     (name "r-anndatar")
-    (version "1.1.3")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "anndataR" version))
        (sha256
-        (base32 "0dqizs3mgjz3fr87ji2fippavaryq9xkf3gjlavi47dbnkjrmiwn"))))
+        (base32 "1s8c69hgs1jv58pinsbc237fzwc4w29fw541y2hmwm13i7qcjw2m"))))
     (properties `((upstream-name . "anndataR")))
     (build-system r-build-system)
     (arguments
      (list
+      #:skipped-tests
+      ;; Division by zero in Python, raised while reading key '_index' of
+      ;; <class 'zarr.core.Array'> from /obs. This happens only in test
+      ;; "Writing an AnnData with layer 'empty' .zarr. works", but we cannot
+      ;; easily select it.
+      '("test-roundtrip-empty.R")
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'find-python
