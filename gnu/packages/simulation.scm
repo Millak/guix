@@ -795,8 +795,9 @@ some support for generating and analysing traffic scenarios..")
                   (invoke "./runtests.sh"))))))))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           ;; This package has a custom way to run tests.
+           python-pytest-cov
+           python-setuptools))
     (inputs
      (list openmpi python-numpy))
     (propagated-inputs
