@@ -31,6 +31,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages swig))
 
 (define-public tbb
@@ -127,7 +128,7 @@ asynchronous tasks, synchronization primitives, atomic operations, and more.")
               (when tests?
                 (invoke "ctest" "-R" "python_test" "--output-on-failure")))))))
     (inputs (list python tbb))
-    (native-inputs (list swig-4.0))))
+    (native-inputs (list swig-4.0 python-setuptools))))
 
 (define-public tbb-2020
   (package
