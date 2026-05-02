@@ -2524,14 +2524,16 @@ Astropy project, but is optimized for use with astropy-related projects.")
 (define-public python-pytest-benchmark
   (package
     (name "python-pytest-benchmark")
-    (version "5.1.0")
+    (version "5.2.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-benchmark" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ionelmc/pytest-benchmark")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "01d1mk951ldkw589z7f0w8c22sp5341hphflghgj7s4jqb6n39ly"))))
+        (base32 "0xqwr78rcs5lps4zqhbqzx10k5lk8sl3m9hnsxk82lfngps0yf5a"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))        ;XXX: cycles with python-nbmake
