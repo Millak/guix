@@ -1538,7 +1538,7 @@ to establish class invariants.")
 (define-public python-inline-snapshot
   (package
     (name "python-inline-snapshot")
-    (version "0.32.5")
+    (version "0.32.6")
     (source
      (origin
        (method git-fetch)
@@ -1547,7 +1547,7 @@ to establish class invariants.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zbg9kydbqh51ksvc5qkdf4fap543ff2ay5nb9726lmli4q2hyn6"))))
+        (base32 "1xcn26z1c7awkfpbjnr579vk7nchvl7vn3c2i88ihyabjblmy0d5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
