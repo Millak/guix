@@ -4410,6 +4410,41 @@ thoroughly
      "Package randfill is a library for populating go objects with random values.")
     (license license:asl2.0)))
 
+(define-public go-znkr-io-diff
+  (package
+    (name "go-znkr-io-diff")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/znkr/diff")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s3slsr9d21zbcks9c7l3vli2pam2waww4bk63dy4qw9qsgaga90"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - znkr.io/diff/internal/benchmarks
+            (delete-file-recursively "internal/benchmarks")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "znkr.io/diff"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-golang-org-x-tools))
+    (home-page "https://znkr.io/diff")
+    (synopsis "Difference algorithm module for Go")
+    (description
+     "Package diff provides functions to efficiently compare two slices
+similar to the Unix diff command line tool to compare files.")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Executables:
 ;;;
