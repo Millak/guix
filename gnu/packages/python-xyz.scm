@@ -29824,33 +29824,31 @@ for embedding context in JSON objects.")
      (license license:mpl2.0)))
 
 (define-public python-json-logger
-  ;; XXX: This project was archived by the owner on Dec 21, 2024. It is now
-  ;; read-only.  See: <https://codeberg.org/guix/guix/issues/7124>.
   (package
     (name "python-json-logger")
-    (version "2.0.7")
+    (version "4.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-json-logger" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nhairs/python-json-logger")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "071f9d62ds1xdp88yzsfpf1pba2f78cp18193smcads2sc1frrr3"))))
+        (base32 "0m64kh446q38lngw2p5rcfcx6rkq8vbrwl58lsi2c34phpwlqnv0"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; See: <https://github.com/madzak/python-json-logger/issues/185>.
-      #~(list #$@(map (lambda (ls) (string-append "--deselect=tests/"
-                                                  (string-join ls "::")))
-                      '(("test_jsonlogger.py" "TestJsonLogger"
-                         "test_custom_object_serialization")
-                        ("test_jsonlogger.py" "TestJsonLogger"
-                         "test_percentage_format")
-                        ("test_jsonlogger.py" "TestJsonLogger"
-                         "test_rename_reserved_attrs"))))))
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://github.com/madzak/python-json-logger")
+    (native-inputs
+     (list python-freezegun
+           python-mike
+           python-msgspec
+           python-orjson
+           python-pypa-build
+           python-pytest
+           python-setuptools
+           python-tzdata
+           python-validate-pyproject
+           python-typing-extensions))
+    (home-page "https://github.com/nhairs/python-json-logger")
     (synopsis "JSON log formatter in Python")
     (description "This library allows standard Python logging to output log data
 as JSON objects.  With JSON we can make our logs more readable by machines and
