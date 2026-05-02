@@ -340,6 +340,49 @@ more.")
 currently does not do much, but it might in the future.")
     (license license:gpl3+)))
 
+(define-public guile-arguments
+  (package
+    (name "guile-arguments")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/fishinthecalculator/arguments")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1r71l6099afk017a3ck5mpp2xhb3bm45s6nga24lhby52rxbkayl"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'generate-api-reference
+            (lambda _
+              (invoke "scripts/generate_api_reference.sh")))
+          (add-after 'build 'build-html-manual
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke `("make" "html" ,@make-flags))))
+          (add-after 'install 'install-html-manual
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke `("make" "install-html" ,@make-flags)))))))
+    (native-inputs
+     (list autoconf
+           automake
+           guile-documenta
+           pkg-config
+           texinfo))
+    (inputs (list guile-3.0))
+    (synopsis "Parse command line arguments into structured objects")
+    (description "This package provides a Guile library to parse command line
+arguments into structured objects.  It allows declaring arguments through a
+small @acronym{DSL, Domain Specific Language}, then call a procedure to parse the
+command line into a structured object.")
+    (home-page "https://codeberg.org/fishinthecalculator/arguments")
+    (license license:gpl3+)))
+
 (define-public guile-oauth
   (package
     (name "guile-oauth")
