@@ -30,6 +30,7 @@
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix build-system julia)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages julia-jll)
   #:use-module (gnu packages python)
@@ -5445,8 +5446,8 @@ This can help users track the progress of long-running tasks.")
     (build-system julia-build-system)
     (arguments
      (list
-      #:imported-modules `((guix build pyproject-build-system)
-                           ,@%julia-build-system-modules)
+      #:imported-modules (append %julia-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules '((guix build julia-build-system)
                   (guix build utils)
                   ((guix build pyproject-build-system) #:prefix py:))
