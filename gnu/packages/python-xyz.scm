@@ -4279,13 +4279,13 @@ the versioning system in PEP 517 build frontends.")
 (define-public python-poetry-plugin-export
   (package
     (name "python-poetry-plugin-export")
-    (version "1.8.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "poetry_plugin_export" version))
        (sha256
-        (base32 "0qgw6w4xaw7cz9ykw376c5hcg9v2k30lnmna6pc9b4ymhn51d9hz"))))
+        (base32 "1w100731jnrv3nkbnbiginia8sd8ll0vrmljbn14m1yd4kwrvvr6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4293,7 +4293,10 @@ the versioning system in PEP 517 build frontends.")
     (native-inputs
      (list python-poetry-core))
     (propagated-inputs
-     (list python-pendulum))
+     (list python-cachy
+           python-pendulum
+           python-poetry-core
+           python-tomlkit))
     (home-page "https://python-poetry.org/")
     (synopsis "Poetry plugin to export the dependencies to various formats")
     (description
