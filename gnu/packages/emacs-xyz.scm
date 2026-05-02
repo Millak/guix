@@ -6175,6 +6175,33 @@ always indented.  It reindents after every change, making it more reliable
 than @code{electric-indent-mode}.")
     (license license:gpl2+)))
 
+(define-public emacs-isayt
+  ;; No tags. The Version header has not been updated since 2021.
+  (let ((commit "32967c11a5a24b3c1d85cbf41a9b52a996739b45")
+        (revision "0"))
+    (package
+      (name "emacs-isayt")
+      (version (git-version "0.0.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/andreyorst/isayt.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "15i8z06k7iakw50lx9akq2ggddm7z99crwqbb0sx81bzddaz2s63"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
+      (home-page "https://gitlab.com/andreyorst/isayt.el")
+      (synopsis "Automatically indent lisp expressions while typing")
+      (description
+       "@code{isayt-mode} is a minor mode to adjust indentation of
+S-expressions automatically as you type.  It is similar to
+@code{aggressive-indent-mode}, but it uses @code{syntax-ppss} and
+@code{indent-sexp} instead of a timer and @code{indent-according-to-mode}.")
+      (license license:gpl3+))))
+
 (define-public emacs-smarttabs
   (package
     (name "emacs-smarttabs")
