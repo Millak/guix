@@ -9358,7 +9358,15 @@ search engine replacement on both desktop and mobile.")
        (sha256
         (base32 "0pdpk3fp87ngfsyp4lm2z7z8b203jxsmvbz59q6r6xgg9sp4cl3l"))))
     (build-system pyproject-build-system)
-    (arguments (list #:test-backend #~'unittest))
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-python-incompatibilities
+            (lambda _
+              (substitute* (find-files "hawkauthlib/tests" "\\.py$")
+                (("assertEquals") "assertEqual")))))))
     (native-inputs (list python-setuptools))
     (propagated-inputs (list python-requests python-webob))
     (home-page "https://github.com/mozilla-services/hawkauthlib")
