@@ -1182,13 +1182,13 @@ endpoints—to Jupyter web applications.")
 (define-public python-jupyter-server-terminals
   (package
     (name "python-jupyter-server-terminals")
-    (version "0.5.3")
+    (version "0.5.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyter_server_terminals" version))
        (sha256
-        (base32 "0sajiadhwncrr0inzzkrs7l1xc6jmw9b5zfw1v79l3i2cx8jkq2s"))))
+        (base32 "1xc7zdhlfy8r2jgsrxfm7skm56dblkrg3ya90c1fj2qxsj715nmv"))))
     (build-system pyproject-build-system)
     ;; The tests require python-jupyter-server, but python-jupyter-server
     ;; needs this package.
