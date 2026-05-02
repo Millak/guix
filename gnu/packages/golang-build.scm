@@ -1431,7 +1431,7 @@ time.")
 (define-public go-golang-org-x-tools
   (package
     (name "go-golang-org-x-tools")
-    (version "0.42.0")
+    (version "0.44.0")
     (source
      (origin
        (method git-fetch)
@@ -1440,16 +1440,14 @@ time.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0206hl6v7gy7cxwamjapa1zr2n3clj0vaqwyy6izcw18faga466i"))
+        (base32 "0inivp0ih1ykl184d4sbshyb1crayj9iayl012ms1b2x0rjg5l0p"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Submodules with their own go.mod files and packaged separately:
            ;;
-           ;; - golang.org/x/tools/cmd/auth
            ;; - golang.org/x/tools/gopls
-           (delete-file-recursively "gopls")
-           (delete-file-recursively "cmd/auth")))))
+           (delete-file-recursively "gopls")))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1480,8 +1478,8 @@ time.")
                        (list
                         ;; The GenericPaths test fails with "invalid memory
                         ;; address or nil pointer dereference".
-                        "TestGenericPaths"
-                        ;; The ordering and paths tests fails because they
+                        "TestGenericPaths" "TestIssue70418"
+                        ;; The ordering and paths tests fail because they
                         ;; can't find test packages (perhaps because we do not
                         ;; support Go modules).
                         "TestOrdering" "TestPaths"
