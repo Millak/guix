@@ -10921,13 +10921,13 @@ distribution.")
 (define-public r-gparotation
   (package
     (name "r-gparotation")
-    (version "2025.3-1")
+    (version "2026.4-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "GPArotation" version))
        (sha256
-        (base32 "12w24c0lllk9fmlaaw8j0lfz0vnggn55kcqs7qsbv6h683pdfaxz"))))
+        (base32 "1cz8bc3iprkn8vv0yd8fykm6iiix1k01xc3r2dmawp6h5j5fc9bs"))))
     (properties `((upstream-name . "GPArotation")))
     (build-system r-build-system)
     (home-page "https://optimizer.r-forge.r-project.org/GPArotation_www/")
