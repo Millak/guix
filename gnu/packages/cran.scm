@@ -59222,13 +59222,13 @@ options for aggregating multi-layer rasters.")
 (define-public r-bien
   (package
     (name "r-bien")
-    (version "1.2.7")
+    (version "1.2.8")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "BIEN" version))
         (sha256
-          (base32 "0qcc1dl7hv7a1n0lsf4hdih0qdi3bcw2v3gj8wh7w4vzf464y61p"))))
+          (base32 "083x73d7clg0ffqdm12v8pxssg2032kyr2na3mf7bhxvfrdvabgy"))))
     (properties `((upstream-name . "BIEN")))
     (build-system r-build-system)
     (native-inputs
