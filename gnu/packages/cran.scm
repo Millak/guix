@@ -7982,13 +7982,13 @@ based on their size or the date of the last backup; inspired by the utility
 (define-public r-roxygen2
   (package
     (name "r-roxygen2")
-    (version "7.3.3")
+    (version "8.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "roxygen2" version))
               (sha256
                (base32
-                "0jk1b71j7r61kmfa7028yybfyw3wjjka2hidlh6n3vdbw8z6whfs"))))
+                "1s1lp8hbhh636nisv9b8pvxb14144jvqbfal49szam2mlbrnp0bm"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-brew
@@ -7997,12 +7997,10 @@ based on their size or the date of the last backup; inspired by the utility
            r-cpp11
            r-desc
            r-knitr
+           r-lifecycle
            r-pkgload
-           r-purrr
            r-r6
            r-rlang
-           r-stringi
-           r-stringr
            r-withr
            r-xml2))
     (native-inputs
@@ -8012,6 +8010,7 @@ based on their size or the date of the last backup; inspired by the utility
            r-r-methodss3
            r-r-oo
            r-rmarkdown
+           r-s7
            r-testthat))
     (home-page "https://github.com/klutometis/roxygen")
     (synopsis "In-source documentation system for R")
