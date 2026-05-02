@@ -20498,7 +20498,7 @@ terminal (state, sizes).")
 (define-public go-github-com-modelcontextprotocol-go-sdk
   (package
     (name "go-github-com-modelcontextprotocol-go-sdk")
-    (version "1.3.1")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -20507,18 +20507,30 @@ terminal (state, sizes).")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lpk2zc6km2d3aadgc9yr2dj8z0zky8vdj63iip1wg7aagl0cyx8"))))
+        (base32 "05r70yiwihzkszckmx3afg2gn6m6i8igcskj5bhr4fhi1vymbw6v"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "github.com/modelcontextprotocol/go-sdk"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               (list
+                ;; resource_meta_test.go:214:
+                ;; GetProtectedResourceMetadata(\
+                ;; "https://127.0.0.1:38027/.well-known/oauth-protected-resource"):
+                ;; bad status 404
+                "TestGetProtectedResourceMetadata/Success")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
             (lambda* (#:key import-path #:allow-other-keys)
               (delete-file-recursively
-               (string-append "src/" import-path "/examples")))))))
+               (string-append "src/" import-path "/examples"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "GODEBUG" "asynctimerchan=0"))))))
     (native-inputs
      (list go-github-com-google-go-cmp
            go-golang-org-x-tools))
