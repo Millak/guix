@@ -10671,7 +10671,12 @@ rectangular dataset.")
         (base32 "1mygyari0xinmw7kiwb258z4f3qjkm4bvhjqm9hl89jc7qx356s0"))))
     (properties `((upstream-name . "Rarr")))
     (build-system r-build-system)
-    (inputs (list zlib))
+    (arguments
+     (list
+      #:skipped-tests
+      ;; This test needs Internet access.
+      '(("test-attributes.R" "read_zarr_attributes from s3"))))
+    (inputs (list c-blosc zlib (list zstd "lib")))
     (propagated-inputs (list r-curl r-jsonlite r-lifecycle r-paws-storage
                              r-r-utils))
     (native-inputs (list r-knitr r-testthat r-withr))
