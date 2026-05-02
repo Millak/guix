@@ -8457,37 +8457,38 @@ on the command line.")
     (license license:expat)))
 
 (define-public python-flask-login
-  (package
-    (name "python-flask-login")
-    (version "0.6.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/maxcountryman/flask-login")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0wk3dni5qssmbn8ii3hsh89qa3kwr97i92k27bzgsgxvvsfwwzja"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-flask))
-    (native-inputs
-     ;; For tests.
-     (list python-blinker
-           python-mock
-           python-pytest
-           python-semantic-version
-           python-setuptools
-           python-werkzeug
-           python-wheel))
-    (home-page "https://github.com/maxcountryman/flask-login")
-    (synopsis "User session management for Flask")
-    (description
-     "@code{Flask-Login} provides user session management for Flask.  It
+  (let ((commit "c8bba84b9ba6768e878317fc46c54bd13fa1ac07")
+        (revision "0"))
+    (package
+      (name "python-flask-login")
+      (version (git-version "0.6.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/maxcountryman/flask-login")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0q0ga1zwm06kvpnsf50ckmsc77959i1spx7z2y3jkbwaa4klsyli"))))
+      (build-system pyproject-build-system)
+      (propagated-inputs
+       (list python-flask))
+      (native-inputs
+       ;; For tests.
+       (list python-blinker
+             python-flit-core
+             python-mock
+             python-pytest
+             python-semantic-version
+             python-werkzeug))
+      (home-page "https://github.com/maxcountryman/flask-login")
+      (synopsis "User session management for Flask")
+      (description
+       "@code{Flask-Login} provides user session management for Flask.  It
 handles the common tasks of logging in, logging out, and remembering your
 users' sessions over extended periods of time.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public python-oauth2client
   (package
