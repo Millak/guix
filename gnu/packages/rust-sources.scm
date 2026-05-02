@@ -98,6 +98,38 @@
       "This package provides a terminal emulator library.")
      (license license:asl2.0))))
 
+(define-public rust-bbqueue-for-meilisearch
+  (let ((commit "e8af4a4bccc8eb36b2b0442c4a9c5cb839d1cea2")
+        (revision "0"))
+    (hidden-package
+     (package
+       (name "rust-bbqueue")
+       (version (git-version "0.5.1" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri
+           (git-reference
+             (url "https://github.com/meilisearch/bbqueue")
+             (commit commit)))
+          (file-name
+           (git-file-name name version))
+          (sha256
+           (base32 "1hzpfjykvpgxsjdaak1bkb4mgg2yim4db9ph5bzx6p1s4b3001sg"))))
+       (build-system cargo-build-system)
+       (arguments
+        (list #:skip-build? #t
+              #:install-source? #t
+              #:cargo-package-crates ''("bbqueue")))
+       (inputs (cargo-inputs 'rust-bbqueue-for-meilisearch))
+       (home-page "https://github.com/meilisearch/bbqueue")
+       (synopsis "Single Producer Single Consumer, lockless, no_std,
+thread safe, queue, based on BipBuffers")
+       (description
+        "This package provides a Single Producer Single Consumer,
+lockless, no_std, thread safe, queue, based on BipBuffers.")
+       (license license:asl2.0)))))
+
 ;; Workspace dependency of zed.
 ;;
 ;; Cargo side: Cargo unifies dependency versions across zed's

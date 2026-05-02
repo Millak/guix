@@ -17,6 +17,7 @@
 ;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
@@ -66,6 +68,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages regex)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
@@ -73,6 +76,7 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
@@ -473,6 +477,105 @@ decompression.")
 search into applications, using either the provided command line and CGI
 interfaces, or a C API.")
     (license license:lgpl2.1+)))
+
+(define-public meilisearch
+  (package
+    (name "meilisearch")
+    (version "1.49.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/meilisearch/meilisearch")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s9pw6i830zmccd0n0xlraakyalq9cdi9khqp7j9qy4dhbrigdd1"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (use-modules (ice-9 rdelim))
+            ;; Remove Enterprise Edition source
+            ;; Make sure that all are under the EXPAT license.
+            (for-each
+             delete-file
+             (find-files
+              "."
+              (lambda (file _)
+                (and
+                 (string-suffix? ".rs" file)
+                 (call-with-input-file file
+                   (lambda (in)
+                     (define rx
+                       (make-regexp
+                        "This file is part of Meilisearch Enterprise Edition [(]EE[)]\\."))
+                     (let loop ((line (read-line in 'concat)))
+                       (if (eof-object? line)
+                           #f
+                           (begin
+                             (or (regexp-exec rx line)
+                                 (loop (read-line in 'concat))))))))))))))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f
+           #:cargo-install-paths ''("crates/meilisearch" "crates/meilitool")
+           ;; some tests failed because "Too many open files", and some tests
+           ;; require network to download assets
+           #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'adjust-git-src
+                 (lambda _
+                   (substitute* "crates/milli/Cargo.toml"
+                     (("git = \"https://github.com/meilisearch/bbqueue\"")
+                      "version = \"0.5.1\""))))
+               (add-after 'unpack 'make-offline-build-work
+                 (lambda _
+                   ;; avoid build.rs download assets
+                   (substitute* "Cargo.toml"
+                     (("    \"crates/benchmarks\",")
+                      ""))
+                   (with-directory-excursion "crates"
+                     ;; enable mini-dashboard Will attempt to download assets
+                     ;; at build time
+                     (substitute* "meilisearch/Cargo.toml"
+                       ((", \"mini-dashboard\"")
+                        ""))
+                     ;; TODO: enable japanese and korean, lindera-unidic and
+                     ;; lindera-ko-dic try download assets
+                     (substitute* (list "milli/Cargo.toml"
+                                        "meilisearch-types/Cargo.toml"
+                                        "meilisearch/Cargo.toml")
+                       (("^(japanese|korean).*")
+                        ""))
+                     (substitute* "milli/Cargo.toml"
+                       (("all-tokenizations = \\[\"charabia/default\"]")
+                        "all-tokenizations = [\"charabia/chinese\",
+ \"charabia/hebrew\",
+ \"charabia/thai\",
+ \"charabia/greek\",
+ \"charabia/khmer\",
+ \"charabia/vietnamese\",
+ \"charabia/swedish-recomposition\",
+ \"charabia/turkish\",
+ \"charabia/german-segmentation\"]")))))
+               (add-after 'unpack 'default-disable-telemetry
+                 (lambda _
+                   (substitute* "crates/meilisearch/src/option.rs"
+                     (("#\\[clap[(]long, env = MEILI_NO_ANALYTICS[)]]")
+                      "#[clap(long, default_value_t= true, \
+env = MEILI_NO_ANALYTICS)]")))))))
+    (native-inputs (list pkg-config))
+    (inputs (cons* oniguruma
+                   mimalloc
+                   `(,zstd "lib")
+                   (cargo-inputs 'meilisearch)))
+    (home-page "https://www.meilisearch.com")
+    (synopsis "Search engine API that into your apps, websites, and workflow")
+    (description
+     "Meilisearch helps you shape a delightful search experience in a snap,
+offering features that work out of the box to speed up your workflow.")
+    (license license:expat)))
 
 (define-public mlocate
   (package
