@@ -6006,7 +6006,7 @@ files.  These locks can also be used to mediate access to other files.")
 (define-public python-zconfig
   (package
     (name "python-zconfig")
-    (version "4.0")
+    (version "4.3")
     (source
      (origin
        (method git-fetch)
@@ -6015,7 +6015,7 @@ files.  These locks can also be used to mediate access to other files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x502hyfijh6fc8n85cm046c44spwfmwcn2lnxa1axg8n0n5rsbp"))))
+        (base32 "06c4vffk51fw03q87r31s81b0xbxg2qqvjfmcl2z4hg21fr088c2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
