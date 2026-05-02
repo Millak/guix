@@ -32152,6 +32152,32 @@ symbols.  Currently the code distinguishes Lisp functions, built-in functions,
 macros, faces and variables.  To enable call @code{highlight-defined-mode}.")
     (license license:gpl3+)))
 
+(define-public emacs-highlight-quoted
+  ;; The last tagged release is from 2014 and predates a license change from
+  ;; BSD 3-clause to BSD 2-clause.
+  (let ((commit "24103478158cd19fbcfb4339a3f1fa1f054f1469")
+        (revision "0"))
+    (package
+      (name "emacs-highlight-quoted")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Fanael/highlight-quoted")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1gq8inxfni9zgz2brqm4nlswgr8b0spq15wr532xfrgr456g10ks"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
+      (home-page "https://github.com/Fanael/highlight-quoted")
+      (synopsis "Highlight Lisp quotes and quoted symbols")
+      (description
+       "@code{highlight-quoted-mode} is a minor mode for highlighting Lisp
+quotes and quoted symbols.")
+      (license license:bsd-2))))
+
 (define-public emacs-parinfer-mode
   (package
     (name "emacs-parinfer-mode")
