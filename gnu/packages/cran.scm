@@ -3083,13 +3083,13 @@ other packages.")
 (define-public r-descr
   (package
     (name "r-descr")
-    (version "1.1.8")
+    (version "1.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "descr" version))
        (sha256
-        (base32 "0yyxh1030pfjriwm8xfx9rp32cq7jfqlxq8mim1qvx06siah545c"))))
+        (base32 "17b13xri1qqh731hyr73il891c4bdk1aiyj1r4i4s4pl4biskg23"))))
     (properties `((upstream-name . "descr")))
     (build-system r-build-system)
     (propagated-inputs (list r-xtable))
