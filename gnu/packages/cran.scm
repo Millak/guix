@@ -29733,13 +29733,13 @@ containing one or more SNPs that evolved under directional selection.")
 (define-public r-brglm2
   (package
     (name "r-brglm2")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "brglm2" version))
        (sha256
-        (base32 "10nylh533d2kkdkcd61v0zjm5d301k0l9kz04d4dlkaj1pfyvr3x"))))
+        (base32 "02lfxlz7hwwj1rfjsbnj3gd5px63xr2zx4rki7725qpr3v9pjxb8"))))
     (properties `((upstream-name . "brglm2")))
     (build-system r-build-system)
     (propagated-inputs (list r-enrichwith
