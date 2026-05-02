@@ -1246,8 +1246,19 @@ communicating with LLM agents.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0njajpz51pbz4hqaq7lcvwaypilq1c9sdxsk6sdxgk1xpivqlxfb"))))
+        (base32 "0njajpz51pbz4hqaq7lcvwaypilq1c9sdxsk6sdxgk1xpivqlxfb"))
+       (patches
+        (search-patches "emacs-agent-shell-fix-tests.patch"))))
     (build-system emacs-build-system)
+    (arguments (list #:test-command
+                     #~(list "ert-runner" "tests"
+                             "-l" "tests/agent-shell-anthropic-tests.el"
+                             "-l" "tests/agent-shell-command-prefix-tests.el"
+                             "-l" "tests/agent-shell-devcontainer-tests.el"
+                             "-l" "tests/agent-shell-diff-tests.el"
+                             "-l" "tests/agent-shell-openai-tests.el"
+                             "-l" "tests/agent-shell-tests.el")))
+    (native-inputs (list emacs-ert-runner))
     (propagated-inputs (list emacs-shell-maker emacs-acp))
     (home-page "https://github.com/xenodium/agent-shell")
     (synopsis "Native agentic integrations for Claude Code, Gemini CLI, etc")

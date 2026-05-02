@@ -1,0 +1,32 @@
+From 158304fb31177304d41fe495f8c1cca1fb5cff70 Mon Sep 17 00:00:00 2001
+From: xenodium <8107219+xenodium@users.noreply.github.com>
+Date: Wed, 25 Mar 2026 12:37:17 +0000
+Subject: [PATCH] Fixing test
+
+---
+ tests/agent-shell-tests.el | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/tests/agent-shell-tests.el b/tests/agent-shell-tests.el
+index f602912d..9263e051 100644
+--- a/tests/agent-shell-tests.el
++++ b/tests/agent-shell-tests.el
+@@ -1233,14 +1233,16 @@ code block content
+                        test-buffer))
+                     ((symbol-function 'shell-maker--process) (lambda () fake-process))
+                     ((symbol-function 'shell-maker-finish-output) #'ignore)
++                    ((symbol-function 'agent-shell--handle) #'ignore)
+                     (agent-shell-file-completion-enabled nil))
+             (let* ((shell-buffer (agent-shell--start :config config
+                                                      :no-focus t
+                                                      :new-session t))
+                    (subs (map-elt (buffer-local-value 'agent-shell--state shell-buffer)
+                                   :event-subscriptions)))
+-              (should (= 1 (length subs)))
+-              (should (eq 'turn-complete (map-elt (car subs) :event))))))
++              (should (seq-find (lambda (sub)
++                                  (eq 'turn-complete (map-elt sub :event)))
++                                subs)))))
+       (remove-hook 'agent-shell-mode-hook hook-fn)
+       (when (process-live-p fake-process)
+         (delete-process fake-process))
