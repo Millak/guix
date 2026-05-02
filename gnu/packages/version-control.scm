@@ -191,19 +191,16 @@
 (define-public breezy
   (package
     (name "breezy")
-    (version "3.3.15")
+    (version "3.3.21")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://launchpad.net/brz/"
-                           (version-major+minor version) "/" version
-                           "/+download/breezy-" version ".tar.gz"))
-       (modules '((guix build utils)))
-       ;; Delete pre-generated Cython C files.
-       (snippet '(for-each delete-file (find-files "." "\\pyx.c$")))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/breezy-team/breezy")
+              (commit (string-append "brz-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0manyzwi04xcdr6swnja1z3087am0axzymr2ggqd8ni5jfkpdvbj"))))
+        (base32 "136fnvda27pm3y123x8mg955kxbjhk5qrygf2h0pjjm28la0gijb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -297,7 +294,7 @@
                  (compose list make-rust-sysroot))
           '())))
     (inputs (cons* python-configobj
-                   python-dulwich-0.24
+                   python-dulwich
                    python-fastbencode
                    python-fastimport
                    python-launchpadlib
