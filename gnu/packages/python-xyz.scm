@@ -1458,11 +1458,15 @@ by Pavel Raiskup.")
     (version "1.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "hatch_gettext" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/damonlynch/hatch-gettext")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "05sh574p1c4wdf9gky965km3f5n904hxkyils07f1b0jyswlm3nh"))))
+        (base32 "0q35pscb6grwpdghxig8i0016gdsqn3jmcqi844yg9dcrvj4swwq"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests upstream.
     (native-inputs (list python-hatchling))
     (propagated-inputs (list python-rich))
     (home-page "https://github.com/damonlynch/hatch-gettext")
