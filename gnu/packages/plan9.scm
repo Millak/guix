@@ -39,6 +39,42 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg))
 
+(define-public 9pfs
+  (package
+    (name "9pfs")
+    (version "0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ftrvxmtrx/9pfs")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fxyrny1alsbg1dr2pav3sz85s3amxiizklj8p3wsfmw08hjhgrm"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))     ;no configure script
+           #:make-flags
+           #~(list
+              "DESTDIR="
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" (assoc-ref %outputs "out")))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list fuse-2))
+    (synopsis "Mounts a 9P server's files into the file system")
+    (home-page "https://github.com/ftrvxmtrx/9pfs")
+    (description
+     "@command{9pfs} mounts a file system using the @acronym{9P protocol, Plan 9
+Filesystem Protocol}.  It is a replacement for @command{9pfuse} from
+@code{plan9port}.")
+    (license (list license:isc license:expat))))
+
 (define-public diod
   (package
     (name "diod")
