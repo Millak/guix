@@ -1317,26 +1317,27 @@ crypto package.")
 (define-public go-github-com-dvsekhvalnov-jose2go
   (package
     (name "go-github-com-dvsekhvalnov-jose2go")
-    (version "1.5.0")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/dvsekhvalnov/jose2go")
-             (commit (string-append "v" version))))
+              (url "https://github.com/dvsekhvalnov/jose2go")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pzfmv2dxb3m455bi1ks4q3i0dcw1sazxk8k96wrgpkwgglyxj3n"))))
+        (base32 "1i43sg8anga22vv2gd40y8nmns10xzmsb3nlvb1p7ikal7h6d9fh"))))
     (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dvsekhvalnov/jose2go"))
     (native-inputs
      (list go-gopkg-in-check-v1))
-    (arguments
-     '(#:import-path "github.com/dvsekhvalnov/jose2go"))
     (home-page "https://github.com/dvsekhvalnov/jose2go")
     (synopsis "Go implementation of Javascript Object Signing and Encryption spec")
-    (description "This package provides a Go library for generating, decoding,
-and encrypting JSON Web Tokens (JWT).  It relies only on the standard
-library.")
+    (description
+     "This package provides a Go library for generating, decoding,and
+encrypting JSON Web Tokens (JWT).  It relies only on the standard library.")
     (license license:expat)))
 
 (define-public go-github-com-elithrar-simple-scrypt
