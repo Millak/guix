@@ -8724,6 +8724,35 @@ GitHub API v3.")
            go-github-com-protonmail-go-crypto
            go-golang-org-x-oauth2))))
 
+(define-public go-github-com-google-go-github-v61
+  (package
+    (inherit go-github-com-google-go-github-v50)
+    (name "go-github-com-google-go-github-v61")
+    (version "61.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/go-github")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kivw55z2xckymg7xx6hkvmki5mwrphhcjlgrpfv35glnd5p5zmy"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/google/go-github/scrape
+            ;; - github.com/google/go-github/tools
+            (delete-file-recursively "scrape")
+            (delete-file-recursively "tools")))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "github.com/google/go-github/v61")))
+    (propagated-inputs
+     (list go-github-com-google-go-querystring))))
+
 (define-public go-github-com-google-go-querystring
   (package
     (name "go-github-com-google-go-querystring")
