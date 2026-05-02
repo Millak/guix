@@ -3803,7 +3803,7 @@ capable of querying the current time from a remote NTP server as specified in
 (define-public go-github-com-bep-golibsass
   (package
     (name "go-github-com-bep-golibsass")
-    (version "0.7.0")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -3812,7 +3812,7 @@ capable of querying the current time from a remote NTP server as specified in
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xk3m2ynbydzx87dz573ihwc4ryq0r545vz937szz175ivgfrhh3"))
+        (base32 "03v6x9775v6gcw3zr4cr2fvd234sagbj6nb0i3pyb44b1jwa0miw"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -3824,7 +3824,7 @@ capable of querying the current time from a remote NTP server as specified in
       #:import-path "github.com/bep/golibsass"
       ;; The dev build tag modifies the build to link to system libsass
       ;; instead of including the bundled one (which we remove.)
-      ;; https://github.com/bep/golibsass/blob/v0.7.0/internal/libsass/a__cgo_dev.go
+      ;; https://github.com/bep/golibsass/blob/v1.2.0/internal/libsass/a__cgo_dev.go
       #:build-flags #~(list "-tags" "dev")
       #:phases
       #~(modify-phases %standard-phases
