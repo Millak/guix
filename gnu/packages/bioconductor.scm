@@ -8775,13 +8775,13 @@ only one command.")
 (define-public r-biocparallel
   (package
     (name "r-biocparallel")
-    (version "1.45.0")
+    (version "1.46.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocParallel" version))
               (sha256
                (base32
-                "0z5bx3k3mgwnhk6kq794l7qkvsgmn934sc5x87rmica16rgpi69l"))))
+                "0f0hkr0if481p0pmcn8iwhfxs0wfq9sb0s5c92d2j5rmnpvl4rnh"))))
     (properties
      '((upstream-name . "BiocParallel")
        (updater-extra-native-inputs . ("r-batchtools"))))
