@@ -2642,7 +2642,7 @@ edit distance algorithm for Python in Cython for high performance.")
 (define-public python-rich-argparse
   (package
     (name "python-rich-argparse")
-    (version "1.7.1")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -2652,7 +2652,7 @@ edit distance algorithm for Python in Cython for high performance.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0wydhy1167yv7lm07iy3aysyhxyixc24ma1wdna36c06d24wbdc0"))))
+         "0kz77mv9grlqpjzqvmslqyl86xk40ync9g5ihp6kziw2gwk71vyd"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
