@@ -26,6 +26,7 @@
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages swig)
   #:use-module (guix build-system cmake)
   #:use-module (guix gexp)
@@ -249,7 +250,7 @@ and more.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "ctest" "-R" "python_test" "--output-on-failure")))))))
-    (native-inputs (list swig-4.0 python-minimal))
+    (native-inputs (list swig-4.0 python-minimal python-setuptools))
     (inputs (list onetbb))
     (synopsis "Python bindings for the oneTBB parallel library")
     (description
