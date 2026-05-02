@@ -25471,37 +25471,37 @@ and branchless algorithms shine.")
 (define-public go-github-com-segmentio-encoding
   (package
     (name "go-github-com-segmentio-encoding")
-    (version "0.4.1")
+    (version "0.5.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/segmentio/encoding")
-             (commit (string-append "v" version))))
+              (url "https://github.com/segmentio/encoding")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gk2ry6s20h4j5gvl9vf83wi3badphnnzh6fhxfx3r24pbg7c2dx"))
+        (base32 "0xzzml7108a3pi4b2g306s0s41qsvwblclckixbir2xi657c9agd"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
             ;; Submodules with their own go.mod files and packaged separately:
             ;;
             ;; - github.com/segmentio/encoding/benchmarks
-            ;; - github.com/segmentio/encoding/proto/fixtures
-            (for-each delete-file-recursively
-                      (list "benchmarks" "proto/fixtures"))))))
+            (delete-file-recursively "benchmarks")))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "github.com/segmentio/encoding"
-      #:test-flags
-      #~(list "-skip" (string-join
-                       (list "TestCodec/string#07"
-                             "TestCodec/string#08"
-                             "TestDecodeFixture"
-                             "TestUnmarshalFixture")
-                       "|"))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'go-generate
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (invoke "go" "generate" "-v" "-n" "./proto/fixtures/generate")))))))
+    (native-inputs
+     (list go-github-com-golang-protobuf
+           go-google-golang-org-protobuf))
     (propagated-inputs
      (list go-github-com-segmentio-asm))
     (home-page "https://github.com/segmentio/encoding")
