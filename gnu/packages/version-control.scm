@@ -2751,7 +2751,7 @@ visualize your public Git repositories on a web interface.")
 (define-public pre-commit
   (package
     (name "pre-commit") ;formerly known as python-pre-commit
-    (version "3.7.1")
+    (version "4.6.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -2760,7 +2760,7 @@ visualize your public Git repositories on a web interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m2cs21xq2j1x80s7bh47fm2nsbnfxgscxfijaqwdsi2rrf4vlzv"))
+        (base32 "03whpgpbw24g3y6s8rn6888id9gyfpg9vnj4ng6xr4jg9nfa7xjr"))
        (modules '((guix build utils)))
        (snippet '(substitute* "setup.cfg"
                    (("virtualenv>=20.10.0") ;our virtualenv (20.3.1) is fine
@@ -2768,18 +2768,28 @@ visualize your public Git repositories on a web interface.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Skip language-specific tests because they depennd on language tools.
       #:test-flags
-      #~(list "--ignore" "tests/languages"
-              ;; These fail with AssertionError.
-              "-k" (string-append
-                    "not test_additional_dependencies_roll_forward"
-                    " and not test_control_c_control_c_on_install"
-                    " and not test_invalidated_virtualenv"
-                    " and not test_local_python_repo"
-                    " and not test_install_existing_hooks_no_overwrite"
-                    " and not test_uninstall_restores_legacy_hooks"
-                    " and not test_installed_from_venv"))
+      #~(append
+         ;; Skip language-specific tests because they depend on language tools.
+         (list "--ignore=tests/languages")
+         ;; These tests rely on a hook that tries to install packages from pip.
+         (map (lambda (test)
+                (string-append "--deselect=tests/repository_test.py::"
+                               test))
+              (list "test_additional_dependencies_roll_forward"
+                    "test_control_c_control_c_on_install"
+                    "test_invalidated_virtualenv"
+                    "test_local_python_repo"
+                    "test_repository_state_compatibility"
+                    "test_reinstall"
+                    "test_really_long_file_paths"))
+         ;; XXX: These fail with AssertionError, unclear why.
+         (map (lambda (test)
+                (string-append "--deselect=tests/commands/"
+                               "install_uninstall_test.py::" test))
+              (list "test_install_existing_hooks_no_overwrite"
+                    "test_uninstall_restores_legacy_hooks"
+                    "test_installed_from_venv")))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'prepare-check-env
