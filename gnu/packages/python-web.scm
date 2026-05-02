@@ -3608,17 +3608,6 @@ other HTTP libraries.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-pyproject
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("\"cherrypy.scaffold\",")
-                 (string-join
-                  (list "\"cherrypy.scaffold\""
-                        "\"cherrypy._private_api\""
-                        "\"cherrypy._private_api.compat\",")
-                  ",\n  "))))))
       #:test-flags
       #~(map
          (lambda (test)
@@ -3633,35 +3622,31 @@ other HTTP libraries.")
           "test_session.py::SessionTest::test_2_File_Concurrency"
           ;; assert b'RamSession' == b'FileSession' or FileNotFoundError
           "test_session.py::SessionTest::test_3_Redirect"
-          "test_session.py::SessionTest::test_4_File_deletion"
-          ;; XXX: Unraisable exceptions.
-          "test_conn.py::LimitedRequestQueueTests::test_queue_full"
-          "test_config_server.py::ServerConfigTests::testMaxRequestSize"
-          "test_core.py::CoreRequestHandlingTest::testRanges"
-          "test_core.py::CoreRequestHandlingTest::testRedirect"
-          "test_encoding.py::EncodingTests::\
-test_multipart_decoding_bigger_maxrambytes"
-          "test_encoding.py::EncodingTests::\
-test_test_http.py::HTTPTests::test_post_filename_with_special_characters"
-          "test_http.py::HTTPTests::test_post_multipart"
-          "test_http.py::HTTPTests::test_post_filename_with_special_characters"
-          "test_mime.py::SafeMultipartHandlingTest::test_Flash_Upload"
-          "test_tutorials.py::TutorialTest::test09Files"))
+          "test_session.py::SessionTest::test_4_File_deletion"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-pytest-config
             (lambda _
               ;; See: <https://codeberg.org/guix/guix/issues/7476>.
-              (delete-file "pytest.ini"))))))
+              (delete-file "pytest.ini")))
+          (add-after 'unpack 'patch-pyproject
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"cherrypy.scaffold\",")
+                 (string-join
+                  (list "\"cherrypy.scaffold\""
+                        "\"cherrypy._private_api\""
+                        "\"cherrypy._private_api.compat\",")
+                  ",\n  "))))))))
     (propagated-inputs
      (list python-cheroot
+           python-filelock
            python-jaraco-collections
            python-more-itertools
            python-portend
            python-zc-lockfile))
     (native-inputs
-     (list python-filelock
-           python-flaky
+     (list python-flaky
            python-objgraph
            python-path
            python-pytest
