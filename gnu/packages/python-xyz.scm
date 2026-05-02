@@ -34220,7 +34220,14 @@ to:
     (arguments
      (list
       ;; XXX: Unclear why this test fails.
-      #:test-flags #~(list "-k" "not test_dumps_dict" "tests.py")))
+      #:test-flags #~(list "-k" "not test_dumps_dict" "tests.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (substitute* "tests.py"
+                (("assert_\\(b'WP_User' in x\\)")
+                 "assertIn(b'WP_User', x)")))))))
     (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/mitsuhiko/phpserialize")
     (synopsis "Python port of the serialize and unserialize functions of PHP")
