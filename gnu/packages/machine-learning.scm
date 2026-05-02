@@ -6899,7 +6899,7 @@ simple speech recognition.")
               (chdir "python")
               (setenv "VOSK_SOURCE" #$vosk-api)))
           (add-before 'build 'from-abi-to-api
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "vosk_builder.py"
                 (("ffibuilder\\.set_source\\(\"vosk.vosk_cffi\", None\\)")
                  (string-append
@@ -6908,7 +6908,10 @@ simple speech recognition.")
                   "library_dirs=["
                   "'" #$vosk-api "/lib'"
                   "],\n\t"
-                  "libraries=['vosk', 'python3.11'],\n\t"
+                  "libraries=['vosk', 'python"
+                  (python-version
+                   (dirname (dirname (search-input-file inputs "bin/python"))))
+                  "'],\n\t"
                   "include_dirs=["
                   "'" #$vosk-api "/src'" "])")))
               (substitute* "vosk/__init__.py"
