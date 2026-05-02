@@ -692,13 +692,16 @@ binary; and fusion and redshift for coolwarm.")
     (version "1.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "cmcrameri" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/callumrollo/cmcrameri")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0h3n6lngq5jnqywl3f6p554qbh95vk3vwdq18pnkzc1yynvzkyjn"))))
+        (base32 "0wvqld65c1p3iqxmidfsavpp1nkjc1f4z6riqv0lmafpxrz2snbi"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-matplotlib python-numpy python-packaging))
-    (native-inputs (list python-setuptools python-setuptools-scm))
+    (native-inputs (list python-pytest python-setuptools python-setuptools-scm))
     (home-page "https://github.com/callumrollo/cmcrameri")
     (synopsis "Perceptually uniform colormaps by Fabio Crameri")
     (description "This package provides a Python wrapper around Fabio
