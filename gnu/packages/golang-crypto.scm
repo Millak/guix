@@ -1638,7 +1638,7 @@ RSA, RSA-PSS, and ECDSA, though hooks are present for adding your own.")
   (package
     (inherit go-github-com-golang-jwt-jwt-v4)
     (name "go-github-com-golang-jwt-jwt-v5")
-    (version "5.2.1")
+    (version "5.3.1")
     (source
      (origin
        (method git-fetch)
@@ -1647,7 +1647,7 @@ RSA, RSA-PSS, and ECDSA, though hooks are present for adding your own.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13l2p4g9f7bpz0nf2sc4r5ms06ps7bs7z1vpzzv943q094pjs0yw"))))
+        (base32 "1h2r420031i405p1mn9z0g959fxx7lk9lgjx47vn4qdpgz62rc47"))))
     (arguments
      (list
       #:import-path "github.com/golang-jwt/jwt/v5"))))
