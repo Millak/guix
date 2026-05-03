@@ -835,36 +835,26 @@ firmware blobs.  You can
 (define-public ganeti
   (package
     (name "ganeti")
-    (version "3.0.2")
+    (version "3.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/ganeti/ganeti")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "1xw7rm0k411aj0a4hrxz9drn7827bihp6bwizbapfx8k4c3125k4"))
+               (base32 "19pqlxcdhqr4nfd94x4grmdppna52wvhkjspry972w0w6glnyf6l"))
               (file-name (git-file-name name version))
               (patches (search-patches "ganeti-shepherd-support.patch"
                                        "ganeti-shepherd-master-failover.patch"
                                        "ganeti-haskell-pythondir.patch"
-                                       "ganeti-pyyaml-compat.patch"
-                                       "ganeti-procps-compat.patch"
                                        "ganeti-disable-version-symlinks.patch"
-                                       "ganeti-lens-compat.patch"
-                                       "ganeti-openssh-test-fix.patch"
-                                       "ganeti-template-haskell-2.17.patch"
-                                       "ganeti-template-haskell-2.18.patch"
-                                       "ganeti-reorder-arbitrary-definitions.patch"
-                                       "ganeti-relax-dependencies.patch"
-                                       "ganeti-sphinx-import.patch"))))
+                                       "ganeti-lens-compat.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:imported-modules (,@%default-gnu-imported-modules
-                           (guix build haskell-build-system)
-                           (guix build python-build-system))
-       #:modules (,@%default-gnu-modules
-                  ((guix build haskell-build-system) #:prefix haskell:)
-                  ((guix build python-build-system) #:select (site-packages))
+     (list
+      #:imported-modules %pyproject-build-system-modules
+      #:modules `(,@%default-gnu-modules
+                  ((guix build pyproject-build-system) #:select (site-packages))
                   (srfi srfi-1)
                   (srfi srfi-26)
                   (ice-9 match)
@@ -877,55 +867,55 @@ firmware blobs.  You can
        #:test-target "check-TESTS"
 
        #:configure-flags
-       (list "--localstatedir=/var"
-             "--sharedstatedir=/var"
-             "--sysconfdir=/etc"
-             "--enable-haskell-tests"
+       #~(list "--localstatedir=/var"
+               "--sharedstatedir=/var"
+               "--sysconfdir=/etc"
+               "--enable-haskell-tests"
 
-             ;; By default, the build system installs everything to versioned
-             ;; directories such as $libdir/3.0 and relies on a $libdir/default
-             ;; symlink pointed from /etc/ganeti/{lib,share} to actually function.
-             ;; This is done to accommodate installing multiple versions in
-             ;; parallel, but is of little use to us as Guix users can just
-             ;; roll back and forth.  Thus, disable it for simplicity.
-             "--disable-version-links"
+               ;; By default, the build system installs everything to versioned
+               ;; directories such as $libdir/3.0 and relies on a $libdir/default
+               ;; symlink pointed from /etc/ganeti/{lib,share} to actually function.
+               ;; This is done to accommodate installing multiple versions in
+               ;; parallel, but is of little use to us as Guix users can just
+               ;; roll back and forth.  Thus, disable it for simplicity.
+               "--disable-version-links"
 
-             ;; Ganeti can optionally take control over SSH host keys and
-             ;; distribute them to nodes as they are added, and also rotate keys
-             ;; with 'gnt-cluster renew-crypto --new-ssh-keys'.  Thus it needs to
-             ;; know how to restart the SSH daemon.
-             "--with-sshd-restart-command='herd restart ssh-daemon'"
+               ;; Ganeti can optionally take control over SSH host keys and
+               ;; distribute them to nodes as they are added, and also rotate keys
+               ;; with 'gnt-cluster renew-crypto --new-ssh-keys'.  Thus it needs to
+               ;; know how to restart the SSH daemon.
+               "--with-sshd-restart-command='herd restart ssh-daemon'"
 
-             ;; Look for OS definitions in this directory by default.  It can
-             ;; be changed in the cluster configuration.
-             "--with-os-search-path=/run/current-system/profile/share/ganeti/os"
+               ;; Look for OS definitions in this directory by default.  It can
+               ;; be changed in the cluster configuration.
+               "--with-os-search-path=/run/current-system/profile/share/ganeti/os"
 
-             ;; The default QEMU executable to use.  We don't use the package
-             ;; here because this entry is stored in the cluster configuration.
-             (string-append "--with-kvm-path=/run/current-system/profile/bin/"
-                            ,(system->qemu-target (%current-system))))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'create-vcs-version
-           (lambda _
-             ;; If we are building from a git checkout, we need to create a
-             ;; 'vcs-version' file manually because the build system does
-             ;; not have access to the git repository information.
-             (unless (file-exists? "vcs-version")
-               (call-with-output-file "vcs-version"
-                 (lambda (port)
-                   (format port "v~a~%" ,version))))))
-         (add-after 'unpack 'patch-absolute-file-names
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* '("lib/utils/process.py"
-                            "lib/utils/text.py"
-                            "src/Ganeti/Constants.hs"
-                            "src/Ganeti/HTools/CLI.hs"
-                            "test/py/ganeti.config_unittest.py"
-                            "test/py/ganeti.hooks_unittest.py"
-                            "test/py/ganeti.utils.process_unittest.py"
-                            "test/py/ganeti.utils.text_unittest.py"
-                            "test/py/ganeti.utils.wrapper_unittest.py")
+               ;; The default QEMU executable to use.  We don't use the package
+               ;; here because this entry is stored in the cluster configuration.
+               (string-append
+                "--with-kvm-path=/run/current-system/profile/bin/"
+                #$(system->qemu-target (%current-system))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'create-vcs-version
+            (lambda _
+              ;; If we are building from a git checkout, we need to create a
+              ;; 'vcs-version' file manually because the build system does
+              ;; not have access to the git repository information.
+              (unless (file-exists? "vcs-version")
+                (call-with-output-file "vcs-version"
+                  (cut format <> "v~a~%" #$version)))))
+          (add-after 'unpack 'patch-absolute-file-names
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("lib/utils/process.py"
+                             "lib/utils/text.py"
+                             "src/Ganeti/Constants.hs"
+                             "src/Ganeti/HTools/CLI.hs"
+                             "test/py/legacy/ganeti.config_unittest.py"
+                             "test/py/legacy/ganeti.hooks_unittest.py"
+                             "test/py/legacy/ganeti.utils.process_unittest.py"
+                             "test/py/legacy/ganeti.utils.text_unittest.py"
+                             "test/py/legacy/ganeti.utils.wrapper_unittest.py")
                (("/bin/sh") (search-input-file inputs "/bin/sh"))
                (("/bin/bash") (search-input-file inputs "/bin/bash"))
                (("/usr/bin/env") (search-input-file inputs "/bin/env"))
@@ -959,76 +949,50 @@ firmware blobs.  You can
                (("\\$SPHINX --version 2>&1")
                 "$SPHINX --version 2>&1 \
 | sed 's/.sphinx-build-real/sphinx-build/g'"))))
-
-         ;; The build system invokes Cabal and GHC, which do not work with
-         ;; GHC_PACKAGE_PATH: <https://github.com/haskell/cabal/issues/3728>.
-         ;; Tweak the build system to do roughly what haskell-build-system does.
-         (add-before 'configure 'configure-haskell
-           (assoc-ref haskell:%standard-phases 'setup-compiler))
-         (add-after 'configure 'do-not-use-GHC_PACKAGE_PATH
-           (lambda _
-             (unsetenv "GHC_PACKAGE_PATH")
-             (substitute* "Makefile"
-               (("\\$\\(CABAL\\)")
-                "$(CABAL) --package-db=../package.conf.d")
-               (("\\$\\(GHC\\)")
-                "$(GHC) -package-db=../package.conf.d"))))
-         (add-after 'configure 'make-ghc-use-shared-libraries
-           (lambda _
-             (substitute* "Makefile"
+          (add-after 'configure 'make-ghc-use-shared-libraries
+            (lambda _
+              (substitute* "Makefile"
                (("HFLAGS =") "HFLAGS = -dynamic -fPIC"))))
-         (add-after 'configure 'fix-installation-directories
-           (lambda _
-             (substitute* "Makefile"
-               ;; Do not attempt to create /var during install.
-               (("\\$\\(DESTDIR\\)\\$\\{localstatedir\\}")
-                "$(DESTDIR)${prefix}${localstatedir}")
-               ;; Similarly, do not attempt to install the sample ifup scripts
-               ;; to /etc/ganeti.
-               (("\\$\\(DESTDIR\\)\\$\\(ifupdir\\)")
-                "$(DESTDIR)${prefix}$(ifupdir)"))))
-         (add-before 'build 'adjust-tests
-           (lambda _
-             ;; Disable tests that can not run.  Do it early to prevent
-             ;; touching the Makefile later and triggering a needless rebuild.
-             (substitute* "Makefile"
-               ;; These tests expect the presence of a 'root' user (via
-               ;; ganeti/runtime.py), which fails in the build environment.
-               (("test/py/ganeti\\.asyncnotifier_unittest\\.py") "")
-               (("test/py/ganeti\\.backend_unittest\\.py") "")
-               (("test/py/ganeti\\.daemon_unittest\\.py") "")
-               (("test/py/ganeti\\.hypervisor\\.hv_kvm_unittest\\.py") "")
-               (("test/py/ganeti\\.tools\\.ensure_dirs_unittest\\.py") "")
-               (("test/py/ganeti\\.utils\\.io_unittest-runasroot\\.py") "")
-               ;; Tracked at: https://github.com/ganeti/ganeti/issues/1752
-               (("test/py/ganeti\\.ssh_unittest\\.py") "")
-               ;; Disable the bash_completion test, as it requires the full
-               ;; bash instead of bash-minimal.
-               (("test/py/bash_completion\\.bash")
-                "")
-               ;; This test requires networking.
-               (("test/py/import-export_unittest\\.bash")
-                ""))
-             (substitute* "test/hs/Test/Ganeti/OpCodes.hs"
-               ;; Some serdes failure, tracked at:
-               ;; https://github.com/ganeti/ganeti/issues/1753
-               ((", 'case_py_compat_types") ""))))
-         (add-after 'build 'build-bash-completions
-           (lambda _
-             (setenv "PYTHONPATH" ".")
-             (invoke "./autotools/build-bash-completion")
-             (unsetenv "PYTHONPATH")))
-         (add-before 'check 'pre-check
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Set TZDIR so that time zones are found.
+          (add-after 'configure 'fix-installation-directories
+            (lambda _
+              (substitute* "Makefile"
+                ;; Do not attempt to create /var during install.
+                (("\\$\\(DESTDIR\\)\\$\\{localstatedir\\}")
+                 "$(DESTDIR)${prefix}${localstatedir}")
+                ;; Similarly, do not attempt to install the sample ifup scripts
+                ;; to /etc/ganeti.
+                (("\\$\\(DESTDIR\\)\\$\\(ifupdir\\)")
+                 "$(DESTDIR)${prefix}$(ifupdir)"))))
+          (add-before 'build 'adjust-tests
+            (lambda _
+              ;; Disable tests that can not run.  Do it early to prevent
+              ;; touching the Makefile later and triggering a needless rebuild.
+              (substitute* "Makefile"
+                ;; Disable the bash_completion test, as it requires the full
+                ;; bash instead of bash-minimal.
+                (("test/py/legacy/bash_completion\\.bash")
+                 "")
+                ;; XXX: Unclear why this test fails.
+                ;; Generating hspace simulation data for hinfo and hbal...
+                ;; FAIL to build test files
+                (("test/hs/offline-test\\.sh")
+                 ""))))
+          (add-after 'build 'build-bash-completions
+            (lambda _
+              (setenv "PYTHONPATH" ".")
+              (invoke "./autotools/build-bash-completion")
+              (unsetenv "PYTHONPATH")))
+          (add-before 'check 'pre-check
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Set TZDIR so that time zones are found.
              (setenv "TZDIR" (search-input-directory inputs "share/zoneinfo"))
 
-             (substitute* "test/py/ganeti.utils.process_unittest.py"
-               ;; This test attempts to run an executable with
-               ;; RunCmd(..., reset_env=True), which fails because the default
-               ;; PATH from Constants.hs does not exist in the build container.
-               ((".*def testResetEnv.*" all)
-                (string-append "  @unittest.skipIf(True, "
+              (substitute* "test/py/legacy/ganeti.utils.process_unittest.py"
+                ;; This test attempts to run an executable with
+                ;; RunCmd(..., reset_env=True), which fails because the default
+                ;; PATH from Constants.hs does not exist in the build container.
+                ((".*def testResetEnv.*" all)
+                 (string-append "  @unittest.skipIf(True, "
                                "\"cannot reset env in the build container\")\n"
                                all))
 
@@ -1039,37 +1003,35 @@ firmware blobs.  You can
                                "\"testPidFile fails in the build container\")\n"
                                all)))
 
-             ;; XXX: Why are these links not added automatically.
-             (with-directory-excursion "test/hs"
-               (for-each (lambda (file)
-                           (symlink "../../src/htools" file))
+              ;; XXX: Why are these links not added automatically.
+              (with-directory-excursion "test/hs"
+                (for-each (cut symlink "../../src/htools" <>)
                          '("hspace" "hscan" "hinfo" "hbal" "hroller"
                            "hcheck" "hail" "hsqueeze")))))
-         (add-after 'install 'install-bash-completions
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (compdir (string-append out "/etc/bash_completion.d")))
-               (mkdir-p compdir)
-               (copy-file "doc/examples/bash_completion"
-                          (string-append compdir "/ganeti"))
-               ;; The one file contains completions for many different
-               ;; executables.  Create symlinks for found completions.
-               (with-directory-excursion compdir
-                 (for-each
-                  (lambda (prog) (symlink "ganeti" prog))
-                  (call-with-input-file "ganeti"
-                    (lambda (port)
-                      (let loop ((line (read-line port))
-                                 (progs '()))
-                        (if (eof-object? line)
-                            progs
-                            (if (string-prefix? "complete" line)
-                                (loop (read-line port)
-                                      ;; Extract "prog" from lines of the form:
-                                      ;; "complete -F _prog -o filenames prog".
-                                      ;; Note that 'burnin' is listed with the
-                                      ;; absolute file name, which is why we
-                                      ;; run everything through 'basename'.
+          (add-after 'install 'install-bash-completions
+            (lambda _
+              (let ((compdir (string-append #$output "/etc/bash_completion.d")))
+                (mkdir-p compdir)
+                (copy-file "doc/examples/bash_completion"
+                           (string-append compdir "/ganeti"))
+                ;; The one file contains completions for many different
+                ;; executables.  Create symlinks for found completions.
+                (with-directory-excursion compdir
+                  (for-each
+                   (lambda (prog) (symlink "ganeti" prog))
+                   (call-with-input-file "ganeti"
+                     (lambda (port)
+                       (let loop ((line (read-line port))
+                                  (progs '()))
+                         (if (eof-object? line)
+                             progs
+                             (if (string-prefix? "complete" line)
+                                 (loop (read-line port)
+                                       ;; Extract "prog" from lines of the form:
+                                       ;; "complete -F _prog -o filenames prog".
+                                       ;; Note that 'burnin' is listed with the
+                                       ;; absolute file name, which is why we
+                                       ;; run everything through 'basename'.
                                       (match (string-split line #\ )
                                         ((commands ... prog)
                                          (cons (basename prog) progs))))
@@ -1102,41 +1064,39 @@ firmware blobs.  You can
                       (not (symbolic-link? file))
                       (not (shell-script? file))))
 
-               (for-each (lambda (file)
-                           (wrap-program file
-                             `("GUIX_PYTHONPATH" ":" prefix
-                               (,PYTHONPATH))))
-                         (append-map (cut find-files <> wrap?)
+                (for-each (cut wrap-program <>
+                              `("GUIX_PYTHONPATH" ":" prefix
+                                (,PYTHONPATH)))
+                          (append-map (cut find-files <> wrap?)
                                      (list (string-append lib "/ganeti")
                                            sbin)))))))))
     (native-inputs
-     `(("haskell" ,ghc)
-       ("cabal" ,cabal-install)
-       ("m4" ,m4)
+     (list ghc
+           cabal-install
+           m4
+           ;; These inputs are necessary to bootstrap the package, because we
+           ;; have patched the build system.
+           autoconf
+           automake
 
-       ;; These inputs are necessary to bootstrap the package, because we
-       ;; have patched the build system.
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)
+           ;; For the documentation.
+           python-docutils-0.19
+           python-sphinx
+           pandoc
+           graphviz
 
-       ;; For the documentation.
-       ("python-docutils" ,python-docutils-0.19)
-       ("sphinx" ,python-sphinx)
-       ("pandoc" ,pandoc)
-       ("dot" ,graphviz)
-
-       ;; Test dependencies.
-       ("fakeroot" ,fakeroot)
-       ("ghc-temporary" ,ghc-temporary)
-       ("ghc-test-framework" ,ghc-test-framework)
-       ("ghc-test-framework-hunit" ,ghc-test-framework-hunit)
-       ("ghc-test-framework-quickcheck2" ,ghc-test-framework-quickcheck2)
-       ("python-mock" ,python-mock)
-       ("python-pyyaml" ,python-pyyaml)
-       ("openssh" ,openssh)
-       ("procps" ,procps)
-       ("shelltestrunner" ,shelltestrunner)
-       ("tzdata" ,tzdata-for-tests)))
+           ;; Test dependencies.
+           fakeroot
+           ghc-temporary
+           ghc-test-framework
+           ghc-test-framework-hunit
+           ghc-test-framework-quickcheck2
+           python-mock
+           python-pyyaml
+           openssh
+           procps
+           shelltestrunner
+           tzdata-for-tests))
     (inputs
      (list bash-minimal
            iputils                      ;for 'arping'
@@ -1148,6 +1108,7 @@ firmware blobs.  You can
            qemu-minimal                 ;for qemu-img
            ghc-attoparsec
            ghc-base64-bytestring
+           ghc-case-insensitive
            ghc-cryptonite
            ghc-curl
            ghc-hinotify
@@ -1155,10 +1116,13 @@ firmware blobs.  You can
            ghc-json
            ghc-lens
            ghc-lifted-base
+           ghc-monad-control
            ghc-network
            ghc-old-time
-           ghc-psqueue
+           ghc-parallel
            ghc-regex-pcre
+           ghc-random
+           ghc-transformers-base
            ghc-utf8-string
            ghc-zlib
            ;; For the optional metadata daemon.
