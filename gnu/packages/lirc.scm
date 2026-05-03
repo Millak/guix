@@ -20,6 +20,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages lirc)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -32,6 +33,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz))
 
 (define-public lirc
@@ -49,61 +51,68 @@
                                        "lirc-reproducible-build.patch"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       '("--localstatedir=/var"
-         ;; "configure" script fails to enable "devinput" driver as it
-         ;; checks for "/dev/input" directory (which is not available),
-         ;; so enable it explicitly.
-         "--enable-devinput")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-kernel-sniffing
-           (lambda _
-             ;; Correct the faulty assumption that systemd support should be
-             ;; hard-wired when a build host's /proc/version contains "Ubuntu".
-             (substitute* "configure"
-               (("kernelversion=.*") "kernelversion=irrelevant\n"))))
-         (add-after 'unpack 'patch-lirc-make-devinput
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; 'lirc-make-devinput' script assumes that linux headers
-             ;; are placed in "/usr/...".
-             (let ((headers (assoc-ref inputs "kernel-headers")))
-               (substitute* "tools/lirc-make-devinput"
-                 (("/usr/include") (string-append headers "/include"))))))
-         (add-after 'unpack 'fix-gcc14-build
-           (lambda _
-             ;; Fix missing sys/sysmacros.h for major() and minor() macros
-             (substitute* "plugins/default.c"
-               (("#include <sys/types.h>" all)
-                (string-append all "\n#include <sys/sysmacros.h>")))))
-         (add-after 'unpack 'patch-doc/Makefile.in
-           (lambda _
-             ;; Lirc wants to install several images and a useless html page
-             ;; to "$(localstatedir)/lib/lirc/".  This makes 'install' phase
-             ;; fail as localstatedir is "/var", so do not install these
-             ;; files there (the same images are installed in
-             ;; "share/doc/lirc/images/" anyway).
-             (substitute* "doc/Makefile.in"
-               (("^vardocs_DATA =.*") "vardocs_DATA =\n")
-               (("^varimage_DATA =.*") "varimage_DATA =\n"))))
-         (add-after 'unpack 'omit-pip-sourceball
-           ;; ‘make install’ invokes ’setup.py sdist’, which has no known (to
-           ;; nckx) way to enforce mtimes.  The utility of this is questionable,
-           ;; IMO: let's disable it entirely & listen for complaints, if any.
-           (lambda _
-             (substitute* "Makefile.in"
-               (("(PYTHON_TARBALL.*=).*" _ tarball=)
-                (string-append tarball= "\n")))))
-         (add-before 'configure 'build-reproducibly
-           (lambda _
-             (setenv "LIRC_IRDB_CACHE_ID" "build time"))))))
+     (list
+      #:configure-flags
+      #~(list "--localstatedir=/var"
+              ;; "configure" script fails to enable "devinput" driver as it
+              ;; checks for "/dev/input" directory (which is not available),
+              ;; so enable it explicitly.
+              "--enable-devinput")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-kernel-sniffing
+            (lambda _
+              ;; Correct the faulty assumption that systemd support should be
+              ;; hard-wired when a build host's /proc/version contains "Ubuntu".
+              (substitute* "configure"
+                (("kernelversion=.*")
+                 "kernelversion=irrelevant\n"))))
+          (add-after 'unpack 'patch-lirc-make-devinput
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; 'lirc-make-devinput' script assumes that linux headers
+              ;; are placed in "/usr/...".
+              (let ((headers (assoc-ref inputs "kernel-headers")))
+                (substitute* "tools/lirc-make-devinput"
+                  (("/usr/include")
+                   (string-append headers "/include"))))))
+          (add-after 'unpack 'fix-gcc14-build
+            (lambda _
+              ;; Fix missing sys/sysmacros.h for major() and minor() macros
+              (substitute* "plugins/default.c"
+                (("#include <sys/types.h>" all)
+                 (string-append all "\n#include <sys/sysmacros.h>")))))
+          (add-after 'unpack 'patch-doc/Makefile.in
+            (lambda _
+              ;; Lirc wants to install several images and a useless html page
+              ;; to "$(localstatedir)/lib/lirc/".  This makes 'install' phase
+              ;; fail as localstatedir is "/var", so do not install these
+              ;; files there (the same images are installed in
+              ;; "share/doc/lirc/images/" anyway).
+              (substitute* "doc/Makefile.in"
+                (("^vardocs_DATA =.*")
+                 "vardocs_DATA =\n")
+                (("^varimage_DATA =.*")
+                 "varimage_DATA =\n"))))
+          (add-after 'unpack 'omit-pip-sourceball
+            ;; ‘make install’ invokes ’setup.py sdist’, which has no known (to
+            ;; nckx) way to enforce mtimes.  The utility of this is questionable,
+            ;; IMO: let's disable it entirely & listen for complaints, if any.
+            (lambda _
+              (substitute* "Makefile.in"
+                (("(PYTHON_TARBALL.*=).*" _ tarball=)
+                 (string-append tarball= "\n")))))
+          (add-before 'configure 'build-reproducibly
+            (lambda _
+              (setenv "LIRC_IRDB_CACHE_ID" "build time"))))))
     (native-inputs
-     (list pkg-config libxslt))
+     (list libxslt
+           pkg-config
+           python-setuptools))
     (inputs
-     `(("libx11" ,libx11)
-       ("libusb-compat" ,libusb-compat)
-       ("alsa-lib" ,alsa-lib)
-       ("python" ,python)))
+     (list libx11
+           libusb-compat
+           alsa-lib
+           python))
     (home-page "https://www.lirc.org/")
     (synopsis "Linux Infrared Remote Control")
     (description
