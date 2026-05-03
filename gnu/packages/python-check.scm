@@ -824,20 +824,20 @@ intuitive syntax.")
 (define-public python-cucumber-tag-expressions
   (package
     (name "python-cucumber-tag-expressions")
-    (version "6.1.1")
+    (version "9.1.0")
     (source
      (origin
-       (method git-fetch)               ;no tests in PyPI archive
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/cucumber/tag-expressions")
-             (commit (string-append "v" version))))
+              (url "https://github.com/cucumber/tag-expressions")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1hanh7hzxmx0f6fp2ykabsg32snmp8y9pd7s5xix15r1gnn7lvp9"))))
+        (base32 "05c8zppc3cwgdrrir0nigjy2jm2pm8f6rl5xrhxl91cbnyar0bq9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:build-backend "setuptools.build_meta"  ;requires uv_build
       #:phases
       #~(modify-phases %standard-phases
           ;; Project's repository contains go, java, javascript, perl, python
