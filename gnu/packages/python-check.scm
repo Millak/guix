@@ -1487,7 +1487,7 @@ programs, something like CSmith, a random generator of C programs.")
 (define-public python-icontract
   (package
     (name "python-icontract")
-    (version "2.7.1")
+    (version "2.7.3")
     (source
      (origin
        (method git-fetch)
@@ -1496,7 +1496,7 @@ programs, something like CSmith, a random generator of C programs.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fix7wx899kn8vp9aa5m6q71la48gx3qqx4qd74535m61pb50r7f"))))
+        (base32 "07ga4jdsk25f7jmd681y8vijdr00ycpfz62hyp09vfx7i696r02i"))))
     (arguments
      (list
       #:phases
