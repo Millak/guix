@@ -337,7 +337,7 @@ reconstruction capability.")
 (define-public cdrdao
   (package
     (name "cdrdao")
-    (version "1.2.5")
+    (version "1.2.6")
     (source
      (origin
        (method git-fetch)
@@ -347,30 +347,18 @@ reconstruction capability.")
               (string-append "rel_" (string-replace-substring version "." "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hh1lm4wr1vhsq2brczn94h88h3bppvjidj9cfqkl20jhaj38968"))))
-    (build-system gnu-build-system)
+        (base32 "0hb8dfb88zk01yk5nfl8m5hsg4x2scb2899pxb717zywznr8jijw"))))
+    (build-system glib-or-gtk-build-system)
     (arguments
-     '(#:configure-flags
-       (list
-        ;; GCDMaster depends on obsolete libgnomeuimm, see
-        ;; <https://github.com/cdrdao/cdrdao/issues/3>.
-        "--without-gcdmaster"
-        ;; Use the native SCSI interface.
-        "--without-scglib")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'bootstrap 'fix-configure.ac
-           (lambda _
-             ;; Remove references to missing macros.
-             (substitute* "configure.ac"
-              (("^AM_GCONF_SOURCE_2.*") "")
-              ;; This was introduced in autoconf-2.70, but is described
-              ;; as usually not needed in the autoconf documentation.
-              (("^AC_CHECK_INCLUDES_DEFAULT") "")))))))
+     (list
+      #:configure-flags
+      #~(list
+         ;; Use the native SCSI interface.
+         "--without-scglib")))
     (native-inputs
-     (list autoconf automake pkg-config))
+     (list autoconf-2.72 automake `(,glib "bin") pkg-config))
     (inputs
-     (list ao lame libmad libvorbis))
+     (list ao gtkmm-3 lame libmad libsigc++-2 libvorbis))
     (home-page "https://cdrdao.sourceforge.net")
     (synopsis "Read and write CDs in disk-at-once mode")
     (description "cdrdao records audio or data CDs in disk-at-once (DAO) mode,
