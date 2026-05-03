@@ -1264,7 +1264,8 @@ Enjoy all of your favorite Atari 2600 games on your PC thanks to Stella!")
         (base32 "1xf15b6c3i0vv92b420a92pfvfaxhji56ivin8pn5r7fajkqyfb7"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config nasm which))
+     (cons* pkg-config which
+            (maybe-nasm)))
     (inputs
      (list freetype
            glu
