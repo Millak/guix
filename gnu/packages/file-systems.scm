@@ -2071,6 +2071,10 @@ local file system using FUSE.")
        (sha256
         (base32 "09409sjncz7n9m2ia5nfzy10q7c23dvpgjdkc3j9bjs4f5hvc9aq"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "bitmasklist_test.py")))
     (native-inputs
      (list python-setuptools
            python-setuptools-scm))
