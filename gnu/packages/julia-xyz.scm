@@ -5505,7 +5505,7 @@ share large data structures between Julia and Python without copying them.")
 (define-public julia-pyplot
   (package
     (name "julia-pyplot")
-    (version "2.10.0")
+    (version "2.11.6")
     (source
       (origin
         (method git-fetch)
@@ -5514,7 +5514,7 @@ share large data structures between Julia and Python without copying them.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "007zs0imfgs69f30pp2a3rc93kl0qiq7qjx6ig35z4wzkmps4skd"))))
+         (base32 "15yjx0b6maw1frnpjk4llnj62l16swah3vnql07310kybrd5fyj7"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-colors
