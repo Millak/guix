@@ -1223,52 +1223,46 @@ several other projects.")
 (define-public python-myst-parser
   (package
     (name "python-myst-parser")
-    (version "4.0.1")
-    (source (origin
-              (method git-fetch)        ;for tests
-              (uri (git-reference
-                    (url "https://github.com/executablebooks/MyST-Parser")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0p862663sqbywlg7yavq6716wzbc05l0ddj2yhvrdf1k7sxxmypw"))))
+    (version "5.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/executablebooks/MyST-Parser")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ijlxls1v0qwn9z1wwfgpqqcjz45sfxha3vvmxdgcmlms66rwlfj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 138 passed, 2 skipped
       #:test-flags
-      ;; "Currently only dot format is supported."
-      #~(list "--ignore=tests/test_renderers/test_parse_directives.py"
-              ;; AssertionError: FILES DIFFER:
-              "--deselect=tests/test_sphinx/test_sphinx_builds.py::test_includes"
-              ;; There are 31 assertion failures (in slightly different
-              ;; expected outputs) in the Sphinx related tests following the
-              ;; update to Sphinx 9 (see:
-              ;; <https://github.com/executablebooks/MyST-Parser/issues/1030>).
-              "--ignore=tests/test_sphinx/test_sphinx_builds.py"
-              "--ignore=tests/test_renderers/test_fixtures_sphinx.py")))
+      ;; Run pytest for docutils-only tests.
+      ;; See: <https://github.com/executablebooks/MyST-Parser/pull/1076>,
+      ;; <https://github.com/executablebooks/MyST-Parser/issues/1030>.
+      #~(list "tests/test_docutils.py"
+              "tests/test_renderers/test_fixtures_docutils.py"
+              "tests/test_renderers/test_include_directive.py"
+              "tests/test_renderers/test_myst_config.py")))
     (native-inputs
-     (list python-beautifulsoup4
-           python-flit-core
+     (list python-flit-core
            python-pytest
-           python-pytest-param-files
-           python-pytest-regressions
-           python-sphinx-pytest))
+           python-pytest-param-files))
     (propagated-inputs
      (list python-docutils
            python-jinja2
-           python-linkify-it-py
            python-markdown-it-py
            python-linkify-it-py
            python-mdit-py-plugins
            python-pyyaml
-           python-sphinx
-           python-typing-extensions))
+           python-sphinx))
     (home-page "https://myst-parser.readthedocs.io/en/latest/")
     (synopsis "Sphinx and Docutils extension to parse MyST")
-    (description "This package provides a Sphinx and Docutils extension to parse
-MyST, a rich and extensible flavour of Markdown for authoring technical and
-scientific documentation.")
+    (description
+     "This package provides a Sphinx and Docutils extension to parse MyST, a
+rich and extensible flavour of Markdown for authoring technical and scientific
+documentation.")
     (license license:expat)))
 
 (define-public python-sphinx-rtd-theme
