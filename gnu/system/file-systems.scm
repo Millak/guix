@@ -303,10 +303,14 @@ string obtained can be used as the option field of a <file-system> record."
                    ",")))
 
 (define (file-system-needed-for-boot? fs)
-  "Return true if FS has the 'needed-for-boot?' flag set, or if it holds the
-store--e.g., if FS is the root file system."
+  "Return true if FS has the 'needed-for-boot?' flag set, or if it's used in the
+boot process--e.g., if FS is the root file system / holds the store."
   (or (%file-system-needed-for-boot? fs)
-      (and (file-prefix? (file-system-mount-point fs) (%store-prefix))
+      (and (any (cut file-prefix? (file-system-mount-point fs) <>)
+                (list (%store-prefix)
+                      "/etc"
+                      "/var/lib"
+                      "/var/log"))
            (not (memq 'bind-mount (file-system-flags fs))))))
 
 (define (file-system->spec fs)
