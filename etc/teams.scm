@@ -1661,6 +1661,11 @@ the \"texlive\" importer."
                        "tok")
   electronics)
 
+(define-member (person "gemmaro"
+                       "gemmaro.dev@gmail.com"
+                       "gemmaro")
+  ruby)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
