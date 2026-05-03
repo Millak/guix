@@ -13733,20 +13733,23 @@ regions of interest, geometric shapes, paths, text, etc for image overlays.")
 (define-public python-lfdfiles
   (package
     (name "python-lfdfiles")
-    (version "2025.9.17")
+    (version "2026.4.30")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "lfdfiles" version))
        (sha256
-        (base32 "0b363vv146icsn86gxc04grq2d5r7xzzabr03xsc7aq9wybgvgqp"))
+        (base32 "1y4p4n321dp33s7a3almgiirch6kain5liq8g01wrpzw1d4g1rz1"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete pre-generated Cython files.
-        #~(for-each delete-file (find-files "lfdfiles" "_.*\\.c$")))))
+        #~(begin
+            (for-each delete-file (find-files "lfdfiles" "_.*\\.c$"))
+            (delete-file "lfdfiles/conftest.py")))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f)) ; No tests, despite a test dependency on pytest.
+     ;; XXX: Tests run with pytest, but most fail due to missing test data.
+     (list #:tests? #f))
     (native-inputs (list python-setuptools))
     (propagated-inputs (list python-click python-numpy python-tifffile))
     (home-page "https://www.lfd.uci.edu/~gohlke/")
