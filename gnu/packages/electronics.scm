@@ -3877,7 +3877,7 @@ Automation}.")
                          #$output "/share/info/hdlmake-figures")))))
       #:test-flags #~(list "test_all.py")))
     (native-inputs
-     (list python-setuptools python-sphinx texinfo))
+     (list python-pytest python-setuptools python-sphinx texinfo))
     (propagated-inputs (list python-networkx))
     (home-page "https://ohwr.gitlab.io/project/hdl-make/")
     (synopsis "Generate multi-purpose makefiles for HDL projects")
