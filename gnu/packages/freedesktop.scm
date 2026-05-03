@@ -44,6 +44,7 @@
 ;;; Copyright © 2025 wvlab <me@wvlab.xyz>
 ;;; Copyright © 2025 jgart <jgart@dismail.de>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
+;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3473,6 +3474,45 @@ interfaces.")
 seeks to add support for the screenshot, screencast, and possibly
 remote-desktop @code{xdg-desktop-portal} interfaces for wlroots based
 compositors.")
+    (license license:expat)))
+
+(define-public xdg-desktop-portal-termfilechooser
+  (package
+    (name "xdg-desktop-portal-termfilechooser")
+    (version "1.3.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/hunkyburrito/xdg-desktop-portal-termfilechooser")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1wvmwl678fr5pxz7x248pm5v4jd3bycz8nqa2q87akys5b9d1xpd"))))
+    (build-system meson-build-system)
+    (arguments
+      (list #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'install 'fix-paths
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (let ((sed (search-input-file inputs "/bin/sed")))
+                      (substitute* (find-files #$output "-wrapper\\.sh")
+                        ((" sed") (string-append " " sed)))))))))
+    (native-inputs
+      (list cmake-minimal
+            pkg-config
+            scdoc))
+    (inputs
+      (list basu
+            libinih
+            sed))
+    (home-page "https://github.com/hunkyburrito/xdg-desktop-portal-termfilechooser")
+    (synopsis "@code{xdg-desktop-portal} backend for choosing files with your
+favorite terminal file chooser")
+    (description
+     "This package provides a backend implementation for xdg-desktop-portal that
+allows using your preferred terminal file manager as file chooser in other
+applications.")
     (license license:expat)))
 
 (define-public poweralertd
