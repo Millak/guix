@@ -26359,10 +26359,11 @@ passed from LaTeX to Python.")
        (sha256
         (base32 "12pj51nw7k3h6pv8r7k7382jwvs5wsd80cpkv222nkv07gnfg390"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests upstream.
     (propagated-inputs (list python-latex2pydata
                              python-latexrestricted
                              python-pygments))
-    (native-inputs (list texlive-kpathsea python-setuptools python-wheel))
+    (native-inputs (list texlive-kpathsea python-setuptools))
     (home-page "https://github.com/gpoore/minted")
     (synopsis "Python library for the LaTeX minted package")
     (description "This Python package provides the Python side of the
