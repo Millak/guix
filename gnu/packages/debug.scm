@@ -978,26 +978,27 @@ engineering.")
 (define-public seer-gdb
   (package
     (name "seer-gdb")
-    (version "1.16")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/epasveer/seer.git")
-                     (commit (string-append "v" version))))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0jdvyg2jab1pvf36pvkyrfsg2wyy8zp1qx0v2ksclgrnr1hja6k6"))))
+    (version "2.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/epasveer/seer")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1szfqybqr5z982vian4f0hpsagiqapzys3axwibyjyg5whjswva1"))))
     (build-system qt-build-system)
     (arguments
-     `(#:tests? #f ; Those are strangely manual
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir "src"))))))
+     (list
+      #:tests? #f                       ;tests are strangely manual
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "src"))))))
     (inputs
-     (list qtbase-5 qtcharts-5 qtwayland-5))
+     (list gdb qtbase qtcharts qtsvg qtwayland))
     (synopsis "GUI frontend for GDB")
     (description "This package provides a frontend to GDB, the GNU debugger.")
     (home-page "https://github.com/epasveer/seer")
