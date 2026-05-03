@@ -4843,32 +4843,32 @@ configuration and monitoring interfaces.")
     (package
       (inherit libnl)
       (name name)
-      (inputs `(,@(cond
-                   ((string=? python "python2")
-                    `(("python-2" ,python-2)))
-                   ((string=? python "python3")
-                    `(("python-3" ,python-3))))
-                ("libxcrypt" ,libxcrypt))) ;required by Python.h
+      (inputs
+       (append (cond
+                ((string=? python "python2")
+                 (list python-2))
+                ((string=? python "python3")
+                 (list python-setuptools python-wrapper)))
+               (list libxcrypt)))       ;required by Python.h
       (propagated-inputs (list libnl))
       (outputs '("out"))
       (arguments
-       `(#:modules ((guix build gnu-build-system)
+       (list
+        #:modules `((guix build gnu-build-system)
                     (guix build utils)
                     (srfi srfi-1))
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'install
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (define (python-inst python)
-                 (invoke python "setup.py" "build")
-                 (invoke python "setup.py" "install"
-                         (string-append "--prefix="
-                                        (assoc-ref %outputs "out")))
-                 (invoke python "setup.py" "clean"))
-               (setenv "LDFLAGS" (format #f "-Wl,-rpath=~a/lib"
-                                         (assoc-ref inputs "libnl")))
-               (with-directory-excursion "./python" (python-inst ,python))
-               #t))))))))
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'install
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((libnl (search-input-directory inputs "lib/libnl")))
+                  (setenv "LDFLAGS"
+                          (string-append "-Wl,-rpath=" (dirname libnl))))
+                (with-directory-excursion "./python"
+                  (invoke "python" "setup.py" "build")
+                  (invoke "python" "setup.py" "install"
+                          (string-append "--prefix=" #$output))
+                  (invoke "python" "setup.py" "clean"))))))))))
 
 (define-public libnl-python3 (libnl-python-package "python3"))
 
