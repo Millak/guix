@@ -3348,7 +3348,7 @@ speedtest.net.")
 (define-public librespeed-cli
   (package
     (name "librespeed-cli")
-    (version "1.0.12")
+    (version "1.0.13")
     (source
      (origin
        (method git-fetch)
@@ -3357,7 +3357,7 @@ speedtest.net.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08x09b3j2qvhnwy8lrbfxqh1lbs64wyqlr4jj6m31b5r2zy90dly"))))
+        (base32 "0zgwdz955vlyy1yricgcbdlbxxh1z08xpbhxa8zs64bsg68mv8j3"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -3381,6 +3381,7 @@ speedtest.net.")
      (list go-github-com-briandowns-spinner
            go-github-com-go-ping-ping
            go-github-com-gocarina-gocsv
+           go-github-com-prometheus-community-pro-bing
            go-github-com-sirupsen-logrus
            go-github-com-urfave-cli-v2
            go-golang-org-x-sys))
