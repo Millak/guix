@@ -16007,14 +16007,14 @@ signal in the input, that lead to spurious peaks during peak calling.")
 (define-public r-diffbind
   (package
     (name "r-diffbind")
-    (version "3.20.0")
+    (version "3.22.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DiffBind" version))
        (sha256
         (base32
-         "1y2i85mcs4wgkl10ykmfhvikapb3kql7v4jwli99jlvi897xwjsq"))))
+         "0dzpn84nc4rn84axzx06r78gwpgva20ji05h33cr09da52xbwlly"))))
     (properties
      `((upstream-name . "DiffBind")
        (updater-extra-native-inputs
@@ -16047,7 +16047,13 @@ signal in the input, that lead to spurious peaks during peak calling.")
            r-summarizedexperiment
            r-systempiper))
     (native-inputs
-     (list r-biocstyle r-csaw r-edger r-genomeinfodb r-testthat r-xtable))
+     (list r-biocstyle
+           r-csaw
+           r-deseq
+           r-edger
+           r-genomeinfodb
+           r-testthat
+           r-xtable))
     (home-page "https://bioconductor.org/packages/DiffBind")
     (synopsis "Differential binding analysis of ChIP-Seq peak data")
     (description
