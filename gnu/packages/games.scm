@@ -3408,7 +3408,8 @@ and defeat them with your bubbles!")
                                  "SamTSE/Sources/Engine/Engine.cpp")
                 (("@OUTPUT_DIR@") #$output)))))))
     (inputs (list sdl2 libvorbis))
-    (native-inputs (list flex bison nasm imagemagick))
+    (native-inputs (cons* flex bison imagemagick
+                          (maybe-nasm)))
     (home-page "https://github.com/tx00100xt/SeriousSamClassic")
     (synopsis "SeriousSam engine and Serious Sam: TFE and TSE")
     (description
