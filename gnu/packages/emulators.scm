@@ -1289,8 +1289,6 @@ Enjoy all of your favorite Atari 2600 games on your PC thanks to Stella!")
                       (list "all" (string-append "PREFIX=" out)))
        ;; There are no tests.
        #:tests? #f))
-    ;; As per the Makefile (in projects/unix/Makefile):
-    (supported-systems '("i686-linux" "x86_64-linux"))
     (home-page "https://www.mupen64plus.org/")
     (synopsis "Nintendo 64 emulator core library")
     (description
