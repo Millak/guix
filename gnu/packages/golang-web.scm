@@ -7628,6 +7628,32 @@ for web automation and scraping, providing a simple API to control Chrome or
 Chromium browsers programmatically.")
     (license license:expat)))
 
+(define-public go-github-com-go-sourcemap-sourcemap
+  (package
+    (name "go-github-com-go-sourcemap-sourcemap")
+    (version "2.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-sourcemap/sourcemap")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11scr3yyhdinlx43k5lzyv215181d477ki74q9k9lnnff3w0jq40"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; A test tries to download jquery.
+      #:import-path "github.com/go-sourcemap/sourcemap"))
+    (home-page "https://github.com/go-sourcemap/sourcemap")
+    (synopsis "Source maps consumer for Golang")
+    (description
+     "This package provides a consumer/parser for JavaScript source maps that
+allows Go programs to map minified JavaScript code locations back to their
+original source file locations, line numbers, and function names.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-go-webauthn-webauthn
   (package
     (name "go-github-com-go-webauthn-webauthn")
