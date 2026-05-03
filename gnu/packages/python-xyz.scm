@@ -9111,30 +9111,37 @@ JavaScript-like message boxes.  Types of dialog boxes include:
       (license license:bsd-3))))
 
 (define-public python-pympler
-  (package
-    (name "python-pympler")
-    (version "1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pympler" version))
-       (sha256
-        (base32 "090403k1wvqyddjwbla4843dylysrkd8yw7i62222b4rp1y8dahy"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; One test fails with error: 'function (test.muppy.test_summary.func)'
-      ;; != 'function (muppy.test_summary.func)'.
-      ;; See <https://github.com/pympler/pympler/issues/134>.
-      #:test-flags #~(list "-k" "not test_repr_function")))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (home-page "https://pythonhosted.org/Pympler/")
-    (synopsis "Measure, monitor and analyze memory behavior")
-    (description
-     "Pympler is a development tool to measure, monitor and analyze
+  (let ((commit "6d595e0ac72d0a6ed2fb4aa77ae5f89189667721")
+        (revision "0"))
+    (package
+      (name "python-pympler")
+      (version (git-version "1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/pympler/pympler")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0clr767p1ky6ckvisq8iv6alcaya2hhvyk3z57wbs765brag4pdh"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        #~(list
+           ;; This test fails with error: 'function (test.muppy.test_summary.func)'
+           ;; != 'function (muppy.test_summary.func)'.
+           ;; See <https://github.com/pympler/pympler/issues/134>.
+           "--deselect=test/muppy/test_summary.py::SummaryTest::test_repr_function"
+           ;; This test times out.
+           "--deselect=test/gui/test_web.py::WebGuiTest::test_traceback")))
+      (native-inputs
+       (list python-pytest python-setuptools))
+      (home-page "https://pythonhosted.org/Pympler/")
+      (synopsis "Measure, monitor and analyze memory behavior")
+      (description
+       "Pympler is a development tool to measure, monitor and analyze
 the memory behavior of Python objects in a running Python application.
 
 By pympling a Python application, detailed insight in the size and the
@@ -9144,7 +9151,7 @@ be identified.
 
 A web profiling frontend exposes process statistics, garbage
 visualisation and class tracker statistics.")
-    (license license:asl2.0)))
+      (license license:asl2.0))))
 
 (define-public python-itsdangerous
   (package
