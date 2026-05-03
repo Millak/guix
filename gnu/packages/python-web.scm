@@ -5400,6 +5400,7 @@ compliance with the specification.")
                          python-mock
                          python-poetry-core
                          python-pytest
+                         python-pytest-asyncio
                          python-responses))
     (propagated-inputs
      (list python-attrs
