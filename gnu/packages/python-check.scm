@@ -786,7 +786,7 @@ counterexamples for you.")
 (define-public python-cucumber-expressions
   (package
     (name "python-cucumber-expressions")
-    (version "18.0.1")
+    (version "19.0.0")
     (source
      (origin
        (method git-fetch)
@@ -795,19 +795,25 @@ counterexamples for you.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1syxa142v9sajy7n2az7d0jc6lsjg93kw659pxfs3g6ddrngpdri"))))
+        (base32 "1ijjvh9hwfcagawysd4p1xirjpx719i7v4iwkbziwqw73jy8gayh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:build-backend "setuptools.build_meta"  ;requires uv_build
       #:phases
       #~(modify-phases %standard-phases
           ;; Project's repository contains go, java, javascript, perl, python
           ;; and ruby implementations.
           (add-after 'unpack 'chdir-python
             (lambda _
-              (chdir "python"))))))
+              (chdir "python")))
+          (add-after 'chdir-python 'patch-pyproject
+            (lambda _
+              ;; setuptools cannot handle both license and license-files
+              (substitute* "pyproject.toml"
+                (("^license = .*") "")))))))
     (native-inputs
-     (list python-poetry-core python-pytest python-pyyaml))
+     (list python-pytest python-pyyaml python-setuptools))
     (home-page "https://github.com/cucumber/cucumber-expressions")
     (synopsis "A simpler alternative to Regular Expressions")
     (description
