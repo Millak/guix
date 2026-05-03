@@ -572,12 +572,15 @@ headers compressed with QPACK.")
   (package
     (name "python-pyppmd")
     (version "1.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pyppmd" version))
-              (sha256
-               (base32
-                "1z91l54ncsdglqv49fajaixld5kwnbgkjd4njvn32s6jy69ay16c"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/miurahr/pyppmd")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a3cqa6l1ip3kdd9d2h94znzrmgrhdbica83b494m9i3vl4i3glz"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags #~(list "--ignore=tests/test_benchmark.py")))
