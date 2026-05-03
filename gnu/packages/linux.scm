@@ -11653,6 +11653,7 @@ headers.")
            elfutils
            luajit
            libbpf
+           python-setuptools
            python-wrapper))
     (arguments
      (list
