@@ -367,7 +367,8 @@ for use with .NET-capable runtime engines and applications.")
                                ;; the old one here.
                                (rename-file "BaseMachine.cs-2"
                                             "BaseMachine.cs"))))
-                (patches (search-patches "mono-1.2.6-bootstrap.patch"))))
+                (patches (search-patches "mono-1.2.6-bootstrap.patch"
+                                         "mono-1.2.6-callsite-bound.patch"))))
       (build-system gnu-build-system)
       (native-inputs
        (list autoconf

@@ -1943,6 +1943,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/modem-manager-fix-test-wrapper.patch	\
   %D%/packages/patches/module-init-tools-moduledir.patch	\
   %D%/packages/patches/mono-1.2.6-bootstrap.patch		\
+  %D%/packages/patches/mono-1.2.6-callsite-bound.patch \
   %D%/packages/patches/mono-1.9.1-add-MONO_CREATE_IMAGE_VERSION.patch		\
   %D%/packages/patches/mono-1.9.1-fixes.patch			\
   %D%/packages/patches/mono-1.9.1-reproducibility.patch	\

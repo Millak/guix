@@ -1,0 +1,322 @@
+Upstream-Status: <https://github.com/wine-mono/mono/pull/10>
+From 2b30fb2f6d7f451d87458fce62e22ea6db62dda4 Mon Sep 17 00:00:00 2001
+Message-ID: <2b30fb2f6d7f451d87458fce62e22ea6db62dda4.1777931841.git.dannym@friendly-machines.com>
+From: Paolo Molaro <lupus@oddwiz.org>
+Date: Tue, 18 Mar 2008 10:02:26 +0000
+Subject: [PATCH 1/2] Tue Mar 18 11:50:14 CET 2008 Paolo Molaro
+ <lupus@ximian.com>
+
+	* mini.h, mini-trampolines.c, tramp-*.c: change the signature of
+	mono_arch_patch_callsite() to include the start of the managed method
+	to be able to perform bound checks.
+
+svn path=/trunk/mono/; revision=98524
+---
+ mono/mini/mini-trampolines.c | 2 +-
+ mono/mini/mini.h             | 2 +-
+ mono/mini/tramp-alpha.c      | 2 +-
+ mono/mini/tramp-amd64.c      | 2 +-
+ mono/mini/tramp-arm.c        | 2 +-
+ mono/mini/tramp-hppa.c       | 2 +-
+ mono/mini/tramp-ia64.c       | 2 +-
+ mono/mini/tramp-ppc.c        | 2 +-
+ mono/mini/tramp-sparc.c      | 2 +-
+ mono/mini/tramp-x86.c        | 2 +-
+ 10 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/mono/mini/mini-trampolines.c b/mono/mini/mini-trampolines.c
+index 3318527ebf9..bb45654c9d8 100644
+--- a/mono/mini/mini-trampolines.c
++++ b/mono/mini/mini-trampolines.c
+@@ -156,7 +156,7 @@ mono_magic_trampoline (gssize *regs, guint8 *code, MonoMethod *m, guint8* tramp)
+ 				mono_jit_info_table_find (mono_domain_get (), mono_get_addr_from_ftnptr (addr));
+ 
+ 			if (mono_method_same_domain (ji, target_ji))
+-				mono_arch_patch_callsite (code, addr);
++				mono_arch_patch_callsite (ji->code_start, code, addr);
+ 		}
+ 	}
+ 
+diff --git a/mono/mini/mini.h b/mono/mini/mini.h
+index 3eb5926b0ad..92bc92238cf 100644
+--- a/mono/mini/mini.h
++++ b/mono/mini/mini.h
+@@ -1042,7 +1042,7 @@ void     mono_arch_create_vars                  (MonoCompile *cfg) MONO_INTERNAL
+ void     mono_arch_save_unwind_info             (MonoCompile *cfg) MONO_INTERNAL;
+ void     mono_arch_register_lowlevel_calls      (void) MONO_INTERNAL;
+ gpointer mono_arch_get_unbox_trampoline         (MonoMethod *m, gpointer addr) MONO_INTERNAL;
+-void     mono_arch_patch_callsite               (guint8 *code, guint8 *addr) MONO_INTERNAL;
++void     mono_arch_patch_callsite               (guint8 *method_start, guint8 *code, guint8 *addr) MONO_INTERNAL;
+ void     mono_arch_patch_plt_entry              (guint8 *code, guint8 *addr) MONO_INTERNAL;
+ void     mono_arch_nullify_class_init_trampoline(guint8 *code, gssize *regs) MONO_INTERNAL;
+ void     mono_arch_nullify_plt_entry            (guint8 *code) MONO_INTERNAL;
+diff --git a/mono/mini/tramp-alpha.c b/mono/mini/tramp-alpha.c
+index 2f2882422b6..ac16bbb662b 100644
+--- a/mono/mini/tramp-alpha.c
++++ b/mono/mini/tramp-alpha.c
+@@ -607,7 +607,7 @@ mono_arch_patch_delegate_trampoline (guint8 *code, guint8 *tramp,
+ }
+ 
+ void
+-mono_arch_patch_callsite (guint8 *code, guint8 *addr)
++mono_arch_patch_callsite (guint8 *method_start, guint8 *code, guint8 *addr)
+ {
+   unsigned long *p = (unsigned int *)(code-12);
+   
+diff --git a/mono/mini/tramp-amd64.c b/mono/mini/tramp-amd64.c
+index 4b90083fb6d..a55dbb2f8d7 100644
+--- a/mono/mini/tramp-amd64.c
++++ b/mono/mini/tramp-amd64.c
+@@ -63,7 +63,7 @@ mono_arch_get_unbox_trampoline (MonoMethod *m, gpointer addr)
+ }
+ 
+ void
+-mono_arch_patch_callsite (guint8 *orig_code, guint8 *addr)
++mono_arch_patch_callsite (guint8 *method_start, guint8 *orig_code, guint8 *addr)
+ {
+ 	guint8 *code;
+ 	guint8 buf [16];
+diff --git a/mono/mini/tramp-arm.c b/mono/mini/tramp-arm.c
+index 00d90253db0..180220bf0a1 100644
+--- a/mono/mini/tramp-arm.c
++++ b/mono/mini/tramp-arm.c
+@@ -75,7 +75,7 @@ mono_arch_get_unbox_trampoline (MonoMethod *m, gpointer addr)
+ }
+ 
+ void
+-mono_arch_patch_callsite (guint8 *code_ptr, guint8 *addr)
++mono_arch_patch_callsite (guint8 *method_start, guint8 *code_ptr, guint8 *addr)
+ {
+ 	guint32 *code = (guint32*)code_ptr;
+ 
+diff --git a/mono/mini/tramp-hppa.c b/mono/mini/tramp-hppa.c
+index 4a214c0d8c2..6a841301f9a 100644
+--- a/mono/mini/tramp-hppa.c
++++ b/mono/mini/tramp-hppa.c
+@@ -77,7 +77,7 @@ mono_arch_get_unbox_trampoline (MonoMethod *m, gpointer addr)
+ }
+ 
+ void
+-mono_arch_patch_callsite (guint8 *p, guint8 *addr)
++mono_arch_patch_callsite (guint8 *method_start, guint8 *p, guint8 *addr)
+ {
+ 	guint32 *code = (void *)p;
+ 	/* Search for and patch the calling sequence
+diff --git a/mono/mini/tramp-ia64.c b/mono/mini/tramp-ia64.c
+index 0b750e02354..7630f7a9a8e 100644
+--- a/mono/mini/tramp-ia64.c
++++ b/mono/mini/tramp-ia64.c
+@@ -78,7 +78,7 @@ mono_arch_get_unbox_trampoline (MonoMethod *m, gpointer addr)
+ }
+ 
+ void
+-mono_arch_patch_callsite (guint8 *code, guint8 *addr)
++mono_arch_patch_callsite (guint8 *method_start, guint8 *code, guint8 *addr)
+ {
+ 	guint8 *callsite_begin;
+ 	guint64 *callsite = (guint64*)(gpointer)(code - 16);
+diff --git a/mono/mini/tramp-ppc.c b/mono/mini/tramp-ppc.c
+index a4de22b77e4..f8261a79637 100644
+--- a/mono/mini/tramp-ppc.c
++++ b/mono/mini/tramp-ppc.c
+@@ -85,7 +85,7 @@ mono_arch_get_unbox_trampoline (MonoMethod *m, gpointer addr)
+ }
+ 
+ void
+-mono_arch_patch_callsite (guint8 *code_ptr, guint8 *addr)
++mono_arch_patch_callsite (guint8 *method_start, guint8 *code_ptr, guint8 *addr)
+ {
+ 	guint32 *code = (guint32*)code_ptr;
+ 	/* This is the 'blrl' instruction */
+diff --git a/mono/mini/tramp-sparc.c b/mono/mini/tramp-sparc.c
+index b5c3784bfb5..279e775a0f3 100644
+--- a/mono/mini/tramp-sparc.c
++++ b/mono/mini/tramp-sparc.c
+@@ -58,7 +58,7 @@ mono_arch_get_unbox_trampoline (MonoMethod *m, gpointer addr)
+ }
+ 
+ void
+-mono_arch_patch_callsite (guint8 *code, guint8 *addr)
++mono_arch_patch_callsite (guint8 *method_start, guint8 *code, guint8 *addr)
+ {
+ 	if (sparc_inst_op (*(guint32*)code) == 0x1) {
+ 		sparc_call_simple (code, (guint8*)addr - (guint8*)code);
+diff --git a/mono/mini/tramp-x86.c b/mono/mini/tramp-x86.c
+index 88d517f759e..833184a7fa1 100644
+--- a/mono/mini/tramp-x86.c
++++ b/mono/mini/tramp-x86.c
+@@ -58,7 +58,7 @@ mono_arch_get_unbox_trampoline (MonoMethod *m, gpointer addr)
+ }
+ 
+ void
+-mono_arch_patch_callsite (guint8 *orig_code, guint8 *addr)
++mono_arch_patch_callsite (guint8 *method_start, guint8 *orig_code, guint8 *addr)
+ {
+ 	guint8 *code;
+ 	guint8 buf [8];
+-- 
+2.52.0
+
+From afa4ad427278fa38e4df05eb61484368015f78ff Mon Sep 17 00:00:00 2001
+Message-ID: <afa4ad427278fa38e4df05eb61484368015f78ff.1777931841.git.dannym@friendly-machines.com>
+In-Reply-To: <2b30fb2f6d7f451d87458fce62e22ea6db62dda4.1777931841.git.dannym@friendly-machines.com>
+References: <2b30fb2f6d7f451d87458fce62e22ea6db62dda4.1777931841.git.dannym@friendly-machines.com>
+From: Paolo Molaro <lupus@oddwiz.org>
+Date: Tue, 18 Mar 2008 10:50:26 +0000
+Subject: [PATCH 2/2] Tue Mar 18 12:39:27 CET 2008 Paolo Molaro
+ <lupus@ximian.com>
+
+	* mini.h, mini-amd64.c, mini-x86.c, tramp-amd64.c, tramp-x86.c: change
+	the mono_breakpoint_clean_code() code to perform bound checks.
+
+svn path=/trunk/mono/; revision=98527
+---
+ mono/mini/mini-amd64.c  | 29 +++++++++++++++++++++++++----
+ mono/mini/mini-x86.c    | 27 ++++++++++++++++++++++++---
+ mono/mini/mini.h        |  2 +-
+ mono/mini/tramp-amd64.c |  2 +-
+ mono/mini/tramp-x86.c   |  2 +-
+ 5 files changed, 52 insertions(+), 10 deletions(-)
+
+diff --git a/mono/mini/mini-amd64.c b/mono/mini/mini-amd64.c
+index 4b608f43841..22d6c9d0d28 100644
+--- a/mono/mini/mini-amd64.c
++++ b/mono/mini/mini-amd64.c
+@@ -5246,12 +5246,33 @@ mono_arch_get_patch_offset (guint8 *code)
+ 	return 3;
+ }
+ 
++/**
++ * mono_breakpoint_clean_code:
++ *
++ * Copy @size bytes from @code - @offset to the buffer @buf. If the debugger inserted software
++ * breakpoints in the original code, they are removed in the copy.
++ *
++ * Returns TRUE if no sw breakpoint was present.
++ */
+ gboolean
+-mono_breakpoint_clean_code (guint8 *code, guint8 *buf, int size)
++mono_breakpoint_clean_code (guint8 *method_start, guint8 *code, int offset, guint8 *buf, int size)
+ {
+ 	int i;
+ 	gboolean can_write = TRUE;
+-	memcpy (buf, code, size);
++	/*
++	 * If method_start is non-NULL we need to perform bound checks, since we access memory
++	 * at code - offset we could go before the start of the method and end up in a different
++	 * page of memory that is not mapped or read incorrect data anyway. We zero-fill the bytes
++	 * instead.
++	 */
++	if (!method_start || code - offset >= method_start) {
++		memcpy (buf, code - offset, size);
++	} else {
++		int diff = code - method_start;
++		memset (buf, 0, size);
++		memcpy (buf + offset - diff, method_start, diff + size - offset);
++	}
++	code -= offset;
+ 	for (i = 0; i < MONO_BREAKPOINT_ARRAY_SIZE; ++i) {
+ 		int idx = mono_breakpoint_info_index [i];
+ 		guint8 *ptr;
+@@ -5276,8 +5297,8 @@ mono_arch_get_vcall_slot (guint8 *code, gpointer *regs, int *displacement)
+ 	gint32 disp;
+ 	guint8 rex = 0;
+ 
+-	mono_breakpoint_clean_code (code - 10, buf, sizeof (buf));
+-	code = buf + 10;
++	mono_breakpoint_clean_code (NULL, code, 9, buf, sizeof (buf));
++	code = buf + 9;
+ 
+ 	*displacement = 0;
+ 
+diff --git a/mono/mini/mini-x86.c b/mono/mini/mini-x86.c
+index 1c83859cce4..05e551520cf 100644
+--- a/mono/mini/mini-x86.c
++++ b/mono/mini/mini-x86.c
+@@ -4453,12 +4453,33 @@ mono_arch_get_patch_offset (guint8 *code)
+ 	}
+ }
+ 
++/**
++ * mono_breakpoint_clean_code:
++ *
++ * Copy @size bytes from @code - @offset to the buffer @buf. If the debugger inserted software
++ * breakpoints in the original code, they are removed in the copy.
++ *
++ * Returns TRUE if no sw breakpoint was present.
++ */
+ gboolean
+-mono_breakpoint_clean_code (guint8 *code, guint8 *buf, int size)
++mono_breakpoint_clean_code (guint8 *method_start, guint8 *code, int offset, guint8 *buf, int size)
+ {
+ 	int i;
+ 	gboolean can_write = TRUE;
+-	memcpy (buf, code, size);
++	/*
++	 * If method_start is non-NULL we need to perform bound checks, since we access memory
++	 * at code - offset we could go before the start of the method and end up in a different
++	 * page of memory that is not mapped or read incorrect data anyway. We zero-fill the bytes
++	 * instead.
++	 */
++	if (!method_start || code - offset >= method_start) {
++		memcpy (buf, code - offset, size);
++	} else {
++		int diff = code - method_start;
++		memset (buf, 0, size);
++		memcpy (buf + offset - diff, method_start, diff + size - offset);
++	}
++	code -= offset;
+ 	for (i = 0; i < MONO_BREAKPOINT_ARRAY_SIZE; ++i) {
+ 		int idx = mono_breakpoint_info_index [i];
+ 		guint8 *ptr;
+@@ -4482,7 +4503,7 @@ mono_arch_get_vcall_slot (guint8 *code, gpointer *regs, int *displacement)
+ 	guint8 reg = 0;
+ 	gint32 disp = 0;
+ 
+-	mono_breakpoint_clean_code (code - 8, buf, sizeof (buf));
++	mono_breakpoint_clean_code (NULL, code, 8, buf, sizeof (buf));
+ 	code = buf + 8;
+ 
+ 	*displacement = 0;
+diff --git a/mono/mini/mini.h b/mono/mini/mini.h
+index 92bc92238cf..653e0d52d1e 100644
+--- a/mono/mini/mini.h
++++ b/mono/mini/mini.h
+@@ -1104,7 +1104,7 @@ void      mono_debugger_run_finally             (MonoContext *start_ctx);
+ 
+ extern gssize mono_breakpoint_info_index [MONO_BREAKPOINT_ARRAY_SIZE];
+ 
+-gboolean mono_breakpoint_clean_code (guint8 *code, guint8 *buf, int size);
++gboolean mono_breakpoint_clean_code (guint8 *method_start, guint8 *code, int offset, guint8 *buf, int size);
+ 
+ /* Mono Debugger support */
+ void      mono_debugger_init                    (void);
+diff --git a/mono/mini/tramp-amd64.c b/mono/mini/tramp-amd64.c
+index a55dbb2f8d7..b1e8034f832 100644
+--- a/mono/mini/tramp-amd64.c
++++ b/mono/mini/tramp-amd64.c
+@@ -67,7 +67,7 @@ mono_arch_patch_callsite (guint8 *method_start, guint8 *orig_code, guint8 *addr)
+ {
+ 	guint8 *code;
+ 	guint8 buf [16];
+-	gboolean can_write = mono_breakpoint_clean_code (orig_code - 14, buf, sizeof (buf));
++	gboolean can_write = mono_breakpoint_clean_code (method_start, orig_code, 14, buf, sizeof (buf));
+ 
+ 	code = buf + 14;
+ 
+diff --git a/mono/mini/tramp-x86.c b/mono/mini/tramp-x86.c
+index 833184a7fa1..68409fe1be1 100644
+--- a/mono/mini/tramp-x86.c
++++ b/mono/mini/tramp-x86.c
+@@ -62,7 +62,7 @@ mono_arch_patch_callsite (guint8 *method_start, guint8 *orig_code, guint8 *addr)
+ {
+ 	guint8 *code;
+ 	guint8 buf [8];
+-	gboolean can_write = mono_breakpoint_clean_code (orig_code - 8, buf, sizeof (buf));
++	gboolean can_write = mono_breakpoint_clean_code (method_start, orig_code, 8, buf, sizeof (buf));
+ 
+ 	code = buf + 8;
+ 	if (mono_running_on_valgrind ())
+-- 
+2.52.0
+
