@@ -227,9 +227,7 @@ of parts of the Windows API.")
              flex
              gettext-minimal
              intltool)
-       (if (target-x86?)
-           (list nasm)
-           '())
+       (maybe-nasm)
        (list pkg-config
              pixman)))
     (arguments
