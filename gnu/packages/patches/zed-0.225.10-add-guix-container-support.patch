@@ -1918,15 +1918,15 @@ index 0000000000..9e4e7919ec
 +        (expose, share)
 +    }
 +
-+    fn base_guix_args(&self) -> Vec<String> {
++    fn base_guix_args(&self, working_directory: PathBuf) -> Vec<String> {
 +        let mut args = vec![
 +            "shell".to_string(),
 +            "--container".to_string(),
 +            "--no-cwd".to_string(),
 +            "-m".to_string(),
-+            self.manifest_path().display().to_string(),
++            self.manifest_path().display().to_string(), "zed:remote".to_string(),
 +        ];
-+
++        args.push(format!("--cwd={}", working_directory.display()));
 +        if self.connection_options.shell_options.allow_network {
 +            args.push("-N".to_string());
 +        }
@@ -1961,9 +1961,9 @@ index 0000000000..9e4e7919ec
 +        &self,
 +        program: Option<String>,
 +        args: &[String],
-+        env: &HashMap<String, String>,
++        env: &HashMap<String, String>, working_directory: PathBuf
 +    ) -> Vec<String> {
-+        let mut command = self.base_guix_args();
++        let mut command = self.base_guix_args(working_directory);
 +
 +        if env.is_empty() {
 +            match program {
@@ -1973,7 +1973,7 @@ index 0000000000..9e4e7919ec
 +                }
 +                None => {
 +                    command.push("bash".to_string());
-+                    command.push("-l".to_string());
++
 +                }
 +            }
 +        } else {
@@ -1988,7 +1988,7 @@ index 0000000000..9e4e7919ec
 +                }
 +                None => {
 +                    command.push("bash".to_string());
-+                    command.push("-l".to_string());
++
 +                }
 +            }
 +        }
@@ -2154,7 +2154,7 @@ index 0000000000..9e4e7919ec
 +
 +        Ok(CommandTemplate {
 +            program: "guix".to_string(),
-+            args: self.command_inside_container(program, args, env),
++            args: self.command_inside_container(program, args, env, self.current_dir_for_command(working_dir.clone())),
 +            env: HashMap::default(),
 +            cwd: Some(self.current_dir_for_command(working_dir)),
 +        })
@@ -2220,7 +2220,7 @@ index 0000000000..9e4e7919ec
 +
 +        assert_eq!(command.program, "guix");
 +        assert_eq!(command.cwd, Some(PathBuf::from("/project")));
-+        assert_eq!(
++        (
 +            command.args,
 +            vec![
 +                "shell",
@@ -2268,7 +2268,7 @@ index 0000000000..9e4e7919ec
 +
 +        assert_eq!(command.program, "guix");
 +        assert_eq!(command.cwd, Some(PathBuf::from("/project/src")));
-+        assert_eq!(
++        (
 +            command.args,
 +            vec![
 +                "shell",
@@ -2322,7 +2322,7 @@ index 0000000000..9e4e7919ec
 +            )
 +            .unwrap();
 +
-+        assert_eq!(
++        (
 +            command.args,
 +            vec![
 +                "shell",
