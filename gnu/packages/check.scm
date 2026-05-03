@@ -3026,24 +3026,32 @@ possible to write plugins to add your own checks.")
 (define-public behave
   (package
     (name "behave")
-    (version "1.3.3")
+    ;; 1.3.3 (2025-09-04), the latest changes provide support for Python
+    ;; 3.12+; move back to git tag when released.
+    (properties '((commit . "43d0a93240c0b25b0cbf59bdc196b74fb8a2353e")
+                  (revision . "0")))
+    (version (git-version "1.3.3"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/behave/behave")
-              (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fxj51kailsdakqi7qbw700k258n7r3lv75mgxs45ld5xh2jfyxh"))))
+        (base32 "05671jf7scpgqr8chzgs9bxidvf12nlkqqiqxa5qwmykqfvc8nk4"))))
     (build-system pyproject-build-system)
+    ;; tests: 1638 passed, 3 skipped, 2 xfailed
     (native-inputs
-     (list python-assertpy
-           python-chardet
-           python-mock
+     (list python-chardet
+           python-freezegun
+           python-charset-normalizer
            python-path
            python-pyhamcrest
            python-pytest
+           python-pytest-html
            python-setuptools))
     (propagated-inputs
      (list python-colorama
