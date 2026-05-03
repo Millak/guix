@@ -73,7 +73,7 @@
 (define-public python-intersphinx-registry
   (package
     (name "python-intersphinx-registry")
-    (version "0.2602.2")
+    (version "0.2705.27")
     (source
      (origin
        (method git-fetch)
@@ -81,11 +81,16 @@
         (git-reference
           (url "https://github.com/Quansight-Labs/intersphinx_registry")
           (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "153rjh3dyk2azwsdsrll2ia4abrv0mzdppkyx4n2pzd705nk767a"))))
+        (base32 "02qrdhlhl4wpwvcags46kqs32dkc5kxmldwyp2ij1njfsvf68nn8"))))
     (build-system pyproject-build-system)
+    ;; XXX: Many tests try to access the network.
+    (arguments (list #:tests? #f))
     (native-inputs
      (list python-flit-core))
+    (propagated-inputs
+     (list python-requests))
     (home-page "https://github.com/Quansight-Labs/intersphinx_registry")
     (synopsis "Convenient utilities and data to write a Sphinx config file")
     (description
