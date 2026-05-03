@@ -1243,6 +1243,7 @@ are interactive HTML widgets for Jupyter notebooks and the IPython kernel.")
     (propagated-inputs (list python-doit python-jupyter-core))
     (native-inputs (list python-ansi2html
                          python-hatchling
+                         python-pytest
                          python-pytest-console-scripts
                          python-pytest-xdist
                          python-tornado))
