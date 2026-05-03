@@ -294,9 +294,7 @@ variety of RDP clients:
              automake
              intltool
              libtool)
-       (if (target-x86?)
-           (list nasm)
-           '())
+       (maybe-nasm)
        (list pkg-config
              pixman)))
     (arguments
