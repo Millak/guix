@@ -2391,6 +2391,47 @@ games.")
     (home-page "https://openmw.org")
     (license license:gpl3)))
 
+(define-public jolt-physics
+  (package
+    (name "jolt-physics")
+    (version "5.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jrouwe/JoltPhysics")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dzqi4mxrzg5cyf5k8rdlb078939ib849n7gs6014d3ljymf839r"))
+       (modules '((guix build utils)))
+       ;; Unbundle Roboto font.
+       (snippet
+        '(begin
+           (delete-file-recursively "Assets/Fonts")
+           (substitute* "TestFramework/TestFramework.cmake"
+             ((".*Roboto-Regular\\.ttf.*") ""))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'change-directory
+            (lambda _
+              (chdir "Build")))
+          (add-after 'install 'change-directory
+            (lambda _
+              (chdir ".."))))))
+    (home-page "https://github.com/jrouwe/JoltPhysics")
+    (synopsis "Rigid body physics and collision detection library")
+    (description
+     "Jolt Physics is a multi core friendly rigid body physics and collision
+detection library, written in C++.  It is suitable for games and VR
+applications.")
+    (license license:expat)))
+
 (define-public godot-lts
   (package
     (name "godot")
