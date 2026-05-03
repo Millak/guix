@@ -75,6 +75,7 @@
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2026 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2026 Luca Alloatti <luca-guix@f-si.org>
+;;; Copyright © 2026 Akiyoshi Suda <code@akiyoshisuda.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4572,6 +4573,45 @@ primes and prime k-tuplets up to 264.")
     (description
      "This package provides the Blis BLAS-like linear algebra library, as a
 self-contained C-extension for Python.")
+    (license license:bsd-3)))
+
+(define-public python-constraint2
+  (package
+    (name "python-constraint2")
+    (version "2.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-constraint/python-constraint")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y62jvgb5dm91abgfs3cy260y1lxiwpvirs378a3lj4mrlmrqdsm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/test_toml_file.py" ;release information tests
+              "--ignore=tests/test_util_benchmark.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; Drop test coverage requirements
+              (substitute* "pyproject.toml"
+                (("--cov(-[^ ]*)?([ =][^ \"]*)?") "")))))))
+    (native-inputs
+     (list python-cython
+           python-poetry-core           ;actual build backend
+           python-pytest
+           python-setuptools))          ;required for cythonization
+    (home-page "https://python-constraint.github.io/python-constraint")
+    (synopsis "Constraint satisfaction problem resolver for Python")
+    (description
+     "The @code{python-constraint} module offers efficient solvers for
+@url{https://en.wikipedia.org/wiki/Constraint_satisfaction_problem, constraint
+satisfaction problems} over finite domains in an accessible Python package.")
     (license license:bsd-3)))
 
 (define-public python-cvxopt
