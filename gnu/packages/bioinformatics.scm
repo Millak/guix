@@ -23087,7 +23087,7 @@ genomes known to contain a given k-mer.")
     (inputs
      (list htslib python-wrapper zlib))
     (native-inputs
-     (list autoconf automake which))
+     (list autoconf automake python-setuptools which))
     (home-page "https://csb5.github.io/lofreq/")
     (synopsis "Sensitive variant calling from sequencing data")
     (description "LoFreq is a fast and sensitive variant-caller for inferring
