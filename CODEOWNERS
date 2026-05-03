@@ -264,6 +264,7 @@ gnu/installer(\.scm$|/)                            @guix/installer
 gnu/packages/clojure\.scm                          @guix/java
 gnu/packages/java(-.+|)\.scm$                      @guix/java
 gnu/packages/maven(-.+|)\.scm$                     @guix/java
+gnu/packages/netbeans\.scm                         @guix/java
 guix/build/ant-build-system\.scm                   @guix/java
 guix/build/clojure-build-system\.scm               @guix/java
 guix/build/clojure-utils\.scm                      @guix/java
