@@ -14449,6 +14449,8 @@ you to actually draw things with your favorite toolkit.")
     (license (list license:gpl2 license:epl1.0))))
 
 (define-public python-gridmap
+  ;; XXX: Project is unmaintained since 2020-08-24, see:
+  ;; <https://github.com/pygridtools/gridmap/issues/99>.
   (package
     (name "python-gridmap")
     (version "0.15.0")
