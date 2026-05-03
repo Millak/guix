@@ -4970,7 +4970,12 @@ Express data files to standard mailbox format.")
     (inputs
      (list boost libgsf python zlib))
     (native-inputs
-     (list autoconf automake gettext-minimal libtool pkg-config))
+     (list autoconf
+           automake
+           gettext-minimal
+           libtool
+           pkg-config
+           python-setuptools))
     (home-page "https://www.five-ten-sg.com/libpst/")
     (synopsis "Tools to process Outlook email archives")
     (description "The Libpst utilities include @code{readpst} which can
