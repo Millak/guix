@@ -1509,7 +1509,7 @@ defaults for 80% of the use cases.")
 (define-public gitlogue
   (package
     (name "gitlogue")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -1519,7 +1519,7 @@ defaults for 80% of the use cases.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "007sf2b605jkjk4qyxar1bq7fh71yvv9ixsxfqrs3hzschyj3m2g"))
+         "008cqcc4kjandfi6pqrnr689xb11d6fdhcb48kbv0227v3f5gvn3"))
        (modules '((guix build utils)))
        (snippet
         '(begin
