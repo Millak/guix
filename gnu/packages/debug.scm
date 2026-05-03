@@ -263,7 +263,7 @@ simple way to add custom protocol messages.")
 (define-public c-vise
   (package
     (name "c-vise")
-    (version "2.4.0")
+    (version "2.8.0")
     (source
      (origin
        (method git-fetch)
@@ -271,37 +271,53 @@ simple way to add custom protocol messages.")
              (url "https://github.com/marxin/cvise")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1i2z5q2pcwh1gpdqc24x1a2q5vzwhblzzq021nzwf304di7m18vl"))
+        (base32 "1ynhm1d56r25apgvv0wqbdrhjbwigkwrgw92g2czz4nfx77rjxz2"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
-    (native-inputs
-     (list flex python-pytest))
-    (inputs
-     (list bash-minimal clang llvm unifdef
-           python python-pebble python-psutil python-chardet))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-linkage
-           (lambda _
-            (substitute* "clang_delta/CMakeLists.txt"
-              (("\\$\\{LLVM_LINK_LLVM_DYLIB\\}") "True")
-              (("  LLVM") "  LLVMSupport"))))
-         (add-before 'build 'hardcode-paths
-           (lambda _
-            (substitute* "cvise.py"
-              (("/bin/bash") (which "bash"))
-              (("(.*)# Special case for clang-format" & >)
-               (string-append > "# Special case for unifdef\n"
-                              > "programs['unifdef'] = '" (which "unifdef") "'\n"
-                              &)))))
-         (add-after 'install 'wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (python-path (getenv "GUIX_PYTHONPATH")))
-               (wrap-program (string-append out "/bin/cvise")
-                 `("PYTHONPATH" ":" prefix (,python-path)))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-linkage
+            (lambda _
+              (substitute* "clang_delta/CMakeLists.txt"
+                (("\\$\\{LLVM_LINK_LLVM_DYLIB\\}")
+                 "True")
+                (("  LLVM")
+                 "  LLVMSupport"))))
+          (add-before 'build 'hardcode-paths
+            (lambda _
+              (substitute* "cvise.py"
+                (("/bin/bash")
+                 (which "bash"))
+                (("(.*)# Special case for clang-format" all blank)
+                 (format #f "~a# Special case for unifdef
+~aprograms['unifdef'] = ~s
+~a"
+                         blank blank (which "unifdef") all)))))
+          (add-after 'install 'wrap
+            (lambda _
+              (let ((python-path (getenv "GUIX_PYTHONPATH")))
+                (wrap-program (string-append #$output "/bin/cvise")
+                  `("PYTHONPATH" ":" prefix
+                    (,(string-join
+                       (filter (lambda (cand)
+                                 (not (string-contains cand "pytest")))
+                               (string-split python-path #\:))
+                       ":"))))))))))
+    (native-inputs
+     (list flex
+           python-pytest
+           python-pytest-flake8))
+    (inputs
+     (list bash-minimal
+           clang
+           llvm
+           unifdef
+           python
+           python-pebble
+           python-psutil
+           python-chardet))
     (home-page "https://github.com/marxin/cvise")
     (synopsis "Reducer for interesting code")
     (description
