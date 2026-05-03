@@ -1158,7 +1158,7 @@ on memory usage on GNU/Linux systems.")
 (define-public htop
   (package
     (name "htop")
-    (version "3.5.0")
+    (version "3.5.1")
     (source
      (origin
        (method git-fetch)
@@ -1166,7 +1166,7 @@ on memory usage on GNU/Linux systems.")
              (url "https://github.com/htop-dev/htop")
              (commit version)))
        (sha256
-        (base32 "1r07ri0dl9xz0jn1hc2g8q3l0q4clvnxs05yagpzsz0zigp4flj5"))
+        (base32 "187gyj081n6qsidll5wdri3jkr4m2i4m461z3xv03y342f5yj3lv"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
