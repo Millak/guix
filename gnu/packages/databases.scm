@@ -72,6 +72,7 @@
 ;;; Copyright © 2026 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2026 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
+;;; Copyright © 2026 Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2341,7 +2342,8 @@ including field and record folding.")
              ;; Ceph requires that RTTI is enabled.
              "-DUSE_RTTI=1"
              ;; Prevent the build from passing '-march=native' to the compiler.
-             "-DPORTABLE=1")
+             "-DPORTABLE=1"
+             "-DWITH_SNAPPY=1")
 
        ;; Many tests fail on 32-bit platforms. There are multiple
        ;; reports about this upstream, but it's not going to be
@@ -2368,8 +2370,9 @@ including field and record folding.")
            gflags
            jemalloc
            lz4
-           snappy
            zlib))
+    ;; RocksDBConfig.cmake references snappy.
+    (propagated-inputs (list snappy))
     (home-page "https://rocksdb.org/")
     (synopsis "Persistent key-value store for fast storage")
     (description
