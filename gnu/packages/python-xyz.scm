@@ -41536,18 +41536,25 @@ style guide, even if the original code didn't violate the style guide.")
 (define-public python-yapsy
   (package
     (name "python-yapsy")
-    (version "1.12.2")
+    ;; 1.12.2 (2019-06-28), the latest changes provide support for Python
+    ;; 3.12+; move back to git tag when released.
+    (properties '((commit . "6b487b04affb19ab40adbbc87827668bea0abcee")
+                  (revision . "0")))
+    (version (git-version "1.12.2"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "Yapsy" version))
-        (sha256
-          (base32 "12rznbnswfw0w7qfbvmmffr9r317gl1rqg36nijwzsklkjgks4fq"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tibonihoo/yapsy")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "046c505kwdbp4vhqjrc5xpdrji7lyxv11nzq9yn20c2q1186b9j0"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'unittest))
     (native-inputs
-     (list python-setuptools))
+     (list python-pytest python-setuptools))
     (home-page "https://yapsy.sourceforge.net")
     (synopsis "Simple plugin system for Python applications")
     (description "Yapsy, or Yet Another Plugin SYstem, is a small library
