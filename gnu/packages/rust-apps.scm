@@ -3360,7 +3360,7 @@ command.")
 (define-public wasm-bindgen-cli
   (package
     (name "wasm-bindgen-cli")
-    (version "0.2.118")
+    (version "0.2.120")
     (source
      (origin
        (method git-fetch)
@@ -3369,7 +3369,7 @@ command.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02yy57pa4p53vrhpgc8xf737dnqiifnnnjinh49yq1345kd3287j"))
+        (base32 "0404jgzfcbmjvr1zl9jgw49nqs1s182cbvdzwh92i76qd2cpg166"))
        (modules '((guix build utils)))
        (snippet
         '(begin
