@@ -115,6 +115,7 @@
        (uri (git-reference
               (url "git://git.chiark.greenend.org.uk/~ianmdlvl/adns.git")
               (commit (string-append "adns-" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
          "0ln3l5j7wb1xazrzl76p9xar52p6l2k1cwy7jazxw1acl71k9h5n"))))
