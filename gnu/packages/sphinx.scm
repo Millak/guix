@@ -959,7 +959,9 @@ builder does not support SVG images natively (e.g. LaTeX).")
     (native-inputs
      (list python-flit-core))
     (propagated-inputs
-     (list python-sphinxcontrib-serializinghtml))
+     (list python-jinja2
+           python-sphinx
+           python-sphinxcontrib-serializinghtml))
     (home-page "https://sphinx-doc.org/")
     (synopsis "Sphinx API for web applications")
     (description
