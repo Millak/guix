@@ -652,6 +652,8 @@ math in HTML via JavaScript.")
        (sha256
         (base32 "0la7qasz5xlyzpx20ldcc62vkwg4xk2dd39j27dqz7zv1m8mjg0c"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))                ;No tests upstream.
     (propagated-inputs (list python-sphinx))
     (native-inputs (list python-flit-core python-pytest))
     (home-page "https://github.com/sphinx-contrib/jquery")
