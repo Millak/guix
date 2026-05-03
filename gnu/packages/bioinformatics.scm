@@ -14540,7 +14540,7 @@ data.  It also generates basic statistics for your sequences.")
 (define-public shorah
   (package
     (name "shorah")
-    (version "1.99.2")
+    (version "1.99.3")
     (source
      (origin
        (method url-fetch)
@@ -14549,7 +14549,7 @@ data.  It also generates basic statistics for your sequences.")
                            "/shorah-" version ".tar.xz"))
        (sha256
         (base32
-         "158dir9qcqspknlnyfr9zwk41x48nrh5wcg10k2grh9cidp9daiq"))))
+         "0zclbvdvbbfv3qpln3f47qa1yn77wf68z2b30vcxrzq3vsla4kgb"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -14584,6 +14584,7 @@ data.  It also generates basic statistics for your sequences.")
            python
            python-biopython
            python-numpy
+           python-setuptools
            zlib))
     (native-inputs
      (list pkg-config))
