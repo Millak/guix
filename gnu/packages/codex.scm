@@ -834,7 +834,8 @@
     (inputs (cons* bash-minimal coreutils git-minimal sed
                    libcap oniguruma openssl sqlite zlib `(,zstd "lib")
                    (cargo-inputs 'codex)))
-    (properties '((timeout . 108000)))  ;30 hours
+    (properties '((timeout . 108000) ; 30  hours
+                  (max-silent-time . 54000))) ; 15 hours
     (home-page "https://github.com/openai/codex")
     (synopsis "AI-assisted coding CLI and TUI")
     (description
