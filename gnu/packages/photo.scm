@@ -587,7 +587,7 @@ scene to produce an image that looks much like a tone-mapped image.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list bash-minimal glib python))
+     (list bash-minimal glib python python-setuptools))
     (home-page "https://lensfun.github.io/")
     (synopsis "Library to correct optical lens defects with a lens database")
     (description "Digital photographs are not ideal.  Of course, the better is
