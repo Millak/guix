@@ -882,6 +882,7 @@ compiled, requires few libraries, and starts up quickly.")
        (uri (git-reference
               (url "https://codeberg.org/museoa/e3editor")
               (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
          "1l57rxin3kv6iiw91rhjzl3bpk0gkfp3nrx7wmqikk1nycmkfbhm"))))
