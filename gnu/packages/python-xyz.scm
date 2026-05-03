@@ -7778,16 +7778,32 @@ matplotlib plots or supply colors for a web application.")
 (define-public python-parse-type
   (package
     (name "python-parse-type")
-    (version "0.6.6")
+    ;; 0.6.6 (2025-08-11), the latest changes provide support for Python
+    ;; 3.12+; move back to git tag when released.
+    (properties '((commit . "5c4126ae3973b5c0a4107cd8b29f2b74993be330")
+                  (revision . "0")))
+    (version (git-version "0.6.6"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "parse_type" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jenisys/parse_type")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1cmzjw8gryc08lp9znaxrngl6csdifd3610fd46pffa82223ffji"))))
+        (base32 "0gcpyzd3lj7bp9k6m515gwkjwabnhkb15vrx6bf8ba8nyv30v571"))))
     (build-system pyproject-build-system)
-    ;; tests: 332 passed, 2 skipped
+    (arguments
+     (list
+      ;; tests: 332 passed, 2 skipped
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            ;; To bypass options: --metadata, --html and --junit-xml.
+            (lambda _
+              (delete-file "pytest.ini"))))))
     (native-inputs
      (list python-pytest
            python-setuptools
@@ -7798,7 +7814,7 @@ matplotlib plots or supply colors for a web application.")
     (home-page "https://github.com/jenisys/parse_type")
     (synopsis "Extended parse module")
     (description "Parse_type extends the python parse module.")
-    (license license:bsd-3)))
+    (license license:expat)))
 
 (define-public python-parse
   (package
