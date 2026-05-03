@@ -35262,20 +35262,31 @@ Currently, Linux is the only platform supported by this library.")
 (define-public python-bleak
   (package
     (name "python-bleak")
-    (version "0.22.3")
+    (version "2.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "bleak" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hbldh/bleak")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0p04kk84vjmfv2pl1lichaaq8rc9xdm9sgd5g9r5gr2pjv0w6j9i"))))
+        (base32 "0vdzx6s5fsgnl3j2k0kn6w1v8mqhb2jjpmpq6vdk9i0bdp1456ff"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f)) ; no tests
-    (propagated-inputs (list python-async-timeout
-                        python-dbus-fast
-                        python-typing-extensions))
-    (native-inputs (list python-poetry-core))
+     (list
+      ;; Integration tests require unpackaged dependencies.
+      #:test-flags #~(list "--ignore=tests/integration")))
+    (propagated-inputs
+     (list python-async-timeout
+           python-dbus-fast
+           python-typing-extensions))
+    (native-inputs
+     (list python-coverage
+           python-packaging
+           python-poetry-core
+           python-pytest
+           python-pytest-asyncio))
     (home-page "https://github.com/hbldh/bleak")
     (synopsis "Bluetooth Low Energy platform Agnostic Klient")
     (description "This package provides a Bluetooth Low Energy platform-agnostic
