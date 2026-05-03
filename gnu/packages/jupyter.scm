@@ -1113,14 +1113,14 @@ JavaScript build steps.")
 (define-public python-jupyter-server
   (package
     (name "python-jupyter-server")
-    (version "2.14.0")
+    (version "2.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyter_server" version))
        (sha256
         (base32
-         "0xz69anflhib514lgpdrs0ppmbwp13zbg4vwzls3820jlp7594b5"))))
+         "1mcrgqgzhwfiqk7x4lc2x294ba7cb3ny2akpnj4chr39ascai3n3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1173,6 +1173,7 @@ JavaScript build steps.")
            python-hatch-jupyter-builder
            python-ipykernel
            python-pytest
+           python-pytest-asyncio
            python-pytest-console-scripts
            python-pytest-jupyter
            python-pytest-timeout
