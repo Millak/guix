@@ -49213,7 +49213,7 @@ Return the default GRUB theme used by the operating system if no
 record.
 
 It comes with a fancy background image displaying the Guix
-logos.
+logo.
 @end deffn
 
 For example, to override the default resolution, you may use something
