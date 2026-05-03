@@ -238,12 +238,12 @@ contains the graphical user interface for synfig.")
              (when tests?
                (invoke "./tests")))))))
     (native-inputs
-     (list gettext-minimal
-           `(,glib "bin")
-           nasm
-           perl
-           pkg-config
-           python-wrapper))
+     (cons* gettext-minimal
+            `(,glib "bin")
+            perl
+            pkg-config
+            python-wrapper
+            (maybe-nasm)))
     (inputs
      (list cairo
            curl
