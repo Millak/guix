@@ -1006,13 +1006,16 @@ JupyterLab-like applications from a more limited scope.")
 (define-public python-jupyter-events
   (package
     (name "python-jupyter-events")
-    (version "0.10.0")
+    (version "0.12.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "jupyter_events" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jupyter/jupyter_events")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "08jyhj16drl3hg594gr677bc5q991lpd4khlhb3jx26csclq42v7"))))
+        (base32 "1n0jgk49kjiv6j6xnwnqfzw88zba7alh6m5gzq78gjvr1kf5cdir"))))
     (build-system pyproject-build-system)
     (arguments
      ;; This passes the whole command line to shutil.which, instead of just
@@ -1031,7 +1034,7 @@ JupyterLab-like applications from a more limited scope.")
                          python-pytest
                          python-pytest-asyncio
                          python-pytest-console-scripts))
-    (home-page "https://pypi.org/project/jupyter-events/")
+    (home-page "https://github.com/jupyter/jupyter_events")
     (synopsis "Jupyter Event System library")
     (description "Jupyter Events enables Jupyter Python
 Applications (e.g. Jupyter Server, JupyterLab Server, JupyterHub, etc.) to
