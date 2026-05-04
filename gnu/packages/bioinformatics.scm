@@ -22481,38 +22481,39 @@ frames with arbitrary sets of columns.")
       (license license:expat))))
 
 (define-public r-imagearray
-  (let ((commit "2f90694fa33ed8320a6a2f7e0ad5c8a1796cbfc6")
-        (revision "1"))
-    (package
-      (name "r-imagearray")
-      (version (git-version "0.99.6" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/BIMSBbioinfo/ImageArray")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1mf68b007dc5wdzdva4vkjgkavgagjk45qv05f7vahbpi24yjj4n"))))
-      (properties `((upstream-name . "ImageArray")))
-      (build-system r-build-system)
-      (propagated-inputs (list r-delayedarray
-                               r-ebimage
-                               r-hdf5array
-                               r-magick
-                               r-rarr
-                               r-rhdf5
-                               r-s4arrays
-                               r-s4vectors))
-      (native-inputs (list r-knitr r-testthat))
-      (home-page "https://github.com/BIMSBbioinfo/ImageArray")
-      (synopsis "Framework for on-disk and in-memory image arrays")
-      (description
-       "@code{ImageArray} provides a framework for on-disk and in-memory image
-arrays, specifically for pyramidal images stored in either HDF5 files or Zarr
-stores.")
-      (license license:expat))))
+  (package
+    (name "r-imagearray")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ImageArray" version))
+       (sha256
+        (base32 "07zq5fcw2dsvm4qaksaj4gy9gj5lxcgq82l497c5kgvl4wba049c"))))
+    (properties `((upstream-name . "ImageArray")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:skipped-tests
+      ;; RBiomFormats is not installed.
+      '(("test-array.R" "check indexing \\(BFArray\\)"))))
+    (propagated-inputs (list r-delayedarray
+                             r-ebimage
+                             r-hdf5array
+                             r-magick
+                             r-rarr
+                             r-rhdf5
+                             r-s4arrays
+                             r-s4vectors
+                             r-zarrarray))
+    (native-inputs (list r-ggplot2 r-knitr r-testthat))
+    (home-page "https://github.com/BIMSBbioinfo/ImageArray")
+    (synopsis "Framework for on-disk and in-memory image arrays")
+    (description
+     "@code{ImageArray} provides a framework for on-disk and in-memory image
+arrays, specifically for pyramidal images stored in HDF5, Zarr and life
+sciences image file formats (OME Bio-Formats).")
+    (license license:expat)))
 
 (define-public r-velocyto
   (let ((commit "d7790346cb99f49ab9c2b23ba70dcf9d2c9fc350")
