@@ -20436,7 +20436,7 @@ implementation.")
 (define-public emacs-cider
   (package
     (name "emacs-cider")
-    (version "1.20.0")
+    (version "1.21.0")
     (source
      (origin
        (method git-fetch)
@@ -20445,26 +20445,30 @@ implementation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08hd281ybskkhir170hr3xpga1b1hwpph7rd0fk6fvm0ngdgxazs"))))
+        (base32 "19wx9mc488qipm08s7hc0zrfmiylw577lmf3jpvqcjq7amx14jgc"))))
     (build-system emacs-build-system)
     (arguments
      (list
-      #:include #~(cons* "^lein\\.sh$" "^clojure\\.sh$" %default-include)
-      #:exclude                        ;don't exclude 'cider-test.el'
-      #~(list "^\\.dir-locals\\.el$" "^test/")
+      #:lisp-directory "lisp"
       #:test-command
       #~(list "eldev" "--use-emacsloadpath" "-dtT" "-p" "test")
+      #:exclude
+      #~(list "^\\.dir-locals\\.el$" "^test/")
       #:phases
-      ;; XXX: file "test/cider-tests.el" contains a bogus "/bin/command"
-      ;; string, and `patch-el-files' phase chokes on it (even though the
-      ;; file is excluded from installation).  Remove the phase altogether
-      ;; since there is no "/bin/executable" to replace in the code base
-      ;; anyway.
       #~(modify-phases %standard-phases
           (delete 'patch-el-files)
-          (add-before 'check 'skip-failing-tests
-            (lambda _ ;; Require network.
-              (delete-file "test/cider-jar-tests.el"))))))
+          (add-after 'unpack 'remove-network-tests
+            (lambda _
+              (delete-file "../test/cider-jar-tests.el")))
+          (replace 'check
+            (lambda* (#:key test-command tests?
+                      #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion ".."
+                  (setenv "EMACSLOADPATH"
+                          (string-append (getcwd) ":"
+                                         (getenv "EMACSLOADPATH")))
+                  (apply invoke test-command))))))))
     (native-inputs (list emacs-buttercup emacs-eldev))
     (propagated-inputs
      (list emacs-clojure-mode
