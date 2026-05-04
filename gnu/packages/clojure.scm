@@ -997,7 +997,7 @@ the @code{tools.deps} library is not needed for dep expansion.")
 (define-public clojure-tools-deps
   (package
     (name "clojure-tools-deps")
-    (version "0.28.1578")
+    (version "0.29.1598")
     (home-page "https://github.com/clojure/tools.deps")
     (source (origin
               (method git-fetch)
@@ -1007,7 +1007,7 @@ the @code{tools.deps} library is not needed for dep expansion.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w3f8cl81q4kln6iz74fnfzms4c4x279ivh1962pcg22q8l1w8d5"))))
+                "1qds0ri6y8s7419x3pzl9yhhr19qli3l52yg9a78w47h0w6dd1kv"))))
     (build-system clojure-build-system)
     (arguments
      `(#:source-dirs '("src/main/clojure" "src/main/resources")
@@ -1016,23 +1016,14 @@ the @code{tools.deps} library is not needed for dep expansion.")
        #:doc-dirs '()
        ;; FIXME: Could not initialize class
        ;; org.eclipse.aether.transport.http.SslSocketFactory
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'reference-clojure-jar-input
-           ;; Use static clojure jar from build input at runtime by default.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/main/resources/clojure/tools/deps/deps.edn"
-               (("org\\.clojure/clojure.*$")
-                (string-append "org.clojure/clojure {:local/root \""
-                               (assoc-ref inputs "clojure")
-                               "/share/java/clojure.jar\"}"))))))))
+       #:tests? #f))
     (propagated-inputs (list maven-3.8-core
                              maven-resolver-1.6-connector-basic
                              maven-resolver-1.6-transport-http
                              maven-resolver-1.6-transport-file
                              clojure-tools-gitlibs
                              clojure-tools-cli
+                             clojure-tools-deps-edn
                              clojure-data-xml
                              cognitect-aws-api))
     (synopsis "Clojure library supporting clojure-tools")
