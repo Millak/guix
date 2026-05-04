@@ -1493,6 +1493,48 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                         ("CONFIG_VHOST_VDPA" . m))
                       (default-extra-linux-options linux-libre-lts-version))))
 
+(define-public reform-debian-packages-for-7.0
+  (package
+    (name "reform-debian-packages")
+    (version "2023-07-10-559-gced99e4") ;from git describe
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://source.mnt.re/reform/reform-debian-packages.git")
+             (commit "ced99e4f4b1fa7294823ac57f1561490d5d4e1f1")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rnk22dg0xrljpfzhc0lvlksd2zpddwhivvph3q6kgbac4afwv9r"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("linux/patches7.0/" "/patches7.0")
+          ("linux/" "/dts/amlogic"
+           #:include-regexp ("meson.*\\.dts$"))
+          ("linux/" "/dts/freescale"
+           #:include-regexp ("imx8.*\\.dts$"))
+          ("linux/" "/dts/freescale"
+           #:include-regexp ("fsl.*\\.dts$"))
+          ("linux/" "/dts/rockchip"
+           #:include-regexp ("rk3588.*\\.dts$"))
+          ("linux/config" "config"))))
+    (home-page "https://source.mnt.re/reform/reform-debian-packages")
+    (synopsis
+     "Linux kernel patches and device-trees used for MNT Reform systems")
+    (description
+     "Linux kernel patches and device-trees used for the MNT Reform systems")
+    (license (list
+              (license:fsf-free "file://filter-output"
+                                "https://www.gnu.org/prep/maintain/html_node/License-Notices-for-Other-Files.html")
+              license:bsd-2
+              license:expat
+              license:gpl2
+              license:gpl2+
+              license:gpl3
+              license:x11))))
+
 (define-public reform-debian-packages-for-6.19
   (package
     (name "reform-debian-packages")
