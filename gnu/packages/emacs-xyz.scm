@@ -18144,11 +18144,14 @@ Application Programming Interface}}, a free and open-source quotations
     (name "emacs-spinner")
     (version "1.7.4")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://elpa.gnu.org/packages/spinner-"
-                                  version ".tar"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Malabarba/spinner.el")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
-               (base32 "140kss25ijbwf8hzflbjz67ry76w2cyrh02axk95n6qcxv7jr7pv"))))
+               (base32
+                "1m872dj1n05mkvgfyiqsbri489vmff5zdmv4xx5qj2s91sp046rl"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/Malabarba/spinner.el")
     (synopsis "Emacs mode-line spinner for operations in progress")
