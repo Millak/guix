@@ -512,7 +512,7 @@ defining and using monads and useful monadic functions.")
 (define-public clojure-core-async
   (package
     (name "clojure-core-async")
-    (version "1.8.741")
+    (version "1.9.865")
     (home-page "https://github.com/clojure/core.async")
     (source (origin
               (method git-fetch)
@@ -522,7 +522,7 @@ defining and using monads and useful monadic functions.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1m6lir2xr119yxz483cz0rfw4k3a40qmmsiwl2y7kyxy65vab60z"))))
+                "15pc2m58fscix85gsiwl9dlvw2x6alvc4qni46rry2sr00nfzd3r"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure")
