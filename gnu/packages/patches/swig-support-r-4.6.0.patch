@@ -1,0 +1,171 @@
+From 494259f19b3ca4ad0b11c858bc3ba9b587fa2ed5 Mon Sep 17 00:00:00 2001
+From: Bradley Lowekamp <blowekamp@mail.nih.gov>
+Date: Thu, 30 Apr 2026 16:09:54 +0000
+Subject: [PATCH 1/2] [R] Fix compilation with R 4.6.0 which removed non-API
+ macros #3407
+
+R 4.6.0 (April 2025) removed the non-API macro SET_S4_OBJECT and made
+CHARACTER_POINTER return a const pointer, breaking compilation of SWIG
+generated R code.
+
+Replace with proper R API equivalents:
+- SET_S4_OBJECT(x) -> x = Rf_asS4(x, TRUE, 0)  (3 sites in rrun.swg)
+- CHARACTER_POINTER(v)[i] = ... -> SET_STRING_ELT(v, i, ...)  (2 sites in std_vector.i)
+- CHARACTER_POINTER() via pstr -> STRING_ELT(, i) directly  (argcargv.i)
+
+All replacement APIs have been available since R 2.x so no version
+guards are required.
+---
+ CHANGES.current    | 6 ++++++
+ Lib/r/argcargv.i   | 4 +---
+ Lib/r/rrun.swg     | 6 +++---
+ Lib/r/std_vector.i | 4 ++--
+ 4 files changed, 12 insertions(+), 8 deletions(-)
+
+diff --git a/Lib/r/argcargv.i b/Lib/r/argcargv.i
+index 73380f4e2c9..af7aa14d66c 100644
+--- a/Lib/r/argcargv.i
++++ b/Lib/r/argcargv.i
+@@ -14,7 +14,6 @@
+ %}
+ %typemap(in) (int ARGC, char **ARGV) {
+   $1_ltype i;
+-  SEXP *pstr;
+   if ($input == R_NilValue) {
+     /* Empty array */
+     $1 = 0;
+@@ -22,14 +21,13 @@
+     SWIG_exception_fail(SWIG_RuntimeError, "Wrong array type.");
+   } else {
+     $1 = Rf_length($input);
+-    pstr = CHARACTER_POINTER($input);
+   }
+   $2 = ($2_ltype) malloc(($1+1)*sizeof($*2_ltype));
+   if ($2 == NULL) {
+     SWIG_exception_fail(SWIG_MemoryError, "Memory allocation failed.");
+   }
+   for (i = 0; i < $1; i++) {
+-    $2[i] = ($*2_ltype)STRING_VALUE(pstr[i]);
++    $2[i] = ($*2_ltype)STRING_VALUE(STRING_ELT($input, i));
+   }
+   $2[i] = NULL;
+ }
+diff --git a/Lib/r/rrun.swg b/Lib/r/rrun.swg
+index 4c03d5884d7..5dee391f32f 100644
+--- a/Lib/r/rrun.swg
++++ b/Lib/r/rrun.swg
+@@ -267,7 +267,7 @@ SWIG_MakePtr(void *ptr, const char *typeName, int flags)
+     R_RegisterCFinalizer(external, R_SWIG_ReferenceFinalizer);
+ 
+   r_obj = SET_SLOT(r_obj, Rf_mkString((char *) "ref"), external);
+-  SET_S4_OBJECT(r_obj);
++  r_obj = Rf_asS4(r_obj, TRUE, 0);
+   Rf_unprotect(2);
+ 
+   return(r_obj);
+@@ -285,7 +285,7 @@ R_SWIG_create_SWIG_R_Array(const char *typeName, SEXP ref, int len)
+    Rf_protect(arr = R_do_slot_assign(arr, Rf_mkString("dims"), Rf_ScalarInteger(len)));
+ 
+    Rf_unprotect(3); 			   
+-   SET_S4_OBJECT(arr);	
++   arr = Rf_asS4(arr, TRUE, 0);
+    return arr;
+ }
+ 
+@@ -308,7 +308,7 @@ SWIG_R_NewPointerObj(void *ptr, swig_type_info *type, int flags) {
+   }
+   rptr = R_MakeExternalPtr(ptr, 
+   R_MakeExternalPtr(type, R_NilValue, R_NilValue), R_NilValue); 
+-  SET_S4_OBJECT(rptr);
++  rptr = Rf_asS4(rptr, TRUE, 0);
+   return rptr;
+ }
+ 
+diff --git a/Lib/r/std_vector.i b/Lib/r/std_vector.i
+index 6b32c9f6fc2..7db6d3814ac 100644
+--- a/Lib/r/std_vector.i
++++ b/Lib/r/std_vector.i
+@@ -203,7 +203,7 @@
+          PROTECT(result = Rf_allocVector(STRSXP, val->size()));
+          for (unsigned pos = 0; pos < val->size(); pos++)
+            {
+-             CHARACTER_POINTER(result)[pos] = Rf_mkChar(((*val)[pos]).c_str());
++             SET_STRING_ELT(result, pos, Rf_mkChar(((*val)[pos]).c_str()));
+            }
+         UNPROTECT(1);
+         return(result);
+@@ -669,7 +669,7 @@
+             // Fill the R vector
+             for (unsigned vpos = 0; vpos < val->at(pos).size(); ++vpos)
+               {
+-                CHARACTER_POINTER(VECTOR_ELT(result, pos))[vpos] = Rf_mkChar(val->at(pos).at(vpos).c_str());
++                SET_STRING_ELT(VECTOR_ELT(result, pos), vpos, Rf_mkChar(val->at(pos).at(vpos).c_str()));
+               }
+           }
+         UNPROTECT(1);
+
+From 77d8826b46a967af158e982d56008aea2c8f6cb1 Mon Sep 17 00:00:00 2001
+From: Erez Geva <ErezGeva2@gmail.com>
+Date: Fri, 1 May 2026 18:47:42 +0200
+Subject: [PATCH 2/2] Add versioned `R` testing
+
+Signed-off-by: Erez Geva <ErezGeva2@gmail.com>
+---
+ .github/workflows/linux.yml |  7 +++++++
+ Tools/CI-linux-install.sh   | 20 +++++++++++++++++++-
+ configure.ac                | 11 +++++++++++
+ 3 files changed, 37 insertions(+), 1 deletion(-)
+
+diff --git a/Tools/CI-linux-install.sh b/Tools/CI-linux-install.sh
+index ad74ad3f21f..8f459899906 100644
+--- a/Tools/CI-linux-install.sh
++++ b/Tools/CI-linux-install.sh
+@@ -181,7 +181,25 @@ case "$SWIGLANG" in
+ 		fi
+ 		;;
+ 	"r")
+-		$RETRY sudo apt-get -qq install r-base
++		if [[ -n "$VER" ]]; then
++			# Should helps with old version, but do not work
++			#$RETRY sudo apt-get -qq remove r-base r-base-core r-base-dev r-base-html r-doc-html r-recommended
++			sudo sed -i 's%^# deb-src %deb-src %' /etc/apt/sources.list
++			sudo sed -i 's%^Types: deb$%Types: deb deb-src%' /etc/apt/sources.list.d/*
++			$RETRY sudo apt-get -qq update
++			$RETRY sudo apt-get -qq build-dep r-base
++			r_build=`mktemp -d`
++			r_tarball=R-$VER.tar.gz
++			URL=https://cran.r-project.org/src/base/R-${VER:0:1}
++			$RETRY wget $URL/$r_tarball
++			tar -xf "$r_tarball" --strip-components=1 -C "$r_build"
++			cd "$r_build"
++			./configure
++			make
++			sudo make install
++		else
++			$RETRY sudo apt-get -qq install r-base
++		fi
+ 		;;
+ 	"ruby")
+ 		if [[ "$VER" ]]; then
+diff --git a/configure.ac b/configure.ac
+index e113f4b877c..e309b36ff45 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -2292,6 +2292,17 @@ else
+ if test "x$RBIN" = xyes; then
+    AC_PATH_PROG(RBIN, R)
+ fi
++if test -n "$RBIN" && test -x "$RBIN"; then
++   r_min_version=2.4.0
++   AC_MSG_CHECKING([for R version])
++   r_version=`R --version | grep 'R version' | sed 's%^R version %%;s% (.*%%'`
++   AS_VERSION_COMPARE(["$r_version"], ["$r_min_version"],
++                  [AC_MSG_RESULT([older then $r_min_version])
++                   AS_UNSET([RBIN])],        dnl bellow r_min_version
++                  [AC_MSG_RESULT([$r_version])],   dnl equal r_min_version
++                  [AC_MSG_RESULT([$r_version])])   dnl above r_min_version
++fi
++
+ fi
+ 
+ AC_SUBST(RBIN)

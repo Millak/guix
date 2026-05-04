@@ -88,7 +88,9 @@ you tailor the wrapping process to suit your application.")
                                  name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1kqz533599d00rrz0g2ryf8w2ynb25ayylpx10nmkxsndiq2l5j0"))))
+                "1kqz533599d00rrz0g2ryf8w2ynb25ayylpx10nmkxsndiq2l5j0"))
+              (patches
+               (search-patches "swig-support-r-4.6.0.patch"))))
     (native-inputs (list boost
                          pcre2 ; for pcre2-config
                          ;; The following are for tests and examples:

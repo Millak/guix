@@ -2488,6 +2488,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/swift-corelibs-libdispatch-5.7.3-modulemap.patch	\
   %D%/packages/patches/swift-llvm-5.7.3-linux.patch	\
   %D%/packages/patches/swig-support-gcc-12.patch		\
+  %D%/packages/patches/swig-support-r-4.6.0.patch		\
   %D%/packages/patches/swish-e-search.patch			\
   %D%/packages/patches/swish-e-format-security.patch		\
   %D%/packages/patches/t1lib-CVE-2010-2642.patch		\
