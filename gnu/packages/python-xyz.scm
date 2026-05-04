@@ -9455,7 +9455,15 @@ Mako, and Tornado.")
        (sha256
         (base32 "1f5hxyzlh5mdvvi52qapys9qcinffr6ghgivb6k4jxa92cbs3mfg"))))
     (build-system pyproject-build-system)
-    (arguments (list #:test-backend #~'unittest))
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-python-incompatibilities
+            (lambda _
+              (substitute* (find-files "tests" "\\.py$")
+                (("assertEquals") "assertEqual")))))))
     (propagated-inputs (list python-chardet))
     (native-inputs (list python-setuptools))
     (home-page "https://github.com/byroot/pysrt")
