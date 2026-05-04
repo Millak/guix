@@ -155,6 +155,7 @@
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system emacs)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system guile)
@@ -2933,7 +2934,7 @@ user which package sets would they like to install from it.")
 (define-public guile-wisp
   (package
     (name "guile-wisp")
-    (version "1.0.12")
+    (version "1.0.13")
     (source (origin
               (method hg-fetch)
               (uri (hg-reference
@@ -2942,7 +2943,7 @@ user which package sets would they like to install from it.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0m5ssl4ngk2jl1zk0fnsss0asyvwanjaa5rrcksldqnh2ikcr4bm"))))
+                "0fb4l0ww4rnkrsh4x46301j5xrqniny9b7yh7i6lp4wprwx0a7fs"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
@@ -2951,9 +2952,7 @@ user which package sets would they like to install from it.")
                   (guix build emacs-utils)
                   (ice-9 rdelim)
                   (ice-9 popen))
-       #:imported-modules (,@%default-gnu-imported-modules
-                           (guix build emacs-build-system)
-                           (guix build emacs-utils))
+       #:imported-modules ,%emacs-build-system-modules
        #:phases
        (modify-phases %standard-phases
          (replace 'bootstrap
@@ -2997,11 +2996,11 @@ user which package sets would they like to install from it.")
     (inputs
      (list guile-3.0))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("emacs" ,emacs-minimal)
-       ("python" ,python)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf
+           automake
+           emacs-minimal
+           pkg-config
+           python))
     (synopsis "Whitespace to lisp syntax for Guile")
     (description "Wisp is a syntax for Guile which provides a Python-like
 whitespace-significant language.  It may be easier on the eyes for some
