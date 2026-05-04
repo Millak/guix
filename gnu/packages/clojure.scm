@@ -1175,7 +1175,7 @@ asynchronous support.")
 (define-public cognitect-aws-api
   (package
     (name "cognitect-aws-api")
-    (version "0.8.800")
+    (version "0.8.824")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1184,7 +1184,7 @@ asynchronous support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17sxj3mvq4iasr0kchbx2anmrh25v8bvmpam4si704vksmnm28p3"))
+                "0ivlcmsr7rvr7741k9wzniv2zxijida0b588nqngm5vrgna816yl"))
               (modules '((guix build utils)))
               (snippet
                '(begin
