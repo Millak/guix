@@ -3620,63 +3620,76 @@ physics engine is just a system for procedural animation.")
 (define-public libtcod
   (package
     (name "libtcod")
-    (version "1.15.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/libtcod/libtcod")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0pzr8ajmbqvh43ldjajx962xirj3rf8ayh344p6mqlrmb8gxrfr5"))
-              (modules '((guix build utils)))
-              (snippet '(begin
-                          (delete-file-recursively "src/vendor/utf8proc")
-                          (delete-file-recursively "src/vendor/zlib")
-                          (delete-file "src/vendor/stb_truetype.h")
-                          (delete-file "src/vendor/stb_sprintf.h")
-                          (delete-file "src/vendor/lodepng.cpp")
-                          (delete-file "src/vendor/lodepng.h")
-
-                          (substitute* "buildsys/autotools/sources.am"
-                            (("\\.\\./\\.\\./src/vendor/lodepng\\.cpp \\\\\n") "")
-                            (("\\.\\./\\.\\./src/vendor/stb\\.c \\\\")
-                             "../../src/vendor/stb.c")
-                            (("\\.\\./\\.\\./src/vendor/utf8proc/utf8proc\\.c") ""))
-
-                          (substitute* "src/libtcod/sys_sdl_img_png.cpp"
-                            (("\\.\\./vendor/") ""))
-
-                          (substitute* '("src/libtcod/color/canvas.cpp"
-                                         "src/libtcod/sys_sdl_img_png.cpp"
-                                         "src/libtcod/tileset/truetype.cpp"
-                                         "src/libtcod/tileset/tilesheet.cpp")
-                            (("\\.\\./\\.\\./vendor/") ""))
-
-                          (substitute* "src/libtcod/console/printing.cpp"
-                            (("\\.\\./\\.\\./vendor/utf8proc/") ""))
-                          #t))))
-    (build-system gnu-build-system)
+    (version "2.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libtcod/libtcod")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zl1w4kpiiarh0f1q3j95k9vp90fx98hxl1ykma9hlkfw33srmy0"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (rmdir "vcpkg")
+           (with-directory-excursion "src"
+             ;; Delete the bundled third party libraries.
+             (with-directory-excursion "vendor"
+               (for-each delete-file
+                         '("khrplatform.h"
+                           "lodepng.c"
+                           "lodepng.h"
+                           "stb_ds.h"
+                           "stb_truetype.h"))
+               (for-each delete-file-recursively '("utf8proc" "zlib")))
+             ;; Do not fetch the libraries from their Git repositories.
+             ;; Instead, find the required packages available in Guix and link
+             ;; them.
+             (substitute* "CMakeLists.txt"
+               (("FetchContent_MakeAvailable\\(SDL3\\)")
+                "find_package(SDL3 REQUIRED)")
+               (("FetchContent_MakeAvailable\\(ZLIB\\)")
+                "find_package(ZLIB REQUIRED)")
+               (("FetchContent_MakeAvailable\\(lodepng-c\\)")
+                "find_library(LODEPNG_LIB NAMES lodepng REQUIRED)")
+               (("lodepng-c") "${LODEPNG_LIB}")
+               (("FetchContent_MakeAvailable\\(utf8proc\\)")
+                (string-append "find_package(PkgConfig REQUIRED)\n"
+                               "    pkg_check_modules(UTF8PROC REQUIRED"
+                               " libutf8proc)"))
+               (("utf8proc\\:\\:utf8proc") "utf8proc")
+               ((".*FetchContent_MakeAvailable\\(Stb.*") "")))))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("--with-gnu-ld"
-                           "LIBS=-lutf8proc -llodepng")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'change-to-build-dir
-           (lambda _
-             (chdir "buildsys/autotools")
-             (patch-shebang "get_version.py"))))))
+     (list
+      #:configure-flags
+      #~(list "-DLIBTCOD_TESTS=ON"
+              "-DBUILD_SHARED_LIBS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/libtcod/tileset_fallback.c"
+                (("popen\\(\"fc-match")
+                 (string-append "popen(\""
+                                (search-input-file inputs "/bin/fc-match"))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "tests"
+                  (copy-recursively "../../source/data" "data")
+                  (setenv "LD_LIBRARY_PATH" "..")
+                  (setenv "XDG_RUNTIME_DIR" (getcwd))
+                  (setenv "HOME" (getcwd))
+                  (invoke "./unittest"
+                          ;; No video device available.
+                          "~[!nonportable]"))))))))
     (native-inputs
-     (list autoconf
-           automake
-           libtool
-           python
-           pkg-config
-           stb-sprintf
-           stb-truetype))
+     (list catch2-3.8 pkg-config))
     (inputs
-     (list lodepng sdl2 utf8proc zlib))
+     (list fontconfig lodepng/c sdl3 stb-truetype utf8proc zlib))
     (home-page "https://github.com/libtcod/libtcod")
     (synopsis "Library specifically designed for writing roguelikes")
     (description
