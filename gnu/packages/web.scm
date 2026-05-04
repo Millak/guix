@@ -8065,21 +8065,12 @@ embedded into C/C++ applications or used as a standalone web server.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1frn97xfa88zrfmpnvdk1pc03yihlchhph99bhjayvzlfcrhm5v3"))))
+        (base32 "1frn97xfa88zrfmpnvdk1pc03yihlchhph99bhjayvzlfcrhm5v3"))
+       (patches
+        (search-patches "python-py-ubjson-recursion-test.patch"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-coverage lcov))
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'avoid-git-clean
-                    (lambda _
-                      (substitute* "coverage_test.sh"
-                        (("git clean.*")
-                         ""))))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "./coverage_test.sh")))))))
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/Iotic-Labs/py-ubjson")
     (synopsis "Universal Binary JSON encoder/decoder")
     (description
