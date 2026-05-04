@@ -2312,6 +2312,7 @@ functions.")
                             "feature/s3/manager"
                             "internal/configsources"
                             "internal/endpoints/v2"
+                            "service/cloudwatchlogs"
                             "service/iam"
                             "service/kms"
                             "service/s3"
@@ -2604,6 +2605,50 @@ configuration sources in AWS.")
     (description
      "Package internal/endpoints/v2 provides utilities for managing AWS as
 structured records.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-aws-aws-sdk-go-v2-service-cloudwatchlogs
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-service-cloudwatchlogs")
+    (version "1.66.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aws/aws-sdk-go-v2")
+              (commit (go-version->git-ref version
+                                           #:subdir "service/cloudwatchlogs"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "133768fizkn8hp0xrf90bh64y14gxzj45zfa1711igwafijwlvnl"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "service" "cloudwatchlogs")
+            (delete-all-but "." "service")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-internal-configsources
+           go-github-com-aws-aws-sdk-go-v2-internal-endpoints-v2
+           go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS SDK for Go v2 - CloudWatch Logs module")
+    (description
+     "This package provides the API client, operations, and parameter types
+for Amazon CloudWatch Logs.")
     (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-service-kms
