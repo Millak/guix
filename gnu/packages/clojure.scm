@@ -959,6 +959,41 @@ tools.analyzer, providing additional JVM-specific passes.")
 work with command-line arguments.")
     (license license:epl1.0)))
 
+(define-public clojure-tools-deps-edn
+  (package
+    (name "clojure-tools-deps-edn")
+    (version "0.9.22")
+    (home-page "https://github.com/clojure/tools.deps.edn")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url home-page)
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "082p6zpbb8vvdc9ncc0d66h3g7sax4pp0h4fymwiv0lakzyq3g9g"))))
+    (build-system clojure-build-system)
+    (arguments
+     `(#:source-dirs '("src/main/clojure" "src/main/resources")
+       #:test-dirs '("src/test/clojure")
+       #:doc-dirs '()
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'reference-clojure-jar-input
+           ;; Use static clojure jar from build input at runtime by default.
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/main/resources/clojure/tools/deps/deps.edn"
+               (("org\\.clojure/clojure.*$")
+                (string-append "org.clojure/clojure {:local/root \""
+                               (assoc-ref inputs "clojure")
+                               "/share/java/clojure.jar\"}"))))))))
+    (synopsis "Reader for @file{deps.edn}")
+    (description "This package provides support for reading and manipulating
+@file{deps.edn} files and data structures.  It can be used in scenarios where
+the @code{tools.deps} library is not needed for dep expansion.")
+    (license license:epl1.0)))
+
 (define-public clojure-tools-deps
   (package
     (name "clojure-tools-deps")
