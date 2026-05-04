@@ -1327,25 +1327,6 @@ for the @acronym{AWS,Amazon Web Services} SDK.")
     (home-page "https://github.com/awslabs/aws-c-sdkutils")
     (license license:asl2.0)))
 
-(define-public pcl
-  (package
-    (name "pcl")
-    (version "1.12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-              "http://www.xmailserver.org/pcl-" version ".tar.gz"))
-       (sha256
-        (base32
-         "06ly65rq4iyj2p4704i215c8y4rgspwl8sxfaifmf4ahfr30bcz7"))))
-    (build-system gnu-build-system)
-    (home-page "http://www.xmailserver.org/libpcl.html")
-    (synopsis "Portable Coroutine Library")
-    (description "The @acronym{PCL, Portable Coroutine Library} implements the
-low level functionality for coroutines.")
-    (license license:gpl2+)))
-
 (define-public aws-c-http
   (package
     (name "aws-c-http")
