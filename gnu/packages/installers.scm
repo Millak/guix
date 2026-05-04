@@ -18,13 +18,14 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages installers)
-  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
-  #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix packages)
   #:use-module (guix build-system scons)
   #:use-module (guix utils))
 
@@ -50,65 +51,75 @@
                        ("mingw-w64" ,xlibc)))
       (inputs (list zlib))
       (arguments
-       `(#:scons ,scons-3
-         #:modules ((srfi srfi-1)
+       (list
+        #:modules `((srfi srfi-1)
                     (srfi srfi-26)
                     (guix build utils)
                     (guix build scons-build-system))
-         #:tests? #f
-         #:scons-flags `("UNICODE=yes"
-                         "SKIPUTILS=MakeLangId,Makensisw,NSIS Menu,SubStart,zip2exe"
-                         "SKIPDOC=COPYING"
-                         "STRIP_CP=no"
-                         ,(string-append "PREFIX=" %output)
-                         ,(string-append "TARGET_ARCH=" ,target-arch)
-                         ,(string-append "XGCC_W32_PREFIX=" ,triplet "-")
-                         ,(string-append "PREFIX_PLUGINAPI_INC=" (assoc-ref %build-inputs "mingw-w64") "/include/")
-                         ,(string-append "PREFIX_PLUGINAPI_LIB=" (assoc-ref %build-inputs "mingw-w64") "/lib/"))
-         #:build-targets '("makensis"
-                           "stubs"
-                           "plugins"
-                           "utils")
-         #:install-targets '("install-stubs"
-                             "install-plugins"
-                             "install-data"
-                             "install-utils"
-                             "install-compiler"
-                             "install-conf")
-         #:phases (modify-phases %standard-phases
-                    (add-before 'build 'fix-env
-                      (lambda _
-                        (define* (filter-delimited-string delimited-string predicate #:optional (delimiter #\:))
-                          ;; Given a DELIMITED-STRING delimited by DELIMITER,
-                          ;; only keep items that satisfy PREDICATE
-                          (string-join
-                           (filter predicate (string-split delimited-string delimiter))
-                           (string delimiter)))
-                        (define (mingw-path? path)
-                          (string-prefix? (assoc-ref %build-inputs "mingw-w64") path))
-                        (define (xgcc-path? path)
-                          (string-prefix? (assoc-ref %build-inputs "xgcc") path))
-                        (define (cross-toolchain-path? path)
-                          (or (xgcc-path? path) (mingw-path? path)))
+        #:tests? #f
+        #:scons-flags
+        #~(list "UNICODE=yes"
+                "SKIPUTILS=MakeLangId,Makensisw,NSIS Menu,SubStart,zip2exe"
+                "SKIPDOC=COPYING"
+                "STRIP_CP=no"
+                (string-append "PREFIX=" #$output)
+                (string-append "TARGET_ARCH=" #$target-arch)
+                (string-append "XGCC_W32_PREFIX=" #$triplet "-")
+                (string-append "PREFIX_PLUGINAPI_INC="
+                               (assoc-ref %build-inputs "mingw-w64")
+                               "/include/")
+                (string-append "PREFIX_PLUGINAPI_LIB="
+                               (assoc-ref %build-inputs "mingw-w64")
+                               "/lib/"))
+        #:build-targets #~(list "makensis" "stubs" "plugins" "utils")
+        #:install-targets
+        #~(list "install-stubs"
+                "install-plugins"
+                "install-data"
+                "install-utils"
+                "install-compiler"
+                "install-conf")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'fix-env
+              (lambda _
+                (define* (filter-delimited-string delimited-string predicate
+                                                  #:optional (delimiter #\:))
+                  ;; Given a DELIMITED-STRING delimited by DELIMITER,
+                  ;; only keep items that satisfy PREDICATE
+                  (string-join
+                   (filter predicate (string-split delimited-string delimiter))
+                   (string delimiter)))
+                (define (mingw-path? path)
+                  (string-prefix? (assoc-ref %build-inputs "mingw-w64") path))
+                (define (xgcc-path? path)
+                  (string-prefix? (assoc-ref %build-inputs "xgcc") path))
+                (define (cross-toolchain-path? path)
+                  (or (xgcc-path? path) (mingw-path? path)))
 
-                        (for-each
-                         (lambda (env-name)
-                           (let ((env-val (getenv env-name)))
-                             ;; Remove all mingw-w64 and xgcc paths from env vars meant
-                             ;; for native toolchain
-                             (setenv env-name
-                                     (filter-delimited-string env-val (negate cross-toolchain-path?)))
-                             ;; Add the removed paths back into CROSS_-prefixed
-                             ;; version of env vars
-                             (setenv (string-append "CROSS_" env-name)
-                                     (filter-delimited-string env-val cross-toolchain-path?))))
-                         '("C_INCLUDE_PATH" "CPLUS_INCLUDE_PATH" "LIBRARY_PATH"))))
-                    (add-before 'build 'fix-target-detection
-                      (lambda _
-                        ;; NSIS target detection is screwed up, manually change
-                        ;; it ourselves
-                        (substitute* "Source/build.cpp" (("m_target_type=TARGET_X86UNICODE")
-                                                         (string-append "m_target_type=" ,nsis-target-type))))))))
+                (for-each
+                 (lambda (env-name)
+                   (let ((env-val (getenv env-name)))
+                     ;; Remove all mingw-w64 and xgcc paths from env vars meant
+                     ;; for native toolchain
+                     (setenv env-name
+                             (filter-delimited-string
+                              env-val (negate cross-toolchain-path?)))
+                     ;; Add the removed paths back into CROSS_-prefixed
+                     ;; version of env vars
+                     (setenv (string-append "CROSS_" env-name)
+                             (filter-delimited-string
+                              env-val cross-toolchain-path?))))
+                          '("C_INCLUDE_PATH"
+                            "CPLUS_INCLUDE_PATH"
+                            "LIBRARY_PATH"))))
+            (add-before 'build 'fix-target-detection
+              (lambda _
+                ;; NSIS target detection is screwed up, manually change
+                ;; it ourselves
+                (substitute* "Source/build.cpp"
+                  (("m_target_type=TARGET_X86UNICODE")
+                   (string-append "m_target_type=" #$nsis-target-type))))))))
       (home-page "https://nsis.sourceforge.io/Main_Page")
       (synopsis "System to create Windows installers")
       (description
