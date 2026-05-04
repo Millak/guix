@@ -546,7 +546,7 @@ work on Communicating Sequential Processes (CSP).")
 (define-public clojure-core-cache
   (package
     (name "clojure-core-cache")
-    (version "1.2.249")
+    (version "1.2.263")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -555,7 +555,7 @@ work on Communicating Sequential Processes (CSP).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hdwv5dsx49i12riz3frzshwkgw26ah43667lzga2n6zgpmrh8ii"))))
+                "19q81aki8wb120v6jfylwqgf965mwkhrpcsrs5zazjfjv8vq6glx"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure")
