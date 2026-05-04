@@ -5823,6 +5823,8 @@ __version_tuple__ = version_tuple = (~a)~%" version version-tuple))))))
            pkg-config
            python-cython
            python-pytest
+           python-pytest-runner
+           python-scikit-build-core
            python-setuptools-scm
            python-setuptools))
     (outputs '("out"))
