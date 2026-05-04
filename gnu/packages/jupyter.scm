@@ -1021,19 +1021,21 @@ JupyterLab-like applications from a more limited scope.")
      ;; This passes the whole command line to shutil.which, instead of just
      ;; the executable.
      (list #:test-flags '(list "--ignore=tests/test_cli.py")))
-    (propagated-inputs (list python-jsonschema
-                             python-json-logger
-                             python-pyyaml
-                             python-referencing
-                             python-rich
-                             python-rfc3339-validator
-                             python-rfc3986-validator
-                             python-traitlets))
-    (native-inputs (list python-click
-                         python-hatchling
-                         python-pytest
-                         python-pytest-asyncio
-                         python-pytest-console-scripts))
+    (native-inputs
+     (list python-click
+           python-hatchling
+           python-pytest
+           python-rich
+           python-pytest-asyncio
+           python-pytest-console-scripts))
+    (propagated-inputs
+     (list python-jsonschema
+           python-json-logger
+           python-pyyaml
+           python-referencing
+           python-rfc3339-validator
+           python-rfc3986-validator
+           python-traitlets))
     (home-page "https://github.com/jupyter/jupyter_events")
     (synopsis "Jupyter Event System library")
     (description "Jupyter Events enables Jupyter Python
