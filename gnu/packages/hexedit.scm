@@ -414,7 +414,7 @@ much more.")
 (define-public bvi
   (package
     (name "bvi")
-    (version "1.4.2")
+    (version "1.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -422,7 +422,7 @@ much more.")
                     "/bvi-" version ".src.tar.gz"))
               (sha256
                (base32
-                "1wllrvs8r8bdm11sx01095j8cj4drjmw0dlkjfdkm5lnnk11dfjb"))))
+                "1jvldfxdpgf044hnhjhxi24a9bkbn8adl22icc8rfarv39m72h35"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f))          ; no check target
     (inputs
