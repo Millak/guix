@@ -1,0 +1,46 @@
+From 1654599ea228efdd7b378ff44ed4e19d547641e0 Mon Sep 17 00:00:00 2001
+From: Bradley Lowekamp <blowekamp@mail.nih.gov>
+Date: Wed, 29 Apr 2026 16:22:49 +0000
+Subject: [PATCH 1/8] BUG: Replace removed CLOENV with R_ClosureEnv for R 4.6.0
+ compatibility
+
+R 4.6.0 removed the non-API macro CLOENV from its public headers.
+The replacement R_ClosureEnv() was added in R 4.5.0. Add a version-
+guarded backport so that builds against older R versions (< 4.5.0)
+continue to work.
+
+Fixes #2574
+---
+ Wrapping/R/sitkRCommand.cxx | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/Wrapping/R/sitkRCommand.cxx b/Wrapping/R/sitkRCommand.cxx
+index 216a9327b8..c3a62bead9 100644
+--- a/Wrapping/R/sitkRCommand.cxx
++++ b/Wrapping/R/sitkRCommand.cxx
+@@ -19,10 +19,15 @@
+ // The python header defines _POSIX_C_SOURCE without a preceding #undef
+ #include <iostream>
+ #include <Rinternals.h>
++#include <Rversion.h>
+ 
+ #include "sitkRCommand.h"
+ #include "sitkExceptionObject.h"
+ 
++// R_ClosureEnv was added in R 4.5.0, CLOENV was removed in R 4.6.0
++#if R_VERSION < R_Version(4, 5, 0)
++#  define R_ClosureEnv(x) CLOENV(x)
++#endif
+ 
+ namespace itk
+ {
+@@ -86,7 +91,7 @@ RCommand::SetFunctionClosure(SEXP FN)
+     // element
+     R_fcall = PROTECT(Rf_lang1(this->m_FunctionClosure));
+     this->SetCallbackRCallable(R_fcall);
+-    this->SetCallbackREnviron(CLOENV(this->m_FunctionClosure));
++    this->SetCallbackREnviron(R_ClosureEnv(this->m_FunctionClosure));
+     UNPROTECT(1);
+   }
+ }
+

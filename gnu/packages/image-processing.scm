@@ -1923,7 +1923,7 @@ and Scan Tailor Enhanced versions as well as including many more bug fixes.")
 (define-public simpleitk
   (package
     (name "simpleitk")
-    (version "2.5.3")
+    (version "2.5.4")
     (source
      (origin
        (method git-fetch)
@@ -1932,7 +1932,9 @@ and Scan Tailor Enhanced versions as well as including many more bug fixes.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fvacjfq0p8v7r2cmzwwh7bxb6ayavznhj0m81dah463x472qkd2"))))
+        (base32 "1bzj5naqbgv2b31iqgz7qqk9rixsvjqycjz6l7w3gm7v1aj14jpb"))
+       (patches
+        (search-patches "simpleitk-r-4.6.0.patch"))))
     (build-system cmake-build-system)
     (outputs '("out" "python" "r"))
     (arguments
@@ -2032,7 +2034,7 @@ and Scan Tailor Enhanced versions as well as including many more bug fixes.")
                    version "/SimpleITKData-" version ".tar.gz"))
              (sha256
               (base32
-               "0i4f87g1rh6xxisw06gwwyi8f216qqs6ih3gghi3k49vsl0h4g5d")))))
+               "0hryvi9fgqac00ng1bfhw3lm0al1dh0ka6jglba2q368nls428nx")))))
     (synopsis "Simplified interface to @acronym{ITK, Insight Toolkit}")
     (description
      "SimpleITK is an image analysis toolkit built on top of @acronym{ITK,
