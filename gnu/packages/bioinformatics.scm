@@ -22764,39 +22764,35 @@ frames with arbitrary sets of columns.")
       (license license:expat))))
 
 (define-public r-zarrarray
-  (let ((commit "3cc3e6acf986074dfaece2ad23f9b56962054625")
-        (revision "2"))
-    (package
-      (name "r-zarrarray")
-      (version (git-version "1.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/BIMSBbioinfo/ZarrArray")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1qjj92cpxpm3zh05vf60h5gmcn1qady0s38hibb0l57iwdhlhrb3"))))
-      (properties
-       '((upstream-name . "ZarrArray")
-         (updater-extra-native-inputs . ("r-testthat"))))
-      (build-system r-build-system)
-      ;; The tests seem to be outdated.
-      (arguments (list #:tests? #false))
-      (propagated-inputs (list r-biocgenerics
-                               r-delayedarray
-                               r-iranges
-                               r-matrix
-                               r-rarr
-                               r-s4arrays
-                               r-s4vectors
-                               r-sparsearray))
-      (native-inputs (list r-testthat))
-      (home-page "https://github.com/BIMSBbioinfo/ZarrArray")
-      (synopsis "Zarr backend for DelayedArray objects")
-      (description "Zarr backend for @code{DelayedArray} objects.")
-      (license license:expat))))
+  (package
+    (name "r-zarrarray")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ZarrArray" version))
+       (sha256
+        (base32 "1ny91qg257kgb1hz2h4jvb0rna9cwyw7fqyj5axv52r3b98xn040"))))
+    (properties `((upstream-name . "ZarrArray")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-delayedarray
+                             r-iranges
+                             r-rarr
+                             r-s4arrays
+                             r-s4vectors
+                             r-sparsearray))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://bioconductor.org/packages/ZarrArray")
+    (synopsis "Bring Zarr datasets in R as DelayedArray objects")
+    (description
+     "The @code{ZarrArray} package leverages the Rarr package to bring Zarr
+datasets in R as @code{DelayedArray} objects.  The main class in the package
+is the @code{ZarrArray} class.  A @code{ZarrArray} object is an array-like
+object that represents a Zarr dataset in R. @code{ZarrArray} objects are
+@code{DelayedArray} derivatives and therefore support all operations (delayed
+or block-processed) supported by @code{DelayedArray} objects.")
+    (license license:artistic2.0)))
 
 (define-public methyldackel
   (package
