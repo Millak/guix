@@ -938,7 +938,7 @@ tools.analyzer, providing additional JVM-specific passes.")
 (define-public clojure-tools-cli
   (package
     (name "clojure-tools-cli")
-    (version "1.3.250")
+    (version "1.4.256")
     (home-page "https://github.com/clojure/tools.cli")
     (source (origin
               (method git-fetch)
@@ -947,7 +947,7 @@ tools.analyzer, providing additional JVM-specific passes.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1nyw33w83gd7xlbpma03p4jwcdcp38h8y99x2rqw4zcnw19gsz4p"))))
+               (base32 "1kr1cpypzgzh8pkih5qamsaq8c96jfpcvmn9f330sic2shb53m55"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure/")
