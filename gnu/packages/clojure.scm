@@ -734,7 +734,7 @@ maps also support conj/peek/pop operations.")
 (define-public clojure-data-xml
   (package
     (name "clojure-data-xml")
-    (version "0.2.0-alpha10")
+    (version "0.2.0-alpha11")
     (home-page "https://github.com/clojure/data.xml")
     (source (origin
               (method git-fetch)
@@ -744,7 +744,7 @@ maps also support conj/peek/pop operations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mnhgrh20p2wwmq8a4631dkpxbgbijwi6sfhw5v784hzkjkfgkh6"))))
+                "0k7hq3s4zbk0ryhgycivl1dk22fzh60522a57az8ykmixhqjxwhg"))))
     (build-system clojure-build-system)
     (arguments
      '(#:source-dirs '("src/main/clojure")
