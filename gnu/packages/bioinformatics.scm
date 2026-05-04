@@ -22734,8 +22734,8 @@ spots, cells and even molecules.")
     (license license:expat)))
 
 (define-public r-zarrdataframe
-  (let ((commit "84c7db2f6f5f84b4a4308f8eb72bedc131fb68bc")
-        (revision "2"))
+  (let ((commit "f5f671521934b2afc3c511f8c09181bc7bb789a4")
+        (revision "3"))
     (package
       (name "r-zarrdataframe")
       (version (git-version "0.0.0" revision commit))
@@ -22747,13 +22747,13 @@ spots, cells and even molecules.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1idrvdlzbwyixlg830sn19vfdn3n3irmlyr4ncf7dpk72r08g3hw"))))
+          (base32 "0klp2njn6qsa8n6c01v1z2dfaa93lhbzhwhbyhl23h8gg7d28yc1"))))
       (properties
        '((upstream-name . "ZarrDataFrame")
          (updater-extra-native-inputs . ("r-testthat"))))
       (build-system r-build-system)
       (propagated-inputs (list r-biocgenerics r-delayedarray r-rarr
-                               r-s4vectors))
+                               r-s4vectors r-zarrarray))
       (native-inputs (list r-knitr r-testthat))
       (home-page "https://github.com/BIMSBbioinfo/ZarrDataFrame")
       (synopsis "Bioconductor-friendly Bindings for Zarr")
