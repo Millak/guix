@@ -195,6 +195,45 @@
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match))
 
+(define-public adplug
+  (package
+    (name "adplug")
+    (version "2.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/adplug/adplug")
+                    (commit (string-append "adplug-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0l31ya42g3q7ry2m0y5djgjb9ax8ciy8jn86252vdjkjswwqgscd"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DBUILD_SHARED_LIBS=ON")
+           #:modules
+           '((guix build cmake-build-system)
+             (guix build utils)
+             (srfi srfi-26))                 ;for cute
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-headers
+                 (lambda _
+                   (for-each (cute install-file <>
+                                  (string-append #$output "/include/adplug"))
+                             (find-files "../source/src" "\\.h$")))))))
+    (propagated-inputs
+     (list libbinio))
+    (home-page "https://adplug.github.io/")
+    (synopsis "AdLib sound player library")
+    (description
+     "AdPlug is a hardware independent AdLib sound player library, mainly
+written in C++.  AdPlug plays sound data, originally created for the AdLib
+(OPL2/3) audio board, on top of an OPL2/3 emulator or by using the real
+hardware.  No OPL2/3 chips are required for playback.")
+    (license license:lgpl2.1+)))
+
 (define-public opensles
   (package
     (name "opensles")
