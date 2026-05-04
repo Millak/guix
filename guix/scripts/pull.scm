@@ -79,7 +79,7 @@
     (graft? . #t)
     (debug . 0)
     (verbosity . 1)
-    (require-trusted-channels? . #t)
+    (require-trusted-channels . default)
     (isolated-channel-evaluation? . #t)
     (authenticate-channels? . #t)
     (verify-certificate? . #t)
@@ -105,8 +105,9 @@ Download and deploy the latest version of Guix.\n"))
       --disable-authentication
                          disable channel authentication"))
   (display (G_ "
-      --allow-untrusted-channels
-                         when downloading channels, allow untrusted channels"))
+      --allow-untrusted-channels[=yes|no]
+                         whether to allow untrusted channels (default: yes
+                         for local channel files, no otherwise)"))
   (display (G_ "
       --unsafe-channel-evaluation
                          evaluate channels file with the full user authority"))
@@ -198,9 +199,14 @@ Download and deploy the latest version of Guix.\n"))
          (option '("disable-authentication") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'authenticate-channels? #f result)))
-         (option '("allow-untrusted-channels") #f #f
+         (option '("allow-untrusted-channels") #f #t
                  (lambda (opt name arg result)
-                   (alist-cons 'require-trusted-channels? #f result)))
+                   (alist-cons 'require-trusted-channels
+                               (match (and arg (string-downcase arg))
+                                 ("yes" #f)
+                                 ("no" #t)
+                                 (_ 'default))
+                               result)))
          (option '("unsafe-channel-evaluation") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'isolated-channel-evaluation? #f result)))
@@ -821,8 +827,8 @@ transformations specified in OPTS (resulting from '--url', '--commit', or
   (define isolated?
     (assoc-ref opts 'isolated-channel-evaluation?))
 
-  (define require-trusted-channels?
-    (assoc-ref opts 'require-trusted-channels?))
+  (define require-trusted-channels
+    (assoc-ref opts 'require-trusted-channels))
 
   (define (load-channels file)
     (let* ((url? (or (string-prefix? "https://" file)
@@ -839,10 +845,13 @@ transformations specified in OPTS (resulting from '--url', '--commit', or
             ;; When downloading channels, keep going if and only if these are
             ;; channels the user trusts.
             (check-trusted-channels result
-                                    (if (and (or url? swhid?)
-                                             require-trusted-channels?)
-                                        'error
-                                        'warning))
+                                    (match require-trusted-channels
+                                      ((? boolean? x)
+                                       (if x 'error 'warning))
+                                      ('default
+                                       (if (or url? swhid?)
+                                           'error
+                                           'warning))))
             result)
           (leave (G_ "'~a' did not return a list of channels~%") file))))
 

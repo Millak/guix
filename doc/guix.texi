@@ -4827,14 +4827,17 @@ or, if the above file doesn't exist, the currently-used channels as
 returned by @command{guix describe}.
 @end itemize
 
-@item --allow-untrusted-channels
-When @option{--channels} is passed a URL, this option causes
-@command{guix pull} to pull the channels returned from that URL, even if
-they are not trusted.
+@item --allow-untrusted-channels[=yes|no]
+Whether to allow pulls from untrusted channels.
+
+By default, @command{guix pull} aborts when downloading a channel file
+that specifies an untrusted channel and merely warns if the list of
+channels comes from a local file.  This option allows you to change
+that.
 
 @quotation Warning
-Using this option can effectively lead to arbitrary code execution on
-your system.
+Allowing untrusted channels can effectively lead to arbitrary code
+execution on your system.
 @end quotation
 
 @anchor{unsafe-channel-evaluation}
@@ -5140,14 +5143,12 @@ immutable.
 
 @xref{Invoking guix pull}, for more information.
 
-@item --allow-untrusted-channels
-When @option{--channels} is passed a URL, this option causes
-@command{guix time-machine} to pull the channels returned from that URL,
-even if they are not trusted.
+@item --allow-untrusted-channels[=yes|no]
+Whether to allow pulls from untrusted channels.
 
 @quotation Warning
-Using this option can effectively lead to arbitrary code execution on
-your system.
+Allowing untrusted channels can effectively lead to arbitrary code
+execution on your system.
 @end quotation
 
 @xref{trusted-channels, @command{guix pull} documentation}, for more

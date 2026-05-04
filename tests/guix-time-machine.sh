@@ -74,6 +74,17 @@ cat > "$channels_file" <<EOF
 EOF
 guix repl -- "$channels_file"
 
+# Under 'pre-inst-env', there are zero trusted channels by default.
+cat > "$channels_file" <<EOF
+%default-channels
+EOF
+
+# Ignore the user's ~/.config/guix/trusted-channels.scm and ensure this
+# command fails.
+XDG_CONFIG_HOME="$XDG_CACHE_HOME/dot-config" \
+guix time-machine -C "$channels_file" --allow-untrusted-channels=no 2> "$log_file" && false
+grep "'guix' is not trusted" "$log_file"
+
 if guile -c '(getaddrinfo "www.gnu.org" "80" AI_NUMERICSERV)' 2> /dev/null
 then
     # Ignore the user's ~/.config/guix/trusted-channels.scm.  Under
