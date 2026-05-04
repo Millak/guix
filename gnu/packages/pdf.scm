@@ -1189,27 +1189,14 @@ Electronic Publication} and @acronym{FB2, Fiction Book 2} (e-books) format.")
      (list
       ;; A required file is missing, seemingly causing the test suite to fail,
       ;; see https://github.com/Krasjet/pdf.tocgen/issues/41
-      #:tests? #f
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'patch-tests
-                     ;; The test suite wants to run all commands with poetry,
-                     ;; this is superfluous and causes errors, so we disable that.
-                     (lambda _
-                       (substitute* "Makefile"
-                         (("@poetry run ") ""))))
-                   (replace 'check
-                     (lambda* (#:key tests? #:allow-other-keys)
-                       (when tests?
-                         (invoke "make" "test")))))))
-    (native-inputs (list poetry
-                         python-poetry-core
-                         python-mamba
-                         python-pylint))
-    (propagated-inputs (list
-                        python-chardet
-                        python-jedi
-                        python-pymupdf
-                        python-toml))
+      #:tests? #f))
+    (native-inputs
+     (list python-poetry-core))
+    (propagated-inputs
+     (list python-chardet
+           python-jedi
+           python-pymupdf
+           python-toml))
     (home-page "https://krasjet.com/voice/pdf.tocgen/")
     (synopsis "Automatically generate table of contents for pdf files")
     (description "pdf.tocgen is a set of command-line tools for automatically
