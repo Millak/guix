@@ -11564,6 +11564,71 @@ accessibility infrastructure.")
     (license license:lgpl2.0)
     (properties '((upstream-name . "pyatspi")))))
 
+(define-public accerciser
+  (package
+    (name "accerciser")
+    (version "3.48.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.gnome.org/GNOME/accerciser.git")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ddh466im0hxqx0ncxglrif72jfwcdl1ayarw874mp1464wkbc4m"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules
+      `((guix build meson-build-system)
+        ((guix build pyproject-build-system) #:prefix py:)
+        (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gnome-post-install
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")
+                (("update_desktop_database: true")
+                 "update_desktop_database: false"))))
+          (add-after 'install 'wrap-python
+            (assoc-ref py:%standard-phases 'wrap))
+          (add-after 'wrap-python 'wrap-program
+            (lambda _
+              (let ((typelib-path (getenv "GI_TYPELIB_PATH")))
+                (wrap-program (string-append #$output "/bin/accerciser")
+                  `("GI_TYPELIB_PATH" ":" prefix (,typelib-path)))))))))
+    (native-inputs
+     (list (list glib "bin")
+           gettext-minimal
+           gobject-introspection
+           pkg-config
+           yelp-tools))
+    (inputs
+     (list appstream
+           appstream-glib
+           at-spi2-core
+           bash-minimal
+           gdk-pixbuf
+           glib
+           gtk+
+           python
+           python-dbus
+           python-pyatspi
+           python-pycairo
+           python-pygobject
+           python-pyxdg))
+    (synopsis "Accessibility explorer")
+    (description "This package provides an interactive accessibility explorer
+for the GNOME desktop.")
+    (home-page "https://gitlab.gnome.org/GNOME/accerciser")
+    (license license:bsd-3)))
+
 (define-public orca
   (package
     (name "orca")
