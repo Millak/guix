@@ -4936,6 +4936,42 @@ using Guix System.")
     ;; GNU Library (not Lesser) General Public License.
     (license license:lgpl2.0+)))
 
+(define-public hiir
+  (let ((commit "4a9a1e67fa6f8ce7688e1c0c8a2b017cecd206a3")
+        (revision "0"))
+    (package
+      (name "hiir")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/LostRobotMusic/hiir")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1wzlg0di768mzcik6fij4pd6dnpmbw8q236h478c057d10qfp44g"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~`(("." "/include/hiir"))))
+      (home-page "https://github.com/LostRobotMusic/hiir")
+      (synopsis "Header-only version of Laurent de Soras's HIIR 1.40 library")
+      (description
+       "This package provides a header-only version of the
+@uref{http://ldesoras.free.fr/prod.html#src_hiir, HIIR library by Laurent De
+Soras}, updated to version 1.40.  HIIR is a C++ library for changing the
+sampling rate of a signal by a factor two, in both directions (upsampling and
+downsampling), obtaining two signals with a π/2 phase difference (Hilbert
+transform).  It is made of a two-path polyphase IIR filter, implemented with
+FPU, 3DNow!, SSE, SSE2, AVX, AVX-512 and NEON instruction sets.
+
+This package contains the same as the original library, except with the
+contents of one source file moved into a header file (and set as inline) to
+make the library header-only, and with the test folder removed.")
+      (license license:wtfpl2))))
+
 (define-public redumper
   (package
     (name "redumper")
