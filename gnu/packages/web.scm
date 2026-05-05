@@ -83,6 +83,7 @@
 ;;; Copyright © 2026 Rodion Goritskov <rodion@goritskov.com>
 ;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2026 Jonathan Frederickson <jonathan@terracrypt.net>
+;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -146,6 +147,7 @@
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
+  #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
@@ -235,6 +237,7 @@
   #:use-module (guix build-system trivial)
   #:use-module (guix cvs-download)
   #:use-module (guix download)
+  #:use-module (guix fossil-download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
@@ -9732,6 +9735,58 @@ in mind.  It has features such as:
 Instead of packing all functionality into kiln itself, the core is lightweight
 and can be extended with the use of external commands.")
     (license license:expat)))
+
+(define-public xoa
+  (package
+    (name "xoa")
+    (version "0.5.1")
+    (source
+     (origin
+       (method fossil-fetch)
+       (uri (fossil-reference
+             (uri "https://chim.loan/xoa")
+             (check-in version)))
+       (sha256 (base32 "0lybgayfafqdm043vnv74lzhcbay9hr1jrgpd0bfdssyyby8km9g"))
+       (modules '((guix build utils)))
+       (snippet #~(delete-file-recursively "doc/djot")))) ;bundled docs
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests?
+      #f                                ;no test
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'install 'wrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((program (string-append #$output "/bin/xoa")))
+                (substitute* program
+                  (("eqn( -T MathML )" all args)
+                   (string-append (search-input-file inputs "bin/eqn")
+                                  args)))
+                (wrap-program program
+                  `("GUIX_LUA_CPATH" ";" = (,(getenv "GUIX_LUA_CPATH")))
+                  `("GUIX_LUA_PATH" ";" = (,(getenv "GUIX_LUA_PATH"))))))))))
+    (native-inputs
+     (list findutils help2man))
+    (inputs
+     (list bash-minimal
+           fennel
+           groff                        ;for eqn
+           lua
+           lua-djot
+           lua-filesystem
+           lua-scintillua))
+    (home-page "https://chim.loan/xoa")
+    (synopsis "Basic static website generator")
+    (description
+     "Xoa is a basic generator of static websites.  It takes care
+of rendering the content of web feeds and pages, while the user defines
+the directory and document structures.")
+    (license (list license:cc0          ;manual page
+                   license:agpl3+))))
 
 (define-public siege
   (package
