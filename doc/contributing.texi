@@ -3216,7 +3216,10 @@ user survey before enacting a plan.
 @cindex package deprecation
 @item Package name changes
 When a package name changes, it must remain available under its old name
-for @b{at least one year}.  For example, @code{go-ipfs} was renamed to
+for @b{at least six months}; the deprecation date should be stated in
+a comment in the code to ease the final removal.
+
+For example, @code{go-ipfs} was renamed to
 @code{kubo} following a decision made upstream; to communicate the name
 change to users, the package module provided this definition:
 
@@ -3240,44 +3243,84 @@ package name as deprecated.
 @cindex package removal policy
 @anchor{package-removal-policy}
 @item Package removal
-Packages whose upstream developers have declared as having reached ``end
-of life'' or being unmaintained may be removed; likewise, packages that
-have been @b{failing to build for two months or more} may be removed.
 
-There is no formal deprecation mechanism for this case, unless a
-replacement exists, in which case the @code{define-deprecated-package}
-macro mentioned above can be used.
+How packages may be removed depends on their build status and on their
+position in the package graph.
+@itemize
+@item Removal of packages that do not build
 
-If the package being removed is a ``leaf'' (no other packages depend on
-it), it may be removed after a @b{one-month review period} of the patch
-removing it (this applies even when the removal has additional
-motivations such as security problems affecting the package).
+A package that does not build becomes a removal candidate immediately.
+A pull request removing such a package should be filed on Codeberg
+with the @samp{deprecation} label.  Additional justification for the
+(non-)importance, obsolescence etc. of the package is welcome, but not
+required.
+Such a pull request may be merged @b{at least three weeks} later if there
+is no opposition to the removal or if nobody has volunteered to repair the
+affected packages.
+
+@item Removal of building packages
+
+There are various reasons why packages may become removal candidates
+although they still build: For instance we may have a newer version of
+the same package in Guix, maintenance has stopped upstream, or the package
+is not adequately maintained in Guix.
+
+@table @asis
+@item
+Removal candidates that are building leaf packages
+
+Leaf packages may be removed following the above process, assuming that
+there is no opposition to the removal or that consensus for the removal
+has been reached.
+Leaf packages that are typically installed into user profiles (for
+instance applications, but also packages used in a service) should
+not be removed unless there are particularly good reasons, such as
+security implications.
+
+@item
+Removal candidates that are building packages with dependents
+
+Removing building packages on which other packages depend causes more
+disruption than removing leaf packages, since at the same time all
+dependent packages need to be removed.  This may still be desirable for
+overarching reasons.  For instance, we want to remove older versions of
+packages for which newer versions are already packaged, remove packages
+that are unmaintained or have reached end of life upstream, or that suffer
+from security vulnerabilities.
+
+In this case, the removal candidate may be removed together with all
+packages depending on it following the above procedure.  If the removal
+candidate falls into the realm of a team, this team must be notified,
+and consensus shall be sought about the removal in particular with this
+team.  Reasonable efforts shall be made beforehand to update or otherwise
+preserve dependent packages.
+
+@end table
+@end itemize
 
 @quotation Note
 Learn about pending package removals by checking
-@uref{https://codeberg.org/guix/guix/issues?labels=445131, issues and
+@uref{https://codeberg.org/guix/guix/pulls?labels=445131,
 pull requests with the @samp{deprecation} label}.
 @end quotation
 
-If the package has many dependent packages---as is the case for example with
-Python version@tie{}2---the relevant team must propose a deprecation
-removal agenda and seek consensus with other packagers for @b{at least
-one month}.  It may also invite feedback from the broader user
-community, for example through a survey.  Removal of all impacted
-packages may be gradual, spanning multiple months, to accommodate all
-use cases.
+@item Moving packages between modules
 
-When the package being removed is considered popular, whether or not it
-is a leaf, its deprecation must be announced as an entry in
-@code{etc/news.scm}.
+When a package is moved from one module to another one, the corresponding
+variable @var{name} should be marked as deprecated in the old location
+for @b{at least six months}, for instance by adding
+@findex define-deprecated/public-alias
+@lisp
+(define-deprecated/public-alias @var{name}
+  (@@ (gnu packages @var{new-module} @var{name}))
+@end lisp
+in @var{gnu/packages/old-module.scm}.
 
-@item Package upgrade
-In the case of packages with many dependents and/or many users, an
-upgrade may be treated like the @emph{removal} of the previous version.
+@item Package additions
 
-Examples include major version upgrades of programming language
-implementations, as we've seen above with Python, and major upgrades of
-``big'' libraries such as Qt or GTK.
+Packages submitted for inclusion must not fulfill the criteria to become
+a removal candidate immediately after addition.
+
 
 @cindex service deprecation
 @item Services
