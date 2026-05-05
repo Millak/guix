@@ -1005,7 +1005,7 @@ e.g. emacs-geiser-guile for Guile.")
 (define-public emacs-gptel
   (package
     (name "emacs-gptel")
-    (version "0.9.9.4")
+    (version "0.9.9.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1014,7 +1014,7 @@ e.g. emacs-geiser-guile for Guile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ffh2mwy9znjd0v9mh065lv122xg4nlnkbxwjfrsaqn1j1q2xc0c"))))
+                "1bf7xynmrm859471nxc56sv028i039qnqhhmkhzkhf76mwac6cx8"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -1025,8 +1025,7 @@ e.g. emacs-geiser-guile for Guile.")
             (lambda _
               (copy-recursively
                #$(this-package-native-input "emacs-gptel-test-files")
-               "test")
-              (invoke "chmod" "--recursive" "u+w" "test")))
+               "test")))
           ;; gptel-pkg.el produces an error during the check phase.
           (add-before 'check 'rename-pkg
             (lambda _ (rename-file "gptel-pkg.el" "gptel-pkg.el_")))
@@ -1053,11 +1052,11 @@ e.g. emacs-geiser-guile for Guile.")
         (method git-fetch)
         (uri (git-reference
                (url "https://github.com/karthink/gptel-test")
-               (commit "318c9dda9e6dbb3e61311cf4de23f124c4d2960a")))
+               (commit "c62e2f78d843f3454e068eb7ec6bb8d6001b0649")))
         (file-name "emacs-gptel-test-files")
         (sha256
          (base32
-          "1368qrxxrw5zd2i0gx55r7yvi5xjma1khs8p5f2w76m7c6ms83yg")))))
+          "1xixi1fa2iwixi6f0wdva2pyisxb8myljwbx2v5nxd3v0i3fbgq9")))))
     (home-page "https://github.com/karthink/gptel")
     (synopsis "GPTel is a simple ChatGPT client for Emacs")
     (description
