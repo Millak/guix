@@ -2699,6 +2699,37 @@ no dependency or linkage required.  It's made for C (ISO C90), and has a C++
 wrapper with a more convenient interface on top.")
       (license license:zlib))))
 
+(define-public lodepng/c
+  (package/inherit lodepng
+    (name "lodepng-c")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:make-flags _ '())
+        #~(list (string-append "CC=" #$(cc-for-target))
+                "CFLAGS=-fPIC"))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'patch
+              (lambda _
+                (rename-file "lodepng.cpp" "lodepng.c")))
+            ;; The unittest target requires the <vector> header which is
+            ;; available only for C++.
+            (delete 'check)
+            (replace 'build
+              (lambda* (#:key (make-flags '()) #:allow-other-keys)
+                (apply invoke "make" "lodepng.o" make-flags)
+                (invoke #$(cc-for-target) "-fPIC" "-O3"
+                        "-o" "liblodepng.so"
+                        "-shared" "lodepng.o")))
+            (replace 'install
+              (lambda _
+                (install-file "lodepng.h" (string-append #$output "/include"))
+                (install-file "liblodepng.so" (string-append #$output "/lib"))
+                (install-file "README.md"
+                              (string-append #$output
+                                             "/share/doc/lodepng"))))))))
+    (properties '((upstream-name . "lodepng")))))
+
 (define-public icoutils
   (package
     (name "icoutils")
