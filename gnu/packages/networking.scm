@@ -4155,7 +4155,7 @@ never see any machines other than the one Dante is running on.")
         (base32 "15j09x36i6zj6innl0w1mfzlc56qmjwrs82my8dsagqa2ikd08ya"))))
     (build-system cmake-build-system)
     (inputs
-     (list asio catch-framework openssl))
+     (list asio-1.28 catch-framework openssl))
     (arguments
      `(;; Running parallel tests results in "bind: Address already in use" error
        ;; in test service_status_feature_test_suite.
