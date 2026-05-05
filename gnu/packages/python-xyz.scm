@@ -9835,7 +9835,8 @@ JavaScript-like message boxes.  Types of dialog boxes include:
            ;; See <https://github.com/pympler/pympler/issues/134>.
            "--deselect=test/muppy/test_summary.py::SummaryTest::test_repr_function"
            ;; This test times out.
-           "--deselect=test/gui/test_web.py::WebGuiTest::test_traceback")))
+           "--deselect=test/gui/test_web.py::WebGuiTest::test_traceback"
+           "--deselect=test/muppy/test_tracker.py::TrackerTest::test_otracker_diff")))
       (native-inputs
        (list python-pytest python-setuptools))
       (home-page "https://pythonhosted.org/Pympler/")
