@@ -657,61 +657,102 @@ music." )
 (define-public python-pyopengl
   (package
     (name "python-pyopengl")
-    (version "3.1.9")
+    (version "3.1.10")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "PyOpenGL" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mcfletch/pyopengl")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "09syrsfrcknr1k2wmj05gfd5d0dyjfxzbipzbd0agv9775vwi9lf"))))
+        (base32 "0gn6n6z76xrvwj9inl2v6rr707n1w8s072qxfmzpla1i9bfckzjk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 54 passed, 5 skipped, 8 deselected, 5 warnings
+      ;; 62 passed, 26 skipped, 26 deselected, 2 xfailed, 2 warnings
       #:test-flags
-      #~(list "-k" (string-join
-                    ;; XXX: Check why these test fail.
-                    (list "not test_get_read_fb_binding"
-                          "test_get_version"
-                          "test_glCallLists_twice2"
-                          "test_glmultidraw"
-                          "test_lookupint"
-                          "test_numpyConversion"
-                          "test_pointers")
-                    " and not ")
-              ;; TypeError: list indices must be integers or slices, not
-              ;; numpy.bool
-              "--deselect=tests/test_core.py::TestCore::test_vbo")
+      #~(list #$@(map (lambda (test) (string-append "--deselect=tests/" test))
+                      (list
+                       ;; RuntimeError: Test script failure on <...>
+                       "test_checks.py::test_check_crash_on_glutinit"
+                       "test_checks.py::test_check_egl_es1"
+                       "test_checks.py::test_check_egl_es2"
+                       "test_checks.py::test_check_egl_opengl"
+                       "test_checks.py::test_check_glutwindow"
+                       "test_checks.py::test_check_freeglut_deinit"
+                       "test_checks.py::test_check_glut_debug"
+                       "test_checks.py::test_check_glut_fc"
+                       "test_checks.py::test_check_glut_load"
+                       "test_checks.py::test_check_glutinit"
+                       "test_checks.py::test_check_glutinit_0args"
+                       "test_checks.py::test_check_glutinit_single"
+                       "test_checks.py::test_check_glutinit_simplest"
+                       "test_checks.py::test_egl_ext_enumerate"
+                       "test_checks.py::test_test_instanced_draw_detect"
+                       "test_checks.py::test_test_gldouble_ctypes"
+                       ;; OpenGL.error.Error: Attempt to retrieve context when
+                       ;; no valid context
+                       "test_arraydatatype.py::TestCoreDatatype::test_numpyConversion"
+                       "test_arraydatatype.py::TestCoreDatatype::test_pointers"
+                       "test_core.py::TestCore::test_glCallLists_twice2"
+                       "test_core.py::TestCore::test_glmultidraw"
+                       ;; RuntimeError: Test Failed
+                       "test_checks.py::test_feedbackvarying"
+                       "test_checks.py::test_test_sf2946226"
+                       "test_checks.py::test_test_glgetactiveuniform"
+                       ;; TypeError: '<' not supported between instances of
+                       ;; 'bool' and 'list'
+                       "test_core.py::TestCore::test_get_read_fb_binding"
+                       "test_core.py::TestCore::test_lookupint"
+                       ;; assert not glShaderSource
+                       "test_core.py::TestCore::test_get_version")))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'fix-paths
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* '("OpenGL/platform/ctypesloader.py")
-                (("filenames_to_try = \\[\\]") "filenames_to_try = [name]"))
+                (("filenames_to_try = \\[base_name\\]")
+                 "filenames_to_try = [name]"))
               (substitute* '("OpenGL/platform/glx.py"
                              "OpenGL/platform/egl.py"
                              "OpenGL/platform/osmesa.py"
                              "OpenGL/platform/darwin.py"
                              "tests/check_glut_load.py")
-                (("'GLU'")
-                 (format #f "'~a/~a'" #$(this-package-input "glu")
-                         "lib/libGLU.so"))
+                (("\"GLU\",")
+                 (format #f "~s," (search-input-file inputs "lib/libGLU.so")))
+                (("'GLU',")
+                 (format #f "~s," (search-input-file inputs "lib/libGLU.so")))
+                (("\"glut\",")
+                 (format #f "~s," (search-input-file inputs "lib/libglut.so")))
                 (("'glut',")
-                 (format #f "'~a/~a'," #$(this-package-input "freeglut")
-                         "lib/libglut.so"))
-                (("'(GL|EGL|GLESv1_CM|GLESv2|OSMesa)'" all gl-library)
-                 (format #f "'~a/~a'" #$(this-package-input "mesa")
-                         (string-append "lib/lib" gl-library ".so"))))
-              ;; Not providing libgle. It seems to be very old.
-              )))))
+                 (format #f "~s," (search-input-file inputs "lib/libglut.so")))
+                (("'(GL|EGL|GLESv1_CM|GLESv2)'" all gl-library)
+                 (format #f "~s" (search-input-file inputs (string-append
+                                                            "lib/lib"
+                                                            gl-library ".so"))))
+                (("\"(GLESv1_CM|GLESv2)\"" all gl-library)
+                 (format #f "~s" (search-input-file inputs (string-append
+                                                            "lib/lib"
+                                                            gl-library ".so")))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "LANG" "fr_FR.UTF-8")
+              (setenv "LANGUAGE" "fr_FR.UTF-8")
+              (setenv "DISPLAY" ":1")
+              (setenv "HOME" "/tmp")
+              (setenv "USER" "guix")
+              (setenv "XDG_RUNTIME_DIR" "/tmp")
+              (setenv "XDG_SESSION_ID" "11235813")
+              (setenv "XDG_SESSION_PATH" "/tmp")
+              (setenv "XDG_SESSION_TYPE" "x11"))))))
     (native-inputs
      (list python-cython
            python-numpy
-           python-pygame
+           python-psutil
+           python-pygame-ce
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (inputs
      (list freeglut
            glu
