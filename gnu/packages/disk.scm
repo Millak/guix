@@ -1225,16 +1225,25 @@ and its highly optimized now for efficient performance.")
   (package
     (name "volume-key")
     (version "0.3.12")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://releases.pagure.org/volume_key/volume_key-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "16rhfz6sjwxlmss1plb2wv2i3jq6wza02rmz1d2jrlnsq67p98vc"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://pagure.io/volume_key")
+              (commit (string-append "volume_key-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zadzbh26ckk263w02d02r2x3mry2kxbybkhwwaxwpv6jsrm7xr6"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config swig-4.0 python-3))           ; used to generate the Python bindings
+     (list autoconf
+           automake
+           gettext-minimal
+           libtool
+           pkg-config
+           python       ; used to generate the Python bindings
+           python-setuptools
+           swig))
     (inputs
      (append
       (cons cryptsetup-minimal (libcryptsetup-propagated-inputs))
@@ -1244,15 +1253,21 @@ and its highly optimized now for efficient performance.")
             glib
             gpgme)))
     (arguments
-     `(#:tests? #f ; not sure how tests are supposed to pass, even when run manually
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-python.h-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((python (assoc-ref inputs "python")))
-               (substitute* "Makefile.in"
-                 (("/usr/include/python") (string-append python "/include/python")))
-               #t))))))
+     (list
+      #:tests? #f ; not sure how tests are supposed to pass, even when run manually
+      #:configure-flags
+      #~(list "--without-python"
+              (string-append "--with-gpgme-prefix="
+                             #$(this-package-input "gpgme")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-python-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((python #$(this-package-native-input "python")))
+                (setenv "PYTHON3"
+                        (string-append python "/bin/python3"))
+                (setenv "PYTHON3_CONFIG"
+                        (string-append python "/bin/python3-config"))))))))
     (home-page "https://pagure.io/volume_key")
     (synopsis "Manipulate storage volume encryption keys")
     (description
