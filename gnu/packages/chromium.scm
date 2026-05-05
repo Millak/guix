@@ -79,12 +79,9 @@
   '("base/third_party/cityhash" ;Expat
     "base/third_party/double_conversion" ;BSD-3
     "base/third_party/icu" ;Unicode, X11-style
-    "base/third_party/nspr" ;MPL-2.0
     "base/third_party/superfasthash" ;BSD-3
     "base/third_party/symbolize" ;BSD-3
     "base/third_party/xdg_user_dirs" ;Expat
-    "buildtools/third_party/libc++" ;BSD
-    "buildtools/third_party/libc++abi" ;BSD
     "net/third_party/mozilla_security_manager" ;MPL-1.1/GPL2+/LGPL2.1+
     "net/third_party/quiche" ;BSD-3
     "net/third_party/uri_template" ;ASL2.0
@@ -222,7 +219,6 @@
     "third_party/libaom/source/libaom/third_party/fastfeat" ;BSD-3
     "third_party/libaom/source/libaom/third_party/vector" ;Expat
     "third_party/libaom/source/libaom/third_party/x86inc" ;ISC
-    "third_party/libc++" ;Expat
     "third_party/libdrm" ; Expat
     "third_party/libgav1" ;ASL2.0
     "third_party/libjingle_xmpp" ;BSD-3
@@ -248,8 +244,6 @@
     "third_party/libzip" ;BSD-3
     "third_party/lit" ;BSD-3
     "third_party/lit/v3_0" ;BSD-3
-    "third_party/llvm-libc" ;ASL2.0
-    "third_party/llvm-libc/src/shared" ;ASL2.0
     "third_party/lottie" ;Expat
     "third_party/lss" ;BSD-3
     "third_party/lzma_sdk" ;public domain
@@ -901,8 +895,9 @@
                                        "libvk_swiftshader.so"
                                        "vk_swiftshader_icd.json"
 
-                                       ;; Chromium ships its own libGL
-                                       ;; implementation called ANGLE.
+                                       ;; Chromium ships its own libGL and
+                                       ;; vulkan implementation called ANGLE.
+                                       "libvulkan.so.1"
                                        "libEGL.so" "libGLESv2.so"))
                      (locales        (string-append lib "/locales"))
                      (resources      (string-append lib "/resources"))
@@ -921,7 +916,7 @@
                   (("@@MENUNAME") "Chromium")
                   (("@@PACKAGE") "chromium")
                   (("/usr/bin/@@usr_bin_symlink_name") exe)
-                  (("@@uri_scheme") "x-scheme-handler/chromium")
+                  (("@@uri_scheme") "x-scheme-handler/chromium;")
                   (("@@extra_desktop_entries") ""))
 
                 (mkdir-p man)
