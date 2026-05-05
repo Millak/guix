@@ -767,7 +767,7 @@ which are indicated in the file name.")
 (define-public guix-modules
   (package
     (name "guix-modules")
-    (version "0.3.0")
+    (version "0.4.0")
     (home-page "https://codeberg.org/guix-science/guix-modules")
     (source (origin
               (method git-fetch)
@@ -776,7 +776,7 @@ which are indicated in the file name.")
               (file-name (string-append "guix-modules-" version "-checkout"))
               (sha256
                (base32
-                "1cdpxmhrbbazr4z53rpk6ssk3clpv4j16ivha7lr4nqg48mxha9q"))))
+                "1zmbd04y69gcak43rnizk8vjgpxhv5m67k3z4fk9cyiymcs872ky"))))
     (build-system guile-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
