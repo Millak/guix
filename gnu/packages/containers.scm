@@ -215,6 +215,50 @@ It can be used with QEMU, Hyperkit, Hyper-V and User-Mode Linux.
 The binary is called @command{gvproxy}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-rootless-containers-rootlesskit-v3
+  (package
+    (name "go-github-com-rootless-containers-rootlesskit-v3")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rootless-containers/rootlesskit")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0giw1whjpm64h8f1iamgym246rr3wl01w7zgw4lygrj7dqk3clmb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/rootless-containers/rootlesskit/v3"))
+    (propagated-inputs
+     (list go-github-com-containernetworking-plugins
+           go-github-com-containers-gvisor-tap-vsock
+           go-github-com-gofrs-flock
+           go-github-com-google-uuid
+           go-github-com-gorilla-mux
+           go-github-com-insomniacslk-dhcp
+           go-github-com-masterminds-semver-v3
+           go-github-com-moby-sys-mountinfo
+           go-github-com-moby-vpnkit
+           go-github-com-sirupsen-logrus
+           go-github-com-songgao-water
+           go-github-com-urfave-cli-v2
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-gotest-tools-v3))
+    (home-page "https://github.com/rootless-containers/rootlesskit")
+    (synopsis "Linux-native fakeroot using user namespaces in Golang")
+    (description
+     "@code{RootlessKit} is a Linux-native implementation of \"fake root\" using
+@url{http://man7.org/linux/man-pages/man7/user_namespaces.7.html,(code
+user_namespaces(7))}.  It is used to run containers engines as an
+unprivileged user, known as \"Rootless mode\".")
+    (license license:asl2.0)))
+
+
 
 ;;;
 ;;; Executables:
