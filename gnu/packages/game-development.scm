@@ -1750,13 +1750,16 @@ color switches, and many more, with multiple options to customize.")
 (define-public python-pygame-ce
   (package
     (name "python-pygame-ce")
-    (version "2.5.5")
+    (version "2.5.7")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pygame_ce" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pygame-community/pygame-ce")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0sxfchimdg606z65qychgvm66mq0aybs2isxsqb5zqy64g19gwm7"))))
+        (base32 "1awvs4wa9fgm8xldsxzdx1knijjpzz560lzj3rjvks3gcw8szhzx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
