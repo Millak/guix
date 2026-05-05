@@ -1034,16 +1034,9 @@ e.g. emacs-geiser-guile for Guile.")
           (add-after 'unpack 'use-appropriate-curl
             (lambda* (#:key inputs #:allow-other-keys)
               ;; These two alternatives error on the substitution.
-              ;; (emacs-substitute-variables "gptel-openai.el"
-              ;;   ("gptel-use-curl"
-              ;;    (search-input-file inputs "/bin/curl")))
-              ;; (emacs-substitute-sexps "gptel-openai.el"
-              ;;   ("(defvar gptel-use-curl"
-              ;;    (search-input-file inputs "/bin/curl")))
-              (substitute* "gptel-openai.el"
-                (("defvar gptel-use-curl")
-                 (format #f "defvar gptel-use-curl \"~a\""
-                         (search-input-file inputs "/bin/curl")))))))))
+              (emacs-substitute-variables "gptel-request.el"
+                ("gptel-use-curl"
+                 (search-input-file inputs "/bin/curl"))))))))
     (inputs (list curl))
     (propagated-inputs (list emacs-compat emacs-transient))
     (native-inputs
