@@ -10554,13 +10554,13 @@ Google and Numpydoc format.")
 (define-public python-docutils
   (package
     (name "python-docutils")
-    (version "0.21.2")
+    (version "0.22.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "docutils" version))
        (sha256
-        (base32 "0vwqzbmzdvwx23myx4cg8s8mdkrqnfxpa9yi7jm2s66z5rrihsrs"))))
+        (base32 "0s4ryafs954ivgb7bifzpbv98vb2mcr0s8wi9nvwpglsvqgkpdad"))))
     (build-system pyproject-build-system)
     (arguments
      (list
