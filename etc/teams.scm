@@ -1666,6 +1666,11 @@ the \"texlive\" importer."
                        "gemmaro")
   ruby)
 
+(define-member (person "bdunahu"
+                       "bdunahu@operationnull.com"
+                       "bdunahu")
+  games)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
