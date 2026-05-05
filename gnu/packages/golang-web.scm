@@ -2350,7 +2350,7 @@ functions.")
 (define-public go-github-com-aws-aws-sdk-go-v2-config
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-config")
-    (version "1.32.7")
+    (version "1.32.17")
     (source
      (origin
        (method git-fetch)
@@ -2360,7 +2360,7 @@ functions.")
                                           #:subdir "config"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04cv6g96hhmjl6snql6a909grq4yxyjk95a3dzk6mpihvg79q47p"))
+        (base32 "1j68835z0dgzxwf3m4gfir50wi6r30yx3g78y63x55sdg2imbhsk"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
