@@ -22597,7 +22597,7 @@ dependencies of @code{VoltRon} package.")
 (define-public r-voltron
   (package
     (name "r-voltron")
-    (version "0.2.5")
+    (version "0.2.6")
     (source
      (origin
        (method git-fetch)
@@ -22606,7 +22606,7 @@ dependencies of @code{VoltRon} package.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "057n4yipkq3gnlyrb63l2ryi78nlmaas02avargm352g5ra1xl9s"))))
+        (base32 "00fl5dmyd9ad4hd0cblgi0415sf6q4q67wh04r7fws828vs5vaj1"))))
     (properties `((upstream-name . "VoltRon")))
     (build-system r-build-system)
     (arguments
@@ -22670,18 +22670,15 @@ guix_python <- \"~a\";"
                              r-irlba
                              r-magick
                              r-matrix
-                             r-pizzarr
                              r-rann
                              r-rcdt
                              r-rcpp
                              r-rcppannoy
                              r-rcpparmadillo
-                             r-reshape2
-                             r-reticulate
-                             r-rhdf5
                              r-rjson
                              r-rlang
                              r-s4arrays
+                             r-s4vectors
                              r-shiny
                              r-shinyjs
                              r-sp
