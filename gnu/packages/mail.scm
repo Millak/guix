@@ -113,6 +113,7 @@
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages docker)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages enchant)
   #:use-module (gnu packages file)
@@ -1544,45 +1545,72 @@ invoking @command{notifymuch} from the post-new hook.")
 (define-public notmuch
   (package
     (name "notmuch")
-    (version "0.39")
+    (version "0.40")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://notmuchmail.org/releases/notmuch-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1qq4yzpc704z9lqfpjvgyr8qna9rir7vpliz666sssy4fqmb12xq"))))
+        (base32 "0vs4pidqrj8392h9mgi21mrv3h8mpg3ycdrng7gry0n2y6xi8hsb"))))
     (build-system gnu-build-system)
+    (outputs (list "out" "python"))
     (arguments
      (list
+      #:imported-modules %pyproject-build-system-modules
+      #:modules '((guix build gnu-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
       #:make-flags
       #~(list "V=1"                      ; verbose test output
               "NOTMUCH_TEST_TIMEOUT=1h") ; don't fail on slow machines
       #:phases
-      #~(modify-phases %standard-phases
-          (replace 'configure
-            (lambda* (#:key inputs #:allow-other-keys)
-              (setenv "CC" #$(cc-for-target))
-              (setenv "CONFIG_SHELL" (search-input-file inputs "/bin/sh"))
-              (invoke "./configure"
-                      (string-append "--prefix=" #$output)
-                      "--without-emacs")))
-          (add-before 'check 'prepare-test-environment
-            (lambda* (#:key inputs #:allow-other-keys)
-              (setenv "TEST_CC" #$(cc-for-target))
-              ;; Patch various inline shell invocations.
-              (let ((sh (search-input-file inputs "/bin/sh")))
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (replace 'configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                (setenv "CC" #$(cc-for-target))
+                (setenv "CONFIG_SHELL" (search-input-file inputs "/bin/sh"))
+                (invoke "./configure"
+                        (string-append "--prefix=" #$output)
+                        "--without-emacs")))
+            (add-after 'build 'build-and-install-python
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let* ((outputs `(("out" . ,#$output:python)))
+                       (site (py:site-packages inputs outputs)))
+                  (with-directory-excursion "bindings/python-cffi"
+                    (for-each
+                     (lambda (phase)
+                       (format #t "Running pyproject phase: ~a~%" phase)
+                       ((assoc-ref py:%standard-phases phase)
+                        #:inputs inputs
+                        #:outputs outputs))
+                     '(enable-bytecode-determinism
+                       build
+                       install
+                       compile-bytecode)))
+                  (invoke "patchelf" "--add-rpath"
+                          (string-append #$output "/lib")
+                          (string-append site "/notmuch2/_capi.abi3.so")))))
+            (add-before 'check 'prepare-test-environment
+              (lambda* (#:key inputs #:allow-other-keys)
+                (setenv "TEST_CC" #$(cc-for-target))
+                ;; Patch various inline shell invocations.
                 (substitute* (find-files "test" "\\.sh$")
-                  (("/bin/sh") sh))))))))
+                  (("/bin/sh")
+                   (search-input-file inputs "/bin/sh")))))))))
     (native-inputs
      (list bash-completion
            pkg-config
-           python
+           patchelf
+           python-cffi
            python-docutils
+           python-pytest
+           python-setuptools
            python-sphinx
+           python-wrapper
            texinfo
            ;; The following are required for tests only.
-           emacs-no-x           ; -minimal lacks libxml, needed for some tests
            which
            dtach
            git-minimal/pinned
