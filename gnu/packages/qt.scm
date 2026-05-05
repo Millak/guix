@@ -1300,6 +1300,7 @@ tst_qt_cmake_create.cpp"
        (prepend at-spi2-core
                 bash-minimal
                 coreutils-minimal
+                `(,mariadb "lib")
                 md4c
                 libb2
                 libice
