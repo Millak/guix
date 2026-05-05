@@ -7943,7 +7943,7 @@ set.")
                "doc"))                  ;12 MiB of documentation
     (native-inputs
      (list doc++
-           doxygen
+           doxygen-1.16
            ghostscript
            python
            python-breathe
@@ -7969,13 +7969,16 @@ set.")
                   texlive-jknapltx
                   texlive-latexmk
                   texlive-listofitems
+                  texlive-ltablex
                   texlive-multirow
                   texlive-natbib
                   texlive-needspace
                   texlive-newunicodechar
+                  texlive-ninecolors
                   texlive-parskip
                   texlive-sectsty
                   texlive-stackengine
+                  texlive-tabularray
                   texlive-tabulary
                   texlive-tex-gyre
                   texlive-titlesec
@@ -7987,6 +7990,7 @@ set.")
                   texlive-wasysym
                   texlive-wrapfig
                   texlive-xcolor
+                  texlive-xltabular
                   texlive-xypic))))
     (inputs
      (list openblas))
@@ -8069,7 +8073,8 @@ problems.")
     (arguments
      (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
-        #~`("--with-MPI" ,@(delete "--without-MPI" #$flags)))
+        #~`("--with-MPI" ,@(delete "--without-MPI"
+                                   #$flags)))
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-before 'check 'mpi-setup
