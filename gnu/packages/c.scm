@@ -81,6 +81,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
@@ -1500,6 +1501,48 @@ Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
     (home-page "https://microsoft.github.io/mimalloc/")
     (license license:expat)))
 
+(define-public mps
+  (package
+    (name "mps")
+    (version "1.118.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Ravenbrook/mps")
+             (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "078iv3fsz0dnfwb7g63apkvcksczbqfxrxm73k80jwnwca6pgafy"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cflags
+            ;; The recursive make call in the test suite doesn't pass CFLAGS
+            ;; down properly so we need to do it ourselves
+            (lambda _
+              (substitute* "Makefile.in"
+                (("CFLAGS=\"(.*)\"" _ flags)
+                 (string-append "CFLAGS=\"" flags " $(CFLAGS)\""))))))
+      #:parallel-build? #f ;Parallel build fails
+      #:test-target "test"
+      #:make-flags
+      #~(list "CFLAGS=-Wno-error=dangling-pointer -Wno-maybe-uninitialized"
+              ;; These flags are needed for the recursive make calls in testing
+              (string-append "CC=" #$(cc-for-target)) "-j" "1")))
+    (inputs (list sqlite))
+    (home-page "http://www.ravenbrook.com/project/mps")
+    (synopsis "Memory pool system")
+    (description
+     "This package provides a cross-platform memory management system.  It
+permits the flexible combination of memory management techniques, supporting
+manual and automatic memory management, in-line allocation, finalization,
+weakness, and multiple concurrent co-operating incremental generational
+garbage collections.  It also includes a library of memory pool classes
+implementing specialized memory management policies.")
+    (license license:bsd-2)))
 ;;; The package is named orangeduck-mpc to differentiate it from GNU mpc.
 (define-public orangeduck-mpc
   ;; The last release lacks an 'install' target.
