@@ -37001,45 +37001,6 @@ for learning large-scale gene association networks (including assignment of
 putative directions).")
     (license license:gpl3+)))
 
-(define-public r-rbamtools
-  (package
-    (name "r-rbamtools")
-    (version "2.16.17")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "rbamtools" version))
-       (sha256
-        (base32
-         "0qj37ljdva3v29s01dkrbg31mcfzy3bl145cp40d54v4h9xhcghc"))))
-    (build-system r-build-system)
-    ;; FIXME: Error in genomePartition(reader, ref) : pCoords: begin must be
-    ;; <= end!
-    (arguments
-     (list
-      #:tests? #false
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'install 'fix-r-4.5.0
-            ;; Changes in R 4.5.0: C-Level Facilities.
-            ;; Strict R headers are now the default. This removes the legacy
-            ;; definitions of PI, Calloc, Realloc and Free: use M_PI,
-            ;; R_Calloc, R_Realloc or R_Free instead.
-            ;; https://cran.r-project.org/doc/manuals/r-release/NEWS.html
-            (lambda _
-              (substitute* '("src/gapSiteList.h" "src/gapSiteListList.h")
-                (("Calloc") "R_Calloc")
-                (("Free") "R_Free")))))))
-    (inputs (list zlib))
-    (propagated-inputs
-     (list r-refgenome))
-    (home-page "https://cran.r-project.org/web/packages/rbamtools")
-    (synopsis "Read and write BAM (binary alignment) files")
-    (description
-     "This package provides an R interface to functions of the SAMtools
-library.")
-    (license license:artistic2.0)))
-
 (define-public r-profvis
   (package
     (name "r-profvis")
