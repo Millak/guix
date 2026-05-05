@@ -3598,13 +3598,16 @@ Standard} data mode.")
     (version "0.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyvcd" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SanDisk-Open-Source/pyvcd")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "15nnydvr1a4ykh8cagi484sfgvdg0dnjxaw6c0ivhjbrbblpaqnw"))))
+        (base32 "1a1fsgxmpy6gbrs7lp3a56b7d4g6srlp42y5azb1ywjx3w8fiwc6"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools python-setuptools-scm))
+     (list python-pytest python-setuptools python-setuptools-scm))
     (home-page "http://pyvcd.readthedocs.io/")
     (synopsis "Library to manipulate digital wave files")
     (description
