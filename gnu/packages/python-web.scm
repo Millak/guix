@@ -3138,12 +3138,12 @@ stream is an enhanced asynchronous iterable.")
 (define-public python-asgiref
   (package
     (name "python-asgiref")
-    (version "3.8.1")
+    (version "3.11.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "asgiref" version))
               (sha256
-               (base32 "146mhkn3zp2bqf7j6r3chdlvfzgs5x1lrnqahsllgjdyl20bshy3"))))
+               (base32 "1km4xlaa21z2h0gz8x84gfgrq8k2mhg48rc0hkz3wxky7g24s62z"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
