@@ -1821,7 +1821,7 @@ multiple local rocks trees.")
 (define-public fennel
   (package
     (name "fennel")
-    (version "1.6.0")
+    (version "1.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1830,11 +1830,10 @@ multiple local rocks trees.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09gky2w8z83qqv0n9vx8jqsfldni14kjr6l7y5k44lq5i30i0fsv"))))
+                "0n58410gmxfnmgggdw6ap12fa68z5s7f83487b2apim52a8wpd9h"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:make-flags #~(list (string-append "PREFIX="
-                                               (assoc-ref %outputs "out")))
+     (list #:make-flags #~(list (string-append "PREFIX=" #$output))
            #:test-target "test"
            #:phases #~(modify-phases %standard-phases
                         (delete 'configure)
