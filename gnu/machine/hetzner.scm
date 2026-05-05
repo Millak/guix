@@ -202,7 +202,7 @@ Have you run 'guix archive --generate-key'?")
   (build-locally? hetzner-configuration-build-locally? ; boolean
                   (default #t))
   (delete? hetzner-configuration-delete? ; boolean
-           (default #f))
+           (default #t))
   (labels hetzner-configuration-labels ; list of strings
           (default '()))
   (location hetzner-configuration-location ; #f | string
