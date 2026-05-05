@@ -195,6 +195,10 @@
             (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
               (assoc-ref glib-or-gtk:%standard-phases
                          'generate-gdk-pixbuf-loaders-cache-file))
+            (add-after 'unpack 'fix-python-incompatibilities
+              (lambda _
+                (substitute* (find-files "." "\\.py$")
+                  (("assertEquals") "assertEqual"))))
             (add-before 'build 'set-home-env
               (lambda _
                 (setenv "HOME" "/tmp")))
