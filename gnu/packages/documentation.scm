@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2018, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
@@ -192,21 +192,20 @@ markup) can be customized and extended by the user.")
 
 (define-deprecated asciidoc-py3 asciidoc)
 
-(define-public doxygen
+(define-public doxygen-1.16
   (package
     (name "doxygen")
-    (version "1.14.0")
+    (version "1.16.1")
     (home-page "https://www.doxygen.nl/")
-    (source (origin
-              (method url-fetch)
-              (uri (list (string-append home-page "files/doxygen-"
-                                        version ".src.tar.gz")
-                         (string-append "mirror://sourceforge/doxygen/rel-"
-                                        version "/doxygen-" version
-                                        ".src.tar.gz")))
-              (sha256
-               (base32
-                "0pbbdvc1zxps6mi58bry16rcrdw6b9gvf9nhv0kp60qkmc8nslyl"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (list (string-append home-page "files/doxygen-" version
+                                 ".src.tar.gz")
+                  (string-append "mirror://sourceforge/doxygen/rel-" version
+                                 "/doxygen-" version ".src.tar.gz")))
+       (sha256
+        (base32 "1a33w82ln692qsf3ls0j31f6khljjs1cy3bwd70pra2fa4xy6710"))))
     (build-system cmake-build-system)
     (native-inputs
      (list bison
@@ -249,6 +248,25 @@ programming languages such as C, Objective-C, C#, PHP, Java, Python,
 IDL (Corba, Microsoft, and UNO/OpenOffice flavors), Fortran, VHDL, Tcl,
 and to some extent D.")
     (license license:gpl3+)))
+
+(define-public doxygen-1.14
+  (package
+    (inherit doxygen-1.16)
+    (name "doxygen")
+    (version "1.14.0")
+    (home-page "https://www.doxygen.nl/")
+    (source (origin
+              (method url-fetch)
+              (uri (list (string-append home-page "files/doxygen-"
+                                        version ".src.tar.gz")
+                         (string-append "mirror://sourceforge/doxygen/rel-"
+                                        version "/doxygen-" version
+                                        ".src.tar.gz")))
+              (sha256
+               (base32
+                "0pbbdvc1zxps6mi58bry16rcrdw6b9gvf9nhv0kp60qkmc8nslyl"))))))
+
+(define-public doxygen doxygen-1.14)
 
 (define-public halibut
   (package
