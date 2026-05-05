@@ -18819,26 +18819,19 @@ activity prediction from transcriptomics data, and its R implementation
       (build-system r-build-system)
       (arguments
        (list
+        #:skipped-tests
+        ;; These tests attempt to connect to the Internet.
+        '(("test-liana_utils.R" "Test liana pipe")
+          ("test-liana_tensor.R"
+           ".*Test tensor wrapper.*"
+           ".*Test decompose_tensor.*")
+          ;; XXX: This test returns a data.frame instead of an error.
+          ("test-liana_cytotalk.R" ".*Test Cytotalk Wrap.*"))
         #:phases
         '(modify-phases %standard-phases
            ;; This is needed to find ~/.config/OmnipathR/omnipathr.yml
            (add-after 'unpack 'set-HOME
-             (lambda _ (setenv "HOME" "/tmp")))
-           (add-after 'unpack 'disable-bad-tests
-             (lambda _
-               ;; These tests attempt to connect to the Internet.
-               (substitute* "tests/testthat/test-liana_utils.R"
-                 ((".*Test liana pipe.*" m)
-                  (string-append m "skip('guix')\n")))
-               (substitute* "tests/testthat/test-liana_tensor.R"
-                 ((".*Test tensor wrapper.*" m)
-                  (string-append m "skip('guix')\n"))
-                 ((".*Test decompose_tensor.*" m)
-                  (string-append m "skip('guix')\n")))
-               ;; XXX: This test returns a data.frame instead of an error.
-               (substitute* "tests/testthat/test-liana_cytotalk.R"
-                 ((".*Test Cytotalk Wrap.*" m)
-                  (string-append m "skip('guix')\n"))))))))
+             (lambda _ (setenv "HOME" "/tmp"))))))
       (propagated-inputs
        (list r-basilisk
              r-basilisk-utils
