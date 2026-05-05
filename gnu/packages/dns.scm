@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2015, 2017, 2018 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2016 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2014, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015-2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
@@ -19,6 +19,7 @@
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Simon South <simon@simonsouth.net>
+;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
@@ -54,15 +55,17 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages dbm)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages groff)
-  #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages libdaemon)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libidn)
@@ -140,6 +143,90 @@ Name System} resolution functionality.  The library is asynchronous, allowing
 several concurrent calls.  The package also includes several command-line
 utilities for use in scripts.")
     (license license:gpl3+)))
+
+(define-public avahi
+  (package
+    (name "avahi")
+    (version "0.8")
+    (home-page "https://avahi.org")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append home-page "/download/avahi-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1npdixwxxn3s9q1f365x9n9rc5xgfz39hxf23faqvlrklgbhj0q6"))
+              (patches (search-patches "avahi-localstatedir.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Fix version constraint in the avahi-libevent pkg-config file.
+                  ;; This can be removed for Avahi versions > 0.8.
+                  (substitute* "avahi-libevent.pc.in"
+                    (("libevent-2\\.1\\.5")
+                     "libevent >= 2.1.5"))))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags '("--with-distro=none"
+                           "--disable-static"
+                           "--localstatedir=/var" ; for the DBus socket
+                           "--disable-python"
+                           "--disable-mono"
+                           "--disable-doxygen-doc"
+                           "--disable-xmltoman"
+                           "--enable-tests"
+                           "--disable-qt4" "--disable-qt5"
+                           "--disable-gtk" "--disable-gtk3"
+                           "--enable-compat-libdns_sd"
+                           ,@(if (%current-target-system)
+                                 '("ac_cv_prog_have_pkg_config=yes")
+                                 '())
+                           ,@(if (or (%current-target-system)
+                                     (not (member (%current-system)
+                                                  (package-supported-systems
+                                                   libcap))))
+                                 '("--disable-autoipd")
+                                 '())
+                           ,@(if (target-hurd?)
+                                 '("CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")
+                                 '()))
+       #:modules ((srfi srfi-26)
+                  (guix build utils)
+                  (guix build gnu-build-system))
+       #:phases
+       ,#~(modify-phases %standard-phases
+            (add-after 'patch-shebangs 'patch-more-shebangs
+              (lambda* (#:key inputs #:allow-other-keys)
+                (define path
+                  `(,(dirname (search-input-file inputs "bin/sh"))))
+                (for-each
+                 (cut patch-shebang <> path)
+                 (find-files (string-append #$output "/etc/avahi"))))))))
+    (inputs
+     `(("bash-minimal" ,bash-minimal)
+       ("dbus" ,dbus)
+       ("expat" ,expat)
+       ("gdbm" ,gdbm)
+       ("glib" ,glib)
+       ;; Do not use libcap when cross-compiling since it's not quite
+       ;; cross-compilable; and use it only for supported systems.
+       ,@(if (and (not (%current-target-system))
+                  (member (%current-system)
+                          (package-supported-systems libcap)))
+             `(("libcap" ,libcap))   ;to enable chroot support in avahi-daemon
+             '())
+       ("libdaemon" ,libdaemon)
+       ("libevent" ,libevent)))
+    (native-inputs
+     `(("gettext" ,gettext-minimal)
+       ("glib" ,glib "bin")
+       ("pkg-config" ,pkg-config)))
+    (synopsis "Implementation of mDNS/DNS-SD protocols")
+    (description
+     "Avahi is a system which facilitates service discovery on a local
+network.  It is an implementation of the mDNS (for \"Multicast DNS\") and
+DNS-SD (for \"DNS-Based Service Discovery\") protocols.")
+    (license license:lgpl2.1+)))
 
 (define-public c-ares
   (package
@@ -422,6 +509,32 @@ Internet Drafts.  A secondary benefit of using ldns is speed; ldns is written in
 C it should be a lot faster than Perl.")
     (home-page "https://nlnetlabs.nl/projects/ldns/about/")
     (license license:bsd-3)))
+
+(define-public nss-mdns
+  (package
+    (name "nss-mdns")
+    (version "0.14.1")
+    (home-page "https://github.com/lathiat/nss-mdns")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append home-page "/releases/download/v" version "/"
+                                  name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "134wdr0n9cm5ab4g6dwq76lvzqns9dcylr470i2xxjimnw0l22d2"))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; The Avahi daemon socket is expected by 'configure.ac' to be at
+     ;; "$(localstatedir)/run/avahi-daemon/socket", but nowadays it lives in
+     ;; /run/avahi-daemon/socket.  Remove the "$(localstatedir)" bit.
+     '(#:configure-flags '("AVAHI_SOCKET=/run/avahi-daemon/socket")))
+    (synopsis "Multicast DNS Name Service Switch (@dfn{NSS}) plug-in")
+    (description
+     "Nss-mdns is a plug-in for the GNU C Library's Name Service Switch
+(@dfn{NSS}) that resolves host names via multicast DNS (@dfn{mDNS}).  It is
+most often used in home and other small networks without a local name server,
+to resolve host names in the @samp{.local} top-level domain.")
+    (license license:lgpl2.1+)))
 
 (define-public dnssec-trigger
   (package
