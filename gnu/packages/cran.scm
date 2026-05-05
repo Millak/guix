@@ -29535,35 +29535,6 @@ the work.")
 @end itemize\n")
     (license license:gpl2+)))
 
-(define-public r-refgenome
-  (package
-    (name "r-refgenome")
-    (version "1.7.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "refGenome" version))
-       (sha256
-        (base32
-         "1za89bn3am1zgvm641qi1ab6kaqpll4rb9p9f1sjwvcgqq6065g5"))))
-    (properties `((upstream-name . "refGenome")))
-    (build-system r-build-system)
-    ;; FIXME: Tests fail with: No matches between query and reference seqid's
-    ;; (wrong genome?)
-    (arguments (list #:tests? #false))
-    (propagated-inputs
-     (list r-dbi r-doby r-rsqlite))
-    (home-page "https://cran.r-project.org/web/packages/refGenome/")
-    (synopsis
-     "Gene and splice site annotation using annotation data from Ensembl and UCSC")
-    (description
-     "This package contains functionality for importing and managing of
-downloaded genome annotation data from the Ensembl genome browser (European
-Bioinformatics Institute) and from the UCSC genome browser (University of
-California, Santa Cruz) and annotation routines for genomic positions and
-splice site positions.")
-    (license license:gpl2)))
-
 (define-public r-reformulas
   (package
     (name "r-reformulas")
