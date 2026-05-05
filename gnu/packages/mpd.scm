@@ -45,12 +45,12 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
-  #:use-module (gnu packages avahi)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages dns)
   #:use-module (gnu packages file-systems)
   #:use-module (gnu packages freedesktop) ;elogind
   #:use-module (gnu packages gettext)

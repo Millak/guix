@@ -109,7 +109,6 @@
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages aspell)
   #:use-module (gnu packages autotools)
-  #:use-module (gnu packages avahi)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
