@@ -18831,7 +18831,16 @@ activity prediction from transcriptomics data, and its R implementation
         '(modify-phases %standard-phases
            ;; This is needed to find ~/.config/OmnipathR/omnipathr.yml
            (add-after 'unpack 'set-HOME
-             (lambda _ (setenv "HOME" "/tmp"))))))
+             (lambda _ (setenv "HOME" "/tmp")))
+           (add-after 'unpack 'seurat-compatibility
+             (lambda _
+               ;; The `slot` argument of `GetAssayData()` was deprecated in
+               ;; SeuratObject 5.0.0.
+               (substitute* '("R/cellchat_pipe.R"
+                              "R/sca_pipe.R"
+                              "R/liana_prep.R"
+                              "R/natmi_pipe.R")
+                 (("slot =") "layer =")))))))
       (propagated-inputs
        (list r-basilisk
              r-basilisk-utils
