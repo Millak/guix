@@ -9324,14 +9324,16 @@ This mode supports Apache HTTP Server 2.4 and major modules.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/raxod502/apheleia")
+             (url "https://github.com/radian-software/apheleia")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1vs532hjkwj19laigqvvk11r0gwhv5vd8v6wh5598dzmfw3yh4bm"))))
     (build-system emacs-build-system)
+    (arguments (list #:include #~(cons "^scripts/formatters/" %default-include)
+                     #:exclude #~(cons "\\.js$" %default-exclude)))
     (native-inputs (list emacs-buttercup))
-    (home-page "https://github.com/raxod502/apheleia")
+    (home-page "https://github.com/radian-software/apheleia")
     (synopsis "Reformat buffer stably")
     (description
      "This package allows for a buffer to be reformatted without moving point,
