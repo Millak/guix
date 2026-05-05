@@ -121,6 +121,100 @@
      "This package provides a Go library to read and manipulate checkpoint
 archives as created by Podman, CRI-O and containerd.")
     (license license:asl2.0)))
+
+(define-public go-github-com-containers-gvisor-tap-vsock
+  (package
+    (name "go-github-com-containers-gvisor-tap-vsock")
+    (version "0.8.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containers/gvisor-tap-vsock")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xz710dmy58gngd0qizjw8g9nkraksqald8vzhwc5h36dqkc8nrf"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file-recursively "vendor")
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/containers/gvisor-tap-vsock/tools
+            (delete-file-recursively "tools")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/containers/gvisor-tap-vsock"
+      #:unpack-path "github.com/containers/gvisor-tap-vsock"
+      #:build-flags
+      #~(list (string-append "-ldflags="
+                             "-X github.com/containers/gvisor-tap-vsock"
+                             "/pkg/types.gitVersion=" #$version))
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Received unexpected error:
+               ;; listen unix /tmp/guix-.../test.sock: bind: invalid argument
+               (list "TestNotificationSender_Success"
+                     ;; Requires network
+                     "TestSuite"
+                     "TestDNS")
+               "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prune-tests
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                ;; Requires working DNS.
+                (substitute* "pkg/services/dns/dns_test.go"
+                  (("Should pass DNS requests to default system DNS.*" all)
+                   (string-append all "\n" "ginkgo.Skip(\"No network.\");"))
+                  (("\"redhat.com\",")
+                   "\"localhost\",")
+                  (("\"52.200.142.250\"")
+                   "\"127.0.0.1\""))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-foxcpp-go-mockdns))
+    (propagated-inputs
+     (list go-github-com-apparentlymart-go-cidr
+           go-github-com-containers-winquit
+           go-github-com-coreos-stream-metadata-go
+           go-github-com-dustin-go-humanize
+           go-github-com-google-gopacket
+           go-github-com-inetaf-tcpproxy
+           go-github-com-insomniacslk-dhcp
+           ;; go-github-com-linuxkit-virtsock  ;Windows only
+           go-github-com-mdlayher-vsock
+           ;; go-github-com-microsoft-go-winio ;Windows only
+           go-github-com-miekg-dns
+           go-github-com-onsi-ginkgo
+           go-github-com-onsi-gomega
+           go-github-com-opencontainers-go-digest
+           go-github-com-sirupsen-logrus
+           go-github-com-songgao-packets
+           go-github-com-songgao-water
+           go-github-com-vishvananda-netlink
+           go-golang-org-x-crypto
+           go-golang-org-x-mod
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-gopkg-in-yaml-v3
+           go-gvisor-dev-gvisor))
+    (home-page "https://github.com/containers/gvisor-tap-vsock")
+    (synopsis "Network stack for virtualization based on gVisor")
+    (description "This package provides a replacement for @code{libslirp} and
+@code{VPNKit}, written in pure Go.  It is based on the network stack of gVisor
+and brings a configurable DNS server and dynamic port forwarding.
+
+It can be used with QEMU, Hyperkit, Hyper-V and User-Mode Linux.
+
+The binary is called @command{gvproxy}.")
+    (license license:asl2.0)))
+
 
 ;;;
 ;;; Executables:
@@ -595,92 +689,33 @@ configure network interfaces in Linux containers.")
     (license license:asl2.0)))
 
 (define-public gvisor-tap-vsock
-  (package
+  (package/inherit go-github-com-containers-gvisor-tap-vsock
     (name "gvisor-tap-vsock")
-    (version "0.8.8")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/containers/gvisor-tap-vsock")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1xz710dmy58gngd0qizjw8g9nkraksqald8vzhwc5h36dqkc8nrf"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            (delete-file-recursively "vendor")
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - github.com/containers/gvisor-tap-vsock/tools
-            (delete-file-recursively "tools")))))
-    (build-system go-build-system)
     (arguments
-     (list
-      #:install-source? #f
-      #:import-path "github.com/containers/gvisor-tap-vsock/cmd/gvproxy"
-      #:unpack-path "github.com/containers/gvisor-tap-vsock"
-      #:build-flags
-      #~(list (string-append "-ldflags="
-                             "-X github.com/containers/gvisor-tap-vsock"
-                             "/pkg/types.gitVersion=" #$version))
-      #:test-flags
-      ;; serve UDP error: *net.OpError read udp 127.0.0.1:5354: use of closed
-      ;; network connection
-      #~(list "-skip" "TestSuite")
-      #:test-subdirs
-      #~(list "../../...")       ;test the whole library
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'prune-tests
-            (lambda* (#:key unpack-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" unpack-path)
-                ;; Requires working DNS.
-                (substitute* "pkg/services/dns/dns_test.go"
-                  (("Should pass DNS requests to default system DNS.*" all)
-                   (string-append all "\n" "ginkgo.Skip(\"No network.\");"))
-                  (("\"redhat.com\",")
-                   "\"localhost\",")
-                  (("\"52.200.142.250\"")
-                   "\"127.0.0.1\""))))))))
+     (substitute-keyword-arguments arguments
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:phases _ '%standard-phases)
+        #~(modify-phases %standard-phases
+            ;; Build binary outputs are taken from project's Makefile.
+            (replace 'build
+              (lambda arguments
+                (for-each
+                 (lambda (cmd)
+                   (apply (assoc-ref %standard-phases 'build)
+                          `(,@arguments #:import-path ,cmd)))
+                 (list "github.com/containers/gvisor-tap-vsock/cmd/gvproxy"
+                       "github.com/containers/gvisor-tap-vsock/cmd/qemu-wrapper"
+                       "github.com/containers/gvisor-tap-vsock/cmd/vm"))))
+            (add-after 'install 'fix-bin-name
+              (lambda _
+                (rename-file (string-append #$output "/bin/vm")
+                             (string-append #$output "/bin/gvforwarder"))))))))
     (native-inputs
-     (list go-github-com-apparentlymart-go-cidr
-           go-github-com-containers-winquit
-           go-github-com-coreos-stream-metadata-go
-           go-github-com-dustin-go-humanize
-           go-github-com-foxcpp-go-mockdns
-           go-github-com-google-gopacket
-           go-github-com-inetaf-tcpproxy
-           go-github-com-insomniacslk-dhcp
-           ;; go-github-com-linuxkit-virtsock  ;Windows only
-           go-github-com-mdlayher-vsock
-           ;; go-github-com-microsoft-go-winio ;Windows only
-           go-github-com-miekg-dns
-           go-github-com-onsi-ginkgo
-           go-github-com-onsi-gomega
-           go-github-com-opencontainers-go-digest
-           go-github-com-sirupsen-logrus
-           go-github-com-songgao-packets
-           go-github-com-songgao-water
-           go-github-com-stretchr-testify
-           go-github-com-vishvananda-netlink
-           go-golang-org-x-crypto
-           go-golang-org-x-mod
-           go-golang-org-x-sync
-           go-golang-org-x-sys
-           go-gopkg-in-yaml-v3
-           go-gvisor-dev-gvisor))
-    (home-page "https://github.com/containers/gvisor-tap-vsock")
-    (synopsis "Network stack for virtualization based on gVisor")
-    (description "This package provides a replacement for @code{libslirp} and
-@code{VPNKit}, written in pure Go.  It is based on the network stack of gVisor
-and brings a configurable DNS server and dynamic port forwarding.
-
-It can be used with QEMU, Hyperkit, Hyper-V and User-Mode Linux.
-
-The binary is called @command{gvproxy}.")
-    (license license:asl2.0)))
+     (package-propagated-inputs go-github-com-containers-gvisor-tap-vsock))
+    (propagated-inputs '())
+    (inputs '())))
 
 (define-public catatonit
   (package
