@@ -2894,21 +2894,22 @@ Python packages.")
 (define-public python-show-in-file-manager
   (package
     (name "python-show-in-file-manager")
-    (version "1.1.5")
+    (version "1.1.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "show-in-file-manager" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/damonlynch/showinfilemanager")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "111d363i7m0lr295301q39j6h0l6nfybyn2cvn7xi3yll60a24zd"))))
+        (base32 "08vlrkhjjk1fklbgfrpnc6gz1gpzny90r53rr68ni3j8ld7p7vra"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests upstream
     (native-inputs
-     (list python-argparse-manpage
-           python-setuptools))
+     (list python-hatch-argparse-manpage python-hatchling python-pytest))
     (propagated-inputs
-     (list python-packaging
-           ;; python-pywin32
-           python-pyxdg))
+     (list python-packaging python-pyxdg))
     (home-page "https://github.com/damonlynch/showinfilemanager")
     (synopsis "Open the system file manager and select files in it")
     (description
