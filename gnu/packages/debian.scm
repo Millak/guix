@@ -257,6 +257,40 @@ contains the archive keys used for that.")
     (license (list license:public-domain ;; the keys
                    license:gpl2+))))
 
+(define-public parrot-archive-keyring
+  (package
+    (name "parrot-archive-keyring")
+    (version "2024.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+          (url "https://gitlab.com/parrotsec/packages/parrot-archive-keyring.git")
+          (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cb54nh7m6ijddrbxpah2j2kfflfcmbn1g23s69dlbgvz3ag3zxz"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:make-flags #~(list (string-append "DESTDIR=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'patch-makefile
+            (lambda _
+              (substitute* "Makefile"
+                (("/usr/share/keyrings/") "/share/keyrings/"))))
+          (delete 'configure))))
+    (native-inputs (list jetring))
+    (home-page "https://tools.parrotsec.org")
+    (synopsis "GnuPG archive keys of the Parrot archive")
+    (description "The Parrot distribution signs its packages.  This package
+contains the archive keys used for that.")
+    (license (list license:public-domain ;; the keys
+                   license:gpl3+))))
+
 (define-public pureos-archive-keyring
   (package
     (name "pureos-archive-keyring")
