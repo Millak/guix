@@ -429,27 +429,34 @@ a simple interface that makes it easy to organize and browse feeds.")
         (method url-fetch)
         (uri (pypi-uri "tuir" version))
         (sha256
-         (base32
-          "06xb030ibphbrz4nsxm8mh3g60ld8xfp6kc3j6vi1k4ls5s4h79i"))))
+         (base32 "06xb030ibphbrz4nsxm8mh3g60ld8xfp6kc3j6vi1k4ls5s4h79i"))
+        (patches (search-patches "tuir-python-3.12-support.patch"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags
-           ;; Some tests require "/etc/ssl/certs/ca-certificates.crt" which is not
-           ;; available during the tests; also likely those tests require networking.
-           #~(list "-k" (string-append "not test_content"
-                                       " and not test_inbox"
-                                       " and not test_mime_parsers"
-                                       " and not test_oauth"
-                                       " and not test_page"
-                                       " and not test_submission"
-                                       " and not test_subreddit"
-                                       " and not test_subscription"))
-           #:phases
-           #~(modify-phases %standard-phases
-               (delete 'sanity-check))))  ; Reads environment variables.
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Some tests require "/etc/ssl/certs/ca-certificates.crt"
+                    ;; which is not available during the tests; also likely
+                    ;; those tests require networking.
+                    (list "not test_content"
+                          "test_inbox"
+                          "test_mime_parsers"
+                          "test_oauth"
+                          "test_page"
+                          "test_submission"
+                          "test_subreddit"
+                          "test_subscription")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'sanity-check))))  ; Reads environment variables.
     (inputs
-     (list python-beautifulsoup4 python-decorator python-kitchen
-           python-requests python-six))
+     (list python-beautifulsoup4
+           python-decorator
+           python-kitchen
+           python-requests
+           python-six))
     (native-inputs
      (list python-mock
            python-pytest

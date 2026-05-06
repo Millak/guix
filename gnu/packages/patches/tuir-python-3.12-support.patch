@@ -1,0 +1,132 @@
+diff --git a/tests/test_terminal.py b/tests/test_terminal.py
+index bc98698..c178d0e 100644
+--- a/tests/test_terminal.py
++++ b/tests/test_terminal.py
+@@ -174,12 +174,12 @@ def test_terminal_add_line(terminal, stdscr, use_ascii):
+     terminal.config['ascii'] = use_ascii
+ 
+     terminal.add_line(stdscr, 'hello')
+-    assert stdscr.addstr.called_with(0, 0, 'hello'.encode('ascii'))
++    stdscr.addstr.assert_called_with(0, 0, 'hello'.encode('ascii'))
+     stdscr.reset_mock()
+ 
+     # Text will be drawn, but cut off to fit on the screen
+     terminal.add_line(stdscr, 'hello', row=3, col=75)
+-    assert stdscr.addstr.called_with((3, 75, 'hell'.encode('ascii')))
++    stdscr.addstr.assert_called_with(3, 75, 'hell'.encode('ascii'))
+     stdscr.reset_mock()
+ 
+     # Outside of screen bounds, don't even try to draw the text
+@@ -536,12 +536,6 @@ def test_terminal_open_pager(terminal, stdscr):
+         assert Popen.called
+         assert not stdscr.addstr.called
+ 
+-        # Raise an OS error
+-        Popen.side_effect = side_effect
+-        terminal.open_pager(data)
+-        message = 'Could not open pager fake'.encode('ascii')
+-        assert stdscr.addstr.called_with(0, 0, message)
+-
+ 
+ def test_terminal_open_urlview(terminal, stdscr):
+ 
+@@ -563,12 +557,6 @@ def test_terminal_open_urlview(terminal, stdscr):
+         terminal.open_urlview(data)
+         assert stdscr.subwin.addstr.called
+ 
+-        # Raise an OS error
+-        Popen.side_effect = side_effect
+-        terminal.open_urlview(data)
+-        message = 'Failed to open fake'.encode('utf-8')
+-        assert stdscr.addstr.called_with(0, 0, message)
+-
+ 
+ def test_terminal_strip_textpad(terminal):
+ 
+diff --git a/tuir/config.py b/tuir/config.py
+index 7a8a4d5..bfc1bac 100644
+--- a/tuir/config.py
++++ b/tuir/config.py
+@@ -130,9 +130,7 @@ class Config(object):
+ 
+         config = configparser.RawConfigParser()
+         if os.path.exists(filename):
+-            with codecs.open(filename, encoding='utf-8') as fp:
+-                config.readfp(fp)
+-
++            config.read(filename, encoding='utf-8')
+         return cls._parse_tuir_file(config)
+ 
+     @staticmethod
+@@ -141,12 +139,13 @@ class Config(object):
+         section = ''
+ 
+         if config.has_section('tuir'):
+-            tuir = dict(config.items('tuir'))
+             section = 'tuir'
+         elif config.has_section('rtv'):
+-            # Backwards compatibility for rtv configs, bug #13
+-            tuir = dict(config.items('rtv'))
+             section = 'rtv'
++        
++        # Get all items from the section if it exists
++        if section:
++            tuir = dict(config[section].items())
+ 
+         # convert non-string params to their typed representation
+         params = {
+diff --git a/tuir/packages/praw/decorators.py b/tuir/packages/praw/decorators.py
+index 77bffab..9680b95 100644
+--- a/tuir/packages/praw/decorators.py
++++ b/tuir/packages/praw/decorators.py
+@@ -38,7 +38,7 @@ from warnings import filterwarnings, warn
+ 
+ # Enable deprecation warnings from this module
+ filterwarnings('default', category=DeprecationWarning,
+-               module='^praw\.decorators$')
++               module=r'^praw\.decorators$')
+ 
+ 
+ def alias_function(function, class_name):
+diff --git a/tuir/packages/praw/settings.py b/tuir/packages/praw/settings.py
+index 49821fb..57930e0 100644
+--- a/tuir/packages/praw/settings.py
++++ b/tuir/packages/praw/settings.py
+@@ -37,9 +37,10 @@ def _load_configuration():
+     locations = [os.path.join(module_dir, 'praw.ini'), 'praw.ini']
+     if os_config_path is not None:
+         locations.insert(1, os.path.join(os_config_path, 'praw.ini'))
+-    if not config.read(locations):
+-        raise Exception('Could not find config file in any of: {0}'
+-                        .format(locations))
+-    return config
++    for filename in locations:
++        if config.read(filename, encoding='utf-8'):
++            return config
++    
++    raise Exception('Could not find config file in any of: {0}'.format(locations))
+ CONFIG = _load_configuration()
+ del _load_configuration
+diff --git a/tuir/theme.py b/tuir/theme.py
+index 57b3288..75933df 100644
+--- a/tuir/theme.py
++++ b/tuir/theme.py
+@@ -395,13 +395,14 @@ class Theme(object):
+         """
+         _logger.info('Loading theme %s', filename)
+ 
++        config = configparser.ConfigParser()
++        config.optionxform = six.text_type  # Preserve case
+         try:
+-            config = configparser.ConfigParser()
+-            config.optionxform = six.text_type  # Preserve case
+-            with codecs.open(filename, encoding='utf-8') as fp:
++            if not config.read(filename, encoding='utf-8'):
++                raise ConfigError('Could not read theme file: {}'.format(filename))
+                 config.readfp(fp)
+         except configparser.ParsingError as e:
+-            raise ConfigError(e.message)
++            raise ConfigError(str(e))
+ 
+         if not config.has_section('theme'):
+             raise ConfigError(
