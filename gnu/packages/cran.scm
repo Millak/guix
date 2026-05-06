@@ -1833,14 +1833,14 @@ vignettes or for sharing results via email.")
 (define-public r-clubsandwich
   (package
     (name "r-clubsandwich")
-    (version "0.6.2")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "clubSandwich" version))
        (sha256
         (base32
-         "1pwpl1p941w7c08d7nscqlgakfjzz2wnfccbhy26xhnqb5bhjzc5"))))
+         "1v9j0024w310vmdzkf8ifkadq3l299z3xkjd6p8vh8h0hkarrkgk"))))
     (properties `((upstream-name . "clubSandwich")))
     (build-system r-build-system)
     (propagated-inputs
