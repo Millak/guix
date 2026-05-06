@@ -2202,13 +2202,13 @@ STAR. Data is available on @code{ExperimentHub} as a data package.")
 (define-public r-biscuiteerdata
   (package
     (name "r-biscuiteerdata")
-    (version "1.25.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biscuiteerData" version 'experiment))
        (sha256
-        (base32 "05nr6yj460bb2w8masg8vjfnl8y2pa2s095iaghfdvx61nyrm5pg"))))
+        (base32 "0l0ajihw7hrjrygvwrx3i06v2ixkz9m0j4yl5a89yjdwfqczyd65"))))
     (properties
      `((upstream-name . "biscuiteerData")))
     (build-system r-build-system)
