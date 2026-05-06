@@ -3324,14 +3324,14 @@ al., 2012) and to the FASTQ files.")
 (define-public r-rnbeads-hg19
   (package
     (name "r-rnbeads-hg19")
-    (version "1.43.0")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RnBeads.hg19" version
                               'experiment))
        (sha256
-        (base32 "1ffchrlnv0nrxa0c32hd1viyyng4lgznpmjhyvqbp091li94rpns"))))
+        (base32 "10mlkhv445n8ng9wzjwjcqdd65as4fh5iv682g1di6rhqrvn607h"))))
     (properties `((upstream-name . "RnBeads.hg19")))
     (build-system r-build-system)
     (propagated-inputs (list r-genomicranges))
