@@ -10514,6 +10514,7 @@ SFTP.  It has the following main usages:
     (native-inputs
      (list python-approvaltests
            python-pytest
+           python-pytest-cov     ; This package has a custom way to run tests.
            python-pytest-mockito
            python-robotframework
            python-setuptools))
