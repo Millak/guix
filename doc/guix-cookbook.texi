@@ -646,9 +646,11 @@ This field contains a description of the source code origin.  The
 
 @enumerate
 @item  The method, here @code{url-fetch} to download via HTTP/FTP, but other methods
-    exist, such as @code{git-fetch} for Git repositories.
+    exist, such as @code{git-fetch} for Git repositories.  @xref{origin
+    Reference,,, guix, GNU Guix Reference Manual}, for more info on the
+    available download methods.
 @item  The URI, which is typically some @code{https://} location for @code{url-fetch}.  Here
-    the special `mirror://gnu` refers to a set of well known locations, all of
+    the special @code{mirror://gnu} refers to a set of well known locations, all of
     which can be used by Guix to fetch the source, should some of them fail.
 @item  The @code{sha256} checksum of the requested file.  This is essential to ensure
     the source is not corrupted.  Note that Guix works with base32 strings,
@@ -1116,7 +1118,8 @@ Let's discuss those fields in depth.
 @subsubsection @code{git-fetch} method
 
 Unlike the @code{url-fetch} method, @code{git-fetch} expects a @code{git-reference} which takes
-a Git repository and a commit.  The commit can be any Git reference such as
+a Git repository and a commit (@pxref{origin Reference,,, guix, GNU Guix
+Reference Manual}).  The commit can be any Git reference such as
 tags, so if the @code{version} is tagged, then it can be used directly.  Sometimes
 the tag is prefixed with a @code{v}, in which case you'd use @code{(commit (string-append
 "v" version))}.
@@ -1162,7 +1165,7 @@ Snippets might need additional Guile modules which can be imported from the
 
 There are 3 different input types.  In short:
 
-@table @asis
+@table @code
 @item native-inputs
 Required for building but not runtime -- installing a package
 through a substitute won't install these inputs.
@@ -1230,9 +1233,14 @@ It's advised to separate outputs only when you've shown it's worth it: if the
 output size is significant (compare with @code{guix size}) or in case the package is
 modular.
 
+@xref{Packages with Multiple Outputs,,, guix, GNU Guix Reference
+Manual}, for more info.
+
 @subsubsection Build system arguments
 
-The @code{arguments} is a keyword-value list used to configure the build process.
+The @code{arguments} is a keyword-value list used to configure the build
+process; these arguments are passed to the @dfn{build system}
+(@pxref{Build Systems,,, guix, GNU Guix Reference Manual}).
 
 The simplest argument @code{#:tests?} can be used to disable the test suite when
 building the package.  This is mostly useful when the package does not feature
@@ -1248,7 +1256,7 @@ following flags
                    "CC=gcc")
 @end lisp
 
-translate into
+translate into:
 
 @example
 $ make CC=gcc prefix=/gnu/store/...-<out>
@@ -1268,7 +1276,9 @@ Similarly, it's possible to set the configure flags:
 The @code{%build-inputs} variable is also generated in scope.  It's an association
 table that maps the input names to their store directories.
 
-The @code{phases} keyword lists the sequential steps of the build system.  Typically
+The @code{phases} keyword lists the sequential steps of the build
+system.  @xref{Build Phases,,, guix, GNU Guix Reference Manual}, for
+details; in a nutshell,
 phases include @code{unpack}, @code{configure}, @code{build}, @code{install} and @code{check}.  To know
 more about those phases, you need to work out the appropriate build system
 definition in @samp{$GUIX_CHECKOUT/guix/build/gnu-build-system.scm}:
@@ -1383,10 +1393,12 @@ Its return value is ignored.
 
 @subsubsection Code staging
 
-The astute reader may have noticed the quasi-quote and comma syntax in the
+The astute reader may have noticed the hash-tilde and hash-dollar syntax in the
 argument field.  Indeed, the build code in the package declaration should not be
 evaluated on the client side, but only when passed to the Guix daemon.  This
 mechanism of passing code around two running processes is called @uref{https://arxiv.org/abs/1709.00833, code staging}.
+@xref{G-Expressions,,, guix, GNU Guix Reference Manual}, for info on the
+this mechanism, which is called @dfn{g-expressions}.
 
 @subsubsection Utility functions
 
@@ -1395,7 +1407,7 @@ equivalent system invocations (@code{make}, @code{mkdir}, @code{cp}, etc.)@: com
 regular ``Unix-style'' installations.
 
 Some like @code{chmod} are native to Guile.
-@xref{,,, guile, Guile reference manual} for a complete list.
+@xref{File System,,, guile, Guile reference manual} for a complete list.
 
 Guix provides additional helper functions which prove especially handy in the
 context of package management.
@@ -1575,7 +1587,9 @@ noticed that a significant number of them have a @code{inherit} field:
 
 All unspecified fields are inherited from the parent package.  This is very
 convenient to create alternative packages, for instance with different source,
-version or compilation options.
+version or compilation options.  @xref{Defining Package Variant,,, guix,
+GNU Guix Reference Manual}, for a discussion of inheritance and of other
+ways to create package variants.
 
 @node Getting help
 @subsection Getting help
@@ -1616,7 +1630,8 @@ hopefully we will see your contributions soon!
 
 @itemize
 @item
-The @uref{https://guix.gnu.org/manual/en/html_node/Defining-Packages.html, package reference in the manual}
+@xref{Defining Packages,,, guix, GNU Guix Reference Manual}, for the
+@code{package} reference in the manual.
 
 @item
 @uref{https://gitlab.com/pjotrp/guix-notes/blob/master/HACKING.org, Pjotr’s hacking guide to GNU Guix}
