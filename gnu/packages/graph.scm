@@ -666,7 +666,7 @@ contains supporting code for evaluation and parameter tuning.")
                                                 (not (member file ignored))))))))
                     (format #t "test suite not run~%"))))))))
     (native-inputs
-     (list python-scipy))
+     (list python-scipy python-setuptools))
     (inputs
      (list faiss openblas python-wrapper swig-4.0))
     (propagated-inputs
