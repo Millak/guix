@@ -1763,11 +1763,15 @@ with the included @command{xfstests-check} helper.")
                 (("\\$\\(sysconfdir)") (string-append #$output "/etc")))
               (substitute* "udev/vdev_id"
                 (("PATH=/bin:/sbin:/usr/bin:/usr/sbin")
-                 (string-append "PATH="
-                                (dirname (which "chmod")) ":"
-                                (dirname (which "grep")) ":"
-                                (dirname (which "sed")) ":"
-                                (dirname (which "gawk")))))
+                 (format #f "PATH=~a"
+                         (list->search-path-as-string
+                          (map (lambda (name)
+                                 (dirname (search-input-file inputs name)))
+                               '("bin/chmod"
+                                 "bin/grep"
+                                 "bin/sed"
+                                 "bin/gawk"))
+                          ":"))))
               (substitute* '("Makefile.am" "Makefile.in")
                 (("\\$\\(prefix)/src") (string-append #$output:src "/src")))
               (substitute* (find-files "udev/rules.d/" ".rules.in$")
@@ -1803,7 +1807,10 @@ with the included @command{xfstests-check} helper.")
                               "/share/bash-completion/completions")))))))
     (native-inputs
      (list attr autoconf automake libtool kmod pkg-config))
-    (inputs (list eudev
+    (inputs (list coreutils-minimal
+                  eudev
+                  gawk
+                  grep
                   kmod
                   libaio
                   libtirpc
@@ -1811,6 +1818,7 @@ with the included @command{xfstests-check} helper.")
                   openssl
                   python
                   python-cffi
+                  sed
                   util-linux
                   `(,util-linux "lib")
                   zlib))
