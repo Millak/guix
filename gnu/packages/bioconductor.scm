@@ -2587,14 +2587,14 @@ of provenance unknown to the maintainer at present; it now employs
 (define-public r-gsvadata
   (package
     (name "r-gsvadata")
-    (version "1.47.3")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GSVAdata" version
                               'experiment))
        (sha256
-        (base32 "0s9fj36jc4xbqlrcn48pixl0l3kxsbgbpw1zr6711ky0qi9n6gvx"))))
+        (base32 "0b974c28wnskx7clz54qj1hvm9fiaclbl9r6z2ygbgbphs4lwa2s"))))
     (properties `((upstream-name . "GSVAdata")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-gseabase r-matrix r-spatialexperiment
