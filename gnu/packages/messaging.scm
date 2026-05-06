@@ -1720,27 +1720,48 @@ serialization format.")
 (define-public c-toxcore
   (package
     (name "c-toxcore")
-    (version "0.2.19")
+    (version "0.2.22")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/TokTok/c-toxcore")
-             (commit (string-append "v" version))
-             ;; XXX: c-toxcore now depends on a package called 'cmp', an
-             ;; implementation of MessagePack in C.  Fetch the submodule
-             ;; for now, maybe package it later.
-             (recursive? #t)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0wq6grc5lfjip39gm0ji1cw6b1sdv1zvimg1g40haqzhj51755za"))))
+         "1awx3q21ghln9fr605ycirgipsr6p5573xbqqkmhkyrpj2zfpmw4"))))
     (arguments
-     (list #:tests? #f ; figure out how to run the tests
-           #:configure-flags #~(list "-DENABLE_STATIC=false")))
+     (list
+      ;; FIXME: Expected family TOX_AF_INET6 (10), got 2.
+      #:test-exclude "network"
+      #:configure-flags
+      #~(list "-DENABLE_STATIC=false"
+              "-DAUTOTEST=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-cmp
+            (lambda _
+              (rmdir "third_party/cmp")
+              (substitute* "cmake/Dependencies.cmake"
+                (("^find_library\\(NSL_LIBRARIES" all)
+                 (string-append "find_library(CMP_LIB cmp REQUIRED)\n\n"
+                                all)))
+              (substitute* "CMakeLists.txt"
+                (("^if\\(TARGET libsodium" all)
+                 (string-append "set(toxcore_LINK_LIBRARIES"
+                                " ${toxcore_LINK_LIBRARIES} ${CMP_LIB})\n"
+                                all))
+                ((".*third_party\\/cmp.*") ""))
+              (with-directory-excursion "toxcore"
+                (substitute* '("bin_pack.c" "bin_unpack.c")
+                  (("#include \"\\.\\.\\/third_party\\/cmp\\/cmp\\.h\"")
+                   "#include <cmp.h>"))))))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config))
+    (inputs
+     (list cmp))
     (propagated-inputs
      (list libsodium opus libvpx))
     (home-page "https://tox.chat")
