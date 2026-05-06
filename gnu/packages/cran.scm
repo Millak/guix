@@ -39269,14 +39269,14 @@ univariate class intervals for mapping or other graphics purposes.")
 (define-public r-spdata
   (package
     (name "r-spdata")
-    (version "2.3.4")
+    (version "2.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spData" version))
        (sha256
         (base32
-         "0czsg358127c391fr84pibscvw6q8a7mrvrdf6c0rw718y73353h"))))
+         "05dhmg9pvzi1qydpmjbg3p2r29v45pplvg8c3fji1is56kckak83"))))
     (properties `((upstream-name . "spData")))
     (build-system r-build-system)
     (propagated-inputs
