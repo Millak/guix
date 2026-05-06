@@ -48,6 +48,7 @@
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Adrien 'neox' Bourmault <neox@gnu.org>
 ;;; Copyright © 2026 orahcio <orahcio@gmail.com>
+;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1630,6 +1631,60 @@ and prevent message loss.")))
     (synopsis "Support for MUC vCards and avatars")
     (description "This module adds the ability to set vCard for MUC rooms. One
 of the most common use cases is to define avatars for MUC rooms.")))
+
+(define-public cmp
+  (package
+    (name "cmp")
+    (properties '((revision . "0")
+                  ;; XXX: the build fails with the version 19.  With this more
+                  ;; recent commit picked from the master branch the build
+                  ;; succeeds.
+                  (commit . "52bfcfa17d2eb4322da2037ad625f5575129cece")))
+    (version (git-version "19"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/TokTok/cmp")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "15bq8dmk6zk5w5fzrziq2pi8f6iwpiy75raslnrw6mxpxlb4hdbb"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "CFLAGS=" "-fPIC -O3"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda* (#:key (make-flags '()) #:allow-other-keys)
+              (apply invoke "make" "cmp.o" make-flags)
+              (apply invoke "make" "cmpunittest" make-flags)
+              (invoke #$(cc-for-target) "-fPIC" "-O3"
+                      "-o" "libcmp.so" "--coverage" "-lgcov"
+                      "-shared" "cmp.o")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./cmpunittest"))))
+          (replace 'install
+            (lambda _
+              (install-file "libcmp.so" (string-append #$output "/lib"))
+              (install-file "cmp.h" (string-append #$output "/include")))))))
+    (native-inputs
+     (list cmocka))
+    (home-page "https://github.com/TokTok/cmp")
+    (synopsis "C implementation of the MessagePack serialization format")
+    (description
+     "CMP is a C implementation of the @uref{https://msgpack.org/, MessagePack}
+serialization format.")
+    (license license:expat)))
 
 (define-public libtoxcore
   (let ((revision "2")
