@@ -1858,7 +1858,7 @@ instant messenger with audio and video chat capabilities.")
 (define-public qtox
   (package
     (name "qtox")
-    (version "1.18.3")
+    (version "1.18.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1867,7 +1867,7 @@ instant messenger with audio and video chat capabilities.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qxaq5nzsjmxa3w4nl04p7ydfzyjq15scnyrjlzdwxh9vgsgg4g6"))))
+                "0rw2r219vxvdpd33gp247321ni40hl96hvm9f39s1wdzy9rcgs03"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
