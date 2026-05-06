@@ -2914,13 +2914,13 @@ timecourse of mouse gastrulation and early organogenesis.")
 (define-public r-minfidata
   (package
     (name "r-minfidata")
-    (version "0.57.0")
+    (version "0.58.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "minfiData" version 'experiment))
               (sha256
                (base32
-                "1n1z1gx3q3zv0y1m81gw635n400n7vyyrgbg1ja512x24njijxjj"))))
+                "02diyhp3dl9aldz41qsnj8mm6fcpckd91yk0j0k2qmp6fcnbk0xz"))))
     (properties `((upstream-name . "minfiData")))
     (build-system r-build-system)
     (propagated-inputs
