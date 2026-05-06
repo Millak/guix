@@ -7628,6 +7628,31 @@ significance (Johnson & Neyman, 1936; cf.  Spiller et al., 2012), etc.")
 package registries.")
      (license license:gpl2+)))
 
+(define-public r-regress
+  (package
+    (name "r-regress")
+    (version "1.3-22")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "regress" version))
+       (sha256
+        (base32 "0b22h610k75w9xsal3bdbbzd6x093pp457dzrvx80w363chfk2yw"))))
+    (properties `((upstream-name . "regress")))
+    (build-system r-build-system)
+    (native-inputs (list r-mass r-nlme))
+    (home-page "https://github.com/kbroman/regress")
+    (synopsis "Gaussian linear models with linear covariance structure")
+    (description
+     "This package provides functions to fit Gaussian linear model by
+maximising the residual log likelihood where the covariance structure can be
+written as a linear combination of known matrices.  It can be used for
+multivariate models and random effects models.  It aims to provide an easy
+straight forward manner to specify random effects models, including random
+interactions.  The code is optimized to use Sherman Morrison Woodbury
+identities for matrix inversion in random effects models.")
+    (license license:gpl2)))
+
 (define-public r-rematch
   (package
     (name "r-rematch")
