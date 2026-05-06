@@ -1268,10 +1268,9 @@ compression parameters used by Gzip.")
 (define-public borgmatic
   (package
     (name "borgmatic")
-    (version "2.1.2")
+    (version "2.1.5")
     (source
      (origin
-       ;; PyPI archive does not contain NEWS file needed for one test.
        (method git-fetch)
        (uri (git-reference
               (url "https://projects.torsion.org/borgmatic-collective/borgmatic")
@@ -1279,10 +1278,11 @@ compression parameters used by Gzip.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0vrpl21n6hf3pj0di4n7s36jq64sx24c93j48cmbdgczs8jiwi36"))))
+         "17i15ysg0wbcnfvki8wz2z9gx3zx99czv3czjh83y2m1xppvqbl5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 2609 passed
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'configure
@@ -1297,18 +1297,12 @@ compression parameters used by Gzip.")
                 (("(module.get_local_path.+ == )'borg'" all start)
                  (string-append start "'"
                                 (search-input-file inputs "bin/borg")
-                                "'")))))
-          (add-before 'check 'set-path
-            (lambda _
-              ;; Tests require the installed executable.
-              (setenv "PATH"
-                      (string-append #$output "/bin" ":"
-                                     (getenv "PATH"))))))))
+                                "'"))))))))
     (native-inputs
      (list python-flexmock
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-pytest-timeout
+           python-setuptools))
     (inputs
      (list borg
            python-apprise
