@@ -50436,49 +50436,45 @@ download images.")
 (define-public r-rserve
   (package
     (name "r-rserve")
-    (version "1.8-6")
+    (version "1.8-19")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://www.rforge.net/Rserve/snapshot/Rserve_"
-                           version ".tar.gz"))
+       (uri (cran-uri "Rserve" version))
        (sha256
-        (base32 "0z1xvx8ifvlwfl3rf1wwhpbwp4ivh7sn71xhlqihqpsclpmljg8p"))))
+        (base32 "06a997a2a2mkaayqnknpy7angqf6k06flhcds6w0z8lrl29whii0"))
+       (snippet
+        '(begin (delete-file "src/client/java/Rserve/Rserve.jar")
+                (delete-file "inst/java/REngine.jar")
+                (delete-file "inst/java/Rserve.jar")))))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-gcc-14-strictness
+     (list
+      #:configure-flags
+      '(list "--configure-args=\"--with-client\""
+             "--configure-args=\"--with-server\""
+             "--configure-args=\"--with-proxy\"")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'build-java-components
+            ;; Makevars tries to install to R's store directory.
             (lambda _
-              ;; XXX FIXME: $HOME/.R/Makevars seems to be the only way to
-              ;; set custom CFLAGS for R?
-              (setenv "HOME" (getcwd))
-              (mkdir-p ".R")
-              (with-directory-excursion ".R"
-                (with-output-to-file "Makevars"
-                  (lambda _
-                    (display (string-append
-                              "CFLAGS=-g -O2"
-                              " -std=gnu11"
-                              " -Wno-error=implicit-function-declaration\n")))))))
-         (add-before 'install 'install-server-binary
-           ;; Makevars tries to install to R's store directory.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (substitute* "src/Makevars.in"
-                 (("\\$\\(R_HOME\\)") out))
-               (mkdir-p bin)))))))
-    (propagated-inputs
-     (list r-checkmate
-           r-mime
-           r-jsonlite
-           r-knitr
-           r-r6
-           r-rcpp
-           r-uuid))
+              (let ((root (getcwd)))
+                (with-directory-excursion "src/client/java/"
+                  (invoke "make" "all")
+                  (install-file "REngine.jar"
+                                (string-append root "/inst/java"))
+                  (install-file "Rserve.jar"
+                                (string-append root "/inst/java"))))))
+          (add-before 'install 'install-server-binary
+            ;; Makevars tries to install to R's store directory.
+            (lambda _
+              (let ((bin (string-append #$output "/bin")))
+                (substitute* "src/Makevars.in"
+                  (("\\$\\(R_HOME\\)") #$output))
+                (mkdir-p bin)))))))
     (inputs
-     (list openssl zlib))
+     (list `(,openjdk11 "jdk") openssl zlib))
     (home-page "https://github.com/s-u/Rserve")
     (synopsis
      "Server providing access to R from many languages and systems")
