@@ -1987,6 +1987,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/netbeans-25-nativeexecution-paths.patch \
   %D%/packages/patches/netbeans-25-terminal-no-login-shell.patch \
   %D%/packages/patches/netbeans-25-source-only-build.patch	\
+  %D%/packages/patches/netbeans-25-wayland-font-rendering.patch	\
   %D%/packages/patches/netpbm-CVE-2017-2586.patch		\
   %D%/packages/patches/netpbm-CVE-2017-2587.patch		\
   %D%/packages/patches/netsurf-message-timestamp.patch		\
