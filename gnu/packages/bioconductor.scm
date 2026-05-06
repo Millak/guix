@@ -2365,15 +2365,16 @@ chromstaR package.")
 (define-public r-copyhelper
   (package
     (name "r-copyhelper")
-    (version "1.43.0")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "CopyhelpeR" version 'experiment))
        (sha256
-        (base32 "1350zd8zmh8sycbkmx80xvrvixgjmizabq6ixfi2m9inqgck6rdg"))))
+        (base32 "1w10dz2jccrax7xhyi5bdc46a0p24n503p8nq5fj1dfgl2csjk13"))))
     (properties `((upstream-name . "CopyhelpeR")))
     (build-system r-build-system)
+    (native-inputs (list r-biocstyle))
     (home-page "https://bioconductor.org/packages/CopyhelpeR/")
     (synopsis "Helper files for CopywriteR")
     (description
