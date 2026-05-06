@@ -2806,14 +2806,14 @@ Fastq files and are meant for use with the TP53Genome object in the
 (define-public r-macrophage
   (package
     (name "r-macrophage")
-    (version "1.27.0")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "macrophage" version
                                      'experiment))
               (sha256
                (base32
-                "19xv7958ddzis18fli10x923bjxlnpm98djgz3pj56x4509npzry"))))
+                "1slm3cn1b04nl6jys2gz5p4aidgw475h4xi5a60f0l9j96b360ds"))))
     (properties `((upstream-name . "macrophage")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
