@@ -54167,12 +54167,12 @@ genome scans.")
 (define-public r-qtl2
   (package
     (name "r-qtl2")
-    (version "0.38")
+    (version "0.40")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "qtl2" version))
               (sha256
-               (base32 "17h9cazf2q9f1wx5nf1pawvv5b5pld191sj9pdfab0vw2r9rdf4l"))))
+               (base32 "1a8na77byryr9xx8kg5lw4id7mz6czdcnwa12my0hagx2cdv9l5r"))))
     (properties
      '((updater-extra-native-inputs . ("zip"))))
     (build-system r-build-system)
@@ -54191,7 +54191,7 @@ genome scans.")
            r-rcppeigen
            r-rsqlite
            r-yaml))
-    (native-inputs (list r-qtl r-testthat r-vdiffr zip))
+    (native-inputs (list r-qtl r-regress r-testthat r-vdiffr zip))
     (home-page "https://kbroman.org/qtl2/")
     (synopsis "Quantitative Trait Locus Mapping in Experimental Crosses")
     (description
