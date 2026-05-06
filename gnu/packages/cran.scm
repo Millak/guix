@@ -16016,17 +16016,29 @@ data structures in C++.")
 (define-public r-fastglm
   (package
     (name "r-fastglm")
-    (version "0.0.4")
+    (version "0.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fastglm" version))
        (sha256
-        (base32 "0r00qm72qz22np0d2h3jkk9hz0c31mrvkqlkwmir4xhhrhg3apdw"))))
+        (base32 "1cxiv3csmvhhs1bfcn39sibh8swidk1l0ld365xv19gcxyf8gg2v"))))
     (properties `((upstream-name . "fastglm")))
     (build-system r-build-system)
-    (propagated-inputs (list r-bh r-bigmemory r-rcpp r-rcppeigen))
-    (native-inputs (list r-knitr))
+    (propagated-inputs (list r-bh
+                             r-bigmemory
+                             r-formula
+                             r-matrix
+                             r-rcpp
+                             r-rcppeigen))
+    (native-inputs (list r-knitr
+                         r-logistf
+                         r-mass
+                         r-pscl
+                         r-sandwich
+                         r-statmod
+                         r-testthat
+                         r-tweedie))
     (home-page "https://cran.r-project.org/package=fastglm")
     (synopsis
      "Fast and stable fitting of generalized linear models using 'RcppEigen'")
