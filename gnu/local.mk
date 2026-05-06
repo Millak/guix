@@ -1515,6 +1515,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-reinstate-prlimit64-fallback.patch	\
   %D%/packages/patches/glibc-supported-locales.patch     	\
   %D%/packages/patches/glibc-versioned-locpath.patch		\
+  %D%/packages/patches/glycin-sandbox-Adapt-bwrap-invocation.patch	\
   %D%/packages/patches/gmime-disable-tests.patch		\
   %D%/packages/patches/gmp-arm-asm-nothumb.patch		\
   %D%/packages/patches/gmp-faulty-test.patch			\
