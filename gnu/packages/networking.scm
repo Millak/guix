@@ -1006,11 +1006,11 @@ publish/subscribe, RPC-style request/reply, or service discovery.")
     (home-page "https://nng.nanomsg.org/")
     (license license:expat)))
 
-(define-public nng-1.10
+(define-public nng-1.11
   (package
     (inherit nng)
     (name "nng")
-    (version "1.10.1")
+    (version "1.11")
     (source
      (origin
        (method git-fetch)
@@ -1019,7 +1019,7 @@ publish/subscribe, RPC-style request/reply, or service discovery.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13nmz1p8qd12gyj7wm8fz1ccap47qh41sxz4jqdhj8gnd0kiy5h4"))))
+        (base32 "1l4rxwnc9knndwmy7xg53adyrm17ld7c5gxwm7vgfmgfy0my4zy8"))))
     (arguments
      (list
       #:configure-flags
@@ -1035,7 +1035,6 @@ publish/subscribe, RPC-style request/reply, or service discovery.")
                (("add_nng_test1\\(httpclient 60 NNG_SUPP_HTTP\\)") "")
                (("add_nng_test\\(tls 60\\)") ""))
              (substitute* "src/platform/CMakeLists.txt"
-               (("nng_test\\(platform_test\\)") "")
                (("nng_test\\(resolver_test\\)") ""))
              (substitute* "src/sp/transport/tcp/CMakeLists.txt"
                (("nng_test\\(tcp_test\\)") ""))

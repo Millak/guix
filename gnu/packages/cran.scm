@@ -24313,7 +24313,7 @@ explored with minimal deviation from the common work patterns of
            (lambda _
              (setenv "INCLUDE_DIR" (getenv "C_INCLUDE_PATH"))
              (setenv "LIB_DIR" (getenv "LIBRARY_PATH")))))))
-    (inputs (list mbedtls-lts nng-1.10))
+    (inputs (list mbedtls-lts nng-1.11))
     (native-inputs (list r-later r-litedown r-promises))
     (home-page "https://shikokuchuo.net/nanonext/")
     (synopsis "NNG (Nanomsg Next Gen) lightweight messaging library")
