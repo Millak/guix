@@ -2141,14 +2141,14 @@ example with the @code{biotmle} R package.")
 (define-public r-bladderbatch
   (package
     (name "r-bladderbatch")
-    (version "1.49.0")
+    (version "1.50.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "bladderbatch" version
                                      'experiment))
               (sha256
                (base32
-                "1mxpfbskqsz69abb4niazgs3w0mhwfwqkr1nwarqwvzg8cp4nlch"))))
+                "0x6yx733b2j1flvphgcgbnbifmkkwri62bbsi5m707vm5cp6q6s3"))))
     (properties `((upstream-name . "bladderbatch")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase))
