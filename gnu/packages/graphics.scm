@@ -645,7 +645,7 @@ applications.")
   (package
     (inherit embree)
     (name "embree")
-    (version "3.3.15")
+    (version "3.13.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
