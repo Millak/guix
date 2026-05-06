@@ -5982,6 +5982,8 @@ science including tools for accessing data sets in Python.")
       #:modules '(((guix build cargo-build-system) #:prefix cargo:)
                   (guix build pyproject-build-system)
                   (guix build utils))
+      ;; There are rust tests which would be costly to run, but no python ones.
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'build-without-rust-nightly
