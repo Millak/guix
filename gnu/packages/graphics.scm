@@ -628,9 +628,17 @@ with the @command{autotrace} utility or as a C library, @code{libautotrace}.")
        #:configure-flags
          (list
           "-DEMBREE_ISPC_SUPPORT=OFF"
-          ;; They SAY that that's the default--but it isn't
-          ;; (that would be AVX512--and that segfaults GCC (!)).
-          "-DEMBREE_MAX_ISA=AVX2")))
+          ,@(cond
+              ((target-x86-64?)
+               ;; They SAY that that's the default--but it isn't
+               ;; (that would be AVX512--and that segfaults GCC (!)).
+               `("-DEMBREE_MAX_ISA=AVX2"))
+              ((target-aarch64?)
+               `("-DEMBREE_ARM=ON"
+                 "-DEMBREE_IGNORE_CMAKE_CXX_FLAGS=OFF"
+                 "-DCMAKE_CXX_FLAGS=-flax-vector-conversions"))
+              (else
+               '())))))
     (inputs
      (list glfw onetbb))
     (home-page "https://www.embree.org/")
