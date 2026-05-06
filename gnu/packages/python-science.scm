@@ -39,6 +39,7 @@
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2026 Reza Housseini <reza@housseini.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2334,6 +2335,57 @@ evaluating arrays of polynomials based on @code{numpy.ndarray objects}.")
      "This package provides optimized tools for group-indexing operations:
 aggregated sum and more.")
     (license license:bsd-3)))
+
+(define-public python-openpmd-api
+  (package
+    (name "python-openpmd-api")
+    ;; This can be removed when version 0.17.1 is released.
+    (properties '((commit . "ec8251eaa80ecc7182f83de2180d020f42978046")
+                  (revision . "0")))
+    (version (git-version "0.17.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/openPMD/openPMD-api")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y9jz1igjwcrxh5w31q0dmzb9hpizbmg4yzma14ca3pcs0na4mqc"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DopenPMD_SUPERBUILD=OFF")))
+    (native-inputs
+     (list catch2
+           python-numpy))
+    (inputs
+     (list hdf5
+           nlohmann-json
+           openmpi
+           pybind11
+           python
+           toml11))
+    (propagated-inputs
+     (list python-mpi4py))
+    (home-page "https://openpmd-api.readthedocs.io/")
+    (synopsis "C++ & Python API for Scientific I/O")
+    (description
+     "openPMD is an open meta-data schema that provides meaning and
+self-description for data sets in science and engineering.  See the
+@url{https://github.com/openPMD/openPMD-standard, openPMD standard} for
+details of this schema.
+
+This library provides a reference API for openPMD data handling.  Since
+openPMD is a schema (or markup) on top of portable, hierarchical file formats,
+this library implements various backends such as HDF5, ADIOS2 and JSON.
+Writing & reading through those backends and their associated files are
+supported for serial and @url{https://www.mpi-forum.org/docs/, MPI-parallel}
+workflows.")
+    (license (list license:gpl3 license:lgpl3))))
 
 (define-public python-opt-einsum
   (package
