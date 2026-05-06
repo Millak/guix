@@ -36784,19 +36784,30 @@ a port of the chalk package for javascript.")
     (version "1.9.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "svgelements" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/meerk40t/svgelements")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1xrp7yxg65dqdrmghriljf9hh2smq2zhzr2hzmqifgfd0ijas0kw"))))
+        (base32 "0bpddyy4klmkkv6w06hqrv2m5ds1kxc0rl9pxnsw91wyfwcsq7cz"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-python-incompatibilities
+            (lambda _
+              (substitute* (find-files "test" "\\.py$")
+                (("(assert(|NotAlmost)Equal)s" all out in)
+                 out)))))))
     (native-inputs
      (list python-anyio
            python-pytest
            python-numpy
            python-pillow
            python-scipy
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/meerk40t/svgelements")
     (synopsis "SVG parsing for elements, paths, and other SVG objects")
     (description
