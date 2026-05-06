@@ -26,6 +26,7 @@
 ;;; Copyright © 2025, 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -278,6 +279,64 @@ common extended features of widespread compilers like @code{gcc} and
  supporting most of C11 along with some GCC and C2x extensions.")
       (home-page "https://sr.ht/~mcf/cproc")
       (license license:expat))))
+
+(define-public minini
+  (package
+    (name "minini")
+    (properties '((revision . "0")
+                  ;; This commit is the next one to 1.5 that fixes the wrong
+                  ;; type used in prototype for ini_putbool() function.
+                  (commit . "797be9d2b883222d387732df73945d52c99ec994")))
+    (version (git-version "1.5"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/compuphase/minIni")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qdrvm0rzip1qbpgxp4bz1dd52lgxxcn40pdw6viz7scj47iccvn"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules
+      '((guix build gnu-build-system)
+        (guix build utils)
+        (srfi srfi-26))               ;for cute
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (with-directory-excursion "dev"
+                (invoke #$(cc-for-target) "-c" "-fPIC" "minIni.c"
+                        "-o" "minIni.o")
+                (invoke #$(cc-for-target) "-shared"
+                        "-o" "libminIni.so" "minIni.o")
+                (invoke #$(cc-for-target) "-o" "test" "test.c" "minIni.c"))))
+          (replace 'install
+            (lambda _
+              (install-file "dev/libminIni.so" (string-append #$output "/lib"))
+              (for-each (cute install-file <>
+                              (string-append #$output "/share/doc/minIni"))
+                        '("doc/minIni.pdf" "README.md"))
+              (for-each (cute install-file <>
+                              (string-append #$output "/include/minIni"))
+                        (find-files "dev" "\\.h"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "dev"
+                  (invoke "./test"))))))))
+    (home-page "https://www.compuphase.com/minini.htm")
+    (synopsis "Library for reading and writing @file{.ini} files")
+    (description
+     "minIni is a portable and configurable library for reading and writing
+@file{.ini} files.")
+    (license license:asl2.0)))
 
 (define-public stringzilla
   (package
