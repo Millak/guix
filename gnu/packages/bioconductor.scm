@@ -3005,14 +3005,14 @@ files for various search engines.")
 (define-public r-msigdb
   (package
     (name "r-msigdb")
-    (version "1.19.0")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "msigdb" version
                                      'experiment))
               (sha256
                (base32
-                "1pb3fg33dnk70cx8ajr01kg58l4qis98s8067nkwzssj57nfwhz9"))))
+                "1rgbf28nlyf84ax7nv70mlqbmdqkp18x8n8np8qgvncyi595x0qr"))))
     (properties `((upstream-name . "msigdb")))
     (build-system r-build-system)
     ;; Tests require Internet access.
