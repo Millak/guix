@@ -4417,15 +4417,6 @@ problem.  It was inspired from the SVGNest Javascript library.")
        (sha256
         (base32 "0jhqfylg6vzlbz9rqs981bg6y8s18iklw1p8hmax72xq2c7561s1"))))
     (build-system cmake-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list boost
-           clipper
-           libnest2d-for-cura
-           nlopt
-           python
-           python-sip-4))
     (arguments
      `(#:tests? #f
        #:phases
@@ -4445,6 +4436,16 @@ problem.  It was inspired from the SVGNest Javascript library.")
                   (string-append path " Python3_SITEARCH"))
                  (("\\$\\{_process_output\\} Python3_SITELIB")
                   (string-append path " Python3_SITELIB")))))))))
+    (native-inputs
+     (list pkg-config
+           python-setuptools))
+    (inputs
+     (list boost
+           clipper
+           libnest2d-for-cura
+           nlopt
+           python
+           python-sip-4))
     (home-page "https://github.com/Ultimaker/pynest2d")
     (synopsis "Python bindings for libnest2d")
     (description
