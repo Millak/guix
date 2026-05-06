@@ -56671,14 +56671,14 @@ and formatted text files with additional meta-data, such including @code{.csv},
 (define-public r-lwgeom
   (package
     (name "r-lwgeom")
-    (version "0.2-15")
+    (version "0.2-16")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lwgeom" version))
        (sha256
         (base32
-         "0rmcdqx1pmv758wnam0c5diaj7lblkyhzlwv292bnfdip9h794v5"))))
+         "1rgmvrnzihb478bn1q1s9d2if3r2xal86dscz1sawckzlrl2xpns"))))
     (properties `((upstream-name . "lwgeom")))
     (build-system r-build-system)
     (inputs
