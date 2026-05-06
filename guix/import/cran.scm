@@ -927,7 +927,8 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
          (inputs     (cran-package-inputs meta repository
                                           #:download-source download-source))
          (substitutable? (and substitutable? (not git?) (not hg?)
-                              (not (source-size-too-big? source-url))))
+                              (not (false-if-exception
+                                    (source-size-too-big? source-url)))))
          (package
            `(package
               (name ,(cran-guix-name name))
