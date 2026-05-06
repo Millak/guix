@@ -3371,14 +3371,14 @@ snapshot.")
 (define-public r-scpdata
   (package
     (name "r-scpdata")
-    (version "1.19.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scpdata" version
                               'experiment))
        (sha256
-        (base32 "11kj6nvlb9mw74k5hz264pdayjlrx4lliywq7yxna3xs09vz23bh"))))
+        (base32 "0fnx1qkiqhpnhhln8hcbhqdrxqymq14j39zv7s5sg6374wi2w9f8"))))
     (properties `((upstream-name . "scpdata")))
     (build-system r-build-system)
     (arguments
