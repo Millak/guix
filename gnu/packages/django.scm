@@ -106,7 +106,7 @@ prefixing to determine WebSocket endpoints versus HTTP endpoints.")
 (define-public python-channels
   (package
     (name "python-channels")
-    (version "4.2.2")
+    (version "4.3.2")
     (source
      (origin
        (method git-fetch) ; no tests in PyPI
@@ -115,8 +115,14 @@ prefixing to determine WebSocket endpoints versus HTTP endpoints.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x7w29qpj2acrzf8hcgymsyr5gk3aj2wkbvlwcr01ygd6as8h7hz"))))
+        (base32 "0lxq5l0729ms4xzbn1rq968qpi7ipa9aj1wjvzrpdxd3mmlg2618"))))
     (build-system pyproject-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'delete-selenium-tests
+           (lambda* _
+             (delete-file "tests/sample_project/tests/test_selenium.py"))))))
     (propagated-inputs (list python-asgiref python-django))
     ;; Channels develops and maintains Daphne but any other ASGI server can be
     ;; used, so keep it in native-inputs for tests.
