@@ -9450,16 +9450,20 @@ and convert DDL to BigQuery JSON schema.")
 (define-public python-jsonschema
   (package
     (name "python-jsonschema")
-    (version "4.23.0")
+    (version "4.26.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "jsonschema" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Julian/jsonschema")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1i3b4sckkc3v8vckqa11xbrj695qzrzsfzrkclra6lb3ybz9f56p"))))
+        (base32 "0p89jy7s1agi2zqrsdm56p843k847n9cixjsc12hnzscll37kysk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 7744 passed, 71 skipped
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -9469,21 +9473,20 @@ and convert DDL to BigQuery JSON schema.")
      (list python-hatchling
            python-hatch-fancy-pypi-readme
            python-hatch-vcs
-           ;; For <tests/test_cli.py::TestCLIIntegration::test_license>.
-           python-pip
+           python-jsonpath-ng
            python-pytest))
     (propagated-inputs
      (list python-attrs
-           python-fqdn
-           python-idna
-           python-importlib-resources
-           python-isoduration
-           python-jsonpointer
            python-jsonschema-specifications
-           python-rfc3339-validator
-           python-rfc3986-validator
            python-referencing-bootstrap
            python-rpds-py
+           ;; [optional]
+           python-fqdn
+           python-idna
+           python-isoduration
+           python-jsonpointer
+           python-rfc3339-validator
+           python-rfc3986-validator
            python-uri-template
            python-webcolors))
     (home-page "https://github.com/Julian/jsonschema")
