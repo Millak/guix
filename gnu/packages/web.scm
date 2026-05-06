@@ -480,7 +480,7 @@ one.")
 (define-public mod-wsgi
   (package
     (name "mod-wsgi")
-    (version "4.9.4")
+    (version "5.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -489,19 +489,16 @@ one.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zf921nd9xxdvvc8awzzfrljr0n29vi28mlam0jdwvsk0xv4gd7a"))))
+                "0cb3bh682cf8v0hvlx84w44vgac0lkx8pkbnxyd8ahpqrx9r44qn"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:disallowed-references ,(list (this-package-native-input "httpd"))
-       #:tests? #f                 ; TODO: can't figure out if there are tests
-       #:make-flags (list
-                     (string-append "DESTDIR="
-                                    (assoc-ref %outputs "out"))
-                     "LIBEXECDIR=/modules")))
-    (native-inputs
-     `(("httpd" ,httpd)))
-    (inputs
-     `(("python" ,python-wrapper)))
+     (list
+      #:disallowed-references (list (this-package-native-input "httpd"))
+      #:tests? #f ; TODO: can't figure out if there are tests
+      #:make-flags #~(list (string-append "DESTDIR=" #$output)
+                           "LIBEXECDIR=/modules")))
+    (native-inputs (list httpd))
+    (inputs (list python-wrapper))
     (synopsis "Apache HTTPD module for Python WSGI applications")
     (description
      "The mod_wsgi module for the Apache HTTPD Server adds support for running
