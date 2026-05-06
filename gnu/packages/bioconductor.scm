@@ -2641,13 +2641,13 @@ tracks were originally downloaded from the UCSC table browser.  See the
 (define-public r-hdcytodata
   (package
     (name "r-hdcytodata")
-    (version "1.31.0")
+    (version "1.32.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "HDCytoData" version 'experiment))
               (sha256
                (base32
-                "0f56i0zn50bk8w40ib120dzw9cvsflggvib3k7ib6fqar1kkkysc"))))
+                "1zah1xd9kksd8apvxisjp3w6xhwcqzb2kvrfgikf5jhv2kn98vcz"))))
     (properties `((upstream-name . "HDCytoData")))
     (build-system r-build-system)
     (arguments
