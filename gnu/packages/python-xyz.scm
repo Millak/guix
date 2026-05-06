@@ -31661,14 +31661,20 @@ positioning, and keyboard input.")
 (define-public python-readme-renderer
   (package
     (name "python-readme-renderer")
-    (version "44.0")
+    (properties '((commit . "e603eb17fcabd6bd20706d278fc24a7e9a663190")
+                  (revision . "0")))
+    (version (git-version "44.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "readme_renderer" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pypa/readme_renderer")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1qfiqm3w1ydpbipns5nifa7h4wraxd72nh7imif819mzmd7064l7"))))
+        (base32 "15w3lzgg8gcq22saqy2cpnv3hvkrixhyn57fcg1p1bm2njh1hr61"))))
     (build-system pyproject-build-system)
     (arguments
      (list
