@@ -10098,13 +10098,13 @@ stock assessment methods.")
 (define-public r-fixest
   (package
     (name "r-fixest")
-    (version "0.14.0")
+    (version "0.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fixest" version))
        (sha256
-        (base32 "0ifr13p6kqf3qx17l5b6kvwhzzrb3qlcm7sv9cnm703l7ax25i60"))))
+        (base32 "1gjbvyyavs8hnrxx4ndyipdc9q3mqv0hzj8rmc0lmr37hf2l92km"))))
     (properties
      '((upstream-name . "fixest")
        (updater-extra-native-inputs . ("r-matrix"))
