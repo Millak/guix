@@ -46394,14 +46394,14 @@ functional outliers with bagplots, boxplots and rainbow plots.")
 (define-public r-fds
   (package
     (name "r-fds")
-    (version "1.8")
+    (version "1.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fds" version))
        (sha256
         (base32
-         "1284vncixrzrz9x6b52gslrbrbia07sd0xac7nwdqhp5f5v5wfi0"))))
+         "03ivvx8iv1vvxp2zcggrvs1j3q9mm56winjw7q3x7aq5l4xgi1hx"))))
     (properties `((upstream-name . "fds")))
     (build-system r-build-system)
     (propagated-inputs
