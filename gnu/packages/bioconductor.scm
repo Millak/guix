@@ -2783,14 +2783,14 @@ of leukemia (ALL, AML, CLL, CML) or non-leukemia.")
 (define-public r-lungcancerlines
   (package
     (name "r-lungcancerlines")
-    (version "0.49.2")
+    (version "0.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "LungCancerLines" version
                               'experiment))
        (sha256
-        (base32 "1kw45zi9p52psx0ahik5b7imy79j0xx74z0bsjxy7xnjq998yvmk"))))
+        (base32 "0pags7zjx6vazfisn2j458b1x25979fq8wfbcvfyq73ia7wpfsrv"))))
     (properties `((upstream-name . "LungCancerLines")))
     (build-system r-build-system)
     (propagated-inputs (list r-rsamtools))
