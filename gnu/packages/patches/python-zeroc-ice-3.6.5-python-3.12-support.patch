@@ -1,0 +1,24 @@
+diff --git a/lib/Ice.py b/lib/Ice.py
+--- a/lib/Ice.py
++++ b/lib/Ice.py
+@@ -11,7 +11,7 @@
+ Ice module
+ """
+ 
+-import sys, string, imp, os, threading, warnings, datetime
++import sys, string, importlib, os, threading, warnings, datetime
+ 
+ #
+ # RTTI problems can occur in C++ code unless we modify Python's dlopen flags.
+@@ -373,7 +373,8 @@ def createModule(name):
+         elif curr in _pendingModules:
+             mod = _pendingModules[curr]
+         else:
+-            nmod = imp.new_module(curr)
++            spec = importlib.util.spec_from_loader(curr, loader=None)
++            nmod = importlib.util.module_from_spec(spec)
+             _pendingModules[curr] = nmod
+             mod = nmod
+ 
+-- 
+
