@@ -24293,20 +24293,24 @@ explored with minimal deviation from the common work patterns of
 (define-public r-nanonext
   (package
     (name "r-nanonext")
-    (version "1.8.2")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nanonext" version))
        (sha256
-        (base32 "1kmbpkj6g0ah8c6wliakz05wk65yxw33hnfizsw92hdf80b28kjj"))))
+        (base32 "17v1rryf6dbp45g3m5hx4hcqwp8rl4dvq8qkhhqckj3089b33196"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "src/mbedtls")
+                (delete-file-recursively "src/nng")))))
     (properties
      '((upstream-name . "nanonext")
        (updater-extra-inputs . ("mbedtls-lts" "nng"))))
     (build-system r-build-system)
     (arguments
      (list
-      #:tests? #false                   ;some tests require Internet access
+      #:tests? #false ;many of the tests require Internet access
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'find-libraries
