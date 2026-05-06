@@ -1701,7 +1701,7 @@ with the included @command{xfstests-check} helper.")
                                      (search-input-directory
                                       inputs
                                       "lib/modules/build")))))
-          (add-after 'unpack 'patch-source
+          (add-after 'bootstrap 'patch-source
             (lambda* (#:key inputs #:allow-other-keys)
               ;; New feature "compatibility=" in 2.1.0.
               ;; This feature looks up in two locations:
@@ -1802,7 +1802,7 @@ with the included @command{xfstests-check} helper.")
                (string-append #$output
                               "/share/bash-completion/completions")))))))
     (native-inputs
-     (list attr kmod pkg-config))
+     (list attr autoconf automake libtool kmod pkg-config))
     (inputs (list eudev
                   kmod
                   libaio
