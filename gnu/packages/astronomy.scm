@@ -6684,7 +6684,7 @@ astronomical tables
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1509 passed, 55331 warnings
+      ;; tests: 1508 passed, 43621 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; TypeError: SparseSolverBase.__init__() got an unexpected
@@ -6701,7 +6701,12 @@ astronomical tables
               (string-append "--deselect=test/test_Sampling/test_Likelihoods/"
                              "test_position_likelihood.py"
                              "::TestPositionLikelihood"
-                             "::test_multiplane_position_likelihood"))
+                             "::test_multiplane_position_likelihood")
+              ;; XXX: AttributeError: 'FileFinder' object has no attribute
+              ;; 'find_module'.
+              ;; See: <https://github.com/lenstronomy/lenstronomy/issues/845>.
+              (string-append "--deselect=test/test_Util/test_package_util.py"
+                             "::test_short_and_laconic"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
