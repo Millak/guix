@@ -10510,7 +10510,7 @@ designated prefix.")
   ;; https://github.com/webrecorder/warcio/issues/132).
   (package
     (name "python-warcio")
-    (version "1.7.5")
+    (version "1.8.1")
     (source
      (origin
        (method git-fetch)
@@ -10520,7 +10520,7 @@ designated prefix.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0r3kijsm8wsbipi5pxsrqpg5nn4w8iaw5i8010b0ligmfxnxamlb"))))
+         "19wwg7zmx33c942dbahdkng1byiwr4c9cd1ayrsh13f818n17zps"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -10536,11 +10536,10 @@ designated prefix.")
              ; The following test requires the hookdns package.
              "--ignore=test/test_capture_http_proxy.py")))
     (native-inputs
-     ;; These inputs are required for the test suite.
      (list python-httpbin
+           python-pytest
            python-requests
            python-setuptools
-           python-wheel
            python-wsgiprox))
     (home-page "https://github.com/webrecorder/warcio")
     (synopsis "Streaming web archival archive (WARC) library")
