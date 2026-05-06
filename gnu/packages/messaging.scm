@@ -76,6 +76,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -149,6 +150,7 @@
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages stb)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages telephony)
   #:use-module (gnu packages texinfo)
@@ -1780,30 +1782,52 @@ messenger protocol.")
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/uTox/uTox")
-             (commit (string-append "v" version))
-             (recursive? #t))) ;; Needed for 'minini' git submodule.
+             (commit (string-append "v" version))))
        (file-name (string-append name "-" version "-checkout"))
        (sha256
         (base32
-         "01rvlf94d4rkrygnnjak3cg16hrrqyi1rn9nx65y17qk2nbyh68g"))))
+         "0wknlpyqc3hkkrhn6shgg67ba6zbd8n1biy2kvy1awqzwyfmc46z"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DENABLE_TESTS=on")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-absolute-filename-libgtk-3
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "../source/src/xlib/gtk.c"
-               (("libgtk-3.so")
-                (search-input-file inputs "/lib/libgtk-3.so")))))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (wrap-program (string-append (assoc-ref outputs "out")
-                                          "/bin/utox")
-               ;; For GtkFileChooserDialog.
-               `("GSETTINGS_SCHEMA_DIR" =
-                 (,(string-append (assoc-ref inputs "gtk+")
-                                  "/share/glib-2.0/schemas")))))))))
+     (list
+      #:configure-flags
+      #~(list "-DENABLE_TESTS=on")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake
+            (lambda _
+              (substitute* "third_party/CMakeLists.txt"
+                (("add_subdirectory\\(minini\\)")
+                 "find_library(MININI_LIB minIni REQUIRED)")
+                (("add_subdirectory\\(qrcodegen\\)")
+                 "find_package(qrcodegen REQUIRED)"))
+              (substitute* "CMakeLists.txt"
+                (("minini") "minIni"))))
+          (add-after 'patch-cmake 'patch-includes
+            (lambda _
+              (with-directory-excursion "third_party/stb"
+                (substitute* '("stb.c" "stb.h")
+                  (("\"stb\\/(stb.*\\.h)\"" _ keep)
+                   (string-append "<" keep ">"))))
+              (with-directory-excursion "src"
+                (substitute* "qr.c"
+                  (("#include <qrcodegen\\.h>")
+                   "#include <qrcodegen/qrcodegen.h>"))
+                (substitute* "settings.c"
+                  (("#include <minIni\\.h>")
+                   "#include <minIni/minIni.h>")))))
+          (add-before 'build 'patch-absolute-filename-libgtk-3
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "../source/src/xlib/gtk.c"
+                (("libgtk-3.so")
+                 (search-input-file inputs "/lib/libgtk-3.so")))))
+          (add-after 'install 'wrap-program
+            (lambda _
+              (wrap-program (string-append #$output "/bin/utox")
+                ;; For GtkFileChooserDialog.
+                `("GSETTINGS_SCHEMA_DIR" =
+                  (,(string-append #$(this-package-input "gtk+")
+                                   "/share/glib-2.0/schemas")))))))))
     (inputs
      (list bash-minimal                 ;for wrap-program
            dbus
@@ -1816,7 +1840,11 @@ messenger protocol.")
            libx11
            libxext
            libxrender
+           minini
            openal
+           qrcodegen-cpp
+           stb-image
+           stb-image-write
            v4l-utils))
     (native-inputs
      (list check pkg-config))
