@@ -52653,14 +52653,14 @@ the @code{survival} package.")
 (define-public r-exactranktests
   (package
     (name "r-exactranktests")
-    (version "0.8-36")
+    (version "0.8-37")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "exactRankTests" version))
        (sha256
         (base32
-         "0dm7imc8fxw9xdmwbxc22r2rrp0mibz4a8mgkkjslyvafq5kpgap"))))
+         "1x5rwxf95847p27jf69ra6y9dqn07b099whihc3dy3s3psk95p55"))))
     (properties
      `((upstream-name . "exactRankTests")))
     (build-system r-build-system)
