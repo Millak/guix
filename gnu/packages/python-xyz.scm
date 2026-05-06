@@ -10451,6 +10451,10 @@ trace directly to the terminal to ease debugging.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-python-incompatibilities
+            (lambda _
+              (substitute* (find-files "utest" "\\.py$")
+                (("assertEquals") "assertEqual"))))
           (add-before 'build 'build-and-install-doc
             (lambda _
               (let ((doc (string-append #$output:doc
