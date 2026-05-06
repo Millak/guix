@@ -3465,13 +3465,13 @@ a wide range of data analysis needs.")
 (define-public r-tcgabiolinksgui-data
   (package
     (name "r-tcgabiolinksgui-data")
-    (version "1.31.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "TCGAbiolinksGUI.data" version 'experiment))
        (sha256
-        (base32 "1rbyp21xacqsvibmw32k3aq3d8rwws6mbsz2ssns5q7sj0dj9cbh"))))
+        (base32 "0fdmb80xs1glr5dvpjsidl1wjz21pdlvk3cb83m69h1xd1pqkh9r"))))
     (properties `((upstream-name . "TCGAbiolinksGUI.data")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
