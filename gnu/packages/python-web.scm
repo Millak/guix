@@ -5773,16 +5773,20 @@ can utilise asyncio, uvloop, or trio worker types.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "querystring_parser/tests.py")
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
+          (add-after 'unpack 'fix-python-incompatibilities
             (lambda _
-              ;; XXX FIXME: This test is broken with Python 3.7:
-              ;; https://github.com/bernii/querystring-parser/issues/35
               (substitute* "querystring_parser/tests.py"
+                ;; XXX FIXME: This test is broken with Python 3.7:
+                ;; https://github.com/bernii/querystring-parser/issues/35
                 (("self\\.assertEqual\\(self\\.knownValuesNormalized, result\\)")
-                 "True"))
-              (invoke "python" "querystring_parser/tests.py"))))))
+                 "True")
+                ;; Removed in Python 3.12.
+                (("assertEquals")
+                 "assertEqual")))))))
     (native-inputs (list python-setuptools))
     (propagated-inputs (list python-six))
     (home-page "https://github.com/bernii/querystring-parser")
