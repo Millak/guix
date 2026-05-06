@@ -2835,20 +2835,24 @@ networks.")
 (define-public python-senf
   (package
     (name "python-senf")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "senf" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quodlibet/senf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1lcccdb4hrfksbr8vy4nljial85six1w39l5xlw16m4qx884anch"))))
+        (base32 "023zqvrxdpss9r6bmp5arhy7bhr8j0qzgzwy04gydcbxhg2kh6nq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
+      ;; These tests fail due to various home fetching methods during build.
       '(list "--deselect" "tests/test_api.py::test_getuserdir"
              "--deselect" "tests/test_api.py::test_expanduser_user")))
-    (native-inputs (list python-setuptools python-wheel python-pytest))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/quodlibet/senf")
     (synopsis "Text, bytes and paths conversion functions for Python")
     (description "Senf introduces a new platform native string type called
