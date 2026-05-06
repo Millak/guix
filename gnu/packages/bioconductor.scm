@@ -2762,13 +2762,13 @@ please use the package TFBSTools.")
 (define-public r-leukemiaseset
   (package
     (name "r-leukemiaseset")
-    (version "1.47.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "leukemiasEset" version 'experiment))
        (sha256
-        (base32 "00c13jkl0vpb99ibmrxjms1iq3kl4vzp6fag2051kkp63fnwf3vl"))))
+        (base32 "1r11290yl0n8p26phb0nn5b05xhxrqfl1vw03rvwj7parqnydl06"))))
     (properties `((upstream-name . "leukemiasEset")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase))
