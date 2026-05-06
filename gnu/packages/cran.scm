@@ -4544,28 +4544,21 @@ generally.")
 (define-public r-fivethirtyeight
   (package
     (name "r-fivethirtyeight")
-    (version "0.1.0")
+    (version "0.6.2")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://mran.microsoft.com/src/contrib/"
-                           "fivethirtyeight_" version ".tar.gz"))
+       (uri (cran-uri "fivethirtyeight" version))
        (sha256
-        (base32
-         "0fcc8rq745nsghp27dk0lgih90y4zx8hrzcvsn6ih786yv7qxhvl"))))
+        (base32 "0nja8zbbkrxrvznyi1c38yzv6djx58ac5y4l1nkf07ph5d9i3k81"))))
+    (properties `((upstream-name . "fivethirtyeight")))
     (build-system r-build-system)
-    (propagated-inputs
-     (list r-knitr
-           r-rmarkdown
-           r-dplyr
-           r-readr
-           r-ggplot2
-           r-magrittr
-           r-stringr))
-    (home-page "https://mran.microsoft.com/package/fivethirtyeight/")
-    (synopsis "Data and code behind the stories at FiveThirtyEight")
-    (description "This R package provides access to the code and data sets
-published by the statistics blog FiveThirtyEight.")
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/rudeboybert/fivethirtyeight")
+    (synopsis "Data and code behind the stories and interactives at FiveThirtyEight")
+    (description
+     "This R package provides access to datasets and code published by the
+data journalism website @code{FiveThirtyEight}.")
     (license license:expat)))
 
 (define-public r-flexmix
