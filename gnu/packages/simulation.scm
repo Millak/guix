@@ -3,7 +3,7 @@
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
-;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
+;;; Copyright © 2023-2026 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Francisco-Galindo <yo@franciscogalindo.com>
@@ -164,6 +164,7 @@
                   vtk-9.5
                   xz
                   zlib))
+    (propagated-inputs (list python-openpmd-api)) ;needed for paraFoam
     (outputs '("debug" ;~60MB
                "out"))
     (arguments
@@ -580,7 +581,10 @@
                                    openfoam-version
                                    "/platforms/linux64GccDPInt32/lib")
                                  ,(string-append openfoam-root
-                                   "/platforms/linux64GccDPInt32Opt/lib/openmpi-system")))
+                                   "/platforms/linux64GccDPInt32Opt/lib/openmpi-system")
+                                 ,(string-append openfoam-root
+                                   "/platforms/linux64GccDPInt32Opt/lib/paraview-"
+                                   paraview-version-major+minor)))
                               `("PATH" prefix
                                 (,(string-append openfoam-root "/ThirdParty-"
                                    openfoam-version
