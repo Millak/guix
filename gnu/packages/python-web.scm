@@ -4490,6 +4490,76 @@ be written directly in Python without templates.")
 Amazon S3 compatible object storage server.")
     (license license:asl2.0)))
 
+(define-public python-pycrdt
+  (package
+    (name "python-pycrdt")
+    (version "0.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/y-crdt/pycrdt")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18mnjbxdlra1w3jl42bf1jb25z9j3inh6s61qighqrvnylgxvxc1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:test-flags #~(list "--ignore=tests/test_types.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("requires = \\[\"maturin>=.*\"\\]")
+                 "requires = [\"maturin\"]"))))
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums)))))))
+    (propagated-inputs
+     (list python-anyio
+           python-typing-extensions))
+    (inputs (cargo-inputs 'pycrdt))
+    (native-inputs
+     (append
+      (list maturin
+            python-pydantic
+            python-pytest
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (home-page "https://github.com/y-crdt/pycrdt")
+    (synopsis "Python CRDTs library ported from Yjs framework")
+    (description
+     "Conflict-free Replicated Data Types (CRDTs) allow creating shared
+documents that can automatically merge changes made concurrently on different
+copies of the data.  When the data lives on different machines, they make it
+possible to build distributed systems that work with local data, leaving the
+synchronization and conflict resolution with remote data to the CRDT
+algorithm, which ensures that all data replicas eventually converge to the
+same state.
+
+This is a Python CRDT library that provides bindings for Yrs, the Rust port of
+the Yjs framework.")
+    (license license:expat)))
+
 (define-public python-pycurl
   (package
     (name "python-pycurl")
