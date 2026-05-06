@@ -1079,14 +1079,14 @@ highlighting tool to ease code review from your terminal.")
 (define-public difftastic
   (package
     (name "difftastic")
-    (version "0.68.0")
+    (version "0.69.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "difftastic" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "012h76wx5jv6czc9j4awfan7vhrc6g5fdgnxrjmzg5q27wn99hn6"))))
+        (base32 "1wa2vhp26vbim8qp3rlahxmf65lzgacc5p6czc4hqsl3gglg0fs5"))))
     (build-system cargo-build-system)
     (arguments
      (list
