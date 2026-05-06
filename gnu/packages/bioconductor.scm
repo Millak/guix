@@ -2829,14 +2829,14 @@ in Nature Genetics, January 2018.")
 (define-public r-methylaiddata
   (package
     (name "r-methylaiddata")
-    (version "1.43.0")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MethylAidData" version
                               'experiment))
        (sha256
-        (base32 "0lmld6d8ab38bxx80rjn27953hri3har02plgzbpxg8z82bdallx"))))
+        (base32 "0v1ndz8ldnbych597ngxrz944rzibffpph7wsy63yliyqi1liy5v"))))
     (properties `((upstream-name . "MethylAidData")))
     (build-system r-build-system)
     (propagated-inputs (list r-methylaid))
