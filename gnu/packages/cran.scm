@@ -5668,16 +5668,16 @@ and combinations thereof.  Implements the machinery described in the paper
 (define-public r-glmnet
   (package
    (name "r-glmnet")
-   (version "4.1-10")
+   (version "5.0")
    (source
     (origin
      (method url-fetch)
      (uri (cran-uri "glmnet" version))
      (sha256
-      (base32 "171fgxkm4p4ki274mjddapsxkwfp1v99p8brx23pxcjh922bb949"))))
+      (base32 "186jg7g2qhbxc8a4yb3vindjshh0cgd692qkrl1dai9s72k3vcph"))))
    (build-system r-build-system)
    (native-inputs
-    (list gfortran r-knitr))
+    (list r-knitr r-nnet r-testthat))
    (propagated-inputs
     (list r-foreach
           r-matrix
