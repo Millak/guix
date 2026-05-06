@@ -45300,7 +45300,7 @@ to age using B-splines and P-splines.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/acfMPeriod/")
     (synopsis "Estimation of the ACF from the M-periodogram")
     (description
