@@ -9020,17 +9020,21 @@ addon modules.")
 (define-public python-wtforms
   (package
     (name "python-wtforms")
-    (version "3.1.2")
+    (version "3.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "wtforms" version))
        (sha256
-        (base32 "1fblnkzvs6339glwx8bskdjy7nhn2ap90y9g6b399713sy063mzq"))))
+        (base32 "14qbayp2gfmahaqn5migwyz2h1cq3gcdr4q2vd75vwvhhqzwf03v"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-hatchling python-pytest))
-    (propagated-inputs (list python-babel python-email-validator
-                             python-markupsafe))
+    (native-inputs
+     (list python-babel
+           python-email-validator
+           python-hatchling
+           python-pytest
+           python-setuptools))
+    (propagated-inputs (list python-markupsafe))
     (home-page "https://wtforms.readthedocs.io/")
     (synopsis
      "Form validation and rendering library for Python web development")
