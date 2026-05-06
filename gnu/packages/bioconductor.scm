@@ -2095,14 +2095,14 @@ from Illumina 450k methylation arrays.")
 (define-public r-bcellviper
   (package
     (name "r-bcellviper")
-    (version "1.47.0")
+    (version "1.48.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "bcellViper" version
                                      'experiment))
               (sha256
                (base32
-                "069pyfzw6ak49q9rpbhwl8mpq69mdb375qq6m3963xmfrpc38n2i"))))
+                "0pyg0xap1pdba852sy0nvldb78dcycx7jz2hxa5aij856zrnmfzz"))))
     (properties `((upstream-name . "bcellViper")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase))
