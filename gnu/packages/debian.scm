@@ -536,7 +536,7 @@ debbugs server.")
 (define-public debootstrap
   (package
     (name "debootstrap")
-    (version "1.0.141")
+    (version "1.0.143")
     (source
      (origin
        (method git-fetch)
@@ -545,7 +545,7 @@ debbugs server.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xdw29cygp0ii65kz8ns8hf0lfrwdjhaxf3sm6q304cm0ic2m7aj"))))
+        (base32 "1jsvnywmc786ihzd3dgqj1qnyp1l2kv87hi40rm16dhc17840v3r"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -604,6 +604,7 @@ debbugs server.")
            elxr-archive-keyring
            kali-archive-keyring
            pardus-archive-keyring
+           parrot-archive-keyring
            pureos-archive-keyring
            trisquel-keyring
            ubuntu-keyring
