@@ -3439,14 +3439,14 @@ the @code{HorvathMethylChip40} (Mammal40) array.")
 (define-public r-systempiperdata
   (package
     (name "r-systempiperdata")
-    (version "2.15.6")
+    (version "2.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "systemPipeRdata" version
                               'experiment))
        (sha256
-        (base32 "0rwi026zb52w1h5zzys8k10fsi6bdkw0y9n7ij2a3pwsqzdynayz"))))
+        (base32 "118yfnmiyvixds0gwlsz2db28m8g0bsc1sn56dlw0sgshyqp8sci"))))
     (properties `((upstream-name . "systemPipeRdata")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics r-biostrings r-jsonlite r-remotes))
