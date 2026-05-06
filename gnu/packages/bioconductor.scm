@@ -3142,17 +3142,17 @@ resulting in a complete gene expression profile for each cell.")
 (define-public r-all
   (package
     (name "r-all")
-    (version "1.53.0")
+    (version "1.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ALL" version 'experiment))
        (sha256
-        (base32 "0w9z9sdvz70rg8ifzm15702d118gxw6pgz1kpxsbvmhdyd6xnhjn"))))
+        (base32 "1dr5i4h7c1s5hz7lcpv3gh3y9f48676a1wg07xbaig6yim7y6zix"))))
     (properties `((upstream-name . "ALL")))
     (build-system r-build-system)
-    (propagated-inputs
-     (list r-biobase))
+    (propagated-inputs (list r-biobase))
+    (native-inputs (list r-rpart))
     (home-page "https://bioconductor.org/packages/ALL")
     (synopsis "Acute Lymphoblastic Leukemia data from the Ritz laboratory")
     (description
