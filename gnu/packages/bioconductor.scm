@@ -2389,14 +2389,14 @@ GenomicRanges Bioconductor package.")
 (define-public r-derfinderdata
   (package
     (name "r-derfinderdata")
-    (version "2.29.0")
+    (version "2.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "derfinderData" version
                               'experiment))
        (sha256
-        (base32 "1zq0in3iphirv481v9x8w5vbj25apk9nksjsvmk4xccbjdl18c6i"))))
+        (base32 "05mnf4pglfl0gl7bswc6i4ipcbrl58jivpkf1xsmgqnsy453cbck"))))
     (properties `((upstream-name . "derfinderData")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
