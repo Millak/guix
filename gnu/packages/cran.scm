@@ -2539,6 +2539,27 @@ efficiently processes these intense workloads.  The crew package extends mirai
 with a unifying interface for third-party worker launchers.")
     (license license:expat)))
 
+(define-public r-crs
+  (package
+    (name "r-crs")
+    (version "0.15-42")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "crs" version))
+       (sha256
+        (base32 "15xwxyq4q8xaxzbfj6xcllspnbpv42q8afxl7fbxmqxbrc9nwp9g"))))
+    (properties `((upstream-name . "crs")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-boot r-quantreg))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/JeffreyRacine/R-Package-crs")
+    (synopsis "Categorical regression splines")
+    (description
+     "This is a package for regression splines that handle a mix of continuous
+and categorical (discrete) data often encountered in applied settings.")
+    (license license:gpl3+)))
+
 (define-public r-cubelyr
   (package
     (name "r-cubelyr")
