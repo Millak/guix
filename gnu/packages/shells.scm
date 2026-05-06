@@ -133,7 +133,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
 (define-public fish
   (package
     (name "fish")
-    (version "4.6.0")
+    (version "4.7.0")
     (source
      (origin
        (method url-fetch)
@@ -141,7 +141,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                            "releases/download/" version "/"
                            "fish-" version ".tar.xz"))
        (sha256
-        (base32 "1ak12wpjllckv566k9jjy59si25whsib3j8ip8yqmqm06gvnb4gw"))
+        (base32 "1nx9m8kis1v4w27mdzzpj9l9mpnz0w7n1v7kaajd9lv5ny63njn5"))
        ;; TODO: Unbundle corrosion.
        (patches (search-patches "corrosion-honor-CARGO_BUILD_TARGET.patch"))))
     (build-system cmake-build-system)
@@ -218,9 +218,11 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
 ;; "Found existing zombie processes. Clean up zombies before running this test."
                ;; Disabling parallel tests does not reliably prevent it.
                (delete-file "tests/checks/jobs.fish")
-               ;; This one needs to chdir successfully.
+               ;; These ones need to chdir successfully.
                (substitute* "tests/checks/vars_as_commands.fish"
                  (("/usr/bin") "/tmp"))
+               (substitute* "tests/checks/cd.fish"
+                 (("cd bin") "cd tmp"))
                ;; shebangless scripts don't work
                (delete-file "tests/checks/noshebang.fish")
                ;; This doesn't work
@@ -236,6 +238,8 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                  (("/usr/bin/e\"") (string-append coreutils "/bin/e\""))
                  (("\"/bin") "\"/tmp")
                  (("\"/usr") "\"/tmp"))
+               (substitute* "tests/checks/colon-delimited-var.fish"
+                 (("/usr/bin:a:.:b") "/tmp/bin:a:.:b"))
                (substitute* "tests/test_driver.py"
                  (("\"cc\"") "\"gcc\"")))))
          ;; Source /etc/fish/config.fish from $__fish_sysconf_dir/config.fish.
