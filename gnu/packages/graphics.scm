@@ -647,6 +647,9 @@ with the @command{autotrace} utility or as a C library, @code{libautotrace}.")
      "Embree is a collection of high-performance ray tracing kernels.
 Embree is meant to increase performance of photo-realistic rendering
 applications.")
+    ;; From the README: Embree requires at least an x86 CPU with support for
+    ;; SSE2 or an Apple M1 CPU.
+    (supported-systems '("x86_64-linux" "aarch64-linux"))
     (license license:asl2.0)))
 
 (define-public embree-3
