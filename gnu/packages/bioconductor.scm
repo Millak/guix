@@ -2704,14 +2704,14 @@ European).")
 (define-public r-illuminadatatestfiles
   (package
     (name "r-illuminadatatestfiles")
-    (version "1.49.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "IlluminaDataTestFiles" version
                               'experiment))
        (sha256
-        (base32 "1wk9vi6m9ybf7d9c1kjxn5xyhwk7lb4b9qm73n2ayf2qahxfxrmm"))))
+        (base32 "09d897v4r24xdr54d1x00w6vxvm9imcfnz0d8nkmkrbr4z8k6x3b"))))
     (properties `((upstream-name . "IlluminaDataTestFiles")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/IlluminaDataTestFiles")
