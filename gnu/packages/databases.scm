@@ -1061,6 +1061,31 @@ auto-completion and syntax highlighting.")
 \"special\", or \"backslash commands\") on PostgreSQL.")
     (license license:bsd-3)))
 
+(define-public python-sqlite-anyio
+  (package
+    (name "python-sqlite-anyio")
+    (version "0.2.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/davidbrochart/sqlite-anyio")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "075fnrrwzn9xc2clkcsyfycjc870khcwnpdg4g726qwl44pfzy2a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:build-backend "poetry.core.masonry.api")) ;XXX: python-uv-build is required
+    (propagated-inputs (list python-anyio python-typing-extensions))
+    (native-inputs (list python-poetry-core python-pytest))
+    (home-page "https://github.com/davidbrochart/sqlite-anyio")
+    (synopsis "Asynchronous client for SQLite using AnyIO")
+    (description "This package provides an asynchronous client for SQLite
+using @code{AnyIO}.")
+    (license license:expat)))
+
 (define-public python-sqlitedict
   (package
     (name "python-sqlitedict")
