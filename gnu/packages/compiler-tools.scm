@@ -1,4 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2024-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -17,12 +21,42 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages compiler-tools)
+  #:use-module (gnu packages gawk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
+  #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
+
+(define-public byacc
+  (package
+    (name "byacc")
+    (version "20240109")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://invisible-mirror.net/archives/byacc/byacc-"
+             version ".tgz"))
+       (sha256
+        (base32
+         "0il4w1vwbglayakywyghiqhcjpg1yvv5ww2p8ylz32bi05wpg2gj"))
+       (snippet
+        #~(begin (delete-file "btyaccpar.c")
+                 (delete-file "yaccpar.c")))))
+    (native-inputs
+     (list gawk))
+    (build-system gnu-build-system)
+    (home-page "https://invisible-island.net/byacc/byacc.html")
+    (synopsis "Berkeley Yacc LALR parser generator")
+    (description
+     "Berkeley Yacc is an LALR(1) parser generator.  Yacc reads the grammar
+specification from a file and generates an LALR(1) parser for it.  The parsers
+consist of a set of LALR(1) parsing tables and a driver routine written in the
+C programming language.")
+    (license license:public-domain)))
 
 (define-public oyacc
   (package

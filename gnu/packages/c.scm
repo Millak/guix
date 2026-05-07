@@ -47,6 +47,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix packages)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
@@ -62,6 +63,7 @@
   #:use-module (gnu packages bootstrap)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
@@ -1094,32 +1096,8 @@ portability.")
     (license (list license:bsd-2        ;all files except...
                    license:bsd-3))))    ;...the unidef.1 manual page
 
-(define-public byacc
-  (package
-    (name "byacc")
-    (version "20240109")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://invisible-mirror.net/archives/byacc/byacc-"
-                   version ".tgz"))
-             (sha256
-              (base32
-               "0il4w1vwbglayakywyghiqhcjpg1yvv5ww2p8ylz32bi05wpg2gj"))
-             (snippet
-              #~(begin (delete-file "btyaccpar.c")
-                       (delete-file "yaccpar.c")))))
-    (native-inputs
-     (list gawk))
-    (build-system gnu-build-system)
-    (home-page "https://invisible-island.net/byacc/byacc.html")
-    (synopsis "Berkeley Yacc LALR parser generator")
-    (description
-     "Berkeley Yacc is an LALR(1) parser generator.  Yacc reads the grammar
-specification from a file and generates an LALR(1) parser for it.  The parsers
-consist of a set of LALR(1) parsing tables and a driver routine written in the
-C programming language.")
-    (license license:public-domain)))
+(define-deprecated/public-alias byacc
+  (@ (gnu packages compiler-tools) byacc))
 
 (define-public argparse
   (package
