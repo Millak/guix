@@ -57657,6 +57657,13 @@ Apache2.")
      '((upstream-name . "exactextractr")
        (updater-extra-native-inputs . ("r-ncdf4"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:skipped-tests
+      ;; Can't get statistics for empty geometry
+      '(("test_coverage_fraction.R" "Warning is raised on CRS mismatch")
+        ;; Error getting geometry extent.
+        ("test_exact_extract_errors.R" "Warning is raised on CRS mismatch"))))
     (inputs (list geos))
     (propagated-inputs
      (list r-raster r-rcpp r-sf))
