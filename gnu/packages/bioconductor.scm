@@ -6272,6 +6272,17 @@ for clusters.")
                 "1bvj7n2qxfvy1fmjqmm1w65fcj7fy5h74i0jgl0a0940mlhd7s9v"))))
     (properties `((upstream-name . "CelliD")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; "The `slot` argument of `GetAssayData()` was deprecated in
+          ;; SeuratObject 5.0.0 and is now defunct.", i = "Please use
+          ;; the `layer` argument instead."
+          (add-after 'unpack 'fix-deprecated-argument
+            (lambda _
+              (substitute* '("R/mca.R" "tests/testthat/test_CelliD.R")
+                (("slot") "layer")))))))
     (propagated-inputs
      (list r-biocparallel
            r-data-table
