@@ -4631,6 +4631,40 @@ the Yjs framework.")
 @code{python-pycrdt}.")
     (license license:expat)))
 
+(define-public python-pycrdt-websocket
+  (package
+    (name "python-pycrdt-websocket")
+    (version "0.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/y-crdt/pycrdt-websocket")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bcxivdra0v5fwlz3hcz98vxi61884bfvcwifsdp3mji28iprv22"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; These tests require the unpackaged Yjs.
+      #:test-flags #~(list "--deselect=tests/test_pycrdt_yjs.py")))
+    (propagated-inputs
+     (list python-anyio
+           python-pycrdt
+           python-pycrdt-store))
+    (native-inputs
+     (list nss-certs-for-test
+           python-hatchling
+           python-hypercorn
+           python-httpx-ws
+           python-pytest))
+    (home-page "https://github.com/y-crdt/pycrdt-websocket")
+    (synopsis "WebSocket connector for pycrdt")
+    (description "This package provides an asynchronous @code{WebSocket}
+connector for @code{python-pycrdt}.")
+    (license license:expat)))
+
 (define-public python-pycurl
   (package
     (name "python-pycurl")
