@@ -1430,33 +1430,86 @@ within this package are the 3000 bone marrow cells used for vignettes.")
       (license license:gpl3))))
 
 (define-public r-pizzarr
-  (let ((commit "5f4705789ba29344dcb97023f290a26a7f7abd0c")
-        (revision "2"))
-    (package
-      (name "r-pizzarr")
-      (version (git-version "0.1.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/keller-mark/pizzarr")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "17pd6bk8kvnrvvyfqvm8q47kzghlfyfjdd9b7cwiazc5xr4vz6f0"))))
-      (properties `((upstream-name . "pizzarr")))
-      (build-system r-build-system)
-      ;; Some tests require Internet access.
-      (arguments (list #:tests? #false))
-      (propagated-inputs (list r-jsonlite r-memoise r-qs r-r6 r-stringr))
-      (native-inputs (list r-pbapply r-testthat r-vcr))
-      (home-page "https://github.com/keller-mark/pizzarr")
-      (synopsis "Slice into Zarr arrays in R")
-      (description
-       "This package provides an implementation of chunked, compressed,
+  (package
+    (name "r-pizzarr")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/keller-mark/pizzarr")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m38c57pfliycxkhb3mwgh01cl2q76r1jhd3vnk07dbfhqdbqai6"))))
+    (properties `((upstream-name . "pizzarr")))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:imported-modules
+      (append %cargo-build-system-modules
+              %r-build-system-modules)
+      #:modules
+      '((guix build cargo-build-system)
+        ((guix build r-build-system) #:prefix r:)
+        (guix build utils))
+      #:cargo-build-flags
+      '(list "--target-dir=./target" "--release")
+      #:phases
+      #~(append (modify-phases %standard-phases
+                  (add-after 'unpack 'patch-Makevars
+                    (lambda _
+                      ;; At this point we've already built the Rust parts.
+                      (substitute* "src/Makevars.in"
+                        (("^all:.*") "all:")
+                        (("^\\$\\(STATLIB\\):") "NOBODYCARES:")
+                        (("@PKG_LIBS_EXTRA@") "@PKG_LIBS_EXTRA@ -lzstd -lz"))))
+                  (add-after 'patch-Makevars 'chdir
+                    (lambda _ (chdir "src/rust")))
+                  (add-after 'chdir 'patch-rust-dependency
+                    (lambda _
+                      (setenv "RUSTFLAGS" "--print=native-static-libs")
+                      (substitute* "Cargo.toml"
+                        (("extendr-api = \\{ git.* \\}") "extendr-api = \"0.8.1\""))))
+                  (add-after 'package 'chdir-back
+                    (lambda _ (chdir "../..")))
+                  (delete 'install)
+                  (delete 'check))
+                (modify-phases (@ (guix build r-build-system) %standard-phases)
+                  (delete 'unpack)
+                  (replace 'patch-tests
+                    (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+                      ((assoc-ref (@ (guix build r-build-system) %standard-phases)
+                                  'patch-tests)
+                       #:skipped-tests
+                       ;; These files contain tests that require Internet access.
+                       '("test-compat.R" "test-get.R"
+                         ;; HttpStore requires the crul package
+                         ("test-zarrs-dispatch.R" "can_use_zarrs_create returns FALSE for HttpStore")
+                         ("test-zarrs-store-cache.R" "HttpStore get_store_identifier returns URL")))))
+                  (replace 'check
+                    (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+                      ((assoc-ref (@ (guix build r-build-system) %standard-phases)
+                                  'check)
+                       #:test-target "tests"
+                       #:test-types #false
+                       #:inputs inputs
+                       #:outputs outputs
+                       #:tests? tests?)))))))
+    (propagated-inputs (list r-jsonlite r-memoise r-qs2 r-r6 r-stringr))
+    (inputs
+     (cons* openssl zlib `(,zstd "lib")
+            (cargo-inputs 'r-pizzarr)))
+    (native-inputs
+     (list pkg-config
+           r-minimal r-pbapply r-testthat r-vcr))
+    (home-page "https://github.com/keller-mark/pizzarr")
+    (synopsis "Slice into Zarr arrays in R")
+    (description
+     "This package provides an implementation of chunked, compressed,
 N-dimensional arrays for R, Zarr specification version 2 (2024)
 <doi:10.5281/zenodo.11320255>.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public r-rhtslib12
   (let ((commit "ee186daf04876969c7f31c16a0e0fda8e7c16a30")

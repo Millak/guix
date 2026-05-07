@@ -37,6 +37,8 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages rust)
+  #:use-module (gnu packages statistics)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages virtualization))
 
@@ -245,6 +247,48 @@ transliterating them.  It supports Emoji and Chinese.")
        ;; deunicode crate itself.  That self-dependency is resolved from the
        ;; checkout and does not need a cargo input.
        (inputs (cargo-inputs 'rust-deunicode-1.6.2.cfb8552))))))
+
+;; Workspace dependency of r-pizzarr.
+(define-public rust-extendr-0.8.1.93d7244
+  (let ((commit "93d7244e3145d94186bc2f35258ad0ef25a28908")
+        (revision "1"))
+    (hidden-package
+     (package
+       (name "rust-extendr")
+       (version (git-version "0.8.1" revision commit))
+       (source (origin
+                 (method git-fetch)
+                 (uri (git-reference
+                        (url "https://github.com/extendr/extendr")
+                        (commit commit)))
+                 (file-name (git-file-name name version))
+                 (sha256
+                  (base32
+                   "03d16y7f1r0y1s8gwzw7wzn5yhcqr1wn0vga9dvdjxpbga372vx7"))))
+       (build-system cargo-build-system)
+       (arguments
+        (list
+         #:cargo-package-crates
+         ;; Note that the order matters!
+         '(list "extendr-ffi"
+                "extendr-macros"
+                "extendr-api"
+                "extendr-engine")
+         #:phases
+         #~(modify-phases %standard-phases
+             (add-after 'unpack 'set-R_HOME
+               (lambda _
+                 (delete-file-recursively ".cargo")
+                 (setenv "R_HOME"
+                         (string-append
+                          #$(this-package-input "r-minimal")
+                          "/lib/R")))))))
+       (inputs (cons r-minimal (cargo-inputs 'extendr)))
+       (home-page "https://extendr.rs/")
+       (synopsis "R extension library for Rust")
+       (description "This library allows you to extend R with Rust.  It can be
+used to write R packages that link with Rust libraries.")
+       (license license:expat)))))
 
 ;; Workspace dependency of zed.
 ;;
