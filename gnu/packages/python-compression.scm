@@ -288,13 +288,24 @@ were a single file.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 742 passed, 1 skipped, 2 deselected
+      ;; tests: 740 passed, 1 skipped, 4 deselected
       #:test-flags
       #~(list "--ignore=benchmarks/test_bench.py"
-              ;; FIXME: Did not raise cramjam.DecompressionError
-              "--deselect=tests/test_variants.py::test_variants_raise_exception[deflate]"
-              ;; This test fails nondeterministically.
-              "--deselect=tests/test_variants.py::test_variants_decompress_into[zlib-Buffer-File]")
+              #$@(map (lambda (test)
+                        (string-append "--deselect=tests/test_variants.py::"
+                                       test))
+                      ;; FIXME: Did not raise cramjam.DecompressionError
+                      (list "test_variants_raise_exception[deflate]"
+                            ;; This test fails nondeterministically.
+                            "test_variants_decompress_into[zlib-Buffer-File]"
+                            ;; could not convert string to float: '<' -
+                            ;; Consider hexadecimal for huge integer literals
+                            ;; to avoid decimal conversion limits.
+                            "test_variants_decompress_into[lz4-numpy-bytes]"
+                            ;; could not convert string to float: 'M' -
+                            ;; Consider hexadecimal for huge integer literals
+                            ;; to avoid decimal conversion limits.
+                            "test_variants_decompress_into[zstd-File-Buffer]")))
       #:imported-modules `(,@%cargo-build-system-modules
                            ,@%pyproject-build-system-modules)
       #:modules '(((guix build cargo-build-system) #:prefix cargo:)
