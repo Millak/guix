@@ -21,6 +21,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages compiler-tools)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages gawk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
@@ -44,11 +45,17 @@
         (base32
          "0il4w1vwbglayakywyghiqhcjpg1yvv5ww2p8ylz32bi05wpg2gj"))
        (snippet
-        #~(begin (delete-file "btyaccpar.c")
-                 (delete-file "yaccpar.c")))))
-    (native-inputs
-     (list gawk))
+        #~(begin
+            ;; Remove machine-generated files
+            (for-each delete-file
+                      (list "configure"
+                            "btyaccpar.c"
+                            "yaccpar.c"))))))
     (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf
+           automake
+           gawk))
     (home-page "https://invisible-island.net/byacc/byacc.html")
     (synopsis "Berkeley Yacc LALR parser generator")
     (description
