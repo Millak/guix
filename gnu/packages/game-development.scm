@@ -558,7 +558,7 @@ PCM data.")
 (define-public nml
   (package
     (name "nml")
-    (version "0.8.1")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -567,7 +567,7 @@ PCM data.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03qrpnv2r2kjjfqkc67sqjzxq59li7vb1jhbdhgif8kf2x92805k"))))
+        (base32 "1kn70sskwpl2wcjlkdvxqja04khjb0vwwkgnyr67df1q3mga6l8m"))))
     (arguments
      (list
       #:phases
