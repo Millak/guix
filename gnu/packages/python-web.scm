@@ -4023,6 +4023,47 @@ websites.  It automatically stores and sends cookies, follows redirects, and can
 follow links and submit forms.  It doesn’t do JavaScript.")
     (license license:expat)))
 
+(define-public python-hypercorn
+  (package
+    (name "python-hypercorn")
+    (version "0.18.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pgjones/hypercorn")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jdi05n5isxn0rysq242p198lz03gbwsnizzb9yp6rxr7ajapns4"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-aioquic
+           python-h11
+           python-h2
+           python-priority
+           python-pydata-sphinx-theme
+           python-sphinxcontrib-mermaid
+           python-tomli
+           python-trio
+           python-typing-extensions
+           python-uvloop
+           python-wsproto))
+    (native-inputs
+     (list nss-certs-for-test
+           python-httpx
+           python-pdm-backend
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-pytest-trio))
+    (home-page "https://github.com/pgjones/hypercorn")
+    (synopsis "ASGI Server based on Hyper libraries")
+    (description
+     "This package provides an ASGI (Asynchronous Server Gateway Interface)
+Server based on Hyper libraries and inspired by @code{python-gunicorn}.")
+    (license license:expat)))
+
 (define-public python-hyperframe
   (package
     (name "python-hyperframe")
