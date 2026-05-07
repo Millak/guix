@@ -41939,7 +41939,7 @@ add popup descriptions to existing keymaps
 (define-public emacs-forgejo
   (package
     (name "emacs-forgejo")
-    (version "0.1.2")
+    (version "0.1.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -41948,10 +41948,12 @@ add popup descriptions to existing keymaps
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fcyxv4swymjqmx5dhicjjg8k84649scmpn48mfblcl0gy2hsphj"))))
+                "028z0vm8v2frwm5qdszqxs66ig3x5knnjg9nxpymlfdxiz5iipqc"))))
     (build-system emacs-build-system)
     (arguments
-     (list #:lisp-directory "lisp"))
+     (list #:lisp-directory "lisp"
+           #:emacs emacs                ;tests requires sqlite
+           #:test-command #~(list "make" "-C" ".." "test")))
     (propagated-inputs (list emacs-keymap-popup emacs-markdown-mode))
     (home-page "https://codeberg.org/thanosapollo/emacs-forgejo")
     (synopsis "Emacs front-end for Forgejo instances")
