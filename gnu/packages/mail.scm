@@ -3998,7 +3998,7 @@ CalDAV, CardDAV and WebDAV support and a wide range of modern features.")
 (define-public stalwart-cli
   (package
     (name "stalwart-cli")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method git-fetch)
@@ -4007,7 +4007,7 @@ CalDAV, CardDAV and WebDAV support and a wide range of modern features.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rbhzd8m48fm5q8vlzkla5zxrypkbvsi8i1bplkm1ndp0bwiqdvz"))))
+        (base32 "1dnmv730bd4p4vhxw5m4jazbzyvwm9bf4rdsr8g84yriv51zbz6a"))))
     (build-system cargo-build-system)
     (arguments
      (list #:install-source? #f))
