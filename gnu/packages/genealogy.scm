@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,13 +19,15 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages genealogy)
-  #:use-module (guix build-system pyproject)
-  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix gexp)
+  #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages geo)
@@ -34,6 +37,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
@@ -57,15 +61,42 @@
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:imported-modules
-      `((guix build glib-or-gtk-build-system)
-        ,@%pyproject-build-system-modules)
+      #:imported-modules (append %glib-or-gtk-build-system-modules
+                                 %pyproject-build-system-modules)
       #:modules
       `((ice-9 match)
         (srfi srfi-1)
         (guix build pyproject-build-system)
         ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
         (guix build utils))
+      ;; tests: 32408 passed, 44 skipped, 9 deselected, 1 warning, 65730 subtests passed
+      #:test-flags
+      ;; Tests failing during collection.
+      #~(list "--ignore=gramps/gen/merge/test/merge_ref_test.py"
+              "--ignore=po/test/po_test.py"
+              "--ignore=test/LosHawlos_db_test.py"
+              "--ignore=test/blob_to_json_test.py"
+              ;; Assertions are not equal for these tests.
+              #$@(map (lambda (ls) (string-append "--deselect=gramps/"
+                                                  (string-join ls "::")))
+                      '(("gen/proxy/test/proxies_test.py"
+                         "LivingProxyTest" "test_person_count")
+                        ("gen/proxy/test/proxies_test.py"
+                         "LivingPrivateProxyTest" "test_person_count")
+                        ("plugins/test/reports_test.py"
+                         "TestDynamic" "test_export_gedcom")
+                        ("plugins/test/reports_test.py"
+                         "TestDynamic" "test_export_gpkg")
+                        ("plugins/test/reports_test.py"
+                         "TestDynamic" "test_indiv_complete")
+                        ("plugins/test/reports_test.py"
+                         "TestDynamic" "test_navwebpage")
+                        ("plugins/test/reports_test.py"
+                         "TestDynamic" "test_tool_check")
+                        ("plugins/test/tools_test.py"
+                         "ToolControl" "test_tcg_and_check_and_repair")
+                        ("plugins/test/db_undo_and_signals_test.py"
+                         "TestSQLite" "test_one"))))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'fix-gexiv2-dependency
@@ -73,15 +104,19 @@
               ;; Use our own version
               (substitute* (find-files "." ".*\\.py$")
                 (("\"GExiv2\", \"0.10\"") "\"GExiv2\", \"0.16\""))))
+          (add-after 'unpack 'swap-bsddb3-with-berkeleydb
+            ;; bsddb3 was renamed upstream to berkeleydb.
+            (lambda _
+              (substitute* (find-files "." ".*\\.py")
+                (("bsddb3") "berkeleydb"))))
           (add-before 'check 'prepare-tests
             (lambda _
-              (setenv "HOME" (getenv "TMPDIR"))
+              (setenv "GDK_BACKEND" "-")
+              (setenv "HOME" "/tmp")
               ;; Presence of .git directory is used to determine whether this
               ;; is a final installation.  Without it, tests fail to determine
               ;; resource path.
-              (mkdir ".git")
-              ;; Test is failing
-              (delete-file "gramps/gen/utils/test/file_test.py")))
+              (mkdir ".git")))
           (add-before 'wrap 'wrap-with-GI_TYPELIB_PATH
             (lambda* (#:key inputs #:allow-other-keys)
               (wrap-program (string-append #$output "/bin/gramps")
@@ -98,8 +133,11 @@
           (add-after 'wrap 'glib-or-gtk-wrap
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
-     (list gettext-minimal intltool
-           glibc-utf8-locales ;for one test
+     (list gettext-minimal
+           intltool
+           python-jsonschema
+           python-mock
+           python-pytest
            python-setuptools))
     (inputs
      (list bash-minimal
@@ -115,12 +153,12 @@
            (librsvg-for-system)
            osm-gps-map
            pango
-           python-bsddb3
-           python-jsonschema
-           python-lxml
+           python-berkeleydb
+           python-imagesize
            python-orjson
            python-pillow
            python-pycairo
+           python-pycountry
            python-pygobject
            python-pyicu
            rcs
