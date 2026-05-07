@@ -10379,6 +10379,38 @@ Plus all the standard features of requests:
     (description "Consume Server-Sent Event (SSE) messages with HTTPX.")
     (license license:expat)))
 
+(define-public python-httpx-ws
+  (package
+    (name "python-httpx-ws")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/frankie567/httpx-ws")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hin6fndvfnx3mjgy30x0ghgjalikxavyj24klcknnly9sqzg83v"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-anyio
+           python-httpcore
+           python-httpx
+           python-wsproto))
+    (native-inputs
+     (list nss-certs-for-test
+           python-hatch-regex-commit
+           python-hatchling
+           python-pytest
+           python-pytest-cov
+           python-starlette
+           python-uvicorn))
+    (home-page "https://github.com/frankie567/httpx-ws")
+    (synopsis "WebSockets support for HTTPX")
+    (description "This package provides @code{WebSockets} support for HTTPX.")
+    (license license:expat)))
+
 (define-public python-wsgiprox
   (package
     (name "python-wsgiprox")
