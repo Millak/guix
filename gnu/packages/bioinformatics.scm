@@ -24483,79 +24483,77 @@ It also handles cell type-specific differential expression.")
       (license license:gpl3))))
 
 (define-public r-spectre
-  (let ((commit "ff5314fd5b3f29121e52f948d91e222a19dd4d25")
-        (revision "1"))
-    (package
-      (name "r-spectre")
-      (version "1.2.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/ImmuneDynamics/Spectre")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0hziqlaq6mnkxi4bwp5xilxy90yh1vz1j1n117d38vmchvclx9yq"))))
-      (properties `((upstream-name . "Spectre")))
-      (build-system r-build-system)
-      (propagated-inputs
-       (list r-biobase
-             r-biocmanager
-             r-caret
-             r-class
-             r-colorramps
-             r-data-table
-             r-dendsort
-             r-devtools
-             r-dplyr
-             r-exactextractr
-             r-factoextra
-             r-flowcore
-             r-flowsom
-             r-flowviz
-             r-fnn
-             r-ggplot2
-             r-ggpointdensity
-             r-ggpubr
-             r-ggraph
-             r-ggthemes
-             r-gridextra
-             r-gridextra
-             r-gtools
-             r-hdf5array
-             r-irlba
-             r-patchwork
-             r-pheatmap
-             r-plyr
-             r-qs
-             r-raster
-             r-rcolorbrewer
-             r-rhdf5
-             r-rstudioapi
-             r-rsvd
-             r-rtsne
-             r-s2
-             r-scales
-             r-scattermore
-             r-sf
-             r-sp
-             r-stars
-             r-stringr
-             r-tidygraph
-             r-tidyr
-             r-tidyr
-             r-tiff
-             r-umap
-             r-uwot))
-      (home-page "https://github.com/ImmuneDynamics/Spectre")
-      (synopsis "High-dimensional cytometry and imaging analysis")
-      (description
-       "This package provides a computational toolkit in R for the
+  (package
+    (name "r-spectre")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ImmuneDynamics/Spectre")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "15g9w08x0pz2ia9qfalhcg3z5z2zx2085mfbr8gx9w5yxnw475ld"))))
+    (properties `((upstream-name . "Spectre")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biobase
+           r-biocmanager
+           r-caret
+           r-class
+           r-colorramps
+           r-data-table
+           r-dendsort
+           r-devtools
+           r-dplyr
+           r-exactextractr
+           r-factoextra
+           r-flowcore
+           r-flowsom
+           r-flowviz
+           r-fnn
+           r-ggplot2
+           r-ggpointdensity
+           r-ggpubr
+           r-ggraph
+           r-ggthemes
+           r-gridextra
+           r-gridextra
+           r-gtools
+           r-hdf5array
+           r-irlba
+           r-patchwork
+           r-pheatmap
+           r-plyr
+           r-qs2
+           r-raster
+           r-rcolorbrewer
+           r-rhdf5
+           r-rstudioapi
+           r-rsvd
+           r-rtsne
+           r-s2
+           r-scales
+           r-scattermore
+           r-sf
+           r-sp
+           r-stars
+           r-stringr
+           r-tidygraph
+           r-tidyr
+           r-tidyr
+           r-tiff
+           r-umap
+           r-uwot))
+    (home-page "https://github.com/ImmuneDynamics/Spectre")
+    (synopsis "High-dimensional cytometry and imaging analysis")
+    (description
+     "This package provides a computational toolkit in R for the
 integration, exploration, and analysis of high-dimensional single-cell
 cytometry and imaging data.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public r-compgenomrdata
   (let ((commit "24484cb77631e1123ead6c329b9d62c160e600c6")
