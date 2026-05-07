@@ -1254,14 +1254,27 @@ APIs.  It can also play videos from PeerTube sources.")
                   "0iaandlbv2v4a6wsdxk19ynj77axd3kc72nw28bvbsfb0kqc0mai"))))
       (build-system qt-build-system)
       (arguments
-       (list #:qtbase qtbase
-             #:tests? #f)) ;no tests
+       (list
+        #:qtbase qtbase
+        #:tests? #f ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'wrap-program
+              (lambda _
+                (wrap-program (string-append #$output "/bin/rattlesnake")
+                  `("GST_PLUGIN_SYSTEM_PATH" ":" suffix
+                    (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
       (native-inputs
        (list extra-cmake-modules))
       (inputs
-       (list kirigami qtdeclarative qtmultimedia qtwayland))
-      (propagated-inputs
-       (list gstreamer gst-plugins-base gst-plugins-good))
+       (list gst-plugins-base
+             gst-plugins-good
+             gstreamer
+             kirigami
+             kirigami-addons
+             qtdeclarative
+             qtmultimedia
+             qtwayland))
       (home-page "https://invent.kde.org/multimedia/rattlesnake")
       (synopsis "Metronome")
       (description "Rattlesnake is a metronome app.")
