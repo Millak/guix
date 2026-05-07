@@ -45,7 +45,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2022, 2023, 2024 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2022, 2023, 2024, 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2022, 2025, 2026 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
@@ -968,7 +968,7 @@ many input formats and provides a customisable Vi-style user interface.")
 (define-public ctune
   (package
     (name "ctune")
-    (version "1.3.4")
+    (version "1.3.10")
     (source
      (origin
        (method git-fetch)
@@ -976,11 +976,15 @@ many input formats and provides a customisable Vi-style user interface.")
               (url "https://github.com/An7ar35/ctune")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (patches (search-patches "ctune-cmake-disable-git-clone.patch"))
        (sha256
-        (base32 "05gs1a1pc303qrnd1bz0z0wkzxkpm310hqznnq6zz7nl4vs3b9nz"))))
+        (base32 "0g7a2yz5nnhd4dln07hiax5701hc4b7sn97c36jgvm8pq6ap2bd4"))))
     (build-system cmake-build-system)
-    (arguments '(#:tests? #f)) ;no check target
+    (arguments
+     (list
+      #:tests? #f ;no check target
+      ;; We do not have the headers of ncurses inside 'ncursesw' subdirectory.
+      #:configure-flags
+      #~(list "-DNO_NCURSESW=ON")))
     (native-inputs (list pkg-config
                          json-c
                          ffmpeg-6

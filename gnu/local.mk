@@ -1169,7 +1169,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/cryfs-boost-1.89-fix.patch		\
   %D%/packages/patches/csvkit-set-locale-for-tests.patch			\
   %D%/packages/patches/ctranslate2-local-build.patch		\
-  %D%/packages/patches/ctune-cmake-disable-git-clone.patch		\
   %D%/packages/patches/cube-nocheck.patch			\
   %D%/packages/patches/cups-relax-root-ownership-check.patch		\
   %D%/packages/patches/cura-engine-gcc-14.patch			\
