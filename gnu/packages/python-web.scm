@@ -4560,6 +4560,36 @@ This is a Python CRDT library that provides bindings for Yrs, the Rust port of
 the Yjs framework.")
     (license license:expat)))
 
+(define-public python-pycrdt-store
+  (package
+    (name "python-pycrdt-store")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/y-crdt/pycrdt-store")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18yvv5lgxb4v0qlbi8bbkcm1666nxbkmhbx445sxpzab7027fl1a"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-anyio
+           python-pycrdt
+           python-sqlite-anyio))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-rerunfailures
+           python-trio))
+    (home-page "https://github.com/y-crdt/pycrdt-store")
+    (synopsis "Persistent storage for pycrdt")
+    (description
+     "This package provides a persistent storage feature for
+@code{python-pycrdt}.")
+    (license license:expat)))
+
 (define-public python-pycurl
   (package
     (name "python-pycurl")
