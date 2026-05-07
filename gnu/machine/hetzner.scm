@@ -585,19 +585,11 @@ chmod 600 /mnt/root/.ssh/authorized_keys
 
 # Small instance don't have much disk space.  Bind mount the store of the
 # rescue system to the tmp directory of the new Guix system.
-mkdir -p /mnt/tmp/gnu/store
-mkdir -p /gnu/store
-mount --bind /mnt/tmp/gnu/store /gnu/store
+mkdir -p /mnt/tmp/gnu
+mkdir -p /gnu
+mount --bind /mnt/tmp/gnu /gnu
 
 wget -O /tmp/guix-install.sh https://guix.gnu.org/guix-install.sh
-
-# Modify the install script to point the systemd unit of the /gnu/store
-# mountpoint to the same /mnt/tmp/gnu/store which was introduced above.
-store_fix=\"sed -i 's#Where=/gnu/store#Where=/mnt/tmp/gnu/store#'
- ~~root/.config/guix/current/lib/systemd/system/gnu-store.mount\"
-sed -i \"s@install_unit gnu-store.mount\"\\
-\"@$(printf \"%q \" $store_fix)\\ninstall_unit gnu-store.mount@\" /tmp/guix-install.sh
-
 chmod +x /tmp/guix-install.sh
 set +o pipefail # avoid hangup on 'yes' killing this script
 yes '' | /tmp/guix-install.sh
