@@ -51961,14 +51961,14 @@ for linear mixed models (AIREML).")
 (define-public r-cpp11
   (package
     (name "r-cpp11")
-    (version "0.5.4")
+    (version "0.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cpp11" version))
        (sha256
         (base32
-         "1v0xswffph4a55v05h8pi2n633x97pyjpps9c6kc38w67375603f"))))
+         "1x32biqcgx32dw8s72fkkg08vbr4c99ws8nlyfdj5h850vmnnj3j"))))
     (properties
      `((upstream-name . "cpp11")
        (updater-ignored-native-inputs
