@@ -1484,6 +1484,29 @@ by Pavel Raiskup.")
  bsmulti-lingual messages with GNU gettext's tools msgfmt.")
     (license license:gpl3+)))
 
+(define-public python-hatch-regex-commit
+  (package
+    (name "python-hatch-regex-commit")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/frankie567/hatch-regex-commit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01ngfz2x49h323akksfhwlpp6hiy36ai5gnxfspd10g2rjm7gny5"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-hatchling))
+    (native-inputs (list python-hatchling))
+    (home-page "https://github.com/frankie567/hatch-regex-commit")
+    (synopsis "Hatch plugin to create a commit and tag when bumping version")
+    (description
+     "This provides a plugin for Hatch that automatically creates a Git commit
+and tag after version bumping.")
+    (license license:expat)))
+
 ;; TODO: Move to ci or task-runners, see:
 ;; <https://codeberg.org/guix/guix/issues/3096>.
 (define-public python-huey
