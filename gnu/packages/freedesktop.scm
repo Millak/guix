@@ -1972,6 +1972,10 @@ message bus.")
          "-Dsystemdsystemunitdir=/tmp/empty")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-python-incompatibilities
+           (lambda _
+             (substitute* (find-files "tests" "\\.py$")
+               (("assertEquals") "assertEqual"))))
          (add-after 'unpack 'patch-paths
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "meson_post_install.py"
