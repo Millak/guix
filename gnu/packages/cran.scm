@@ -39463,14 +39463,14 @@ information about geometries.")
 (define-public r-sf
   (package
     (name "r-sf")
-    (version "1.1-0")
+    (version "1.1-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sf" version))
        (sha256
         (base32
-         "09fs4ahh0l6kmzihircvlbggwwsjcnnh36b34g0qkisixck61rvw"))))
+         "146a1lfdmymgls99d9kbwz66gdwcj8jrf61dmrj98q7hg703knvc"))))
     (properties
      ;; We don't have this package
      '((updater-ignored-native-inputs . ("r-geom"))))
@@ -39486,12 +39486,7 @@ information about geometries.")
            sqlite
            zlib))
     (propagated-inputs
-     (list r-classint
-           r-dbi
-           r-magrittr
-           r-rcpp
-           r-s2
-           r-units))
+     (list r-classint r-dbi r-rcpp r-s2 r-units))
     (native-inputs
      (list pkg-config
            r-blob
