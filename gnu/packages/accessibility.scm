@@ -51,6 +51,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages java)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages xml)
@@ -185,7 +186,9 @@ terminals.")
     (native-inputs
      (append
        (list clisp
-             python-cython-0 ;; See https://bugzilla.redhat.com/show_bug.cgi?id=2231865
+             ;; See: <https://bugzilla.redhat.com/show_bug.cgi?id=2231865>.
+             python-cython-0
+             python-setuptools  ;remove with next update
              doxygen
              gettext-minimal)
        ;; icedtea doesn't build reliably on all architectures.
