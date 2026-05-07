@@ -33457,6 +33457,8 @@ the interfaces between R and C++.")
        (sha256
         (base32
          "0zjk6ylvgkzs7cpw21pkdclrvfhy46llmwznqjhva19hg75j3an9"))))
+    (properties
+     '((updater-extra-inputs . ("gsl"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass
@@ -33465,6 +33467,7 @@ the interfaces between R and C++.")
            r-rcppgsl
            r-statmod
            r-tweedie))
+    (inputs (list gsl))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/web/packages/mvabund/")
     (synopsis "Statistical methods for analysing multivariate abundance data")
