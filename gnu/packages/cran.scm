@@ -16110,7 +16110,8 @@ rules and utility functions for adaptive GH quadrature.")
          "1jcb8429bi5ra5chnv2iz8gbf5340xmhmbx97dj4xv7hd6d6f4ay"))))
     (properties
      '((upstream-name . "rstpm2")
-       (updater-extra-native-inputs . ("r-desolve"))))
+       ;; eha is needed for one test: test_delayed.R: All values zero or one.
+       (updater-extra-native-inputs . ("r-desolve" "r-eha"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bbmle
@@ -16123,7 +16124,7 @@ rules and utility functions for adaptive GH quadrature.")
            r-rcpparmadillo
            r-survival))
     (native-inputs
-     (list gfortran r-desolve r-ggplot2 r-runit r-testthat))
+     (list gfortran r-desolve r-eha r-ggplot2 r-runit r-testthat))
     (home-page "https://github.com/mclements/rstpm2")
     (synopsis "Link-based survival models")
     (description
