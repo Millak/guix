@@ -52018,10 +52018,13 @@ This package provides Rcpp bindings to a TOML parser.")
        (sha256
         (base32
          "041ynqr8hkr59is5az6i53pzcvp6y7vpcix4kw4jylq1x9s9rc1f"))))
-    (properties `((upstream-name . "RcppZiggurat")))
+    (properties
+     '((upstream-name . "RcppZiggurat")
+       (updater-extra-inputs . ("gsl"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-rcppgsl))
+    (inputs (list gsl))
     (native-inputs (list pkg-config))
     (home-page "https://cran.r-project.org/web/packages/RcppZiggurat/")
     (synopsis "Rcpp integration of different \"Ziggurat\" normal RNG implementations")
