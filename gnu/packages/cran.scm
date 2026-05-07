@@ -4132,6 +4132,32 @@ everywhere in package development.")
 various statistical models with linear predictors.")
     (license license:gpl2+)))
 
+(define-public r-eha
+  (package
+    (name "r-eha")
+    (version "2.11.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "eha" version))
+       (sha256
+        (base32 "0ps8a5q47m2yd67hap7886dwanlqlsdx1v2nh3immq61ym9zbrpv"))))
+    (properties `((upstream-name . "eha")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-survival))
+    (native-inputs (list gfortran r-knitr))
+    (home-page "https://ehar.se/r/eha/")
+    (synopsis "Event history analysis")
+    (description
+     "This is a package for parametric proportional hazards fitting with left
+truncation and right censoring for common families of distributions, piecewise
+constant hazards, and discrete models.  It offer parametric accelerated
+failure time models for left truncated and right censored data.  It also
+provides proportional hazards models for tabular and register data.  Lastly,
+it enables sampling of risk sets in Cox regression, selections in the Lexis
+diagram, bootstrapping.")
+    (license license:gpl2+)))
+
 (define-public r-embed
   (package
     (name "r-embed")
