@@ -56180,14 +56180,14 @@ percentages, citations, person tags, phone numbers, times, and zip codes.")
 (define-public r-mgsub
   (package
     (name "r-mgsub")
-    (version "1.7.3")
+    (version "2.0.0")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "mgsub" version))
         (sha256
           (base32
-            "1mci6x65h94qiz9cwikx2inbrwkykv43zbs8abfbx416zrh2bbn9"))))
+            "0nk9ail6xifaykpinkvwm6kxgwpmdf28qggjf8nkran8b7ipl8b5"))))
     (properties `((upstream-name . "mgsub")))
     (build-system r-build-system)
     (native-inputs (list r-knitr r-testthat))
