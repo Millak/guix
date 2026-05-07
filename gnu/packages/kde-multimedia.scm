@@ -898,8 +898,16 @@ autoloading of subtitle files for use while playing video.")
            qtdeclarative
            qtwayland))
     (arguments
-     (list #:qtbase qtbase
-           #:tests? #f))
+     (list
+      #:qtbase qtbase
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-program
+            (lambda _
+              (wrap-program (string-append #$output "/bin/kamoso")
+                `("GST_PLUGIN_SYSTEM_PATH" ":" suffix
+                  (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
     (home-page "https://apps.kde.org/kamoso/")
     (synopsis "Take pictures and videos out of your webcam")
     (description "Kamoso is a simple and friendly program to use your
