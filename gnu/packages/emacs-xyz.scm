@@ -41896,7 +41896,7 @@ Lisp's (relatively new) EIEIO object oriented libraries.")
 (define-public emacs-keymap-popup
   (package
     (name "emacs-keymap-popup")
-    (version "0.2.2")
+    (version "0.2.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -41905,7 +41905,7 @@ Lisp's (relatively new) EIEIO object oriented libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16f5lba7m1k7s2y80fkyf9lf4c79lhs4g0xz7y4bxz6r9x70m9zf"))))
+                "0p0rj46yqs0ns4d0fmbx8y5najhfrp7959bsp8xg5vi64sd35nj2"))))
     (build-system emacs-build-system)
     (arguments
      (list #:tests? #f))            ;tests need a live display read-loop
