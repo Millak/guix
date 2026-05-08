@@ -264,14 +264,14 @@ Qt-based XMPP library QXmpp.")
 (define-public kget
   (package
     (name "kget")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kget-" version ".tar.xz"))
        (sha256
-        (base32 "1fxhl67gycaqbmrqrsbnq9v62cp17cxyjhy029f84lpwvykp6a58"))))
+        (base32 "0vg3wkww6z8byn7zgwfsn0295xafnzfzkcc346iywyxdksnaddd2"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config))
