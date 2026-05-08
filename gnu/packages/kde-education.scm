@@ -115,7 +115,7 @@ expressions and let you evaluate and draw them.")
 (define-public gcompris-qt
   (package
     (name "gcompris-qt")
-    (version "26.0")
+    (version "26.1")
     (source
      (origin
        (method url-fetch)
@@ -123,7 +123,7 @@ expressions and let you evaluate and draw them.")
              "mirror://kde//stable/gcompris/qt/src/gcompris-qt-"
              version ".tar.xz"))
        (sha256
-        (base32 "0czk3srhx7g370mhx8yk13ak004h6y8lzqdbj0wqhvnxjszghgbx"))))
+        (base32 "0f8kycj62ipfjwrk8bisq5a7cv7zh84p9vry3g62q0czn9ivi2f3"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
