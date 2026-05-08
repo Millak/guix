@@ -408,14 +408,14 @@ models such as Ollama.")
 (define-public kalm
   (package
     (name "kalm")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kalm-" version ".tar.xz"))
        (sha256
-        (base32 "0hz66b23i6zf31drl70npfzmsfzbkqdffnnq1ks2sw8rckwy8r66"))))
+        (base32 "00qbbr61s6vhfiy602gaxwvgilgpi30h9sqvj270qaqb07rzh9wp"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
