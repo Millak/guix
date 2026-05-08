@@ -934,14 +934,14 @@ calendaring applications.")
 (define-public kcalutils
   (package
     (name "kcalutils")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kcalutils-" version ".tar.xz"))
        (sha256
-        (base32 "0d520aalixqvc624kyag7s93figr6ii2pfjjkffrr4mp8gpxym4d"))))
+        (base32 "09bpgh61b19dh49dxdd5v80xzx6ya1g32clfm70zfmjf7xc94m5z"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list kcoreaddons kconfig kcalendarcore))
