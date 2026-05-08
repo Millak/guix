@@ -445,14 +445,14 @@ with emails through Akonadi easier.")
 (define-public akonadi-search
   (package
     (name "akonadi-search")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/akonadi-search-" version ".tar.xz"))
        (sha256
-        (base32 "028x283lhxwxz164m2qrci4dk5hgzvrg0am7ls15inxrib1sdv3m"))))
+        (base32 "0gsyp50i2hr92z6brn2s26cf8i0q1k4fq28v5wnirdmf9wl40fia"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list akonadi
