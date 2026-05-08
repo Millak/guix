@@ -42051,7 +42051,7 @@ add popup descriptions to existing keymaps
 (define-public emacs-forgejo
   (package
     (name "emacs-forgejo")
-    (version "0.1.5")
+    (version "0.1.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -42060,7 +42060,7 @@ add popup descriptions to existing keymaps
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "028z0vm8v2frwm5qdszqxs66ig3x5knnjg9nxpymlfdxiz5iipqc"))))
+                "0xp4hvvg98lr65w49jh60vnln74q48zwiv17n7ly5sk44xzf0s5w"))))
     (build-system emacs-build-system)
     (arguments
      (list #:lisp-directory "lisp"
