@@ -695,14 +695,14 @@ as well as QR codes.")
 (define-public yakuake
   (package
     (name "yakuake")
-    (version "25.12.3")
+    (version "26.04.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/yakuake-" version ".tar.xz"))
               (sha256
                (base32
-                "1py98c5b2xysy9f1nzqirg74480zybwziy3p4za53x2gdhvrsb1n"))))
+                "0mx4xy316hc29qs7hvbcmf31aazk7p65dc4xdj04rrws2rsmv9qs"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -728,7 +728,8 @@ as well as QR codes.")
            kwindowsystem
            libxkbcommon
            qtsvg
-           qtwayland))
+           qtwayland
+           wayland))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
