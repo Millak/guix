@@ -769,14 +769,14 @@ and timers can also wake the system from suspend.")
 (define-public kdialog
   (package
     (name "kdialog")
-    (version "25.12.3")
+    (version "26.04.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kdialog-" version ".tar.xz"))
               (sha256
                (base32
-                "18ay220hj46g6qlyzci71mxi7mfdf6jawvm7vix6m4cl4gas7rgy"))))
+                "00df8i14yv3q14gjna7gwbqmgzvadnb8fxc6wcip484bwsilwwb4"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
                      #:tests? #f))
