@@ -6804,13 +6804,13 @@ Python style, together with a fast and comfortable execution environment.")
      (list
       #:test-flags
       ;; These tests require network access.
-      #~(list "--ignore=orsopy/slddb/tests/test_webapi.py"
-              (map (lambda (test)
-                     (string-append "--deselect=orsopy/fileio/tests/"
-                                    "test_model_language.py::" test))
-                   (list "TestSubStack::test_resolve_layers"
-                         "TestMaterial::test_density_lookup_elements"
-                         "TestSampleModel::test_resolve_to_layers")))))
+      #~(cons* "--ignore=orsopy/slddb/tests/test_webapi.py"
+               (map (lambda (test)
+                      (string-append "--deselect=orsopy/fileio/tests/"
+                                     "test_model_language.py::" test))
+                    (list "TestSubStack::test_resolve_layers"
+                          "TestMaterial::test_density_lookup_elements"
+                          "TestSampleModel::test_resolve_to_layers")))))
     (propagated-inputs
      (list python-numpy python-pyyaml python-jsonschema python-h5py))
     (native-inputs
