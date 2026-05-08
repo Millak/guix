@@ -187,14 +187,14 @@ exhausted.")
 (define-public kdf
   (package
     (name "kdf")
-    (version "25.12.3")
+    (version "26.04.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kdf-" version ".tar.xz"))
               (sha256
                (base32
-                "0m5i9222hh468zliizdly5j07xdwz4ag8rqhzi674dijkphngsmv"))))
+                "1xdmqmdp4v7vf9z6h917wb6sg7a4y4i44j6w44m84h8a6w6b5c49"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
