@@ -11110,7 +11110,9 @@ Server (PLS).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dyp49x844c4mja0qg01nilsbi09w7526izsk3pi5zpylmhmvbk2"))))
+        (base32 "1dyp49x844c4mja0qg01nilsbi09w7526izsk3pi5zpylmhmvbk2"))
+       (patches
+        (search-patches "python-lsp-server-python-3.13-compatibility.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list

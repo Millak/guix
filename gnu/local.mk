@@ -2254,6 +2254,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-piexif-fix-tests-with-pillow-7.2.patch	\
   %D%/packages/patches/python-pillow-CVE-2022-45199.patch	\
   %D%/packages/patches/python-libxml2-utf8.patch		\
+  %D%/packages/patches/python-lsp-server-python-3.13-compatibility.patch	\
   %D%/packages/patches/python-memcached-syntax-warnings.patch	\
   %D%/packages/patches/python-mslice-matplotlib-3.6-compatibility.patch	\
   %D%/packages/patches/python-packaging-test-arch.patch		\
