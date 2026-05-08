@@ -322,7 +322,7 @@ This package is part of the KDE networking module.")
 (define-public kdeconnect
   (package
     (name "kdeconnect")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
@@ -331,7 +331,7 @@ This package is part of the KDE networking module.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "1fv9kv6c7mnm6dx6x3vficjrijlzidrfag0i08gg4fpqnxlcjhm2"))))
+         "0f55wf25nyr39p25ismxgvsdcx58gk82rs0w450f9jdadkhpg0n5"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -382,6 +382,8 @@ This package is part of the KDE networking module.")
            kpeople
            kstatusnotifieritem
            kwayland
+           libei
+           libevdev
            libfakekey
            openssl
            plasma-wayland-protocols
