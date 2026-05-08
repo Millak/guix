@@ -628,14 +628,14 @@ browser for easy news reading.")
 (define-public itinerary
   (package
     (name "itinerary")
-    (version "25.12.3")
+    (version "26.04.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1apm2q0a4a9fxw1ybmcfqc5r6s2z41grkiywvy02rw1p8rqn5ssc"))))
+                "10wws4nwxz0gv8y9sa91czpvl2s89sjgp9wbr8izjw7xxahq1dpc"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
