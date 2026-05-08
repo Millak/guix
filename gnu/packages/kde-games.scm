@@ -758,14 +758,14 @@ This package is part of the KDE games module.")
 (define-public klickety
   (package
     (name "klickety")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/klickety-" version ".tar.xz"))
        (sha256
-        (base32 "1akgfcavzq2yn3577gzbraa880zff8alx7k9h2bny0hzxxqrdxf9"))))
+        (base32 "0c62xn0ragm49bpkrdpd0askik5cw7caf30bfv29aydmg48pqqa1"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
