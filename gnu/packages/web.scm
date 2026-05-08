@@ -403,7 +403,7 @@ one.")
 (define-public miniflux
   (package
     (name "miniflux")
-    (version "2.2.17")
+    (version "2.2.19")
     (source
      (origin
        (method git-fetch)
@@ -412,10 +412,11 @@ one.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "090qb53v8xn838qxdyjqcj7d5gxrn9ivlxv0qqfv3164is275vs6"))))
+        (base32 "12mm95x7xrmc6ck39xizjyv44ibknvwq2kdjd2315q0kp3l0wc7z"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.26
       #:install-source? #f
       #:import-path "miniflux.app/v2"
       #:build-flags
@@ -424,6 +425,14 @@ one.")
                #$version))
       #:phases
       #~(modify-phases %standard-phases
+          ;; Force disable legacy ServeMux behaviour, with which routing
+          ;; doesn't work.  It is enabled automatically because we use
+          ;; GO111MODULE=off in go-build-system.
+          (add-after 'unpack 'fix-httpmuxgo121
+            (lambda _
+              (substitute* "src/miniflux.app/v2/main.go"
+                (("^package main")
+                 "//go:debug httpmuxgo121=0\n\npackage main"))))
           ;; Skipping test case that is trying to resolve a domain name
           (add-after 'unpack 'skip-real-domain-resolve-test
             (lambda _
@@ -444,7 +453,6 @@ one.")
      (list go-github-com-andybalholm-brotli
            go-github-com-coreos-go-oidc-v3
            go-github-com-go-webauthn-webauthn
-           go-github-com-gorilla-mux
            go-github-com-lib-pq
            go-github-com-prometheus-client-golang
            go-github-com-puerkitobio-goquery
