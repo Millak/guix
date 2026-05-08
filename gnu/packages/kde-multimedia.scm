@@ -485,14 +485,14 @@ its own database.  You can build and play your own playlist.")
 (define-public ffmpegthumbs
   (package
     (name "ffmpegthumbs")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ffmpegthumbs-" version ".tar.xz"))
        (sha256
-        (base32 "1s4dxxvl5r6amv6b1nvl8r43xklgl2y20fmq69jw2md9cp68mczf"))))
+        (base32 "1zplaxd1a7dpk72ijx72158qcj1gwbg7xvjvq90skx025xwgcf6z"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
