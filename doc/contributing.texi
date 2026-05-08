@@ -618,6 +618,33 @@ enhance @code{scheme-mode} and Geiser.  @xref{Introduction,,,
 emacs-guix, Emacs-Guix Reference Manual}, to make sure you don't miss
 out!
 
+@unnumberedsubsubsec Submitting Pull Requests Following the AGit Workflow
+
+@cindex AGit workflow, for pull requests (Emacs).
+@url{https://codeberg.org/halvin/agitjo, Agitjo} is a helper to ease
+AGit workflow based patch submission (@pxref{Submitting Patches}).
+Install it with:
+
+@example
+guix install emacs-agitjo
+@end example
+
+Assuming your local checkout is on the branch containing the changes you
+would like to submit for inclusion in the @code{master} branch, use
+@command{M-x agitjo-push} then:
+
+@itemize
+@item
+Set options like the title @option{-t} and the session identifier
+@option{-s}.
+@item
+Invoke one of the push commands to execute a @command{git push} operation.
+@end itemize
+
+When creating a new pull request, a dedicated buffer will open for
+drafting a description. The force-push option @option{-f} is enabled to
+push changes to the existing pull request.
+
 @unnumberedsubsubsec Taming Boilerplate with Templates
 
 @cindex code snippets
