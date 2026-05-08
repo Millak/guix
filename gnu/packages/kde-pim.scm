@@ -2193,14 +2193,14 @@ It features:
 (define-public korganizer
   (package
     (name "korganizer")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/korganizer-" version ".tar.xz"))
        (sha256
-        (base32 "1hwqsqx5csyv2yc68zn2nj8pap3grhkaam1jbzrxpbprl7qkgf4v"))))
+        (base32 "1nysr47k85240qg36x5j1m5milkk1387bnijc026r6pfwvnyi4hv"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules dbus qttools kdoctools tzdata-for-tests))
