@@ -2084,14 +2084,14 @@ information in non-ASCII character sets.")
 (define-public kontactinterface
   (package
     (name "kontactinterface")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kontactinterface-" version ".tar.xz"))
        (sha256
-        (base32 "1447sy0a2qwbkrzwpma9hgz403c3x2xjd6b5d8s12f1945qbjfay"))))
+        (base32 "1d8s1afv42f4p6kbbrikcmzm47pkfn5hxa33z5q6lvb714c8gk5f"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list kparts)) ;required by KPim6KontactInterfaceConfigVersion.cmake
