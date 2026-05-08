@@ -57732,45 +57732,6 @@ simply include a single header file RApiSerializeAPI.h provided by this
 package.")
     (license license:gpl2+)))
 
-(define-public r-qs
-  (package
-    (name "r-qs")
-    (version "0.27.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "qs" version))
-       (sha256
-        (base32
-         "0s24sggs2nxxdsfa1snd7bz2cmncxarv5s4v59a8r0i419fkf2vf"))))
-    (properties
-     '((upstream-name . "qs")
-       (updater-extra-native-inputs . ("r-data-table" "r-dplyr"))))
-    (build-system r-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             ;; XXX: tests/correctness_testing.R aborts when doing a
-             ;; data.frame test.
-             (delete-file "tests/correctness_testing.R")
-             ;; XXX: one data frame test fails with:
-             ;; Error: attributes_serialize_identical(z, x1) is not TRUE
-             (delete-file "tests/qattributes_testing.R"))))))
-    (inputs (list lz4 zlib (list zstd "lib")))
-    (propagated-inputs
-     (list r-bh r-rapiserialize r-rcpp r-stringfish))
-    (native-inputs
-     (list pkg-config r-data-table r-dplyr r-knitr r-testthat))
-    (home-page "https://github.com/traversc/qs")
-    (synopsis "Quick serialization of R objects")
-    (description
-     "This package provides functions for quickly writing and reading any R
-object to and from disk.")
-    (license license:gpl3)))
-
 (define-public r-qs2
   (package
     (name "r-qs2")
