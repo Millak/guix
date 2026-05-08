@@ -1985,14 +1985,14 @@ This package is part of the KDE games module.")
 (define-public skladnik
   (package
     (name "skladnik")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/skladnik-" version ".tar.xz"))
        (sha256
-        (base32 "0nhpkcmyalndx03ab3bi9ckfgny7qplbdgfiyshq532nxpnb6hgd"))))
+        (base32 "1rhhajnwamdwj9pswab5hncvrgcn0iw5qip73c6812vnj8wda4x2"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
