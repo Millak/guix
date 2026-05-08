@@ -156,14 +156,14 @@ The main features of Dolphin are:
 (define-public kde-inotify-survey
   (package
     (name "kde-inotify-survey")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kde-inotify-survey-" version ".tar.xz"))
        (sha256
-        (base32 "1qwhdh4qfv7834vghzsasdgk1h080jpzb5nkbd5g0v8nvi6j1h05"))))
+        (base32 "16844gn7zh97lf81h6g64hnnrral800kkd10q389j5i5cfnl1l1k"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
