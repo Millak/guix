@@ -2641,14 +2641,14 @@ various Google services.")
 (define-public libkleo
   (package
     (name "libkleo")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkleo-" version ".tar.xz"))
        (sha256
-        (base32 "0b6yb4x59kd87rpl4xlmj6bwh2g80hwckad9j33ws1ak8ixq1asz"))))
+        (base32 "1p6f5iykb5scv1bvgvjqqgxy59dbsqhk5gmaxls11llq0pwzwik3"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools qttools))
