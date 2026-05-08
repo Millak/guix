@@ -334,14 +334,14 @@ and allows you to preview your content.")
 (define-public marknote
   (package
     (name "marknote")
-    (version "1.4.1")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://kde/stable/marknote"
+       (uri (string-append "mirror://kde//stable/marknote"
                            "/marknote-" version ".tar.xz"))
        (sha256
-        (base32 "1697mp11x1w5bc6l2abzvw8wiadkchp29k6nqbdrr86rqd8zbhln"))))
+        (base32 "1dzfwdvb8is3nyb852ba9ljy00r098ff8a4bzfycs93sps10lnmw"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -362,6 +362,7 @@ and allows you to preview your content.")
            kirigami
            kirigami-addons
            kmime
+           knotifications
            kwindowsystem
            kxmlgui
            md4c
