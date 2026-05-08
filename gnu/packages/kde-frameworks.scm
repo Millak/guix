@@ -1135,7 +1135,7 @@ interfaces in the areas of colors, fonts, text, images, keyboard input.")
 (define-public kholidays
   (package
     (name "kholidays")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1143,11 +1143,11 @@ interfaces in the areas of colors, fonts, text, images, keyboard input.")
                     (version-major+minor version) "/"
                     name "-" version ".tar.xz"))
               (sha256
-               (base32 "0wafckbsc770rx7gnav2bb507c552a9jbslp2gnpxi05cp59mjal"))))
+               (base32 "1gmp35sp5via3aphzrj3c2dapdbvjmgnc6pqgwqf10iv03mc98wl"))))
     (build-system cmake-build-system)
     ;; As required by kholidaysdeclarativeplugin.qmltypes.
     (propagated-inputs (list qtdeclarative))
-    (native-inputs (list extra-cmake-modules qttools))
+    (native-inputs (list bison extra-cmake-modules flex qttools))
     (inputs (list qtbase))
     (home-page "https://invent.kde.org/frameworks/kholidays")
     (synopsis "Library for regional holiday information")
