@@ -4200,7 +4200,7 @@ widgets with a user-interface defined in terms of actions.")
 (define-public kpeople
   (package
     (name "kpeople")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4209,7 +4209,7 @@ widgets with a user-interface defined in terms of actions.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0f5f0jfn5ls7r1zbrxwz11hsz6z5abdvb6wxfmlf9nzjkrcgfqcq"))))
+                "197yj0w39wd1s7dc4c2v04nycpk90d2lmbz4m2xknk5n7rsngqnk"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list qtdeclarative)) ;required by KF6PeopleDeclarative.qmltypes
