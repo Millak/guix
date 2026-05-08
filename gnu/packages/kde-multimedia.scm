@@ -233,7 +233,12 @@ This package is part of the KDE multimedia module.")
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
                      ;; testsqlscanmanager fails, even when run manually.
-                     (invoke "ctest" "-E" "testsqlscanmanager")))))))
+                     (invoke "ctest" "-E" "testsqlscanmanager"))))
+               (add-after 'install 'wrap-program
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/amarok")
+                     `("GST_PLUGIN_SYSTEM_PATH" ":" suffix
+                       (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
     (native-inputs
      (list extra-cmake-modules
            googletest
