@@ -66,14 +66,14 @@
 (define-public ark
   (package
     (name "ark")
-    (version "25.12.3")
+    (version "26.04.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/ark-" version ".tar.xz"))
               (sha256
                (base32
-                "12q2brbgg68kknf193wx44spg8jbqzib58hhrvnkqvr1ivq7xwl1"))
+                "0wcccrdfadllcafz9mdavbp9yafmylh72anv5j89j16mnm746mg3"))
               ;; The libarchive package in Guix does not support
               ;; xar; disable related tests.
               (patches (search-patches "ark-skip-xar-test.patch"))))
