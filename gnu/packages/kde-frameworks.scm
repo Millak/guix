@@ -1959,7 +1959,7 @@ libpulse.")
 (define-public qqc2-desktop-style
   (package
     (name "qqc2-desktop-style")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1968,7 +1968,7 @@ libpulse.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "03cqwx63h1zmnhk3b3pl7r1rqdjjw2jl0rj4y28zn7ym405pxam7"))))
+                "0r6y4aqv0pmfyqigvzclzpkfvcqa6dd2fj0r6whzs7bgb4dpm5j5"))))
     (build-system qt-build-system)
     (arguments
      (list
