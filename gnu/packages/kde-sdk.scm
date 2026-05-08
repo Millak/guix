@@ -270,14 +270,14 @@ for some KDevelop language plugins (Ruby, PHP, CSS...).")
 (define-public kdevelop
   (package
     (name "kdevelop")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kdevelop-" version ".tar.xz"))
        (sha256
-        (base32 "1mgwglrnxigyf0h0rff0kl1xgxg3vsm17nif46r47f1s5fhgds5n"))))
+        (base32 "0ss8yzf025zb7sra7kvifxs87va14fzmaqy1cjv1x21aks7lwdf9"))))
     (build-system qt-build-system)
     ;; As required by KDevPlatformConfig.cmake.
     (propagated-inputs
