@@ -22726,7 +22726,7 @@ are common in Chromium-derived projects.")
 (define-public emacs-gnosis
   (package
     (name "emacs-gnosis")
-    (version "0.10.4")
+    (version "0.10.6")
     (source
      (origin
        (method git-fetch)
@@ -22735,12 +22735,13 @@ are common in Chromium-derived projects.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06ps2hnz03pmy0v768w8ky447aam68r7d86rnh25rhka7x9flipk"))))
+        (base32 "1cjm8hj62zm9k89pnsh5hbgjqqnh53byw4mijl76a7cn8args4gy"))))
     (build-system emacs-build-system)
     (arguments
      (list
+      #:lisp-directory "lisp"
       #:test-command
-      #~(list "make" "test" "GUIX_SHELL=")
+      #~(list "make" "-C" ".." "test" "GUIX_SHELL=")
       #:emacs emacs-no-x ;tests require built-in SQLite support
       #:phases
       #~(modify-phases %standard-phases
@@ -22753,7 +22754,7 @@ are common in Chromium-derived projects.")
                         "/.emacs.d"))))
           (add-before 'install 'make-info
             (lambda _
-              (invoke "make" "doc" "GUIX_SHELL="))))))
+              (invoke "make" "-C" ".." "doc" "GUIX_SHELL="))))))
     (native-inputs (list texinfo))
     (propagated-inputs (list emacs-keymap-popup))
     (home-page "https://thanosapollo.org/projects/gnosis/")
