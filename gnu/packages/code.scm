@@ -1,8 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2015, 2018, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2013, 2015, 2018, 2020, 2021, 2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2017, 2019-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2018, 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
@@ -865,6 +865,46 @@ Objective@tie{}C, D, Java, Pawn, and Vala).  Features:
      "Artistic Style is a source code indenter, formatter, and beautifier for
 the C, C++, C++/CLI, Objective‑C, C#, and Java programming languages.")
     (license license:lgpl3+)))
+
+(define-public idutils
+  (package
+    (name "idutils")
+    (version "4.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/idutils/idutils-" version ".tar.xz"))
+       (sha256
+        (base32 "1hmai3422iaqnp34kkzxdnywl7n7pvlxp11vrw66ybxn9wxg90c1"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* (find-files "lib" "\\.c$")
+             (("#if defined _IO_ftrylockfile")
+              "#if defined _IO_EOF_SEEN"))
+           (substitute* "lib/stdio-impl.h"
+             (("^/\\* BSD stdio derived implementations")
+              (string-append
+               "#if !defined _IO_IN_BACKUP && defined _IO_EOF_SEEN" "\n"
+               "# define _IO_IN_BACKUP 0x100\n" "#endif\n\n"
+               "/* BSD stdio derived implementations")))
+
+           ;; 'gets' is deprecated in glibc 2.33 and its declaration is
+           ;; no longer visible by default from <stdio.h>.
+           (substitute* "lib/stdio.in.h"
+             (("_GL_WARN_ON_USE \\(gets.*")
+              ""))))))
+    (build-system gnu-build-system)
+    (native-inputs (list emacs-minimal))
+    (home-page "https://www.gnu.org/software/idutils/")
+    (synopsis "Identifier database utilities")
+    (description
+     "The GNU idutils package includes tools to create an index of textual
+tokens used in a list of file names and then to query that index.  Thus, it
+allows the user to, for example, find all the uses of a particular function
+in a large programming project.  In addition to handling textual tokens, it
+can also handle numeric constants and the contents of character strings.")
+    (license license:gpl3+)))
 
 (define-public indent
   ;; XXX: Not released anymore, but some patches fix CVEs.
