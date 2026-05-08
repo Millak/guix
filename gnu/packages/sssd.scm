@@ -48,6 +48,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages selinux)
@@ -138,7 +139,7 @@ fundamental object types for C.")
 (define-public sssd
   (package
     (name "sssd")
-    (version "2.9.8")
+    (version "2.13.0")
     (source
      (origin
        (method git-fetch)
@@ -147,7 +148,7 @@ fundamental object types for C.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dk481bg8dydrgxi4s76kbshywpn1x3l786dmlnihxxmszzahy70"))
+        (base32 "1p7zrs1ldkmzc50f3sicmy16vprzw1pjnaxvmf6rahp9xbphaczz"))
        (patches (search-patches "sssd-system-directories.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -203,27 +204,28 @@ fundamental object types for C.")
                 (("(sambalibdir=.*/)samba" _ prefix)
                  prefix))))
           (add-after 'patch-source-shebangs 'patch-more-shebangs
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* '("src/tools/analyzer/sss_analyze"
                              "src/tools/sss_obfuscate")
                 (("#!/usr/bin/.*python")
-                 (string-append "#!" #$(this-package-input "python") "/bin/python3")))))
+                 (string-append "#!" (search-input-file inputs "bin/python3"))))))
           (add-before 'bootstrap 'fix-configure-macros
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               ;; A configure test for nsupdate realm support fails without this.
               (substitute* "src/external/nsupdate.m4"
                 (("\\$NSUPDATE ") "$NSUPDATE -i "))
               ;; Let tests find softhsm lib.
               (substitute* "src/external/test_ca.m4"
                 (("/usr/lib/softhsm")
-                 (string-append #$(this-package-native-input "softhsm")
-                                "/lib/softhsm")))))
+                 (search-input-directory inputs "lib/softhsm")))))
           (add-before 'configure 'disable-failing-tests
             (lambda _
-              ;; Disable tests that needs /etc/passwd.
               (substitute* "Makefile.am"
+                ;; Disable tests that need /etc/passwd.
                 (("pam-srv-tests") "")
-                (("test-negcache") ""))
+                (("test-negcache") "")
+                ;; Disable tests that need the root user.
+                (("src/config/SSSDConfigTest\\.py3\\.sh") ""))
               ;; This test fails for unknown reason.
               (substitute* "src/tests/responder_socket_access-tests.c"
                 (("tcase_add_test\\(tc_utils, resp_str_to_array_test\\);") ""))))
@@ -234,9 +236,12 @@ fundamental object types for C.")
                 (("ad_gpo_tests") "")
                 (("ad_common_tests") ""))))
           (add-before 'check 'set-libpython-path
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (setenv "LD_LIBRARY_PATH"
-                      (string-append #$(this-package-input "python") "/lib"))))
+                      (string-append
+                       (dirname (dirname
+                                 (search-input-file inputs "bin/python3")))
+                       "/lib"))))
           (add-after 'install 'remove-static-libs
             (lambda _
               ;; Remove a static library that produces a (harmless) warning
@@ -274,6 +279,7 @@ fundamental object types for C.")
            jose ; for OpenID Connect support
            keyutils
            ldb
+           libcap
            libnl
            libselinux
            libsemanage
@@ -308,6 +314,7 @@ fundamental object types for C.")
            openssh ; for tests
            pkg-config
            po4a
+           python-setuptools
            softhsm ; for tests
            `(,util-linux "lib"))) ; for uuid.h, required for KCM
     (home-page "https://pagure.io/SSSD/sssd/")

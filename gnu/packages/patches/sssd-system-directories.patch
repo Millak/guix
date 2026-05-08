@@ -2,10 +2,10 @@ Do not attempt to create $localstatedir and $sysconfdir (i.e., /var and /etc)
 upon "make install".
 
 diff --git a/Makefile.am b/Makefile.am
-index e780e8a14..afd2b0a49 100644
+index d55dc3585..905fc98b0 100644
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -84,7 +84,7 @@ pkgconfigdir = $(libdir)/pkgconfig
+@@ -89,7 +89,7 @@ pkgconfigdir = $(libdir)/pkgconfig
  krb5rcachedir = @krb5rcachedir@
  sudolibdir = @sudolibpath@
  polkitdir = @polkitdir@
@@ -14,7 +14,7 @@ index e780e8a14..afd2b0a49 100644
  systemtap_tapdir = @tapset_dir@
  sssdkcmdatadir = $(datadir)/sssd-kcm
  deskprofilepath = $(sss_statedir)/deskprofile
-@@ -5378,7 +5378,6 @@ installsssddirs::
+@@ -5477,7 +5477,6 @@ installsssddirs::
      $(DESTDIR)$(bindir) \
      $(DESTDIR)$(sbindir) \
      $(DESTDIR)$(mandir) \
@@ -22,7 +22,7 @@ index e780e8a14..afd2b0a49 100644
      $(DESTDIR)$(pluginpath) \
      $(DESTDIR)$(libdir)/ldb \
      $(DESTDIR)$(dbuspolicydir) \
-@@ -5388,24 +5387,12 @@ installsssddirs::
+@@ -5487,9 +5486,7 @@ installsssddirs::
      $(DESTDIR)$(sssddatadir) \
      $(DESTDIR)$(sudolibdir) \
      $(DESTDIR)$(autofslibdir) \
@@ -32,26 +32,37 @@ index e780e8a14..afd2b0a49 100644
      $(NULL);
  if SSSD_USER
  	-chown $(SSSD_USER):$(SSSD_USER) $(SSSD_USER_DIRS)
- 	-chown $(SSSD_USER) $(DESTDIR)$(pipepath)/private
+@@ -5498,20 +5495,6 @@ if SSSD_USER
+ 	-chown -f -R $(SSSD_USER):$(SSSD_USER) $(DESTDIR)$(sssdconfdir)/conf.d || true
+ 	-chown -f $(SSSD_USER):$(SSSD_USER) $(DESTDIR)$(logpath)/*.log || true
  endif
--	$(INSTALL) -d -m 0700 $(DESTDIR)$(dbpath) $(DESTDIR)$(logpath) \
--	    $(DESTDIR)$(keytabdir) \
+-	$(INSTALL) -d -m 0770 $(DESTDIR)$(dbpath) $(DESTDIR)$(logpath) \
+-	    $(DESTDIR)$(keytabdir) $(DESTDIR)$(gpocachepath) \
 -	    $(NULL)
--	$(INSTALL) -d -m 0750 $(DESTDIR)$(pipepath)/private
--	$(INSTALL) -d -m 0755 $(DESTDIR)$(mcpath) $(DESTDIR)$(pipepath) \
+-	$(INSTALL) -d -m 0770 $(DESTDIR)$(pipepath)/private
+-	$(INSTALL) -d -m 0771 $(DESTDIR)$(deskprofilepath)
+-	$(INSTALL) -d -m 0775 $(DESTDIR)$(sss_statedir) \
+-            $(DESTDIR)$(mcpath) $(DESTDIR)$(pipepath) \
 -            $(DESTDIR)$(pubconfpath) \
--            $(DESTDIR)$(pubconfpath)/krb5.include.d $(DESTDIR)$(gpocachepath)
--	$(INSTALL) -d -m 0711 $(DESTDIR)$(sssdconfdir) \
+-            $(DESTDIR)$(pubconfpath)/krb5.include.d \
+-            $(DESTDIR)$(runstatedir)/sssd \
+-	    $(NULL)
+-	$(INSTALL) -d -m 0750 $(DESTDIR)$(sssdconfdir) \
 -                          $(DESTDIR)$(sssdconfdir)/conf.d \
 -                          $(DESTDIR)$(sssdconfdir)/pki
  
  if HAVE_DOXYGEN
  docs:
-@@ -5523,7 +5510,6 @@ if BUILD_SAMBA
+@@ -5635,12 +5618,10 @@ if BUILD_SAMBA
  endif
  if BUILD_KCM
  	$(MKDIR_P) $(DESTDIR)/$(sssdkcmdatadir)
 -	$(MKDIR_P) $(DESTDIR)$(secdbpath)
+ if SSSD_USER
+ 	-chown $(SSSD_USER):$(SSSD_USER) $(DESTDIR)$(secdbpath)
+ 	-chown -f $(SSSD_USER):$(SSSD_USER) $(DESTDIR)$(secdbpath)/*.ldb || true
+ endif
+-	$(INSTALL) -d -m 0770 $(DESTDIR)$(secdbpath)
  endif
  
  uninstall-hook:
