@@ -57,14 +57,14 @@
 (define-public dolphin-plugins
   (package
     (name "dolphin-plugins")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dolphin-plugins-" version ".tar.xz"))
        (sha256
-        (base32 "1h5704xknncrwqi3qix2d8hmzg6a82jcbzsj0pzq70hly7wx8f57"))))
+        (base32 "00kdy1h3ig5avxms05iz2yq2nzkypqr4y1wk9zx8arzgcf8y1x7g"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
