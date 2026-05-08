@@ -2119,7 +2119,7 @@ ASpell and HUNSPELL.")
 (define-public threadweaver
   (package
     (name "threadweaver")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2128,7 +2128,7 @@ ASpell and HUNSPELL.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "02wba5hdxlxy0i7s73ihdmm79z761xyv4sars5amc4xgiw6nx0nl"))))
+                "0vylbrg1bkhghc8lra73valmnv5sxb8yjainr2ywvrwp2fb0hxma"))))
     (build-system cmake-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list qtbase))
