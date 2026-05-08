@@ -1451,7 +1451,7 @@ pixel units.")
 (define-public ksvg
   (package
     (name "ksvg")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1460,7 +1460,7 @@ pixel units.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0bi3cfbsmq5wsdlpw4bs50r0jkmw6va01nc4722n3fzfi7yh5qs4"))))
+                "1lplh2af1nmpdxkwgxikfgc9dhny9i27yhp07pl54566nimizmn4"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list qtdeclarative)) ;required by corebindingsplugin.qmltypes
