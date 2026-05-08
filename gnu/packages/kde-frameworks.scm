@@ -1331,7 +1331,7 @@ of applications that follow the Kirigami Human Interface Guidelines.")
 (define-public kitemmodels
   (package
     (name "kitemmodels")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1340,7 +1340,7 @@ of applications that follow the Kirigami Human Interface Guidelines.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1hiy4z3xc4a01pkvq0h3v0ipm6whfb142rv9dqqw4icqyxvdyqpg"))))
+                "09wpjnpmi45v7cjhbcqzr6ms5yqf6j9106k9ji54dwhdvr3vydk6"))))
     (build-system qt-build-system)
     ;; As required by itemmodelsplugin.qmltypes.
     (propagated-inputs
