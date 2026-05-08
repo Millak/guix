@@ -10786,7 +10786,7 @@ of other R packages who wish to make use of HTSlib.")
                              r-scales
                              r-uwot))
     (native-inputs
-     (list r-circlize r-complexheatmap r-knitr r-testthat r-viridis))
+     (list r-circlize r-complexheatmap r-cowplot r-knitr r-testthat r-viridis))
     (home-page "https://github.com/welch-lab/liger")
     (synopsis "Linked inference of genomic experimental relationships")
     (description
