@@ -1,0 +1,28 @@
+From 8d566618e7db92c10882ee87d361907210b21865 Mon Sep 17 00:00:00 2001
+From: Rodion Goritskov <rodion@goritskov.com>
+Date: Wed, 19 Aug 2026 23:51:26 +0200
+Subject: [PATCH] Qt < 6.10 compatibility fix
+
+Dolphin has minimal Qt version 6.4 specified in CMakeLists.txt, but doesn't build with Qt < 6.10
+Filed a bug upstream https://bugs.kde.org/show_bug.cgi?id=524475
+
+---
+ src/settings/interface/panelsettingspage.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/settings/interface/panelsettingspage.cpp b/src/settings/interface/panelsettingspage.cpp
+index c564e97fc..a42b9e9a5 100644
+--- a/src/settings/interface/panelsettingspage.cpp
++++ b/src/settings/interface/panelsettingspage.cpp
+@@ -27,7 +27,7 @@ PanelSettingsPage::PanelSettingsPage(QWidget *parent)
+ 
+ {
+     QVBoxLayout *layout = new QVBoxLayout(this);
+-    layout->setVerticalSizeConstraint(QLayout::SetFixedSize);
++    layout->setSizeConstraint(QLayout::SetFixedSize);
+ 
+     QFormLayout *topLayout = new QFormLayout();
+     layout->addLayout(topLayout);
+-- 
+2.54.0
+

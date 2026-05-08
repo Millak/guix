@@ -1231,6 +1231,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/doc++-segfault-fix.patch			\
   %D%/packages/patches/dolphin-emu-unbundle-tinygltf.patch      \
   %D%/packages/patches/dolphin-emu-unbundle-watcher.patch       \
+  %D%/packages/patches/dolphin-qt-6.9-compatibility-fix.patch	\
   %D%/packages/patches/dovecot-opensslv3.patch			\
   %D%/packages/patches/dovecot-trees-support-dovecot-2.3.patch	\
   %D%/packages/patches/dstat-fix-crash-when-specifying-delay.patch	\

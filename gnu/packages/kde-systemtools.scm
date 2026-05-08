@@ -91,14 +91,15 @@ This package contains GUI widgets for baloo.")
 (define-public dolphin
   (package
     (name "dolphin")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dolphin-" version ".tar.xz"))
        (sha256
-        (base32 "0fws10g06bm75gs32ch9cw2s5yxwvspm6zxvk3axgnbnq1ydwqcr"))))
+        (base32 "0msgkvnq63k77zmspyf8pjfwzpfxiyqxyx5azs9g6iby5wcsakds"))
+       (patches (search-patches "dolphin-qt-6.9-compatibility-fix.patch"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list kio))
