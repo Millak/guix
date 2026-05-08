@@ -1906,7 +1906,7 @@ which are used in DBus communication.")
 (define-public prison
   (package
     (name "prison")
-    (version "6.23.0")
+    (version "6.24.0")
     (source
      (origin
        (method url-fetch)
@@ -1914,7 +1914,7 @@ which are used in DBus communication.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0dh2105m0cz7sv7s50mv7w0yws88d1s8cadrs5gni6zk95v9234x"))))
+        (base32 "0d6dwkfxf4lpn9l0snclb24pj70is15dc8hz9jb5nh0fzm8jpsir"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list qtdeclarative)) ;required by the QML modules
