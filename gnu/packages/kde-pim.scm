@@ -828,14 +828,14 @@ CalDAV server.")
 (define-public kaccounts-integration
   (package
     (name "kaccounts-integration")
-    (version "25.12.3")
+    (version "26.04.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1dn3izdas01b8q7inb8z4m7dildjhn4294iwrhrgfn8lrbjhmhki"))))
+                "0ln3qr400bpassc79xnpwnjdqfgmdd75mf0ghgf950npxaf0fjh1"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list kcoreaddons libaccounts-qt6 signond-qt6))
