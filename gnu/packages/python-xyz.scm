@@ -35853,6 +35853,34 @@ for persistent data structures.  It was written initially to support replacing
 generator for Python.")
       (license license:expat))))
 
+(define-public python-misc-utils
+  (package
+    (name "python-misc-utils")
+    (version "0.28")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/davidel/py_misc_utils")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zk3lr9xviqqsvag0is91p2f70w8qlmvk25pp2xprrh30fhxfa9g"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f        ; see https://github.com/davidel/py_misc_utils/issues/1
+      #:test-backend #~'custom
+      #:test-flags #~(list "test/test_runner.py")))
+    (propagated-inputs
+     (list python-numpy python-pandas python-psutil python-pyyaml))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/davidel/py_misc_utils")
+    (synopsis "Collection of Python utilities")
+    (description "This package provides a collection of Python miscellaneous
+utility tools mainly used by other projects of the same author.")
+    (license license:asl2.0)))
+
 (define-public python-misskey
   (package
     (name "python-misskey")
