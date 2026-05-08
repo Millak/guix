@@ -114,14 +114,14 @@ opening hours expressions.")
 (define-public kosmindoormap
   (package
     (name "kosmindoormap")
-    (version "25.12.3")
+    (version "26.04.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "06rklrm6gv5jlngigpn8rrk7whb7md24v89j4xr3zgczqaclr9hx"))))
+                "0rcp7wk8yim07q3yzr4xs082rx1vpazy09ba2j244nkajls4w4bp"))))
     (build-system cmake-build-system)
     ;; As required by the QML modules.
     (propagated-inputs
