@@ -4735,54 +4735,72 @@ savings are consistently > 5x.")
 (define-public python-libensemble
   (package
     (name "python-libensemble")
-    (version "1.4.2")
+    (version "1.6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "libensemble" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Libensemble/libensemble")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0qxb0sn624jaxjxg2ayd65zaiq1p043w3kk55w8r6drkjiar70yj"))))
+        (base32 "1381xnhf8mrpbkhzaibqf0k8rmvb0bsjjfv0wjrf052yv1jzjimx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 180 passed, 13 skipped
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-psutil
-            (lambda _
-              (substitute* "setup.py"
-                (("psutil>=5.9.4") "psutil>=5.9.2"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                ;; These files require MPI and call subprocesses.
-                (delete-file
-                 "libensemble/tests/unit_tests/test_executor.py")
-                (delete-file
-                 "libensemble/tests/unit_tests/test_executor_gpus.py")
-                ;; This file has one failing MPI test but since tests run from
-                ;; a shell script, they can't be disabled individually.
-                ;; Failing test: 'test_ensemble_prevent_comms_overwrite'
-                (delete-file "libensemble/tests/unit_tests/test_ensemble.py")
-                (setenv "TERM" "xterm")
-                ;; A very bad way to skip another MPI test.
-                (substitute* "libensemble/tests/run-tests.sh"
-                  (("export UNIT_TEST_MPI_SUBDIR=.*")
-                   "export UNIT_TEST_MPI_SUBDIR=''"))
-                ;; Run only unit tests, regression tests require MPI.
-                (invoke "bash" "libensemble/tests/run-tests.sh" "-u")))))))
-    (native-inputs (list ncurses
-                         python-mock
-                         python-mpi4py
-                         python-pytest
-                         python-pytest-timeout
-                         python-setuptools
-                         python-wheel))
-    (propagated-inputs (list python-mpmath
-                             python-numpy
-                             python-psutil
-                             python-pydantic
-                             python-pyyaml
-                             python-tomli))
+                (substitute* '("libensemble/tests/unit_tests/test_executor.py"
+                               "libensemble/tests/unit_tests/test_resources.py")
+                  (((string-join
+                     ;; Tests expecting running MPI.
+                     (list "(test_finish_and_kill"
+                           "test_futures_interface"
+                           "test_futures_interface_cancel"
+                           "test_get_local_nodelist_.*_not_in_list"
+                           "test_get_local_resources_dedicated_mode"
+                           "test_kill_on_file"
+                           "test_kill_on_timeout"
+                           "test_kill_on_timeout_polling_loop_method"
+                           "test_launch_and_poll"
+                           "test_launch_and_poll_multitasks"
+                           "test_launch_and_wait"
+                           "test_launch_and_wait_no_platform"
+                           "test_launch_and_wait_timeout"
+                           "test_launch_as_gen"
+                           "test_launch_wait_on_start"
+                           "test_machinefile_from_resources"
+                           "test_procs_and_machinefile_logic"
+                           "test_wresources_set_gpus"
+                           "test_wresources_set_gpus_by_platform"
+                           "test_wresources_set_gpus_by_platform_gpu_tiles"
+                           "test_wresources_set_gpus_x2"
+                           "test_wresources_set_limit_gpus"
+                           "test_wresources_set_no_gpus)")
+                     "|") all)
+                   (string-append "__off_" all)))
+                (invoke "python" "libensemble/tests/run_tests.py" "-u")))))))
+    (native-inputs
+     (list openmpi
+           python-mock
+           python-mpi4py
+           python-pytest
+           python-pytest-cov    ;custom test config
+           python-pytest-timeout
+           python-rich
+           python-setuptools))
+    (propagated-inputs
+     (list python-gest-api
+           python-mpmath
+           python-numpy
+           python-psutil
+           python-pydantic
+           python-pyyaml
+           python-tomli))
     (home-page "https://github.com/Libensemble/libensemble")
     (synopsis "Toolkit for dynamic ensembles of calculations")
     (description "@code{libensemble} is a complete toolkit for dynamic
