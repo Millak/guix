@@ -1739,14 +1739,14 @@ This package is part of the KDE games module.")
 (define-public kreversi
   (package
     (name "kreversi")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kreversi-" version ".tar.xz"))
        (sha256
-        (base32 "11vnz2yikbvi3dgigs1h2069mb1ydwwpb7j9lqr1dvba1sdixfrd"))))
+        (base32 "036a6s1q2szzh1ryyk4wfm11i0kkb47v3w1ffz06p1fwwsdjqmpz"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
