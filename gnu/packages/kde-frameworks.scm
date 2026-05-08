@@ -2772,7 +2772,7 @@ covers feedback and persistent events.")
 (define-public kpackage
   (package
     (name "kpackage")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2781,7 +2781,7 @@ covers feedback and persistent events.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1dkzq7zn10v5qx75ybbi8p8bqaxnqxkp666my7f85hvkgnga8kfd"))
+                "0x607kz7ig8a6qlwbpg305klf7654x08z530hxbghr57c5gw7q2h"))
               (modules '((guix build utils)))
               ;; Allow following paths or symlinks outside this package.
               (snippet
