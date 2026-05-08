@@ -176,17 +176,16 @@ multi-floor indoor maps.")
 (define-public akonadi
   (package
     (name "akonadi")
-    (version "25.12.3")
+    (version "26.04.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/akonadi-" version ".tar.xz"))
               (sha256
                (base32
-                "0ah6f0d9jm6ipbkwh753by90lp09gmw6pp56svs00zsl35icm138"))
+                "0fj5npjz20mm8b037j3a152ngm5prf6766ghlx59y87lzcdnfphk"))
               (patches (search-patches "akonadi-paths.patch"
-                                       "akonadi-timestamps.patch"
-                                       "akonadi-not-relocatable.patch"))))
+                                       "akonadi-timestamps.patch"))))
     (build-system qt-build-system)
     (native-inputs
      (list dbus
@@ -203,7 +202,6 @@ multi-floor indoor maps.")
            kio
            kitemviews
            kwidgetsaddons
-           kwindowsystem
            libxml2
            libxslt
            ;; Do NOT add mysql or postgresql to the inputs. Otherwise the binaries
