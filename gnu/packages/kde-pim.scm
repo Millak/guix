@@ -2455,14 +2455,14 @@ unnecessary network operations.")
 (define-public kpimtextedit
   (package
     (name "kpimtextedit")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kpimtextedit-" version ".tar.xz"))
        (sha256
-        (base32 "1idr8w7dqc90n04q022xspkx9wzgl0s515zjcf7rismd0gbms3qh"))))
+        (base32 "10h5z0ylpkhaba4czx0qmqcizj1slz7qcrn3kvhv70lw0dhwqw16"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list ktextaddons)) ;required by KPim6TextEditConfig.cmake
