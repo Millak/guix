@@ -2011,7 +2011,7 @@ feel.")
 (define-public solid
   (package
     (name "solid")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2020,7 +2020,7 @@ feel.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1k502z9h0czx03kvby15ky3pzklgfrf4rwyasgmlkq686bm051a4"))))
+                "1zak58rkwm9m0zw2ag29g6q894vccq5hfyc8j7cwvzrjzw46jl1g"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list qtdeclarative)) ;required by sonnetquickplugin.qmltypes
