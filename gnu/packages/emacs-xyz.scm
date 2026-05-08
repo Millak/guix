@@ -42007,7 +42007,7 @@ Lisp's (relatively new) EIEIO object oriented libraries.")
 (define-public emacs-keymap-popup
   (package
     (name "emacs-keymap-popup")
-    (version "0.2.6")
+    (version "0.2.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -42016,13 +42016,13 @@ Lisp's (relatively new) EIEIO object oriented libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0p0rj46yqs0ns4d0fmbx8y5najhfrp7959bsp8xg5vi64sd35nj2"))))
+                "1p48nnzf6m4r5jg3qxp7cv78gfwz521zi4zq0d54jmjwyszjjw1z"))))
     (build-system emacs-build-system)
     (arguments
      (list #:tests? #f))            ;tests need a live display read-loop
     (home-page "https://codeberg.org/thanosapollo/emacs-keymap-popup")
     (synopsis "Elisp library to create key-driven popup menus")
-    (description "This package provides @code{keyboard-popup-define}, a macro
+    (description "This package provides @code{keymap-popup-define}, a macro
 to define a keymap along with popup data and documentation in one place.  It
 is similar to the @code{transient} Elisp library, but aims to be simpler to
 use.  Among its features are:
