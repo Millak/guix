@@ -5138,32 +5138,60 @@ when writing automated tests in Python.")
   ;; only.
   (package
     (name "python-tox")
-    (version "4.23.2")
+    (version "4.27.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "tox" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tox-dev/tox")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0b2a5wrjwryjzg58v1mwzx3wn7pr2wwk7z2cwy16xpsmwl05w1w6"))))
+        (base32 "1z8bc37sbzzrssw426v5xr94ywk5l3i6dy4hfppv6y9mihmr8yk7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1867 passed, 11 skipped, 2 warnings
       #:test-flags
-      #~(list "-k" (string-join
-                    ;; These freeze the test suite
-                    (list "not test_parallel"
-                          "test_parallel_live"
-                          ;; Needs internet access
-                          "test_build_wheel_external"
-                          "test_run_installpkg_targz"
-                          "test_python_generate_hash_seed"
-                          ;; XXX Tries to call python-wrapper-3.10.7/bin/tox
-                          "test_call_as_exe"
-                          ;; assert 'covdefaults>=1.2; python_version == "2.7"
-                          ;; or python_version == "3.11"' == 'sphinx>=3'
-                          "test_load_dependency_many_extra")
-                    " and not "))))
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              #$@(map (lambda (ls) (string-append "--deselect=tests/"
+                                                  (string-join ls "")))
+                      '(("plugin/test_plugin.py"
+                         "::test_plugin_hooks_and_order")
+                        ("session/cmd/test_devenv.py"
+                         "::test_devenv_fail_multiple_target")
+                        ("session/cmd/test_parallel.py"
+                         "::test_keyboard_interrupt")
+                        ("session/cmd/test_sequential.py"
+                         "::test_skip_pkg_install")
+                        ("session/cmd/test_show_config.py"
+                         "::test_show_config_cli_flag")
+                        ("session/cmd/test_show_config.py"
+                         "::test_show_config_pkg_env_once")
+                        ("session/cmd/test_show_config.py"
+                         "::test_show_config_pkg_env_skip")
+                        ("session/cmd/test_show_config.py"
+                         "::test_show_config_py_ver_impl_constants")
+                        ("test_call_modes.py"
+                         "::test_call_as_exe")
+                        ("tox_env/python/test_python_api.py"
+                         "::test_python_disable_hash_seed")
+                        ("tox_env/python/test_python_api.py"
+                         "::test_python_generate_hash_seed")
+                        ("tox_env/python/test_python_api.py"
+                         "::test_python_hash_seed_from_env_and_disable")
+                        ("tox_env/python/test_python_api.py"
+                         "::test_python_hash_seed_from_env_and_override")
+                        ("tox_env/python/test_python_api.py"
+                         "::test_python_keep_hash_seed")
+                        ("tox_env/python/test_python_api.py"
+                         "::test_python_set_hash_seed")
+                        ("tox_env/python/virtual_env/package/"
+                         "test_package_cmd_builder.py"
+                         "::test_build_wheel_external")
+                        ("tox_env/python/virtual_env/package/"
+                         "test_package_cmd_builder.py"
+                         "::test_run_installpkg_targz"))))))
     (propagated-inputs
      (list python-cachetools
            python-chardet
@@ -5173,11 +5201,10 @@ when writing automated tests in Python.")
            python-platformdirs
            python-pluggy
            python-pyproject-api
-           python-tomli
-           python-typing-extensions
            python-virtualenv))
     (native-inputs
      (list python-devpi-process
+           python-docutils
            python-flaky
            python-hatch-vcs
            python-hatchling
@@ -5186,8 +5213,7 @@ when writing automated tests in Python.")
            python-pytest-mock
            python-pytest-xdist
            python-re-assert
-           python-time-machine
-           python-wheel))
+           python-time-machine))
     (home-page "https://tox.readthedocs.io")
     (synopsis "Virtualenv-based automation of test activities")
     (description "Tox is a generic virtualenv management and test command line
