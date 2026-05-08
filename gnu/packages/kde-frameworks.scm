@@ -3114,7 +3114,7 @@ using the XBEL format.")
 (define-public kcmutils
   (package
     (name "kcmutils")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3123,7 +3123,7 @@ using the XBEL format.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1y0h8bffb9f2jlrrb6x1k5z5b4r93pj572wbm5gyj7691gfgxv2l"))))
+                "12p5x0z38h6lymq8gqsgr7x4a9bxk0yssls0vp4ip8ak5c04ccw9"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list kconfigwidgets
@@ -3135,18 +3135,26 @@ using the XBEL format.")
            gettext-minimal
            qttools))
     (inputs
-     (list kio
+     (list kcolorscheme
            kcompletion
            kguiaddons
-           kiconthemes
-           kitemviews
            ki18n
-           kcolorscheme
+           kiconthemes
+           kio
+           kitemviews
            kwidgetsaddons
            kxmlgui
            qtwayland))
     (arguments
-     (list #:qtbase qtbase))
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'unrequire-qmlmodule
+                 (lambda _
+                   ;; HACK: ecm_find_qmlmodule cannot find qmlmodule on other
+                   ;; prefix, so we remove its requirement.
+                   (substitute* "CMakeLists.txt"
+                     (("(org\\.kde\\.kirigami) REQUIRED" _ keep) keep)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Utilities for KDE System Settings modules")
     (description "KCMUtils provides various classes to work with KCModules.
