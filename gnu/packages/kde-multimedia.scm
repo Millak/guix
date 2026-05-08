@@ -925,14 +925,14 @@ camera.  Use it to take pictures and make videos to share.")
 (define-public kasts
   (package
     (name "kasts")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kasts-" version ".tar.xz"))
        (sha256
-        (base32 "1l001i0hx9br9al7ik9ifrk1v1kzvlq9bpmr7rv1lyl8ll99bldm"))))
+        (base32 "1i47nkyh8s4866bg0cc0q5ai41f0z9pj0i73qm382w0ygxhl35x5"))))
     (build-system qt-build-system)
     (native-inputs (list pkg-config extra-cmake-modules))
     (inputs (list breeze-icons
