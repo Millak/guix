@@ -45932,29 +45932,28 @@ the selected region with @code{| tr -d a-z}.")
       (license license:gpl3+))))
 
 (define-public emacs-shell-pop
-  (let ((commit "4b4394037940a890a313d715d203d9ead2d156a6")
-        (revision "0"))
-    (package
-      (name "emacs-shell-pop")
-      (version (git-version "0.64" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/kyagi/shell-pop-el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0s77n6b9iw1x3dv91ybkpgy3zvqd12si7zw3lg0m2b6j1akrawsg"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/kyagi/shell-pop-el")
-      (synopsis "Utility which helps with pop up shell buffer")
-      (description
-       "This Emacs utility helps you pop up and pop out shell buffer window
+  (package
+    (name "emacs-shell-pop")
+    (version "0.70")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kyagi/shell-pop-el")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sdi7ckn3dcxy9kw7xz2b5z46fgjjn5mvwpqsmjh3qa6kqirlwmi"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
+    (home-page "https://github.com/kyagi/shell-pop-el")
+    (synopsis "Utility which helps with pop up shell buffer")
+    (description
+     "This Emacs utility helps you pop up and pop out shell buffer window
 easily.  Four pre-set options are: @samp{shell}, @samp{terminal},
 @samp{ansi-term}, and @samp{eshell}.  You can also set your custom shell if
 you use some other configuration.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-shell-here
   (let ((commit "eeb437ff26d62a5009046b1b3b4503b768e3131a")
