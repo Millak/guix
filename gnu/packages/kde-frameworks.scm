@@ -369,7 +369,7 @@ cards.")
 (define-public attica
   (package
     (name "attica")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -378,7 +378,7 @@ cards.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0mzkm3w4lr5dsrd6nw41kgpcs5x1bfl2hjj4hakcm7zx4gg5xy6n"))))
+                "1jxb22qn6vm966y38v0b9g1yynlrkgqf614ippykn2dsiwa7gsk7"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules))
