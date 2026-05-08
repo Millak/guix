@@ -107,7 +107,7 @@
 (define-public extra-cmake-modules
   (package
     (name "extra-cmake-modules")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -116,7 +116,7 @@
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "152112hi1abkm38cn1z5zqfqn9xf32dlp9lm7rfkm6nhcm3x78nv"))))
+                "18z6l65n6zhaqsyg0s61j87mkl7yykfj17am0af0k3jqfvhzgwwf"))))
     (build-system cmake-build-system)
     (native-inputs
      ;; Add test dependency, except on armhf where building it is too
