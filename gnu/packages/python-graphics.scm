@@ -587,6 +587,12 @@ music." )
               "--deselect=tests/unit/media/test_listener.py::test_openal_listener")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-python-3.12-incompatibility
+            ;; The only user of pyglet@1 is printrun, see:
+            ;; <https://github.com/kliment/Printrun/issues/1468>.
+            (lambda _
+              (substitute* "tests/integration/test_toplevel_imports.py"
+                (("import imp") ""))))
           (add-after 'unpack 'patch-lib-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* (list "pyglet/font/fontconfig.py"
