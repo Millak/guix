@@ -818,7 +818,7 @@ Winamp/XMMS skins.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.2.14")
+    (version "1.2.19")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -827,17 +827,7 @@ Winamp/XMMS skins.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sli0wm1l34ca8y6m3rfa604v1bbzbaiala13kzndcqqwnrsh66f"))
-              (modules '((guix build utils)))
-              ;; Unbundle and disable discord-rpc.
-              (snippet
-               '(begin
-                  (delete-file-recursively "3rdparty")
-                  (substitute* "CMakeLists.txt"
-                    ((".*3rdparty\\/discord-rpc.*") "")
-                    ((".*src/discord.*") "")
-                    ((".*:discord-rpc.*") "")
-                    (("DISCORD_RPC ON") "DISCORD_RPC OFF"))))))
+                "1bxrqqi2xi057v9qaz73dl44jyyhpqvi51pjs6pzprfiqgy1gi11"))))
     (build-system qt-build-system)
     (arguments
      (list
