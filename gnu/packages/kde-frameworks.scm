@@ -2192,7 +2192,7 @@ with other frameworks.")
 (define-public kauth
   (package
     (name "kauth")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2201,7 +2201,7 @@ with other frameworks.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "16jyxfzzifwv8y6mpqm6li50qn570pah8rd28v1jcnpcpyf6j036"))
+                "0k1qdzpb46zmjf10gcnwprfdgqw7wjdipn3dz0vb69154xz6d5pm"))
               (modules '((guix build utils)))
               ;; Make packages using kauth put their policy files and helpers
               ;; into their own prefix.
