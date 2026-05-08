@@ -47,6 +47,7 @@
 ;;; Copyright © 2026 John Dawson <dawson.john.andrew@gmail.com>
 ;;; Copyright © 2026 Ivan Vilata i Balaguer <ivan@selidor.net>
 ;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2026 Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,6 +66,7 @@
 
 (define-module (gnu packages password-utils)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -91,6 +93,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages dotnet)
@@ -133,6 +136,7 @@
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages security-token)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages suckless)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls)
@@ -775,6 +779,76 @@ age, and PGP.")
     (description "This package provides a simple command-line tool to
 convert SSH @code{ed25519} keys to @code{age} keys.")
     (license license:expat)))
+
+(define-public vaultwarden
+  (package
+    (name "vaultwarden")
+    (version "1.36.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dani-garcia/vaultwarden")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lipk99gqfivg95yqg80b8q0a220vwn9nmq0f4syawxnhvn9zkcd"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:features '(list "sqlite_system" "s3" "postgresql")
+      ;; The build.rs script mandates the activation of a DB backend.
+      #:cargo-test-flags
+      '(list
+        "--features"
+        "sqlite_system,s3,postgresql"
+        "--")
+      #:cargo-install-paths ''(".")))
+    (inputs
+     (cons* openssl
+            postgresql
+            sqlite
+            `(,zstd "lib")
+            (cargo-inputs 'vaultwarden)))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/dani-garcia/vaultwarden")
+    (synopsis
+     "Alternative implementation of the Bitwarden server API")
+    (description
+     "Vaultwarden is an unofficial Bitwarden server implementation written in
+Rust.  It is compatible with the official Bitwarden clients, and is ideal for
+self-hosted deployments where running the official resource-heavy service is
+undesirable.
+
+Supported features are:
+@itemize
+@item Personal vault support
+@item Organization vault support
+@item Groups
+@item Event Logs
+@item Password sharing and access control
+@item Collections
+@item File attachments
+@item Folders
+@item Favorites
+@item Website icons
+@item Bitwarden Authenticator (TOTP)
+@item Bitwarden Send
+@item Emergency Access
+@item Trash (soft delete, you can configure the days for automatic deletion)
+@item Master password re-prompt
+@item Personal API key
+@item Two-step login via email, Duo, YubiKey, and FIDO2 WebAuthn
+@item Username generator integration
+@item Directory Connector support
+@item Account Recovery (this requires mail to be enabled)
+@item Live sync (WebSocket only) for desktop/browser clients/extensions
+@item Live sync (push notifications) for mobile clients (Android/iOS)
+@item Single Sign-On (SSO)
+@end itemize
+")
+    (license license:agpl3)))
 
 (define-public yapet
   (package
