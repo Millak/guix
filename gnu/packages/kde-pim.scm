@@ -2696,7 +2696,7 @@ KDE using certificate-based crypto.")
 (define-public libksieve
   (package
     (name "libksieve")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
@@ -2704,7 +2704,7 @@ KDE using certificate-based crypto.")
                            "/src/libksieve-" version ".tar.xz"))
        (sha256
         (base32
-	 "039yk6jzw9nxf6pcs6g4cnz2nvmxz0rcqni3q72cdwk0z86ydzad"))))
+	 "09gghzy7a77xmcr0gy04sh7h1ym8zv4qjvi0pylap8phgnm9wqb3"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list ksyntaxhighlighting)) ;required by KPim6KManageSieveConfig.cmake
