@@ -91,14 +91,14 @@ charts.")
 (define-public analitza
   (package
     (name "analitza")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/analitza-" version ".tar.xz"))
        (sha256
-        (base32 "1dzx7ff4bx1ma3am7928y3qp99lxxd1zk4czfpcm66fn2q8w02sg"))))
+        (base32 "1rn1w6spz776zl23ri5fdk499f7ihldkh3iv03cimda1l26h6v61"))))
     ;; As required by the QML modules.
     (propagated-inputs (list qtdeclarative))
     (native-inputs (list extra-cmake-modules qttools))
