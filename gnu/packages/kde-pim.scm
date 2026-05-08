@@ -2116,14 +2116,14 @@ application \"Parts\" to be embedded as a Kontact component (or plugin).")
 (define-public kalarm
   (package
     (name "kalarm")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kalarm-" version ".tar.xz"))
        (sha256
-        (base32 "0qi7yw80p6wcksj7pfkx5zdkw8mplygfnahnk5wbjmvg47wi98ib"))))
+        (base32 "173f0gsvfnsyc0dyzfn0b207xxp7a0zk7a2r851063rqicwl9ha5"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
