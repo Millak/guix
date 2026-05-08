@@ -1370,14 +1370,14 @@ test and recovery certificates.")
 (define-public kidentitymanagement
   (package
     (name "kidentitymanagement")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kidentitymanagement-" version ".tar.xz"))
        (sha256
-        (base32 "11wyshrwd4b62ybcf2g3csszz9hxrsrcgmqcgdhmxnvgplilrchq"))))
+        (base32 "142mzv5r3fss4939j91lnc8av3nkcl1wg43zsb4lfkmk5dda74sf"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list ;; As required by KPim6IdentityManagementCoreConfig.cmake.
