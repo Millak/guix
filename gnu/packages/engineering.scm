@@ -1361,24 +1361,33 @@ determines the frequencies, decay constants, amplitudes, and phases of those sin
 (define-public guile-libctl
   (package
     (name "guile-libctl")
-    (version "4.2.0")
+    (version "4.6.0")
     (source (origin
-              (method url-fetch)
-              (uri
-               (string-append
-                "https://github.com/NanoComp/libctl/releases/download/v"
-                version "/libctl-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/NanoComp/libctl")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0x8r56lpfq83kfbq28vr25icl19xpfd6fjrxzcpdmv30l9pash83"))))
+                "1lsch1qc5w9yyprrvawfwbnz7na4qah0p752kxxv144xp8yq98x7"))))
     (build-system gnu-build-system)
     (arguments
-      `(#:configure-flags '("--enable-shared")))
+     (list #:configure-flags
+           #~(list "--enable-shared")
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Avoid bin/sh shebang in configure.
+               (add-before 'bootstrap 'no-/bin/sh
+                 (lambda _ (delete-file "autogen.sh"))))))
     (native-inputs
-     `(("fortran" ,gfortran)))
+     (list autoconf
+           automake
+           libtool
+           gfortran))
     (inputs
-     (list guile-2.2))
-    (home-page "http://ab-initio.mit.edu/wiki/index.php/Libctl")
+     (list guile-3.0))
+    (home-page "https://libctl.readthedocs.io/en/latest/")
     (synopsis "Flexible control files implementation for scientific simulations")
     (description
      "Libctl is a Guile-based library implementing flexible control files
