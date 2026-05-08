@@ -337,14 +337,14 @@ collection and item views.")
 (define-public akonadi-contacts
   (package
     (name "akonadi-contacts")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/akonadi-contacts-" version ".tar.xz"))
        (sha256
-        (base32 "13w9a31abkpr45vpcz783xhgi4l4hwv9dnnfxarjppmzlqcv8nsp"))))
+        (base32 "0851vb1w40j5ich0wn39lc5bwp4gsrx4gd3mj4765rl40msa4fz6"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list akonadi kcontacts grantleetheme))
