@@ -53400,7 +53400,7 @@ specifying the command to run.
 @lisp
 (use-modules (gnu) (guix)
              (gnu home services shepherd)
-             (gnu packages idutils))
+             (gnu packages code))
 
 (define idutils-service
   ;; Index my 'doc' directory everyday at 12:15PM and 7:15PM.
