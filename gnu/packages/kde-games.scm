@@ -485,14 +485,14 @@ This package is part of the KDE games module.")
 (define-public kbreakout
   (package
     (name "kbreakout")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kbreakout-" version ".tar.xz"))
        (sha256
-        (base32 "0aa0acsv62q7cn2r3qb3azkzpscfs8wy62sv4hqfh8fmjgkld4yw"))))
+        (base32 "1mn6dfn2ggmnhc8nz4bzwwfbcf9ry2qmmvyz532z4023z6d2jrq1"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
