@@ -2047,14 +2047,14 @@ kwebengineviewer.")
 (define-public kmime
   (package
     (name "kmime")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmime-" version ".tar.xz"))
        (sha256
-        (base32 "0vc28fgk53b3kdrm42znp03wwan3hnbw80g1y2iwkzn3r81wdqzw"))))
+        (base32 "0sif8wbj1vk31skrpw7fd64wb0rf6i9ywzjfzkrgh447q9xnlqbr"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list kcodecs)) ;required by KPim6MimeConfig.cmake
