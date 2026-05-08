@@ -2303,14 +2303,14 @@ pass files.")
 (define-public kpimcommon
   (package
     (name "kpimcommon")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/pimcommon-" version ".tar.xz"))
        (sha256
-        (base32 "0bsbkwznbxn43qab5vwd8z4csss22d1pgr0ribdwc8sf569y55k4"))))
+        (base32 "0v8jg1bbxwkd9h6lbvnm5h4hl5cri3401qmj0anqgl6qcrvhklkz"))))
     (properties `((upstream-name . "pimcommon")))
     (build-system qt-build-system)
     (native-inputs
@@ -2331,7 +2331,6 @@ pass files.")
            kiconthemes
            kirigami ;; run-time dependency
            kitemmodels
-           kitemviews
            kjobwidgets
            kldap
            kmime
