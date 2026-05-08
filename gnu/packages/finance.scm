@@ -235,14 +235,15 @@ line client and a client based on Qt.")
                 "04kh88xklyq5w2x0zykfas6ssxajp1z33c2899fq342jnfr510b6"))))
     (arguments
      (substitute-keyword-arguments arguments
-       ((#:qtbase original-flags #f)
-        qtbase-5)))
+       ((#:configure-flags original-flags '())
+        #~(cons "-DWITH_QT_VERSION=6"
+                #$original-flags))))
     (native-inputs
      (modify-inputs native-inputs
        (delete qttools)
        (append imagemagick
                librsvg
-               qttools-5)))
+               qttools)))
     (home-page "https://bitcoinknots.org")
     (synopsis "Enhanced Bitcoin node/wallet based on Bitcoin Core")
     (description "Bitcoin Knots connects to the Bitcoin peer-to-peer network
