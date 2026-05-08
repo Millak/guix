@@ -14046,33 +14046,20 @@ of scRNA-seq data.")
 (define-public r-misha
   (package
     (name "r-misha")
-    (version "4.1.0")
+    (version "5.6.23")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/tanaylab/misha")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0bgivx3lzjh3173jsfrhb5kvhjsn53br0n4hmyx7i3dwy2cnnp2p"))
-       ;; Delete bundled executable.
-       (snippet
-        '(delete-file "exec/bigWigToWig"))))
+         "1k973j04iq02dy4f7qgi3cmp3rcx5yinyx0m7vyag54rqanird8x"))))
     (build-system r-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'do-not-use-bundled-bigWigToWig
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "R/misha.R"
-               (("get\\(\".GLIBDIR\"\\), \"/exec/bigWigToWig")
-                (string-append "\""
-                               (assoc-ref inputs "kentutils")
-                               "/bin/bigWigToWig"))))))))
-    (inputs
-     (list kentutils))
+    (propagated-inputs (list r-curl r-digest r-magrittr r-ps r-yaml))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/tanaylab/misha")
     (synopsis "Toolkit for analysis of genomic data")
     (description "This package is intended to help users to efficiently
