@@ -892,14 +892,14 @@ KAccounts system.")
 (define-public kcalendarsupport
   (package
     (name "kcalendarsupport")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/calendarsupport-" version ".tar.xz"))
        (sha256
-        (base32 "18bhijhlr94rwvllfaa3djn05nb5j2wlwcbsjjkxpw1j59qqams5"))))
+        (base32 "1fgdrjrjm1hg0sl776n97dv7358ygl5wwkr7zp9jj7z7zy9qx4rk"))))
     (properties `((upstream-name . "calendarsupport")))
     (build-system qt-build-system)
     (native-inputs
