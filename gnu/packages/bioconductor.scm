@@ -23360,29 +23360,6 @@ and parameters of which are trained on a set of aligned reads and a reference
 genome sequence.")
     (license license:lgpl3)))
 
-(define-public r-reqon
-  (package
-    (name "r-reqon")
-    (version "1.48.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "ReQON" version))
-       (sha256
-        (base32
-         "0w28b3ma8r8rshijdm5jj1z64v91my7hcvw18r9pdwjprh05bw0g"))))
-    (properties `((upstream-name . "ReQON")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-rjava r-rsamtools r-seqbias))
-    (home-page "https://bioconductor.org/packages/ReQON/")
-    (synopsis "Recalibrating quality of nucleotides")
-    (description
-     "This package provides an implementation of an algorithm for
-recalibrating the base quality scores for aligned sequencing data in BAM
-format.")
-    (license license:gpl2)))
-
 (define-public r-wavcluster
   (package
     (name "r-wavcluster")
