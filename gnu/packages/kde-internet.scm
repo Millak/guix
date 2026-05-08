@@ -111,7 +111,7 @@ KDSoap.")
   (package
     (name "qxmpp")
     ;; kaidan requires a precise version
-    (version "1.14.3")
+    (version "1.15.1")
     (source
      (origin
        (method git-fetch)
@@ -120,7 +120,7 @@ KDSoap.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gic4pbd2jhw7s89mf1bb4pglb891gb12d44f8wbic7ynjbczd5y"))))
+        (base32 "1shy183868wlaka4s092nlbsga1950hzk21wpj5xil48088p6iry"))))
     (build-system qt-build-system)
     (arguments
      `(#:qtbase ,qtbase
@@ -139,6 +139,7 @@ KDSoap.")
      (list
        gstreamer
        libomemo-c
+       openssl
        qca-qt6
        qt5compat))
     (home-page "https://invent.kde.org/libraries/qxmpp")
