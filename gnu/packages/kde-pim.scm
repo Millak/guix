@@ -1935,14 +1935,14 @@ mail transport.")
 (define-public kmbox
   (package
     (name "kmbox")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmbox-" version ".tar.xz"))
        (sha256
-        (base32 "14zzabwwx38vv4qnam4b3j969114wph52lr1anl4sdw6asw8i3h8"))))
+        (base32 "1k5w6cr5hqyg5ql9k6gjrjf64c99088hhwacpqbfq5cyhmvwci9z"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list kmime)) ;required by KPim6MboxConfig.cmake
