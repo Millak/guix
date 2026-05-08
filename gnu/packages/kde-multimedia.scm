@@ -872,14 +872,14 @@ autoloading of subtitle files for use while playing video.")
 (define-public kamoso
   (package
     (name "kamoso")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kamoso-" version ".tar.xz"))
        (sha256
-        (base32 "0r5qivz7fdbp8rhhdvqz5vn8j79r5a61xxwh9ycjc0wsjxlsc6kq"))))
+        (base32 "01b769wihi29gf6jsw71m7xjljqf2c79yq3vnsfrrn24rcnwsfmp"))))
     (build-system qt-build-system)
     (native-inputs
      (list
