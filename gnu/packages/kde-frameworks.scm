@@ -1078,7 +1078,7 @@ infrastructure.")
 (define-public kguiaddons
   (package
     (name "kguiaddons")
-    (version "6.23.1")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1087,7 +1087,7 @@ infrastructure.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1ypvvb707piyviq9as1dr3fjdabdk1dscplpv9a668db8n4whab5"))))
+                "1bsy753q7nsnmvm8abyh1758i0pm6jaxqplmnvhngg4wfdb4pr65"))))
     (build-system qt-build-system)
     ;; As required by kguiaddonsqml.qmltypes.
     (propagated-inputs (list qtdeclarative))
