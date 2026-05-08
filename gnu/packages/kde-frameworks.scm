@@ -3985,7 +3985,7 @@ and desktop experiences.")
 (define-public knewstuff
   (package
     (name "knewstuff")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3994,7 +3994,7 @@ and desktop experiences.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1595rrsydg0r76k853v2d5gapfs5xls6rvdcxan99x7i3nvvvx62"))))
+                "019aisqf9njb33v292k32bzpqbqv8h0k4i1i041ndx6ib3hz8ncp"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list ;; Required by KF6NewStuffCoreConfig.cmake.
