@@ -235,14 +235,14 @@ such as addition, trigonometric functions or derivatives.")
 (define-public ktouch
   (package
     (name "ktouch")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/ktouch-" version ".tar.xz"))
        (sha256
-        (base32 "1467905b8l5dnml5bdm0zg9agi3knprkmg16r7k1ncljqkq5xvc8"))))
+        (base32 "0hd2vp8yj24aa8wa3hh2lhnsjqh4i7p65i5036h0272ciyhzp4zy"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config))
