@@ -1114,14 +1114,14 @@ Its features include:
 (define-public libkcddb
   (package
     (name "libkcddb")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkcddb-" version ".tar.xz"))
        (sha256
-        (base32 "0wyfcwdfd9xs7j67w91ay5knlpfygnyl8qyqd94h0wsi91in0j74"))))
+        (base32 "0j8r0z9hmmr6qbdlnvrhf57mz3w6mqmlrww8kzwpnip76s5bfwzs"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list kconfig)) ;as required by KCddb6Config.cmake
