@@ -19870,8 +19870,8 @@ set.")
     (name "instrain")
     ;; Git repository does not tag releases, use the latest commit from master
     ;; branch.
-    (properties '((commit . "6180be7b49a61b7e1ffe9f1489da5c6aa2ff9ac3")
-                  (revision . "0")))
+    (properties '((commit . "f172367e599851a6cb90048ae890d1bb6569063f")
+                  (revision . "1")))
     (version (git-version "1.10.0"
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
@@ -19883,18 +19883,32 @@ set.")
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1njsxjf3248121yw3q1ig6asf6b3wa5fgjfyc6dkgk6nd4ih8wni"))))
+        (base32 "12rrkcckna7k095clir9100cz6i5dn77anih6aq1blbsg4yhprnr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Tests assume that test files exist (they don't) and are located in
-      ;; the developer's home directory, see:
-      ;; <https://github.com/MrOlm/inStrain/issues/218>.
-      #:tests? #false
+      ;; tests: 10 failed, 86 passed, 15 skipped, 220 warnings
+      #:test-flags
+      #~(list #$@(map (lambda (test)
+                        (string-append "--deselect=test/tests/" test))
+                      ;; Mixture of "FileNotFoundError" and "AssertionError"
+                      ;; errors.
+                      (list "test_genes.py::test_genes_0"
+                            "test_genes.py::test_genes_1"
+                            "test_genes.py::test_genes_2"
+                            "test_genes.py::test_genes_3"
+                            "test_parse_gene_annotations.py::test_PA_2"
+                            "test_polymorpher.py::test_polymorpher_unit_0"
+                            "test_polymorpher.py::test_polymorpher_unit_3"
+                            "test_quick_profile.py::test_quick_profile_0"
+                            "test_quick_profile.py::test_quick_profile_1"
+                            "test_quick_profile.py::test_quick_profile_2")))
       #:phases
       #~(modify-phases %standard-phases
          (add-after 'unpack 'patch-relative-imports
            (lambda _
+             ;; See: <https://github.com/MrOlm/inStrain/issues/218>.
+             (mkdir "test/test_backend/")
              (substitute* (find-files "test/tests" "test_.*\\.py")
                (("from test_utils import BTO")
                 "from .test_utils import BTO")
@@ -19907,9 +19921,10 @@ set.")
          (add-after 'unpack 'relax-requirements
            (lambda _
              (substitute* "setup.py"
+               (("biopython<=1.74") "biopython")
                ((".*pytest.*") "")))))))
     (propagated-inputs
-     (list python-biopython-1.73
+     (list python-biopython
            python-h5py
            python-lmfit
            python-matplotlib
@@ -19921,7 +19936,9 @@ set.")
            python-seaborn
            python-tqdm))
     (native-inputs
-     (list python-setuptools))
+     (list python-boto3
+           python-pytest
+           python-setuptools))
     (home-page "https://github.com/MrOlm/inStrain")
     (synopsis "Calculation of strain-level metrics")
     (description
