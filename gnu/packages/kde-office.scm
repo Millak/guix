@@ -290,14 +290,14 @@ cmark processors if they are installed.")
 (define-public klevernotes
   (package
     (name "klevernotes")
-    (version "1.2.5")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/klevernotes/" version
                            "/klevernotes-" version ".tar.xz"))
        (sha256
-        (base32 "0jnnbsml29gmpbycx8b012rnzdnjfigp9d6wsaww085mql0rdf73"))))
+        (base32 "1vfx6mlxl21aahpb5jv8b0q0mwsd6a0y1rvz8z9xv1w05700pbah"))))
     (build-system qt-build-system)
     (arguments
      (list
