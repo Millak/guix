@@ -3724,7 +3724,7 @@ consumption.")
 (define-public kio
   (package
     (name "kio")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3733,7 +3733,7 @@ consumption.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "15zb6inm08k429410l7bbrb0zcs3a2df7x6sqsgs3f07y3q5k7k2"))))
+                "1i7kd12xv39zx9141298g3qdhf6vffshkp6cb3sr4kwj6yp2dglz"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list acl
