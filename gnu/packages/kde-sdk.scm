@@ -90,7 +90,7 @@ Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
 (define-public poxml
   (package
     (name "poxml")
-    (version "25.12.3")
+    (version "26.04.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -98,7 +98,7 @@ Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
                               "/src/poxml-" version ".tar.xz"))
               (sha256
                (base32
-                "0z2lacq5v8ychmgy628alcbbpwlyihizmgqn82axv9vq9c95f2gl"))))
+                "0acn5579ivvrsij4lf2c8rbxy9fbv8vx8linpcr7gnr7l2mhy2vs"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
