@@ -611,14 +611,14 @@ It provides:
 (define-public partitionmanager
   (package
     (name "partitionmanager")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/partitionmanager-" version ".tar.xz"))
        (sha256
-        (base32 "16ay9mxhia69xrfikznhylf71qlhf1rl7l4ibk7mzsg357acl3vw"))))
+        (base32 "0x5aslnflsd8jxjixh99g2w36as2ggf21mkyc2jqysrzi39jy3sb"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
