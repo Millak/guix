@@ -101,18 +101,3 @@ file, without requiring the old and new versions to both be present at the
 sending end.  The library uses a \"streaming\" design similar to that of zlib
 with the aim of allowing it to be embedded into many different applications.")
    (license license:lgpl2.1+)))
-
-(define-public librsync-0.9
-  (package
-    (inherit librsync)
-    (version "0.9.7")
-        (source (origin
-             (method url-fetch)
-            (uri (string-append "mirror://sourceforge/librsync/librsync/"
-                                version "/librsync-" version ".tar.gz"))
-             (sha256
-              (base32
-              "1mj1pj99mgf1a59q9f2mxjli2fzxpnf55233pc1klxk2arhf8cv6"))))
-    (build-system gnu-build-system)
-    (arguments '(#:configure-flags '("--enable-shared")))
-    (inputs '())))
