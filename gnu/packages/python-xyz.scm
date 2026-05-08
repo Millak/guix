@@ -1369,6 +1369,42 @@ part of @url{https://github.com/hgrecco/pint, Pint}, the Python units
 package. ")
     (license license:bsd-3)))
 
+(define-public python-gest-api
+  (package
+    (name "python-gest-api")
+    (version "0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "gest_api" version))
+       (sha256
+        (base32 "1a15glcwadq7zkp3dzrlbwj2k5xr1lad8xp9yzg8zarg0whjfwf5"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-pydantic))
+    (home-page "https://github.com/campa-consortium/gest-api")
+    (synopsis "Standardization for generators")
+    (description
+     "This package provides a standard for generating test points and
+exchanging variables, objectives, and constraints in optimization problems.
+
+It is an effort to standardize the interface of the generators in optimization
+libraries such as:
+@itemize
+@item @url{https://github.com/ChristopherMayes/Xopt, Xopt} - flexible
+high-level optimization in Python
+@item @url{https://github.com/optimas-org/optimas, optimas} - optimization at
+scale, powered by @code{libEnsemble}
+@item @url{https://github.com/Libensemble/libensemble, libEnsemble} - a Python
+toolkit for coordinating asynchronous and dynamic ensembles of calculations
+@item @url{https://github.com/radiasoft/rsopt, rsopt} - flexible configuration
+and execution of large, black-box optimization problems
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public python-grapheme
   ;; 0.6.0 has not git tag, PyPI has no tests. use the latest commit on master
   ;; branch.
