@@ -2262,7 +2262,7 @@ utilities.")
 (define-public kcompletion
   (package
     (name "kcompletion")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2271,7 +2271,7 @@ utilities.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0xp18jngxrbvf8shsakfxz9sl9y84vbslxi5g5xmygmnyl5q6p5d"))))
+                "1mbhsgg5amv76vnnms399n9hsksc0lgz5mqhfa6mbnmqvkrbipqv"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules qttools))
