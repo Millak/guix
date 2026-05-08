@@ -22330,29 +22330,20 @@ database, file, dict stores.  Cachy supports python versions 2.7+ and 3.2+.")
 (define-public python-pyproject-api
   (package
     (name "python-pyproject-api")
-    (version "1.8.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyproject_api" version))
        (sha256
-        (base32 "15l4fx1v4dqhhysxd2mcm1vn4qvrwbqmf6y2zkp36pgb5ygh9f3p"))))
+        (base32 "0c5kpg0fpqvvimzxjq2a9kdijk601393wxqwwvz4mp7b5vcg5ij0"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "-k" (string-append
-                   ;; This fails because of extraneous parentheses
-                   "not test_setuptools_prepare_metadata_for_build_wheel"
-                   ;; This fails because wheel shows up in requirements
-                   " and not test_setuptools_get_requires_for_build_wheel"))))
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
            python-pytest
            python-pytest-mock
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-packaging python-tomli))
     (home-page "https://pyproject-api.readthedocs.io/latest/")
