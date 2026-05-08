@@ -3845,6 +3845,36 @@ design.")
 to enforce it.")
     (license license:gpl3+)))
 
+(define-public python-pyxhdl
+  (package
+    (name "python-pyxhdl")
+    (version "0.53")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/davidel/pyxhdl")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16dqqhbg5q6fxlhnfcjimxv1zgziw5g46askjhfg8g2hn7i3vfal"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests/test_runner.py")))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-numpy python-misc-utils))
+    (home-page "https://github.com/davidel/pyxhdl")
+    (synopsis
+     "Python frontend for @acronym{HDL, Hardware Description Languages}")
+    (description
+     "PyXHDL replaces HDL code by Python, generating VHDL (>= 2008) and
+Verilog (SystemVerilog >= 2012) code to be used for synthesis and simulation.")
+    (license license:asl2.0)))
+
 (define-public python-vunit
   (package
     (name "python-vunit")
