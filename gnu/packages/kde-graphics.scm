@@ -98,14 +98,14 @@
 (define-public kquickimageeditor
   (package
     (name "kquickimageeditor")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/" name "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0yjl4b8ix9ffya89nq9pp1gmvdwshjslh5dw1gavda34q7hlrv8i"))))
+        (base32 "1ylrpb8znxcb4jg7hpcpdymj56pcrklnnscxdkilx0dvp45q0s5q"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
