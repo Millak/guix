@@ -1263,14 +1263,14 @@ package.")
 (define-public kgpg
   (package
     (name "kgpg")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kgpg-" version ".tar.xz"))
        (sha256
-        (base32 "12lgj8w9561hmh5fxb8fyv18s2mjjc3m2c7gg1qpg2qkl5b412ms"))))
+        (base32 "0138h096g21pfgscg7anpn0ww5r67cqpa1scrs5j50rykxdz7nml"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
