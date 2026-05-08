@@ -200,7 +200,7 @@ common build settings used in software produced by the KDE community.")
 (define-public kquickcharts
   (package
     (name "kquickcharts")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/frameworks/"
@@ -208,7 +208,7 @@ common build settings used in software produced by the KDE community.")
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0gmfzlrbjgxnv9cf35v0aap06qg8s0x7lfijpqg4ynany29q4i7p"))))
+                "1aqspnvgj3pq82vvq4n60q39p7vccb672ybiqifj4b3y36l18jiv"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     ;; These packages are required by the QML modules.
