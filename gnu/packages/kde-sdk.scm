@@ -494,14 +494,14 @@ compressed massif files can also be opened transparently.")
 (define-public umbrello
   (package
     (name "umbrello")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/umbrello-" version ".tar.xz"))
        (sha256
-        (base32 "1jrdsvkp2jags3jzh6h7xy2zz1k78fl67fkwpp5ss2vlvwwlawa5"))))
+        (base32 "0q10xla82rmkbchfbynvr3y7mjs2ngg4a0mznrv8smci829cxk6m"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
