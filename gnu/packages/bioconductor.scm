@@ -11829,7 +11829,7 @@ throughput genetic sequencing data sets using regression methods.")
            r-singlecellexperiment
            r-summarizedexperiment
            r-variancepartition))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-deseq2 r-knitr r-sctransform r-testthat))
     (home-page "https://github.com/HelenaLC/muscat")
     (synopsis "Multi-sample multi-group scRNA-seq data analysis tools")
     (description
