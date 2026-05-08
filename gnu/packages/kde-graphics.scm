@@ -750,14 +750,14 @@ decode RAW picture files.")
 (define-public libksane
   (package
     (name "libksane")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                              "/src/libksane-" version ".tar.xz"))
        (sha256
-        (base32 "01cqga2ks7bnb9f2yfr3xm9h8c2c1j7zb2xlifv34s9gdxvpwvna"))))
+        (base32 "07gf3zgs0vkiir9csbravmabf62m4d26481vmfpp4n7kg1gk6y4d"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
