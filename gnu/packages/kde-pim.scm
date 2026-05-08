@@ -394,14 +394,14 @@ to list and filter contacts.")
 (define-public akonadi-mime
   (package
     (name "akonadi-mime")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/akonadi-mime-" version ".tar.xz"))
        (sha256
-        (base32 "185zpy6wwjf210g1c0q14vdxv7bsp2gzry5kff9ksgzsa7zwgr0m"))))
+        (base32 "1ghr49sxblf88mr8riq2drxhy933y4bdp0yl9wv1s40ql8abwp2x"))))
     (build-system qt-build-system)
     (propagated-inputs (list akonadi))
     (native-inputs
