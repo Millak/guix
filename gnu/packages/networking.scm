@@ -1994,7 +1994,7 @@ and up to 1 Mbit/s downstream.")
 (define-public whois
   (package
     (name "whois")
-    (version "5.6.5")
+    (version "5.6.6")
     (source
      (origin
        (method git-fetch)
@@ -2003,7 +2003,7 @@ and up to 1 Mbit/s downstream.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "145lp72347vmr1ipai8rz10bqi6lkjx104g3rq2dmdi2ygfqq9nc"))))
+        (base32 "05549a8r7qr6rv26i7kwg4h6ciwa4cc8dsd5zhfprjrjk909ga24"))))
     (build-system gnu-build-system)
     (arguments
      (list
