@@ -2880,7 +2880,7 @@ were traditional plugins.")
 (define-public kpty
   (package
     (name "kpty")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2889,7 +2889,7 @@ were traditional plugins.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0ldrln2h4cxdf41qcnfprqnp3inpb223z4j73rnz4lncp6v8w8d1"))))
+                "06c35dwzb7jhl148y0fmnn5xj8vmfac8jlpx10q8ga0ih97z3br7"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list kcoreaddons)) ;required by KF6PtyConfig.cmake
