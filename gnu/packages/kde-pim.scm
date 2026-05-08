@@ -859,14 +859,14 @@ management system and its Plasma integration components.")
 (define-public kaccounts-providers
   (package
     (name "kaccounts-providers")
-    (version "25.12.3")
+    (version "26.04.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1g76wgpgil10cmaya36gfxix7ia45nhhhf4x2z8jl4hwc1g4brhc"))))
+                "1dxr7vkvdq8dx0751rl65rxg9r8lsn4vfk254fgcr49m9phw62ym"))))
     (build-system qt-build-system)
     ;; These packages are required by the QML modules.
     (propagated-inputs
