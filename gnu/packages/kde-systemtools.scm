@@ -64,14 +64,14 @@
 (define-public baloo-widgets
   (package
     (name "baloo-widgets")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/baloo-widgets-" version ".tar.xz"))
        (sha256
-        (base32 "04f769ij3hp5ljfb3xfqq7mib1qhp4my5d9znpp6v97dvw5gq0qb"))))
+        (base32 "1l6wxf1bs8dm01b4ijjidaz5fn7dgs6xybpzhhasv00676j5cy38"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list kcoreaddons kio))
