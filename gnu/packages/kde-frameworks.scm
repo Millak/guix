@@ -3406,7 +3406,7 @@ that offer bindings to some of the Frameworks.")
 (define-public kded
   (package
     (name "kded")
-    (version "6.23.0")
+    (version "6.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3415,7 +3415,7 @@ that offer bindings to some of the Frameworks.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0kaghxn09276h2wzp0bz7mmq9r2zh918zvf0ibpss29s7ww9g3x8"))))
+                "19djjsm19nsg4965pr91ajyjqyg9fw7hzsdbprf44q8903a822gn"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
