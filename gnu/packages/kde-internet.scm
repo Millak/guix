@@ -614,14 +614,14 @@ Features are:
 (define-public krdc
   (package
     (name "krdc")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/krdc-" version ".tar.xz"))
        (sha256
-        (base32 "09ydlhwdh6wgs53z0ni8aj7iwiaxgp5nbdnj2nh8iyscsqy4d5qr"))))
+        (base32 "162a8k8rbjxg94ry1q6gcnjh19ncbiw69bjn8fgx5hbim8m2qar1"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config kdoctools))
@@ -653,6 +653,7 @@ Features are:
            lzo
            libjpeg-turbo
            libgcrypt
+           qtkeychain-qt6
            qtwayland))
     (arguments
      (list #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
