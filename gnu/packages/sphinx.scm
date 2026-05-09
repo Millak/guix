@@ -351,6 +351,7 @@ create tags for documentation pages.")
          (sha256
           (base32 "0f5vm8m8gbjl963mgw4r3yq5k9npyiyp80c785f73sh8z9zhq485"))))
       (build-system pyproject-build-system)
+      (arguments (list #:tests? #f))    ; No tests upstream.
       (native-inputs
        (list python-flit-core))
       (propagated-inputs
