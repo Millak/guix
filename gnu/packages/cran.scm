@@ -28683,19 +28683,20 @@ implemented in bibutils.")
 (define-public r-rbiom
   (package
     (name "r-rbiom")
-    (version "2.2.1")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rbiom" version))
        (sha256
-        (base32 "1xp8gv4n3nqllqxpzjjaq057hm0lsckpf9q8p6nghx3rz3kxjs2h"))))
+        (base32 "08d6s5b2ziwlwr7vnglv5whgzkflvdwnzq2zklp9b6j8cwi5xibz"))))
     (properties
      '((upstream-name . "rbiom")
        (updater-extra-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
     (propagated-inputs (list r-ape
                              r-dplyr
+                             r-ecodive
                              r-emmeans
                              r-fillpattern
                              r-ggbeeswarm
@@ -28706,13 +28707,11 @@ implemented in bibutils.")
                              r-jsonlite
                              r-magrittr
                              r-mgcv
-                             r-parallelly
                              r-patchwork
                              r-pillar
                              r-plyr
                              r-readr
                              r-readxl
-                             r-slam
                              r-vegan))
     (native-inputs (list r-testthat))
     (home-page "https://cmmr.github.io/rbiom/index.html")
