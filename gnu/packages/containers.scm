@@ -545,7 +545,7 @@ Layer-4 sockets.")
 (define-public cni-plugins
   (package
     (name "cni-plugins")
-    (version "1.9.0")
+    (version "1.9.1")
     (source
      (origin
        (method git-fetch)
@@ -554,7 +554,7 @@ Layer-4 sockets.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l3jgbizq0yaxld07hsdbh6ix2w6i789101ddk0ldnsmr93jg6ni"))
+        (base32 "12z6w2jk6xgfiwdxys7skpkxldz1cgaa7scgfcr90lsghay59s6w"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "vendor")))))
