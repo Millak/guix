@@ -1452,3 +1452,36 @@ It is an alternative to e.g. @command{make(1)} and @command{redo(1)}.  Features:
 @end itemize
 ")
     (license license:wtfpl2)))
+
+(define-public xmake
+  (package
+   (name "xmake")
+   (version "3.0.8")
+   (source (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xmake-io/xmake.git")
+             (commit (string-append "v" version))
+             ;; Requires some dependencies from "xmake-core-*" repos
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pdjz52w9lzfbcpx9wmzy0bsjg7i19xz43f63czk7jz9v0xba6gi"))))
+   (build-system gnu-build-system)
+   (arguments
+    (list
+     ;; No check rule in make
+     ;; TODO: find how to run Lua tests in "test" directory
+     #:tests? #f))
+   (home-page "https://xmake.io/")
+   (synopsis "Cross-platform build utility based on Lua")
+   (description "@command{xmake} is a cross-platform build utility based on Lua.
+Features:
+@itemize
+@item Built-in caching and parallel compilation,
+@item Concise Lua syntax,
+@item Custom rules, plugins and modules,
+@item Support for C++20 modules and compile_commands.json,
+@item Support for languages outside C/C++ (e.g. Go, Rust, Zig).
+@end itemize")
+   (license license:asl2.0)))
