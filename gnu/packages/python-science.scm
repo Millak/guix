@@ -4818,7 +4818,7 @@ NumPy and does not depend on C++ ROOT.")
     (propagated-inputs
      (list python-matplotlib python-pandas))
     (native-inputs
-     (list python-setuptools python-wheel))
+     (list python-pytest python-setuptools))
     (home-page "https://upsetplot.readthedocs.io")
     (synopsis "Draw UpSet plots with Pandas and Matplotlib")
     (description
