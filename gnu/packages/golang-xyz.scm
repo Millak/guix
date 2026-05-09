@@ -17878,7 +17878,7 @@ dates and other date-only dates in Go.")
 (define-public go-github-com-lucasb-eyer-go-colorful
   (package
     (name "go-github-com-lucasb-eyer-go-colorful")
-    (version "1.2.0")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -17887,7 +17887,7 @@ dates and other date-only dates in Go.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08c3fkf27r16izjjd4w94xd1z7w1r4mdalbl53ms2ka2j465s3qs"))))
+        (base32 "1z98jw2hi45fd8aqaap6wdh1dig7lkf9lds7sarb0c44f86cdzcb"))))
     (build-system go-build-system)
     (arguments
      (list
