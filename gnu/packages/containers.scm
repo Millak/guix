@@ -150,7 +150,7 @@ as created by Podman, CRI-O and containerd.")))
 (define-public crun
   (package
     (name "crun")
-    (version "1.26")
+    (version "1.27.1")
     (source
      (origin
        (method url-fetch)
@@ -160,7 +160,7 @@ as created by Podman, CRI-O and containerd.")))
              "/crun-" version ".tar.gz"))
        (sha256
         (base32
-         "1hdwk5dpsz9danxiyfli07b7sqid6hr34qmhs5qjl2dcc00is89j"))))
+         "1w782s95f3xvw3fb66l2ciqkqsg4bk7n9ph31jmvn669ap272ymy"))))
     (build-system gnu-build-system)
     (arguments
      (list
