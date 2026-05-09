@@ -10721,7 +10721,7 @@ non-UTF-friendly sources.")
 (define-public go-github-com-gdamore-tcell
   (package
     (name "go-github-com-gdamore-tcell")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
@@ -10730,7 +10730,7 @@ non-UTF-friendly sources.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "178h7kj4zb8lcw84nbqanapnxrgvhq4111xw4fj6m56y46anlzwg"))))
+        (base32 "0axbrk7fq8sac3sqxvz81fdbdrzpp4z3vavfiwzb7y2vblh60d7k"))))
     (build-system go-build-system)
     (arguments
      (list
