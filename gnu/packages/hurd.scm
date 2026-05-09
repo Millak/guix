@@ -643,7 +643,8 @@ exec ${system}/rc \"$@\"
                 "CFLAGS=-fcommon")))
     (build-system gnu-build-system)
     (inputs
-     `(("libgcrypt" ,libgcrypt)                  ;for /hurd/random
+     `(("libacpica" ,libacpica)                  ;for hurd/acpi.static
+       ("libgcrypt" ,libgcrypt)                  ;for /hurd/random
        ("libdaemon" ,libdaemon)                  ;for /bin/console --daemonize
        ("libxcrypt" ,libxcrypt)                  ;for password hashing
        ("unifont" ,unifont)
