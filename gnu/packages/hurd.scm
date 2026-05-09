@@ -334,6 +334,61 @@ Hurd-minimal package which are needed for both glibc and GCC.")
 (define %add-to-hurd-subdirs
   (list "libmachdevdde" "libddekit"))
 
+(define-public libacpica
+  (let ((commit "0c3593e27947ef0734a070143caadaed28438354")
+        (revision "0"))
+    (package
+      (name "libacpica")
+      (home-page "https://salsa.debian.org/hurd-team/libacpica")
+      (version (git-version "20220331" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url home-page)
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0hyfg4w2ch6a833kkxjcsddqq2712gqlbvrl6zv5yzvallpfzh7d"))
+                (file-name (git-file-name name version))))
+      (arguments
+       (list
+        #:tests? #f ;no tests
+        #:modules '((srfi srfi-26)
+                    (ice-9 rdelim)
+                    (guix build utils)
+                    (guix build gnu-build-system))
+        #:make-flags #~`(,(string-append "CC=" #$(cc-for-target))
+                         ,(string-append "PREFIX=" #$output))
+        ;; As we are using the Debian package as upstream, we follow their
+        ;; build:
+        ;;   * apply patches in debian/patches taken from the
+        ;;     debian/patches/series file
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-after 'unpack 'apply-patches
+              (lambda* (#:key target #:allow-other-keys)
+                (let* ((patch-directory "debian/patches/")
+                       (series (string-append patch-directory "series"))
+                       (text (with-input-from-file series read-string))
+                       (lines (string-split (string-trim-right text) #\newline))
+                       (patches (filter (negate (cute string-prefix? "#" <>))
+                                        lines))
+                       (patch-files (map
+                                     (cute string-append patch-directory <>)
+                                     patches)))
+                  (for-each
+                   (cute invoke "patch" "--force" "-p1" "-i" <>)
+                   patch-files)))))))
+      (inputs (list libirqhelp
+                    libpciaccess))
+      (build-system gnu-build-system)
+      (supported-systems %hurd-systems)
+      (synopsis "ACPICA as a library")
+      (description "libacpica provides ACPICA as a library.")
+      (license (list bsd-3
+                     gpl2)))))
+
 (define-public hurd
   (package
     (name "hurd")
