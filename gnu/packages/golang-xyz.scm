@@ -10753,7 +10753,7 @@ also favors portability, and includes support for all POSIX systems.")
   (package
     (inherit go-github-com-gdamore-tcell)
     (name "go-github-com-gdamore-tcell-v2")
-    (version "2.13.5")
+    (version "2.13.9")
     (source
      (origin
        (method git-fetch)
@@ -10762,13 +10762,13 @@ also favors portability, and includes support for all POSIX systems.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "085f1r9a082m0pwmylrkd8j8zwwjj4ww71vwwpxs77frrrl49kvq"))))
+        (base32 "00fm4p9fhrn7k4ilsy1f8kqgrxg738gq7ikdb6xggqrsz1pwgyng"))))
     (arguments
      (list
       #:import-path "github.com/gdamore/tcell/v2"))
     (propagated-inputs
      (modify-inputs (package-inputs go-github-com-gdamore-tcell)
-       (prepend go-golang-org-x-term go-golang-org-x-sys)))))
+       (prepend go-github-com-rivo-uniseg go-golang-org-x-term)))))
 
 (define-public go-github-com-gdey-errors
   (package
