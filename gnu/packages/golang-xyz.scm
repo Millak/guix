@@ -3126,7 +3126,7 @@ information and periodically output metrics")
 (define-public go-github-com-bits-and-blooms-bitset
   (package
     (name "go-github-com-bits-and-blooms-bitset")
-    (version "1.20.0")
+    (version "1.24.4")
     (source
      (origin
        (method git-fetch)
@@ -3135,7 +3135,7 @@ information and periodically output metrics")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m1rk1bf6i1jnhjxm774i3rhg8n8s88a3n5pnhg5a9gf34y7r8az"))))
+        (base32 "0qy6ky518awhcx2klvyz6kh14bbagbvbfnczzdy25iw7j9j3ffia"))))
     (build-system go-build-system)
     (arguments
      (list
