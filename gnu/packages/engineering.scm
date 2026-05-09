@@ -4175,10 +4175,6 @@ BOM creation and has a lot of extra features.")
        (sha256
         (base32 "19fi0y0lk45cyampczgh3kz2swai4zcgzkffp0xf5h55rxxrdpvk"))))
     (build-system cmake-build-system)
-    (inputs
-     (list protobuf
-           python
-           python-sip-4))
     (arguments
      `(#:tests? #f
        #:configure-flags '("-DBUILD_EXAMPLES=OFF")
@@ -4199,6 +4195,11 @@ BOM creation and has a lot of extra features.")
                                  (package-version python))
                                "/site-packages"
                                " Python3_SITEARCH"))))))))
+    (inputs
+     (list protobuf
+           python
+           python-sip-4))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/Ultimaker/libArcus")
     (synopsis "Communication library for Ultimaker software components")
     (description "This library contains C++ code and Python3 bindings for
