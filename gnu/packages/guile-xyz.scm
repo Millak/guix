@@ -3168,6 +3168,12 @@ object-oriented programming system, GOOPS.")
   (package
     (inherit guile-g-golf)
     (name "g-golf-gtk-4-examples")
+    (version "0.8.3")
+    (source
+     (g-golf-source #:version version
+                    #:hash
+                    (content-hash
+                     "1cbvb42dy94612m8040y3km9941jhi17mf78yc4pavlala8x6937")))
     (arguments
      (list
       #:modules `(((guix build guile-build-system)
