@@ -535,7 +535,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/openpgp.scm			\
   %D%/packages/openstack.scm			\
   %D%/packages/orange.scm			\
-  %D%/packages/orpheus.scm			\
   %D%/packages/ots.scm				\
   %D%/packages/oyacc.scm			\
   %D%/packages/package-management.scm		\
@@ -2080,7 +2079,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/opusfile-CVE-2022-47021.patch		\
   %D%/packages/patches/orbit2-fix-array-allocation-32bit.patch \
   %D%/packages/patches/orca-fix-gst-init-check-call.patch \
-  %D%/packages/patches/orpheus-cast-errors-and-includes.patch	\
   %D%/packages/patches/ots-no-include-missing-file.patch	\
   %D%/packages/patches/owncloud-disable-updatecheck.patch	\
   %D%/packages/patches/pnet-fix-line-number-info.patch		\
