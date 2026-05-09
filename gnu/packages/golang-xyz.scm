@@ -3151,7 +3151,7 @@ space usage.")
 (define-public go-github-com-bits-and-blooms-bloom-v3
   (package
     (name "go-github-com-bits-and-blooms-bloom-v3")
-    (version "3.7.0")
+    (version "3.7.1")
     (source
      (origin
        (method git-fetch)
@@ -3160,7 +3160,7 @@ space usage.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "022pyzjp862ysl30aj105i2xmapn400ambjh8h1dcyjy9c0f8agn"))))
+        (base32 "1yjlwwbs6n4ds3krhzk3zq8wzkv17kw4slf10mmfrqx4xw56x5r9"))))
     (build-system go-build-system)
     (arguments
      (list
