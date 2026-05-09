@@ -795,11 +795,11 @@ in userland processes thanks to the DDE layer.")
       (license gpl2))))
 
 (define-public rumpkernel
-  (let ((commit "2aad456903b2dc2232fa18c7f286cea6d77b570f")
-        (revision "0"))
+  (let ((commit "debian/0_20250111-6")
+        (revision "1"))
     (package
       (name "rumpkernel")
-      (version (git-version "0-20250111" revision commit))
+      (version (git-version "0-20250111" revision (substring commit 7)))
       ;; This uses the Debian Salsa rumpkernel package git as upstream as that
       ;; is where development happens.  Once things have stabilized, upstream
       ;; may change to the NetBSD git from where Debian takes their snapshots.
@@ -810,7 +810,7 @@ in userland processes thanks to the DDE layer.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "14fiv2llvd5s1vi9gigmi1vi0b9yvg2zqyc9xg67ffxl1phv7p8j"))
+                  "1pvd54k06rlgvppfbzl1d0qqcjc0kshamw1iw40s3apabh87pw1i"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
