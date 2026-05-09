@@ -373,30 +373,44 @@ to perform data analysis.")
 (define-public marble
   (package
     (name "marble")
-    (version "25.12.3")
+    (version "26.04.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/marble-" version ".tar.xz"))
        (sha256
-        (base32 "1m1x1imcibyq6z38l9wk6qk9b9w8lyz0gk69lavy9qqsyrq4wi3g"))))
+        (base32 "04gz0ivzs385c87myh1pwiy92c8j9ycm6i979bw3k2al0jxfnjqp"))))
     (build-system qt-build-system)
     (arguments
-     ;; FIXME: libmarblewidget-qt5.so.28 not found.  Also enable the
-     ;; corresponding configure flag to build tests.
      (list
-      #:tests? #f
+      #:test-exclude
+      (string-append "("
+                     (string-join '("MarbleRunnerManagerTest"
+                                    "MarbleMapTest"
+                                    "MarbleWidgetTest"
+                                    "RenderPluginTest"
+                                    "AbstractDataPluginModelTest"
+                                    "AbstractDataPluginTest"
+                                    "AbstractFloatItemTest")
+                                  "|")
+                     ")")
       #:qtbase qtbase
-      #:configure-flags #~(list "-DBUILD_MARBLE_TOOLS=YES" ;file conversion tools
-                                "-DBUILD_TOUCH=YES")
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'alter-osmctools-lookup
-                     (lambda _
-                       (substitute* "tools/vectorosm-tilecreator/autotests/CMakeLists.txt"
-                         (("\\$<TARGET_FILE:osmconvert>")
-                          (which "osmconvert"))))))))
-    (native-inputs (list abseil-cpp extra-cmake-modules kdoctools osmctools
+      #:configure-flags
+      #~(list "-DBUILD_MARBLE_TOOLS=YES" ;file conversion tools
+              "-DBUILD_TOUCH=YES")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'alter-osmctools-lookup
+            (lambda _
+              (substitute* "tools/vectorosm-tilecreator/autotests/CMakeLists.txt"
+                (("\\$<TARGET_FILE:osmconvert>")
+                 (which "osmconvert"))))))))
+    (native-inputs (list abseil-cpp
+                         extra-cmake-modules
+                         kdoctools
+                         osmctools
+                         python-minimal
                          qttools))
     ;; One optional dependency missing: libwlocate.
     (inputs (list gpsd
