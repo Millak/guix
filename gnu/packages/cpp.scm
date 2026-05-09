@@ -53,6 +53,7 @@
 ;;; Copyright © 2025 Murilo <murilo@disroot.org>
 ;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
+;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4479,6 +4480,29 @@ file name and location, as well as filters with friendly names (such as
       (description
        "This package provides a simple S-Expression parser for C++.")
       (license license:gpl3+))))
+
+(define-public sfl-library
+  (package
+    (name "sfl-library")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/slavenf/sfl-library")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ngy86b9y1b8a4j37c14m1jrg0q5b12jj8b0gdnpl5sjb1r2fljk"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))              ;no tests
+    (home-page "https://github.com/slavenf/sfl-library")
+    (synopsis "Header-only C++11/20 container library")
+    (description "sfl-library provides many STL-like (Standard Template Library)
+containers including vectors, associative containers, and unordered containers
+based on hash tables.  These containers are designed for C++11 and C++20
+constant expression usage.")
+    (license license:zlib)))
 
 (define-public string-view-lite
   (package
