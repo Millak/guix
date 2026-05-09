@@ -20,6 +20,7 @@
 
 (define-module (gnu packages chicken)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -108,7 +109,21 @@ la nguage standard, and includes many enhancements and extensions.")
             ;; compile from the Scheme source using chicken-bootstrap.
             (add-after 'unpack 'remove-auto-generated-code
               (lambda _
-                (invoke "make" "spotless")))))))
+                (invoke "make" "spotless")))
+            ;; Invoke commands by name, not by path.
+            ;;
+            ;; See <https://codeberg.org/guix/guix/issues/8471>.
+            (add-after 'unpack 'fix-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((sh (search-input-file inputs "/bin/sh"))
+                      (cp (search-input-file inputs "/bin/cp")))
+                  (substitute* "egg-compile.scm"
+                    (("/bin/sh") sh)
+                    (("\"cp\"") (string-append "\"" cp "\"")))
+                  (substitute* "posixunix.scm"
+                    (("/bin/sh") sh))
+                  (substitute* "chicken-install.scm"
+                    (("\"sh \"") (string-append "\"" sh " \""))))))))))
     (inputs (list chicken-bootstrap))
     (properties
      (alist-delete 'hidden? (package-properties chicken-bootstrap)))))
