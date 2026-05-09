@@ -37004,6 +37004,48 @@ Nix expressions.  It supports syntax highlighting, indenting and refilling of
 comments.")
     (license license:lgpl2.1+)))
 
+(define-public emacs-nix-ts-mode
+  (package
+    (name "emacs-nix-ts-mode")
+    (version "0.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nix-community/nix-ts-mode.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x8flq97vrxqvqmf25dr5wnmvwpa0l3zv5hyz2af3aj4yy1ic35n"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:emacs emacs-no-x                ; tests need treesit support
+      #:test-command #~(list "ert-runner" "-l" "test/guix-treesit.el")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests load the Nix tree-sitter grammar. Guix informs Emacs of
+          ;; tree-sitter grammars via site-run-file, which ert-runner does not
+          ;; load by default.
+          (add-before 'check 'fix-tests
+            (lambda _
+              (with-output-to-file "test/guix-treesit.el"
+                (lambda _
+                  (display "\
+(with-eval-after-load 'treesit
+  (when-let* ((grammar-path (getenv \"TREE_SITTER_GRAMMAR_PATH\")))
+    (mapcar (lambda (x) (add-to-list 'treesit-extra-load-path x))
+            (split-string grammar-path \":\"))))
+"))))))))
+    (native-inputs (list emacs-ert-runner))
+    (propagated-inputs (list tree-sitter-nix))
+    (home-page "https://github.com/nix-community/nix-ts-mode")
+    (synopsis "Major mode for Nix expressions, powered by tree-sitter")
+    (description
+     "This package provides a major mode for editing Nix expressions, powered
+by built-in Emacs tree-sitter support.")
+    (license license:gpl3+)))
+
 (define-public emacs-libmpdel
   (package
     (name "emacs-libmpdel")
