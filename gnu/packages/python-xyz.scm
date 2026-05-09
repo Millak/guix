@@ -181,6 +181,7 @@
 ;;; Copyright © 2025 Andy Tai <atai@atai.org>
 ;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;; Copyright © 2026 Akiyoshi Suda <code@akiyoshisuda.com>
+;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -13545,6 +13546,33 @@ a general image processing tool.")
     (license (license:x11-style
               "https://github.com/python-pillow/Pillow/blob/12.1.1/LICENSE"
               "MIT-CMU License"))))
+
+(define-public python-pillow-avif-plugin
+  (package
+    (name "python-pillow-avif-plugin")
+    (version "1.5.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fdintino/pillow-avif-plugin/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1812liaxcdhzqzrjl9cf2xrnki7zz6f3iq3dvh1w9sgnbbjhfkj6"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-requests))
+    (native-inputs (list python-packaging
+                         python-pillow
+                         python-pytest
+                         python-setuptools))
+    (inputs (list libavif))
+    (home-page "https://github.com/fdintino/pillow-avif-plugin/")
+    (synopsis "Pillow plugin that adds avif support via libavif")
+    (description
+     "This package provides a pillow plugin that adds avif support via
+libavif.")
+    (license license:expat)))
 
 (define-public python-pillow-heif
   (package
