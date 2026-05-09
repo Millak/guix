@@ -44,6 +44,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages vim)
@@ -607,6 +608,7 @@ command-line tool, @command{amd-smi}, which can be used to do the same.")
            python-cppheaderparser
            python-lxml
            python-pyyaml
+           python-setuptools
            rocm-cmake
            rocm-toolchain))
     (synopsis "ROC profiler library")
