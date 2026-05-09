@@ -578,6 +578,7 @@ and JSON.
            python-pydantic
            python-pytest
            python-pytest-cases
+           python-pytest-reportlog
            python-pytest-xdist
            python-shortuuid
            python-tenacity))
