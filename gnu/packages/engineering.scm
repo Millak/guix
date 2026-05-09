@@ -4491,8 +4491,6 @@ belongs to the Cura project from Ultimaker.")
        (sha256
         (base32 "1cq85x0xizsjwf9nl7v7x4i9vl335mgv2lda3q2c9fcwrndsc3wk"))))
     (build-system cmake-build-system)
-    (inputs
-     (list python python-sip-4))
     (arguments
      `(#:tests? #f ; No test suite.
        #:phases
@@ -4509,6 +4507,8 @@ belongs to the Cura project from Ultimaker.")
                   (string-append path " Python3_SITEARCH"))
                  (("\\$\\{_process_output\\} Python3_SITELIB")
                   (string-append path " Python3_SITELIB")))))))))
+    (inputs (list python python-sip-4))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/Ultimaker/libSavitar")
     (synopsis "C++ implementation of 3mf loading with SIP python bindings")
     (description "LibSavitar is a C++ implementation of 3mf loading with SIP
