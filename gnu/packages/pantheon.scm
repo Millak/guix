@@ -439,14 +439,16 @@ terminal in the Pantheon desktop.")
          "0hn9gnzr25i0k6b81ia6c73lqmr43grfdwn18sfp8xhjiqlqqmlq"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
+     (list
+       #:glib-or-gtk? #t
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-symlinks
-           (lambda _
-             (let ((bin (string-append #$output "/bin/io.elementary.sideload"))
-                   (link (string-append #$output "/bin/sideload")))
-               (symlink bin link)))))))
+       #~(modify-phases %standard-phases
+           (add-after 'install 'install-symlinks
+             (lambda _
+               (let ((bin (string-append #$output
+                                         "/bin/io.elementary.sideload"))
+                     (link (string-append #$output "/bin/sideload")))
+                 (symlink bin link)))))))
     (inputs
      (list flatpak
            glib
