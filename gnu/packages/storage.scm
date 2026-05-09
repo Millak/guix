@@ -91,7 +91,7 @@
 (define-public ceph
   (package
     (name "ceph")
-    (version "20.3.0")
+    (version "21.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -104,8 +104,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08k7f1nj3g1mb7h8vgw71xgpslz0dhqwr6ldzxs3naf2f73x0mh8"))
-              (patches (search-patches "ceph-fix-cmake.patch"))
+                "13rv8kz0rjnldxs4ldpxhckqn7pf95rr8wlvg9s6nwcvl31iq9cv"))
               (modules '((guix build utils)))
               (snippet
                ;; Delete bundled libraries where feasible.
@@ -138,6 +137,7 @@
               "-DCEPHADM_BUNDLED_DEPENDENCIES=none"
               "-DWITH_SYSTEM_ARROW=ON"
               "-DWITH_SYSTEM_BOOST=ON"
+              "-DWITH_SYSTEM_CATCH2=ON"
               "-DWITH_SYSTEM_FMT=ON"
               #$@(if (target-x86-64?)
                      #~("-DWITH_SYSTEM_QATLIB=ON"
@@ -152,6 +152,7 @@
               "-DWITH_MGR=OFF"        ;requires python-rook-client
               "-DWITH_MGR_DASHBOARD_FRONTEND=OFF" ;requires node + nodeenv
               "-DWITH_BABELTRACE=OFF"
+              "-DWITH_BREAKPAD=OFF"
               "-DWITH_JAEGER=OFF"     ;requires bundled opentelemetry-cpp
               "-DWITH_LTTNG=OFF"
               "-DWITH_RADOSGW=OFF"    ;requires bundled libkmip and rgw
@@ -202,18 +203,32 @@
               (invoke "make" "legacy-option-headers")))
           (add-after 'unpack 'patch-source
             (lambda _
-              (substitute* "cmake/modules/Distutils.cmake"
-                ;; Prevent creation of Python eggs.
-                (("setup.py install")
-                 "setup.py install --single-version-externally-managed --root=/")
-                ;; Inject the -rpath linker argument when linking
-                ;; Python C libraries so RUNPATH gets set up correctly.
-                (("LDFLAGS=(.*)\n" _ flags)
-                 (string-append "LDFLAGS=\\\"" flags
-                                " -Wl,-rpath=" #$output "/lib\\\"\n")))
+              ;; Injecting the -rpath linker argument in Distutils.cmake
+              ;; doesn't help because the argument is ignored at compile time,
+              ;; in get_python_flags.  Instead, use runtime_library_dirs there.
+              (substitute* (find-files "src/pybind" "setup\\.py")
+                (("^( *)libraries=libs \\+ py_libs," all blank)
+                 (format #f "~aruntime_library_dirs=[~s],~%~a"
+                         blank (string-append #$output "/lib") all)))
               (substitute* "udev/50-rbd.rules"
                 (("/usr/bin/ceph-rbdnamer")
-                 (string-append #$output "/bin/ceph-rbdnamer")))))
+                 (string-append #$output "/bin/ceph-rbdnamer")))
+              ;; os <-> memstore circular dependency require static library
+              (substitute* "src/os/memstore/CMakeLists.txt"
+                (("add_library\\(memstore" all)
+                 (string-append all " STATIC")))))
+          (add-after 'install 'post-install
+            (lambda _
+              (let ((lib (string-append #$output "/lib")))
+                ;; Some libraries have that library in their runpath but
+                ;; it doesn't get installed for some reason.
+                (install-file "../build/lib/libfusestore.so"
+                              (string-append #$output "/lib"))
+                ;; Unclear why, but in CMakeLists.txt, this target explicitely
+                ;; sets INSTALL_RPATH to "", which then fails the guix
+                ;; validate-runpath phase.
+                (invoke "patchelf" "--add-rpath" lib
+                        (string-append #$output "/bin/ceph-osd")))))
           (add-after 'install 'wrap-python-scripts
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((scripts '("bin/ceph" "bin/cephfs-top" "sbin/ceph-volume"))
@@ -235,9 +250,12 @@
                               `("GUIX_PYTHONPATH" prefix (,PYTHONPATH))))
                           scripts)))))))
     (native-inputs
-     (list pkg-config
+     (list catch2-3.8
+           patchelf
+           pkg-config
            python
            python-cython
+           python-setuptools
            python-sphinx
            yasm))
     (inputs
@@ -250,7 +268,7 @@
             `(,apache-arrow "lib")
             `(,util-linux "lib")
             bash-minimal
-            boost-1.88
+            boost
             cryptsetup-minimal
             curl
             eudev
