@@ -450,7 +450,7 @@ programming languages.")
 (define-public cvc5
   (package
     (name "cvc5")
-    (version "1.3.3")
+    (version "1.3.4")
     (source
      (origin
        (method git-fetch)
@@ -458,10 +458,8 @@ programming languages.")
              (url "https://github.com/cvc5/cvc5/")
              (commit (string-append "cvc5-" version))))
        (file-name (git-file-name name version))
-       (patches (search-patches "cvc5-reproducible-build.patch"
-                                "cvc5-symfpu-compatibility.patch"))
        (sha256
-        (base32 "0ynz7di4dyyiiydgmf0z9dc2jl7nm44xi0amch29rcgznwr4wy5m"))))
+        (base32 "1xix197pyd45jakk10apam3bhl38nk14zjk0fzr9rj4knh10x5rx"))))
     (build-system cmake-build-system)
     (arguments
      (list
