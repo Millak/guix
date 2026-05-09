@@ -3980,6 +3980,29 @@ enables repeating a single test, or multiple tests, a specific number of
 times.")
     (license license:mpl2.0)))
 
+(define-public python-pytest-reportlog
+  (package
+    (name "python-pytest-reportlog")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pytest-dev/pytest-reportlog")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19h1kmwas42qmirdfaw0ffq3g7ibsdd46xfia71i6l8z1qswxwb1"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pytest))
+    (native-inputs (list python-hatch-vcs python-hatchling))
+    (home-page "https://github.com/pytest-dev/pytest-reportlog")
+    (synopsis "Replacement for the --resultlog pytest option")
+    (description
+     "This package provides a replacement for the @code{--resultlog} option,
+focused in simplicity and extensibility.")
+    (license license:expat)))
+
 (define-public python-pytest-rerunfailures
   (package
     (name "python-pytest-rerunfailures")
