@@ -18823,9 +18823,13 @@ and tooling.")
            (lambda* (#:key inputs #:allow-other-keys)
              (emacs-substitute-variables "elfeed-curl.el"
                ("elfeed-curl-program-name"
-                (search-input-file inputs "/bin/curl"))))))))
+                (search-input-file inputs "/bin/curl")))
+             (substitute* "elfeed-lib.el"
+               (("\\(executable-find \"gzip\"\\)")
+                (string-append
+                 "\"" (search-input-file inputs "/bin/gzip") "\""))))))))
     (inputs
-     (list curl))
+     (list curl gzip))
     (home-page "https://github.com/skeeto/elfeed")
     (synopsis "Atom/RSS feed reader for Emacs")
     (description
