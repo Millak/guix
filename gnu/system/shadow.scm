@@ -199,9 +199,9 @@ export PATH=/run/setuid-programs:$PATH
 (define %default-zprofile
   (plain-file "zprofile" "\
 # Set up the system, user profile, and related variables.
-source /etc/profile
+emulate sh -c '. /etc/profile'
 # Set up the home environment profile.
-source ~/.profile
+emulate sh -c '. ~/.profile'
 "))
 
 (define %default-xdefaults
