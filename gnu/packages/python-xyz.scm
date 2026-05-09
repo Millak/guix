@@ -13611,6 +13611,64 @@ and a plugin for Pillow.")
        (sha256
         (base32 "16mkap63d14f69105b3bm8pi64fvpdznncgn48vhgls0jf977m31"))))))
 
+(define-public python-pillow-jxl-plugin
+  (package
+    (name "python-pillow-jxl-plugin")
+    (version "1.3.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Isotr0py/pillow-jpegxl-plugin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bfcypr81c7rxvs2yw992f3dklfbniyysgfrplsa706raa3288pk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Test requires OpenEXR and pyexiv2 modules, which not are yet available
+      ;; in Guix.
+      #:tests? #f
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each (lambda (phase)
+                          (format #t "Running cargo phase: ~a~%" phase)
+                          (apply (assoc-ref cargo:%standard-phases phase)
+                                 #:cargo-target #$(cargo-triplet)
+                                 args))
+                        '(unpack-rust-crates
+                          configure
+                          check-for-pregenerated-files
+                          patch-cargo-checksums))))
+          (add-after 'unpack 'patch-pyproject
+            (lambda _
+              ;; maturin failed to parse pyproject.toml.
+              (substitute* "pyproject.toml"
+                (("^license-files = .*") "")))))))
+    (propagated-inputs (list python-brotli
+                             python-packaging
+                             python-pillow))
+    ;; TODO: Add python-openexr and python-pyexiv2 for tests.
+    (native-inputs (list maturin
+                         python-numpy
+                         python-pytest
+                         rust
+                         `(,rust "cargo")))
+    (inputs (cons* libjxl (cargo-inputs 'python-pillow-jxl-plugin)))
+    (home-page "https://github.com/Isotr0py/pillow-jpegxl-plugin")
+    (synopsis "Pillow plugin for JPEG-XL using Rust for bindings")
+    (description "This package provides pillow plugin for JPEG-XL, using Rust
+for bindings.")
+    (license license:gpl3+)))
+
 (define-public python-jxlpy
   (package
     (name "python-jxlpy")
