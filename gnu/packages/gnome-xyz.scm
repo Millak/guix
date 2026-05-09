@@ -2074,6 +2074,43 @@ used in text editing environments to provide a complete and integrated
 feature-set for programming Vala effectively.")
     (license license:lgpl2.1+)))
 
+(define-public vala-lint
+  (package
+    (name "vala-lint")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/vala-lang/vala-lint")
+              (commit "28dbf44dd2c5ec2fc7273982d35ff8cb0ef46283")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pl581xaxr8f1gm66fygazfa3ms9mdjqvb3zpl55gbbsc36fjyhs"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-vala-lint-symlink
+            (lambda _
+              (let ((bindir (string-append #$output "/bin")))
+                (symlink "io.elementary.vala-lint"
+                         (string-append bindir "/vala-lint"))))))))
+    (native-inputs
+     (list gobject-introspection
+           pkg-config
+           vala))
+    (inputs
+     (list glib json-glib vala))
+    (home-page "https://github.com/vala-lang/vala-lint")
+    (synopsis "Code-style checker for Vala")
+    (description
+     "Vala-lint checks Vala source code for common formatting and style
+issues.  It can be configured to enable or disable individual checks and can
+report line and column locations for detected issues.")
+    (license license:gpl2+)))
 
 (define-public yaru-theme
   (package
