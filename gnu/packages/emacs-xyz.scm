@@ -4547,43 +4547,6 @@ boilerplate code from defining new Flymake backend functions.")
     (description "This package adds Clojure syntax checker clj-kondo.")
     (license license:gpl3+)))
 
-(define-public emacs-flymake-shellcheck
-  ;; No tag, version grabbed from source .el file.
-  (let ((commit "ac534e9ef15c82ac86ae65fe5004d29dbc8c92c7")
-        (revision "1"))
-    (package
-      (name "emacs-flymake-shellcheck")
-      (version (git-version "0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/federicotdn/flymake-shellcheck")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "04yfb4sy41spjzk9mhm4gy0h8vnjx09p2g6nm1yzgd9a5ph9sqgl"))))
-      (build-system emacs-build-system)
-      (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'substitute-shellcheck-path
-             (lambda* (#:key inputs #:allow-other-keys)
-               (make-file-writable "flymake-shellcheck.el")
-               (emacs-substitute-sexps "flymake-shellcheck.el"
-                 ("defcustom flymake-shellcheck-path"
-                  `(or (executable-find "shellcheck")
-                       ,(search-input-file inputs "bin/shellcheck")))))))))
-      (inputs
-       (list shellcheck))
-      (home-page "https://github.com/federicotdn/flymake-shellcheck")
-      (synopsis "Flymake backend for Bash/Sh powered by ShellCheck")
-      (description
-       "This package provides a backend for Flymake to use the
-tool ShellCheck for static analyzing @command{bash} and @command{sh}
-scripts.")
-      (license license:gpl3+))))
-
 (define-public emacs-a
   (package
     (name "emacs-a")
