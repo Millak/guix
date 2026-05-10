@@ -242,6 +242,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages telephony)
@@ -14054,42 +14055,50 @@ libraries from Swagger specs.")
                   (guix build emacs-utils)
                   (guix build utils))
       #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'avoid-server-installation-for-tests
-            (lambda _
-              (substitute* "Makefile"
-                ;; Disable tox since it's only configured for python 3.8 and
-                ;; python 3.9 by the project--that's ancient.
-                (("tox")
-                 "echo tox")
-                (("env: .*$")
-                 (string-append "env: " #$output "/bin/jediepcserver\n")))))
-          (add-after 'unpack 'ensure-no-mtimes-pre-1980
-            (assoc-ref py:%standard-phases 'ensure-no-mtimes-pre-1980))
-          (add-before 'check 'setenv
-            (lambda _
-              (setenv "HOME" "/tmp")))
-          (add-after 'ensure-no-mtimes-pre-1980 'relax-python-requirements
-            (lambda _
-              ;; Argparse should only be required for Python < 3.2
-              ;; (see: https://github.com/tkf/emacs-jedi/issues/365).
-              (substitute* "setup.py"
-                ((".*argparse.*") ""))))
-          (add-after 'relax-python-requirements 'python:add-install-to-pythonpath
-            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
-          (add-after 'python:add-install-to-pythonpath 'python:install
-            (assoc-ref py:%standard-phases 'install))
-          (add-after 'python:install 'python:wrap
-            (assoc-ref py:%standard-phases 'wrap))
-          (add-after 'python:wrap 'patch-jedi:server-command
-            (lambda* (#:key outputs #:allow-other-keys)
-              (emacs-substitute-variables "jedi-core.el"
-                ("jedi:server-command"
-                 `(list ,(search-input-file outputs "bin/jediepcserver")))))))))
+      (with-extensions (list (pyproject-guile-json))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'avoid-server-installation-for-tests
+              (lambda _
+                (substitute* "Makefile"
+                  ;; Disable tox since it's only configured for python 3.8 and
+                  ;; python 3.9 by the project--that's ancient.
+                  (("tox")
+                   "echo tox")
+                  (("env: .*$")
+                   (string-append "env: " #$output "/bin/jediepcserver\n")))))
+            (add-after 'unpack 'ensure-no-mtimes-pre-1980
+              (assoc-ref py:%standard-phases 'ensure-no-mtimes-pre-1980))
+            (add-before 'check 'setenv
+              (lambda _
+                (setenv "HOME" "/tmp")))
+            (add-after 'ensure-no-mtimes-pre-1980 'relax-python-requirements
+              (lambda _
+                ;; Argparse should only be required for Python < 3.2
+                ;; (see: https://github.com/tkf/emacs-jedi/issues/365).
+                (substitute* "setup.py"
+                  ((".*argparse.*") ""))))
+            (add-after 'relax-python-requirements 'python:build
+              (assoc-ref py:%standard-phases 'build))
+            (add-after 'python:build 'python:add-install-to-pythonpath
+              (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+            (add-after 'python:add-install-to-pythonpath 'python:install
+              (assoc-ref py:%standard-phases 'install))
+            (add-after 'python:install 'python:create-entrypoints
+              (assoc-ref py:%standard-phases 'create-entrypoints))
+            (add-after 'python:create-entrypoints 'python:wrap
+              (assoc-ref py:%standard-phases 'wrap))
+            (add-after 'python:wrap 'patch-jedi:server-command
+              (lambda* (#:key outputs #:allow-other-keys)
+                (emacs-substitute-variables "jedi-core.el"
+                  ("jedi:server-command"
+                   `(list ,(search-input-file outputs "bin/jediepcserver"))))))))))
     (native-inputs (list emacs-mocker python-wrapper))
     (inputs (list python-wrapper python-epc python-jedi)) ;wrapped
     (propagated-inputs
-     (list emacs-auto-complete emacs-python-environment emacs-epc))
+     (list emacs-auto-complete
+           emacs-python-environment
+           emacs-epc
+           python-setuptools))
     (home-page "https://github.com/tkf/emacs-jedi")
     (synopsis "Provides Python completion in Emacs")
     (description
