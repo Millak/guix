@@ -2890,6 +2890,7 @@ sandboxed desktop applications on GNU/Linux.")
            node-lts
            perl-app-cpanminus
            python
+           python-setuptools
            ruby-rspec
            squashfs-tools
            zstd))
