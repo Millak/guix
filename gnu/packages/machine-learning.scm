@@ -850,7 +850,7 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
     (license license:asl2.0)))
 
 (define-public llama-cpp
-  (let ((tag "b8445"))                  ;sync with ggml and python-gguf
+  (let ((tag "b9095"))                  ;sync with ggml and python-gguf
     (package
       (name "llama-cpp")
       (version (string-append "0.0.0-" tag))
@@ -862,7 +862,7 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                (commit tag)))
          (file-name (git-file-name name tag))
          (sha256
-          (base32 "1h97kj34b9157ky3c98g8wlmdqvfrg5paw8pyi38xv7faljb0nf4"))))
+          (base32 "1kx8fk1k9jydx17w0b07y5y3gx5p9vn3wykwfp7k3w97cmksqysl"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -890,8 +890,6 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                   (("set_tests_properties\\(test-download-model.*")
                    (string-append "set_tests_properties(test-download-model "
                                   " PROPERTIES DISABLED TRUE)"))
-                  (("llama_build_and_test\\(test-chat.cpp.*")
-                   "")
                   ;; error while handling argument "-m": expected value for
                   ;; argument
                   (("llama_build_and_test\\(test-arg-parser.cpp.*")
