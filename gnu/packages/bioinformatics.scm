@@ -20169,27 +20169,32 @@ fasta subsequences.")
 (define-public python-cooler
   (package
     (name "python-cooler")
-    (version "0.10.4")
+    ;; 0.10.4 (2025-07-21), the latest changes provide support for Python
+    ;; 3.12+; move back to git tag when released.
+    (properties '((commit . "6c2d65b1420a636193b7f05100a96410ea252147")
+                  (revision . "0")))
+    (version (git-version "0.10.4"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "cooler" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open2c/cooler")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1fh5wjffbl5j8fdkc3c3lybscwvhv4v6r5jiyqgxvkkhb5nn498w"))))
+        (base32 "0xdb7lvyzj3wwv6jhkrxlj7gk830wkac4lwq5rjwk1r5qshjbn3n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 141 passed, 4 skipped, 2 deselected, 268 warnings
+      ;; tests: 141 passed, 4 skipped, 2 deselected, 270 warnings
       #:test-flags
-      '(list "-k"
-             (string-append
-              ;; These tests download files from the internet.
-              "not test_fetch_chromsizes"
-              " and not test_roundtrip"
-              ;; This test depends on ipytree, which contains a lot of
-              ;; minified JavaScript.
-              " and not test_print_trees"))))
+      ;; This test depends on ipytree, which contains a lot of minified
+      ;; JavaScript.
+      #~(list "--deselect=tests/test_fileops.py::test_print_trees"
+              ;; Network access is required.
+              "--deselect=tests/test_create.py::test_roundtrip")))
     (native-inputs
      (list python-hatchling
            python-pytest))
