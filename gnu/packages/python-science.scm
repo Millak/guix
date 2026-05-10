@@ -6054,6 +6054,11 @@ It is designed to be fast, easy to use and expressive.")
        (sha256
         (base32 "0fc2fx2p72g01nhhhfs1fzbwz58rcj7zppascanq1y2f6kjjnfl0"))))
     (build-system pyproject-build-system)
+    ;; The wheel doesn't have tests.
+    ;; TODO On the next update, hopefully if delete-all-but has made it
+    ;; into guix, switch to a git-source and keep src/polars and tests
+    ;; subdirectories.
+    (arguments (list #:tests? #f))
     (propagated-inputs (list python-polars-runtime-32))
     (native-inputs (list python-setuptools))
     (home-page "https://pola.rs/")
