@@ -19347,7 +19347,7 @@ tutorial.")
 (define-public python-pythonanywhere-core
   (package
     (name "python-pythonanywhere-core")
-    (version "0.2.7")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -19356,7 +19356,7 @@ tutorial.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1p9zlq3is0jvbni9ydiv6f0fw89lm44hkgbj6nari2a3gb3qw856"))))
+        (base32 "0whi3a4wrfcaw224mi69gyds3njq64ck76mvgndamzxcq23sqr4v"))))
     (build-system pyproject-build-system)
     (arguments
      (list
