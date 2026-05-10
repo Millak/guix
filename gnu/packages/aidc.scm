@@ -117,7 +117,7 @@ Features:
 (define-public python-zbarlight
   (package
     (name "python-zbarlight")
-    (version "3.0")
+    (version "4.0")
     (source
      (origin
        (method git-fetch)
@@ -126,7 +126,7 @@ Features:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1radfpfhfhkx3xnz01bqr5l9pl2zv70zis6l2kw1gwqbfw65r6w6"))))
+        (base32 "1q1nfc7g7bl9y63fwvnq1fcgqk79inc2hhw3ilvyw0nk0g74v8cm"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-pillow))
     (inputs (list zbar))
