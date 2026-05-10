@@ -3322,7 +3322,17 @@ trees, synthetic data generation, or just phylogenetic tree simulation.")
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x0c1zhlfplhm4n07vibvh4jprjsdlypnlig87a8r07d26d4qphh"))))
+        (base32 "1x0c1zhlfplhm4n07vibvh4jprjsdlypnlig87a8r07d26d4qphh"))
+       (patches
+        (list
+         (origin
+           (method url-fetch)
+           (uri
+            (string-append "https://github.com/cancerit/parabam/commit/"
+                           "477246d7a13b227841bf49521181235c76afe75f.patch"))
+           (file-name (string-append name "-" version "-pull-16.patch"))
+           (sha256
+            (base32 "0znmyvrmwbscqymhsx60pnp9jhzpz94diyv409jygjm58hj5454z")))))))
     (build-system pyproject-build-system)
     (arguments
      (list
