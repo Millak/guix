@@ -7178,7 +7178,7 @@ training of deep learning models for inference and training on-device.")
   (package
     (inherit llama-cpp)
     (name "python-gguf")
-    (version "0.18.0")                  ;from gguf-py/pyproject.toml
+    (version "0.19.0")                  ;from gguf-py/pyproject.toml
     (build-system pyproject-build-system)
     (arguments
      (list
