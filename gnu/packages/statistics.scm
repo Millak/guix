@@ -1717,47 +1717,24 @@ completion.")
 (define-public python-rpy2
   (package
     (name "python-rpy2")
-    (version "3.5.17")
+    (version "3.6.7")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "rpy2" version))
         (sha256
          (base32
-          "10nmydlbmi0vyim7sx71isx3z2mnnfjmhf3248cicy9x1z1hizyv"))))
+          "17wczrbabp41bww11ivwrqvyn9ysgk4xx21h2csyj53xrr4ldyzi"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: ...trying to load module _rinterface_cffi_api: ERROR:
-          ;;
-          ;; See: <https://github.com/rpy2/rpy2/issues/1034>.
-          (delete 'sanity-check))))
-    (propagated-inputs
-     (list python-cffi
-           python-jinja2
-           python-numpy
-           python-pandas
-           python-pytz
-           python-ipython
-           python-tzlocal))
-    (inputs
-     (list icu4c
-           libdeflate
-           pcre
-           python-numpy
-           readline
-           r-minimal
-           r-survival
-           r-ggplot2
-           r-rsqlite
-           r-dplyr
-           r-dbplyr
-           zlib))
+     ;; This is a meta package with tests moved to python-rpy2-rinterface and
+     ;; python-rpy2-robjects.
+     (list #:tests? #f))
     (native-inputs
-     (list python-pytest-8
-           python-setuptools))
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-rpy2-rinterface
+           python-rpy2-robjects))
     (home-page "https://rpy2.github.io")
     (synopsis "Python interface to the R language")
     (description "rpy2 is a redesign and rewrite of rpy.  It is providing a
