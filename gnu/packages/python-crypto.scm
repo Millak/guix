@@ -330,32 +330,27 @@ do what is needed for client/server Kerberos authentication based on
 (define-public python-keyring
   (package
     (name "python-keyring")
-    (version "23.9.3")
+    (version "25.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "keyring" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jaraco/keyring")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "19f4jpsxng9sjfqi8ww5hgg196r2zh1zb8g71wjr1xa27kc1vc39"))))
+        (base32 "116nkhnldhgqd5nz0wf5zfjnkmlrpwj47pdd8p4r1zrizkr3dnxz"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'workaround-test-failure
-            (lambda _
-              ;; Workaround a failure in the test_entry_point test (see:
-              ;; https://github.com/jaraco/keyring/issues/526).
-              (delete-file-recursively "keyring.egg-info"))))))
     (native-inputs
-     (list python-toml
+     (list python-pyfakefs
            python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-jaraco-classes
+           python-jaraco-context
+           python-jaraco-functools
+           python-jeepney
            python-secretstorage))
     (home-page "https://github.com/jaraco/keyring")
     (synopsis "Store and access your passwords safely")
@@ -363,7 +358,8 @@ do what is needed for client/server Kerberos authentication based on
      "The Python keyring lib provides a easy way to access the system keyring
 service from python.  It can be used in any application that needs safe
 password storage.")
-    ;; "MIT" and PSF dual license
+    ;; "MIT" and PSF dual license, see:
+    ;; <https://github.com/jaraco/keyring/issues/263>.
     (license license:x11)))
 
 (define-public python-keyrings-alt
