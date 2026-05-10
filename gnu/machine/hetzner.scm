@@ -85,6 +85,7 @@
             hetzner-configuration-server-type
             hetzner-configuration-ssh-key
             hetzner-configuration-ssh-public-key
+            hetzner-configuration-user
             hetzner-configuration?
             hetzner-environment-type))
 
@@ -268,7 +269,9 @@ Have you run 'guix archive --generate-key'?")
                    (lambda (value)
                      (if (string? value) (public-key-from-file value) value))))
   (ssh-key hetzner-configuration-ssh-key
-           (default #f))) ; #f | string
+           (default #f))                ; #f | string
+  (user hetzner-configuration-user
+        (default "root")))              ;string
 
 (define (hetzner-configuration-ssh-key-fingerprint config)
   "Return the SSH public key fingerprint of CONFIG as a string."
@@ -293,21 +296,26 @@ Have you run 'guix archive --generate-key'?")
          ;; Get the operating system WITHOUT the provenance service to avoid a
          ;; duplicate symlink conflict in the store.
          (os ((@@ (gnu machine) %machine-operating-system) target)))
-    (machine
-     (inherit target)
-     (operating-system
-       (if (hetzner-configuration-authorize? config)
-           (operating-system-authorize os)
-           os))
-     (environment managed-host-environment-type)
-     (configuration
-      (machine-ssh-configuration
-       (allow-downgrades? (hetzner-configuration-allow-downgrades? config))
-       (authorize? (hetzner-configuration-authorize? config))
-       (build-locally? (hetzner-configuration-build-locally? config))
-       (host-name (hetzner-server-public-ipv4 server))
-       (identity (hetzner-configuration-ssh-key config))
-       (system (hetzner-server-system server)))))))
+    (match-record config <hetzner-configuration>
+                  ( authorize? allow-downgrades? build-locally? user)
+      (machine
+        (inherit target)
+        (operating-system
+          (if authorize?
+              (operating-system-authorize os)
+              os))
+        (environment managed-host-environment-type)
+        (configuration
+         (machine-ssh-configuration
+           (allow-downgrades? allow-downgrades?)
+           (authorize? authorize?)
+           (build-locally? build-locally?)
+           (host-name (hetzner-server-public-ipv4 server))
+           ;; XXX: match-record doesn't make use of custom accessors to obtain
+           ;; the value, so we can't bind SSH-KEY with it.
+           (identity (hetzner-configuration-ssh-key config))
+           (system (hetzner-server-system server))
+           (user user)))))))
 
 (define (hetzner-machine-location machine)
   "Find the location of MACHINE on the Hetzner API."

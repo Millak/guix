@@ -50569,6 +50569,10 @@ If specified, either a public key as returned by
 @code{string->public-key} or the path to the SSH public key to use to
 authenticate with the remote host.
 
+@item @code{user} (default: @code{"root"})
+The user to use for SSH authentication for the @samp{guix deploy}
+command once the initial provisioning is complete.
+
 @end table
 
 When deploying a machine for the first time, the following steps are
