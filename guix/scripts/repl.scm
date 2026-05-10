@@ -157,8 +157,7 @@ call THUNK."
                 #:build-options? #f
                 #:argument-handler
                 (lambda (arg result)
-                  (append `((script . ,arg)
-                            (ignore-dot-guile? . #t))
+                  (append `((script . ,arg))
                           result))))
 
   (define user-config
@@ -168,7 +167,9 @@ call THUNK."
 
   (define (set-user-module)
     (set-current-module user-module)
-    (when (and (not (assoc-ref opts 'ignore-dot-guile?))
+    (when (and (not (or (assoc-ref opts 'ignore-dot-guile?)
+                        (and (assoc-ref opts 'script)
+                             (not (assoc-ref opts 'interactive?)))))
                user-config
                (file-exists? user-config))
       (load user-config)))
