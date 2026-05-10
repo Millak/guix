@@ -1802,6 +1802,37 @@ otherwise relatively easily to crash (segfault) a process by calling R's
 C-API.")
     (license (list license:mpl2.0 license:gpl2+ license:lgpl2.1+))))
 
+(define-public python-rpy2-robjects
+  (package
+    (name "python-rpy2-robjects")
+    (version "3.6.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "rpy2_robjects" version))
+       (sha256
+        (base32 "1r5gnhv2wlqg787cwgwcvb6wg68a881gd2wgzd8qn6m06vs9kl03"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-ipython-minimal
+           python-numpy
+           python-pandas
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-jinja2
+           python-rpy2-rinterface
+           python-tzlocal))
+    (home-page "https://rpy2.github.io")
+    (synopsis "Python interface to the R language (embedded R)")
+    (description
+     "The rpy2 package is a namespace package.  This is the part of that
+package that covers the \"high-level\" interface to R used in rpy2.  It uses
+the \"low-level\" interface (bindings to R's C API) to create a more Pythonic
+and safer interface in rpy2.robjects as well as extentions for ipython and
+jupyter notebooks in rpy2.ipython.")
+    (license (list license:mpl2.0 license:gpl2+ license:lgpl2.1+))))
+
 (define-public python-rchitect
   (package
     (name "python-rchitect")
