@@ -681,7 +681,12 @@ and a lot more.")
     (arguments
      (list
       ;; doctests require NumPy1.
-      #:test-flags #~(list "-o" "addopts=''")))
+      #:test-flags #~(list "-o" "addopts=''")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'drop-custom-test-configuration
+            (lambda _
+              (delete-file "conftest.py"))))))
     (native-inputs
      (list python-array-api-strict
            python-pytest
