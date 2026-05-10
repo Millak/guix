@@ -302,6 +302,7 @@ configurations deterministically based on compute and memory latencies.")
      (list python-filelock
            python-pandas
            python-pytest
+           python-setuptools
            rocminfo
            rocm-hip-runtime
            rocm-toolchain))
