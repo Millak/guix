@@ -2009,8 +2009,11 @@ in Python 3.13 by PEP-594.")
        (sha256
         (base32 "0xjp04zjn7m79xsda9wp79rqyzy2c10347s967vp7xvmndwwa0ds"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-asgiref python-opentelemetry-api
-                             python-opentelemetry-sdk))
+    (arguments (list #:tests? #f))      ; No tests in the wheel.
+    (propagated-inputs
+     (list python-asgiref
+           python-opentelemetry-api
+           python-opentelemetry-sdk))
     (native-inputs (list python-hatchling))
     (home-page "https://opentelemetry.io/docs/languages/python/")
     (synopsis "Test utilities for OpenTelemetry unit tests")
@@ -2021,13 +2024,10 @@ in Python 3.13 by PEP-594.")
   (hidden-package
    (package/inherit python-opentelemetry-test-utils
      (name "python-opentelemetry-test-utils-bootstrap")
-     (arguments
-      (list
-       #:tests? #f))
-     (propagated-inputs (list python-asgiref
-                              python-opentelemetry-api-bootstrap
-                              python-opentelemetry-sdk-bootstrap))
-     (native-inputs (list python-hatchling)))))
+     (propagated-inputs
+      (list python-asgiref
+            python-opentelemetry-api-bootstrap
+            python-opentelemetry-sdk-bootstrap)))))
 
 (define-public python-pathy
   (package
