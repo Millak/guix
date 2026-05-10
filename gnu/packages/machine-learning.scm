@@ -257,6 +257,21 @@ written in C and C++ with a focus on transformer inference, similar to ML
 libraries such as PyTorch and TensorFlow.")
     (license license:expat)))
 
+(define-public ggml-for-whisper
+  (package
+    (inherit ggml)
+    (name "ggml-for-whisper")
+    (version "0.10.2")                  ;sync whisper.cpp
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ggml-org/ggml")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12g83g6ja1j9jj6hlbp6nsriiak2p880bxyqpi0z40rshiqjbvg2"))))))
+
 (define-public python-apricot-select
   (package
     (name "python-apricot-select")
