@@ -19,6 +19,7 @@
 (define-module (gnu packages physics)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
@@ -166,6 +167,34 @@ theory, and density matrix renormalization group methods.  It contains both
 ready to use applications and C++ library for simplifying the development of
 such components.")
     (license license:expat)))
+
+(define-public cif-core
+  (package
+    (name "cif-core")
+    (version "3.0.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/COMCIFS/cif_core")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xkb3kdsqq8lsn6601m1ymqa42vr742ly2cb4izv44awfamqkzhz"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("." "share/cif-core" #:include-regexp ("\\.dic$" "\\.cif$")))))
+    (home-page "https://github.com/COMCIFS/cif_core")
+    (synopsis "IUCr CIF core files")
+    (description
+     "This package provides the
+@url{http://www.iucr.org/resources/cif/comcifs, IUCr} (International Union of
+Crystallography) core CIF dictionary and supplementary dictionaries which
+COMCIFS manages.  Dictionary definitions are described using DDLm attributes,
+which are themselves described in 'ddl.dic'.")
+    (license license:cc-by4.0)))
 
 (define-public python-brille
   (package
