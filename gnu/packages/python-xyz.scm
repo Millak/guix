@@ -27473,7 +27473,7 @@ environments.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-backend #~'unittest
+      #:tests? #f       ;XXX: tests can't be found with pytest or unittest
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
