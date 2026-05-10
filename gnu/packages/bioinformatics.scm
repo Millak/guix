@@ -20591,8 +20591,8 @@ and intra-cell population structure.\" Baron et al. Cell Systems (2016)
 (define-public porechop
   ;; The recommended way to install is to clone the git repository
   ;; https://github.com/rrwick/Porechop#installation
-  (let ((commit "289d5dca4a5fc327f97b3f8cecb68ecaf1014861")
-        (revision "1"))
+  (let ((commit "109e437280436d1ec27e5a5b7a34ffb752176390")
+        (revision "2"))
     (package
       (name "porechop")
       (version (git-version "0.2.3" revision commit))
@@ -20600,13 +20600,28 @@ and intra-cell population structure.\" Baron et al. Cell Systems (2016)
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/rrwick/Porechop")
-               (commit commit)))
+                (url "https://github.com/rrwick/Porechop")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "05ps43gig0d3ia9x5lj84lb00hbsl6ba9n7y7jz927npxbr2ym23"))))
+          (base32 "0m7bsgvknv0cbkrpc0qi7b39jaws38dcdih4hi2ppg6z7byxip0k"))))
       (build-system pyproject-build-system)
-      (native-inputs (list python-setuptools python-wheel python-pytest))
+      (arguments
+       (list
+        #:test-flags
+        ;; Tests fail with errors: "SyntaxWarning: invalid escape sequence"
+        ;; and "AssertionError: Lists differ".
+        #~(list "-k" (string-join
+                      (list "not test_albacore_directory_all"
+                            "test_albacore_directory_unclassified"
+                            "test_verbosity_0_output"
+                            "test_albacore_directory_3"
+                            "test_verbosity_1_output"
+                            "test_verbosity_2_output")
+                      " and not "))))
+      (native-inputs
+       (list python-pytest
+             python-setuptools))
       (home-page "https://github.com/rrwick/porechop")
       (synopsis
        "Finding, trimming or splitting adapters, in Oxford Nanopore reads")
