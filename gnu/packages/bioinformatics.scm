@@ -12280,14 +12280,14 @@ sequences.")
 (define-public subread
   (package
     (name "subread")
-    (version "2.0.3")
+    (version "2.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/subread/subread-"
                                   version "/subread-" version "-source.tar.gz"))
               (sha256
                (base32
-                "0szmllia7jl0annk5568xjhw6cc8yj1c5mb961qk5m0lz6ig7kjn"))))
+                "1ahyn0dgz1aymmqrdfnhismny6x5g4m8jlc2wmkxgk9id33dg4k3"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ;no "check" target
