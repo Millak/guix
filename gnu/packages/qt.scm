@@ -5102,19 +5102,36 @@ bindings (PySide, PySide2, PyQt4 and PyQt5).")
 (define-deprecated-package python-qt.py python-qt-py)
 
 (define-public python-superqt
+  ;; XXX: Move to (gnu packages python-graphics) or closer to mantid to
+  ;; prevent adding python-science module here.
   (package
     (name "python-superqt")
-    (version "0.7.6")
+    (version "0.8.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "superqt" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pyapp-kit/superqt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0zkqm6rdz252d7wjcsc7ybi63a52ikvkkf1xknf954f33nkxnbw2"))))
+        (base32 "1sxvz1jm1kyd4nlaz6g9p64c0ifj1mmj0qcwpgd0p3b7l7yyvjqz"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-pygments python-qtpy
-                             python-typing-extensions))
-    (native-inputs (list python-hatch-vcs python-hatchling))
+    (arguments
+     (list #:tests? #f))         ;XXX: tets segfaulted
+    (native-inputs
+     (list python-pytest
+           python-hatch-vcs
+           python-hatchling
+           python-numpy
+           python-pytest-qt))
+    (propagated-inputs
+     (list python-pygments
+           python-qtpy
+           python-typing-extensions
+           ;; [optional]
+           python-pyqt-6
+           python-pyconify))
     (home-page "https://github.com/pyapp-kit/superqt")
     (synopsis "Extra widgets and components for PyQt/PySide")
     (description "This package provides some extra widgets for
