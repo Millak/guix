@@ -136,6 +136,33 @@ on the Blowfish password hashing algorithm, as described in
 Password Scheme\"} by Niels Provos and David Mazieres.")
     (license license:asl2.0)))
 
+(define-public python-bip32utils
+  (package
+    (name "python-bip32utils")
+    (version "0.3.post4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "bip32utils" version))
+       (sha256
+        (base32 "1hj8iirdwxj2f3gp0d3bmz4gfll26ixkidh6rk9qjykjpc7z8w2r"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))  ;no tests
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-ecdsa))
+    ;; Original link is gone <https://github.com/prusnak/bip32utils>.
+    (home-page "https://salsa.debian.org/debian/python-bip32utils")
+    (synopsis
+     "Python implementation of Bitcoin hierarchical deterministic wallet")
+    (description
+     "This package provides utilities for generating and using Bitcoin
+Hierarchical Deterministic wallets
+(BIP0032).")
+    (license license:expat)))
+
 (define-public python-murmurhash
   (package
     (name "python-murmurhash")
