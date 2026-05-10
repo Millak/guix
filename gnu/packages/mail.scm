@@ -3605,10 +3605,13 @@ an SMTP transaction before a message is committed to queue.")
     (version "3.3.10")
     (source
       (origin
-        (method url-fetch)
-        (uri (pypi-uri "mailman" version))
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://gitlab.com/mailman/mailman")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
         (sha256
-         (base32 "0cjn8karkgrapgiv3ra6ddcngkf5c5779hrq369mvwi6ygy7ir0d"))))
+         (base32 "1vv9d25lb9lwy6nbym81w9zk9bh3krhap1xz8hfm01idp757y8ni"))))
     (build-system pyproject-build-system)
     (arguments
      ;; XXX: Too much failing tests to try and isolate them.
