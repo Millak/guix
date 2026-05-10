@@ -19002,6 +19002,48 @@ spaces, along with extended support for control characters.")
      "This package provides wrappers around the ZFS command line tools.")
     (license license:asl2.0)))
 
+(define-public go-github-com-mistifyio-go-zfs-v4
+  (package
+    (name "go-github-com-mistifyio-go-zfs-v4")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mistifyio/go-zfs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ysjs9rj5qh71dr0f5m6p054dhm9n5ll5jdw4lzqayprk3y856ja"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mistifyio/go-zfs/v4"
+      #:test-flags
+      ;; The following tests need zpool executable
+      #~(list "-skip" (string-join
+                       (list "TestDatasets"
+                             "TestDatasetGetProperty"
+                             "TestSnapshots"
+                             "TestFilesystems"
+                             "TestCreateFilesystemWithProperties"
+                             "TestVolumes"
+                             "TestSnapshot"
+                             "TestClone"
+                             "TestSendSnapshot"
+                             "TestChildren"
+                             "TestListZpool"
+                             "TestRollback"
+                             "TestDiff")
+                       "|"))))
+    (propagated-inputs
+     (list go-github-com-google-uuid))
+    (home-page "https://github.com/mistifyio/go-zfs")
+    (synopsis "ZFS wrapper for Golang")
+    (description
+     "This package provides wrappers around the ZFS command line tools.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-mitchellh-cli
   (package
     (name "go-github-com-mitchellh-cli")
