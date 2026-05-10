@@ -3397,7 +3397,7 @@ to test using multiple servers in a single run.")
 (define-public atftp
   (package
     (name "atftp")
-    (version "0.8.0")
+    (version "0.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3405,7 +3405,7 @@ to test using multiple servers in a single run.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "019qrh2wpvr577ksvs3s82q6kiqm5i6869aj7qba326b59lhkxrc"))
+                "1pj0270r87iv84vrlrrbp66vkzdmaa4ramhx34b151hclkiv3c8j"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
