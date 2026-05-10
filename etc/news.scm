@@ -47,6 +47,8 @@
         (title
          (en "@command{pull} and @command{time-machine} can download channel
 files")
+         (de "@command{pull} und @command{time-machine} können Kanaldateien
+herunterladen")
          (fr "@command{pull} et @command{time-machine} peuvent télécharger des
 fichiers canaux"))
         (body
@@ -78,6 +80,35 @@ only @dfn{trusted channels} are allowed---one may specify them in
 @file{~/.config/guix/trusted-channels.scm}.
 
 See @samp{info \"(guix)Invoking guix pull\"} for more information.")
+         (de "Den Befehlen @command{guix pull} und @command{guix time-machine}
+kann jetzt eine URL mit der Option @option{-C} (oder @option{--channels})
+übergeben werden.  Zum Beispiel lädt der folgende Befehl vom neuesten
+erfolgreich ausgewerteten Commit des @code{master}-Branches herunter:
+
+@example
+guix pull \\
+  -C https://ci.guix.gnu.org/eval/latest/channels.scm?spec=master
+@end example
+
+Als Alternative kann man auch eine @uref{https://swhid.org, SWHID} angeben, die
+auf eine Kanaldatei verweist:
+
+@example
+guix time-machine \\
+  -C swh:1:cnt:ae02d8ba3538a385ee799e61cdd0dfc5e14a8d1b \\
+  -- ...
+@end example
+
+Damit das möglich ist, werden Kanaldateien jetzt in einer isolierten Umgebung
+ausgewertet (einer @dfn{Sandbox}), wodurch sie keinen beliebigen Code mehr
+ausführen können. Wenn Sie in bestehenden Dateien solche über den „Standard“
+hinausgehenden Funktionen benutzt haben, kann dazu jetzt verlangt werden, dass
+Sie @option{--unsafe-channel-evaluation} übergeben, um sie auszuwerten. Des
+Weiteren dürfen Kanäle aus heruntergeladenen Dateien nur als
+@dfn{vertrauenswürdig} markierte Kanäle verwenden, die Sie in
+@file{~/.config/guix/trusted-channels.scm} angeben.
+
+Siehe @samp{info \"(guix.de) Aufruf von guix pull\"} für mehr Informationen.")
          (fr "Les commandes @command{guix pull} et @command{guix time-machine}
 peuvent dorénavant prendre une URL pour l'option @option{-C} (ou
 @option{--channels}).  Par exemple, la commande ci-dessous tire la dernière
