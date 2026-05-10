@@ -46,6 +46,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz))
 
 (define-public boinc-client
@@ -108,7 +109,11 @@ resources).  It supports virtualized, parallel, and GPU-based applications.")
                                      "--with-gtk"
                                      "--with-auth")))
     (native-inputs
-     (list pkg-config autoconf automake which))
+     (list autoconf
+           automake
+           pkg-config
+           python-setuptools
+           which))
     (inputs
      (list avahi
            gtk+
