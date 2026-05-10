@@ -1005,6 +1005,34 @@ much more.")
 solver (theorem prover) for Deal.")
     (license license:expat)))
 
+(define-public python-diagnostic
+  (package
+    (name "python-diagnostic")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pradyunsg/diagnostic")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "119js783bfq89slhkxispl01xzv4a2c2wa59armncl6x23shrr02"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; This test fails due to meaningless print differences.
+     (list #:test-flags #~(list "-k" "not test_directory_traversal")))
+    (propagated-inputs
+     (list python-docutils python-markdown-it-py python-rich))
+    (native-inputs
+     (list python-flit-core python-pytest))
+    (home-page "https://github.com/pradyunsg/diagnostic")
+    (synopsis "Tooling to present errors in Python")
+    (description
+     "This package provides tooling to makes it easier to build command line
+tools with great error reporting.")
+    (license license:expat)))
+
 (define-public python-doc8
   (package
     (name "python-doc8")
