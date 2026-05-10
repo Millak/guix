@@ -16389,74 +16389,125 @@ command pipeline functionality.")
     (license license:bsd-3)))
 
 (define-public python-sentry-sdk
+  ;; TODO: Move to (gnu packages python-web).
   (package
     (name "python-sentry-sdk")
-    (version "1.5.5")
+    (version "2.59.0")
     (source
      (origin
-       (method git-fetch)               ; no tests in PyPI release
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/getsentry/sentry-python")
-             (commit version)))
+              (url "https://github.com/getsentry/sentry-python")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dygfaapvznpj2j7cfjb0vlwhsn5qa5kf0kq488xbhjg06n8rrc4"))))
+        (base32 "1ghpfqfhjkh511q11l5lisahian34b3lzjk2xvkg2ijm6p9ail88"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 2119 passed, 128 skipped, 224 warnings
       #:test-flags
-      ;; See <https://github.com/pytest-dev/pytest-forked/issues/88>.
-      ;; AttributeError: module 'py' has no attribute 'process'
-      '(list "--ignore=tests/integrations/django/test_basic.py"
-             "--ignore=tests/utils/test_contextvars.py"
-             ;; These try to use pip to install packages.
-             "--ignore=tests/integrations/gcp/test_gcp.py"
-             "-k"
-             (string-append
-              ;; This test requires extra dependencies.
-              "not test_auto_enabling_integrations"
-              ;; AttributeError: module 'py' has no attribute 'process'
-              " and not test_threading"
-              " and not test_transport"
-              ;; Tests below require network.
-              " and not test_crumb_capture"
-              " and not test_crumb_capture_hint"
-              " and not test_httplib_misuse"
-              ;; Unclear assert error
-              " and not test_auto_session_tracking_with_aggregates"
-              ;; Fails with IndexError.
-              " and not test_session_mode_defaults_to"
-              "_request_mode_in_wsgi_handler"))
-       #:phases
-       '(modify-phases %standard-phases
-          (add-before 'check 'fix-test
-            ;; See https://github.com/getsentry/sentry-python/pull/2712
+      #~(list "--durations=10"
+              "--numprocesses" (number->string (parallel-job-count))
+              ;; The whole test suite is quite shaky, may fail unpredictably
+              ;; and depends on many additional inputs to enable all
+              ;; integration tests.
+              "-k" (string-join
+                    (list "not test_aggregates"
+                          "test_aggregates_deprecated"
+                          (string-append "test_aggregates_explicitly_disabled"
+                                         "_session_tracking_request_mode")
+                          (string-append "test_aggregates_explicitly_disabled"
+                                         "_session_tracking_request"
+                                         "_mode_deprecated")
+                          "test_auto_session_tracking_with_aggregates[False]"
+                          "test_auto_session_tracking_with_aggregates[True]"
+                          "test_basic"
+                          "test_default_attributes"
+                          "test_default_release"
+                          (string-append "test_ensure_integration_enabled"
+                                         "_no_original_function_enabled")
+                          "test_logger_with_all_attributes"
+                          "test_merging"
+                          (string-append "test_session_mode_defaults_to"
+                                         "_request_mode_in_wsgi_handler"))
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
             (lambda _
-              (substitute* "tests/__init__.py"
-                (("import pytest")
-                 "import warnings")
-                (("pytest.warns\\(None\\)")
-                 "warnings.catch_warnings(record=True)"))))
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (apply invoke "python" "-m" "pytest" test-flags)))))))
+              ;; Tests run in debug mode which generats a lot of noise.
+              (delete-file "tox.ini")
+              (substitute* "pyproject.toml"
+                (("addopts =.*") "")))))))
     (native-inputs
      (list nss-certs-for-test
-           python-django
-           python-executing
-           python-gevent
+           python-brotli
            python-jsonschema
            python-mock
-           python-pyrsistent
+           python-pysocks
            python-pytest
-           python-pytest-django
+           python-pytest-aiohttp
+           python-pytest-asyncio
            python-pytest-localserver
+           python-pytest-timeout
+           python-pytest-xdist
+           python-responses
            python-setuptools
-           python-werkzeug
-           python-wheel))
+           python-socksio))
     (propagated-inputs
-     (list python-certifi python-urllib3))
+     (list python-certifi
+           python-urllib3
+           ;; [optional]
+           ;; python-unleashclient
+           python-aiohttp
+           ;; python-anthropic
+           ;; python-apache-beam
+           ;; python-arq
+           python-asttokens
+           ;; python-asyncpg
+           ;; python-blinker
+           ;; python-bottle
+           ;; python-celery
+           ;; python-celery-redbeat
+           ;; python-chalice
+           ;; python-clickhouse-driver
+           ;; python-django
+           python-executing
+           ;; python-falcon
+           ;; python-fastapi
+           ;; python-flask
+           ;; python-google-genai
+           ;; python-grpcio
+           python-httpcore
+           ;; python-httpx
+           ;; python-huey
+           ;; python-huggingface-hub
+           ;; python-langchain
+           ;; python-langgraph
+           ;; python-launchdarkly-server-sdk
+           ;; python-litellm
+           ;; python-litestar
+           ;; python-loguru
+           ;; python-markupsafe
+           ;; python-mcp
+           ;; python-openai
+           ;; python-openfeature-sdk
+           ;; python-opentelemetry-distro
+           ;; python-protobuf
+           ;; python-pure-eval
+           ;; python-pydantic-ai
+           ;; python-pymongo
+           ;; python-pyspark
+           ;; python-quart
+           ;; python-rq
+           ;; python-sanic
+           ;; python-sqlalchemy
+           ;; python-starlette
+           ;; python-starlite
+           ;; python-statsig
+           ;; python-tiktoken
+           #;python-tornado))
     (home-page "https://github.com/getsentry/sentry-python")
     (synopsis "Python SDK for Sentry")
     (description "This package provides a Python SDK for the Sentry
