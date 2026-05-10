@@ -3069,12 +3069,12 @@ users and in some situations.")
 (define-public guile-g-golf
   (package
     (name "guile-g-golf")
-    (version "0.8.3")
+    (version "0.8.7")
     (source
      (g-golf-source #:version version
                     #:hash
                     (content-hash
-                     "1cbvb42dy94612m8040y3km9941jhi17mf78yc4pavlala8x6937")))
+                     "0lwwr78fwdcap7606r5rszw6369lsq876zmr9mdsw37d4nimm7xi")))
     (build-system gnu-build-system)
     (arguments
      (list
