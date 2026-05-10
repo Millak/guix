@@ -45,6 +45,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages containers)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages golang)
@@ -197,6 +198,50 @@ Docker Registry 2}.")
 enforce convention and best practices for metrics collection in Docker
 projects.")
     (license (list license:asl2.0 license:cc-by-sa4.0))))
+
+(define-public go-github-com-moby-policy-helpers
+  (package
+    (name "go-github-com-moby-policy-helpers")
+    (version "0.0.0-20260507153417-a39d60132186")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/moby/policy-helpers")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12fa602jianip7dg98f2i9i686s2a9bsclw8sqxw1ac1v19qlqr8"))
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "vendor"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.25
+      #:embed-files #~(list ".*\\.json")
+      #:import-path "github.com/moby/policy-helpers"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-containerd-containerd-v2
+           go-github-com-containerd-errdefs
+           go-github-com-containerd-platforms
+           go-github-com-distribution-reference
+           go-github-com-gofrs-flock
+           go-github-com-in-toto-in-toto-golang
+           go-github-com-opencontainers-go-digest
+           go-github-com-opencontainers-image-spec
+           go-github-com-pkg-errors
+           go-github-com-sigstore-protobuf-specs
+           go-github-com-sigstore-sigstore
+           go-github-com-sigstore-sigstore-go
+           go-github-com-theupdateframework-go-tuf-v2
+           go-golang-org-x-sync))
+    (home-page "https://github.com/moby/policy-helpers")
+    (synopsis "Policy helpers for Docker")
+    (description "This package provides a policy helpers for Moby (Docker)
+and BuildKit.  It is a work in progress.")
+    (license license:asl2.0)))
 
 (define-public python-docker
   (package
