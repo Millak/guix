@@ -212,7 +212,7 @@ representations and sentence classification.")
 (define-public ggml
   (package
     (name "ggml")
-    (version "0.9.8")                   ;sync with llama.cpp and whisper.cpp
+    (version "0.11.1")                  ;sync with llama.cpp
     (source
      (origin
        (method git-fetch)
@@ -221,7 +221,7 @@ representations and sentence classification.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "149j80i60l7c4zaa6ji48yfr9q6cbjn2m8l2wwcx2c0bh346b02x"))))
+        (base32 "0hz7fjd9djwkbpvlbz6l0kmmlz2ridnss4h47rx52rvd4j465sxf"))))
     (build-system cmake-build-system)
     (arguments
      (list
