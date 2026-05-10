@@ -9001,19 +9001,19 @@ from Python as a referencing-based Schema Registry.")
 (define-public python-schema
   (package
     (name "python-schema")
-    (version "0.7.7")
+    (version "0.7.8")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "schema" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/keleshev/schema")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "01qq1amzbjm1kvjrnnhpjs8v761kwp6qihs74pf1k2lmsamm79bx"))))
+        (base32 "149smlvj0jlvpsw39lw84c29prg76k1gr6iazl9fqydaqiaw52c5"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/keleshev/schema")
     (synopsis "Simple data validation library")
     (description
