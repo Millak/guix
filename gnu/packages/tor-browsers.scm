@@ -789,17 +789,17 @@ attacks on the privacy of Tor users.")
 
 ;; We copy the official build id, which can be found there:
 ;; https://cdn.mullvad.net/browser/update_responses/update_1/release.
-(define %mullvadbrowser-build-date "20260427173000")
+(define %mullvadbrowser-build-date "20260506160000")
 
 ;; To find the last version, look at
 ;; https://mullvad.net/en/download/browser/linux.
-(define %mullvadbrowser-version "15.0.11")
+(define %mullvadbrowser-version "15.0.12")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/mullvadbrowser/<%mullvadbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-mullvad-browser-".
-(define %mullvadbrowser-firefox-version "140.10.1esr-15.0-1-build1")
+(define %mullvadbrowser-firefox-version "140.10.2esr-15.0-1-build1")
 
 ;; See tor-browser-build/projects/translation/config.
 (define mullvadbrowser-translation-base
@@ -807,11 +807,11 @@ attacks on the privacy of Tor users.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "1f76c1fa38583ae3f911e00a3bb170d73a329fac")))
+          (commit "bca639ef183dba065e6f9dc0bab86aedb03f9335")))
     (file-name "translation-base-browser")
     (sha256
      (base32
-      "1plf0pcijid8lhrfzkbppf67q46783wxxqsjxi327d4xp0zxfq9g"))))
+      "0h1vp8qkbbydkii7a1hfgrgzyyrfax4gkv24g50xrx34r7qjhjcl"))))
 
 ;; See tor-browser-build/projects/translation/config.
 (define mullvadbrowser-translation-specific
@@ -839,7 +839,7 @@ attacks on the privacy of Tor users.")
          version "/mullvad-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "11yq8cy0kqa0j1xba0j56gq3dv6543x2r1vnpxnvlqj1vs4hdjgs"))))
+         "0qd285awd2pslw8q05s0mqfjclcjmwra0bcs5bvbpqdazpsxm9sf"))))
     (arguments
      (list
       #:install-plan
@@ -882,7 +882,7 @@ Mullvad Browser.")
          %mullvadbrowser-firefox-version ".tar.xz"))
        (sha256
         (base32
-         "1cbc7s8fzwxl19nbf1l7gn6xjlkc81si147ww2v15yv0xpvlsymy"))))
+         "0nwbcdqcyr5a9w233gmfjy0ych8frhx5am1zszyl84i7miykqads"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:phases phases)
