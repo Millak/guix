@@ -7351,13 +7351,16 @@ standard.")
 (define-public python-sinfo
   (package
     (name "python-sinfo")
-    (version "0.3.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sinfo" version))
-              (sha256
-               (base32
-                "0kdsp883mx0lfyykv0p12bvs203kdm3skb8bw5wf2pc7kb393sl1"))))
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/joelostblom/session_info")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14rdr235gn1f9lcp1wnvxhjkbqy6jxs0k8qfkh074gfzhp6kh4w5"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ; no tests in PyPI or Git
