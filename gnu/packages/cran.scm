@@ -43872,14 +43872,14 @@ emphasize hidden group structures in networks or focus on specific nodes.")
 (define-public r-terra
   (package
     (name "r-terra")
-    (version "1.9-25")
+    (version "1.9-27")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "terra" version))
        (sha256
         (base32
-         "1xll69w66giags5cb7kwbfsnj457n0ybvi0ffrwpfqx6f0dw6f29"))))
+         "06knzm66jgi3skw9a480n9n1b065cw6ydszh0vx64b6vqs79ilna"))))
     (properties
      '((upstream-name . "terra")
        (updater-ignored-inputs . ("openssh" "openssl"))))
