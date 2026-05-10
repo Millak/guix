@@ -3357,25 +3357,29 @@ defined rule on an input file.")
 (define-public python-pdbfixer
   (package
     (name "python-pdbfixer")
-    (version "1.9")
+    (version "1.12")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/openmm/pdbfixer")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zjhb19q5dclkwvzh8n29p31n1vzkhlmmzwqllimi89jsis1cx35"))))
+        (base32 "0jj724fkvk7bk47izk92ss8nz9ymfvj0f1fkypc0ig4xd5qzjqsz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
+      ;; These tests fail because they require internet access or test data.
       '(list "-k"
-             ;; These tests fail because they require internet access.
-             (string-append "not test_build_and_simulate.py"
-                            " and not test_cli.py"
-                            " and not test_mutate.py"))))
+             (string-join (list "not test_build_and_simulate"
+                                "test_charge_and_solvate"
+                                "test_cli"
+                                "test_leaving_atoms"
+                                "test_mutate"
+                                "test_nonstandard")
+                          " and not "))))
     (propagated-inputs (list openmm python-numpy))
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/openmm/pdbfixer")
