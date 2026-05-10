@@ -80,10 +80,23 @@ Return the value associated with OPTION, or #f on failure."
     (string-append root (if (string-suffix? "/" root) "" "/") dir))
 
   (mkdir-p (scope "dev"))
-  ;; Don't create /dev/null etc just yet; the store
-  ;; messes-up the permission bits.
-  ;; Don't create /dev/console, /dev/vcs, etc.: they are created by
-  ;; console-run on first boot.
+  ;; XXX: We must have `/dev/console` otherwise `console-run` tries to
+  ;; create it while the file-system is still read-only.
+  (for-each (lambda (file)
+              (call-with-output-file (scope file)
+                (lambda (port)
+                  (display file port)   ;avoid hard-linking
+                  (chmod port #o666))))
+            '("dev/console"
+              ;; XXX What about vcs?
+              ;; Don't create /dev/null etc just yet; the store
+              ;; messes-up the permission bits.
+              ;; "dev/null"
+              ;; "dev/zero"
+              ;; "dev/full"
+              ;; "dev/random"
+              ;; "dev/urandom"
+              ))
 
   (mkdir-p (scope "servers"))
   (for-each (lambda (file)

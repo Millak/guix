@@ -1553,6 +1553,7 @@ a list of <menu-entry>, to populate the \"old entries\" menu."
          (root-file-system-command
           (list (file-append hurd "/hurd/ext2fs.static")
                 "ext2fs"
+                "--readonly"
                 "--multiboot-command-line='${kernel-command-line}'"
                 "--exec-server-task='${exec-task}'"
                 "--store-type=typed"

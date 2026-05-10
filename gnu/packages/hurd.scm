@@ -459,12 +459,55 @@ Hurd-minimal package which are needed for both glibc and GCC.")
 # Remove this script when Linux and the Hurd have xattr patches.
 PATH=@PATH@
 
-fsck --yes --force /
-fsysopts / --writable
+fsysopts / --update --readonly
 
+if test -f /etc/fstab; then
+    fsck --all --preen --verbose
+else
+    echo \"No /etc/fstab found, ignoring...\"
+fi
+
+case $? in
+# Successful completion
+0)
+    fsysopts / --writable
+    ;;
+# Filesystem modified (but ok now)
+1)
+    fsysopts / --writable
+    ;;
+# Filesystem modified, filesystem should be restarted
+# Ideally we would only restart the filesystem
+2 | 3)
+    # Note: this /sbin gets substituted
+    /sbin/reboot
+    ;;
+# Fsck couldn't fix it.
+4 | 5 | 8 | 9)
+    echo \"Automatic boot failed... help!\"
+    exit 1
+    ;;
+# Signal that really interrupted something
+20 | 130 | 131)
+    echo \"Boot interrupted\"
+    exit 1
+    ;;
+# Special `let fsck finish' interruption (SIGQUIT)
+12)
+    echo \"Boot interrupted (filesystem checks complete)\"
+    exit 1
+    ;;
+# Oh dear.
+*)
+    echo \"Unknown error during fsck (exit status $?)\"
+    exit 1
+    ;;
+esac
+
+# Only after this we can run guile.
 mkdir -p /servers/socket
 rm -f /servers/socket/1
-# Note: this /hurd/ gets substituted
+# Note: this /hurd gets substituted
 settrans --create /servers/socket/1 /hurd/pflocal
 
 # Upon second boot, (file-exists? /dev/null) in hurd-boot-system hangs unless:
@@ -489,7 +532,8 @@ exec ${system}/rc \"$@\"
                     (coreutils (assoc-ref inputs "coreutils"))
                     (sed  (assoc-ref inputs "sed"))
                     (grep (assoc-ref inputs "grep"))
-                    (util-linux (assoc-ref inputs "util-linux")))
+                    (util-linux (assoc-ref inputs "util-linux"))
+                    (e2fsprogs (assoc-ref inputs "e2fsprogs")))
                (substitute* '("daemons/runttys.c" "daemons/getty.c" "utils/login.c")
                  (("/bin/login")
                   (string-append out "/bin/login"))
@@ -505,9 +549,13 @@ exec ${system}/rc \"$@\"
                ;; name.
                (substitute* '("boot/boot.c"
                               "daemons/console-run.c"
-                              "startup/startup.c")
+                              "startup/startup.c"
+                              "sutils/swapon.c"
+                              "tmpfs/tmpfs.c")
                  (("/hurd/")
-                  (string-append out "/hurd/")))
+                  (string-append out "/hurd/"))
+                 (("/sbin/")
+                  (string-append out "/sbin/")))
                (substitute* '("libdiskfs/boot-start.c"
                               "libdiskfs/opts-std-startup.c")
                  (("_HURD_STARTUP")
@@ -521,12 +569,15 @@ exec ${system}/rc \"$@\"
                   (string-append "PATH=" out "/bin"
                                  ":" out "/sbin"
                                  ":" coreutils "/bin"
+                                 ":" e2fsprogs "/sbin"
                                  ":" grep "/bin"
                                  ":" sed "/bin"
                                  ":" util-linux "/sbin\n"))
                  (("/sbin/") (string-append out "/sbin/"))
                  (("/libexec/") (string-append out "/libexec/"))
-                 (("/hurd/") (string-append out "/hurd/"))))))
+                 (("/hurd/") (string-append out "/hurd/")))
+               (substitute* "sutils/fsck.c"
+                 (("/sbin/") (in-vicinity e2fsprogs "sbin/"))))))
          (add-after 'patch-shebangs 'patch-libexec-shebangs
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; XXX: Since the 'patch-shebangs' phase doesn't traverse
@@ -536,8 +587,7 @@ exec ${system}/rc \"$@\"
                     (path (list (string-append bash "/bin"))))
                (for-each (lambda (file)
                            (patch-shebang file path))
-                         (find-files (string-append out "/libexec")))
-               #t)))
+                         (find-files (string-append out "/libexec"))))))
          (add-after 'build 'build-libdde-linux
           (lambda* (#:key inputs native-inputs #:allow-other-keys)
             (let ((arch ,(match (or (%current-target-system)
@@ -655,6 +705,7 @@ exec ${system}/rc \"$@\"
        ;; Tools for the /libexec/* scripts.
        ("bash-minimal" ,bash-minimal)
        ("coreutils" ,coreutils)
+       ("e2fsprogs" ,e2fsprogs)                  ;for fsck.ext2
        ("sed" ,sed)
        ("grep" ,grep)
        ("util-linux" ,util-linux "static")       ;libuuid.a, for parted
