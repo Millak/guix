@@ -1526,6 +1526,36 @@ reconstruct the original secret.  Knowledge of fewer than the required number
 of parts does not leak information about the secret.")
     (license license:expat)))
 
+(define-public python-slip10
+  (package
+    (name "python-slip10")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/trezor/python-slip10")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r1p7kxg1hcc3mcda8mrrhrnx6idzik7gw8c42q4359yp633vv83"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
+    (propagated-inputs
+     (list python-cryptography))
+    (home-page "https://github.com/trezor/python-slip10")
+    (synopsis "Reference implementation of SLIP10 ")
+    (description
+     "This package provides a reference implementation of the SLIP-0010 (see:
+https://github.com/satoshilabs/slips, slip-0010.md) specification,which
+generalizes the BIP-0032 (see: https://github.com/bitcoin/bips/tree,
+bip-0032.mediawiki) derivation scheme for private and public key pairs in
+hierarchical deterministic wallets for the curves secp256k1, NIST P-256,
+ed25519 and curve25519.")
+    (license license:bsd-3)))
+
 (define-public python-spake2
   (package
     (name "python-spake2")

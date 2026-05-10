@@ -1284,7 +1284,7 @@ Ledger Blue/Nano S.")
 (define-public python-trezor
   (package
     (name "python-trezor")
-    (version "0.13.7")
+    (version "0.20.0")
     (source
      (origin
        (method git-fetch)
@@ -1293,7 +1293,7 @@ Ledger Blue/Nano S.")
              (commit (string-append "python/v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13wyl9b15c8iscfakprwfvh2akw180hfqdjww79b78ywz51y7hdh"))
+        (base32 "06d4mw8iydgv2c3qxa47482k7dqpg89a2b6wd8f4g15ydn3gsfmn"))
        (modules
         '((guix build utils)
           (srfi srfi-26)
@@ -1331,26 +1331,32 @@ Ledger Blue/Nano S.")
                           "test_legacy_basic"
                           "test_unsigned"
                           "test_vendor_header")
-                    " and not "))))
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("platformdirs>=4.4.0") "platformdirs")))))))
     (propagated-inputs
-     (list python-attrs
-           python-click
+     (list python-click
+           python-construct
            python-construct-classes
-           python-ecdsa
-           python-hidapi
+           python-cryptography
+           python-keyring
            python-libusb1
            python-mnemonic
+           python-noiseprotocol
+           python-platformdirs
            python-requests
+           python-shamir-mnemonic
+           python-slip10
            python-typing-extensions))
-    (native-inputs ; Only needed for running the tests
+    (native-inputs
      (list nss-certs-for-test
-           protobuf
-           python-pytest
-           python-pillow
-           python-protobuf
-           python-pyqt
-           python-pytest
-           python-simple-rlp))
+           python-hatchling
+           python-setuptools
+           python-pytest))
     (home-page "https://github.com/trezor/python-trezor")
     (synopsis "Python library for communicating with TREZOR Hardware Wallet")
     (description "@code{trezor} is a Python library for communicating with
