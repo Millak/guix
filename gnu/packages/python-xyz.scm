@@ -6596,15 +6596,19 @@ helpers.")
     (version "3.1.15")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "aenum" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ethanfurman/aenum")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0ncmbdblqhqyb2mg73d5663vx3q2xb9q8hmj77zp1y64336pdgcc"))
+        (base32 "1yf656gigzn76yin8f6n6rbjq5d7l0sklni7pmm6nb5bzv84ml4v"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete the Python 2 specific files which won't compile
         ;; in Python 3.
-        '(for-each delete-file (find-files "." "_py2.py$")))))
+        '(for-each delete-file
+                   (find-files "." "_py2.py$")))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6615,7 +6619,10 @@ helpers.")
       #~(list "-k" (string-join
                     (list "not test_pickle_enum_function_with_qualname"
                           "test_class_nested_enum_and_pickle_protocol_four"
-                          "test_subclasses_with_getnewargs_ex")
+                          "test_subclasses_with_getnewargs_ex"
+                          ;; This test fails from Python@3.12 onwards.
+                          ;; <enum 'Color'> has no attribute 'value'
+                          "test_extend_enum_shadow_property_stdlib")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
@@ -6626,9 +6633,7 @@ helpers.")
                 (("import tempfile.*")
                  (format #f "import tempfile~%tempdir = tempfile.mkdtemp()~%"))))))))
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/ethanfurman/aenum")
     (synopsis "Advanced enumerations, namedtuples and constants for Python")
     (description
