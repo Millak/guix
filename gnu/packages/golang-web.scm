@@ -4475,6 +4475,116 @@ OAuth authorization against a server, typically @code{GitHub.com}.")
 transient error handling.")
     (license license:bsd-2)))
 
+(define-public go-github-com-cloudflare-cfssl
+  (package
+    (name "go-github-com-cloudflare-cfssl")
+    (version "1.6.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cloudflare/cfssl")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rs1mn6ddylcv9kfjjvs9aghwz4r2i22f1ksfnv2q9jbmfzykk2x"))
+       (modules '((guix build utils)))
+       (snippet #~(begin (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/cloudflare/cfssl"
+      #:unpack-path "github.com/cloudflare/cfssl"
+      #:test-subdirs
+      #~(list "api/..."
+              "auth/..."
+              ;;"bundle/..."
+              "certinfo/..."
+              "certdb/..."
+              "cli/..."
+              "config/..."
+              "crl/..."
+              "crypto/..."
+              "csr/..."
+              "errors/..."
+              "helpers/..."
+              "info/..."
+              "initca/..."
+              "log/..."
+              "multiroot/..."
+              "ocsp/..."
+              "revoke/..."
+              ;; "scan/..."
+              "selfsign/..."
+              "signer/..."
+              "transport/..."
+              "ubiquity/..."
+              "whitelist/...")
+      #:test-flags
+      #~(list "-vet=off"
+              "-skip" (string-join
+                       ;; panic: attempt to write a readonly database [recovered]
+                       (list "TestSqliteTrivial"
+                             "TestRevokeMain"
+                             "TestSQLite"
+                             "TestParseSerialNumber"
+                             "TestSignerDBPersistence"
+                             "TestInvalidRevocation"
+                             "TestCRLGeneration"
+                             "TestInsertValidCertificate"
+                             "TestInsertMissingAKI"
+                             "TestInsertMissingSerial"
+                             "TestInsertMissingExpiry"
+                             "TestInsertMissingPEM"
+                             "TestInsertInvalidSerial"
+                             "TestInsertInvalidAKI"
+                             "TestInsertInvalidStatus"
+                             "TestInsertInvalidPEM"
+                             "TestInsertInvalidExpiry"
+                             "TestInsertWrongSerial"
+                             "TestInsertWrongAKI"
+                             "TestInsertWrongExpiry"
+                             "TestInsertRevokedCertificate"
+                             "TestRevocation"
+                             "TestRevokeExpiry"
+                             "TestOCSPGeneration"
+                             "TestOCSPGeneration"
+                             ;; exec: "cfssl": executable file not found in $PATH
+                             "TestStartCFSSLServer"
+                             "TestCreateCertificateChain"
+                             "TestCreateSelfSignedCert"
+                             "TestSignerWithDB"
+                             "TestSqliteRealResponse"
+                             "TestOCSPRefreshMain"
+                             ;; requires network
+                             "TestCachedCRLSet"
+                             "TestLdap"
+                             "TestGood"
+                             "TestLint")
+                       "|"))))
+    (propagated-inputs
+     (list go-github-com-cloudflare-backoff
+           go-github-com-cloudflare-redoctober
+           go-github-com-go-sql-driver-mysql
+           go-github-com-google-certificate-transparency-go
+           go-github-com-jmhodges-clock
+           go-github-com-jmoiron-sqlx
+           go-github-com-kisielk-sqlstruct
+           go-github-com-lib-pq
+           go-github-com-mattn-go-sqlite3
+           go-github-com-prometheus-client-golang
+           go-github-com-zmap-zcrypto
+           go-github-com-zmap-zlint-v3
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/cloudflare/cfssl")
+    (synopsis "Cloudflare's PKI and TLS toolkit")
+    (description
+     "This package provides the source code of CloudFlare's PKI/TLS swiss army knife.
+It is both a command line tool and an HTTP API server for signing, verifying, and
+bundling TLS certificates.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-cloudinary-cloudinary-go-v2
   (package
     (name "go-github-com-cloudinary-cloudinary-go-v2")
