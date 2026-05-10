@@ -10117,7 +10117,7 @@ week, a month) and then browse/organise it while staying disconnected.")
 (define-public uriparser
   (package
     (name "uriparser")
-    (version "1.0.0")
+    (version "1.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10126,7 +10126,7 @@ week, a month) and then browse/organise it while staying disconnected.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05y33g80wgf155lm6ir21kw2an59fgf3q4w26iaarc8zi75m324k"))))
+                "1a4032wn6p9mv5lizh5rpg5gwvq69bk7zfqix7vjv5cap1zqvk84"))))
     (build-system cmake-build-system)
     (native-inputs (list googletest doxygen graphviz))
     (arguments (if (%current-target-system)
