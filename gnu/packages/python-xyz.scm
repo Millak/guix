@@ -1159,6 +1159,31 @@ implemented in pure Python, and most of them are also implemented in C.")
 packaging tasks.")
     (license license:expat)))
 
+(define-public python-duet
+  (package
+    (name "python-duet")
+    (version "0.2.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/duet")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y1jkhlhhdg0bvlv65xqarhr86sph25zj5c7nshrrv8351973ciz"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/google/duet")
+    (synopsis "Simple future-based async library for Python")
+    (description
+     "This package provides a simple @code{Future}-based async library for
+Python.  Duet uses a structured concurrency approach to async programming,
+relying on the @code{Future} interface for parallelism.  Duet also provides
+a way to run async/await coroutines around those @code{Future}s.  Unlike most
+async libraries, duet is re-entrant.")
+    (license license:asl2.0)))
+
 (define-public python-envs
   (package
     (name "python-envs")
