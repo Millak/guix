@@ -21919,6 +21919,10 @@ pycisTarget and SCENIC.")
       #:test-backend #~'unittest
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'python-3.12-compatibility
+            (lambda _
+              (substitute* (find-files "tests" "\\.py")
+                (("assertEquals") "assertEqual"))))
           (add-after 'unpack 'disable-failing-tests
             (lambda _
               (substitute* "tests/test_algo.py"
