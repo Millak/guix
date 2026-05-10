@@ -11557,13 +11557,30 @@ using a pure Python implementation.")
 (define-public python-js2py
   (package
     (name "python-js2py")
-    (version "0.74")
+    (properties '((commit . "2e017b86e2f18a6c8a842293b1687f2ce7baa12e")
+                  (revision . "0")))
+    (version (git-version "0.74"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "Js2Py" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/PiotrDabkowski/Js2Py")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0bwpp23qpx9amzqisiqvzlr17hr7vxqp4ry8lgxhw639hjmadwrr"))))
+        (base32 "0rsac03shkm0yxq91hzxdvhb96wy168bxdw8azi25bvlm8s3l27p"))
+       (patches
+        (list
+         (origin
+           (method url-fetch)
+           (uri (string-append "https://github.com/PiotrDabkowski/Js2Py/commit"
+                               "/fd7df4a91fb08060914c7b1d9e94583d18f3371b"
+                               ".patch"))
+           (file-name (string-append name "-" version "-pull-327.patch"))
+           (sha256
+            (base32 "14v89v8qqrsq0d63xbilkvx19l1rk59mlrbxvd4sj138lk7160ki")))))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ; tests require Node
