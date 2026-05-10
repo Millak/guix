@@ -695,18 +695,14 @@ on arbitrary tasks.  All the time data is saved in files residing in the
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "--hypothesis-profile=ci"
-                        "-vv" "tests" "-k"
-                        (string-append
-                         ;; Test expects wrong output string.
-                         "not test_bad_start_date "
-                         ;; Unknown failure
-                         "and not test_default_command_args"))))))))
+      #:test-flags
+      #~(list "--hypothesis-profile=ci"
+              "tests" "-k"
+              (string-append
+               ;; Test expects wrong output string.
+               "not test_bad_start_date "
+               ;; Unknown failure
+               "and not test_default_command_args"))))
     (native-inputs
      (list python-freezegun
            python-hypothesis
