@@ -15203,7 +15203,10 @@ following CLI scripts:
     (inherit python-ipyparallel-bootstrap)
     (name "python-ipyparallel")
     (arguments
-     (list #:test-flags #~(list "--pyargs" "ipyparallel")))
+     (list
+      #:test-flags
+      ;; Disable warning because DeprecationWarnings make tests fail.
+      #~(list "-p" "no:warnings" "--pyargs" "ipyparallel")))
     (native-inputs
      (modify-inputs native-inputs
        (append python-ipython
