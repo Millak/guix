@@ -12350,15 +12350,9 @@ Cuffdiff or Ballgown programs.")
               ;; This version file is expected to be created with git describe.
               (mkdir-p "taxtastic/data")
               (with-output-to-file "taxtastic/data/ver"
-                (lambda () (display #$version)))))
-          (replace 'check
-            ;; Note, this fails to run with "-v" as it tries to write to a
-            ;; closed output stream.
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (apply invoke "python" "-m" "unittest" test-flags)))))))
+                (lambda () (display #$version))))))))
     (native-inputs
-     (list python-setuptools python-wheel))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-biopython
            python-decorator
