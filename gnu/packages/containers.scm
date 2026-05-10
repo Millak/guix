@@ -50,6 +50,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages docker)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -70,6 +71,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages prometheus)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
@@ -120,6 +122,227 @@
     (description
      "This package provides a Go library to read and manipulate checkpoint
 archives as created by Podman, CRI-O and containerd.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-containerd-containerd-v2
+  (package
+    (name "go-github-com-containerd-containerd-v2")
+    (version "2.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containerd/containerd")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wxy5np689571s6lw77mx63nw75fx85w5svi0jplksmqzmjqp8wd"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+         (delete-file-recursively "vendor")
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/containerd/containerd/api
+            (delete-file-recursively "api")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/containerd/containerd/v2"
+      #:test-subdirs
+      #~(list "cmd/protoc-gen-go-fieldpath/..."
+              "core/containers/..."
+              "core/content/..."
+              "core/diff"
+              "core/diff/apply"
+              "core/events/..."
+              "core/images/..."
+              "core/introspection/..."
+              "core/leases/..."
+              "core/metrics/..."
+              "core/remotes/..."
+              "core/sandbox/..."
+              "core/streaming/..."
+              "core/transfer"
+              "core/transfer/archive/..."
+              "core/transfer/image/..."
+              "core/transfer/local/..."
+              "core/transfer/plugins/..."
+              "core/transfer/streaming/..."
+              "core/unpack/..."
+              "internal/cleanup/..."
+              "internal/erofsutils/..."
+              "internal/eventq/..."
+              "internal/failpoint/..."
+              "internal/fsverity/..."
+              "internal/kmutex/..."
+              "internal/lazyregexp/..."
+              "internal/pprof/..."
+              "internal/randutil/..."
+              "internal/registrar/..."
+              "internal/tomlext/..."
+              "internal/truncindex/..."
+              "internal/userns/..."
+              "internal/wintls/..."
+              "pkg/apparmor/..."
+              "pkg/archive/..."
+              "pkg/atomicfile/..."
+              "pkg/blockio/..."
+              "pkg/cap/..."
+              "pkg/cio..."
+              "pkg/deprecation/..."
+              "pkg/dialer/..."
+              "pkg/display/..."
+              "pkg/epoch/..."
+              "pkg/fifosync/..."
+              "pkg/filters/..."
+              "pkg/gc/..."
+              "pkg/httpdbg/..."
+
+              ;; TODO: Check why these submodule fail to build.
+              ;; "client/..."
+              ;; "cmd/containerd-shim-runc-v2/..."
+              ;; "cmd/containerd-stress/..."
+              ;; "cmd/containerd/..."
+              ;; "cmd/ctr/..."
+              ;; "cmd/gen-manpages/..."
+              ;; "contrib/..."
+              ;; "core/diff/proxy"
+              ;; "core/metadata/..."
+              ;; "core/mount/..."
+              ;; "core/runtime/..."
+              ;; "core/snapshots/..."
+              ;; "core/transfer/proxy/..."
+              ;; "core/transfer/registry/..."
+              ;; "integration/..."
+              ;; "internal/cri/..."
+              ;; "internal/nri/..."
+              ;; "pkg/cdi/..."
+              #;"plugins/...")
+      #:test-flags
+      #~(list "-skip" (string-join
+                      ;; panic: cannot statfs cgroup root [recovered]
+                      (list "TestValidateConfig"
+                            ;; io_test.go:40: failed to start binary process:
+                            ;; fork/exec /bin/echo: no such file or directory
+                            "TestNewBinaryIO"
+                            ;; expected success: got executable file not found in $PATH
+                            "TestExecutorWithArgs"
+                            "TestSetEnv"
+                            "TestStdIOPipes"
+                            ;; panic: cannot statfs cgroup root
+                            "TestContainerCapabilities"
+                            "TestContainerSpecTty"
+                            "TestContainerSpecReadonlyRootfs"
+                            "TestContainerSpecWithExtraMounts"
+                            "TestContainerAndSandboxPrivileged"
+                            "TestPrivilegedBindMount"
+                            "TestCgroupNamespace"
+                            "TestPidNamespace/node_namespace_mode"
+                            ;; failed to apply b: invalid argument
+                            "TestDiffTar/IgnoreSockets"
+                            "TestBinDirVerifyImage/max_verifiers_=_-1,_with_timeout"
+                            "TestContainerSpecDefaultPath"
+                            ;; Error: Not equal:
+                            ;;        expected: 1000
+                            ;;        actual  : 123
+                            "TestSetPositiveOomScoreAdjustment")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-dario-cat-mergo
+           go-github-com-adalogics-go-fuzz-headers
+           go-github-com-checkpoint-restore-checkpointctl
+           go-github-com-checkpoint-restore-go-criu-v7
+           go-github-com-containerd-btrfs-v2
+           go-github-com-containerd-cgroups-v3
+           go-github-com-containerd-console
+           go-github-com-containerd-containerd-api
+           go-github-com-containerd-continuity
+           go-github-com-containerd-errdefs
+           go-github-com-containerd-errdefs-pkg
+           go-github-com-containerd-fifo
+           go-github-com-containerd-go-cni
+           go-github-com-containerd-go-runc
+           go-github-com-containerd-imgcrypt-v2
+           go-github-com-containerd-log
+           go-github-com-containerd-nri
+           go-github-com-containerd-otelttrpc
+           go-github-com-containerd-platforms
+           go-github-com-containerd-plugin
+           go-github-com-containerd-ttrpc
+           go-github-com-containerd-typeurl-v2
+           go-github-com-containerd-zfs-v2
+           go-github-com-containernetworking-cni
+           go-github-com-containernetworking-plugins
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-davecgh-go-spew
+           go-github-com-distribution-reference
+           go-github-com-docker-go-events
+           go-github-com-docker-go-metrics
+           go-github-com-docker-go-units
+           go-github-com-emicklei-go-restful-v3
+           go-github-com-fsnotify-fsnotify
+           go-github-com-google-certtostore
+           go-github-com-google-go-cmp
+           go-github-com-google-uuid
+           go-github-com-grpc-ecosystem-go-grpc-middleware-providers-prometheus
+           go-github-com-intel-goresctrl
+           go-github-com-klauspost-compress
+           go-github-com-mdlayher-vsock
+           ;;go-github-com-microsoft-go-winio ;Windows only
+           ;;go-github-com-microsoft-hcsshim ;Windows only
+           go-github-com-moby-locker
+           go-github-com-moby-sys-mountinfo
+           go-github-com-moby-sys-sequential
+           go-github-com-moby-sys-signal
+           go-github-com-moby-sys-symlink
+           go-github-com-moby-sys-user
+           go-github-com-moby-sys-userns
+           go-github-com-opencontainers-go-digest
+           go-github-com-opencontainers-image-spec
+           go-github-com-opencontainers-runtime-spec
+           go-github-com-opencontainers-runtime-tools
+           go-github-com-opencontainers-selinux
+           go-github-com-pelletier-go-toml-v2
+           go-github-com-prometheus-client-golang
+           go-github-com-sirupsen-logrus
+           go-github-com-tchap-go-patricia-v2
+           go-github-com-urfave-cli-v2
+           go-github-com-vishvananda-netlink
+           go-github-com-vishvananda-netns
+           go-go-etcd-io-bbolt
+           go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracehttp
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-trace
+           go-go-uber-org-goleak
+           go-golang-org-x-mod
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-time
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-gopkg-in-inf-v0
+           go-k8s-io-apimachinery
+           go-k8s-io-client-go
+           go-k8s-io-cri-api
+           go-k8s-io-klog-v2
+           go-tags-cncf-io-container-device-interface))
+    (home-page "https://containerd.io/")
+    (synopsis "Container runtime support daemon")
+    (description
+     "Containerd is a container runtime with an emphasis on simplicity,
+robustness, and portability.  It is available as a daemon, which can manage
+the complete container lifecycle of its host system: image transfer and
+storage, container execution and supervision, low-level storage and network
+attachments, etc.")
     (license license:asl2.0)))
 
 (define-public go-github-com-containers-gvisor-tap-vsock
