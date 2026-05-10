@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020-2025 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023, 2024, 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +37,7 @@
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages less)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu services)
   #:use-module (gnu services base)
@@ -72,7 +73,7 @@
         diffutils patch gawk tar gzip bzip2 xz lzip zstd
         guile-3.0-latest guile-colorized guile-readline
         net-base nss-certs inetutils less procps shadow sudo which
-        info-reader))
+        info-reader pciutils))
 
 (define %base-services/hurd
   (append (list (service hurd-console-service-type
