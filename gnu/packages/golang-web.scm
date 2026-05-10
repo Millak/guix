@@ -4792,7 +4792,7 @@ it mimics the functionality and signatures of the standard `os` package.")
 (define-public go-github-com-containerd-containerd-api
   (package
     (name "go-github-com-containerd-containerd-api")
-    (version "1.9.0")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -4802,7 +4802,7 @@ it mimics the functionality and signatures of the standard `os` package.")
                                            #:subdir "api"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06pl08p1f86z70hy9si5h7p2bgassqjsy625pvzxazxix35ggq6x"))
+        (base32 "0pmcgi5jdcf0cx6z6qlppzqqwf6fhglfxd4sdr00wgbhvhfzchm3"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
