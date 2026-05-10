@@ -9401,7 +9401,15 @@ Authentication, a simple HTTP request-signing scheme.")
        (sha256
         (base32 "0in0sbj56wrz5mlrj6wkd3h7rrp7714c5rkxvkfwp60s2hr6ynj6"))))
     (build-system pyproject-build-system)
-    (arguments (list #:test-backend #~'unittest))
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'python-3.12-compatibility
+            (lambda _
+              (substitute* (find-files "browserid/tests" "\\.py")
+                (("assertEquals") "assertEqual")))))))
     (propagated-inputs (list python-requests))
     (native-inputs (list python-mock python-setuptools))
     (home-page "https://github.com/mozilla/PyBrowserID")
