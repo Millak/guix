@@ -1769,6 +1769,39 @@ functions.")
     ;; in "setup.py".
     (license (list license:mpl2.0 license:gpl2+ license:lgpl2.1+))))
 
+(define-public python-rpy2-rinterface
+  (package
+    (name "python-rpy2-rinterface")
+    (version "3.6.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "rpy2_rinterface" version))
+       (sha256
+        (base32 "0s9kiaai3l0fzri45g8mfb7gmjp05hxxqh3wqqfxzd2wrr0i7k59"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-cffi
+           python-pytest
+           python-setuptools))
+    (inputs
+     (list icu4c
+           libdeflate
+           r-survival
+           zlib))
+    (propagated-inputs
+     (list python-cffi
+           r-minimal))
+    (home-page "https://rpy2.github.io")
+    (synopsis "Low-level interface from Python to the R")
+    (description
+     "The rpy2 package is a namespace package.  This is the part of that
+package that covers the \"low-level\" interface to R used in rpy2.  This
+provides mappings to access R's C-API and utilities to do so safely.  It is
+otherwise relatively easily to crash (segfault) a process by calling R's
+C-API.")
+    (license (list license:mpl2.0 license:gpl2+ license:lgpl2.1+))))
+
 (define-public python-rchitect
   (package
     (name "python-rchitect")
