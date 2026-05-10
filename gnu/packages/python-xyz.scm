@@ -19285,7 +19285,7 @@ command-line parsers like @code{getopt} and @code{argparse}.")
 (define-public python-pythonanywhere
   (package
     (name "python-pythonanywhere")
-    (version "0.17.0")
+    (version "0.19.0")
     (source
      (origin
        (method git-fetch)
@@ -19294,7 +19294,7 @@ command-line parsers like @code{getopt} and @code{argparse}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hsxrw1inqqnxbfvjk0j218ijx5xv4lkfh1qzvay7pzk9ifc0sfz"))))
+        (base32 "18g94djpq03c52j4g2c7v2s2bpijdhqz2lzz0rind97kyvss6fca"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -19316,6 +19316,11 @@ command-line parsers like @code{getopt} and @code{argparse}.")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"schema==.*\",")
+                 "\"schema\","))))
           (add-before 'check 'change-home
             (lambda _
               (setenv "HOME" "/tmp"))))))
