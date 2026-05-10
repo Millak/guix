@@ -1494,6 +1494,38 @@ implements RFC 6125 fully and plans to add other relevant RFCs too.")
 of the CRC32C hashing algorithm.")
     (license license:asl2.0)))
 
+(define-public python-shamir-mnemonic
+  (package
+    (name "python-shamir-mnemonic")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/trezor/python-shamir-mnemonic")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nzg1l9hrjgrw8jnji8jjl6yy8wixxipcbdjhmh6x1vn1z25ndia"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-bip32utils
+           python-poetry-core
+           python-pytest))
+    (propagated-inputs
+     (list python-click))
+    (home-page "https://github.com/trezor/python-shamir-mnemonic")
+    (synopsis "SLIP-39 Shamir Mnemonics")
+    (description
+     "This package provides a reference implementation of SLIP-0039: Shamir's
+Secret-Sharing for Mnemonic Codes.  This SLIP describes a standard and
+interoperable implementation of Shamir's secret sharing (SSS).  SSS splits a
+secret into unique parts which can be distributed among participants, and
+requires a specified minimum number of parts to be supplied in order to
+reconstruct the original secret.  Knowledge of fewer than the required number
+of parts does not leak information about the secret.")
+    (license license:expat)))
+
 (define-public python-spake2
   (package
     (name "python-spake2")
