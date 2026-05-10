@@ -2448,6 +2448,37 @@ relying on @code{import asyncore} is able to continue being used without
 significant refactoring.")
     (license license:psfl)))
 
+(define-public python-pyconify
+  (package
+    (name "python-pyconify")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pyapp-kit/pyconify")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19amhlha8n9fh9sq4iy1rpasmcagslxbvbjlnv012zndcca22mk6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;require netwok access
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling))
+    (propagated-inputs
+     (list python-requests))
+    (home-page "https://github.com/pyapp-kit/pyconify")
+    (synopsis "Python wrapper for the Iconify API")
+    (description
+     "This packge provides a Python wrapper for the
+@url{https://github.com/iconify, Iconify} API.  Iconify is a versatile icon
+framework that includes 100+ icon sets with more than 100,000 icons from
+FontAwesome, Material Design Icons, DashIcons, Feather Icons, EmojiOne, Noto
+Emoji and many other open source icon sets.")
+    (license license:bsd-3)))
+
 (define-public python-pygls
   (package
     (name "python-pygls")
