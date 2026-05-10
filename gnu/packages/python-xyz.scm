@@ -16514,6 +16514,19 @@ command pipeline functionality.")
 application monitoring and error tracking software.")
     (license license:bsd-2)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure
+;; size. Tests are left out in the main package to slim down native-inputs.
+(define-public python-sentry-sdk-minimal
+  (package/inherit python-sentry-sdk
+    (name "python-sentry-sdk-minimal")
+    (arguments
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-certifi
+           python-urllib3))))
+
 (define-public python-pep440
   (package
     (name "python-pep440")
