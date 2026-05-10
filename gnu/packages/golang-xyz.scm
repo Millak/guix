@@ -4980,7 +4980,7 @@ and multi-selects with a focus on user experience and aesthetics.")
 (define-public go-github-com-charmbracelet-x-ansi
   (package
     (name "go-github-com-charmbracelet-x-ansi")
-    (version "0.10.1")
+    (version "0.10.2")
     (source
      (origin
        (method git-fetch/lfs)
@@ -4990,7 +4990,7 @@ and multi-selects with a focus on user experience and aesthetics.")
                                            #:subdir "ansi"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "083zj3yqb48li8w389iabi1b1zklbw7cwam2grvvglcqrrsj3bsf"))
+        (base32 "1nr09574rdrgnsj7c2z11233zljl3gcqax0jb3na6v4ixl7gnhq2"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
