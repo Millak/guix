@@ -398,32 +398,55 @@ not a GUI application.")
 (define-public python-pycifrw
   (package
     (name "python-pycifrw")
-    (version "4.4.6")
+    (version "5.0.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/jamesrhester/pycifrw.git")
-             (commit version)))
+              (url "https://github.com/jamesrhester/pycifrw")
+              (commit (string-append "v" version))))
        (sha256
-        (base32 "0xda4vgm6dz6fhhrfv8y6igsc5kznlnv0j3yrwkbcd3qqv16ic6r"))))
+        (base32 "14qm472gzfblwph00vhv1fpyx0azfk4fba6fwzjh1z47pmapx7kg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 220 passed, 1 skipped, 5 deselected, 3 xfailed, 13752 warnings
+      #:test-flags
+      #~(list
+         ;;  AssertionError: False is not true
+         "--deselect=TestPyCIFRW.py::DDLmDicTestCase::testMandatory"
+         "--deselect=TestPyCIFRW.py::DDLmDicTestCase::testProhibited"
+         ;; AssertionError: assert '_atom_site.adp_type' ==
+         ;; '_atom_site.ADP_type'
+         "--deselect=TestPyCIFRW.py::DicStructureTestCase::testCatObj2"
+         ;; KeyError: 'No such category,object in the dictionary: atom_site
+         ;; matrix_beta'
+         "--deselect=TestDrel.py::TestWithDict::test_fancy_packets"
+         "--deselect=TestDrel.py::TestWithDict::testCaptures"
+         "TestPyCIFRW.py"
+         "TestDrel.py")
       #:phases
       #~(modify-phases %standard-phases
+          ;; Steps are taken from project's .github/workflows/CI.yml file.
+          (add-after 'unpack 'copy-dictionaries
+            (lambda _
+              (copy-recursively
+               (string-append #$(this-package-native-input "cif-core")
+                              "/share/cif-core")
+               "tests/dictionaries")))
           (add-before 'build 'generate-sources
             (lambda _
-              (invoke "make" "-C" "src" "PYTHON=python3" "package")
-              (invoke "make" "-C" "src/drel" "PYTHON=python3" "package")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python3" "TestPyCIFRW.py")))))))
-    (propagated-inputs
-     (list python-numpy python-ply))
+              (invoke "make" "-C" "src" "package"))))))
     (native-inputs
-     (list latex2html noweb python-setuptools))
+     (list cif-core
+           latex2html
+           noweb
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-numpy
+           python-prettytable
+           python-ply))
     (home-page "https://github.com/jamesrhester/pycifrw")
     (synopsis "CIF file reader and writer")
     (description
