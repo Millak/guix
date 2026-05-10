@@ -30,7 +30,7 @@
 ;;; Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024, 2025 Andy Tai <atai@atai.org>
 ;;; Copyright © 2025 Lapearldot <lapearldot@disroot.org>
-;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025, 2026 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Romain Garbage <romain.garbage@inria.fr>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
@@ -935,7 +935,7 @@ independently to be able to run a LLaMA model.")
 (define-public whisper-cpp
   (package
     (name "whisper-cpp")
-    (version "1.8.4")                   ;keep in sync with ggml
+    (version "1.8.4")                   ;keep in sync with ggml-for-whisper
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -977,7 +977,7 @@ independently to be able to run a LLaMA model.")
     (native-inputs
      (list git-minimal/pinned pkg-config))
     (inputs
-     (list ffmpeg ggml sdl2))
+     (list ffmpeg ggml-for-whisper sdl2))
     (synopsis "OpenAI's Whisper model in C/C++")
     (description
      "This package is a high-performance inference of OpenAI's
