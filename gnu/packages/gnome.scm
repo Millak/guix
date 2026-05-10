@@ -13689,59 +13689,71 @@ useful to navigate and edit translation messages and comments.")
   (package
     (name "ocrfeeder")
     (version "0.8.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/ocrfeeder/"
-                                  (version-major+minor version) "/"
-                                  "ocrfeeder-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1vaaphzk6zn7pp2x9scphdzlbsma910wnbhd9xry50nx95cjlgdh"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.gnome.org/GNOME/ocrfeeder")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11xj5vidvppfd34hrvadz8fljsasljrgq7smfjx7asf88hv79d60"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after
-          'install 'wrap-program
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((prog (string-append (assoc-ref outputs "out")
-                                       "/bin/" "ocrfeeder"))
-                  (pylib (string-append (assoc-ref outputs "out")
-                                        "/lib/python"
-                                        ,(version-major+minor
-                                          (package-version python))
-                                        "/site-packages")))
-              (wrap-program prog
-                `("PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH") ,pylib))
-                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-configure-on-python-3.12
+            (lambda _
+              (substitute* "m4/m4_ax_python_module.m4"
+                (("import imp; imp\\.find_module\\((.*)\\)" all target)
+                 (format #f "import importlib.util; \
+exit(0 if importlib.util.find_spec(~a) else 1)"
+                         target)))))
+          (add-after 'install 'wrap-program
+            (lambda _
+              (wrap-program (string-append #$output "/bin/ocrfeeder")
+                `("PYTHONPATH" =
+                  (,(getenv "GUIX_PYTHONPATH")
+                   ,(string-append #$output "/lib/python"
+                                   #$(version-major+minor
+                                      (package-version python))
+                                   "/site-packages")))
+                `("GI_TYPELIB_PATH" =
+                  (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")                   ; for glib-compile-resources
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")                   ; for gtk-update-icon-cache
-       ("intltool" ,intltool)
-       ("itstool" ,itstool)
-       ("pkg-config" ,pkg-config)
-       ("xmllint" ,libxml2)))
+     (list autoconf
+           automake
+           `(,glib "bin")               ;for glib-compile-resources
+           gobject-introspection
+           `(,gtk+ "bin")               ;for gtk-update-icon-cache
+           intltool
+           itstool
+           gnome-common
+           libxml2
+           pkg-config
+           which
+           yelp-tools))
     (inputs
-     `(("bash" ,bash-minimal) ; for wrap-program
-       ("enchant" ,enchant)
-       ("glib" ,glib)
-       ("goocanvas" ,goocanvas)
-       ("gtk" ,gtk+)
-       ("gtkspell3" ,gtkspell3)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libtiff" ,libtiff)
-       ("libraw" ,libraw)
-       ("ocrad" ,ocrad)
-       ("python" ,python-wrapper)
-       ("python-pygobject" ,python-pygobject)
-       ("python-odfpy" ,python-odfpy)
-       ("python-pillow" ,python-pillow)
-       ("python-pyenchant" ,python-pyenchant)
-       ("python-reportlab" ,python-reportlab)
-       ("python-sane" ,python-sane)
-       ("sane" ,sane)
-       ("tesseract-ocr" ,tesseract-ocr)))
+     (list bash-minimal                 ;for wrap-program
+           enchant
+           glib
+           goocanvas
+           gtk+
+           gtkspell3
+           libjpeg-turbo
+           libtiff
+           libraw
+           ocrad
+           python-wrapper
+           python-pygobject
+           python-odfpy
+           python-pillow
+           python-pyenchant
+           python-reportlab
+           python-sane
+           sane
+           tesseract-ocr))
     (home-page "https://wiki.gnome.org/Apps/OCRFeeder")
     (synopsis "Complete OCR Suite")
     (description "OCRFeeder is a complete Optical Character Recognition and
