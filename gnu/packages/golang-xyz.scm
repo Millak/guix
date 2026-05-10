@@ -6216,7 +6216,7 @@ dependencies and a simple API.")
   ;; TODO: Move to (gnu packages containers).
   (package
     (name "go-github-com-containerd-containerd")
-    (version "1.7.22")
+    (version "1.7.31")
     (source
      (origin
        (method git-fetch)
@@ -6225,7 +6225,7 @@ dependencies and a simple API.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yfda4qnygy4lcqb6cqc7v7h2lf0gl64xhvkp39zngmqm0lw30gh"))
+        (base32 "167flr5ms3j12sp5v9b34cwzbdzjybq1nbsf73rwzhdldvnmdg6f"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
@@ -6371,7 +6371,7 @@ dependencies and a simple API.")
            ;; go-github-com-containerd-aufs
            ;; go-github-com-containerd-imgcrypt
            #;go-github-com-containerd-zfs))
-    (home-page "https://github.com/containerd/containerd")
+    (home-page "https://containerd.io/")
     (synopsis "Container runtime support daemon")
     (description
      "containerd is a container runtime with an emphasis on simplicity,
