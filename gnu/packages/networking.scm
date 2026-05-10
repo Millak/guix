@@ -5489,22 +5489,22 @@ and IP address registration information in JSON format over HTTP.")
 (define-public wireproxy
   (package
     (name "wireproxy")
-    (version "1.0.10")
+    (version "1.1.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/whyvl/wireproxy")
+              (url "https://github.com/windtf/wireproxy")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ypk9migx1l7xwcxr542pcdy8q2bm33wp03bqzgav0hp1fsrmi8p"))))
+        (base32 "0nzs3xzvq3rhqg808qgazymmwdx9p3nw669wl3r5xclhvibbyla7"))))
     (build-system go-build-system)
     (arguments
      (list
       #:install-source? #f
-      #:import-path "github.com/pufferffish/wireproxy/cmd/wireproxy"
-      #:unpack-path "github.com/pufferffish/wireproxy"
+      #:import-path "github.com/windtf/wireproxy/cmd/wireproxy"
+      #:unpack-path "github.com/windtf/wireproxy"
       #:test-subdirs #~(list "../../..."))) ;to test the whole module
     (native-inputs
      (list go-github-com-akamensky-argparse
@@ -5515,7 +5515,7 @@ and IP address registration information in JSON format over HTTP.")
            go-golang-org-x-net
            go-golang-zx2c4-com-wireguard
            go-suah-dev-protect))
-    (home-page "https://github.com/whyvl/wireproxy")
+    (home-page "https://github.com/windtf/wireproxy")
     (synopsis "Wireguard client that exposes itself as a socks5 proxy")
     (description
      "wireproxy is a completely userspace application that connects to a
