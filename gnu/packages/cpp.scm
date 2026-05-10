@@ -105,6 +105,7 @@
   #:use-module (gnu packages disk)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages file)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
@@ -1054,7 +1055,7 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
 (define-public hyprgraphics
   (package
     (name "hyprgraphics")
-    (version "0.5.0")
+    (version "0.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1065,17 +1066,21 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
               (snippet #~(substitute* "CMakeLists.txt" (("libjxl_cms") "")))
               (sha256
                (base32
-                "1l8yfnv1vs6iqnh7r73yyfkbl8l61mqpmpyhri65sqwvplkgw41i"))))
+                "06nqbz3vw55vd2a57ayigyfqb9g54bcb094rp3gz1w7ijrnyxh73"))))
     (build-system cmake-build-system)
     (native-inputs (list gcc-15 pkg-config))
     (inputs (list cairo
+                  file ;; Provides libmagic.
                   hyprutils
+                  libdrm
+                  libpng
                   libjpeg-turbo
                   libjxl
                   ;; Note: The current librsvg-2.40 for non-Rust architectures
                   ;; is too old.
                   (librsvg-for-system)
                   libwebp
+                  mesa
                   pango
                   pixman
                   spng))
