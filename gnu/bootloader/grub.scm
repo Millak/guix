@@ -446,9 +446,11 @@ when booting a root file system on a Btrfs subvolume."
                (modules (menu-entry-multiboot-modules entry)))
           #~(format port "
 menuentry ~s {
+  ~a
   multiboot ~a root=~a~a~a
 }~%"
                     #$label
+                    #$(grub-root-search device kernel)
                     #$kernel
                     #$(device-name->hurd-device-name device-name #:disk disk)
                     (string-join (list #$@arguments) " " 'prefix)
