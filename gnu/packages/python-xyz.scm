@@ -30946,29 +30946,34 @@ to minimize duplication of information across files.  The format supports schema
 validation.")
     (license license:lgpl3)))
 
-;; XXX: Not maintained since 2021, there is no git available as seen in
-;; <https://pypi.org/project/flufl.bounce>.
 (define-public python-flufl-bounce
   (package
     (name "python-flufl-bounce")
-    (version "4.0")
+    (properties '((commit . "e7d37db46149795f355eab4dca68e670267885f6")
+                  (revision . "0")))
+    (version (git-version "4.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
       (origin
-        (method url-fetch)
-        (uri (pypi-uri "flufl.bounce" version))
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://gitlab.com/flufl/flufl.bounce")
+              (commit (assoc-ref properties 'commit))))
+        (file-name (git-file-name name version))
         (sha256
-         (base32
-          "0c9qc2l47lyqnpwskp6vvi7m3jqh6hx42v6d35dgxh3fjzmlll15"))))
+         (base32 "0i1a2jns0ahls23m0261v1wd429b37xrqdv5pxdlmpyd7if0r1mi"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-                   (when tests?
-                     (with-directory-excursion
-                         (string-append (site-packages inputs outputs) "/flufl")
-                       (invoke "python" "-m" "nose2" "-v"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion
+                    (string-append (site-packages inputs outputs) "/flufl")
+                  (invoke "python" "-m" "nose2" "-v"))))))))
     (propagated-inputs
      (list python-atpublic python-zope-interface))
     (native-inputs
