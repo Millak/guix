@@ -1673,7 +1673,7 @@ automated way to document command-line programs.  It scans
 (define-public python-sphinx-theme-builder
   (package
     (name "python-sphinx-theme-builder")
-    (version "0.2.0b1")
+    (version "0.3.2")
     (source
      (origin
        (method git-fetch)
@@ -1682,12 +1682,13 @@ automated way to document command-line programs.  It scans
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15gvwzd4l3wcmd6fns8xvv44yzxmamr1nfn28mp12sdw2y10v2ba"))))
+        (base32 "100v659ngafxr4lsylac5m2ci7qkjd7h5lg4p7nq8pkj6x2fxql2"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-flit-core python-pytest))
     (propagated-inputs
      (list python-pypa-build
            python-click
+           python-diagnostic
            python-nodeenv
            python-packaging
            python-pyproject-metadata
