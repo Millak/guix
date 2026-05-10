@@ -7221,13 +7221,9 @@ of @code{xmlfile}.")
       (build-system pyproject-build-system)
       (arguments
        (list
-        ;; #:tests? #f
         #:test-flags
         #~(list
            "-m" "not broken" "-rf" "test" "-s"
-           ;; XXX: Failing collection because of Numpy compatibility.
-           "--ignore=test/unit/tablestest/test_hdfstorage.py"
-           "--ignore=test/unit/tablestest/test_servants.py"
            ;; TestImport tries to download Java things; TestSessions
            ;; and TestBuildQuery require networking.
            "-k" "not TestImport and not TestSessions and not TestBuildQuery")
