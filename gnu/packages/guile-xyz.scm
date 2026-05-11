@@ -6126,7 +6126,7 @@ implementation in itself.")
 (define-public guile-uuid
   (package
     (name "guile-uuid")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -6135,7 +6135,7 @@ implementation in itself.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g508aajkyi513wbhm1rhs03ilnb701lwlrvppkmc0vynydlk9ws"))))
+        (base32 "01gza8zsjmazc02p9vm7pgidvfzdi786asc7c4r8cnjxdn3sigvd"))))
     (arguments
      (list
       #:phases
@@ -6144,6 +6144,7 @@ implementation in itself.")
             (lambda _
               (invoke "guile" "--no-auto-compile" "run-tests.scm")
               (delete-file "run-tests.scm")
+              (delete-file "guix.scm")
               (delete-file-recursively "tests")))
           (add-after 'build 'install-info-documentation
             (lambda _
