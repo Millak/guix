@@ -820,7 +820,8 @@ Filter) modules follow the convention of 1V / Octave.")
                    "https://aubio.org/pub/aubio-" version ".tar.bz2"))
              (sha256
               (base32
-               "1npks71ljc48w6858l9bq30kaf5nph8z0v61jkfb70xb9np850nl"))))
+               "1npks71ljc48w6858l9bq30kaf5nph8z0v61jkfb70xb9np850nl"))
+             (patches (search-patches "aubio-waflib-python312-compat.patch"))))
     (build-system waf-build-system)
     (arguments
      (list

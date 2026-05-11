@@ -1,0 +1,132 @@
+From: Thomas Nagy <tnagy@waf.io>
+Date: Tue, 7 Oct 2025 09:01:31 +0200
+Subject: Conceal imp warnings in Python3
+
+Origin: vendor, https://gitlab.com/ita1024/waf/-/commit/d2060dfd8af4edb5824153ff24e207b39ecd67a2
+Bug: https://github.com/aubio/aubio/issues/394
+Bug-Debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1061736
+Bug-Ubuntu: https://bugs.launchpad.net/debian/+source/aubio/+bug/2051990
+Last-Update: 2024-02-02
+
+Workaround removal of imp module in Python 3.12
+
+IOhannes m zmölnig: also work around some warnings like
+> SyntaxWarning: invalid escape sequence '\s'
+
+due to non-raw strings.
+
+---
+ waflib/Context.py      | 10 +++++++++-
+ waflib/Tools/python.py |  2 +-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+--- aubio.orig/waflib/Context.py
++++ aubio/waflib/Context.py
+@@ -2,9 +2,17 @@
+ # encoding: utf-8
+ # WARNING! Do not edit! https://waf.io/book/index.html#_obtaining_the_waf_file
+ 
+-import os,re,imp,sys
++import os,re,sys
+ from waflib import Utils,Errors,Logs
+ import waflib.Node
++
++if sys.hexversion > 0x3040000:
++	import types
++	class imp(object):
++		new_module = lambda x: types.ModuleType(x)
++else:
++	import imp
++
+ HEXVERSION=0x2000e00
+ WAFVERSION="2.0.14"
+ WAFREVISION="907519cab9c1c8c7e4f7d4e468ed6200b9250d58"
+--- aubio.orig/waflib/Tools/python.py
++++ aubio/waflib/Tools/python.py
+@@ -399,7 +399,7 @@
+ 	v.PYC=getattr(Options.options,'pyc',1)
+ 	v.PYO=getattr(Options.options,'pyo',1)
+ 	try:
+-		v.PYTAG=conf.cmd_and_log(conf.env.PYTHON+['-c',"import imp;print(imp.get_tag())"]).strip()
++		v.PYTAG = conf.cmd_and_log(conf.env.PYTHON + ['-c', "import sys\ntry:\n print(sys.implementation.cache_tag)\nexcept AttributeError:\n import imp\n print(imp.get_tag())\n"]).strip()
+ 	except Errors.WafError:
+ 		pass
+ def options(opt):
+--- aubio.orig/waflib/ConfigSet.py
++++ aubio/waflib/ConfigSet.py
+@@ -4,7 +4,7 @@
+ 
+ import copy,re,os
+ from waflib import Logs,Utils
+-re_imp=re.compile('^(#)*?([^#=]*?)\ =\ (.*?)$',re.M)
++re_imp=re.compile(r'^(#)*?([^#=]*?)\ =\ (.*?)$',re.M)
+ class ConfigSet(object):
+ 	__slots__=('table','parent')
+ 	def __init__(self,filename=None):
+--- aubio.orig/waflib/Task.py
++++ aubio/waflib/Task.py
+@@ -567,7 +567,7 @@
+ 	dc={}
+ 	exec(c,dc)
+ 	return dc['f']
+-re_cond=re.compile('(?P<var>\w+)|(?P<or>\|)|(?P<and>&)')
++re_cond=re.compile(r'(?P<var>\w+)|(?P<or>\|)|(?P<and>&)')
+ re_novar=re.compile(r'^(SRC|TGT)\W+.*?$')
+ reg_act=re.compile(r'(?P<backslash>\\)|(?P<dollar>\$\$)|(?P<subst>\$\{(?P<var>\w+)(?P<code>.*?)\})',re.M)
+ def compile_fun_shell(line):
+--- aubio.orig/waflib/TaskGen.py
++++ aubio/waflib/TaskGen.py
+@@ -351,7 +351,7 @@
+ 			for y in self.tasks:
+ 				y.set_run_after(x)
+ 	self.bld.prev=self
+-re_m4=re.compile('@(\w+)@',re.M)
++re_m4=re.compile(r'@(\w+)@',re.M)
+ class subst_pc(Task.Task):
+ 	def force_permissions(self):
+ 		if getattr(self.generator,'chmod',None):
+--- aubio.orig/waflib/Tools/c_preproc.py
++++ aubio/waflib/Tools/c_preproc.py
+@@ -18,9 +18,9 @@
+ strict_quotes=0
+ g_optrans={'not':'!','not_eq':'!','and':'&&','and_eq':'&=','or':'||','or_eq':'|=','xor':'^','xor_eq':'^=','bitand':'&','bitor':'|','compl':'~',}
+ re_lines=re.compile('^[ \t]*(?:#|%:)[ \t]*(ifdef|ifndef|if|else|elif|endif|include|import|define|undef|pragma)[ \t]*(.*)\r*$',re.IGNORECASE|re.MULTILINE)
+-re_mac=re.compile("^[a-zA-Z_]\w*")
++re_mac=re.compile(r"^[a-zA-Z_]\w*")
+ re_fun=re.compile('^[a-zA-Z_][a-zA-Z0-9_]*[(]')
+-re_pragma_once=re.compile('^\s*once\s*',re.IGNORECASE)
++re_pragma_once=re.compile(r'^\s*once\s*',re.IGNORECASE)
+ re_nl=re.compile('\\\\\r*\n',re.MULTILINE)
+ re_cpp=re.compile(r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"',re.DOTALL|re.MULTILINE)
+ trig_def=[('??'+a,b)for a,b in zip("=-/!'()<>",r'#~\|^[]{}')]
+@@ -391,7 +391,7 @@
+ 			return(v,[[],t[1:]])
+ 		else:
+ 			return(v,[[],[('T','')]])
+-re_include=re.compile('^\s*(<(?:.*)>|"(?:.*)")')
++re_include=re.compile(r'^\s*(<(?:.*)>|"(?:.*)")')
+ def extract_include(txt,defs):
+ 	m=re_include.search(txt)
+ 	if m:
+--- aubio.orig/waflib/Utils.py
++++ aubio/waflib/Utils.py
+@@ -440,7 +440,7 @@
+ 		return s
+ 	if s=='cli'and os.name=='nt':
+ 		return'win32'
+-	return re.split('\d+$',s)[0]
++	return re.split(r'\d+$',s)[0]
+ def nada(*k,**kw):
+ 	pass
+ class Timer(object):
+--- aubio.orig/waflib/ansiterm.py
++++ aubio/waflib/ansiterm.py
+@@ -175,7 +175,7 @@
+ 			self._csinfo.bVisible=0
+ 			windll.kernel32.SetConsoleCursorInfo(self.hconsole,byref(self._csinfo))
+ 		ansi_command_table={'A':move_up,'B':move_down,'C':move_right,'D':move_left,'E':next_line,'F':prev_line,'G':set_column,'H':set_cursor,'f':set_cursor,'J':clear_screen,'K':clear_line,'h':show_cursor,'l':hide_cursor,'m':set_color,'s':push_cursor,'u':pop_cursor,}
+-		ansi_tokens=re.compile('(?:\x1b\[([0-9?;]*)([a-zA-Z])|([^\x1b]+))')
++		ansi_tokens=re.compile(r'(?:\x1b\[([0-9?;]*)([a-zA-Z])|([^\x1b]+))')
+ 		def write(self,text):
+ 			try:
+ 				wlock.acquire()

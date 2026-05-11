@@ -1021,6 +1021,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ath9k-htc-firmware-gcc.patch		\
   %D%/packages/patches/ath9k-htc-firmware-gcc-compat.patch	\
   %D%/packages/patches/atlas-gfortran-compat.patch		\
+  %D%/packages/patches/aubio-waflib-python312-compat.patch	\
   %D%/packages/patches/audacity-ffmpeg-fallback.patch		\
   %D%/packages/patches/audiofile-fix-datatypes-in-tests.patch	\
   %D%/packages/patches/audiofile-fix-sign-conversion.patch	\
