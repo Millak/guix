@@ -259,6 +259,10 @@ Installation
 * Application Setup::           Application-specific setup.
 * Upgrading Guix::              Upgrading Guix and its build daemon.
 
+Binary Installation
+
+* Installation with a pre-mounted store::
+
 Setting Up the Daemon
 
 * Build Environment Setup::     Preparing the isolated build environment.
@@ -878,6 +882,40 @@ We advise system administrators who install Guix, both from the
 installation script or @i{via} the native package manager of their
 foreign distribution, to also regularly read and follow security
 notices, as shown by @command{guix pull}.
+
+@menu
+* Installation with a pre-mounted store::
+@end menu
+
+@node Installation with a pre-mounted store
+@subsection Installation with a pre-mounted store
+
+@cindex pre-mounted store, installation on small root file system
+@cindex bind mounted store, binary installation
+@cindex binary installation using an alternative storage device
+If you need to install Guix on a system whose main file system is too
+small (as can be the case for the rescue environments of @acronym{VPS,
+Virtual Private Servers}, for example), you may need to expose the
+@file{/gnu} directory from a different storage device/partition.  This
+can be achieved by mounting a secondary partition or directory at
+@file{/gnu}, via a bind mount for example.  In the bind mount case,
+assuming the partition that should be used to hold the content of the
+store is mounted at @file{/mnt}, you could proceed like this
+@emph{before} starting the installation:
+
+@example
+mkdir /mnt/gnu
+mkdir /gnu
+mount --bind /mnt/gnu /gnu
+@end example
+
+@quotation Important
+If your foreign distribution uses systemd, do not attempt to mount
+directly on the store directory, @file{/gnu/store}, as this would
+conflict with the @file{gnu-store.mount} systemd unit and cause the
+@file{guix-daemon.service} to unmount it before starting, failing its
+execution.  Mount on @file{/gnu} instead.
+@end quotation
 
 @node Setting Up the Daemon
 @section Setting Up the Daemon
