@@ -48,6 +48,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -121,58 +122,83 @@ Carnegie Mellon University.")
               "https://github.com/cmusphinx/cmudict/blob/master/LICENSE"))))
 
 (define-public dico
-  (package
-    (name "dico")
-    (version "2.12")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/dico/dico-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "1xvahrav8aml90qcj4cj3a33y0n7nm1k0ywgks1zy2q91v2qk2vj"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags #~(list "--disable-static")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-shell-file-name
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; This code invokes "/bin/sh -c 'm4 -s ...'".
-              (substitute* "grecs/src/grecs-lex.c"
-                (("\"/bin/sh\"")
-                 (string-append "\""
-                                (search-input-file inputs "/bin/sh")
-                                "\"")))))
-          (add-before 'check 'silence-guile
-            (lambda _
-              ;; Guile is too talkative, which disturbs the test
-              ;; infrastructure.  Gag it.
-              (setenv "GUILE_AUTO_COMPILE" "0")
-              (setenv "GUILE_WARN_DEPRECATED" "no"))))))
-    (native-inputs (list groff))
-    (inputs
-     (list m4                           ;used at run time
-           bash-minimal                 ;likewise
-           pcre
-           python-wrapper
-           guile-3.0
-           gsasl
-           readline
-           zlib
-           wordnet
-           libxcrypt                    ;for 'crypt'
-           libltdl))
-    (home-page "https://www.gnu.org.ua/software/dico/")
-    (synopsis "Implementation of DICT server (RFC 2229)")
-    (description
-     "GNU Dico implements a flexible dictionary server and client according to
-RFC 2229 (DICT Server).  It is able to access any database available,
+  (let ((commit "05da4bc9e613834fdb065e38c7181044d8889575")
+        (revision "0"))
+    (package
+      (name "dico")
+      (version (git-version "2.12" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://git.gnu.org.ua/dico.git")
+                (commit commit)
+                (recursive? #t)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1fmr01gpvvb1p6p9ylr67nqx8ymmmkqjhsi9y5zvp2nc32cgxvah"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:configure-flags #~(list "--disable-static")
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'bootstrap
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "grecs/bootstrap"
+                  (("/bin/sh")
+                   (which "bash"))
+                  ((" GRECS_GIT_ID=.*")
+                   " GRECS_GIT_ID=v1.0-25-g51b12be\n"))
+                (invoke "perl" "./bootstrap" "--force" "--skip-po")))
+            (add-before 'build 'post-configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; For some reason, this file is missing.
+                (install-file "gnulib/lib/getopt.c"
+                              "xdico/gnu")
+                ;; This code invokes "/bin/sh -c 'm4 -s ...'".
+                (substitute* "grecs/src/grecs-lex.l"
+                  (("\"/bin/sh")
+                   (string-append "\""
+                                  (search-input-file inputs "/bin/sh"))))))
+
+            (add-before 'check 'silence-guile
+              (lambda _
+                ;; Guile is too talkative, which disturbs the test
+                ;; infrastructure.  Gag it.
+                (setenv "GUILE_AUTO_COMPILE" "0")
+                (setenv "GUILE_WARN_DEPRECATED" "no"))))))
+      (native-inputs
+       (list autoconf-2.71
+             automake
+             bison
+             flex
+             gettext-minimal
+             groff
+             libtool
+             perl
+             texinfo))
+      (inputs
+       (list m4                           ;used at run time
+             bash-minimal                 ;likewise
+             pcre
+             python-wrapper
+             guile-3.0
+             gsasl
+             readline
+             zlib
+             wordnet
+             libxcrypt                    ;for 'crypt'
+             libltdl))
+      (home-page "https://www.gnu.org.ua/software/dico/")
+      (synopsis "Implementation of DICT server (RFC 2229)")
+      (description
+       "GNU Dico implements a flexible dictionary server and client according
+to RFC 2229 (DICT Server).  It is able to access any database available,
 regardless of format, thanks to its modular structure.  New modules may be
 written in C, Guile or Python.  Dico also includes a command-line client,
 which may be used to query remote dictionary databases.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public libmaa
   (package
