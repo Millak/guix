@@ -511,32 +511,37 @@ and every application benefits from this.")
 
 (define-public qgpgme-qt5
   (package
-    (inherit gpgme)
     (name "qgpgme-qt5")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnupg/qgpgme/qgpgme-" version ".tar.xz"))
+       (sha256
+        (base32 "1bb198dk49bd7yx4cf4w07acjhllilx1nczdna7139ncflj5nr0m"))))
+    (build-system qt-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'chdir-and-symlink
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((gpgme (assoc-ref inputs "gpgme")))
-               (symlink (string-append gpgme "/lib/libgpgmepp.la")
-                        "lang/cpp/src/libgpgmepp.la")
-               (symlink (string-append gpgme "/lib/libgpgme.la")
-                        "src/libgpgme.la"))
-             (chdir "lang/qt"))))))
-    (propagated-inputs (list gpgme))    ;required by QGpgmeConfig.cmake
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'check-setup
+            (lambda _
+              (setenv "HOME" (getcwd))
+              (invoke "gpg-agent" "--daemon"))))))
+    (propagated-inputs
+     (list gpgme-2        ;for FindGpgme.cmake and QGpgmeQt6Config.cmake
+           gpgmepp        ;for QGpgmeQt6Config.cmake
+           libgpg-error)) ;for FindLibGpgError.cmake and QGpgmeQt6Config.cmake
     (native-inputs
-     (modify-inputs native-inputs
-       (prepend pkg-config)))
-    (inputs
-     (modify-inputs inputs
-       (prepend qtbase-5)))
+     (list gnupg        ;for tests
+           pkg-config))
+    (home-page "https://gnupg.org/software/gpgme/index.html")
     (synopsis "Qt API bindings for gpgme")
     (description "QGpgme provides a very high level Qt API around GpgMEpp.
 
 QGpgME was originally developed as part of libkleo and incorporated into
 gpgpme starting with version 1.7.")
-    (license license:gpl2+))) ;; Note: this differs from gpgme
+    (license license:gpl2+)))
 
 (define-public qgpgme
   (package
