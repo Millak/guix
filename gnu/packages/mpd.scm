@@ -754,14 +754,14 @@ Daemon (MPD).")
 (define-public rmpc
   (package
     (name "rmpc")
-    (version "0.9.0")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rmpc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "00a8z3b4wqf1j6v0ws2fckj452w46vgj1v2n446bv4ngrk7wnf06"))))
+        (base32 "0j2jahbm49jl1116cdl9f47pi0rmi6h4qy5gajwswr9dnld36803"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -787,7 +787,7 @@ Daemon (MPD).")
                  ("target/completions/_rmpc" .
                   "share/zsh/site-functions/_rmpc"))))))))
     (inputs (cargo-inputs 'rmpc))
-    (home-page "https://mierak.github.io/rmpc/")
+    (home-page "https://rmpc.mierak.dev/")
     (synopsis "Configurable TUI client for MPD")
     (description
      "rmpc is a terminal based Music Player Daemon client heavily inspired by
