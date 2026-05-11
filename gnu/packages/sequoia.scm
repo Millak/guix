@@ -303,10 +303,11 @@ This Guix package is built to use the nettle cryptographic library.")
 
 ;;
 
+;; This package follows the version of the sequoia-openpgp crate.
 (define-public sequoia
   (package
     (name "sequoia")
-    (version "2.2.0")
+    (version "2.3.0")
     (source #f)
     (build-system trivial-build-system)
     (arguments
