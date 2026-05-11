@@ -729,7 +729,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/zig.scm				\
   %D%/packages/zig-xyz.scm			\
   %D%/packages/zile.scm				\
-  %D%/packages/zwave.scm			\
 						\
   %D%/services.scm				\
   %D%/services/admin.scm			\
@@ -2070,7 +2069,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/openssl-3.0-c-rehash-in.patch		\
   %D%/packages/patches/openssl-hurd64.patch			\
   %D%/packages/patches/opentaxsolver-file-browser-fix.patch     \
-  %D%/packages/patches/open-zwave-hidapi.patch			\
   %D%/packages/patches/opusfile-CVE-2022-47021.patch		\
   %D%/packages/patches/orbit2-fix-array-allocation-32bit.patch \
   %D%/packages/patches/orca-fix-gst-init-check-call.patch \

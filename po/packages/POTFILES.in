@@ -552,7 +552,6 @@ gnu/packages/webkit.scm
 gnu/packages/wireservice.scm
 gnu/packages/xfce.scm
 gnu/packages/xml.scm
-gnu/packages/zwave.scm
 gnu/packages/xiph.scm
 gnu/packages/zig.scm
 gnu/packages/virtualization.scm
