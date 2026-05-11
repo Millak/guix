@@ -1587,7 +1587,7 @@ noticed that a significant number of them have a @code{inherit} field:
 
 All unspecified fields are inherited from the parent package.  This is very
 convenient to create alternative packages, for instance with different source,
-version or compilation options.  @xref{Defining Package Variant,,, guix,
+version or compilation options.  @xref{Defining Package Variants,,, guix,
 GNU Guix Reference Manual}, for a discussion of inheritance and of other
 ways to create package variants.
 
