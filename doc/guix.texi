@@ -49,7 +49,7 @@ Copyright @copyright{} 2017 humanitiesNerd@*
 Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2021, 2022 Marius Bakke@*
 Copyright @copyright{} 2017, 2019, 2020, 2022 Hartmut Goebel@*
-Copyright @copyright{} 2017, 2019--2025 Maxim Cournoyer@*
+Copyright @copyright{} 2017, 2019--2026 Maxim Cournoyer@*
 Copyright @copyright{} 2017–2022 Tobias Geerinckx-Rice@*
 Copyright @copyright{} 2017 George Clemmer@*
 Copyright @copyright{} 2017 Andy Wingo@*
@@ -50528,36 +50528,36 @@ server.
 Once the server has been provisioned and SSH is available, deployment
 continues by delegating it to the @code{managed-host-environment-type}.
 
-Servers on the Hetzner Cloud service can be provisioned on the AArch64
-architecture using UEFI boot mode, or on the x86_64 architecture using
-BIOS boot mode.  The @code{(gnu machine hetzner)} module exports the
-@code{%hetzner-os-arm} and @code{%hetzner-os-x86} operating systems that
-are compatible with those two architectures, and can be used as a base
-for defining your custom operating system.
+Depending on their type, x86_64 or AArch64 servers on the Hetzner Cloud
+service can be provisioned using BIOS or UEFI boot mode.  The @code{(gnu
+machine hetzner)} module exports the @code{make-hetzner-os} procedure,
+which takes the server type string as an argument (e.g. @code{"cx23"})
+and returns a base @code{operating-system} definition compatible with
+it.
 
 The following example shows the definition of two machines that are
-deployed on the Hetzner Cloud service.  The first one uses the
-@code{%hetzner-os-arm} operating system to run a server with 16 shared
-vCPUs and 32 GB of RAM on the @code{aarch64} architecture, the second
-one uses the @code{%hetzner-os-x86} operating system on a server with 16
-shared vCPUs and 32 GB of RAM on the @code{x86_64} architecture.
+deployed on the Hetzner Cloud service.  The first one for an ARM server
+type that has 16 shared vCPUs and 32 GB of RAM, the second for an x86_64
+server type that has 16 shared vCPUs and 32 GB of RAM.
 
 @lisp
 (use-modules (gnu machine)
              (gnu machine hetzner))
 
-(list (machine
-       (operating-system %hetzner-os-arm)
-       (environment hetzner-environment-type)
-       (configuration (hetzner-configuration
-                       (server-type "cax41")
-                       (ssh-key "/home/charlie/.ssh/id_rsa"))))
-      (machine
-       (operating-system %hetzner-os-x86)
-       (environment hetzner-environment-type)
-       (configuration (hetzner-configuration
-                       (server-type "cpx51")
-                       (ssh-public-key "/home/charlie/.ssh/id_rsa.pub")))))
+(list (let ((server-type "cax41"))
+        (machine
+          (operating-system (make-hetzner-os server-type))
+          (environment hetzner-environment-type)
+          (configuration (hetzner-configuration
+                           (server-type server-type)
+                           (ssh-key "/home/charlie/.ssh/id_rsa")))))
+      (let ((server-type "cpx51"))
+        (machine
+          (operating-system (make-hetzner-os server-type))
+          (environment hetzner-environment-type)
+          (configuration (hetzner-configuration
+                           (server-type server-type)
+                           (ssh-public-key "/home/charlie/.ssh/id_rsa.pub"))))))
 @end lisp
 
 @vindex GUIX_HETZNER_API_TOKEN

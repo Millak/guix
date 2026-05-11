@@ -36,6 +36,7 @@
   #:use-module (gnu system)
   #:use-module (guix base32)
   #:use-module (guix colors)
+  #:use-module (guix deprecation)
   #:use-module (guix derivations)
   #:use-module (guix diagnostics)
   #:use-module (guix gexp)
@@ -66,8 +67,10 @@
   #:use-module (ssh session)
   #:use-module (ssh sftp)
   #:use-module (ssh shell)
-  #:export (%hetzner-os-arm
-            %hetzner-os-x86
+  #:export (%hetzner-os-arm             ;deprecated
+            %hetzner-os-x86             ;deprecated
+            make-hetzner-os
+
             deploy-hetzner
             hetzner-configuration
             hetzner-configuration-allow-downgrades?
@@ -98,7 +101,7 @@
 
 ;; Operating system for arm servers using UEFI boot mode.
 
-(define %hetzner-os-arm
+(define %hetzner-os-arm/efi
   (operating-system
     (host-name "guix-arm")
     (bootloader
@@ -128,9 +131,9 @@
 
 ;; Operating system for x86 servers using BIOS boot mode.
 
-(define %hetzner-os-x86
+(define %hetzner-os-x86/bios
   (operating-system
-    (inherit %hetzner-os-arm)
+    (inherit %hetzner-os-arm/efi)
     (host-name "guix-x86")
     (bootloader
      (bootloader-configuration
@@ -145,6 +148,51 @@
              (device "/dev/sda1")
              (type "ext4"))
            %base-file-systems))))
+
+(define %hetzner-os-x86/efi
+  (operating-system
+    (inherit %hetzner-os-arm/efi)
+    (host-name "guix-x86")
+    (initrd-modules
+     (cons "virtio_scsi" %base-initrd-modules))))
+
+(define (server-type-name->arch type-name)
+  "Return a symbol corresponding to the server type architecture, e.g.
+@code{'x86} or @code{'arm}."
+  (cond
+    ((string-prefix-ci? "cax" type-name)
+     'arm)
+    (else
+     'x86)))
+
+(define (server-type-name->bootloader type-name)
+  "Return a symbol corresponding to the bootloader type, e.g.
+@code{'efi} or @code{'bios}."
+  (if (eq? 'arm (server-type-name->arch type-name))
+      'efi
+      (cond
+       ((string-prefix-ci? "cx" type-name)
+        'bios)                          ;old, cost-optimized x86 servers
+       (else
+        'efi))))           ;newer, regular performance/general purpose servers
+
+(define* (make-hetzner-os server-type-name)
+  "Return an operating server customized for SERVER-TYPE-NAME, a string like
+\"cx23\" or \"cax11\", denoting the Hetzner virtual server type."
+  (match (server-type-name->arch server-type-name)
+    ('arm %hetzner-os-arm/efi)
+    ('x86
+     (match (server-type-name->bootloader server-type-name)
+       ('bios %hetzner-os-x86/bios)
+       ('efi %hetzner-os-x86/efi)))))
+
+(define-deprecated %hetzner-os-x86
+  make-hetzner-os
+  %hetzner-os-x86/bios)
+
+(define-deprecated %hetzner-os-arm
+  make-hetzner-os
+  %hetzner-os-arm/efi)
 
 (define (operating-system-authorize os)
   "Authorize the OS with the public signing key of the current machine."
@@ -363,43 +411,43 @@ Available locations:~%~%~a~%~%For more details, see: ~a")
   "Return the form to bootstrap an operating system on SERVER."
   (let* ((os (machine-operating-system machine))
          (system (hetzner-server-system server))
+         (type-name (hetzner-server-type-name (hetzner-server-type server)))
          (arm? (equal? "arm" (hetzner-server-architecture server)))
          (x86? (equal? "x86" (hetzner-server-architecture server)))
+         (efi? (equal? 'efi (server-type-name->bootloader type-name)))
          (root-fs-type (operating-system-root-file-system-type os)))
     `(operating-system
        (host-name ,(operating-system-host-name os))
        (timezone "Etc/UTC")
        (bootloader (bootloader-configuration
-                    (bootloader ,(cond (arm? 'grub-efi-bootloader)
-                                       (x86? 'grub-bootloader)))
-                    (targets ,(cond (arm? '(list "/boot/efi"))
-                                    (x86? '(list "/dev/sda"))))
-                    (terminal-outputs '(console))))
+                     (bootloader ,(if efi?
+                                      'grub-efi-bootloader
+                                      'grub-bootloader))
+                     (targets ,(if efi?
+                                   '(list "/boot/efi")
+                                   '(list "/dev/sda")))
+                     (terminal-outputs '(console))))
        (initrd-modules (append
                         ,(cond (arm? '(list "sd_mod" "virtio_scsi"))
                                (x86? '(list "virtio_scsi")))
                         %base-initrd-modules))
-       (file-systems ,(cond
-                       (arm? `(cons* (file-system
-                                       (mount-point "/")
-                                       (device "/dev/sda1")
-                                       (type ,root-fs-type))
-                                     (file-system
-                                       (mount-point "/boot/efi")
-                                       (device "/dev/sda15")
-                                       (type "vfat"))
-                                     %base-file-systems))
-                       (x86? `(cons* (file-system
-                                       (mount-point "/")
-                                       (device "/dev/sda1")
-                                       (type ,root-fs-type))
-                                     %base-file-systems))))
+       (file-systems (cons* (file-system
+                              (mount-point "/")
+                              (device "/dev/sda1")
+                              (type ,root-fs-type))
+                            ,@(if efi?
+                                  '((file-system
+                                      (mount-point "/boot/efi")
+                                      (device "/dev/sda15")
+                                      (type "vfat")))
+                                  '())
+                            %base-file-systems))
        (services
         (cons* (service dhcpcd-service-type)
                (service openssh-service-type
                         (openssh-configuration
-                         (openssh openssh-sans-x)
-                         (permit-root-login 'prohibit-password)))
+                          (openssh openssh-sans-x)
+                          (permit-root-login 'prohibit-password)))
                %base-services)))))
 
 (define (rexec-verbose session cmd)
