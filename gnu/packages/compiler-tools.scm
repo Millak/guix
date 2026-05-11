@@ -1,8 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2012-2014, 2019, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2024-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
-;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2024-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -22,14 +23,20 @@
 
 (define-module (gnu packages compiler-tools)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages gawk)
+  #:use-module (gnu packages m4)
+  #:use-module (gnu packages man)
+  #:use-module (gnu packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages))
+  #:use-module (guix packages)
+  #:use-module (guix utils)
+  #:use-module (srfi srfi-1))
 
 (define-public byacc
   (package
@@ -64,6 +71,58 @@ specification from a file and generates an LALR(1) parser for it.  The parsers
 consist of a set of LALR(1) parsing tables and a driver routine written in the
 C programming language.")
     (license license:public-domain)))
+
+(define-public flex
+  (package
+    (name "flex")
+    (version "2.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/westes/flex"
+             "/releases/download/v" version "/"
+             "flex-" version ".tar.gz"))
+       (sha256
+        (base32
+         "15g9bv236nzi665p9ggqjlfn4dwck5835vf0bbw2cz7h5c1swyp8"))))
+    (build-system gnu-build-system)
+    (inputs
+     (let ((bison-for-tests
+            (package
+              (inherit bison)
+              (arguments
+               ;; Disable tests, since they require flex.
+               (substitute-keyword-arguments arguments
+                 ((#:tests? _ #f) #f)))
+              (inputs (alist-delete "flex" (package-inputs bison))))))
+       `(("bison" ,bison-for-tests))))
+    (arguments
+     (if (%current-target-system)
+         (list #:configure-flags
+               #~'("ac_cv_func_malloc_0_nonnull=yes"
+                   "ac_cv_func_realloc_0_nonnull=yes"))
+         '()))
+    ;; m4 is not present in PATH when cross-building
+    (native-inputs
+     (list help2man m4))
+    (propagated-inputs (list m4))
+    (home-page "https://github.com/westes/flex")
+    (synopsis "Fast lexical analyser generator")
+    (description
+     "Flex is a tool for generating scanners.  A scanner, sometimes
+called a tokenizer, is a program which recognizes lexical patterns in
+text.  The flex program reads user-specified input files, or its standard
+input if no file names are given, for a description of a scanner to
+generate.  The description is in the form of pairs of regular expressions
+and C code, called rules.  Flex generates a C source file named,
+\"lex.yy.c\", which defines the function yylex().  The file \"lex.yy.c\"
+can be compiled and linked to produce an executable.  When the executable
+is run, it analyzes its input for occurrences of text matching the
+regular expressions for each rule.  Whenever it finds a match, it
+executes the corresponding C code.")
+    (license (license:non-copyleft "file://COPYING"
+                                   "See COPYING in the distribution."))))
 
 (define-public oyacc
   (package
