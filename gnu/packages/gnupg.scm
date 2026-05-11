@@ -82,6 +82,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
@@ -481,6 +482,32 @@ and every application benefits from this.")
        (base32 "0px87fbp90xp8vf1wms02flk14zmrqsfr135f5his1kiiqjx01ga"))))))
 
 (define-public gpgme gpgme-1)
+
+(define-public gpgmepp
+  (package
+    (name "gpgmepp")
+    (version "2.0.0")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (string-append "mirror://gnupg/gpgmepp/gpgmepp-" version ".tar.xz"))
+      (sha256
+       (base32 "10jkaqzjr5gy04bmcw75q6iy2isk17plixwn61ps4237q14n0yfl"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; FIXME: BUILD_TESTING variable is enabled by deault, but still no tests
+      ;; are found.
+      #:tests? #f))
+    (propagated-inputs
+     ;; As required by the pkg-config's Requires.private.
+     (list gpgme-2 libgpg-error))
+    (home-page "https://gnupg.org/software/gpgme/index.html")
+    (synopsis "C++ bindings/wrapper for GPGME")
+    (description
+     "GPGME++ is a C++ wrapper (or C++ bindings) for the GnuPG project's
+@acronym{GPGME, GnuPG Made Easy} library.")
+    (license license:lgpl2.1+)))
 
 (define-public qgpgme-qt5
   (package
