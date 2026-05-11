@@ -3900,7 +3900,7 @@ is an extremely fast non-cryptographic hash algorithm.")
       ;; XXX: Source only, to break cycle with
       ;; go-github-com-zmap-zcrypto. Addintional inputs requaired only to
       ;; build CLI:
-      ;; 
+      ;;
       ;; -  github.com/sirupsen/logrus
       ;; -  github.com/zmap/zcrypto
       ;; -  github.com/zmap/zlint/v3
