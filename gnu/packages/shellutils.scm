@@ -195,7 +195,7 @@ in Zsh intelligently.")
 (define-public zsh-autosuggestions
   (package
     (name "zsh-autosuggestions")
-    (version "0.7.0")
+    (version "0.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -204,7 +204,7 @@ in Zsh intelligently.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g3pij5qn2j7v7jjac2a63lxd97mcsgw6xq6k5p7835q9fjiid98"))))
+                "02p5wq93i12w41cw6b00hcgmkc8k80aqzcy51qfzi0armxig555y"))))
     (build-system gnu-build-system)
     (native-inputs
      (list ruby
