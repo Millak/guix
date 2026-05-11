@@ -741,6 +741,14 @@ them via CalDAV using, for example, @code{vdirsyncer}.")
        (sha256
         (base32 "0j0gqnxf0smjs0sy7ipryj1sk0s59wrh4qwr7h55zdr4wdhi407w"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; FIXME This is an edge case to fix in the build system.
+          ;; The issue seems that sanity-check is unable to handle
+          ;; the case where the module and package have different names.
+          (delete 'sanity-check))))
     (native-inputs
      (list python-mock
            python-pytest
