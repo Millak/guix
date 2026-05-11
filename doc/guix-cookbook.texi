@@ -1541,9 +1541,9 @@ The recursive importer won't import packages for which Guix already has package
 definitions, except for the very first.
 
 Not all applications can be packaged this way, only those relying on a select
-number of supported systems.  Read about the full list of importers in
-the guix import section of the manual
-(@pxref{Invoking guix import,,, guix, GNU Guix Reference Manual}).
+number of supported systems.
+@xref{Invoking guix import,,, guix, GNU Guix Reference Manual} for
+the full list of importers.
 
 @node Automatic update
 @subsubsection Automatic update
@@ -1562,6 +1562,9 @@ well:
 @example
 $ guix refresh hello --update
 @end example
+
+@xref{Invoking guix refresh,,, guix, GNU Guix Reference Manual}, for
+more info.
 
 @node Inheritance
 @subsubsection Inheritance
