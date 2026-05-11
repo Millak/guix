@@ -73,7 +73,7 @@
         diffutils patch gawk tar gzip bzip2 xz lzip zstd
         guile-3.0-latest guile-colorized guile-readline
         net-base nss-certs inetutils less procps shadow sudo which
-        info-reader pciutils))
+        info-reader e2fsprogs pciutils))
 
 (define %base-services/hurd
   (append (list (service hurd-console-service-type

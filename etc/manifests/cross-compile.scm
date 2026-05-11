@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020-2022, 2024 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;;
@@ -61,7 +61,7 @@ TARGET."
   ;; from the other package sets.
   (fold delete %base-packages
         (append (map specification->package
-                     '("e2fsprogs" "kbd" "iproute2" "iw" "wireless-tools"))
+                     '("kbd" "iproute2" "iw" "wireless-tools"))
                 %base-packages-linux)))
 
 (define %system-packages

@@ -526,8 +526,7 @@ exec ${system}/rc \"$@\"
                                  ":" util-linux "/sbin\n"))
                  (("/sbin/") (string-append out "/sbin/"))
                  (("/libexec/") (string-append out "/libexec/"))
-                 (("/hurd/") (string-append out "/hurd/")))
-               #t)))
+                 (("/hurd/") (string-append out "/hurd/"))))))
          (add-after 'patch-shebangs 'patch-libexec-shebangs
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; XXX: Since the 'patch-shebangs' phase doesn't traverse
