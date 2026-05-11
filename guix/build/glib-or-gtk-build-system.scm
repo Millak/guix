@@ -207,6 +207,8 @@ if needed."
 ;; `generate-gdk-pixbuf-loaders-cache' build phase defined below.
 (define %gdk-pixbuf-loaders-cache-file
   "lib/gdk-pixbuf-2.0/2.10.0/loaders.cache")
+(define %gdk-pixbuf-loaders-directory
+  "lib/gdk-pixbuf-2.0/2.10.0/loaders")
 
 (define (generate-gdk-pixbuf-loaders-cache directories outputs)
   "Generate the loaders.cache file used by gdk-pixbuf to locate the available
@@ -214,8 +216,9 @@ loaders among DIRECTORIES, and set the GDK_PIXBUF_MODULE_FILE environment
 variable.  The cache file is installed under OUTPUTS.  Return the first cache
 file name if one was created else #f."
   (let* ((loaders (append-map
-                   (cut find-files <> "^libpixbufloader-.*\\.so$")
-                   (delete-duplicates directories)))
+                   (lambda (dir)
+                     (find-files (in-vicinity dir %gdk-pixbuf-loaders-directory) "^.*.so$"))
+                   directories))
          (outputs* (map (cut string-append <> "/"
                              %gdk-pixbuf-loaders-cache-file)
                         outputs))
