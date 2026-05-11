@@ -816,7 +816,8 @@ is based on Vim's builtin plugin support.")
                                       (%current-system))
                                   (package-supported-systems luajit))
                           '()
-                          '("-DPREFER_LUA:BOOL=YES")))
+                          '("-DPREFER_LUA:BOOL=YES"))
+                   "-DUSE_BUNDLED:BOOL=NO")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'prevent-embedding-gcc-store-path
