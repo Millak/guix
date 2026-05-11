@@ -37492,31 +37492,43 @@ background.")
 (define-public python-term-image
   (package
     (name "python-term-image")
-    (version "0.7.2")
+    (properties '((commit . "a40a12bb0a12944b7d7a182e93f1caad4261693a")
+                  (revision . "0")))
+    (version (git-version "0.7.2"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       ;; We need the full repo to run the tests.
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/AnonymouX47/term-image")
-              (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lsd5m0k5m99arkca2rzrrlln10c8ax6xfawqwjnspcbf8l3h3dq"))))
+        (base32 "1g1a5b756l7bj69zwy9c86c72bwfb38iifv7z5lfr870i93f1k8r"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags
-           #~(list "tests"
-                   ;; These tests require network access.
-                   "-k" (string-append "not test_from_url"
-                                       " and not test_source"
-                                       " and not test_close"))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'adjust-dependencies
-                 (lambda _
-                   (substitute* "setup.py"
-                     (("pillow>=9.1,<11") "pillow>=9.1,<12")))))))
+     (list
+      #:test-flags
+      #~(list "tests"
+              ;; These tests require network access.
+              "-k" (string-append "not test_from_url"
+                                  " and not test_source"
+                                  " and not test_close"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'bump-pillow-requirement
+            (lambda _
+              (substitute* "src/term_image/image/common.py"
+                (("\\.getdata")
+                 ".get_flattened_data"))
+              (let* ((major #$(version-major
+                               (package-version
+                                (this-package-input "python-pillow"))))
+                     (next (number->string (+ 1 (string->number major)))))
+                (substitute* "pyproject.toml"
+                (("pillow>=9.1,<12")
+                 (string-append "pillow>=9.1,<" next)))))))))
     (propagated-inputs (list python-pillow python-requests))
     (native-inputs
      (list python-pytest
