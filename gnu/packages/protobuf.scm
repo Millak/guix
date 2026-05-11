@@ -158,8 +158,8 @@ data in motion, or as a file format for data at rest.")
                 (disable-tests
                  "src/google/protobuf/io/zero_copy_stream_unittest.cc"
                  "LargeOutput")))))))
-    (native-inputs (list googletest python-minimal-wrapper ruby))
-    (inputs (list abseil-cpp jsoncpp zlib))
+    (native-inputs (list googletest))
+    (inputs (list abseil-cpp zlib))
     (home-page "https://protobuf.dev")
     (synopsis "Data encoding for remote procedure calls (RPCs)")
     (description
