@@ -35,7 +35,9 @@
   #:use-module (ice-9 binary-ports)
   #:use-module (rnrs bytevectors)
   #:use-module (guix ui)
-  #:use-module (guix utils)
+  #:use-module ((guix utils)
+                #:select ((cache-directory . default-cache-directory)
+                          with-atomic-file-output))
   #:use-module (guix base64)
   #:autoload   (gcrypt hash) (sha256)
   #:autoload   (gnutls) (error/invalid-session error/again error/interrupted)
@@ -311,11 +313,12 @@ returning."
                       string->number*)
                36))))
 
-(define (cache-file-for-uri uri)
-  "Return the name of the file in the cache corresponding to URI."
+(define* (cache-file-for-uri uri cache-directory)
+  "Return the name of the file in the cache corresponding to URI,
+under CACHE-DIRECTORY."
   (let ((digest (sha256 (string->utf8 (uri->string uri)))))
     ;; Use the "URL" alphabet because it does not contain "/".
-    (string-append (cache-directory) "/http/"
+    (string-append cache-directory "/http/"
                    (base64-encode digest 0 (bytevector-length digest)
                                   #f #f base64url-alphabet))))
 
@@ -324,9 +327,11 @@ returning."
                             (write-cache dump-port)
                             (cache-miss (const #t))
                             (log-port (current-error-port))
+                            (cache-directory (default-cache-directory))
                             (timeout 10))
   "Like 'http-fetch', return an input port, but cache its contents in
-~/.cache/guix.  The cache remains valid for TTL seconds.
+CACHE-DIRECTORY, ~/.cache/guix by default.  The cache remains valid for
+TTL seconds.
 
 Call WRITE-CACHE with the HTTP input port and the cache output port to write
 the data to cache.  Call CACHE-MISS with URI just before fetching data from
@@ -341,7 +346,7 @@ Write information about redirects to LOG-PORT."
   (let* ((uri (if (string? uri)
                   (string->uri uri)
                   uri))
-         (file (cache-file-for-uri uri)))
+         (file (cache-file-for-uri uri cache-directory)))
     (define (update-cache cache-port)
       (define cache-time
         (and cache-port
