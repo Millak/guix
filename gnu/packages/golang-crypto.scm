@@ -2073,7 +2073,7 @@ the Go standard library's TLS 1.3 implementation.")
 (define-public go-github-com-melbahja-goph
   (package
     (name "go-github-com-melbahja-goph")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -2082,7 +2082,7 @@ the Go standard library's TLS 1.3 implementation.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w6sn6m3bsh60flp0fdbv70c2d1ky12mpj09100qf64w0v1d32k0"))))
+        (base32 "1ncvs9pbjg7m8yp3h8wbhxvzvks1g06a5qcjrkw2k515m2yqhg8k"))))
     (build-system go-build-system)
     (arguments
      (list
