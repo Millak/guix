@@ -2726,18 +2726,21 @@ choice.  Supported launchers are: dmenu, fuzzel, rofi, walker and custom.")
 (define-public py-spy
   (package
     (name "py-spy")
-    (version "0.4.0")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "py-spy" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fvdmrqp4qand1zb9cwks8hpkysdqajrdh9y7ks15c78985k1x64"))))
+        (base32 "15vccm4q0lqgpq0q9vrzriz58dcrxj2bqf9ac9s4n2bvdxy5f0va"))))
     (build-system cargo-build-system)
     (arguments
      (list
       #:install-source? #f
+      #:cargo-test-flags
+      ;; python-numpy isn't in the build environment
+      ''("--" "--skip=test_local_vars")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-shell-completions
@@ -2778,7 +2781,7 @@ choice.  Supported launchers are: dmenu, fuzzel, rofi, walker and custom.")
            (list this-package)
            '())
        (list python-minimal-wrapper)))
-    (inputs (cons libunwind (cargo-inputs 'py-spy)))
+    (inputs (cargo-inputs 'py-spy))
     (home-page "https://github.com/benfred/py-spy")
     (synopsis "Sampling profiler for Python programs")
     (description
