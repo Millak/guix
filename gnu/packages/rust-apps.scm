@@ -3107,14 +3107,14 @@ rebase.")
 (define-public pastel
   (package
     (name "pastel")
-    (version "0.10.0")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pastel" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mwy4nx3jn74sr1q8ap98faja5wp7hz51yqga8l050xz645kb8wj"))))
+        (base32 "0rcvas6xcjdl9whhjzbvj3pmr7q86masn5vnvc2bmn1c3788mh30"))))
     (build-system cargo-build-system)
     (arguments
      (list
