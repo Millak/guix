@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2026 Daniel Patrick Fahey <dpf@helmcontrol.ltd>
+;;; Copyright © 2026 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,6 +24,8 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages documentation)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages language)
   #:use-module (gnu packages linux)
@@ -153,52 +156,54 @@ features not otherwise available.")
       (license license:agpl3))))
 
 (define-public atomspace-storage
-  ;; Storage backends for AtomSpace.
   (let ((commit "ecd88d673258e51f65cc0605400003affdf4d694")
-        (revision "0"))
+        (revision "1"))
     (package
       (name "atomspace-storage")
-      (version (git-version "0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/opencog/atomspace-storage")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "12ssnc313cm5n8bc6zw53dkjm9crrry90lpsknzxafnm61mzcgx3"))))
+      (version (git-version "4.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/opencog/atomspace-storage")
+               (commit commit)))
+         (sha256
+          (base32 "12ssnc313cm5n8bc6zw53dkjm9crrry90lpsknzxafnm61mzcgx3"))
+         (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments
        (list
         #:configure-flags
-        #~(list "-DSKIP_LDCONF=ON"
-                (string-append "-DGUILE_INCLUDE_DIR=" #$guile-3.0.11
-                               "/include/guile/3.0/")
-                (string-append "-DGUILE_SITE_DIR=" #$output
-                               "/share/guile/site/3.0/")
-                (string-append "-DGUILE_CCACHE_DIR=" #$output
-                               "/lib/guile/3.0/site-ccache"))
-        #:modules '((guix build cmake-build-system)
-                    ((guix build gnu-build-system) #:prefix gnu:)
-                    (guix build utils))
+        #~(map (lambda (strings)
+                 (apply string-append strings))
+               `(("-DGUILE_LIBRARIES=" ,(dirname (search-input-file
+                                                  %build-inputs
+                                                  "lib/libguile-3.0.so")))
+                 ("-DGUILE_INCLUDE_DIRS=" ,(search-input-directory
+                                            %build-inputs "include/guile/3.0"))
+                 ("-DGUILE_SITE_DIR=" ,#$output "/share/guile/site/3.0/")
+                 ("-DPYTHON_INSTALL_PREFIX=" ,#$output "/lib/python"
+                  ,#$(version-major+minor (package-version (this-package-input
+                                                            "python-minimal")))
+                  "/site-packages/")))
         #:phases
         #~(modify-phases %standard-phases
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys #:rest args)
-                (when tests?
-                  (apply (assoc-ref gnu:%standard-phases 'check)
-                         #:tests? tests? #:test-target "tests" args)
-                  (for-each invoke
-                            (find-files "tests" "UTest$"))))))))
-      (inputs
-       (list atomspace boost cogutil gmp guile-3.0-latest))
-      (native-inputs
-       (list cxxtest pkg-config python-minimal))
+            (add-after 'build 'build-tests
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (begin
+                  (apply invoke "make" "tests" make-flags)))))))
+      (inputs (list atomspace cogutil gmp guile-3.0-latest python-minimal))
+      (native-inputs (list cxxtest pkg-config python-cython))
       (home-page "https://github.com/opencog/atomspace-storage")
-      (synopsis "Storage backends for AtomSpace")
-      (description "AtomSpace-Storage provides various storage backends
-for the AtomSpace hypergraph database.")
+      (synopsis "StorageNode API for AtomSpace")
+      (description
+       "This AtomSpace module contains the StorageNode base class.  The
+StorageNode API is the original, primary API for I/O storage and movement
+of Atoms into, out of and between AtomSpaces.  It is mandatory for the
+RocksStorageNode which stores Atoms and AtomSpaces to disk, via RocksDB, and
+to CogStorageNode, which moves Atoms between AtomSpaces on different network
+nodes, and ProxyNodes which provides mirroring, routing, caching and filtering
+between AtomSpaces.")
       (license license:agpl3))))
 
 (define-public cogserver
