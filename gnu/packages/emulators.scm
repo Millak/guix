@@ -148,7 +148,7 @@
 (define-public ares
   (package
     (name "ares")
-    (version "145")
+    (version "147")
     (source
      (origin
        (method git-fetch)
@@ -157,23 +157,28 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "074kkgrbiga7grkwhnhw51ih7krxgf91m9zrrwjkj4q1hdjhlz5a"))))
+        (base32 "1b4xixngp8md2ishf3cyfwpzjcsvjb5zp678can5dcmv9z1dlsis"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Delete non-free blobs: Supersoft Diagnostics II.
+        #~(delete-file-recursively "tests/i8080/tests"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:tests? #f                  ; No tests
-           #:configure-flags
-           #~(list "-DARES_BUILD_LOCAL=FALSE"
-                   "-DARES_BUILD_OFFICIAL=TRUE"
-                   "-DARES_BUNDLE_SHADERS=FALSE"
-                   "-DARES_SKIP_DEPS=TRUE"
-                   (string-append "-DARES_VERSION_OVERRIDE=" #$version))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'avoid-libglvnd
-                 (lambda _
-                   ;; XXX: Our mesa doesn't have libglvnd support.
-                   (substitute* "ruby/cmake/os-linux.cmake"
-                     (("OpenGL::GLX") "OpenGL::GL")))))))
+     (list
+      #:tests? #f                       ; non-free blobs
+      #:configure-flags
+      #~(list "-DARES_BUILD_LOCAL=FALSE"
+              "-DARES_BUILD_OFFICIAL=TRUE"
+              "-DARES_BUNDLE_SHADERS=FALSE"
+              "-DARES_SKIP_DEPS=TRUE"
+              (string-append "-DARES_VERSION_OVERRIDE=" #$version))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'avoid-libglvnd
+            (lambda _
+              ;; TODO: Our mesa doesn't have libglvnd support.
+              (substitute* "ruby/cmake/os-linux.cmake"
+                (("OpenGL::GLX") "OpenGL::GL")))))))
     (native-inputs
      (list pkg-config))
     (inputs
