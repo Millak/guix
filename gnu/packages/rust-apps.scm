@@ -3039,24 +3039,24 @@ browsers.")
 (define-public rust-cargo-edit
   (package
     (name "rust-cargo-edit")
-    (version "0.13.2")
+    (version "0.13.10")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "cargo-edit" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1y3pa7qdq2r13ya9qfiw0lb8xm0qbs6q64pj548q6c0hdcxw2mdm"))))
+                "0m0bbrkk8lpliwji19cd7jxzgv7i7fcdimbv52icqyr9nl0xlnba"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       ;; Not all files included.
-       #:cargo-test-flags '("--" "--skip=::case")))
+     (list #:install-source? #f
+           ;; Not all files included.
+           #:cargo-test-flags ''("--" "--skip=::case")))
     (native-inputs
      (list pkg-config))
     (inputs
      (cons* curl
-            libgit2-1.8
+            libgit2-1.9
             libssh2
             openssl
             zlib
