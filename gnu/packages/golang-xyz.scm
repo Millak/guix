@@ -47,7 +47,7 @@
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2023 conses <contact@conses.eu>
-;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024, 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Brian Kubisiak <brian@kubisiak.com>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Jean Simard <woshilapin@tuziwo.info>
@@ -25544,7 +25544,17 @@ suffix comparison, rather than the string-based or tree-based approaches.")
     (arguments
      (list
       #:parallel-tests? #f
-      #:import-path "github.com/syncthing/notify"))
+      #:import-path "github.com/syncthing/notify"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* "notify_test.go"
+                  ;; XXX: Sometimes this test fails due to timeout.
+                  ;; Increasing the timeout from 5s to 10s does not help.
+                  ;; See <https://github.com/rjeczalik/notify/issues/227>
+                  (("TestRecreated") "OffTestRecreated"))))))))
     (propagated-inputs
      (list go-golang-org-x-sys))
     (home-page "https://github.com/syncthing/notify")
