@@ -3118,7 +3118,30 @@ rebase.")
     (build-system cargo-build-system)
     (arguments
      (list
-      #:install-source? #f))
+      #:install-source? #f
+      #:imported-modules (append %copy-build-system-modules
+                                 %cargo-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build copy-build-system) #:prefix copy:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pre-build
+            (lambda _
+              (setenv "SHELL_COMPLETIONS_DIR" "target")))
+          (add-after 'install 'install-extras
+            (lambda args
+              (apply (assoc-ref copy:%standard-phases 'install)
+                     #:install-plan
+                     '(("target/pastel.bash"
+                        "share/bash-completion/completions/pastel")
+                       ("target/pastel.fish"
+                        "share/fish/vendor_completions.d/")
+                       ("target/_pastel"
+                        "share/zsh/site-functions/")
+                       ("target/" "share/man/man1/"
+                        #:include-regexp ("\\.1$")))
+                     args))))))
     (inputs (cargo-inputs 'pastel))
     (home-page "https://github.com/sharkdp/pastel")
     (synopsis
