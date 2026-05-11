@@ -264,6 +264,7 @@ Setting Up the Daemon
 * Build Environment Setup::     Preparing the isolated build environment.
 * Daemon Offload Setup::        Offloading builds to remote machines.
 * SELinux Support::             Using an SELinux policy for the daemon.
+* AppArmor Support::            Using an AppArmor profile for the daemon.
 
 System Installation
 
@@ -480,12 +481,14 @@ Home Services
 * GPG: GNU Privacy Guard.       Setting up GPG and related tools.
 * Desktop: Desktop Home Services.  Services for graphical environments.
 * Guix: Guix Home Services.     Services for Guix.
-* Backup: Backup Home Services.   Services for backing up User's files.
+* Backup: Backup Home Services.  Services for backing up User's files.
 * Fonts: Fonts Home Services.   Services for managing User's fonts.
 * Sound: Sound Home Services.   Dealing with audio.
 * Mail: Mail Home Services.     Services for managing mail.
 * Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
+* mpv Media Player::
+* Niri: Niri window manager.    Setting up the Niri.
 * Sway: Sway window manager.    Setting up the Sway configuration.
 * Networking: Networking Home Services.  Networking services.
 * Secrets: Secrets Home Services.  Services for storing secrets.
@@ -52425,12 +52428,13 @@ services)}.
 * GPG: GNU Privacy Guard.       Setting up GPG and related tools.
 * Desktop: Desktop Home Services.  Services for graphical environments.
 * Guix: Guix Home Services.     Services for Guix.
-* Backup: Backup Home Services.   Services for backing up User's files.
+* Backup: Backup Home Services.  Services for backing up User's files.
 * Fonts: Fonts Home Services.   Services for managing User's fonts.
 * Sound: Sound Home Services.   Dealing with audio.
 * Mail: Mail Home Services.     Services for managing mail.
 * Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
+* mpv Media Player::
 * Niri: Niri window manager.    Setting up the Niri.
 * Sway: Sway window manager.    Setting up the Sway configuration.
 * Networking: Networking Home Services.  Networking services.
