@@ -50,7 +50,8 @@ files")
          (de "@command{pull} und @command{time-machine} können Kanaldateien
 herunterladen")
          (fr "@command{pull} et @command{time-machine} peuvent télécharger des
-fichiers canaux"))
+fichiers canaux")
+         (pt "@command{pull} e @command{time-machine} podem baixar arquivos de canal"))
         (body
          (en "The @command{guix pull} and @command{guix time-machine} can now
 be passed a URL as their @option{-C} (or @option{--channels}) option.  For
@@ -138,7 +139,36 @@ sont admis---on peut les énumérer dans
 @file{~/.config/guix/trusted-channels.scm}.
 
 Voir @samp{info \"(guix.fr) Invoquer guix pull\"} pour plus
-d'informations.")))
+d'informations.")
+         (pt "Os comandos @command{guix pull} e @command{guix time-machine} já
+podem receber uma URL como opção para @option{-C} (or @option{--channels}).
+Por exemplo, o comando abaixo busca do commit mais recente evaluado com
+sucesso do ramo @code{master}:
+
+@example
+guix pull \\
+  -C https://ci.guix.gnu.org/eval/latest/channels.scm?spec=master
+@end example
+
+Alternativamente, pode-se também especificar uma @uref{https://swhid.org,
+SWHID} que aponta para um arquivo de canal:
+
+@example
+guix time-machine \\
+  -C swh:1:cnt:ae02d8ba3538a385ee799e61cdd0dfc5e14a8d1b \\
+  -- ...
+@end example
+
+Para tornar isso possível, arquivos de canal agora são evaluados em um
+ambiente isolado (uma caixinha de areia, vulgo @dfn{sandbox}), o que os impede
+de evaluar código arbitrário; se você tem arquivos de canal que dependem de
+recursos \"não padrão\", pode ser necessário que você passe a opção
+@option{--unsafe-channel-evaluation} para evaluá-los.  Além disso, quando se
+buscam canais de um arquivo baixado, somente @dfn{canais confiáveis} são
+permitidos---é possível especificá-los em
+@file{~/.config/guix/trusted-channels.scm}.
+
+Veja @samp{info \"(guix.pt_BR)Invocando guix pull\"} para mais informação.")))
 
  (entry (commit "a7c8e68dc51144a6d3981b770aca9c4897fc7c0c")
         (title
