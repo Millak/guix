@@ -22827,38 +22827,6 @@ types.  It can be used for queries, zone transfers, and dynamic updates.
 It supports TSIG authenticated messages and EDNS0.")
     (license license:expat)))
 
-(define-public python-dnspython-1.16
-  (package
-    (inherit python-dnspython)
-    (version "1.16.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://www.dnspython.org/kits/"
-                                  version "/dnspython-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1yaw7irazy42n0kdhlk7wyg8ki34rxcnc5xbc1wfwy245b0wbxab"))))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'compatibility
-            (lambda _
-              (substitute* "dns/namedict.py"
-                (("collections.MutableMapping")
-                 "collections.abc.MutableMapping"))))
-          (add-after 'unpack 'patch-getprotobyname-calls
-            ;; These calls are problematic in the build environment as there is
-            ;; no /etc/protocols.  This breaks the sanity-check phase of any
-            ;; package depending on this one.
-            (lambda _
-              (substitute* "dns/rdtypes/IN/WKS.py"
-                (("socket.getprotobyname\\('tcp'\\)")
-                 "6")
-                (("socket.getprotobyname\\('udp'\\)")
-                 "17")))))))
-    (native-inputs (list python-pytest python-setuptools python-wheel))))
-
 (define-public python-py3dns
   (package
     (name "python-py3dns")
