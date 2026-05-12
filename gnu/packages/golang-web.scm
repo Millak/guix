@@ -23695,6 +23695,20 @@ go-github-com-tdewolff-minify-v2 source.")))
 the TLS @acronym{SNI, Server Name Indication} of the TLS handshake.  It
 carries no encryption keys and cannot decode the traffic that it proxies.")))
 
+(define-public go-tool-cache
+  (package/inherit go-github-com-bradfitz-go-tool-cache
+    (name "go-tool-cache")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/bradfitz/go-tool-cache/cmd/...")
+       ((#:unpack-path _ "") "github.com/bradfitz/go-tool-cache")))
+    (native-inputs
+     (package-propagated-inputs go-github-com-bradfitz-go-tool-cache))
+    (propagated-inputs '())))
+
 (define-public menshen
   (package/inherit go-0xacab-org-leap-menshen
     (name "menshen")
