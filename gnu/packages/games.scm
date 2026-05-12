@@ -1407,10 +1407,10 @@ want what you have.")
     (license license:cc-by-sa3.0)))
 
 (define-public cockatrice
-  (let ((release-date "2023-09-14"))
+  (let ((release-date "2026-05-08"))
     (package
       (name "cockatrice")
-      (version "2.9.0")
+      (version "3.0.0")
       (source
        (origin
          (method git-fetch)
@@ -1420,12 +1420,12 @@ want what you have.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1jhn6pprd3j8m312mm8nlb9hwcchg3qkks5rw0x7d22alk922dlv"))
+           "11hzw3zmnnsfc4w23kwhzpflmbaj3bgrvsz734wk89fvs5dcdccc"))
          (modules '((guix build utils)))
          (snippet
           ;; Strip image URLs as they point towards non-free web services
-          '(substitute* "cockatrice/src/settings/downloadsettings.cpp"
-             (("downloadURLs.append\\(\".*\"\\);") "")))))
+          '(substitute* "libcockatrice_settings/libcockatrice/settings/download_settings.cpp"
+             (("\"https://.*\",?") "")))))
       (build-system qt-build-system)
       (arguments
        `(#:configure-flags '("-DWITH_SERVER=1"
@@ -1436,12 +1436,13 @@ want what you have.")
        (list googletest pkg-config))
       (inputs
        (list protobuf
-             qtbase-5
-             qtmultimedia-5
-             qtsvg-5
-             qttools-5
-             qtwebsockets-5
-             qtwayland-5
+             qtbase
+             qtmultimedia
+             qtsvg
+             qttools
+             qttranslations
+             qtwebsockets
+             qtwayland
              xz
              zlib))
       (home-page "https://cockatrice.github.io")
