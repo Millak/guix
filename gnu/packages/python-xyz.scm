@@ -12802,6 +12802,7 @@ toolkits.")
            python-numpydoc
            python-pyyaml
            python-scipy
+           python-setuptools
            ;; XXX: investigate how to build using a newer version of sphinx.
            python-sphinx-6
            python-sphinx-copybutton
