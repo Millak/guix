@@ -36638,6 +36638,37 @@ version 3.6 and removed in version 3.12; use @code{asyncio} instead. See:
 standard library}.")
     (license license:psfl)))
 
+(define-public python-standard-smtpd
+  (package
+    (name "python-standard-smtpd")
+    (version %python-standard-pep-594-version)
+    (source %python-standard-pep-594-source)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; ImportError: cannot import name 'mock_socket' from 'test'
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "smtpd"))))))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list
+      python-standard-asynchat
+      python-standard-asyncore))
+    (home-page "https://github.com/youknowone/python-deadlib")
+    (synopsis "Backport of smtpd from Python 3.11")
+    (description
+     "Standard library @code{smtpd} redistribution.  Deprecated since version
+3.6 and removed in version 3.12; the @code{aiosmtpd} package is a recommended
+replacement for this module, based on @code{asyncio}. See:
+@url{https://peps.python.org/pep-0594/, Removing dead batteries from the
+standard library}.")
+    (license license:psfl)))
+
 (define-public python-stdio-mgr
   (package
     (name "python-stdio-mgr")
