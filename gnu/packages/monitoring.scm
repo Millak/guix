@@ -589,17 +589,22 @@ etc. via a Web interface.  Features include:
     (license license:gpl2)))
 
 (define-public zabbix-agentd
+  ;; Zabbix distributes source from 2 repositories:
+  ;; - Stable: <https://cdn.zabbix.com/zabbix/sources/stable/>.
+  ;; - Old Stable: <https://cdn.zabbix.com/zabbix/sources/oldstable/>.
+  ;;
+  ;; Official Git repository is <https://git.zabbix.com/scm/zbx/zabbix.git>.
   (package
     (name "zabbix-agentd")
-    (version "7.2.9")
+    (version "7.2.15")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://cdn.zabbix.com/zabbix/sources/stable/"
+             "https://cdn.zabbix.com/zabbix/sources/oldstable/"
              (version-major+minor version) "/zabbix-" version ".tar.gz"))
        (sha256
-        (base32 "1rq03lpkz5d04540xiywlzwjva7v0v6isgny8ajslbadv99f6g5a"))
+        (base32 "0p78f02lslpfsqrr38rs30dq6fylyzph2q3fbwc6l9f6p5ik00dp"))
        (modules '((guix build utils)))
        (snippet
         '(substitute* '("src/zabbix_proxy/proxy.c"
