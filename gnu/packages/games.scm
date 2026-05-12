@@ -4825,6 +4825,72 @@ match, cannon keep, and grave-itation pit.")
       (license (list license:gpl3+
                      license:cc-by-sa3.0))))) ;/data/audio/music
 
+(define-public maelstrom
+  (package
+    (name "maelstrom")
+    (version "4.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/libsdl-org/Maelstrom")
+              (commit (string-append "release-" version))))
+       (sha256
+        (base32 "1vry9vqb8sijyl10b7cbyxlx1sadykw3zgvg28lz92qk4p406jpy"))
+       (file-name (git-file-name name version))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (substitute* '("game/mods.cpp" "utils/files.c")
+              (("\"[^\"]*/physfssdl3.h\"") "\"physfssdl3.h\""))
+            (substitute* "CMakeLists.txt"
+              (("set\\(original_BUILD_SHARED_LIBS.*\n") "")
+              (("set\\(BUILD_SHARED_LIBS OFF\\)\n") "")
+              (("add_subdirectory\\(external/SDL_net.*")
+               (string-append "find_package(SDL3_net REQUIRED)\n"
+                              "include(CheckCSourceCompiles)\n"
+                              "include(CMakeDependentOption)\n"))
+              (((string-append "set\\(BUILD_SHARED_LIBS \"\\$\\{"
+                               "original_BUILD_SHARED_LIBS\\}\"\\)\n")) "")
+              (("add_subdirectory\\(macres\\)\n") "")
+              (("miniz/miniz\\.c\n") "")
+              (("find_package\\(SDL3_net (REQUIRED)\\)\n" all first)
+               (string-append all "pkg_check_modules(MINIZ " first
+                              " IMPORTED_TARGET miniz)\n"))
+              (("(target_link_libraries\\(Maelstrom PRIVATE )SDLmac\\)" all first)
+               (string-append all "\n" first "PkgConfig::MINIZ)")))
+            (for-each delete-file-recursively
+                      (list "macres"
+                            "miniz"
+                            "Xcode"))))
+       (patches (search-patches "maelstrom-use-system-physfs.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DSTEAM=OFF"
+              "-DUSE_VENDORED_SDL=OFF"
+              "-DSTANDALONE_INSTALL=OFF")
+      #:tests? #f)) ;no testes
+    (native-inputs (list pkg-config))
+    (inputs (list miniz physfs physfs-sdl3 sdl3 sdl3-net))
+    (home-page "https://github.com/libsdl-org/Maelstrom")
+    (synopsis "Asteroids game")
+    (description
+     "You pilot your ship through the dreaded \"Maelstrom\" asteroid belt
+-- suddenly your best friend thrusts towards you and fires, directly at your
+cockpit.  You raise your shields just in time, and the battle is joined.
+
+Maelstrom is a free software port of the original shareware game for the
+Macintosh by Ambrosia Software, Inc.  It is a fast-action, asteroids-like game,
+with classic pixel graphics and original sounds.
+
+In addition to being a faithful reproduction of the original game, this version
+adds game controller support, mobile touch controls, and both cooperative and
+competitive multiplayer action.")
+    (license (list license:zlib ;game code
+                   license:cc-by3.0)))) ;sprites, sounds, etc.
+
 (define-public alienblaster
   (package
     (name "alienblaster")

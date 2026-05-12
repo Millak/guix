@@ -1,0 +1,39 @@
+Use system physfs and physfs-sdl3 instead of the vendored copy.
+
+This patch switches Maelstrom from using bundled physfs and physfssdl3
+to using the system packages found via pkg-config.
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt	2026-05-20 09:21:15.747350351 -0300
++++ b/CMakeLists.txt	2026-05-20 09:25:32.336090395 -0300
+@@ -26,9 +26,9 @@
+     set(SDL_EMSCRIPTEN_PERSISTENT_PATH /storage)
+ endif()
+ 
+-set(PHYSFS_BUILD_SHARED OFF)
+-set(PHYSFS_BUILD_TEST OFF)
+-add_subdirectory(external/physfs EXCLUDE_FROM_ALL)
++find_package(PkgConfig REQUIRED)
++pkg_check_modules(PHYSFS REQUIRED IMPORTED_TARGET physfs)
++pkg_check_modules(PHYSFSSDL3 REQUIRED IMPORTED_TARGET physfs-sdl3)
+ 
+ option(USE_VENDORED_SDL "Use the vendored version of SDL" TRUE)
+ if (USE_VENDORED_SDL)
+@@ -163,8 +163,6 @@
+ 	utils/rapidxml.h
+ 	utils/rapidxml.hpp
+ 
+-	external/physfs/extras/physfssdl3.c
+-
+ 	miniz/miniz.c
+ 
+ 	Maelstrom.rc
+@@ -224,7 +222,8 @@
+ endif()
+ 
+ target_link_libraries(Maelstrom PRIVATE SDLmac)
+-target_link_libraries(Maelstrom PRIVATE physfs-static)
++target_link_libraries(Maelstrom PRIVATE PkgConfig::PHYSFS)                                                                                                              
++target_link_libraries(Maelstrom PRIVATE PkgConfig::PHYSFSSDL3)
+ target_link_libraries(Maelstrom PRIVATE SDL3_net::SDL3_net)
+ target_link_libraries(Maelstrom PRIVATE SDL3::SDL3)

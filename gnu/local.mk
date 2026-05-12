@@ -1889,6 +1889,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/lxsession-potfiles-ignore.patch		\
   %D%/packages/patches/mate-common-honor-aclocal.patch		\
   %D%/packages/patches/mactelnet-remove-init.patch		\
+  %D%/packages/patches/maelstrom-use-system-physfs.patch		\
   %D%/packages/patches/mailutils-variable-lookup.patch		\
   %D%/packages/patches/mandoc-support-zstd-compression.patch	\
   %D%/packages/patches/mantid-openmp-cleanup.patch		\
