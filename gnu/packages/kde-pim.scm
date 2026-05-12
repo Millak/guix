@@ -1788,7 +1788,7 @@ KMail.")
     (inputs
      (list akonadi-contacts
            boost
-           gpgme
+           gpgme-2
            grantleetheme
            karchive
            kcodecs
