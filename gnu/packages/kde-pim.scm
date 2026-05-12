@@ -1614,7 +1614,7 @@ and retrieving certificates from LDAP servers.")
            akonadi-mime
            akonadi-search
            boost
-           gpgme
+           gpgme-2
            grantleetheme
            kaddressbook
            kbookmarks
