@@ -36588,6 +36588,32 @@ than the default.")
     (sha256
      (base32 "1a16pbdr2q6cy87zg3l33k0avrn08qyy8qm9mq2vwp3jvm6qa4dy"))))
 
+(define-public python-standard-asynchat
+  (package
+    (name "python-standard-asynchat")
+    (version %python-standard-pep-594-version)
+    (source %python-standard-pep-594-source)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "asynchat"))))))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-standard-asyncore))
+    (home-page "https://github.com/youknowone/python-deadlib")
+    (synopsis "Backport of asynchat from Python 3.11")
+    (description
+     "Standard library @code{asynchat} redistribution.  Deprecated since
+version 3.6 and removed in version 3.12; use @code{asyncio} instead. See:
+@url{https://peps.python.org/pep-0594/, Removing dead batteries from the
+standard library}.")
+    (license license:psfl)))
+
 (define-public python-standard-asyncore
   (package
     (name "python-standard-asyncore")
