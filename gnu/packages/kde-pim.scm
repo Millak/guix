@@ -581,7 +581,7 @@ PIM data into Akonadi for use in KDE PIM applications.")
            akonadi-mime
            boost
            breeze-icons
-           gpgme
+           gpgme-2
            grantleetheme
            kcmutils
            kcontacts
