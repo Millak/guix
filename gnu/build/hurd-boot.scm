@@ -211,6 +211,9 @@ set."
       ("dev/null"    ("/hurd/null")                         #o666)
       ("dev/random"  ("/hurd/random"   "--seed-file" ,random-seed)
                                                             #o644)
+      ("dev/urandom"  ("/hurd/random"   "--seed-file" ,random-seed
+                      "--fast")
+       #o644)
       ("dev/zero"    ("/hurd/storeio"  "--store-type=zero") #o666)
 
       ("dev/console" ("/hurd/term"     "/dev/console" "device" "console"))
@@ -295,7 +298,6 @@ set."
     (rename-file (scope "dev/console") (scope "dev/console-")))
   (for-each scope-set-translator devices)
 
-  (false-if-EEXIST (symlink "/dev/random" (scope "dev/urandom")))
   (false-if-EEXIST (symlink "/dev/fd/0" (scope "dev/stdin")))
   (false-if-EEXIST (symlink "/dev/fd/1" (scope "dev/stdout")))
   (false-if-EEXIST (symlink "/dev/fd/2" (scope "dev/stderr")))
