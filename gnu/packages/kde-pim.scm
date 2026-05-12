@@ -1972,7 +1972,7 @@ using a Qt/KMime C++ API.")
      (list akonadi-contacts
            akonadi-search
            boost
-           gpgme
+           gpgme-2
            grantleetheme
            karchive
            kcalendarcore
