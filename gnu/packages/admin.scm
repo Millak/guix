@@ -3423,7 +3423,7 @@ modules and plugins that extend Ansible.")
 (define-public debops
   (package
     (name "debops")
-    (version "3.2.5")
+    (version "3.3.0")
     (source
      (origin
        (method git-fetch)
@@ -3432,13 +3432,13 @@ modules and plugins that extend Ansible.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15wfhha2b315i15l40j3sylyvs3mdrfw5awzq4cix51l5jppx8z5"))
+        (base32 "0z6wck5kax5h2bjv1vw8pbd7fdcdhx87bj9fakh3h0rar9d2qksj"))
        (patches
         (search-patches "debops-setup-py-avoid-git.patch"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-setuptools))
     (inputs
-     (list ansible
+     (list ;; ansible ;XXX; build fails with Ansible in scope
            bash-minimal
            encfs
            fuse
@@ -3454,8 +3454,8 @@ modules and plugins that extend Ansible.")
            python-future
            python-gitpython
            python-jinja2
-           python-pyyaml
            python-pyxdg
+           python-pyyaml
            python-toml))
     (arguments
      (list
@@ -3470,7 +3470,7 @@ modules and plugins that extend Ansible.")
                          `("PATH" ":" prefix
                            ,(map dirname
                                  (map (cut search-input-file inputs <>)
-                                      (list "bin/ansible"
+                                      (list ;; "bin/ansible"    ;see above
                                             "bin/gpg"
                                             "bin/git"
                                             "bin/git-crypt"
