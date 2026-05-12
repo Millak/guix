@@ -345,7 +345,7 @@ your computer.")
                 "02g9k51srrqslapjxzcymnmy9v1frv9pkgg8wmf6d0607hwkaff5"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
-    (inputs (list gpgme
+    (inputs (list gpgme-2
                   kauth
                   karchive
                   kcoreaddons
