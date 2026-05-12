@@ -995,7 +995,7 @@ FFC is part of the FEniCS Project.")
                   pt-scotch32
                   suitesparse
                   zlib))
-    (native-inputs (list catch-framework pkg-config))
+    (native-inputs (list catch-framework pkg-config python-setuptools))
     (propagated-inputs (list python-fenics-ffc petsc-openmpi slepc-openmpi))
     (arguments
      (list
