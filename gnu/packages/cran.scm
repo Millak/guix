@@ -12559,6 +12559,40 @@ All methods return the set of estimated change-points as well as other summary
 information.")
     (license license:gpl2+)))
 
+(define-public r-elevatr
+  (package
+    (name "r-elevatr")
+    (version "0.99.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "elevatr" version))
+       (sha256
+        (base32 "0b41d2z58izi523ci1b9l1k0bv1sr75cwdwfx0rcw2s4cbypmbx9"))))
+    (properties `((upstream-name . "elevatr")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-curl
+                             r-furrr
+                             r-future
+                             r-httr
+                             r-jsonlite
+                             r-progressr
+                             r-purrr
+                             r-raster
+                             r-sf
+                             r-slippymath
+                             r-terra
+                             r-units))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://github.com/usepa/elevatr/")
+    (synopsis "Access elevation data from various APIs")
+    (description
+     "Several web services are available that provide access to elevation
+data.  This package provides access to many of those services and returns
+elevation data either as an @code{sf} simple features object from point
+elevation services or as a raster object from raster elevation services.")
+    (license license:expat)))
+
 (define-public r-ellipsis
   (package
     (name "r-ellipsis")
