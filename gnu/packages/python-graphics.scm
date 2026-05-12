@@ -355,14 +355,14 @@ Design spec without sacrificing ease of use or application performance.")
     (name "python-pivy")
     (version "0.6.11")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/coin3d/pivy")
-               (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0rjbhhxyrh0fszc0va7qmkv6ayf2s49ppnw31p51xmq63bx3n5wc"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/coin3d/pivy")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rjbhhxyrh0fszc0va7qmkv6ayf2s49ppnw31p51xmq63bx3n5wc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -377,18 +377,18 @@ Design spec without sacrificing ease of use or application performance.")
                 (("\\$\\{SoQt_INCLUDE_DIRS}")
                  "${Coin_INCLUDE_DIR};${SoQt_INCLUDE_DIRS}")))))))
     (native-inputs
-      (list cmake-minimal swig-4.4))
+     (list cmake-minimal swig-4.4))
     (inputs
-      (list python-wrapper
-            qtbase
-            libxi
-            libice
-            glew
-            coin3d))
+     (list python-wrapper
+           qtbase
+           libxi
+           libice
+           glew
+           coin3d))
     (home-page "https://github.com/coin3d/pivy")
     (synopsis "Python bindings to Coin3D")
     (description
-      "Pivy provides python bindings for Coin, a 3D graphics library with an
+     "Pivy provides python bindings for Coin, a 3D graphics library with an
 Application Programming Interface based on the Open Inventor 2.1 API.")
     (license license:isc)))
 
