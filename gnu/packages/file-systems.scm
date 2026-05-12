@@ -15,7 +15,7 @@
 ;;; Copyright © 2024 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Julian Flake <flake@uni-koblenz.de>
-;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 45mg <45mg.writes@gmail.com>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -1663,7 +1663,7 @@ with the included @command{xfstests-check} helper.")
 (define-public zfs
   (package
     (name "zfs")
-    (version "2.4.1")
+    (version "2.4.2")
     (outputs '("out" "module" "src"))
     (source
      (origin
@@ -1672,7 +1672,7 @@ with the included @command{xfstests-check} helper.")
                            "/download/zfs-" version
                            "/zfs-" version ".tar.gz"))
        (sha256
-        (base32 "140k7hf83s509zq3igdh7dm7vw3hd99wgf4fax7ia8q01xvnjyy1"))))
+        (base32 "13y7pqdkpplai7vkb06xv1c7pw5fl70clhg2qnjbx5gjd870s9ky"))))
     (build-system linux-module-build-system)
     (arguments
      (list
