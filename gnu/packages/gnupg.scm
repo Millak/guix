@@ -471,38 +471,14 @@ and every application benefits from this.")
 
 (define-public gpgme-1
   (package
-    (name "gpgme")
+    (inherit gpgme-2)
     (version "1.24.1")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnupg/gpgme/gpgme-" version ".tar.bz2"))
       (sha256
-       (base32 "0px87fbp90xp8vf1wms02flk14zmrqsfr135f5his1kiiqjx01ga"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(let ((gpg-bins (dirname (search-input-file %build-inputs "/bin/gpg"))))
-          (list (string-append "--enable-fixed-path=" gpg-bins)))))
-    (inputs
-     (list gnupg))
-    (propagated-inputs
-     ;; As required by the pkg-config's Requires.private.
-     (list libgpg-error libassuan))
-    (home-page "https://www.gnupg.org/related_software/gpgme/")
-    (synopsis "Library providing simplified access to GnuPG functionality")
-    (description
-     "GnuPG Made Easy (GPGME) is a library designed to make access to GnuPG
-easier for applications.  It provides a High-Level Crypto API for encryption,
-decryption, signing, signature verification and key management.  Currently
-it uses GnuPG as its backend but the API isn't restricted to this engine.
-
-Because the direct use of GnuPG from an application can be a complicated
-programming task, it is suggested that all software should try to use GPGME
-instead.  This way bug fixes or improvements can be done at a central place
-and every application benefits from this.")
-    (license license:lgpl2.1+)))
+       (base32 "0px87fbp90xp8vf1wms02flk14zmrqsfr135f5his1kiiqjx01ga"))))))
 
 (define-public gpgme gpgme-1)
 
