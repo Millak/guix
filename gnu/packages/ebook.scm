@@ -206,7 +206,7 @@ with Microsoft Compiled HTML (CHM) files.")
            python-css-parser
            python-cssselect
            python-dateutil
-           python-dnspython-1.16
+           python-dnspython
            python-feedparser
            python-fonttools
            python-html2text
