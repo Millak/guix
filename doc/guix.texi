@@ -4861,7 +4861,10 @@ among the user's @dfn{trusted channels}, defined as:
 @itemize
 @item
 the channels returned by @file{~/.config/guix/trusted-channels.scm},
-which has the same format as any channel file;
+which has the same format as any channel file (these channels
+@emph{must} have an ``introduction'', @pxref{Channel Authentication};
+channels are identified by their introduction and other fields are
+ignored, including @code{url} and @code{name});
 
 @item
 or, if the above file doesn't exist, the currently-used channels as
