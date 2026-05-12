@@ -4076,6 +4076,32 @@ Supported Barcode Types:
      "This package provides a syntactically different way to iterate over integers.")
     (license license:bsd-3)))
 
+(define-public go-github-com-bradfitz-parentdeath
+  (package
+    (name "go-github-com-bradfitz-parentdeath")
+    (version "0.0.0-20260315043412-764506aeb900")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bradfitz/parentdeath")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z5621cxbif9npivbphfmzhsa0cmy7zfxyqs78yxmki5vw95d0xy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bradfitz/parentdeath"))
+    (home-page "https://github.com/bradfitz/parentdeath")
+    (synopsis "Portable alternative to Linux's PR_SET_PDEATHSIG in Go")
+    (description
+     "Package parentdeath detects when a parent process dies so that child
+processes can clean up and exit, even when the parent is killed
+violently (SIGKILL) or when children are launched in ways that prevent normal
+signal delivery (e.g. via sudo systemd-run).")
+    (license license:bsd-3)))
+
 (define-public go-github-com-briandowns-spinner
   (package
     (name "go-github-com-briandowns-spinner")
