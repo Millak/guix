@@ -634,21 +634,20 @@ interface (FFI) of Guile.")
 (define-public python-gpg
   (package
     (name "python-gpg")
-    (version "1.10.0")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "gpg" version))
-              (patches (search-patches "python-gpg-setup-72.patch"))
               (sha256
                (base32
-                "1ji3ynhp36m1ccx7bmaq75dhij9frpn19v9mpi4aajn8csl194il"))))
+                "0f2l0iyc8gp49i604c5wpliaa1dsyj0i0p9xc9zfj4z7fwaavdsf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f ; No test suite.
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'set-environment
+          (add-before 'build 'patch-setup.py
             (lambda _
               ;; GPGME is built with large file support, so we need to set
               ;; _FILE_OFFSET_BITS to 64 in all users of the GPGME library.
@@ -658,9 +657,16 @@ interface (FFI) of Guile.")
                            "extra_macros = { \"_FILE_OFFSET_BITS\": 64 }")))
                      #~())
               (substitute* "setup.py"
-                (("cc") (which "gcc"))))))))
+                (("cc") (which "gcc"))
+                (("\\/usr\\/lib\\/x86_64-linux-gnu( -lgpg-error)" _ keep)
+                 (string-append #$(this-package-input "libgpg-error") "/lib"
+                                keep))
+                (("\\/usr\\/lib\\/x86_64-linux-gnu( -lgpgme)" _ keep)
+                 (string-append #$(this-package-input "gpgme") "/lib" keep))
+                (("\\/usr\\/local(', 'include', 'gpgme\\.h')" _ keep)
+                 (string-append #$(this-package-input "gpgme") keep))))))))
     (inputs
-     (list gpgme))
+     (list gpgme-2 libgpg-error))
     (native-inputs
      (list swig-4.0 python-setuptools))
     (home-page (package-home-page gpgme))
