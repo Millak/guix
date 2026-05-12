@@ -41983,7 +41983,7 @@ Lisp's (relatively new) EIEIO object oriented libraries.")
 (define-public emacs-fj
   (package
     (name "emacs-fj")
-    (version "0.36")
+    (version "0.37")
     (source
      (origin
        (method git-fetch)
@@ -41992,17 +41992,9 @@ Lisp's (relatively new) EIEIO object oriented libraries.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10v79lxnaya8h8qkdpvr7ns8330nrrl2h5mz4wh15blcp87ha37l"))))
+        (base32 "09ff20am16ysjpbqx7b92qgmvyar9b6blm32flkvzqxccqqinxya"))))
     (build-system emacs-build-system)
-    (arguments
-     (list
-      #:test-command #~(list "make" "tests")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'remove-cask
-            (lambda _
-              (substitute* "Makefile"
-                (("cask ") "")))))))
+    (arguments (list #:test-command #~(list "make" "tests" "CASK=")))
     (native-inputs
      (list emacs-el-mock emacs-exemplify-ert emacs-exemplify-eval))
     (propagated-inputs (list emacs-fedi emacs-magit emacs-tp emacs-transient))
