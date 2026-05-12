@@ -3498,40 +3498,42 @@ Both command-line and GTK2 interface are available.")
 (define-public ytcc
   (package
     (name "ytcc")
-    (version "2.6.1")
+    (version "2.8.0")
     (source
      (origin
-       (method git-fetch)        ; no tests in PyPI
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/woefe/ytcc")
-             (commit (string-append "v" version))))
+              (url "https://github.com/woefe/ytcc")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03rypw9sycardmrxc7hb0iak8zdxz1snv55fbpzyp79yi2iawbd4"))))
+        (base32 "0k9cyd9fb9cwn58xyf3ysyw2w6cm8hpikygqjk7rkd6fcsh737p9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-k" (string-append "not test_subscribe"
-                                  " and not test_bug_report_command"
-                                  " and not test_download"
-                                  " and not test_import"
-                                  " and not test_import_duplicate"
-                                  " and not test_play_video"
-                                  " and not test_update"))))
+      ;; AssertionError: assert 'NoCopyrightSounds'.
+      #~(list "--deselect=tests/test_cli.py::test_download"
+              "--deselect=tests/test_cli.py::test_import"
+              "--deselect=tests/test_cli.py::test_import_csv"
+              "--deselect=tests/test_cli.py::test_import_duplicate"
+              "--deselect=tests/test_cli.py::test_play_video"
+              "--deselect=tests/test_cli.py::test_subscribe"
+              "--deselect=tests/test_cli.py::test_update")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
+     (list python-hatchling
+           python-pytest))
     (inputs
-     (list python-click
-           python-wcwidth
+     (list mpv
+           python-click
+           python-defusedxml
            python-websockets
-           python-urllib3
-           python-requests
-           python-pycryptodomex
-           python-mutagen
-           python-brotli
+           python-wcwidth
            yt-dlp))
     (home-page "https://github.com/woefe/ytcc")
     (synopsis "Command line tool to keep track of your favorite playlists")
