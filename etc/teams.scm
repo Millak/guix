@@ -1247,6 +1247,11 @@ the \"texlive\" importer."
                       "guix/build-system/zig.scm")))
 
 
+(define-member (person "Anderson Torres"
+                       "anderson.torres.8519@gmail.com"
+                       "AndersonTorres")
+  community translations)
+
 (define-member (person "Eric Bavier"
                        "bavier@posteo.net"
                        "bavier")
