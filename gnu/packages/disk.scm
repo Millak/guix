@@ -311,18 +311,6 @@ tmpfs/ramfs filesystems.")
 tables.  It includes a library and command-line utility.")
     (license license:gpl3+)))
 
-(define-public parted-3.4
-  (package
-    (inherit parted)
-    (version "3.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/parted/parted-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "0hjkv84x1bs2qqyx1fnzjqyyqrhv7kpdbq9bgydmi99d8wi80ag1"))))))
-
 (define-public fdisk
   (package
     (name "fdisk")
