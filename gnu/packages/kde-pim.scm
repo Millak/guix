@@ -785,7 +785,7 @@ information.")
            akonadi-mime
            akonadi-search
            boost
-           gpgme
+           gpgme-2
            grantleetheme
            kcalendarcore
            kcmutils
