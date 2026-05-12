@@ -7896,7 +7896,7 @@ software to answer ad hoc questions.")
            r-tidyr
            r-upsetr
            r-yaml
-           snakemake-7))
+           snakemake))
     (native-inputs (list python-cython python-pyfakefs python-pytest))
     (home-page "https://github.com/dieterich-lab/Baltica")
     (synopsis "Integrated splice junction usage analysis")
