@@ -504,14 +504,22 @@ case $? in
     ;;
 esac
 
+# Create seed file to avoid
+# /gnu/store/...-hurd-x.y.z/hurd/random: Warning: Failed to read random seed file /var/lib/random-seed: No such file or directory
+mkdir -p /var/lib
+seq 1000 > /var/lib/random-seed
+
+# The random translators, especially /dev/urandom, need to be non-passive
+# When they exist in the file-system and reference /var/lib/random-seed
+# while / is read-only. console-run will hang.
+settrans --create --active /dev/random /hurd/random --seed-file /var/lib/random-seed
+settrans --create --active /dev/urandom /hurd/random --seed-file /var/lib/random-seed --fast
+
 # Only after this we can run guile.
 mkdir -p /servers/socket
 rm -f /servers/socket/1
 # Note: this /hurd gets substituted
 settrans --create /servers/socket/1 /hurd/pflocal
-
-# Upon second boot, (file-exists? /dev/null) in hurd-boot-system hangs unless:
-rm -f /dev/urandom
 
 # parse multiboot arguments
 for i in \"$@\"; do

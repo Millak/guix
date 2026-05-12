@@ -193,19 +193,19 @@ set."
 
   (define (mkdir* dir)
     (let ((dir (scope dir)))
-     (unless (file-exists? dir)
-       (mkdir-p dir))))
+      (unless (file-exists? dir)
+        (mkdir-p dir))))
 
-  (define random-seed "/var/lib/random-seed")
+  ;; (define random-seed "/var/lib/random-seed")
 
-  ;; Create seed file to avoid
-  ;; /gnu/store/...-hurd-x.y.z/hurd/random: Warning: Failed to read random seed file /var/lib/random-seed: No such file or directory
-  (let ((file (scope random-seed)))
-    (mkdir-p (dirname file))
-    (call-with-output-file file
-      (lambda (port)
-        (display (iota 1000) port)
-        (chmod port #o600))))
+  ;; ;; Create seed file to avoid
+  ;; ;; /gnu/store/...-hurd-x.y.z/hurd/random: Warning: Failed to read random seed file /var/lib/random-seed: No such file or directory
+  ;; (let ((file (scope random-seed)))
+  ;;   (mkdir-p (dirname file))
+  ;;   (call-with-output-file file
+  ;;     (lambda (port)
+  ;;       (display (iota 1000) port)
+  ;;       (chmod port #o600))))
 
   (define servers
     '(("servers/bus/pci"         ("/hurd/pci-arbiter"))
@@ -222,11 +222,14 @@ set."
   (define devices
     `(("dev/full"    ("/hurd/null"     "--full")            #o666)
       ("dev/null"    ("/hurd/null")                         #o666)
-      ("dev/random"  ("/hurd/random"   "--seed-file" ,random-seed)
-                                                            #o644)
-      ("dev/urandom"  ("/hurd/random"   "--seed-file" ,random-seed
-                      "--fast")
-       #o644)
+      ;; The random translators, especially /dev/urandom, need to be non-passive
+      ;; When they exist in the file-system and reference /var/lib/random-seed
+      ;; while / is read-only. console-run will hang.
+      ;; ("dev/random"  ("/hurd/random"   "--seed-file" ,random-seed)
+      ;;                                                       #o644)
+      ;; ("dev/urandom"  ("/hurd/random"   "--seed-file" ,random-seed
+      ;;                 "--fast")
+      ;;  #o644)
       ("dev/zero"    ("/hurd/storeio"  "--store-type=zero") #o666)
 
       ("dev/console" ("/hurd/term"     "/dev/console" "device" "console"))
