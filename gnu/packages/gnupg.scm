@@ -434,7 +434,7 @@ libskba (working with X.509 certificates and CMS data).")
                (substitute* "checks/Makefile.in"
                  (("/bin/sh") (which "sh"))))))))))
 
-(define-public gpgme
+(define-public gpgme-1
   (package
     (name "gpgme")
     (version "1.24.1")
@@ -468,6 +468,8 @@ programming task, it is suggested that all software should try to use GPGME
 instead.  This way bug fixes or improvements can be done at a central place
 and every application benefits from this.")
     (license license:lgpl2.1+)))
+
+(define-public gpgme gpgme-1)
 
 (define-public qgpgme-qt5
   (package
