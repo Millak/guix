@@ -742,7 +742,7 @@ For PDF support, install the @emph{mupdf} package.")
 (define-public qpageview
   (package
     (name "qpageview")
-    (version "1.0.1")
+    (version "1.0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -751,8 +751,10 @@ For PDF support, install the @emph{mupdf} package.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0h3b7qhmjk1bz7ws7jwa9012wh2yvmk45j21ciyzj28mcjx9ygz4"))))
+                "1g1lslc3aljhcl4nbwd81clmzbdl89n6dkaxn7nizc8f4v2iiaiy"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))                ;no tests in repository.
     (home-page "https://qpageview.org/")
     (synopsis "Page based document viewer widget for Qt/PyQt")
     (inputs
