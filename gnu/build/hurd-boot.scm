@@ -183,6 +183,17 @@ set."
      (unless (file-exists? dir)
        (mkdir-p dir))))
 
+  (define random-seed "/var/lib/random-seed")
+
+  ;; Create seed file to avoid
+  ;; /gnu/store/...-hurd-x.y.z/hurd/random: Warning: Failed to read random seed file /var/lib/random-seed: No such file or directory
+  (let ((file (scope random-seed)))
+    (mkdir-p (dirname file))
+    (call-with-output-file file
+      (lambda (port)
+        (display (iota 1000) port)
+        (chmod port #o600))))
+
   (define servers
     '(("servers/bus/pci"         ("/hurd/pci-arbiter"))
       ("servers/crash-dump-core" ("/hurd/crash" "--dump-core"))
@@ -198,7 +209,7 @@ set."
   (define devices
     `(("dev/full"    ("/hurd/null"     "--full")            #o666)
       ("dev/null"    ("/hurd/null")                         #o666)
-      ("dev/random"  ("/hurd/random"   "--seed-file" "/var/lib/random-seed")
+      ("dev/random"  ("/hurd/random"   "--seed-file" ,random-seed)
                                                             #o644)
       ("dev/zero"    ("/hurd/storeio"  "--store-type=zero") #o666)
 
