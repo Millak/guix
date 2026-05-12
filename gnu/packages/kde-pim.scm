@@ -1552,7 +1552,7 @@ protocol for querying and modifying directory services running over TCP/IP.")
            kdoctools))
     (inputs
      (list boost
-           gpgme
+           gpgme-2
            kcmutils
            kcodecs
            kconfig
