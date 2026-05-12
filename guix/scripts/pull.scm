@@ -741,7 +741,8 @@ Return true when there is more package info to display."
      channel-introduction-first-signed-commit
      openpgp-fingerprint
      %default-channels
-     %default-guix-channel)))
+     %default-guix-channel
+     guix-channel?)))
 
 (define (trusted-channels)
   "Return the user's trusted channels, either those in
