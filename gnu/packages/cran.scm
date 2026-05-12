@@ -29942,6 +29942,30 @@ based on index arrays and simple triplet representations, respectively.")
 visualization of similarity data.")
     (license license:expat)))
 
+(define-public r-slippymath
+  (package
+    (name "r-slippymath")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "slippymath" version))
+       (sha256
+        (base32 "0dqnv089mcfxvpsc1px7mblim6m77n59xpcysz75jrvpc5q4lsrg"))))
+    (properties `((upstream-name . "slippymath")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-png r-purrr r-raster))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://www.github.com/milesmcbain/slippymath")
+    (synopsis "Slippy map tile tools")
+    (description
+     "This package provides functions for performing common tasks when working
+with slippy map tile service APIs e.g. Google maps, Open Street Map, Mapbox,
+Stamen, among others.  Functionality includes converting from latitude and
+longitude to tile numbers, determining tile bounding boxes, and compositing
+tiles to a georeferenced raster image.")
+    (license license:expat)))
+
 (define-public r-manipulatewidget
   (package
     (name "r-manipulatewidget")
