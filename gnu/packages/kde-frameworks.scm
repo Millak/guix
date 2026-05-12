@@ -4542,7 +4542,7 @@ to separate the structure of documents from the data they contain.")
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config))
     (inputs
-     (list gpgme
+     (list gpgme-2
            kauth
            kcodecs
            kconfig
