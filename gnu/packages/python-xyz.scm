@@ -36574,6 +36574,44 @@ tracebacks.  Is can be used to display more useful tracebacks
 than the default.")
     (license license:expat)))
 
+;; Python dead batteries backports. See: PEP 594 – Removing dead batteries
+;; from the standard library, <https://peps.python.org/pep-0594/>.
+(define %python-standard-pep-594-version "3.13.0")
+(define %python-standard-pep-594-source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+           (url "https://github.com/youknowone/python-deadlib")
+           (commit (string-append "v" %python-standard-pep-594-version))))
+    (file-name (git-file-name "python-standard-pep-594"
+                              %python-standard-pep-594-version))
+    (sha256
+     (base32 "1a16pbdr2q6cy87zg3l33k0avrn08qyy8qm9mq2vwp3jvm6qa4dy"))))
+
+(define-public python-standard-asyncore
+  (package
+    (name "python-standard-asyncore")
+    (version %python-standard-pep-594-version)
+    (source %python-standard-pep-594-source)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "asyncore"))))))
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/youknowone/python-deadlib")
+    (synopsis "Backport of asyncore from Python 3.11")
+    (description
+     "Standard library @code{asyncore} redistribution.  Deprecated since
+version 3.6 and removed in version 3.12; use @code{asyncio} instead. See:
+@url{https://peps.python.org/pep-0594/, Removing dead batteries from the
+standard library}.")
+    (license license:psfl)))
+
 (define-public python-stdio-mgr
   (package
     (name "python-stdio-mgr")
