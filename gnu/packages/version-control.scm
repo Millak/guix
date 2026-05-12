@@ -2282,7 +2282,8 @@ will work.")
            python-setuptools))
     (propagated-inputs
      (list python-jinja2
-           python-multipart))
+           python-multipart
+           python-standard-smtpd))
     (home-page "https://trac.edgewall.org")
     (synopsis "Integrated SCM, wiki, issue tracker and project environment")
     (description "Trac is a minimalistic web-based software project management
