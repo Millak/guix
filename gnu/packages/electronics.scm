@@ -1303,6 +1303,60 @@ libraries.")
     (description "This package contains the official KiCad project and
 worksheet templates.")))
 
+(define-public kicad-cern-libraries
+  ;; Upstream does not tag releases.
+  (let ((commit "980670fefdf71965aae6c56194d7f2a68c3e6a68")
+        (revision "0"))
+    (package
+      (name "kicad-cern-libraries")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://gitlab.com/ohwr/cern-kicad-libs.git")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0lr1p28gknbgsr86hbzh87plagcyc040v6141xmha280n78h2l62"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~'(("SchLib" "share/kicad/cern/")
+            ("PcbLib" "share/kicad/cern/")
+            ("CERN.sqlite" "share/kicad/cern/")
+            ("CERN_Linux.kicad_dbl" "share/kicad/cern/")
+            ("fp-lib-table" "share/kicad/cern/")
+            ("sym-lib-table" "share/kicad/cern/")
+            ("README.md" "share/doc/kicad-cern-libraries/")
+            ("LICENSE" "share/doc/kicad-cern-libraries/")
+            ("LICENSES" "share/doc/kicad-cern-libraries/")
+            ("CHECKSUMS" "share/doc/kicad-cern-libraries/")
+            ("pcblib_conversion_log.txt" "share/doc/kicad-cern-libraries/")
+            ("schlib_conversion_log.txt" "share/doc/kicad-cern-libraries/"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'adapt-library-tables
+              (lambda _
+                (substitute* "sym-lib-table"
+                  (("\\$\\{KICAD9_SYMBOL_DIR\\}")
+                   "${KICAD10_SYMBOL_DIR}")))))))
+      (propagated-inputs (list sqliteodbc))
+      (native-search-paths
+       (list (search-path-specification
+              (variable "CERN_LIB_DIR")
+              (files '("share/kicad/cern"))
+              (separator #f))))
+      (home-page "https://gitlab.com/ohwr/cern-kicad-libs")
+      (synopsis "CERN component libraries for KiCad")
+      (description
+       "This package provides CERN's KiCad component libraries, including
+schematic symbols, footprints, a SQLite-backed database library, and KiCad
+library tables.  The libraries are generated from CERN's Altium Designer
+libraries.")
+      (license license:ohl2-p))))
+
 (define-public lepton-eda
   (package
     (name "lepton-eda")
