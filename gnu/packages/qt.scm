@@ -2617,24 +2617,6 @@ native APIs where it makes sense.")
     (home-page (package-home-page qtbase))
     (license (package-license qtbase))))
 
-(define-public qtwebview-5
-  (package
-    (inherit qtsvg-5)
-    (name "qtwebview")
-    (version "5.15.17")
-    (source (origin
-              (method url-fetch)
-              (uri (qt-url name version))
-              (sha256
-               (base32
-                "0jww3bls4x4izk0lm2bjy21m20r3gvmri1kjgapzz4w1j8xdramk"))))
-    (native-inputs (list perl))
-    (inputs (list qtbase-5 qtdeclarative-5))
-    (synopsis "Display web content in a QML application")
-    (description "Qt WebView provides a way to display web content in a QML
-application without necessarily including a full web browser stack by using
-native APIs where it makes sense.")))
-
 (define-public qtlanguageserver
   (package
     (name "qtlanguageserver")
