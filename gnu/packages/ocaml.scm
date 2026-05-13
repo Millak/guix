@@ -584,6 +584,9 @@ depend: $(STDLIB_MLIS) $(STDLIB_DEPS)"))
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)))))
 
+;; WARNING: this older release of the compiler has known vulnerabilities and
+;; is NOT supported. It remains in the distribution only to aid in building a
+;; bootstrap chain.
 (define-public ocaml-4.07
   (package
     (inherit ocaml-4.07-boot)
