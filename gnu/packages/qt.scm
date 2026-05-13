@@ -3412,45 +3412,6 @@ message.")
     (home-page (package-home-page qtbase))
     (license (package-license qtbase))))
 
-(define-public qtvirtualkeyboard-5
-  (package
-    (inherit qtsvg-5)
-    (name "qtvirtualkeyboard")
-    (version "5.15.17")
-    (source (origin
-              (method url-fetch)
-              (uri (qt-url name version))
-              (sha256
-               (base32
-                "03qxll32431qwrrbnb75mm9xbdq0lvzj03037yzw6mxfhl491sh6"))))
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:tests? _ #f) #f) ; TODO: pass 2 fail test
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-before 'check 'set-display
-             (lambda _
-               ;; Make Qt render "offscreen", required for tests.
-               (setenv "QT_QPA_PLATFORM" "offscreen")
-               (setenv "DISPLAY" ":1")
-               (system "Xvfb +extension GLX :1 &")))
-           (delete 'check)               ;move after the install phase
-           (add-after 'install 'check
-             (assoc-ref %standard-phases 'check))
-           (add-before 'check 'prepare-for-tests
-             (lambda* (#:key outputs #:allow-other-keys)
-               (setenv "QML2_IMPORT_PATH"
-                       (string-append (assoc-ref outputs "out")
-                                      "/lib/qt5/qml:"
-                                      (getenv "QML2_IMPORT_PATH")))))))))
-    (native-inputs (list perl xorg-server-for-tests))
-    (inputs (list qtbase-5 qtdeclarative-5))
-    (propagated-inputs (list qtquickcontrols-5 qtsvg-5))
-    (synopsis "QtQuick virtual keyboard")
-    (description "The Qt Virtual Keyboard module provides a virtual keyboard
-framework that consists of a C++ backend supporting custom input methods as well
-as a UI frontend implemented in QML.")))
-
 (define-public qtvirtualkeyboard
   (package
     (name "qtvirtualkeyboard")
