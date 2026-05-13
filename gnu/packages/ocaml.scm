@@ -309,7 +309,7 @@ functional, imperative and object-oriented styles of programming.")
 (define-public ocaml-4.14
   (package
     (name "ocaml")
-    (version "4.14.1")
+    (version "4.14.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -318,7 +318,7 @@ functional, imperative and object-oriented styles of programming.")
                     "/ocaml-" version ".tar.xz"))
               (sha256
                (base32
-                "0vxvwxxycpc3r5p7ys59d86vw5vdr2lhmck1f3s6qms2096rf9y1"))))
+                "0sdh7qs5s485657a7dvdzz5xmzp772ffywprdjzsg7mbzfw87md5"))))
     (build-system gnu-build-system)
     (native-search-paths
      (list (search-path-specification
