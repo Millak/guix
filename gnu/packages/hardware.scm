@@ -1592,7 +1592,7 @@ and libtss2-tcti-mssim.")
 (define-public tpm2-tools
   (package
     (name "tpm2-tools")
-    (version "5.5")
+    (version "5.7")
     (source
      (origin
        (method url-fetch)
@@ -1600,7 +1600,7 @@ and libtss2-tcti-mssim.")
                            "releases/download/" version "/"
                            "tpm2-tools-" version ".tar.gz"))
        (sha256
-        (base32 "08y16q92dh7frsyw0zlm3q9gsfqyls0li248s2pgsysk633lknqz"))))
+        (base32 "0flqf32w7nx2z26m6cf16483pm0k4bi55rbw5x7ny9bra1mx641q"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
