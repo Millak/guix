@@ -223,6 +223,13 @@ OCaml and can effectively bootstrap OCaml 4.07.
 This package produces a native @command{ocamlc} and a bytecode @command{ocamllex}.")
       (license license:expat))))
 
+;; WARNING: this older release of the compiler has known vulnerabilities and
+;; is NOT supported. It remains in the distribution only to aid in building a
+;; bootstrap chain.
+;;
+;; For example, all versions in the 5.x series < 5.4.1 are vulnerable to
+;; CVE-2026-28364:
+;; https://github.com/ocaml/security-advisories/blob/main/advisories/2026/OSEC-2026-01.md
 (define-public ocaml-5.0
   (package
     (name "ocaml")
