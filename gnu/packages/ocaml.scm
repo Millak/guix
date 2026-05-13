@@ -390,6 +390,13 @@ functional, imperative and object-oriented styles of programming.")
     ;; distributed under lgpl2.0.
     (license (list license:qpl license:lgpl2.0))))
 
+;; WARNING: this older release of the compiler has known vulnerabilities and
+;; is NOT supported. It remains in the distribution only to aid in building a
+;; bootstrap chain.
+;;
+;; For example, all versions in the 4.x series < 4.14.3 are vulnerable to
+;; CVE-2026-28364:
+;; https://github.com/ocaml/security-advisories/blob/main/advisories/2026/OSEC-2026-01.md
 (define-public ocaml-4.09
   (package
     (inherit ocaml-4.14)
