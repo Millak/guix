@@ -2558,35 +2558,6 @@ between the host (QML/C++ application) and the client (HTML/JavaScript
 application).")
     (license (package-license qtbase))))
 
-(define-public qtwebglplugin-5
-  (package
-    (inherit qtsvg-5)
-    (name "qtwebglplugin")
-    (version "5.15.17")
-    (source (origin
-              (method url-fetch)
-              (uri (qt-url name version))
-              (sha256
-               (base32
-                "0msg2ghi5g7anv7nlkj55b1dwpz6dgd4qv1brikb06nvmxs6dl8b"))))
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-after 'unpack 'disable-network-tests
-              (lambda _
-                (substitute* "tests/plugins/platforms/platforms.pro"
-                  (("webgl") "# webgl"))))))))
-    (native-inputs '())
-    (inputs (list mesa qtbase-5 qtdeclarative-5 qtwebsockets-5 zlib))
-    (synopsis "QPA plugin for running applications via a browser using
-streamed WebGL commands")
-    (description "Qt back end that uses WebGL for rendering.  It allows Qt
-applications (with some limitations) to run in a web browser that supports
-WebGL.  WebGL is a JavaScript API for rendering 2D and 3D graphics within any
-compatible web browser without the use of plug-ins.  The API is similar to
-OpenGL ES 2.0 and can be used in HTML5 canvas elements")))
-
 (define-public qtwebview
   (package
     (name "qtwebview")
