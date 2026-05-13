@@ -485,7 +485,8 @@ the system in terms of memory pools and their agents.")
                (base32
                 "10qjisjz4shsznh61in6zjjzsag49mdzj1ahclsyxhh5qvxvfrq4"))
               (patches
-               (search-patches "amd-smi-python.patch"))))
+               (search-patches "amd-smi-python.patch"
+                               "amd-smi-newer-libdrm.patch"))))
     (build-system cmake-build-system)
     (arguments (list
                 #:tests? #f ;; The test suite is empty and failing as of 25.5.1

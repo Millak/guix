@@ -1,0 +1,172 @@
+This commit fixes compilation of amd-smi for ROCm 7.1.1 with recent versions
+of libdrm.
+
+Adapted from <https://github.com/ROCm/rocm-systems/pull/3517>.
+
+From 6b32c405e1495d626a40a0ad195024220f9c08a9 Mon Sep 17 00:00:00 2001
+From: "Mario Limonciello (AMD)" <superm1@kernel.org>
+Date: Wed, 17 Dec 2025 23:59:07 -0600
+Subject: [PATCH] Fix compilation against newer libdrm
+
+diff --git a/include/amd_smi/impl/amd_smi_drm.h b/include/amd_smi/impl/amd_smi_drm.h
+index ea6198c1187..79003546103 100644
+--- a/include/amd_smi/impl/amd_smi_drm.h
++++ b/include/amd_smi/impl/amd_smi_drm.h
+@@ -26,15 +26,12 @@
+ #include <unistd.h>
+ 
+ #include <vector>
+-#include <memory>
+ #include <mutex>  // NOLINT
+ #include <string>
+ 
+ #include "amd_smi/amdsmi.h"
+ #include "amd_smi/impl/amd_smi_lib_loader.h"
+ #include "amd_smi/impl/amdgpu_drm.h"
+-#include "amd_smi/impl/xf86drm.h"
+-#include "amd_smi/impl/scoped_fd.h"
+ 
+ namespace amd::smi {
+ 
+diff --git a/include/amd_smi/impl/amdgpu_drm.h b/include/amd_smi/impl/amdgpu_drm.h
+index b56a5ac4b20..0e483d13b38 100644
+--- a/include/amd_smi/impl/amdgpu_drm.h
++++ b/include/amd_smi/impl/amdgpu_drm.h
+@@ -1625,15 +1625,6 @@ struct drm_amdgpu_info_uq_metadata {
+ #define AMDGPU_FAMILY_GC_11_5_0			150 /* GC 11.5.0 */
+ #define AMDGPU_FAMILY_GC_12_0_0			152 /* GC 12.0.0 */
+ 
+-/* FIXME wrong namespace! */
+-struct drm_color_ctm_3x4 {
+-	/*
+-	 * Conversion matrix with 3x4 dimensions in S31.32 sign-magnitude
+-	 * (not two's complement!) format.
+-	 */
+-	__u64 matrix[12];
+-};
+-
+ #if defined(__cplusplus)
+ }
+ #endif
+diff --git a/include/amd_smi/impl/xf86drm.h b/include/amd_smi/impl/xf86drm.h
+index 04568e10083..1fbfdd0ac78 100644
+--- a/include/amd_smi/impl/xf86drm.h
++++ b/include/amd_smi/impl/xf86drm.h
+@@ -34,7 +34,7 @@
+ #ifndef _XF86DRM_H_
+ #define _XF86DRM_H_
+ 
+-#include <stdarg.h>
++#include <cstdarg>
+ #include <sys/types.h>
+ #include <cstdint>
+ #ifndef __LIBDRM__
+diff --git a/src/amd_smi/amd_smi.cc b/src/amd_smi/amd_smi.cc
+index 36361fd8086..560ca08309b 100644
+--- a/src/amd_smi/amd_smi.cc
++++ b/src/amd_smi/amd_smi.cc
+@@ -21,11 +21,11 @@
+  * THE SOFTWARE.
+  */
+ 
+-#include <assert.h>
+-#include <errno.h>
++#include <cassert>
++#include <cerrno>
+ #include <sys/utsname.h>
+-#include <stdio.h>
+-#include <string.h>
++#include <cstdio>
++#include <cstring>
+ #include <fcntl.h>
+ 
+ #include <cstdlib>
+@@ -35,7 +35,6 @@
+ #include <sstream>
+ #include <iomanip>
+ #include <iostream>
+-#include <fstream>
+ #include <queue>
+ #include <vector>
+ #include <set>
+@@ -43,11 +42,10 @@
+ #include <memory>
+ #include <limits>
+ #include <functional>
+-#include <exception>
+ 
+ #include "config/amd_smi_config.h"
+ #include "amd_smi/amdsmi.h"
+-#include "amd_smi/impl/fdinfo.h"
++#include "amd_smi/impl/scoped_fd.h"
+ #include "amd_smi/impl/amd_smi_common.h"
+ #include "amd_smi/impl/amd_smi_cper.h"
+ #include "amd_smi/impl/amd_smi_system.h"
+@@ -66,7 +64,6 @@
+ #include "amd_smi/impl/amd_smi_utils.h"
+ #include "amd_smi/impl/amd_smi_processor.h"
+ #include "rocm_smi/rocm_smi.h"
+-#include "rocm_smi/rocm_smi_common.h"
+ #include "rocm_smi/rocm_smi_logger.h"
+ #include "rocm_smi/rocm_smi_utils.h"
+ #include "rocm_smi/rocm_smi_kfd.h"
+diff --git a/src/amd_smi/amd_smi_drm.cc b/src/amd_smi/amd_smi_drm.cc
+index de0cc7178fa..ad98f524bad 100644
+--- a/src/amd_smi/amd_smi_drm.cc
++++ b/src/amd_smi/amd_smi_drm.cc
+@@ -24,11 +24,11 @@
+ #include <dirent.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+-#include <cstring>
+ #include <memory>
+ #include <regex>
+ #include "config/amd_smi_config.h"
+ #include "amd_smi/impl/amd_smi_drm.h"
++#include "amd_smi/impl/xf86drm.h"
+ #include "impl/scoped_fd.h"
+ #include "rocm_smi/rocm_smi.h"
+ #include "rocm_smi/rocm_smi_main.h"
+diff --git a/src/amd_smi/amd_smi_utils.cc b/src/amd_smi/amd_smi_utils.cc
+index aac3170b704..ddf2efea519 100644
+--- a/src/amd_smi/amd_smi_utils.cc
++++ b/src/amd_smi/amd_smi_utils.cc
+@@ -20,17 +20,17 @@
+  * THE SOFTWARE.
+  */
+ 
+-#include <limits.h>
++#include <climits>
+ #include <sys/ioctl.h>
+ #include <libdrm/amdgpu.h>
+ #include <libdrm/drm.h>
+ #include <fcntl.h>
+ #include <cstdint>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
++#include <cstdio>
++#include <cstdlib>
++#include <cstring>
+ #include <sys/mman.h>
+-#include <time.h>
++#include <ctime>
+ #include <unistd.h>
+ #include <dirent.h>
+ #include <sys/types.h>
+@@ -41,14 +41,13 @@
+ #include <iostream>
+ #include <iterator>
+ #include <memory>
+-#include <random>
+ #include <regex>
+ #include <sstream>
+ 
+ #include "config/amd_smi_config.h"
+ #include "amd_smi/impl/amd_smi_utils.h"
++#include "amd_smi/impl/scoped_fd.h"
+ #include "amd_smi/impl/amd_smi_system.h"
+-#include "shared_mutex.h"  // NOLINT
+ #include "rocm_smi/rocm_smi_logger.h"
+ #include "rocm_smi/rocm_smi_utils.h"
+ 
