@@ -24,6 +24,7 @@
 ;;; Copyright © 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2025 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1036,7 +1037,7 @@ specific SMBIOS tables.")
 (define-public liquidctl
   (package
     (name "liquidctl")
-    (version "1.15.0")
+    (version "1.16.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1045,7 +1046,7 @@ specific SMBIOS tables.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1cj4ag6h08clklqg63wpw1vvxfjx37a7ib081dd1z5bl0580zxl9"))))
+                "0i5865wrpkz2cbzs28ngn7qgwiifjb89h0c2qhymg3vhqhywpprl"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
