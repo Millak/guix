@@ -850,7 +850,7 @@ intellihide and multimonitor support.")
 (define-public gnome-shell-extension-gsconnect
   (package
     (name "gnome-shell-extension-gsconnect")
-    (version "71")
+    (version "72")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -860,7 +860,7 @@ intellihide and multimonitor support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i6zrvb40h0af96md7jb4y3f2c1g37h5qp649xk68gp6gwn1401s"))))
+                "06ps946q53jfqi4ycapjb9755763z8p0dvd7jssw6l8h8ma11ly3"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -935,7 +935,6 @@ intellihide and multimonitor support.")
      (list
       at-spi2-core
       bash-minimal
-      caribou
       evolution-data-server
       gjs
       glib
