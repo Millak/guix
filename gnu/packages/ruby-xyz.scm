@@ -7318,17 +7318,15 @@ of terminal output.")
     (license license:gpl2)))
 
 (define-public ruby-immutable-struct
-  (let ((commit "bb67ad8fa2117e8031c3f4333b4c25c8bcd3afff")
-        (revision "0"))
     (package
       (name "ruby-immutable-struct")
-      (version (git-version "2.4.1" revision commit))
+      (version "2.5.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/stitchfix/immutable-struct")
-               (commit commit)))
+               (commit version)))
          (file-name (git-file-name name version))
          (sha256
           (base32
@@ -7349,7 +7347,7 @@ of terminal output.")
        "This package provides a library to help create value objects without
 the pain of Ruby's Struct (or its setters).")
       (home-page "https://stitchfix.github.io/immutable-struct/")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public ruby-faker
   (package
