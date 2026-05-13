@@ -9982,13 +9982,13 @@ for the Zig programming language in Emacs.")
 (define-public emacs-erc
   (package
     (name "emacs-erc")
-    (version "5.6.1")
+    (version "5.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/erc-" version ".tar"))
        (sha256
-        (base32 "13dzip6xhj0mf8hs8wk08pfxny5gwpbzfsqkmz146xvl2d8m621x"))))
+        (base32 "0rm7aw6p8736ssp4z7vmfmwff93h4dwcv9pz3b83f9060i2svvvn"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-compat))
     (home-page "https://www.gnu.org/software/emacs/erc.html")
