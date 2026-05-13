@@ -162,7 +162,7 @@ sets, and tools to deal with register databases.")
 (define-public brillo
   (package
     (name "brillo")
-    (version "1.4.12")
+    (version "1.4.13")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -170,7 +170,7 @@ sets, and tools to deal with register databases.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "16n4j45mfhd1zxwbpl8342vyqf8rj3plhcl90xp02m46hn58v8bl"))
+                "0qq2c2l9wyrh2kz1adicmizymln1878hynnixhyck7j5f4rk45gq"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
