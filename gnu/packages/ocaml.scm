@@ -299,6 +299,9 @@ functional, imperative and object-oriented styles of programming.")
     ;; distributed under lgpl2.0.
     (license (list license:qpl license:lgpl2.0))))
 
+;; WARNING: this older release of the compiler has known vulnerabilities and
+;; is NOT supported. It remains in the distribution only to aid in building a
+;; bootstrap chain.
 (define-public ocaml-5.3
   (package
     (inherit ocaml-5.0)
