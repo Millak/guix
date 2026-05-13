@@ -3150,22 +3150,6 @@ position on a map.  In addition, you can use to the API to retrieve satellite
 information and perform area based monitoring.")
     (license (package-license qtbase))))
 
-(define-public qtpurchasing-5
-  (package
-    (inherit qtsvg-5)
-    (name "qtpurchasing")
-    (version "5.15.17")
-    (source (origin
-              (method url-fetch)
-              (uri (qt-url name version))
-              (sha256
-               (base32
-                "1i2w9xdm874hnmv1i4wq3s9yhj7xmklk06yivhqadml42q8qdg9c"))))
-    (inputs (list qtbase-5 qtdeclarative-5))
-    (synopsis "Qt Purchasing module")
-    (description "The Qt Purchasing module provides and in-app API for
-purchasing goods and services.")))
-
 (define-public qtcharts-5
   (package
     (inherit qtsvg-5)
