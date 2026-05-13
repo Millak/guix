@@ -2145,6 +2145,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/qtdeclarative-disable-qmlcache.patch	\
   %D%/packages/patches/qtlocation-5.15.8-mapboxgl-gcc13.patch	\
   %D%/packages/patches/qtwebengine-revert-egl.patch		\
+  %D%/packages/patches/qtwebengine5-python312-six-compat.patch	\
   %D%/packages/patches/quodlibet-disable-bundled-packages.patch	\
   %D%/packages/patches/qxlsx-fix-include-directory.patch	\
   %D%/packages/patches/schiffbruch-fix-build-for-gcc-13.patch	\

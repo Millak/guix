@@ -3655,6 +3655,7 @@ using the Enchant spell-checking library.")
        (sha256
         (base32
          "11hir1dwsfy96jxmsmadcr46m034dpjlnpqw60nqk6wk0qscxvg8"))
+       (patches (search-patches "qtwebengine5-python312-six-compat.patch"))
        (modules '((ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-1)
@@ -3807,6 +3808,12 @@ using the Enchant spell-checking library.")
                   ;; Delete bundled software and binaries that were not explicitly
                   ;; preserved above.
                   #$remove-third-party-files
+
+                  ;; For compatibility with python-3.12 remove 'import imp'.
+                  ;; This can be removed with qtwebengine@5.15.19.
+                  (substitute* '("mojo/public/tools/mojom/mojom/fileutil.py"
+                                 "mojo/public/tools/mojom/mojom/parse/lexer.py")
+                    (("import imp\n") ""))
 
                   ;; Use relative header locations instead of hard coded ones.
                   (substitute*
