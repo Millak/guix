@@ -52178,8 +52178,10 @@ mount --rbind /sys /mnt/sys
 mount --rbind /dev /mnt/dev
 @end example
 
-If your system is EFI-based, you must also mount the ESP partition.
-Assuming it is @file{/dev/sda1}, you can do so with:
+A quick way to check if your system booted with EFI support is to check
+if @file{/sys/firmware/efi} exists.  If your system is EFI-based, you
+must also mount the ESP partition.  Assuming it is @file{/dev/sda1}, you
+can do so with:
 
 @example sh
 mount /dev/sda1 /mnt/boot/efi
