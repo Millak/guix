@@ -1428,15 +1428,16 @@ want what you have.")
              (("\"https://.*\",?") "")))))
       (build-system qt-build-system)
       (arguments
-       `(#:configure-flags '("-DWITH_SERVER=1"
-                             "-DWITH_CLIENT=1"
-                             "-DWITH_ORACLE=1"
-                             "-DTEST=1")))
+       (list
+         #:qtbase qtbase
+         #:configure-flags #~(list "-DWITH_SERVER=1"
+                                   "-DWITH_CLIENT=1"
+                                   "-DWITH_ORACLE=1"
+                                   "-DTEST=1")))
       (native-inputs
        (list googletest pkg-config))
       (inputs
        (list protobuf
-             qtbase
              qtmultimedia
              qtsvg
              qttools
