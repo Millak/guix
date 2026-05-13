@@ -3041,34 +3041,6 @@ control equipment.  The module provides both QML and C++ interfaces.  The
 primary target audience are embedded devices with fullscreen user interfaces,
 and mobile applications targeting TV-like form factors.")))
 
-(define-public qtscxml-5
-  (package
-    (inherit qtsvg-5)
-    (name "qtscxml")
-    (version "5.15.17")
-    (source (origin
-              (method url-fetch)
-              (uri (qt-url name version))
-              (sha256
-               (base32
-                "1vzrahskfhkfs60jiiyzd67q7k4ja4575gnb1hc385xq37wfv2fk"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (delete-file-recursively "tests/3rdparty")
-                  ;; the scion test refers to the bundled 3rd party test code.
-                  (substitute* "tests/auto/auto.pro"
-                    (("scion") "#"))))))
-    (arguments (substitute-keyword-arguments arguments
-                 ((#:tests? _ #f) #f))) ; TODO: Enable the tests
-    (inputs (list qtbase-5 qtdeclarative-5))
-    (synopsis "Qt SCXML module")
-    (description "The Qt SCXML module provides functionality to create state
-machines from SCXML files.  This includes both dynamically creating state
-machines (loading the SCXML file and instantiating states and transitions) and
-generating a C++ file that has a class implementing the state machine.  It
-also contains functionality to support data models and executable content.")))
-
 (define-public qtscxml
   (package
     (name "qtscxml")
