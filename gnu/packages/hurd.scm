@@ -459,6 +459,11 @@ Hurd-minimal package which are needed for both glibc and GCC.")
 # Remove this script when Linux and the Hurd have xattr patches.
 PATH=@PATH@
 
+# XXX Work around a race condition (probably in the root translator).
+for i in $(seq 100000); do :; done
+
+# This is necessary to make stat / return the correct device ids.
+# As / should be read-only at this point, this should be a no-op.
 fsysopts / --update --readonly
 
 if test -f /etc/fstab; then
