@@ -1935,7 +1935,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/modglue-fix-build.patch		\
   %D%/packages/patches/modem-manager-fix-test-wrapper.patch	\
   %D%/packages/patches/module-init-tools-moduledir.patch	\
-  %D%/packages/patches/monero-use-system-miniupnpc.patch			\
   %D%/packages/patches/mono-1.2.6-bootstrap.patch		\
   %D%/packages/patches/mono-1.9.1-add-MONO_CREATE_IMAGE_VERSION.patch		\
   %D%/packages/patches/mono-1.9.1-fixes.patch			\
