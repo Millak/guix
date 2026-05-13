@@ -8504,67 +8504,78 @@ Evolution (hence the name), but is now used by other packages as well.")
     (license license:lgpl2.0)))
 
 (define-public caribou
-  (package
-    (name "caribou")
-    (version "0.4.21")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0mfychh1q3dx0b96pjz9a9y112bm9yqyim40yykzxx1hppsdjhww"))))
-    (build-system glib-or-gtk-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      ;; Relax gcc-14's strictness.
-      #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")
-      #:phases
-       #~(modify-phases %standard-phases
-           (add-before
-               'build 'pre-build
-             (lambda _
-               ;; Use absolute shared library path in Caribou-1.0.typelib.
-               (substitute* "libcaribou/Makefile"
-                 (("--shared-library=libcaribou.so")
-                  (string-append "--shared-library="
-                                 #$output "/lib/libcaribou.so")))))
-         (add-after 'install 'wrap-programs
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((python-path (getenv "GUIX_PYTHONPATH"))
-                  (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-              (for-each
-               (lambda (prog)
-                 (wrap-program prog
-                   `("GUIX_PYTHONPATH"      ":" prefix (,python-path))
-                   `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-               (list (string-append #$output "/bin/caribou-preferences")
-                     (string-append #$output "/libexec/antler-keyboard")))))))))
-    (native-inputs
-     `(("glib:bin" ,glib "bin") ; for glib-compile-schemas, etc.
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("vala" ,vala)
-       ("xsltproc" ,libxslt)))
-    (propagated-inputs
-     ;; caribou-1.0.pc refers to all these.
-     (list libgee libxklavier libxtst gtk+))
-    (inputs
-     `(("bash" ,bash-minimal) ; for wrap-program
-       ("clutter" ,clutter)
-       ("dconf" ,dconf)
-       ("gtk+-2" ,gtk+-2)
-       ("python-pygobject" ,python-pygobject)))
-    (synopsis "Text entry and UI navigation application")
-    (home-page "https://wiki.gnome.org/Projects/Caribou")
-    (description
-     "Caribou is an input assistive technology intended for switch and pointer
+  ;; Latest tag does not work with recent vala versions.
+  (let ((commit "9c900f0139af225bb35bf34bb2aee83f47495ba5")
+        (revision "0"))
+    (package
+      (name "caribou")
+      (version (git-version "0.4.21" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://gitlab.gnome.org/Archive/caribou")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "066z098gfqyrjscbchbjlwkd5sakrrmwm4k2s76vjl5ir62w0mxg"))))
+      (build-system glib-or-gtk-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        ;; Relax gcc-14's strictness.
+        #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before
+                'build 'pre-build
+              (lambda _
+                ;; Use absolute shared library path in Caribou-1.0.typelib.
+                (substitute* "libcaribou/Makefile"
+                  (("--shared-library=libcaribou.so")
+                   (string-append "--shared-library="
+                                  #$output "/lib/libcaribou.so")))))
+            (add-after 'install 'wrap-programs
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((python-path (getenv "GUIX_PYTHONPATH"))
+                      (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+                  (for-each
+                   (lambda (prog)
+                     (wrap-program prog
+                       `("GUIX_PYTHONPATH" ":" prefix (,python-path))
+                       `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
+                   (list
+                    (string-append #$output "/bin/caribou-preferences")
+                    (string-append #$output "/libexec/antler-keyboard")))))))))
+      (native-inputs
+       (list autoconf
+             automake
+             `(,glib "bin") ;for glib-compile-schemas, etc.
+             gobject-introspection
+             gnome-common ;for gnome-autogen.sh
+             intltool
+             libtool
+             libxslt
+             pkg-config
+             python
+             vala
+             which))
+      (propagated-inputs
+       ;; caribou-1.0.pc refers to all these.
+       (list libgee libxklavier libxtst gtk+))
+      (inputs
+       (list bash-minimal ; for wrap-program
+             clutter
+             dconf
+             gtk+-2
+             python-pygobject))
+      (synopsis "Text entry and UI navigation application")
+      (home-page "https://wiki.gnome.org/Projects/Caribou")
+      (description
+       "Caribou is an input assistive technology intended for switch and pointer
 users.")
-    (license license:lgpl2.1)))
+      (license license:lgpl2.1))))
 
 (define-public network-manager
   (package
