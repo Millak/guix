@@ -322,7 +322,7 @@ register-closure."
 
   ;; Populate /dev.
   (when make-device-nodes
-    (make-device-nodes root))
+    (make-device-nodes #:root root))
 
   (when register-closures?
     (unless copy-closures?

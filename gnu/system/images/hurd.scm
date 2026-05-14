@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2024, 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +22,7 @@
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader grub)
   #:use-module (gnu image)
+  #:use-module (gnu packages hurd)
   #:use-module (gnu packages ssh)
   #:use-module (guix platforms x86)
   #:use-module (gnu services)
@@ -97,7 +98,14 @@
   #~(lambda* (#:rest args)
       (apply initialize-root-partition
              (append args
-                     (list #:make-device-nodes make-hurd-device-nodes
+                     (list #:make-device-nodes
+                           (lambda device-args
+                             (let-keywords (cdr args) #t
+                                           ((system-directory #f))
+                               (let ((hurd (in-vicinity system-directory
+                                                        "hurd/hurd")))
+                                 (apply make-hurd-device-nodes
+                                        (cons* #:hurd hurd device-args)))))
                            ;; XXX Creating a db.sqlite with journal_mode=WAL
                            ;; yields "unable to open database file" on GNU/Hurd
                            ;; for an sqlite with the hurd-locking-mode.patch;

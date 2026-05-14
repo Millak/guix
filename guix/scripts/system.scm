@@ -5,7 +5,7 @@
 ;;; Copyright © 2017, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Christopher Baines <mail@cbaines.net>
-;;; Copyright © 2020, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2024, 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -72,6 +72,7 @@
   #:use-module (gnu image)
   #:use-module (gnu system)
   #:use-module (gnu bootloader)
+  #:use-module (gnu packages hurd)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system image)
   #:use-module (gnu system mapped-devices)
@@ -249,7 +250,7 @@ the ownership of '~a' may be incorrect!~%")
   (chmod target #o755)
   ;; For the Hurd to boot, it needs some essential device nodes.
   (when (target-hurd?)
-    (make-hurd-device-nodes target))
+    (make-hurd-device-nodes #:hurd (in-vicinity hurd "hurd") #:root target))
   (let ((os-dir   (derivation->output-path os-drv))
         (format   (lift format %store-monad))
         (populate (lift2 populate-root-file-system %store-monad)))

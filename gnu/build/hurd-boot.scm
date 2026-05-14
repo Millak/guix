@@ -74,10 +74,18 @@ Return the value associated with OPTION, or #f on failure."
                 (loop (absolute target) (+ depth 1))
                 file))))))
 
-(define* (make-hurd-device-nodes #:optional (root "/"))
+(define* (make-hurd-device-nodes #:key (root "/") (hurd "/hurd"))
   "Make some of the nodes needed on GNU/Hurd."
   (define (scope dir)
-    (string-append root (if (string-suffix? "/" root) "" "/") dir))
+    (in-vicinity root dir))
+
+  (define scope-set-translator
+    (match-lambda
+      ((file-name command)
+       (scope-set-translator (list file-name command #o600)))
+      ((file-name command mode)
+       (let ((mount-point (scope file-name)))
+         (set-translator mount-point command mode)))))
 
   (mkdir-p (scope "dev"))
   ;; XXX: We must have `/dev/console` otherwise `console-run` tries to
@@ -114,12 +122,32 @@ Return the value associated with OPTION, or #f on failure."
               "suspend"))
 
   (mkdir-p (scope "servers/socket"))
+  (mkdir-p (scope "servers/bus/pci"))
 
-  ;; Don't create /servers/socket/1 & co: runsystem does that on first boot.
+  ;; Set the 'gnu.translator' extended attribute for passive translator
+  ;; settings for pipes (servers/socet/1) and mount information (proc/mounts).
+  ;; Pipes are needed for guile-3.0.11 to startup, this enables moving
+  ;; "runsystem" to guile.
+  ;; XXX TODO: Set more passive xattr translators?
+  (define servers
+    `(
+      ;; ("servers/bus/pci"         ("/hurd/pci-arbiter"))
+      ;; ("servers/crash-dump-core" ("/hurd/crash" "--dump-core"))
+      ;; ("servers/crash-kill"      ("/hurd/crash" "--kill"))
+      ;; ("servers/crash-suspend"   ("/hurd/crash" "--suspend"))
+      ;; ("servers/password"        ("/hurd/password"))
+      ;; PIPE -- for running runsystem as Guile
+      ("servers/socket/1"        (,(in-vicinity hurd "pflocal")))
+      ;; /servers/socket/2 and /26 are created by 'static-networking-service'.
+      ;; XXX: Spawn pfinet without arguments on these nodes so that a DHCP
+      ;; client has someone to talk to?
+      ("proc"                    (,(in-vicinity hurd "procfs") "--stat-mode=444"))))
 
-  ;; TODO: Set the 'gnu.translator' extended attribute for passive translator
-  ;; settings?
-  (mkdir-p (scope "servers/bus/pci")))
+  (for-each scope-set-translator servers)
+
+  (define devices
+    '())
+  (for-each scope-set-translator devices))
 
 (define (passive-translator-xattr? file-name)
   "Return true if FILE-NAME has an extended @code{gnu.translator} attribute
@@ -190,7 +218,7 @@ needed."
   "Make some of the device nodes needed on GNU/Hurd."
 
   (define (scope dir)
-    (string-append root (if (string-suffix? "/" root) "" "/") dir))
+    (in-vicinity root dir))
 
   (define scope-set-translator
     (match-lambda

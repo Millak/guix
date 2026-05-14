@@ -352,7 +352,8 @@ set to the given OS."
 (define-syntax-rule (with-imported-modules* gexp* ...)
   (with-extensions gcrypt-sqlite3&co
     (with-imported-modules `(,@(source-module-closure
-                                '((gnu build image)
+                                '((ice-9 optargs)
+                                  (gnu build image)
                                   (gnu build bootloader)
                                   (gnu build hurd-boot)
                                   (gnu build linux-boot)
@@ -360,7 +361,8 @@ set to the given OS."
                                 #:select? neither-config-nor-git?)
                              ((guix config) => ,(make-config.scm)))
       #~(begin
-          (use-modules (gnu build image)
+          (use-modules (ice-9 optargs)
+                       (gnu build image)
                        (gnu build bootloader)
                        (gnu build hurd-boot)
                        (gnu build linux-boot)
