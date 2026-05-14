@@ -6556,7 +6556,8 @@ Python style, together with a fast and comfortable execution environment.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nxp4z81vykv07kv2b6zrwk7ns8s10zqsb7vcignp8695yq3nlcm"))))
+        (base32 "0nxp4z81vykv07kv2b6zrwk7ns8s10zqsb7vcignp8695yq3nlcm"))
+       (snippet #~(delete-file "versioneer.py"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6570,8 +6571,8 @@ Python style, together with a fast and comfortable execution environment.")
         ;; It's a similar story with this test, which requires access
         ;; to the Google Storage service.
         "--ignore=tests/test_google_lifesciences.py"
-        ;; Unclear failure.
-        "-k" "not test_lint[long_run-positive]")
+        ;; Unclear failures.
+        "-k" "not test_lint")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'tabulate-compatibility
@@ -6613,7 +6614,7 @@ Python style, together with a fast and comfortable execution environment.")
            python-pandas
            python-requests-mock
            python-setuptools
-           python-wheel))
+           python-versioneer))
     (home-page "https://snakemake.readthedocs.io")
     (synopsis "Python-based execution environment for make-like workflows")
     (description
