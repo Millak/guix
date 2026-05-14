@@ -661,6 +661,12 @@ challenges"))
                       "gnu/system/examples/lightweight-desktop.tmpl"
                       "gnu/system/examples/desktop.tmpl")))
 
+(define-team dotnet
+  (team 'dotnet
+        #:name ".NET"
+        #:description ".NET programming environment."
+        #:scope (list "gnu/packages/dotnet.scm")))
+
 (define-team electronics
   (team 'electronics
         #:name "Electronics team"

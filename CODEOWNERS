@@ -161,6 +161,8 @@ gnu/system/examples/bare-bones\.tmpl               @guix/documentation
 gnu/system/examples/lightweight-desktop\.tmpl      @guix/documentation
 gnu/system/examples/desktop\.tmpl                  @guix/documentation
 
+gnu/packages/dotnet\.scm                           @guix/dotnet
+
 gnu/packages/electronics\.scm                      @guix/electronics
 gnu/packages/hdl\.scm                              @guix/electronics
 gnu/packages/libftdi\.scm                          @guix/electronics
