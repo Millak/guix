@@ -1166,17 +1166,17 @@ auto-completion and syntax highlighting.")
     (name "mysql")
     (version "5.7.33")
     (source (origin
-             (method url-fetch)
-             (uri (list (string-append
+              (method url-fetch)
+              (uri (list (string-append
                           "https://dev.mysql.com/get/Downloads/MySQL-"
                           (version-major+minor version) "/"
                           name "-" version ".tar.gz")
-                        (string-append
+                         (string-append
                           "https://downloads.mysql.com/archives/get/file/"
                           name "-" version ".tar.gz")))
-             (sha256
-              (base32
-               "1bb343mf7n0qg2qz497gxjsqprygrjz1q1pbz76hgqxnsy08sfxd"))))
+              (sha256
+               (base32
+                "1bb343mf7n0qg2qz497gxjsqprygrjz1q1pbz76hgqxnsy08sfxd"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -1202,37 +1202,37 @@ auto-completion and syntax highlighting.")
          "-DINSTALL_SQLBENCHDIR=")
        #:phases (modify-phases %standard-phases
                   (add-after
-                   'install 'remove-extra-binaries
-                   (lambda* (#:key outputs #:allow-other-keys)
-                     (let ((out (assoc-ref outputs "out")))
-                       ;; Remove the 3 *_embedded files, which weigh in at
-                       ;; 14 MiB each.
-                       (for-each delete-file
-                                 (find-files (string-append out "/bin")
-                                             "_embedded$"))
-                       #t)))
+                      'install 'remove-extra-binaries
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out")))
+                        ;; Remove the 3 *_embedded files, which weigh in at
+                        ;; 14 MiB each.
+                        (for-each delete-file
+                                  (find-files (string-append out "/bin")
+                                              "_embedded$"))
+                        #t)))
                   (add-after
-                   'install 'wrap-mysql_helpers
-                   (lambda* (#:key inputs outputs #:allow-other-keys)
-                     (let* ((out (assoc-ref outputs "out"))
-                            (bin (string-append out "/bin"))
-                            (awk (assoc-ref inputs "gawk"))
-                            (coreutils (assoc-ref inputs "coreutils"))
-                            (grep (assoc-ref inputs "grep"))
-                            (ps (assoc-ref inputs "procps"))
-                            (sed (assoc-ref inputs "sed")))
-                       (wrap-program (string-append bin "/mysql_config")
-                         `("PATH" ":" suffix
-                           (,(string-append awk "/bin")
-                            ,(string-append coreutils "/bin")
-                            ,(string-append sed "/bin"))))
-                       (wrap-program (string-append bin "/mysqld_safe")
-                         `("PATH" ":" suffix
-                           (,(string-append awk "/bin")
-                            ,(string-append coreutils "/bin")
-                            ,(string-append grep "/bin")
-                            ,(string-append ps "/bin")
-                            ,(string-append sed "/bin"))))))))))
+                      'install 'wrap-mysql_helpers
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin"))
+                             (awk (assoc-ref inputs "gawk"))
+                             (coreutils (assoc-ref inputs "coreutils"))
+                             (grep (assoc-ref inputs "grep"))
+                             (ps (assoc-ref inputs "procps"))
+                             (sed (assoc-ref inputs "sed")))
+                        (wrap-program (string-append bin "/mysql_config")
+                          `("PATH" ":" suffix
+                            (,(string-append awk "/bin")
+                             ,(string-append coreutils "/bin")
+                             ,(string-append sed "/bin"))))
+                        (wrap-program (string-append bin "/mysqld_safe")
+                          `("PATH" ":" suffix
+                            (,(string-append awk "/bin")
+                             ,(string-append coreutils "/bin")
+                             ,(string-append grep "/bin")
+                             ,(string-append ps "/bin")
+                             ,(string-append sed "/bin"))))))))))
     (native-inputs
      (list bison perl pkg-config))
     (inputs
@@ -1246,7 +1246,7 @@ auto-completion and syntax highlighting.")
            ncurses
            openssl-1.1
            procps
-           rpcsvc-proto ; rpcgen
+           rpcsvc-proto                 ; rpcgen
            sed
            zlib))
     (home-page "https://www.mysql.com/")
