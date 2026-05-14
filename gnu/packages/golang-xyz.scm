@@ -16655,7 +16655,9 @@ by Kovid Goyal for use in Kitty.")
         (base32 "1pibiw33h4gwg0dzaqblr2a2x2m6cwsnz1i568kj593d9dnf82m7"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/kovidgoyal/exiffix"))
+     (list
+      #:import-path "github.com/kovidgoyal/exiffix"
+      #:embed-files #~(list ".*\\.icc")))
     (propagated-inputs
      (list go-github-com-kovidgoyal-imaging
            go-github-com-rwcarlsen-goexif))
