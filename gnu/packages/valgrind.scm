@@ -36,7 +36,8 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages gdb)
-  #:use-module (gnu packages perl))
+  #:use-module (gnu packages perl)
+  #:use-module (gnu packages python))
 
 (define-public valgrind/pinned
   (package
@@ -111,5 +112,7 @@ also use Valgrind to build new tools.")
   (package/inherit valgrind
     (inputs
      ;; GDB is needed to provide a sane default for `--db-command'.
-     (list gdb `(,(canonical-package (libc-for-target)) "debug")))
+     (list gdb
+           `(,(canonical-package (libc-for-target)) "debug")
+           python))                     ;for cg_* shebangs
     (properties '())))
