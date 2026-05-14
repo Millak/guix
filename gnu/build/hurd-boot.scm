@@ -123,13 +123,18 @@ Return the value associated with OPTION, or #f on failure."
 
 (define (passive-translator-xattr? file-name)
   "Return true if FILE-NAME has an extended @code{gnu.translator} attribute
-set."
-  (catch 'system-error
-    (lambda _ (not (string-null? (getxattr file-name "gnu.translator"))))
-    (lambda args
-      (if (= ENODATA (system-error-errno args))
-          #f
-          (apply throw args)))))
+set.
+
+Note that reading \"gnu.*\" xattrs on Linux only work with ext4; for tmpfs,
+used during image creation, linux-7.0 with linux-shmem-hurd-xattr patch is
+needed."
+  (and (file-exists? file-name)
+       (catch 'system-error
+         (lambda _ (not (string-null? (getxattr file-name "gnu.translator"))))
+         (lambda args
+           (if (= ENODATA (system-error-errno args))
+               #f
+               (apply throw args))))))
 
 (define (passive-translator-installed? file-name)
   "Return true if @file{showtrans} finds a translator installed on FILE-NAME."
@@ -149,7 +154,11 @@ set."
       (passive-translator-installed? file-name)))
 
 (define* (set-translator file-name command #:optional (mode #o600))
-  "Setup translator COMMAND on FILE-NAME."
+  "Setup translator COMMAND on FILE-NAME.
+
+Note that setting \"gnu.*\" xattrs on Linux only work with ext4; for tmpfs,
+used during image creation, linux-7.0 with linux-shmem-hurd-xattr patch is
+needed."
   (unless (translated? file-name)
     (let ((dir (dirname file-name)))
       (unless (directory-exists? dir)
