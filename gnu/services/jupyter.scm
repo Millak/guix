@@ -27,6 +27,7 @@
   #:use-module (guix records)
   #:use-module (ice-9 match)
   #:export (jupyter-service-type
+            jupyter-shepherd-service
             jupyter-configuration))
 
 (define list-of-file-likes? (list-of file-like?))
@@ -73,7 +74,9 @@
                 (let ((url (assoc-ref (json->scm port) #$field)))
                   (format #t "~a~%" url)))))))))
 
-(define (jupyter-shepherd-service config)
+(define* (jupyter-shepherd-service config
+                                   #:optional
+                                   (log-file "/var/log/jupyter.log"))
   (match-record config <jupyter-configuration>
                 (python-jupyter-core disable-check-xsrf? token)
     (list
@@ -88,7 +91,7 @@
                  #$@(if disable-check-xsrf?
                         #~("--ServerApp.disable_check_xsrf=True")
                         #~()))
-           #:log-file "/var/log/jupyter.log"))
+           #:log-file #$log-file))
        (stop #~(make-kill-destructor))
        (respawn? #f)
        (actions

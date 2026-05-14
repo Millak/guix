@@ -20,12 +20,30 @@
   #:use-module (gnu home services)
   #:use-module (gnu services)
   #:use-module (gnu services jupyter)
+  #:use-module (gnu services shepherd)
   ;; For the 'home-shepherd-service-type' mapping.
   #:use-module (gnu home services shepherd)
+  #:use-module (guix gexp)
+  #:use-module (srfi srfi-1)
   #:export (home-jupyter-service-type)
   #:re-export (jupyter-configuration))
 
 (define home-jupyter-service-type
-  (service-type
-    (inherit (system->home-service-type jupyter-service-type))
-    (default-value (for-home (jupyter-configuration)))))
+  (let* ((type jupyter-service-type)
+         ;; XXX: Find a better way for this #:log-file replacement.
+         (log-file #~(string-append %user-log-dir "/jupyter.log"))
+         (shepherd-extension
+          (service-extension shepherd-root-service-type
+                             (lambda (config)
+                               (jupyter-shepherd-service config log-file))))
+         (base (service-type
+                 (inherit type)
+                 (extensions
+                  (cons* shepherd-extension
+                         (remove (lambda (extension)
+                                   (memq (service-extension-target extension)
+                                         (list shepherd-root-service-type)))
+                                 (service-type-extensions type)))))))
+    (service-type
+      (inherit (system->home-service-type base))
+      (default-value (for-home (jupyter-configuration))))))
