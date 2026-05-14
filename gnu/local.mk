@@ -119,6 +119,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/home/services/gnome.scm			\
   %D%/home/services/gnupg.scm			\
   %D%/home/services/guix.scm			\
+  %D%/home/services/jupyter.scm			\
   %D%/home/services/mail.scm			\
   %D%/home/services/media.scm			\
   %D%/home/services/messaging.scm		\
@@ -767,6 +768,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/services/getmail.scm				\
   %D%/services/guix.scm			\
   %D%/services/hurd.scm				\
+  %D%/services/jupyter.scm			\
   %D%/services/kerberos.scm			\
   %D%/services/ldap.scm		      		\
   %D%/services/lightdm.scm      		\
