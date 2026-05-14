@@ -353,6 +353,10 @@ textual.")
     (build-system cargo-build-system)
     (arguments
      (list
+      #:modules
+      '((guix build cargo-build-system)
+        (guix build utils)
+        (ice-9 match))
       #:install-source? #f
       #:cargo-test-flags
       '(list "--no-default-features" "--"
@@ -400,7 +404,29 @@ textual.")
                           "--features" (string-join features)))
                 (if (null? cargo-install-paths)
                     '(".")
-                    cargo-install-paths)))))))
+                    cargo-install-paths))))
+          (add-after 'install 'install-completions
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+               (match-lambda
+                 ((shell . path)
+                  (mkdir-p (in-vicinity #$output (dirname path)))
+                  (let ((binary
+                         (if #$(%current-target-system)
+                             (search-input-file native-inputs "bin/atuin")
+                             (in-vicinity #$output "bin/atuin"))))
+                    (with-output-to-file (in-vicinity #$output path)
+                      (lambda _
+                        (invoke binary "gen-completions" "--shell" shell))))))
+               '(("bash"    . "share/bash-completion/completions/atuin")
+                 ("elvish"  . "share/elvish/lib/atuin")
+                 ("fish"    . "share/fish/vendor_completions.d/atuin.fish")
+                 ("nushell" . "share/nushell/vendor/autoload/atuin")
+                 ("zsh"     . "share/zsh/site-functions/_atuin"))))))))
+    (native-inputs
+     (if (%current-target-system)
+         (list this-package)
+         '()))
     (inputs (cons* sqlite
                    (cargo-inputs 'atuin)))
     (home-page "https://atuin.sh")
