@@ -620,6 +620,24 @@ Kubernetes APIs.")
 ;;; Executables:
 ;;;
 
+(define-public etcd-server
+  (package/inherit go-go-etcd-io-etcd-server-v3
+    (name "etcd-server")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? #f #t) #f)
+       ((#:install-source? #t #t) #f)
+       ((#:skip-build? #t #t) #f)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'fix-bin-name
+              (lambda _
+                (rename-file (string-append #$output "/bin/v3")
+                             (string-append #$output "/bin/etcd-server"))))))))
+    (native-inputs (package-propagated-inputs go-go-etcd-io-etcd-server-v3))
+    (propagated-inputs '())
+    (inputs '())))
+
 (define-public kubernetes-apiserver
   (package/inherit go-k8s-io-apiextensions-apiserver
     (name "kubernetes-apiserver")
