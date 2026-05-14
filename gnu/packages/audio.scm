@@ -63,6 +63,7 @@
 ;;; Copyright © 2026 Noé Lopez <noelopez@free.fr>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2026 Daniel Martins <email@danielfm.me>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8173,7 +8174,16 @@ Icecast server.")
            (lambda _
              (substitute* "misc.c"
                (("#include <stdio.h>\n" all)
-                (string-append all "#include <string.h>\n")))))
+                (string-append all "#include <string.h>\n")))
+             (substitute* "wavsubs.c"
+               (("#include \"wavsubs.h\"\n" all)
+                (string-append all "#include <stdlib.h>")))
+             (substitute* "wavfile.c"
+               (("#include \"wavsubs.h\"\n" all)
+                (string-append all "#include <stdlib.h>")))
+             (substitute* "generator.c"
+               (("#include \"wavsubs.h\"\n" all)
+                (string-append all "#include <stdlib.h>")))))
          (delete 'configure)
          (replace 'install
            (lambda* (#:key make-flags outputs #:allow-other-keys)
@@ -8185,7 +8195,8 @@ Icecast server.")
     (inputs
      (list ncurses))
     (native-inputs
-     `(("groff" ,groff-minimal)         ; for nroff
+     `(("gcc" ,gcc-9)
+       ("groff" ,groff-minimal)         ; for nroff
        ("util-linux" ,util-linux)))     ; for col
     (home-page "https://github.com/bleskodev/siggen")
     (synopsis "Signal generation tools")
