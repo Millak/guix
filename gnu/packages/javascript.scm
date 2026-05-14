@@ -966,7 +966,7 @@ animating a series of images.")
 (define-public mujs
   (package
     (name "mujs")
-    (version "1.3.7")
+    (version "1.3.8")
     (source
      (origin
        (method git-fetch)
@@ -975,7 +975,7 @@ animating a series of images.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "031raywxz1znh70rvh915bhrcaysxa1kbv4gfhl4ghcqagpd975d"))
+        (base32 "0k365drffxj02846cr0l7qjbw2j6k2z7caby6g1gqm275vbn9q1k"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
