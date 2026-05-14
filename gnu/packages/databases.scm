@@ -1179,60 +1179,57 @@ auto-completion and syntax highlighting.")
                 "1bb343mf7n0qg2qz497gxjsqprygrjz1q1pbz76hgqxnsy08sfxd"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       '("-DBUILD_CONFIG=mysql_release"
-         "-DWITH_SSL=system"
-         "-DWITH_ZLIB=system"
-         "-DDEFAULT_CHARSET=utf8"
-         "-DDEFAULT_COLLATION=utf8_general_ci"
-         "-DMYSQL_DATADIR=/var/lib/mysql"
-         "-DMYSQL_UNIX_ADDR=/run/mysqld/mysqld.sock"
-         "-DINSTALL_INFODIR=share/mysql/docs"
-         "-DINSTALL_MANDIR=share/man"
-         "-DINSTALL_PLUGINDIR=lib/mysql/plugin"
-         "-DINSTALL_SCRIPTDIR=bin"
-         "-DINSTALL_INCLUDEDIR=include/mysql"
-         "-DINSTALL_DOCREADMEDIR=share/mysql/docs"
-         "-DINSTALL_SUPPORTFILESDIR=share/mysql"
-         "-DINSTALL_MYSQLSHAREDIR=share/mysql"
-         "-DINSTALL_DOCDIR=share/mysql/docs"
-         "-DINSTALL_SHAREDIR=share/mysql"
-         ;; Get rid of test data.
-         "-DINSTALL_MYSQLTESTDIR="
-         "-DINSTALL_SQLBENCHDIR=")
-       #:phases (modify-phases %standard-phases
-                  (add-after
-                      'install 'remove-extra-binaries
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        ;; Remove the 3 *_embedded files, which weigh in at
-                        ;; 14 MiB each.
-                        (for-each delete-file
-                                  (find-files (string-append out "/bin")
-                                              "_embedded$"))
-                        #t)))
-                  (add-after
-                      'install 'wrap-mysql_helpers
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (bin (string-append out "/bin"))
-                             (awk (assoc-ref inputs "gawk"))
-                             (coreutils (assoc-ref inputs "coreutils"))
-                             (grep (assoc-ref inputs "grep"))
-                             (ps (assoc-ref inputs "procps"))
-                             (sed (assoc-ref inputs "sed")))
-                        (wrap-program (string-append bin "/mysql_config")
-                          `("PATH" ":" suffix
-                            (,(string-append awk "/bin")
-                             ,(string-append coreutils "/bin")
-                             ,(string-append sed "/bin"))))
-                        (wrap-program (string-append bin "/mysqld_safe")
-                          `("PATH" ":" suffix
-                            (,(string-append awk "/bin")
-                             ,(string-append coreutils "/bin")
-                             ,(string-append grep "/bin")
-                             ,(string-append ps "/bin")
-                             ,(string-append sed "/bin"))))))))))
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_CONFIG=mysql_release"
+              "-DWITH_SSL=system"
+              "-DWITH_ZLIB=system"
+              "-DDEFAULT_CHARSET=utf8"
+              "-DDEFAULT_COLLATION=utf8_general_ci"
+              "-DMYSQL_DATADIR=/var/lib/mysql"
+              "-DMYSQL_UNIX_ADDR=/run/mysqld/mysqld.sock"
+              "-DINSTALL_INFODIR=share/mysql/docs"
+              "-DINSTALL_MANDIR=share/man"
+              "-DINSTALL_PLUGINDIR=lib/mysql/plugin"
+              "-DINSTALL_SCRIPTDIR=bin"
+              "-DINSTALL_INCLUDEDIR=include/mysql"
+              "-DINSTALL_DOCREADMEDIR=share/mysql/docs"
+              "-DINSTALL_SUPPORTFILESDIR=share/mysql"
+              "-DINSTALL_MYSQLSHAREDIR=share/mysql"
+              "-DINSTALL_DOCDIR=share/mysql/docs"
+              "-DINSTALL_SHAREDIR=share/mysql"
+              ;; Get rid of test data.
+              "-DINSTALL_MYSQLTESTDIR="
+              "-DINSTALL_SQLBENCHDIR=")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'remove-extra-binaries
+            (lambda _
+              ;; Remove the 3 *_embedded files, which weigh in at
+              ;; 14 MiB each.
+              (for-each delete-file
+                        (find-files (string-append #$output "/bin")
+                                    "_embedded$"))))
+          (add-after 'install 'wrap-mysql_helpers
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((bin (string-append #$output "/bin"))
+                    (gawk (search-input-file inputs "bin/gawk"))
+                    (coreutils (search-input-file inputs "bin/ls"))
+                    (grep (search-input-file inputs "bin/grep"))
+                    (ps (search-input-file inputs "bin/ps"))
+                    (sed (search-input-file inputs "bin/sed")))
+                (wrap-program (search-input-file outputs "bin/mysql_config")
+                  `("PATH" suffix
+                    ,(list (dirname gawk)
+                           (dirname coreutils)
+                           (dirname sed))))
+                (wrap-program (search-input-file outputs "bin/mysqld_safe")
+                  `("PATH" suffix
+                    ,(list (dirname gawk)
+                           (dirname coreutils)
+                           (dirname grep)
+                           (dirname ps)
+                           (dirname sed))))))))))
     (native-inputs
      (list bison perl pkg-config))
     (inputs
