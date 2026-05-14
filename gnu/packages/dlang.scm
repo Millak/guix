@@ -69,7 +69,7 @@
 (define-public ldc-bootstrap
   (package
     (name "ldc")
-    (version "1.39.0")
+    (version "1.40.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -82,7 +82,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0spa8170sm4lskjq2qja1ciymyz16j7dvb3vv8p0ps0q7c0v88b6"))
+                "1sdsxryr9i5j7xp17mlj7w0xl6c7nrhvjdyn6h69l0xrgmsg1nar"))
               (patches (search-patches "ldc-i686-int128-alignment.patch"
                                        "ldc-phobos-support-TZDIR.patch"))))
     (build-system cmake-build-system)
@@ -96,6 +96,7 @@
       #:configure-flags
       #~(list "-DD_COMPILER_FLAGS=-fPIC"
               "-DBUILD_SHARED_LIBS=OFF" ; see .github/actions/2-build-bootstrap
+              "-DLDC_DYNAMIC_COMPILE=OFF" ; likewise
               (format #f "-DCMAKE_INSTALL_RPATH=~a/lib"
                       (assoc-ref %outputs "lib"))
               #$@(if (target-riscv64?)
@@ -209,11 +210,6 @@
                 (substitute* "tests/dmd/fail_compilation/needspkgmod.d"
                   (("_D7imports9pkgmod3133mod3barFZv")
                    "imports.pkgmod313.mod.bar()"))
-                ;; Our gdb is more clever than expected.
-                ;; Introduced in ldc v1.13.0. Fixed (like this) in v1.40.0.
-                (substitute* "tests/debuginfo/print_gdb.d"
-                  (("GDB: p b_Glob")
-                   "GDB: p inputs.import_b.b_Glob"))
                 ;; These CTFE tests fail on riscv64-linux.
                 ;; Test for signbit introduced in ldc v1.19.0.
                 ;; Test for getNaNPayload introduced in ldc v1.25.0.
@@ -395,9 +391,9 @@
                     (((format #f "rpath = \"~a\";" out/lib))
                      (format #f "rpath = \"~a\";" lib/lib))))))))))
     (inputs
-     (list clang-runtime-18
+     (list clang-runtime-19
            libconfig
-           llvm-18
+           llvm-19
            zlib
            clang                        ; used as a linker wrapper
            curl                         ; std.net.curl
@@ -420,7 +416,7 @@ compiler with modern optimization and code generation capabilities.  The
 compiler uses the official DMD frontend to support the latest version of D2,
 and relies on the LLVM Core libraries for code generation.
 
-This compiler is based on the DMD frontend version 2.109.1.")
+This compiler is based on the DMD frontend version 2.110.0.")
     ;; Most of the code is released under BSD-3, except for code originally
     ;; written for GDC, which is released under GPLv2+, and the DMD frontend
     ;; and the druntime and phobos libraries which are released under the
