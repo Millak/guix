@@ -69,7 +69,7 @@
 (define-public ldc-bootstrap
   (package
     (name "ldc")
-    (version "1.40.1")
+    (version "1.41.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -82,7 +82,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1sdsxryr9i5j7xp17mlj7w0xl6c7nrhvjdyn6h69l0xrgmsg1nar"))
+                "1sxkfy8i414csg4fpzzybbjnxqrcgxdar1j8h05aw56jf9ijkdz8"))
               (patches (search-patches "ldc-i686-int128-alignment.patch"
                                        "ldc-phobos-support-TZDIR.patch"))))
     (build-system cmake-build-system)
@@ -97,6 +97,8 @@
       #~(list "-DD_COMPILER_FLAGS=-fPIC"
               "-DBUILD_SHARED_LIBS=OFF" ; see .github/actions/2-build-bootstrap
               "-DLDC_DYNAMIC_COMPILE=OFF" ; likewise
+              (format #f "-DCOMPILER_RT_LIBDIR_CONFIG=~a/lib/linux"
+                      #$(this-package-input "clang-runtime"))
               (format #f "-DCMAKE_INSTALL_RPATH=~a/lib"
                       (assoc-ref %outputs "lib"))
               #$@(if (target-riscv64?)
@@ -130,6 +132,7 @@
                   (("\"cc\"")
                    (format #f "~s" #$target-bin-clang)))))
             (add-after 'unpack 'patch-compiler-rt-library-discovery
+              ;; See also the -DCOMPILER_RT_LIBDIR_CONFIG configure flag.
               (lambda _
                 (let* ((system #$(or (%current-target-system)
                                      (%current-system)))
@@ -141,16 +144,7 @@
                   ;; naming.
                   (substitute* "driver/linker-gcc.cpp"
                     (("triple.getArchName\\(\\)")
-                     (format #f "~s" clang-arch)))
-                  ;; Augment the configuration of the ldc2 binaries so they
-                  ;; can find the compiler-rt libraries they need to be
-                  ;; linked with for the tests.
-                  (substitute* (find-files "." "^ldc2.*\\.conf\\.in$")
-                    ((".*LIB_SUFFIX.*" all)
-                     (string-append all
-                                    "        \""
-                                    #$target-clang-runtime
-                                    "/lib/linux\",\n"))))))
+                     (format #f "~s" clang-arch))))))
             ;; Using ImportC will always emit warnings when using gcc 14+
             ;; as its preprocessor, causing tests that read stderr to
             ;; fail.
@@ -172,11 +166,11 @@
             (add-after 'unpack 'patch-importc-float128
               (lambda _
                 (substitute* "runtime/druntime/src/importc.h"
-                  (("^#ifndef __aarch64__.*$")
+                  (("^#ifndef __clang__.*$")
                    (string-append
-                    "#if !defined(__aarch64__) && defined(__clang__)\n"
+                    "#ifdef __clang__\n"
                     "#define __float128 long double\n"
-                    "#elif !defined(__aarch64__)\n")))))
+                    "#else\n")))))
             (add-after 'unpack 'patch-paths-in-phobos
               (lambda _
                 (with-directory-excursion "runtime/phobos"
@@ -238,10 +232,6 @@
                 ;; Likewise.  Introduced in ldc v1.30.0.
                 (for-each delete-file
                           '("tests/sanitizers/lsan_memleak.d"))
-                ;; Also related to ImportC with clang breaking on floats.
-                ;; Introduced in ldc v1.36.0
-                ;; Fixed (like this) in ldc v1.41.0.
-                (delete-file "tests/dmd/compilable/fix24187.c")
                 ;; Patch a shell path in the druntime profile test Makefile.
                 ;; Introduced in ldc v1.34.0.
                 (substitute* "runtime/druntime/test/profile/Makefile"
@@ -391,9 +381,9 @@
                     (((format #f "rpath = \"~a\";" out/lib))
                      (format #f "rpath = \"~a\";" lib/lib))))))))))
     (inputs
-     (list clang-runtime-19
+     (list clang-runtime-20
            libconfig
-           llvm-19
+           llvm-20
            zlib
            clang                        ; used as a linker wrapper
            curl                         ; std.net.curl
@@ -416,7 +406,7 @@ compiler with modern optimization and code generation capabilities.  The
 compiler uses the official DMD frontend to support the latest version of D2,
 and relies on the LLVM Core libraries for code generation.
 
-This compiler is based on the DMD frontend version 2.110.0.")
+This compiler is based on the DMD frontend version 2.111.0.")
     ;; Most of the code is released under BSD-3, except for code originally
     ;; written for GDC, which is released under GPLv2+, and the DMD frontend
     ;; and the druntime and phobos libraries which are released under the
