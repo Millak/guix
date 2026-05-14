@@ -3016,7 +3016,7 @@ signing.")
 (define-public go-github-com-aws-smithy-go-metrics-smithyotelmetrics
   (package
     (name "go-github-com-aws-smithy-go-metrics-smithyotelmetrics")
-    (version "1.0.2")
+    (version "1.0.15")
     (source
      (origin
        (method git-fetch)
@@ -3026,15 +3026,29 @@ signing.")
                                           #:subdir "metrics/smithyotelmetrics"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16jbv7cyj85048f4kcrib8k2yif165sc099h0aklal5dwlf85xcg"))))
+        (base32 "15f2j863rb9cp4927sn48gsccnn6cm6cn8zjc8mycas4fw07lswr"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "metrics" "smithyotelmetrics")
+            (delete-all-but "." "metrics")))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/aws/smithy-go/metrics/smithyotelmetrics"
       #:unpack-path "github.com/aws/smithy-go"))
     (propagated-inputs
-     (list go-go-opentelemetry-io-otel
-           go-go-opentelemetry-io-otel)) ; for go.opentelemetry.io/otel/metric
+     (list go-github-com-aws-smithy-go
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-metric))
     (home-page "https://github.com/aws/smithy-go")
     (synopsis "AWS Smithy OTEL metrics adapter")
     (description
