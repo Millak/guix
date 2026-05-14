@@ -652,6 +652,41 @@ Kubernetes APIs.")
     (propagated-inputs '())
     (inputs '())))
 
+(define-public kubernetes-code-generator
+  (package/inherit go-k8s-io-code-generator
+    (name "kubernetes-code-generator")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:import-path _) "k8s.io/code-generator/cmd/...")))
+    (native-inputs (package-propagated-inputs go-k8s-io-code-generator))
+    (propagated-inputs '())
+    (inputs '())
+    (description
+     "This package provides Kubernetes code generators command line interface
+tools:
+@itemize
+@item @command{applyconfiguration-gen} - is a tool for auto-generating apply
+builder functions
+@item @command{client-gen} - makes the individual typed clients using gengo
+@item @command{conversion-gen} - is a tool for auto-generating functions that
+convert between internal and external types
+@item @command{deepcopy-gen} - is a tool for auto-generating DeepCopy functions
+@item @command{defaulter-gen} - is a tool for auto-generating Defaulter functions
+@item @command{go-to-protobuf} - generates a Protobuf @acronym{Interface
+Definition Language, IDL} from a Go struct, respecting any existing IDL tags
+on the Go struct
+@item @command{informer-gen}
+@item @command{lister-gen}
+@item @command{prerelease-lifecycle-gen} - is a tool for auto-generating
+api-status.csv files
+@item @command{register-gen}
+@item @command{validation-gen} - is a tool for auto-generating Validation
+functions
+@end itemize")))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above in alphabetic order:
