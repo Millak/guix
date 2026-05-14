@@ -1677,6 +1677,11 @@ the \"texlive\" importer."
                        "bdunahu")
   games)
 
+(define-member (person "Nomike"
+                       "nomike@nomike.com"
+                       "nomike")
+  dotnet)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
