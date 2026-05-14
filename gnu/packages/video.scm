@@ -3380,7 +3380,7 @@ original project.")
 (define-public you-get
   (package
     (name "you-get")
-    (version "0.4.1555")
+    (version "0.4.1743")
     (source
      (origin
        (method git-fetch)
@@ -3389,7 +3389,7 @@ original project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gn86i6nfsw395r9a3i88nv2g08s5bgjps7w4qawb9gvk4h7zqap"))))
+        (base32 "05i2rzj40n5l14zm1zwgncwpdfgrrr1p94wk4vjxkji56y60yydf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3407,7 +3407,9 @@ original project.")
                   (("(FFMPEG == |\\()'ffmpeg'" _ prefix)
                    (string-append prefix "'" ffmpeg "'")))))))))
     (native-inputs (list python-setuptools))
-    (inputs (list ffmpeg)) ;for multi-part and >=1080p videos
+    (inputs
+     (list ffmpeg       ;for multi-part and >=1080p videos
+           python-dukpy))
     (synopsis "Download videos, audio, or images from Web sites")
     (description
      "You-Get is a command-line utility to download media contents (videos,
