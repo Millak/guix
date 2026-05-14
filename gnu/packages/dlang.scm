@@ -71,25 +71,24 @@
   (package
     (name "ldc")
     (version "1.38.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/ldc-developers/ldc/releases"
-                           "/download/v" version "/ldc-" version "-src.tar.gz"))
-       (sha256
-        (base32 "13pkg69wjj4ali4ikijicccpg8y6f2hghhb70z9lrqr2w3pkhqna"))
-       (patches (search-patches "ldc-i686-int128-alignment.patch"))))
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/ldc-developers/ldc/releases"
+                    "/download/v" version "/ldc-" version "-src.tar.gz"))
+              (sha256
+               (base32
+                "13pkg69wjj4ali4ikijicccpg8y6f2hghhb70z9lrqr2w3pkhqna"))
+              (patches (search-patches "ldc-i686-int128-alignment.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:disallowed-references (,tzdata-for-tests)
-       #:tests? #f                  ;skip in the bootstrap
+       #:tests? #f                      ; skip in the bootstrap
        #:build-type "Release"
        #:configure-flags
         (list "-GNinja"
-              ;; see .github/actions/2-build-bootstrap/action.yml
-              "-DBUILD_SHARED_LIBS=OFF")
-       #:make-flags                 ;used as build targets
-        (list "all")
+              "-DBUILD_SHARED_LIBS=OFF"); see .github/actions/2-build-bootstrap
+       #:make-flags (list "all")        ; used as build targets
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-paths
@@ -122,23 +121,22 @@
        ("unzip" ,unzip)))
     (home-page "http://wiki.dlang.org/LDC")
     (synopsis "LLVM-based compiler for the D programming language")
-    (description
-     "LDC is an LLVM compiler for the D programming language.  It is based on
-the latest DMD compiler that was written in C and is used for
+    (description "LDC is an LLVM compiler for the D programming language.  It
+is based on the latest DMD compiler that was written in C and is used for
 bootstrapping more recent compilers written in D.")
+    ;; Most of the code is released under BSD-3, except for code originally
+    ;; written for GDC, which is released under GPLv2+, and the DMD frontend,
+    ;; which is released under the "Boost Software License version 1.0".
+    (license (list license:bsd-3
+                   license:gpl2+
+                   license:boost1.0))
     (properties
      ;; Some of the tests take a very long time on ARMv7.  See
      ;; <https://lists.gnu.org/archive/html/guix-devel/2018-02/msg00312.html>.
      `((max-silent-time . ,(* 3600 3))
 
        ;; This variant exists solely for bootstrapping purposes.
-       (hidden? . #t)))
-    ;; Most of the code is released under BSD-3, except for code originally
-    ;; written for GDC, which is released under GPLv2+, and the DMD frontend,
-    ;; which is released under the "Boost Software License version 1.0".
-    (license (list license:bsd-3
-                   license:gpl2+
-                   license:boost1.0))))
+       (hidden? . #t)))))
 
 (define-public ldc
   (package
@@ -260,9 +258,9 @@ bootstrapping more recent compilers written in D.")
                                  "dmd/compilable/test23705.d"
                                  "dmd/fail_compilation/diag7420.d")))
                    (#t '())))))
+           ;; The tests require to be built with Clang; build everything
+           ;; with it, for simplicity.
            (add-before 'configure 'set-cc-and-cxx-to-use-clang
-             ;; The tests require to be built with Clang; build everything
-             ;; with it, for simplicity.
              (lambda _
                (setenv "CC" (which "clang"))
                (setenv "CXX" (which "clang++"))))
@@ -326,7 +324,7 @@ integration tests...\n")
      (modify-inputs native-inputs
        (delete "llvm")
        (replace "ldc" ldc-bootstrap)
-       (append clang-17                 ;propagates llvm and clang-runtime
+       (append clang-17                 ; propagates llvm and clang-runtime
                python-lit)))
     (properties
      (alist-delete 'hidden? (package-properties ldc-bootstrap)))))
@@ -559,11 +557,11 @@ integration tests...\n")
                "0afi5glnf96242cbnr10ccjvfsgkh4k5y7qnmxv4ph5g0izvi1dc"))
              (patches (search-patches "dmd-phobos-support-TZDIR.patch")))))
     (outputs '("out" "lib" "debug"))
+    (home-page "https://github.com/dlang/dmd")
     (synopsis "Reference D Programming Language compiler")
     (description "@acronym{DMD, Digital Mars D compiler} is the reference
 compiler for the D programming language.")
     (license license:boost1.0)
-    (home-page "https://github.com/dlang/dmd")
     ;; As reported by upstream: https://wiki.dlang.org/Compilers#Comparison
     ;; Note: aarch64-linux is currently unsupported as the build system doesn't
     ;; work with gdmd yet. Attempting to force through anyways gives assembler
