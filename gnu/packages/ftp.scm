@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 David Larsson <david.larsson@selfhosted.xyz>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -183,7 +184,7 @@ FTP browser, as well as non-interactive commands such as @code{ncftpput} and
 (define-public weex
   (package
     (name "weex")
-    (version "2.8.2")
+    (version "2.8.3")
     (source
       (origin
         (method url-fetch)
@@ -192,8 +193,21 @@ FTP browser, as well as non-interactive commands such as @code{ncftpput} and
                          "/weex_" version ".tar.gz"))
         (sha256
           (base32
-            "1ir761hjncr1bamaqcw9j7x57xi3s9jax3223bxwbq30a0vsw1pd"))))
+           "00qnw5q2i0xa2a51jp5737r3jx959rl1gbi9flpwin8s8ymqd9bj"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "--disable-dependency-tracking")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-/bin/sh
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "po/Makefile.in.in"
+                (("/bin/sh")
+                 (search-input-file inputs "/bin/sh")))
+              (substitute* "intl/Makefile.in"
+                (("/bin/sh")
+                 (search-input-file inputs "/bin/sh"))))))))
     (native-inputs
      (list automake autoconf gettext-minimal))
     (home-page "https://weex.sourceforge.net/")
