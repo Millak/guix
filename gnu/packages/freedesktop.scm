@@ -748,7 +748,7 @@ other applications that need to directly deal with input devices.")
            python-pytest
            python-structlog
            python-pyaml
-           valgrind/interactive))
+           valgrind/pinned))
     (home-page "https://libinput.pages.freedesktop.org/libei/")
     (synopsis "Emulated Input protocol implementation")
     (description
