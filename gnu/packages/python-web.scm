@@ -1068,6 +1068,56 @@ Async mode for @url{https://domainconnect.org/, Domain Connect protocol}.")
 Dropbox API v2.")
     (license license:expat)))
 
+(define-public python-dukpy
+  (package
+    (name "python-dukpy")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/amol-/dukpy")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qsqfgy12frrdikjf353bsvhln11jixc3qs9rc1zra55k0569036"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list #$@(map (lambda (test)
+                        (string-append "--deselect=tests/test_installer.py"
+                                       "::TestPackageInstaller::"
+                                       test))
+                      ;; Network access is required.
+                      (list "test_install_command"
+                            "test_install_command_latest_ver"
+                            "test_install_command_substrate_error"
+                            "test_install_command_without_dest"
+                            "test_install_react"
+                            "test_install_scoped_package"
+                            "test_install_unexisting_package"
+                            "test_install_unexisting_version")))))
+    (native-inputs
+     (list python-mock
+           python-pytest
+           python-setuptools
+           python-webassets))
+    (home-page "https://github.com/amol-/dukpy")
+    (synopsis "Simple JavaScript interpreter for Python")
+    (description
+     "DukPy is a simple JavaScript interpreter for Python built on top of
+duktape engine without any external dependency.  It comes with a bunch of
+common transpilers built-in for convenience:
+@itemize
+@item CoffeeScript
+@item BabelJS
+@item TypeScript
+@item JSX
+@item LESS
+@end itemize")
+    (license license:expat)))
+
 (define-public python-essentials-openapi
   (package
     (name "python-essentials-openapi")
