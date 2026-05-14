@@ -22950,6 +22950,16 @@ For example, to add two files named @file{001-basic.conf} and
 unmanaged-devices=interface-name:wlo1_ap\n"))))))
 @end lisp
 
+@item @code{dnsmasq-configuration-files} (default: @code{'()})
+A list of two-element lists; the first element of each list is a file
+name (as a string), and the second is a file-like object.  Used to
+specify configuration files which will be added to the
+@file{/etc/NetworkManager/dnsmasq.d}.  When using the @code{"dnsmasq"}
+DNS processing mode, NetworkManager will read configuration from
+this directory when it starts @code{dnsmasq}.  The configuration files
+specify command line arguments without the leading @code{--}.  See
+@samp{man 8 dnsmasq} for further details.
+
 @end table
 @end deftp
 

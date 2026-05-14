@@ -1468,18 +1468,34 @@ project's documentation} for more information."
         (sanitize warn-iwd?-field-deprecation))
   (extra-configuration-files
    network-manager-configuration-extra-configuration-files
-   (default '())))                 ;'((file-name-string file-like-object) ...)
+   (default '()))                 ;'((file-name-string file-like-object) ...)
+  (dnsmasq-configuration-files
+   network-manager-configuration-dnsmasq-configuration-files
+   (default '())))
 
 (define (network-manager-activation config)
   ;; Activation gexp for NetworkManager
   (match-record config <network-manager-configuration>
-                (network-manager dns vpn-plugins extra-configuration-files)
+                (network-manager dns vpn-plugins extra-configuration-files dnsmasq-configuration-files)
     #~(begin
         (use-modules (guix build utils))
         (mkdir-p "/etc/NetworkManager/system-connections")
         #$@(if (equal? dns "dnsmasq")
                ;; create directory to store dnsmasq lease file
                '((mkdir-p "/var/lib/misc"))
+               '())
+        #$@(if (pair? dnsmasq-configuration-files)  ;if non-empty
+               ;; If /etc/NetworkManager/dnsmasq.d is a symlink to a store file,
+               ;; delete it.
+               `((if (and (file-exists? "/etc/NetworkManager/dnsmasq.d")
+                          (store-file-name?
+                           (canonicalize-path "/etc/NetworkManager/dnsmasq.d")))
+                     (delete-file-recursively
+                      "/etc/NetworkManager/dnsmasq.d"))
+                 (symlink
+                  ,(file-union "network-manager-dnsmasq-configuration-directory"
+                               dnsmasq-configuration-files)
+                  "/etc/NetworkManager/dnsmasq.d"))
                '())
         #$@(if (pair? extra-configuration-files)  ;if non-empty
                ;; If /etc/NetworkManager/conf.d is a symlink to a store file,
