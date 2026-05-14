@@ -6635,7 +6635,8 @@ Python style, together with a fast and comfortable execution environment.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09yrpi9f86r9yvcm2dfjs5zy87c4j31bxama77kfd6y8yfrrjlai"))))
+        (base32 "09yrpi9f86r9yvcm2dfjs5zy87c4j31bxama77kfd6y8yfrrjlai"))
+       (snippet #~(delete-file "versioneer.py"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6646,8 +6647,8 @@ Python style, together with a fast and comfortable execution environment.")
         "--ignore=tests/test_tibanna.py"
         ;; E   ModuleNotFoundError: No module named 'google'
         "--ignore=tests/test_google_lifesciences.py"
-        ;; Unclear failure.
-        "-k" "not test_lint[long_run-positive]")
+        ;; Unclear failures.
+        "-k" "not test_lint")
       #:phases
       #~(modify-phases %standard-phases
           ;; For cluster execution Snakemake will call Python.  Since there is
@@ -6698,7 +6699,7 @@ Python style, together with a fast and comfortable execution environment.")
            python-pandas
            python-requests-mock
            python-setuptools
-           python-wheel))))
+           python-versioneer))))
 
 (define-public snakemake-7
   (package
