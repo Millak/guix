@@ -3873,17 +3873,17 @@ typographical palette.")
 (define-public font-mona-sans
   (package
     (name "font-mona-sans")
-    (version "2.0.23")
+    (version "2.0.24")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/github/mona-sans")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1pa6bghch1y0drxmz627055fwgsbdyp9vsj0f3va64pmvgkyf5jl"))))
+         "1sj6mvqhc1xc2rwiqi7jn9vkdir33yz7d5ml0pql6zljyv3hyq5r"))))
     (build-system font-build-system)
     (outputs '("out" "ttf" "woff"))
     (home-page "https://github.com/mona-sans")
