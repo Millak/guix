@@ -18063,6 +18063,8 @@ methylation and segmentation.")
              (setenv "NUMBA_CACHE_DIR" "/tmp")
              ;; Needed to capture environment
              (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH")))))))
+    (native-inputs
+     (list python-setuptools))
     (inputs
      (list coreutils
            perl
