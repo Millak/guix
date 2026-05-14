@@ -829,6 +829,31 @@ for the Simple Direct Media (SDL) cross-platform API layer.")
      (list sdl3 libavif libjpeg-turbo libpng libtiff libwebp))
     (properties '((upstream-name . "SDL3_image")))))
 
+(define-public sdl3-net
+  ;; SDL3_net does not yet have a release. Use latest commit.
+  (let ((commit "5af3b068ea13f888be954801c0b8c17993811850")
+        (revision "0"))
+    (package (inherit sdl-net)
+      (name "sdl3-net")
+      (version (git-version "3.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/libsdl-org/SDL_net")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1pwi5s83rhy0q1114hbrk8prvqsw4wcjnfxxdzc6xyx8v3cybwxv"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:configure-flags
+             #~(list "-DBUILD_SHARED_LIBS=ON")
+             #:tests? #f))
+      (propagated-inputs (list sdl3))
+      (properties '((upstream-name . "SDL3_net"))))))
+
 (define-public sdl3-ttf
   (package
     (name "sdl3-ttf")
