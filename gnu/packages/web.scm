@@ -579,14 +579,14 @@ the same, being completely separated from the Internet.")
     ;; Track the ‘mainline’ branch.  Upstream considers it more reliable than
     ;; ’stable’ and recommends that “in general you deploy the NGINX mainline
     ;; branch at all times” (https://www.nginx.com/blog/nginx-1-6-1-7-released/)
-    (version "1.28.0")
+    (version "1.31.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nginx.org/download/nginx-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0sppdxbmz61y3hfcfyc20gk0ky8f3m60hppzlcy9vpy0hsqcddf6"))))
+                "1apb6gcfs0zl8qm0dvbqfsycrw4ql794592jgi72xbwkaga00nvd"))))
     (build-system gnu-build-system)
     (inputs (list libxcrypt libxml2 libxslt openssl pcre zlib))
     (arguments
@@ -680,21 +680,20 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
 
 (define-public nginx-documentation
   ;; This documentation should be relevant for the current nginx package.
-  (let ((version "1.28.0")
-        (revision 3202)
-        (changeset "16887604240f"))
+  (let ((commit "82d15ac14a0c96800d60d0215b2f8fb36ecc1a73")
+        (revision "0"))
     (package
       (name "nginx-documentation")
-      (version (simple-format #f "~A-~A-~A" version revision changeset))
+      (version (git-version "1.31.0" revision commit))
       (source
-       (origin (method hg-fetch)
-               (uri (hg-reference
-                     (url "http://hg.nginx.org/nginx.org")
-                     (changeset changeset)))
-               (file-name (string-append name "-" version))
+       (origin (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/nginx/nginx.org.git")
+                     (commit commit)))
+               (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "0slfgl9ap6hxcjg2fc5lfccz0sbmlk83p74i31g05a27ldrqv03l"))))
+                 "15xdl364zkbaks5zmc6q7wrnrzqc2zvzma8322l3m552a4aipma7"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f                    ; no test suite
