@@ -32,7 +32,7 @@
 ;;; Copyright © 2017 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
-;;; Copyright © 2018, 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2018, 2021-2023, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
@@ -131,6 +131,7 @@
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages jemalloc)
+  #:use-module (gnu packages kerberos)
   #:use-module (gnu packages language)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libevent)
@@ -147,6 +148,7 @@
   #:use-module (gnu packages networking)
   #:use-module (gnu packages node)
   #:use-module (gnu packages onc-rpc)
+  #:use-module (gnu packages openldap)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages pantheon)
   #:use-module (gnu packages parallel)
@@ -175,6 +177,7 @@
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages ruby-xyz)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
@@ -1183,50 +1186,81 @@ autocompletion and syntax highlighting.")
 auto-completion and syntax highlighting.")
     (license license:bsd-3)))
 
-;; XXX When updating, check whether boost-for-mysql is still needed.
-;; It might suffice to patch ‘cmake/boost.cmake’ as done in the past.
 (define-public mysql
   (package
     (name "mysql")
-    (version "5.7.33")
+    (version "9.7.0")
     (source (origin
               (method url-fetch)
               (uri (list (string-append
-                          "https://dev.mysql.com/get/Downloads/MySQL-"
+                          "https://cdn.mysql.com/Downloads/MySQL-"
                           (version-major+minor version) "/"
-                          name "-" version ".tar.gz")
-                         (string-append
-                          "https://downloads.mysql.com/archives/get/file/"
                           name "-" version ".tar.gz")))
               (sha256
                (base32
-                "1bb343mf7n0qg2qz497gxjsqprygrjz1q1pbz76hgqxnsy08sfxd"))))
+                "0v9hc8yzp0f5pwl4kr1a8k7lwyf62g95klxb6avfrc2npjx79dbl"))
+              (modules '((guix build utils)
+                         (ice-9 ftw)
+                         (srfi srfi-26)))
+              (snippet
+               #~(begin
+                   (define (delete-all-but directory . preserve)
+                     (with-directory-excursion directory
+                       (let* ((pred (negate (cut member <>
+                                                 (cons* "." ".." preserve))))
+                              (items (scandir "." pred)))
+                         (for-each (cut delete-file-recursively <>) items))))
+
+                   ;; Delete bundled source libraries.
+                   (delete-all-but "extra"
+                                   ;; XXX: The build system doesn't currently
+                                   ;; support unbundling these.
+                                   "json" ;used by bundled opentelemetry
+                                   "libbacktrace"
+                                   "libcno"
+                                   "opentelemetry-cpp"
+                                   "opentelemetry-proto"
+                                   "rapidjson"
+                                   "unordered_dense"
+                                   "xxhash")))))
     (build-system cmake-build-system)
     (arguments
      (list
+      #:tests? #f          ;FIXME: teach build system to use system googletest
       #:configure-flags
       #~(list "-DBUILD_CONFIG=mysql_release"
-              "-DWITH_SSL=system"
-              "-DWITH_ZLIB=system"
-              "-DDEFAULT_CHARSET=utf8"
-              "-DDEFAULT_COLLATION=utf8_general_ci"
+              "-DWITH_AUTHENTICATION_LDAP=ON"
+              "-DWITH_AUTHENTICATION_WEBAUTHN=ON"
+              "-DWITH_BENCHMARK=OFF"
+              ;; XXX: BUILD_ID is disabled so that the INFO_BIN target is not
+              ;; run; this target relies on running mysqld before it is
+              ;; installed, which fails in our case.
+              "-DWITH_BUILD_ID=OFF"
+              "-DWITH_FIDO=system"
+              "-DWITH_SYSTEM_LIBS=ON"
+              "-DWITH_UNIT_TESTS=OFF"   ;avoid bundled googletest
+              "-DREPRODUCIBLE_BUILD=ON"
               "-DMYSQL_DATADIR=/var/lib/mysql"
               "-DMYSQL_UNIX_ADDR=/run/mysqld/mysqld.sock"
-              "-DINSTALL_INFODIR=share/mysql/docs"
+              "-DINSTALL_INFODIR=share/info"
               "-DINSTALL_MANDIR=share/man"
               "-DINSTALL_PLUGINDIR=lib/mysql/plugin"
-              "-DINSTALL_SCRIPTDIR=bin"
               "-DINSTALL_INCLUDEDIR=include/mysql"
               "-DINSTALL_DOCREADMEDIR=share/mysql/docs"
               "-DINSTALL_SUPPORTFILESDIR=share/mysql"
               "-DINSTALL_MYSQLSHAREDIR=share/mysql"
+              "-DINSTALL_MYSQLTESTDIR=OFF"
               "-DINSTALL_DOCDIR=share/mysql/docs"
-              "-DINSTALL_SHAREDIR=share/mysql"
-              ;; Get rid of test data.
-              "-DINSTALL_MYSQLTESTDIR="
-              "-DINSTALL_SQLBENCHDIR=")
+              "-DINSTALL_SHAREDIR=share/mysql")
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'configure 'disable-broken-abi-check
+            (lambda _
+              ;; The ABI check started failing with MySQL 9.7.0 for unknown
+              ;; reasons.
+              (substitute* "cmake/abi_check.cmake"
+                (("RUN_ABI_CHECK 1")
+                 "RUN_ABI_CHECK 0"))))
           (add-after 'install 'remove-extra-binaries
             (lambda _
               ;; Remove the 3 *_embedded files, which weigh in at
@@ -1253,30 +1287,46 @@ auto-completion and syntax highlighting.")
                            (dirname coreutils)
                            (dirname grep)
                            (dirname ps)
-                           (dirname sed))))))))))
+                           (dirname sed)))))))
+          (add-after 'install 'fix-permissions
+            ;; XXX: Otherwise, the guix daemon reports: "suspicious ownership
+            ;; or permission on `/gnu/store/...-mysql-9.7.0'; rejecting this
+            ;; build output".
+            (lambda _
+              (chmod #$output #o755))))))
     (native-inputs
      (list bison perl pkg-config))
     (inputs
      (list bash-minimal
-           boost-for-mysql
+           boost
            coreutils
+           curl
+           cyrus-sasl
            gawk
            grep
+           icu4c
            libaio
+           libedit
+           libfido2
            libtirpc
+           lz4
+           mit-krb5
            ncurses
-           openssl-1.1
+           openldap
+           openssl
+           protobuf
            procps
            rpcsvc-proto                 ; rpcgen
            sed
-           zlib))
+           zlib
+           `(,zstd "lib")))
     (home-page "https://www.mysql.com/")
     (synopsis "Fast, easy to use, and popular database")
     (description
      "MySQL is a fast, reliable, and easy to use relational database
 management system that supports the standardized Structured Query
 Language.")
-    (license license:gpl2)))
+    (license license:gpl2)))    ;v2 only -- see 'Election of GPLv2' in LICENSE
 
 (define-public mysql-connector-python
   (package
