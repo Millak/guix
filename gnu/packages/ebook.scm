@@ -415,6 +415,43 @@ e-books for convenient reading.")
 accessing and converting various ebook file formats.")
     (license license:expat)))
 
+(define-public epub-thumbnailer
+  ;; See: <https://github.com/marianosimone/epub-thumbnailer/issues/46>.
+  (let ((commit "de4b5bf0fcd1817d560f180231f7bd22d330f1be")
+        (revision "0"))
+    (package
+      (name "epub-thumbnailer")
+      (version (git-version "0.0.0" revision commit))
+      (home-page "https://github.com/marianosimone/epub-thumbnailer")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url home-page)
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1bkknrcds67qkgci6kdkv51fz8hzmqg8z1vkkni4jl4vgix7cjxg"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:tests? #f     ;no tests provided
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'strip 'rename-program
+              (lambda _
+                (with-directory-excursion #$output
+                  (rename-file "bin/epub-thumbnailer.py"
+                               "bin/epub-thumbnailer")))))))
+      (propagated-inputs (list python-pillow))
+      (native-inputs (list python-setuptools))
+      (synopsis
+       "Extract the cover of an epub book and create a thumbnail for it")
+      (description
+       "@code{epub-thumbnailer} is a simple script that tries to find a cover
+into an epub file and creates a thumbnail for it.")
+      (license license:gpl3))))
+
 (define-public inkbox
   (package
     (name "inkbox")
