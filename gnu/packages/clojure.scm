@@ -24,6 +24,10 @@
 
 (define-module (gnu packages clojure)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages java)
   #:use-module (gnu packages maven)
@@ -31,6 +35,7 @@
   #:use-module (guix build-system ant)
   #:use-module (guix build-system clojure)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system go)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -1253,3 +1258,44 @@ an operation on the service. invoke takes a map and returns a map, and works
 the same way for every operation on every service.")
     (home-page "https://github.com/cognitect-labs/aws-api")
     (license license:asl2.0)))
+
+(define-public let-go
+  (package
+    (name "let-go")
+    (version "1.7.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nooga/let-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "139a129fw3w9a4bcfgms60ll90vy2vmqinbmjn44zmgx4fr2adif"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.26
+      #:install-source? #f
+      #:import-path "github.com/nooga/let-go"))
+    (native-inputs
+     (list go-github-com-davecgh-go-spew
+           go-github-com-alimpfard-line
+           go-github-com-hashicorp-go-uuid
+           go-github-com-kr-pretty
+           go-github-com-pmezard-go-difflib
+           go-github-com-stretchr-testify
+           go-github-com-zeebo-bencode
+           go-golang-org-x-sys
+           go-gopkg-in-check-v1
+           go-gopkg-in-yaml-v3))
+    (home-page "https://nooga.github.io/let-go")
+    (synopsis "Clojure dialect written in Go")
+    (description
+     "let-go is a Clojure dialect with a bytecode compiler and a stack virtual
+machine, written in the Go programming language.
+
+It is not a drop-in replacement for Clojure JVM.  It does not load JARs and
+does not aim to.  Most idiomatic Clojure code runs unmodified, but a real
+project with library dependencies will need adjustments.")
+    (license license:expat)))
