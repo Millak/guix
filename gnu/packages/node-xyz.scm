@@ -4136,7 +4136,7 @@ tablets.
 (define-public node-typescript
   (package
     (name "node-typescript")
-    (version "5.8.3")
+    (version "6.0.3")
     (source (origin
       (method git-fetch)
       (uri (git-reference
@@ -4144,7 +4144,7 @@ tablets.
         (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-        (base32 "1dlwf83bc9kwnj35ng6ji9vl2hx23c9fl988rqq0hy29bmxl1rhm"))))
+        (base32 "05w6rmlc0d2xicmp7dkjvbgz95cjkp0525qq8dfqpq5xcdy3xws6"))))
     (build-system node-build-system)
     (native-inputs (list
       node-dprint-formatter ; 0.x
