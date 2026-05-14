@@ -29792,6 +29792,31 @@ utilities for cty Golang module.")
      "Package yaml can marshal and unmarshal cty values in YAML format.")
     (license license:asl2.0)))
 
+(define-public go-github-com-zeebo-bencode
+  (package
+    (name "go-github-com-zeebo-bencode")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zeebo/bencode")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c6bw1if1vbcr9l4684a4jdri8z31m8msjpp7z6y2p9s1jqjhkrp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zeebo/bencode"))
+    (home-page "https://github.com/zeebo/bencode")
+    (synopsis "Bencode marshal and unmarshal library")
+    (description
+     "This library implements encoding and decoding of
+@url{https://wiki.theory.org/BitTorrentSpecification#Bencoding, bencoded}
+objects.")
+    (license license:expat)))
+
 (define-public go-github-com-zeebo-errs
   (package
     (name "go-github-com-zeebo-errs")
