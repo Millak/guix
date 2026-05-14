@@ -69,7 +69,7 @@
 (define-public ldc-bootstrap
   (package
     (name "ldc")
-    (version "1.41.0")
+    (version "1.42.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -82,7 +82,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1sxkfy8i414csg4fpzzybbjnxqrcgxdar1j8h05aw56jf9ijkdz8"))
+                "1zrfdhm9yw9bsd55k5x89pyj3zyxyly3hs3mpj3bnvkzvki3bl39"))
               (patches (search-patches "ldc-i686-int128-alignment.patch"
                                        "ldc-phobos-support-TZDIR.patch"))))
     (build-system cmake-build-system)
@@ -372,18 +372,19 @@
                               (install-file original lib/lib)
                               (delete-file original))
                             libs)
-                  ;; Patch default lib-dirs and rpath in ldc2.conf.
-                  (substitute* (string-append out/etc "/ldc2.conf")
-                    ;; Append to lib-dirs.
-                    (((format #f "\"~a\"," out/lib) all)
-                     (format #f "~a~%        \"~a\"," all lib/lib))
-                    ;; Replace rpath.
-                    (((format #f "rpath = \"~a\";" out/lib))
-                     (format #f "rpath = \"~a\";" lib/lib))))))))))
+                  ;; Append to default lib-dirs and override rpath.
+                  (with-output-to-file
+                      (string-append out/etc "/ldc2.conf/80-guix.conf")
+                    (lambda ()
+                      (format #t "\"default\":~%")
+                      (format #t "{~%")
+                      (format #t "    lib-dirs ~~= [\"~a\"];~%" lib/lib)
+                      (format #t "    rpath = \"~a\";~%" lib/lib)
+                      (format #t "};~%"))))))))))
     (inputs
-     (list clang-runtime-20
+     (list clang-runtime-21
            libconfig
-           llvm-20
+           llvm-21
            zlib
            clang                        ; used as a linker wrapper
            curl                         ; std.net.curl
@@ -406,7 +407,7 @@ compiler with modern optimization and code generation capabilities.  The
 compiler uses the official DMD frontend to support the latest version of D2,
 and relies on the LLVM Core libraries for code generation.
 
-This compiler is based on the DMD frontend version 2.111.0.")
+This compiler is based on the DMD frontend version 2.112.1.")
     ;; Most of the code is released under BSD-3, except for code originally
     ;; written for GDC, which is released under GPLv2+, and the DMD frontend
     ;; and the druntime and phobos libraries which are released under the
