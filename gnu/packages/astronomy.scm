@@ -11933,7 +11933,7 @@ for reading and writing.")
 (define-public scamp
   (package
     (name "scamp")
-    (version "2.14.0")
+    (version "2.15.0")
     (source
      (origin
        (method git-fetch)
@@ -11942,7 +11942,7 @@ for reading and writing.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wva4c0gz7qrphq713hcnjv84hbwqix05fqmqjq5vypnkdg67p31"))))
+        (base32 "12iccq0b9g8pmranja5rmayrlxbayy1h6w6v9grs764gf85g2wql"))))
     (build-system gnu-build-system)
     (arguments
      (list
