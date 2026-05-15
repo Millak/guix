@@ -1,9 +1,11 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012-2014, 2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2024-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2020, 2021 Sergei Trofimovich <slyfox@inbox.ru>
+;;; Copyright © 2018, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
-;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -27,6 +29,7 @@
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
@@ -172,3 +175,42 @@ besides libc.")
     (description
      "This package provides the @command{yacc} command, implemented as a
 symbolic link to the @command{oyacc} command from the same-named package.")))
+
+(define-public re2c
+  (package
+    (name "re2c")
+    (version "4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/skvadrik/" name
+                           "/releases/download/" version "/"
+                           name "-" version ".tar.xz"))
+       (sha256
+        (base32
+         "07ysqgdm0h566a8lwnpdgycp93vz7zskzihsgah3bla0ycj2pp69"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests?
+      (not (or (%current-target-system)
+               ;; TODO: run_tests.py hangs
+               (system-hurd?)))
+      #:phases
+      (if (target-arm32?)
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'patch-sources
+                (lambda _
+                  (invoke "patch" "-p1" "--force" "--input"
+                          #$(local-file (search-patch
+                                         "re2c-Use-maximum-alignment.patch"))))))
+          #~%standard-phases)))
+    (native-inputs
+     (list python))             ; for the test driver
+    (home-page "https://re2c.org/")
+    (synopsis "Lexer generator")
+    (description
+     "@code{re2c, Regular Expressions to Code} is a flexible lexical analyser.
+Instead of using traditional table-driven approaches, it encodes a finite
+state machine directly in the code in the form of jumps and comparisons.")
+    (license license:public-domain)))
