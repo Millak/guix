@@ -124,7 +124,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
 (define-public mpd
   (package
     (name "mpd")
-    (version "0.24.6")
+    (version "0.24.11")
     (source (origin
               (method url-fetch)
               (uri
@@ -133,7 +133,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                               "/mpd-" version ".tar.xz"))
               (sha256
                (base32
-                "1a8zzp0lirfpg3w5fyhvmvvqply64mrqcvd9k4lv9zkp0l0lmqwc"))))
+                "0ry9hryc6x5rcnx0j115h0q2gpxcfha5g4jyi667qjl48d6gcvhh"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -234,16 +234,17 @@ protocol.")
   (package
     (name "mpd-mpc")
     (version "0.35")
-    (source (origin
-              (method git-fetch)
-              (uri
-               (git-reference
-                (url "https://github.com/MusicPlayerDaemon/mpc")
-                (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1fv9v5jmcw8ba4bfg5mxdfwy4skaifls3843f23z6qpcg67nfmx1"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+          (url "https://github.com/MusicPlayerDaemon/mpc")
+          (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1fv9v5jmcw8ba4bfg5mxdfwy4skaifls3843f23z6qpcg67nfmx1"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases
