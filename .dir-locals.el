@@ -42,9 +42,12 @@
      ;; For use with 'bug-reference-prog-mode'.  Extra bug-reference
      ;; configuration should be done in your Emacs user configuration file;
      ;; refer to (info (guix) The Perfect Setup).
-     (eval . (setq-local bug-reference-bug-regexp
-                         (rx (group (seq (zero-or-more "guix/guix") "#")
-                                    (group (one-or-more digit))))))
+     (eval . (setq-local
+              ;; #8545, guix/guix#8545, guix/guix!8545, but not !8545
+              bug-reference-bug-regexp
+              (rx (group (or (seq (zero-or-more "guix/guix") "#")
+                             (seq (one-or-more "guix/guix") "!"))
+                         (group (one-or-more digit))))))
      (bug-reference-url-format . "https://codeberg.org/guix/guix/issues/%s")
 
      (eval . (add-to-list 'completion-ignored-extensions ".go"))
