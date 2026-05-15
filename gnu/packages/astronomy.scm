@@ -12733,7 +12733,7 @@ expansions) are calculated from input timing models.")
 (define-public tempo2
   (package
     (name "tempo2")
-    (version "2025.02.1")
+    (version "2026.04.1")
     (source
      (origin
        (method git-fetch)
@@ -12742,7 +12742,7 @@ expansions) are calculated from input timing models.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06494q0zff1qj813y70r014ifm60cminhk7lisy4by022mr6wd3k"))))
+        (base32 "0vwsp06anvq5lw3lrz18hwxd62iflgh0a8g22kvm1j6aicw3zixj"))))
     (build-system gnu-build-system)
     (arguments
      (list
