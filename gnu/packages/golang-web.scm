@@ -23869,6 +23869,37 @@ feature set and features are added on as the need arises.")
 ;;; Executables:
 ;;;
 
+(define-public cfssl
+  (package/inherit go-github-com-cloudflare-cfssl
+    (name "cfssl")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/cloudflare/cfssl/cmd/...")))
+    (native-inputs
+     (package-propagated-inputs go-github-com-cloudflare-cfssl))
+    (propagated-inputs '())
+    (description
+     "This package provides Cloudflare's PKI and TLS toolkit which includes
+the following commands:
+@itemize
+@item @command{cfssl-bundle} - create a certificate bundle that contains the
+client cer
+@item @command{cfssl-certinfo} - output certinfo about the given cert
+@item @command{cfssl-newkey} - generate a new key and CSR
+@item @command{cfssl-scan} - scan a host for issues
+@item @command{cfssl} - command line tool to issue/sign/bundle client
+certificate
+@item @command{cfssljson} - splits out JSON with cert, csr, and key fields to
+separate files
+@item @command{mkbundle} - command line tool for building certificate pool
+bundles
+@item @command{multirootca} - program, which is a certificate authority server
+that can use multiple signing keys
+@end itemize")))
+
 (define-public lyrebird
   (package
     (name "lyrebird")
