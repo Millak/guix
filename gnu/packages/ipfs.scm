@@ -1111,6 +1111,38 @@ IPLD graph as detailed below.  Objects are demonstrated here using both
 @code{go-ipld-prime} nodes and @code{go-ipld-format} legacy interface.")
     (license (list license:expat license:asl2.0))))
 
+(define-public go-github-com-ipfs-go-libdht
+  (package
+    (name "go-github-com-ipfs-go-libdht")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ipfs/go-libdht")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "139zzvs9c65k6agfpy412y9bb4pfxdmwvwjbvndx9gd615qhxzak"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/ipfs/go-libdht"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/ipfs/go-libdht")
+    (synopsis "go-libdht")
+    (description
+     "@code{go-libdht} is a generic toolbox designed for the implementation
+and experimentation of @acronym{Distributed Hash Tables, DHT} in Go.  It
+establishes foundational types and interfaces applicable across a broad
+spectrum of DHTs, especially those sharing a similar topology.  By offering
+reusable components like keys and routing tables, @code{go-libdht} streamlines
+the DHT implementation process.  Using @code{go-libdht}, developers can
+seamlessly craft their own DHTs using the provided modular components.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public go-github-com-ipfs-go-metrics-interface
   (package
     (name "go-github-com-ipfs-go-metrics-interface")
