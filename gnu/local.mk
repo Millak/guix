@@ -1854,6 +1854,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/linux-libre-arm64-mnt-reform-revert-vop2-display-modes.patch	\
   %D%/packages/patches/linux-pam-no-setfsuid.patch		\
   %D%/packages/patches/linux-pam-unix_chkpwd.patch		\
+  %D%/packages/patches/linux-shmem-hurd-xattr.patch		\
   %D%/packages/patches/lirc-localstatedir.patch			\
   %D%/packages/patches/lirc-reproducible-build.patch		\
   %D%/packages/patches/llvm-13-gcc-14.patch			\

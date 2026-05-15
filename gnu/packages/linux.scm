@@ -42,7 +42,7 @@
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020, 2023, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2020, 2023-2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
@@ -688,7 +688,9 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 
 (define-public linux-libre-7.0-source
   (source-with-patches linux-libre-7.0-pristine-source
-                       (list %linux-libre-arm-export-__sync_icache_dcache-patch)))
+                       (append
+                        (list %linux-libre-arm-export-__sync_icache_dcache-patch)
+                        (search-patches "linux-shmem-hurd-xattr.patch"))))
 
 (define-public linux-libre-6.19-source
   (source-with-patches linux-libre-6.19-pristine-source

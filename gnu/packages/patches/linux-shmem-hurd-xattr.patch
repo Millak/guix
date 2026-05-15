@@ -1,0 +1,71 @@
+Upstream status: Being tested; not yet presented upstream.
+
+From 6f9b9584f43d9d6058e10048dd0dfc5d0eff88c4 Mon Sep 17 00:00:00 2001
+From: Janneke Nieuwenhuizen <janneke@gnu.org>
+Date: Fri, 15 May 2026 10:12:30 +0200
+Subject: [PATCH] shmem: support xattr gnu.* namespace for the Hurd
+
+The Hurd gained[0] support for moving the translator and author
+fields out of the inode and into the "gnu.*" xattr namespace.
+
+In anticipation of that, an xattr INDEX was reserved[1].  The Hurd has
+now been brought into compliance[2] with that, and so has ext4[3].
+
+This patch adds support for reading and writing such attributes from
+a Linux tmpfs; you can now do something like
+
+    mkdir -p hurd-root
+    mount -t tmpfs -o size=2M tmpfs hurd-root
+    mkdir -p hurd-root/servers/socket
+    touch hurd-root/servers/socket/1
+    setfattr --name=gnu.translator --value='"/hurd/pflocal\0"' \
+        hurd-root/servers/socket/1
+    getfattr --name=gnu.translator hurd-root/servers/socket/1
+    # file: 1
+    gnu.translator="/hurd/pflocal"
+
+to setup a pipe translator, which is being used to create an
+initial file-system image for the Hurd from GNU Guix[4].
+
+[0] https://summerofcode.withgoogle.com/projects/#5869799859027968
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3980bd3b406addb327d858aebd19e229ea340b9a
+[2] https://git.savannah.gnu.org/cgit/hurd/hurd.git/commit/?id=a04c7bf83172faa7cb080fbe3b6c04a8415ca645
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=88ee9d571b6d8ed345f877e05f685814412e359b
+[4] https://git.savannah.gnu.org/cgit/guix.git/log/?h=wip-hurd-vm
+---
+ mm/shmem.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 3b5dc21b323c..5d60aa4dba92 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -15,6 +15,7 @@
+  * Extended attribute support for tmpfs:
+  * Copyright (c) 2004, Luke Kenneth Casson Leighton <lkcl@lkcl.net>
+  * Copyright (c) 2004 Red Hat, Inc., James Morris <jmorris@redhat.com>
++ * Copyright (C) 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
+  *
+  * tiny-shmem:
+  * Copyright (c) 2004, 2008 Matt Mackall <mpm@selenic.com>
+@@ -4371,10 +4372,17 @@ static const struct xattr_handler shmem_user_xattr_handler = {
+ 	.set = shmem_xattr_handler_set,
+ };
+ 
++static const struct xattr_handler shmem_hurd_xattr_handler = {
++	.prefix = XATTR_HURD_PREFIX,
++	.get = shmem_xattr_handler_get,
++	.set = shmem_xattr_handler_set,
++};
++
+ static const struct xattr_handler * const shmem_xattr_handlers[] = {
+ 	&shmem_security_xattr_handler,
+ 	&shmem_trusted_xattr_handler,
+ 	&shmem_user_xattr_handler,
++	&shmem_hurd_xattr_handler,
+ 	NULL
+ };
+ 
+-- 
+2.54.0
+
