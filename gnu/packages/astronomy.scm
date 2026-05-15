@@ -641,7 +641,7 @@ accurately in real time at any rate desired.")
 (define-public cfitsio
   (package
     (name "cfitsio")
-    (version "4.6.3")
+    (version "4.6.4")
     (source
      (origin
        (method url-fetch)
@@ -649,7 +649,7 @@ accurately in real time at any rate desired.")
              "https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/"
              "cfitsio-" version ".tar.gz"))
        (sha256
-        (base32 "001nh63i3fadjk42yadr48kkd5n5qcxzy3qcrkzsbpag4zzlzm7s"))))
+        (base32 "0m9w33w27wc452737x42gmbdwlzhhyq5x9irdylhx0n9j5xn6yr2"))))
     (build-system gnu-build-system)
     (arguments
      (list
