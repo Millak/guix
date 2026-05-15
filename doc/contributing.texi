@@ -706,13 +706,7 @@ Manual}).  To set it up, enable it in the relevant modes:
 
 When working from a Git checkout of Guix, setup is automatic:
 @code{bug-reference} automatically detects that the project is hosted on
-Codeberg@footnote{
-@c 'vc-git-repository-url' is used by
-@c 'bug-reference-setup-from-vc-alist', which checks for one of these
-@c names for the remote.
-As of Emacs@tie{}30.2, auto-detection works if and
-only if the Git remote is called @code{upstream} or @code{origin}.} and
-infers the issue and pull request URL from there.
+Codeberg and infers the issue and pull request URL from there.
 
 @node Guile Studio
 @subsection Guile Studio
