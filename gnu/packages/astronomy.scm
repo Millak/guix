@@ -4770,18 +4770,13 @@ code to be greatly simplified.")
 (define-public python-drizzlepac
   (package
     (name "python-drizzlepac")
-    ;; 3.10.0 requires astrocut<0.9.
-    (properties '((commit . "d8e4c455575d34e95dc56c77a6f91b3a5fa4b0a6")
-                  (revision . "2")))
-    (version (git-version "3.10.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "3.11.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/spacetelescope/drizzlepac")
-              (commit (assoc-ref properties 'commit))))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "00f32b544i9jrgf6phzgbj3as3cfpqn7gl7wn1njl09gbfvy0yvw"))))
