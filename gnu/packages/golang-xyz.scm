@@ -13441,7 +13441,7 @@ It converts raw time durations into a more readable format, such as
   (package
     (inherit go-github-com-hanwen-go-fuse)
     (name "go-github-com-hanwen-go-fuse-v2")
-    (version "2.9.0")  ;check go,mod in gocryptfs before upgrading
+    (version "2.10.1")
     (source
      (origin
        (method git-fetch)
@@ -13450,7 +13450,7 @@ It converts raw time durations into a more readable format, such as
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08z0l2pnbbmrnf6fgrbdzbyq9vkb27bvdbh3yi5zryy59nkz9hcs"))))
+        (base32 "08dss1r2v9xqijf71wpfcslm57k069ds2cikxy9hwzc8ppn5vzl5"))))
     (build-system go-build-system)
     (arguments
      (substitute-keyword-arguments
