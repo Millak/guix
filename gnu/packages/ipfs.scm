@@ -615,7 +615,7 @@ storing and retrieving items.  Queued items are persisted across restarts.")
 (define-public go-github-com-ipfs-go-ipfs-cmds
   (package
     (name "go-github-com-ipfs-go-ipfs-cmds")
-    (version "0.14.1")
+    (version "0.16.1")
     (source
      (origin
        (method git-fetch)
@@ -624,7 +624,7 @@ storing and retrieving items.  Queued items are persisted across restarts.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0npgcwzxzgvygl9r9h5kbnfl1dh0hygmwk1jj1hwznyvj47x6lwl"))))
+        (base32 "01cnpzbacdcbzi6lbppyn6vczrjvayh6s0fqm0mcaym1xi61y8jh"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -637,7 +637,7 @@ storing and retrieving items.  Queued items are persisted across restarts.")
                 (delete-file-recursively "examples")))))))
     (propagated-inputs
      (list go-github-com-ipfs-boxo
-           go-github-com-ipfs-go-log
+           go-github-com-ipfs-go-log-v2
            go-github-com-rs-cors
            go-github-com-texttheater-golang-levenshtein
            go-golang-org-x-term))
