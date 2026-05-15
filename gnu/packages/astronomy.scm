@@ -12930,7 +12930,7 @@ n-body file formats (nemo, Gadget binaries 1 and 2, Gadget hdf5, Ramses).")
 (define-public uraniborg
   (package
     (name "uraniborg")
-    (version "0.0.14")
+    (version "0.0.15")
     (source
      (origin
        (method git-fetch)
@@ -12939,7 +12939,7 @@ n-body file formats (nemo, Gadget binaries 1 and 2, Gadget hdf5, Ramses).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08pyb2dw7162673526iwr2s24a4fvssaq72ivi92mq41qm5nkp6p"))))
+        (base32 "0wniyp6rw2gcv1plqdqqx8l9qa1yr2rap6yhhq628ynj846v0xk4"))))
     (build-system go-build-system)
     (arguments
      (list
