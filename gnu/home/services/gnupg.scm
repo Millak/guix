@@ -125,18 +125,16 @@ entry will be expired even if it has been accessed recently.")
                  (requirement shepherd-requirement)
                  (modules '((shepherd support)))  ;for '%user-runtime-dir'
                  (start
-                  #~(lambda args
-                      ((make-systemd-constructor
-                        (list #$(file-append gnupg "/bin/gpg-agent")
-                              "--supervised" "--enable-ssh-support")
-                        (list #$(endpoint "ssh" "S.gpg-agent.ssh")
-                              #$(endpoint "browser" "S.gpg-agent.browser")
-                              #$(endpoint "extra" "S.gpg-agent.extra")
-                              ;; #$(endpoint "scdaemon" "S.scdaemon")
-                              #$(endpoint "std" "S.gpg-agent"))
-                        ;; Inherit graphical session environment.
-                        #:environment-variables (environ))
-                       args)))
+                  #~(make-systemd-constructor
+                     (list #$(file-append gnupg "/bin/gpg-agent")
+                           "--supervised" "--enable-ssh-support")
+                     (list #$(endpoint "ssh" "S.gpg-agent.ssh")
+                           #$(endpoint "browser" "S.gpg-agent.browser")
+                           #$(endpoint "extra" "S.gpg-agent.extra")
+                           ;; #$(endpoint "scdaemon" "S.scdaemon")
+                           #$(endpoint "std" "S.gpg-agent"))
+                     ;; Inherit graphical session environment.
+                     #:environment-variables (environ)))
                  (stop #~(make-systemd-destructor))
                  (documentation "Start 'gpg-agent', the GnuPG passphrase
 agent, with support for handling OpenSSH material."))))
