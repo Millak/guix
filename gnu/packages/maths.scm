@@ -1740,7 +1740,7 @@ in the terminal or with an external viewer.")
      (list #:configure-flags
            #~(list "--with-qt=no"
                    (string-append "--with-texdir=" #$output
-                                  "/texmf-local/tex/latex/gnuplot"))
+                                  "/share/texmf-dist/tex/latex/gnuplot"))
            ;; Plot on a dumb terminal during tests.
            #:make-flags #~'("GNUTERM=dumb")))
     (home-page "http://www.gnuplot.info")
