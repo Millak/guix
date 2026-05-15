@@ -2006,7 +2006,7 @@ kab-dht}.  This DHT is modeled after Kademlia with S/Kademlia modifications.")
 (define-public go-github-com-libp2p-go-libp2p-pubsub
   (package
     (name "go-github-com-libp2p-go-libp2p-pubsub")
-    (version "0.13.0")
+    (version "0.16.0")
     (source
      (origin
        (method git-fetch)
@@ -2015,31 +2015,45 @@ kab-dht}.  This DHT is modeled after Kademlia with S/Kademlia modifications.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14afjrgfbmlrnjd5xnl70ff95mbvfxp9n8mx3hrw8069bcpzvm2k"))))
+        (base32 "03nh7lbzy51yyfgi6lqlyxz91il05axvis0nq3zfi8c98dadzr5j"))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; TODO: Tests may need some adjustments as they take quite a lot of
-      ;; time to finish.
-      #:tests? #f
       #:import-path "github.com/libp2p/go-libp2p-pubsub"
+      #:test-flags
+      #~(list "-short"
+              "-skip" (string-join
+                       ;; Expencive tests, which takes more than 10s to pass
+                       ;; and accumulate hard timeout; succeeded after 235.9
+                       ;; seconds with 16 threads.
+                       (list "TestBasicSeqnoValidatorReplay"
+                             "TestLastSeenCacheNotFoundAfterExpire"
+                             "TestConfigurableMaxMessageSize"
+                             "TestFloodSubPluggableProtocol/won"
+                             "TestGossipsubAttackSpamIHAVE"
+                             "TestGossipsubFanoutMaintenance"
+                             "TestGossipsubGossip"
+                             "TestGossipsubOpportunisticGrafting"
+                             "TestGossipsubRPCFragmentation"
+                             "TestGossipsubStarTopology"
+                             "TestGossipsubStarTopologyWithSignedPeerRecords"
+                             "TestPairwiseInteractionWithPartialMessages"
+                             "TestPeerDisconnect")
+                       "|"))
       ;; src/github.com/libp2p/go-libp2p-asn-util/asn.go:12:12: pattern
       ;; sorted-network-list.bin: cannot embed irregular file
       ;; sorted-network-list.bin
       #:embed-files #~(list "sorted-network-list\\.bin")))
     (native-inputs
-     (list go-github-com-libp2p-go-libp2p-testing
-           go-github-com-stretchr-testify))
+     (list go-github-com-libp2p-go-libp2p-testing))
     (propagated-inputs
      (list go-github-com-benbjohnson-clock
            go-github-com-gogo-protobuf
-           go-github-com-ipfs-go-log-v2
            go-github-com-libp2p-go-buffer-pool
            go-github-com-libp2p-go-libp2p
            go-github-com-libp2p-go-msgio
            go-github-com-multiformats-go-multiaddr
-           go-github-com-multiformats-go-varint
-           go-go-uber-org-zap))
+           go-github-com-multiformats-go-varint))
     (home-page "https://github.com/libp2p/go-libp2p-pubsub")
     (synopsis "PubSub implementation for go-libp2p")
     (description
