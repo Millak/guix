@@ -942,6 +942,7 @@ television and DVD.  It is also known as AC-3.")
 
 (define-public libaom
   (package
+    (replacement libaom/fixed)
     (name "libaom")
     (version "3.8.0")
     (source (origin
@@ -976,6 +977,21 @@ television and DVD.  It is also known as AC-3.")
     (description "Libaom is the reference implementation of AV1.  It includes a
 shared library and encoder and decoder command-line executables.")
     (license license:bsd-2)))
+
+(define-public libaom/fixed
+  (package
+    (inherit libaom)
+    (name "libaom")
+    (version "3.9.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://aomedia.googlesource.com/aom/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0wpbc2vnwnvgr2ig64rgy38bi3wg24kaxizzc0i403ar8dx6q3ax"))))))
 
 (define-public libmpeg2
   (package
