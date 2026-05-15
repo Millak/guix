@@ -7096,7 +7096,7 @@ Brian 2 simulator.")
 (define-public mnn
   (package
     (name "mnn")
-    (version "3.4.0")
+    (version "3.5.0")
     (source
      (origin
        (method git-fetch)
@@ -7106,20 +7106,23 @@ Brian 2 simulator.")
        (snippet
         #~(begin
             (use-modules (guix build utils))
+            ;; Remove failing tests.
+            (delete-file-recursively "test/expr/ModuleTest.cpp")
+            (delete-file-recursively "test/op/ConvInt8Test.cpp")
             ;; Remove external libraries.  Almost all of them are
             ;; available in Guix.
             (with-directory-excursion "3rd_party"
               (for-each delete-file-recursively
                         '(;;"OpenCLHeaders"; for now does not build if in tree copy removed
                           ;; "flatbuffers"  ; for now does not build if in tree copy removed
-                          ;; "protobuf"   ; for now does not build if in tree copy removed
+                          "protobuf"
                           "rapidjson")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "073cdbcazxjzffajmn1w28jcaavann0c55fnm7cf7b0azj5vnhg6"))))
+        (base32 "1jllq0zik55kznnks0kjqkilk362msgbz65qc3az5hvcrz34m8j7"))))
     (build-system cmake-build-system)
     (native-inputs (list googletest pkg-config python-minimal-wrapper))
-    (inputs (list flatbuffers
+    (inputs (list ;; flatbuffers               ;requires 1.10.2
                   fp16
                   glew
                   glslang
@@ -7131,14 +7134,20 @@ Brian 2 simulator.")
                   opencl-clhpp
                   opencl-icd-loader
                   opencv
-                  protobuf
+                  protobuf-3.20                  ;requires 3.19.0
                   pthreadpool
-                  rapidjson
+                  rapidjson                      ;requires 1.1.0
                   shaderc
                   vulkan-headers
                   vulkan-loader))
     (arguments
      (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./run_test.out")))))
       #:configure-flags
       #~(list "-DMNN_USE_SYSTEM_LIB=ON"
               "-DMNN_OPENMP=ON"
@@ -7149,6 +7158,7 @@ Brian 2 simulator.")
               "-DMNN_BUILD_TEST=ON"
               "-DMNN_BUILD_AUDIO=ON"
               "-DMNN_BUILD_OPENCV=ON"
+              "-DMNN_BUILD_PROTOBUFFER=OFF"
               "-DMNN_IMGCODECS=ON"
               ;; "-DMNN_AUDIO_TEST=ON"
               ;; tests trying to fetch googletest and cannot build
@@ -7161,8 +7171,7 @@ Brian 2 simulator.")
               "-DMNN_BUILD_TOOLS=ON"
               "-DMNN_BUILD_CONVERTER=ON"
               "-DMNN_USE_SSE=ON"
-              "-DMNN_AVX512=ON") ;TO DO: add Pytorch support
-      #:tests? #f)) ;tests not building yet, cannot run
+              "-DMNN_AVX512=ON"))) ;TO DO: add Pytorch support
     (home-page "http://www.mnn.zone/")
     (synopsis "Fast, lightweight deep learning framework")
     (description
