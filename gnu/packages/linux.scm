@@ -3093,7 +3093,7 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
 (define-public util-linux
   (package
     (name "util-linux")
-    (version "2.40.4")
+    (version "2.42")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/linux/utils/"
@@ -3101,7 +3101,7 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
                                   "util-linux-" version ".tar.xz"))
               (sha256
                (base32
-                "0ygvflcr7v7x2rmr9h5mi07yx00i9368ggf3znd8bs847drsy7aw"))
+                "1saqlzgjdnn84l09fi7lq4zh118p24ibphwsfip5sxxapdhb4lil"))
               (patches (search-patches "util-linux-tests.patch"))
               (modules '((guix build utils)))
               (snippet
@@ -3126,6 +3126,7 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
                    ;; Don't try to chown root:root mount and umount
                    "--disable-makeinstall-chown"
                    "--localstatedir=/var"
+                   "--sysconfdir=/etc"
                    (string-append "--localedir=" #$output:lib
                                   "/share/locale")
                    ;; Install completions where our bash-completion package
@@ -3160,10 +3161,14 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
                       (string-append "\"" #$output "/bin/umount\"")))))
                (add-before 'check 'pre-check
                  (lambda* (#:key native-inputs inputs #:allow-other-keys)
+
+                   ;; Some tests use the invalid pw_shell
+                   (setenv "SHELL" (which "sh"))
+
                    (let ((services (search-input-file (or native-inputs inputs)
                                                       "etc/services")))
                      ;; Change the test to refer to the right file.
-                     (substitute* "tests/ts/misc/mcookie"
+                     (substitute* "tests/ts/mcookie/mcookie"
                        (("/etc/services")
                         services))
                      (substitute* "tests/helpers/test_mkfds.c"
@@ -3178,7 +3183,7 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
                    ;; emulation, which is our primary method of building
                    ;; ARMv7 packages.  See
                    ;; <https://github.com/karelzak/util-linux/issues/601>.
-                   (substitute* "tests/ts/misc/setarch"
+                   (substitute* "tests/ts/setarch/setarch"
                      (("ts_init_subtest.*" all)
                       (string-append
                        all "\n"
@@ -3191,6 +3196,16 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
                    ;; on i686 even if the same test passes on x86_64 on the
                    ;; same machine.  See <https://issues.guix.gnu.org/49933>.
                    (delete-file "tests/ts/lsns/ioctl_ns")))
+               (add-before 'check 'disable-choom-test
+                 (lambda _
+                   ;; This test relies on writing to /proc/%d/oom_score_adj
+                   (delete-file "tests/ts/choom/choom")))
+               (add-before 'check 'disable-lslogins-tests
+                 (lambda _
+                   ;; these test require that a user with name root exists
+                   ;; In the build sandbox there is no such user
+                   (delete-file "tests/ts/lslogins/checkuser")
+                   (delete-file "tests/ts/lslogins/json_mode")))
                #$@(if (target-ppc32?)
                       #~((add-before 'check 'disable-enosys-ioctl
                            ;; It is unclear why this test specifically
