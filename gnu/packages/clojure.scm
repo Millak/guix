@@ -23,19 +23,19 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages clojure)
-  #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages java)
   #:use-module (gnu packages maven)
-  #:use-module (guix gexp)
-  #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix git-download)
+  #:use-module (gnu packages)
   #:use-module (guix build-system ant)
+  #:use-module (guix build-system clojure)
   #:use-module (guix build-system copy)
-  #:use-module (guix build-system clojure))
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix packages))
 
 (define-public clojure-spec-alpha
   (package
