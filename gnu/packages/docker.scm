@@ -373,6 +373,26 @@ application’s services.  Then, using a single command, the containers are
 created and all the services are started as specified in the configuration.")
     (license license:asl2.0)))
 
+(define-public docker-policy-helper
+  (package/inherit go-github-com-moby-policy-helpers
+    (name "docker-policy-helper")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "github.com/moby/policy-helpers/cmd/policy-helper")
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:unpack-path _ "") "github.com/moby/policy-helpers")
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'fix-bin-name
+              (lambda _
+                (rename-file (string-append #$output "/bin/policy-helper")
+                             (string-append #$output "/bin/docker-policy-helper"))))))))
+    (native-inputs (package-propagated-inputs go-github-com-moby-policy-helpers))
+    (propagated-inputs '())
+    (inputs '())))
+
 (define-public python-docker-pycreds
   (package
     (name "python-docker-pycreds")
