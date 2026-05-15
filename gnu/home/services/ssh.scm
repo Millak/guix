@@ -89,7 +89,7 @@
 (define (serialize-field-name name)
   (match name
     ('accepted-key-types "PubkeyAcceptedKeyTypes")
-    ('sent-environment-variables "SentEnv")
+    ('sent-environment-variables "SendEnv")
     ('environment-variables "SetEnv")
     ('control-file-name "ControlPath")
     (_
@@ -139,8 +139,10 @@
 (define-maybe natural-number)
 
 (define (serialize-symbol field value)
-  (string-append "  " (serialize-field-name field) " "
-                 (symbol->string value) "\n"))
+  (if (maybe-value-set? value)
+      (string-append "  " (serialize-field-name field) " "
+                     (symbol->string value) "\n")
+      ""))
 
 (define-maybe symbol)
 
@@ -178,7 +180,7 @@
                  (string-join
                   (map (match-lambda
                          ((key . value)
-                          (format #nil "~a = ~s~%" (serialize-field-name key) value)))
+                          (format #nil "~s" (string-append key "=" value))))
                        lst) " ") "\n"))
 
 (define-maybe string-alist)
