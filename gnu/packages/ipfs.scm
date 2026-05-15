@@ -2351,7 +2351,7 @@ types.")
 (define-public kubo
   (package
     (name "kubo")
-    (version "0.39.0")
+    (version "0.41.0")
     (source
      (origin
        (method git-fetch)
@@ -2360,7 +2360,7 @@ types.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17571bm3zp04z6y62mpdi3vsrmx7xrhsyzzz5nssfc4rymp0y4sn"))
+        (base32 "1fa4szzvgzahv1n5laz11habdj4p43n8sbq5msmp0d95cnqnciyg"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -2371,6 +2371,7 @@ types.")
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.26
       #:install-source? #f
       #:embed-files #~(list "sorted-network-list.bin" ".*\\.css" ".*\\.html")
       #:unpack-path "github.com/ipfs/kubo"
@@ -2391,8 +2392,7 @@ types.")
                                   "ipfs"
                                   #~(string-append #$output "/bin/ipfs"))
                             "commands" "completion" "bash")))))))))
-    (inputs (list go-bazil-org-fuse
-                  go-contrib-go-opencensus-io-exporter-prometheus
+    (inputs (list go-contrib-go-opencensus-io-exporter-prometheus
                   go-github-com-anmitsu-go-shlex
                   go-github-com-blang-semver-v4
                   go-github-com-caddyserver-certmagic
@@ -2404,9 +2404,9 @@ types.")
                   go-github-com-dustin-go-humanize
                   go-github-com-elgris-jsondiff
                   go-github-com-facebookgo-atomicfile
-                  go-github-com-filecoin-project-go-clock
                   go-github-com-fsnotify-fsnotify
                   go-github-com-google-uuid
+                  go-github-com-hanwen-go-fuse-v2
                   go-github-com-hashicorp-go-version
                   go-github-com-ipfs-boxo
                   go-github-com-ipfs-go-block-format
