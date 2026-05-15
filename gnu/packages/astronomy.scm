@@ -11045,37 +11045,65 @@ and @code{astropy}.")
 (define-public python-sunkit-spex
   (package
     (name "python-sunkit-spex")
-    (properties '((commit . "bb544c44573d6de44e3d5ba08d06cab0059a4db7")
-                  (revision . "0")))
-    (version (git-version "0.4.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/sunpy/sunkit-spex")
-              (commit (assoc-ref properties 'commit))))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n6if5zpbblp5bjy93bzh5bwrmbjfn2lkc850j4d9n5cw4jia3gy"))))
+        (base32 "0l619zs1ym6jznnbfiisb2qyyiz54xznkgazp4cnnhmcgqh3w93w"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; TODO: tests require some removed data, find out how to run bare minimal
-      ;; unit tests without it.
-      #:tests? #f))
+      #:test-flags
+      #~(list "--ignore=sunkit_spex/legacy/"
+              ;; Network access is required
+              "--ignore=sunkit_spex/models/physical/tests/test_thermal.py"
+              "--ignore=sunkit_spex/models/physical/tests/test_thermal.py"
+              "--ignore=sunkit_spex/models/physical/thermal.py"
+              #$@(map (lambda (test)
+                        (string-append "--deselect=sunkit_spex/models/"
+                                       "physical/tests/" test))
+                      (list "test_albedo.py::test_get_albedo_matrix"
+                            "test_albedo.py::test_albedo_model"
+                            "test_albedo.py::test_albedo_idl"))
+              ;; astropy.units.errors.UnitConversionError: 'Angstrom' (length)
+              ;; and '' (dimensionless) are not convertible
+              (string-append "--deselect="
+                             "sunkit_spex/spectrum/tests/test_spectrum.py"
+                             "::test_gwcs_from_array_1d_wavelength")
+              (string-append "--deselect="
+                             "sunkit_spex/spectrum/tests/test_spectrum.py"
+                             "::test_gwcs_from_array_3d_cube")
+              ;; XXX: Maby this: <https://github.com/sunpy/ndcube/issues/913>.
+              (string-append "--deselect="
+                             "sunkit_spex/models/physical/albedo.py"
+                             "::sunkit_spex.models.physical.albedo"
+                             ".get_albedo_matrix"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            ;; See: <https://github.com/sunpy/ndcube/issues/913>, resolved by
+            ;; <https://github.com/spacetelescope/gwcs/pull/635> and it's part
+            ;; of python-gwst@1.0.3.
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("gwcs>=0.26.0,<1.0.0") "gwcs>=0.26.0,<=1.0.3"))))
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-setuptools
+     (list python-pytest
+           python-pytest-doctestplus
+           python-setuptools
            python-setuptools-scm))
     (propagated-inputs
-     (list python-corner
-           python-emcee
-           python-gwcs
+     (list python-gwcs
            python-matplotlib
            python-ndcube
-           python-nestle
-           python-numdifftools
            python-numpy
            python-parfive
            python-scipy
