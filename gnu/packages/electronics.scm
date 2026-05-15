@@ -1069,7 +1069,7 @@ characterization result in a liberty library file.")
 (define-public kicad
   (package
     (name "kicad")
-    (version "10.0.2")
+    (version "10.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1077,7 +1077,7 @@ characterization result in a liberty library file.")
                     (commit version)))
               (sha256
                (base32
-                "0bk86javsfm1mwlksnv8p7pws5ii3zag6aah13gn5zlc31z295yh"))
+                "0ldaj072x16452xw2wszbk20g932rz36zappjrxc4m6ygx298aa3"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1202,7 +1202,7 @@ package.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18lsm1h3ksg2wq9yjrl47rpaqylksxil7x1vbyv4fp03grr5hv32"))))
+                "1532y6whn1bcwjb417qlga1hibgpfqs594l9zs4c8f5ymaqb8s1b"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html"
@@ -1264,7 +1264,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1h1v44qc5lvvqvmi1i7b79jhxsfq8snk0mcfl6r73hj6w0b25l84"))))
+                "0wdzsn7z11wc5yskk576a4a6qfagsvw0y6r034inxrnfc32aiah9"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
