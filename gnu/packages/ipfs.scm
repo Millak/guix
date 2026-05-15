@@ -125,7 +125,7 @@ alternative fork of @url{https://github.com/gxed/bbloom}.")
 (define-public go-github-com-ipfs-boxo
   (package
     (name "go-github-com-ipfs-boxo")
-    (version "0.35.2")
+    (version "0.39.0")
     (source
      (origin
        (method git-fetch)
@@ -134,18 +134,14 @@ alternative fork of @url{https://github.com/gxed/bbloom}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02z88kv17m1mia68ac8wliiz5kzq59b1632qql21vy9c3gjqk56r"))
+        (base32 "0sy7v5cnz7ajvfb1mz4p86rmsr8f8agzgfnpwyzlhvvwcglslns9"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packed as
-            ;; separated packages:
+            ;; Submodules with their own go.mod files and packaged separately:
             ;;
-            ;; - github.com/ipfs/boxo/cmd/boxo-migrate
-            ;; - github.com/ipfs/boxo/cmd/deprecator
             ;; - github.com/ipfs/boxo/examples
-            (for-each delete-file-recursively
-                      (list "cmd" "examples"))))))
+            (delete-file-recursively "examples")))))
     (build-system go-build-system)
     (arguments
      (list
@@ -161,7 +157,13 @@ alternative fork of @url{https://github.com/gxed/bbloom}.")
                              ;; config: Get
                              ;; "https://conf.ipfs-mainnet.org/autoconf.json"
                              "TestRealAutoConfURL")
-                       "|"))))
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              ;; See: <https://go.dev/blog/synctest>.
+              (setenv "GODEBUG" "asynctimerchan=0"))))))
     (native-inputs
      (list go-github-com-libp2p-go-libp2p-kad-dht-bootstrap
            go-github-com-libp2p-go-libp2p
@@ -223,11 +225,9 @@ alternative fork of @url{https://github.com/gxed/bbloom}.")
            go-go-opencensus-io
            go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
            go-go-opentelemetry-io-otel
-           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace
            go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
            go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracehttp
            go-go-opentelemetry-io-otel-exporters-stdout-stdouttrace
-           go-go-opentelemetry-io-otel-exporters-zipkin
            go-go-opentelemetry-io-otel-sdk
            go-go-opentelemetry-io-otel-trace
            go-go-uber-org-zap
