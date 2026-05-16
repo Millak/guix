@@ -1881,6 +1881,13 @@ associated with their name."))
                              "python/mozbuild/mozbuild/backend/base.py"
                              "python/mozbuild/mozbuild/preprocessor.py")
                 (("\"rU\"") "\"r\""))))
+          (add-after 'unpack 'restore-api-compat
+            (lambda _
+              (substitute* "js/public/GCAPI.h"
+                (("enum class GCReason")
+                 "#define FIRST_FIREFOX_REASON FIRST_ICECAT_REASON
+#define LAST_FIREFOX_REASON LAST_ICECAT_REASON
+enum class GCReason"))))
           (add-after 'patch-source-shebangs 'patch-cargo-checksums
             (lambda _
               (let ((null-hash
