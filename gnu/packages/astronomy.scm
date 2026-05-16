@@ -9192,7 +9192,7 @@ changing the pixel resolution, orientation, coordinate system.")
 (define-public python-roman-datamodels
   (package
     (name "python-roman-datamodels")
-    (version "0.31.0")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -9201,11 +9201,11 @@ changing the pixel resolution, orientation, coordinate system.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10d72vmj0p3bjc26a4sv3ry6n80hi2l4ikz8pf9p496k2abqhn6k"))))
+        (base32 "04y60sqayily8s5rwghx52ma5li8a9r2mjqgwpfalrkymzlab7j1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 5457 passed, 1 skipped
+      ;; tests: 5654 passed, 1 skipped
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
