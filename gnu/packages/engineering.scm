@@ -449,7 +449,8 @@ optimizer; and it can produce photorealistic and design review images.")
      ;; LaTeX Warning: Citation `nabors91' on page 2 undefined on input line
      ;; 3.
      `(("texlive" ,(texlive-local-tree))
-       ("ghostscript" ,ghostscript)))
+       ("ghostscript" ,ghostscript)
+       ("libfaketime" ,libfaketime)))
     (arguments
      (list
       #:make-flags #~(list "CC=gcc" "RM=rm" "SHELL=sh"
@@ -467,7 +468,9 @@ optimizer; and it can produce photorealistic and design review images.")
        #~(modify-phases %standard-phases
            (add-after 'build 'make-doc
              (lambda _
-               (invoke "make" "CC=gcc" "RM=rm" "SHELL=sh" "manual")))
+               (invoke "faketime"
+                       "1970-01-01 00:00:00"
+                       "make" "CC=gcc" "RM=rm" "SHELL=sh" "manual")))
            (add-before 'make-doc 'fix-doc
              (lambda _
                (substitute* "doc/Makefile" (("/bin/rm") (which "rm")))
@@ -506,10 +509,16 @@ optimizer; and it can produce photorealistic and design review images.")
                (setenv "TEXMFVAR" "/tmp")     ;For texlive font cache
                (with-directory-excursion "doc"
                  (for-each (lambda (file)
-                             (invoke "dvips" file "-o"))
+                             (invoke "faketime"
+                                     "-f"
+                                     "1970-01-01 00:00:00"
+                                     "dvips" file "-o"))
                            (find-files "." "\\.dvi"))
                  (for-each (lambda (file)
-                             (invoke "ps2pdf" file))
+                             (invoke "faketime"
+                                     "-f"
+                                     "1970-01-01 00:00:00"
+                                     "ps2pdf" file))
                            '("mtt.ps" "ug.ps" "tcad.ps"))
                  (invoke "make" "clean"))))
            (replace 'install
@@ -522,7 +531,10 @@ optimizer; and it can produce photorealistic and design review images.")
                    (for-each (lambda (f)
                                (install-file f bin))
                              (find-files "." ".*")))
-                 (copy-recursively "doc" doc)
+                 (with-directory-excursion "doc"
+                   (for-each (lambda (f)
+                               (install-file f doc))
+                             (find-files "." ".pdf")))
                  (copy-recursively "examples" examples)))))))
     (home-page "https://www.rle.mit.edu/cpg/research_codes.htm")
     (synopsis "Multipole-accelerated capacitance extraction program")
