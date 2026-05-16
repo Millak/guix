@@ -10508,7 +10508,7 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
 (define-public python-stpipe
   (package
     (name "python-stpipe")
-    (version "0.12.0")
+    (version "0.13.0")
     (source
      (origin
        (method git-fetch)
@@ -10517,7 +10517,7 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ncws9fqdpl89dpl28dr67m2plik9xad47s7ayqdkyckn8kn36xz"))
+        (base32 "1ngyygax9zjxgzfrbl20y0nd102a5m3xkhy2kphzkdrmxfyqp4d7"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -10534,7 +10534,7 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 270 passed, 1 skipped, 5 deselected
+      ;; tests: 274 passed, 1 skipped, 5 deselected
       #:test-flags
       #~(list #$@(map (lambda (test)
                         (string-append "--deselect=tests/test_step.py::"
