@@ -11608,6 +11608,50 @@ datasets, in particular, catalogs of particles or galaxies/halos from
 cosmological simulations.")
     (license license:expat)))
 
+(define-public python-velociraptor
+  (package
+    (name "python-velociraptor")
+    (version "0.21.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/SWIFTSIM/velociraptor-python")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "038k3wp5z22mf73a20rjm5l87yrzmwk8p99jj014s47drixgk9k4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; See: <https://github.com/SWIFTSIM/velociraptor-python/issues/117>.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'sanity-check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-astropy
+           python-h5py
+           python-numpy
+           python-swiftsimio
+           python-unyt))
+    (home-page "https://github.com/SWIFTSIM/velociraptor-python")
+    (synopsis "VELOCIraptor catalogue reading routines")
+    (description
+     " VELOCIraptor-Python is a python toolkit for reading
+@url{http://github.com/pelahi/velociraptor-stf, VELOCIraptor} outputs, with a
+particular focus on integration with the
+@url{https://github.com/SWIFTSIM/SWIFT, SWIFT} cosmological simulation code.
+
+It allows for automatic association of symbolic units (using unyt) with halo
+properties, extraction of individual haloes to a SWIFTsimIO dataset, and
+includes tools to help create both publication-ready and quick figures.")
+    (license license:gpl3+)))
+
 (define-public python-viresclient
   (package
     (name "python-viresclient")
