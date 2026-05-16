@@ -9879,7 +9879,7 @@ but has evolved to support other missions as well.")
 (define-public python-space-dolphin
   (package
     (name "python-space-dolphin")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -9888,15 +9888,16 @@ but has evolved to support other missions as well.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19lxv0ii7y7v14qv43cvfkzgm5rgn42g8jy5z5pnfq7bxl6nc62w"))))
+        (base32 "0nzdy4d8ysmz8h4s56r31zxnk125lninpyzhr589ibny0k5is3nr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 77 passed, 4 deselected, 394 warnings
+      ;; tests: 85 passed, 8 deselected, 394 warnings
       #:test-flags
       #~(list "--ignore=test/test_ai/test_modeler.py"
               "--ignore=test/test_ai/test_vision.py"
               "--ignore=test/test_pipeline.py"
+              "--ignore=test/test_util/test_jax_util.py"
               #$@(map (lambda (ls) (string-append "--deselect=test/"
                                                   (string-join ls "::")))
                       ;; AttributeError: `np.string_` was removed in the NumPy
@@ -9911,7 +9912,10 @@ but has evolved to support other missions as well.")
                         ;; certificate bundle, invalid path:
                         ;; /etc/ssl/certs/ca-certificates.crt
                         ("test_processor/test_files.py" "TestFileSystem"
-                         "test_get_trained_model_file_path"))))
+                         "test_get_trained_model_file_path")
+                        ;; ModuleNotFoundError: No module named 'jax'
+                        ("test_processor/test_config.py" "TestModelConfig"
+                         "test_get_kwargs_likelihood"))))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
