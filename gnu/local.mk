@@ -2271,6 +2271,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/proot-add-clone3.patch			\
   %D%/packages/patches/proot-add-missing-include.patch		\
   %D%/packages/patches/protobuf-fix-build-on-32bit.patch	\
+  %D%/packages/patches/protobuf-pathmax.patch			\
   %D%/packages/patches/psm2-compile-ctor-without-avx.patch	\
   %D%/packages/patches/psm-arch.patch				\
   %D%/packages/patches/psm-disable-memory-stats.patch		\

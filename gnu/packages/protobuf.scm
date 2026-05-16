@@ -202,7 +202,8 @@ internal RPC protocols and file formats.")
               (sha256
                (base32
                 "01cl4l0rnnzjbhjjs2gyg2pk13505gh86ikh22jqjp54dp8mvp5x"))
-              (patches (search-patches "protobuf-fix-build-on-32bit.patch"))))
+              (patches (search-patches "protobuf-fix-build-on-32bit.patch"
+                                       "protobuf-pathmax.patch"))))
     (outputs (list "out"
                    "static"))           ; ~12 MiB of .a files
     (build-system cmake-build-system)
@@ -232,7 +233,12 @@ internal RPC protocols and file formats.")
                                "BlockSizeSmallerThanAllocation")
                 ;; See: https://github.com/protocolbuffers/protobuf/issues/8082.
                 (disable-tests "src/google/protobuf/io/zero_copy_stream_unittest.cc"
-                               "LargeOutput"))))
+                               "LargeOutput")
+                ;; setsockopt SO_RCVTIMEO is unsupported
+                #$@(if (target-hurd?)
+                       #~((disable-tests "src/google/protobuf/io/zero_copy_stream_unittest.cc"
+                                         "BlockingFileIoWithTimeout"))
+                       #~()))))
           (add-before 'configure 'set-c++-standard
             (lambda _
               (substitute* "CMakeLists.txt"
