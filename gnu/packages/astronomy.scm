@@ -10448,13 +10448,13 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "5.0.1")
+    (version "5.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stdatamodels" version))
        (sha256
-        (base32 "1pl6d3a7gssj7a6pkhfpxz10qjp9kr6l88y6l9g2mmv4iv738i8j"))))
+        (base32 "1pzsk3ahc9qm08a0jyhc506m35vahc87vflz1y2wd87qahkh3yxz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
