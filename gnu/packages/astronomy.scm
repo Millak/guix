@@ -6416,7 +6416,7 @@ milliarcsecond).")
 (define-public python-jwst
   (package
     (name "python-jwst")
-    (version "2.0.0")
+    (version "2.0.1")
     (source
      (origin
        (method git-fetch)
@@ -6425,7 +6425,7 @@ milliarcsecond).")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jsw02s5gw471i2cr01jq7n74v1zkaqkf0pj3jyjna236ds5fklr"))
+        (base32 "1gp8s69bc7m1jyvrjm77ik7n6dvd3gh3cpwkdqa9j80pfnvnxpnw"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
