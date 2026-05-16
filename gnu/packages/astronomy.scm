@@ -11498,13 +11498,16 @@ of the old packages.")
 (define-public python-tweakwcs
   (package
     (name "python-tweakwcs")
-    (version "0.8.12")
+    (version "0.9.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "tweakwcs" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacetelescope/tweakwcs")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1p7kbx7ih4ch04gxzv3pm8zkrv45my0c43k42iar5k5jihjhqhx6"))))
+        (base32 "0d43p3cpjjvbh3kqhza89aizqy75lmw1j8jyaqamdc2y8jlw7q7i"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
