@@ -10410,7 +10410,13 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
               ;; download test data from
               ;; <s3://stpubdata/gaia/gaia_dr3/public/hats/gaia/>.
               "--ignore=tests/test_tweakreg.py"
-              "tests")))
+              "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("tweakwcs>=0.8.8,<0.9") "tweakwcs>=0.8.8,<=0.9.0")))))))
     (native-inputs
      (list python-cython
            python-psutil
