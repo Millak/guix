@@ -7505,19 +7505,21 @@ astronomical sources.")
 (define-public python-pint-pulsar
   (package
     (name "python-pint-pulsar")
-    (version "1.1.4")
+    (version "1.1.5")
     (source
      (origin
-       (method git-fetch) ; no tests data in the PyPI tarball
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/nanograv/PINT")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0522p1gns52vzgj1l89s1s3idi40910hv4dpbhy4r1ijmwfb3kdg"))))
+        (base32 "1ypwhh0s821q21j4n5iv4102pxmhq68a28z610z88c99cdbrh90v"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 778 passed, 17 skipped, 10 deselected, 11 xfailed, 1 xpassed,
+      ;;        722 warnings
       #:test-flags
       #~(list "-k" (string-join
                     ;; Tests failing with assertion on not correct precision
@@ -7555,7 +7557,6 @@ astronomical sources.")
               "tests/test_erfautils.py"
               "tests/test_eventstats.py"
               "tests/test_funcpar.py"
-              "tests/test_kepler.py"
               "tests/test_leapsec.py"
               "tests/test_model_manual.py"
               "tests/test_numpy.py"
@@ -7582,24 +7583,11 @@ astronomical sources.")
               "tests/test_tcb2tdb.py"
               "tests/test_templates.py"
               "tests/test_variety_parfiles.py"
-              "tests/test_version.py")
-      #:phases
-      #~(modify-phases %standard-phases
-         (add-after 'unpack 'remove-deprecated-scripts
-           ;; ImportError: cannot import name 'CompositeMCMCFitter' from
-           ;; 'pint.mcmc_fitter'.
-           ;;
-           ;; Removed in 1.1.3: Broken fitter class `CompositeMCMCFitter`
-           ;; (this fitter was added seemingly to deal with combined radio and
-           ;; high-energy datasets, but has since been broken for a while.)
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("event_optimize_multiple.*") "")))))))
+              "tests/test_version.py")))
     (native-inputs
      (list python-pytest
            python-setuptools
-           python-versioneer
-           python-wheel))
+           python-versioneer))
     (propagated-inputs
      (list python-astropy
            python-corner
