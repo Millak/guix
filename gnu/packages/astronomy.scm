@@ -1995,6 +1995,46 @@ model-fitting photometry or morphological analyses.")
      "Python Tools for HST ACS (Advanced Camera for Surveys) Data.")
     (license license:bsd-3)))
 
+(define-public python-adari-core
+  (package
+    (name "python-adari-core")
+    (version "4.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://ftp.eso.org/pub/dfs/pipelines/libraries/adari_core/"
+             "adari_core-" version ".tar.gz"))
+       (sha256
+        (base32 "152p32miwhpiwkd7lcdxljby20w15qf63s00brp9ilvxmy2cqdn4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Some custom ESO Python module is missing:
+      ;; E   ModuleNotFoundError: No module named 'inst_reports'
+      #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-astropy
+           python-fastapi
+           python-matplotlib
+           python-pydantic
+           python-requests
+           python-requests-unixsocket
+           python-uvicorn))
+    ;; I could not find actual homepage of the project on
+    ;; <https://www.eso.org/public/about-eso/>.
+    (home-page "https://arxiv.org/abs/2510.00147")
+    (synopsis "Visualizing the quality of VLT data")
+    (description
+     "ADARI (Astronomical DAta Reporting Infrastructure) is a system designed
+for creating graphical reports of astronomical data so that the quality of
+these products can be assessed.  It has been designed from the ground up to be
+backend-agnostic, meaning the same ADARI code can be sent to a web plotting
+API, or a code-based plotting API, with no alteration.")
+    (license license:bsd-3)))
+
 (define-public python-ads
   (package
     (name "python-ads")
