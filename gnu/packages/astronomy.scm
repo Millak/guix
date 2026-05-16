@@ -8930,17 +8930,17 @@ wiggles are caused by resampling noise or aliasing artifacts.")
 (define-public python-rad
   (package
     (name "python-rad")
-    (version "0.31.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rad" version))
        (sha256
-        (base32 "0aji0j8wgqxqan09xiwjgcdd4f6s8z4n2ji438rs4asjcrj87drr"))))
+        (base32 "0gdvq9fa4yn3b3yf81mmfm8jz7bm0mg981ibbcm9c6ldzxmhgd3p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 5153 passed, 156 skipped, 21 xfailed
+      ;; tests: 5240 passed, 156 skipped, 21 xfailed
       #:test-flags
       ;; Tests try to detec version by Git tag.
       #~(list "--ignore=tests/test_versioning.py")))
