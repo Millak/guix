@@ -1061,6 +1061,14 @@ renewed TLS certificates, or @code{include}d files.")
   (wsgi-app-module gunicorn-app-wsgi-app-module)
   (user gunicorn-app-user)
   (group gunicorn-app-group)
+  (socket-user gunicorn-app-socket-user
+               (default (gunicorn-app-user this-gunicorn-app))
+               (thunked))
+  (socket-group gunicorn-app-socket-group
+                (default (gunicorn-app-group this-gunicorn-app))
+                (thunked))
+  (socket-mode gunicorn-app-socket-mode
+               (default #o750))
   (sockets gunicorn-app-sockets
            (default (list (string-append "unix:/var/run/gunicorn/"
                                          (gunicorn-app-name this-gunicorn-app)
@@ -1094,16 +1102,18 @@ renewed TLS certificates, or @code{include}d files.")
 
         ;; Create socket directories and set ownership.
         (for-each (match-lambda
-                    ((user group socket-directories ...)
+                    ((user group mode socket-directories ...)
                      (for-each (lambda (socket-directory)
                                  (mkdir-p socket-directory)
+                                 (chmod socket-directory mode)
                                  (chown socket-directory
                                         (passwd:uid (getpw user))
                                         (group:gid (getgrnam group))))
                                socket-directories)))
                   '#$(map (lambda (app)
-                            (cons* (gunicorn-app-user app)
-                                   (gunicorn-app-group app)
+                            (cons* (gunicorn-app-socket-user app)
+                                   (gunicorn-app-socket-group app)
+                                   (gunicorn-app-socket-mode app)
                                    (filter-map (lambda (socket)
                                                  (and
                                                   (unix-socket? socket)

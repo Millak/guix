@@ -36232,6 +36232,15 @@ Launch the app as this group (it must be an existing group).
 A list of sockets (as path strings) which gunicorn will be listening
 on.  This list must contain at least one socket.
 
+@item @code{socket-user} (default: @code{user}) (type: string)
+Owner of the directory containing the socket (must be an existing user).
+
+@item @code{socket-group} (default: @code{group}) (type: string)
+Group owner of the directory containing the socket (must be an existing group).
+
+@item @code{socket-mode} (default: @code{#o750}) (type: integer)
+File mode to use for the directory containing the socket.
+
 @item @code{workers} (default: @code{1}) (type: integer)
 The number of workers for the gunicorn app.
 
