@@ -1953,27 +1953,45 @@ model-fitting photometry or morphological analyses.")
 (define-public python-acstools
   (package
     (name "python-acstools")
-    (version "3.7.2")
+    (version "3.8.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "acstools" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacetelescope/acstools")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0kc1lwr160awk3rq44iav2bk8b9w7vw4q6dd1s035yb442cqz0qh"))))
+        (base32 "0ixa977x4rc7glbgid4xr9bnf50wxh5ap02m240sh8jxgyknr26y"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; OSError: No SIMPLE card found, this file does not appear to be a
+         ;; valid FITS file. If this is really a FITS file, try with
+         ;; ignore_missing_simple=True
+         "--deselect=acstools/tests/test_wfc_findsat_mrt.py::test_WfcWrapper")))
     (native-inputs
      (list python-ci-watson
            python-pytest
            python-pytest-astropy-header
            python-pytest-remotedata
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-numpy
            python-pyyaml
-           python-requests))
+           python-requests
+           ;; [optional]
+           python-dask
+           python-matplotlib
+           python-photutils
+           python-scikit-image
+           python-scipy
+           python-stsci-imagestats
+           python-stsci-tools))
     (home-page "https://github.com/spacetelescope/acstools")
     (synopsis "Hubble Space Telescope Advanced Camera for Surveys Tools")
     (description
