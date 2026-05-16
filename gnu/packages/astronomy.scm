@@ -2134,7 +2134,7 @@ Main features:
 (define-public python-asdf
   (package
     (name "python-asdf")
-    (version "5.2.0")
+    (version "5.3.0")
     (source
      (origin
        (method git-fetch)
@@ -2143,17 +2143,17 @@ Main features:
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00y7hp0iw3ryirkpj053irvc2y7bgckplrw2jjzxf80pp6c9vnsa"))))
+        (base32 "1pbycdkc9958rjsg6yfi0qs1q46lamrcqf4q4cw104l3ipankdbc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1999 passed, 1 skipped, 2 xfailed
+      ;; tests: 2145 passed, 1 skipped, 2 xfailed
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'include-package-data
-            ;; XXX: Check why schemas stoped coppied with setuptools in 5.2.0
+            ;; XXX: Check why schemas stoped coppied with setuptools in 5.3.0
             ;; version.
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (copy-recursively "asdf/_jsonschema/schemas"
@@ -2165,7 +2165,8 @@ Main features:
            python-pytest-remotedata
            python-pytest-xdist
            python-setuptools
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-syrupy))
     (propagated-inputs
      (list python-asdf-standard
            python-attrs ;; for vendorized jsonschema
