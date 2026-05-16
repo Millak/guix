@@ -4607,7 +4607,7 @@ such as CTA.")
 (define-public python-czml3
   (package
     (name "python-czml3")
-    (version "3.2.0")
+    (version "3.3.1")
     (source
      (origin
        (method git-fetch)
@@ -4618,9 +4618,9 @@ such as CTA.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cxaxmvl8asrq4g8b0vcbij162lwf6c52ywh4bywys09zcbgw32z"))))
+        (base32 "0hnlqn0jyazkkc6p81f9dsn7jgm37b7bmnvykxn1m7xchkhzc2hr"))))
     (build-system pyproject-build-system)
-    ;; tests: 235 passed, 3 xfailed, 32 warnings
+    ;; tests: 255 passed, 1 xfailed, 1 warning
     (native-inputs
      (list python-pytest
            python-setuptools))
