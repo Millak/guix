@@ -21,6 +21,7 @@
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1526,6 +1527,8 @@ supports automatic snapshots timelines.")
       (build-system gnu-build-system)
       (arguments
        (list
+        #:configure-flags
+        #~'("CFLAGS=-Wno-error=implicit-int")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-tool-locations
