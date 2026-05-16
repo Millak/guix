@@ -6953,7 +6953,7 @@ supports only the basic features of the original.")
 (define-public python-losoto
   (package
     (name "python-losoto")
-    (version "2.6.0")
+    (version "2.7.1")
     (source
      (origin
        (method git-fetch)
@@ -6962,7 +6962,7 @@ supports only the basic features of the original.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wqqjc7iaphiq517n939s3wmsypyxwjaqrr51q21343m2blrl40m"))))
+        (base32 "09z1zfi9aisj289jniqyy5ls7x4zy0pjry3zaagng1b82lfj49qc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
