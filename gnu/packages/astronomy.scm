@@ -7858,7 +7858,7 @@ and the Generalized Lomb-Scargle periodogram
     (build-system pyproject-build-system)
     (native-inputs
      (list cmake-minimal
-           pybind11-2
+           pybind11
            python-pandas
            python-pytest
            python-scipy
