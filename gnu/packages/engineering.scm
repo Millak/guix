@@ -33,7 +33,7 @@
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2022, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022, 2024-2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022, 2023, 2025 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Theofilos Pechlivanis <theofilos.pechlivanis@gmail.com>
@@ -438,9 +438,8 @@ optimizer; and it can produce photorealistic and design review images.")
                 "0x37vfp6k0d2z3gnig0hbicvi0jp8v267xjnn3z8jdllpiaa6p3k"))
               (snippet
                ;; Remove a non-free file.
-               '(begin
-                  (delete-file "doc/psfig.sty")
-                  #t))
+               #~(begin
+                   (delete-file "doc/psfig.sty")))
               (patches (search-patches "fastcap-mulSetup.patch"
                                        "fastcap-mulGlobal.patch"))))
     (build-system gnu-build-system)
@@ -452,77 +451,79 @@ optimizer; and it can produce photorealistic and design review images.")
      `(("texlive" ,(texlive-local-tree))
        ("ghostscript" ,ghostscript)))
     (arguments
-     `(#:make-flags '("CC=gcc" "RM=rm" "SHELL=sh" "all")
+     (list
+      #:make-flags #~(list "CC=gcc" "RM=rm" "SHELL=sh"
+                           (string-append
+                            "CFLAGS="
+                            "-Wno-error=implicit-int"
+                            " -Wno-error=return-mismatch"
+                            " -Wno-error=implicit-function-declaration")
+                           "all")
        #:parallel-build? #f
        #:tests? #f ;; no tests-suite
-       #:modules ((srfi srfi-1)
-                  ,@%default-gnu-modules)
+       #:modules `((srfi srfi-1)
+                   ,@%default-gnu-modules)
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'make-doc
-           (lambda _
-             (invoke "make" "CC=gcc" "RM=rm" "SHELL=sh" "manual")))
-         (add-before 'make-doc 'fix-doc
-           (lambda _
-             (substitute* "doc/Makefile" (("/bin/rm") (which "rm")))
-             (substitute* (find-files "doc" "\\.tex")
-               (("\\\\special\\{psfile=([^,]*),.*scale=([#0-9.]*).*\\}"
-                 all file scale)
-                (string-append "\\includegraphics[scale=" scale "]{"
-                               file "}"))
-               (("\\\\psfig\\{figure=([^,]*),.*width=([#0-9.]*in).*\\}"
-                 all file width)
-                (string-append "\\includegraphics[width=" width "]{"
-                               file "}"))
-               (("\\\\psfig\\{figure=([^,]*),.*height=([#0-9.]*in).*\\}"
-                 all file height)
-                (string-append "\\includegraphics[height=" height "]{"
-                               file "}"))
-               (("\\\\psfig\\{figure=([^,]*)\\}" all file)
-                (string-append "\\includegraphics{" file "}")))
-             (substitute* '("doc/mtt.tex" "doc/tcad.tex" "doc/ug.tex")
-               (("^\\\\documentstyle\\[(.*)\\]\\{(.*)\\}"
-                 all options class)
-                (string-append "\\documentclass[" options "]{"
-                               class "}\n"
-                               "\\usepackage{graphicx}\n"
-                               "\\usepackage{robinspace}"))
-               (("\\\\setlength\\{\\\\footheight\\}\\{.*\\}" all)
-                (string-append "%" all))
-               (("\\\\setstretch\\{.*\\}" all)
-                (string-append "%" all)))
-             #t))
-         (delete 'configure)
-         (add-before 'install 'clean-bin
-           (lambda _
-             (delete-file (string-append (getcwd) "/bin/README"))
-             #t))
-         (add-before 'install 'make-pdf
-           (lambda _
-             (setenv "TEXMFVAR" "/tmp")     ;For texlive font cache
-             (with-directory-excursion "doc"
-               (and
-                (for-each (lambda (file)
-                            (invoke "dvips" file "-o"))
-                          (find-files "." "\\.dvi"))
-                (for-each (lambda (file)
-                            (invoke "ps2pdf" file))
-                          '("mtt.ps" "ug.ps" "tcad.ps"))
-                (invoke "make" "clean")))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (data (string-append out "/share"))
-                    (bin (string-append out "/bin"))
-                    (doc (string-append data "/doc/" ,name "-" ,version))
-                    (examples (string-append doc "/examples")))
-               (with-directory-excursion "bin"
-                 (for-each (lambda (f)
-                             (install-file f bin))
-                           (find-files "." ".*")))
-               (copy-recursively "doc" doc)
-               (copy-recursively "examples" examples)
-               #t))))))
+       #~(modify-phases %standard-phases
+           (add-after 'build 'make-doc
+             (lambda _
+               (invoke "make" "CC=gcc" "RM=rm" "SHELL=sh" "manual")))
+           (add-before 'make-doc 'fix-doc
+             (lambda _
+               (substitute* "doc/Makefile" (("/bin/rm") (which "rm")))
+               (substitute* (find-files "doc" "\\.tex")
+                 (("\\\\special\\{psfile=([^,]*),.*scale=([#0-9.]*).*\\}"
+                   all file scale)
+                  (string-append "\\includegraphics[scale=" scale "]{"
+                                 file "}"))
+                 (("\\\\psfig\\{figure=([^,]*),.*width=([#0-9.]*in).*\\}"
+                   all file width)
+                  (string-append "\\includegraphics[width=" width "]{"
+                                 file "}"))
+                 (("\\\\psfig\\{figure=([^,]*),.*height=([#0-9.]*in).*\\}"
+                   all file height)
+                  (string-append "\\includegraphics[height=" height "]{"
+                                 file "}"))
+                 (("\\\\psfig\\{figure=([^,]*)\\}" all file)
+                  (string-append "\\includegraphics{" file "}")))
+               (substitute* '("doc/mtt.tex" "doc/tcad.tex" "doc/ug.tex")
+                 (("^\\\\documentstyle\\[(.*)\\]\\{(.*)\\}"
+                   all options class)
+                  (string-append "\\documentclass[" options "]{"
+                                 class "}\n"
+                                 "\\usepackage{graphicx}\n"
+                                 "\\usepackage{robinspace}"))
+                 (("\\\\setlength\\{\\\\footheight\\}\\{.*\\}" all)
+                  (string-append "%" all))
+                 (("\\\\setstretch\\{.*\\}" all)
+                  (string-append "%" all)))))
+           (delete 'configure)
+           (add-before 'install 'clean-bin
+             (lambda _
+               (delete-file (string-append (getcwd) "/bin/README"))))
+           (add-before 'install 'make-pdf
+             (lambda _
+               (setenv "TEXMFVAR" "/tmp")     ;For texlive font cache
+               (with-directory-excursion "doc"
+                 (for-each (lambda (file)
+                             (invoke "dvips" file "-o"))
+                           (find-files "." "\\.dvi"))
+                 (for-each (lambda (file)
+                             (invoke "ps2pdf" file))
+                           '("mtt.ps" "ug.ps" "tcad.ps"))
+                 (invoke "make" "clean"))))
+           (replace 'install
+             (lambda _
+               (let* ((data (string-append #$output "/share"))
+                      (bin (string-append #$output "/bin"))
+                      (doc (string-append data "/doc/" #$name "-" #$version))
+                      (examples (string-append doc "/examples")))
+                 (with-directory-excursion "bin"
+                   (for-each (lambda (f)
+                               (install-file f bin))
+                             (find-files "." ".*")))
+                 (copy-recursively "doc" doc)
+                 (copy-recursively "examples" examples)))))))
     (home-page "https://www.rle.mit.edu/cpg/research_codes.htm")
     (synopsis "Multipole-accelerated capacitance extraction program")
     (description
