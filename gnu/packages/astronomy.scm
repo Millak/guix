@@ -2883,7 +2883,7 @@ simulated Astronomical data in Python.")
 (define-public python-astromartini
   (package
     (name "python-astromartini")
-    (version "2.1.15")
+    (version "2.1.18")
     (source
      (origin
        (method git-fetch)
@@ -2892,12 +2892,22 @@ simulated Astronomical data in Python.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18fbygh6vimjdwb7k9kdqzi1v8yfailrh4m5c5pgj20043n8xh8s"))))
+        (base32 "0dqwy6wmdwv5garr30jiimi6fdgzsx3havndjmpvg520ld6l3skv"))))
     (build-system pyproject-build-system)
-    ;; Tests are not thread save, see
-    ;; <https://github.com/kyleaoman/martini/issues/98>.
-    ;;
-    ;; tests: 2529 passed, 11 skipped, 4 xfailed, 8 warnings
+    (arguments
+     (list
+      ;; Tests are not thread save, see
+      ;; <https://github.com/kyleaoman/martini/issues/98>.
+      ;;
+      ;; tests: 2758 passed, 12 skipped, 4 xfailed
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; If the secret isn't available (e.g. github workflow on fork)
+              ;; then skip: see
+              ;; <tests/test_sources.py::TestTNGSource::test_tng_notebook>.
+              (setenv "TNG_API_KEY" ""))))))
     (native-inputs
      (list python-pytest
            python-setuptools))
@@ -2917,7 +2927,7 @@ simulated Astronomical data in Python.")
            python-swiftgalaxy
            python-swiftsimio
            python-utilities-awetzel
-           #;python-velociraptor))      ;not packaged yet in Guix
+           python-velociraptor))
     (home-page "https://github.com/kyleaoman/martini")
     (synopsis "Synthetic datacube creation from simulations")
     (description
