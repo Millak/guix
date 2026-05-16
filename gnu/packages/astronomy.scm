@@ -5770,13 +5770,16 @@ across many files.")
 (define-public python-glue-vispy-viewers
   (package
     (name "python-glue-vispy-viewers")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "glue_vispy_viewers" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/glue-viz/glue-vispy-viewers")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0pnlkrkc6vn6mrqlw8xknb01rp7dy3qng4vaaiz9fry50nkf4gsd"))))
+        (base32 "0wa6sgyvnmdgpb7h88nqz31wb11lf7v31a3bs91z5ncdxhq9sbvz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
