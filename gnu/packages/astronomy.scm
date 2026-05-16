@@ -9263,21 +9263,16 @@ pipelines.")
 (define-public python-romancal
   (package
     (name "python-romancal")
-    ;; To support "spherical-geometry>=1.3.3,<1.5"
-    (properties '((commit . "fb49640377b93d1c66456dc5bb7a6d1fa355eea1")
-                  (revision . "1")))
-    (version (git-version "0.22.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/spacetelescope/romancal")
-              (commit (assoc-ref properties 'commit))))
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1l6c1w9i9ml2nvfiphrvkl1qpi6q56ljwa2759w40mx17h7a1xgp"))))
+        (base32 "1ybyw7xkgdr3fzlvly2i8q8j0y56zyd94z75p4pvjhnqbm5i37vk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
