@@ -11618,7 +11618,7 @@ cosmological simulations.")
 (define-public python-viresclient
   (package
     (name "python-viresclient")
-    (version "0.15.2")
+    (version "0.16.0")
     (source
      (origin
        (method git-fetch)
@@ -11627,7 +11627,7 @@ cosmological simulations.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gr8q59ici7plgazi47g9yyhpb48mh08l2qyragnw9m336qiy4dv"))))
+        (base32 "1plnjb6x8221q5ivnzjrvqvig7lb54rdvywzcg04msc3v3kwmdk6"))))
     (build-system pyproject-build-system)
     ;; tests: 9 passed
     (native-inputs
