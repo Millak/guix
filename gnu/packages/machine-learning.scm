@@ -1350,6 +1350,45 @@ SentencePiece allows us to make a purely end-to-end system that does not
 depend on language-specific pre- or post-processing.")
     (license license:asl2.0)))
 
+(define-public stable-diffusion-cpp
+  (package
+    (name "stable-diffusion-cpp")
+    (version "608-38b14ad")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/leejet/stable-diffusion.cpp")
+              (commit (string-append "master-" version))
+              ;; for libwebm 1.0.0, libwepb 1.6.0
+              (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yirchx3xsipdc6ncfjlckcra6zv06ilzlcrc8mcap2a2gvwbkzr"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      ;; see docs/build.md
+      #:configure-flags
+      #~(list "-DSD_BUILD_SHARED_LIBS=ON"
+              "-DSD_USE_SYSTEM_GGML=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-CXXFLAGS
+            (lambda _
+              (setenv "CXXFLAGS" "-DGGML_MAX_NAME=128"))))))
+    (inputs
+     (list ggml-for-stable-diffusion))
+    (properties '((tunable? . #true))) ;use AVX512, FMA, etc. when available
+    (home-page "https://github.com/leejet/stable-diffusion.cpp")
+    (synopsis "Diffusion model inference in pure C/C++")
+    (description
+     "This package provides a Plain C/C++ implementation based
+on ggml, working in the same way as llama.cpp.  It supports diffusion models
+such as SD, Flux, Wan, Qwen and Image,Z-Image.")
+    (license license:expat)))
+
 (define-public python-hopcroftkarp
   ;; This commit fixes a broken import, but has not been released to PyPI.
   (let ((commit "2846e1dd3265d95d2bddb0cf4190b830cbb4efe6")
