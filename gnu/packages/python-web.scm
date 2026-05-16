@@ -3392,6 +3392,34 @@ files.")
 code asynchronously.")
     (license license:asl2.0)))
 
+(define-public python-requests-unixsocket
+  (package
+    (name "python-requests-unixsocket")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/msabramo/requests-unixsocket")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f0pi31xqzm3cdag4s4gpdj36x169jwc8ibqvcwqz6h9c0pklf3n"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-waitress))
+    (propagated-inputs
+     (list python-requests))
+    (home-page "https://github.com/msabramo/requests-unixsocket")
+    (synopsis "Use requests to talk HTTP via a UNIX domain socket")
+    (description
+     "This package provides an extension to @code{requests} which let it talk
+HTTP via a UNIX domain socket.")
+    (license license:asl2.0)))
+
 (define-public python-s3path
   (package
     (name "python-s3path")
