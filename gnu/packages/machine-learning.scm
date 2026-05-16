@@ -256,6 +256,30 @@ written in C and C++ with a focus on transformer inference, similar to ML
 libraries such as PyTorch and TensorFlow.")
     (license license:expat)))
 
+(define-public ggml-for-stable-diffusion
+  (package
+    (inherit ggml)
+    (name "ggml-for-stable-diffusion")
+    (version "0.9.9")                  ;sync with stable-diffusion
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ggml-org/ggml")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12sm95pqh3prn0hsjsr0hzb3flqh1xg4nv928h56sdky60whhbzx"))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:configure-flags flags)
+        ;; See: https://github.com/leejet/stable-diffusion.cpp/issues/1087
+        #~(cons*
+           (string-append "-DGGML_BUILD_NUMBER=" #$version)
+           (delete (string-append "-DGGML_BACKEND_DIR="
+                                  #$output "/lib/backends")
+                   (delete "-DGGML_BACKEND_DL=ON"  #$flags))))))))
+
 (define-public ggml-for-whisper
   (package
     (inherit ggml)
