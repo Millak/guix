@@ -5912,7 +5912,7 @@ and a 3D volume rendering viewer.")
 specifically pulsar timing array signals.")
     (license license:expat)))
 
-(define-public python-gwcs-1
+(define-public python-gwcs
   (package
     (name "python-gwcs")
     (version "1.0.3")
@@ -5949,9 +5949,8 @@ the entire transformation pipeline from input coordinates (detector by
 default) to world coordinates.")
     (license license:bsd-3)))
 
-;; Not all of the dependeds are ready to use 1.X.X, pin on the highest 0.X.X
-;; for now.
-(define-public python-gwcs python-gwcs-1)
+;; XXX: Deprecated on <2026-05-16>.
+(define-public python-gwcs-1 python-gwcs)
 
 (define-public python-halo-analysis
   (package
