@@ -52,6 +52,7 @@
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2026 Daniel Martins <email@danielfm.me>
+;;; Copyright © 2026 Yappaholic <sav.boyar@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2743,6 +2744,34 @@ the official client.")
 is being designed to work with Podman but is also applicable for other OCI
 container management applications.")
     (license license:asl2.0)))
+
+(define-public onefetch
+  (package
+    (name "onefetch")
+    (version "2.27.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "onefetch" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qxcrxvf6wkyx332nigcim5l136v9wsm5vx0wsacnsrhl0rkicdp"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f))
+    (native-inputs
+     (list pkg-config
+           git-minimal  ; For tests
+           `(,zstd "lib")))
+    (inputs (cargo-inputs 'onefetch))
+    (home-page "https://onefetch.dev")
+    (synopsis "Command-line Git information tool")
+    (description "Onefetch is a command-line Git information tool that
+displays project information and code statistics for a local Git repository
+directly in your terminal. The tool works completely offline with a focus on
+performance and customizability.")
+    (license license:expat)))
 
 (define-public ouch
   (package
