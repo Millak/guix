@@ -5949,18 +5949,6 @@ the entire transformation pipeline from input coordinates (detector by
 default) to world coordinates.")
     (license license:bsd-3)))
 
-;; The last 0.X.X version, providing breaking changes with 1.X.X.
-(define-public python-gwcs-0
-  (package
-    (inherit python-gwcs-1)
-    (version "0.26.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "gwcs" version))
-       (sha256
-        (base32 "0gkxgwzlazg0xihhgg9vlss6jj7lg6i6r2z6igpxcnyc5s147d0p"))))))
-
 ;; Not all of the dependeds are ready to use 1.X.X, pin on the highest 0.X.X
 ;; for now.
 (define-public python-gwcs python-gwcs-1)
