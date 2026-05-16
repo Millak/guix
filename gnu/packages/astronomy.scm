@@ -4288,7 +4288,7 @@ Spectrograph}.")
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "13.1.14")
+    (version "13.2.1")
     (source
      (origin
        (method git-fetch)
@@ -4297,14 +4297,14 @@ Spectrograph}.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1l9m9jln4vk0a2dzzm0wlijlik74lvd1mqf7nh5g70rj8y524b7a"))))
+        (base32 "09p7968mgnj5nr90cwwlx618rj6hfymdjnbav2lfjj878xn3ps0n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; tests: 26 passed, 3 skipped
       #:test-flags
       ;; XXX: Tests require a complex set up and test data, try to run some
-      ;; minimal portion of unit tests to persist package comparability during
+      ;; minimal portion of unit tests to persist package compatibility during
       ;; updates, see:
       ;; <https://github.com/spacetelescope/crds/blob/13.1.1/TESTING>.
       #~(list #$@(map (lambda (file) (string-append "--ignore=" file))
