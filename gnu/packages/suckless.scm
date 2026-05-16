@@ -18,7 +18,7 @@
 ;;; Copyright © 2024 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 cage <cage-dev@twistfold.it>
-;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025, 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -715,7 +715,8 @@ assuming a reparenting window manager for instance.")
     (arguments
      `(#:tests? #f ; No tests
        #:make-flags (list
-                     (string-append "PREFIX=" %output))
+                     (string-append "PREFIX=" %output)
+                     "CFLAGS=-Wno-error=implicit-function-declaration")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)))) ; No configure script
