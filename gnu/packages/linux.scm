@@ -971,6 +971,12 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
     ,@(if (version>=? version "6.17")
           '(("CONFIG_DMABUF_HEAPS_CMA_LEGACY" . #t))
           '())
+    ;; Enable sched_ext support for userspace schedulers
+    ;; Note: Depends on BPF tracing
+    ;; https://docs.kernel.org/scheduler/sched-ext.html
+    ,@(if (version>=? version "6.12")
+          '(("CONFIG_SCHED_CLASS_EXT" . #t))
+          '())
     ;; Disable the EFI pstore storage backend to avoid causing
     ;; unrecoverable failures on some EFI systems:
     ;; https://lists.gnu.org/archive/html/help-guix/2025-01/msg00173.html
