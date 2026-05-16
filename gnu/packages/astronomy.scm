@@ -9347,17 +9347,17 @@ observations from the Nancy Grace Roman Space Telescope.")
 (define-public python-romanisim
   (package
     (name "python-romanisim")
-    (version "0.13.1")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "romanisim" version))
        (sha256
-        (base32 "0wvpsi6iq13a2zh9n4j6nw4mmi9xpk2k79hsl827jixfqidl1mfq"))))
+        (base32 "13ffgfid1ii4w5aqxw44qx0nxds35889wwjmjwm9hqyr46a2r5a0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 101 passed, 2 skipped, 8 deselected
+      ;; tests: 112 passed, 2 skipped, 8 deselected, 3 warnings
       #:test-flags
       #~(list "--pyargs" "romanisim"
               ;; TODO: python-stpsf needs to be packaged with test data:
