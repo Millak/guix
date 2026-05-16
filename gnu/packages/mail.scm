@@ -69,6 +69,7 @@
 ;;; Copyright © 2026 Sergey Trofimov <sarg@sarg.org.ru>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2026 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -249,7 +250,7 @@
          (add-before 'bootstrap 'fix-gettext-macro-version
            (lambda _
              (substitute* "po/Makefile.in.in"
-               (("0.18") "0.20"))))
+               (("0.18") "0.22"))))
          (replace 'bootstrap
            (lambda _
              (invoke "aclocal")
