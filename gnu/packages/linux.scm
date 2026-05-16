@@ -11037,7 +11037,7 @@ the superuser to make device nodes.")
 (define-public fakeroot
   (package
     (name "fakeroot")
-    (version "1.37.1.2")
+    (version "1.37.2")
     (source
      (origin
        ;; There are no tags in the repository, so take this snapshot.
@@ -11046,7 +11046,7 @@ the superuser to make device nodes.")
                            "fakeroot/fakeroot_" version ".orig.tar.gz"))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "091jym16c4m4qjf5yclksvx7nw4sl7v5yrkz6z46wrwaij99d54m"))
+        (base32 "1nw4i3cih9r1q1fvmwxwxgnykkvc18pqyp21ry7vhwcpx3xn1shf"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet
