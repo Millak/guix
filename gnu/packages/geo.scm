@@ -1248,21 +1248,32 @@ readily with other Python GIS packages such as pyproj, Rtree, and Shapely.")
 (define-public python-geopack
   (package
     (name "python-geopack")
-    (version "1.0.12")
+    ;; See: <https://github.com/tsssss/geopack/issues/26>.
+    (properties '((commit . "8c5f0e0f6752604c5a6f57bac752059e0f85edbb")
+                  (revision . "0")))
+    (version (git-version "1.0.13"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/tsssss/geopack")
-              (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ap5j4359xxjkbz06y097yq5d37sxcwlnlsfwrv6dvza7ydmgcgg"))))
+        (base32 "0ywqg9j09mhpfb9dcjmnlvh26s0v4lvzfwdmlivgx9ypamafa117"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; XXX Reported upstream <https://github.com/tsssss/geopack/issues/21>.
-      #:tests? #f))
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "setup.py"
+                (("1.0.12") "1.0.13")))))))
     (native-inputs
      (list python-setuptools))
     (propagated-inputs
