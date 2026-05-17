@@ -42,6 +42,7 @@
 ;;; Copyright © 2025-2026 Hennadii Stepanov <hebasto@gmail.com>
 ;;; Copyright © 2025 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2026 Robin Templeton <robin@guixotic.coop>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1552,7 +1553,7 @@ agent.")
 (define-public kitsas
   (package
     (name "kitsas")
-    (version "5.9")
+    (version "5.11.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1561,7 +1562,7 @@ agent.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hx8fad8pyma6gq60ziiqd5mbflwzjn0115lsdvf72sz86jryl70"))))
+                "1rlg36r62ngl4zpqja7fv407i6xnax2wh7y5jcplsx3zi7nrnkk5"))))
     (build-system qt-build-system)
     (inputs (list libzip qtsvg qtwebengine qt5compat))
     (arguments
