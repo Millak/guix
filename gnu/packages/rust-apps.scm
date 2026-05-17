@@ -2631,7 +2631,7 @@ GitHub-like look.")
                  (list this-package)
                  '())
              (list pkg-config)))
-    (inputs (cons* lua-5.1 openssl `(,zstd "lib") (cargo-inputs 'mise)))
+    (inputs (cons* bzip2 lua-5.1 openssl xz `(,zstd "lib") (cargo-inputs 'mise)))
     (home-page "https://mise.jdx.dev")
     (synopsis "Polyglot version manager, task runner, and environment manager")
     (description "Mise manages dev tool versions (e.g., Node.js, Python, Ruby,
