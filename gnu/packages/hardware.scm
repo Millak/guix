@@ -1720,7 +1720,7 @@ your network, send SCPI commands, and receive responses.")
 (define-public lxi-tools
   (package
     (name "lxi-tools")
-    (version "2.5")
+    (version "2.8")
     (source
      (origin
        (method git-fetch)
@@ -1730,7 +1730,7 @@ your network, send SCPI commands, and receive responses.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1xc99xhca386az73rpsrf3z0j7y0hrv0xcwj1dr2ahr7lhnjznqp"))))
+         "0xkg1hipixzg5ssfy1k6w0yjsr9qbkv1bhx2xw2pqk9plaj9jrcn"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -1740,7 +1740,7 @@ your network, send SCPI commands, and receive responses.")
           (add-after 'unpack 'skip-gtk-update-icon-cache
             (lambda _
               (substitute* "build-aux/meson/postinstall.py"
-                (("gtk-update-icon-cache") (which "true"))
+                (("gtk4-update-icon-cache") (which "true"))
                 (("update-desktop-database") (which "true"))))))))
     (native-inputs
      (list bash-completion
