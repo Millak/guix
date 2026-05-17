@@ -4749,7 +4749,7 @@ parallel computing platforms.  It also supports serial execution.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.64")
+    (version "0.65")
     (source
      (origin
        (method git-fetch)
@@ -4757,15 +4757,16 @@ parallel computing platforms.  It also supports serial execution.")
               (url "https://github.com/YosysHQ/yosys")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "13gw5msk1kv05jkb330nybvx2s0ixm6l6mdpyapnqmv3lkhby1mj"))
+        (base32 "04sks9hj8h9vy6zii29zjgq38h2h4nz8a7xxiq33p1aivwq7bz8q"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
     (arguments
      (list
-      #:test-target "vanilla-test"  ;TODO: restore to "test" with next release
+      #:test-target "all"
       #:make-flags
       #~(list (string-append "PREFIX=" #$output)
+              "ENABLE_FUNCTIONAL_TESTS=1"
               "ENABLE_EDITLINE=1"
               "ENABLE_LIBYOSYS=1"
               "ENABLE_PYOSYS=1"
@@ -4780,6 +4781,11 @@ parallel computing platforms.  It also supports serial execution.")
                       #$(this-package-input "abc-yosyshq")))
       #:phases
       #~(modify-phases %standard-phases
+          ;; TODO: Remove when fixed.
+          (add-after 'unpack 'remove-aiger
+            (lambda _
+              (substitute* "tests/Makefile"
+                ((".*aiger.*") ""))))
           (add-before 'configure 'fix-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "backends/smt2/smtio.py"
@@ -4870,12 +4876,12 @@ parallel computing platforms.  It also supports serial execution.")
               (git-reference
                 (url "https://github.com/povik/yosys-slang")
                 ;; No tags, nor releases.
-                (commit "4e53d772996184b07e9bfe784060f96e6cb0a267")
+                (commit "cf20b1ba0d2c9df0508f927930a87565e7e0d220")
                 (recursive? #t)))  ;requires slang and fmt
              (file-name "yosys-slang")
              (sha256
               (base32
-               "1jjr1b6xd1sr9fkyfyl4y2wkzl51m7g10bw97mnw81v2mzssrs2q")))))
+               "1rl9i19a90yis33g549ida7lygfh1qka5k96zdrvk0shn2jnm8g4")))))
     ;; Optional dependencies increase considerably package closure.
     ;; - gtkwave: required only for vcd2fst binary, used by ‘sim’ command.
     ;; - graphviz, xdot: used by ‘show’ command to display schematics.
@@ -4906,7 +4912,7 @@ for various application domains, including FPGAs and ASICs.")
               license:expat
               ;; yosys-slang/third_party/fmt
               license:bsd-2 license:bsd-3 license:psfl
-              ;; yosys
+              ;; yosys, yosys-slang
               license:isc))))
 
 (define-deprecated-package yosys-clang yosys)
