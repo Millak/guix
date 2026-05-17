@@ -2352,28 +2352,29 @@ more.")
         (base32 "0r1nbw4ljl4654kjw1vszf4gsp0cc1s3bp2y2azml988r740vl8s"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-shell-completion-dir
-           (lambda _
-             (setenv "SHELL_COMPLETIONS_DIR" "target/assets")))
-         (add-after 'install 'install-more
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share"))
-                    (bash-completions-dir
-                      (string-append out "/etc/bash_completion.d"))
-                    (zsh-completions-dir
-                      (string-append share "/zsh/site-functions"))
-                    (fish-completions-dir
-                      (string-append share "/fish/vendor_completions.d")))
-               ;; The completions are generated in build.rs.
-               (install-file "target/assets/_lsd" zsh-completions-dir)
-               (install-file "target/assets/lsd.fish" fish-completions-dir)
-               (mkdir-p bash-completions-dir)
-               (copy-file "target/assets/lsd.bash"
-                          (string-append bash-completions-dir "/lsd"))))))))
+     (list
+      #:install-source? #f
+      #:imported-modules (append %copy-build-system-modules
+                                 %cargo-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build copy-build-system) #:prefix copy:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pre-build
+            (lambda _
+              (setenv "SHELL_COMPLETIONS_DIR" "target/assets")))
+          (add-after 'install 'install-extras
+            (lambda args
+              (apply (assoc-ref copy:%standard-phases 'install)
+                     #:install-plan
+                     '(("target/assets/lsd.bash"
+                        "share/bash-completion/completions/lsd")
+                       ("target/assets/lsd.fish"
+                        "share/fish/vendor_completions.d/")
+                       ("target/assets/_lsd"
+                        "share/zsh/site-functions/"))
+                     args))))))
     (native-inputs (list pkg-config
                          ;; for tests
                          git-minimal))
