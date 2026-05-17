@@ -26303,6 +26303,32 @@ for high-level filesystem operations.")
 distances, edit scripts and ratios for strings (slices of runes).")
     (license license:expat)))
 
+(define-public go-github-com-theckman-goconstraint
+  (package
+    (name "go-github-com-theckman-goconstraint")
+    (version "1.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/theckman/goconstraint")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ngc5zc409smdbl5yj84ynzzcqk3g070bxwhl9jy03bz0ic4sfxc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/theckman/goconstraint"))
+    (home-page "https://github.com/theckman/goconstraint")
+    (synopsis "Declare a minimum required Go version to build the code")
+    (description
+     "Package goconstraint is a lightweight way to declare that the code
+requires a minimum Go runtime version, using a blank import.")
+    ;; This package is released under two software licenses: MIT or Public
+    ;; Domain.
+    (license (list license:expat license:public-domain))))
+
 (define-public go-github-com-thejerf-suture
   (package
     (name "go-github-com-thejerf-suture")
