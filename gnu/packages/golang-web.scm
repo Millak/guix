@@ -3183,6 +3183,35 @@ the OTEL Go SDK.")
      "This package provides a minimal templating engine for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-azure-azure-pipeline-go
+  (package
+    (name "go-github-com-azure-azure-pipeline-go")
+    (version "0.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Azure/azure-pipeline-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "154qwr7v1q2wjp263jhkvrygi728q568zc930h3fxp75v32laqwb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/Azure/azure-pipeline-go"))
+    (propagated-inputs
+     (list go-github-com-mattn-go-ieproxy
+           go-github-com-pkg-errors))
+    (home-page "https://github.com/Azure/azure-pipeline-go")
+    (synopsis "HTTP request/response middleware pipeline for Go")
+    (description
+     "Package pipeline implements an HTTP request/response middleware pipeline
+whose policy objects mutate an HTTP request's URL, query parameters, and/or
+headers before the request is sent over the wire.")
+    (license license:expat)))
+
 (define-public go-github-com-azure-azure-sdk-for-go-sdk-azcore
   (package
     (name "go-github-com-azure-azure-sdk-for-go-sdk-azcore")
