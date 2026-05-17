@@ -3687,7 +3687,7 @@ can be whipped up with little effort.")
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs
-     (list jansson libcap ncurses))
+     (list jansson ncurses))
     (arguments
      `(#:tests? #f))                    ; tests require network access
     (home-page "https://www.bitwizard.nl/mtr/")
