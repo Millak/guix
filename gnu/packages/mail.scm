@@ -3376,14 +3376,14 @@ from the Cyrus IMAP project.")
 (define-public opensmtpd
   (package
     (name "opensmtpd")
-    (version "7.7.0p0")
+    (version "7.8.0p1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.opensmtpd.org/archives/"
                            "opensmtpd-" version ".tar.gz"))
        (sha256
-        (base32 "0s1r93f9g8rpbd13v68arx1apgszjfm1knww2fzf9grcrshkv5dh"))))
+        (base32 "1hz3c28b6kss2dwrjxi8nbv7q0zzwv8nd521d63g4h1l5srv2wzl"))))
     (build-system gnu-build-system)
     (inputs
      ;; OpenSMTPd bundled (a subset of) libasr and libtls, which we use.  See
@@ -3392,7 +3392,6 @@ from the Cyrus IMAP project.")
            bdb
            coreutils       ;for cat
            gzip            ;for zcat
-           libbsd          ;https://github.com/OpenSMTPD/OpenSMTPD/issues/1233
            libevent
            libressl
            linux-pam
@@ -3400,7 +3399,8 @@ from the Cyrus IMAP project.")
            zlib))
     (native-inputs
      (list autoconf
-           automake-1.16.5
+           automake
+           libtool
            bison
            groff                        ;for man pages
            pkg-config))
@@ -3410,7 +3410,6 @@ from the Cyrus IMAP project.")
       #~(list "--localstatedir=/var"
               ;; Allow work with /etc/mailname.
               "--sysconfdir=/etc"
-              "--with-libbsd"
               ;; This is the default only if it exists at build time—it doesn't.
               "--with-path-socket=/var/run"
               "--with-path-CAfile=/etc/ssl/certs/ca-certificates.crt"
@@ -3428,6 +3427,7 @@ from the Cyrus IMAP project.")
           ;; Fix some incorrectly hard-coded external tool file names.
           (add-after 'unpack 'patch-FHS-file-names
             (lambda* (#:key inputs #:allow-other-keys)
+              (delete-file "configure")
               (substitute* "mk/pathnames"
                 ;; avoids warning smtpd: couldn't enqueue offline message
                 ;; smtpctl exited abnormally
