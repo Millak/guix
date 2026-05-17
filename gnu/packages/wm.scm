@@ -2512,7 +2512,7 @@ limited size and a few external dependencies.  It is configurable via
 (define-public mangowm
   (package
     (name "mangowm")
-    (version "0.12.9")
+    (version "0.13.0")
     (source
      (origin
        (method git-fetch)
@@ -2521,7 +2521,7 @@ limited size and a few external dependencies.  It is configurable via
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0iczd26gcj0azcl7gj34r6n1w4jx29ziqx3q166znhz7lrbdxzj4"))))
+        (base32 "1sh1hcr3c74ac8cxd45mnjw1zpb2i22bsfz02cb409rw6dwiy524"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -2554,7 +2554,7 @@ limited size and a few external dependencies.  It is configurable via
                   xcb-util-wm
                   wlroots-0.19
                   scenefx))
-    (home-page "https://github.com/mangowm/mango")
+    (home-page "https://mangowm.github.io")
     (synopsis "Wayland compositor based on wlroots and scenefx")
     (description
      "MangoWM is a modern, lightweight, high-performance Wayland compositor
