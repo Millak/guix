@@ -1286,6 +1286,34 @@ for Go applications.  It's an alternative fork of deprecated
 @url{https://github.com/mozilla-services/pkcs7}.")
     (license license:expat)))
 
+(define-public go-github-com-dromara-dongle
+  (package
+    (name "go-github-com-dromara-dongle")
+    (version "1.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dromara/dongle")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c4kiv2xk0s6lb2svdy2y38rklx4qj95asniwv3s24h69frabb6x"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dromara/dongle"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://dongle.go-pkg.com/")
+    (synopsis "Semantic and developer-friendly crypto package for Golang")
+    (description
+     "Package dongle is a simple, semantic and developer-friendly Golang
+crypto package.")
+    (license license:expat)))
+
 (define-public go-github-com-dvsekhvalnov-jose2go
   (package
     (name "go-github-com-dvsekhvalnov-jose2go")
