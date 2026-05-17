@@ -206,13 +206,15 @@ low-end hardware and serving many concurrent requests.")
     (arguments
      `(#:install-source? #f
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-extras
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "cargo" "run" "--example" "generate-docs")
-             (install-file "target/manpages/age-plugin-yubikey.1.gz"
-                           (string-append (assoc-ref outputs "out")
-                                          "/share/man/man1")))))))
+       ,@(if (%current-target-system)
+             `(%standard-phases)
+             `((modify-phases %standard-phases
+                 (add-after 'install 'install-extras
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (invoke "cargo" "run" "--example" "generate-docs")
+                     (install-file "target/manpages/age-plugin-yubikey.1.gz"
+                                   (string-append (assoc-ref outputs "out")
+                                                  "/share/man/man1")))))))))
     (native-inputs (list pkg-config))
     (inputs (cons* pcsc-lite openssl
                    (cargo-inputs 'age-plugin-yubikey)))
