@@ -10063,7 +10063,7 @@ owners/operators, academia and other entities.")
 (define-public python-specreduce
   (package
     (name "python-specreduce")
-    (version "1.8.0")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -10072,13 +10072,18 @@ owners/operators, academia and other entities.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hs9wax5ri4b17s6d2wfg4c79b6byfivljdlrngfpdxdad5fcaph"))))
+        (base32 "14c625a7mg0sznavkmjx1cbxwdrc41fwjsvj4xvyyg7ibx7qikwa"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; tests: 129 passed, 25 skipped
       #:test-flags
-      #~(list "--pyargs" "specreduce")
+      #~(list "--pyargs" "specreduce"
+              ;; Network access is required to download test data from
+              ;; <https://raw.githubusercontent.com/pypeit/pypeit
+              ;; /release/pypeit/data//arc_lines/lists/HeI_lines.dat>.
+              "--ignore=specreduce/tests/test_tilt_correction.py"
+              "--ignore=specreduce/tests/test_tilt_solution.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home
