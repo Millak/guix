@@ -37,7 +37,7 @@
 (define-public python-core-sr-ht
   (package
     (name "python-core-sr-ht")
-    (version "0.83.0")
+    (version "0.83.3")
     (source
      (origin
        (method git-fetch)
@@ -47,7 +47,7 @@
              (recursive? #true)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v8hnphc65kq6p2pv2aicwdfbdrzg0knnzynx4mwx4fi6lp48v04"))))
+        (base32 "07a136icvapj4xp700mi24ibz9cmd21paikrv4c605f7z3vycciq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
