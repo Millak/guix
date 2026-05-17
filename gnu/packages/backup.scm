@@ -893,7 +893,7 @@ is like a time machine for your data.")
 (define-public restic
   (package
     (name "restic")
-    (version "0.17.3")
+    (version "0.18.1")
     (source
      (origin
        (method git-fetch)
@@ -902,7 +902,7 @@ is like a time machine for your data.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wsgq7f0bfi0i5iiwcc3hlf2lhxcnz3zfs8p8bc6l913r9hvyg1x"))))
+        (base32 "0gxhknn022bwg2s8hababqg3vjkzflq59vr67y7r1c8fjnlsgf4l"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -911,15 +911,18 @@ is like a time machine for your data.")
       #:import-path "github.com/restic/restic/cmd/restic"
       #:unpack-path "github.com/restic/restic"
       #:embed-files #~(list "children" "nodes" "text")
-      #:test-flags
-      ;; Python is required.
-      #~(list "-skip" "TestStdinFromCommand|TestStdinFromCommandNoOutput")
       #:test-subdirs #~(list "../../...")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-python-path
+            (lambda* (#:key inputs unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* "cmd/restic/cmd_backup_integration_test.go"
+                  (("python")
+                   (search-input-file inputs "/bin/python3"))))))
           (add-after 'install 'install-docs
-            (lambda* (#:key import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
                 (let* ((man "/share/man")
                        (man-section (string-append man "/man")))
                   ;; Install all the man pages to "out".
@@ -942,12 +945,12 @@ is like a time machine for your data.")
            go-github-com-cenkalti-backoff-v4
            go-github-com-cespare-xxhash-v2
            go-github-com-elithrar-simple-scrypt
-           ;; go-github-com-go-ole-go-ole ;windows only
+           ;; go-github-com-go-ole-go-ole       ;Windows only
            go-github-com-google-go-cmp
            go-github-com-hashicorp-golang-lru-v2
            go-github-com-klauspost-compress
+           ;; go-github-com-microsoft-go-winio  ;Windows only
            go-github-com-minio-minio-go-v7
-           go-github-com-minio-sha256-simd
            go-github-com-ncw-swift-v2
            go-github-com-peterbourgon-unixtransport
            go-github-com-pkg-errors
@@ -967,6 +970,7 @@ is like a time machine for your data.")
            go-golang-org-x-text
            go-golang-org-x-time
            go-google-golang-org-api
+           python-minimal
 
            ;; XXX: These packages have to be bootstrapped to break cycle with
            ;; go-google-golang-org-grpc.
