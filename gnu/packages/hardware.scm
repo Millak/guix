@@ -1382,7 +1382,7 @@ Features:
 (define-public wavemon
   (package
     (name "wavemon")
-    (version "0.9.4")
+    (version "0.9.7")
     (source
      (origin
        (method git-fetch)
@@ -1391,16 +1391,16 @@ Features:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s3yz15vzx90fxyb8bgryksn0cr2gpz9inbcx4qjrgs7zfbm4pgh"))))
+        (base32 "0f2x433jqf2469ybdziq50ggqbk3s4mi2i8s997b9lbcvj3nbdrw"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list "CC=gcc"
-             ;; Makefile.in (ab)uses $(datadir) as $(docdir). Set it to Guix's
-             ;; standard --docdir since it's only used as such.
-             (string-append "datadir=" (assoc-ref %outputs "out")
-                            "/share/doc/" ,name "-" ,version))
-       #:tests? #f))                    ; no tests
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   ;; Makefile.in (ab)uses $(datadir) as $(docdir).  Set it to
+                   ;; Guix's standard --docdir since it's only used as such.
+                   (string-append "datadir=" (assoc-ref %outputs "out")
+                                  "/share/doc/" #$name "-" #$version))
+           #:tests? #f))                    ; no tests
     (native-inputs
      (list pkg-config))
     (inputs
