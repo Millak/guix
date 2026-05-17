@@ -1377,10 +1377,15 @@ console.")
     (arguments
      (list
       #:install-source? #f
+      #:imported-modules (append %copy-build-system-modules
+                                 %cargo-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build copy-build-system) #:prefix copy:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'build 'build-manual
-            (lambda* (#:key inputs #:allow-other-keys)
+          (add-after 'install 'install-manual
+            (lambda* (#:key inputs #:allow-other-keys #:rest args)
               (when (assoc-ref inputs "pandoc")
                 (map (lambda (page)
                        (with-output-to-file page
@@ -1391,31 +1396,26 @@ console.")
                                    (string-append "man/" page ".md")))))
                      (list "eza.1"
                            "eza_colors.5"
-                           "eza_colors-explanation.5")))))
-          (add-after 'install 'install-extras
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (share (string-append out "/share"))
-                     (bash-completions-dir
-                       (string-append share "/bash-completion/completions"))
-                     (zsh-completions-dir
-                       (string-append share "/zsh/site-functions"))
-                     (fish-completions-dir
-                       (string-append share "/fish/vendor_completions.d"))
-                     (nu-completions-dir
-                       (string-append share "/nushell/vendor/autoload"))
-                     (man1 (string-append share "/man/man1"))
-                     (man5 (string-append share "/man/man5")))
-                (when (file-exists? "eza.1")
-                  (install-file "eza.1" man1))
-                (when (file-exists? "eza_colors.5")
-                  (install-file "eza_colors.5" man5))
-                (when (file-exists? "eza_colors-explanation.5")
-                  (install-file "eza_colors-explanation.5" man5))
-                (install-file "completions/bash/eza" bash-completions-dir)
-                (install-file "completions/zsh/_eza" zsh-completions-dir)
-                (install-file "completions/fish/eza.fish" fish-completions-dir)
-                (install-file "completions/nush/eza.nu" nu-completions-dir)))))))
+                           "eza_colors-explanation.5"))
+                (apply (assoc-ref copy:%standard-phases 'install)
+                       #:install-plan
+                       '(("eza.1" "share/man/man1/")
+                         ("eza_colors.5" "share/man/man5/")
+                         ("eza_colors-explanation.5" "share/man/man5/"))
+                       args))))
+          (add-after 'install 'install-completions
+            (lambda args
+              (apply (assoc-ref copy:%standard-phases 'install)
+                     #:install-plan
+                     '(("completions/bash/eza"
+                        "share/bash-completion/completions/")
+                       ("completions/fish/eza.fish"
+                        "share/fish/vendor_completions.d/")
+                       ("completions/nush/eza.nu"
+                        "share/nushell/vendor/autoload/")
+                       ("completions/zsh/_eza"
+                        "share/zsh/site-functions/"))
+                     args))))))
     (native-inputs
      (append (list pkg-config)
              (if (supported-package? pandoc)
