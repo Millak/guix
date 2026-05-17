@@ -30834,6 +30834,30 @@ distributions of benchmark measurements
      "This package allows access different file time metadata from Golang.")
     (license license:expat)))
 
+(define-public go-gopkg-in-go-playground-colors-v1
+  (package
+    (name "go-gopkg-in-go-playground-colors-v1")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-playground/colors")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gdcfgmvzmrcgw1042rkclrsxdzq10mcik2m3r5cl729c8qy2g7h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gopkg.in/go-playground/colors.v1"))
+    (home-page "https://github.com/go-playground/colors")
+    (synopsis "Go color manipulation library/utility")
+    (description
+     "This package provides a Go color manipulation, conversion and printing
+library/utility.")
+    (license license:expat)))
+
 (define-public go-gopkg-in-fsnotify-v1
   (package/inherit go-github-com-fsnotify-fsnotify
     (name "go-gopkg-in-fsnotify-v1")
