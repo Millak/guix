@@ -2617,12 +2617,15 @@ and are compatible with its API.")
   (package
     (name "python-thinc")
     (version "8.3.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "thinc" version))
-              (sha256
-               (base32
-                "1n7zyqasnbb67bcr67l96pvihn4ibjrpbqvi0z56vfwb961594mm"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/explosion/thinc")
+              (commit (string-append "release-v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iw99sw1ipbpqshny9s9hgc0v7gkcxi50x78s6avli208nixgnp5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
