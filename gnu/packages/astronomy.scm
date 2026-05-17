@@ -707,9 +707,9 @@ in FITS files.")
     (name "cianna")
     ;; Project does not publish regular releases, see:
     ;; <https://github.com/Deyht/CIANNA/issues/3>.
-    (properties '((commit . "c9aa934a931ed77663997f0f20172ee7f63b068a")
+    (properties '((commit . "3c4156801b91a9824d534baae9d1473d1aed56d8")
                   (revision . "0")))
-    (version (git-version "1.0.1.2"
+    (version (git-version "1.0.1.4"
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
     (source
@@ -720,10 +720,7 @@ in FITS files.")
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xdm5sfk2w49sg8bpalw5yy2nmfmrmlbyf5bshhg9621rzp5r6p7"))
-       (patches
-        ;; XXX: See: <https://github.com/Deyht/CIANNA/issues/4>.
-        (search-patches "cianna-remove-error-for-missing-cuda.patch"))))
+        (base32 "1qjlzd4zy7ydxr2kvw4qjkmzq9pp5wi3z809sxlc88k3l75djp7m"))))
     (build-system cmake-build-system)
     (arguments
      (list
