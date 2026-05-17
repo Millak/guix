@@ -6,7 +6,7 @@
 # Copyright © 2016, 2018 Mathieu Lirzin <mthl@gnu.org>
 # Copyright © 2018, 2021 Julien Lepiller <julien@lepiller.eu>
 # Copyright © 2019 Timothy Sample <samplet@ngyro.com>
-# Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+# Copyright © 2024, 2026 Janneke Nieuwenhuizen <janneke@gnu.org>
 # Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 #
 # This file is part of GNU Guix.
@@ -147,7 +147,7 @@ $(srcdir)/%D%/contributing.%.texi: po/doc/guix-manual.%.po guix/build/po.go
 
 %D%/os-config-%.texi: gnu/system/examples/%.tmpl
 	$(AM_V_GEN)$(MKDIR_P) "`dirname $@`";	\
-	cp "$<" "$@"
+	sed -e s,@,@@,g "$<" > "$@"
 
 infoimagedir = $(infodir)/images
 dist_infoimage_DATA =				\
