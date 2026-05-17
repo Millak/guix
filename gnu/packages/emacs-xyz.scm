@@ -4120,7 +4120,7 @@ prover, version 4.")
 (define-public emacs-lem
   (package
     (name "emacs-lem")
-    (version "0.24")
+    (version "0.25")
     (source
      (origin
        (method git-fetch)
@@ -4130,7 +4130,7 @@ prover, version 4.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "181cibmv6da4rjr6p3nqpza6i7v4scc4qndznhyjb9nhbf3gsil4"))))
+         "1h28bwy0nd08lxvpqdxqcbg0n2j09ilb7rf3nj6csflz64nhg40x"))))
     (build-system emacs-build-system)
     (arguments
      (list
