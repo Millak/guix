@@ -404,7 +404,7 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
 (define-public ciel
   (package
     (name "ciel")
-    (version "2.4.0")
+    (version "2.4.1")
     (source
      (origin
        (method git-fetch)
@@ -413,7 +413,7 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cj4cpmpqi7aqj9jkpp87qs9bjcg3j97adv1s91pnfrkplff8rh1"))))
+        (base32 "08r30ighn86995dcf7278k9nrci8wbp6kglgk011y6g80z9m2zm7"))))
     (arguments
      (list
       #:tests? #f ;no tests
