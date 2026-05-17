@@ -2960,15 +2960,17 @@ package.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/refraction-networking/utls")
-             (commit (string-append "v" version))))
+              (url "https://github.com/refraction-networking/utls")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "03kgwxdm2lg28fn2w5q7ql2szsiwj2xjdf477h1g3a4a9y9j6zk0"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/refraction-networking/utls"
-       #:tests? #f))                    ;requires internet access
+     (list
+      #:import-path "github.com/refraction-networking/utls"
+      #:test-flags
+      #~(list "-skip" "TestVerifyHostname")))
     (propagated-inputs
      (list go-github-com-andybalholm-brotli
            go-github-com-cloudflare-circl
@@ -2980,10 +2982,12 @@ package.")
            go-golang-org-x-sys))
     (home-page "https://github.com/refraction-networking/utls")
     (synopsis "Fork of the Go standard TLS library")
-    (description "uTLS is a fork of “crypto/tls”, which provides ClientHello
-fingerprinting resistance, low-level access to handshake, fake session tickets
-and some other features.  Handshake is still performed by “crypto/tls”, this
-library merely changes ClientHello part of it and provides low-level access.")
+    (description
+     "uTLS is a fork of @code{crypto/tls}, which provides
+@url{https://www.rfc-editor.org/rfc/rfc9849.html, ClientHello} fingerprinting
+resistance, low-level access to handshake, fake session tickets and some other
+features.  Handshake is still performed by @code{crypto/tls}, this library
+merely changes ClientHello part of it and provides low-level access.")
     (license license:bsd-3)))
 
 (define-public go-github-com-rfjakob-eme
