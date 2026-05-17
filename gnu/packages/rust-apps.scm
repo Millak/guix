@@ -1722,14 +1722,14 @@ repositories.")
 (define-public gitui
   (package
     (name "gitui")
-    (version "0.27.0")
+    (version "0.28.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gitui" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0mbf7gqnlkprx6scyghnp0g5cq2ap0j9c48gnpv0kqlhig0c5r07"))
+        (base32 "1fg7cmksm626vqpcbv913y8gg855r5adcvsm33rxsmgqbabaam6r"))
        (modules '((guix build utils)))
        (snippet
         '(begin
