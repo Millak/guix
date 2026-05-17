@@ -11467,6 +11467,51 @@ simultaneously provides a controller to organize your application code.  It's
 an alternative fork of @url{https://github.com/spf13/cobra}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-spatial-geom
+  (package
+    (name "go-github-com-go-spatial-geom")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-spatial/geom")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09sh76ajybrjpzkcx9am17h1xlakcd7w1xswbx43nj2gidmf6h9l"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-spatial/geom"
+      ;; github.com/go-spatial/geom/planar/makevalid/makevalid_test.go:160:40:
+      ;; undefined: slippy.NewTile
+      #:test-subdirs
+      #~(list "."
+              "internal/...")
+      #:test-flags
+      #~(list "-vet=off"
+              ;; panic
+              "-skip" "TestRecorder")))
+    (propagated-inputs
+     (list go-github-com-arolek-p
+           go-github-com-gdey-errors
+           go-github-com-go-spatial-proj
+           go-github-com-golang-protobuf
+           go-github-com-mattn-go-sqlite3
+           go-github-com-mattn-goveralls
+           go-github-com-pborman-uuid
+           go-golang-org-x-tools))
+    (home-page "https://github.com/go-spatial/geom")
+    (synopsis "Geometry interfaces for Go")
+    (description
+     "Geometry interfaces to help drive interoperability within the Go
+geospatial community.  This package focuses on 2D geometries.")
+    (license license:expat)))
+
 (define-public go-github-com-go-spatial-proj
   (package
     (name "go-github-com-go-spatial-proj")
