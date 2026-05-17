@@ -3544,6 +3544,40 @@ Servers with Azure File Sync for fast access near where the data is being
 used.")
     (license license:expat)))
 
+(define-public go-github-com-azure-azure-storage-blob-go
+  (package
+    (name "go-github-com-azure-azure-storage-blob-go")
+    (version "0.0.0-20180706173141-f0a732ea9441")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Azure/azure-storage-blob-go")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y3ql7208a2h2pf3zrd2qrqpyjda2mpf78cw9jyvi33211cqcdky"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/Azure/azure-storage-blob-go"))
+    (native-inputs
+     (list go-gopkg-in-check-v1))
+    (propagated-inputs
+     (list go-github-com-google-uuid
+           go-github-com-azure-azure-pipeline-go
+
+           ;; TODO: Complete packaging.
+           #;go-github-com-azure-go-autorest-autorest-adal))
+    (home-page "https://github.com/Azure/azure-storage-blob-go")
+    (synopsis "Microsoft Azure Blob Storage Library for Go")
+    (description
+     "The Microsoft Azure Storage SDK for Go to build applications that takes
+advantage of Azure's scalable cloud storage.")
+    (license license:expat)))
+
 (define-public go-github-com-azure-go-ntlmssp
   (package
     (name "go-github-com-azure-go-ntlmssp")
