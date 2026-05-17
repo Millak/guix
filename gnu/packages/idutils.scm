@@ -21,4 +21,4 @@
   #:use-module (gnu packages code)
   #:use-module (guix deprecation))
 
-(define-deprecated/public-alias idutils (@ (guix packages code) idutils))
+(define-deprecated/public-alias idutils (@ (gnu packages code) idutils))
