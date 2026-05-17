@@ -45,6 +45,7 @@
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
+;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1178,6 +1179,63 @@ still-image compression standard from the Joint Photographic Experts Group
 (JPEG).  Since April 2015, it is officially recognized by ISO/IEC and ITU-T as a
 JPEG 2000 Reference Software.")
     (home-page "https://github.com/uclouvain/openjpeg")
+    (license license:bsd-2)))
+
+(define jp2k-test-codestreams
+ (origin
+   (method git-fetch)
+   (uri (git-reference
+         (url "https://github.com/aous72/jp2k_test_codestreams")
+         (commit "eda0844b9f3be47d9b64194bcea5eb1ac2285e39")))
+   (sha256
+    (base32 "1sci4a4dvgrgmrf942zdf0hqhcx30a5lffwfy6r3hya35l3q8q8f"))))
+
+(define-public openjph
+  (package
+    (name "openjph")
+    (version "0.27.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aous72/OpenJPH")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1knygwn4bf6n53qr12w05yava7464x3c70rf5r20sz8adjcfccvx"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(if #$(%current-target-system)
+            '()
+            '("-DOJPH_BUILD_TESTS=ON"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake
+            (lambda _
+              (substitute* "tests/CMakeLists.txt"
+                (("^FetchContent_MakeAvailable\\(googletest\\)")
+                 #$(if (%current-target-system)
+                       ""
+                       "find_package(GTest REQUIRED)"))
+                (("^FetchContent_MakeAvailable\\(jp2k_test_codestreams\\).*")
+                 ""))))
+          #$@(if (%current-target-system)
+                 #~()
+                 #~((add-before 'check 'unpack-jp2k-test-codestreams
+                      (lambda _
+                        (copy-recursively #$jp2k-test-codestreams
+                                          "tests/jp2k_test_codestreams"))))))))
+    (native-inputs (if (%current-target-system)
+                       '()
+                       (list googletest)))
+    (inputs (list libtiff))
+    (home-page "https://github.com/aous72/OpenJPH")
+    (synopsis "JPEG2000 Part-15 (or JPH or HTJ2K) implementation")
+    (description
+     "OpenJPH is an implementation of @acronym{HTJ2K, High-throughput JPEG2000},
+also known as JPH, JPEG2000 Part 15, ISO/IEC 15444-15, and ITU-T T.814.")
     (license license:bsd-2)))
 
 (define-public openslide
