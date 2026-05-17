@@ -47244,7 +47244,7 @@ execute code split into cells according to certain magic comments.")
 (define-public emacs-codex-ide
   (package
     (name "emacs-codex-ide")
-    (version "0.2.5")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -47253,7 +47253,7 @@ execute code split into cells according to certain magic comments.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1p8f3hb06fn2m94vddkj12sv09vsk50pp2ib1ipg671asbdgvhxi"))))
+        (base32 "0xasn1yp494wqr2z9ddq3s71la27cvdvlv4alid2k5bjj89fv2gz"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -47287,11 +47287,6 @@ execute code split into cells according to certain magic comments.")
                    "context"
                    (list (concat "compose-turn-input-does-not-"
                                  "duplicate-prompt-context-block")))
-                  (remove-test
-                   "transient"
-                   '("config-menu-groups-codex-ide-settings-under-one-column"
-                     "debug-menu-exposes-show-debug-info"
-                     "menu-session-suffixes-use-current-commands"))
                   (remove-test
                    "mcp"
                    (list "mcp-script-uses-emacsclient-bridge-responses"
