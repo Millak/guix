@@ -1785,24 +1785,29 @@ match from local for any action outbound
 (define %opensmtpd-pam-services
   (list (unix-pam-service "smtpd")))
 
-(define (opensmtpd-set-gids config)
+(define (opensmtpd-privileged-programs config)
   (match-record config <opensmtpd-configuration> (package config-file setgid-commands?)
-    (if setgid-commands?
-        (map (lambda (command)
-               (privileged-program
-                (program (file-append package "/" command))
-                (setgid? #t)
-                (group "smtpq")))
-             (list "sbin/smtpctl"
+    (append
+     (list
+      (privileged-program
+        (program (file-append package "/libexec/opensmtpd/lockspool"))
+        (setuid? #t)))
+     (if setgid-commands?
+         (map (lambda (command)
+                (privileged-program
+                  (program (file-append package "/" command))
+                  (setgid? #t)
+                  (group "smtpq")))
+              (list "sbin/smtpctl"
 
-                   ;; Also privilege the compatibility symlinks created by
-                   ;; the Guix opensmtpd package; all synonyms for smtpctl.
-                   "sbin/mailq"
-                   "sbin/makemap"
-                   "sbin/newaliases"
-                   "sbin/sendmail"
-                   "sbin/send-mail"))
-        '())))
+                    ;; Also privilege the compatibility symlinks created by
+                    ;; the Guix opensmtpd package; all synonyms for smtpctl.
+                    "sbin/mailq"
+                    "sbin/makemap"
+                    "sbin/newaliases"
+                    "sbin/sendmail"
+                    "sbin/send-mail"))
+         '()))))
 
 (define opensmtpd-service-type
   (service-type
@@ -1819,7 +1824,7 @@ match from local for any action outbound
           (service-extension shepherd-root-service-type
                              opensmtpd-shepherd-service)
           (service-extension privileged-program-service-type
-                             opensmtpd-set-gids)))
+                             opensmtpd-privileged-programs)))
    (description "Run the OpenSMTPD, a lightweight @acronym{SMTP, Simple Mail
 Transfer Protocol} server.")))
 
