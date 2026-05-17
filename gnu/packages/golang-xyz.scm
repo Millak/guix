@@ -11437,6 +11437,36 @@ with Redis servers.  @code{github.com/redis/go-redis} and
 @code{github.com/go-redis/redis} are distributed from the same source.")
     (license license:bsd-2)))
 
+(define-public go-github-com-go-spatial-cobra
+  (package
+    (name "go-github-com-go-spatial-cobra")
+    (version "0.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-spatial/cobra")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q1nsx05svyv9fv3fy6xv6gs9ffimkyzsfm49flvl3wnvf1ncrkd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/go-spatial/cobra"))
+    (propagated-inputs
+     (list go-github-com-spf13-pflag))
+    (home-page "https://github.com/go-spatial/cobra")
+    (synopsis "Commander for modern Go CLI interactions")
+    (description
+     "Package cobra is a commander providing a simple interface to create
+powerful modern CLI interfaces.  In addition to providing an interface, Cobra
+simultaneously provides a controller to organize your application code.  It's
+an alternative fork of @url{https://github.com/spf13/cobra}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-spatial-proj
   (package
     (name "go-github-com-go-spatial-proj")
