@@ -2342,14 +2342,14 @@ more.")
 (define-public lsd
   (package
     (name "lsd")
-    (version "1.1.5")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lsd" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "06l0ynhny43q74dyb8m4r2j1w9xz29m0xrqmnpysm1f09bx3dzrj"))))
+        (base32 "0r1nbw4ljl4654kjw1vszf4gsp0cc1s3bp2y2azml988r740vl8s"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
@@ -2374,12 +2374,10 @@ more.")
                (mkdir-p bash-completions-dir)
                (copy-file "target/assets/lsd.bash"
                           (string-append bash-completions-dir "/lsd"))))))))
-    (native-inputs (list libgit2-1.7
-                         pkg-config
-                         zlib
+    (native-inputs (list pkg-config
                          ;; for tests
                          git-minimal))
-    (inputs (cargo-inputs 'lsd))
+    (inputs (cons* libgit2-1.9 zlib (cargo-inputs 'lsd)))
     (home-page "https://github.com/lsd-rs/lsd")
     (synopsis "Mostly ls compatible command with pretty colors")
     (description
