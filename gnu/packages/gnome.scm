@@ -12966,7 +12966,8 @@ to.")
     (inputs
      (list gtk+ (librsvg-for-system) libxml2))
     (arguments
-     `(#:configure-flags '("CFLAGS=-fcommon")))
+     `(#:configure-flags
+       '("CFLAGS=-fcommon -Wno-error=incompatible-pointer-types")))
     (home-page "https://glabels.org/")
     (synopsis "Program for creating labels and business cards")
     (description
