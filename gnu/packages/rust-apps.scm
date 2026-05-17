@@ -4804,31 +4804,18 @@ It will then write @code{fixup!} commits for each of those changes.")
 (define-public git-delta
   (package
     (name "git-delta")
-    (version "0.18.2")
+    (version "0.19.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "git-delta" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1bmjan13lm1d6vcy8mh0iryl2rnvh39ml5y4alf6s728xdzc2yhj"))))
+        (base32 "0g5d8pqw54yd6jivnjyg0q08f5y0zgbw2vwvvwic6c05mrbl9xkz"))))
     (build-system cargo-build-system)
     (arguments
      (list
       #:install-source? #f
-      #:cargo-test-flags
-      '(list "--release" "--"
-             "--skip=ansi::tests::test_measure_text_width"
-             "--skip=features::line_numbers::tests::test_line_numbers_continue_correctly_after_wrapping"
-             "--skip=features::side_by_side::tests::test_two_plus_lines_exact_fit"
-             "--skip=handlers::diff_header::tests::test_diff_header_relative_paths"
-             "--skip=tests::test_example_diffs::tests::test_binary_file_added"
-             "--skip=tests::test_example_diffs::tests::test_binary_file_removed"
-             "--skip=tests::test_example_diffs::tests::test_binary_files_differ"
-             "--skip=tests::test_example_diffs::tests::test_binary_files_differ_after_other"
-             "--skip=wrapping::tests::test_alignment_1_line_vs_3_lines"
-             "--skip=wrapping::tests::test_alignment_2_lines_vs_3_lines"
-             "--skip=wrapping::tests::test_wrap_line_newlines")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-extras
@@ -4852,7 +4839,7 @@ It will then write @code{fixup!} commits for each of those changes.")
                            (string-append fish-completions-dir "/delta.fish"))))))))
     (native-inputs (list git-minimal pkg-config))
     (inputs
-     (cons* libgit2-1.7
+     (cons* libgit2-1.9
             oniguruma
             openssl
             zlib
