@@ -7373,6 +7373,28 @@ translations.")
 Astronomy.")
     (license license:expat)))
 
+(define-public python-openspace-api
+  (package
+    (name "python-openspace-api")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "openspace_api" version))
+       (sha256
+        (base32 "02iqkgv3n3xzxkj94pwklll1vba6lnphmlbvbvkbgzkqk34r63ic"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://openspaceproject.com")
+    (synopsis "Python library to interface with OpenSpace using sockets")
+    (description
+     "Python library to interface with
+@url{https://github.com/OpenSpace/OpenSpace, OpenSpace} using TCP sockets.")
+    (license license:expat)))
+
 (define-public python-orbitalpy
   (package
     (name "python-orbitalpy")
