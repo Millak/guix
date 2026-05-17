@@ -1235,28 +1235,30 @@ main repository.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Hoverth/fdroidcl")
-             (commit (string-append "v" version))))
+              (url "https://github.com/Hoverth/fdroidcl")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1bflahcsjarv4v6r61knl5gc5iydh1lwvqjgffhxr4pis4qfsqsa"))
-       ;; reported upstream: https://github.com/Hoverth/fdroidcl/pull/92
+       ;; XXX: Reported upstream.
+       ;; See: <https://github.com/Hoverth/fdroidcl/pull/92>.
        (patches (search-patches "fdroidcl-fix-tests.patch"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "mvdan.cc/fdroidcl"
-       #:install-source? #f))
+     (list
+      #:install-source? #f
+      #:import-path "mvdan.cc/fdroidcl"))
     (inputs
      (list go-github-com-kr-pretty
            go-github-com-pelletier-go-toml-v2
            go-github-com-rogpeppe-go-internal
            go-github-com-schollz-progressbar-v3))
+    (home-page "https://github.com/Hoverth/fdroidcl")
     (synopsis "F-Droid desktop client")
     (description
      "While the Android client integrates with the system with regular update
 checks and notifications, this is a simple command line client that talks to
 connected devices via ADB.")
-    (home-page "https://github.com/Hoverth/fdroidcl")
     (license license:bsd-3)))
 
 (define-public emacs-fdroid
