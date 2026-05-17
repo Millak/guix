@@ -2759,12 +2759,39 @@ container management applications.")
     (build-system cargo-build-system)
     (arguments
      (list
-      #:install-source? #f))
+      #:install-source? #f
+      #:modules
+      '((guix build cargo-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-extras
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+               (match-lambda
+                 ((shell . path)
+                  (mkdir-p (in-vicinity #$output (dirname path)))
+                  (let ((binary
+                          (if #$(%current-target-system)
+                              (search-input-file native-inputs "bin/onefetch")
+                              (in-vicinity #$output "bin/onefetch"))))
+                    (with-output-to-file (in-vicinity #$output path)
+                      (lambda _
+                        (invoke binary "--generate" shell))))))
+               '(("bash"   . "share/bash-completion/completions/onefetch")
+                 ("elvish" . "share/elvish/lib/onefetch")
+                 ("fish"   . "share/fish/vendor_completions.d/onefetch.fish")
+                 ("zsh"    . "share/zsh/site-functions/_onefetch"))))))))
     (native-inputs
-     (list pkg-config
-           git-minimal  ; For tests
-           `(,zstd "lib")))
-    (inputs (cargo-inputs 'onefetch))
+     (append
+       (if (%current-target-system)
+           (list this-package)
+           '())
+       (list pkg-config
+             git-minimal))) ; For tests
+    (inputs (cons `(,zstd "lib")
+                  (cargo-inputs 'onefetch)))
     (home-page "https://onefetch.dev")
     (synopsis "Command-line Git information tool")
     (description "Onefetch is a command-line Git information tool that
