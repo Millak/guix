@@ -1085,7 +1085,7 @@ the chat output in the background.")
 (define-public snooze
   (package
     (name "snooze")
-    (version "0.5")
+    (version "0.5.1")
     (source
      (origin
        (method git-fetch)
@@ -1095,7 +1095,7 @@ the chat output in the background.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02ng3r1gzgpyjia4b60i11dj5bhn3xjsdcbwmxaam6dzb33dmgib"))))
+        (base32 "0jbcsamxj1k9xankd0yvdjwa560xrhnsj3hgn6f90n15pgyr05c2"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; There are no tests.
