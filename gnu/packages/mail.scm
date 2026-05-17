@@ -3435,6 +3435,10 @@ from the Cyrus IMAP project.")
                  (string-append def "\\\"/run/privileged/bin/smtpctl\\\" \\"))
                 (("(-DPATH_MAKEMAP=).*\\\\" all def)
                  (string-append def "\\\"/run/privileged/bin/makemap\\\" \\")))
+              ;; lockspool needs to be suid to be able to lock root owned /var/mail
+              (substitute* "contrib/libexec/mail.local/pathnames.h"
+                (("(#define _PATH_LOCKSPOOL).*" all def)
+                 (string-append def " \"/run/privileged/bin/lockspool\"")))
               (substitute* "usr.sbin/smtpd/smtpctl.c"
                 ;; ‘gzcat’ is auto-detected at compile time, but ‘cat’ isn't.
                 (("/bin/cat" file) (search-input-file inputs file)))
