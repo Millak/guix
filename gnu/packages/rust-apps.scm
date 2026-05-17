@@ -194,14 +194,14 @@ low-end hardware and serving many concurrent requests.")
 (define-public age-plugin-yubikey
   (package
     (name "age-plugin-yubikey")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "age-plugin-yubikey" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0vp85bf39a89pzy88icjsyf9a7gmkasbppm87zww7pvxr65qaj9z"))))
+        (base32 "02cjphgj6c355yixd2ickzpb6jal95iyzp65yfry1kq1nbqcwams"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
