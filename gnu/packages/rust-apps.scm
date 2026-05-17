@@ -4816,27 +4816,24 @@ It will then write @code{fixup!} commits for each of those changes.")
     (arguments
      (list
       #:install-source? #f
+      #:imported-modules (append %copy-build-system-modules
+                                 %cargo-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build copy-build-system) #:prefix copy:)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-extras
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (share (string-append out "/share"))
-                     (bash-completions-dir
-                      (string-append out "/share/bash-completion/completions"))
-                     (zsh-completions-dir
-                      (string-append share "/zsh/site-functions"))
-                     (fish-completions-dir
-                      (string-append share "/fish/vendor_completions.d")))
-                (mkdir-p bash-completions-dir)
-                (mkdir-p zsh-completions-dir)
-                (mkdir-p fish-completions-dir)
-                (copy-file "etc/completion/completion.bash"
-                           (string-append bash-completions-dir "/delta"))
-                (copy-file "etc/completion/completion.zsh"
-                           (string-append zsh-completions-dir "/_delta"))
-                (copy-file "etc/completion/completion.fish"
-                           (string-append fish-completions-dir "/delta.fish"))))))))
+            (lambda args
+              (apply (assoc-ref copy:%standard-phases 'install)
+                     #:install-plan
+                     '(("etc/completion/completion.bash"
+                        "share/bash-completion/completions/delta")
+                       ("etc/completion/completion.fish"
+                        "share/fish/vendor_completions.d/delta.fish")
+                       ("etc/completion/completion.zsh"
+                        "share/zsh/site-functions/_delta"))
+                     args))))))
     (native-inputs (list git-minimal pkg-config))
     (inputs
      (cons* libgit2-1.9
