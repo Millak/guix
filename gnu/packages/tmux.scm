@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Matthew Jordan <matthewjordandevops@yandex.com>
 ;;; Copyright © 2017 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2017 Stefan Reichör <stefan@xsteve.at>
@@ -381,14 +381,43 @@ The system load average is also displayed.")
                       (("\"vendored-openssl\"")
                        ""))))))
     (build-system cargo-build-system)
-    (native-inputs (list pkg-config))
+    (arguments
+     (list
+      #:install-source? #f
+      #:modules
+      '((guix build cargo-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-extras
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+               (match-lambda
+                 ((shell . path)
+                  (mkdir-p (in-vicinity #$output (dirname path)))
+                  (let ((binary
+                          (if #$(%current-target-system)
+                              (search-input-file native-inputs "bin/tms")
+                              (in-vicinity #$output "bin/tms"))))
+                    (with-output-to-file (in-vicinity #$output path)
+                      (lambda _
+                        (invoke binary "--generate" shell))))))
+               '(("bash"   . "share/bash-completion/completions/tms")
+                 ("elvish" . "share/elvish/lib/tms")
+                 ("fish"   . "share/fish/vendor_completions.d/tms.fish")
+                 ("zsh"    . "share/zsh/site-functions/_tms"))))))))
+    (native-inputs
+     (append
+       (if (%current-target-system)
+           (list this-package)
+           '())
+       (list pkg-config)))
     (inputs
      (cons* openssl
             libgit2-1.8
             libssh2
             (cargo-inputs 'tmux-plugin-sessionizer)))
-    (arguments
-     `(#:install-source? #f))
     (home-page "https://github.com/jrmoulton/tmux-sessionizer")
     (synopsis "Fuzzy find Git repositories and open them as Tmux sessions")
     (description
