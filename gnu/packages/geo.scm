@@ -2122,28 +2122,9 @@ Unidata/UCAR UDUNITS-2 library, and the cftime calendar functionality.")
               (sha256
                (base32
                 "1f5l7b372dfyibawhcnlz700z11a0dxqd7kr731nwfmhwz2v3438"))
-              (modules '((guix build utils)))
-              ;; TODO: Unbundle more when missing packages are available.
-              (snippet #~(with-directory-excursion "vendor"
-                           (for-each delete-file-recursively
-                                     '("github.com/BurntSushi"
-                                       "github.com/SAP"
-                                       "github.com/ajstarks"
-                                       "github.com/aws"
-                                       "github.com/beorn7"
-                                       "github.com/dgryski"
-                                       "github.com/go-test"
-                                       "github.com/gofrs"
-                                       "github.com/golang"
-                                       "github.com/google"
-                                       "github.com/jmespath"
-                                       "github.com/mattn"
-                                       "github.com/prometheus"
-                                       "github.com/redis"
-                                       "github.com/spf13"
-                                       "go.uber.org"
-                                       "golang.org/x"
-                                       "google.golang.org/protobuf"))))))
+              (snippet
+               #~(begin (use-modules (guix build utils))
+                        (delete-file-recursively "vendor")))))
     (build-system go-build-system)
     (arguments
      (list
@@ -2157,16 +2138,16 @@ Unidata/UCAR UDUNITS-2 library, and the cftime calendar functionality.")
                              "-X github.com/go-spatial/tegola/internal/"
                              "build.Version=" #$version))))
     (inputs
-     (list ;; go-cloud-google-com-go-storage
+     (list go-cloud-google-com-go-storage
            go-github-com-ajstarks-svgo
            go-github-com-akrylysov-algnhsa
            go-github-com-aws-aws-sdk-go
-           ;; go-github-com-azure-azure-storage-blob-go
+           go-github-com-azure-azure-storage-blob-go
            go-github-com-burntsushi-toml
            go-github-com-dimfeld-httptreemux
            go-github-com-gdey-tbltest
-           ;; go-github-com-go-spatial-cobra
-           ;; go-github-com-go-spatial-geom
+           go-github-com-go-spatial-cobra
+           go-github-com-go-spatial-geom
            go-github-com-go-spatial-proj
            go-github-com-go-test-deep
            go-github-com-golang-protobuf
@@ -2179,15 +2160,14 @@ Unidata/UCAR UDUNITS-2 library, and the cftime calendar functionality.")
            go-github-com-prometheus-client-golang
            go-github-com-redis-go-redis-v9
            go-github-com-sap-go-hdb
-           ;; go-github-com-theckman-goconstraint
+           go-github-com-theckman-goconstraint
            go-go-uber-org-zap
-           ;; go-gopkg-in-go-playground-colors-v1
+           go-gopkg-in-go-playground-colors-v1
 
-           ;; XXX: Indirect dependencies, remove when all direct ones are
-           ;; packaged.
-           go-github-com-golang-groupcache ;go.opencensus.io/trace
-           go-github-com-spf13-pflag       ;github.com/go-spatial/cobra
-           go-golang-org-x-xerrors))       ;cloud.google.com/go
+           ;; XXX: These packages have to be bootstrapped to break cycle with
+           ;; go-google-golang-org-grpc.
+           go-github-com-envoyproxy-go-control-plane
+           go-github-com-envoyproxy-go-control-plane-envoy))
     (home-page "https://tegola.io")
     (synopsis "Vector tile server for maps")
     (description "Tegola is a free vector tile server written in Go.  Tegola
