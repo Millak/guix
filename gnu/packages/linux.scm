@@ -8758,35 +8758,6 @@ native Linux file system, and has been part of the Linux kernel since version
     ;; grant additional permission to link with OpenSSL.
     (license license:gpl2+)))
 
-(define-public libnfsidmap
-  (package
-    (name "libnfsidmap")
-    (version "0.27")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://fedorapeople.org/~steved/"
-                           name "/" version "/" name "-" version ".tar.bz2"))
-       (sha256
-        (base32 "0bg2bcii424mf1bnp3fssr8jszbvhdxl7wvifm1yf6g596v8b8i5"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags (list
-                          (string-append "--with-pluginpath="
-                                         (assoc-ref %outputs "out")
-                                         "/lib/libnfsidmap"))))
-    (native-inputs
-     (list autoconf))         ; 0.27 still needs autoheader
-    (home-page
-     "http://www.citi.umich.edu/projects/nfsv4/crossrealm/libnfsidmap_config.html")
-    (synopsis "NFSv4 support library for name/ID mapping")
-    (description "Libnfsidmap is a library holding multiple methods of
-mapping names to ids and visa versa, mainly for NFSv4.  It provides an
-extensible array of mapping functions, currently consisting of two choices:
-the default @code{nsswitch} and the experimental @code{umich_ldap}.")
-    (license (license:non-copyleft "file://COPYING"
-                                   "See COPYING in the distribution."))))
-
 (define-public module-init-tools
   (package
     (name "module-init-tools")
