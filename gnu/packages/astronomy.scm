@@ -5221,25 +5221,34 @@ all the input image headers.")
 (define-public python-fitsio
   (package
     (name "python-fitsio")
-    (version "1.3.0")
+    ;; 1.3.0 (2025-11-12), latest changes support cfitsio 4.6.4, revert back
+    ;; to git tag when released.
+    (properties '((commit . "3a301234b28aeac48f96597c44d6339ad3a19778")
+                  (revision . "0")))
+    (version (git-version "1.3.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fitsio" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/esheldon/fitsio")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0q4j9c49ladlpy7ag5jsi91d5mpsi6nlh6pnmbz4cbx6vjq4yfg2"))
+        (base32 "1vqin0ixk9div0bjfqh4b63a85n8kg0959ngsaz2qy07r38q9cxx"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove the bundled cfitsio. When update the package check the
         ;; current bundled version.
         #~(begin
-            (delete-file-recursively "cfitsio-4.6.3.tar.gz")
+            (delete-file-recursively "cfitsio-4.6.4.tar.gz")
             (substitute* "MANIFEST.in"
-              (("recursive-include cfitsio-4.6.3.*$\n") ""))))))
+              (("recursive-include cfitsio-4.6.4.*$\n") ""))))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1860 passed, 904 skipped, 113 xfailed
+      ;; tests: 1882 passed, 904 skipped, 111 xfailed, 2 xpassed, 7 warnings
       #:test-flags
       #~(list "--pyargs" "fitsio")
       #:phases
@@ -5255,7 +5264,8 @@ all the input image headers.")
                        #$(this-package-input "cfitsio") "/lib")))))))
     (native-inputs
      (list python-pytest
-           python-setuptools))
+           python-setuptools
+           python-setuptools-scm))
     (inputs
      (list curl
            cfitsio
