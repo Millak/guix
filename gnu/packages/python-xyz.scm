@@ -1011,6 +1011,60 @@ like normal Tkinter widgets, which can also be used in combination with normal
 Tkinter elements.")
     (license license:expat)))
 
+(define-public python-cyclopts
+  (package
+    (name "python-cyclopts")
+    (version "4.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/BrianPugh/cyclopts")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wbhlpdl7higrgwd45si48l5k1kgjms6f4lzqd6y9qmbfsx0x48l"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 2194 passed, 95 skipped, 69 deselected, 3 warnings
+      #:test-flags
+      #~(list #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/completion/"
+                                                    "test_bash.py::"
+                                                    test))
+                      (list "test_list_path_multi_positional_default_case"
+                            "test_eq_form_path_completion"
+                            "test_bash_path_completion_reflects_caller_cwd"))
+              "--deselect=tests/completion/test_behavior.py::test_behavior")))
+    (native-inputs
+     (list python-docutils
+           python-hatch-vcs
+           python-hatchling
+           python-mkdocs
+           python-pexpect
+           python-pydantic
+           python-pytest
+           python-pytest-mock
+           python-pyyaml
+           python-sphinx
+           python-syrupy
+           python-toml
+           python-trio))
+    (propagated-inputs
+     (list python-attrs
+           python-docstring-parser
+           python-rich
+           python-rich-rst
+           python-tomli
+           python-typing-extensions))
+    (home-page "https://github.com/BrianPugh/cyclopts")
+    (synopsis "Intuitive, easy CLIs based on type hints")
+    (description
+     "Cyclopts is a modern, easy-to-use command-line interface (CLI) framework
+that aims to provide an intuitive & efficient developer experience.")
+    (license license:asl2.0)))
+
 (define-public python-darkdetect
   (package
     (name "python-darkdetect")
