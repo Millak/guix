@@ -5235,7 +5235,8 @@ access the technical and tag data for video and audio files.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 414 passed, 278 skipped
+      ;; tests: X86_64-linux 414 passed, 278 skipped
+      ;;        i686-linux 410 passed, 278 skipped
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               "--dist" "loadgroup"
@@ -5272,7 +5273,18 @@ access the technical and tag data for video and audio files.")
                          "test_import_all")
                         ;; FileNotFoundError: [Errno 2] No such file or
                         ;; directory: '/sys/class/power_supply'
-                        ("test_misc.py" "TestMisc" "test_serialization"))))
+                        ("test_misc.py" "TestMisc" "test_serialization")))
+              #$@(if (target-32bit?)
+                     (map (lambda (ls) (string-append "--deselect=tests/"
+                                                      (string-join ls "::")))
+                          ;; assert 12884901915 < 500 where 12884901915 =
+                          ;; abs((2596570605 - 15481472520))
+                          '(("test_linux.py" "TestSystemCPUStats"
+                             "test_interrupts")
+                            ;; OSError: [Errno 22] Invalid argument
+                            ("test_process.py" "TestProcess"
+                             "test_zombie_process")))
+                     '()))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
