@@ -1672,7 +1672,7 @@ multiple services and devices with hundreds of supported integrations.")
 (define-public python-esptool
   (package
     (name "python-esptool")
-    (version "5.0.2")
+    (version "5.2.0")
     (source
      (origin
        (method git-fetch)
@@ -1681,7 +1681,7 @@ multiple services and devices with hundreds of supported integrations.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wl75j6ncm5lahy9pzc38qivhaf9p42a2bijishdkwkw388fs6x1"))))
+        (base32 "0rgwa7mimznwkn8ql17yxwxsfp0is3i75y7bf62mgsxjyx7zawcd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
