@@ -446,6 +446,15 @@ handy.")
 (define-public lua5.2-socket
   (make-lua-socket "lua5.2-socket" lua-5.2))
 
+(define-public lua-socket
+  (make-lua-socket "lua-socket" lua))
+
+(define-public lua5.4-socket
+  (make-lua-socket "lua5.4-socket" lua-5.4))
+
+(define-public lua5.5-socket
+  (make-lua-socket "lua5.5-socket" lua-5.5))
+
 (define (make-lua-filesystem name lua)
   (package
     (name name)
