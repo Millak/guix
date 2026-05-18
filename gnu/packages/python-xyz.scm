@@ -2741,6 +2741,34 @@ edit distance algorithm for Python in Cython for high performance.")
 requiring minimal changes to the code.")
     (license license:expat)))
 
+(define-public python-rich-rst
+  (package
+    (name "python-rich-rst")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/wasi-master/rich-rst")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1in5rjzgxyjaqj1vqq8mrcwxxm00whqd2bw8lqs717alxw3f4ygf"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-pygments
+           python-rich))
+    (home-page "https://wasi-master.github.io/rich-rst")
+    (synopsis "Beautiful reStructuredText renderer for Rich")
+    (description
+     "This package turns @url{https://docutils.sourceforge.io/rst.html, reST}
+documents into @url{https://rich.readthedocs.io/en/latest/, Rich}
+renderables.")
+    (license license:expat)))
+
 (define-public python-roman-numerals
   (package
     (name "python-roman-numerals")
