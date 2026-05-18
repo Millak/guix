@@ -328,34 +328,32 @@ some projects.")))
 (define (make-lua-expat name lua)
   (package
     (name name)
-    (version "1.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://matthewwild.co.uk/projects/"
-                                  "luaexpat/luaexpat-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1hvxqngn0wf5642i5p3vcyhg3pmp102k63s9ry4jqyyqc1wkjq6h"))))
+    (version "1.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lunarmodules/luaexpat")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "03wb1rr739qh9xvvi762kpiw5bs99m2plypq5caaan3qacm73rry"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (let ((out (assoc-ref %outputs "out"))
-             (lua-version ,(version-major+minor (package-version lua))))
-         (list ,(string-append "CC=" (cc-for-target))
-               (string-append "LUA_LDIR=" out "/share/lua/" lua-version)
-               (string-append "LUA_CDIR=" out "/lib/lua/" lua-version)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'check
-           (lambda _
-             (setenv "LUA_CPATH" "src/?.so;;")
-             (setenv "LUA_PATH"  "src/?.lua;;")
-             (invoke "lua" "tests/test.lua")
-             (invoke "lua" "tests/test-lom.lua"))))))
+     (list
+      #:tests? #f                       ;tests require "busted"
+      #:make-flags
+      #~(let ((lua-version #$(version-major+minor (package-version lua))))
+          (list (string-append "CC=" #$(cc-for-target))
+                (string-append "LUA_LDIR=" #$output "/share/lua/" lua-version)
+                (string-append "LUA_CDIR=" #$output "/lib/lua/" lua-version)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
     (inputs
      (list lua expat))
-    (home-page "https://matthewwild.co.uk/projects/luaexpat/")
+    (home-page "https://github.com/lunarmodules/luaexpat")
     (synopsis "SAX XML parser based on the Expat library")
     (description "LuaExpat is a SAX XML parser based on the Expat library.")
     (license (package-license lua-5.1))))
