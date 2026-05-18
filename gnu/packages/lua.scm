@@ -374,41 +374,60 @@ some projects.")))
   (make-lua-expat "lua5.5-expat" lua-5.5))
 
 (define (make-lua-socket name lua)
-  (package
-    (name name)
-    (version "3.0-rc1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/diegonehab/luasocket")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1chs7z7a3i3lck4x7rz60ziwbf793gw169hpjdfca8y4yf1hzsxk"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:make-flags
-       (let ((out (assoc-ref %outputs "out"))
-             (lua-version ,(version-major+minor (package-version lua))))
-         (list (string-append "INSTALL_TOP=" out)
-               (string-append "LUAV?=" lua-version)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'check
-           (lambda _
-             (setenv "LUA_CPATH" (string-append "src/?.so." ,version ";;"))
-             (setenv "LUA_PATH"  "src/?.lua;;")
-             (when (zero? (primitive-fork))
-               (invoke "lua" "test/testsrvr.lua"))
-             (invoke "lua" "test/testclnt.lua"))))))
-    (inputs
-     (list lua))
-    (home-page "http://www.tecgraf.puc-rio.br/~diego/professional/luasocket/")
-    (synopsis "Socket library for Lua")
-    (description "LuaSocket is a Lua extension library that is composed by two
-parts: a C core that provides support for the TCP and UDP transport layers,
+  ;; The 3.1.0 tag still has 3.0.0 in a bunch of places.
+  (let ((commit "de359ea4083ac6d944216229e4104dc36537c29c")
+        (revision "1"))
+    (package
+      (name name)
+      (version (git-version "3.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+            (url "https://github.com/lunarmodules/luasocket")
+            (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1bdcdad8fq2p193jcvsv59wm5mifb07alvrxm8qq31qmgs1q4mpw"))))
+      (build-system gnu-build-system)
+      (arguments
+       (let ((luav (version-major+minor (package-version lua))))
+         (list
+          #:make-flags
+          #~(list (string-append "INSTALL_TOP=" #$output)
+                  (string-append "LUAV=" #$luav)
+                  "MYCFLAGS=-DLUASOCKET_DEBUG")
+          #:modules
+          (cons '(ice-9 threads) %default-gnu-modules)
+          #:phases
+          #~(modify-phases %standard-phases
+              (delete 'configure)
+              (delete 'check)
+              (add-after 'install 'install-unix
+                (lambda* (#:key make-flags #:allow-other-keys)
+                  (apply invoke "make" "install-unix" make-flags)))
+              (add-after 'install-unix 'check
+                (lambda _
+                  (setenv "GUIX_LUA_CPATH"
+                          (string-append #$output "/lib/lua/" #$luav))
+                  (setenv "GUIX_LUA_PATH"
+                          (string-append #$output "/share/lua/" #$luav))
+                  (with-directory-excursion "test"
+                    (make-thread invoke "lua" "testsrvr.lua")
+                    (make-thread invoke "lua" "utestsrvr.lua")
+                    (for-each
+                     (lambda (test)
+                       (invoke "lua" (string-append test ".lua")))
+                     '("hello" "stufftest" "excepttest" "test_bind"
+                       "test_getaddrinfo" "ltn12test" "mimetest" "urltest"
+                       "test_socket_error" "testclnt" "utestclnt")))))))))
+      (inputs (list lua))
+      (home-page "https://lunarmodules.github.io/luasocket")
+      (synopsis "Network support for the Lua language")
+      (description
+       "LuaSocket is a Lua extension library that is composed by two parts:
+a C core that provides support for the TCP and UDP transport layers,
 and a set of Lua modules that add support for functionality commonly needed by
 applications that deal with the Internet.
 
@@ -419,7 +438,7 @@ to the functionality defined by each protocol.  In addition, you will find
 that the MIME (common encodings), URL (anything you could possible want to do
 with one) and LTN12 (filters, sinks, sources and pumps) modules can be very
 handy.")
-    (license license:expat)))
+      (license (package-license lua-5.1)))))
 
 (define-public lua5.1-socket
   (make-lua-socket "lua5.1-socket" lua-5.1))
