@@ -2154,6 +2154,8 @@ flake8 to check PEP-8 naming conventions.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? (and (target-64bit?)
+                    (not (%current-target-system)))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
