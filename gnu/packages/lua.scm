@@ -845,6 +845,15 @@ between the peers.")
 (define-public lua5.2-sec
   (make-lua-sec "lua5.2-sec" lua-5.2 lua5.2-socket))
 
+(define-public lua-sec
+  (make-lua-sec "lua-sec" lua lua-socket))
+
+(define-public lua5.4-sec
+  (make-lua-sec "lua5.4-sec" lua-5.4 lua5.4-socket))
+
+(define-public lua5.5-sec
+  (make-lua-sec "lua5.5-sec" lua-5.5 lua5.5-socket))
+
 (define (make-lua-cqueues name lua lua-ossl)
   (package
     (name name)
