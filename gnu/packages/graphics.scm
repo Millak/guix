@@ -1212,7 +1212,7 @@ quaternions and other useful 2D and 3D math functions.  Iex is an
 exception-handling library.")
     (license license:bsd-3)))
 
-(define-public lib2geom
+(define-public lib2geom/pinned
   (package
     (name "lib2geom")
     (version "1.3")
@@ -1290,7 +1290,13 @@ basic geometries.")
     ;; Because the library is linked with the GNU Scientific Library
     ;; (GPLv3+), the combined work must be licensed as GPLv3+ (see:
     ;; https://gitlab.com/inkscape/inkscape/issues/784).
-    (license license:gpl3+)))
+    (license license:gpl3+)
+    (properties '((hidden? . #t)))))
+
+(define-public lib2geom
+  (package
+    (inherit lib2geom/pinned)
+    (properties '((hidden? . #f)))))
 
 (define-public python-booleanoperations
   (package
