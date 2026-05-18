@@ -364,6 +364,15 @@ some projects.")))
 (define-public lua5.2-expat
   (make-lua-expat "lua5.2-expat" lua-5.2))
 
+(define-public lua-expat
+  (make-lua-expat "lua-expat" lua))
+
+(define-public lua5.4-expat
+  (make-lua-expat "lua5.4-expat" lua-5.4))
+
+(define-public lua5.5-expat
+  (make-lua-expat "lua5.5-expat" lua-5.5))
+
 (define (make-lua-socket name lua)
   (package
     (name name)
