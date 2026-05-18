@@ -1438,74 +1438,70 @@ default.")
 (define-public prosody
   (package
     (name "prosody")
-    (version "0.12.4")
+    (version "13.0.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://prosody.im/downloads/source/"
                                   "prosody-" version ".tar.gz"))
               (sha256
                (base32
-                "0mjqss1h2cw0nlyj9nkxdg1bnq1j0zndlv1g8665aa9g7hki5ms7"))))
+                "03q5jdywcjsjzkfgv4m3d57crv8wdarkyzdh0i5azhv2ynf6ysgc"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ;tests require "busted"
-       #:configure-flags (list "--no-example-certs")
-       #:modules ((ice-9 match)
-                  (srfi srfi-1)
-                  (guix build gnu-build-system)
-                  (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-configure-script
-           (lambda _
-             ;; The configure script aborts when it encounters unexpected
-             ;; arguments.  Make it more tolerant.
-             (substitute* "configure"
-               (("exit 1") ""))))
-         (add-after 'unpack 'fix-makefile
-           (lambda _
-             (substitute* "GNUmakefile"
-               ;; prosodyctl needs to read the configuration file.
-               (("^INSTALLEDCONFIG =.*") "INSTALLEDCONFIG = /etc/prosody\n")
-               ;; prosodyctl needs a place to put auto-generated certificates.
-               (("^INSTALLEDDATA =.*") "INSTALLEDDATA = /var/lib/prosody\n"))))
-         (add-after 'unpack 'invoke-prosody-wrapper
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Invoke the prosody wrapper script instead of invoking lua on
-             ;; the actual executable.
-             (substitute* "util/prosodyctl.lua"
-               (("os.execute\\(lua[^;]*")
-                (string-append "os.execute(\""
-                               (assoc-ref outputs "out")
-                               "/bin/prosody -D\")")))))
-         (add-after 'install 'wrap-programs
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Make sure all executables in "bin" find the required Lua
-             ;; modules at runtime.
-             (let* ((out   (assoc-ref outputs "out"))
-                    (bin   (string-append out "/bin/"))
-                    (openssl (assoc-ref inputs "openssl"))
-                    (coreutils (assoc-ref inputs "coreutils"))
-                    (path (map (lambda (dir)
-                                 (string-append dir "/bin"))
-                               (list openssl coreutils))))
-               (for-each (lambda (file)
-                           (wrap-program file
-                             `("GUIX_LUA_PATH"  ";" prefix (,(getenv "GUIX_LUA_PATH")))
-                             `("GUIX_LUA_CPATH" ";" prefix (,(getenv "GUIX_LUA_CPATH")))
-                             `("PATH" ":" prefix ,path)))
-                         (find-files bin ".*"))))))))
+     (list
+      #:tests? #f                      ;tests require "busted"
+      #:configure-flags ''("--no-example-certs")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            ;; configure fails if it is followed by SHELL, CONFIG_SHELL,
+            ;; --enable-fast-install, and --build
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (apply invoke "./configure" (string-append "--prefix=" #$output)
+                     configure-flags)))
+          (add-after 'unpack 'fix-makefile
+            (lambda _
+              (substitute* "GNUmakefile"
+                ;; prosodyctl needs to read the configuration file.
+                (("^INSTALLEDCONFIG =.*") "INSTALLEDCONFIG = /etc/prosody\n")
+                ;; prosodyctl needs a place to put auto-generated certificates.
+                (("^INSTALLEDDATA =.*") "INSTALLEDDATA = /var/lib/prosody\n"))))
+          (add-after 'unpack 'invoke-prosody-wrapper
+            (lambda _
+              ;; Invoke the prosody wrapper script instead of invoking lua on
+              ;; the actual executable.
+              (substitute* "util/prosodyctl.lua"
+                (("(os.execute\\()lua .*(/prosody -D\"\\);)" all left right)
+                 (simple-format #f "~a\"~a/bin~a" left #$output right)))))
+          (add-after 'install 'wrap-programs
+            (lambda _
+              ;; Make sure all executables in "bin" find the required Lua
+              ;; modules at runtime.
+              (let* ((bin  (string-append #$output "/bin/"))
+                     (path (map (lambda (dir)
+                                  (string-append dir "/bin"))
+                                (list #$(this-package-input "openssl")
+                                      #$(this-package-input "coreutils")))))
+                (for-each (lambda (file)
+                            (wrap-program file
+                              `("GUIX_LUA_PATH"  ";" prefix (,(getenv "GUIX_LUA_PATH")))
+                              `("GUIX_LUA_CPATH" ";" prefix (,(getenv "GUIX_LUA_CPATH")))
+                              `("PATH" ":" prefix ,path)))
+                          (find-files bin ".*"))))))))
     (inputs
      (list bash-minimal
+           coreutils
            icu4c
            libidn
            openssl
-           lua-5.2
-           lua5.2-bitop
-           lua5.2-expat
-           lua5.2-socket
-           lua5.2-filesystem
-           lua5.2-sec))
+           lua-5.4
+           ;; required
+           lua5.4-socket
+           lua5.4-sec
+           lua5.4-expat
+           lua5.4-filesystem
+           ;; optional
+           lua5.4-unbound))
     (home-page "https://prosody.im/")
     (synopsis "Jabber (XMPP) server")
     (description "Prosody is a modern XMPP communication server.  It aims to
