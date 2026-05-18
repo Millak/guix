@@ -338,14 +338,14 @@ completely independent from the extension API.")
     (name "mailutils")
     (version "3.21")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnu/mailutils/mailutils-"
-                                 version ".tar.xz"))
-             (sha256
-              (base32
-               "1sgmgslmifs8kpi4y2gjw4c7z0xfhhxdnxxwzmsnd3cvd7f1wz74"))
-             (patches
-              (search-patches "mailutils-variable-lookup.patch"))))
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/mailutils/mailutils-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "1sgmgslmifs8kpi4y2gjw4c7z0xfhhxdnxxwzmsnd3cvd7f1wz74"))
+              (patches
+               (search-patches "mailutils-variable-lookup.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
@@ -415,36 +415,33 @@ completely independent from the extension API.")
                    "CFLAGS=-DPATH_SENDMAIL=\\\"/run/setuid-programs/sendmail\\\""
                    ;; Add "/X.Y" to the installation directory.
                    (string-append "--with-guile-site-dir="
-                                  (assoc-ref %outputs "out")
+                                  #$output
                                   "/share/guile/site/"
-                                  #$(match (assoc "guile"
-                                                  (package-inputs this-package))
-                                      (("guile" guile)
-                                       (version-major+minor
-                                        (package-version guile))))))))
+                                  #$(version-major+minor
+                                     (package-version
+                                      (this-package-input "guile")))))))
     (native-inputs
      ;; Regeneration of the build system is triggered by touching the
      ;; 'libmailutils/tests/lock.at' file.
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("libtool" ,libtool)
-       ("m4" ,m4)
-       ("perl" ,perl)                           ;for 'gylwrap'
-       ("texinfo" ,texinfo)
-       ("dejagnu" ,dejagnu)))
+     (list autoconf
+           automake
+           dejagnu
+           gettext-minimal
+           libtool
+           m4
+           perl                         ;for 'gylwrap'
+           texinfo))
     (inputs
-     (list guile-3.0
-           gsasl
+     (list gdbm
            gnutls
-           ncurses
-           readline
-           linux-pam
+           gsasl
+           guile-3.0
            libltdl
+           libunistring                 ;required for SEARCH CHARSET
            libxcrypt
-           gdbm
-           ;; Required for SEARCH CHARSET.
-           libunistring))
+           linux-pam
+           ncurses
+           readline))
     (home-page "https://mailutils.org")
     (synopsis "Utilities and library for reading and serving mail")
     (description
