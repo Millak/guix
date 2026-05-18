@@ -297,7 +297,8 @@ human.")
      (list
       #:configure-flags
       #~(append
-         (list "-DWITH_XC_ALL=YES"
+         (list "-DKEEPASSXC_BUILD_TYPE=Release"
+               "-DWITH_XC_ALL=YES"
                "-DWITH_XC_UPDATECHECK=NO")
          #$(if (member (%current-system)
                        (package-transitive-supported-systems
