@@ -8285,54 +8285,6 @@ Longest Commons Subsequence of a set of strings.")
       (home-page "https://github.com/gdv/Reduce-Expand-for-LCS")
       (license license:gpl3+))))
 
-(define-public jacal
-  (package
-    (name "jacal")
-    (version "1c8")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://groups.csail.mit.edu/mac/ftpdir/scm/jacal-"
-                    version ".zip"))
-              (sha256
-               (base32 "0dn706gl5nd36177m7rkx9sdzpxy116jy2mdmc0dcb758r64qvmw"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'pre-build
-                     ;; Don't use upstream's script - it really doesn't fit into
-                     ;; Guix's functional paradigm.
-                     (lambda* (#:key inputs outputs #:allow-other-keys)
-                       (substitute* "Makefile"
-                         (("^install: install-script") "install: "))))
-         (add-after 'install 'post-install
-                    ;; Instead, we provide our own simplified script.
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (let ((wrapper (string-append (assoc-ref outputs "out")
-                                                    "/bin/jacal")))
-                        (format (open wrapper (logior O_WRONLY O_CREAT))
-                                (string-append "#!~a\nexec ~a/bin/scm -ip1 "
-                                "-e '(slib:load \"~a/lib/jacal/math\") "
-                                "(math)' \"$@\"\n")
-                                (which  "bash")
-                                (assoc-ref inputs "scm")
-                                (assoc-ref outputs "out"))
-                        (chmod wrapper #o555))))
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "sh" "configure"
-                     (string-append "--prefix="
-                                    (assoc-ref outputs "out"))))))))
-    (inputs (list scm))
-    (native-inputs (list time unzip texinfo))
-    (synopsis "Symbolic mathematics system")
-    (description "GNU JACAL is an interactive symbolic mathematics program based on
-Scheme.  It manipulate and simplify a range of mathematical expressions such
-as equations, scalars, vectors, and matrices.")
-    (home-page "https://www.gnu.org/software/jacal/")
-    (license license:gpl3+)))
-
 (define-public boolector
   (package
    (name "boolector")
