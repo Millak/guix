@@ -142,7 +142,6 @@
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
-  #:use-module (gnu packages rust-crates)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
