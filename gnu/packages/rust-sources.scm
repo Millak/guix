@@ -26,7 +26,6 @@
   #:use-module (guix git-download)
   #:use-module (guix search-paths)
   #:use-module (guix build-system cargo)
-  #:use-module (guix build-system trivial)
   #:use-module ((guix config) #:select (%storedir))
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -38,7 +37,6 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages rust)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages virtualization))
 
