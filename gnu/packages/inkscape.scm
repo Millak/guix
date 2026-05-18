@@ -296,7 +296,7 @@ endif()~%~%"
             gtk+
             gtkmm-3
             lcms
-            lib2geom
+            lib2geom/pinned
             libcdr
             libgc
             libjpeg-turbo
@@ -389,6 +389,7 @@ as the native format.")
                   `("GDK_PIXBUF_MODULE_FILE" =
                     (,(getenv "GDK_PIXBUF_MODULE_FILE"))))))))))
     (inputs (modify-inputs (package-inputs inkscape/pinned)
+              (replace "lib2geom" lib2geom)
               (append imagemagick)))    ;for libMagickCore and libMagickWand
     (native-inputs
      (modify-inputs (package-native-inputs inkscape/pinned)
