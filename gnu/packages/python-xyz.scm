@@ -19567,8 +19567,8 @@ files.")
     (license license:bsd-3)))
 
 (define-public python-omegaconf
-  (let ((commit "117f7de07285e4d1324b9229eaf873de15279457")
-        (revision "0"))
+  (let ((commit "71e02647d93bb8bd467502008940317920ec7e5b")
+        (revision "1"))
     (package
       (name "python-omegaconf")
       (version (git-version "2.3.0" revision commit))
@@ -19588,7 +19588,7 @@ files.")
                 (("\"-jar\",") "")
                 (("str\\(build_dir / \"bin\" / \"antlr.*\"\\),") ""))))
          (sha256
-          (base32 "0f922dar5dwyyfk1bwsbs9gws0vyj1w2h9n3148hcfa8c4hg2ysv"))))
+          (base32 "1n5s1lm22sl2h4c1wv73lgkkqxcvhzgwm4bafvcqml3ckawvbw99"))))
       (build-system pyproject-build-system)
       (arguments
        (list
