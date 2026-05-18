@@ -49,6 +49,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
+  #:use-module (guix hg-download)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
@@ -63,6 +64,7 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages dns)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gperf)
@@ -2166,3 +2168,61 @@ from within Lua programs.")
 
 (define-public lua5.4-lsqlite3
   (make-lua-lsqlite3 "lua5.4-lsqlite3" lua-5.4 lua5.4-lunitx))
+
+(define (make-lua-unbound name lua)
+  (package
+    (name name)
+    (version "1.1.0")
+    (source
+     (origin
+       (method hg-fetch)
+       (uri (hg-reference
+             (url "https://hg.sr.ht/~zash/luaunbound")
+             (changeset version)))
+       (file-name (hg-file-name name version))
+       (sha256
+        (base32 "17q5n9h1hnlx00x4k3h93rwyy41gfpd42yyp13rqkhhkmimw6q2y"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                     ;no test
+      #:make-flags
+      #~(let ((lua-version #$(version-major+minor (package-version lua))))
+          (list
+           (string-append "CC=" #$(cc-for-target))
+           (string-append "LUA_VERSION=" lua-version)
+           (string-append "LUA_LIBDIR=/lib/lua/" lua-version)
+           (string-append "MYLDFLAGS=-L"
+                          #$(this-package-input "unbound") "/lib")
+           (string-append "DESTDIR=" #$output)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (native-inputs (list pkg-config))
+    (inputs (list lua unbound))
+    (home-page "https://www.zash.se/luaunbound.html")
+    (synopsis "Unbound binding for Lua")
+    (description
+     "This is a binding to libunbound for Lua, allowing both asynchronous
+and DNSSEC-secured DNS lookups of arbitrary DNS record types.
+
+It was created because Prosody needs an asynchronous DNS library with support
+for SRV records, and the ones found at the time did one or the other, or was
+missing DNSSEC that allowed implementing DANE.
+
+It originated out of a need in the XMPP server software Prosody for an
+async-capable resolver library supporting SRV records, as well as a desire to
+experiment with DNSSEC and new DNS records.")
+    (license license:expat)))
+
+(define-public lua5.2-unbound
+  (make-lua-unbound "lua5.2-unbound" lua-5.2))
+
+(define-public lua-unbound
+  (make-lua-unbound "lua-unbound" lua))
+
+(define-public lua5.4-unbound
+  (make-lua-unbound "lua5.4-unbound" lua-5.4))
+
+(define-public lua5.5-unbound
+  (make-lua-unbound "lua5.5-unbound" lua-5.5))
