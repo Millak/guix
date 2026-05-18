@@ -2536,7 +2536,7 @@ limited size and a few external dependencies.  It is configurable via
 (define-public mangowm
   (package
     (name "mangowm")
-    (version "0.13.0")
+    (version "0.13.1")
     (source
      (origin
        (method git-fetch)
@@ -2545,7 +2545,7 @@ limited size and a few external dependencies.  It is configurable via
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sh1hcr3c74ac8cxd45mnjw1zpb2i22bsfz02cb409rw6dwiy524"))))
+        (base32 "0szzssar8h80wqh46vxrh87znqnq8rmwrl1a01rg4ww4in0ni20y"))))
     (build-system meson-build-system)
     (arguments
      (list
