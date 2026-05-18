@@ -812,60 +812,6 @@ utility functions for all standard Scheme implementations.")
               "http://people.csail.mit.edu/jaffer/SLIB_COPYING.txt"
               "Or see COPYING in the distribution."))))
 
-(define-public scm
-  (package
-    (name "scm")
-    (version "5f4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://groups.csail.mit.edu/mac/ftpdir/scm/scm-"
-                    version ".zip"))
-              (sha256
-               (base32
-                "17i6shvh2caqmksm7z130f9fz0qinaxg7xz9yadv904xh3znshnk"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-                  (lambda* (#:key inputs outputs #:allow-other-keys)
-                    (invoke "./configure"
-                            (string-append "--prefix="
-                                           (assoc-ref outputs "out")))))
-         (add-before 'build 'pre-build
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       (substitute* "Makefile"
-                         (("ginstall-info") "install-info"))
-                       #t))
-         (replace 'build
-                  (lambda* (#:key inputs outputs #:allow-other-keys)
-                    (setenv "SCHEME_LIBRARY_PATH"
-                            (search-input-directory inputs "lib/slib/"))
-                    (invoke "make" "scmlit" "CC=gcc")
-                    (invoke "make" "all")))
-         (add-after 'install 'post-install
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (let* ((out         (assoc-ref outputs "out"))
-                             (req (string-append out "/lib/scm/require.scm")))
-                        (delete-file req)
-                        (format (open req (logior O_WRONLY O_CREAT))
-                                "(define (library-vicinity) ~s)\n"
-                                (search-input-directory inputs "lib/slib/"))
-
-                        ;; We must generate the slibcat file.
-                        (invoke (string-append out "/bin/scm")
-                                "-br" "new-catalog")))))))
-    (inputs (list slib))
-    (native-inputs (list unzip texinfo))
-    (home-page "https://people.csail.mit.edu/jaffer/SCM")
-    (synopsis "Scheme implementation conforming to R5RS and IEEE P1178")
-    (description "GNU SCM is an implementation of Scheme.  This
-implementation includes Hobbit, a Scheme-to-C compiler, which can
-generate C files whose binaries can be dynamically or statically
-linked with a SCM executable.")
-    (license license:lgpl3+)))
-
 (define-public tinyscheme
   (package
     (name "tinyscheme")
