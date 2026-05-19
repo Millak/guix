@@ -1676,6 +1676,10 @@ an embedded event driven algorithm.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("click>=8,<8.3") "click>=8"))))
           (add-after 'compress-documentation 'wrap-program
             (lambda _
               (wrap-program (string-append #$output "/bin/librelane")
