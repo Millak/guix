@@ -2392,6 +2392,71 @@ and engineering community.")
 (define-deprecated coin3D-4 coin3d)
 (export coin3D-4)
 
+(define-public skcms
+  ;; No tags are available.
+  (let ((commit "a7a3b15f06355692d86a3b8373c579a521598f4c")
+        (revision "0"))
+    (package
+      (name "skcms")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://skia.googlesource.com/skcms")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ylrsm7cinw59ilgbffazbgifax81kkya5cxq8q8wybnxx6z6ps6"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-includes
+              (lambda _
+                (substitute* "skcms.h"
+                  (("src\\/skcms_public\\.h") "skcms/skcms_public.h"))))
+            (delete 'configure)
+            (replace 'build
+              (lambda _
+                ;; Some CPUs may not support these features.
+                (let ((cflags (append '("-DSKCMS_DISABLE_HSW=1"
+                                        "-DSKCMS_DISABLE_SKX=1")
+                                      (if #$(target-mingw?)
+                                          '("-DSKCMS_HAS_MUSTTAIL=0")
+                                          '())))
+                      (ldflags '("-lstdc++")))
+                  (apply invoke #$(cc-for-target)
+                         `("-O2" "-g" "-fPIC" ,@cflags
+                           "skcms.cc"
+                           "src/skcms_TransformBaseline.cc"
+                           "src/skcms_TransformHsw.cc"
+                           "src/skcms_TransformSkx.cc"
+                           "-shared" ,@ldflags
+                           "-o" "libskcms.so"))
+                  (apply invoke #$(cc-for-target)
+                         `(,@cflags
+                           "tests.c" "test_only.c"
+                           "-Wl,-rpath=." "-L." "-lskcms" ,@ldflags
+                           "-o" "tests")))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "./tests"))))
+            (replace 'install
+              (lambda _
+                (install-file "libskcms.so" (string-append #$output "/lib"))
+                (install-file "skcms.h" (string-append #$output "/include"))
+                (install-file "src/skcms_public.h"
+                              (string-append #$output "/include/skcms")))))))
+      (native-inputs (list ninja))
+      (home-page "https://skia.org/")
+      (synopsis "Color management engine")
+      (description
+       "skcms is the color management engine.  It is a part of @code{skia}.")
+      (license license:bsd-3))))
+
 (define-public skia
   ;; Releases follow those of Chromium, about every 6 weeks.  The release
   ;; version can be found on this page:
