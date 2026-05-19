@@ -3113,23 +3113,18 @@ touchscreen devices.")
     (license license:expat)))
 
 (define-public rusty
-  ;; commit before 7b80dee6fefc1f6f012a57e451331db524a8012f, which updates
-  ;; the rust version to 1.9. After rust has been updated in Guix, we can
-  ;; continue updating.
-  (let ((commit "2f406d938f95415c5063e5d3615dae29671b351e")
-        (revision "1"))
     (package
       (name "rusty")
-      (version (git-version "0.2.0" revision commit))
+      (version "0.5.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/PLC-lang/rusty")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0zsyyh7n4pc5q2dmsn3qcil00m8aw6id8qq2k61j02mz0cm6ylvp"))))
+          (base32 "1a0gv247kzclya5i78mgxav21aqrya4bv5sylh7idnzhn1ap37nb"))))
       (build-system cargo-build-system)
       (arguments
        (list
@@ -3147,16 +3142,15 @@ touchscreen devices.")
                                "xtask/src/task.rs" "xtask/src/main.rs")
                   (("([=\"])cc(\")" _ prefix suffix)
                    (string-append prefix #$(cc-for-target) suffix))))))))
-      (inputs (cons* libffi lld-14 llvm-14
+      (inputs (cons* libffi llvm-21
                      (cargo-inputs 'rusty)))
-      (native-inputs (list lld-wrapper))
       (home-page "https://plc-lang.github.io/rusty/")
       (synopsis "IEC 61131-3 structured text compiler")
       (description
        "RuSTy is a IEC 61131-3 @acronym{ST, Structured Text} compiler written in
 Rust.  It compiles ST down to native machine code, targeting most
 @code{llvm}-supported targets.")
-      (license (list license:lgpl3 license:gpl3)))))
+      (license (list license:lgpl3 license:gpl3))))
 
 (define-public rust-swc
   (package
