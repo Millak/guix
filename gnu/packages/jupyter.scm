@@ -1727,15 +1727,8 @@ analyzing Jupyter Notebooks.")
     (arguments
      (list
       #:test-flags
-      ;; All tests fail with error: This plugin does not support
-      ;; propagateSizeHints()
-      #~(list "--ignore=qtconsole/tests/test_00_console_widget.py"
-              ;; AssertionError: '<!DO[261 chars]size:12pt; font-weight:400;
-              ;; font-style:normal;[1218 chars]tml>' != '<!DO[261
-              ;; chars]size:9pt; font-weight:400; font-style:normal;"[1217
-              ;; chars]tml>'Diff is 1756 characters long. Set self.maxDiff to
-              ;; None to see it.
-              "-k" "not test_other_output")
+      ;; See: <https://github.com/spyder-ide/qtconsole/issues/582>.
+      #~(list "--ignore=qtconsole/tests/test_jupyter_widget.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
