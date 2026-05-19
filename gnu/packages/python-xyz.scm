@@ -25655,14 +25655,14 @@ hypermedia formats.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-check-environment
-            (lambda* (#:key inputs #:allow-other-keys)
-              (setenv "TZ" "UTC")
-              (setenv "TZDIR"
-                      (search-input-directory inputs
-                                              "share/zoneinfo")))))))
+      ;; tests: x86_64 1117 passed
+      ;;        i686-linux 1116 passed, 1 deselected
+      #:test-flags
+      #~(list #$@(if (target-64bit?)
+                     '()
+                     ;; OverflowError
+                     '((string-append "--deselect=tests/test_utils.py"
+                        "::test_from_timestamp_with_overflow_value"))))))
     (native-inputs
      (list python-flit-core
            python-pytest
