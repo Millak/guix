@@ -841,23 +841,20 @@ See also @url{https://prosody.im/doc/modules/mod_muc}."
   (let* ((prosody (if (opaque-prosody-configuration? config)
                       (opaque-prosody-configuration-prosody config)
                       (prosody-configuration-prosody config)))
-         (prosodyctl-bin (file-append prosody "/bin/prosodyctl"))
          (pid-file (prosody-configuration-pidfile config))
-         (prosodyctl-action (lambda args
-                              #~(lambda _
-                                  (invoke #$prosodyctl-bin #$@args)
-                                  (match '#$args
-                                    (("start")
-                                     (call-with-input-file #$pid-file read))
-                                    (_ #t))))))
+         (prosody-bin (file-append prosody "/bin/prosody")))
     (list (shepherd-service
            (documentation "Run the Prosody XMPP server")
            (provision '(prosody xmpp-daemon))
            (requirement '(networking syslogd user-processes))
            (modules `((ice-9 match)
                       ,@%default-modules))
-           (start (prosodyctl-action "start"))
-           (stop (prosodyctl-action "stop"))))))
+           (start #~(make-forkexec-constructor
+                     (list #$prosody-bin "-F")
+                     #:user "prosody"
+                     #:group "prosody"
+                     #:pid-file #$pid-file))
+           (stop #~(make-kill-destructor))))))
 
 (define %prosody-accounts
   (list (user-group (name "prosody") (system? #t))
