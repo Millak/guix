@@ -16620,14 +16620,14 @@ Markdown documents.  More generally, icons can be inserted in any
 (define-public r-bslib
   (package
     (name "r-bslib")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bslib" version))
        (sha256
         (base32
-         "1lsnbbm6adb2scqfa6zgz1py3mqkc8dhzb4f1fca96g2am4d5a5l"))
+         "1frh4cf900j695dh3rc85ms3k3d459gpxssmplwlr0nbb62lgpz4"))
        (snippet
         '(for-each delete-file
                    '("inst/components/dist/components.min.js"
@@ -16650,23 +16650,16 @@ Markdown documents.  More generally, icons can be inserted in any
       #:imported-modules `(,@%r-build-system-modules
                            (guix build minify-build-system))
       #:skipped-tests
-      ;; Some tests require shiny, leading to a dependency cycle.
+      ;; These tests require shiny, leading to a dependency cycle.
       '(("test-layout.R"
          "layout_columns\\(\\) with col_widths")
         ("test-navs-legacy.R"
-         "navset_bar\\(\\) warns if using deprecated args"
-         "navset_bar\\(\\) warns if `navbar_options\\(\\)` collide with direct deprecated options"
-         "shiny:navbarPage\\(\\) is unaffected"
          "navbar markup snapshots")
         ("test-page.R"
-         "page_sidebar\\(\\)"
-         "save_html\\(\\) works on components and pages with a custom theme"
          "page_\\*\\(\\) functions can handle trailing commas")
-        ("test-sidebar.R"
-         "sidebar\\(\\) - assigns a random `id` if collapsible and `id` not provided"
-         "sidebar\\(\\) - sets `aria-expanded` correctly on collapse toggle"
-         "sidebar\\(\\) - warns if `max_height_mobile` used with `open != 'always'")
-        ;; This test requires r-shiny.
+        ("test-toolbar.R"
+         "toolbar_input_select\\(\\) validates selected is in choices"
+         "update_toolbar_input_select\\(\\) validates selected is in choices")
         ("test-input-submit.R"
          "input_submit_textarea\\(\\) markup snapshots"))
       #:phases
@@ -16698,9 +16691,9 @@ Markdown documents.  More generally, icons can be inserted in any
                              . "lib/bs-a11y-p/plugins/js/bootstrap-accessibility.min.js")
                             ("lib/bs3/assets/javascripts/bootstrap.js"
                              . "lib/bs3/assets/javascripts/bootstrap.min.js")
-                            (,(assoc-ref inputs "js-bootstrap4-bundle")
+                            (,(assoc-ref inputs "bootstrap4.bundle.js")
                              . "lib/bs4/dist/js/bootstrap.bundle.min.js")
-                            (,(assoc-ref inputs "js-bootstrap5-bundle")
+                            (,(assoc-ref inputs "bootstrap5.bundle.js")
                              . "lib/bs5/dist/js/bootstrap.bundle.min.js")))))))))
     (propagated-inputs
      (list r-base64enc
@@ -16715,23 +16708,24 @@ Markdown documents.  More generally, icons can be inserted in any
            r-rlang
            r-sass))
     (native-inputs
-     `(("esbuild" ,esbuild)
-       ("js-bootstrap4-bundle"
-        ,(origin
-           (method url-fetch)
-           (uri "https://raw.githubusercontent.com/twbs/bootstrap/v4.6.0/dist/js/bootstrap.bundle.js")
-           (sha256
-            (base32
-             "04abvgp923w36qfqkkl2syim3bl119nwxbgials90z1jyb8jgss1"))))
-       ("js-bootstrap5-bundle"
-        ,(origin
-           (method url-fetch)
-           (uri "https://raw.githubusercontent.com/twbs/bootstrap/v5.3.1/dist/js/bootstrap.bundle.js")
-           (sha256
-            (base32
-             "1bp0a2fin80hwxvd260r1jk57snsgz74vahid64yb2sgj0rlmj8a"))))
-       ("r-testthat" ,r-testthat)
-       ("r-yaml" ,r-yaml)))
+     (list esbuild
+           (origin
+             (method url-fetch)
+             (uri "https://raw.githubusercontent.com/twbs/bootstrap/v4.6.0/dist/js/bootstrap.bundle.js")
+             (file-name "bootstrap4.bundle.js")
+             (sha256
+              (base32
+               "04abvgp923w36qfqkkl2syim3bl119nwxbgials90z1jyb8jgss1")))
+           (origin
+             (method url-fetch)
+             (uri "https://raw.githubusercontent.com/twbs/bootstrap/v5.3.1/dist/js/bootstrap.bundle.js")
+             (file-name "bootstrap5.bundle.js")
+             (sha256
+              (base32
+               "1bp0a2fin80hwxvd260r1jk57snsgz74vahid64yb2sgj0rlmj8a")))
+           r-testthat
+           r-withr
+           r-yaml))
     (home-page "https://rstudio.github.io/bslib/")
     (synopsis "Custom Bootstrap Sass themes for shiny and rmarkdown")
     (description
