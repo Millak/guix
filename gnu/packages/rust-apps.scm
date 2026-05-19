@@ -3113,44 +3113,43 @@ touchscreen devices.")
     (license license:expat)))
 
 (define-public rusty
-    (package
-      (name "rusty")
-      (version "0.5.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/PLC-lang/rusty")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1a0gv247kzclya5i78mgxav21aqrya4bv5sylh7idnzhn1ap37nb"))))
-      (build-system cargo-build-system)
-      (arguments
-       (list
-        #:install-source? #f
-        #:cargo-install-paths
-        ''("compiler/plc_driver")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'set-cc
-              ;; Tests assume `cc' is available in PATH, but Guix does not
-              ;; provide that with the `gcc' or `clang' packages.
-              (lambda _
-                (substitute* '("tests/integration/build_description_tests.rs"
-                               "compiler/plc_driver/src/cli.rs"
-                               "xtask/src/task.rs" "xtask/src/main.rs")
-                  (("([=\"])cc(\")" _ prefix suffix)
-                   (string-append prefix #$(cc-for-target) suffix))))))))
-      (inputs (cons* libffi llvm-21
-                     (cargo-inputs 'rusty)))
-      (home-page "https://plc-lang.github.io/rusty/")
-      (synopsis "IEC 61131-3 structured text compiler")
-      (description
-       "RuSTy is a IEC 61131-3 @acronym{ST, Structured Text} compiler written in
+  (package
+    (name "rusty")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PLC-lang/rusty")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a0gv247kzclya5i78mgxav21aqrya4bv5sylh7idnzhn1ap37nb"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-install-paths ''("compiler/plc_driver")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-cc
+            ;; Tests assume `cc' is available in PATH, but Guix does not
+            ;; provide that with the `gcc' or `clang' packages.
+            (lambda _
+              (substitute* '("tests/integration/build_description_tests.rs"
+                             "compiler/plc_driver/src/cli.rs"
+                             "xtask/src/task.rs" "xtask/src/main.rs")
+                (("([=\"])cc(\")" _ prefix suffix)
+                 (string-append prefix #$(cc-for-target) suffix))))))))
+    (inputs (cons* libffi llvm-21
+                   (cargo-inputs 'rusty)))
+    (home-page "https://plc-lang.github.io/rusty/")
+    (synopsis "IEC 61131-3 structured text compiler")
+    (description
+     "RuSTy is a IEC 61131-3 @acronym{ST, Structured Text} compiler written in
 Rust.  It compiles ST down to native machine code, targeting most
 @code{llvm}-supported targets.")
-      (license (list license:lgpl3 license:gpl3))))
+    (license (list license:lgpl3 license:gpl3))))
 
 (define-public rust-swc
   (package
