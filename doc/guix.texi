@@ -28827,9 +28827,8 @@ host	all	all	::1/128 	md5"))
 @table @asis
 @item @code{log-destination} (default: @code{"syslog"})
 The logging method to use for PostgreSQL@.  Valid values are
-@code{"stderr"}, @code{"csvlog"}, @code{"jsonlog"}, stder@code{"syslog"}
-and @code{"eventlog"}.  Multiple values are accepted, separated by
-commas.
+@code{"stderr"}, @code{"csvlog"}, @code{"jsonlog"}, @code{"syslog"} and
+@code{"eventlog"}.  Multiple values are accepted, separated by commas.
 
 @item @code{hba-file} (default: @code{%default-postgres-hba})
 Filename or G-expression for the host-based authentication
