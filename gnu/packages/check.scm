@@ -2695,7 +2695,11 @@ failures and errors instantly.")
                      "test_is_not_identity"
                      "test_resolves_builtin_types[object]"
                      "test_resolves_forwardrefs_to_builtin_types[object]"
-                     "test_timezone_lookup[tzinfo]")
+                     "test_timezone_lookup[tzinfo]"
+                     ;; hypothesis.errors.FailedHealthCheck: Input generation is slow
+                     #$@(if (target-riscv64?)
+                            '("test_can_run_with_no_db")
+                            '()))
                " and not "))
       #:phases
       #~(modify-phases %standard-phases
