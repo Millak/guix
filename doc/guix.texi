@@ -36277,6 +36277,10 @@ Launch the app as this group (it must be an existing group).
 A list of sockets (as path strings) which gunicorn will be listening
 on.  This list must contain at least one socket.
 
+@item @code{control-socket} (default: #f) (type: string)
+If set, creates a gunicorn control-socket at the given path.  Note that,
+the control socket should refer to a path listed in @code{mappings}.
+
 @item @code{socket-user} (default: @code{user}) (type: string)
 Owner of the directory containing the socket (must be an existing user).
 

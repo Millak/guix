@@ -181,6 +181,7 @@
             gunicorn-app-mappings
             gunicorn-app-name
             gunicorn-app-package
+            gunicorn-app-control-socket
             gunicorn-app-sockets
             gunicorn-app-timeout
             gunicorn-app-user
@@ -1073,6 +1074,8 @@ renewed TLS certificates, or @code{include}d files.")
                 (thunked))
   (socket-mode gunicorn-app-socket-mode
                (default #o750))
+  (control-socket gunicorn-app-control-socket
+                  (default #f))
   (sockets gunicorn-app-sockets
            (default (list (string-append "unix:/var/run/gunicorn/"
                                          (gunicorn-app-name this-gunicorn-app)
@@ -1180,6 +1183,10 @@ renewed TLS certificates, or @code{include}d files.")
                         #:namespaces (delq 'net %namespaces))
                      "--workers" #$(number->string (gunicorn-app-workers app))
                      "--timeout" #$(number->string (gunicorn-app-timeout app))
+                     #$(let ((ctrl-socket (gunicorn-app-control-socket app)))
+                         (if ctrl-socket
+                           (string-append "--control-socket=" ctrl-socket)
+                           "--no-control-socket"))
                      (list
                       #$@(append
                           (append-map (lambda (socket)
