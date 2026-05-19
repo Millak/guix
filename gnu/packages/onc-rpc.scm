@@ -95,7 +95,8 @@ IPv4 and IPv6.  ONC RPC is notably used by the network file system (NFS).")
       (uri (string-append "mirror://sourceforge/" name "/" name "/"
                           version "/"
                           name "-" version ".tar.bz2"))
-      (patches (search-patches "rpcbind-CVE-2017-8779.patch"))
+      (patches (search-patches "rpcbind-hurd.patch"
+                               "rpcbind-CVE-2017-8779.patch"))
       (sha256
        (base32 "1pp8xvprsfz8nlmmvxf829gilx0ibb08bfs3lhisxrfai5j784sn"))))
     (build-system gnu-build-system)
