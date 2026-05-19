@@ -1379,6 +1379,68 @@ and it makes it easy to ship a new archive that will override a previous
 archive on a per-file basis.")
     (license license:zlib)))
 
+(define-public physfs-sdl3
+  ;; 3.2.0 does not include SDL3 glue layer, use oldest compatible commit
+  (let ((commit "49cfd5fdd46f38b4c2611556b44ee9b0d308e162")
+         (revision "0"))
+    (package
+      (name "physfs-sdl3")
+      (version (git-version "3.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/icculus/physfs")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "18i0dalg5w5c6y6fnalb87bxf2qgx4cbniq9a08rhsjwy8lwz8xz"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-before 'build 'chdir-source
+              (lambda _
+                (chdir "extras")))
+            (replace 'build
+              (lambda -
+                (invoke "gcc" "-shared" "-fPIC" "-O2"
+                          "-o" "libphysfssdl3.so" "physfssdl3.c")))
+            (replace 'install
+              (lambda _
+                (let ((out #$output))
+                  (install-file "libphysfssdl3.so"
+                                (string-append #$output "/lib"))
+                  (install-file "physfssdl3.h"
+                                (string-append #$output "/include"))
+                  (with-output-to-file "physfs-sdl3.pc"
+                    (lambda ()
+                      (format #t "\
+prefix=~a
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: physfs-sdl3
+Version: 3.2.0
+Description: PhysicsFS SDL3 integration
+Libs: -L${libdir} -lphysfssdl3
+Cflags: -I${includedir}
+" out)))
+                  (install-file "physfs-sdl3.pc"
+                                (string-append out "/lib/pkgconfig"))))))))
+      (inputs (list physfs sdl3))
+      (synopsis "PhysicsFS SDL3 I/O backend")
+      (home-page "https://github.com/icculus/physfs")
+      (description "This package provides @file{physfssdl3.c} and its header,
+which implement SDL3's @code{SDL_IOStream} and @code{SDL_Storage}
+interfaces using PhysicsFS as the backend.  It enables SDL3 applications
+to load assets from compressed archives and other PhysicsFS-supported
+storage through the standard SDL3 API.")
+      (license license:public-domain))))
+
 (define-public love
   (package
     (name "love")
