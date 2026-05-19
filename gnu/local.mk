@@ -1880,6 +1880,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/lua-5.4-pkgconfig.patch			\
   %D%/packages/patches/lua-5.4-liblua-so.patch			\
   %D%/packages/patches/lua-5.4-search-paths.patch		\
+  %D%/packages/patches/lua-5.5-search-paths.patch		\
   %D%/packages/patches/lua-5.x-search-path-helpers.patch	\
   %D%/packages/patches/lua-lgi-fix-pango.patch			\
   %D%/packages/patches/lua-lgi-fix-ref.patch			\

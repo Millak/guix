@@ -151,6 +151,22 @@ automatic memory management with incremental garbage collection, making it ideal
 for configuration, scripting, and rapid prototyping.")
     (license license:x11)))
 
+(define-public lua-5.5
+  (package (inherit lua)
+           (version "5.5.0")
+           (source (origin
+                     (method url-fetch)
+                     (uri (string-append "https://www.lua.org/ftp/lua-"
+                                         version ".tar.gz"))
+                     (sha256
+                      (base32 "0gcbsr00difm2s82pflxg28zcnjka9048lncbfvwl1fhpcmw7k2p"))
+                     ;; Note: Some lua-5.4 patches seem to apply without issues
+                     (patches (search-patches "lua-5.4-pkgconfig.patch"
+                                              "lua-5.4-liblua-so.patch"
+                                              "lua-5.x-search-path-helpers.patch"
+                                              "lua-5.5-search-paths.patch"))))
+           (native-search-paths (lua-search-paths "5.5"))))
+
 (define-public lua-5.4
   (package (inherit lua)
            (version "5.4.8")
