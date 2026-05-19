@@ -801,10 +801,10 @@ interfaces.")
 (define-public lua5.2-ossl
   (make-lua-ossl "lua5.2-ossl" lua-5.2))
 
-(define (make-lua-sec name lua)
+(define (make-lua-sec name lua lua-socket)
   (package
     (name name)
-    (version "0.9")
+    (version "1.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -813,40 +813,37 @@ interfaces.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ssncgkggyr8i3z6zbvgrgsqj2q8676rnsikhpfwnk9n7sx4gwbl"))))
+                "0rrdfbnkd8pgqwh3f0iyd5cxy7g1h0568a88m3sq1z7715js4yx3"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (let ((out (assoc-ref %outputs "out"))
-             (lua-version ,(version-major+minor (package-version lua))))
-         (list "linux"
-               ,(string-append "CC=" (cc-for-target))
-               "LD=gcc"
-               (string-append "LUAPATH=" out "/share/lua/" lua-version)
-               (string-append "LUACPATH=" out "/lib/lua/" lua-version)))
-       #:tests? #f ; no tests included
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
-    (inputs
-     (list lua openssl))
-    (propagated-inputs
-     `(("lua-socket"
-        ,(make-lua-socket
-          (format #f "lua~a-socket"
-                  (version-major+minor (package-version lua))) lua))))
+     (list
+      #:tests? #f                       ;no tests
+      #:make-flags
+      #~(let* ((lua-api-version #$(version-major+minor (package-version lua)))
+               (lua-path (string-append #$output "/share/lua/" lua-api-version))
+               (lua-cpath (string-append #$output "/lib/lua/" lua-api-version)))
+          (list "linux"
+                (string-append "CC=" #$(cc-for-target))
+                (string-append "LD=" #$(cc-for-target))
+                (string-append "LUAPATH=" lua-path)
+                (string-append "LUACPATH=" lua-cpath)))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure))))
+    (inputs (list lua openssl))
+    (propagated-inputs (list lua-socket))
     (home-page "https://github.com/brunoos/luasec/wiki")
     (synopsis "OpenSSL bindings for Lua")
-    (description "LuaSec is a binding for OpenSSL library to provide TLS/SSL
-communication.  It takes an already established TCP connection and creates a
-secure session between the peers.")
+    (description
+     "LuaSec is a binding for OpenSSL library to provide TLS/SSL communication.
+It takes an already established TCP connection and creates a secure session
+between the peers.")
     (license license:expat)))
 
 (define-public lua5.1-sec
-  (make-lua-sec "lua5.1-sec" lua-5.1))
+  (make-lua-sec "lua5.1-sec" lua-5.1 lua5.1-socket))
 
 (define-public lua5.2-sec
-  (make-lua-sec "lua5.2-sec" lua-5.2))
+  (make-lua-sec "lua5.2-sec" lua-5.2 lua5.2-socket))
 
 (define (make-lua-cqueues name lua lua-ossl)
   (package
