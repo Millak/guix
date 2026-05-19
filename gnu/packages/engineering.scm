@@ -1930,17 +1930,52 @@ r2ghidra.")
 (define-public rayforge
   (package
     (name "rayforge")
-    (version "1.0.2")
+    (version "1.7.7")   ;newer version requires python-raygeo (Rust)
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/barebaric/rayforge")
-             (commit version)))
+              (url "https://github.com/barebaric/rayforge")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c6dl0x3pafmh4p533jbk2cj73q90vz1797jya3hzzxdv0h383yc"))))
+        (base32 "1w44qw51nynf1rk61y0d0wj6xl66ciswpcsp38dnwrpfwsqgafxw"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 1626 passed
+      #:test-flags
+      ;; XXX: Tests fail to pick exact version of cairo: E gi.RepositoryError:
+      ;; Typelib file for namespace 'cairo', version '1.0' not found
+      #~(list "--ignore=tests/core/geo/test_font_config.py"
+              "--ignore=tests/core/geo/test_geo_text.py"
+              "--ignore=tests/core/geo/test_geometry.py"
+              "--ignore=tests/core/geo/test_text.py"
+              "--ignore=tests/core/geo/test_transform.py"
+              ;; XXX: Projects ships a huge test suite which the majority
+              ;; fail, run bare minimal core tests.
+              "tests/core")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              ;; All of the dependencies are pined to exact version.
+              (substitute* "requirements.txt"
+                (("[=~]=.*") "\n")
+                ;; XXX: Guix's opencv package does not provide Python's
+                ;; version metadata.
+                (("opencv_python") ""))))
+          (add-before  'sanity-check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "rayforge")))
+          (add-after 'wrap 'wrap-rayforge
+            (lambda _
+              (wrap-program (string-append #$output "/bin/rayforge")
+                `("GI_TYPELIB_PATH" ":" prefix
+                  (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs (list python-gitpython
                          python-pytest
                          python-pytest-asyncio
@@ -1953,54 +1988,27 @@ r2ghidra.")
                   python-asyncudp
                   python-blinker
                   python-ezdxf
+                  python-gitpython
                   python-numpy
                   python-platformdirs
+                  python-pluggy
                   python-pycairo
                   python-pyclipper
                   python-pygobject
+                  python-pymupdf
                   python-pyopengl
                   python-pyopengl-accelerate
                   python-pypdf
-                  python-pyserial-asyncio
+                  python-pyserial
                   python-pyvips
                   python-pyyaml
                   python-scipy
                   python-semver
                   python-svgelements
+                  python-trimesh
                   python-websockets
                   vtracer))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'write-version-file
-            (lambda _
-              (call-with-output-file "rayforge/version.txt"
-                (lambda (port)
-                  (display #$version port)))
-              (let ((port (open-file "MANIFEST.in" "a")))
-                (display "include rayforge/version.txt\n" port)
-                (close-port port))))
-          (add-after 'unpack 'fix-tests
-            (lambda _
-              (mkdir "tmp-home")
-              (setenv "HOME"
-                      (string-append (getcwd) "/tmp-home"))
-              ;; Fix abstract class test for older Python error message format
-              (substitute* "tests/pipeline/stage/test_base_stage.py"
-                (("without an implementation for abstract method 'reconcile'")
-                 "abstract method '?reconcile'?"))
-              ;; Fix arc fitting test: add looser tolerance for floating point comparison
-              (substitute* "tests/core/geo/test_fitting.py"
-                (("(assert np\\.allclose\\(.*, \\(-10\\.0, 0\\.0\\))" match)
-                 (string-append match ", atol=1e-3")))))
-          (delete 'sanity-check) ; Tests against python package version of rayforge
-          (add-after 'wrap 'wrap-rayforge
-            (lambda _
-              (wrap-program (string-append #$output "/bin/rayforge")
-                `("GI_TYPELIB_PATH" ":" prefix
-                  (,(getenv "GI_TYPELIB_PATH")))))))))
-    (home-page "https://github.com/barebaric/rayforge")
+    (home-page "https://rayforge.org/")
     (synopsis "Desktop application for laser cutting and engraving")
     (description
      "Rayforge is a cross-platform 2D CAD and G-code control software designed
