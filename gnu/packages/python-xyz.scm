@@ -25912,6 +25912,7 @@ version of @code{SocksiPy} with bug fixes and extra features.")
     (license license:bsd-3)))
 
 (define-public python-pydub
+  ;; TODO: Move to (gnu packages audio)
   (package
     (name "python-pydub")
     (version "0.25.1")
@@ -25923,7 +25924,17 @@ version of @code{SocksiPy} with bug fixes and extra features.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xskllq66wqndjfmvp58k26cv3w480sqsil6ifwp4gghir7hqc8m"))))
+        (base32 "0xskllq66wqndjfmvp58k26cv3w480sqsil6ifwp4gghir7hqc8m"))
+       (patches
+        (list
+         ;; See: <https://github.com/jiaaro/pydub/pull/769>.
+         (origin
+           (method url-fetch)
+           (uri
+            (string-append "https://github.com/jiaaro/pydub/commit/"
+                           "66c1bf7813ae8621a71484fdcdf609734c0d8efd.patch"))
+           (sha256
+            (base32 "17nlbw79gv9mag6xpd46al5f1bgqcncffh151znn0fmhj8i9rgz3")))))))
     (build-system pyproject-build-system)
     (arguments
      (list
