@@ -41676,7 +41676,15 @@ are easily incorporated into the library with a minimum amount of work.")
        (sha256
         (base32 "03y7fabyky67cw4g71xcbwfdal79wxcnmr303qyllz21x2d4s5ac"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-test-file-names
+            (lambda _
+              (rename-file "tests/test-schema.py" "tests/test_schema.py")
+              (rename-file "tests/test-yaml.py" "tests/test_yaml.py"))))))
+    (native-inputs (list python-pytest python-setuptools))
     (inputs (list python-pyyaml))
     (home-page "https://github.com/perlpunk/pyyaml-core")
     (synopsis "YAML 1.2 support for PyYAML")
