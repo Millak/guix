@@ -6008,6 +6008,36 @@ your Web app.")
 object to help create WSGI responses.")
     (license license:expat)))
 
+(define-public python-yewtube-search
+  (package
+    (name "python-yewtube-search")
+    ;; Original repository for python-youtube-search package is archived, see:
+    ;; <https://github.com/alexmercerind/youtube-search-python/issues/189>.
+    ;; The most promising fork was
+    ;; <https://github.com/ahmedayyad-dev/youtube-search-python-fork> which is
+    ;; archived since <2026-04-04>. This is another fork with a different PyPI
+    ;; name for python-yewtube.
+    (version "1.6.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "yewtube_search_python" version))
+       (sha256
+        (base32 "0vjh4wrlqx4lv9qi6572jx2d0rsp6gkvaqf0f2ar4npdz0ldgl47"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;no tests in repository
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-httpx))
+    (home-page "https://github.com/iamtalhaasghar/youtube-search-python")
+    (synopsis "Search for YouTube videos, channels & playlists")
+    (description
+     "This package provides tools to search for @code{YouTube} videos,
+channels and playlists; as well as getting video metadata from links.  This
+package does not rely on the @code{YouTube} Data API v3.")
+    (license license:expat)))
+
 (define-public python-zc-lockfile
   (package
     (name "python-zc-lockfile")
