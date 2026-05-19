@@ -42,6 +42,7 @@
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (guix packages)
@@ -59,6 +60,7 @@
             %test-hpcguix-web
             %test-anonip
             %test-go-webdav
+            %test-gunicorn
             %test-patchwork
             %test-sogogi
             %test-agate
@@ -624,6 +626,88 @@ HTTP-PORT, along with php-fpm."
     (name "go-webdav")
     (description "Test that go-webdav can handle HTTP requests.")
     (value (run-webserver-test name %go-webdav-os))))
+
+
+;;;
+;;; gunicorn
+;;;
+
+(define %gunicorn-os
+  (simple-operating-system
+    (service dhcpcd-service-type)
+    (service gunicorn-service-type
+             (gunicorn-configuration
+              (apps
+               (list (gunicorn-app
+                      (name "werkzeug")
+                      (package python-werkzeug)
+                      (wsgi-app-module "werkzeug.testapp:test_app")
+                      (sockets (list "0.0.0.0:8080"))
+                      (user "root")
+                      (group "users"))))))))
+
+(define (run-gunicorn-test)
+  (define os
+    (marionette-operating-system
+     %gunicorn-os
+     #:imported-modules '((gnu services herd))))
+
+  (define forwarded-port 8080)
+
+  (define vm
+    (virtual-machine
+     (operating-system os)
+     (memory-size 1024)
+     (port-forwardings `((8080 . ,forwarded-port)))))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (srfi srfi-11) (srfi srfi-64)
+                       (gnu build marionette)
+                       (web uri)
+                       (web client)
+                       (web response))
+
+          (define marionette
+            (make-marionette (list #$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "gunicorn")
+
+          (test-assert "service is running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (match (start-service 'gunicorn-werkzeug)
+                  (#f #f)
+                  (('service response-parts ...)
+                   (match (assq-ref response-parts 'running)
+                     ((#t) #t)
+                     ((pid) pid)))))
+             marionette))
+
+          (test-assert "HTTP port ready"
+            (wait-for-tcp-port #$forwarded-port marionette))
+
+          (test-assert "get index page"
+            (let-values
+              (((response text)
+                (http-get #$(simple-format
+                              #f "http://localhost:~A/" forwarded-port)
+                          #:decode-body? #t)))
+              (and (equal? (response-code response) 200)
+                   (string-contains text "WSGI Information"))))
+
+          (test-end))))
+
+  (gexp->derivation "gunicorn-test" test))
+
+(define %test-gunicorn
+  (system-test
+    (name "gunicorn")
+    (description "Test that gunicorn can serve the Werkzeug testapp.")
+    (value (run-gunicorn-test))))
 
 
 ;;;
