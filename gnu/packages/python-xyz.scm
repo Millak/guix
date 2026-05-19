@@ -31672,19 +31672,25 @@ applications with variable CPU loads).")
 (define-public python-param
   (package
     (name "python-param")
-    (version "2.1.0")
+    (version "2.3.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "param" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/holoviz/param")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "07z7az7xg8pzjrmaf928is7n6siw9v9nxfmf0a5vgqj7nl40pcx7"))))
+        (base32 "0cs550plb10ghhn0w5bdnq0i0bkh12996kv3lfibsbzy4dcc7qc7"))))
     (build-system pyproject-build-system)
+    ;; tests: 1448 passed, 5 skipped, 2 xfailed
     (native-inputs
+     ;; Project does not require any dependencies, all of the listed
+     ;; native-inputs are for build/test only.
      (list python-cloudpickle
-           python-hatchling
            python-hatch-vcs
-           python-ipython
+           python-hatchling
+           python-ipython-minimal
            python-jsonschema
            python-nbval
            python-nest-asyncio
@@ -31695,7 +31701,6 @@ applications with variable CPU loads).")
            python-pyarrow
            python-pytest
            python-pytest-asyncio
-           python-pytest-xdist
            python-tables
            python-xlrd))
     (home-page "https://param.holoviz.org/")
