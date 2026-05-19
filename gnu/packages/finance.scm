@@ -1675,19 +1675,26 @@ main features are:
 (define-public silkaj
   (package
     (name "silkaj")
-    (version "0.12.1")
+    ;; 0.12.1 (2025-07-08), all tests passed on the latest commit, revert back
+    ;; to git tag when released.
+    (properties '((commit . "dabe484ba1871030be33a1473ee473004e102763")
+                  (revision . "0")))
+    (version (git-version "0.12.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://git.duniter.org/clients/python/silkaj")
-             (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0prglgwvzi676h4lyw9266sqiqbfs2l0mv0bmjvplvdxzzcs63bv"))))
+        (base32 "08wg4q3y747apj5phq4ghjgg9cdr8mnyzjspjvd8v9qz08v5zg6b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 224 passed, 4 skipped, 2 deselected
       #:test-flags
       ;; They require Poetry in the PATH.
       #~(list "--ignore=tests/integration/"
