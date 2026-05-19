@@ -1105,6 +1105,53 @@ images of initially unknown height.")
     (license (list license:isc          ; pbmtools/p?m.5
                    license:gpl2+))))    ; the rest
 
+(define-public sjpeg
+  ;; No tags available.
+  (let ((commit "46da5aec5fce05faabf1facf0066e36e6b1c4dff")
+        (revision "0"))
+    (package
+      (name "sjpeg")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/webmproject/sjpeg")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0r496mp2ylisspwxl4883pzbl0l8qpscd1x9l7sb5nnmknawr868"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-cmake
+              (lambda _
+                ;; Enable building shared libraries.
+                (substitute* "CMakeLists.txt"
+                  (("add_library\\(sjpeg " all)
+                   (string-append all "SHARED ")))))
+            (add-before 'check 'patch-tests
+              (lambda _
+                (with-directory-excursion "../source/tests"
+                  (substitute* '("test_cmd.sh" "test_png_jpg.sh")
+                    (("\\.\\./examples") "../../build")))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (with-directory-excursion "../source/tests"
+                    (invoke "./test_cmd.sh")
+                    (invoke "./test_png_jpg.sh"))))))))
+      (inputs (list freeglut libjpeg-turbo libpng zlib))
+      (home-page "https://github.com/webmproject/sjpeg")
+      (synopsis "Simple JPEG encoder")
+      (description
+       "sjpeg is a simple encoding library for encoding baseline JPEG files.
+It is also a command-line tool that takes PNG or JPEG images as input to
+produce JPEG files.")
+    (license license:asl2.0))))
+
 (define-public openjpeg-data
   (package
     (name "openjpeg-data")
