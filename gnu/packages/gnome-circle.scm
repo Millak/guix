@@ -682,17 +682,17 @@ and a high score table.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "50.3.0")
+    (version "50.4.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://codeberg.org/valos/Komikku/")
-             (commit (string-append "v" version))))
+              (url "https://codeberg.org/valos/Komikku/")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0hm1infvdsms193g2yp7qw7lrsxjsx5zziib8hgch34y6dbhfhf1"))))
+         "0skkb1b6jgfzy3v1bhbgxkgxmjvnxdi442asp5gdm7j8j9cv5wxv"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -738,21 +738,18 @@ and a high score table.")
            python
            python-beautifulsoup4
            python-brotli
-           python-cloudscraper
            python-colorthief
+           ;; python-curl-cffi          ;not packaged yet in Guix
            python-dateparser
            python-ebooklib
            python-emoji
-           python-keyring
            python-jxlpy
+           python-keyring
            python-lxml
            python-magic
            python-natsort
            python-piexif
            python-pillow
-           python-pillow-heif-0.22
-           python-pure-protobuf
-           python-pycairo
            python-pygobject
            python-pyjwt
            python-pypdf
@@ -774,8 +771,8 @@ and a high score table.")
 developed with the aim of being used with the Librem 5 phone.")
     (license license:gpl3+)
     (native-search-paths (list (search-path-specification
-                                (variable "KOMIKKU_SERVERS_PATH")
-                                (files '("lib/komikku/servers")))))))
+                                 (variable "KOMIKKU_SERVERS_PATH")
+                                 (files '("lib/komikku/servers")))))))
 
 (define-public komikku-servers
   (package
