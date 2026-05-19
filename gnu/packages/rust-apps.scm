@@ -3130,6 +3130,28 @@ touchscreen devices.")
      (list
       #:install-source? #f
       #:cargo-install-paths ''("compiler/plc_driver")
+      #:cargo-test-flags
+      ;; Some of the tests assume an x86_64-linux-gnu host or cross-compiler.
+      (if (target-x86-64?)
+          ''()
+          ''("--"
+             "--skip=integration::build_description_tests::build_empty_project"
+             "--skip=integration::build_description_tests::build_empty_project_debug"
+             "--skip=integration::build_description_tests::build_to_temp"
+             "--skip=integration::build_description_tests::build_with_library_link_path"
+             "--skip=integration::build_description_tests::build_with_separate_lib_folder"
+             "--skip=integration::build_description_tests::build_with_target_but_without_sysroot"
+             "--skip=integration::external_files::compile_external_file"
+             "--skip=integration::external_files::compile_external_file_with_encoding"
+             "--skip=integration::linking::link_as_pic_object"
+             "--skip=integration::linking::link_as_relocatable_object"
+             "--skip=integration::linking::link_as_shared_object"
+             "--skip=integration::linking::link_as_static_object"
+             "--skip=integration::linking::link_constants"
+             "--skip=integration::linking::link_files_with_same_name"
+             "--skip=integration::linking::link_files_with_same_name_but_different_extension"
+             "--skip=integration::linking::link_to_a_relative_location_with_no_parent"
+             "--skip=integration::linking::link_with_initial_values"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-cc
