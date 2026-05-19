@@ -1092,7 +1092,8 @@ renewed TLS certificates, or @code{include}d files.")
 
 (define (unix-socket? string)
   "Whether STRING indicates a Unix socket."
-  (eq? 'unix (uri-scheme (string->uri string))))
+  (let ((uri (string->uri string)))
+    (and uri (eq? 'unix (uri-scheme uri)))))
 
 (define (socket-dir string)
   "Return the socket directory."
