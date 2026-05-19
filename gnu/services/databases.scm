@@ -139,11 +139,11 @@ host	all	all	::1/128 	scram-sha-256"))
 
 (define-gexp-compiler (postgresql-config-file-compiler
                        (file <postgresql-config-file>) system target)
-  (match file
-    (($ <postgresql-config-file> log-destination hba-file
-                                 ident-file socket-directory
-                                 extra-config)
-     ;; See: https://www.postgresql.org/docs/current/config-setting.html.
+  (match-record file <postgresql-config-file>
+                ( log-destination hba-file
+                  ident-file socket-directory
+                  extra-config)
+    ;; See: https://www.postgresql.org/docs/current/config-setting.html.
     (define (format-value value)
       (cond
        ((boolean? value)
@@ -169,14 +169,14 @@ host	all	all	::1/128 	scram-sha-256"))
                '())
          ,@extra-config)))
 
-     (gexp->derivation
-      "postgresql.conf"
-      #~(call-with-output-file (ungexp output "out")
-          (lambda (port)
-            (display
-             (string-append #$@contents)
-             port)))
-      #:local-build? #t))))
+    (gexp->derivation
+     "postgresql.conf"
+     #~(call-with-output-file (ungexp output "out")
+         (lambda (port)
+           (display
+            (string-append #$@contents)
+            port)))
+     #:local-build? #t)))
 
 (define %default-home-directory "/var/empty")
 
@@ -254,100 +254,100 @@ host	all	all	::1/128 	scram-sha-256"))
                 extension-packages))))))
 
 (define postgresql-activation
-  (match-lambda
-    (($ <postgresql-configuration> postgresql port locale config-file
-                                   log-directory data-directory
-                                   extension-packages)
-     #~(begin
-         (use-modules (guix build utils)
-                      (ice-9 match))
+  (match-record-lambda <postgresql-configuration>
+      ( postgresql port locale config-file
+        log-directory data-directory
+        extension-packages)
+    #~(begin
+        (use-modules (guix build utils)
+                     (ice-9 match))
 
-         (let ((user (getpwnam "postgres")))
-           ;; Create the socket directory.
-           (let ((socket-directory
-                  #$(postgresql-config-file-socket-directory config-file)))
-             (when (string? socket-directory)
-               (mkdir-p socket-directory)
-               (chown socket-directory (passwd:uid user) (passwd:gid user))))
+        (let ((user (getpwnam "postgres")))
+          ;; Create the socket directory.
+          (let ((socket-directory
+                 #$(postgresql-config-file-socket-directory config-file)))
+            (when (string? socket-directory)
+              (mkdir-p socket-directory)
+              (chown socket-directory (passwd:uid user) (passwd:gid user))))
 
-           ;; Create the log directory.
-           (when (string? #$log-directory)
-             (mkdir-p #$log-directory)
-             (chown #$log-directory (passwd:uid user) (passwd:gid user)))
+          ;; Create the log directory.
+          (when (string? #$log-directory)
+            (mkdir-p #$log-directory)
+            (chown #$log-directory (passwd:uid user) (passwd:gid user)))
 
-           (unless (file-exists? #$data-directory)
-             (let ((initdb (string-append
-                            #$(final-postgresql postgresql
-                                                extension-packages)
-                            "/bin/initdb"))
-                   (initdb-args
-                    (append
-                     (if #$locale
-                         (list (string-append "--locale=" #$locale))
-                         '()))))
-               ;; Create db state directory.
-               (mkdir-p #$data-directory)
-               (chown #$data-directory (passwd:uid user) (passwd:gid user))
+          (unless (file-exists? #$data-directory)
+            (let ((initdb (string-append
+                           #$(final-postgresql postgresql
+                                               extension-packages)
+                           "/bin/initdb"))
+                  (initdb-args
+                   (append
+                    (if #$locale
+                        (list (string-append "--locale=" #$locale))
+                        '()))))
+              ;; Create db state directory.
+              (mkdir-p #$data-directory)
+              (chown #$data-directory (passwd:uid user) (passwd:gid user))
 
-               ;; Drop privileges and init state directory in a new
-               ;; process.  Wait for it to finish before proceeding.
-               (match (primitive-fork)
-                 (0
-                  ;; Exit with a non-zero status code if an exception is
-                  ;; thrown.
-                  (dynamic-wind
-                      (const #t)
-                      (lambda ()
-                        (setgid (passwd:gid user))
-                        (setuid (passwd:uid user))
-                        (apply execl initdb
-                               initdb "-D" #$data-directory
-                               initdb-args))
-                      (lambda ()
-                        (primitive-exit 1))))
-                 (pid (waitpid pid))))))))))
+              ;; Drop privileges and init state directory in a new
+              ;; process.  Wait for it to finish before proceeding.
+              (match (primitive-fork)
+                (0
+                 ;; Exit with a non-zero status code if an exception is
+                 ;; thrown.
+                 (dynamic-wind
+                   (const #t)
+                   (lambda ()
+                     (setgid (passwd:gid user))
+                     (setuid (passwd:uid user))
+                     (apply execl initdb
+                            initdb "-D" #$data-directory
+                            initdb-args))
+                   (lambda ()
+                     (primitive-exit 1))))
+                (pid (waitpid pid)))))))))
 
 (define postgresql-shepherd-service
-  (match-lambda
-    (($ <postgresql-configuration> postgresql port locale config-file
-                                   log-directory data-directory
-                                   extension-packages)
-     (let* ((pg_ctl-wrapper
-             ;; Wrapper script that switches to the 'postgres' user before
-             ;; launching daemon.
-             (program-file
-              "pg_ctl-wrapper"
-              #~(begin
-                  (use-modules (ice-9 match)
-                               (ice-9 format))
-                  (match (command-line)
-                    ((_ mode)
-                     (let ((user (getpwnam "postgres"))
-                           (pg_ctl #$(file-append
-                                      (final-postgresql postgresql
-                                                        extension-packages)
-                                                  "/bin/pg_ctl"))
-                           (options (format #f "--config-file=~a -p ~d"
-                                            #$config-file #$port)))
-                       (setgid (passwd:gid user))
-                       (setuid (passwd:uid user))
-                       (execl pg_ctl pg_ctl "-D" #$data-directory
-                              #$@(if (string? log-directory)
-                                     (list "-l"
-                                           (string-append log-directory
-                                                          "/pg_ctl.log"))
-                                     '())
-                              "-o" options
-                              mode)))))))
-            (pid-file (in-vicinity data-directory "postmaster.pid"))
-            (action (lambda args
-                      #~(lambda _
-                          (invoke #$pg_ctl-wrapper #$@args)
-                          (match '#$args
-                            (("start")
-                             (call-with-input-file #$pid-file read))
-                            (_ #f))))))
-       (list (shepherd-service
+  (match-record-lambda <postgresql-configuration>
+      ( postgresql port locale config-file
+        log-directory data-directory
+        extension-packages)
+    (let* ((pg_ctl-wrapper
+            ;; Wrapper script that switches to the 'postgres' user before
+            ;; launching daemon.
+            (program-file
+             "pg_ctl-wrapper"
+             #~(begin
+                 (use-modules (ice-9 match)
+                              (ice-9 format))
+                 (match (command-line)
+                   ((_ mode)
+                    (let ((user (getpwnam "postgres"))
+                          (pg_ctl #$(file-append
+                                     (final-postgresql postgresql
+                                                       extension-packages)
+                                     "/bin/pg_ctl"))
+                          (options (format #f "--config-file=~a -p ~d"
+                                           #$config-file #$port)))
+                      (setgid (passwd:gid user))
+                      (setuid (passwd:uid user))
+                      (execl pg_ctl pg_ctl "-D" #$data-directory
+                             #$@(if (string? log-directory)
+                                    (list "-l"
+                                          (string-append log-directory
+                                                         "/pg_ctl.log"))
+                                    '())
+                             "-o" options
+                             mode)))))))
+           (pid-file (in-vicinity data-directory "postmaster.pid"))
+           (action (lambda args
+                     #~(lambda _
+                         (invoke #$pg_ctl-wrapper #$@args)
+                         (match '#$args
+                           (("start")
+                            (call-with-input-file #$pid-file read))
+                           (_ #f))))))
+      (list (shepherd-service
               (provision '(postgres postgresql))
               (documentation "Run the PostgreSQL daemon.")
               (requirement '(user-processes loopback syslogd))
@@ -355,7 +355,7 @@ host	all	all	::1/128 	scram-sha-256"))
                          ,@%default-modules))
               (actions (list (shepherd-configuration-action config-file)))
               (start (action "start"))
-              (stop (action "stop"))))))))
+              (stop (action "stop")))))))
 
 (define postgresql-service-type
   (service-type
