@@ -6902,7 +6902,7 @@ can also directly record to WebM or MP4 if you prefer.")
 (define-public python-yewtube
   (package
     (name "python-yewtube")
-    (version "2.12.1")
+    (version "2.13.1")
     (source
      (origin
        (method git-fetch)
@@ -6911,7 +6911,7 @@ can also directly record to WebM or MP4 if you prefer.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bvn1zcycsq2gnvs10hn82ic8zp9q4s9gmmi6flahg3wavpnspzr"))))
+        (base32 "02z4z2a5wy3fz8819fd7k3r4vkjdii0li4x3nfdpx4jqdlr504k9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6933,13 +6933,12 @@ can also directly record to WebM or MP4 if you prefer.")
                 (("__version__ =.*")
                  (format #f "__version__ = ~s~%" #$version)))
               (substitute* "requirements.txt"
-                (("httpx.*")
-                 "httpx\n"))))
-          (add-before 'check 'configure-tests
+                (("httpx<0.28") "httpx"))))
+          (add-before 'sanity-check 'set-home
             (lambda _
-              (setenv "HOME" (getcwd)))))))
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-dbus-1.2
+     (list python-dbus
            python-pygobject
            python-pytest
            python-setuptools))
@@ -6947,7 +6946,7 @@ can also directly record to WebM or MP4 if you prefer.")
      (list python-pylast
            python-pyperclip
            python-requests
-           python-youtube-search
+           python-yewtube-search
            yt-dlp))
     (home-page "https://github.com/mps-youtube/yewtube")
     (synopsis "Terminal based YouTube player and downloader")
