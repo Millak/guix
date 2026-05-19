@@ -2412,7 +2412,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/r-httpuv-1.6.6-unvendor-libuv.patch	\
   %D%/packages/patches/r-sapa-lapack.patch			\
   %D%/packages/patches/ripperx-missing-file.patch		\
-  %D%/packages/patches/rpcbind-CVE-2017-8779.patch		\
   %D%/packages/patches/rpcbind-hurd.patch			\
   %D%/packages/patches/rtosc-0.3.1-fix-invalid-comparison-operator.patch	\
   %D%/packages/patches/racket-chez-scheme-bin-sh.patch		\

@@ -88,23 +88,22 @@ IPv4 and IPv6.  ONC RPC is notably used by the network file system (NFS).")
 (define-public rpcbind
   (package
     (name "rpcbind")
-    (version "1.2.6")
+    (version "1.2.9")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://sourceforge/" name "/" name "/"
                           version "/"
                           name "-" version ".tar.bz2"))
-      (patches (search-patches "rpcbind-hurd.patch"
-                               "rpcbind-CVE-2017-8779.patch"))
+      (patches (search-patches "rpcbind-hurd.patch"))
       (sha256
-       (base32 "1pp8xvprsfz8nlmmvxf829gilx0ibb08bfs3lhisxrfai5j784sn"))))
+       (base32 "06wrmavbc8rl33safiis87n3zhhxbjkm13x2jwl0pvv6qn3ilpyf"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
        `("--with-systemdsystemunitdir=no" "--enable-warmstarts")))
     (inputs
-     (list libnsl libtirpc))
+     (list libtirpc))
     (native-inputs
      (list pkg-config))
     (home-page "http://rpcbind.sourceforge.net/")
