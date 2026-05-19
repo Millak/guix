@@ -12071,6 +12071,7 @@ numpysane has:
            python-pandas
            python-pydata-sphinx-theme
            python-scipy                 ;used by matplotlib
+           python-setuptools
            python-sphinx
            python-sphinx-copybutton
            python-sphinx-design
