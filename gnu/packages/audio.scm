@@ -420,7 +420,7 @@ displays a histogram of the roundtrip time jitter.")
                                  #~(list "-Dinline-sse=false")
                                  #~'())))
     (native-inputs (list pkg-config))
-    (inputs (list abseil-cpp))
+    (propagated-inputs (list abseil-cpp))
     (synopsis "WebRTC's Audio Processing Library")
     (description "WebRTC-Audio-Processing library based on Google's
 implementation of WebRTC.")
