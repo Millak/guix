@@ -5022,6 +5022,28 @@ also make functions for FAM and BIM tables with default values to go with
 simulated genotype data.")
     (license license:gpl3)))
 
+(define-public r-geodata
+  (package
+    (name "r-geodata")
+    (version "0.6-9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "geodata" version))
+       (sha256
+        (base32 "0qjkchq32rzg0pkxzw7ch6sz3cg1sp901m7idsd1zldzm44pk6j3"))))
+    (properties `((upstream-name . "geodata")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rappdirs r-terra))
+    (home-page "https://rspatial.github.io/geodata/")
+    (synopsis "Access geographic data")
+    (description
+     "This package provides functions for downloading of geographic data for
+use in spatial analysis and mapping.  The package facilitates access to
+climate, crops, elevation, land use, soil, species occurrence, accessibility,
+administrative boundaries and other data.")
+    (license license:gpl3+)))
+
 (define-public r-gfonts
   (package
     (name "r-gfonts")
