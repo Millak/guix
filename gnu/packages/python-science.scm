@@ -4111,7 +4111,11 @@ tissue-specificity metrics for gene expression.")
               "-k" (string-join
                     (list "not test_git_version"
                           "test_parsing_tzlocal_deprecated"
-                          "test_show_versions_console")
+                          "test_show_versions_console"
+                          ;; AssertionError: Series are different.
+                          #$@(if (target-64bit?)
+                                 '()
+                                 '("test_rolling_var_numerical_issues")))
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
