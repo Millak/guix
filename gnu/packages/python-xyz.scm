@@ -31990,28 +31990,31 @@ older versions of Python and so are packaged here.")
 (define-public python-loguru
   (package
     (name "python-loguru")
-    (version "0.7.3")
+    ;; 0.7.3 (2024-12-06); latest changes provide test clean up for MyPy,
+    ;; covert to git tag when released.
+    (properties '((commit . "75b920160d0655c1631a2739b4470fc12317a155")
+                  (revision . "0")))
+    (version (git-version "0.7.3"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/Delgan/loguru")
-              (commit version)))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vnnhjw8r7d75sy0sdimryanapwh5ivy6v6gci0d2kix7g7h9ixm"))))
+        (base32 "1ypx3dgdfi6fpr7mmg8bqg7bgbwaqrm13l9d50xmd8j2b7zb13bi"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list"--numprocesses" (number->string (parallel-job-count)))))
+    ;; tests: 1598 passed, 28 skipped
     (native-inputs
      (list python-flit-core
            python-freezegun
+           python-mypy-for-tests
            python-pytest
-           python-pytest-mypy-plugins
-           python-pytest-xdist
-           python-setuptools))
+           python-setuptools
+           tzdata-for-tests))
     (propagated-inputs
      (list python-colorama))
     (home-page "https://github.com/Delgan/loguru")
