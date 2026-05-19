@@ -32018,7 +32018,17 @@ older versions of Python and so are packaged here.")
        (sha256
         (base32 "1ypx3dgdfi6fpr7mmg8bqg7bgbwaqrm13l9d50xmd8j2b7zb13bi"))))
     (build-system pyproject-build-system)
-    ;; tests: 1598 passed, 28 skipped
+    ;; tests: x86_64-linux 1598 passed, 28 skipped
+    ;;        i686-linux 1562 passed, 28 skipped, 36 deselected
+    (arguments
+     (list
+      #:test-flags
+      #~(list #$@(if (target-64bit?)
+                     '()
+                     ;; OverflowError
+                     '("--deselect=tests/test_datetime.py::test_formatting"
+                       (string-append "--deselect=tests/test_datetime.py"
+                                      "::test_value_of_gmtoff_is_invalid"))))))
     (native-inputs
      (list python-flit-core
            python-freezegun
