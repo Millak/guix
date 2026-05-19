@@ -4895,6 +4895,36 @@ up calculations.  For more info about Gaussian process software, see Erickson
 et al. (2018) <doi:10.1016/j.ejor.2017.10.002>.")
     (license license:gpl3)))
 
+(define-public r-gdalutilities
+  (package
+    (name "r-gdalutilities")
+    (version "1.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "gdalUtilities" version))
+       (sha256
+        (base32 "19vi6mr5jwlb00r33hkz7d0n9dar95hwdvbqbhh2dmha128fjwia"))))
+    (properties `((upstream-name . "gdalUtilities")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-sf))
+    ;(native-inputs (list gdal))
+    (home-page "https://github.com/JoshOBrien/gdalUtilities/")
+    (synopsis "Wrappers for GDAL utilities executables")
+    (description
+     "R's @code{sf} package ships with self-contained GDAL executables,
+including a bare bones interface to several GDAL-related utility programs
+collectively known as the GDAL utilities.  For each of those utilities, this
+package provides an R wrapper whose formal arguments closely mirror those of
+the GDAL command line interface.  The utilities operate on data stored in
+files and typically write their output to other files.  Therefore, to process
+data stored in any of R's more common spatial formats (i.e. those supported by
+the @code{sf} and @code{terra} packages), first write them to disk, then
+process them with the package's wrapper functions before reading the outputted
+results back into R. GDAL function arguments introduced in GDAL version 3.5.2
+or earlier are supported.")
+    (license license:gpl2+)))
+
 (define-public r-gdata
   (package
     (name "r-gdata")
