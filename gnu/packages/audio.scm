@@ -146,6 +146,7 @@
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
@@ -8247,10 +8248,10 @@ Home Page}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/librosa/librosa/")
-             (commit version)
-             ;; For test files.
-             (recursive? #true)))
+              (url "https://github.com/librosa/librosa/")
+              (commit version)
+              ;; TODO: Package test data.
+              (recursive? #true)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "065x43hx670rjrclxi4hiqxscllb16v9s7myjvg7rd5pd3y0k7sg"))))
@@ -8258,14 +8259,13 @@ Home Page}.")
     (arguments
      (list
       #:test-flags
-      ;; Ignore --mpl flag.
-      '(list "-k" (string-append
-                   ;; Resampling tests require python-samplerate.
-                   "not resample"
-                   ;; These tests use Pooch and download data files.
-                   " and not example and not test_cite"
-                   ;; XXX assert 22050 == 31744
-                   " and not test_stream"))))
+      #~(list "-k" (string-append
+                    ;; Resampling tests require python-samplerate.
+                    "not resample"
+                    ;; These tests use Pooch and download data files.
+                    " and not example and not test_cite"
+                    ;; XXX assert 22050 == 31744
+                    " and not test_stream"))))
     (propagated-inputs
      (list python-audioread
            python-decorator
@@ -8284,9 +8284,9 @@ Home Page}.")
      (list python-matplotlib
            python-packaging
            python-pytest
+           python-pytest-mpl
            python-resampy
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://librosa.org")
     (synopsis "Python module for audio and music processing")
     (description
