@@ -524,47 +524,6 @@ the percentage of copied data.  It can also show estimated time and throughput,
 and provides a \"top-like\" mode (monitoring).")
     (license license:gpl3+)))
 
-(define-public shepherd-0.8
-  (package
-    (name "shepherd")
-    (version "0.8.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/shepherd/shepherd-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0x9zr0x3xvk4qkb6jnda451d5iyrl06cz1bjzjsm0lxvjj3fabyk"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Build with -O1 to work around <https://bugs.gnu.org/48368>.
-                  (substitute* "Makefile.in"
-                    (("compile --target")
-                     "compile -O1 --target"))))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:configure-flags '("--localstatedir=/var")
-       #:make-flags '("GUILE_AUTO_COMPILE=0")))
-    (native-inputs
-     (list pkg-config
-           ;; This is the Guile we use as a cross-compiler...
-           guile-3.0))
-    (inputs
-     ;; ... and this is the one that appears in shebangs when cross-compiling.
-     (list guile-3.0
-           ;; The 'shepherd' command uses Readline when used interactively.  It's
-           ;; an unusual use case though, so we don't propagate it.
-           guile-readline))
-    (synopsis "System service manager")
-    (description
-     "The GNU Shepherd is a daemon-managing daemon, meaning that it supervises
-the execution of system services, replacing similar functionality found in
-typical init systems.  It provides dependency-handling through a convenient
-interface and is based on GNU Guile.")
-    (license license:gpl3+)
-    (home-page "https://www.gnu.org/software/shepherd/")))
-
 (define-public shepherd-0.9
   (package
     (name "shepherd")
