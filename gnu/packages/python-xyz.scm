@@ -10194,8 +10194,8 @@ decorator for retrying on exceptions.")
     (name "python-click-repl")
     ;; To support Python 3.12, see:
     ;; <https://github.com/click-contrib/click-repl/issues/128>.
-    (properties '((commit . "9a05fe9e58f768ce446f2777d13b4162211131e0")
-                  (revision . "0")))
+    (properties '((commit . "b84191aec21b407b3cb3374ff1ab000887d38f29")
+                  (revision . "1")))
     (version (git-version "0.3.0"
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
@@ -10207,13 +10207,13 @@ decorator for retrying on exceptions.")
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kyk3cj4wdckk1sdx0bk19r59sa5bs5s6npx0a99lhsyd92xiv77"))))
+        (base32 "0kg1qbg69gym4vf8cqhzixqww1f80fpndv5dvi289c3swnhzlyz5"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
            python-setuptools))
     (propagated-inputs
-     (list python-click-8.1
+     (list python-click
            python-prompt-toolkit))
     (home-page "https://github.com/click-contrib/click-repl")
     (synopsis "REPL plugin for Click")
