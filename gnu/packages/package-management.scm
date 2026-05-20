@@ -1201,8 +1201,8 @@ transactions from C or Python.")
     (license license:gpl2+)))
 
 (define-public bffe
-  (let ((commit "d6c90f217595674c7910a858edcb735f88d3a14f")
-        (revision "18"))
+  (let ((commit "85b31c222944c3eed583dc97e05a13aee21e5201")
+        (revision "19"))
     (package
       (name "bffe")
       (version (git-version "0" revision commit))
@@ -1213,7 +1213,7 @@ transactions from C or Python.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0f7i68k6l5ylg8nch54xw4bxn0hayx2ng9j5dvwvai1vi887vmbj"))
+                  "0ndjr46z7fc69imghf2j4hv6yswv93hnch4wvr40k4k0i1q02mvz"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (native-inputs
@@ -1230,6 +1230,7 @@ transactions from C or Python.")
              guix-build-coordinator
              guile-fibers
              guile-knots
+             guile-safsaf
              guile-pfds
              guile-prometheus
              guile-lib))
@@ -1241,6 +1242,7 @@ transactions from C or Python.")
              guix-build-coordinator
              guile-fibers
              guile-knots
+             guile-safsaf
              guile-pfds
              guile-prometheus
              guile-lib))
