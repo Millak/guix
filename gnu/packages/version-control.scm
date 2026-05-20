@@ -4763,7 +4763,7 @@ commit messages for style.")
 (define-public git-extras
   (package
     (name "git-extras")
-    (version "7.4.0")
+    (version "7.5.0")
     (source
      (origin
        (method git-fetch)
@@ -4772,7 +4772,7 @@ commit messages for style.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v5yp4qrv1vf2yrvysk706grw99bhn93613q5dz598b008w6c467"))))
+        (base32 "1yrnzhf7z21rrirw55vm9rwaliy4hib3qsibf0y8gs4gsv0lnr06"))))
     (build-system gnu-build-system)
     (arguments
      (list
