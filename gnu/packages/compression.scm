@@ -34,7 +34,7 @@
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021, 2024-2025 Maxim Cournoyer <maxim@guixotic.coop>
-;;; Copyright © 2021 Ahmad Jarara <git@ajarara.io>
+;;; Copyright © 2021, 2026 Ahmad Jarara <ajarara@fastmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -3201,17 +3201,13 @@ can append files to the end of such compressed archives.")
           "00ibddiy62kbs9wl52c35j0hbqanx6pi7lvzkpzmbsizkj8mhp1p"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f
-       #:configure-flags
-       (let* ((out (assoc-ref %outputs "out"))
-              (lib (string-append out "/lib")))
-         (list
-          "-DCMAKE_BUILD_TYPE=Release"
-          "-DBUILD_SHARED_LIBS=ON"
-          "-DCBOR_CUSTOM_ALLOC=ON"
-          (string-append "-DCMAKE_INSTALL_LIBDIR=" lib)
-          (string-append "-DCMAKE_INSTALL_RPATH=" lib)))))
+     (list
+      #:configure-flags
+      #~'("-DWITH_TESTS=ON"
+          "-DBUILD_SHARED_LIBS=ON")))
     (synopsis "The C library for parsing and generating CBOR")
+    (native-inputs
+     (list cmocka))
     (description
      "@acronym{CBOR, The Concise Binary Object Representation} is a data format
 whose design goals include the possibility of extremely small code size, fairly
