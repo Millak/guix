@@ -64,6 +64,7 @@
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;; Copyright © 2026 Ivan Vilata i Balaguer <ivan@selidor.net>
 ;;; Copyright © 2026 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7596,15 +7597,24 @@ standalone JACK application.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/linuxmao-org/fogpad")
-             (commit (string-append "v" version))
-             ;; bundles a specific commit of the DISTRHO plugin framework
-             (recursive? #t)))
+              (url "https://github.com/linuxmao-org/fogpad-port")
+              (commit (string-append "v" version))
+              ;; bundles a specific commit of the DISTRHO plugin framework
+              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
         (base32
          "1j1hbya2dsqpf22zkpi4kwz3dram9g1ndxzmgfwpmf3i4jd3csgb"))))
-    (home-page "https://github.com/linuxmao-org/fogpad")
+    (native-inputs (list gcc-12 pkg-config))
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "CXX=" #$(cxx-for-target))
+                           (string-append "PREFIX=" #$output))
+      #:tests? #f                       ; no tests
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure))))
+    (home-page "https://github.com/linuxmao-org/fogpad-port")
     (synopsis "Reverb effect plugin")
     (description
      "Fogpad is a reverb effect in which the reflections can be frozen,
