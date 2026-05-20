@@ -153,6 +153,7 @@ Copyright @copyright{} 2026 Nguyễn Gia Phong@*
 Copyright @copyright{} 2026 Yarl Baudig@*
 Copyright @copyright{} 2026 Joan Vilardaga Castro@*
 Copyright @copyright{} 2026 Nemin@*
+Copyright @copyright{} 2026 Fredrik Salomonsson@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -2717,7 +2718,7 @@ bootloaders.
 
 Once you are done partitioning the target hard disk drive, you have to
 create a file system on the relevant partition(s)@footnote{Currently
-Guix System can mount only ext4, btrfs, JFS, F2FS, and XFS file systems
+Guix System can mount only ext4, Btrfs, JFS, F2FS, and XFS file systems
 at boot time.  In particular, code that reads file system UUIDs and
 labels works only for these file system types.  The code for bcachefs is
 in place, but support for loading out-of-tree kernel modules in the
@@ -2784,12 +2785,18 @@ mkswap /dev/sda3
 swapon /dev/sda3
 @end example
 
-Alternatively, you may use a swap file.  For example, assuming that in
-the new system you want to use the file @file{/swapfile} as a swap file,
-you would run@footnote{This example will work for many types of file
-systems (e.g., ext4).  However, for copy-on-write file systems (e.g.,
-btrfs), the required steps may be different.  For details, see the
-manual pages for @command{mkswap} and @command{swapon}.}:
+Alternatively, you may use a swap file, whose size can be trivially
+modified at a later date.  Creating a swap file will look a bit
+different depending on what sort of file system your new system is
+using.  We therefore have two examples on how to create a swap file, the
+first will work for many types of file systems (e.g., ext4) but not
+Btrfs@footnote{For other copy-on-write file systems, the required steps
+may also be different.  For details, see the manual pages for
+@command{mkswap} and @command{swapon}.}.  The second example is
+specifically for Btrfs.
+
+For the common case, assuming that in the new system you want to use the
+file @file{/swapfile} as a swap file, you would run:
 
 @example
 # This is 10 GiB of swap space.  Adjust "count" to change the size.
@@ -2798,6 +2805,35 @@ dd if=/dev/zero of=/mnt/swapfile bs=1MiB count=10240
 chmod 600 /mnt/swapfile
 mkswap /mnt/swapfile
 swapon /mnt/swapfile
+@end example
+
+When you use Btrfs the steps for creating a swap file are slightly
+different and it comes with a few caveats.  I.e. it must be on a single
+device, the filesystem must only have @code{single} as the data profile
+and the subvolume that contains the active swap file or files cannot be
+snapshotted.  It is therefore best to put the swap file in a separate
+subvolume to allow to snapshot the rest of the filesystem.  This example
+assumes the label for the Btrfs file system is @code{btrfs-pool} and the
+subvolume for the root is @code{rootfs}.
+
+@example
+# Temporarily unmount btrfs-pool
+umount /mnt
+# Mount the top level subvolume
+mount LABEL=btrfs-pool -o subvolid=5 /mnt
+# Create the subvolume (swap) that will hold the swap file
+cd /mnt && btrfs subvolume create swap && cd -
+# Remount the target file system
+unmount /mnt
+mount LABEL=btrfs-pool -o subvol=rootfs /mnt
+# Create the directory where it should mount the swap subvolume
+mkdir /mnt/swap
+# Mount the swap subvolume
+mount LABEL=btrfs-pool -o subvol=swap /mnt/swap
+# Create a 10 GiB of swap space.  It accepts k/m/g/e/p as suffix
+btrfs filesystem mkswapfile --size 10G /mnt/swap/swapfile
+# Activate the swap file
+swapon /mnt/swap/swapfile
 @end example
 
 Note that if you have encrypted the root partition and created a swap
@@ -2864,6 +2900,10 @@ Be sure that your file system labels match the value of their respective
 @code{device} fields in your @code{file-system} configuration, assuming
 your @code{file-system} configuration uses the @code{file-system-label}
 procedure in its @code{device} field.
+
+If you are using Btrfs and your swap file is in a subvolume make sure to
+list the root partition as its dependency in its @code{file-system}
+entry to make sure everything is mounted in the right order.
 
 @item
 If there are encrypted or RAID partitions, make sure to add a
@@ -19811,6 +19851,15 @@ File size of /swapfile is 2463842304 (601524 blocks of 4096 bytes)
 @dots{}
 $ sudo filefrag -e /swapfile | grep '^ *0:' | cut -d: -f3 | cut -d. -f1
    92514304
+@end smallexample
+
+Note that if the swap file is on a Btrfs file system use @command{btrfs
+inspect-internal map-swapfile -r} instead of @command{filefrag} to get
+the offset as the latter will not give the right offset.
+
+@smallexample
+$ sudo btrfs inspect-internal map-swapfile -r /swapfile
+   163845376
 @end smallexample
 
 @node User Accounts
