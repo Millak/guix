@@ -9,7 +9,7 @@
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
-;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024, 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Alex Bosco <me@alexbos.co>
 ;;;
@@ -60,7 +60,7 @@
 (define-public tmux
   (package
     (name "tmux")
-    (version "3.6a")
+    (version "3.6b")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -69,7 +69,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fzp15rc5rzrq0nmj54qj5c0kadc9p56wjalr7p0z10qsr3v40sp"))))
+                "1xvan4wi7ymynh3kgjnpr7zmy1fgllp0yf92jdarqmjjxky0lvl9"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent ncurses))
