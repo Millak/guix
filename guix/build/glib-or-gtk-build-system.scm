@@ -30,6 +30,7 @@
   #:use-module (srfi srfi-26)
   #:export (%standard-phases
             %gdk-pixbuf-loaders-cache-file
+            %gdk-pixbuf-loaders-directory
             generate-gdk-pixbuf-loaders-cache
             glib-or-gtk-build))
 
