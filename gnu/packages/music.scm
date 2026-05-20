@@ -123,6 +123,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpio)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
@@ -1968,7 +1969,7 @@ with a selectable pattern matrix size.")
   (package
     (inherit bsequencer)
     (name "bchoppr")
-    (version "1.12.6")
+    (version "1.12.8")
     (source
      (origin
        (method git-fetch)
@@ -1978,7 +1979,9 @@ with a selectable pattern matrix size.")
              (recursive? #t))) ;for BWidgets
        (file-name (git-file-name name version))
        (sha256
-        (base32 "010z75zn07ab907rbbg5srr5jmpqc8ww4rfz56asxfsn98nyi8px"))))
+        (base32 "1d48jiwgw82swwv7ikj5dj8b8viklhfvnq1d3qsq8wk91s4npd6d"))))
+    (native-inputs (list pkg-config))
+    (inputs (list cairo cpio libsndfile lv2))
     (synopsis "Audio stream-chopping LV2 plugin")
     (description "B.Choppr cuts the audio input stream into a repeated
 sequence of up to 16 chops.  Each chop can be leveled up or down (gating).
