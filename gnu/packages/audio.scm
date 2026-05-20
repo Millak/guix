@@ -7208,32 +7208,6 @@ developing fully accurate DirectX Audio runtime libraries.")
            license:expat
            license:public-domain))))
 
-(define-public gnaural
-  (package
-    (name "gnaural")
-    (version "20110606")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/gnaural/Gnaural/gnaural_"
-                           version ".tar.xz"))
-       (sha256
-        (base32
-         "1gq519c0imsh57zklyi0f8h64l3ai48lh672c834470z8c6kvbfi"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list alsa-lib gtk+-2 libsndfile portaudio))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://gnaural.sourceforge.net/")
-    (synopsis "Binaural beat synthesizer")
-    (description "Gnaural is a programmable auditory binaural beat synthesizer
-intended to be used for brainwave entrainment.  Gnaural supports creation of
-binaural beat tracks of different frequencies and exporting of tracks into
-different audio formats.  Gnaural can also be linked over the internet with
-other Gnaural instances, allowing synchronous sessions between many users.")
-    (license license:gpl2+)))
-
 (define-public darkice
   (package
     (name "darkice")
