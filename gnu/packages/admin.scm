@@ -665,13 +665,6 @@ interface and is based on GNU Guile.")
        (native-inputs '())
        (inputs (list base))))))
 
-(define-public guile2.2-shepherd
-  (package
-    (inherit shepherd-0.10)
-    (name "guile2.2-shepherd")
-    (native-inputs (list pkg-config guile-2.2))
-    (inputs (list guile-2.2 guile2.2-fibers))))
-
 (define-public shepherd-run
   (package
     (name "shepherd-run")
