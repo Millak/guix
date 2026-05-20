@@ -4844,6 +4844,52 @@ git commands for repository metrics and summarization, commit and log editing,
 developer workflow, and project and release management.")
     (license license:expat)))
 
+(define-public git-quick-stats
+  (package
+    (name "git-quick-stats")
+    (version "2.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/git-quick-stats/git-quick-stats")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sx6idfl0s88xx5wd39cg1540hzkh7p6yad0l56qnf9v2i38hra1"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:tests? #f ;Tests require interactive terminal
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'install 'wrap-program
+            (lambda _
+              (wrap-program (string-append #$output "/bin/git-quick-stats")
+                '("PATH" ":" prefix
+                  #$(map (lambda (x)
+                          (file-append (cadr x) "/bin"))
+                        (package-inputs this-package)))))))))
+    (native-inputs (list which))
+    (inputs (list bash-minimal
+                  coreutils-minimal
+                  gawk
+                  git-minimal/pinned
+                  grep
+                  ncurses
+                  util-linux))
+    (home-page "https://git-quick-stats.sh")
+    (synopsis "Access various statistics in git repositories")
+    (description
+     "Any git repository may contain tons of information about commits,
+contributors, and files.  Extracting this information is not always trivial,
+mostly because there are a gazillion options to a gazillion git commands.
+This package provides a cleaner interface to access this information.")
+    (license license:expat)))
+
 (define-public hut
   (package
     (name "hut")
