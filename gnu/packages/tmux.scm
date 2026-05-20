@@ -167,7 +167,7 @@ windows.")
 (define-public python-libtmux
   (package
     (name "python-libtmux")
-    (version "0.53.0")
+    (version "0.57.1")
     (source
      (origin
        (method git-fetch)
@@ -176,7 +176,7 @@ windows.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19l3kglg2yxw4i1czr93071ymlyj0in3d6yhl9nwd5dm7a3bjs4l"))))
+        (base32 "14hazgr2fn5c5lad5aa2z6xn28w22q95wr3jnajv6yl56m1rdz2g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
