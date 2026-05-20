@@ -524,49 +524,6 @@ the percentage of copied data.  It can also show estimated time and throughput,
 and provides a \"top-like\" mode (monitoring).")
     (license license:gpl3+)))
 
-(define-public shepherd-0.9
-  (package
-    (name "shepherd")
-    (version "0.9.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/shepherd/shepherd-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0qy2yq13xhf05an5ilz7grighdxicx56211yaarqq5qigiiybc32"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:configure-flags #~'("--localstatedir=/var")
-           #:make-flags #~'("GUILE_AUTO_COMPILE=0")
-           #:phases (if (%current-target-system)
-                        #~(modify-phases %standard-phases
-                            (add-before 'configure 'set-fibers-directory
-                              (lambda _
-                                ;; When cross-compiling, refer to the target
-                                ;; Fibers, not the native one.
-                                (substitute* '("herd.in" "shepherd.in")
-                                  (("%FIBERS_SOURCE_DIRECTORY%")
-                                   #$(file-append
-                                      (this-package-input "guile-fibers")
-                                      "/share/guile/site/3.0"))
-                                  (("%FIBERS_OBJECT_DIRECTORY%")
-                                   #$(file-append
-                                      (this-package-input "guile-fibers")
-                                      "/lib/guile/3.0/site-ccache"))))))
-                        #~%standard-phases)))
-    (native-inputs (list pkg-config guile-3.0
-                         guile-fibers-1.1))       ;for cross-compilation
-    (inputs (list guile-3.0 guile-fibers-1.1))
-    (synopsis "System service manager")
-    (description
-     "The GNU Shepherd is a daemon-managing daemon, meaning that it supervises
-the execution of system services, replacing similar functionality found in
-typical init systems.  It provides dependency-handling through a convenient
-interface and is based on GNU Guile.")
-    (license license:gpl3+)
-    (home-page "https://www.gnu.org/software/shepherd/")))
-
 (define-public shepherd-0.10
   (package
     (name "shepherd")
