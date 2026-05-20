@@ -1056,32 +1056,6 @@ in the context of per-cpu data.  The library offers ABI headers to interface
 with the kernel and various utilities such as per-cpu counters.")
       (license (list license:lgpl2.1 license:expat)))))
 
-(define-public linsmith
-  (package
-    (name "linsmith")
-    (version "0.99.33")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://sourceforge/linsmith/linsmith/linsmith-"
-                    version "/linsmith-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1629p29casy9pgy8hzva1bmgrvh923qk01ls3anik6zqn6swkjfn"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:configure-flags '("CFLAGS=-fcommon")))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list gtk+-2 libgnomeui))
-    (home-page "https://jcoppens.com/soft/linsmith/index.en.php")
-    (synopsis "Smith Charting program")
-    (description "LinSmith is a Smith Charting program, mainly designed for
-educational use.  As such, there is an emphasis on capabilities that improve
-the 'showing the effect of'-style of operation.")
-    (license license:gpl2+)))
-
 (define-public valeronoi
   (package
     (name "valeronoi")
