@@ -3438,7 +3438,7 @@ modules and plugins that extend Ansible.")
     (build-system pyproject-build-system)
     (native-inputs (list python-setuptools))
     (inputs
-     (list ;; ansible ;XXX; build fails with Ansible in scope
+     (list ansible
            bash-minimal
            encfs
            fuse
