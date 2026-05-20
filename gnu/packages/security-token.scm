@@ -14,7 +14,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Sergey Trofimov <sarg@sarg.org.ru>
 ;;; Copyright © 2021 Dhruvin Gandhi <contact@dhruvin.dev>
-;;; Copyright © 2021 Ahmad Jarara <git@ajarara.io>
+;;; Copyright © 2021, 2026 Ahmad Jarara <ajarara@fastmail.com>
 ;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -1359,9 +1359,8 @@ phone and a running pcscd service are required.")
     (arguments
      (list
       #:configure-flags
-      #~(list (string-append "-DUDEV_RULES_DIR=" #$output "/lib/udev/rules.d"))
-      ;; regress tests enabled only for debug builds
-      #:tests? #f))
+      #~(list
+         (string-append "-DUDEV_RULES_DIR=" #$output "/lib/udev/rules.d"))))
     (synopsis "Library functionality and command-line tools for FIDO devices")
     (description "libfido2 provides library functionality and command-line
 tools to communicate with a FIDO device over USB, and to verify attestation
