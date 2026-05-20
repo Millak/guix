@@ -26032,24 +26032,33 @@ executed more than a given number of times during a given period.")
 (define-public python-rbfly
   (package
     (name "python-rbfly")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rbfly" version))
        (sha256
-        (base32 "019fs94qzbxb43vahcm0va53m5d4nxrib5pkl29m4hx9adcccpf6"))))
+        (base32 "12xwf8zdvc5pf4nlpblml3jbn3gksgkyw9zw6jfsrvddv3hsm1b0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "-o" "addopts=''" "--pyargs" "rbfly")))
+      #:test-flags
+      #~(list "--pyargs" "rbfly"
+              #$@(if (target-64bit?)
+                     '()
+                     '((string-append "--deselect=tests/amqp/test_message.py"
+                        "::test_encode_amqp_string_too_long"))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "rbfly"))))))
     (native-inputs
      (list python-cython
            python-pytest
            python-pytest-asyncio
            python-pytest-timeout
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://wrobell.dcmod.org/rbfly/")
     (synopsis "Work with RabbitMQ Streams in Python")
     (description
