@@ -599,6 +599,7 @@ a bind mount."
   ;; List of essential network configuration files.
   '("/etc/resolv.conf"
     "/etc/nsswitch.conf"
+    "/etc/protocols"
     "/etc/services"
     "/etc/hosts"))
 
