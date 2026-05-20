@@ -26,6 +26,7 @@
 (define-module (gnu packages kde-systemtools)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system qt)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -144,38 +145,9 @@ The main features of Dolphin are:
     (license ;; GPL for programs, FDL for documentation
      (list license:gpl2+ license:fdl1.2+))))
 
-(define-public dolphin-plugins
-  (package
-    (name "dolphin-plugins")
-    (version "25.12.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/dolphin-plugins-" version ".tar.xz"))
-       (sha256
-        (base32 "1h5704xknncrwqi3qix2d8hmzg6a82jcbzsj0pzq70hly7wx8f57"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list dolphin
-           ki18n
-           kio
-           ktexteditor
-           ktextwidgets
-           ksyntaxhighlighting
-           kxmlgui
-           breeze-icons ;; default icon set
-           qt5compat))
-    (arguments
-     (list #:qtbase qtbase
-           #:tests? #f))
-    (home-page "https://www.kde.org/")
-    (synopsis "VCS-Plugins for Dolphin")
-    (description "This package contains plugins that offer integration in
-Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
-    (license license:gpl2+)))
+;; XXX: Deprecated on <2026-05-20>
+(define-deprecated/public-alias dolphin-plugins
+  (@ (gnu packages kde-sdk) dolphin-plugins))
 
 (define-public kde-inotify-survey
   (package

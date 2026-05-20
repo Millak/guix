@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2018-2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2018-2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
@@ -45,6 +45,7 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages kde-plasma)
+  #:use-module (gnu packages kde-systemtools)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -52,6 +53,39 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml))
+
+(define-public dolphin-plugins
+  (package
+    (name "dolphin-plugins")
+    (version "25.12.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/dolphin-plugins-" version ".tar.xz"))
+       (sha256
+        (base32 "1h5704xknncrwqi3qix2d8hmzg6a82jcbzsj0pzq70hly7wx8f57"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list dolphin
+           ki18n
+           kio
+           ktexteditor
+           ktextwidgets
+           ksyntaxhighlighting
+           kxmlgui
+           breeze-icons ;; default icon set
+           qt5compat))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
+    (home-page "https://www.kde.org/")
+    (synopsis "VCS-Plugins for Dolphin")
+    (description "This package contains plugins that offer integration in
+Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
+    (license license:gpl2+)))
 
 (define-public poxml
   (package
