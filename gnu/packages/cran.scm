@@ -21462,23 +21462,32 @@ these progress updates.")
 (define-public r-lava
   (package
     (name "r-lava")
-    (version "1.9.0")
+    (version "1.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lava" version))
        (sha256
         (base32
-         "0dbqql7gzgfmz4x3vwhxzgq9cjzi3716c3adcz0ybz8sas0qdl96"))))
+         "0d7mssy14bxbjpz3cak7avhww6r2pgpy7yp4a68iv329vn600y7x"))))
+    ;; r-mets depends on r-lava.
+    (properties `((updater-ignored-native-inputs . "r-mets")))
     (build-system r-build-system)
     (arguments
      (list
       #:skipped-tests
-      ;; This file and the next test need the r-mets package, which depends
-      ;; on r-lava.
+      ;; These files and the following tests need the r-mets package, which
+      ;; depends on r-lava.
       '("test-merge-estimate.R"
+        "test-mixture.R"
         ("test-multigroup.R"
          "Multiple cluster")
+        ("test-nonlinear.R" "twostage")
+        ("test-cens.R"
+         "left censoring"
+         "right censoring"
+         "interval censoring"
+         "left and right censoring")
         ;; undefined columns selected
         ("test-sim.R"
          "sim.default I")
