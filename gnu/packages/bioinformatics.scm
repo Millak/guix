@@ -9505,16 +9505,16 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
 (define-public idr
   (package
     (name "idr")
-    (version "2.0.3")
+    (version "2.0.4.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/nboley/idr")
+                    (url "https://github.com/kundajelab/idr")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04j876h6z444v2q79drxx283d3k5snd72kj895wbalnl42206x9g"))
+                "01491ffhhj5plmpvvwmzp6c5arp5390h3jdpgsai92y6xbsgvxz8"))
               ;; Delete generated C code.
               (snippet
                '(begin (delete-file "idr/inv_cdf.c") #t))))
@@ -9522,11 +9522,21 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
     ;; There is only one test ("test_inv_cdf.py") and it tests features that
     ;; are no longer part of this package.  It also asserts False, which
     ;; causes the tests to always fail.
-    (arguments `(#:tests? #f))
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'numpy-compatibility
+           (lambda _
+             (substitute* "idr/idr.py"
+               (("numpy.int") "int"))
+             (substitute* "idr/inv_cdf.pyx"
+               (("np.int_t") "np.int64_t")))))))
     (propagated-inputs
-     (list python-scipy python-sympy python-numpy-1 python-matplotlib))
+     (list python-scipy python-sympy python-numpy python-matplotlib))
     (native-inputs
-     (list python-cython-0
+     (list python-cython
            python-setuptools))
     (home-page "https://github.com/nboley/idr")
     (synopsis "Tool to measure the irreproducible discovery rate (IDR)")
