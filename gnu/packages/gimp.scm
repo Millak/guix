@@ -11,6 +11,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Runciter <runciter@whispers-vpn.org>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2026 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -355,7 +356,6 @@ that is extensible via a plugin system.")
 
 (define-public gimp-3
   (package
-    (inherit gimp-2)
     (name "gimp")
     (version "3.2.0")
     (source
@@ -367,6 +367,7 @@ that is extensible via a plugin system.")
        (sha256
         (base32 "10z0n9shpqwny6hkwdin7nmp5vb0707gk7nzjg3f66z52qa3j616"))))
     (build-system meson-build-system)
+    (outputs '("out" "doc"))
     (arguments
      (list #:modules `((ice-9 popen)
                        (ice-9 rdelim)
@@ -413,24 +414,58 @@ that is extensible via a plugin system.")
                     (find-files (string-append #$output "/bin")
                                 (lambda (_ stat)
                                   (eq? 'regular (stat:type stat))))))))))
-    (inputs (modify-inputs inputs
-              (replace "gtk+" gtk+)
-              (replace "mypaint-brushes" mypaint-brushes)
-              (prepend appstream
-                       bash-minimal
-                       libjxl
-                       libxmu
-                       libxt
-                       python
-                       python-pygobject-3.50
-                       gjs
-                       libxslt
-                       xdg-utils)))
-    (native-inputs (modify-inputs native-inputs
-                     (prepend appstream-glib
-                              gi-docgen
-                              libarchive
-                              shared-mime-info)))))
+    (inputs
+     (list appstream
+           bash-minimal
+           libjxl
+           libxmu
+           libxt
+           python
+           python-pygobject-3.50
+           gjs
+           libxslt
+           xdg-utils
+           at-spi2-core
+           babl
+           gegl
+           gexiv2-0.14
+           glib
+           glib-networking
+           gtk+
+           libjpeg-turbo
+           libmypaint
+           libtiff
+           libwebp
+           mypaint-brushes
+           libexif                      ;optional, EXIF + XMP support
+           ghostscript                  ;optional, EPS + PS support
+           lcms                         ;optional, color management
+           libheif                      ;optional, HEIF + AVIF support
+           libmng                       ;optional, MNG support
+           libxpm                       ;optional, XPM support
+           (librsvg-for-system)         ;optional, SVG support
+           libxcursor                   ;optional, Mouse Cursor support
+           openexr                      ;optional, EXR support
+           openjpeg                     ;optional, JPEG 2000 support
+           poppler                      ;optional, PDF support
+           poppler-data))               ;optional, PDF support
+    (native-inputs
+     (list appstream-glib
+           gi-docgen
+           libarchive
+           shared-mime-info
+           desktop-file-utils
+           `(,glib "bin")        ;for glib-compile-resources and gdbus-codegen
+           intltool
+           pkg-config))
+    (home-page "https://www.gimp.org")
+    (synopsis "GNU Image Manipulation Program")
+    (description
+     "GIMP is an application for image manipulation tasks such as photo
+retouching, composition and authoring.  It supports all common image formats
+as well as specialized ones.  It features a highly customizable interface
+that is extensible via a plugin system.")
+    (license license:gpl3+))) ; some files are lgplv3
 
 (define-public gimp gimp-3)
 (define-deprecated-package gimp-next
