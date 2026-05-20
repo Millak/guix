@@ -24,7 +24,7 @@
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
-;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2026 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;;
@@ -841,14 +841,14 @@ to result in system-wide compromise.")
 (define-public unbound
   (package
     (name "unbound")
-    (version "1.25.0")
+    (version "1.25.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.unbound.net/downloads/unbound-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1iyyplggqhh2h1sbssq65v8z2s8mk1v9n1z4pr0z1qizfbd6wah6"))))
+        (base32 "0vsqmgnq7ibi0b3akzy45nqf0wazmb0bmpk2fp8wyn89gckvds0g"))))
     (build-system gnu-build-system)
     (outputs '("out" "python"))
     (native-inputs
