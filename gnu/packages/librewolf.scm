@@ -125,14 +125,14 @@
   ;; ex:
   ;; tar xf /gnu/store/...-firefox-123.4.source.tar.xz -O \
   ;;     firefox-123.4/browser/locales/l10n-changesets.json | grep revision
-  (let ((commit "2aae3e7569773e373a9559ef0be4c214e3a0f7aa"))
+  (let ((commit "a8799feda04a221a2c552576501975662c5350bb"))
     (origin
       (method git-fetch)
       (uri (git-reference
             (url "https://github.com/mozilla-l10n/firefox-l10n.git")
             (commit commit)))
       (file-name (git-file-name "firefox-l10n" commit))
-      (sha256 (base32 "02xwyzm3an2dpv8s2ly09325yq3nk2xbcgrwdnmby0rk2w5bwwhw")))))
+      (sha256 (base32 "1625rh1w5fdq6nl7fpwgiln29hkqcj0zksmnwcfj34y5cvhwrq2z")))))
 
 (define* (make-librewolf-source #:key version firefox-hash librewolf-hash l10n)
   (let* ((ff-src (firefox-source-origin
