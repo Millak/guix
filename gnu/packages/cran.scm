@@ -7842,6 +7842,68 @@ character vector.")
 using just two functions: melt and dcast (or acast).")
     (license license:expat)))
 
+(define-public r-riskregression
+  (package
+    (name "r-riskregression")
+    (version "2026.03.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "riskRegression" version))
+       (sha256
+        (base32 "1kpmccr0xhriijw9gzx9mprkknpxs1jq17yd4hpj2rd1l7wllvkw"))))
+    (properties `((upstream-name . "riskRegression")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases '(modify-phases %standard-phases
+                  (add-after 'unpack 'set-HOME
+                    (lambda _
+                      (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list r-cmprsk
+                             r-data-table
+                             r-doparallel
+                             r-foreach
+                             r-ggplot2
+                             r-glmnet
+                             r-hmisc
+                             r-lattice
+                             r-lava
+                             r-mets
+                             r-mvtnorm
+                             r-plotrix
+                             r-prodlim
+                             r-publish
+                             r-ranger
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-rms
+                             r-survival
+                             r-timereg))
+    (native-inputs (list r-proc
+                         r-r-rsp
+                         r-randomforestsrc
+                         r-testthat))
+    (home-page "https://github.com/tagteam/riskRegression")
+    (synopsis
+     "Risk regression models and prediction scores for survival analysis")
+    (description
+     "This package implements the following methods for event history
+analysis: Risk regression models for survival endpoints also in the presence
+of competing risks are fitted using binomial regression based on a time
+sequence of binary event status variables.  A formula interface for the
+Fine-Gray regression model and an interface for the combination of
+cause-specific Cox regression models.  A toolbox for assessing and comparing
+performance of risk predictions (risk markers and risk prediction models).
+Prediction performance is measured by the Brier score and the area under the
+ROC curve for binary possibly time-dependent outcome.  Inverse probability of
+censoring weighting and pseudo values are used to deal with right censored
+data.  Lists of risk markers and lists of risk models are assessed
+simultaneously.  Cross-validation repeatedly splits the data, trains the risk
+prediction models on one part of each split and then summarizes and compares
+the performance across splits.")
+    (license license:gpl2+)))
+
 (define-public r-rlang
   (package
     (name "r-rlang")
