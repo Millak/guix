@@ -11561,6 +11561,36 @@ individual SNP score statistics in a SNP set and efficiently compute SNP-set
 level p-values.")
     (license license:gpl2+)))
 
+(define-public r-smcfcs
+  (package
+    (name "r-smcfcs")
+    (version "2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "smcfcs" version))
+       (sha256
+        (base32 "1kz297dhcdiazs6r13bkax8nqy61s8hb0lhk6psdm6ngbcs6i64n"))))
+    (properties `((upstream-name . "smcfcs")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-abind
+                             r-brglm2
+                             r-checkmate
+                             r-mass
+                             r-rlang
+                             r-survival
+                             r-vgam))
+    (native-inputs (list r-knitr r-mitools))
+    (home-page "https://github.com/jwb133/smcfcs")
+    (synopsis "Multiple imputation of covariates")
+    (description
+     "This package implements multiple imputation of missing covariates by
+Substantive Model Compatible Fully Conditional Specification.  This is a
+modification of the popular FCS/chained equations multiple imputation
+approach, and allows imputation of missing covariate values from models which
+are compatible with the user specified substantive model.")
+    (license license:gpl3)))
+
 (define-public r-smotefamily
   (package
     (name "r-smotefamily")
