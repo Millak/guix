@@ -6388,7 +6388,6 @@ API.  It includes bindings for Python, Ruby, and other languages.")
       (cons* '(guix build qt-utils) %pyproject-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'build) ;install phase does all the work
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
