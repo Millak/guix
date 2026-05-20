@@ -3620,7 +3620,7 @@ for dealing with different structured file formats.")
                 ;; gdk-pixbuf's prefix.  Work around that.
                 (("pixbuf_dep.get_variable.*'gdk_pixbuf_moduledir'.*),")
                  (format #f "get_option('prefix') / '~a',"
-                         #$(dirname %gdk-pixbuf-loaders-cache-file)))
+                         #$%gdk-pixbuf-loaders-directory))
                 (("pixbuf_dep.get_variable.*'gdk_pixbuf_query_loaders'.*),")
                  (format #f "'~a'," (which "gdk-pixbuf-query-loaders")))
                 (("pixbuf_dep.get_variable.*'gdk_pixbuf_cache_file'.*)")
