@@ -21009,18 +21009,18 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
 (define-public python-celery
   (package
     (name "python-celery")
-    (version "5.6.2")
+    (version "5.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "celery" version))
        (sha256
-        (base32 "16q0hlsw9p2mri1c1i2l4knq2d8hf83h4a9vglqpdbgjzk1j32aa"))))
+        (base32 "04i9w7sakiahf2593mshxxwqis19hnyrmr8vy3lq5f2l42yhcw0p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 3248 passed, 26 skipped, 8 deselected, 3 xfailed, 55 warnings,
-      ;;        28958 subtests passed
+      ;; tests: 3364 passed, 38 skipped, 8 deselected, 3 xfailed, 63 warnings,
+      ;;        28808 subtests passed
       #:test-flags
       ;; The MongoDB backend test appears to expect an older version of
       ;; MongoDB which provided its own bson module, fails with "
@@ -21059,7 +21059,7 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
            python-setuptools))
     (propagated-inputs
      (list python-billiard
-           python-click-8.1
+           python-click
            python-click-didyoumean
            python-click-plugins
            python-click-repl
