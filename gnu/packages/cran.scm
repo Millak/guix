@@ -51244,25 +51244,21 @@ amounts of memory.")
 (define-public r-boruta
   (package
     (name "r-boruta")
-    (version "9.0.0")
+    (version "10.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Boruta" version))
        (sha256
         (base32
-         "1rdzcncmpbbkmifayscagf73m5k61nf3fxxra4xcp5kawxxfxvkx"))))
+         "1f1mvl5xgrvi4a4695kmigpgxlirbqwj7pclxvc7wvznr4ljq0x0"))))
     (properties
      '((upstream-name . "Boruta")
        (updater-extra-native-inputs
         . ("r-randomforest" "r-survival" "r-xgboost"))))
     (build-system r-build-system)
-    (propagated-inputs (list r-ranger))
-    (native-inputs (list r-randomforest
-                         r-rferns
-                         r-survival
-                         r-testthat
-                         r-xgboost))
+    (propagated-inputs (list r-fru))
+    (native-inputs (list r-randomforest r-survival r-xgboost))
     (home-page "https://gitlab.com/mbq/Boruta/")
     (synopsis "Wrapper algorithm for all relevant feature selection")
     (description
