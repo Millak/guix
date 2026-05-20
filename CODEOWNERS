@@ -292,12 +292,12 @@ guix/build-system/julia\.scm                       @guix/julia
 
 gnu/packages/(kde)(-.+|)\.scm$                     @guix/kde
 
-gnu/build/linux-modules\.scm                       @guix/kernel
-gnu/packages/aux-files/linux-libre.*$              @guix/kernel
-gnu/packages/linux\.scm                            @guix/kernel
-gnu/tests/linux-modules\.scm                       @guix/kernel
-guix/build/linux-module-build-system\.scm          @guix/kernel
-guix/build-system/linux-module\.scm                @guix/kernel
+gnu/build/linux-modules\.scm                       @guix/linux-libre
+gnu/packages/aux-files/linux-libre.*$              @guix/linux-libre
+gnu/packages/linux\.scm                            @guix/linux-libre
+gnu/tests/linux-modules\.scm                       @guix/linux-libre
+guix/build/linux-module-build-system\.scm          @guix/linux-libre
+guix/build-system/linux-module\.scm                @guix/linux-libre
 
 gnu/packages/lisp(-.+|)\.scm$                      @guix/lisp
 guix/build/asdf-build-system\.scm                  @guix/lisp

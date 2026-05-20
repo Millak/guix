@@ -876,8 +876,8 @@ and the maven-build-system."
         "The plasma desktop environment, and KDE Applications."
         #:scope (list (make-regexp* "^gnu/packages/(kde)(-.+|)\\.scm$"))))
 
-(define-team kernel
-  (team 'kernel
+(define-team linux-libre
+  (team 'linux-libre
         #:name "Linux-libre kernel team"
         #:scope (list "gnu/build/linux-modules.scm"
                       (make-regexp* "^gnu/packages/aux-files/linux-libre.*$")
@@ -1298,7 +1298,7 @@ the \"texlive\" importer."
 (define-member (person "Leo Famulari"
                        "leo@famulari.name"
                        "lfam")
-  kernel)
+  linux-libre)
 
 (define-member (person "Efraim Flashner"
                        "efraim@flashner.co.il"
@@ -1383,7 +1383,7 @@ the \"texlive\" importer."
 (define-member (person "Vagrant Cascadian"
                        "vagrant@debian.org"
                        "vagrantc")
-  debian embedded kernel)
+  debian embedded linux-libre)
 
 (define-member (person "Vagrant Cascadian"        ;XXX: duplicate
                        "vagrant@reproducible-builds.org"
@@ -1537,7 +1537,7 @@ the \"texlive\" importer."
 (define-member (person "Rodion Goritskov"
                        "rodion@goritskov.com"
                        "rodion-goritskov")
-  games java kde kernel release)
+  games java kde linux-libre release)
 
 (define-member (person "Jason Conroy"
                        "jconroy@tscripta.net"
@@ -1622,7 +1622,7 @@ the \"texlive\" importer."
 (define-member (person "Wilko Meyer"
                        "w@wmeyer.eu"
                        "theesm")
-  kernel perl)
+  linux-libre perl)
 
 (define-member (person "Untrusem"
                        "mysticmoksh@riseup.net"
