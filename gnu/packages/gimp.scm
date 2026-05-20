@@ -30,6 +30,7 @@
 
 (define-module (gnu packages gimp)
   #:use-module (guix packages)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -266,7 +267,7 @@ buffers.")
     ;; application and GUI binary gegl is licensed under GPL.
     (license (list license:lgpl3+ license:gpl3+))))
 
-(define-public gimp-3
+(define-public gimp
   (package
     (name "gimp")
     (version "3.2.0")
@@ -379,7 +380,8 @@ as well as specialized ones.  It features a highly customizable interface
 that is extensible via a plugin system.")
     (license license:gpl3+))) ; some files are lgplv3
 
-(define-public gimp gimp-3)
+;; 2026-05-20
+(define-deprecated/public-alias gimp-3 gimp)
 
 (define-public libmypaint
   (package
