@@ -7091,6 +7091,30 @@ and independent proportions.")
 prototype-based, rather than class-based object oriented ideas.")
     (license license:gpl2+)))
 
+(define-public r-publish
+  (package
+    (name "r-publish")
+    (version "2025.07.24")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "Publish" version))
+       (sha256
+        (base32 "1ay89c0ldxnavp9dlphawjcfbi3291wksdsfgrjv8x1wn7ziy57y"))))
+    (properties `((upstream-name . "Publish")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-data-table r-lava r-multcomp r-prodlim
+                             r-survival))
+    (native-inputs (list r-mitools r-smcfcs r-testthat))
+    (home-page "https://cran.r-project.org/package=Publish")
+    (synopsis "Format output for reports and publication")
+    (description
+     "This package provides a bunch of convenience functions that transform
+the results of some basic statistical analyses into table format nearly ready
+for publication.  This includes descriptive tables, tables of logistic
+regression and Cox regression results as well as forest plots.")
+    (license license:gpl2+)))
+
 (define-public r-puniform
   (package
     (name "r-puniform")
