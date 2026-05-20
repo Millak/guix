@@ -21574,18 +21574,19 @@ time in debugging.")
 (define-public r-drr
   (package
     (name "r-drr")
-    (version "0.0.4")
+    (version "0.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "DRR" version))
        (sha256
         (base32
-         "1y70si1gig4l7jx5jiqsqliyywfsvimkx53x3zh1lc3yj2j6bqwk"))))
+         "15kz65c5j05f0fq7pr1d1s9rzazyw47nl5hvql9fvhzpvf07jhpl"))))
     (properties `((upstream-name . "DRR")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cvst r-kernlab r-matrix))
+    (native-inputs (list r-knitr))
     (home-page "https://cran.r-project.org/web/packages/DRR")
     (synopsis "Dimensionality reduction via regression")
     (description
