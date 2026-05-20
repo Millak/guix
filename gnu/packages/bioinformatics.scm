@@ -17868,7 +17868,7 @@ expression report comparing samples in an easily configurable manner.")
 (define-public pigx-chipseq
   (package
     (name "pigx-chipseq")
-    (version "0.1.0")
+    (version "0.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/BIMSBbioinfo/pigx_chipseq/"
@@ -17876,7 +17876,7 @@ expression report comparing samples in an easily configurable manner.")
                                   "/pigx_chipseq-" version ".tar.gz"))
               (sha256
                (base32
-                "008n6drj9q5av86xihxlj4py2c9p3c5z5ld89c3bksrp77zxiy67"))))
+                "09m1bpjapfxwhzrnvfs2g2zv28k6af7yf7s5ji861nb9bwlkmyi7"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; parts of the tests rely on access to the network
@@ -17927,7 +17927,7 @@ expression report comparing samples in an easily configurable manner.")
            python-magic
            python-xlrd
            trim-galore
-           macs
+           macs-3
            multiqc
            perl
            pandoc
