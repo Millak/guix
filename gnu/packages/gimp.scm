@@ -467,22 +467,6 @@ MyPaint.")
     ;; public domain or under CC0 terms.
     (license (list license:gpl2+ license:cc0 license:public-domain))))
 
-(define-public mypaint-brushes-1.3
-  (package
-    (inherit mypaint-brushes)
-    (name "mypaint-brushes")
-    (version "1.3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/mypaint/mypaint-brushes")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1c95l1vfz7sbrdlzrbz7h1p6s1k113kyjfd9wfnxlm0p6562cz3j"))))
-    (native-inputs (list autoconf automake-1.16.5))))
-
 (define-public gimp-resynthesizer
   ;; GIMP does not respect any plugin search path environment variable, so after
   ;; installation users have to edit their GIMP settings to include
