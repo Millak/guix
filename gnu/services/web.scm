@@ -329,6 +329,7 @@
             mumi-configuration-data-directory
             mumi-configuration-rsync-remote
             mumi-configuration-rsync-flags
+            mumi-configuration-rsync-and-index-event
             mumi-configuration-mailer?
             mumi-configuration-sender
             mumi-configuration-smtp
@@ -2355,6 +2356,9 @@ WSGIPassAuthorization On
   (rsync-remote mumi-configuration-rsync-remote)
   (rsync-flags mumi-configuration-rsync-flags
                (default '()))
+  (rsync-and-index-event mumi-configuration-rsync-and-index-event
+                         ;; Run every 5 minutes by default.
+                         (default #~(calendar-event #:minutes '#$(iota 12 0 5))))
   (mailer? mumi-configuration-mailer? (default #t))
   (sender  mumi-configuration-sender (default #f))
   (smtp    mumi-configuration-smtp (default #f))
@@ -2465,7 +2469,7 @@ WSGIPassAuthorization On
                            "/lib/locale")))
 
   (match-record config <mumi-configuration>
-    (mumi mailer? sender smtp)
+    (mumi rsync-and-index-event mailer? sender smtp)
     (list (shepherd-service
             (provision '(mumi))
             (documentation "Mumi bug-tracking web interface.")
@@ -2482,9 +2486,7 @@ WSGIPassAuthorization On
             (provision '(mumi-rsync-and-index))
             (modules '((shepherd service timer)))
             (start #~(make-timer-constructor
-                      ;; Run every 5 minutes, unless an instance of
-                      ;; this job is already running.
-                      (calendar-event #:minutes '#$(iota 12 0 5))
+                      #$rsync-and-index-event
                       (command (list #$(mumi-rsync-and-index config)))
                       #:log-file #$%mumi-rsync-and-index-log
                       #:max-duration (* 2 60 60)

@@ -53,7 +53,7 @@ Copyright @copyright{} 2017, 2019--2026 Maxim Cournoyer@*
 Copyright @copyright{} 2017–2022 Tobias Geerinckx-Rice@*
 Copyright @copyright{} 2017 George Clemmer@*
 Copyright @copyright{} 2017 Andy Wingo@*
-Copyright @copyright{} 2017, 2018, 2019, 2020, 2023, 2024, 2025 Arun Isaac@*
+Copyright @copyright{} 2017, 2018, 2019, 2020, 2023, 2024, 2025, 2026 Arun Isaac@*
 Copyright @copyright{} 2017 nee@*
 Copyright @copyright{} 2018 Rutger Helling@*
 Copyright @copyright{} 2018, 2021, 2023, 2025, 2026 Oleg Pykhalov@*
@@ -36741,12 +36741,15 @@ The Mumi package to use.
 Data directory to store Debbugs data from upstream Debbugs instance.
 
 @item @code{rsync-remote}
-Remote rsync path from which to download Debbugs data.  The remote is
-polled every 5 minutes, unless a previous instance of rsync is already
-running.
+Remote rsync path from which to download Debbugs data.
 
 @item @code{rsync-flags} (default: @code{'()})
 Additional flags to pass to @command{rsync}.
+
+@item @code{rsync-and-index-event} (default: @code{#~(calendar-event #:minutes '#$(iota 12 0 5))})
+Shepherd calendar event to run the rsync and indexing timer at.  By
+default, this is once every 5 minutes.  The timer job is not run if an
+earlier instance of it is still running.
 
 @item @code{mailer?} (default: @code{#true})
 Whether to enable or disable the mailer component.
