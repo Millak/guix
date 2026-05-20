@@ -4453,13 +4453,13 @@ your music.")
 (define-public beets-beetcamp
   (package
     (name "beets-beetcamp")
-    (version "0.21.0")
+    (version "0.24.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "beetcamp" version))
        (sha256
-        (base32 "14him9y82071l8jszy3g86k3mvnvzdb6g9yir3czfy7bhcn8x50x"))))
+        (base32 "00kbjvbqspmcx51cxgi67nw6a0cscbj4dz2ap9szyihdza5q1icj"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list beets
                              python-httpx
