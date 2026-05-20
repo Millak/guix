@@ -436,42 +436,6 @@ that is extensible via a plugin system.")
 (define-deprecated-package gimp-next
   gimp-3)
 
-(define-public gimp-fourier
-  (package
-    (name "gimp-fourier")
-    (version "0.4.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/rpeyron/plugin-gimp-fourier/"
-                           "releases/download/v" version
-                           "/gimp-plugin-fourier-" version ".tar.gz"))
-       (sha256
-        (base32 "0c4z3hd2sk1s6sx0441p4li383riq1q33wj7ni7l2rwsr8x1s95s"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f)) ;no tests
-    (inputs
-     (list fftw
-           gimp-2
-           ;; needed by gimp-2.0.pc
-           gdk-pixbuf
-           gegl
-           cairo
-           glib
-           ;; needed by gimpui-2.0.pc
-           gtk+-2))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://www.lprp.fr/gimp_plugin_en/#fourier")
-    (synopsis "GIMP plug-in to edit image in fourier space")
-    (description
-     "This package provides a simple plug-in to apply the fourier transform on
-an image, allowing you to work with the transformed image inside GIMP.  You
-can draw or apply filters in fourier space and get the modified image with an
-inverse fourier transform.")
-    (license license:gpl3+)))
-
 (define-public libmypaint
   (package
     (name "libmypaint")
