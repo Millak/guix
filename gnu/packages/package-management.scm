@@ -2412,8 +2412,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "44ca801e2352b64e19921c72177b35b2e49a7a09")
-        (revision "53"))
+  (let ((commit "48d4d33690d19a858d1bb77edf04b8b3f280ade5")
+        (revision "54"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -2424,7 +2424,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "15sc9rgna1fxsns1q9q1xlrqfqc4r5lcmmddw0af2lhll75kj7v2"))
+                  "16kyhagdwgsqaf3ny8xk74kqzvzf0firqb12kaz94py64rmq6199"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -2490,7 +2490,6 @@ in an isolated environment, in separate namespaces.")
              guile-gnutls
 
              ;; Guile libraries are needed here for cross-compilation.
-             guile-next
              guile-3.0-latest
              guile-aws
              guile-json-4
