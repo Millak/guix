@@ -57292,16 +57292,17 @@ variability than the Poisson, but less than the negative binomial.")
 (define-public r-rjsonio
   (package
     (name "r-rjsonio")
-    (version "2.0.0")
+    (version "2.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RJSONIO" version))
        (sha256
         (base32
-         "0ai0gfgszj4z65hgn6px8a5hhaf12y2rc2bra1cxdf3q0higiiz9"))))
+         "17r5xfgdnhdb9rv3dpsz8cab3dys371qwbjn98rlh2wcr13l14na"))))
     (properties `((upstream-name . "RJSONIO")))
     (build-system r-build-system)
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/package=RJSONIO")
     (synopsis "Serialize R objects to JSON")
     (description
