@@ -13386,6 +13386,44 @@ mixed effects models with respect to fixed effects parameter, random
 effect (co)variances, and residual variance.")
     (license license:gpl2+)))
 
+(define-public r-mets
+  (package
+    (name "r-mets")
+    (version "1.3.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mets" version))
+       (sha256
+        (base32 "0albfa5njy20iv59s5a90csm2sgrhbjl58mjhmf4c1mr476r9w02"))))
+    (properties `((upstream-name . "mets")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:test-directory "inst/tinytest/"
+      ;; Depends on r-riskregression, which depends on r-mets.
+      #:skipped-tests '("test_ate_wglm.R")))
+    (propagated-inputs (list r-lava
+                             r-mvtnorm
+                             r-numderiv
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-survival
+                             r-timereg))
+    (native-inputs (list gfortran r-knitr r-prodlim r-tinytest))
+    (home-page "https://kkholst.github.io/mets/")
+    (synopsis "Analysis of multivariate event times")
+    (description
+     "This package provides an implementation of various statistical models
+for multivariate event history data <doi:10.1007/s10985-013-9244-x>.  It
+includes multivariate cumulative incidence models <doi:10.1002/sim.6016>, and
+bivariate random effects probit models
+(Liability models) <doi:10.1016/j.csda.2015.01.014>.  It also provides methods
+for survival analysis, including regression modelling (Cox, Fine-Gray,
+Ghosh-Lin, Binomial regression) with fast computation of influence
+functions.")
+    (license license:asl2.0)))
+
 (define-public r-mgcv
   (package
     (name "r-mgcv")
