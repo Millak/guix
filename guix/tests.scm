@@ -75,7 +75,12 @@
 
 (define %tests-build-timeout
   ;; Timeout limit for guix unit tests (default: 5 minutes)
-  (let ((default (* 5 60)))
+  (let ((default (if (string=? "riscv64-linux" (%current-system))
+                     ;; Compiling the modules required by the
+                     ;; "gexp: gexp->derivation, store copy" test
+                     ;; can take more than 5 minutes on riscv64.
+                     (* 10 60)
+                     (* 5 60))))
     (match (getenv "GUIX_TESTS_BUILD_TIMEOUT")
       (#f default)
       (str (or (string->number str) default)))))
