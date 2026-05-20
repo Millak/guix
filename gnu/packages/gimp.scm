@@ -380,8 +380,6 @@ that is extensible via a plugin system.")
     (license license:gpl3+))) ; some files are lgplv3
 
 (define-public gimp gimp-3)
-(define-deprecated-package gimp-next
-  gimp-3)
 
 (define-public libmypaint
   (package
