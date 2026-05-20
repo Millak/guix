@@ -569,7 +569,7 @@ interface and is based on GNU Guile.")
 
 (define-public shepherd-0.10
   (package
-    (inherit shepherd-0.9)
+    (name "shepherd")
     (version "0.10.5")
     (source (origin
               (method url-fetch)
@@ -578,20 +578,46 @@ interface and is based on GNU Guile.")
               (sha256
                (base32
                 "0k40n9qm5r5rqf94isa1857ghd4329zc5rjf3ll2572gpiw3ij4x"))))
-    (native-inputs (modify-inputs (package-native-inputs shepherd-0.9)
-                     (replace "guile-fibers"
-                       ;; Work around
-                       ;; <https://github.com/wingo/fibers/issues/89>.  This
-                       ;; affects any system without a functional real-time
-                       ;; clock (RTC), but in practice these are typically Arm
-                       ;; single-board computers.
-                       (if (or (target-arm?)
-                               (target-riscv64?))
-                           guile-fibers-1.1
-                           guile-fibers-1.3)))) ;pinned version to avoid rebuilds
-    (inputs (modify-inputs (package-inputs shepherd-0.9)
-              (replace "guile-fibers"
-                (this-package-native-input "guile-fibers"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags #~'("--localstatedir=/var")
+           #:make-flags #~'("GUILE_AUTO_COMPILE=0")
+           #:phases (if (%current-target-system)
+                        #~(modify-phases %standard-phases
+                            (add-before 'configure 'set-fibers-directory
+                              (lambda _
+                                ;; When cross-compiling, refer to the target
+                                ;; Fibers, not the native one.
+                                (substitute* '("herd.in" "shepherd.in")
+                                  (("%FIBERS_SOURCE_DIRECTORY%")
+                                   #$(file-append
+                                      (this-package-input "guile-fibers")
+                                      "/share/guile/site/3.0"))
+                                  (("%FIBERS_OBJECT_DIRECTORY%")
+                                   #$(file-append
+                                      (this-package-input "guile-fibers")
+                                      "/lib/guile/3.0/site-ccache"))))))
+                        #~%standard-phases)))
+    (native-inputs (list pkg-config guile-3.0
+                         ;; Work around
+                         ;; <https://github.com/wingo/fibers/issues/89>.  This
+                         ;; affects any system without a functional real-time
+                         ;; clock (RTC), but in practice these are typically Arm
+                         ;; single-board computers.
+                         (if (or (target-arm?)
+                                 (target-riscv64?))
+                             guile-fibers-1.1
+                             guile-fibers-1.3))) ;pinned version to avoid rebuilds
+    (inputs (list guile-3.0
+                  (this-package-native-input "guile-fibers")))
+    (synopsis "System service manager")
+    (description
+     "The GNU Shepherd is a daemon-managing daemon, meaning that it supervises
+the execution of system services, replacing similar functionality found in
+typical init systems.  It provides dependency-handling through a convenient
+interface and is based on GNU Guile.")
+    (license license:gpl3+)
+    (home-page "https://www.gnu.org/software/shepherd/")))
 
 (define-public shepherd-1.0
   (package
