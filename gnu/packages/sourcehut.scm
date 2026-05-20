@@ -51,11 +51,7 @@
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #false                   ;there are none
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _ (setenv "PKGVER" #$version))))))
+      #:tests? #false))                   ;there are none
     (propagated-inputs
      (list python-alembic
            python-beautifulsoup4
@@ -73,7 +69,9 @@
            python-requests
            python-sqlalchemy
            python-sqlalchemy-utils))
-    (native-inputs (list python-setuptools))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))
     (home-page "https://git.sr.ht/~sircmpwn/core.sr.ht")
     (synopsis "Shared code for all sourcehut projects")
     (description
