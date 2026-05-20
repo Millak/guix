@@ -4752,6 +4752,37 @@ well as symmetric and asymmetric discriminant projections for visualisation of
 the separation of groupings.")
   (license license:gpl2+)))
 
+(define-public r-fru
+  (package
+    (name "r-fru")
+    (version "0.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "fru" version))
+       (sha256
+        (base32 "012dzkbacrgjpch01ram3wv9v8vyhmsf7igvq8j758sf06x4i833"))))
+    (properties `((upstream-name . "fru")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-variables-for-rust
+            (lambda _
+              (setenv "CC" #$(cc-for-target)))))))
+    (native-inputs (list rust `(,rust "cargo")))
+    (home-page "https://gitlab.com/mbq/fru")
+    (synopsis "Fast implementation of Random Forest")
+    (description
+     "This package provides yet another implementation of the Random Forest
+method by Breiman (2001) <doi:10.1023/A:1010933404324>, written in Rust and
+tailored towards stability, correctness, efficiency and scalability on modern
+multi-core machines.  It handles both classification and regression, as well
+as provides permutation feature importance via a novel, highly optimized
+algorithm.")
+    (license license:gpl3)))
+
 (define-public r-fscache
   (package
     (name "r-fscache")
