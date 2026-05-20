@@ -17422,22 +17422,19 @@ in R and Shiny via the D3 visualization library.")
 (define-public r-webfakes
   (package
     (name "r-webfakes")
-    (version "1.4.1")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "webfakes" version))
        (sha256
-        (base32 "1w88rcqrplwvafvv2bpz05xafxr84lzdjc99z380xq2yi1fz6kwf"))))
+        (base32 "0jgnzgjsi7yh7w2z7pw0bs5qdf4hwabc79b0ah8ahff0099mdyia"))))
     (properties `((upstream-name . "webfakes")))
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           ;; This test requires Internet access.
-           (lambda _ (delete-file "tests/testthat/test-httpbin.R"))))))
+      ;; This test requires Internet access.
+      #:skipped-tests '(("test-httpbin.R" "/brotli"))))
     (native-inputs (list r-callr
                          r-curl
                          r-digest
