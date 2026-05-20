@@ -7579,7 +7579,7 @@ performance mode, and custom scripts.")
 (define-public btrfs-progs
   (package
     (name "btrfs-progs")
-    (version "6.16")
+    (version "7.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/linux/kernel/"
@@ -7587,7 +7587,7 @@ performance mode, and custom scripts.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1ibg8qrsxzw4qjnsl5da1qz10m1zv3yx2jxd4jl1h9kwfgw31a9i"))))
+                "16cs5n1hm06ppkylkd9p7v13wdc0sb7y85xll0kj7mxwdj3xd1n2"))))
     (build-system gnu-build-system)
     (outputs '("out" "static")) ;static versions of the binaries in "out"
     (arguments
