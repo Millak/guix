@@ -23133,6 +23133,28 @@ suite of fast incremental algorithms for machine learning that can be used for
 training models for classification or ranking.")
     (license license:asl2.0)))
 
+(define-public r-xactonomial
+  (package
+    (name "r-xactonomial")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "xactonomial" version))
+       (sha256
+        (base32 "1gjyg8fbm0n48hhlsvdw2p8y6w0nm6b785xrnapblrra2vc4g17y"))))
+    (properties `((upstream-name . "xactonomial")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr rust `(,rust "cargo") r-testthat))
+    (home-page "https://sachsmc.github.io/xactonomial/")
+    (synopsis "Inference for functions of multinomial parameters")
+    (description
+     "The goal of xactonomial is to use an exact (but computational and
+stochastic) method to compute a confidence interval and a function for
+calculation of p values in the k sample multinomial setting where interest is
+about a real-valued functional of the multinomial probabilities.")
+    (license license:expat)))
+
 (define-public r-xts
   (package
     (name "r-xts")
