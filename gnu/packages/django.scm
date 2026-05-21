@@ -375,28 +375,27 @@ and adapters that are useful for non-trivial configuration scenarios.")
 (define-public python-django-extensions
   (package
     (name "python-django-extensions")
-    (version "4.1")
+    (properties '((commit . "32ddfb0499bec7f39f9fbb44568d2781cecd1f32")
+                  (revision . "0")))
+    (version (git-version "4.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        ;; Fetch from the git repository, so that the tests can be run.
        (uri (git-reference
              (url "https://github.com/django-extensions/django-extensions")
-             (commit version)))
+             (commit (assoc-ref properties 'commit))))
        (file-name (string-append name "-" version))
        (sha256
-        (base32 "1qayan9za7ylvzkwp6p0l0735gavnzd1kdjsfc178smq6xnby0ss"))))
+        (base32 "09gk82rsmqgaz4pqk0xvb4mgfprls8h1wm24p74d0ykdi7li2plg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; The 5 tests in test_dumbscript.py fail (OperationalError).
       #:test-flags
-      #~(list "--ignore" "tests/test_dumpscript.py"
-              "-k" (string-append
-                    ;; These fail for unknown reasons.
-                    "not test_do_export_emails_format_vcard_start"
-                    " and not test_initialize_runserver_plus"
-                    " and not test_should_highlight_python_syntax_with_name"))))
+      #~(list "--ignore" "tests/test_dumpscript.py")))
     (propagated-inputs
      (list python-django))
     (native-inputs
@@ -407,6 +406,8 @@ and adapters that are useful for non-trivial configuration scenarios.")
            python-pytest-django
            python-setuptools
            python-shortuuid
+           python-vobject
+           python-werkzeug
            tzdata-for-tests))
     (home-page "https://github.com/django-extensions/django-extensions")
     (synopsis "Custom management extensions for Django")
