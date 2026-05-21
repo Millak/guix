@@ -510,13 +510,13 @@ Jump conversion filter by CFFI for Python.")
 (define-public python-inflate64
   (package
     (name "python-inflate64")
-    (version "1.0.3")
+    (version "1.0.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "inflate64" version))
               (sha256
                (base32
-                "1vhj7qhghyc6bvwqval471d2rnsm2pzk2byklp1s1v9ndi0xv7m8"))))
+                "1kh7nkvm6r6ccxkbygzwdjaxnspnhqd2ivf0mxvrf0hcjs3cd65k"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-setuptools python-setuptools-scm))
