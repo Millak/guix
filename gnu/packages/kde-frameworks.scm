@@ -326,13 +326,6 @@ surveys")
 accessibility clients such as screen readers.")
     (license license:lgpl2.1+)))
 
-(define-public libqaccessibilityclient-qt5
-  (package
-    (inherit libqaccessibilityclient)
-    (name "libqaccessibilityclient-qt5")
-    (inputs (modify-inputs inputs
-              (replace "qtbase" qtbase-5)))))
-
 (define-public qca
   (package
     (name "qca")
