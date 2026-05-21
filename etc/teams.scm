@@ -1687,6 +1687,11 @@ the \"texlive\" importer."
                        "nomike")
   dotnet)
 
+(define-member (person "Fabio Natali"
+                       "me@fabionatali.com"
+                       "fnat")
+  emacs)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
