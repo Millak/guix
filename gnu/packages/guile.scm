@@ -529,6 +529,17 @@ without requiring the source code to be rewritten.")
 ;;; (security or else) and this deprecation could be removed.
 (define-deprecated/public-alias guile-3.0/fixed guile-3.0/pinned)
 
+(define-public guile-with-gmp
+  (package/inherit guile-3.0-latest
+    (name "guile-with-gmp")
+    (propagated-inputs
+      (modify-inputs propagated-inputs
+        (append gmp)))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:configure-flags flags #~'())
+        #~(delete "--enable-mini-gmp" #$flags))))))
+
 (define-public guile-3.0/pinned
   ;; A package of Guile that's rarely changed.  It is the one used in the
   ;; `base' module, and thus changing it entails a full rebuild.
