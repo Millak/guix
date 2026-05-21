@@ -4434,6 +4434,29 @@ information for Golang.")
 variables into structs.")
     (license license:expat)))
 
+(define-public go-github-com-caarlos0-go-version
+  (package
+    (name "go-github-com-caarlos0-go-version")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/caarlos0/go-version")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kp78am3yzffz8r70f1skq0m2vms0wk37f76hqbfg1r29hay1ban"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/caarlos0/go-version"))
+    (home-page "https://github.com/caarlos0/go-version")
+    (synopsis "Fetch Go module version")
+    (description
+     "Package goversion provides utilities to get the Go module version information.")
+    (license license:expat)))
+
 (define-public go-github-com-calebcase-tmpfile
   (package
     (name "go-github-com-calebcase-tmpfile")
