@@ -210,14 +210,30 @@ of C++20 coroutines in connection with certain asynchronous Qt actions.")
 
 (define-public qcoro-qt6
   (package
-    (inherit qcoro-qt5)
     (name "qcoro-qt6")
+    (version "0.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/danvratil/qcoro")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g9laaw1mkp5ynpp3c7aingndcmgncbacslq3p6bzwjisdd6xr5m"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:configure-flags
+           #~(list "-DCMAKE_CXX_FLAGS=-fPIC"
+                   "-DUSE_QT_VERSION=6")))
+    (native-inputs (list dbus))         ;for tests
+    (inputs (list qtdeclarative qtwebsockets libxkbcommon))
+    (home-page "https://qcoro.dvratil.cz/")
     (synopsis "C++ Coroutine Library for Qt6")
-    (inputs (modify-inputs inputs
-              (replace "qtbase" qtbase)
-              (replace "qtdeclarative" qtdeclarative)
-              (replace "qtwebsockets" qtwebsockets)
-              (append libxkbcommon)))))
+    (description "QCoro is a C++ library that provide set of tools to make use
+of C++20 coroutines in connection with certain asynchronous Qt actions.")
+    (license license:expat)))
 
 (define-public qlementine
   (package
