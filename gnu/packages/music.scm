@@ -6876,7 +6876,7 @@ file is added, which you could load per drag 'n drop into XUiDesigner.")
 (define-public zam-plugins
   (package
     (name "zam-plugins")
-    (version "4.4")
+    (version "4.5")
     (source
      (origin
        (method git-fetch)
@@ -6890,7 +6890,7 @@ file is added, which you could load per drag 'n drop into XUiDesigner.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mfcz3308wqfyhc8689j1yvr17yllgpm09sy7hij97yamc6y2fd6"))))
+        (base32 "1a5i31rg1rd8phvgj2f6wv1jkagc5cynj2plzq7rm818hkykdf52"))))
     (build-system gnu-build-system)
     (arguments
      (list
