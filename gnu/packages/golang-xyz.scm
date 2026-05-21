@@ -22623,6 +22623,36 @@ expiration times, it doesn't need to serialize or transmit its contents over
 the network.")
     (license license:expat)))
 
+(define-public go-github-com-pb33f-ordered-map-v2
+  (package
+    (name "go-github-com-pb33f-ordered-map-v2")
+    (version "2.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pb33f/ordered-map")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k4r1rvlziddaszm1jvgz27nkrk1jfka0zik16f4b3gmhdnmd9vc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/pb33f/ordered-map/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-bahlo-generic-list-go
+           go-github-com-buger-jsonparser
+           go-go-yaml-in-yaml-v4))
+    (home-page "https://github.com/pb33f/ordered-map")
+    (synopsis "Ordered maps in Golang")
+    (description
+     "This package provides a Golang implementation of an ordered map, which
+is a map that also keeps track of the order in which keys were inserted.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-pbnjay-memory
   (let ((commit "7b4eea64cf580186c0eceb10dc94ba3a098af46c")
         (revision "2"))
