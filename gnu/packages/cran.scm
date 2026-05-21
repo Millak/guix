@@ -23829,17 +23829,17 @@ script.")
 (define-public r-aricode
   (package
     (name "r-aricode")
-    (version "1.0.3")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "aricode" version))
               (sha256
                (base32
-                "02nrw66jfpzf6dy0zy21sbdjxjc8c11iv9fkjqj5akzb7wskk9qh"))))
+                "1x260wxs1yaccpdgncnky1188p3zahxhhwq0r4pvdv8lzm3dhs4s"))))
     (properties `((upstream-name . "aricode")))
     (build-system r-build-system)
-    (propagated-inputs (list r-matrix r-rcpp))
-    (native-inputs (list r-testthat))
+    (propagated-inputs (list r-lifecycle r-matrix r-rcpp))
+    (native-inputs (list r-spelling r-testthat))
     (home-page "https://github.com/jchiquet/aricode")
     (synopsis "Efficient computations of standard clustering comparison measures")
     (description
