@@ -407,19 +407,23 @@ following algorithms are available:
 (define-public python-pybcj
   (package
     (name "python-pybcj")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pybcj" version))
-              (sha256
-               (base32
-                "1hvm3c3mb20z25kmbzyyn6pr5inx50z0ignl8b0bggxaik82ws4b"))))
+    (version "1.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/miurahr/pybcj")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w5c706l0nhqrh1ms3m01w7pbd4vsm3jv84gxwlgrpr0w7d8hq7p"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
+     (list python-hypothesis
+           python-pytest
            python-setuptools
            python-setuptools-scm))
-    (home-page "https://codeberg.org/miurahr/pybcj")
+    (home-page "https://github.com/miurahr/pybcj")
     (synopsis "BCJ filter library")
     (description "In data compression, BCJ, short for Branch-Call-Jump, refers
 to a technique that improves the compression of machine code of executable
