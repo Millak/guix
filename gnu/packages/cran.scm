@@ -2221,13 +2221,13 @@ labels on the node can also be achieved.")
 (define-public r-collapse
   (package
     (name "r-collapse")
-    (version "2.1.6")
+    (version "2.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "collapse" version))
        (sha256
-        (base32 "1nas21avxrc28pqn83iknnd0nriyx3ygj290gy68bqwpcch71nwl"))))
+        (base32 "0y9fma6fk43n4cza7wyxxx3w9v40y7d1jffca47d552x794rxypq"))))
     (properties `((upstream-name . "collapse")))
     (build-system r-build-system)
     (arguments
@@ -2255,6 +2255,7 @@ labels on the node can also be achieved.")
                          r-magrittr
                          r-matrixstats
                          r-testthat
+                         r-tibble
                          r-withr
                          r-zoo))
     (home-page "https://sebkrantz.github.io/collapse/")
