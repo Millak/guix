@@ -598,10 +598,12 @@ headers compressed with QPACK.")
         (base32 "1a3cqa6l1ip3kdd9d2h94znzrmgrhdbica83b494m9i3vl4i3glz"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags #~(list "--ignore=tests/test_benchmark.py")))
+     (list #:test-flags #~(list "--benchmark-disable")))
     (native-inputs
-     (list python-pytest
+     (list python-hypothesis
+           python-pytest
            python-pytest-benchmark
+           python-pytest-timeout
            python-setuptools
            python-setuptools-scm))
     (home-page "https://github.com/miurahr/pyppmd")
