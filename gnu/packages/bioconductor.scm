@@ -7776,13 +7776,13 @@ over-abundant or less-abundant as compared to that of normal cells.")
 (define-public r-infusion
   (package
     (name "r-infusion")
-    (version "2.3.0")
+    (version "2.3.12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Infusion" version))
        (sha256
-        (base32 "1xway5jpfadll9jg6dvmd4xi9pkr5zphrlldlipsyyr7jayrpadm"))))
+        (base32 "1k36z7s3vsgr6vqzq2d3vg79z0l8aayh3qrxh596hf04wxdfa8ch"))))
     (properties
      '((upstream-name . "Infusion")
        (updater-ignored-native-inputs . ("r-pkg"))))
