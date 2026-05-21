@@ -36467,14 +36467,14 @@ preparing, executing, and processing HTTP requests.")
 (define-public r-bigrquery
   (package
     (name "r-bigrquery")
-    (version "1.6.1")
+    (version "1.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bigrquery" version))
        (sha256
         (base32
-         "0zmny13b2g1pbrw090hqwk9xyzlakjvq07n2sby9r2xgvw8x89kb"))))
+         "11qanpx85f38m47a4viy4qp04bpklh06x08d5py6z7r7jbhnl8s4"))))
     (properties
      '((updater-extra-native-inputs . ("r-blob" "r-dbplyr"))))
     (build-system r-build-system)
