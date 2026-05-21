@@ -6959,7 +6959,7 @@ tactics.")
 (define-public widelands
   (package
     (name "widelands")
-    (version "1.3")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -6968,7 +6968,7 @@ tactics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j288rkflqmzxbacrrx35y8qm4mvbvd30c03cmkvh8b29jkgz3gp"))
+        (base32 "0ab9s1imqdq1krfwlba1ipx3pwnvy91aqqzr15ssfzixy4wj5mww"))
        (modules '((guix build utils)))
        (snippet
         #~(delete-file-recursively "src/third_party/minizip"))))
