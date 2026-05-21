@@ -44000,13 +44000,13 @@ rule.")
 (define-public r-harmony
   (package
     (name "r-harmony")
-    (version "2.0.2")
+    (version "2.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "harmony" version))
        (sha256
-        (base32 "1ll0cgg18amq4bjczsdjwvsjnrzf84i49pwm7yc6xxiq754jbrm7"))))
+        (base32 "1n48l497q387sqkm5c5z3aamm0l69bydalap2nz41kq4bqnapbnc"))))
     (properties `((upstream-name . "harmony")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
