@@ -420,7 +420,7 @@ based command language.")
 (define-public kakoune
   (package
     (name "kakoune")
-    (version "2026.04.12")
+    (version "2026.05.21")
     (source
      (origin
        (method git-fetch)
@@ -429,7 +429,7 @@ based command language.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11c4sgb9k1iahi06i5p6m0qz1qf5hz4g2f1z80di23987bwvbjlv"))))
+        (base32 "18l7lk8mqj3rfxvmp3mmlcqvwb92ch2h08d6lhdnimivmyz62y72"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -454,7 +454,7 @@ based command language.")
                 `("PATH" ":" prefix
                   (,(dirname (search-input-file inputs "bin/perl")))))))
           (delete 'configure))))            ; no configure script
-    (inputs (list perl))
+    (inputs (list bash-minimal perl))
     (native-search-paths
      (list (search-path-specification
             (variable "KAKOUNE_RUNTIME")
