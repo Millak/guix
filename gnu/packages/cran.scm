@@ -15147,14 +15147,14 @@ it has been in the first iteration.")
 (define-public r-readxl
   (package
     (name "r-readxl")
-    (version "1.4.5")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "readxl" version))
        (sha256
         (base32
-         "1pyy3g65zcq0b98xqc2v400z5l5ryvdl71vvd372kqgvp9xhvmq9"))))
+         "1rsc07jpr1pz9vpgyb1ydf8zsv0nasb63c605psacns5gz94g0wh"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cellranger r-cpp11 r-progress r-tibble))
