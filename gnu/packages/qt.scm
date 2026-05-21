@@ -6471,17 +6471,29 @@ a secure way.")
 
 (define-public packagekit-qt6
   (package
-    (inherit packagekit-qt5)
     (name "packagekit-qt6")
-    (arguments (substitute-keyword-arguments arguments
-                 ((#:configure-flags flags #~'())
-                  #~(cons "-DBUILD_WITH_QT6=ON" #$flags))))
-    (inputs (modify-inputs inputs
-              (replace "qtbase" qtbase)))
+    (version "1.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/PackageKit/PackageKit-Qt")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1nx8xfhz9v4pc0mz1ir0pq47skpc3w3yj8wqa4m5yky87ib5xcxc"))))
+    (build-system cmake-build-system)
+    (arguments
+      (list
+        #:tests? #f          ;no test suite
+        #:configure-flags #~(list "-DBUILD_WITH_QT6=ON")))
+    (inputs (list packagekit qtbase))
+    (home-page "https://www.freedesktop.org/software/PackageKit/pk-intro.html")
     (synopsis "Qt6 bindings for PackageKit")
     (description "Provides Qt6 bindings to PackageKit which is a DBUS
 abstraction layer that allows the session user to manage packages in
-a secure way.")))
+a secure way.")
+    (license license:lgpl2.1+)))
 
 ;; fork for support qt6
 (define-public signond-qt6
