@@ -4284,13 +4284,13 @@ to evaluate quadratic forms efficiently.")
 (define-public r-epir
   (package
     (name "r-epir")
-    (version "2.0.92")
+    (version "2.0.93")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "epiR" version))
        (sha256
-        (base32 "0lkkplzyc83ami0m03if2dmc26f7gws6ikgnkg622lkfclx67rnq"))))
+        (base32 "1jc4wlil3wp14lmk49glx52bwspnn5bjfxzqnvm51s5akirg13kq"))))
     (properties `((upstream-name . "epiR")))
     (build-system r-build-system)
     (propagated-inputs (list r-biasedurn
