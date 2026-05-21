@@ -13004,6 +13004,10 @@ card sheets that you’ll find at most office supply stores.")
            libgee
            tepl
            uchardet))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")))
     (home-page "https://wiki.gnome.org/Apps/GNOME-LaTeX")
     (synopsis "LaTeX editor for the GNOME desktop")
     (description
