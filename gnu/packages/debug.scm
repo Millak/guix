@@ -1038,7 +1038,7 @@ to aid in debugging.")
 (define-public delve
   (package
     (name "delve")
-    (version "1.25.2")
+    (version "1.26.3")
     (source
      (origin
        (method git-fetch)
@@ -1048,7 +1048,7 @@ to aid in debugging.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1b6vp6m4vjx4wfs1djhpizvz40s563jwld9lgjq82svaiilrmlqa"))
+         "0mf363l7md4193cgrpb6hkhmsgnlnrx44q1bzw3zq0bmjrcg3fj7"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "vendor")))))
@@ -1066,7 +1066,7 @@ to aid in debugging.")
      (list go-github-com-cilium-ebpf
            go-github-com-cosiner-argv
            go-github-com-creack-pty
-           go-github-com-derekparker-trie
+           go-github-com-derekparker-trie-v3
            go-github-com-go-delve-liner
            go-github-com-google-go-dap
            go-github-com-hashicorp-golang-lru
