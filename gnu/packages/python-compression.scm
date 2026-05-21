@@ -645,14 +645,18 @@ several possible methods.")
 (define-public python-py7zr
   (package
     (name "python-py7zr")
-    (version "1.0.0rc3")
+    ;; Last version that still works with python-brotli 1.0.9.
+    (version "1.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "py7zr" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/miurahr/py7zr")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "04ff0jc0d0b4r2r5yidcfnx30qabi41k5s04v4h4y7rfb6yd40ac"))))
+         "15mjxf9168iq4gvzpygdm7pv04a7p4fdww6y3340nv6a8qfl6z06"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -666,7 +670,8 @@ several possible methods.")
                 (("(brotli|brotlicffi)>=.*;" _ name)
                  (string-append name ";"))))))))
     (propagated-inputs
-     (list python-brotli
+     (list python-backports-zstd
+           python-brotli
            python-brotlicffi
            python-inflate64
            python-multivolumefile
@@ -678,8 +683,6 @@ several possible methods.")
            python-texttable))
     (native-inputs
      (list python-libarchive-c
-           python-py-cpuinfo
-           python-pypa-build
            python-pytest
            python-pytest-benchmark
            python-pytest-httpserver
