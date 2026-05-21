@@ -179,35 +179,6 @@ official project.")
     (home-page "https://github.com/oclero/qtappinstancemanager")
     (license license:expat)))
 
-(define-public qcoro-qt5
-  (package
-    (name "qcoro-qt5")
-    (version "0.11.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/danvratil/qcoro")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0g9laaw1mkp5ynpp3c7aingndcmgncbacslq3p6bzwjisdd6xr5m"))))
-    (build-system qt-build-system)
-    (arguments
-     (list #:configure-flags
-           #~(list "-DCMAKE_CXX_FLAGS=-fPIC"
-                   (string-append "-DUSE_QT_VERSION="
-                                  #$(version-major
-                                     (package-version
-                                      (this-package-input "qtbase")))))))
-    (native-inputs (list dbus))         ;for tests
-    (inputs (list qtbase-5 qtdeclarative-5 qtwebsockets-5))
-    (home-page "https://qcoro.dvratil.cz/")
-    (synopsis "C++ Coroutine Library for Qt5")
-    (description "QCoro is a C++ library that provide set of tools to make use
-of C++20 coroutines in connection with certain asynchronous Qt actions.")
-    (license license:expat)))
-
 (define-public qcoro-qt6
   (package
     (name "qcoro-qt6")
