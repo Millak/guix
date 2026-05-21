@@ -11914,13 +11914,13 @@ or omit optional keywords.")
 (define-public r-statmod
   (package
     (name "r-statmod")
-    (version "1.5.1")
+    (version "1.5.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "statmod" version))
               (sha256
                (base32
-                "15qk57r8sdzzbs41c0k49m4clay32b521wvjbpjpaaim2y0kh14g"))))
+                "07aqdbagqfpd4v5v8pzrxh5y9dx11mc3j0gw9086zqn58chdi0sz"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/statmod")
     (native-inputs (list gfortran))
