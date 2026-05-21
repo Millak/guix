@@ -54062,14 +54062,14 @@ analysis using @code{dplyr}, @code{ggplot2}, and other Tidy tools.")
 (define-public r-parsnip
   (package
     (name "r-parsnip")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "parsnip" version))
        (sha256
         (base32
-         "1iwh7m6dm23awks4bkfqmswrmb78cjwr8h94vdkslsgifcni2cfg"))))
+         "08xd54wvvwd8caqxwfk5xhr7dp2czclivkm0wblzfswjcywi6f3z"))))
     (properties
      '((upstream-name . "parsnip")
        ;; We don't need them.  Do you really want a package depending on
