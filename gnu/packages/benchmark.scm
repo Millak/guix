@@ -13,7 +13,7 @@
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025-2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2023 Advanced Micro Devices, Inc.
 ;;;
@@ -680,20 +680,26 @@ the user is too low.  To raise such limit on a Guix System, refer to
          "0ifnw8vnkcgrksx7g5d9ii4kjppqnk32lvrybdybmibyvag6zfdc"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-broken-makefile
-           (lambda _
-             ;; Remove erroneous "-lm" target
-             (substitute* "Makefile"
-               (("hackbench.o -lm") "hackbench.o"))))
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (install-file "interbench" (string-append out "/bin"))
-               (install-file "interbench.8" (string-append out "/share/man/man8"))))))))
+     (list #:tests? #f                      ; no tests
+           #:make-flags
+           #~(list "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"
+                   (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-broken-makefile
+                 (lambda _
+                   ;; Remove erroneous "-lm" target
+                   (substitute* "Makefile"
+                     (("hackbench.o -lm") "hackbench.o"))))
+               (delete 'configure)
+               (replace 'install
+                 (lambda _
+                   (install-file "interbench"
+                                 (string-append #$output "/bin"))
+                   (install-file "interbench.8"
+                                 (string-append #$output
+                                                "/share/man/man8")))))))
+    (native-inputs (list gcc-10))
     (home-page "http://users.on.net/~ckolivas/interbench/")
     (synopsis "Interactivity benchmark")
     (description "interbench is designed to benchmark interactivity on Linux.
