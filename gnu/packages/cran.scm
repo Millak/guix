@@ -34462,14 +34462,14 @@ hypothesis testing.")
 (define-public r-feature
   (package
     (name "r-feature")
-    (version "1.2.15")
+    (version "1.2.16")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "feature" version))
        (sha256
         (base32
-         "0yzn1w1sasilcp8v0pcjnxjv9l6lspkskqi412i6h040gqmjjf6y"))))
+         "19mmayi959bjkag1nrxz660b27ld1zv7snhf6d7za96xi4ig6q2v"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ks r-plot3d))
