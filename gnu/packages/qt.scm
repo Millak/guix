@@ -6445,30 +6445,6 @@ handles the authentication process of an account and securely stores the
 credentials and service-specific settings.")
     (license license:lgpl2.1+)))
 
-(define-public packagekit-qt5
-  (package
-    (name "packagekit-qt5")
-    (version "1.1.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/PackageKit/PackageKit-Qt")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1nx8xfhz9v4pc0mz1ir0pq47skpc3w3yj8wqa4m5yky87ib5xcxc"))))
-    (build-system cmake-build-system)
-    (arguments '(#:tests? #f))          ;no test suite
-    (native-inputs (list pkg-config))
-    (inputs (list packagekit qtbase-5))
-    (home-page "https://www.freedesktop.org/software/PackageKit/pk-intro.html")
-    (synopsis "Qt5 bindings for PackageKit")
-    (description "Provides Qt5 bindings to PackageKit which is a DBUS
-abstraction layer that allows the session user to manage packages in
-a secure way.")
-    (license license:lgpl2.1+)))
-
 (define-public packagekit-qt6
   (package
     (name "packagekit-qt6")
