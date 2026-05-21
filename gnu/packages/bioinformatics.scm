@@ -6710,20 +6710,20 @@ meso, or continuum scale.")
                 "09693dmf1scdac5pyq6qyn8b4mcipvnmc370k9a5z41z81m3dcsj"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
+     (list
+       #:test-target "test"
        #:tests? #f ; tests require access to the web
        #:make-flags
-       ,#~(list "CC=gcc"
-                (string-append "prefix=" #$output))
+       #~(list "CC=gcc"
+               (string-append "prefix=" #$output))
        #:phases
-       (modify-phases %standard-phases
+       #~(modify-phases %standard-phases
          (delete 'configure))))
     (inputs
      (list zlib curl))
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ;; Need for tests
-       ("python" ,python-2)))
+     (list doxygen
+           python)) ;for tests
     (home-page "https://github.com/dpryan79/libBigWig")
     (synopsis "C library for handling bigWig files")
     (description
