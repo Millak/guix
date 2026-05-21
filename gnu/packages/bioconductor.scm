@@ -25529,13 +25529,13 @@ array-like semantic.  It also provides:
 (define-public r-s4vectors
   (package
     (name "r-s4vectors")
-    (version "0.50.0")
+    (version "0.50.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "S4Vectors" version))
               (sha256
                (base32
-                "0w4bvvn8ixmy6941fhv9igfi01694hz0znlagf1nvp9g0pxw97ry"))))
+                "03k9kk6w6z1ri2yi8izb7b2v9lmhmdbsniqsa03bq92lcagaqpd8"))))
     (properties
      '((upstream-name . "S4Vectors")
        (updater-ignored-native-inputs
@@ -25543,20 +25543,22 @@ array-like semantic.  It also provides:
     (build-system r-build-system)
     (arguments
      (list
-      ;; Tests require r-iranges, which depends on this package.
-      #:tests? #false
-      #:phases
-      '(modify-phases %standard-phases
-         ;; Since R 4.6.0 some of the internal symbols are no longer exported
-         ;; unless ENABLE_LEGACY_NONAPI is defined.
-         (add-after 'unpack 'R-4.6.0-compatibility
-           (lambda _
-             (substitute* "src/S4Vectors.h"
-               (("#include \"../inst" m)
-                (string-append "#define ENABLE_LEGACY_NONAPI\n#define ENABLE_LEGACY_NONAPI_FUNS\n" m))))))))
+      ;; These tests require r-iranges and r-genomicranges, which depend on
+      ;; this package.
+      #:test-directory "inst/unitTests/"
+      #:skipped-tests
+      '("test_DataFrame-class.R"
+        "test_DataFrame-combine.R"
+        "test_expand-methods.R"
+        "test_List-class.R"
+        "test_List-utils.R"
+        "test_Pairs-class.R"
+        "test_Rle-class.R"
+        "test_Rle-utils.R"
+        "test_Vector-merge.R")))
     (propagated-inputs
      (list r-biocgenerics))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/S4Vectors")
     (synopsis "S4 implementation of vectors and lists")
     (description
