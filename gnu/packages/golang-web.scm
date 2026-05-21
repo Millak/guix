@@ -10796,6 +10796,33 @@ dhcpv6 and dhcpv4
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-github-com-invopop-jsonschema
+  (package
+    (name "go-github-com-invopop-jsonschema")
+    (version "0.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/invopop/jsonschema")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y881agfaycn5l5qn2y2jmiskchi0cvn5v602hna4ljy9rv5jxw2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/invopop/jsonschema"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pb33f-ordered-map-v2))
+    (home-page "https://github.com/invopop/jsonschema")
+    (synopsis "Go JSON Schema Reflection")
+    (description
+     "Package jsonschema uses reflection to generate JSON Schemas from Go types.")
+    (license license:expat)))
+
 (define-public go-github-com-ipfs-go-cid
   (package
     (name "go-github-com-ipfs-go-cid")
