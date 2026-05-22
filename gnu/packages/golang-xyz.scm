@@ -20687,6 +20687,35 @@ and kong packages.  It extracts commands, flags, and arguments from the target
 program and enables it to self-document.")
     (license license:expat)))
 
+(define-public go-github-com-muesli-mango-cobra
+  (package
+    (name "go-github-com-muesli-mango-cobra")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/muesli/mango-cobra")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11vvm3f2mq8yaqbfrjbzdcyvkn9f75rp4kygxyvqwc5jsw1kdwal"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/muesli/mango-cobra"))
+    (propagated-inputs
+     (list go-github-com-muesli-mango
+           go-github-com-muesli-mango-pflag
+           go-github-com-muesli-roff
+           go-github-com-spf13-cobra))
+    (home-page "https://github.com/muesli/mango-cobra")
+    (synopsis "Cobra adapter for mango")
+    (description
+     "This package provides a cobra adapter for the
+@url{https://github.com/muesli/mango,mango} man-page generator.")
+    (license license:expat)))
+
 (define-public go-github-com-muesli-mango-pflag
   (package
     (name "go-github-com-muesli-mango-pflag")
