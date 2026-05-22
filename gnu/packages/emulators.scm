@@ -3475,7 +3475,7 @@ This is a part of the TiLP project.")
              (for-each delete-file-recursively
                        '("asio" "expat" "glm" "flac" "libjpeg" "lua"
                          "portaudio" "portmidi" "pugixml" "rapidjson"
-                         "sqlite3" "utf8proc" "zlib")))))))
+                         "sqlite3" "utf8proc" "zlib" "zstd")))))))
     (outputs '("out" "tools"))
     (build-system gnu-build-system)
     (arguments
@@ -3490,7 +3490,7 @@ This is a part of the TiLP project.")
          (map (lambda (lib)
                 (string-append "USE_SYSTEM_LIB_" (string-upcase lib) "=1"))
               '("asio" "expat" "flac" "glm" "jpeg" "lua" "portaudio" "portmidi"
-                "pugixml" "rapidjson" "sqlite3" "utf8proc" "zlib")))
+                "pugixml" "rapidjson" "sqlite3" "utf8proc" "zlib" "zstd")))
       #:tests? #f                       ;no test in regular release
       #:phases
       #~(modify-phases %standard-phases
@@ -3646,7 +3646,8 @@ This is a part of the TiLP project.")
            (sdl-union (list sdl2 sdl2-ttf))
            sqlite
            utf8proc
-           zlib))
+           zlib
+           `(,zstd "lib")))
     (home-page "https://www.mamedev.org")
     (synopsis "Multi-purpose emulation framework")
     (description "MAME's purpose is to preserve decades of software
