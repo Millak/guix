@@ -533,8 +533,6 @@ Python 3.3 and later, rather than on Python 2.")
                 (for-each mkdir-p (list bash zsh))
                 (copy-file "contrib/completion/git-completion.bash"
                            (string-append bash "/git"))
-                (copy-file "contrib/completion/git-completion.bash"
-                           (string-append zsh "/git-completion.bash"))
                 (copy-file "contrib/completion/git-prompt.sh"
                            (string-append #$output "/bin/git-prompt"))
                 (copy-file "contrib/completion/git-completion.zsh"
