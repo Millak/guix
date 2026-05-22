@@ -52628,13 +52628,13 @@ data interface.")
 (define-public r-nanotime
   (package
     (name "r-nanotime")
-    (version "0.3.14")
+    (version "0.3.15")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nanotime" version))
        (sha256
-        (base32 "0scnq8f1mqd97ymsd7587wnbh7ybcrkadayp1c1al4b069f80ih7"))))
+        (base32 "11j9fvr86406jqnmvfmfkqqbwmxrj2s6djc5c1lapd7w7dlj1cw3"))))
     (properties
      `((upstream-name . "nanotime")
        (updater-extra-native-inputs . ("tzdata-for-tests"))))
