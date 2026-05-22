@@ -1591,6 +1591,18 @@ XEP-0357: Push Notifications.")))
 Priority of notifications.  It is a custom extension to XEP-0357: Push
 Notifications.")))
 
+(define-public prosody-http-libjs
+  (package
+    (inherit (prosody-module "mod_http_libjs"))
+    (synopsis "Serve common static CSS and Javascript libraries from the
+filesystem.")
+    (description "This module serves common static CSS and Javascript
+libraries from the filesystem, allowing other HTTP modules to easily reference
+them.
+
+You can override the filesystem location using the @code{libjs_path}
+configuration option. The default is @code{/usr/share/javascript}.")))
+
 (define-public prosody-http-upload
   (package
     (inherit (prosody-module "mod_http_upload"))
