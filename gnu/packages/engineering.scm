@@ -3045,7 +3045,7 @@ Runge-Kutta method of order 5(4) from @code{scipy.integrate.solve_ivp.}")
 (define-public cgns
   (package
     (name "cgns")
-    (version "4.3.0")
+    (version "4.5.2")
     (source
      (origin
        (method git-fetch)
@@ -3054,7 +3054,7 @@ Runge-Kutta method of order 5(4) from @code{scipy.integrate.solve_ivp.}")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jig1y7lv9qk1ri2gqws7ffpajmhxnank7gbyna9hfaghsxdlnvd"))))
+        (base32 "0r8y6lddp7q9nb6804c6bbr4y0pv7ssdzi9m5ddx50ksvfv382fw"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
