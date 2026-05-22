@@ -20660,6 +20660,33 @@ for any given struct and a set of its potential member values.  This can be
 used to generate extensive test matrixes among other things.")
     (license license:expat)))
 
+(define-public go-github-com-muesli-mango
+  (package
+    (name "go-github-com-muesli-mango")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/muesli/mango")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16d0sga6cbdxzlqkibcgw0civkw11fpkcjpgv21i0q5j9mjbsjw4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/muesli/mango"))
+    (propagated-inputs
+     (list go-github-com-muesli-roff))
+    (home-page "https://github.com/muesli/mango")
+    (synopsis "Golang man-page generator")
+    (description
+     "This package provides a man-page generator for the Go flag, pflag, cobra, coral,
+and kong packages.  It extracts commands, flags, and arguments from the target
+program and enables it to self-document.")
+    (license license:expat)))
+
 (define-public go-github-com-muesli-reflow
   (package
     (name "go-github-com-muesli-reflow")
