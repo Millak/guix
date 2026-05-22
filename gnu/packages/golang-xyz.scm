@@ -20687,6 +20687,32 @@ used to generate extensive test matrixes among other things.")
 helping you to transform blocks of text.")
     (license license:expat)))
 
+(define-public go-github-com-muesli-roff
+  (package
+    (name "go-github-com-muesli-roff")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/muesli/roff")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l263rqwq2ccr1lpamsvs48dddsr70xim8mv6rsj2x9y3prcq3yh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/muesli/roff"
+      ;; Expected title heading, got:
+      ;; .TH TITLE 1 "2026-05-22" "Title" "A short description"
+      #:test-flags #~(list "-skip" "TestTitleHeading")))
+    (home-page "https://github.com/muesli/roff")
+    (synopsis "Write roff documents in Go")
+    (description "This package provides tools to write @code{roff}
+documents in Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-muesli-termenv
   (package
     (name "go-github-com-muesli-termenv")
