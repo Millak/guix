@@ -37,6 +37,7 @@
   #:use-module (guix modules)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages dns)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages guile)
@@ -45,6 +46,8 @@
   #:export (%test-static-networking
             %test-static-networking-failure
             %test-static-networking-advanced
+            %test-network-manager
+            %test-network-manager-dnsmasq
             %test-inetd
             %test-openvswitch
             %test-dhcpd
@@ -350,6 +353,152 @@ passed an invalid device.")
                #:imported-modules '((gnu services herd)
                                     (guix combinators)))))
       (run-static-networking-advanced-test (virtual-machine os))))))
+
+
+;;;
+;;; NetworkManager.
+;;;
+
+(define (run-network-manager-test vm)
+  (define test
+    (with-imported-modules '((gnu build marionette)
+                             (guix build syscalls))
+      #~(begin
+          (use-modules (gnu build marionette)
+                       (guix build syscalls)
+                       (srfi srfi-64))
+
+          (define marionette
+            (make-marionette
+              '(#$vm "-nic" "user,model=virtio-net-pci")))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "network-manager")
+
+          (test-assert "service is up"
+            (marionette-eval
+             '(begin
+               (use-modules (gnu services herd))
+               (start-service 'NetworkManager))
+             marionette))
+
+          (test-assert "network interfaces"
+            (marionette-eval
+             '(begin
+               (use-modules (guix build syscalls))
+               (network-interface-names))
+             marionette))
+
+          (test-equal "eth0 is up"
+            IFF_UP
+            (marionette-eval
+             '(let* ((sock (socket AF_INET SOCK_STREAM 0))
+                     (flags (network-interface-flags sock "eth0")))
+               (logand flags IFF_UP))
+             marionette))
+
+          (test-end))))
+
+  (gexp->derivation "network-manager" test))
+
+(define %test-network-manager
+  (system-test
+    (name "network-manager")
+    (description "Test the 'network-manager' service.")
+    (value
+     (let ((os (marionette-operating-system
+                (simple-operating-system
+                 (service network-manager-service-type)
+                 (service wpa-supplicant-service-type))
+               #:imported-modules '((gnu services herd)
+                                    (guix combinators)))))
+       (run-network-manager-test (virtual-machine os))))))
+
+
+(define (run-network-manager-dnsmasq-test vm)
+  (define test
+    (with-imported-modules '((gnu build marionette)
+                             (guix build syscalls))
+      #~(begin
+          (use-modules (gnu build marionette)
+                       (guix build syscalls)
+                       (srfi srfi-64))
+
+          (define marionette
+            (make-marionette
+              '(#$vm "-nic" "user,model=virtio-net-pci")))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "network-manager-dnsmasq")
+
+          (test-assert "service is up"
+            (marionette-eval
+             '(begin
+               (use-modules (gnu services herd))
+               (start-service 'NetworkManager))
+             marionette))
+
+          (test-assert "network interfaces"
+            (marionette-eval
+             '(begin
+               (use-modules (guix build syscalls))
+               (network-interface-names))
+             marionette))
+
+          (test-equal "eth0 is up"
+            IFF_UP
+            (marionette-eval
+             '(let* ((sock (socket AF_INET SOCK_STREAM 0))
+                     (flags (network-interface-flags sock "eth0")))
+               (logand flags IFF_UP))
+             marionette))
+
+          (test-assert "dnsmasq is running"
+            (marionette-eval
+              `(zero? (system* ,#$(file-append procps "/bin/pgrep")
+                               "--count" "--exact" "dnsmasq"))
+              marionette))
+
+          (test-equal "resolves custom address"
+            "1.2.3.4"
+            (marionette-eval
+              '(begin
+                 (use-modules (ice-9 popen)
+                              (rnrs io ports))
+
+                 (let* ((resolve-cmd "dig @127.0.0.1 example.test +short")
+                        (port (open-input-pipe resolve-cmd))
+                        (out (get-string-all port)))
+                   (close-port port)
+                   (string-drop-right out 1))) ;; drop newline
+               marionette))
+
+          (test-end))))
+
+  (gexp->derivation "network-manager-dnsmasq" test))
+
+(define %test-network-manager-dnsmasq
+  (system-test
+    (name "network-manager-dnsmasq")
+    (description "Test the 'network-manager' service using dnsmasq.")
+    (value
+     (let* ((base-os (simple-operating-system
+                     (service network-manager-service-type
+                              (network-manager-configuration
+                                (dns "dnsmasq")
+                                (dnsmasq-configuration-files
+                                 `(("dnsmasq.conf"
+                                   ,(plain-file "dnsmasq.conf" "address=/example.test/1.2.3.4\n"))))))
+                     (service wpa-supplicant-service-type)))
+            (os (marionette-operating-system
+                 (operating-system
+                   (inherit base-os)
+                   (packages
+                     (append (list (list isc-bind "utils"))
+                             (operating-system-packages base-os))))
+                   #:imported-modules '((gnu services herd)
+                                    (guix combinators)))))
+       (run-network-manager-dnsmasq-test (virtual-machine os))))))
 
 
 ;;;
