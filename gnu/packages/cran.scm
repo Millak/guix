@@ -37249,13 +37249,13 @@ discovery rates.")
 (define-public r-logging
   (package
     (name "r-logging")
-    (version "0.10-108")
+    (version "0.10-111")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "logging" version))
               (sha256
                (base32
-                "13gd40ygx586vs6xcp6clg69a92aj8zxlk1rn3xzkx8klfjimjc5"))))
+                "0nag239xsv44s52wsb3rz1478j8lpnxg5l3licvh55scy5kd76q1"))))
     (properties `((upstream-name . "logging")))
     (build-system r-build-system)
     (native-inputs (list r-testthat))
