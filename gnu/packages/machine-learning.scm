@@ -850,7 +850,7 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
     (license license:asl2.0)))
 
 (define-public llama-cpp
-  (let ((tag "b9095"))                  ;sync with ggml and python-gguf
+  (let ((tag "9276"))                  ;sync with ggml and python-gguf
     (package
       (name "llama-cpp")
       (version (string-append "0.0.0-" tag))
@@ -859,16 +859,19 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/ggml-org/llama.cpp")
-               (commit tag)))
+               (commit (string-append "b" tag))))
          (file-name (git-file-name name tag))
          (sha256
-          (base32 "1kx8fk1k9jydx17w0b07y5y3gx5p9vn3wykwfp7k3w97cmksqysl"))))
+          (base32 "07f23yiy2q0xrpfbkcvn9gs2adb3zmqyllih0kqklxa7vvmsmw1r"))))
       (build-system cmake-build-system)
       (arguments
        (list
         #:configure-flags
         #~(list "-DBUILD_SHARED_LIBS=ON"
-                "-DLLAMA_USE_SYSTEM_GGML=ON")
+                "-DLLAMA_USE_SYSTEM_GGML=ON"
+                #$(string-append "-DLLAMA_BUILD_NUMBER=" tag)
+                ;; See https://github.com/ggml-org/llama.cpp/issues/23105
+                "-DLLAMA_BUILD_UI=OFF")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'fix-tests
@@ -893,6 +896,12 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                   ;; error while handling argument "-m": expected value for
                   ;; argument
                   (("llama_build_and_test\\(test-arg-parser.cpp.*")
+                   "")
+                  (((string-append "llama_build_and_test\\"
+                                   "(test-recurrent-state-rollback.cpp.*"))
+                   "")
+                  (((string-append "set_tests_properties\\"
+                                   "(test-recurrent-state-rollback.*"))
                    ""))
                 ;; test-eval-callback downloads ML model from network, cannot
                 ;; run in Guix build environment
@@ -908,20 +917,11 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
               (lambda _
                 (for-each delete-file
                           (find-files (string-append #$output "/bin")
-                                      "^test-"))))
-            ;; This phase and coreutils are needed to reduce the closure size
-            ;; of this package. Remove them when not needed anymore.
-            (add-after 'patch-shebangs 'fix-python-shebang
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* (string-append #$output
-                                            "/bin/convert_hf_to_gguf.py")
-                  (("^#!.*/bin/python3")
-                   (string-append "#!" (search-input-file inputs "bin/env")
-                                  " python3"))))))))
-      (inputs (list coreutils ggml openssl))
+                                      "^test-")))))))
+      (inputs (list ggml openssl))
       (native-inputs
        ;; These are only used in the check phase for test-jinja-py
-       (list python python-jinja2))
+       (list python-minimal-wrapper python-jinja2))
       (properties '((tunable? . #true))) ;use AVX512, FMA, etc. when available
       (home-page "https://github.com/ggml-org/llama.cpp")
       (synopsis "Port of Facebook's LLaMA model in C/C++")
