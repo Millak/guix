@@ -1603,6 +1603,15 @@ them.
 You can override the filesystem location using the @code{libjs_path}
 configuration option. The default is @code{/usr/share/javascript}.")))
 
+(define-public prosody-invites-api
+  (package
+    (inherit (prosody-module "mod_invites_api"))
+    (synopsis "Authenticated HTTP API to create invites using mod_invites.")
+    (description "mod_invites_api provides an authenticated HTTP API to create
+invites using mod_invites.
+
+You can use the command-line to create and manage API keys.")))
+
 (define-public prosody-http-upload
   (package
     (inherit (prosody-module "mod_http_upload"))
