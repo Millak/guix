@@ -1949,18 +1949,20 @@ and Zilog Z80 families, plus many of their variants.")
 (define-public python-psptrace
   (package
     (name "python-psptrace")
-    (version "0.7")
+    (version "0.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "psptrace" version))
        (sha256
-        (base32 "1mrympnpkkns2dxq34h9x9qn667ihdvbbf0wpmbp3jli0n7bj7ih"))))
+        (base32 "0lzv0dy2m5g6q4rpjd4wpw0p7n8v8crkx7akbp53lpy1c6y40iw8"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ;no tests in PyPI or Git
     (native-inputs
-     (list python-setuptools))
+     (list python-hatch-vcs
+           python-hatchling
+           python-setuptools))
     (propagated-inputs
      (list python-prettytable
            python-psptool))
