@@ -13873,6 +13873,57 @@ emulation.")
 subsystem in Linux.")
     (license license:expat)))
 
+(define-public go-github-com-holoplot-go-evdev
+  (package
+    (name "go-github-com-holoplot-go-evdev")
+    (version "0.0.0-20260504100651-66d1748fe847")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/holoplot/go-evdev")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kccbgm09i0h2i5c2ka23rj6vb7f8ncnwrpris0qqxashfqarq9a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/holoplot/go-evdev"
+      #:unpack-path "github.com/holoplot/go-evdev"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-usage-path
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (substitute* "cmd/uinputtest/main.go"
+                  (("os\\.Args\\[0\\]") "\"uinputtest\""))
+                (substitute* "cmd/evtest/main.go"
+                  (("os\\.Args\\[0\\]") "\"evtest\""))))))))
+    (home-page "https://github.com/holoplot/go-evdev")
+    (synopsis "Go support for the Linux evdev interface")
+    (description
+     "This is a pure Go package for the Linux @code{evdev} interface, without
+@code{cgo} dependencies.
+
+The implementation in this package has the following features:
+
+@itemize
+@item Query device information such as the name, the physical location, the
+unique ID, the vendor/product/bus/version IDs
+@item Query supported event types, codes and device properties
+@item Query the current status of bit-field based input types (such as
+keyboard, switches etc) as well as information on absolute types
+(@code{ABS_X}, ...)  including their min/max values and current state
+@item Grab/Ungrab/Revoke support for exclusive claiming of devices
+@item Auto-generated @code{const} definitions and maps for types and codes from the
+kernel include headers
+@end itemize
+
+This package is a Go library, for @command{evtest} and @code{uinputtest}, use
+@code{go-evdev}.")
+    (license license:expat)))
+
 (define-public go-github-com-huandu-xstrings
   (package
     (name "go-github-com-huandu-xstrings")
@@ -33556,6 +33607,15 @@ metadata and/or configuration.")))
     (description
      (string-append (package-description go-github-com-olekukonko-tablewriter)
                     "\nThis package provides a command line interface (CLI) tool."))))
+
+(define-public go-evdev
+  (package/inherit go-github-com-holoplot-go-evdev
+    (name "go-evdev")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/holoplot/go-evdev/cmd/...")))))
 
 (define-public go-hclogvet
   (package/inherit go-github-com-hashicorp-go-hclog
