@@ -965,6 +965,40 @@ format's \"Extra Fields\".  The intention is to eventually support and provide
 a low-level API for the majority of PKWARE's and Info-ZIP's extra fields.")
     (license license:expat)))
 
+(define-public go-github-com-sassoftware-go-rpmutils
+  (package
+    (name "go-github-com-sassoftware-go-rpmutils")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sassoftware/go-rpmutils")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06ymwjn6xvc4cpxcsh5achwgma4i075ikbzq8jm143m0pck4pmfi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sassoftware/go-rpmutils"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-go-uber-org-goleak))
+    (propagated-inputs
+     (list go-github-com-datadog-zstd
+           go-github-com-klauspost-compress
+           go-github-com-protonmail-go-crypto
+           go-github-com-ulikunitz-xz
+           go-github-com-xi2-xz
+           go-golang-org-x-sys))
+    (home-page "https://github.com/sassoftware/go-rpmutils")
+    (synopsis "Parse RPM packages in Golang")
+    (description
+     "This package provides some Golang interfaces for handling RPM packages,
+such extracting RPM header and CPIO content.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-sorairolake-lzip-go
   (package
     (name "go-github-com-sorairolake-lzip-go")
