@@ -930,6 +930,33 @@ of foundation language models.  It requires models parameters to be downloaded
 independently to be able to run a LLaMA model.")
       (license license:expat))))
 
+(define-public llama-cpp-scripts
+  (package
+    (inherit llama-cpp)
+    (name "llama-cpp-scripts")
+    (version "0.0.0")                  ;from pyproject.toml
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=scripts/snapdragon"
+              "--ignore=tools/server/tests")))
+    (inputs '())
+    (propagated-inputs
+     (list python-numpy
+           python-pytorch
+           python-protobuf
+           python-sentencepiece
+           python-transformers
+           python-gguf))
+    (native-inputs (list python-poetry-core python-pytest))
+    (properties '())
+    (synopsis "Scripts that ship with @code{llama.cpp}")
+    (description "This package includes the Python scripts included in
+@code{llama.cpp}.  These scripts are necessary for format conversion, shader
+generation, etc.")
+    (license license:expat)))
+
 (define-public whisper-cpp
   (package
     (name "whisper-cpp")
