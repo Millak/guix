@@ -20687,6 +20687,34 @@ and kong packages.  It extracts commands, flags, and arguments from the target
 program and enables it to self-document.")
     (license license:expat)))
 
+(define-public go-github-com-muesli-mango-pflag
+  (package
+    (name "go-github-com-muesli-mango-pflag")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/muesli/mango-pflag")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k4m88i9shs36a8n86k3a1vlxmdf5vwavkih2f2j3xj718hnhpw0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/muesli/mango-pflag"))
+    (propagated-inputs
+     (list go-github-com-muesli-mango
+           go-github-com-muesli-roff
+           go-github-com-spf13-pflag))
+    (home-page "https://github.com/muesli/mango-pflag")
+    (synopsis "Pflag adapter for mango")
+    (description
+     "This package provides a pflag adapter for the
+@url{https://github.com/muesli/mango, mango} man-page generator.")
+    (license license:expat)))
+
 (define-public go-github-com-muesli-reflow
   (package
     (name "go-github-com-muesli-reflow")
