@@ -14369,13 +14369,13 @@ code.")
 (define-public r-tidyclust
   (package
     (name "r-tidyclust")
-    (version "0.2.4")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidyclust" version))
        (sha256
-        (base32 "09z4p01l76wyc1dzkz1ggvbwcdih1c515amwm54mx5rvpmvmdw64"))))
+        (base32 "1dx2nlrn8g8xd37zyk31g59f5bnazddlpxq6r1hk4q3vd4zb7f7r"))))
     (properties
      '((upstream-name . "tidyclust")
        (updater-extra-native-inputs
@@ -14385,14 +14385,16 @@ code.")
                              r-dials
                              r-dplyr
                              r-flexclust
-                             r-foreach
                              r-generics
                              r-glue
                              r-hardhat
+                             r-lifecycle
+                             r-mclust
                              r-modelenv
                              r-parsnip
                              r-philentropy
                              r-prettyunits
+                             r-purrr
                              r-rlang
                              r-rsample
                              r-tibble
@@ -14400,8 +14402,18 @@ code.")
                              r-tune
                              r-vctrs))
     (native-inputs
-     (list r-cluster r-clusterr r-clustmixtype r-rcpphungarian
-           r-recipes r-testthat r-workflows))
+     (list r-cluster
+           r-clusterr
+           r-clustmixtype
+           r-dbscan
+           r-future
+           r-knitr
+           r-mirai
+           r-rcpphungarian
+           r-recipes
+           r-testthat
+           r-withr
+           r-workflows))
     (home-page "https://github.com/tidymodels/tidyclust")
     (synopsis "Common API to clustering")
     (description
