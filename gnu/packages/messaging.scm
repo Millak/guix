@@ -1570,7 +1570,6 @@ app so it can connect to XMPP and receive any pending messages.")))
 (define-public prosody-cloud-notify-encrypted
   (package
     (inherit (prosody-module "mod_cloud_notify_encrypted"))
-    (propagated-inputs (list lua5.2-ossl))
     (synopsis "Custom extension to XEP-0357: Push Notifications")
     (description "This module implements support for a Encrypted Push
 Notifications, a custom extension to XEP-0357: Push Notifications.")))
