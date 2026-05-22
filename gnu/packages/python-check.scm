@@ -2052,49 +2052,6 @@ Python environments, similar to @code{tox}.  Unlike tox, Nox uses a standard
 Python file for configuration.")
     (license license:asl2.0)))
 
-(define-public python-pandas-vet
-  (package
-    (name "python-pandas-vet")
-    (version "2023.8.2")
-    (source
-     (origin
-       ;; No tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/deppen8/pandas-vet")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0vkc9sa8x6vfmnd24pxp3gjlmbwx926h4y5alkdbbpb9x5h5ml3j"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("^source = \"regex_commit\"") "")
-                (("^tag_sign.*") "")
-                (("\\[tool.hatch.version\\]") "")
-                (("dynamic = \\[\"version\"\\]")
-                 (string-append "version = \"" #$version "\"")))
-              (with-output-to-file "src/pandas_vet/__about__.py"
-                (let* ((version #$(package-version this-package) )
-                       (version-tuple (string-join (string-split version #\.) ", ")))
-                  (lambda ()
-                    (format #t
-                            "__version__ = version = '~a'
-__version_tuple__ = version_tuple = (~a)~%" version version-tuple)))))))))
-    (propagated-inputs (list python-attrs python-flake8))
-    (native-inputs (list python-hatchling python-pytest python-pytest-cov))
-    (home-page "https://github.com/deppen8/pandas-vet")
-    (synopsis "Opionated @code{flake8} plugin for @code{pandas} code")
-    (description
-     "This package provides a @code{flake8} plugin to lint @code{pandas} code
-in an opinionated way.")
-    (license license:expat)))
-
 (define-public python-pep8-naming
   (package
     (name "python-pep8-naming")
