@@ -166,6 +166,7 @@
 ;;; Copyright © 2025 case_lambda <case_lambda@disroot.org>
 ;;; Copyright © 2026 Kenny Ballou <kb@devnulllabs.io>
 ;;; Copyright © 2026 Adrien 'neox' Bourmault <neox@gnu.org>
+;;; Copyright © 2026 Jiyu Software <info@jiyu.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23277,6 +23278,32 @@ package is a collection of LaTeX templates for the auto-activating-snippets
 engine. Shorthands for many cumbersome-to-input LaTeX macros are
 implemented. Expansion directly to Unicode code points can be configured to
 enable use outside LaTeX source.")
+      (license license:gpl3+))))
+
+(define-public emacs-yascroll
+  ;; The tagged 0.2.0 release is very outdated (2020) and does not include
+  ;; a license file, so use a recent commit on the default branch instead.
+  (let ((commit "95e24b79ee6b9e1d069670902cd526ba1d8e4ac2")
+        (revision "0"))
+    (package
+      (name "emacs-yascroll")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacsorphanage/yascroll")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1agkg6q8r2mbayv4ckkmip6qy4f9qmq18rkzrjywk6had9mynxkq"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))
+      (home-page "https://github.com/emacsorphanage/yascroll")
+      (synopsis "Yet another scroll bar mode for Emacs")
+      (description
+       "This package provides a scroll bar that is drawn inside the buffer
+rather than using the GTK scroll bar.")
       (license license:gpl3+))))
 
 (define-public emacs-yasnippet
