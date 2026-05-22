@@ -1612,6 +1612,13 @@ invites using mod_invites.
 
 You can use the command-line to create and manage API keys.")))
 
+(define-public prosody-invites-groups
+  (package
+    (inherit (prosody-module "mod_invites_groups"))
+    (synopsis "Group handling for mod_invites_register")
+    (description "This package provides group handling for
+mod_invites_register")))
+
 (define-public prosody-http-upload
   (package
     (inherit (prosody-module "mod_http_upload"))
