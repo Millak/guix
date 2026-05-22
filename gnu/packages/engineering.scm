@@ -2759,7 +2759,7 @@ but also adds new features and improves existing ones.")
 (define-public emacs-scad-mode
   (package
     (name "emacs-scad-mode")
-    (version "98.0")
+    (version "99.0")
     (source
      (origin
        (method git-fetch)
@@ -2767,9 +2767,10 @@ but also adds new features and improves existing ones.")
              (url "https://github.com/openscad/emacs-scad-mode")
              (commit version)))
        (sha256
-        (base32 "19mn6z98c8s7mspa7j8xw7za33gmpsy4iw2r9xiggdv7yh6mh8h8"))
+        (base32 "0mqfvff8f7lqjviwz30j7vkb098xd0k8bdzznb77aw4q7gdsf8nm"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))    ; no tests
     (propagated-inputs (list emacs-compat))
     (synopsis "Emacs mode to edit OpenSCAD files")
     (description
