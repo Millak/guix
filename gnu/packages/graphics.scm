@@ -43,6 +43,7 @@
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -725,14 +726,14 @@ typically encountered in feature film production.")
 (define-public blender
   (package
     (name "blender")
-    (version "3.6.23")                   ;4.2.x+ requires Python >= 3.12
+    (version "4.5.10")                   ;5.1.x+ requires Python >= 3.13
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.blender.org/source/"
                                   "blender-" version ".tar.xz"))
               (sha256
                (base32
-                "16ah70kqznxz60n39d4hnlnwh1vi7xn9kx37di708n03l5bn6mmw"))))
+                "1z4sq4rmg5lx0502i2kgalmdyw3a4kc3lw70kwnwkih5wkjnrbyx"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -759,37 +760,50 @@ typically encountered in feature film production.")
                 "-DWITH_SYSTEM_GLOG=ON"
                 "-DWITH_SYSTEM_LZO=ON"
                 (string-append "-DPYTHON_LIBRARY=python" #$python-version)
-                (string-append "-DPYTHON_LIBPATH="
-                               (assoc-ref %build-inputs "python")
-                               "/lib")
-                (string-append "-DPYTHON_INCLUDE_DIR="
-                               (assoc-ref %build-inputs "python")
+                (string-append "-DPYTHON_LIBPATH=" #$python "/lib")
+                (string-append "-DPYTHON_INCLUDE_DIR=" #$python
                                "/include/python" #$python-version)
                 (string-append "-DPYTHON_VERSION=" #$python-version)
                 (string-append "-DPYTHON_NUMPY_INCLUDE_DIRS="
-                               (assoc-ref %build-inputs "python-numpy")
+                               #$(this-package-input "python-numpy")
                                "/lib/python" #$python-version
                                "/site-packages/numpy/core/include/")
                 (string-append "-DPYTHON_NUMPY_PATH="
-                               (assoc-ref %build-inputs "python-numpy")
+                               #$(this-package-input "python-numpy")
                                "/lib/python" #$python-version
                                "/site-packages/")))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'install-assets
+            (lambda _
+              (copy-recursively #$(this-package-input "blender-assets")
+                                "./release/datafiles/assets")))
+          (add-after 'install 'link-python-binary
+            (lambda _
+              (let* ((blender-dir (string-append #$output "/share/blender/"
+                                                 #$(version-major+minor version)))
+                     (blender-python-dir (string-append blender-dir "/python")))
+                (mkdir-p blender-dir)
+                (symlink #$(this-package-input "python")
+                         blender-python-dir))))
           (add-after 'install 'wrap-bin
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (python-path (getenv "GUIX_PYTHONPATH")))
-                (wrap-program (string-append out "/bin/blender")
-                  `("GUIX_PYTHONPATH" ":" prefix (,python-path)))))))))
+            (lambda _
+              (let ((python-path (getenv "GUIX_PYTHONPATH")))
+                (when python-path
+                  (wrap-program (string-append #$output "/bin/blender")
+                    `("GUIX_PYTHONPATH" ":" prefix (,python-path))))))))))
+    (native-inputs
+     (list pkg-config))
     (inputs
      (list bash-minimal
+           blender-assets
            boost
            bullet
            eigen
            embree
            ffmpeg-6
            fftw
+           fftwf
            freetype-with-brotli
            glew
            glog
@@ -817,6 +831,9 @@ typically encountered in feature film production.")
            pugixml
            python
            python-numpy-1
+           shaderc
+           vulkan-headers
+           vulkan-loader
            zlib
            `(,zstd "lib")))
     (home-page "https://www.blender.org/")
