@@ -1397,7 +1397,7 @@ for scientific simulations.")
 (define-public mpb
   (package
     (name "mpb")
-    (version "1.8.0")
+    (version "1.12.0")
     (source (origin
               (method url-fetch)
               (uri
@@ -1406,44 +1406,35 @@ for scientific simulations.")
                 version "/mpb-" version ".tar.gz"))
               (sha256
                (base32
-                "1jgrb7dd6qs6j6y1gnxmdgrh79l2bvqa6nk60a4pw1annsks4brd"))))
+                "197dm8z5hfikivb73rhywyq976rn1k621bf1admgc5xjaii20awd"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-libctl="
-                            (assoc-ref %build-inputs "libctl")
-                            "/share/libctl")
-             "--enable-shared")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'relax-gcc-14-strictness
-           (lambda _
-             (setenv "CFLAGS"
-                     (string-join
-                      (list "-Wno-error=incompatible-pointer-types"
-                            "-Wno-error=implicit-function-declaration"
-                            "-Wno-error=int-conversion")
-                      " ")))))))
+     (list
+      #:configure-flags
+      #~(list
+         (string-append "--with-libctl="
+                        #$(this-package-input "guile-libctl") "/share/libctl")
+         "--enable-shared")))
     (native-inputs
-     `(("fortran" ,gfortran)
-       ("pkg-config" ,pkg-config)
-       ("swig" ,swig-4.0)))
+     (list gfortran
+           pkg-config
+           swig-4.4))
     (inputs
-     `(("fftw" ,fftw)
-       ("gsl" ,gsl)
-       ("guile" ,guile-2.2)
-       ("hdf5" ,hdf5)
-       ("openblas" ,openblas)
-       ("libctl" ,guile-libctl)
-       ("readline" ,readline)
-       ("zlib" ,zlib)))
-    (home-page "http://ab-initio.mit.edu/wiki/index.php/MIT_Photonic_Bands")
+     (list fftw
+           gsl
+           guile-3.0
+           guile-libctl
+           hdf5
+           openblas
+           readline
+           zlib))
+    (home-page "https://mpb.readthedocs.io/en/latest/")
     (synopsis "Computes band structures and electromagnetic modes of dielectric
 structures")
     (description
-     "MIT Photonic-Bands (MPB) computes definite-frequency eigenstates (harmonic modes)
-of Maxwell's equations in periodic dielectric structures for arbitrary wavevectors, using
-fully-vectorial and three-dimensional methods.")
+     "MIT Photonic-Bands (MPB) computes definite-frequency eigenstates
+(harmonic modes) of Maxwell's equations in periodic dielectric structures for
+arbitrary wavevectors, using fully-vectorial and three-dimensional methods.")
     (license license:gpl2+)))
 
 (define-public meep
