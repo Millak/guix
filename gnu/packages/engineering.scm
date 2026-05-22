@@ -1440,7 +1440,7 @@ arbitrary wavevectors, using fully-vectorial and three-dimensional methods.")
 (define-public meep
   (package
     (name "meep")
-    (version "1.30.1")
+    (version "1.33.0")
     (source (origin
               (method url-fetch)
               (uri
@@ -1449,7 +1449,7 @@ arbitrary wavevectors, using fully-vectorial and three-dimensional methods.")
                 version "/meep-" version ".tar.gz"))
               (sha256
                (base32
-                "1h80d7i7v06fxfdsa496b542dvr105c4v1n7pk8m3jssvbxvv2a0"))))
+                "1azhgz6s95siqmnxb3if6waxbvia3bij5jmxgxjz4sgn2ahw1axx"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -1459,11 +1459,11 @@ arbitrary wavevectors, using fully-vectorial and three-dimensional methods.")
     (native-inputs
      (list gfortran
            pkg-config
-           swig-4.0))
+           swig-4.4))
     (inputs
      (list fftw
            gsl
-           guile-2.2
+           guile-3.0
            guile-libctl
            harminv
            hdf5
