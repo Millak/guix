@@ -3476,6 +3476,7 @@ This is a part of the TiLP project.")
                        '("asio" "expat" "glm" "flac" "libjpeg" "lua"
                          "portaudio" "portmidi" "pugixml" "rapidjson"
                          "sqlite3" "utf8proc" "zlib")))))))
+    (outputs '("out" "tools"))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3483,6 +3484,7 @@ This is a part of the TiLP project.")
       #~(cons*
          ;; A 'strict-overflow' error pops up on i686 so disable '-Werror'.
          "NOWERROR=1"
+         "TOOLS=1"
          (string-append "QT_HOME=" #$(this-package-input "qtbase"))
          (string-append "SDL_INI_PATH=" #$output "/share/mame/ini")
          (map (lambda (lib)
@@ -3512,6 +3514,28 @@ This is a part of the TiLP project.")
                 (when (file-exists? "mame64")
                   (rename-file "mame64" "mame"))
                 (install-file "mame" (string-append #$output "/bin")))))
+          (add-after 'install 'install-tools
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((tools-bin (string-append (assoc-ref outputs "tools")
+                                              "/bin")))
+                (for-each (lambda (name)
+                            (install-file name tools-bin))
+                          '("castool"
+                            "chdman"
+                            "floptool"
+                            "imgtool"
+                            "jedutil"
+                            "ldresample"
+                            "ldverify"
+                            "nltool"
+                            "nlwav"
+                            "pngcmp"
+                            "regrep"
+                            "romcmp"
+                            "split"
+                            "srcclean"
+                            "testkeys"
+                            "unidasm")))))
           (add-after 'install 'install-documentation
             (lambda _
               (let ((man (string-append #$output "/share/man/man1"))
