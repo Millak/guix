@@ -1636,6 +1636,14 @@ the invitation and guides the user to set up their account using one of a
 configurable list of XMPP clients (to configure the list, see
 mod_register_apps documentation).")))
 
+(define-public prosody-invites-register-web
+  (package
+    (inherit (prosody-module "mod_invites_register_web"))
+    (synopsis "Web-based registration form that validates invite tokens")
+    (description "This package implements a web-based registration form that
+validates invite tokens. It also supports guiding the user through client
+download and configuration via @code{mod_register_apps}.")))
+
 (define-public prosody-http-upload
   (package
     (inherit (prosody-module "mod_http_upload"))
