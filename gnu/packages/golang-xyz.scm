@@ -22805,6 +22805,39 @@ protocols.")
 on top of the standard library @code{flag} package.")
     (license license:bsd-3)))
 
+(define-public go-github-com-pilebones-go-udev
+  (package
+    (name "go-github-com-pilebones-go-udev")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pilebones/go-udev")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m2mwr81x9cr63bf6mp9s6wlbdkm03b1xbdkbyfw5pcvgvm9x7ak"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/pilebones/go-udev"
+      #:test-flags
+      ;; device_test.go:105: unable to get existing devices, err: lstat
+      ;; /sys/devices: no such file or directory.
+      #~(list "-skip" "TestExistingDevices")))
+    (propagated-inputs
+     (list go-github-com-kr-pretty))
+    (home-page "https://github.com/pilebones/go-udev")
+    (synopsis "Simple udev implementation in Golang")
+    (description
+     "This package provides a @url{https://en.wikipedia.org/wiki/Udev, udev}
+implementation in Golang developed from scratch.  This library allow to listen
+and manage Linux-kernel (since version 2.6.10) Netlink messages to user
+space (ie: @code{NETLINK_KOBJECT_UEVENT}).")
+    (license license:gpl3)))
+
 (define-public go-github-com-pingcap-errors
   (package
     (name "go-github-com-pingcap-errors")
@@ -33866,6 +33899,19 @@ tools."))))
      (string-append
       (package-description go-github-com-burntsushi-toml)
       "\nThis package provides a command line interface (CLI) tool."))))
+
+(define-public go-udev
+  (package/inherit go-github-com-pilebones-go-udev
+    (name "go-udev")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (package-propagated-inputs go-github-com-pilebones-go-udev))
+    (inputs '())
+    (propagated-inputs '())))
 
 (define-public go-ulid
   (package/inherit go-github-com-oklog-ulid-v2
