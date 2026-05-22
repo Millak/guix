@@ -1619,6 +1619,23 @@ You can use the command-line to create and manage API keys.")))
     (description "This package provides group handling for
 mod_invites_register")))
 
+(define-public prosody-invites-page
+  (package
+    (inherit (prosody-module "mod_invites_page"))
+    (synopsis "Generate unique links per invitation.")
+    (description "This package provides a unique web page for each generated
+invitation. Without this module, Prosody will only be able to generate invite
+links as @code{xmpp:} URIs (they look something like
+@code{xmpp:example.com?register;preauth=29Xbxr91}). URIs will only work if the
+invited user already has an XMPP client installed. This is usually not the
+case.
+
+This module transforms the URI into a friendly web page that can be shared via
+any method (email, SMS, etc.), and opened in any browser. The page explains
+the invitation and guides the user to set up their account using one of a
+configurable list of XMPP clients (to configure the list, see
+mod_register_apps documentation).")))
+
 (define-public prosody-http-upload
   (package
     (inherit (prosody-module "mod_http_upload"))
