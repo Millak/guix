@@ -9968,63 +9968,6 @@ ncurses for text display.")
     (home-page "https://frotz.sourceforge.net")
     (license license:gpl2+)))
 
-(define-public naev
-  (package
-    (name "naev")
-    (version "0.12.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/naev/naev")
-             (commit (string-append "v" version))
-             (recursive? #t))) ; for game data
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "14rvwacvc2gqyh193w8ymaznqrrymbznndfp6f5fjcs90iqnc4p5"))))
-    (build-system meson-build-system)
-    (arguments
-     ;; XXX: Do not add debugging symbols, which cause the build to fail.
-     `(#:configure-flags (list "--buildtype=release")
-       #:tests? #f))          ;sole test fails with a missing "/dev/dri" error
-    (native-inputs
-     (list gettext-minimal pkg-config))
-    (inputs
-     (list enet
-           freetype
-           glpk
-           libpng
-           libunibreak
-           libvorbis
-           libwebp
-           libxml2
-           luajit
-           openal
-           openblas
-           pcre2
-           physfs
-           python
-           python-pyyaml
-           sdl2
-           sdl2-image
-           suitesparse))
-    (home-page "https://naev.org/")
-    (synopsis "Game about space exploration, trade and combat")
-    (description
-     "Naev is a 2d action/rpg space game that combines elements from
-the action, RPG and simulation genres.  You pilot a spaceship from
-a top-down perspective, and are more or less free to do what you want.
-As the genre name implies, you’re able to trade and engage in combat
-at will.  Beyond that, there’s an ever-growing number of story-line
-missions, equipment, and ships; even the galaxy itself grows larger
-with each release.  For the literacy-inclined, there are large amounts
-of lore accompanying everything from planets to equipment.")
-    (license (list license:gpl3
-                   license:public-domain
-                   license:expat        ;edtaa3func.c
-                   license:bsd-2        ;distance_field.c
-                   license:bsd-3))))    ;perlin.c
-
 (define-public frotz-dumb-terminal
   (package
     (name "frotz-dumb-terminal")
