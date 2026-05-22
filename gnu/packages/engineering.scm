@@ -2128,7 +2128,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
 (define-public gpx
   (package
     (name "gpx")
-    (version "2.5.2")
+    (version "2.6.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2137,7 +2137,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1yab269x8qyf7rd04vaxyqyjv4pzz9lp4sc4dwh927k23avr3rw5"))))
+                "1izs8s5npkbfrsyk17429hyl1vyrbj9dp6vmdlbb2vh6mfgl54h8"))))
     (build-system gnu-build-system)
     (home-page "https://github.com/markwal/GPX")
     (synopsis "Converting gcode to x3g files for 3D printing")
