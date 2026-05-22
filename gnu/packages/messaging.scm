@@ -1660,6 +1660,12 @@ to affiliated users who are not in the room.  This is a custom extension by
 Tigase to allow push notifications from MUCs to users who are not currently
 connected.")))
 
+(define-public prosody-password-policy
+  (package
+    (inherit (prosody-module "mod_password_policy"))
+    (synopsis "Password policy enforcement")
+    (description "This package provides a password policy enforcement")))
+
 (define-public prosody-rest
   (package
     (inherit (prosody-module "mod_rest"))
