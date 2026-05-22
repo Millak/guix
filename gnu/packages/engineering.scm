@@ -1228,7 +1228,7 @@ specified in rfc2217 and a (Linux specific) CAN mode.")
 (define-public minicom
   (package
     (name "minicom")
-    (version "2.10")
+    (version "2.11.1")
     (source
      (origin
        (method git-fetch)
@@ -1236,7 +1236,7 @@ specified in rfc2217 and a (Linux specific) CAN mode.")
              (url "https://salsa.debian.org/minicom-team/minicom.git")
              (commit version)))
        (sha256
-        (base32 "0sxbyf1li3lsrvkjpn04xz6ywa42ggfc1fhdrmsibfkhqja9abn0"))
+        (base32 "15k20qbxrjdxadwzkp31hjy7apdasrsgs532kwmlkpzs92ff4ghs"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
