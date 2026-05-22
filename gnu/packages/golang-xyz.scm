@@ -33617,6 +33617,22 @@ metadata and/or configuration.")))
        ((#:install-source? _ #t) #f)
        ((#:import-path _) "github.com/holoplot/go-evdev/cmd/...")))))
 
+(define-public go-gronx-tasker
+  (package/inherit go-github-com-adhocore-gronx
+    (name "go-gronx-tasker")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-adhocore-gronx)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:import-path _) "github.com/adhocore/gronx/cmd/tasker")
+       ((#:unpack-path _ "") "github.com/adhocore/gronx")))
+    (native-inputs
+     (package-propagated-inputs go-github-com-adhocore-gronx))
+    (propagated-inputs '())
+    (inputs '())))
+
 (define-public go-hclogvet
   (package/inherit go-github-com-hashicorp-go-hclog
     (name "go-hclogvet")
@@ -33636,20 +33652,6 @@ metadata and/or configuration.")))
 Trace/Debug/Info/Warn/Error methods on @code{hclog.Logger} are used
 correctly.")))
 
-(define-public go-jfmt
-  (package/inherit go-zgo-at-jfmt
-    (name "go-jfmt")
-    (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-zgo-at-jfmt)
-       ((#:tests? _ #t) #f)
-       ((#:install-source? _ #t) #f)
-       ((#:import-path _) "zgo.at/jfmt/cmd/jfmt")
-        ((#:unpack-path _ "") "zgo.at/jfmt")))
-    (description
-     (string-append (package-description go-zgo-at-jfmt)
-                    "  This package provides a command line interface (CLI) tool."))))
-
 (define-public go-ifacemaker
   (package/inherit go-github-com-vburenin-ifacemaker
     (name "go-ifacemaker")
@@ -33667,6 +33669,20 @@ correctly.")))
      (string-append
       (package-description go-github-com-vburenin-ifacemaker)
       "\nThis package provides a command line interface (CLI) tool."))))
+
+(define-public go-jfmt
+  (package/inherit go-zgo-at-jfmt
+    (name "go-jfmt")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-zgo-at-jfmt)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "zgo.at/jfmt/cmd/jfmt")
+        ((#:unpack-path _ "") "zgo.at/jfmt")))
+    (description
+     (string-append (package-description go-zgo-at-jfmt)
+                    "  This package provides a command line interface (CLI) tool."))))
 
 (define-public go-md2man
   (package/inherit go-github-com-cpuguy83-go-md2man-v2
@@ -33776,6 +33792,24 @@ go-github-com-tklauser-numcpus source.")))
      "This package provides a CLI build from the
 go-github-com-orisano-pixelmatch source.")))
 
+(define-public go-ply
+  (package/inherit go-howett-net-plist
+    (name "go-ply")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-howett-net-plist)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:import-path _) "howett.net/plist/cmd/ply")
+       ((#:unpack-path _ "") "howett.net/plist")))
+    (native-inputs
+     (append
+      (package-native-inputs go-howett-net-plist)
+      (package-propagated-inputs go-howett-net-plist)))
+    (propagated-inputs '())
+    (inputs '())))
+
 (define-public go-porter2
   (package
     (inherit go-github-com-surgebase-porter2)
@@ -33875,40 +33909,6 @@ tool."))))
      (string-append
       (package-description go-github-com-d5-tengo-v2)
       "\nThis package provides a command line interface (CLI) tool."))))
-
-(define-public go-gronx-tasker
-  (package/inherit go-github-com-adhocore-gronx
-    (name "go-gronx-tasker")
-    (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-github-com-adhocore-gronx)
-       ((#:tests? _ #t) #f)
-       ((#:install-source? _ #t) #f)
-       ((#:skip-build? _ #t) #f)
-       ((#:import-path _) "github.com/adhocore/gronx/cmd/tasker")
-       ((#:unpack-path _ "") "github.com/adhocore/gronx")))
-    (native-inputs
-     (package-propagated-inputs go-github-com-adhocore-gronx))
-    (propagated-inputs '())
-    (inputs '())))
-
-(define-public go-ply
-  (package/inherit go-howett-net-plist
-    (name "go-ply")
-    (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-howett-net-plist)
-       ((#:tests? _ #t) #f)
-       ((#:install-source? _ #t) #f)
-       ((#:skip-build? _ #t) #f)
-       ((#:import-path _) "howett.net/plist/cmd/ply")
-       ((#:unpack-path _ "") "howett.net/plist")))
-    (native-inputs
-     (append
-      (package-native-inputs go-howett-net-plist)
-      (package-propagated-inputs go-howett-net-plist)))
-    (propagated-inputs '())
-    (inputs '())))
 
 (define-public go-toml
   (package/inherit go-github-com-pelletier-go-toml-v2
@@ -34040,6 +34040,19 @@ various modes for analyzing and transforming YAML data.")))
             #:unpack-path "github.com/itchyny/gojq"
             #:install-source? #f)))))
 
+(define-public gops
+  (package/inherit go-github-com-google-gops
+    (name "gops")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-google-gops)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)))
+    (native-inputs (package-propagated-inputs go-github-com-google-gops))
+    (propagated-inputs '())
+    (inputs '())))
+
 (define-public misspell
   (package/inherit go-github-com-client9-misspell
     (name "misspell")
@@ -34052,19 +34065,6 @@ various modes for analyzing and transforming YAML data.")))
         "github.com/client9/misspell/cmd/misspell")
        ((#:unpack-path _ "") "github.com/client9/misspell")))
     (native-inputs (package-propagated-inputs go-github-com-client9-misspell))
-    (propagated-inputs '())
-    (inputs '())))
-
-(define-public gops
-  (package/inherit go-github-com-google-gops
-    (name "gops")
-    (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-github-com-google-gops)
-       ((#:tests? _ #t) #f)
-       ((#:install-source? _ #t) #f)
-       ((#:skip-build? _ #t) #f)))
-    (native-inputs (package-propagated-inputs go-github-com-google-gops))
     (propagated-inputs '())
     (inputs '())))
 
