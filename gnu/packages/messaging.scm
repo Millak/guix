@@ -1666,6 +1666,18 @@ connected.")))
     (synopsis "Password policy enforcement")
     (description "This package provides a password policy enforcement")))
 
+(define-public prosody-register-apps
+  (package
+    (inherit (prosody-module "mod_register_apps"))
+    (synopsis "Configure a list of XMPP client apps recommended by the current
+server")
+    (description "This module provides a way to configure a list of XMPP
+client apps recommended by the current server. This list is used by other
+modules such as @code{mod_invites_page} and @code{mod_invites_register_web}.
+
+It also contains the logos of a number of popular XMPP clients, and serves
+them over HTTP for other modules to reference when serving web pages.")))
+
 (define-public prosody-rest
   (package
     (inherit (prosody-module "mod_rest"))
