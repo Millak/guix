@@ -1580,6 +1580,7 @@ by Pavel Raiskup.")
        (sha256
         (base32 "01ngfz2x49h323akksfhwlpp6hiy36ai5gnxfspd10g2rjm7gny5"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;test directory is empty
     (propagated-inputs (list python-hatchling))
     (native-inputs (list python-hatchling))
     (home-page "https://github.com/frankie567/hatch-regex-commit")
