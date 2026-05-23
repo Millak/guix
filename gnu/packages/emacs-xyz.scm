@@ -16794,6 +16794,51 @@ line program.")
 requests library that uses the url library.")
       (license license:gpl2+))))
 
+(define-public emacs-http-server
+  (let ((commit "00e746baf4a622a7545b4af5c5237a55d51f801b")
+        (revision "0"))
+    (package
+      (name "emacs-http-server")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/martenlienen/http-server.el")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0j7ls15ljk22qxy6hs2qzcjnbdfvrq4qwly8s6kfbczi74mw5iji"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command
+        #~(list "emacs" "-Q" "-batch"
+                "-l" "http-server.el"
+                "-l" "http-server-ws.el"
+                "-l" "http-server-tests.el"
+                "-l" "http-server-ws-tests.el"
+                "--eval"
+                (string-append
+                 "(ert-run-tests-batch-and-exit "
+                 "'(and (not http-server-accepts-extra-methods)
+                        (not http-server-rejects-unsupported-methods)))"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'build-info-manual
+              (lambda _
+                (invoke "makeinfo" "--no-split"
+                        "-o" "http-server.info" "docs/http-server.texi"))))))
+      (native-inputs
+       (list emacs-package-lint emacs-plz emacs-websocket texinfo))
+      (home-page "https://codeberg.org/martenlienen/http-server.el")
+      (synopsis "Emacs HTTP server")
+      (description
+       "This library implements an HTTP server inside of Emacs to communicate
+with the user or other external programs.")
+      (license license:gpl3+))))
+
 (define-public emacs-rtfm-mode
   (package
    (name "emacs-rtfm-mode")
