@@ -2955,8 +2955,11 @@ execution of any hook written in any language before every commit.")
     ;; Find third-party extensions.
     (native-search-paths
      (list (search-path-specification
-            (variable "HGEXTENSIONPATH")
-            (files '("lib/python3.11/site-packages/hgext3rd")))))
+             (variable "HGEXTENSIONPATH")
+             (files (list
+                     ;; Cannot use the line below due to circular imports.
+                     ;;(version-major+minor (package-version python))
+                     "lib/python3.12/site-packages/hgext3rd")))))
     (home-page "https://www.mercurial-scm.org/")
     (synopsis "Decentralized version control system")
     (description
