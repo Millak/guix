@@ -173,7 +173,16 @@ SYSTEM."
 (define (core-packages system)
   "Return the 'core' package set suitable for SYSTEM, which might be a system
 type or a GNU triplet."
-  (cond ((target-linux? system) (append %core-packages %linux-packages))
+  (cond ((target-linux? system)
+         (append %core-packages
+                 %linux-packages
+                 (cond ((target-arm32? system)
+                        (list linux-libre-arm-generic))
+                       ((target-aarch64? system)
+                        (list linux-libre-arm64-generic))
+                       ((target-riscv64? system)
+                        (list linux-libre-riscv64-generic))
+                       (else '()))))
         ((target-hurd? system) (append %core-packages %hurd-packages))
         ((target-mingw? system) %core-packages-for-mingw)
         (else '())))
