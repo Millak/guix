@@ -1,0 +1,23 @@
+Fix incorrect Windows.h inclusion on non-Windows platforms.
+
+The condition check for HAVE_CXX11_ATOMIC was not correctly handling the case
+where it evaluates to 0 (defined but false), leading to Windows.h being included
+on non-Windows platforms. Also use more explicit Windows platform detection
+macros instead of the ambiguous OS_WINDOWS macro.
+
+--- a/src/glog/logging.h.in
++++ b/src/glog/logging.h.in
+@@ -99,11 +99,11 @@ #if @ac_cv_have_libgflags@
+ #include <gflags/gflags.h>
+ #endif
+ 
+-#ifdef HAVE_CXX11_ATOMIC
++#if defined(HAVE_CXX11_ATOMIC) && HAVE_CXX11_ATOMIC
+ #include <atomic>
+-#elif defined(OS_WINDOWS)
++#elif defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__)
+ #include <Windows.h>
+ #endif
+ 
+ @ac_google_start_namespace@
+ 

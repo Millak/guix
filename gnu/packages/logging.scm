@@ -160,7 +160,8 @@ a @code{printf}-like syntax and five logging levels.")
               (sha256
                (base32
                 "17014q25c99qyis6l3fwxidw6222bb269fdlr74gn7pzmzg4lvg3"))
-              (file-name (git-file-name name version))))
+              (file-name (git-file-name name version))
+              (patches (search-patches "glog-windows-h-nonwindows.patch"))))
     (build-system cmake-build-system)
     (native-inputs
      (list perl ;for tests
