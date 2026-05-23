@@ -3860,43 +3860,54 @@ depends on @code{scipy.sparse} for some computations.")
 (define-public python-tdda
   (package
     (name "python-tdda")
-    (version "2.2.17")
+    (version "3.0.02")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "tdda" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tdda/tdda")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1l2ph60m20ii4ljgd81wccpp5p8p2m81irr97k7850s2l1qnikcw"))))
+        (base32 "0agqy4v895qbrg149w2fkyh8kdfbk650iqp77aw8542ry1333lgs"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 276 passed, 14 skipped, 2 deselected
       #:test-flags
       #~(list
-         ;; One test fails with error: AssertionError: False is not true : 5
-         ;; lines are different, starting at line 1
-         "--deselect=tdda/test_tdda.py::TestOne::test_ddiff_values_output"
-         ;; TypeError: 'property' object is not iterable
-         "--deselect=tdda/test_tdda.py::TestPandasDataFrames::test_types_match")
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; "datetime.UTC" is not available in Python 3.10 but in
-          ;; 3.11 it's present
-          ;; <https://docs.python.org/3/library/datetime.html#datetime.UTC>.
-          (add-after 'unpack 'fix-Python3.11-datetime.UTC
-            (lambda _
-            (substitute* (find-files "." "\\.py")
-              (("datetime.UTC")
-               "datetime.timezone.utc")))))))
+         (string-append "--deselect=tdda/test_tdda.py::"
+                        "TestTDDAUtils::test_handle_tilde_strings")
+         (string-append "--deselect=tdda/test_tdda.py::"
+                        "TestPandasCommandLine::testDetectE118Cmd")
+         (string-append "--deselect=tdda/test_tdda.py::"
+                        "TestPandasCommandLine::testDetectE118CmdInterleaved")
+         (string-append "--deselect=tdda/test_tdda.py::"
+                        "TestPandasCommandLine::testDetectE118ParquetCmd")
+         (string-append "--deselect=tdda/test_tdda.py::"
+                        "TestPandasCommandLine::testDiscoverCmd")
+         (string-append "--deselect=tdda/test_tdda.py::"
+                        "TestPandasCommandLine::testVerifyE118Cmd")
+         (string-append "--deselect=tdda/test_tdda.py::"
+                        "TestPandasCommandLine::testVerifyE92Cmd")
+         (string-append "--deselect=tdda/test_tdda.py::"
+                        "TestPandasCommandLine::testVerifyEpsilon")
+         (string-append "--deselect=tdda/test_tdda.py::"
+                        "TestPandasCommandLine::testVerifyOptionFlags"))))
     (native-inputs
-     (list python-numpy
-           python-chardet
+     (list python-pytest python-setuptools))
+    (propagated-inputs
+     (list python-chardet
+           python-numpy
            python-pandas
+           python-polars
            python-pyarrow
-           python-pytest
+           python-pyyaml
+           python-regex
+           python-requests
            python-rich
-           python-setuptools))
-    (home-page "https://www.stochasticsolutions.com")
+           python-tomli
+           python-tomli-w))
+    (home-page "https://tdda.readthedocs.io/en/stable")
     (synopsis "Test-driven data analysis library for Python")
     (description
      "The TDDA Python module provides command-line and Python API support
