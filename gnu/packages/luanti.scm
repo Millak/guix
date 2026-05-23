@@ -57,7 +57,7 @@
 (define-public luanti
   (package
     (name "luanti")
-    (version "5.15.2")
+    (version "5.16.0")
     (source
      (origin
        (method git-fetch)
@@ -66,11 +66,10 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mcbsgf549y2jg9qds95wwgd1699mkk4byv9ls4lpg43bd829dhk"))
+        (base32 "1prlrixnkky4bb8d6ibni6qaa590hl6f0mn4hsjvj7fcs25qrmh6"))
        (modules '((guix build utils)
                   (srfi srfi-26)
                   (ice-9 ftw)))
-       (patches (search-patches "luanti-paths.patch"))
        ;; Delete bundled libraries.
        ;; - Keep lib/sha256 because there's no good upstream, see:
        ;;   https://github.com/openssl/openssl/blob/master/crypto/sha/sha512.c
@@ -91,9 +90,9 @@
              (substitute* "CMakeLists.txt"
                (("add_subdirectory\\(lib/catch2\\)") "find_package(Catch2 3 REQUIRED)"))
              (substitute* '("src/catch.h"
-                            "src/unittest/test_irr_rotation.cpp"
-                            "src/unittest/test_irr_matrix4.cpp"
-                            "src/unittest/test_irr_x_mesh_loader.cpp")
+                            "src/test/test_irr_rotation.cpp"
+                            "src/test/test_irr_matrix4.cpp"
+                            "src/test/client/test_irr_x_mesh_loader.cpp")
                (("catch_amalgamated.hpp") "catch2/catch_all.hpp"))))))
     (build-system cmake-build-system)
     (arguments
