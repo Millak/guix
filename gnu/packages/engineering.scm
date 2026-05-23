@@ -4959,7 +4959,9 @@ and mogan.")
                (("'\" [+] python_path [+]")
                 (string-append "'\" + std::string(\""
                                (assoc-ref outputs "out")
-                               "/lib/python3.11/site-packages"
+                               "/lib/python"
+                               #$(version-major+minor (package-version python))
+                               "/site-packages"
                                "\") +")))))
           (add-before 'check 'prepare-checks
             (lambda _
