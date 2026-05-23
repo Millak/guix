@@ -237,7 +237,9 @@ between AtomSpaces.")
                 (string-append "-DGUILE_CCACHE_DIR=" #$output
                                "/lib/guile/3.0/site-ccache")
                 (string-append "-DPYTHON_INSTALL_PREFIX=" #$output
-                               "/lib/python3.11/site-packages"))
+                               "/lib/python"
+                               #$(version-major+minor (package-version python))
+                               "/site-packages"))
         #:modules '((guix build cmake-build-system)
                     ((guix build gnu-build-system) #:prefix gnu:)
                     (guix build utils))
