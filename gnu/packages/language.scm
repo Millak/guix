@@ -14,6 +14,7 @@
 ;;; Copyright © 2024, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -395,8 +396,8 @@ Marburg.")
                    license:gpl3+))))    ; tools
 
 (define-public liblouisutdml
-  (let ((commit "68f702d43cda279f960d8ffa2415ac639d301295")
-        (revision "1"))
+  (let ((commit "84916f523709855a2d845645cb52a8b3d9b6197e")
+        (revision "2"))
     (package
       (name "liblouisutdml")
       (version (git-version "2.12.0" revision commit))
@@ -409,7 +410,7 @@ Marburg.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0r0k91fcsp4kwlgrmb497r2dh0c3yz45wbd1ds1kh0m28v78q5i3"))))
+          (base32 "09azlyj32xzrwbaykkllfmjy0wd686ncxz5iy8na7crqvh2bs90z"))))
       (build-system gnu-build-system)
       (outputs '("out" "bin" "doc"))
       (arguments
