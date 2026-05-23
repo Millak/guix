@@ -869,7 +869,9 @@ eigenvectors, and structure factors.")
                              #$(this-package-input "qtbase"))
               (string-append "-DPYQT5_SIP_DIR="
                              #$(this-package-input "python-pyqt")
-                             "/lib/python3.11/site-packages/PyQt5/bindings"))
+                             "/lib/python"
+                             #$(version-major+minor (package-version python))
+                             "/site-packages/PyQt5/bindings"))
       #:modules '((guix build qt-build-system)
                   (guix build utils)
                   (ice-9 textual-ports))
@@ -947,8 +949,12 @@ eigenvectors, and structure factors.")
             (lambda* (#:key inputs #:allow-other-keys)
               ;; sip-build needs to find PyQt5's .sip files for %Import directives.
               ;; Add sip-include-dirs to the pyproject.toml template.
-              (let ((pyqt-sip-dir (string-append (assoc-ref inputs "python-pyqt")
-                                                  "/lib/python3.11/site-packages/PyQt5/bindings")))
+              (let ((pyqt-sip-dir (string-append
+                                   (assoc-ref inputs "python-pyqt")
+                                   "/lib/python"
+                                   #$(version-major+minor
+                                      (package-version python))
+                                   "/site-packages/PyQt5/bindings")))
                 (substitute* "buildconfig/CMake/sip-templates/pyproject.toml.in"
                   (("\\[tool\\.sip\\.project\\]")
                    (string-append "[tool.sip.project]\n"
