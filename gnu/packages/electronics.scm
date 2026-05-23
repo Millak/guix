@@ -3436,8 +3436,12 @@ SystemVerilog, and SystemC, with conversion between languages and to JSON.")
                                           inputs "include/antlr4-runtime"))
                      (antlr4cpp-lib (search-input-file
                                       inputs "lib/libantlr4-runtime.so"))
-                     (python-include (search-input-directory
-                                       inputs "include/python3.11")))
+                     (python-include
+                      (search-input-directory
+                       inputs
+                       (string-append
+                        "include/python"
+                        #$(version-major+minor (package-version python))))))
                 ;; Patch CMake to use our paths directly.
                 (substitute* "src/CMake_antlr4.txt"
                   (("set\\(ANTLR_CLASSPATH \"\"\\)")
