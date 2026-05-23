@@ -3789,7 +3789,7 @@ set.")
 (define-public fusesoc
   (package
     (name "fusesoc")
-    (version "2.4.5")
+    (version "2.4.6")
     (source
      (origin
        (method git-fetch)
@@ -3798,7 +3798,7 @@ set.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sw0zl6hjlzp1a0agdl9yp901pih70ppzzss18l8f3jxs6q7jm1n"))))
+        (base32 "11bmvk10mszv65ws84jmm220ivwn55v8664kkdm9d4m99pryi2kp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
