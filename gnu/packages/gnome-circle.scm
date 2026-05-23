@@ -320,7 +320,11 @@ You can also use it to fall asleep in a noisy environment.")
             (lambda* (#:key inputs #:allow-other-keys)
               (wrap-program (string-append #$output "/bin/cartridges")
                 `("GUIX_PYTHONPATH" =
-                  (,(string-append #$output "/lib/python3.11/site-packages:"
+                  (,(string-append #$output
+                                   "/lib/python"
+                                   #$(version-major+minor
+                                      (package-version python))
+                                   "/site-packages:"
                                    (getenv "GUIX_PYTHONPATH"))))
                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))
                 `("GDK_PIXBUF_MODULE_FILE" =
