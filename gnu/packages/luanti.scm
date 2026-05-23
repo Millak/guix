@@ -228,8 +228,8 @@ new features.")
 (define-public luanti-halon
   ;; There is no tag for this fork; find the base luanti used for the
   ;; base-version, and otherwise use the latest commit.
-  (let ((base-version "5.14.0")
-        (commit "335545ebf64d25eea084dd46f49d8e62bcab0ada")
+  (let ((base-version "5.16.0")
+        (commit "91e523a698b23e1f281092e6f2b633ac722995c1")
         (revision "0"))
     (package
       (inherit luanti)
@@ -243,7 +243,7 @@ new features.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1qk98kzjv748f0aak8k20nxkqa7wbxwj3qjd4ks08ab9apgwzlps"))))
+          (base32 "1l2pyk4pisn6grjvhwp07mwi9jvm06mj9cr284w562h97b8qyimk"))))
       (arguments
        (substitute-keyword-arguments arguments
          ((#:phases phases)
