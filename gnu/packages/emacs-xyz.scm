@@ -5303,6 +5303,39 @@ to prevent advertisers from tracking you when you open URLs (or listen to
 podcasts) in Emacs.")
       (license (list license:gpl3+)))))
 
+(define-public emacs-emcp
+  (let ((commit "a91016452ef73813ea4a7e84cde233176d87a97f")
+        (revision "0"))
+    (package
+      (name "emacs-emcp")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/martenlienen/emcp")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "08wbpj95l38fsdihxhgryb74psl11agw5n9swnpf1j3qyhwa13cn"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command
+        #~(list "emacs" "-Q" "-batch"
+                "-l" "emcp-tests.el"
+                "-f"
+                "ert-run-tests-batch-and-exit")))
+      (propagated-inputs
+       (list emacs-elisp-refs emacs-magit emacs-http-server))
+      (home-page "https://codeberg.org/martenlienen/emcp")
+      (synopsis "Emacs MCP client")
+      (description
+       "@code{emacs-emcp} is an Emacs client for the @acronym{Model Context
+Protocol, MCP}, designed to connect LLM agents directly to Emacs.")
+      (license license:gpl3+))))
+
 (define emacs-emms-print-metadata
   (package
     (name "emacs-emms-print-metadata")
