@@ -1095,7 +1095,7 @@ minimalistic.")
 (define-public fzf
   (package
     (name "fzf")
-    (version "0.67.0")
+    (version "0.72.0")
     (source
      (origin
        (method git-fetch)
@@ -1104,7 +1104,7 @@ minimalistic.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yia1i1dp9k8dpw88n98gpmvzirp4lck7h62rkx39nhwr4mg5a1z"))))
+        (base32 "0qnzi9xccaaynbi0l71j907i4kf2fbm5iz320q2200cmdw5mnk5d"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1157,7 +1157,7 @@ minimalistic.")
      (list bash-minimal
            findutils
            ncurses))
-    (home-page "https://github.com/junegunn/fzf")
+    (home-page "https://junegunn.github.io/fzf/")
     (synopsis "Command-line fuzzy-finder")
     (description "This package provides an interactive command-line filter
 usable with any list--including files, command history, processes and more.")
