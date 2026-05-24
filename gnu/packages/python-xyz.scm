@@ -31974,40 +31974,6 @@ distribution in Python.")
 environment.")
     (license license:expat)))
 
-(define-public python-logutils
-  (package
-    (name "python-logutils")
-    (properties '((commit . "c032f726c36d4f932b5a902fdb048f9f07c40d0d")
-                  (revision . "0")))
-    (version (git-version "0.3.5"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://bitbucket.org/vinay.sajip/logutils")
-              (commit (assoc-ref properties 'commit))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "188hbcyg95ibjwx4qgbd2qi9vm1h8pq2sllkm847146zcahab3a2"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; XXX: Unclear why this test fails.
-      #~(list "--deselect=tests/test_adapter.py::\
-AdapterTest::test_hashandlers")))
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://bitbucket.org/vinay.sajip/logutils/")
-    (synopsis "Logging utilities")
-    (description "This package provides a set of handlers for the Python
-standard library logging package.  Some of these handlers are out-of-scope
-for the standard library, and so they are packaged here.  Others are updated
-versions which have appeared in recent Python releases, but are usable with
-older versions of Python and so are packaged here.")
-    (license license:bsd-3)))
-
 (define-public python-loguru
   (package
     (name "python-loguru")
