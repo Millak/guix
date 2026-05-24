@@ -651,49 +651,6 @@ It's not clear at the moment whether one day it will be possible to
 do so.")
     (license license:agpl3+)))
 
-(define-public libbwt-jni
-  (package
-    (name "libbwt-jni")
-    (version "0.2.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/bwt-dev/libbwt-jni")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1xbb8ad6rlpg972rnf7fipgzz6ry7yzbnxacgisqpkcjnw768zy5"))
-              (snippet
-               '(begin
-                  (use-modules (guix build utils))
-                  (delete-file-recursively "bwt")
-                  (substitute* "Cargo.toml"
-                    (("path = \"./bwt\"")
-                     "version = \"0.2.4\""))))))
-    (build-system cargo-build-system)
-    (arguments
-     (list
-      #:install-source? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'install-lib
-            (lambda _
-              (install-file "target/release/libbwt_jni.so"
-                            (string-append #$output "/lib")))))))
-    (inputs (cons (package-source bwt)
-                  (cargo-inputs 'libbwt-jni)))
-    (home-page "https://github.com/bwt-dev/libbwt-jni")
-    (synopsis "Java Native Interface bindings for Bitcoin Wallet Tracker")
-    (description "Libbwt-jni is Java Native Interface bindings for Bitcoin
-Wallet Tracker, a lightweight personal indexer for Bitcoin wallets.
-Libbwt-jni allows you to programmatically manage bwt's Electrum RPC and HTTP
-API servers.  It can be used as a compatibility layer for easily upgrading
-Electrum-backed wallets to support a Bitcoin Core full node backend (by
-running the Electrum server in the wallet), or for shipping software that
-integrates bwt's HTTP API as an all-in-one package.")
-    (license license:expat)))
-
 (define-public python-electrum-ecc
   (package
     (name "python-electrum-ecc")
