@@ -2302,7 +2302,7 @@ Unicode.")
 (define-public kibi
   (package
     (name "kibi")
-    (version "0.2.2")
+    (version "0.3.3")
     (source
      (origin
        ;; crates.io doesn't have the config files
@@ -2312,24 +2312,32 @@ Unicode.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s9ka3pfhpssms2y5707f33n59ljnqqwp7jarh2l55a9dhlnl7d3"))))
+        (base32 "1ryk9vz0hdqcka8n90qnhh430rj2z4s7kh71bkc5lpdx5lassq5q"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Use a packaged version of tokei.
+                 (substitute* "xtask/Cargo.toml"
+                   (("git = .*tokei\", branch.*,") "version = \"*\","))))))
     (build-system cargo-build-system)
     (arguments
      (list
       #:install-source? #f
-      #:cargo-test-flags `(list "--release" "--"
-                                "--skip=syntax::tests::syntax_d_files")
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'install 'install-extras
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (let* ((out (assoc-ref outputs "out"))
-                              (share (string-append out "/share"))
-                              (syntax.d (string-append share "/syntax.d"))
-                              (etc (string-append out "/etc")))
-                         (mkdir-p syntax.d)
-                         (copy-recursively "syntax.d" syntax.d)
-                         (rename-file "config_example.ini" "config.ini")
-                         (install-file "config.ini" etc)))))))
+      #:imported-modules (append %copy-build-system-modules
+                                 %cargo-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build copy-build-system) #:prefix copy:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-extras
+            (lambda args
+              (apply (assoc-ref copy:%standard-phases 'install)
+                     #:install-plan
+                     '(("config_example.ini" "etc/kibi/config.ini")
+                       ("syntax.d" "share/kibi/")
+                       ("kibi.desktop" "share/applications/")
+                       ("assets/kibi.svg" "share/icons/hicolor/scalable/apps/"))
+                     args))))))
     (inputs (cargo-inputs 'kibi))
     (home-page "https://github.com/ilai-deutel/kibi")
     (synopsis "Featureful text editor in less than 1024 lines of code")
