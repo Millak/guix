@@ -1041,6 +1041,12 @@ def contents() -> str:
                                        " test_venv"               ;freeze
                                        " test_multiprocessing_forkserver" ;runs over 10min
                                        " test_multiprocessing_spawn" ;runs over 10min
+                                       " test_glob" ;did not finish in 10h
+                                       " test_site" ;Invalid argument
+                                       " test_termios" ;os.openpty() Operation not permitted
+                                       " test_tty" ;os.openpty() Operation not permitted
+                                       " test_sqlite3" ;; sqlite3.OperationalError: database is locked
+                                       " test_tarfile" ;; ELOOP vs ENAMETOOLONG
                                        " test_builtin"
                                        " test_capi"
                                        " test_dbm_ndbm"
@@ -1053,7 +1059,11 @@ def contents() -> str:
                                        " test_multiprocessing_main_handling"
                                        " test_pdb "
                                        " test_regrtest"
+                                       " test_ssl" ;; Fails with openssl 3.5
                                        " test_sqlite")
+                                    #~())
+                             #$@(if (system-hurd64?)
+                                    #~(" test_largefile") ;; hangs
                                     #~())))
 
       #:modules '((ice-9 ftw)
