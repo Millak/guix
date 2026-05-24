@@ -27,7 +27,7 @@
 (define-public lout
   (package
     (name "lout")
-    (version "3.43.2")
+    (version "3.43.4")
 
     ;; The original version at <https://savannah.nongnu.org/projects/lout/> is
     ;; effectively abandoned, not receiving build fixes and the likes, and
@@ -41,7 +41,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lvk1ffzgydgj4csaclrh3a9nwla061clgf8lda6n47masg12qzi"))))
+                "09s6mcimvhw96i3vncqa8cz04xcq9x3qir8m1nzqfny8vdwyz35n"))))
     (build-system gnu-build-system)     ; actually, just a makefile
     (outputs '("out" "doc"))
     (native-inputs
