@@ -80,14 +80,14 @@
 (define-public gdb-17
   (package
     (name "gdb")
-    (version "17.1")
+    (version "17.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gdb/gdb-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0xnqqv3j463r5rnfmblj3zwhf0l0lyy4bp1zaid8zxn9fignz68l"))))
+                "1312lccryan1jfkjwkbw9mpxgyfnmlr8dj4lbkxx3cz4f86nq0qw"))))
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (arguments
