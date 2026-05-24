@@ -34660,27 +34660,6 @@ async I/O support.")
 for styling strings in the terminal.")
       (license license:expat))))
 
-(define-public python-ansicolors
-  ;; XXX: Not maintained fork since 2017, consider to remove when there is no
-  ;; any users.
-  (package
-    (name "python-ansicolors")
-    (version "1.1.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ansicolors" version ".zip"))
-       (sha256
-        (base32 "1q3jqglkq4z0f6nkkn8bswcwqg012i2grrc27kabr8286dg4zycr"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest python-setuptools unzip))
-    (home-page "https://github.com/jonathaneunice/colors/")
-    (synopsis "ANSI colors for Python")
-    (description
-     "This package adds ANSI colors and decorations to your strings.")
-    (license license:isc)))
-
 (define-public python-multipart
   (package
     (name "python-multipart")
