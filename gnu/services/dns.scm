@@ -64,6 +64,8 @@
             dnsmasq-configuration-port
             dnsmasq-configuration-local-service?
             dnsmasq-configuration-listen-address
+            dnsmasq-configuration-ipv4?
+            dnsmasq-configuration-ipv6?
             dnsmasq-configuration-resolv-file
             dnsmasq-configuration-no-resolv?
             dnsmasq-configuration-forward-private-reverse-lookup?
@@ -793,6 +795,10 @@ cache.size = 100 * MB
                     (default #t))       ;boolean
   (listen-addresses dnsmasq-configuration-listen-address
                     (default '()))      ;list of string
+  (ipv4?            dnsmasq-configuration-ipv4?
+                    (default #t))
+  (ipv6?            dnsmasq-configuration-ipv6?
+                    (default #t))
   (resolv-file      dnsmasq-configuration-resolv-file
                     (default "/etc/resolv.conf")) ;string
   (no-resolv?       dnsmasq-configuration-no-resolv?
@@ -859,7 +865,7 @@ cache.size = 100 * MB
      shepherd-requirement
      pid-file
      no-hosts?
-     port local-service? listen-addresses
+     port local-service? listen-addresses ipv4? ipv6?
      resolv-file no-resolv?
      forward-private-reverse-lookup? query-servers-in-order?
      servers addresses servers-file
@@ -891,6 +897,12 @@ cache.size = 100 * MB
                         '())
                 #$@(map (cut format #f "--listen-address=~a" <>)
                         listen-addresses)
+                #$@(if (not ipv4?)
+                       '("--filter-A")
+                       '())
+                #$@(if (not ipv6?)
+                       '("--filter-AAAA")
+                       '())
                 #$(format #f "--resolv-file=~a" resolv-file)
                 #$@(if no-resolv?
                        '("--no-resolv")

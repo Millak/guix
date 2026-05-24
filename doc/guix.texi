@@ -38201,6 +38201,12 @@ ie a subnet for which an interface exists on the server.
 @item @code{listen-addresses} (default: @code{'()})
 Listen on the given IP addresses.
 
+@item @code{ipv4?} (default: @code{#t})
+Whether to include A records in answers.
+
+@item @code{ipv6?} (default: @code{#t})
+Whether to include AAAA records in answers.
+
 @item @code{resolv-file} (default: @code{"/etc/resolv.conf"})
 The file to read the IP address of the upstream nameservers from.
 
