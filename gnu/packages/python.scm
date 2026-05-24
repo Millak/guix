@@ -586,6 +586,7 @@ data types.")
     (build-system gnu-build-system)
     (arguments
      (list
+      #:test-target "test"
       #:configure-flags
       ;; Avoid inheriting phases, but configure-flags is fine, as
       ;; it doesn't propagate to later python version.
