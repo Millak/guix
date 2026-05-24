@@ -1630,6 +1630,7 @@ ing, and tagging large collections of email messages.")
   (package
     (inherit notmuch)
     (name "emacs-notmuch")
+    (outputs (list "out"))
     (build-system emacs-build-system)
     (native-inputs '())
     (inputs
