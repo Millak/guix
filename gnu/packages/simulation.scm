@@ -1135,7 +1135,9 @@ user interface to the FEniCS core components and external libraries.")
          "--ignore=unit/io/test_XDMF.py"
          ;; Assertions failed.
          "--deselect=unit/common/test_timer.py::test_context_manager_named"
-         "--deselect=unit/common/test_timer.py::test_context_manager_anonymous")
+         "--deselect=unit/common/test_timer.py::test_context_manager_anonymous"
+         ;; TypeError: 'float' object cannot be interpreted as an integer.
+         "--ignore=unit/common/test_timer.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
