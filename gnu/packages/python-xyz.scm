@@ -12196,37 +12196,6 @@ objects.")
      "This is a Python library for color math and conversions.")
     (license license:bsd-3)))
 
-(define-public python-spectra
-  (package
-    (name "python-spectra")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "spectra" version))
-       (sha256
-        (base32 "0gva48a1rn5yxj6dgy76dnndqaf09k5q2l9r41h2a66b84rf6c3a"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-colormath2))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/jsvine/spectra")
-    (synopsis "Color scales and color conversion")
-    (description
-     "This package provides a Python library intended to make color math,
-color scales, and color space conversion easy.  It has support for:
-
-@enumerate
-@item Color scales
-@item Color ranges
-@item Color blending
-@item Brightening/darkening colors
-@item Saturating/desaturating colors
-@item Conversion to/from multiple color spaces.
-@end enumerate\n")
-    (license license:expat)))
-
 (define-public python-pyspnego
   (package
     (name "python-pyspnego")
@@ -13149,58 +13118,6 @@ the results.")
     (description
      "This package provides a thread-safe disk (file and sqlite) based
 persistent queue in Python.")
-    (license license:bsd-3)))
-
-(define-public python-socksipy-branch
-  (package
-    (name "python-socksipy-branch")
-    (version "1.01")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "SocksiPy-branch" version))
-       (sha256
-        (base32 "01l41v4g7fy9fzvinmjxy6zcbhgqaif8dhdqm4w90fwcw9h51a8p"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ; There are no tests
-    (native-inputs (list python-setuptools))
-    (home-page "https://code.google.com/archive/p/socksipy-branch/")
-    (synopsis "Python SOCKS module")
-    (description
-     "SocksiPy - A Python SOCKS client module.  It provides a socket-like
-interface that supports connections to any TCP service through the use of a
-SOCKS4, SOCKS5 or HTTP proxy.  The original version was developed by Dan Haim,
-this is a branch created by Mario Vilas to address some open issues,as the
-original project seems to have been abandoned circa 2007.")
-    (license license:bsd-3)))
-
-(define-public python-socksipychain
-  (package
-    (name "python-socksipychain")
-    (properties '((commit . "570c75c55661db175bd733996ed1ab68fc4e3b33")
-                  (revision . "0")))
-    (version (git-version "2.1.3"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/pagekite/PySocksipyChain")
-              (commit (assoc-ref properties 'commit))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1fi82id1qgh63wm8k1gcxpkaa8ic0mwliq7x3iy9lxihaqmr0zww"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ; Tests try to access the network.
-    (native-inputs (list python-setuptools))
-    (home-page "http://pagekite.net/wiki/Floss/PySocksipyChain/")
-    (synopsis "Python SOCKS module with chained proxies support")
-    (description
-     "SocksiPyChain is a modified version of the SocksiPy SOCKS module, which
-adds support for arbitrary chaining of proxy servers and various modes of
-TLS/SSL encryption.  It was developed for use in PageKite, and also includes
-a simple netcat replacement with chaining support.")
     (license license:bsd-3)))
 
 (define-public python-pycodestyle
@@ -15850,31 +15767,6 @@ converts incoming documents to Unicode and outgoing documents to UTF-8.")
      (native-inputs
       (list python-hatchling))
      (propagated-inputs '()))))
-
-(define-public python-soupsieve
-  (package
-    (name "python-soupsieve")
-    (version "2.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "soupsieve" version))
-       (sha256
-        (base32 "0shjmvk8yz2ljc16pmizg16bqhk1i8n5al27mlp6sa16d6djya5d"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-beautifulsoup4-bootstrap
-           python-hatchling
-           python-pytest))
-    (home-page "https://github.com/facelessuser/soupsieve")
-    (synopsis "CSS selector library")
-    (description
-     "Soup Sieve is a CSS selector library designed to be used with Beautiful
-Soup 4.  It aims to provide selecting, matching, and filtering using modern
-CSS selectors.  Soup Sieve currently provides selectors from the CSS level 1
-specifications up through the latest CSS level 4 drafts and beyond (though
-some are not yet implemented).")
-    (license license:expat)))
 
 
 (define-public python-netifaces
@@ -28067,52 +27959,6 @@ main differences are that @code{cytoolz} is faster and cytoolz offers a C API
 that is accessible to other projects developed in Cython.")
     (license license:bsd-3)))
 
-(define-public python-sortedcollections
-  (package
-    (name "python-sortedcollections")
-    (version "2.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/grantjenks/python-sortedcollections")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1y2xsbh31jp9fsjy53g5ma974z7a9vcds6ij1vlh00nllzqlwihs"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-pytest python-wheel))
-    (propagated-inputs (list python-sortedcontainers))
-    (home-page "https://www.grantjenks.com/docs/sortedcollections/")
-    (synopsis "Python Sorted Collections")
-    (description "Sorted Collections is a Python sorted collections library.")
-    (license license:asl2.0)))
-
-(define-public python-sortedcontainers
-  (package
-    (name "python-sortedcontainers")
-    (version "2.4.0")
-    (source
-     (origin
-       (method git-fetch)       ;no tests in PyPI archive
-       (uri (git-reference
-              (url "https://github.com/grantjenks/python-sortedcontainers")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "190w2mvgvx0r5k0r8117slq48nh6k7xidbpsrp02wnmcd0rx45k1"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags #~(list "--pyargs" "sortedcontainers")))
-    (native-inputs
-     (list python-pytest-bootstrap python-setuptools))
-    (home-page "https://grantjenks.com/docs/sortedcontainers/")
-    (synopsis "Sorted List, Sorted Dict, Sorted Set")
-    (description
-     "This package provides a sorted collections library, written in
-pure-Python.")
-    (license license:asl2.0)))
-
 (define-public python-cloudpickle
   (package
     (name "python-cloudpickle")
@@ -36244,83 +36090,6 @@ instance in spelling correction, predictive typing, to help disabled people
 write text fast, and for various text generation, statistics, and modeling tasks.")
     (license license:expat)))
 
-(define-public python-speedy-antlr-tool
-  (package
-    (name "python-speedy-antlr-tool")
-    (version "1.4.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/amykyta3/speedy-antlr-tool")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1bj67n3f6admjc7mfgnksb35s983inw2mh27d7wfp1xf697h0yp3"))))
-    (build-system pyproject-build-system)
-    (arguments '(#:tests? #f))          ;no test
-    (native-inputs (list python-setuptools python-setuptools-scm))
-    (propagated-inputs (list python-antlr4-runtime python-jinja2))
-    (home-page "https://speedy-antlr-tool.readthedocs.io")
-    (synopsis "Generate ANTLR parser as Python extension module")
-    (description
-     "This tool generates a Python extension that runs your parser
-using ANTLR's C++ target, and then translates the parsed tree
-back into Python.")
-    (license license:bsd-3)))
-
-(define-public python-speg
-  (package
-    (name "python-speg")
-    ;; 0.3 was released in 2017, the latest change on master HEAD is from 2018.
-    (properties '((commit . "877acddfd5ac5ae8b4a4592d045e74e108477643")
-                  (revision . "0")))
-    (version (git-version "0.3"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/avakar/speg")
-              (commit (assoc-ref properties 'commit))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0lhms1sfvmnplcwq8qwwvkrcz4sgi9yprvrkjz7p84fjhk86n4sb"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-six))
-    (home-page "https://github.com/avakar/speg")
-    (synopsis "PEG-based parser interpreter with memoization")
-    (description "This package is a PEG-based parser and interpreter with
-memoization.")
-    (license license:expat)))
-
-(define-public python-spinners
-  (package
-    (name "python-spinners")
-    (version "0.0.24")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "spinners" version))
-       (sha256
-        (base32 "0zz2z6dpdjdq5z8m8w8dfi8by0ih1zrdq0caxm1anwhxg2saxdhy"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))         ;no tests in PyPI archive, tests depend on Nose
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://github.com/manrajgrover/py-spinners")
-    (synopsis "Python library with graphical spinners for the terminal")
-    (description
-     "Spinners is a Python library that contains graphical spinners that can
-be displayed terminal.")
-    (license license:expat)))
-
 (define-public python-sqlglot
   (package
     (name "python-sqlglot")
@@ -36426,6 +36195,237 @@ syntactically and semantically correct SQL in the targeted dialects.")
      "Sqltrie is a SQL-based prefix tree inspired by pygtrie and
 python-diskcache.")
     (license license:asl2.0)))
+
+(define-public python-socksipy-branch
+  (package
+    (name "python-socksipy-branch")
+    (version "1.01")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "SocksiPy-branch" version))
+       (sha256
+        (base32 "01l41v4g7fy9fzvinmjxy6zcbhgqaif8dhdqm4w90fwcw9h51a8p"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; There are no tests
+    (native-inputs (list python-setuptools))
+    (home-page "https://code.google.com/archive/p/socksipy-branch/")
+    (synopsis "Python SOCKS module")
+    (description
+     "SocksiPy - A Python SOCKS client module.  It provides a socket-like
+interface that supports connections to any TCP service through the use of a
+SOCKS4, SOCKS5 or HTTP proxy.  The original version was developed by Dan Haim,
+this is a branch created by Mario Vilas to address some open issues,as the
+original project seems to have been abandoned circa 2007.")
+    (license license:bsd-3)))
+
+(define-public python-socksipychain
+  (package
+    (name "python-socksipychain")
+    (properties '((commit . "570c75c55661db175bd733996ed1ab68fc4e3b33")
+                  (revision . "0")))
+    (version (git-version "2.1.3"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pagekite/PySocksipyChain")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fi82id1qgh63wm8k1gcxpkaa8ic0mwliq7x3iy9lxihaqmr0zww"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; Tests try to access the network.
+    (native-inputs (list python-setuptools))
+    (home-page "http://pagekite.net/wiki/Floss/PySocksipyChain/")
+    (synopsis "Python SOCKS module with chained proxies support")
+    (description
+     "SocksiPyChain is a modified version of the SocksiPy SOCKS module, which
+adds support for arbitrary chaining of proxy servers and various modes of
+TLS/SSL encryption.  It was developed for use in PageKite, and also includes
+a simple netcat replacement with chaining support.")
+    (license license:bsd-3)))
+
+(define-public python-sortedcollections
+  (package
+    (name "python-sortedcollections")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/grantjenks/python-sortedcollections")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y2xsbh31jp9fsjy53g5ma974z7a9vcds6ij1vlh00nllzqlwihs"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-pytest python-wheel))
+    (propagated-inputs (list python-sortedcontainers))
+    (home-page "https://www.grantjenks.com/docs/sortedcollections/")
+    (synopsis "Python Sorted Collections")
+    (description "Sorted Collections is a Python sorted collections library.")
+    (license license:asl2.0)))
+
+(define-public python-sortedcontainers
+  (package
+    (name "python-sortedcontainers")
+    (version "2.4.0")
+    (source
+     (origin
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/grantjenks/python-sortedcontainers")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "190w2mvgvx0r5k0r8117slq48nh6k7xidbpsrp02wnmcd0rx45k1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "--pyargs" "sortedcontainers")))
+    (native-inputs
+     (list python-pytest-bootstrap python-setuptools))
+    (home-page "https://grantjenks.com/docs/sortedcontainers/")
+    (synopsis "Sorted List, Sorted Dict, Sorted Set")
+    (description
+     "This package provides a sorted collections library, written in
+pure-Python.")
+    (license license:asl2.0)))
+
+(define-public python-soupsieve
+  (package
+    (name "python-soupsieve")
+    (version "2.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "soupsieve" version))
+       (sha256
+        (base32 "0shjmvk8yz2ljc16pmizg16bqhk1i8n5al27mlp6sa16d6djya5d"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-beautifulsoup4-bootstrap
+           python-hatchling
+           python-pytest))
+    (home-page "https://github.com/facelessuser/soupsieve")
+    (synopsis "CSS selector library")
+    (description
+     "Soup Sieve is a CSS selector library designed to be used with Beautiful
+Soup 4.  It aims to provide selecting, matching, and filtering using modern
+CSS selectors.  Soup Sieve currently provides selectors from the CSS level 1
+specifications up through the latest CSS level 4 drafts and beyond (though
+some are not yet implemented).")
+    (license license:expat)))
+
+(define-public python-spectra
+  (package
+    (name "python-spectra")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "spectra" version))
+       (sha256
+        (base32 "0gva48a1rn5yxj6dgy76dnndqaf09k5q2l9r41h2a66b84rf6c3a"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-colormath2))
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/jsvine/spectra")
+    (synopsis "Color scales and color conversion")
+    (description
+     "This package provides a Python library intended to make color math,
+color scales, and color space conversion easy.  It has support for:
+
+@enumerate
+@item Color scales
+@item Color ranges
+@item Color blending
+@item Brightening/darkening colors
+@item Saturating/desaturating colors
+@item Conversion to/from multiple color spaces.
+@end enumerate\n")
+    (license license:expat)))
+
+(define-public python-speedy-antlr-tool
+  (package
+    (name "python-speedy-antlr-tool")
+    (version "1.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/amykyta3/speedy-antlr-tool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bj67n3f6admjc7mfgnksb35s983inw2mh27d7wfp1xf697h0yp3"))))
+    (build-system pyproject-build-system)
+    (arguments '(#:tests? #f))          ;no test
+    (native-inputs (list python-setuptools python-setuptools-scm))
+    (propagated-inputs (list python-antlr4-runtime python-jinja2))
+    (home-page "https://speedy-antlr-tool.readthedocs.io")
+    (synopsis "Generate ANTLR parser as Python extension module")
+    (description
+     "This tool generates a Python extension that runs your parser
+using ANTLR's C++ target, and then translates the parsed tree
+back into Python.")
+    (license license:bsd-3)))
+
+(define-public python-speg
+  (package
+    (name "python-speg")
+    ;; 0.3 was released in 2017, the latest change on master HEAD is from 2018.
+    (properties '((commit . "877acddfd5ac5ae8b4a4592d045e74e108477643")
+                  (revision . "0")))
+    (version (git-version "0.3"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/avakar/speg")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lhms1sfvmnplcwq8qwwvkrcz4sgi9yprvrkjz7p84fjhk86n4sb"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-six))
+    (home-page "https://github.com/avakar/speg")
+    (synopsis "PEG-based parser interpreter with memoization")
+    (description "This package is a PEG-based parser and interpreter with
+memoization.")
+    (license license:expat)))
+
+(define-public python-spinners
+  (package
+    (name "python-spinners")
+    (version "0.0.24")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "spinners" version))
+       (sha256
+        (base32 "0zz2z6dpdjdq5z8m8w8dfi8by0ih1zrdq0caxm1anwhxg2saxdhy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))         ;no tests in PyPI archive, tests depend on Nose
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/manrajgrover/py-spinners")
+    (synopsis "Python library with graphical spinners for the terminal")
+    (description
+     "Spinners is a Python library that contains graphical spinners that can
+be displayed terminal.")
+    (license license:expat)))
 
 (define-public python-sre-yield
   (package
