@@ -2292,7 +2292,8 @@ versus schematic} tests and can assist with automatic routing.")
                   (chmod bin_ #o755)))
               (install-it "mcy")
               (install-it "mcy-dash")))
-          (add-after 'make-install 'python:wrap py:wrap))))
+          (add-after 'make-install 'python:wrap
+            (assoc-ref py:%standard-phases 'wrap)))))
     (native-inputs
      (list pkg-config
            python-sphinx
