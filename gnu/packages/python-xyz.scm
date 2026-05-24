@@ -32053,30 +32053,6 @@ older versions of Python and so are packaged here.")
     (description "Python logging made (stupidly) simple.")
     (license license:expat)))
 
-(define-public python-helper
-  (package
-    (name "python-helper")
-    (version "2.5.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gmr/helper")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0zypjv8rncvrsgl200v7d3bn08gs48dwqvgamfqv71h07cj6zngp"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:test-backend #~'unittest))
-    (native-inputs (list python-mock python-setuptools))
-    (propagated-inputs (list python-logutils python-pyyaml))
-    (home-page "https://github.com/gmr/helper")
-    (synopsis "Library for writing configurable applications and daemons")
-    (description
-     "This package provides procedures for quickly writing configurable
-applications and daemons.")
-    (license license:bsd-3)))
-
 (define-public python-qtsass
   (package
     (name "python-qtsass")
