@@ -71,3 +71,20 @@ language, designed to be a light-weight scripting language that fits in the
 size, memory bandwidth, and real-time requirements of applications like video
 games.")
     (license license:expat)))
+
+(define-public squirrel-for-supertux
+  (let ((commit "abab32a2077397c3739c70fc8b5b22a18bc2b5de")
+        (revision "0"))
+  (package
+    (inherit squirrel)
+    (name "squirrel-for-supertux")
+    (version (git-version "2025-12-21" revision commit))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/SuperTux/squirrel.git")
+                     (commit commit)))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0dsg9iz0hsypa8020vl35fqzzichrrq09f1ns2fnmi3x1ggw0c0f")))))))
