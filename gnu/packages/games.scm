@@ -1968,44 +1968,50 @@ real-time combat.")
                 "049n634abxfpgh4imh3s5qqfn9nbwmcl6jm91f29ngqm53jcsdaq"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags (list "CC=gcc"
-                          (string-append "GOLLYDIR="
-                                         (assoc-ref %outputs "out")
-                                         "/share/golly"))
-       #:tests? #f ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'build
-           (lambda* (#:key make-flags outputs #:allow-other-keys)
-             (with-directory-excursion "gui-wx"
-               (apply invoke `("make" ,@make-flags "-f" "makefile-gtk")))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (doc (string-append out "/share/doc/golly"))
-                    (pixmaps (string-append out "/share/pixmaps"))
-                    (share (string-append out "/share/golly")))
-               (for-each (lambda (binary)
-                           (install-file binary bin))
-                         '("bgolly" "golly"))
-               (for-each (lambda (document)
-                           (install-file
-                            (string-append "docs/" document ".html")
-                            doc))
-                         '("License" "ReadMe" "ToDo"))
-               (install-file "gui-wx/icons/appicon.xpm" pixmaps)
-               (for-each (lambda (folder)
-                           (copy-recursively
-                            folder
-                            (string-append share "/" folder)))
-                         '("Help" "Patterns" "Rules" "Scripts")))
-             #t)))))
+     (list
+      #:make-flags
+      #~(list "CC=gcc"
+              (string-append "GOLLYDIR="
+                             #$output
+                             "/share/golly"))
+      #:tests? #f ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (with-directory-excursion "gui-wx"
+                (apply invoke `("make" ,@make-flags "-f" "makefile-gtk")))))
+          (replace 'install
+            (lambda _
+                (let* ((bin (string-append #$output "/bin"))
+                     (doc (string-append #$output "/share/doc/golly"))
+                     (pixmaps (string-append #$output "/share/pixmaps"))
+                     (share (string-append #$output "/share/golly")))
+                (for-each (lambda (binary)
+                            (install-file binary bin))
+                          (list "bgolly" "golly"))
+                (for-each (lambda (document)
+                            (install-file
+                             (string-append "docs/" document ".html")
+                             doc))
+                          (list "License" "ReadMe" "ToDo"))
+                (install-file "gui-wx/icons/appicon.xpm" pixmaps)
+                (for-each (lambda (folder)
+                            (copy-recursively
+                             folder
+                             (string-append share "/" folder)))
+                          (list "Help" "Patterns" "Rules" "Scripts"))))))))
     (native-inputs
-     (list lua python-setuptools))
+     (list lua
+           python-setuptools))
     (inputs
-     (list glu mesa python sdl2 wxwidgets zlib))
+     (list glu
+           mesa
+           python
+           sdl2
+           wxwidgets
+           zlib))
     (home-page "https://golly.sourceforge.net/")
     (synopsis "Software for exploring cellular automata")
     (description
