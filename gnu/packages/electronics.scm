@@ -611,7 +611,8 @@ individual low-level driver modules.")
                 ;; https://github.com/YosysHQ/eqy/actions/runs/18767539188/job/53545383858
                 (invoke "make" "-C" "examples/spm")
                 (invoke "make" "-C" "examples/simple"))))
-          (add-after 'install 'python:wrap py:wrap))))
+          (add-after 'install 'python:wrap
+            (assoc-ref py:%standard-phases 'wrap)))))
     (native-inputs
      (list clang python-minimal-wrapper python-sphinx texinfo yosys))
     (inputs
