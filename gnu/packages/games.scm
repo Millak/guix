@@ -2003,7 +2003,7 @@ real-time combat.")
                          '("Help" "Patterns" "Rules" "Scripts")))
              #t)))))
     (native-inputs
-     (list lua))
+     (list lua python-setuptools))
     (inputs
      (list glu mesa python sdl2 wxwidgets zlib))
     (home-page "https://golly.sourceforge.net/")
