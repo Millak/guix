@@ -744,7 +744,7 @@ manager.")
 (define-public swineherd
   (package
     (name "swineherd")
-    (version "0.0.4")
+    (version "0.0.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -753,7 +753,7 @@ manager.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0iij1pl0y410k1dk1ifa56dxmjb1blv0y3k5rxy794gwg6w6c480"))))
+                "1w3fvkdmqvbzqfx3xindm8qgam54wja46isgwasaiqmmhnla7p52"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--localstatedir=/var")
@@ -767,7 +767,7 @@ manager.")
            guile-netlink
            guile-3.0
            guix
-           shepherd-0.10))
+           shepherd-1.0))
     (home-page "https://github.com/BIMSBbioinfo/swineherd")
     (synopsis "System container manager")
     (description
