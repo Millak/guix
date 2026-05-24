@@ -341,7 +341,7 @@ $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) $(srcdir)/predicates_init.c \
 (define-public xdot
   (package
     (name "xdot")
-    (version "1.4")
+    (version "1.6")
     (source
      (origin
        ;; PyPI tarball is missing some test files.
@@ -351,7 +351,7 @@ $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) $(srcdir)/predicates_init.c \
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1l34ahvcz90j3j7aspp9wqvxpq10mzgq7l0sanrj142ihdnbahvy"))))
+        (base32 "0gg54k6zhdviz17aa3harc82f7bx4mpwnj292q066dzamvr87svq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
