@@ -692,32 +692,28 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
                  "0zyjjyikc65gmx24b3pbaxznqgp6mnygwcgdax1nqlv1cj30n5a0"))))
       (build-system gnu-build-system)
       (arguments
-       '(#:tests? #f                    ; no test suite
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)          ; no configure script
-           (replace 'build
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((output (assoc-ref outputs "out")))
-                 (substitute* "tools/umasked.sh"
-                   ((" /bin/sh") (string-append " " (which "sh"))))
-                 ;; The documentation includes a banner, which makes sense on
-                 ;; the NGinx website, but doesn't make much sense when
-                 ;; viewing locally. Therefore, modify the CSS to remove the
-                 ;; banner.
-                 (substitute* "xslt/style.xslt"
-                   (("#banner           \\{ background:     black;")
-                    "#banner           { display:        none;"))
-                 (invoke "make")
-                 #t)))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((output (assoc-ref outputs "out")))
-                 (mkdir-p output)
-                 (copy-recursively "libxslt" output)
-                 #t))))))
-      (native-inputs
-       (list libxml2 libxslt nginx-xslscript))
+       (list
+        #:tests? #f                     ; no test suite
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)         ; no configure script
+            (replace 'build
+              (lambda _
+                (substitute* "tools/umasked.sh"
+                  ((" /bin/sh") (string-append " " (which "sh"))))
+                ;; The documentation includes a banner, which makes sense on
+                ;; the NGinx website, but doesn't make much sense when
+                ;; viewing locally. Therefore, modify the CSS to remove the
+                ;; banner.
+                (substitute* "xslt/style.xslt"
+                  (("#banner           \\{ background:     black;")
+                   "#banner           { display:        none;"))
+                (invoke "make")))
+            (replace 'install
+              (lambda _
+                (mkdir-p #$output)
+                (copy-recursively "libxslt" #$output))))))
+      (native-inputs (list libxml2 libxslt nginx-xslscript))
       (home-page "https://nginx.org")
       (synopsis "Documentation for the nginx web server")
       (description
