@@ -38221,6 +38221,12 @@ When false, all reverse lookups for private IP ranges are answered with
 When true, dnsmasq queries the servers in the same order as they appear
 in @var{servers}.
 
+@item @code{locals} (default: @code{'()})
+Specify domain name @emph{patterns} which should be treated as local,
+that is, for which there should be no delegation to upstream servers.
+Provided pattern values should be of the form
+@code{'("/vpn.example.com/")}.
+
 @item @code{servers} (default: @code{'()})
 Specify IP address of upstream servers directly.
 

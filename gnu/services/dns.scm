@@ -70,6 +70,7 @@
             dnsmasq-configuration-no-resolv?
             dnsmasq-configuration-forward-private-reverse-lookup?
             dnsmasq-configuration-query-servers-in-order?
+            dnsmasq-configuration-locals
             dnsmasq-configuration-servers
             dnsmasq-configuration-servers-file
             dnsmasq-configuration-addresses
@@ -809,6 +810,8 @@ cache.size = 100 * MB
   (query-servers-in-order?
                     dnsmasq-configuration-query-servers-in-order?
                     (default #f))       ;boolean
+  (locals           dnsmasq-configuration-locals
+                    (default '()))
   (servers          dnsmasq-configuration-servers
                     (default '()))      ;list of string
   (servers-file     dnsmasq-configuration-servers-file
@@ -868,7 +871,7 @@ cache.size = 100 * MB
      port local-service? listen-addresses ipv4? ipv6?
      resolv-file no-resolv?
      forward-private-reverse-lookup? query-servers-in-order?
-     servers addresses servers-file
+     locals servers addresses servers-file
      cache-size negative-cache?
      cpe-id
      tftp-enable? tftp-no-fail?
@@ -916,6 +919,8 @@ cache.size = 100 * MB
                 #$@(if servers-file
                        (list #~(string-append "--servers-file=" #$servers-file))
                        '())
+                #$@(map (cut format #f "--local=~a" <>)
+                        locals)
                 #$@(map (cut format #f "--server=~a" <>)
                         servers)
                 #$@(map (cut format #f "--address=~a" <>)
