@@ -328,7 +328,7 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
 (define-public man-pages
   (package
     (name "man-pages")
-    (version "6.16")
+    (version "6.18")
     (source
      (origin
        (method url-fetch)
@@ -338,7 +338,7 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
               (string-append "mirror://kernel.org/linux/docs/man-pages/Archive/"
                              "man-pages-" version ".tar.xz")))
        (sha256
-        (base32 "18yp64vb8br49d44jmq47dc901n7p20nqs88zsf8106dfnypl94f"))))
+        (base32 "1l949fvqikf88qjxbp1wny185prd3mcgcd3s49l8qx2rigfgld69"))))
     (build-system gnu-build-system)
     (arguments
      (list
