@@ -7401,7 +7401,7 @@ with the \"Stamp\" tool within Tux Paint.")
 (define-public supertux
   (package
    (name "supertux")
-   (version "0.6.3")
+   (version "0.7.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://github.com/SuperTux/supertux/"
@@ -7410,49 +7410,56 @@ with the \"Stamp\" tool within Tux Paint.")
             (file-name (string-append name "-" version ".tar.gz"))
             (sha256
              (base32
-              "1xkr3ka2sxp5s0spp84iv294i29s1vxqzazb6kmjc0n415h0x57p"))
-            (patches
-             (search-patches "supertux-unbundle-squirrel.patch"))
+              "198xqcxyav8kj62i0vi5h6rn8mwjvqhny79lb27daklrp6cmpz1j"))
             (modules '((guix build utils)))
             (snippet
-             #~(substitute* "external/partio_zip/zip_manager.hpp"
-                            (("^#include <vector>" include-vector)
-                             (string-append "#include <memory>\n"
-                                            include-vector))))))
+             ;; Unbundle libraries
+             #~(begin
+                 (for-each (lambda (dir)
+                             (delete-file-recursively
+                              (string-append "external/" dir)))
+                           '(;; "SDL_savePNG"
+                             "SDL_ttf"
+                             "discord-sdk"
+                             ;; "findlocale"
+                             ;; "obstack"
+                             ;; "partio_zip"
+                             ;; "sexp-cpp"
+                             "shared-modules"
+                             "simplesquirrel"
+                             "tinygettext"))
+                 (substitute* "CMakeLists.txt"
+                   (("add_subdirectory\\(external/simplesquirrel .*$") "")
+                   (("add_subdirectory\\(external/tinygettext .*$") "")
+                   (("set_property\\(TARGET squirrel .*$") "")
+                   (("## Link supertux binary with squirrel .*$" all)
+                    (string-append all "\n"
+                                   "target_link_libraries(supertux2 PUBLIC "
+                                   "squirrel sqstdlib)\n")))
+                 (substitute* "mk/cmake/SuperTux/BuildInstall.cmake"
+                   (("install\\(TARGETS simplesquirrel.*$") ""))))))
    (arguments
-    '(#:tests? #f
-      #:configure-flags '("-DINSTALL_SUBDIR_BIN=bin"
-                          "-DUSE_SYSTEM_PHYSFS=ON")
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'adapt-squirrel
-          (lambda* (#:key inputs #:allow-other-keys)
-            (let ((squirrel (assoc-ref inputs "squirrel")))
-              (substitute* "CMakeLists.txt"
-                (("set\\(SQUIRREL_PREFIX.*")
-                 (string-append "set(SQUIRREL_PREFIX " squirrel ")"))
-                (("add_dependencies\\(supertux2_lib squirrel\\)") "")
-                (("\\$\\{SQUIRREL_PREFIX\\}/include")
-                 (string-append "${SQUIRREL_PREFIX}/include/squirrel"))))
-            ;; Adapt to changed API between squirrel-3.1 and 3.2.
-            (substitute* "src/scripting/wrapper.cpp"
-              (("sq_getinstanceup\\(vm, 1, &data, nullptr" all)
-               (string-append all ", 0"))))))))
+    (list
+     #:configure-flags #~(list "-DINSTALL_SUBDIR_BIN=bin"
+                               "-DUSE_SYSTEM_SDL2_TTF=ON")))
    (build-system cmake-build-system)
-   (inputs (list boost-1.83
-                 curl
-                 freetype
-                 glew
-                 glm
-                 libogg
-                 libvorbis
-                 mesa
-                 openal
-                 physfs
-                 sdl2
-                 sdl2-image
-                 sdl2-mixer
-                 squirrel))
+   (inputs
+    (list curl
+          fmt
+          freetype
+          glew
+          glm
+          harfbuzz
+          libogg
+          libvorbis
+          openal
+          physfs
+          sdl2
+          sdl2-image
+          sdl2-ttf
+          simplesquirrel-for-supertux
+          squirrel-for-supertux
+          tinygettext))
    (native-inputs
     (list pkg-config))
    (synopsis "2D platformer game")

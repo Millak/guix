@@ -2487,7 +2487,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/strutcpp-fix-includes.patch              \
   %D%/packages/patches/superlu-dist-awpm-grid.patch		\
   %D%/packages/patches/superlu-dist-scotchmetis.patch		\
-  %D%/packages/patches/supertux-unbundle-squirrel.patch		\
   %D%/packages/patches/swift-5.7.3-sdk-path.patch			\
   %D%/packages/patches/swift-5.7.3-sourcekit-rpath.patch		\
   %D%/packages/patches/swift-6.2-cplus-include-path.patch		\

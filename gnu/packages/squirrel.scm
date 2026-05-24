@@ -135,20 +135,10 @@ games.")
       (home-page "https://matusnovak.github.io/simplesquirrel")
       (synopsis "C++ API bindings for Squirrel language")
       (description "Simplesquirrel is a C++ 11 library providing
-bindings for Squirrel language.
-
-Allows the following:
-
-@itemize
-@item Binding C++ function and calling it from Squirrel
-@item Looking up Squirrel function and calling it from C++
-@item Looking up Squirrel classes and creating instances on C++ side
-@item Binding C++ classes including methods and member variables
-@item Passing any C++ pointer as either instance or userpointer
-(depends if your C++ has been exposed to VM)
-@item Creating enumerations
-@item Creating and passing tables
-@item Creating and passing arrays
-@end itemize")
+bindings for Squirrel language.  It allows binding C++ function
+and calling it from Squirrel, looking up for Squirrel function
+(or class) and calling it (or creating instance of it) on C++ side,
+passing any C++ pointer as either instance or userpointer,
+creating enumerations, tables, and arrays.")
       (license license:expat))))
 
