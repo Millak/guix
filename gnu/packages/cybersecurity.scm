@@ -111,7 +111,7 @@ Refresh}in-DRAM mitigations effectively and as such can trigger bit flips.")
 (define-public gallia
   (package
     (name "gallia")
-    (version "2.0.2")
+    (version "2.1.1")
     (source
      (origin
        (method git-fetch)
@@ -120,7 +120,7 @@ Refresh}in-DRAM mitigations effectively and as such can trigger bit flips.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yvjpwpqq6r6glfm4qzb8j91d2gsfy4lvygd9z9pg2j6jvcq6f6s"))))
+        (base32 "04xzh5fi18wrkjs7sqwlv344jf54njvnly042rhxq3x5jrvpvkdw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -132,25 +132,16 @@ Refresh}in-DRAM mitigations effectively and as such can trigger bit flips.")
       #:test-flags #~(list "tests/pytest")))
     (native-inputs
      (list python-poetry-core
-           python-pygit2
            python-pytest
            python-pytest-asyncio))
     (inputs
-     (list python-aiofiles
-           python-aiosqlite
+     (list python-aiosqlite
            python-argcomplete
            python-boltons
-           python-can
-           python-construct
-           python-exitcode
-           python-httpx
-           python-more-itertools
-           python-msgspec
            python-platformdirs
-           python-psutil
            python-pydantic
-           python-pygit2
            python-tabulate
+           python-wcwidth
            python-zstandard))
     (home-page "https://github.com/Fraunhofer-AISEC/gallia")
     (synopsis "Extendable Pentesting Framework")
