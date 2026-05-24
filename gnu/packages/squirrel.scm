@@ -25,6 +25,7 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build utils)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils))
 
@@ -88,3 +89,66 @@ games.")
               (sha256
                (base32
                 "0dsg9iz0hsypa8020vl35fqzzichrrq09f1ns2fnmi3x1ggw0c0f")))))))
+
+(define-public simplesquirrel-for-supertux
+  (let ((commit "37c2410b5f31d3aea3431d83b9b4398883224f23")
+        (revision "0"))
+    (package
+      (name "simplesquirrel-for-supertux")
+      (version (git-version "2026-01-06" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/SuperTux/simplesquirrel.git")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "0d41vmjzdx1l4xfzn4sywy6bhspv89ih589s77b5gbllylgrakxp"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        ;; No tests by default.  Tests that can be enabled with
+        ;; -DSSQ_BUILD_TESTS configure options do not seem to be
+        ;; in working order.
+        #:tests? #f
+        #:configure-flags
+        #~(list
+           ;; "-DSSQ_BUILD_TESTS=ON"
+           "-DSSQ_USE_SQ_SUBMODULE=OFF"
+           (string-append "-DSQUIRREL_INCLUDE_DIR="
+                          #$(this-package-input "squirrel-for-supertux")
+                          "/include")
+           (string-append "-DSQUIRREL_LIBRARIES="
+                          #$(this-package-input "squirrel-for-supertux")
+                          "/include/lib/libsquirrel.so")
+           (string-append "-DSQSTDLIB_LIBRARIES="
+                          #$(this-package-input "squirrel-for-supertux")
+                          "/include/lib/libsqstdlib.so"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'do-not-install-static-lib
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("INSTALL\\(TARGETS \\$\\{PROJECT_NAME\\}_static .*$")
+                   "")))))))
+      (inputs (list squirrel-for-supertux))
+      (home-page "https://matusnovak.github.io/simplesquirrel")
+      (synopsis "C++ API bindings for Squirrel language")
+      (description "Simplesquirrel is a C++ 11 library providing
+bindings for Squirrel language.
+
+Allows the following:
+
+@itemize
+@item Binding C++ function and calling it from Squirrel
+@item Looking up Squirrel function and calling it from C++
+@item Looking up Squirrel classes and creating instances on C++ side
+@item Binding C++ classes including methods and member variables
+@item Passing any C++ pointer as either instance or userpointer
+(depends if your C++ has been exposed to VM)
+@item Creating enumerations
+@item Creating and passing tables
+@item Creating and passing arrays
+@end itemize")
+      (license license:expat))))
+
