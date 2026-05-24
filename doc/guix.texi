@@ -38112,6 +38112,21 @@ This is the type of the dnsmasq service, whose value should be a
            (servers '("192.168.1.1"))))
 @end lisp
 
+The following example shows a slightly more complex configuration that
+defines an authoritative DNS server on a given subdomain.
+@lisp
+(service dnsmasq-service-type
+         (dnsmasq-configuration
+           (listen-addresses '("10.1.1.1"))
+           (no-resolv? #t)
+           (no-hosts? #t)
+           (authoritative-servers '("vpn.example.com")) ;self
+           (authoritative-zones '("vpn.example.com"))
+           (host-records '("some-service.vpn.example.com,10.1.1.1"))))
+@end lisp
+
+For more examples, refer to @samp{man 8 dnsmasq.}
+
 @code{dnsmasq-service-type} provides two actions:
 
 @table @code
@@ -38212,6 +38227,21 @@ The file to read the IP address of the upstream nameservers from.
 
 @item @code{no-resolv?} (default: @code{#f})
 When true, don't read @var{resolv-file}.
+
+@item @code{authoritative-servers} (default: @code{'()})
+A list of strings corresponding to valid @option{--auth-server} values,
+such as a domain name.  This is useful to make @command{dnsmasq}
+authoritative for a given domain name or interface.
+
+@item @code{authoritative-zones} (default: @code{'()})
+A list of strings corresponding to valid @option{--auth-zone} values,
+such as a domain name.  This is useful to make @command{dnsmasq}
+authoritative for a given domain name.  Note that this must be used in
+conjunction with the @code{authoritative-servers} option.
+
+@item @code{host-records} (default: @code{'()})
+A list of strings corresponding to valid @option{--host-record} values,
+for example @code{'("some-service.example.com,10.1.1.1")}.
 
 @item @code{forward-private-reverse-lookup?} (default: @code{#t})
 When false, all reverse lookups for private IP ranges are answered with

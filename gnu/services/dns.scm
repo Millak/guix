@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2024 Sören Tempel <soeren@soeren-tempel.net>
+;;; Copyright © 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -68,6 +69,7 @@
             dnsmasq-configuration-ipv6?
             dnsmasq-configuration-resolv-file
             dnsmasq-configuration-no-resolv?
+            dnsmasq-configuration-authoritative-zones
             dnsmasq-configuration-forward-private-reverse-lookup?
             dnsmasq-configuration-query-servers-in-order?
             dnsmasq-configuration-locals
@@ -804,6 +806,12 @@ cache.size = 100 * MB
                     (default "/etc/resolv.conf")) ;string
   (no-resolv?       dnsmasq-configuration-no-resolv?
                     (default #f))       ;boolean
+  (authoritative-servers dnsmasq-configuration-authoritative-servers
+                       (default '()))   ;list of strings
+  (authoritative-zones dnsmasq-configuration-authoritative-zones
+                       (default '()))   ;list of strings
+  (host-records dnsmasq-configuration-host-records
+                (default '()))          ;list of strings
   (forward-private-reverse-lookup?
                     dnsmasq-configuration-forward-private-reverse-lookup?
                     (default #t))       ;boolean
@@ -870,6 +878,7 @@ cache.size = 100 * MB
      no-hosts?
      port local-service? listen-addresses ipv4? ipv6?
      resolv-file no-resolv?
+     authoritative-servers authoritative-zones host-records
      forward-private-reverse-lookup? query-servers-in-order?
      locals servers addresses servers-file
      cache-size negative-cache?
@@ -909,7 +918,13 @@ cache.size = 100 * MB
                 #$(format #f "--resolv-file=~a" resolv-file)
                 #$@(if no-resolv?
                        '("--no-resolv")
-                        '())
+                       '())
+                #$@(map (cut format #f "--auth-server=~a" <>)
+                        authoritative-servers)
+                #$@(map (cut format #f "--auth-zone=~a" <>)
+                        authoritative-zones)
+                #$@(map (cut format #f "--host-record=~a" <>)
+                        host-records)
                 #$@(if forward-private-reverse-lookup?
                        '()
                         '("--bogus-priv"))
