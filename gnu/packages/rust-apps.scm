@@ -2123,7 +2123,7 @@ JSON viewer and jq filter editor.")
 (define-public jujutsu
   (package
     (name "jujutsu")
-    (version "0.40.0")
+    (version "0.41.0")
     (source
      (origin
        (method git-fetch)
@@ -2132,7 +2132,7 @@ JSON viewer and jq filter editor.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wdl6jqvv3bhdij65gsn0lpycw2qg2i5p1rc2wi42fdhghsfq6iw"))))
+        (base32 "1jla0sjw8cyhrmkl83xkp8mp8nbplj4nmd0w16bprj1kd5xzkpc9"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -2180,7 +2180,7 @@ JSON viewer and jq filter editor.")
        (list pkg-config
              ;; For tests.
              git-minimal
-             openssh)))
+             openssh-sans-x)))
     (inputs (cons* zlib openssl libssh2 libgit2-1.9 (cargo-inputs 'jujutsu)))
     (home-page "https://github.com/jj-vcs/jj")
     (synopsis "Git-compatible distributed version control system")
