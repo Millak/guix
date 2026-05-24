@@ -1577,7 +1577,7 @@ the \"texlive\" importer."
 (define-member (person "Nguyễn Gia Phong"
                        "cnx@loang.net"
                        "cnx")
-  build-tools python qa-packages sysadmin vcs)
+  build-tools qa-packages sysadmin vcs)
 
 (define-member (person "Lilah Tascheter"
                        "lilah@lunabee.space"
