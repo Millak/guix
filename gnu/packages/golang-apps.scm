@@ -115,7 +115,7 @@ that handle none of the event types.")
 (define-public go-jsonnet
   (package
     (name "go-jsonnet")
-    (version "0.21.0")
+    (version "0.22.0")
     (source
      (origin
        (method git-fetch)
@@ -124,7 +124,7 @@ that handle none of the event types.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d05f16qxabfhaj0l3da3x7zl5g8jbvkcyn39bidd2a278sb3p97"))))
+        (base32 "1c7h14rvavgadvbsyfa9j4rchsgxb5j363f53rhcvghvmblzddiv"))))
     (build-system go-build-system)
     (arguments
      (list
