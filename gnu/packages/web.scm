@@ -589,7 +589,14 @@ the same, being completely separated from the Internet.")
      (list
       #:tests? #f                       ; no test target
       #:configure-flags
-      #~(list "--with-http_ssl_module"
+      #~(list (string-append "--conf-path=" #$output
+                             "/share/nginx/conf/nginx.conf")
+              ;; These file names should be configured by the service, but at
+              ;; least set the defaults to writable locations.
+              "--error-log-path=/tmp/nginx-error.log"
+              "--http-log-path=/tmp/nginx-access.log"
+              "--pid-path=/tmp/nginx.pid"
+              "--with-http_ssl_module"
               "--with-http_v2_module"
               "--with-http_v3_module"
               "--with-http_xslt_module"
@@ -646,19 +653,12 @@ the same, being completely separated from the Internet.")
             (lambda _
               (let ((man (string-append #$output "/share/man")))
                 (install-file "objs/nginx.8" (string-append man "/man8")))))
-          (add-after 'install 'fix-root-dirs
+          (add-after 'install 'move-html-doc
             (lambda _
-              ;; 'make install' puts things in strange places, so we need to
-              ;; clean it up ourselves.
               (let* ((out #$output)
                      (share (string-append out "/share/nginx")))
-                ;; This directory is empty, so get rid of it.
-                (rmdir (string-append out "/logs"))
-                ;; Example configuration and HTML files belong in
-                ;; /share.
+                ;; Example configuration and HTML files belong in /share.
                 (mkdir-p share)
-                (rename-file (string-append out "/conf")
-                             (string-append share "/conf"))
                 (rename-file (string-append out "/html")
                              (string-append share "/html"))))))))
     (home-page "https://nginx.org")
