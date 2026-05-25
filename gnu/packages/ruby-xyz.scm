@@ -12463,24 +12463,42 @@ almost perfectly compatible with ruby 1.9's.")
 (define-public ruby-childprocess
   (package
     (name "ruby-childprocess")
-    (version "4.1.0")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "childprocess" version))
        (sha256
         (base32
-         "1lvcp8bsd35g57f7wz4jigcw2sryzzwrpcgjwwf3chmjrjcww5in"))))
+         "1v5nalaarxnfdm6rxb7q6fmc6nx097jd630ax6h9ch7xw95li3cs"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:tests? #f  ;; one failing test, even with fixes below
-       #:test-target "spec"
+     `(#:test-target "spec"
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'sanitize-dependencies
+           (lambda _
+             (substitute* "childprocess.gemspec"
+               ((".*coveralls.*") ""))
+             (substitute* "spec/spec_helper.rb"
+               ((".*[Cc]overalls.*") ""))))
          (add-after 'unpack 'patch
            (lambda _
              (substitute* "spec/spec_helper.rb"
-               (("#!/bin/sh\\\\n") (string-append "#!" (which "sh") "\\n"))))))))
+               (("#!/bin/sh\\\\n") (string-append "#!" (which "sh") "\\n")))))
+          (add-before 'check 'disable-broken-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (let ((skippedtests
+                        (list ;; Disable Rubygems version warning check
+                              "ChildProcess validates cleanly")))
+                     (setenv "SPEC_OPTS"
+                       (string-append
+                         "--warnings" " "
+                         ;; Disable tests failing in the guix environment:
+                         "--example-matches "
+                         "'(^(?!.*(" (string-join skippedtests "|") ")).*)'")))
+                (invoke "rspec")))))))
     (native-inputs
      (list ruby-coveralls ruby-rspec))
     (synopsis "Control external programs running in the background, in Ruby")
