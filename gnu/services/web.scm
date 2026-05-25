@@ -1018,25 +1018,26 @@ renewed TLS certificates, or @code{include}d files.")
         (nginx-error-log-file config)))
 
 (define nginx-service-type
-  (service-type (name 'nginx)
-                (extensions
-                 (list (service-extension shepherd-root-service-type
-                                          nginx-shepherd-service)
-                       (service-extension log-rotation-service-type
-                                          nginx-log-files)
-                       (service-extension activation-service-type
-                                          nginx-activation)
-                       (service-extension account-service-type
-                                          (const %nginx-accounts))))
-                (compose concatenate)
-                (extend (lambda (config servers)
-                          (nginx-configuration
-                            (inherit config)
-                            (server-blocks
-                              (append (nginx-configuration-server-blocks config)
-                              servers)))))
-                (default-value (nginx-configuration))
-                (description "Run the nginx Web server.")))
+  (service-type
+    (name 'nginx)
+    (extensions
+     (list (service-extension shepherd-root-service-type
+                              nginx-shepherd-service)
+           (service-extension log-rotation-service-type
+                              nginx-log-files)
+           (service-extension activation-service-type
+                              nginx-activation)
+           (service-extension account-service-type
+                              (const %nginx-accounts))))
+    (compose concatenate)
+    (extend (lambda (config servers)
+              (nginx-configuration
+                (inherit config)
+                (server-blocks
+                 (append (nginx-configuration-server-blocks config)
+                         servers)))))
+    (default-value (nginx-configuration))
+    (description "Run the nginx Web server.")))
 
 (define-record-type* <gunicorn-configuration>
   gunicorn-configuration make-gunicorn-configuration
