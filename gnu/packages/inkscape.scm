@@ -379,6 +379,15 @@ as the native format.")
                    ;; Re-instate the tests disabled in inkscape/pinned, now that
                    ;; their ImageMagick requirement is satisfied.
                    #~((replace 'check (assoc-ref gnu:%standard-phases 'check))))
+            #$@(if (or (target-aarch64?)
+                       (target-ppc64le?)
+                       (target-riscv64?))
+                   '((add-after 'unpack 'disable-geom-pathstroke-test
+                       (lambda _
+                         ;; https://gitlab.com/inkscape/lib2geom/-/work_items/80
+                         (substitute* "testfiles/CMakeLists.txt"
+                           (("    geom-pathstroke-test") "")))))
+                   '())
             (replace 'wrap-program
               ;; Ensure Python is available at runtime.
               (lambda _
