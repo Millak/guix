@@ -610,25 +610,6 @@ UTF-32 support.")
        (description "This package provides Rust bindings for PipeWire.")
        (license license:expat)))))
 
-(define-public rust-pipewire-0.8.0.93138d0
-  (let ((commit "93138d01b23628521b29b5604bbebe991cba4c65"))
-    (hidden-package
-     (package
-       (inherit rust-pipewire-0.8.0.fd3d8f7)
-       (name "rust-pipewire")
-       (version (git-version "0.8.0" "0" commit))
-       (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://gitlab.freedesktop.org/pipewire/pipewire-rs.git")
-                 (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32
-            "0zgqklzmyk893n82zq8d0is57npvy9lsfpqb83h1bbx9c42fl35p"))))
-       (inputs (cargo-inputs 'rust-pipewire-0.8.0.93138d0))))))
-
 ;; Workspace dependency of zed.
 ;;
 ;; Cargo side: Cargo unifies dependency versions across zed's
@@ -699,38 +680,6 @@ UTF-32 support.")
      (description
       "This package provides Python environment tools.")
      (license license:expat))))
-
-(define-public rust-pubgrub-0.3.0.b70cf70
-  (let ((commit "b70cf707aa43f21b32f3a61b8a0889b15032d5c4")
-        (revision "0"))
-    (hidden-package
-     (package
-       (name "rust-pubgrub")
-       (version (git-version "0.3.0" revision commit))
-       (source (origin
-                 (method git-fetch)
-                 (uri (git-reference
-                       (url "https://github.com/astral-sh/pubgrub")
-                       (commit commit)))
-                 (file-name (git-file-name name version))
-                 (sha256
-                  (base32
-                   "08rfk4hh2cx4v8fi62j365mwga3fgww9wcfszq7i5g4zmlhp8p8l"))
-                 (modules '((guix build utils)))
-                 ;; Pretend to be version 0.3.0.
-                 (snippet
-                  '(substitute* "Cargo.toml"
-                     (("0\\.3\\.0-alpha\\.1") "0.3.0")))))
-       (build-system cargo-build-system)
-       (arguments
-        (list #:skip-build? #t
-              #:cargo-package-crates ''("version-ranges" "pubgrub")))
-       (inputs (cargo-inputs 'rust-pubgrub-0.3.0.b70cf70))
-       (home-page "https://github.com/pubgrub-rs/pubgrub")
-       (synopsis "PubGrub version solving algorithm")
-       (description
-        "This package provides the @code{PubGrub} version solving algorithm.")
-       (license license:mpl2.0)))))
 
 (define-public rust-ring-0.17
   (hidden-package
@@ -1013,44 +962,10 @@ UTF-32 support.")
 incrementalized computation (experimental).")
       (license (list license:asl2.0 license:expat)))))
 
-(define-public rust-smithay-0.6.0.ede2707
-  (let ((commit "ede27079f45eeb7c21796e22f3bc25b741b024ea")
-        (revision "2"))
-    (hidden-package
-     (package
-       (name "rust-smithay")
-       (version (git-version "0.6.0" revision commit))
-       (source (origin
-                 (method git-fetch)
-                 (uri (git-reference
-                       (url "https://github.com/Smithay/smithay")
-                       (commit commit)))
-                 (file-name (git-file-name name version))
-                 (sha256
-                  (base32
-                   "187vdwhy6fjjym9xmyzdhpw1r5xfdfsbbn7y8xv0x9dv12f1var2"))))
-       (build-system cargo-build-system)
-       (arguments
-        (list #:skip-build? #t
-              #:cargo-package-crates ''("smithay" "smithay-drm-extras")))
-       (inputs (cargo-inputs 'rust-smithay-0.6.0.ede2707))
-       (home-page "https://github.com/Smithay/smithay")
-       (synopsis "Smithy for Rust Wayland compositors")
-       (description
-        "Smithay aims to provide building blocks to create wayland compositors
-in Rust.  While not being a full-blown compositor, it'll provide objects and
-interfaces implementing common functionalities that pretty much any compositor
-will need, in a generic fashion.
-
-It supports the @code{wayland}, @code{wayland-protocols}, and some external
-extensions, such as @code{wlr-protocols} and @code{plasma-wayland-protocols}.")
-       (license license:expat)))))
-
 (define-public rust-smithay-0.7.0.ff5fa7d
   (let ((commit "ff5fa7df392cecfba049ffed55cdaa4e98a8e7ef"))
     (hidden-package
      (package
-       (inherit rust-smithay-0.6.0.ede2707)
        (name "rust-smithay")
        (version (git-version "0.7.0" "0" commit))
        (source
@@ -1063,7 +978,22 @@ extensions, such as @code{wlr-protocols} and @code{plasma-wayland-protocols}.")
           (sha256
            (base32
             "1dfksva7hizx675vh128ibrbf6ggjh2a01jm41qgb0dgyi6wcpsd"))))
-       (inputs (cargo-inputs 'rust-smithay-0.7.0.ff5fa7d))))))
+       (build-system cargo-build-system)
+       (arguments
+        (list #:skip-build? #t
+              #:cargo-package-crates ''("smithay" "smithay-drm-extras")))
+       (inputs (cargo-inputs 'rust-smithay-0.7.0.ff5fa7d))
+       (home-page "https://github.com/Smithay/smithay")
+       (synopsis "Smithy for Rust Wayland compositors")
+       (description
+        "Smithay aims to provide building blocks to create wayland compositors
+in Rust.  While not being a full-blown compositor, it'll provide objects and
+interfaces implementing common functionalities that pretty much any compositor
+will need, in a generic fashion.
+
+It supports the @code{wayland}, @code{wayland-protocols}, and some external
+extensions, such as @code{wlr-protocols} and @code{plasma-wayland-protocols}.")
+       (license license:expat)))))
 
 (define inspired-github-color-scheme-for-rust-syntect-5
   (let ((version "1.3.0"))
@@ -1406,172 +1336,10 @@ language models.")
 repository, used as dependencies by codex-acp.")
      (license license:asl2.0))))
 
-(define-public rust-codex-0.120.0
-  (hidden-package
-   (package
-     (name "rust-codex")
-     (version "0.120.0")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/openai/codex")
-              (commit "65319eb1400cbd2890c43d572263dabd25f18ba9")))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0gqzkqndb8jwvb9j5dxqgidyzk67x00ccfzhg54gdlv4adc1cgwj"))
-        (modules '((guix build utils)))
-        (snippet '(begin
-                    ;;; These are JSON manifests with a dotslash
-                    ;;; shebang that download and run pre-built
-                    ;;; binaries (ripgrep, bash) at runtime.
-                    (delete-file "codex-cli/bin/rg")
-                    ;; Bundled bubblewrap source tree; includes a
-                    ;; compiled BPF blob (demos/flatpak.bpf).
-                    (delete-file-recursively "codex-rs/vendor/bubblewrap")))
-        (patches (search-patches
-                  "codex-acp-0.11.1-disable-code-mode.patch"
-                  "rust-codex-0.120.0-core-remove-self-dep.patch"
-                  "rust-codex-0.120.0-remove-libwebrtc.patch"))))
-     (build-system cargo-build-system)
-     (arguments
-      (list
-       #:skip-build? #t
-       #:cargo-package-crates
-       ;; Order matters: dependencies must come before packages that need them
-       ''(;; Topologically sorted by internal dependency order.
-          "codex-experimental-api-macros"
-          "codex-utils-absolute-path"
-          "codex-git-utils"
-          "codex-async-utils"
-          "codex-execpolicy"
-          "codex-utils-home-dir"
-          "codex-utils-rustls-provider"
-          "codex-network-proxy"
-          "codex-utils-cache"
-          "codex-utils-image"
-          "codex-utils-string"
-          "codex-utils-template"
-          "codex-protocol"
-          "codex-shell-command"
-          "codex-utils-cargo-bin"
-          "codex-app-server-protocol"
-          "codex-client"
-          "codex-api"
-          "codex-otel"
-          "codex-features"
-          "codex-model-provider-info"
-          "codex-config"
-          "codex-keyring-store"
-          "codex-terminal-detection"
-          "codex-login"
-          "codex-utils-plugins"
-          "codex-plugin"
-          "codex-analytics"
-          "codex-ansi-escape"
-          "codex-utils-pty"
-          "codex-exec-server"
-          "codex-apply-patch"
-          "codex-code-mode"
-          "codex-connectors"
-          "codex-instructions"
-          "codex-skills"
-          "codex-core-skills"
-          "codex-feedback"
-          "codex-hooks"
-          "codex-rmcp-client"
-          "codex-mcp"
-          "codex-collaboration-mode-templates"
-          "codex-response-debug-context"
-          "codex-utils-output-truncation"
-          "codex-models-manager"
-          "codex-file-search"
-          "codex-state"
-          "codex-utils-path"
-          "codex-rollout"
-          "codex-sandboxing"
-          "codex-secrets"
-          "codex-shell-escalation"
-          "codex-tools"
-          "codex-utils-readiness"
-          "codex-utils-stream-parser"
-          "codex-windows-sandbox"
-          "codex-core"
-          "codex-linux-sandbox"
-          "codex-arg0"
-          "codex-backend-openapi-models"
-          "codex-backend-client"
-          "codex-utils-cli"
-          "codex-chatgpt"
-          "codex-cloud-requirements"
-          "codex-utils-json-to-toml"
-          "codex-app-server"
-          "codex-app-server-client"
-          "codex-app-server-test-client"
-          "codex-cloud-tasks-client"
-          "codex-cloud-tasks-mock-client"
-          "codex-utils-approval-presets"
-          "codex-utils-elapsed"
-          "codex-utils-fuzzy-match"
-          "codex-lmstudio"
-          "codex-ollama"
-          "codex-utils-oss"
-          "codex-utils-sandbox-summary"
-          "codex-utils-sleep-inhibitor"
-          "codex-realtime-webrtc"
-          "codex-exec"
-          "codex-mcp-server"
-          "codex-process-hardening"
-          "codex-responses-api-proxy"
-          "codex-stdio-to-uds"
-          "codex-debug-client"
-          "codex-execpolicy-legacy")
-       #:phases
-       #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir-to-workspace
-            (lambda _
-              (chdir "codex-rs")))
-          (add-after 'chdir-to-workspace 'patch-git-deps-to-vendor
-            (lambda _
-              (substitute* "Cargo.toml"
-                (("crossterm = \\{ git = [^}]+\\}")
-                 "crossterm = { version = \"0.28.1\" }")
-                (("ratatui = \\{ git = [^}]+\\}")
-                 "ratatui = { version = \"0.29.0\" }")
-                (("tokio-tungstenite = \\{ git = [^}]+\\}")
-                 "tokio-tungstenite = { version = \"0.28.0\" }")
-                (("nucleo = \\{ git = [^}]+\\}")
-                 "nucleo = { version = \"0.5.0\" }")
-                (("runfiles = \\{ git = [^}]+\\}")
-                 "runfiles = { version = \"0.1.0\" }"))
-              ;; Disable V8 runtime in codex-code-mode.
-              (substitute* "Cargo.toml"
-                (("codex-code-mode = \\{ path = \"code-mode\" \\}")
-                 "codex-code-mode = { path = \"code-mode\", default-features = false }"))))
-          (add-after 'patch-git-deps-to-vendor 'add-version-to-workspace-deps
-            (lambda _
-              ;; cargo package requires all dependencies to have versions.
-              ;; Add version = "0.120.0" to internal path dependencies.
-              (let ((cargo-files (find-files "." "^Cargo\\.toml$")))
-                (substitute* cargo-files
-                  (("(codex-[a-z0-9-]+) = \\{ path = " all name)
-                   (string-append name " = { version = \"0.120.0\", path = "))
-                  (("(codex-[a-z0-9-]+) = \\{ package = " all name)
-                   (string-append name " = { version = \"0.120.0\", package = "))
-                  (("^(path = \"\\.\\./[^\"]*\")" all path-line)
-                   (string-append path-line "\nversion = \"0.120.0\"")))))))))
-     (inputs (cargo-inputs 'rust-codex-0.0.0.785c0c43))
-     (home-page "https://github.com/openai/codex")
-     (synopsis "OpenAI Codex workspace crates")
-     (description
-      "This package provides the workspace crates for the OpenAI Codex CLI
-and runtime for AI-assisted coding.")
-     (license license:asl2.0))))
-
 (define-public rust-codex-0.124.0
   (hidden-package
    (package
-     (inherit rust-codex-0.120.0)
+     (name "rust-codex")
      (version "0.124.0")
      (source
       (origin
@@ -1579,7 +1347,7 @@ and runtime for AI-assisted coding.")
         (uri (git-reference
               (url "https://github.com/openai/codex")
               (commit "e9fb49366c93a1478ec71cc41ecee415a197d036")))
-        (file-name (git-file-name "rust-codex" "0.124.0"))
+        (file-name (git-file-name name version))
         (sha256
          (base32 "06il60npjnc0h91afyp3wk725cgy3ywk3hx2sbvzdxx6037z6nb0"))
         (modules '((guix build utils)))
@@ -1596,139 +1364,151 @@ and runtime for AI-assisted coding.")
                   "rust-codex-0.124.0-code-mode-stub-toolname.patch"
                   "rust-codex-0.124.0-remove-patch-sections.patch"
                   "rust-codex-0.120.0-remove-libwebrtc.patch"))))
+     (build-system cargo-build-system)
      (arguments
-      (substitute-keyword-arguments (package-arguments rust-codex-0.120.0)
-        ;; 0.124 differs from 0.120 by a single removal
-        ;; (codex-instructions) and ten additions placed at topo-correct
-        ;; positions; the order also shifts in a few spots to satisfy new
-        ;; deps (e.g. codex-utils-cargo-bin moves before codex-app-server-
-        ;; protocol).  Replace the whole list rather than computing a
-        ;; delta against the inherited one.
-        ((#:cargo-package-crates _)
-         ''(;; Topologically sorted by internal dependency order.
-            "codex-async-utils"
-            "codex-utils-absolute-path"
-            "codex-execpolicy"
-            "codex-utils-home-dir"
-            "codex-utils-rustls-provider"
-            "codex-network-proxy"
-            "codex-utils-cache"
-            "codex-utils-image"
-            "codex-utils-string"
-            "codex-utils-template"
-            "codex-protocol"
-            "codex-agent-identity"
-            "codex-experimental-api-macros"
-            "codex-shell-command"
-            "codex-utils-cargo-bin"
-            "codex-app-server-protocol"
-            "codex-client"
-            "codex-api"
-            "codex-otel"
-            "codex-features"
-            "codex-model-provider-info"
-            "codex-utils-path"
-            "codex-config"
-            "codex-sandboxing"
-            "codex-utils-pty"
-            "codex-exec-server"
-            "codex-git-utils"
-            "codex-keyring-store"
-            "codex-terminal-detection"
-            "codex-login"
-            "codex-utils-plugins"
-            "codex-plugin"
-            "codex-analytics"
-            "codex-ansi-escape"
-            "codex-apply-patch"
-            "codex-code-mode"
-            "codex-connectors"
-            "codex-skills"
-            "codex-utils-output-truncation"
-            "codex-core-skills"
-            "codex-core-plugins"
-            "codex-feedback"
-            "codex-hooks"
-            "codex-rmcp-client"
-            "codex-mcp"
-            "codex-aws-auth"
-            "codex-model-provider"
-            "codex-collaboration-mode-templates"
-            "codex-response-debug-context"
-            "codex-models-manager"
-            "codex-file-search"
-            "codex-state"
-            "codex-rollout"
-            "codex-rollout-trace"
-            "codex-secrets"
-            "codex-shell-escalation"
-            "codex-thread-store"
-            "codex-tools"
-            "codex-utils-readiness"
-            "codex-utils-stream-parser"
-            "codex-windows-sandbox"
-            "codex-core"
-            "codex-linux-sandbox"
-            "codex-arg0"
-            "codex-backend-openapi-models"
-            "codex-backend-client"
-            "codex-utils-cli"
-            "codex-chatgpt"
-            "codex-cloud-requirements"
-            "codex-device-key"
-            "codex-utils-json-to-toml"
-            "codex-app-server"
-            "codex-app-server-client"
-            "codex-app-server-test-client"
-            "codex-cloud-tasks-client"
-            "codex-cloud-tasks-mock-client"
-            "codex-install-context"
-            "codex-realtime-webrtc"
-            "codex-utils-approval-presets"
-            "codex-utils-elapsed"
-            "codex-utils-fuzzy-match"
-            "codex-lmstudio"
-            "codex-ollama"
-            "codex-utils-oss"
-            "codex-utils-sandbox-summary"
-            "codex-utils-sleep-inhibitor"
-            "codex-exec"
-            "codex-mcp-server"
-            "codex-process-hardening"
-            "codex-responses-api-proxy"
-            "codex-uds"
-            "codex-stdio-to-uds"
-            "codex-debug-client"
-            "codex-execpolicy-legacy"
-            "codex-test-binary-support"))
-        ((#:phases orig)
-         ;; Two changes from the inherited phases:
-         ;; (1) 'add-version-to-workspace-deps stamps the literal
-         ;;     0.120.0 version inside its substitute pattern, so we
-         ;;     swap the whole phase for one stamping 0.124.0 (and
-         ;;     using a regex that also matches the codex_windows_
-         ;;     sandbox underscore alias introduced in 0.124).
-         ;; (2) Add a new phase 'break-dev-dep-cycles to strip the
-         ;;     codex-test-binary-support dev-dep from exec-server and
-         ;;     core; it forms a cycle (test-binary-support -> arg0 ->
-         ;;     {exec-server,core} -> test-binary-support) that cargo
-         ;;     package --no-verify still rejects.
-         #~(modify-phases #$orig
-             (replace 'add-version-to-workspace-deps
-               (lambda _
-                 (let ((cargo-files (find-files "." "^Cargo\\.toml$")))
-                   (substitute* cargo-files
-                     (("(codex[_-][a-z0-9_-]+) = \\{ path = " all name)
-                      (string-append name " = { version = \"0.124.0\", path = "))
-                     (("(codex[_-][a-z0-9_-]+) = \\{ package = " all name)
-                      (string-append name " = { version = \"0.124.0\", package = "))
-                     (("^(path = \"\\.\\./[^\"]*\")" all path-line)
-                      (string-append path-line "\nversion = \"0.124.0\""))))))
+      (list
+       #:skip-build? #t
+       #:cargo-package-crates
+       ;; Order matters: dependencies must come before packages that need them
+       ''(;; Topologically sorted by internal dependency order.
+          "codex-async-utils"
+          "codex-utils-absolute-path"
+          "codex-execpolicy"
+          "codex-utils-home-dir"
+          "codex-utils-rustls-provider"
+          "codex-network-proxy"
+          "codex-utils-cache"
+          "codex-utils-image"
+          "codex-utils-string"
+          "codex-utils-template"
+          "codex-protocol"
+          "codex-agent-identity"
+          "codex-experimental-api-macros"
+          "codex-shell-command"
+          "codex-utils-cargo-bin"
+          "codex-app-server-protocol"
+          "codex-client"
+          "codex-api"
+          "codex-otel"
+          "codex-features"
+          "codex-model-provider-info"
+          "codex-utils-path"
+          "codex-config"
+          "codex-sandboxing"
+          "codex-utils-pty"
+          "codex-exec-server"
+          "codex-git-utils"
+          "codex-keyring-store"
+          "codex-terminal-detection"
+          "codex-login"
+          "codex-utils-plugins"
+          "codex-plugin"
+          "codex-analytics"
+          "codex-ansi-escape"
+          "codex-apply-patch"
+          "codex-code-mode"
+          "codex-connectors"
+          "codex-skills"
+          "codex-utils-output-truncation"
+          "codex-core-skills"
+          "codex-core-plugins"
+          "codex-feedback"
+          "codex-hooks"
+          "codex-rmcp-client"
+          "codex-mcp"
+          "codex-aws-auth"
+          "codex-model-provider"
+          "codex-collaboration-mode-templates"
+          "codex-response-debug-context"
+          "codex-models-manager"
+          "codex-file-search"
+          "codex-state"
+          "codex-rollout"
+          "codex-rollout-trace"
+          "codex-secrets"
+          "codex-shell-escalation"
+          "codex-thread-store"
+          "codex-tools"
+          "codex-utils-readiness"
+          "codex-utils-stream-parser"
+          "codex-windows-sandbox"
+          "codex-core"
+          "codex-linux-sandbox"
+          "codex-arg0"
+          "codex-backend-openapi-models"
+          "codex-backend-client"
+          "codex-utils-cli"
+          "codex-chatgpt"
+          "codex-cloud-requirements"
+          "codex-device-key"
+          "codex-utils-json-to-toml"
+          "codex-app-server"
+          "codex-app-server-client"
+          "codex-app-server-test-client"
+          "codex-cloud-tasks-client"
+          "codex-cloud-tasks-mock-client"
+          "codex-install-context"
+          "codex-realtime-webrtc"
+          "codex-utils-approval-presets"
+          "codex-utils-elapsed"
+          "codex-utils-fuzzy-match"
+          "codex-lmstudio"
+          "codex-ollama"
+          "codex-utils-oss"
+          "codex-utils-sandbox-summary"
+          "codex-utils-sleep-inhibitor"
+          "codex-exec"
+          "codex-mcp-server"
+          "codex-process-hardening"
+          "codex-responses-api-proxy"
+          "codex-uds"
+          "codex-stdio-to-uds"
+          "codex-debug-client"
+          "codex-execpolicy-legacy"
+          "codex-test-binary-support")
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'chdir-to-workspace
+             (lambda _
+               (chdir "codex-rs")))
+           (add-after 'chdir-to-workspace 'patch-git-deps-to-vendor
+             (lambda _
+               (substitute* "Cargo.toml"
+                 (("crossterm = \\{ git = [^}]+\\}")
+                  "crossterm = { version = \"0.28.1\" }")
+                 (("ratatui = \\{ git = [^}]+\\}")
+                  "ratatui = { version = \"0.29.0\" }")
+                 (("tokio-tungstenite = \\{ git = [^}]+\\}")
+                  "tokio-tungstenite = { version = \"0.28.0\" }")
+                 (("nucleo = \\{ git = [^}]+\\}")
+                  "nucleo = { version = \"0.5.0\" }")
+                 (("runfiles = \\{ git = [^}]+\\}")
+                  "runfiles = { version = \"0.1.0\" }"))
+               ;; Disable V8 runtime in codex-code-mode.
+               (substitute* "Cargo.toml"
+                 (("codex-code-mode = \\{ path = \"code-mode\" \\}")
+                  "codex-code-mode = { path = \"code-mode\", default-features = false }"))))
+           (add-after 'patch-git-deps-to-vendor 'add-version-to-workspace-deps
+             (lambda _
+               (let ((cargo-files (find-files "." "^Cargo\\.toml$")))
+                 (substitute* cargo-files
+                   (("(codex[_-][a-z0-9_-]+) = \\{ path = " all name)
+                    (string-append name " = { version = \"0.124.0\", path = "))
+                   (("(codex[_-][a-z0-9_-]+) = \\{ package = " all name)
+                    (string-append name " = { version = \"0.124.0\", package = "))
+                   (("^(path = \"\\.\\./[^\"]*\")" all path-line)
+                    (string-append path-line "\nversion = \"0.124.0\""))))))
              (add-after 'add-version-to-workspace-deps 'break-dev-dep-cycles
                (lambda _
                  (substitute* '("exec-server/Cargo.toml" "core/Cargo.toml")
-                   (("^codex-test-binary-support = \\{[^}]*\\}\n") ""))))))))
-     (inputs (cargo-inputs 'rust-codex-0.124.0)))))
+                   (("^codex-test-binary-support = \\{[^}]*\\}\n") "")))))))
+     (inputs (cargo-inputs 'rust-codex-0.124.0))
+     (home-page "https://github.com/openai/codex")
+     (synopsis "OpenAI Codex workspace crates")
+     (description
+      "This package provides the workspace crates for the OpenAI Codex CLI
+and runtime for AI-assisted coding.")
+     (license license:asl2.0))))
 
 ;; Also update (@ (gnu packages gnome) glycin-loaders) when updating this.
 (define-public rust-glycin-3

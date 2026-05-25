@@ -1138,8 +1138,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/clucene-pkgconfig.patch			\
   %D%/packages/patches/codex-acp-0.11.1-disable-code-mode.patch \
   %D%/packages/patches/codex-acp-0.11.1-remove-patch-sections.patch \
-  %D%/packages/patches/codex-0.98.0-remove-patch-sections.patch    \
-  %D%/packages/patches/rust-codex-0.117.0-remove-patch-sections.patch    \
   %D%/packages/patches/cogl-fix-double-free.patch		\
   %D%/packages/patches/collada-dom-boost.patch			\
   %D%/packages/patches/collectd-5.11.0-noinstallvar.patch	\
@@ -2417,13 +2415,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/rust-1.78-unwinding-fix.patch		\
   %D%/packages/patches/rust-1.81-fix-riscv64-bootstrap.patch	\
   %D%/packages/patches/rust-candle-0.9.1-add-candle-onnx-to-workspace.patch	\
-  %D%/packages/patches/rust-codex-0.98.0-core-remove-self-dep.patch	\
   %D%/packages/patches/rust-codex-0.98.0-test-shebangs.patch	\
-  %D%/packages/patches/rust-codex-0.98.0-test-timeout.patch	\
-  %D%/packages/patches/rust-codex-0.98.0-windows-sandbox-protocol-version.patch	\
   %D%/packages/patches/rust-codex-0.117.0-core-remove-self-dep.patch	\
-  %D%/packages/patches/rust-codex-0.120.0-core-remove-self-dep.patch	\
-  %D%/packages/patches/rust-codex-0.120.0-connectors-cache-test-race.patch	\
   %D%/packages/patches/rust-codex-0.120.0-remove-libwebrtc.patch	\
   %D%/packages/patches/rust-codex-0.120.0-test-timeout.patch	\
   %D%/packages/patches/rust-codex-0.124.0-code-mode-stub-toolname.patch	\
