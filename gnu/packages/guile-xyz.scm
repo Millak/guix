@@ -7526,7 +7526,7 @@ in a large number of randomly generated test cases.")
 (define-public guile-veritas
   (package
     (name "guile-veritas")
-    (version "0.1.6")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -7535,13 +7535,13 @@ in a large number of randomly generated test cases.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h4si2p8gj4wfhvn4cshga2kjxf59vd4nwvxkc2i3g5gv3kxhm3k"))))
+        (base32 "1i64pd5pcx37i25hnks7zj8pbwf1fdy0s5y9ic2sgn800zqq1dxy"))))
     (build-system guile-build-system)
     (arguments
      (list
       #:source-directory "src"))
     (native-inputs (list guile-3.0))
-    (propagated-inputs (list guile-fibers))
+    (propagated-inputs (list guile-fibers guile-json-4))
     (home-page "https://codeberg.org/jjba23/veritas")
     (synopsis "Testing framework for Guile")
     (description
