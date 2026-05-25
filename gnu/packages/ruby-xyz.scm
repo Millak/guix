@@ -9665,7 +9665,7 @@ during shutdown.")
 (define-public ruby-aruba
   (package
     (name "ruby-aruba")
-    (version "2.1.0")
+    (version "2.3.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9674,7 +9674,7 @@ during shutdown.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mmlgqhi6yww3z34hmrrnha2rygkv6kx0q962z31dqxjkcv23yfd"))))
+                "1fg8mddfbcyv6w27bbjcxz1hsjyhk1yw9si7366mghhl1fk2c7dr"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -9694,18 +9694,13 @@ during shutdown.")
             ;; Many development requirements are not actually needed.
             (lambda _
               (substitute* "aruba.gemspec"
-                (("\\[\">= 0.18.0\", \"< 0.22.0\"]") ;simplecov
-                 "\">= 0.18.0\"")
+                (("(spec.*dependency.*simplecov.*,.*),.*" _ minver) minver)
                 ((".*appraisal.*") "")
-                ((".*pry.*") "")
                 ((".*kramdown.*") "")
-                ((".*rubocop.*") "")
-                ((".*yard-junk.*") ""))
+                ((".*rubocop.*") ""))
               (substitute* "Rakefile"
-                ((".*require \"rubocop/rake_task\".*") "")
-                ((".*require \"yard-junk/rake\".*") "")
-                ((".*RuboCop::RakeTask.new.*") "")
-                ((".*YardJunk::Rake.define_task.*") ""))))
+                ((".*require.*rubocop/rake_task.*") "")
+                ((".*RuboCop::RakeTask.new.*") ""))))
           ;; The tests rely on the Gem being installed, so move the check
           ;; phase after the install phase.
           (delete 'check)
