@@ -38434,18 +38434,20 @@ functions and classes.")
 (define-public python-toolshed
   (package
     (name "python-toolshed")
-    (version "0.4.6")
+    (version "0.4.8")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "toolshed" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/brentp/toolshed")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "14zvz51gzf9i1i3d1sj363ba4rksl6lcf4lz1arl8hpqgcbir8r3"))))
+        (base32 "0r6c6nc2mj83fbg2cwym810cg5gbd0cl7qkhjca7i6vnshcbv8y0"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))        ;tests are not included in PyPI archive
     (native-inputs
-     (list python-setuptools))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/brentp/toolshed/")
     (synopsis "Collection of modules and functions for working with data")
     (description "This is a collection of well-tested, simple modules and
