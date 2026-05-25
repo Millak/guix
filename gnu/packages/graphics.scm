@@ -1347,6 +1347,19 @@ basic geometries.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0gfgzwm5s50caj5s6l7irgmlifpmypd0fnm6ckzli1fdziwjgdwi"))))
+    (arguments
+     ;; https://gitlab.com/inkscape/lib2geom/-/work_items/82
+     (if (or (target-aarch64?)
+             (target-riscv64?)
+             (target-ppc64le?))
+         (substitute-keyword-arguments arguments
+           ((#:phases phases #~%standard-phases)
+            #~(modify-phases #$phases
+                (add-after 'unpack 'disable-polynomial-test
+                  (lambda _
+                    (substitute* "tests/CMakeLists.txt"
+                      (("polynomial-test") "")))))))
+         arguments))
     (properties '((hidden? . #f)))))
 
 (define-public pstoedit
