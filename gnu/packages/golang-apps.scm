@@ -84,17 +84,16 @@ translators for Pygments lexers and styles.")
 (define-public go-fxlint
   (package
     (name "go-fxlint")
-    (version "0.0.0-20251227140935-d5da5b04ac90")
+    (version "1.24.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/uber-go/fx")
-              (commit (go-version->git-ref version
-                                           #:subdir "tools"))))
+              (commit (string-append "v" version ))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yw9x95v82dcxh0zf13inz8c3q7p2hmzqzgja360b1yifi01rvrc"))))
+        (base32 "0iifq4gjd873l444qh32x2zzsz2yinrvpjsdfphxsfk1h0cyk4q9"))))
     (build-system go-build-system)
     (arguments
      (list
