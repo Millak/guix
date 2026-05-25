@@ -5144,7 +5144,7 @@ and users are in full control of their data and workflow.")
 (define-public zola
   (package
     (name "zola")
-    (version "0.21.0")
+    (version "0.22.1")
     (source
      (origin
        (method git-fetch)
@@ -5153,7 +5153,7 @@ and users are in full control of their data and workflow.")
              (url "https://github.com/getzola/zola")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1j7mdw7y3j2fzwickfl9w4yx0xjbkaf03vcndf2b6jc3la20rzgv"))))
+        (base32 "145gag7y26fgwfznm3s48ml1p554zx52vk26zw7qgv24s9ffhacv"))))
     (build-system cargo-build-system)
     (arguments
      (list
