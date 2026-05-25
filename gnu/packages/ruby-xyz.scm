@@ -7457,7 +7457,7 @@ easily generate fake data: names, addresses, phone numbers, etc.")
 (define-public ruby-terraform
   (package
   (name "ruby-terraform")
-  (version "1.7.0")
+  (version "1.9.0")
   (source
    (origin
      (method git-fetch)
@@ -7467,13 +7467,16 @@ easily generate fake data: names, addresses, phone numbers, etc.")
      (file-name (git-file-name name version))
      (sha256
       (base32
-       "18d1qkf2rbbvc2f0dxni85i2l2g8zn5kzh0v8zr1b86r1wjy6rvd"))))
+       "0j2gzpg28d62l2dgm9cnblwq76h148b2rdscql41f7913q7f5x82"))))
   (build-system ruby-build-system)
   (arguments
    (list
     #:test-target "spec"
     #:phases
     #~(modify-phases %standard-phases
+        (add-after 'unpack 'remove-gemlock
+          (lambda _
+            (delete-file "Gemfile.lock")))
         (add-after 'unpack 'disable-bundler
           (lambda _
             (substitute* "spec/spec_helper.rb"
