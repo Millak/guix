@@ -4,6 +4,7 @@
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 jgart <jgart@dismail.de>
+;;; Copyright © 2026 Ankit Gadiya <git@argp.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -276,19 +277,20 @@ import of a 3rd party package at runtime).")
     (name "gopls")
     ;; XXX: Starting from 0.14.0 gppls needs golang.org/x/telemetry, which
     ;; needs to be discussed if it may be included in Guix.
-    (version "0.19.1")
+    (version "0.22.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/tools")
-             (commit (go-version->git-ref version #:subdir "gopls"))))
+              (url "https://go.googlesource.com/tools")
+              (commit (go-version->git-ref version #:subdir "gopls"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dihdw4nzp21hlbwxf6qyhyfgavi1a55lmlyk36czd85v0jcp6a0"))))
+        (base32 "0n5ixvk6c8hww5z9lvf74dx6p4j573bq3ssvp77n6033l0fcbv94"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.26
       #:install-source? #f
       #:import-path "golang.org/x/tools/gopls"
       #:unpack-path "golang.org/x/tools"
@@ -311,11 +313,13 @@ import of a 3rd party package at runtime).")
               (setenv "GODEBUG" "gotypesalias=1"))))))
     (native-inputs
      (list go-github-com-fatih-gomodifytags
+           go-github-com-fsnotify-fsnotify
            go-github-com-google-go-cmp
+           go-github-com-google-jsonschema-go
            go-github-com-jba-templatecheck
+           go-github-com-modelcontextprotocol-go-sdk
            go-golang-org-x-mod
            go-golang-org-x-sync
-           go-golang-org-x-sys
            go-golang-org-x-telemetry
            go-golang-org-x-text
            go-golang-org-x-tools
