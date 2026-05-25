@@ -543,7 +543,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
 (define-public hyprland
   (package
     (name "hyprland")
-    (version "0.54.3")
+    (version "0.55.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/hyprwm/Hyprland"
@@ -560,11 +560,14 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
                               "subprojects"))))
               (sha256
                (base32
-                "1vk39k04x210zdlrszs465cwkbf6j3b3ddldk9gzffpjls8s281w"))))
+                "1m6gf3ja47nsjlxnk3ky5f4ldcgwpy9n5l00zma5wdvhr8b8x08j"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;No tests.
-           #:configure-flags #~'("-DNO_HYPRPM=True")
+           #:configure-flags #~'("-DNO_HYPRPM=True"
+                                 ;; UWSM depends on SystemD targets
+                                 "-DNO_UWSM=True"
+                                 "-DNO_SYSTEMD=True")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-path
@@ -593,12 +596,14 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
            (module-ref (resolve-interface
                         '(gnu packages commencement))
                        'ld-wrapper)
-           pkg-config))
+           pkg-config
+           python))
     (inputs
      (list aquamarine
            binutils
            cairo
            glaze
+           glslang
            hyprcursor
            hyprgraphics
            hyprland-protocols
@@ -606,14 +611,17 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
            hyprlang
            hyprutils
            hyprwire
+           lcms
            libinput-minimal
            libxcursor
            libxkbcommon
+           lua-5.5
            mesa
            muparser
            pango
            pciutils
            re2-next
+           spirv-tools
            udis86
            wayland
            wayland-protocols
