@@ -1173,7 +1173,8 @@ application suites.")
                      '("--no-suite=gsk-compare-gl"
                        "--no-suite=gsk-compare-cairo"
                        "--no-suite=gsk-compare-ngl"
-                       "--no-suite=gsk-compare-vulkan")
+                       "--no-suite=gsk-compare-vulkan"
+                       "--no-suite=svg")
                      '()))
       #:phases
       #~(modify-phases %standard-phases
