@@ -1152,6 +1152,93 @@ computing in Python.  It extends both the @code{concurrent.futures} and
 @code{dask} APIs to moderate sized clusters.")
     (license license:bsd-3)))
 
+(define-public python-dvc-data
+  (package
+    (name "python-dvc-data")
+    (version "3.16.12")
+    (home-page "https://github.com/iterative/dvc-data")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "dvc_data" version))
+              (sha256
+               (base32
+                "156iwdn7v5jhwbpwz92n28qiasgcbmcqv9vxg8xbvdfxzlzw0b7r"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-attrs
+           python-dictdiffer
+           python-diskcache
+           python-dvc-objects
+           python-fsspec
+           python-funcy-1.14
+           python-orjson
+           python-pygtrie
+           python-sqltrie
+           python-tqdm))
+    (native-inputs
+     (list python-click
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-mock
+           ;; python-pytest-servers is not packaged in Guix yet
+           python-setuptools
+           python-setuptools-scm
+           python-typer
+           python-wheel))
+    (arguments
+     (list
+      #:test-flags
+      ;; TODO: package python-pytest-server with its transitive dependencies
+      #~(list "--ignore=tests/hashfile/test_db.py"
+              "--ignore=tests/hashfile/test_db_index.py"
+              "--ignore=tests/hashfile/test_obj.py"
+              "--ignore=tests/index/test_build.py"
+              "--ignore=tests/index/test_checkout.py"
+              "--ignore=tests/index/test_fs.py"
+              "--ignore=tests/index/test_index.py"
+              "--ignore=tests/index/test_storage.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pyproject
+            (lambda _
+              ;; setuptools cannot handle both license and license-files
+              (substitute* "pyproject.toml"
+                (("^license = .*") "license = {text = \"Apache-2.0\"}\n")
+                (("^license-files = .*") "")))))))
+    (synopsis "DVC's data management subsystem")
+    (description "Dvc data is DVC's data management subsystem.")
+    (license license:asl2.0)))
+
+(define-public python-dvc-objects
+  (package
+    (name "python-dvc-objects")
+    (version "5.1.1")
+    (home-page "https://github.com/iterative/dvc-objects")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dvc_objects" version))
+       (sha256
+        (base32 "1amx5z8k2v2hbsajg0dcd5dxmmlv9bnbchpas95s8sj86cm8yc4y"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-fsspec
+                             python-funcy-1.14))
+    (native-inputs
+     (list python-mypy
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-benchmark
+           python-pytest-mock
+           python-pytest-sugar
+           python-reflink
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (synopsis "Filesystem and object-db level abstractions for DVC")
+    (description "Dvc objects provides a filesystem and object-db level
+abstractions to use in dvc and dvc-data.")
+    (license license:asl2.0)))
+
 (define-public python-ecos
   (package
     (name "python-ecos")
@@ -1196,6 +1283,47 @@ numerical software for solving convex second-order cone programs (SOCPs).")
     (synopsis "An efficient Python implementation of the Apriori algorithm.")
     (description "An efficient Python implementation of the Apriori algorithm,
 which uncovers hidden structures in categorical data")
+    (license license:expat)))
+
+(define-public python-einops
+  (package
+    (name "python-einops")
+    (version "0.8.1")
+    (source
+     (origin
+       (method git-fetch) ;PyPI misses .ipynb files required for tests
+       (uri (git-reference
+             (url "https://github.com/arogozhnikov/einops")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07xd5a4sya3mr003f17hxykcbq3zf3mnr51qagv7fy55qcnbkn97"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Skip optional dependency on Jupyter during tests.
+      #~(list "--ignore=scripts/test_notebooks.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-backend
+            (lambda _
+              ;; Einops supports different backends, but we test
+              ;; only NumPy for availability and simplicity.
+              (setenv "EINOPS_TEST_BACKENDS" "numpy"))))))
+    (native-inputs
+     (list python-hatchling
+           python-nbconvert
+           python-nbformat
+           python-parameterized
+           python-pytest))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://einops.rocks/")
+    (synopsis "Tensor operations for different backends")
+    (description
+     "Einops provides a set of tensor operations for NumPy and multiple deep
+learning frameworks.")
     (license license:expat)))
 
 (define-public python-fast-histogram
@@ -1269,6 +1397,35 @@ that is 20-25x faster than @code{numpy.histogram2d}.")
 clustering schemes efficiently.  The package is made with two interfaces to
 standard software: R and Python.")
     (license license:bsd-2)))
+
+;; XXX: Not maintained since 2019. The project was archived by the owner on
+;; Nov 2, 2020. It is now read-only.
+(define-public python-fbpca
+  (package
+    (name "python-fbpca")
+    (version "1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "fbpca" version))
+              (sha256
+               (base32
+                "1lbjqhqsdmqk86lb86q3ywf7561zmdny1dfvgwqkyrkr4ij7f1hm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; TypeError: 'dia_matrix' object is not subscriptable
+      #~(list "--deselect=fbpca.py::TestPCA::test_sparse"
+              "fbpca.py")))
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs
+     (list python-numpy python-scipy))
+    (home-page "https://fbpca.readthedocs.io/")
+    (synopsis "Functions for principal component analysis and accuracy checks")
+    (description
+     "This package provides fast computations for @dfn{principal component
+analysis} (PCA), SVD, and eigendecompositions via randomized methods")
+    (license license:bsd-3)))
 
 (define-public python-fgivenx
   (package
@@ -4664,76 +4821,6 @@ changed, it made sense to abstract away the nuisance of having to re-learn
 them.")
   (license license:bsd-3)))
 
-;; XXX: Not maintained since 2019. The project was archived by the owner on
-;; Nov 2, 2020. It is now read-only.
-(define-public python-fbpca
-  (package
-    (name "python-fbpca")
-    (version "1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "fbpca" version))
-              (sha256
-               (base32
-                "1lbjqhqsdmqk86lb86q3ywf7561zmdny1dfvgwqkyrkr4ij7f1hm"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; TypeError: 'dia_matrix' object is not subscriptable
-      #~(list "--deselect=fbpca.py::TestPCA::test_sparse"
-              "fbpca.py")))
-    (native-inputs (list python-pytest python-setuptools))
-    (propagated-inputs
-     (list python-numpy python-scipy))
-    (home-page "https://fbpca.readthedocs.io/")
-    (synopsis "Functions for principal component analysis and accuracy checks")
-    (description
-     "This package provides fast computations for @dfn{principal component
-analysis} (PCA), SVD, and eigendecompositions via randomized methods")
-    (license license:bsd-3)))
-
-(define-public python-einops
-  (package
-    (name "python-einops")
-    (version "0.8.1")
-    (source
-     (origin
-       (method git-fetch) ;PyPI misses .ipynb files required for tests
-       (uri (git-reference
-             (url "https://github.com/arogozhnikov/einops")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "07xd5a4sya3mr003f17hxykcbq3zf3mnr51qagv7fy55qcnbkn97"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Skip optional dependency on Jupyter during tests.
-      #~(list "--ignore=scripts/test_notebooks.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-backend
-            (lambda _
-              ;; Einops supports different backends, but we test
-              ;; only NumPy for availability and simplicity.
-              (setenv "EINOPS_TEST_BACKENDS" "numpy"))))))
-    (native-inputs
-     (list python-hatchling
-           python-nbconvert
-           python-nbformat
-           python-parameterized
-           python-pytest))
-    (propagated-inputs
-     (list python-numpy))
-    (home-page "https://einops.rocks/")
-    (synopsis "Tensor operations for different backends")
-    (description
-     "Einops provides a set of tensor operations for NumPy and multiple deep
-learning frameworks.")
-    (license license:expat)))
-
 (define-public python-uhi
   (package
     (name "python-uhi")
@@ -6303,93 +6390,6 @@ series, a dozen datasets of local french data, numerous sources available on
 well as key metadata and SIRENE database containing data on all French
 compagnies.")
     (license license:expat)))
-
-(define-public python-dvc-objects
-  (package
-    (name "python-dvc-objects")
-    (version "5.1.1")
-    (home-page "https://github.com/iterative/dvc-objects")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "dvc_objects" version))
-       (sha256
-        (base32 "1amx5z8k2v2hbsajg0dcd5dxmmlv9bnbchpas95s8sj86cm8yc4y"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-fsspec
-                             python-funcy-1.14))
-    (native-inputs
-     (list python-mypy
-           python-pytest
-           python-pytest-asyncio
-           python-pytest-benchmark
-           python-pytest-mock
-           python-pytest-sugar
-           python-reflink
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (synopsis "Filesystem and object-db level abstractions for DVC")
-    (description "Dvc objects provides a filesystem and object-db level
-abstractions to use in dvc and dvc-data.")
-    (license license:asl2.0)))
-
-(define-public python-dvc-data
-  (package
-    (name "python-dvc-data")
-    (version "3.16.12")
-    (home-page "https://github.com/iterative/dvc-data")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "dvc_data" version))
-              (sha256
-               (base32
-                "156iwdn7v5jhwbpwz92n28qiasgcbmcqv9vxg8xbvdfxzlzw0b7r"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-attrs
-           python-dictdiffer
-           python-diskcache
-           python-dvc-objects
-           python-fsspec
-           python-funcy-1.14
-           python-orjson
-           python-pygtrie
-           python-sqltrie
-           python-tqdm))
-    (native-inputs
-     (list python-click
-           python-pytest
-           python-pytest-benchmark
-           python-pytest-mock
-           ;; python-pytest-servers is not packaged in Guix yet
-           python-setuptools
-           python-setuptools-scm
-           python-typer
-           python-wheel))
-    (arguments
-     (list
-      #:test-flags
-      ;; TODO: package python-pytest-server with its transitive dependencies
-      #~(list "--ignore=tests/hashfile/test_db.py"
-              "--ignore=tests/hashfile/test_db_index.py"
-              "--ignore=tests/hashfile/test_obj.py"
-              "--ignore=tests/index/test_build.py"
-              "--ignore=tests/index/test_checkout.py"
-              "--ignore=tests/index/test_fs.py"
-              "--ignore=tests/index/test_index.py"
-              "--ignore=tests/index/test_storage.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-pyproject
-            (lambda _
-              ;; setuptools cannot handle both license and license-files
-              (substitute* "pyproject.toml"
-                (("^license = .*") "license = {text = \"Apache-2.0\"}\n")
-                (("^license-files = .*") "")))))))
-    (synopsis "DVC's data management subsystem")
-    (description "Dvc data is DVC's data management subsystem.")
-    (license license:asl2.0)))
 
 (define-public python-pyqtgraph
   (package
