@@ -984,7 +984,10 @@ def contents() -> str:
               #$@(if (%current-target-system)
                      #~("ac_cv_buggy_getaddrinfo=no"
                         "ac_cv_file__dev_ptmx=no"
-                        "ac_cv_file__dev_ptc=no")
+                        "ac_cv_file__dev_ptc=no"
+                        (string-append "--with-build-python="
+                                       #+(this-package-native-input "python")
+                                       "/bin/python3"))
                      #~())
               ;; -fno-semantic-interposition reinstates some
               ;; optimizations by gcc leading to around 15% speedup.
