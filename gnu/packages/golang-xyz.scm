@@ -33977,6 +33977,22 @@ library.")
 ;;; Executables:
 ;;;
 
+(define-public chglog
+  (package/inherit go-github-com-goreleaser-chglog
+    (name "chglog")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/goreleaser/chglog/cmd/chglog")
+       ((#:unpack-path _ "") "github.com/goreleaser/chglog")))
+    (native-inputs
+     (append
+      (package-native-inputs go-github-com-goreleaser-chglog)
+      (package-propagated-inputs go-github-com-goreleaser-chglog)))
+    (inputs '())
+    (propagated-inputs '())))
+
 (define-public containers-storage
   (package/inherit go-github-com-containers-storage
     (name "containers-storage")
