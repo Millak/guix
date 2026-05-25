@@ -846,6 +846,19 @@ on the presence of a particular marker
 
 For the Go library, refer to go-sigs-k8s-io-controller-tools package.")))
 
+(define-public kubernetes-crd-ref-docs
+  (package/inherit go-github-com-elastic-crd-ref-docs
+    (name "kubernetes-crd-ref-docs")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:install-source? #t #t) #f)
+       ((#:skip-build? #t #t) #f)
+       ((#:tests? #t #t) #f)))
+    (native-inputs
+     (package-propagated-inputs go-github-com-elastic-crd-ref-docs))
+    (propagated-inputs '())
+    (inputs '())))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above in alphabetic order:
