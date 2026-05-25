@@ -3635,7 +3635,7 @@ engine.")
    (list ruby-rspec))
   (synopsis "Efficient, immutable, thread-safe collection classes for Ruby")
   (description
-    "Hamster provides 6 persistent data structures: @code{Hash}, @code{Vector},
+    "Hamster provides six persistent data structures: @code{Hash}, @code{Vector},
 @code{Set}, @code{SortedSet}, @code{List}, and @code{Deque} (which works as an
 immutable queue or stack).")
   (home-page "https://github.com/hamstergem/hamster")
@@ -7316,6 +7316,38 @@ of terminal output.")
     (home-page "https://flori.github.io/term-ansicolor/")
     ;; There is no mention of the "or later" clause.
     (license license:gpl2)))
+
+(define-public ruby-immutable-ruby
+  (package
+    (name "ruby-immutable-ruby")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/immutable-ruby/immutable-ruby")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02sbb24yhg8lxmp4va9js3kn81j268ih4ac4nvgvnq86zdribl8k"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests? (invoke "ruby" (which "rspec"))))))))
+    (propagated-inputs (list ruby-concurrent-ruby ruby-sorted-set))
+    (native-inputs (list ruby-benchmark-ips ruby-pry ruby-rspec))
+    (synopsis "Efficient, immutable, Thread-Safe Collection classes")
+    (description
+     "Immutable-Ruby provides 6 persistent data structures:
+@code{Hash}, @code{Vector}, @code{Set}, @code{SortedSet}, @code{List}, and
+@code{Deque} (which works as an immutable queue or stack).  Immutable is forked
+from the Hamster library.")
+    (home-page "https://github.com/immutable-ruby/immutable-ruby")
+    (license license:expat)))
 
 (define-public ruby-immutable-struct
     (package
