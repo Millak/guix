@@ -1028,7 +1028,10 @@ renewed TLS certificates, or @code{include}d files.")
            (service-extension activation-service-type
                               nginx-activation)
            (service-extension account-service-type
-                              (const %nginx-accounts))))
+                              (const %nginx-accounts))
+           ;; Make the nginx manual page available.
+           (service-extension profile-service-type
+                              (compose list nginx-configuration-nginx))))
     (compose concatenate)
     (extend (lambda (config servers)
               (nginx-configuration
