@@ -820,6 +820,32 @@ api-status.csv files
 functions
 @end itemize")))
 
+(define-public kubernetes-controller-tools
+  (package/inherit go-sigs-k8s-io-controller-tools
+    (name "kubernetes-controller-tools")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "sigs.k8s.io/controller-tools/cmd/...")
+       ((#:install-source? #t #t) #f)
+       ((#:skip-build? #t #t) #f)
+       ((#:tests? #t #t) #f)
+       ((#:unpack-path _ "") "sigs.k8s.io/controller-tools")))
+    (native-inputs
+     (package-propagated-inputs go-sigs-k8s-io-controller-tools))
+    (propagated-inputs '())
+    (inputs '())
+    (description
+     "This package provides helper commands to work with Kubernetes (k8s):
+@itemize:
+@item @command{controller-gen} - generates Kubernetes API extension resources
+and code
+@item @command{helpgen} - generates marker help using @command{godoc}, based
+on the presence of a particular marker
+@item @command{type-scaffold} - scaffolds out basic bits of a Kubernetes type
+@end itemize
+
+For the Go library, refer to go-sigs-k8s-io-controller-tools package.")))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above in alphabetic order:
