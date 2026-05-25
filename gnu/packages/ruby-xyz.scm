@@ -2963,25 +2963,66 @@ Libxml2 XML toolkit.")
 (define-public ruby-lino
   (package
     (name "ruby-lino")
-    (version "3.1.0")
+    (version "4.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (rubygems-uri "lino" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/infrablocks/lino")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1zq9dza040fgjvr9imh7z2lgxrcyc5ac100rqimsnsf9bpfz3fsm"))))
+        (base32 "0hz7ivjl6ig63gng8b3y6cmmjymf809044c04460f8kq9q9xr9d7"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:tests? #f)) ; No included tests
-    (propagated-inputs
-     (list ruby-hamster ruby-open4))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'loosen-dependency-constraints
+            (lambda _
+              (substitute* "lino.gemspec"
+                (("~>") ">="))))
+          (add-after 'unpack 'remove-unnecessary-dependencies
+            (lambda _
+              (delete-file "Gemfile.lock")
+              (substitute* "lino.gemspec"
+                (("'hamster'.*") "'immutable-ruby', '~> 0.2'\n")
+                ((".*rake_circle_ci.*") "\n")
+                ((".*rake_git.*") "\n")
+                ((".*rake_gpg.*") "\n")
+                ((".*rake_ssh.*") "\n")
+                ((".*rake_simplecov.*") "\n")
+                (("spec\\.add_development_dependency 'simplecov'") ""))
+              (substitute* "spec/spec_helper.rb"
+                ((".*simplecov.*") "\n")
+                ((".*bundler.*") "\n")
+                ;; Use [].each to disable running the SimpleCov configuration
+                ;; block
+                (("SimpleCov\\.start") "[].each"))))
+          (add-after 'unpack 'replace-hamster-with-immutable
+            (lambda _
+              (substitute* "lib/lino/builders/command_line.rb"
+                (("hamster") "immutable/vector"))
+              (substitute* "lib/lino/builders/subcommand.rb"
+                (("hamster") "immutable/vector")
+                (("Hamster") "Immutable"))
+              (substitute* (find-files "lib/lino/builders/mixins/" "\\.rb")
+                (("Hamster") "Immutable"))
+              (substitute* (find-files "lib/lino/model/" "\\.rb")
+                (("Hamster") "Immutable"))))
+          ;; Reduce required development dependencies by running rspec directly.
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ruby" (which "rspec"))))))))
+    (propagated-inputs (list ruby-childprocess ruby-immutable-ruby ruby-open4))
+    (native-inputs (list ruby-rspec))
     (synopsis "Build and execute commands in Ruby")
     (description
      "@code{Lino} provides an interface to run external commands.  It provides
 an interface to add options as well as managing the standard input, output and
 error streams.")
-    (home-page "https://github.com/tobyclemson/lino")
+    (home-page "https://github.com/infrablocks/lino")
     (license license:expat)))
 
 (define-public ruby-x25519
