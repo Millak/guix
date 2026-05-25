@@ -34533,6 +34533,22 @@ various modes for analyzing and transforming YAML data.")))
     (propagated-inputs '())
     (inputs '())))
 
+(define-public nfpm
+  (package/inherit go-github-com-goreleaser-nfpm-v2
+    (name "nfpm")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "github.com/goreleaser/nfpm/v2/cmd/nfpm")
+       ((#:install-source? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:unpack-path _ "") "github.com/goreleaser/nfpm/v2")))
+    (native-inputs
+     (append
+      (package-native-inputs go-github-com-goreleaser-nfpm-v2)
+      (package-propagated-inputs go-github-com-goreleaser-nfpm-v2)))
+    (inputs '())
+    (propagated-inputs '())))
+
 (define-public oci-runtime-tool
   (package/inherit go-github-com-opencontainers-runtime-tools
     (name "oci-runtime-tool")
