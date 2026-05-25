@@ -17012,9 +17012,11 @@ kinds of referrer URLs (search, social, ...).")
      (list
       #:skip-build? #t
       #:import-path "github.com/sigstore/rekor"
-      ;; XXX: Remove when all inputs are packaged.
+      #:embed-files #~(list ".*\\.json")
+      ;; ;; XXX: Remove when all inputs are packaged.
       #:test-subdirs
-      #~(list "pkg/events/newentry"
+      #~(list "pkg/client"
+              "pkg/events/newentry"
               "pkg/indexstorage/mysql"
               "pkg/pki/minisign"
               "pkg/pki/pgp"
@@ -17022,7 +17024,10 @@ kinds of referrer URLs (search, social, ...).")
               "pkg/pki/tuf"
               "pkg/pki/x509"
               "pkg/pubsub/gcp"
-              "pkg/util")))
+              "pkg/tle"
+              "pkg/types"
+              "pkg/util"
+              "pkg/verify")))
     (native-inputs
      (list go-github-com-asaskevich-govalidator
            go-github-com-data-dog-go-sqlmock
@@ -17050,6 +17055,7 @@ kinds of referrer URLs (search, social, ...).")
            go-github-com-go-openapi-validate
            go-github-com-go-sql-driver-mysql
            go-github-com-go-viper-mapstructure-v2
+           go-github-com-google-rpmpack
            go-github-com-google-trillian
            go-github-com-grpc-ecosystem-go-grpc-middleware
            go-github-com-hashicorp-go-cleanhttp
@@ -17093,7 +17099,6 @@ kinds of referrer URLs (search, social, ...).")
            ;; go-github-com-adamkorcz-go-fuzz-headers-1
            ;; go-github-com-cavaliercoder-go-rpm
            ;; go-github-com-go-redis-redismock-v9
-           ;; go-github-com-google-rpmpack
            ;; go-github-com-sassoftware-relic
            ;; go-github-com-sassoftware-relic-v7
            ;; go-go-step-sm-crypto
