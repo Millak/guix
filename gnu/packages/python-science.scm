@@ -40,6 +40,7 @@
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Reza Housseini <reza@housseini.me>
+;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -534,6 +535,42 @@ of solids.")
 setting up, manipulating, running, visualizing and analyzing atomistic
 simulations.")
     (license license:lgpl2.1+)))
+
+(define-public python-autoray
+  (package
+    (name "python-autoray")
+    (version "0.8.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jcmgray/autoray")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gqfkpdng09l804xm9r1r098w10gr1bc5ax2xmhrpz9niybv71f5"))))
+    (build-system pyproject-build-system)
+    ;; tests: 1758 passed, 1483 skipped, 96 xfailed, 4 warnings
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-dask
+           python-matplotlib
+           python-networkx
+           python-numpy
+           python-opt-einsum
+           python-scipy
+           python-sparse))
+    (home-page "https://github.com/jcmgray/autoray")
+    (synopsis "Library for abstracting tensor operations")
+    (description
+     "This package provides a lightweight Python library for
+abstracting tensor operations.  It provides an automatic dispatch mechanism
+that means you can write backend agnostic code that works for any library
+that provides a @code{numpy} compatible API.")
+    (license license:asl2.0)))
 
 (define-public python-baycomp
   (package
