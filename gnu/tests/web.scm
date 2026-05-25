@@ -203,8 +203,21 @@ the tests."
 (define %nginx-servers
   ;; Server blocks.
   (list (nginx-server-configuration
-         (listen '("8080")))))
+          (listen '("8080"))
+          (locations
+           ;; Dummy location to test the default configuration path.
+           (list (nginx-location-configuration
+                  (uri "/")
+                  (body (list "include fastcgi_params;"))))))))
 
+;;; For a manual test/inspection:
+#;(
+
+$(./pre-inst-env guix system vm \
+-e '(@@ (gnu tests web) %nginx-os)' --no-graphic) \
+-nic user,model=virtio-net-pci,hostfwd=tcp::8080-:80 -m 1024
+
+)
 (define %nginx-os
   ;; Operating system under test.
   (simple-operating-system

@@ -18,7 +18,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Miguel Ángel Moreno <mail@migalmoreno.com>
 ;;; Copyright © 2024 Leo Nikkilä <hello@lnikki.la>
-;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Rodion Goritskov <rodion@goritskov.com>
 ;;; Copyright © 2026 Fabio Natali <me@fabionatali.com>
 ;;;
@@ -933,6 +933,13 @@ of index files."
          (home-directory "/var/empty")
          (shell (file-append shadow "/sbin/nologin")))))
 
+(define %nginx-configuration-file
+  ;; A fixed location is used for the configuration so that it can be reloaded
+  ;; in place.  The supporting nginx default configuration files are also
+  ;; added to the /etc/nginx directory so that they can be included normally,
+  ;; e.g. via 'include fastcgi_params;'.
+  "/etc/nginx/nginx.conf")
+
 (define (nginx-activation config)
   (match-record config
                 <nginx-configuration>
@@ -952,72 +959,104 @@ of index files."
        (mkdir-p (string-append #$run-directory "/scgi_temp"))
        ;; Start-up logs. Once configuration is loaded, nginx switches to
        ;; log-directory.
-       (mkdir-p (string-append #$run-directory "/logs"))
-       ;; Check configuration file syntax.
-       (system* (string-append #$nginx "/sbin/nginx")
-                "-c" #$(or file
-                           (default-nginx-config config))
-                "-p" #$run-directory
-                "-t"))))
+       (mkdir-p (string-append #$run-directory "/logs")))))
 
 (define (nginx-shepherd-service config)
-  (match-record config
-                <nginx-configuration>
+  (match-record config <nginx-configuration>
                 (nginx file run-directory shepherd-requirement)
-   (let* ((nginx-binary (file-append nginx "/sbin/nginx"))
-          (pid-file (in-vicinity run-directory "pid"))
-          (config-file (or file (default-nginx-config config)))
-          (nginx-action
-           (lambda args
-             #~(lambda _
-                 (invoke #$nginx-binary "-c" #$config-file #$@args)
-                 (match '#$args
-                   (("-s" "stop") #f)
-                   (("-s" . _) #t)
-                   (_
-                    ;; When FILE is true, we cannot be sure that PID-FILE will
-                    ;; be created, so assume it won't show up.  When FILE is
-                    ;; false, read PID-FILE.
-                    #$(if file
-                          #~#t
-                          #~(read-pid-file #$pid-file))))))))
+    (let* ((nginx-binary (file-append nginx "/sbin/nginx"))
+           (pid-file (in-vicinity run-directory "pid"))
+           (nginx-action
+            (lambda args
+              #~(lambda _
+                  (invoke #$nginx-binary "-c" #$%nginx-configuration-file
+                          #$@args)
+                  (match '#$args
+                    (("-s" "stop") #f)
+                    (("-s" . _) #t)
+                    (_
+                     ;; When FILE is true, we cannot be sure that PID-FILE will
+                     ;; be created, so assume it won't show up.  When FILE is
+                     ;; false, read PID-FILE.
+                     #$(if file
+                           #~#t
+                           #~(read-pid-file #$pid-file))))))))
 
-     (list (shepherd-service
-            (provision '(nginx))
-            (documentation "Run the nginx daemon.")
-            (requirement `(user-processes loopback ,@shepherd-requirement))
-            (modules `((ice-9 match)
-                       ,@%default-modules))
-            (start (nginx-action "-p" run-directory))
-            (stop #~(lambda (value)
-                      ;; When the PID is known, use 'terminate-process', which
-                      ;; waits for the main process to actually terminate.
-                      ;; When FILE is true, there's potentially no PID file
-                      ;; and thus the PID is not known; in that case, invoke
-                      ;; "nginx -s stop".
-                      (if (process? value)
-                          (terminate-process (process-id value) SIGTERM)
-                          (#$(nginx-action "-s" "stop")))))
+      (list (shepherd-service
+              (documentation "Run nginx pre-start actions.")
+              (requirement '(user-processes loopback))
+              (provision '(nginx-init))
+              (one-shot? #t)
+              (start
+               #~(lambda _
+                   ;; Check configuration file syntax.
+                   (invoke #$nginx-binary
+                           "-c" #$%nginx-configuration-file
+                           "-p" #$run-directory
+                           "-t"))))
+            (shepherd-service
+              (provision '(nginx))
+              (documentation "Run the nginx daemon.")
+              (requirement `( user-processes loopback nginx-init
+                              ,@shepherd-requirement))
+              (modules `((ice-9 match)
+                         ,@%default-modules))
+              (start (nginx-action "-p" run-directory))
+              (stop #~(lambda (value)
+                        ;; When the PID is known, use 'terminate-process', which
+                        ;; waits for the main process to actually terminate.
+                        ;; When FILE is true, there's potentially no PID file
+                        ;; and thus the PID is not known; in that case, invoke
+                        ;; "nginx -s stop".
+                        (if (process? value)
+                            (terminate-process (process-id value) SIGTERM)
+                            (#$(nginx-action "-s" "stop")))))
 
-            (actions
-              (list
-               (shepherd-configuration-action config-file)
-               (shepherd-action
-                 (name 'reload)
-                 (documentation "Reload nginx configuration file and restart worker processes.
-This has the effect of killing old worker processes and starting new ones, using
-the same configuration file.  It is useful for situations where the same nginx
-configuration file can point to different things after a reload, such as
-renewed TLS certificates, or @code{include}d files.")
-                 (procedure (nginx-action "-p" run-directory "-s" "reload")))
-               (shepherd-action
-                (name 'reopen)
-                (documentation "Re-open log files.")
-                (procedure (nginx-action "-p" run-directory "-s" "reopen"))))))))))
+              (actions
+               (list
+                (shepherd-configuration-action %nginx-configuration-file)
+                (shepherd-action
+                  (name 'reload)
+                  (documentation "Reload the nginx configuration file and
+restart worker processes.  This has the effect of killing old worker processes
+and starting new ones, using the same configuration file.  This is useful when
+either the configuration files itself, or any files it refers to or includes
+changed (for example, TLS certificates).")
+                  (procedure (nginx-action "-p" run-directory "-s" "reload")))
+                (shepherd-action
+                  (name 'reopen)
+                  (documentation "Re-open log files.")
+                  (procedure (nginx-action "-p" run-directory "-s" "reopen"))))))))))
 
 (define (nginx-log-files config)
   (list (nginx-access-log-file config)
         (nginx-error-log-file config)))
+
+(define (nginx-conf-files config)
+  ;; Nginx's conf directory files except nginx.conf and .default files.
+  (match-record config <nginx-configuration>
+                (nginx file)
+    (computed-file
+     "nginx-conf-files"
+     #~(begin
+         (use-modules (ice-9 ftw)
+                      (srfi srfi-26))
+         (mkdir #$output)
+         (define nginx-conf #$(file-append nginx "/share/nginx/conf"))
+         (for-each
+          (lambda (x)
+            (symlink x (string-append #$output "/" (basename x))))
+          (map (cut string-append nginx-conf "/" <>)
+               (scandir nginx-conf
+                        (negate (lambda (name)
+                                  (or (string-suffix? ".default" name)
+                                      (member name '("." ".."
+                                                     "nginx.conf"))))))))
+         (symlink #$(or file (default-nginx-config config))
+                  (string-append #$output "/nginx.conf"))))))
+
+(define (nginx-etc-directory config)
+  `(("nginx" ,(nginx-conf-files config))))
 
 (define nginx-service-type
   (service-type
@@ -1031,6 +1070,8 @@ renewed TLS certificates, or @code{include}d files.")
                               nginx-activation)
            (service-extension account-service-type
                               (const %nginx-accounts))
+           (service-extension etc-service-type
+                              nginx-etc-directory)
            ;; Make the nginx manual page available.
            (service-extension profile-service-type
                               (compose list nginx-configuration-nginx))))
