@@ -3090,11 +3090,11 @@ language known as SASS.")
     (properties '((hidden? . #t)))))
 
 (define-public guile-safsaf
-  (let ((commit "079267a2454c14f21ca21cd13f80cafe686cb680")
-        (revision "2"))
+  (let ((commit "2be53482c396df550863ab6d407327325e003791")
+        (revision "1"))
     (package
     (name "guile-safsaf")
-    (version (git-version "0.1" revision commit))
+    (version (git-version "0.2" revision commit))
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3102,7 +3102,7 @@ language known as SASS.")
                     (commit commit)))
               (sha256
                (base32
-                "0fswcpb2zg291bs3a8h12q4r4rrr0bvqd81kcbnpappjfdm3ajhz"))
+                "0dx4lnxlch8wixkqpbf1br2v0830w9x0f378mvhx1g3hqcqkr17h"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
