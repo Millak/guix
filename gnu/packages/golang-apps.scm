@@ -2,7 +2,7 @@
 ;;; Copyright © 2023 JOULAUD François <Francois.JOULAUD@radiofrance.com>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
-;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 jgart <jgart@dismail.de>
 ;;; Copyright © 2026 Ankit Gadiya <git@argp.in>
 ;;;
@@ -49,7 +49,7 @@
 (define-public go-chroma
   (package
     (name "go-chroma")
-    (version "2.20.0")
+    (version "2.24.1")
     (source
      (origin
        (method git-fetch)
@@ -58,7 +58,7 @@
               (commit (string-append "v" version ))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05w4hnfcxqdlsz7mkc0m3jbp1aj67wzyhq5jh8ldfgnyjnlafia3"))))
+        (base32 "0kww0yhwqzzgl8n3alislf0136rk7kh507bbvr32a30wmk5dzi81"))))
     (build-system go-build-system)
     (arguments
      (list
