@@ -5873,6 +5873,95 @@ data one-way over a HTTP connection using the Server-Sent Events API
 http://dev.w3.org/html5/eventsource/.")
     (license license:asl2.0)))
 
+(define-public go-github-com-dop251-goja
+  (package
+    (name "go-github-com-dop251-goja")
+    (version "0.0.0-20260311135729-065cd970411c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dop251/goja")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cnyxvnymmd5vjzwnznzdp04hqphmzsf7k1rk0cijv783dkv2gk2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dop251/goja"
+      #:test-flags #~(list "-vet=off")))
+    (native-inputs
+     (list go-github-com-dop251-goja-nodejs-bootstrap))
+    (propagated-inputs
+     (list go-github-com-dlclark-regexp2
+           go-github-com-go-sourcemap-sourcemap
+           go-github-com-google-pprof
+           go-github-com-masterminds-semver-v3
+           go-golang-org-x-text
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/dop251/goja")
+    (synopsis "ECMAScript/JavaScript engine in pure Go")
+    (description
+     "Goja is an implementation of ECMAScript 5.1 in pure Go with emphasis on
+standard compliance and performance, it was largely inspired by
+@url{https://github.com/robertkrimen/otto, otto}.
+
+Features:
+
+@itemize
+@item Full ECMAScript 5.1 support (including regex and strict mode).
+@item Passes nearly all tc39 tests for the features implemented so far.
+@item Capable of running Babel, TypeScript compiler and pretty much anything
+written in ES5.
+@item Sourcemaps.
+@end itemize")
+    (license license:expat)))
+
+(define-public go-github-com-dop251-goja-nodejs
+  (package
+    (name "go-github-com-dop251-goja-nodejs")
+    (version "0.0.0-20260212111938-1f56ff5bcf14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dop251/goja_nodejs")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q83hhv05vk66brpplai4jxpc9nj0hnc55jjhlp6sycn77qlq191"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/dop251/goja_nodejs"))
+    (propagated-inputs
+     (list go-github-com-dop251-base64dec
+           go-github-com-dop251-goja
+           go-go-uber-org-goleak
+           go-golang-org-x-net
+           go-golang-org-x-text))
+    (home-page "https://github.com/dop251/goja_nodejs")
+    (synopsis "Nodejs compatibility library for Goja")
+    (description
+     "This is a collection of @url{https://github.com/dop251/goja, Goja}
+modules that provide Node.js compatibility.")
+    (license license:expat)))
+
+(define-public go-github-com-dop251-goja-nodejs-bootstrap
+  (hidden-package
+   (package/inherit go-github-com-dop251-goja-nodejs
+     (name "go-github-com-dop251-goja-nodejs-bootstrap")
+     (arguments
+      (substitute-keyword-arguments arguments
+        ((#:tests? _ #t) #f)))
+     (propagated-inputs
+      (list go-github-com-dop251-base64dec
+            go-go-uber-org-goleak
+            go-golang-org-x-net
+            go-golang-org-x-text)))))
+
 (define-public go-github-com-dpotapov-go-spnego
   (package
     (name "go-github-com-dpotapov-go-spnego")
