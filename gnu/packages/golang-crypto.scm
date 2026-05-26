@@ -211,24 +211,27 @@ crypto/internal/bigmod, the backend of crypto/rsa and crypto/ecdsa.")
 (define-public go-filippo-io-edwards25519
   (package
     (name "go-filippo-io-edwards25519")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/FiloSottile/edwards25519")
-             (commit (string-append "v" version))))
+              (url "https://github.com/FiloSottile/edwards25519")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b2c4iv13mfa0dydr8wawpnnrxgwl7mxzhryfrkjxrgwad8gas5k"))))
+        (base32 "0iz8sprg66v3dp7rgmpgfdr6h9mdfpnw1s2pyxyjgwbs3zd98q1k"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "filippo.io/edwards25519"))
+     (list
+      ;; Tests hang forewer on ARM64.
+      #:tests? (not (target-aarch64?))
+      #:import-path "filippo.io/edwards25519"))
     (home-page "https://filippo.io/edwards25519")
     (synopsis "Group logic for the twisted Edwards curve")
-    (description "This package implements the edwards25519 elliptic curve in
-Go, exposing the necessary APIs to build a wide array of higher-level
-primitives.")
+    (description
+     "This package implements the edwards25519 elliptic curve in Go, exposing
+the necessary APIs to build a wide array of higher-level primitives.")
     (license license:bsd-3)))
 
 (define-public go-filippo-io-hpke
