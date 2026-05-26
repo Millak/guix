@@ -31093,22 +31093,27 @@ written in YAML or JSON.")
 (define-public go-go-mongodb-org-mongo-driver
   (package
     (name "go-go-mongodb-org-mongo-driver")
-    (version "1.16.1")
+    (version "1.17.9")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mongodb/mongo-go-driver")
-             (commit (string-append "v" version))))
+              (url "https://github.com/mongodb/mongo-go-driver")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "160hwrk8y8h3nl9sh5v6pxnlyw1ywbssjgzb72lj0x68akgl8gff"))
+        (base32 "1ba6nr5gzkv4k0h2gf58h2f2cmhdc53z0zxgy01vaw4sxa8h3adl"))
+       (modules '((guix build utils)))
        (snippet
-        #~(begin (use-modules (guix build utils))
-                 (delete-file-recursively "vendor")))))
+        #~(begin
+            (delete-file-recursively "vendor")
+            ;; Submodules with their own go.mod files and packaged separately:
+            (delete-file-recursively "internal/test/goleak")
+            (delete-file-recursively "internal/test/faas/awslambda/mongodb")))))
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       #:import-path "go.mongodb.org/mongo-driver"
       #:test-flags
       #~(list "-skip"
@@ -31116,11 +31121,15 @@ written in YAML or JSON.")
                ;; Some tests require running database and available network
                ;; connection.
                (list "TestAggregate"
+                     "TestClient"
+                     "TestClientOptions"
+                     "TestConvenientTransactions"
+                     "TestGridFS"
                      "TestPollSRVRecords"
+                     "TestPollSRVRecordsMaxHosts"
                      "TestPollSRVRecordsServiceName"
                      "TestPollingSRVRecordsLoadBalanced"
                      "TestPollingSRVRecordsSpec"
-                     "TestServerHeartbeatOffTimeout"
                      "TestServerHeartbeatTimeout"
                      "TestTimeCodec"
                      "TestTopologyConstructionLogging"
@@ -31128,10 +31137,22 @@ written in YAML or JSON.")
                "|")
               "-vet=off")
       #:test-subdirs
-      #~(list "bson/..." "event/..." "internal/..." "tag/..." "x/...")
+      ;; Exclude integration tests requiring running MongoDB instance.
+      #~(list "bson/..."
+              "event/..."
+              "internal/..."
+              "mongo"
+              "mongo/address"
+              "mongo/description"
+              "mongo/gridfs"
+              "mongo/options"
+              "mongo/readconcern"
+              "mongo/readpref"
+              "mongo/writeconcern"
+              "tag/..."
+              "x/...")
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'build) ; no go files in project's root
           (add-after 'unpack 'remove-examples-and-benchmarks
             (lambda* (#:key tests? import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
@@ -31140,11 +31161,10 @@ written in YAML or JSON.")
                                 "examples"
                                 "cmd/godriver-benchmark"))))))))
     (native-inputs
-     (list go-github-com-aws-aws-lambda-go))
-    (propagated-inputs
      (list go-github-com-davecgh-go-spew
-           go-github-com-golang-snappy
-           go-github-com-google-go-cmp
+           go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-golang-snappy
            go-github-com-klauspost-compress
            go-github-com-montanaflynn-stats
            go-github-com-xdg-go-scram
