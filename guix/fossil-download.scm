@@ -36,7 +36,8 @@
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (web uri)
-  #:export (fossil-reference
+  #:export (<fossil-reference>
+            fossil-reference
             fossil-reference?
             fossil-reference-uri
             fossil-reference-check-in
