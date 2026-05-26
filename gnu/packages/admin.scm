@@ -7228,6 +7228,38 @@ has a focus on performance.  It can be used as a greeter by starting
 it from @file{~/.bashrc} for example.")
     (license license:agpl3+)))
 
+(define-public zeptofetch
+  (package
+    (name "zeptofetch")
+    (version "1.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.archlinux.org/gurov/zeptofetch")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f1dm9nrp0z0prqy90csrkbk98ixp0jx76ax473qb0qsbb7ys4g7"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; No tests available.
+      #:make-flags
+      #~(list (string-append "PREFIX="
+                             #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)))) ; No configure script.
+    (home-page "https://gitlab.archlinux.org/gurov/zeptofetch")
+    (synopsis
+     "Fast, minimal system information tool for Linux.")
+    (description
+     "This package provides a system fetch tool, similar to
+@command{neofetch}, @command{fastfetch}, etc.  It is lightweight and
+has a focus on performance.")
+    (license license:gpl3+)))
+
 (define-public zzz
   (package
     (name "zzz")
