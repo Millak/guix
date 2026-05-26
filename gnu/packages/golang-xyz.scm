@@ -9417,6 +9417,39 @@ help message which may simplify crating CLI applications, it's Golang
 implementation of http://docopt.org/.")
       (license license:expat))))
 
+(define-public go-github-com-dop251-base64dec
+  (package
+    (name "go-github-com-dop251-base64dec")
+    (version "0.0.0-20231022112746-c6c9f9a96217")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dop251/base64dec")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d1dc276r14118iznarg07bmsnawv2517vpjkrwzf2yszbmcvc1x"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dop251/base64dec"))
+    (home-page "https://github.com/dop251/base64dec")
+    (synopsis "Universal Lenient Base64 Decoder")
+    (description
+     "This is a modified version of the standard base64 decoder from
+@code{encoding/base64}.
+
+Key differences:
+@itemize
+@item Accepts both Standard and URL-safe encoding, no need to specify it
+explicitly.
+@item Works for both padded and raw inputs.
+@item The input can be a string or a @code{[]byte}, no allocation or copy is
+performed for either.
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public go-github-com-dop251-scsu
   (package
     (name "go-github-com-dop251-scsu")
