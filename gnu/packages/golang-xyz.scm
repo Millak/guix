@@ -31178,6 +31178,102 @@ written in YAML or JSON.")
      "This package provides a driver for @code{Mongo} data base.")
     (license license:asl2.0)))
 
+(define-public go-go-mongodb-org-mongo-driver-v2
+  (package
+    (inherit go-go-mongodb-org-mongo-driver)
+    (name "go-go-mongodb-org-mongo-driver-v2")
+    (version "2.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mongodb/mongo-go-driver")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rw0zg1xjix3b6l5bpxy3vmk2b9v95p7jpyljhbsfd70xaq96g67"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            (for-each delete-file-recursively
+                      (list "internal/cmd/faas/awslambda/mongodb"
+                            "internal/test/compilecheck"
+                            "internal/cmd/benchmark"
+                            "internal/test/goleak"
+                            "examples"))))))
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "go.mongodb.org/mongo-driver/v2"
+      #:test-flags
+      #~(list "-vet=off"
+              "-skip"
+              (string-join
+               ;; Some tests require running database and available network
+               ;; connection.
+               (list "FuzzDecode"
+                     "TestAggregate"
+                     "TestApplyURI"
+                     "TestAuthSpec"
+                     "TestBSONCorpus"
+                     "TestBsonBinaryVectorSpec"
+                     "TestCMAPSpec"
+                     "TestClient"
+                     "TestConnStringSpec"
+                     "TestConnection"
+                     "TestMaxStalenessSpec"
+                     "TestPollSRVRecords"
+                     "TestPollSRVRecordsMaxHosts"
+                     "TestPollSRVRecordsServiceName"
+                     "TestPollingSRVRecordsLoadBalanced"
+                     "TestPollingSRVRecordsSpec"
+                     "TestSDAMSpec"
+                     "TestServerHeartbeatTimeout"
+                     "TestServerSelectionRTTSpec"
+                     "TestServerSelectionSpec"
+                     "TestServerSelectionSpecInWindow"
+                     "TestTimeCodec"
+                     "TestTopologyConstructionLogging"
+                     "TestURIOptionsSpec")
+               "|"))
+      #:test-subdirs
+      ;; Test submodules which don't require running MongoDB instance.
+      #~(list "bson"
+              "event"
+              "internal/assert"
+              "internal/assert/assertbson"
+              "internal/aws/credentials"
+              "internal/aws/signer/v4"
+              "internal/binaryutil"
+              "internal/bsoncoreutil"
+              "internal/codecutil"
+              "internal/csot"
+              "internal/errutil"
+              "internal/httputil"
+              "internal/logger"
+              "internal/mongoutil"
+              "internal/ptrutil"
+              "internal/rand"
+              "internal/randutil"
+              "internal/serverselector"
+              "internal/test/aws"
+              "internal/test/oidcauth"
+              "internal/uuid"
+              "mongo/address"
+              "mongo/options"
+              "mongo/readpref"
+              "mongo/writeconcern"
+              "tag"
+              "x/...")))
+    (propagated-inputs
+     (list go-github-com-klauspost-compress
+           go-github-com-xdg-go-scram
+           go-github-com-xdg-go-stringprep
+           go-github-com-youmark-pkcs8
+           go-golang-org-x-crypto
+           go-golang-org-x-sync))))
+
 (define-public go-go-senan-xyz-flagconf
   (package
     (name "go-go-senan-xyz-flagconf")
