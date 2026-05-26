@@ -35514,19 +35514,22 @@ for styling strings in the terminal.")
 (define-public python-multipart
   (package
     (name "python-multipart")
-    (version "0.0.20")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "python_multipart" version))
-              (sha256
-               (base32
-                "04wxzakk3hs4z4xf3ldhym3gm46hjicn4iwiw150c8wfbfscml4d"))))
+    (version "0.0.29")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Kludex/python-multipart")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06rxa2xymdqri8zydy7xw2cnpsnzlv2jzdy9g86m5fpfca0pp9fm"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-hatchling
            python-pytest
            python-pyyaml))
-    (home-page "https://github.com/andrew-d/python-multipart")
+    (home-page "https://github.com/Kludex/python-multipart")
     (synopsis "Streaming multipart parser for Python")
     (description
      "This package provides a streaming multipart parser for Python.")
