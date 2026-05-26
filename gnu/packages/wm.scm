@@ -3015,7 +3015,7 @@ narrow the items to those matching the tokens in the input.")
 (define-public sway
   (package
     (name "sway")
-    (version "1.11")
+    (version "1.12")
     (source
      (origin
        (method git-fetch)
@@ -3024,7 +3024,7 @@ narrow the items to those matching the tokens in the input.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a7f7jgf87dm4hxg9nylqsyy7cc7dk49c800pjkl30p9a32xxjn4"))))
+        (base32 "1ngc8cdrqzaq145k1xibq67bki6bwad9y3wh6ghm7147wf67ph9r"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -3052,7 +3052,7 @@ narrow the items to those matching the tokens in the input.")
                   pcre2
                   swaybg
                   wayland
-                  wlroots-0.19))
+                  wlroots-0.20))
     (native-inputs
      (cons* linux-pam mesa pkg-config scdoc wayland-protocols
             (if (%current-target-system)
