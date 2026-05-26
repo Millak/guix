@@ -1829,7 +1829,7 @@ streaming, tool calling, and integration with Amazon Bedrock.")
 (define-public go-github-com-antithesishq-antithesis-sdk-go
   (package
     (name "go-github-com-antithesishq-antithesis-sdk-go")
-    (version "0.5.0")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -1838,17 +1838,26 @@ streaming, tool calling, and integration with Amazon Bedrock.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ac3p3y9905ryj4j3mfvspbdcj9lkap85l2fa8va3mw2svg0wv8d"))))
+        (base32 "13b6hsi5djmragxk7y99988icd5hqjd1c8s4p5m25v643r3wd6l8"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
+      #:import-path "github.com/antithesishq/antithesis-sdk-go"
       #:test-flags
-      #~(list "-vet=off")    ;Go@1.24 forces vet, but tests are not ready yet.
-      #:import-path "github.com/antithesishq/antithesis-sdk-go"))
+      #~(list "-skip" (string-join
+                       ;; Tests expect GO111MODULE=on
+                       (list "TestAliasedImport"
+                             "TestCatalogStability"
+                             "TestE2E"
+                             "TestMultiMain"
+                             "TestSingleMain")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-go-quicktest-qt))
     (propagated-inputs
-     (list go-golang-org-x-tools
-           go-golang-org-x-mod))
+     (list go-golang-org-x-mod
+           go-golang-org-x-tools))
     (home-page "https://github.com/antithesishq/antithesis-sdk-go")
     (synopsis "Antithesis SDK for Golang")
     (description
