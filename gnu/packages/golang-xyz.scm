@@ -17119,7 +17119,7 @@ very eas to use.")
   (package
     (inherit go-github-com-klauspost-cpuid )
     (name "go-github-com-klauspost-cpuid-v2")
-    (version "2.2.8")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -17128,7 +17128,7 @@ very eas to use.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fys5v9vslar483arj7wy4id5kg1c7vqv4437kgjnwvki69j9mxf"))))
+        (base32 "02a8d8hj1gs61fbr30d69mxd7y89pxg8rdvqmqdq4avnmd8n1yl4"))))
     (arguments
      (list
       #:import-path "github.com/klauspost/cpuid/v2"))))
