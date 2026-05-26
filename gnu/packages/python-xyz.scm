@@ -17627,6 +17627,14 @@ should be stored on various operating systems.")
        (sha256
         (base32 "0vm1r1jlaiagj0l9yf7j6zn9w3733dr2169911c0svgrr3gwiwn9"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-tests
+           (lambda _
+             (substitute* "pasta/augment/inline_test.py"
+               (("assertRaisesRegexp") "assertRaisesRegex")))))))
     (propagated-inputs (list python-six))
     (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/google/pasta")
