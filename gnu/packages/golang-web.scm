@@ -2829,6 +2829,7 @@ functions.")
                             "credentials"
                             "feature/ec2/imds"
                             "feature/s3/manager"
+                            "feature/s3/transfermanager"
                             "internal/configsources"
                             "internal/endpoints/v2"
                             "service/cloudwatchlogs"
@@ -3034,6 +3035,52 @@ Instance Metadata Service.")
     (description
      "Package manager provides utilities to upload and download objects from
 S3 concurrently.  Helpful for when working with large objects.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-aws-aws-sdk-go-v2-feature-s3-transfermanager
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-feature-s3-transfermanager")
+    (version "0.1.22")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aws/aws-sdk-go-v2")
+              (commit (go-version->git-ref version
+                                           #:subdir "feature/s3/transfermanager"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lf7jp1bbrnil1grkdqhhy5bssz82g03np2hpffadqjjpg9780w5"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "feature")
+            (delete-all-but "feature" "s3")
+            (delete-all-but "feature/s3" "transfermanager")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-service-s3
+           go-github-com-aws-aws-sdk-go-v2-internal-configsources
+           go-github-com-aws-aws-sdk-go-v2-internal-endpoints-v2
+           go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS SDK for Go v2 - S3 transfer manager module")
+    (description
+     "Package transfermanager implements the Amazon S3 Transfer Manager, a
+high-level S3 client library.")
     (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-internal-configsources
