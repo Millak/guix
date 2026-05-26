@@ -297,7 +297,17 @@ configurations deterministically based on compute and memory latencies.")
                     "availableArchs = ['"
                     (string-join (current-amd-gpu-targets) "', '") "']")))
               (setenv "TENSILE_ROCM_ASSEMBLER_PATH"
-                      (string-append (which "clang"))))))))
+                      (string-append (which "clang")))))
+          ;; Packages, such as rocblas, expect to be able to run those scripts
+          ;; in their CMake builds.
+          (add-after 'install 'adjust-tensile-binaries-permissions
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((site-packages (site-packages inputs outputs)))
+                (with-directory-excursion (string-append site-packages
+                                                         "/Tensile/bin")
+                  ;; Use `make-file-executable' once #7224 is merged.
+                  (chmod "Tensile" #o555)
+                  (chmod "TensileCreateLibrary" #o555))))))))
     (native-inputs
      (list python-filelock
            python-pandas
