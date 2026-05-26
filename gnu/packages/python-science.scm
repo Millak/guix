@@ -819,6 +819,42 @@ Carlo simulations and the defaults are chosen with this application in mind but
 it can be used for displaying many qualitatively different samples.")
     (license license:bsd-2)))
 
+(define-public python-cotengra
+  (package
+    (name "python-cotengra")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jcmgray/cotengra")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "000z233s6nr2qmpjyn4sl1gym8a980xh2vf1jkvfjxfnrv40zl73"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-autoray
+           python-matplotlib
+           python-seaborn))
+    (home-page "https://cotengra.readthedocs.io")
+    (synopsis
+     "Hyper optimized contraction trees")
+    (description
+     "This library allows for contracting tensor networks or einsum expressions
+involving large numbers of tensors.  It includes drop-in replacements for
+@code{einsum} and @code{ncon}, an explicit contraction tree object, a hyper
+optimizer that samples trees while tuning the generating meta-parameters,
+dynamic slicing for massive memory savings and parallelism, simulated annealing
+as an alternative strategy for optimizing and slicing, and integrations with
+other libraries such as @code{numpy}, @code{opt_einsum}, @code{quimb}, and
+others.")
+    (license license:asl2.0)))
+
 (define-public python-cvxpy
   (package
     (name "python-cvxpy")
