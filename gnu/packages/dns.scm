@@ -1425,7 +1425,7 @@ and TCP-capable recursive DNS server for finding domains on the internet.")
 (define-public openresolv
   (package
     (name "openresolv")
-    (version "3.17.4")
+    (version "3.13.2")
     (source
      (origin
        (method git-fetch)
@@ -1435,7 +1435,7 @@ and TCP-capable recursive DNS server for finding domains on the internet.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1lawj50qhr2yj7fy3p8x4m3kqz4lbvghnjc4jlqnxp484hg83ki3"))
+         "03m8n0j0kxxm5kpl66gz4lxr1qqgrp8zlkaq9j8fz27fih0g75xf"))
        (patches
         (search-patches "openresolv-restartcmd-guix.patch"))))
     (build-system gnu-build-system)
