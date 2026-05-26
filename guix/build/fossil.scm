@@ -36,12 +36,12 @@
   "Fetch CHECK-IN from URI into DIRECTORY.  CHECK-IN must be a valid
 Fossil check-in name.  Return #t on success, else raise an exception."
   (setenv "FOSSIL_HOME" "/tmp")
+  (let ((name (basename (strip-store-file-name file) ".tar.gz")))
   (invoke fossil-command
-    "tarball" check-in file "-R"
+    "tarball" check-in file "--name" name "-R"
     (case (uri-scheme (string->uri-reference uri))
       ((file https)                     ;clone the repository first
-       (match-let ((repository (simple-format #f "/tmp/~a.fossil"
-                                 (basename file ".tar.gz")))
+       (match-let ((repository (simple-format #f "/tmp/~a.fossil" name))
                    ((input . output) (pipe)))
          ;; Trust the TLS certificate of the server,
          ;; since we'll later verify the tarball's checksum.
@@ -56,4 +56,4 @@ Fossil check-in name.  Return #t on success, else raise an exception."
        (let ((message (string-append "fetching a Fossil repository through SSH"
                                      " is not supported: " uri)))
          (raise (condition (&message (message message))))))
-      ((#f) uri))))                     ;local file
+      ((#f) uri)))))                    ;local file
