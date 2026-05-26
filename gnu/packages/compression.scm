@@ -3214,3 +3214,11 @@ ratio at the cost of high CPU/memory usage.")
      "zlib-ng is a @code{zlib} replacement with optimizations for next
 generation systems.")
     (license license:zlib)))
+
+(define-public zlib-ng-compat
+  (package/inherit zlib-ng
+    (name "zlib-ng-compat")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:configure-flags flags #~(list))
+        #~(cons "-DZLIB_COMPAT=ON" #$flags))))))
