@@ -11732,3 +11732,35 @@ use the library and researchers to make new capabilities available under a
 common interface.
 ")
     (license license:bsd-3)))
+
+(define-public xdmf
+  (package
+    (name "xdmf")
+    ;; Project does not publish releases / tags
+    (properties '((commit . "04a84bab0eb1568e0f1a27c8fb60c6931efda003")
+                  (revision . "0")))
+    (version (git-version "3.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.kitware.com/xdmf/xdmf")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (patches
+        (search-patches "xdmf-3.0.0-hdf5.patch"))
+       (sha256
+        (base32 "06k4vibkvgxlzkn06x470aq5q18p7yhql8awrpdz3czys3z8i288"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ;has no tests
+    (inputs
+     (list boost hdf5 libxml2))
+    (home-page "https://www.xdmf.org/index.html")
+    (synopsis "XDMF library")
+    (description
+     "This package provides the eXtensible Data Model and Format (XDMF) C++
+library.")
+    (license license:bsd-4)))

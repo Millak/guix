@@ -2628,6 +2628,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/x265-arm-flags.patch			\
   %D%/packages/patches/x265-4-arm-flags.patch			\
   %D%/packages/patches/xdg-desktop-portal-wlr-harcoded-length.patch\
+  %D%/packages/patches/xdmf-3.0.0-hdf5.patch \
   %D%/packages/patches/xf86-video-siliconmotion-fix-ftbfs.patch \
   %D%/packages/patches/xfig-Enable-error-message-for-missing-libraries.patch		\
   %D%/packages/patches/xfig-Fix-double-free-when-requesting-MediaBox.patch		\

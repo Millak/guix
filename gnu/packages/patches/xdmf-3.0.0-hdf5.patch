@@ -1,0 +1,45 @@
+From 92a851f1acb87ad5367eb62f9b97785bedb700bb Mon Sep 17 00:00:00 2001
+From: Dmitri Naumov <github@naumov.de>
+Date: Thu, 28 Oct 2021 22:34:00 +0200
+Subject: [PATCH] Detect if hid_t is defined in new versions of HDF5
+
+In HDF5 development the header file guards were changed,
+namely the leading underscore was removed. This lead to
+a redefinition of the hid_t type, which is int64_t.
+
+The change happened in commit
+https://github.com/HDFGroup/hdf5/commit/c17b4b93d680340af2b3f2c026f2c03c3baeb33ahttps://github.com/HDFGroup/hdf5/commit/c17b4b93d680340af2b3f2c026f2c03c3baeb33a
+and is published in HDF5 version hdf5-1_13_0-rc6.
+---
+ core/XdmfHDF5Controller.hpp | 2 +-
+ core/XdmfHDF5Writer.hpp     | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/core/XdmfHDF5Controller.hpp b/core/XdmfHDF5Controller.hpp
+index c5c15d0a..b52bab3f 100644
+--- a/core/XdmfHDF5Controller.hpp
++++ b/core/XdmfHDF5Controller.hpp
+@@ -30,7 +30,7 @@
+ 
+ // So that hdf5 does not need to be included in the header files
+ // It would add a dependancy to programs that use Xdmf
+-#ifndef _H5Ipublic_H
++#if !defined(_H5Ipublic_H) && !defined(H5Ipublic_H)
+   #ifndef XDMF_HID_T
+   #define XDMF_HID_T
+     typedef int hid_t;
+diff --git a/core/XdmfHDF5Writer.hpp b/core/XdmfHDF5Writer.hpp
+index cfbec6f4..6f8cfd4f 100644
+--- a/core/XdmfHDF5Writer.hpp
++++ b/core/XdmfHDF5Writer.hpp
+@@ -31,7 +31,7 @@
+ 
+ // So that hdf5 does not need to be included in the header files
+ // It would add a dependancy to programs that use Xdmf
+-#ifndef _H5Ipublic_H
++#if !defined(_H5Ipublic_H) && !defined(H5Ipublic_H)
+   #ifndef XDMF_HID_T
+   #define XDMF_HID_T
+     typedef int hid_t;
+-- 
+GitLab
