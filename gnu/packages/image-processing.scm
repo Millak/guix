@@ -1521,7 +1521,7 @@ libraries designed for computer vision research and implementation.")
                     python
                     onetbb
                     vxl-1
-                    zlib))
+                    zlib-ng-compat))
       (native-inputs
        (list castxml
              git-minimal
