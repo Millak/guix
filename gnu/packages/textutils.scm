@@ -2016,7 +2016,7 @@ Expressions, and being faster to type than grep.")
 (define-public yq
   (package
     (name "yq")
-    (version "4.52.4")
+    (version "4.53.2")
     (source
      (origin
        (method git-fetch)
@@ -2025,7 +2025,7 @@ Expressions, and being faster to type than grep.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gha586k0gscgq8jjx3nna70bc0xjy3b8d8gg62wgl9gra6ymfxx"))))
+        (base32 "10910496h435jdiwmcpdqhc70gyfgbmarhazqcdvii20p58k53aa"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -2062,9 +2062,9 @@ Expressions, and being faster to type than grep.")
            go-github-com-yuin-gopher-lua
            go-github-com-zclconf-go-cty
            go-go-yaml-in-yaml-v4
+           go-golang-org-x-mod
            go-golang-org-x-net
-           go-golang-org-x-text
-           go-gopkg-in-op-go-logging-v1))
+           go-golang-org-x-text))
     (home-page "https://mikefarah.gitbook.io/yq/")
     (synopsis "Command-line YAML, JSON, XML, CSV, TOML and properties processor")
     (description
