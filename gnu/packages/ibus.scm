@@ -36,6 +36,7 @@
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix gexp)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
@@ -946,9 +947,9 @@ traditional Chinese output.")
 hanja dictionary and small hangul character classification.")
     (license lgpl2.1+)))
 
-(define-public ibus-libhangul
+(define-public ibus-hangul
   (package
-    (name "ibus-libhangul")
+    (name "ibus-hangul")
     (version "1.5.5")
     (source
      (origin
@@ -995,6 +996,9 @@ hanja dictionary and small hangul character classification.")
     (description
      "ibus-hangul is a Korean input method engine for IBus.")
     (license gpl2+)))
+
+;; XXX: Deprecated on 2026-05-26.
+(define-deprecated-package ibus-libhangul ibus-hangul)
 
 (define-public ibus-table
   (package
