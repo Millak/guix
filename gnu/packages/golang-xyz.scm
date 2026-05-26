@@ -10791,16 +10791,16 @@ It's an alternative fork of @url{https://github.com/docopt/docopt.go}.")
 (define-public go-github-com-fxamacker-cbor-v2
   (package
     (name "go-github-com-fxamacker-cbor-v2")
-    (version "2.9.0")
+    (version "2.9.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/fxamacker/cbor")
-             (commit (string-append "v" version))))
+              (url "https://github.com/fxamacker/cbor")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mvlgjh59s0hqdhz5j0nf8p9mlp6hwkrd8i8bkyvq2hilgplm1pw"))))
+        (base32 "0cvka4ykwydmgc2wh4dv00063ww7rww9pcj9dc3rgx6pi6879s7g"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -10816,9 +10816,9 @@ It's an alternative fork of @url{https://github.com/docopt/docopt.go}.")
     (synopsis "CBOR Codec in Golang")
     (description
      "This package implements functionality for encoding and decoding
-@acronym{Concise Binary Object
-Representation,CBOR} (@url{https://www.rfc-editor.org/rfc/rfc8949.html,RFC
-8949}) and CBOR Sequences, with CBOR tags, Golang struct tags (@code{toarray},
+@acronym{Concise Binary Object Representation, CBOR}
+(@url{https://www.rfc-editor.org/rfc/rfc8949.html, RFC 8949}) and CBOR
+Sequences, with CBOR tags, Golang struct tags (@code{toarray},
 @code{keyasint}, @code{omitempty}), @code{float64/32/16}, and
 @code{big.Intp}.")
     (license license:expat)))
