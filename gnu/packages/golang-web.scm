@@ -5584,7 +5584,7 @@ Features:
 (define-public go-github-com-danielgtaylor-huma-v2
   (package
     (name "go-github-com-danielgtaylor-huma-v2")
-    (version "2.37.3")
+    (version "2.38.0")
     (source
      (origin
        (method git-fetch)
@@ -5593,14 +5593,20 @@ Features:
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xgsb6ihwgv1x35bmrwbknwzl4yzcws6s1p1yfr1ppk09ghwgiss"))))
+        (base32 "18q6r7dg21fbmgryr6yc79mva0vn3jrbb8fvhh92fh5ibib55lmq"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/danielgtaylor/huma/v2"
       #:test-flags
       ;; Tests require local network setup.
-      #~(list "-skip" "TestFeatures|TestAdapters/go|ExampleResolver")
+      #~(list "-skip" (string-join
+                       (list "ExampleResolver"
+                             "TestAdapters/go"
+                             "TestBodyFallbackContentType"
+                             "TestFeatures"
+                             "TestWriteResponseTransformErrorStatus")
+                       "|"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
@@ -5618,6 +5624,7 @@ Features:
            go-github-com-gin-gonic-gin
            go-github-com-go-chi-chi-v5
            go-github-com-gofiber-fiber-v2
+           go-github-com-gofiber-fiber-v3
            go-github-com-google-uuid
            go-github-com-gorilla-mux
            go-github-com-julienschmidt-httprouter
