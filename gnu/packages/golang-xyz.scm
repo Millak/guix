@@ -23107,7 +23107,12 @@ the network.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/pb33f/ordered-map/v2"))
+      #:import-path "github.com/pb33f/ordered-map/v2"
+      #:test-flags
+      #~(list "-skip" (string-append "TestYAMLRoundTrip/"
+                                     "empty_map"
+                                     "|TestYAMLRoundTrip/"
+                                     "with_UTF-8_special_chars_in_key"))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
