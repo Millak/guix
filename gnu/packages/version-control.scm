@@ -3533,7 +3533,6 @@ modification time.")
        (uri (fossil-reference
              (uri "https://fossil.wanderinghorse.net/r/libfossil")
              (check-in version)))
-       (file-name (fossil-file-name name version))
        (sha256
         (base32 "0haaczpjnjpkiikf0q70nfabm2csdk6dl9rh80j0sh90wfvkyqwm"))
        (modules '((guix build utils)
