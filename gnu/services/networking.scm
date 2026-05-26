@@ -1487,11 +1487,9 @@ project's documentation} for more information."
         #$@(if (pair? dnsmasq-configuration-files)  ;if non-empty
                ;; If /etc/NetworkManager/dnsmasq.d is a symlink to a store file,
                ;; delete it.
-               `((if (and (file-exists? "/etc/NetworkManager/dnsmasq.d")
-                          (store-file-name?
-                           (canonicalize-path "/etc/NetworkManager/dnsmasq.d")))
-                     (delete-file-recursively
-                      "/etc/NetworkManager/dnsmasq.d"))
+               `((when (false-if-exception
+                         (store-file-name? (readlink "/etc/NetworkManager/dnsmasq.d")))
+                   (delete-file "/etc/NetworkManager/dnsmasq.d"))
                  (symlink
                   ,(file-union "network-manager-dnsmasq-configuration-directory"
                                dnsmasq-configuration-files)
@@ -1500,11 +1498,9 @@ project's documentation} for more information."
         #$@(if (pair? extra-configuration-files)  ;if non-empty
                ;; If /etc/NetworkManager/conf.d is a symlink to a store file,
                ;; delete it.
-               `((if (and (file-exists? "/etc/NetworkManager/conf.d")
-                          (store-file-name?
-                           (canonicalize-path "/etc/NetworkManager/conf.d")))
-                     (delete-file-recursively
-                      "/etc/NetworkManager/conf.d"))
+               `((when (false-if-exception
+                         (store-file-name? (readlink "/etc/NetworkManager/conf.d")))
+                   (delete-file "/etc/NetworkManager/conf.d"))
                  ;; If it exists but is not a symlink to a store file, then
                  ;; this will fail with EEXIST; we leave this for the user to
                  ;; handle, since they probably created the directory
