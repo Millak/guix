@@ -24,6 +24,7 @@
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Ada Stevenson <adanskana@gmail.com>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2026 Luca Kredel <luca.kredel@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -477,7 +478,7 @@ cloc can handle a greater variety of programming languages.")
 (define-public scc
   (package
     (name "scc")
-    (version "3.3.5")
+    (version "3.7.0")
     (source
      (origin
        (method git-fetch)
@@ -486,20 +487,24 @@ cloc can handle a greater variety of programming languages.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fvp9ab65vwn3dn0wm8l63rrp5fz1gpymcxs8yr0h4s5zmrsg9zf"))))
+        (base32 "1kybs8849whpl1rgbgnwcy0z9nb1jzcjdimba91n6zng9ksz9sl0"))))
     (build-system go-build-system)
     (arguments
      (list
       #:install-source? #f
       #:import-path "github.com/boyter/scc"))
     (native-inputs
-     (list go-github-com-dbaggerman-cuba
+     (list go-github-com-agnivade-levenshtein
+           go-github-com-boyter-gocodewalker
+           go-github-com-boyter-simplecache
            go-github-com-json-iterator-go
            go-github-com-mattn-go-runewidth
-           go-github-com-minio-blake2b-simd
+           go-github-com-rs-zerolog
            go-github-com-spf13-cobra
-           go-golang-org-x-text
-           go-gopkg-in-yaml-v2))
+           go-github-com-spf13-pflag
+           go-go-yaml-in-yaml-v2
+           go-golang-org-x-crypto
+           go-golang-org-x-text))
     (home-page "https://github.com/boyter/scc")
     (synopsis "Fast code counter written in Go")
     (description
