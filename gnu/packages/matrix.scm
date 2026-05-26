@@ -184,7 +184,7 @@ asyncio_mode = auto")))))
            python-attrs
            python-cachetools
            python-click
-           python-dbus-1.2
+           python-dbus
            python-janus
            python-keyring
            python-logbook
