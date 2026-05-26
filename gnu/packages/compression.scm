@@ -42,6 +42,7 @@
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024, 2025 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2026 Jake Forster <jakecameron.forster@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3191,3 +3192,25 @@ exported by the zlib library.")
 ratio at the cost of high CPU/memory usage.")
     (home-page "https://github.com/byronknoll/cmix")
     (license license:gpl3)))
+
+(define-public zlib-ng
+  (package
+    (name "zlib-ng")
+    (version "2.3.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/zlib-ng/zlib-ng")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0g4pxy7gc1slw9n6j583hzps32mml30f08gmmg1adsq4y3dl2cny"))))
+    (build-system cmake-build-system)
+    (native-inputs (list googletest))
+    (home-page "https://github.com/zlib-ng/zlib-ng")
+    (synopsis "Fork of the zlib data compression library")
+    (description
+     "zlib-ng is a @code{zlib} replacement with optimizations for next
+generation systems.")
+    (license license:zlib)))
