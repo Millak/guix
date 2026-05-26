@@ -29592,6 +29592,31 @@ identifiers, a standardized format in the form of a 128 bit number.")
 detection.")
     (license license:asl2.0)))
 
+(define-public go-github-com-xyproto-randomstring
+  (package
+    (name "go-github-com-xyproto-randomstring")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/xyproto/randomstring")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gb8hj3dzcr3j5878yrgn483sbi1ypxjkxd8lc2vl7m9ia1hdsbm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? (not (target-aarch64?))  ;hangs forever on ARM64
+      #:import-path "github.com/xyproto/randomstring"))
+    (home-page "https://github.com/xyproto/randomstring")
+    (synopsis "Random string generator in Go")
+    (description
+     "Package randomstring can be used for generating different types of
+random strings.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-yargevad-filepathx
   (package
     (name "go-github-com-yargevad-filepathx")
