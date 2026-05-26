@@ -118,13 +118,13 @@ is in the public domain.")
 (define-public sqlite-next
   (package
     (inherit sqlite)
-    (version "3.53.0")
+    (version "3.53.1")
     (source (origin
               (method url-fetch)
               (uri (sqlite-uri version 2026))
               (sha256
                (base32
-                "0ninfc6kh0idcslsdlcv7l6261pswxjsdfp0cnmcxqig34w9n7l5"))))
+                "0kzwb61vkzx36mkx5jq95qb2zm8sksjywbx7six9lkh3181b5rl3"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:tests? _ #f)
