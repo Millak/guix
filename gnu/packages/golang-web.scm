@@ -7114,16 +7114,16 @@ of HTML5[1] by the W3C}.")
 (define-public go-github-com-gin-gonic-gin
   (package
     (name "go-github-com-gin-gonic-gin")
-    (version "1.10.0")
+    (version "1.12.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/gin-gonic/gin")
-             (commit (string-append "v" version))))
+              (url "https://github.com/gin-gonic/gin")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01xjvw2d46b77jnszgbwqbdzh9jx7y3h5ik3q30y9dn9gaq5mhks"))))
+        (base32 "040pqmjsx2p4sc5izia8f1akhcp1z7yvi6wxg641cnnnvz9qfy9m"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -7135,13 +7135,16 @@ of HTML5[1] by the W3C}.")
            go-github-com-gin-contrib-sse
            go-github-com-go-playground-validator-v10
            go-github-com-goccy-go-json
+           go-github-com-goccy-go-yaml
            go-github-com-json-iterator-go
            go-github-com-mattn-go-isatty
+           go-github-com-modern-go-reflect2
            go-github-com-pelletier-go-toml-v2
+           go-github-com-quic-go-quic-go
            go-github-com-ugorji-go-codec
+           go-go-mongodb-org-mongo-driver-v2
            go-golang-org-x-net
-           go-google-golang-org-protobuf
-           go-gopkg-in-yaml-v3))
+           go-google-golang-org-protobuf))
     (home-page "https://github.com/gin-gonic/gin")
     (synopsis "HTTP web framework")
     (description
