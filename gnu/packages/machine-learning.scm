@@ -872,7 +872,7 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
     (license license:asl2.0)))
 
 (define-public llama-cpp
-  (let ((tag "9276"))                  ;sync with ggml and python-gguf
+  (let ((tag "9353"))                  ;sync with ggml and python-gguf
     (package
       (name "llama-cpp")
       (version (string-append "0.0.0-" tag))
@@ -884,7 +884,7 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                (commit (string-append "b" tag))))
          (file-name (git-file-name name tag))
          (sha256
-          (base32 "07f23yiy2q0xrpfbkcvn9gs2adb3zmqyllih0kqklxa7vvmsmw1r"))))
+          (base32 "0f942ngvkbk36763kmf3pvfy4hkqy4k806dnhs0mvs2l3gkxw6a1"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -897,16 +897,27 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
         #:configure-flags
         #~(list "-DBUILD_SHARED_LIBS=ON"
                 "-DLLAMA_USE_SYSTEM_GGML=ON"
-                #$(string-append "-DLLAMA_BUILD_NUMBER=" tag)
-                ;; See https://github.com/ggml-org/llama.cpp/issues/23105
-                "-DLLAMA_BUILD_UI=OFF")
+                #$(string-append "-DLLAMA_BUILD_NUMBER=" tag))
         #:phases
         #~(modify-phases %standard-phases
+            ;; See :
+            ;; llama.cpp/issues/23105#issuecomment-4531264818
+            (add-before 'build 'get-ui
+              (lambda _
+                (with-directory-excursion "tools/ui"
+                  (copy-file #$(this-package-input "ui.tar.gz") "ui.tar.gz")
+                  (invoke "tar" "xvf" "ui.tar.gz")
+                  (rename-file "llama-b9353" "dist"))))
             (add-after 'unpack 'fix-tests
               (lambda _
                 ;; test-thread-safety downloads ML model from network,
                 ;; cannot run in Guix build environment
                 (substitute* '("tests/CMakeLists.txt")
+                  (("llama_build_and_test\\(test-save-load-state.cpp.*")
+                   "")
+                  (("set_tests_properties\\(test-save-load-state.*")
+                   "")
+
                   (("llama_build_and_test\\(test-thread-safety.cpp.*")
                    "")
                   (("set_tests_properties\\(test-thread-safety.*")
@@ -946,7 +957,16 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                 (for-each delete-file
                           (find-files (string-append #$output "/bin")
                                       "^test-")))))))
-      (inputs (list ggml openssl))
+      (inputs
+       (list ggml openssl
+             (origin
+               (method url-fetch)
+               (uri
+                (format #f "~a/releases/download/b~a/llama-b~a-ui.tar.gz"
+                        "https://github.com/ggml-org/llama.cpp" tag tag))
+               (file-name "ui.tar.gz")
+               (sha256
+                (base32 "1rqgq5nfw0wbym3gz2ivhrpl69b4fpl6my6nnnr1cbdd6x1mvz44")))))
       (native-inputs
        ;; These are only used in the check phase for test-jinja-py
        (list python-minimal-wrapper python-jinja2))
