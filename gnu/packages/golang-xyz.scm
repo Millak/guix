@@ -4683,7 +4683,7 @@ contexts (e.g. testing).")
 (define-public go-github-com-charlievieth-fastwalk
   (package
     (name "go-github-com-charlievieth-fastwalk")
-    (version "1.0.8")
+    (version "1.0.14")
     (source
      (origin
        (method git-fetch)
@@ -4692,7 +4692,7 @@ contexts (e.g. testing).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17zy17q31p8b93bf703rr0xqafp02bb0slkrgpxb8r0aaxz3zg4y"))))
+        (base32 "0ab90pdqgnd0a6ylmq35zca0imj2pp4pxz2bcmg2zx0szv3910im"))))
     (build-system go-build-system)
     (arguments
      (list
