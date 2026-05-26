@@ -2113,6 +2113,7 @@ different versioned Go structs.")
     (build-system go-build-system)
     (arguments
      (list
+      #:tests? (not (target-aarch64?))  ;hangs forever on ARM64
       #:import-path "github.com/AndreasBriese/bbloom"
       #:test-flags
       #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
