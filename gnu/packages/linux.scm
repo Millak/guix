@@ -11851,16 +11851,16 @@ then IP sets may be the proper tool for you.")
 (define-public liburing
   (package
     (name "liburing")
-    (version "2.12")
+    (version "2.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://git.kernel.dk/liburing")
+                    (url "https://github.com/axboe/liburing")
                     (commit (string-append "liburing-" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vz3p7g0nzcg5bag7kqkdncigl9nc0vrzm07l8yww2gb529k6hxh"))))
+                "1xsrd1x3p5aidcmvhcqqjzgw283hjzrbz26ndpwd0i09dwrvhakd"))))
     (build-system gnu-build-system)
     (arguments
      `(;; Tests are dependent on kernel version and features
