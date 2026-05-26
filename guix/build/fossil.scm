@@ -37,23 +37,23 @@
 Fossil check-in name.  Return #t on success, else raise an exception."
   (setenv "FOSSIL_HOME" "/tmp")
   (let ((name (basename (strip-store-file-name file) ".tar.gz")))
-  (invoke fossil-command
-    "tarball" check-in file "--name" name "-R"
-    (case (uri-scheme (string->uri-reference uri))
-      ((file https)                     ;clone the repository first
-       (match-let ((repository (simple-format #f "/tmp/~a.fossil" name))
-                   ((input . output) (pipe)))
-         ;; Trust the TLS certificate of the server,
-         ;; since we'll later verify the tarball's checksum.
-         (display "y" output)
-         (close-port output)
-         (with-input-from-port input
-           (cut invoke fossil-command "clone"
-                "--no-open" "--once" uri repository))
-         (close-port input)
-         repository))
-      ((ssh)                            ;TODO: authentication for SSH
-       (let ((message (string-append "fetching a Fossil repository through SSH"
-                                     " is not supported: " uri)))
-         (raise (condition (&message (message message))))))
-      ((#f) uri)))))                    ;local file
+    (invoke fossil-command
+      "tarball" check-in file "--name" name "-R"
+      (case (uri-scheme (string->uri-reference uri))
+        ((file https)                   ;clone the repository first
+         (match-let ((repository (simple-format #f "/tmp/~a.fossil" name))
+                     ((input . output) (pipe)))
+           ;; Trust the TLS certificate of the server,
+           ;; since we'll later verify the tarball's checksum.
+           (display "y" output)
+           (close-port output)
+           (with-input-from-port input
+             (cut invoke fossil-command "clone"
+                  "--no-open" "--once" uri repository))
+           (close-port input)
+           repository))
+        ((ssh)                          ;TODO: authentication for SSH
+         (let ((message (string-append "fetching a Fossil repository through SSH"
+                                       " is not supported: " uri)))
+           (raise (condition (&message (message message))))))
+        ((#f) uri)))))                  ;local file
