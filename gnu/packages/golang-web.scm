@@ -8258,7 +8258,7 @@ allocation and performance in mind.")
   (package
     (inherit go-github-com-gofiber-fiber-v2)
     (name "go-github-com-gofiber-fiber-v3")
-    (version "3.2.0")
+    (version "3.3.0")
     (source
      (origin
        (method git-fetch)
@@ -8267,10 +8267,21 @@ allocation and performance in mind.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1186zazs2pgib0rj0fxjg83vk314p4wz00xlizx3njm16drzf57b"))))
+        (base32 "189hqhbm9pvpl5g2n2yk3mvp0f4jx4s0w5ivmgh5li8plffc9iwk"))))
     (arguments
      (substitute-keyword-arguments arguments
-       ((#:import-path _) "github.com/gofiber/fiber/v3")))
+       ((#:import-path _) "github.com/gofiber/fiber/v3")
+       ((#:embed-files _ #~())
+        #~(list
+           ;; golang.org/x/net/publicsuffix/table.go:63:12: pattern
+           ;; data/children: cannot embed irregular file data/children
+           "children"
+           ;; golang.org/x/net/publicsuffix/table.go:48:12: pattern
+           ;; data/nodes: cannot embed irregular file data/nodes
+           "nodes"
+           ;; golang.org/x/net/publicsuffix/table.go:33:12: pattern data/text:
+           ;; cannot embed irregular file data/text
+           "text"))))
     (native-inputs
      (list go-github-com-stretchr-testify
            go-github-com-shamaton-msgpack-v3))
