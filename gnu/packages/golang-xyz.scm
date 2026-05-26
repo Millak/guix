@@ -8041,7 +8041,7 @@ Features:
 (define-public go-github-com-danielgtaylor-mexpr
   (package
     (name "go-github-com-danielgtaylor-mexpr")
-    (version "1.9.1")
+    (version "1.10.1")
     (source
      (origin
        (method git-fetch)
@@ -8050,7 +8050,7 @@ Features:
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kiya25njhy5k9jpk79dz07bwzl33x19mjl4h1sjmdh98aw41z3r"))))
+        (base32 "0pi12ygh1j6fnwfrhx5r2pnzg29h3g5981px6g8v378ixrqd7dgp"))))
     (build-system go-build-system)
     (arguments
      (list
