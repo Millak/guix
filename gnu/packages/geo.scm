@@ -807,7 +807,7 @@ OpenGeoSys")
 (define-public ogs-serial
   (package
     (name "ogs-serial")
-    (version "6.5.7")
+    (version "6.5.8")
     (source
      (origin
        (method git-fetch)
@@ -816,9 +816,7 @@ OpenGeoSys")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wflgkbcsa4sr8g63img0ld6h4jm1b7hjzsa2m4gsbzc6j7kd41w"))
-       ;; Remove patch on next release, likely 6.5.8
-       (patches (search-patches "ogs-6.5.7-netcdfconverter.patch"))))
+        (base32 "037il6jw2j1g7bvrwvbp20yf0cnz7c7f3wmszxfv5ay7l54sffqg"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -873,6 +871,7 @@ OpenGeoSys")
            tclap
            tfel
            vtk
+           xdmf
            xmlpatch
            zlib))
     (propagated-inputs
