@@ -1668,28 +1668,35 @@ RSA, RSA-PSS, and ECDSA, though hooks are present for adding your own.")
 (define-public go-github-com-google-go-tpm
   (package
     (name "go-github-com-google-go-tpm")
-    (version "0.9.4")
+    (version "0.9.8")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/google/go-tpm")
-             (commit (string-append "v" version))))
+              (url "https://github.com/google/go-tpm")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sp1mbr6vz36zy9w36iksirbsj5p2jslsl8zs1cdj8s4ig4lkd9d"))))
+        (base32 "17210acrj3kd9k9l6grlgqzq1063981mscwwws3mjdzlm3r4bn9g"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       #:import-path "github.com/google/go-tpm"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Break cycle:
-          ;; github.com/google/go-tpm/tpm2/transport/simulator/simulator.go ->
-          ;; github.com/google/go-tpm-tools -> github.com/google/go-tpm.
-          ;; Consider to add required inputs on dependent package.
-          (delete 'build)
-          (delete 'check))))
+      ;; github.com/google/go-tpm-tools needs to be boostrapped.
+      #:test-subdirs
+      #~(list "legacy/tpm2"
+              "legacy/tpm2/credactivation"
+              "tpm"
+              "tpm2/transport/linuxtpm"
+              "tpm2/transport/linuxudstpm"
+              "tpm2/transport/tcp"
+              "tpmutil")))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list ;; go-github-com-google-go-tpm-tools
+           go-golang-org-x-sys))
     (home-page "https://github.com/google/go-tpm")
     (synopsis "Go-TPM Legacy TPM 2.0 library")
     (description
