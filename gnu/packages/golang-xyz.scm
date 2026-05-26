@@ -8068,7 +8068,7 @@ if-statement evaluation) so is minimal in what it supports by design.")
 (define-public go-github-com-danielgtaylor-shorthand-v2
   (package
     (name "go-github-com-danielgtaylor-shorthand-v2")
-    (version "2.2.0")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -8077,25 +8077,26 @@ if-statement evaluation) so is minimal in what it supports by design.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17s4jjzfz10lavwnir8cd6nwsf15hrm38y87f7w2pi9hv40x7vn9"))
+        (base32 "0x1bb7i4mixvd2crbjwxafcqmvbp8mw4ddy97mjb4g7v0i4iykkv"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
             ;; Submodules with their own go.mod files and packaged separately:
             ;;
-            ;; - github.com/danielgtaylor/shorthand/cmd/j
-            (delete-file-recursively "cmd")))))
+            ;; - github.com/danielgtaylor/shorthand/cmd
+            ;; - github.com/danielgtaylor/shorthand/benchmarks
+            (delete-file-recursively "cmd")
+            (delete-file-recursively "benchmarks")))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/danielgtaylor/shorthand/v2"
-      #:test-flags
-      #~(list "-vet=off")))  ;Go@1.24 forces vet, but tests are not ready yet.
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-fxamacker-cbor-v2
-           go-github-com-danielgtaylor-mexpr))
+     (list go-github-com-danielgtaylor-mexpr
+           go-github-com-fxamacker-cbor-v2))
     (home-page "https://github.com/danielgtaylor/shorthand")
     (synopsis "Structured Data Shorthand Syntax")
     (description
