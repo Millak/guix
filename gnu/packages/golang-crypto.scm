@@ -762,7 +762,7 @@ The package include Go source library and @code{redoctober} command.")
 (define-public go-github-com-cloudwego-base64x
   (package
     (name "go-github-com-cloudwego-base64x")
-    (version "0.1.4")
+    (version "0.1.7")
     (source
      (origin
        (method git-fetch)
@@ -771,7 +771,10 @@ The package include Go source library and @code{redoctober} command.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lgs28mj5w350vp6pazz2265hx2kab3kbjw7vnk0w1skslxbj8kx"))))
+        (base32 "1f394m92xspc03sfwijbbn86ywm4q31aw86hd4d87ckrnbxp3mrc"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "bench")))))
     (build-system go-build-system)
     (arguments
      (list
