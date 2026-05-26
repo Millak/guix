@@ -949,34 +949,39 @@ hanja dictionary and small hangul character classification.")
 (define-public ibus-libhangul
   (package
     (name "ibus-libhangul")
-    (version "1.5.3")
+    (version "1.5.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/libhangul/ibus-hangul/"
-                           "releases/download/" version
-                           "/ibus-hangul-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libhangul/ibus-hangul")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1400ba2p34vr9q285lqvjm73f6m677cgfdymmjpiwyrjgbbiqrjy"))))
+        (base32 "0wsbh6ii223wdai2qwcwy6sj5jr9zzma7511fhkfq4m2qxdhwsn7"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (wrap-program (string-append (assoc-ref outputs "out")
-                                          "/libexec/ibus-setup-hangul")
-               `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
-               `("LD_LIBRARY_PATH" ":" prefix
-                 (,(string-append (assoc-ref inputs "libhangul") "/lib")))
-               `("GI_TYPELIB_PATH" ":" prefix
-                 (,(getenv "GI_TYPELIB_PATH"))))
-             #t)))))
+     (list
+      #:make-flags
+      #~'("DISABLE_GUI_TESTS=ibus-hangul")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output
+                                           "/libexec/ibus-setup-hangul")
+                `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))
+                `("LD_LIBRARY_PATH" ":" prefix
+                  (,(dirname (search-input-file inputs "lib/libhangul.so"))))
+                `("GI_TYPELIB_PATH" ":" prefix
+                  (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")))
+     (list autoconf
+           automake
+           gettext-minimal
+           `(,glib "bin")
+           libtool
+           pkg-config))
     (inputs
      (list bash-minimal
            ibus
