@@ -92,7 +92,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages bison)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages video)
   #:use-module ((guix licenses) #:prefix license:)

@@ -58,7 +58,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages ebook)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)

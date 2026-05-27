@@ -22,7 +22,7 @@
 (define-module (gnu packages netpbm)
   #:use-module (gnu packages)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages image)
   #:use-module (gnu packages perl)

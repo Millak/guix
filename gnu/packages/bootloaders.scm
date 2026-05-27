@@ -55,7 +55,7 @@
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages firmware)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)

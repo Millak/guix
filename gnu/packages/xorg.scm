@@ -89,7 +89,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages digest)
   #:use-module (gnu packages emacs)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages fltk)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)

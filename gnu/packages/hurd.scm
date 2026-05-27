@@ -38,7 +38,7 @@
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages disk)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages bison)

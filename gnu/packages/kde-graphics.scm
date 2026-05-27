@@ -57,7 +57,7 @@
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages ebook)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)

@@ -33,7 +33,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages m4)

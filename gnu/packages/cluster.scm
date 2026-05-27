@@ -32,7 +32,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages docbook)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)

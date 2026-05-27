@@ -41,7 +41,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)

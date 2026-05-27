@@ -57,7 +57,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages docbook)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gettext)

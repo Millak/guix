@@ -36,7 +36,7 @@
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages bison)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages apr)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages code)

@@ -36,7 +36,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages dbm)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
   #:use-module (gnu packages gettext)

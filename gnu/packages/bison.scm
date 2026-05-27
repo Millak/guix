@@ -28,7 +28,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (srfi srfi-1))
 
 (define-public bison

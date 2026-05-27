@@ -23,7 +23,7 @@
 (define-module (gnu packages coreboot)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages pciutils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cargo)

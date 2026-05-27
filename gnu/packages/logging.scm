@@ -46,7 +46,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages kerberos)

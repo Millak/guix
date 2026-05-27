@@ -31,7 +31,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages dejagnu)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages llvm)

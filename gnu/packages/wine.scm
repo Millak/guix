@@ -45,7 +45,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages image)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)

@@ -72,7 +72,7 @@
   #:use-module (gnu packages electronics)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages embedded)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang-xyz)

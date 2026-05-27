@@ -50,7 +50,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages image)
   #:use-module (gnu packages linux)

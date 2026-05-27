@@ -56,7 +56,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages education)
   #:use-module (gnu packages emacs)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)

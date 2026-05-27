@@ -61,7 +61,7 @@
   #:use-module (gnu packages debian)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages documentation)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)

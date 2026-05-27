@@ -25,7 +25,7 @@
   #:use-module (guix gexp)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages dbm)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)

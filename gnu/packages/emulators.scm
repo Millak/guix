@@ -81,7 +81,7 @@
   #:use-module (gnu packages engineering)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages file-systems)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages fltk)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)

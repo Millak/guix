@@ -24,7 +24,7 @@
 (define-module (gnu packages esolangs)
   #:use-module (gnu packages)
   #:use-module (gnu packages bison)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)

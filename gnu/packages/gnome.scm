@@ -136,7 +136,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages enchant)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages file-systems)
   #:use-module (gnu packages firmware)

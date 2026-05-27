@@ -96,7 +96,7 @@
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages dlang)
   #:use-module (gnu packages file)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)

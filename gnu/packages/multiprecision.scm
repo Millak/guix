@@ -32,7 +32,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bison)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages texinfo)

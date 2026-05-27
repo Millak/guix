@@ -46,7 +46,7 @@
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages glib)

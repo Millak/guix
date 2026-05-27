@@ -55,7 +55,7 @@
   #:use-module (gnu packages cran)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages graphics)

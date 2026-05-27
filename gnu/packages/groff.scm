@@ -37,7 +37,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages bison)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages perl)

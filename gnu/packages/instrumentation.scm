@@ -34,7 +34,7 @@
   #:use-module (gnu packages elf)
   #:use-module (gnu packages engineering)
   #:use-module (gnu packages file)
-  #:use-module (gnu packages flex)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages glib)
