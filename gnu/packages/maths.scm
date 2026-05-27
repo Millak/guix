@@ -467,7 +467,9 @@ programming languages.")
              (commit (string-append "cvc5-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xix197pyd45jakk10apam3bhl38nk14zjk0fzr9rj4knh10x5rx"))))
+        (base32 "1xix197pyd45jakk10apam3bhl38nk14zjk0fzr9rj4knh10x5rx"))
+       (patches
+         (search-patches "cvc5-symfpu-1.2.0.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list

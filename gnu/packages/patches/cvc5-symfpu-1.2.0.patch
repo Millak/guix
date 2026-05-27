@@ -1,0 +1,129 @@
+Makes CVC5 compatible with our packaged version of symfpu.
+
+Taken from https://github.com/cvc5/cvc5/commit/7bff291851c0debf099b431daf25e9a5f9751af0.
+
+diff --git a/COPYING b/COPYING
+index 8cdf9df1c..6faf5f48d 100644
+--- a/COPYING
++++ b/COPYING
+@@ -65,7 +65,7 @@ this library does not affect the license terms of the cvc5 code.
+ 
+ The implementation of the floating point solver in cvc5 depends on symfpu
+ (https://github.com/martin-cs/symfpu) written by Martin Brain.
+-See https://raw.githubusercontent.com/martin-cs/symfpu/CVC4/LICENSE for
++See https://raw.githubusercontent.com/martin-cs/symfpu/main/LICENSE for
+ copyright and licensing information.
+ 
+ When building with GCC, cvc5 links against the libgcc and libstdc++ libraries,
+diff --git a/INSTALL.rst b/INSTALL.rst
+index f0f41f3d8..10a88c14d 100644
+--- a/INSTALL.rst
++++ b/INSTALL.rst
+@@ -180,7 +180,7 @@ versions; more recent versions should be compatible.
+   + module `pyparsing <https://pypi.org/project/pyparsing/>`_
+ - `GMP v6.3 (GNU Multi-Precision arithmetic library) <https://gmplib.org>`_
+ - `CaDiCaL >= 2.1.0 (SAT solver) <https://github.com/arminbiere/cadical>`_
+-- `SymFPU <https://github.com/martin-cs/symfpu/tree/CVC4>`_
++- `SymFPU <https://github.com/martin-cs/symfpu/tree/main>`_
+ 
+ If ``--auto-download`` is given, the Python modules will be installed automatically in
+ a virtual environment if they are missing. To install the modules globally and skip
+@@ -205,7 +205,7 @@ automatically when ``--auto-download`` is given.
+ SymFPU (Support for the Theory of Floating Point Numbers)
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
+-`SymFPU <https://github.com/martin-cs/symfpu/tree/CVC4>`_ is an implementation
++`SymFPU <https://github.com/martin-cs/symfpu/tree/main>`_ is an implementation
+ of SMT-LIB/IEEE-754 floating-point operations in terms of bit-vector operations.
+ It is required for supporting the theory of floating-point numbers and can be
+ downloaded and built automatically.
+diff --git a/cmake/FindSymFPU.cmake b/cmake/FindSymFPU.cmake
+index 05a86e9ee..c95184d02 100644
+--- a/cmake/FindSymFPU.cmake
++++ b/cmake/FindSymFPU.cmake
+@@ -29,13 +29,13 @@ if(NOT SymFPU_FOUND_SYSTEM)
+   include(ExternalProject)
+   include(deps-helper)
+ 
+-  set(SymFPU_COMMIT "227a7246b8ce513b393cc2645d6d65d3490ea1de")
+-  set(SymFPU_CHECKSUM "ff22e37dbc133120ada5760878974811737bec65b12a8883f92b1ed9e3f96e99")
++  set(SymFPU_COMMIT "40bdec00e99f8ea1b96c3dac0a05eed11c541639")
++  set(SymFPU_CHECKSUM "ba17877fbf0c851e113fddaab225152f1c0b2044429396b56b2f113832e36ce5")
+ 
+   ExternalProject_Add(
+     SymFPU-EP
+     ${COMMON_EP_CONFIG}
+-    URL https://github.com/cvc5/symfpu/archive/${SymFPU_COMMIT}.tar.gz
++    URL https://github.com/martin-cs/symfpu/archive/${SymFPU_COMMIT}.tar.gz
+     URL_HASH SHA256=${SymFPU_CHECKSUM}
+     CONFIGURE_COMMAND ""
+     BUILD_COMMAND ""
+diff --git a/src/base/configuration.cpp b/src/base/configuration.cpp
+index 50715e53d..300cffcc6 100644
+--- a/src/base/configuration.cpp
++++ b/src/base/configuration.cpp
+@@ -110,7 +110,7 @@ std::string Configuration::copyright()
+   }
+ 
+   ss << "  SymFPU - The Symbolic Floating Point Unit\n"
+-     << "  See https://github.com/martin-cs/symfpu/tree/CVC4 for copyright "
++     << "  See https://github.com/martin-cs/symfpu/tree/main for copyright "
+      << "information.\n\n";
+ 
+   if (isBuiltWithGmp() || isBuiltWithPoly())
+diff --git a/test/regress/cli/CMakeLists.txt b/test/regress/cli/CMakeLists.txt
+index 458b97ce0..8dc32a6ea 100644
+--- a/test/regress/cli/CMakeLists.txt
++++ b/test/regress/cli/CMakeLists.txt
+@@ -958,10 +958,12 @@ set(regress_0_tests
+   regress0/fp/issue6164.smt2
+   regress0/fp/issue7002.smt2
+   regress0/fp/issue7569.smt2
++  regress0/fp/issue7858-1.smt2
+   regress0/fp/issue9078-1.smt2
+   regress0/fp/issue9078-2.smt2
+   regress0/fp/issue9078-3.smt2
+   regress0/fp/issue9505.smt2
++  regress0/fp/issue9697.smt2
+   regress0/fp/issue9854.smt2
+   regress0/fp/issue9858.smt2
+   regress0/fp/issue9864.smt2
+diff --git a/test/regress/cli/regress0/fp/issue7858-1.smt2 b/test/regress/cli/regress0/fp/issue7858-1.smt2
+new file mode 100644
+index 000000000..7f96a55be
+--- /dev/null
++++ b/test/regress/cli/regress0/fp/issue7858-1.smt2
+@@ -0,0 +1,13 @@
++;; An issue with the rounder in SymFPU not handling some exotic formats
++;; Fixed in SymFPU 1.2.0
++; COMMAND-LINE: --fp-exp
++(set-info :smt-lib-version 2.6)
++(set-logic QF_FP)
++(set-info :source |https://github.com/cvc5/cvc5/issues/7858|)
++(set-option :produce-models true)
++(set-option :check-models true)
++(set-info :status sat)
++
++(declare-fun v () Float64)
++(assert (= ((_ to_fp 9 53) RNE v) (fp (_ bv0 1) (_ bv0 9) (_ bv0 52))))
++(check-sat)
+diff --git a/test/regress/cli/regress0/fp/issue9697.smt2 b/test/regress/cli/regress0/fp/issue9697.smt2
+new file mode 100644
+index 000000000..222f6108c
+--- /dev/null
++++ b/test/regress/cli/regress0/fp/issue9697.smt2
+@@ -0,0 +1,14 @@
++;; Originally a seg fault cause by a zero width vector, fixed by SymFPU 1.2.0
++
++(set-info :smt-lib-version 2.6)
++(set-logic QF_BVFP)
++(set-info :source |https://github.com/cvc5/cvc5/issues/9697|)
++(set-option :produce-models true)
++(set-option :check-models true)
++(set-info :status sat)
++
++(declare-const c5 (_ BitVec 1))
++(declare-const c35 (_ FloatingPoint 8 24))
++(declare-const c72 RoundingMode)
++(assert (not (= c5 ((_ fp.to_sbv 1) c72 c35))))
++(check-sat)
