@@ -4019,6 +4019,38 @@ with documentation.
     ;; details.
     (license license:gpl3+)))
 
+(define-public guile-scriba
+  (package
+    (name "guile-scriba")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/jjba23/scriba.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1chhbhy21g6zghc3alpqhvb6nizylmzzapjariykv41f47ynhljs"))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:source-directory "src"))
+    (propagated-inputs (list guile-json-4))
+    (inputs (list guile-3.0))
+    (synopsis "Structured logging framework for Guile Scheme")
+    (description
+     "Scriba is a structured logging library for GNU Guile that prioritizes
+flexibility and observability.  It provides modular log routing, formatting,
+and filtering, allowing developers to generate human-readable console logs
+during development and machine-readable JSON logs for production environments.
+Key features include an auto-logger configured via environment variables,
+dynamically scoped log contexts using Scheme parameters, ahead-of-time log
+level filtering, and minimal runtime overhead achieved through memoization
+and compile-time macros.")
+    (home-page "https://codeberg.org/jjba23/scriba")
+    (license license:lgpl3+)))
+
 (define-public guile-simple-iterators
   (let ((commit "50f16a2b2aa57e657e52e19fb3c35bdc182cfa36")
         (revision "0"))
