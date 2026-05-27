@@ -19877,6 +19877,31 @@ and is designed to be accessible to both humans and machines.")
 implementation as closely while remaining idiomatic and easy to use.")
     (license license:expat)))
 
+(define-public go-github-com-victoriametrics-easyproto
+  (package
+    (name "go-github-com-victoriametrics-easyproto")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/VictoriaMetrics/easyproto")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h52wjjfqp58wk77q154am8h8zwzi8x8nk9sa844nz04jkkf760p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/VictoriaMetrics/easyproto"))
+    (home-page "https://github.com/VictoriaMetrics/easyproto")
+    (synopsis "Building blocks for protobuf marshaling and unmarshaling")
+    (description
+     "Package easyproto provides building blocks for marshaling and
+unmarshaling (encoding/decoding) protobuf v3 messages according to
+@url{https://protobuf.dev/programming-guides/encoding}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-vishvananda-netlink
   (package
     (name "go-github-com-vishvananda-netlink")
