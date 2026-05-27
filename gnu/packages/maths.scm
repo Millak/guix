@@ -8436,7 +8436,7 @@ erations.")
 (define-public bitwuzla
   (package
     (name "bitwuzla")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -8445,7 +8445,7 @@ erations.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "012h3fj25f5zk9qy353vqn5jpp26db45xjbxi7ns02pkhlm46f6x"))))
+        (base32 "085cph4vdr8j64wmia88bmrd84vgs51rkpismdh7b1f5s0nsvr6y"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dtesting=enabled" "-Ddefault_library=shared"
