@@ -1218,6 +1218,12 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
+(define-public linux-libre-version         linux-libre-7.0-version)
+(define-public linux-libre-gnu-revision    linux-libre-7.0-gnu-revision)
+(define-public linux-libre-pristine-source linux-libre-7.0-pristine-source)
+(define-public linux-libre-source          linux-libre-7.0-source)
+(define-public linux-libre                 linux-libre-7.0)
+
 (define-public linux-libre-6.19
   (make-linux-libre* linux-libre-6.19-version
                      linux-libre-6.19-gnu-revision
@@ -1233,12 +1239,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      '("x86_64-linux" "i686-linux" "armhf-linux"
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
-
-(define-public linux-libre-version         linux-libre-6.18-version)
-(define-public linux-libre-gnu-revision    linux-libre-6.18-gnu-revision)
-(define-public linux-libre-pristine-source linux-libre-6.18-pristine-source)
-(define-public linux-libre-source          linux-libre-6.18-source)
-(define-public linux-libre                 linux-libre-6.18)
 
 (define-public linux-libre-6.12
   (make-linux-libre* linux-libre-6.12-version
@@ -1979,6 +1979,8 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-reform2-dsi.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-reform-next.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-pocket-reform.dtb")))))))))))
 
+(define-public linux-libre-arm64-mnt-reform linux-libre-arm64-mnt-reform-7.0)
+
 (define-public linux-libre-arm64-mnt-reform-6.19
   ;; Kernel for use on the MNT/Reform systems
   ;; https://mntre.com/reform.html
@@ -2314,8 +2316,6 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-desktop-reform.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-reform2-dsi.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-reform-next.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-pocket-reform.dtb")))))))))))
-
-(define-public linux-libre-arm64-mnt-reform linux-libre-arm64-mnt-reform-6.18)
 
 (define-public linux-libre-arm64-mnt-reform-6.12
   ;; Kernel for use on the MNT/Reform systems
