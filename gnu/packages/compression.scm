@@ -1475,7 +1475,7 @@ for most inputs, but the resulting compressed files are anywhere from 20% to
 (define-public 7zip
   (package
     (name "7zip")
-    (version "26.00")
+    (version "26.01")
     (source
      (origin
        (method git-fetch)
@@ -1483,7 +1483,7 @@ for most inputs, but the resulting compressed files are anywhere from 20% to
               (url "https://github.com/ip7z/7zip")
               (commit version)))
        (sha256
-        (base32 "1fvgl9qp2pl5c0jmvgbdx6qig3qd80mhxvml42yby8y412x65sh7"))
+        (base32 "0qwzn9pz1m6f8q20cqgmfqp1qx6s7959xnyikpr60n1v8c1mj98q"))
        (file-name (git-file-name name version))
        (modules '((guix build utils)
                   (ice-9 regex)))
