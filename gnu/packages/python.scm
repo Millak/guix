@@ -1255,7 +1255,7 @@ base, via the @file{pythoncapi_compat.h} header file.")
 (define-public micropython
   (package
     (name "micropython")
-    (version "1.26.1")
+    (version "1.28.0")
     (source
       (origin
         (method url-fetch)
@@ -1263,7 +1263,7 @@ base, via the @file{pythoncapi_compat.h} header file.")
                             "releases/download/v" version
                             "/micropython-" version ".tar.xz"))
         (sha256
-         (base32 "165c8g60f5zf82gw2d94snyjmcgn999jn4i8ngyc0wk2vwa6bghj"))
+         (base32 "05d2gd3g8v3paxf4fin4cv5scgnc4yl0jdahpjs37nmqaybcahsf"))
       (modules '((guix build utils)))
       (snippet
        '(begin
