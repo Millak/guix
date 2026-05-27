@@ -14065,7 +14065,7 @@ Python list with elements of type @code{PIL.Image} (from the
 (define-public python-pillow
   (package
     (name "python-pillow")
-    (version "12.1.1")
+    (version "12.2.0")
     (source
      (origin
        (method git-fetch)
@@ -14074,7 +14074,7 @@ Python list with elements of type @code{PIL.Image} (from the
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g374rklljx0941j6d1gib9pgcq3scmqw9psqaj2c7m8pilqsn9n"))))
+        (base32 "140ynzxpazq6gq041bhkzx314z4kkzv3wlmvph68a0nkj9nqa3pg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -14115,7 +14115,7 @@ stored in a few basic pixel formats.  It should provide a solid foundation for
 a general image processing tool.")
     (properties `((cpe-name . "pillow")))
     (license (license:x11-style
-              "https://github.com/python-pillow/Pillow/blob/12.1.1/LICENSE"
+              "https://github.com/python-pillow/Pillow/blob/12.2.0/LICENSE"
               "MIT-CMU License"))))
 
 (define-public python-pillow-avif-plugin
