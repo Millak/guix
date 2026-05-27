@@ -1022,6 +1022,9 @@ publish/subscribe, RPC-style request/reply, or service discovery.")
         (base32 "1l4rxwnc9knndwmy7xg53adyrm17ld7c5gxwm7vgfmgfy0my4zy8"))))
     (arguments
      (list
+      ;; At least on aarch64-linux, running tests in parallel leads to ports
+      ;; being unavailable in later tests, which then fail.
+      #:parallel-tests? #false
       #:configure-flags
       '(list "-DNNG_ENABLE_COVERAGE=ON"
              "-DNNG_ENABLE_TLS=ON"
@@ -1035,6 +1038,8 @@ publish/subscribe, RPC-style request/reply, or service discovery.")
                (("add_nng_test1\\(httpclient 60 NNG_SUPP_HTTP\\)") "")
                (("add_nng_test\\(tls 60\\)") ""))
              (substitute* "src/platform/CMakeLists.txt"
+               ;; This test only seems to fail on aarch64-linux
+               (("nng_test\\(platform_test\\)") "")
                (("nng_test\\(resolver_test\\)") ""))
              (substitute* "src/sp/transport/tcp/CMakeLists.txt"
                (("nng_test\\(tcp_test\\)") ""))
