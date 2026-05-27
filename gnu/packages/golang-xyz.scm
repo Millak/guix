@@ -31536,6 +31536,9 @@ organization}.")
         (base32 "03hdf855gm8bh8wnhxibin8y626ahaij6v5ivkmic2z86f48ah9n"))))
     (arguments
      (list
+      ;; Cannot use -9223372036854775808 (untyped int constant) as int value
+      ;; in map literal (overflows).
+      #:tests? (not (target-32bit?))
       #:import-path "go.yaml.in/yaml/v3"))))
 
 (define-public go-go-yaml-in-yaml-v4
