@@ -46,6 +46,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages graphics)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
@@ -352,8 +353,19 @@ waveform until they line up with the proper sounds.")
                 "0b1nwiwyg01087q318vymg4si76dw41ykxbn2zwd6dqbxzbpr1dh"))))
     (build-system gnu-build-system)
     (inputs
-     (list bash-minimal qtbase-5 qtxmlpatterns-5 qtmultimedia-5 qtsvg-5
-           qtwayland-5))
+     (list bash-minimal
+           qtbase-5
+           qtxmlpatterns-5
+           qtmultimedia-5
+           qtsvg-5
+           qtwayland-5
+           qttools
+           ;; Necessary for audio import
+           gstreamer
+           gst-plugins-base
+           gst-plugins-good
+           gst-plugins-bad
+           gst-libav))
     (arguments
      (list
       #:phases
@@ -372,7 +384,9 @@ waveform until they line up with the proper sounds.")
               (let ((out (assoc-ref outputs "out"))
                     (plugin-path (getenv "QT_PLUGIN_PATH")))
                 (wrap-program (string-append out "/bin/pencil2d")
-                  `("QT_PLUGIN_PATH" ":" prefix (,plugin-path)))))))))
+                  `("QT_PLUGIN_PATH" ":" prefix (,plugin-path))
+                  `("GST_PLUGIN_SYSTEM_PATH" ":" suffix
+                    (,(getenv "GST_PLUGIN_SYSTEM_PATH"))))))))))
     (home-page "https://www.pencil2d.org")
     (synopsis "Make 2D hand-drawn animations")
     (description
