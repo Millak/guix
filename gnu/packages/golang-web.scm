@@ -4390,6 +4390,34 @@ used with @code{http.Client} and @code{http.Transport} to alter host
 lookups.")
     (license license:expat)))
 
+(define-public go-github-com-chi-middleware-proxy
+  (package
+    (name "go-github-com-chi-middleware-proxy")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/chi-middleware/proxy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pslb4x8jhblgg7sfahrsiv7r4ay5aizgrqkrpfpwzsnhw88fl6h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/chi-middleware/proxy"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-chi-chi-v5))
+    (home-page "https://github.com/chi-middleware/proxy")
+    (synopsis "Proxy forwarded headers middleware")
+    (description
+     "This package is forwarded headers middleware to use if application is
+run behind reverse proxy.")
+    (license license:expat)))
+
 (define-public go-github-com-chris-ramon-douceur
   (package
     (name "go-github-com-chris-ramon-douceur")
