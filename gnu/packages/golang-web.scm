@@ -1084,6 +1084,36 @@ other applications can be provided using this API.  This library is used to
 interact with the Trace API directly.")
     (license license:asl2.0)))
 
+(define-public go-code-forgejo-org-forgejo-actions-proto
+  (package
+    (name "go-code-forgejo-org-forgejo-actions-proto")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://code.forgejo.org/forgejo/actions-proto.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ff0yqb7qgn5gy2jz3kw1hirc88jignhr1x2ycbf91xf9ag1bvys"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Projects builds Go code from protobuf with buf command, not
+      ;; packaged yet in Guix.
+      #:skip-build? #t
+      #:import-path "code.forgejo.org/forgejo/actions-proto"))
+    (propagated-inputs
+     (list go-connectrpc-com-connect
+           go-google-golang-org-protobuf))
+    (home-page "https://code.forgejo.org/forgejo/actions-proto")
+    (synopsis "Protocol Buffer schema and go package for Forgejo Actions")
+    (description
+     "This package provides a protocol Buffer schema and go package for
+Forgejo Actions.")
+    (license license:expat)))
+
 (define-public go-code-gitea-io-sdk-gitea
   (package
     (name "go-code-gitea-io-sdk-gitea")
