@@ -1840,6 +1840,33 @@ software (based on Python's
 @uref{https://github.com/pycontribs/tendo, tendo}).")
     (license license:expat)))
 
+(define-public go-github-com-alimpfard-line
+  (package
+    (name "go-github-com-alimpfard-line")
+    (version "0.0.0-20230131232016-03b4e7dee324")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/alimpfard/line")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0swjy1z7hqy4xgq2hfa457rs7p9d7fw5lmdh0zaf3n25rqv10ds1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/alimpfard/line"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/alimpfard/line")
+    (synopsis "Terminal line editor")
+    (description
+     "This package provides a full reimplementation of SerenityOS's LibLine in
+Go language.  It supports flexible autocompletion, live prompt, buffer update
+and stylisation, multiline editing and more.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-alsm-ioprogress
   (package
     (name "go-github-com-alsm-ioprogress")
