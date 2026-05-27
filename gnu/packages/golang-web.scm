@@ -1114,6 +1114,40 @@ interact with the Trace API directly.")
 Forgejo Actions.")
     (license license:expat)))
 
+(define-public go-code-forgejo-org-forgejo-contrib-go-libravatar
+  (package
+    (name "go-code-forgejo-org-forgejo-contrib-go-libravatar")
+    (version "0.0.0-20260301104140-add494e31dab")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://code.forgejo.org/forgejo-contrib/go-libravatar")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18ch92a9qrwvi1pxak6bvjn5vjwmwhdidhv40z56kpzagybywwdr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f       ;they try to fetch avatars from Internet
+      #:import-path "code.forgejo.org/forgejo-contrib/go-libravatar"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-import-path
+            ;; Build fails if that commit is kept.
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* "libravatar.go"
+                  (("// import \"strk.kbt.io/projects/go/libravatar\"")
+                   ""))))))))
+    (home-page "https://code.forgejo.org/forgejo-contrib/go-libravatar")
+    (synopsis "Golang library for serving federated avatars")
+    (description
+     "This package provides a simple Go library for serving
+@url{https://www.libravatar.org, federated avatars}.")
+    (license license:expat)))
+
 (define-public go-code-gitea-io-sdk-gitea
   (package
     (name "go-code-gitea-io-sdk-gitea")
