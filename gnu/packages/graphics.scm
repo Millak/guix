@@ -997,24 +997,17 @@ baking tools to produce normal maps.")
                    (string-append "-DLLVM_BC_GENERATOR="
                                   #$(this-package-native-input "clang")
                                   "/bin/clang++"))
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke
-                      "ctest" "--exclude-regex"
-                      (string-join
-                       (list
-                        "osl-imageio" ; file does not exist
-                        "osl-imageio.opt" ; file does not exist
-                        "osl-imageio.opt.rs_bitcode" ; file does not exist
-                        "texture-udim"    ; file does not exist
-                        "texture-udim.opt" ; file does not exist
-                        "texture-udim.opt.rs_bitcode" ; file does not exist
-                        "example-deformer" ; could not find OSLConfig
-                        "python-oslquery") ; no module oslquery
-                       "|"))))))))
+           #:test-exclude (string-join
+                           (list
+                            "osl-imageio" ; file does not exist
+                            "osl-imageio.opt" ; file does not exist
+                            "osl-imageio.opt.rs_bitcode" ; file does not exist
+                            "texture-udim"    ; file does not exist
+                            "texture-udim.opt" ; file does not exist
+                            "texture-udim.opt.rs_bitcode" ; file does not exist
+                            "example-deformer" ; could not find OSLConfig
+                            "python-oslquery") ; no module oslquery
+                           "|")))
     (native-inputs
      (list bison
            clang
