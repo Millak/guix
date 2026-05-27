@@ -19,9 +19,11 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** GNOME updated to version 48
 *** New service for Fossil SCM
 *** TeX Live updated to 2026.1
+*** Python updated to version 3.12
 
 ** Programming interfaces
 *** New (guix fossil-download) module, for fetching Fossil repositories
+*** All python packages now use the ‘pyproject-build-system’
 
 * Changes in 1.5.0 (since 1.4.0)
 ** Package management
