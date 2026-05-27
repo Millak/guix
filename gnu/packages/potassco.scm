@@ -44,7 +44,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
-  #:use-module (gnu packages re2c)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages sphinx))
 
 (define-public libpotassco

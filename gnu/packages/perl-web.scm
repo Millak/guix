@@ -36,7 +36,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages perl-compression)
-  #:use-module (gnu packages re2c)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)

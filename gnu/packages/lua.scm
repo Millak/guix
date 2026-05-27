@@ -77,7 +77,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages rdf)
-  #:use-module (gnu packages re2c)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages ssh)
