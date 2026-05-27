@@ -31,14 +31,16 @@
 (define-public musl
   (package
     (name "musl")
-    (version "1.2.5")
+    (version "1.2.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.musl-libc.org/releases/"
                                   "musl-" version ".tar.gz"))
               (sha256
                (base32
-                "1r3mgky9d19b2285s274qxzlgs7sncx8plm01vd691sdx2xii8d9"))))
+                "0ajic0jgiyfk2sk3brn1wsshq0kp9za8x7i4qcgiariwc4xzv1fm"))
+              (patches
+               (search-patches "musl-CVE-2026-40200.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                      ; musl has no tests
