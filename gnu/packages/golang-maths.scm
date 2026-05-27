@@ -41,6 +41,31 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-github-com-aio-arch-graphlib
+  (package
+    (name "go-github-com-aio-arch-graphlib")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aio-arch/graphlib")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a69h1wlrv324wb0amagn6qyjb6cny0qhg82ivvkv0ilvvn17b6m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? (not (target-aarch64?))
+      #:import-path "github.com/aio-arch/graphlib"))
+    (home-page "https://github.com/aio-arch/graphlib")
+    (synopsis "Topological sort lib for Sorting and pruning of DAG graphs")
+    (description
+     "This package provides a Topological sort lib.  Sorting and pruning of
+DAG graphs.")
+    (license license:expat)))
+
 (define-public go-github-com-altree-bigfloat
   (package
     (name "go-github-com-altree-bigfloat")
