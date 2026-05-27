@@ -10836,6 +10836,11 @@ between a set of landmarks and the samples are calculated.")
                 "test-isSingular.R"            ;freezes
                 "test-lmer.R"                  ;freezes
                 "test-methods.R")              ;freezes
+              '())
+        ,@(if (target-aarch64?)
+              ;; Fails with there is no package called ‘merDeriv’.  No idea
+              ;; why this is not a problem on x86_64.
+              '(("test-isSingular.R" "checking singular fit for merMod"))
               '()))
       #:phases
       (if (target-32bit?)
