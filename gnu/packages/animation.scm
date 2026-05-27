@@ -341,7 +341,7 @@ waveform until they line up with the proper sounds.")
 (define-public pencil2d
   (package
     (name "pencil2d")
-    (version "0.6.6")
+    (version "0.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -350,7 +350,7 @@ waveform until they line up with the proper sounds.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0b1nwiwyg01087q318vymg4si76dw41ykxbn2zwd6dqbxzbpr1dh"))))
+                "1g56f1ng6v0z9f7hj9hl358p189j1my092472pravpn9z9669gvp"))))
     (build-system gnu-build-system)
     (inputs
      (list bash-minimal
