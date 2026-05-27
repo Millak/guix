@@ -1176,6 +1176,36 @@ email, it was inspired by Ruby's project
 It's a maintained fork of @url{https://github.com/dimiro1/reply}.")
     (license license:expat)))
 
+(define-public go-code-forgejo-org-go-chi-binding
+  (package
+    (name "go-code-forgejo-org-go-chi-binding")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://code.forgejo.org/go-chi/binding")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hwpiim3ry3g39vw0v1nvaplk7ps1fvvcs7rd2827lc81j8bdnsy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "code.forgejo.org/go-chi/binding"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-chi-chi-v5))
+    (home-page "https://code.forgejo.org/go-chi/binding")
+    (synopsis "Request data binding and validation for @code{net/http}")
+    (description
+     "Package binding is a middleware that provides request data binding and
+validation for @code{net/http}.  It's a fork of
+@url{https://gitea.com/go-chi/binding, gitea/binding} which is a fork of
+@url{https://github.com/go-macaron/macaron, Macaron}.")
+    (license license:asl2.0)))
+
 (define-public go-code-gitea-io-sdk-gitea
   (package
     (name "go-code-gitea-io-sdk-gitea")
