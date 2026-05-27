@@ -472,6 +472,34 @@ time dependencies in tests.")
 as human-readable strings.")
     (license license:expat)))
 
+(define-public go-code-forgejo-org-forgejo-levelqueue
+  (package
+    (name "go-code-forgejo-org-forgejo-levelqueue")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://code.forgejo.org/forgejo/levelqueue.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "154cp8w2sfd1csgd2z5y3rb6pgf811pzd9whv7bj2nqn77q5gv8i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "code.forgejo.org/forgejo/levelqueue"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-syndtr-goleveldb))
+    (home-page "https://code.forgejo.org/forgejo/levelqueue")
+    (synopsis "Simple queue Golang library")
+    (description
+     "Level queue is a simple queue Go library base on
+@url{https://github.com/syndtr/goleveldb, go-leveldb}.")
+    (license license:expat)))
+
 (define-public go-codeberg-org-anaseto-gruid
   (package
     (name "go-codeberg-org-anaseto-gruid")
