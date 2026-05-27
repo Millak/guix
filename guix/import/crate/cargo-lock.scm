@@ -81,7 +81,9 @@
 
 ;; dependency specification
 (define-peg-pattern dependency-specification all
-  (and crate-name (? (and (ignore " ") crate-version))))
+  (and crate-name
+       (? (and (ignore " ") crate-version))
+       (? (ignore (and " (" crate-source ")")))))
 
 ;; dependencies
 (define-peg-pattern crate-dependencies all
