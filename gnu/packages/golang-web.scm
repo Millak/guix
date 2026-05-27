@@ -1148,6 +1148,34 @@ Forgejo Actions.")
 @url{https://www.libravatar.org, federated avatars}.")
     (license license:expat)))
 
+(define-public go-code-forgejo-org-forgejo-reply
+  (package
+    (name "go-code-forgejo-org-forgejo-reply")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://code.forgejo.org/forgejo/reply.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x13217haxf8hyzxh2262ys70vh1yswkn96lsazh8glkvy4x8kb7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "code.forgejo.org/forgejo/reply"))
+    (propagated-inputs
+     (list go-github-com-dlclark-regexp2))
+    (home-page "https://code.forgejo.org/forgejo/reply")
+    (synopsis "Go library to trim replies from plain text email")
+    (description
+     "Replay implements a simple function to trim replies from plain text
+email, it was inspired by Ruby's project
+@url{https://github.com/discourse/email_reply_trimmer, email_reply_trimmer}.
+It's a maintained fork of @url{https://github.com/dimiro1/reply}.")
+    (license license:expat)))
+
 (define-public go-code-gitea-io-sdk-gitea
   (package
     (name "go-code-gitea-io-sdk-gitea")
