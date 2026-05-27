@@ -94,13 +94,16 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages logging)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pdf)
@@ -108,6 +111,7 @@
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages profiling)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -120,6 +124,8 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages suckless)
   #:use-module (gnu packages stb)
+  #:use-module (gnu packages tbb)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages upnp)
   #:use-module (gnu packages version-control)
@@ -1285,6 +1291,84 @@ workspaces.
 
 (define-deprecated-package python-ueberzug
   ueberzug)
+
+(define-public ueberzugpp
+  (package
+    (name "ueberzugpp")
+    (version "2.9.10")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/jstkdng/ueberzugpp")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1jac2sca4pmcxp8xcvaxhf6j15phyc85gb5n9ymajbahnd4hbcv2"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f    ; no tests
+           #:configure-flags
+           #~(list "-DENABLE_OPENCV=ON"
+                   "-DENABLE_X11=ON"
+                   "-DENABLE_WAYLAND=ON")))
+    (native-inputs
+     (list extra-cmake-modules
+           gobject-introspection
+           pkg-config))
+    (inputs
+     (list cairo
+           chafa
+           cli11
+           expat
+           fftw
+           fmt
+           imagemagick
+           imath
+           lcms
+           libexif
+           libgsf
+           librsvg
+           libsixel
+           libwebp
+           libxcb
+           matio
+           nlohmann-json
+           opencv
+           openexr
+           openssl
+           orc
+           pango
+           poppler
+           range-v3
+           spdlog
+           tbb
+           vips
+           wayland
+           wayland-protocols
+           xcb-util-image))
+    (home-page "https://github.com/jstkdng/ueberzugpp")
+    (synopsis "Drop in replacement for ueberzug written in C++")
+    (description "Überzug++ is a command line utility written in C++ which
+allows to draw images on terminals by using X11/Wayland child windows, sixels,
+ kitty and iterm2.
+
+Advantages over @command{w3mimgdisplay}:
+@itemize
+@item Support for Wayland: Sway, Hyprland, niri and Wayfire
+@item No race conditions as a new window is created to display images
+@item Expose events will be processed, so images will be redrawn on switch
+workspaces
+@item Tmux support on X11, Sway and Hyprland
+@item Terminals without the @env{WINDOWID} environment variable are supported
+@item Chars are used as position - and size unit
+@item No memory leak (usage of smart pointers)
+@item A lot of image formats supported (through OpenCV and libvips).
+@item GIF and animated WEBP support on X11, Sixel, Sway and hyprland
+@item Fast image downscaling (through OpenCV and OpenCL)
+@item Cache resized images for faster viewing
+@end itemize")
+    (license license:gpl3)))
 
 (define-public vv
   (package
