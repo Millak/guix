@@ -8402,8 +8402,8 @@ s-expression-based format.")
      (list
       #:install-plan
       #~`(("symfpu.pc" "lib/pkgconfig/symfpu.pc")
-          ("core" "include/symfpu/core")
-          ("utils" "include/symfpu/utils"))
+          ("core" "include/symfpu/core" #:exclude ("Makefile"))
+          ("utils" "include/symfpu/utils" #:exclude ("Makefile")))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'install 'build-pkgconfig
