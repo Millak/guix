@@ -13275,21 +13275,27 @@ the available RAM.")
       #:configure-flags
       '(list "--without-bundled-libraries")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-build-system
-           (lambda _
-             (substitute* "src/lzf/lzf/Makefile"
-               ;; Use the default rules for building .o from .c
-               (("	\\$\\(CC\\) .*") ""))
-             (substitute* "src/vbz/vbz/Makefile.in"
-               ;; Use the default rules for building .o from .c
-               (("	$(CXX) $(FLAGS).*") "")
-               ;; Remove PKG_CPPFLAGS which clears the header search path.
-               (("\\$\\(PKG_CPPFLAGS\\)") ""))
-             ;; Remove PKG_CPPFLAGS which clears the header search path.
-             (substitute* '("src/lzf/Makefile"
-                            "src/vbz/Makefile.in")
-               (("\\$\\(PKG_CPPFLAGS\\)") "")))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-build-system
+            (lambda _
+              #$@(if (target-aarch64?)
+                     '((substitute* '("src/vbz/third_party/streamvbyte/Makefile"
+                                      "src/vbz/third_party/streamvbyte/Makefile.in")
+                         (("\\$\\(STREAM_BYTE_CFLAGS\\)" m)
+                          (string-append m " -D__ARM_NEON__"))))
+                     '())
+              (substitute* "src/lzf/lzf/Makefile"
+                ;; Use the default rules for building .o from .c
+                (("	\\$\\(CC\\) .*") ""))
+              (substitute* "src/vbz/vbz/Makefile.in"
+                ;; Use the default rules for building .o from .c
+                (("	$(CXX) $(FLAGS).*") "")
+                ;; Remove PKG_CPPFLAGS which clears the header search path.
+                (("\\$\\(PKG_CPPFLAGS\\)") ""))
+              ;; Remove PKG_CPPFLAGS which clears the header search path.
+              (substitute* '("src/lzf/Makefile"
+                             "src/vbz/Makefile.in")
+                (("\\$\\(PKG_CPPFLAGS\\)") "")))))))
     (propagated-inputs
      (list r-rhdf5lib))
     (inputs
