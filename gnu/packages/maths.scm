@@ -8383,60 +8383,55 @@ s-expression-based format.")
    (license license:gpl3+)))
 
 (define-public symfpu
-  ;; Currently, we use the "experimental" branch of the symfpu repository.  The
-  ;; default "master" branch hasn't been updated in ~7 years and both bitwuzla
-  ;; and cvc5 require fixes from the "experimental" branch.
-  (let ((commit "aeaa3fa62730148c855f5a9e0a9b7040d48e0b7e")
-        (revision "1"))
-    (package
-      (name "symfpu")
-      (version (git-version "0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/martin-cs/symfpu")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0wj9pwr2jiliy4rw4nvy51427dwhwj86azi14qc5vzsdb44c6fdx"))))
-      (build-system copy-build-system)
-      (arguments
-       (list
-        #:install-plan
-        #~`(("symfpu.pc" "lib/pkgconfig/symfpu.pc")
-            ("core" "include/symfpu/core")
-            ("utils" "include/symfpu/utils"))
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'install 'build-pkgconfig
-              (lambda* (#:key outputs #:allow-other-keys)
-                (with-output-to-file "symfpu.pc"
-                  (lambda _
-                    (format #t
-                     "prefix=~a~@
-                      exec_prefix=${prefix}~@
-                      includedir=${prefix}/include~@
-                      ~@
-                      ~@
-                      Name: symfpu~@
-                      Version: ~a~@
-                      Description: library for IEEE-754 floats~@
-                      Cflags: -I${includedir}~%"
-                     (assoc-ref outputs "out")
-                     #$version))))))))
-      (synopsis
-       "Concrete and symbolic implementation of IEEE-754 floating-point numbers")
-      (description
-       "SoftFPU is a C++ library implementing concrete and symbolic
-semantics for floating point numbers as defined in the IEEE-764 Standard
-for Floating-Point Arithmetic.  It is templated in terms of the
-bit-vectors, propositions, floating-point formats and rounding mode types
-used.  This allow the same code to be executed as an arbitrary precision
-library or to be used to build symbolic representations of floating-point
-operations.")
-      (home-page "https://github.com/martin-cs/symfpu")
-      (license license:gpl3+))))
+  (package
+    (name "symfpu")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/martin-cs/symfpu")
+             (commit (string-append "symfpu-" version "-dual-license"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13a9y0spyi6pggbhjgwi9g2qy822h1zakzhhwvm8qgk5c4njv3c6"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~`(("symfpu.pc" "lib/pkgconfig/symfpu.pc")
+          ("core" "include/symfpu/core")
+          ("utils" "include/symfpu/utils"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'build-pkgconfig
+            (lambda* (#:key outputs #:allow-other-keys)
+              (with-output-to-file "symfpu.pc"
+                (lambda _
+                  (format #t
+                   "prefix=~a~@
+                    exec_prefix=${prefix}~@
+                    includedir=${prefix}/include~@
+                    ~@
+                    ~@
+                    Name: symfpu~@
+                    Version: ~a~@
+                    Description: library for IEEE-754 floats~@
+                    Cflags: -I${includedir}~%"
+                   (assoc-ref outputs "out")
+                   #$version))))))))
+    (synopsis
+     "Concrete and symbolic implementation of IEEE-754 floating-point numbers")
+    (description
+     "SoftFPU is a C++ library implementing concrete and symbolic
+mantics for floating point numbers as defined in the IEEE-764 Standard
+r Floating-Point Arithmetic.  It is templated in terms of the
+t-vectors, propositions, floating-point formats and rounding mode types
+ed.  This allow the same code to be executed as an arbitrary precision
+brary or to be used to build symbolic representations of floating-point
+erations.")
+    (home-page "https://github.com/martin-cs/symfpu")
+    (license (list license:bsd-3 license:gpl3+))))
 
 (define-public bitwuzla
   (package
