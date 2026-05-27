@@ -43,6 +43,35 @@
 ;;;
 ;;; Code:
 
+(define-public go-code-forgejo-org-forgejo-go-rpmutils
+  (package
+    (name "go-code-forgejo-org-forgejo-go-rpmutils")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://code.forgejo.org/forgejo/go-rpmutils.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zgqr3il0w7j6964mh1nw5zg9shp1p039a8sj0y946r26labqm9i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "code.forgejo.org/forgejo/go-rpmutils"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-protonmail-go-crypto))
+    (home-page "https://code.forgejo.org/forgejo/go-rpmutils")
+    (synopsis "Go RPM Utils")
+    (description
+     "go-rpmutils is a Golang library for parsing @url{http://www.rpm.org,
+RPM} file archives.  It's a slimmed version of
+@url{https://github.com/sassoftware/go-rpmutils, go-rpmutils}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-a1ex3-zstd-seekable-format-go-pkg
   (let ((commit "eb2f95f46725437a64063e005a54e20c95b774c6")
         (revision "0"))
