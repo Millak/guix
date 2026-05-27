@@ -34373,18 +34373,22 @@ systems in Python.")
 (define-public python-dotenv
   (package
     (name "python-dotenv")
-    (version "1.1.1")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python_dotenv" version))
        (sha256
-        (base32 "1aw9c5gw2gfjf7n3s7k6lb6ybz090hh60wq0daz4azr52sbkk9m8"))))
+        (base32 "1wwwg7gasqmnv5y2hb3w1155c8nai6zzih8x5hn0ifnpzf8ildrc"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; .dotenv-real instead of dotenv
+      #~(list "-k not test_run_with_dotenv_and_command_flags")))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-sh))
+           python-setuptools))
     (propagated-inputs
      (list python-click))
     (home-page "https://saurabh-kumar.com/python-dotenv/")
