@@ -304,6 +304,12 @@ human.")
                         ruby-asciidoctor/minimal))
                #~'()
                #~(list "-DWITH_XC_DOCS=NO")))
+      ;; Entries have recently become sorted per the locale, and
+      ;; causes testentrymodel to fail when using the C locale (see:
+      ;; https://github.com/keepassxreboot/keepassxc/issues/11813).
+      ;; testClip runs 'xclip', which hangs in the container,
+      ;; perhaps because it lacks a TTY.
+      #:test-exclude "testentrymodel|testcli"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'record-clipboard-programs
@@ -327,17 +333,7 @@ human.")
                   "\")")))
               (substitute* "src/gui/Clipboard.cpp"
                 (("\"wl-copy\"")
-                 (format #f "~s" (search-input-file inputs "bin/wl-copy"))))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; Entries have recently become sorted per the locale, and
-                ;; causes testentrymodel to fail when using the C locale (see:
-                ;; https://github.com/keepassxreboot/keepassxc/issues/11813).
-                ;; testClip runs 'xclip', which hangs in the container,
-                ;; perhaps because it lacks a TTY.
-                (invoke "ctest" "--exclude-regex"
-                        "testentrymodel|testcli")))))))
+                 (format #f "~s" (search-input-file inputs "bin/wl-copy")))))))))
     (native-inputs
      (append
       (list qttools-5)
