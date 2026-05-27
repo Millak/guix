@@ -1121,6 +1121,199 @@ data types.")
                   (cpe-vendor . "python")))
     (license license:psfl)))
 
+(define-public python-3.13
+  (package
+    (name "python")
+    (version "3.13.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.python.org/ftp/python/" version
+                           "/Python-" version ".tar.xz"))
+       (sha256
+        (base32 "0wcanwlkfy91hhpsgx9b1vbdyywm5s40rlbm9ykcqg3q07s1zf9a"))
+       (patches (search-patches "python-3-deterministic-build-info.patch"
+                                "python-3.13-fix-tests.patch"
+                                "python-3-hurd-configure.patch"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   ;; Delete the bundled copy of libexpat.
+                   (delete-file-recursively "Modules/expat")
+                   (substitute* "Modules/Setup"
+                     ;; Link Expat instead of embedding the bundled one.
+                     (("^#pyexpat.*")
+                      "pyexpat pyexpat.c -lexpat\n"))
+                   ;; Delete windows binaries
+                   (for-each delete-file
+                             (find-files "Lib/distutils/command" "\\.exe$"))))))
+    (outputs '("out" "tk"               ;tkinter; adds 50 MiB to the closure
+               "idle"))                 ;programming environment; weighs 5MB
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:configure-flags
+      #~(list "--enable-shared"          ;allow embedding
+              "--with-system-expat"      ;for XML support
+              "--with-system-ffi"        ;build ctypes
+              "--with-ensurepip=install" ;install pip and setuptools
+              "--with-computed-gotos"    ;main interpreter loop optimization
+              "--enable-unicode=ucs4"
+              "--without-static-libpython"
+              "--enable-loadable-sqlite-extensions"
+
+              ;; FIXME: These flags makes Python significantly faster,
+              ;; but leads to non-reproducible binaries.
+              ;; "--with-lto"   ;increase size by 20MB, but 15% speedup
+              ;; "--enable-optimizations"
+
+              ;; Prevent the installed _sysconfigdata.py from retaining
+              ;; a reference to coreutils.
+              "INSTALL=install -c"
+              "MKDIR_P=mkdir -p"
+
+              ;; Disable runtime check failing if cross-compiling, see:
+              ;; https://lists.yoctoproject.org/pipermail/poky/2013-June/008997.html
+              #$@(if (%current-target-system)
+                     #~("ac_cv_buggy_getaddrinfo=no"
+                        "ac_cv_file__dev_ptmx=no"
+                        "ac_cv_file__dev_ptc=no"
+	                (string-append "--with-build-python="
+	                               #+(this-package-native-input "python")
+	                               "/bin/python3"))
+                     #~())
+              ;; -fno-semantic-interposition reinstates some
+              ;; optimizations by gcc leading to around 15% speedup.
+              ;; This is the default starting from python 3.10.
+              "CFLAGS=-fno-semantic-interposition"
+              (string-append "LDFLAGS=-Wl,-rpath="
+                             (assoc-ref %outputs "out")
+                             "/lib"
+                             " -fno-semantic-interposition"))
+      ;; With no -j argument tests use all available cpus, so provide one.
+      #:make-flags
+      #~(list (string-append (format #f "TESTOPTS=-j~d"
+                                     (parallel-job-count))
+                             ;; those tests fail on low-memory systems
+                             " --exclude"
+                             " test_mmap"
+                             " test_socket"
+                             " test_threading"
+                             " test_asyncio"
+                             " test_shutdown"
+                             #$@(if (target-ppc32?)
+                                    #~(" test_ssl")
+                                    #~())
+                             #$@(if (system-hurd?)
+                                    #~(" test_posix" ;multiple errors
+                                       " test_time"
+                                       " test_pty"
+                                       " test_shutil"
+                                       " test_tempfile" ;chflags: invalid argument:
+                                       ;; tbv14c9t/dir0/dir0/dir0/test0.txt
+                                       " test_os" ;stty: 'standard input':
+                                       ;; Inappropriate ioctl for device
+                                       " test_openpty" ;No such file or directory
+                                       " test_selectors" ;assertEqual(NUM_FDS // 2, len(fds))
+                                       ;; 32752 != 4
+                                       " test_compileall" ;multiple errors
+                                       " test_poll" ;list index out of range
+                                       " test_subprocess" ;runs over 10min
+                                       " test_asyncore"   ;multiple errors
+                                       " test_threadsignals"
+                                       " test_eintr" ;Process return code is -14
+                                       " test_io"    ;multiple errors
+                                       " test_logging"
+                                       " test_signal"
+                                       " test_flags" ;ERROR
+                                       " test_bidirectional_pty"
+                                       " test_create_unix_connection"
+                                       " test_unix_sock_client_ops"
+                                       " test_open_unix_connection"
+                                       " test_open_unix_connection_error"
+                                       " test_read_pty_output"
+                                       " test_write_pty"
+                                       " test_concurrent_futures" ;freeze
+                                       " test_venv"               ;freeze
+                                       " test_multiprocessing_forkserver" ;runs over 10min
+                                       " test_multiprocessing_spawn" ;runs over 10min
+                                       " test_glob" ;did not finish in 10h
+                                       " test_site" ;Invalid argument
+                                       " test_termios" ;os.openpty() Operation not permitted
+                                       " test_tty" ;os.openpty() Operation not permitted
+                                       " test_sqlite3" ;; sqlite3.OperationalError: database is locked
+                                       " test_tarfile" ;; ELOOP vs ENAMETOOLONG
+                                       " test_builtin"
+                                       " test_capi"
+                                       " test_dbm_ndbm"
+                                       " test_exceptions"
+                                       " test_faulthandler"
+                                       " test_getopt"
+                                       " test_importlib"
+                                       " test_json"
+                                       " test_multiprocessing_fork"
+                                       " test_multiprocessing_main_handling"
+                                       " test_pdb "
+                                       " test_regrtest"
+                                       " test_ssl" ;; Fails with openssl 3.5
+                                       " test_sqlite")
+                                    #~())
+                             #$@(if (system-hurd64?)
+                                    #~(" test_largefile") ;; hangs
+                                    #~())))
+
+      #:modules '((ice-9 ftw)
+                  (ice-9 match)
+                  (guix build utils)
+                  (guix build gnu-build-system))
+
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@(common-python3-phases-edits)
+          (add-after 'install 'install-sitecustomize.py
+            #$(customize-site version)))))
+    (inputs (list bzip2
+                  expat
+                  gdbm
+                  libffi                ;for ctypes
+                  sqlite                ;for sqlite extension
+                  openssl
+                  readline
+                  zlib
+                  tcl
+                  tk))                  ;for tkinter
+    (native-inputs `(("tzdata" ,tzdata-for-tests)
+                     ("unzip" ,unzip)
+                     ("zip" ,(@ (gnu packages compression) zip))
+                     ("pkg-config" ,pkg-config)
+                     ("sitecustomize.py" ,(local-file (search-auxiliary-file
+                                                       "python/sitecustomize.py")))
+                     ;; When cross-compiling, a native version of Python itself is needed.
+                     ,@(if (%current-target-system)
+                           `(("python" ,this-package)
+                             ("which" ,which))
+                           '())))
+    (native-search-paths
+     (list (guix-pythonpath-search-path version)
+           ;; Used to locate tzdata by the zoneinfo module introduced in
+           ;; Python 3.9.
+           (search-path-specification
+            (variable "PYTHONTZPATH")
+            (files (list "share/zoneinfo")))))
+    (home-page "https://www.python.org")
+    (synopsis "High-level, dynamically-typed programming language")
+    (description
+     "Python is a remarkably powerful dynamic programming language that
+is used in a wide variety of application domains.  Some of its key
+distinguishing features include: clear, readable syntax; strong
+introspection capabilities; intuitive object orientation; natural
+expression of procedural code; full modularity, supporting hierarchical
+packages; exception-based error handling; and very high level dynamic
+data types.")
+    (properties '((cpe-name . "python")
+                  (cpe-vendor . "python")))
+    (license license:psfl)))
+
 ;; Next 3.x version.
 (define-public python-next python-3.12)
 
