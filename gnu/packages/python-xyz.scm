@@ -39755,6 +39755,31 @@ progress, among other things.")
 for linkify-it-py projects.")
     (license license:expat)))
 
+(define-public python-udapi
+  (package
+    (name "python-udapi")
+    (version "0.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/udapi/udapi-python")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z9nyj0jmd2yk58c5kag4fkfb7y478di859xi56xc7fhvmyjf7nj"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools))
+    (propagated-inputs
+     (list python-colorama python-termcolor))
+    (home-page "http://udapi.readthedocs.io")
+    (synopsis "Framework for processing Universal Dependencies data")
+    (description
+     "This package is a Python library providing an API for processing
+Universal Dependencies data.")
+    (license license:gpl3+)))
+
 (define-public python-ujson
   (package
     (name "python-ujson")
