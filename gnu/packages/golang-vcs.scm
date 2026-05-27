@@ -33,6 +33,7 @@
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-maths)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages haskell-apps)
@@ -49,6 +50,77 @@
 ;;;
 ;;; Libraries:
 ;;;
+
+(define-public go-code-forgejo-org-f3-gof3-v3
+  (package
+    (name "go-code-forgejo-org-f3-gof3-v3")
+    (version "3.11.39")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://code.forgejo.org/f3/gof3.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gisxivmsy1r6kn4pcn96ry03mmh6y6hl26yi4zkihlj9m48brsb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "code.forgejo.org/f3/gof3/v3"
+      #:unpack-path "code.forgejo.org/f3/gof3/v3"
+      #:build-flags
+      #~(list "-tags" "'netgo osusergo'"
+              (string-append "-ldflags="
+                             "-X code.forgejo.org/f3/gof3/v3/cmd.Version="
+                             #$version))
+      #:embed-files
+      ;; For go-github-com-urfave-cli-v3:
+      #~(list "bash_autocomplete"
+              "powershell_autocomplete.ps1"
+              "zsh_autocomplete"
+              "prelude.graphql"
+              ;; For go-github-com-santhosh-tekuri-jsonschema-v6:
+              "applicator"
+              "content"
+              "core"
+              "format"
+              "format-annotation"
+              "format-assertion"
+              "meta-data"
+              "schema"
+              "unevaluated"
+              "validation")
+    #:test-flags
+    #~(list "-vet=off"
+            "-skip" (string-join
+                     ;; Depends on internal helper command "internal/hoverfly".
+                     (list "TestInternal_Hoverfly"
+                           ;; Test tries to resolve DNS on 4.4.4.4 to clone
+                           ;; local directory.
+                           "TestUtil_Exec_CommandTimeout")
+                     "|"))))
+    (native-inputs
+     (list git-minimal
+           go-github-com-google-go-cmp
+           go-github-com-stretchr-testify
+           go-github-com-urfave-cli-v3))
+    (propagated-inputs
+     (list go-github-com-42wim-httpsig
+           go-github-com-aio-arch-graphlib
+           ;; go-github-com-davidmz-go-pageant  ;Windows only
+           go-github-com-hashicorp-go-version
+           go-github-com-santhosh-tekuri-jsonschema-v6
+           go-gitlab-com-gitlab-org-api-client-go-0.116
+           go-golang-org-x-crypto))
+    (home-page "https://code.forgejo.org/f3/gof3")
+    (synopsis "Friendly Forge Format (F3)")
+    (description
+     "As a command or as a library, @code{GoF3} provides a single operation:
+mirroring.  The origin and destination are designated by the URL of a forge
+and a path to the resource.")
+    (license license:expat)))
 
 (define-public go-code-gitea-io-actions-proto-go-ping
   (package
@@ -661,6 +733,29 @@ interact with GitLab in a simple and uniform way.")
 ;;;
 ;;; Executables:
 ;;;
+
+(define-public f3-cli
+  (package/inherit go-code-forgejo-org-f3-gof3-v3
+    (name "f3-cli")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "code.forgejo.org/f3/gof3/v3/main")
+       ((#:install-source? #t #t) #f)
+       ((#:skip-build? #t #t) #f)
+       ((#:tests? #t #t) #f)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'rename-binary
+              (lambda _
+                (with-directory-excursion #$output
+                  (rename-file "bin/main"
+                               "bin/f3-cli"))))))))
+    (native-inputs
+     (append
+      (package-native-inputs go-code-forgejo-org-f3-gof3-v3)
+      (package-propagated-inputs go-code-forgejo-org-f3-gof3-v3)))
+    (inputs '())
+    (propagated-inputs '())))
 
 (define-public git-sync
   (package
