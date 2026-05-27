@@ -31960,6 +31960,34 @@ interactive behavior should be different.")
 decreasing the default font size in all GUI Emacs frames.")
     (license license:gpl3+)))
 
+(define-public emacs-defaceight
+  ;; No releases
+  (let ((commit "7ad7a4f65854e63096215752872aa761bf2d7a29")
+        (revision "0"))
+    (package
+      (name "emacs-defaceight")
+      (version (git-version "0.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/mekeor/defaceight")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "010ifrkxk80bw827vhd0lvhamg4slrxa59avvqh1626npfy326vb"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f)) ;no tests
+      (home-page "https://codeberg.org/mekeor/defaceight")
+      (synopsis
+       "Emacs package for stepping through effective default face heights")
+      (description
+       "Interactively decrease or increase the attribute @code{:height} of the
+face @{default} in the theme @{user} to the next effective value.")
+      (license license:gpl3+))))
+
 (define-public emacs-fixed-pitch
   (package
     (name "emacs-fixed-pitch")
