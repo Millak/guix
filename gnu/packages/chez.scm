@@ -303,7 +303,7 @@ will name the threaded machine type unless THREADS? is provided as #f."
     (name "chez-scheme-for-racket")
     ;; The version should match `(scheme-version #t)`.
     ;; See s/cmacros.ss c. line 360.
-    (version "10.4.0-pre-release.1-1") ; expect a chez-nanopass-bootstrap update
+    (version "10.5.0-pre-release.1") ; expect a chez-nanopass-bootstrap update
     (source #f)
     (build-system gnu-build-system)
     (inputs `(,@(if (nix-system->native-chez-machine-type)
