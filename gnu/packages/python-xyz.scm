@@ -11983,13 +11983,16 @@ For some datatypes the overhead can be reduced by using khash by factor 4-8.")
   ;; TODO: Move to python-build.
   (package
     (name "python-cython")
-    (version "3.1.7")
+    (version "3.2.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "cython" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cython/cython")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0gaslzb3virk4v6yh5a7dp6ka1lm267v994g8r25lck1702vjy3g"))))
+        (base32 "07n0x4z0ifkhl8hi47amqhqfjc6jlh5dra9r54nlsnwnai83psy1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -11997,17 +12000,16 @@ For some datatypes the overhead can be reduced by using khash by factor 4-8.")
       #:test-flags
       #~(list "runtests.py"
               "-vv"
-              "-j" (number->string (parallel-job-count))
+              ;; Some tests fail when number of cores are 24, keep on save
+              ;; minimal count.
+              "-j" (number->string (min 8 (parallel-job-count)))
               "-x" (string-join
                     (list "annotate_html"
                           "Debugger"
-                          ;; It introduces cycle.
-                          "numpy_test"
                           ;; It fails with AssertionError: Failed doctest test
                           ;; for complex_numbers_cpp.double_abs.
+                          ;; See: <https://github.com/cython/cython/issues/6528>.
                           "complex_numbers_cpp"
-                          ;; This test fails when running on 24 cores.
-                          "cpp_stl_conversion"
                           #$@(if (target-32bit?)
                                  ;; XXX: On 32-bit architectures, running the
                                  ;; parallel tests fails on many-core systems.
@@ -12034,8 +12036,7 @@ For some datatypes the overhead can be reduced by using khash by factor 4-8.")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list libxcrypt
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     ;; we need the full python package and not just the python-wrapper
     ;; because we need libpython3.3m.so
     (inputs
