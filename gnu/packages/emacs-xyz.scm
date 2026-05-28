@@ -23831,8 +23831,8 @@ actually changing the buffer's text.")
 
 (define-public emacs-diff-hl
   ;; No new tags or releases since 2024.
-  (let ((commit "e79aa49ad3cbbe85379cf6646db3aaacd3b04708")
-        (revision "0"))
+  (let ((commit "7d873b2f58908de1ea2f499da9bf993e088953d7")
+        (revision "1"))
     (package
       (name "emacs-diff-hl")
       (version (git-version "1.10.0" revision commit))
@@ -23844,7 +23844,7 @@ actually changing the buffer's text.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0fvxngcbx36vqj72fllfp5iqwihcqd1dfhmqr3m1284191q83na3"))))
+          (base32 "15a9cjlpjsfcb2hxqbb123389qhiqs06mn01pas2l0jqhc2p86v9"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -23867,7 +23867,7 @@ actually changing the buffer's text.")
                 (invoke "git" "init")
                 (invoke "git" "add" ".")
                 (invoke "git" "commit" "-m" "Commit all."))))))
-      (native-inputs (list git-minimal))
+      (native-inputs (list git-minimal/pinned))
       (home-page "https://github.com/dgutov/diff-hl")
       (synopsis "Highlight uncommitted changes using VC")
       (description
