@@ -244,26 +244,21 @@ This Guix package is built to use the nettle cryptographic library.")
 (define-public sequoia-wot-tools
   (package
     (name "sequoia-wot-tools")
-    (version "0.15.0")
+    (version "0.15.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://gitlab.com/sequoia-pgp/sequoia-wot")
-              (commit (string-append "v" version))))
+              (url "https://gitlab.com/sequoia-pgp/sequoia-wot.git/")
+              (commit (string-append "sequoia-wot/v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03wa4l582hx0qq28pkhrf0pagckyx6df01pb4chyngadk49q1xn7"))))
+        (base32 "18v713n36sq5pvd1pbs34v7dly1bi614kwra09qxpsxk0ffp225z"))))
     (build-system cargo-build-system)
     (arguments
      (list
        #:features '(list "sequoia-openpgp/crypto-nettle")
        #:cargo-package-crates ''("tools")
-       #:cargo-test-flags
-       '(list "--"
-              "--skip=gpg_trust_roots"
-              "--skip=backward_propagation::tests::cliques"
-              "--skip=tests::cliques")
        #:install-source? #f
        #:cargo-install-paths ''("tools")
        #:phases
@@ -276,11 +271,12 @@ This Guix package is built to use the nettle cryptographic library.")
                  (for-each (lambda (file)
                              (install-file file man1))
                            (find-files "target/release" "\\.1$"))
-                 (mkdir-p (string-append out "/etc/bash_completion.d"))
+                 (mkdir-p (string-append out "/share/bash-completion/completions"))
                  (mkdir-p (string-append share "/fish/vendor_completions.d"))
                  (mkdir-p (string-append share "/elvish/lib"))
                  (copy-file (car (find-files "target/release" "sq-wot.bash"))
-                            (string-append out "/etc/bash_completion.d/sq-wot"))
+                            (string-append
+                              out "/share/bash-completion/completions/sq-wot"))
                  (copy-file (car (find-files "target/release" "sq-wot.fish"))
                             (string-append
                               share "/fish/vendor_completions.d/sq-wot.fish"))
@@ -292,7 +288,7 @@ This Guix package is built to use the nettle cryptographic library.")
     (inputs
      (cons* nettle openssl sqlite (cargo-inputs 'sequoia-wot-tools)))
     (native-inputs
-     (list clang pkg-config))
+     (list clang gnupg pkg-config))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Implementation of OpenPGP's web of trust")
     (description
