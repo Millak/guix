@@ -3713,7 +3713,17 @@ can connect to any JACK port and record the output into a stereo WAV file.")
           (add-after 'wrap 'wrap-typelib
             (lambda _
               (wrap-program (string-append #$output "/bin/jack-select")
-                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))
+          (add-after 'wrap-typelib 'install-data
+            (lambda _
+              (let ((datadir (string-append #$output "/share")))
+                (install-file "jack-select.png"
+                              (string-append datadir
+                                             "/icons/hicolor/48x48/apps"))
+                (install-file "jack-select.desktop"
+                              (string-append datadir "/applications"))
+                (install-file "jack-select.1"
+                              (string-append datadir "/man/man1"))))))))
     (native-inputs
      (list gobject-introspection
            pkg-config
