@@ -187,13 +187,14 @@ an encoding detection library, and enca, a command line frontend, integrating
 libenca and several charset conversion libraries and tools.")
     (license license:gpl2)))
 
-;; Newer utf8proc depends on julia for tests.  Since julia also depends on
-;; utf8proc, a dependency cycle is created.  This bootstrap variant of utf8proc
-;; disables tests.
-(define-public utf8proc-bootstrap
-  (hidden-package
+;; Tests depend on julia, which itself depends on utf8proc; the previous
+;; solution of a variant without tests broke this cycle, but made the main
+;; utf8proc and thus subversion and ultimately close to 700 packages depend
+;; on julia, which is excessively long to build for testing a tiny library.
+;; Instead we just opt for dropping all tests.
+(define-public utf8proc
    (package
-     (name "utf8proc-bootstrap")
+     (name "utf8proc")
      (version "2.11.3")
      (source
       (origin
@@ -206,7 +207,7 @@ libenca and several charset conversion libraries and tools.")
          (base32 "1ssix4zf3lac1afzlw2gbfg3n52gmggip8lv224gywqf3zyvyp8c"))))
      (build-system gnu-build-system)
      (arguments
-      (list #:tests? #f                 ;To break dependency cycle.
+      (list #:tests? #f
             #:make-flags
             #~(list (string-append "CC=" #$(cc-for-target))
                     (string-append "prefix=" #$output))
@@ -219,64 +220,7 @@ libenca and several charset conversion libraries and tools.")
      (description
       "@code{utf8proc} is a small C library that provides Unicode normalization,
 case-folding, and other operations for data in the UTF-8 encoding.")
-     (license license:expat))))
-
-(define-public utf8proc
-  (package
-    (inherit utf8proc-bootstrap)
-    (name "utf8proc")
-    (native-inputs
-     (let ((UNICODE_VERSION "17.0.0"))  ; defined in data/Makefile
-       ;; Only if the tests will be run should these be added.
-       (if (and (%current-system)
-                (supported-package? julia))
-           ;; Test data that is otherwise downloaded with curl.
-           (list (origin
-                   (method url-fetch)
-                   (uri (string-append
-                         "https://www.unicode.org/Public/"
-                         UNICODE_VERSION "/ucd/NormalizationTest.txt"))
-                   (sha256
-                    (base32
-                     "1nw7i89q42r0plwlc8qj6qm18brk23hc0jf800cp86km63azy6ah")))
-                 (origin
-                   (method url-fetch)
-                   (uri (string-append
-                         "https://www.unicode.org/Public/"
-                         UNICODE_VERSION "/ucd/auxiliary/GraphemeBreakTest.txt"))
-                   (sha256
-                    (base32
-                     "1v4k2x52bzwgqxw89hdf3wdgwm8q3ianmfrya37bl699qp939lg2")))
-                 (origin
-                   (method url-fetch)
-                   (uri (string-append
-                         "https://www.unicode.org/Public/"
-                         UNICODE_VERSION "/ucd/DerivedCoreProperties.txt"))
-                   (sha256
-                    (base32
-                     "021clafsjmjblsxcszp0dpxy2phwhbmyghfmxym2yj2w378zxir4")))
-                 ;; For tests.
-                 julia
-                 perl)
-           '())))
-    (arguments
-     (if (this-package-native-input "julia")
-         (strip-keyword-arguments
-          '(#:tests?)
-          (substitute-keyword-arguments arguments
-            ((#:phases phases '%standard-phases)
-             #~(modify-phases #$phases
-                 (add-before 'check 'check-data
-                   (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                     (for-each (lambda (i)
-                                 (copy-file (assoc-ref (or native-inputs inputs) i)
-                                            (string-append "data/" i)))
-                               '("NormalizationTest.txt" "GraphemeBreakTest.txt"
-                                 "DerivedCoreProperties.txt"))))))))
-          (substitute-keyword-arguments arguments
-            ((#:tests? _ #t) #f))))
-    (properties
-     (alist-delete 'hidden? (package-properties utf8proc-bootstrap)))))
+     (license license:expat)))
 
 (define-public libchardet
   (package
