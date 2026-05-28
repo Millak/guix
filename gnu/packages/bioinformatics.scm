@@ -4572,8 +4572,11 @@ into separate processes; and more.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'python3.11-compatibility
+          (add-after 'unpack 'python3.12-compatibility
             (lambda _
+              ;; This was removed in Python 3.12
+              (substitute* "Bio/Align/_aligners.c"
+                (("case PyUnicode_WCHAR_KIND:") ""))
               ;; Py_TYPE was changed to an inline static function in Python
               ;; 3.11, so it cannot be used on the left-hand side.
               (substitute* "Bio/triemodule.c"
