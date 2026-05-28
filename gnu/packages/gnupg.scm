@@ -1150,14 +1150,14 @@ however, pgpdump produces more detailed and easier to understand output.")
 (define-public gpa
   (package
     (name "gpa")
-    (version "0.11.0")
+    (version "0.11.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnupg/gpa/"
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1k1kvxffyb4nm83yp3mnx9bfmcciwb7vfw8c3xscnh85yxdzma16"))))
+                "02sx9my3s4yjxzxzs8pfif8wvpjrjsh75wwa5mxd0h867v6v5i8b"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list "CFLAGS=-Wno-implicit-function-declaration")
