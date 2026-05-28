@@ -127,6 +127,11 @@
                              "tool/rbinstall.rb")
                 (("/bin/sh")
                  (which "sh")))))
+          #$@(if (system-hurd?)
+                 '((add-after 'unpack 'skip-tests
+                     (lambda _
+                       (delete-file "bootstraptest/test_ractor.rb"))))
+                 '())
           (add-after 'install 'delete-mkmf.log
             (lambda _
               ;; Rubygems installs build log files that embed volatile
