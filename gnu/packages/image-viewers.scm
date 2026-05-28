@@ -39,6 +39,7 @@
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2025 Igorj Gorjaĉev <igor@goryachev.org>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
+;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
