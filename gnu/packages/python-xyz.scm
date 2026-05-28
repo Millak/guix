@@ -18311,9 +18311,21 @@ is binding LibSass.")
        (sha256
         (base32 "1fj4zkcnx3mk7kbnf4d6pjgv331n17wzpphpwdnmr498ghbsph9k"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))  ;circular dependency with python-aiohttp
+    (arguments
+     (list
+      #:tests? #f  ;circular dependency with python-aiohttp
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'python3.12-compatibility
+           (lambda _
+             (substitute* '("idna_ssl.py"
+                            "tests/test_base.py")
+               (("import ssl")
+                "import ssl\nimport urllib3")
+               (("ssl.match_hostname")
+                "urllib3.util.ssl_match_hostname")))))))
     (native-inputs (list python-setuptools))
-    (propagated-inputs (list python-idna))
+    (propagated-inputs (list python-idna python-urllib3))
     (home-page "https://github.com/aio-libs/idna-ssl")
     (synopsis "Support Unicode(idna) domains for Python's @code{ssl} module")
     (description
