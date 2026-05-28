@@ -335,14 +335,14 @@ mediums.")
     (version "4.1")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/rsms/inter")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/rsms/inter/releases/download/"
+             "v" version "/Inter-" version ".zip"))
        (sha256
-        (base32 "1g54vl3jkpan0s1mzrb1s8zjqzy9787ffjg9sfy6yjy4k3qg8xhx"))))
+        (base32 "07miarbl5ain7pg7sxlrb2j4m9prbriacyqpv1mvckwxlkagv0wq"))))
     (build-system font-build-system)
+    (outputs '("out" "ttf" "woff"))
     (home-page "https://rsms.me/inter")
     (synopsis "Variable font family optimized for screen readability")
     (description
