@@ -661,7 +661,7 @@ by the libraries and tools around the libimobiledevice project.")
 (define-public libimobiledevice
   (package
     (name "libimobiledevice")
-    (version "1.3.0")
+    (version "1.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/libimobiledevice"
@@ -670,19 +670,18 @@ by the libraries and tools around the libimobiledevice project.")
                                   ".tar.bz2"))
               (sha256
                (base32
-                "1xmhfnypg6j7shl73wfkrrn4mj9dh8qzaj3258q9zkb5cc669wjk"))))
+                "17ck2kczzsffvjg0bpqxray9k4fll1823c0fpn8xkir1w9vh1k13"))))
     (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags
-       #~(list "CFLAGS=-g -O2 -Wno-error=int-conversion"
-               "PYTHON_VERSION=3")))
     (propagated-inputs
-     (list openssl libplist libusbmuxd))
+     (list openssl
+           libimobiledevice-glue
+           libplist
+           libusbmuxd
+           libtatsu))
     (inputs
-     (list python))
+     (list python-wrapper))
     (native-inputs
-     (list pkg-config python-cython-0 python-setuptools))
+     (list pkg-config python-cython python-setuptools))
     (home-page "https://libimobiledevice.org/")
     (synopsis "Protocol library and tools to communicate with Apple devices")
     (description "libimobiledevice is a software library that talks the
