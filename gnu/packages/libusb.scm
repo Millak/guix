@@ -565,6 +565,43 @@ connections from and to iOS devices by connecting to a socket provided by a
 @code{usbmuxd} daemon.")
     (license license:lgpl2.1+)))
 
+(define-public libimobiledevice-glue
+  (package
+    (name "libimobiledevice-glue")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/libimobiledevice/libimobiledevice-glue")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yhh5k7f28b03avwdwzkz3q6jpwqamrkylyzm4ddcmyr2q0hjivi"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "git-version-gen"
+                (("/bin/sh")
+                 (which "sh")))
+              (call-with-output-file ".tarball-version"
+                (lambda (port)
+                  (display #$version port))))))))
+    (propagated-inputs (list libplist))
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
+    (home-page "https://libimobiledevice.org/")
+    (synopsis "Common code used by libraries and tools for libmobiledevice")
+    (description
+     "libimobiledevice is a software library that talks the protocols to
+support Apple devices.  This package provides a library with common code used
+by the libraries and tools around the libimobiledevice project.")
+    (license license:lgpl2.1+)))
+
 (define-public libimobiledevice
   (package
     (name "libimobiledevice")
