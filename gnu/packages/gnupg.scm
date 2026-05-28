@@ -693,14 +693,14 @@ and signature functionality from Python programs.")
 (define-public perl-gnupg-interface
   (package
     (name "perl-gnupg-interface")
-    (version "1.05")
+    (version "1.06")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/B/BP/BPS/"
                                   "GnuPG-Interface-" version ".tar.gz"))
               (sha256
                (base32
-                "0ig0ra2s1v2rw2ikm1hd0iwf2phhcr8kbc90jhr8kdpvlkymshsl"))))
+                "07946rsmz0ibasd53l4qiwg0dl1h65p8byja4d7fiflxsklxccs4"))))
     (build-system perl-build-system)
     (inputs
      (list gnupg))
