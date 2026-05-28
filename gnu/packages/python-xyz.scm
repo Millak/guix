@@ -12111,16 +12111,8 @@ def load_dynamic(name, path):
               ;; time of the test suite.
               (setenv "CFLAGS" "-O0"))))))))
 
-(define-public python-cython-next
-  (package
-    (inherit python-cython)
-    (version "3.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "cython" version))
-       (sha256
-        (base32 "0d0n0yyicr7icd4f5kn1wwbjqyad6j4m640xlqlk3ixchgad7bf3"))))))
+;; XXX: Deprecated on <2026-05-28>.
+(define-public python-cython-next python-cython)
 
 ;; NOTE: when upgrading numpy please make sure that python-numba,
 ;; python-pandas and python-scipy still build, as these three packages are
