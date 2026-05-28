@@ -1160,15 +1160,14 @@ however, pgpdump produces more detailed and easier to understand output.")
                 "1k1kvxffyb4nm83yp3mnx9bfmcciwb7vfw8c3xscnh85yxdzma16"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("CFLAGS=-Wno-implicit-function-declaration")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gnupg (assoc-ref inputs "gnupg")))
-               (wrap-program (string-append out "/bin/gpa")
-                 `("PATH" ":" prefix (,(string-append gnupg "/bin"))))))))))
+     (list #:make-flags #~(list "CFLAGS=-Wno-implicit-function-declaration")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-program
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((gnupg (assoc-ref inputs "gnupg")))
+                     (wrap-program (string-append #$output "/bin/gpa")
+                       `("PATH" ":" prefix (,(string-append gnupg "/bin"))))))))))
     (native-inputs (list pkg-config))
     (inputs
      (list bash-minimal
