@@ -2135,7 +2135,17 @@ envelope follower, distortion effects, tape effects and more.")
 	        (base32
                  "01hnx4hhbz3ap3bw15s42q4q1mw1mhdjwygq4550wvjfg6k4ga8w"))))
       (build-system waf-build-system)
-      (arguments (list #:tests? #false)) ;There are no tests.
+      (arguments
+       (list
+        #:tests? #false ;There are no tests.
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'python3.12-compatibility
+             (lambda _
+               (substitute* "waflib/Context.py"
+                 (("imp.new_module") "types.ModuleType")
+                 (("import os, re, imp, sys")
+                  "import os, re, types, sys")))))))
       (inputs (list lv2))
       (native-inputs (list pkg-config))
       (home-page "https://git.drobilla.net/cgit.cgi/omins.lv2.git/")
