@@ -513,7 +513,7 @@ broken iOS devices.")
 (define-public libplist
   (package
     (name "libplist")
-    (version "2.2.0")
+    (version "2.7.0")
     (source
      (origin
        (method url-fetch)
@@ -521,7 +521,7 @@ broken iOS devices.")
                            "/libplist/releases/download/" version
                            "/libplist-" version ".tar.bz2"))
        (sha256
-        (base32 "16mxdwaw01x9a3adf0yj3bqjc7afpf2vm1n5hkgj3i3y6zjifmaa"))))
+        (base32 "12zb8ck7r7zq7xl4wmgq1nvpraibr204fqslqviypccnx00j7i3s"))))
     (build-system gnu-build-system)
     (arguments
      `(;; Tests fail randomly when run in parallel because several of them write
@@ -529,10 +529,14 @@ broken iOS devices.")
        ;; 'large.test' and 'largecmp.test'.
        #:parallel-tests? #f))
     (inputs
-     (list python))
+     (list python-wrapper))
     (native-inputs
-     (list autoconf automake libtool pkg-config
-           python-cython-0 python-setuptools)) ; to build Python bindings
+     (list autoconf
+           automake
+           libtool
+           pkg-config
+           python-cython
+           python-setuptools))
     (home-page "https://libimobiledevice.org/")
     (synopsis "C library to handle Apple Property List files")
     (description "This package provides a small portable C library to handle
