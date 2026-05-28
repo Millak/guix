@@ -3857,11 +3857,15 @@ follows a traditional multi-track tape recorder control paradigm.")
      (list
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'python3.11-compatibility
+         (add-after 'unpack 'python3.12-compatibility
            (lambda _
              (substitute* '("waflib/Context.py"
                             "waflib/ConfigSet.py")
-               (("'rU'") "'r'"))))
+               (("'rU'") "'r'"))
+             (substitute* "waflib/Context.py"
+               (("imp.new_module") "types.ModuleType")
+               (("import os, re, imp, sys")
+                "import os, re, types, sys"))))
          (add-after 'unpack 'remove-sse-flags
            (lambda* (#:key system #:allow-other-keys)
              (unless (or (string-prefix? "x86_64" system)
