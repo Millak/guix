@@ -2723,85 +2723,104 @@ for adding, removing and dropping callbacks.")
 (define-public python-aiohttp
   (package
     (name "python-aiohttp")
-    ;; TODO: Newer versions require zlib-ng:
-    ;; <https://github.com/zlib-ng/zlib-ng>,
-    ;; <https://github.com/pycompression/python-zlib-ng>.
-    (version "3.11.18")
+    (version "3.13.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "aiohttp" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aio-libs/aiohttp/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "12jmkxkc5nnk6ma6m7rrs0w4vzswfc47ffxn5m0pwav1708nx1df"))
+        (base32 "0l9jcmhqd2v97gy1bxvimwi3aajxhxqn6jkzzgg7cf42mpyza0vc"))
        (snippet
         #~(begin
             (use-modules ((guix build utils)))
-            ;; TODO: Unbundle the llhttp sources.
-            ;; (delete-file-recursively "vendor")
-            (delete-file "aiohttp/_http_parser.c")
-            (delete-file "aiohttp/_http_writer.c")))))
+            (delete-file-recursively "vendor")))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 3045 passed, 32 skipped, 29 xfailed, 2 subtests passed
+      ;; tests: 4003 passed, 80 skipped, 31 xfailed, 2 subtests passed
       #:test-flags
-      '(list
-        "-o" "addopts=''"               ; Avoid -p pytest_cov.
-        "-m" "not dev_mode"
-        "--numprocesses" (number->string (parallel-job-count))
-        "--ignore=aiohttp/test_utils.py"
-        ;; This tests requires the 'proxy.py' module, not yet packaged.
-        "--ignore=tests/test_proxy_functional.py"
-        ;; These tests need brotli.
-        "--ignore=tests/test_web_sendfile_functional.py"
-        "--ignore=tests/test_web_functional.py"
-        ;; These tests need pytest_codspeed
-        "--ignore-glob=tests/test_benchmarks*"
-        ;; These tests need python_on_whales
-        "--ignore=tests/autobahn/test_autobahn.py"
-        "-k"
-        ;; These tests fail for unknown reasons (see:
-        ;; https://github.com/aio-libs/aiohttp/issues/7130)
-        (string-append
-         "not test_no_warnings "
-         "and not test_default_loop "
-         "and not test_ctor_global_loop "
-         "and not test_set_loop_default_loop "
-
-         ;; Disable brotli tests, because we’re not providing that optional
-         ;; library.
-         "and not test_feed_eof_no_err_brotli "
-
-         ;; Disable the following tests as they require
-         ;; networking.
-         "and not TestDeflateBuffer "
-         "and not test_client_session_timeout_zero "
-         "and not test_empty_body "
-         "and not test_mark_formdata_as_processed[pyloop] "
-         "and not test_receive_runtime_err[pyloop] "
-
-         ;; assert 'gzip, deflate' == 'gzip, deflate, br'
-         "and not test_headers[pyloop] "
-         ;; ~/.. does not resolve
-         "and not test_add_static_path_resolution"))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; This tests requires the 'proxy.py' module, not yet packaged.
+              "--ignore=tests/test_proxy_functional.py"
+              ;; No benchamrks.
+              "--ignore-glob=tests/test_benchmarks_*"
+              "-k"
+              (string-join
+               ;; Combinatin of tests failing with similar errors:
+               ;; - Cannot connect to host example.com:443 ssl:default [Could
+               ;;   not contact DNS servers].
+               ;; - aiohttp.http_exceptions.ContentEncodingError: 400.
+               ;; - Can not decode content-encoding: br
+               (list "not test_add_static_path_resolution"
+                     "test_empty_header_name"
+                     "test_http_payload_brotli"
+                     "test_http_payload_zstandard"
+                     "test_invalid_header_spacing"
+                     "test_payload_decompress_size_limit_brotli"
+                     "test_reject_obsolete_line_folding"
+                     "test_response_with_precompressed_body_brotli"
+                     "test_static_file_custom_content_type_compress"
+                     "test_static_file_with_encoding_and_enable_compression"
+                     "test_tcp_connector_ssl_shutdown_timeout_nonzero_passed"
+                     "test_tcp_connector_ssl_shutdown_timeout_passed_to_"
+                     "test_tcp_connector_ssl_shutdown_timeout_zero_not_")
+               " and not "))
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             ;; Make sure the timestamp of this file is > 1990, because a few
-             ;; tests like test_static_file_if_modified_since_past_date depend
-             ;; on it.
-             (let ((late-90s (* 60 60 24 365 30)))
-               (utime "tests/data.unknown_mime_type" late-90s late-90s))))
-         (add-before 'build 'cythonize
-           (lambda _
-             ;; Adapted from the Makefile.
-             (with-directory-excursion "aiohttp"
-               (for-each
-                (lambda (file)
-                  (invoke "cython" "-3"
-                          file "-I" "."))
-                (find-files "." "_.*\\.pyx$"))))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-libllhtp-pkgconfig
+            (lambda _
+              ;; pkg-config can't find the libllhttp library.
+              (if (getenv "PKG_CONFIG_PATH")
+                  (setenv "PKG_CONFIG_PATH"
+                          (string-append
+                           #$(this-package-input "llhttp") "/lib/pkgconfig"
+                           (getenv "PKG_CONFIG_PATH")))
+                  (setenv "PKG_CONFIG_PATH"
+                          (string-append
+                           #$(this-package-input "llhttp") "/lib/pkgconfig")))))
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "setup.cfg"
+                (("--numprocesses=auto") "")
+                (("-p pytest_cov") "")
+                (("--cov=aiohttp") "")
+                (("--cov=tests/") ""))))
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              ;; Make sure the timestamp of this file is > 1990, because a few
+              ;; tests like test_static_file_if_modified_since_past_date
+              ;; depend on it.
+              (let ((late-90s (* 60 60 24 365 30)))
+                (utime "tests/data.unknown_mime_type" late-90s late-90s))))
+          (add-before 'build 'pre-build
+            (lambda _
+              (setenv "USE_SYSTEM_DEPS" "true")
+              ;; Help setup.py to determine project's root.
+              (with-output-to-file ".git"
+                (lambda () (display "")))
+              (substitute* "Makefile"
+                  (("cythonize: .install-cython") "cythonize:"))
+              (invoke "make" "cythonize")))
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "aiohttp"))))))
+    (native-inputs
+     (list gunicorn-bootstrap
+           python-freezegun
+           python-cython
+           python-pkgconfig
+           ;; python-proxy-py   ;not packaged yet in Guix
+           python-pytest
+           python-pytest-mock
+           python-pytest-xdist
+           python-re-assert
+           python-setuptools
+           python-zlib-ng))
+    (inputs
+     (list llhttp))
     (propagated-inputs
      (list python-aiohappyeyeballs
            python-aiosignal
@@ -2809,17 +2828,11 @@ for adding, removing and dropping callbacks.")
            python-frozenlist
            python-multidict
            python-propcache
-           python-yarl))
-    (native-inputs
-     (list gunicorn-bootstrap
-           python-cython
-           python-freezegun
-           python-isal
-           python-pytest
-           python-pytest-mock
-           python-pytest-xdist
-           python-re-assert
-           python-setuptools))
+           python-yarl
+           ;; [optional]
+           python-aiodns
+           python-backports-zstd        ;Python version < 3.14
+           python-brotli))
     (home-page "https://github.com/aio-libs/aiohttp/")
     (synopsis "Async HTTP client/server framework (asyncio)")
     (description "@code{aiohttp} is an asynchronous HTTP client/server
