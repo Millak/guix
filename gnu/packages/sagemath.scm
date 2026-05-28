@@ -365,7 +365,7 @@ database.")
 (define-public sage
   (package
     (name "sage")
-    (version "10.7")
+    (version "10.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -374,7 +374,7 @@ database.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0513nmym1shlj0vkb982hpj1v86f327w5kav0523wk1xljc432cx"))))
+                "1rbwhhxj6iizfcgbzd63lf1g1dh24253mmmzgfkvcbv6hx0l507h"))))
     (build-system pyproject-build-system)
     (native-inputs
       (list autoconf automake m4 pkg-config ; for ./bootstrap
