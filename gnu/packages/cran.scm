@@ -56057,24 +56057,26 @@ avoid system fonts to make sure your outputs are reproducible.")
     (arguments
      (list
       ;; 6 tests fail with accuracy errors.
-      #:tests? #false
+      #:tests? #f
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'prepare-static-libraries
-           (lambda* (#:key inputs #:allow-other-keys)
-             (mkdir-p "src/target/include")
-             (let ((freetype (assoc-ref inputs "static-freetype"))
-                   (harfbuzz (assoc-ref inputs "static-harfbuzz")))
-               (substitute* "src/Makevars.in"
-                 (("include @MK_FILE@") "") ; do not build static libs
-                 (("^HB_STATIC_LIB =.*")
-                  (string-append "HB_STATIC_LIB = " harfbuzz "/lib/libharfbuzz.a\n"))
-                 (("^FT_STATIC_LIB =.*")
-                  (string-append "FT_STATIC_LIB = " freetype "/lib/libfreetype.a\n")))
-               (copy-recursively (string-append freetype "/include")
-                                 "src/target/include")
-               (copy-recursively (string-append harfbuzz "/include")
-                                 "src/target/include")))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-static-libraries
+            (lambda* (#:key inputs #:allow-other-keys)
+              (mkdir-p "src/target/include")
+              (let* ((freetype (search-input-file inputs "lib/libfreetype.a"))
+                     (harfbuzz (search-input-file inputs "lib/libharfbuzz.a"))
+                     (freetype-include-dir
+                      (string-append (dirname (dirname freetype)) "/include"))
+                     (harfbuzz-include-dir
+                      (string-append (dirname (dirname harfbuzz)) "/include")))
+                (substitute* "src/Makevars.in"
+                  (("include @MK_FILE@") "") ;do not build static libs
+                  (("^HB_STATIC_LIB =.*")
+                   (string-append "HB_STATIC_LIB = " harfbuzz "\n"))
+                  (("^FT_STATIC_LIB =.*")
+                   (string-append "FT_STATIC_LIB = " freetype "\n")))
+                (copy-recursively freetype-include-dir "src/target/include")
+                (copy-recursively harfbuzz-include-dir "src/target/include")))))))
     (propagated-inputs
      (list r-fontquiver))
     ;; This may defeat the purpose of this package as our versions of freetype
@@ -56082,30 +56084,31 @@ avoid system fonts to make sure your outputs are reproducible.")
     ;; project.  On the other hand, Guix arguably does a better job at
     ;; "ensur[ing] deterministic computation".
     (native-inputs
-     `(("r-testthat" ,r-testthat)
-       ("static-freetype"
-        ,(package
-           (inherit (static-package freetype))
-           (arguments
-            `(#:configure-flags
-              (list "--enable-static=yes"
-                    "--with-pic=yes"
-                    "--without-zlib"
-                    "--without-bzip2"
-                    "--without-png"
-                    "--without-harfbuzz")))))
-       ("static-harfbuzz"
-        ,(package
-           (inherit harfbuzz)
-           (arguments
-            `(#:tests? #false ; fail because shared library is disabled
-              #:configure-flags
-              (list "--default-library=static"
-                   "--default-both-libraries=static"
-                   "-Dfreetype=enabled"
-                   "-Dicu=disabled"
-                   "-Dcairo=disabled"
-                   "-Dglib=disabled")))))))
+     (list r-testthat
+           (package
+             (inherit (static-package freetype))
+             (name "static-freetype")
+             (arguments
+              `(#:configure-flags
+                (list "--enable-static=yes"
+                      "--with-pic=yes"
+                      "--without-zlib"
+                      "--without-bzip2"
+                      "--without-png"
+                      "--without-harfbuzz"))))
+           (package
+             (inherit harfbuzz)
+             (name "static-harfbuzz")
+             (arguments
+              `(#:tests? #f ;fail because shared library is disabled
+                         #:configure-flags
+                         (list
+                          "--default-library=static"
+                          "--default-both-libraries=static"
+                          "-Dfreetype=enabled"
+                          "-Dicu=disabled"
+                          "-Dcairo=disabled"
+                          "-Dglib=disabled"))))))
     (inputs
      (list zlib))
     (home-page "https://cran.r-project.org/package=freetypeharfbuzz")
