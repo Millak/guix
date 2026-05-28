@@ -31295,6 +31295,34 @@ CSS, JavaScript, JSON.")
 throw a shell history.")
       (license license:gpl3+))))
 
+(define-public emacs-consult-shell-command
+  (package
+    (name "emacs-consult-shell-command")
+    (version "0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/mekeor/consult-shell-command")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ss0iqxk16ylhy5lksbfld98x9rai9q4s2b6760p7ry0lks79ln6"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ;no tests
+    (propagated-inputs (list emacs-consult))
+    (home-page "https://codeberg.org/mekeor/consult-shell-command")
+    (synopsis "Emacs package @code{Consult}'ing @code{async-shell-command}")
+    (description
+     "@code{consult-shell-command} is an Emacs package that provides an equally
+named command, functionally similar to @code{async-shell-command}, but with
+two benefits: you'll instantly be shown matching history and you use multiple
+history sources at once.  By default, @code{shell-command-history},
+@code{dired-shell-command-history} and the shell history file are used.")
+    (license license:gpl3+)))
+
 (define-public emacs-discover-my-major
   (package
     (name "emacs-discover-my-major")
