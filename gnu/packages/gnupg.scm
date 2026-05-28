@@ -547,17 +547,18 @@ gpgpme starting with version 1.7.")
 (define-public qgpgme
   (package
     (name "qgpgme")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://gnupg/qgpgme/qgpgme-" version ".tar.xz"))
        (sha256
-        (base32 "1bb198dk49bd7yx4cf4w07acjhllilx1nczdna7139ncflj5nr0m"))))
+        (base32 "024gdw8i5ibmq0bjjf6znhxw93chh1j21dr25m0gk9z4xsrzwcjv"))))
     (build-system qt-build-system)
     (arguments
      (list
       #:qtbase qtbase
+      #:configure-flags #~(list "-DBUILD_WITH_QT5=OFF")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'check-setup
