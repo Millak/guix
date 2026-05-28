@@ -1413,7 +1413,9 @@ interface with CI pipeline UIs.")
             (lambda _
               (substitute* "packages/linux/icons.sh"
                 (("/usr/share")
-                 (string-append #$output "/share")))))
+                 (string-append #$output "/share")))
+              (substitute* "TeXmacs/misc/mime/texmacs.desktop"
+                (("Icon=.*$") "Icon=TeXmacs\n"))))
           (add-before 'configure 'gzip-flags
             (lambda _
               (substitute* "Makefile.in"
