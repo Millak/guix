@@ -45516,7 +45516,7 @@ it up again.")
 (define-public emacs-org-super-links
   (package
     (name "emacs-org-super-links")
-    (version "0.4")
+    (version "0.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -45525,10 +45525,10 @@ it up again.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "025hlb8nqhn63y51ddjsclvyj9ys0bh4r0lycyc2jwpy9v79n10q"))))
+                "10zpgzzgihb0130dc190ws4s2ysll3bhmg5w8sa843d00z0nvd95"))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-org))
+    (arguments
+     (list #:tests? #f))    ; no tests
     (synopsis "Create links with auto backlinks")
     (description "This package provides functions that automatically create
 backlinks when inserting a link.")
