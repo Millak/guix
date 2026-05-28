@@ -27,6 +27,7 @@
 ;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -268,7 +269,7 @@ provided.")
 (define-public libksba
   (package
     (name "libksba")
-    (version "1.6.7")
+    (version "1.8.0")
     (source
      (origin
       (method url-fetch)
@@ -277,7 +278,7 @@ provided.")
             version ".tar.bz2"))
       (sha256
        (base32
-        "0qxpmadxggx5808326i9g4ya0xrnv14mfxpg7rlvckmviq5m2wng"))))
+        "14lj3ld4nxf916kq01z0203x36nhgymxf0j222mg4jap16wrssr9"))))
     (build-system gnu-build-system)
     (propagated-inputs
      (list libgpg-error))
