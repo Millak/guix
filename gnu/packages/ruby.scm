@@ -194,7 +194,12 @@ a focus on simplicity and productivity.")
                             "test/ruby/test_process.rb"
                             "test/ruby/test_system.rb"
                             "tool/rbinstall.rb")
-               (("/bin/sh") (which "sh"))))))))
+               (("/bin/sh") (which "sh")))))
+         ,@(if (system-hurd?)
+               '((add-after 'unpack 'skip-tests
+                   (lambda _
+                     (delete-file "bootstraptest/test_ractor.rb"))))
+               '()))))
     (native-inputs
      (append (if (%current-target-system)
                  (list this-package)
