@@ -741,7 +741,7 @@ single-instruction multiple-data (SIMD) intrinsics.")
            perl
            flex
            python
-           python-cython-0
+           python-cython
            python-setuptools))
     (synopsis "PMIx library")
     (description
@@ -780,7 +780,10 @@ commonly needed services in distributed and parallel computing systems.")
        ((#:configure-flags flags #~'())
         #~(list (string-append "--with-hwloc="
                                (ungexp (this-package-input "hwloc") "lib"))
-                "--enable-python-bindings"))))))
+                "--enable-python-bindings"))))
+    (native-inputs
+     (modify-inputs native-inputs
+       (replace "python-cython" python-cython-0)))))
 
 (define-public prrte
   (package
