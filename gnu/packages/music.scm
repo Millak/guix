@@ -3709,7 +3709,11 @@ can connect to any JACK port and record the output into a stereo WAV file.")
               ;; Fix reference to dlopened libraries.
               (substitute* "jackselect/alsainfo.py"
                 (("libasound.so.2")
-                 (search-input-file inputs "/lib/libasound.so.2"))))))))
+                 (search-input-file inputs "/lib/libasound.so.2")))))
+          (add-after 'wrap 'wrap-typelib
+            (lambda _
+              (wrap-program (string-append #$output "/bin/jack-select")
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
      (list gobject-introspection
            pkg-config
