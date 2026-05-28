@@ -565,6 +565,43 @@ connections from and to iOS devices by connecting to a socket provided by a
 @code{usbmuxd} daemon.")
     (license license:lgpl2.1+)))
 
+(define-public libtatsu
+  (package
+    (name "libtatsu")
+    (version "1.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/libimobiledevice/libtatsu")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vcqmr3zkpqr30hfmiz44v6iyc4fd3l2rk44iy9r03666h2k3zmx"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "git-version-gen"
+                (("/bin/sh")
+                 (which "sh")))
+              (call-with-output-file ".tarball-version"
+                (lambda (port)
+                  (display #$version port))))))))
+    (propagated-inputs (list libplist))
+    (inputs (list curl))
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
+    (home-page "https://libimobiledevice.org/")
+    (synopsis "Library handling communication with Tatsu Signing Server")
+    (description
+     "This package provides a library handling communication with Apple's
+@acronym{TSS, Tatsu Signing Server}.")
+    (license license:lgpl2.1+)))
+
 (define-public libimobiledevice-glue
   (package
     (name "libimobiledevice-glue")
