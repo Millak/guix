@@ -487,13 +487,13 @@ and every application benefits from this.")
 (define-public gpgmepp
   (package
     (name "gpgmepp")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnupg/gpgmepp/gpgmepp-" version ".tar.xz"))
       (sha256
-       (base32 "10jkaqzjr5gy04bmcw75q6iy2isk17plixwn61ps4237q14n0yfl"))))
+       (base32 "1qhn583cbi67694m3bg77ckb892in2f16src2x5m0102ix309y2p"))))
     (build-system cmake-build-system)
     (arguments
      (list
