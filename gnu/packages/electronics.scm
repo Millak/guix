@@ -1314,7 +1314,7 @@ package.")
        #:tests? #f)) ;no test suite
     (native-inputs (list asciidoc
                          gettext-minimal
-                         git-minimal
+                         git-minimal/pinned
                          perl
                          perl-unicode-linebreak
                          perl-yaml-tiny
