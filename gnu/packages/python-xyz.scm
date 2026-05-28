@@ -36806,13 +36806,13 @@ line by line or column by column or a combination of both.")
 (define-public python-rpds-py
   (package
     (name "python-rpds-py")
-    (version "0.10.6")
+    (version "0.30.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "rpds_py" version))
               (sha256
                (base32
-                "0l5slkvhq2vf64mapimmj6ginsv01mc4niyj90vvz3assq4agrac"))))
+                "110y8k62b9xb3slny7gf89943xpbji3s7vl7yz0g0jh1j37zg3yx"))))
     (build-system cargo-build-system)
     (arguments
      (list

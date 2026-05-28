@@ -800,6 +800,10 @@
   (crate-source "archery" "1.2.1"
                 "0sdqlmybcvd0rzv22ac3k3xxm5anr1gpm03sf02iy0jmrlhyvqpa"))
 
+(define rust-archery-1.2.2
+  (crate-source "archery" "1.2.2"
+                "07a4wn09ad1q7qi1bfdv03hl4668jaxm63rd6jxqgfzykpwsbq3h"))
+
 (define rust-archspec-0.1.3
   (crate-source "archspec" "0.1.3"
                 "1is6yjyk38hlijhp8yyk3xq3dgg5aass7rms5h6s2mjgrzcprdlx"))
@@ -26233,6 +26237,10 @@ fn main() {
 (define rust-rpds-1.1.0
   (crate-source "rpds" "1.1.0"
                 "194hjbsicmgqi3dyllqrz09mmhh597m2j9l49lr16cyfscambqd0"))
+
+(define rust-rpds-1.2.0
+  (crate-source "rpds" "1.2.0"
+                "0d7vpyignq837rh9wgcrq53xplsg5b85a3bcbq0x7m0rx22z8xcy"))
 
 (define rust-rpm-pkg-count-0.2.1
   (crate-source "rpm-pkg-count" "0.2.1"
@@ -77984,42 +77992,32 @@ fn main() {
                                         rust-zerovec-derive-0.11.3
                                         rust-zmij-1.0.21))
                      (python-rpds-py =>
-                                     (list rust-archery-1.2.1
-                                      rust-autocfg-1.4.0
-                                      rust-bitflags-2.9.0
-                                      rust-cfg-if-1.0.0
-                                      rust-indoc-1.0.9
-                                      rust-libc-0.2.171
-                                      rust-lock-api-0.4.12
+                                     (list rust-archery-1.2.2
+                                      rust-autocfg-1.5.0
+                                      rust-cc-1.2.48
+                                      rust-find-msvc-tools-0.1.5
+                                      rust-heck-0.5.0
+                                      rust-indoc-2.0.7
+                                      rust-libc-0.2.177
                                       rust-memoffset-0.9.1
                                       rust-once-cell-1.21.3
-                                      rust-parking-lot-0.12.3
-                                      rust-parking-lot-core-0.9.10
-                                      rust-proc-macro2-1.0.94
-                                      rust-pyo3-0.19.2
-                                      rust-pyo3-build-config-0.19.2
-                                      rust-pyo3-ffi-0.19.2
-                                      rust-pyo3-macros-0.19.2
-                                      rust-pyo3-macros-backend-0.19.2
-                                      rust-quote-1.0.40
-                                      rust-redox-syscall-0.5.10
-                                      rust-rpds-1.1.0
-                                      rust-scopeguard-1.2.0
-                                      rust-smallvec-1.15.0
-                                      rust-syn-1.0.109
-                                      rust-target-lexicon-0.12.16
-                                      rust-triomphe-0.1.14
-                                      rust-unicode-ident-1.0.18
-                                      rust-unindent-0.1.11
-                                      rust-windows-targets-0.52.6
-                                      rust-windows-aarch64-gnullvm-0.52.6
-                                      rust-windows-aarch64-msvc-0.52.6
-                                      rust-windows-i686-gnu-0.52.6
-                                      rust-windows-i686-gnullvm-0.52.6
-                                      rust-windows-i686-msvc-0.52.6
-                                      rust-windows-x86-64-gnu-0.52.6
-                                      rust-windows-x86-64-gnullvm-0.52.6
-                                      rust-windows-x86-64-msvc-0.52.6))
+                                      rust-portable-atomic-1.11.1
+                                      rust-proc-macro2-1.0.103
+                                      rust-pyo3-0.27.2
+                                      rust-pyo3-build-config-0.27.2
+                                      rust-pyo3-ffi-0.27.2
+                                      rust-pyo3-macros-0.27.2
+                                      rust-pyo3-macros-backend-0.27.2
+                                      rust-python3-dll-a-0.2.14
+                                      rust-quote-1.0.42
+                                      rust-rpds-1.2.0
+                                      rust-rustversion-1.0.22
+                                      rust-shlex-1.3.0
+                                      rust-syn-2.0.111
+                                      rust-target-lexicon-0.13.3
+                                      rust-triomphe-0.1.15
+                                      rust-unicode-ident-1.0.22
+                                      rust-unindent-0.2.4))
                      (python-rustworkx =>
                                        (list rust-adler2-2.0.1
                                         rust-aho-corasick-1.1.4
