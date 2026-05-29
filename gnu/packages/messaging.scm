@@ -47,6 +47,7 @@
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Adrien 'neox' Bourmault <neox@gnu.org>
+;;; Copyright © 2026 orahcio <orahcio@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3458,6 +3459,56 @@ notifications.")
 a persistent connection to an IRC server, acting as a proxy and buffer for
 a number of clients.")
     (license license:gpl3+)))
+
+(define-public whatscli
+  (package
+    (name "whatscli")
+    (version "1.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/normen/whatscli")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ijp0783h4hivj33qi10azhq1bl512jq1wrva2alpkv7wp4qhnw6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/normen/whatscli"
+      #:embed-files #~(list ".*\\.argo" ".*\\.json" ".*\\.sql")))
+    (native-inputs
+     (list go-code-rocketnine-space-tslocum-cbind
+           go-github-com-adrg-xdg
+           go-github-com-gdamore-tcell-v2
+           go-github-com-gen2brain-beeep
+           go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-sqlite3
+           go-github-com-rivo-tview
+           go-github-com-skip2-go-qrcode
+           go-github-com-skratchdot-open-golang
+           go-github-com-zyedidia-clipboard
+           go-go-mau-fi-whatsmeow
+           go-google-golang-org-protobuf
+           go-gopkg-in-ini-v1))
+    (home-page "https://github.com/normen/whatscli")
+    (synopsis "Command line interface for WhatsApp")
+    (description
+     "WhatsCLI is a command-line interface for WhatsApp that connects
+through the Web App API without requiring a browser.  It provides a
+terminal-based user interface built with tview, featuring:
+@itemize
+@item Sending and receiving WhatsApp messages in a terminal
+@item QR code setup for simple authentication
+@item Downloading and opening image, video, audio, and document attachments
+@item Sending images, video, audio, and document attachments
+@item Basic group management capabilities
+@item Desktop notifications support
+@item Color customization options
+@end itemize")
+    (license license:expat)))
 
 (define-public weechat-wee-slack
   (package
