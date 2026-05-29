@@ -298,7 +298,7 @@ communication, encryption, decryption, signatures, etc.")
 (define-public libmd
   (package
     (name "libmd")
-    (version "1.1.0")
+    (version "1.2.0")
     (source (origin
             (method url-fetch)
             (uri
@@ -309,7 +309,7 @@ communication, encryption, decryption, signatures, etc.")
                              version ".tar.xz")))
             (sha256
              (base32
-              "0cmkfq3v0hqzjwpsyp02i3a1z2sfjrdjxky784qsy4sk4x1ammhv"))))
+              "186h2gmxzshgf5bdy832yfqb1sp05slcarpcrnngn0h58fwgy5dc"))))
     (build-system gnu-build-system)
     (arguments
      (list
