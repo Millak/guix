@@ -22785,16 +22785,16 @@ parsers.")
 (define-public sbcl-mcclim
   (package
     (name "sbcl-mcclim")
-    (version "0.9.9")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://codeberg.org/McCLIM/McCLIM")
-             (commit (string-append version "-ostara"))))
+             (commit (string-append version "-koliada"))))
        (file-name (git-file-name "cl-mcclim" version))
        (sha256
-        (base32 "0lf0af7c9kl2gzjm3j1p8z596iws86gn93ckhrba52ia5vz1iq4k"))))
+        (base32 "1rh321ikganff515jnm51jk71dwyij970jvic1jrh0cami7s9ifz"))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-fiveam pkg-config))
