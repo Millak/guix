@@ -4199,23 +4199,31 @@ libraries to make them compatible with the Array API standard")
 (define-public python-array-api-strict
   (package
     (name "python-array-api-strict")
-    (version "2.4.1")
+    (version "2.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "array_api_strict" version))
        (sha256
-        (base32 "0k1v3h54y1yny8mhgwjk6p51zf87farfk1xn9842g5lcrfhxqxvc"))))
+        (base32 "1ig116ld5k8wx82ahld4l7qcb0d4s5s4f4a0nrflrh3hzabyarvp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 584 passed, 1 skipped, 2 deselected
+      ;; tests: 585 passed, 2 deselected
       #:test-flags
-      ;; ModuleNotFoundError: No module named 'numpy', not sure why?
-      #~(list "-k" (string-append "not test_disabled_extensions"
+      ;; hypothesis.errors.InvalidArgument:
+      ;; xp.__array_api_version__='2025.12', but it must be a valid version
+      ;; string ('2021.12', '2022.12', '2023.12', '2024.12'). If the standard
+      ;; version you want is not available, please ensure you're using the
+      ;; latest version of Hypothesis, then open an issue if one doesn't
+      ;; already exist.
+      #~(list "--ignore=array_api_strict/tests/test_set_functions.py"
+              ;; ModuleNotFoundError: No module named 'numpy', not sure why?
+              "-k" (string-append "not test_disabled_extensions"
                                   " and not test_environment_variables"))))
     (native-inputs
-     (list python-pytest
+     (list python-hypothesis
+           python-pytest
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
