@@ -10130,6 +10130,36 @@ and @code{io.ReadCloser}) with overwrites
                     "  This package is a fork of dlclark/regexp2 providing a
 more similar API to regexp."))))
 
+(define-public go-github-com-esiqveland-notify
+  (package
+    (name "go-github-com-esiqveland-notify")
+    (version "0.13.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/esiqveland/notify")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03d27a8rl55j6dqclg3233dj3j7v0i0p9cda06f9c4a21djamrfb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/esiqveland/notify"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-godbus-dbus-v5))
+    (home-page "https://github.com/esiqveland/notify")
+    (synopsis "Delivering desktop notifications over DBus")
+    (description
+     "Notify is a Go library for interacting with the DBus notification
+service defined by freedesktop.org at
+@url{https://developer.gnome.org/notification-spec/}.  Notify can deliver
+desktop notifications over DBus, ala how @code{libnotify} does it.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-ettle-strcase
   (package
     (name "go-github-com-ettle-strcase")
