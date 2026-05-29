@@ -273,6 +273,30 @@ additional error is returned in the Go binding.")
     (description "Package bmp implements a BMP image decoder and encoder.")
     (license license:bsd-3)))
 
+(define-public go-github-com-sergeymakinen-go-ico
+  (package
+    (name "go-github-com-sergeymakinen-go-ico")
+    (version "1.0.0-beta.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sergeymakinen/go-ico")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "115fgnhn1j91zvkigl1x03jkc2dn6vx7qvfmm6l59d24qkfv6cwn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sergeymakinen/go-ico"))
+    (propagated-inputs
+     (list go-github-com-sergeymakinen-go-bmp))
+    (home-page "https://github.com/sergeymakinen/go-ico")
+    (synopsis "ICO and CUR file decoders and encoders")
+    (description "Package ico implements an ICO file decoder and encoder.")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above in alphabetic order:
