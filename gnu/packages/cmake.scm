@@ -362,6 +362,44 @@ and workspaces that can be used in the compiler environment of your choice.")
                   cmake-minimal-cross
                   cmake-bootstrap)))))
 
+(define-public cmake-minimal-4
+  (package
+    (inherit cmake-minimal)
+    (version "4.3.3")
+    (source
+     (origin
+       (inherit (package-source cmake-minimal))
+       (method url-fetch)
+       (uri (string-append "https://cmake.org/files/v"
+                           (version-major+minor version)
+                           "/cmake-" version ".tar.gz"))
+       (snippet
+        (match (origin-snippet (package-source cmake-minimal))
+          (('begin ('define 'preserved-files ('quote x))
+                   rest ...)
+           `(begin
+              (define preserved-files
+                ',(cons*
+                   "Utilities/cmelf"
+                   "Utilities/cmlibarchive/libarchive/archive_parse_date.c"
+                   x))
+              ,@rest))))
+       (sha256
+        (base32
+         "11dvr50smd28vysw7a5k6pjanfrqjql96nghnrxqgwpd8ixbp96b"))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'delete-help-documentation
+              (lambda _
+                (delete-file-recursively
+                 (string-append #$output
+                                "/share/cmake-"
+                                #$(version-major+minor
+                                   (package-version this-package))
+                                "/Help"))))))))))
+
 ;;; The "user-facing" CMake, now with manuals and HTML documentation.
 (define-public cmake
   (package
