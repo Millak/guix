@@ -3135,7 +3135,7 @@ Interfacing Specification) plugin for the @code{mpv} media player.  It implement
 interfaces.
 
 To load this plugin, specify the following option when starting mpv:
-@code{--script $GUIX_PROFILE/lib/mpris.so} or link it into
+@code{--script $GUIX_PROFILE/lib/mpv-mpris/mpris.so} or link it into
 @file{$HOME/.config/mpv/scripts}.")
     (license license:expat)))
 
