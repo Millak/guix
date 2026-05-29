@@ -932,7 +932,7 @@ packages.")
 (define-public python-proton-vpn-api-core
   (package
     (name "python-proton-vpn-api-core")
-    (version "4.18.0")
+    (version "5.2.3")
     (source
      (origin
        (method git-fetch)
@@ -941,7 +941,7 @@ packages.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hlcgickj0ji25m3szrpb44363nvd859jr0853aqbj8yd74148vp"))))
+        (base32 "0g42nrmr3sibjpm6alnsfrc9bjq49l5f7xrf5cgf7rgdimz0haqa"))))
     (build-system pyproject-build-system)
     (arguments
      (list
