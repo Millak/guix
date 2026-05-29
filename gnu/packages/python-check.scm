@@ -2198,18 +2198,21 @@ attachments).
 (define-public python-pyflakes
   (package
     (name "python-pyflakes")
-    (version "3.2.0")
+    (version "3.4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyflakes" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/PyCQA/pyflakes")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0gxgz0kg008pgmjk1dn8z3g00dfa9pc3f80pm6r1yqjly4zn0q8w"))))
+        (base32 "0ag6j4flayslbxcqipmfy5njawzy66py71p63mpjsys4gy70jhg1"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (home-page "https://github.com/PyCQA/pyflakes")
     (synopsis "Passive checker of Python programs")
     (description
