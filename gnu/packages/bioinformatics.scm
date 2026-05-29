@@ -23612,40 +23612,6 @@ metrics, dimension reduction and normalization, visualization, and DNA
 sequence motif analysis.")
       (license license:expat))))
 
-(define-public tombo
-  (package
-    (name "tombo")
-    (version "1.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ont-tombo" version))
-       (sha256
-        (base32
-         "1023hadgcsgi53kz53ql45207hfizf9sw57z0qij3ay1bx68zbpm"))))
-    (build-system pyproject-build-system)
-    (arguments
-     '(#:tests? #false))                ;no tests
-    (native-inputs
-     (list python-cython-0 python-setuptools))
-    ;; The package mainly consists of a command-line tool, but also has a
-    ;; Python-API. Thus these must be propagated.
-    (propagated-inputs
-     (list python-future
-           python-h5py
-           python-mappy
-           python-numpy
-           python-scipy
-           python-tqdm
-           python-rpy2))
-    (home-page "https://github.com/nanoporetech/tombo")
-    (synopsis "Analysis of raw nanopore sequencing data")
-    (description "Tombo is a suite of tools primarily for the identification of
-modified nucleotides from nanopore sequencing data.  Tombo also provides tools
-for the analysis and visualization of raw nanopore signal.")
-    ;; Some parts may be BSD-3-licensed.
-    (license license:mpl2.0)))
-
 ;; This is a fork of the original unmaintained python-pyvcf.
 (define-public python-pyvcf3
   (let ((commit "1fb3789153d1d8e28e2cedf121399f276b5f312a")
