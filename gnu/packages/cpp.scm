@@ -4457,7 +4457,7 @@ VST, VST3, AU, AUv3, AAX and LV2 audio plug-ins and plug-in hosts.")
 (define-public ftxui
   (package
     (name "ftxui")
-    (version "5.0.0")
+    (version "6.1.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4465,7 +4465,7 @@ VST, VST3, AU, AUv3, AAX and LV2 audio plug-ins and plug-in hosts.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1qfk6jwasxhjk410igma7pdv1q664w8cgjf95ciln3hh1kiqcpi0"))
+                "1sbgp1b5v0z8dcfwmgincd759brc1bz64vifdfp4r1afp1672lm6"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs (list googletest benchmark))
