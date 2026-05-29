@@ -2960,7 +2960,7 @@ by AOM, including with alpha.")
 (define-public libheif
   (package
     (name "libheif")
-    (version "1.19.7")
+    (version "1.22.2")
     (source
      (origin
        (method git-fetch)
@@ -2969,7 +2969,7 @@ by AOM, including with alpha.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n6pqmxa9cj9z54rcjqyb2gcp5h260x977zgwws47ddmx80blyhm"))))
+        (base32 "0j5iklzyl4abvfp6yl1p0hwxmcsbc9xbfalwy7kh0zqkj1yx76yg"))))
     (build-system cmake-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config))
