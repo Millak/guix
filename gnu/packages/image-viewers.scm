@@ -105,6 +105,7 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages logging)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pdf)
@@ -141,7 +142,7 @@
 (define-public swayimg
   (package
     (name "swayimg")
-    (version "4.6")
+    (version "5.2")
     (source
      (origin
        (method git-fetch)
@@ -150,12 +151,13 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i6zagyzvq6v6pyq8im029j28ic3c8yp64c0arancj10jmiym523"))))
+        (base32 "1z9iyp60h78xdjvv7z3kzw6ls4bxz4jdhlhc2grm4a9fmwlpndk8"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '(,(string-append "-Dversion=" version))))
     (native-inputs (list pkg-config))
     (inputs (list bash-completion
+                  exiv2
                   fontconfig
                   freetype
                   giflib
@@ -163,7 +165,6 @@
                   imath
                   json-c
                   libavif
-                  libexif
                   libheif
                   libjxl
                   libpng
@@ -171,6 +172,7 @@
                   libtiff
                   libwebp
                   libxkbcommon
+                  luajit
                   openexr
                   wayland
                   wayland-protocols))
