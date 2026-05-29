@@ -2019,6 +2019,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/obs-modules-location.patch		\
   %D%/packages/patches/ocaml-ctypes-test-oo.patch		\
   %D%/packages/patches/ocaml-multiple-definitions.patch		\
+  %D%/packages/patches/ogre-double-free.patch                   \
   %D%/packages/patches/ogre-next-add-riscv64-support.patch		\
   %D%/packages/patches/ocaml-4.07-dynamically-allocate-signal-stack.patch	\
   %D%/packages/patches/ocaml-4.09-dynamically-allocate-signal-stack.patch	\

@@ -21,7 +21,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021, 2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
@@ -1527,6 +1527,90 @@ distills complex, animated scenes into a set of baked geometric results.")
     (synopsis "Vulkan and OpenGL overlay for monitoring performance and hardware")
     (description "MangoHud is a Vulkan and OpenGL overlay for monitoring
 frames per second (FPS), temperatures, CPU/GPU load and more.")
+    (license license:expat)))
+
+(define-public ogre
+  (package
+    (name "ogre")
+    (version "14.5.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/OGRECave/ogre")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08il87zgfgzvn85k9crzlx2lmkz13c2a5awn8615a3snmvlp73m8"))
+       (patches (search-patches "ogre-double-free.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-attempt-building-gtest
+            (lambda _
+              (substitute* "Tests/CMakeLists.txt"
+                (("NOT EXISTS \\$\\{PROJECT_BINARY_DIR}/googletest-1.11.0")
+                 "FALSE"))))
+          (add-before 'configure 'unpack-imgui
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (let ((imgui-source (dirname (search-input-file
+                                            (or native-inputs inputs)
+                                            "imgui.h"))))
+                (copy-recursively imgui-source "../imgui-source"))))
+          (add-before 'configure 'pre-configure
+            ;; CMakeLists.txt forces a CMAKE_INSTALL_RPATH value.  As
+            ;; a consequence, we cannot suggest ours in configure flags.  Fix
+            ;; it.
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set\\(CMAKE_INSTALL_RPATH .*") ""))))
+          (add-before 'check 'run-x-server
+            (lambda _
+              (system "Xvfb &")
+              (setenv "DISPLAY" ":0"))))
+      #:configure-flags
+      #~(let ((runpath (string-join (list (string-append #$output "/lib")
+                                          (string-append #$output "/lib/OGRE"))
+                                    ";")))
+          (list (string-append "-DCMAKE_INSTALL_RPATH=" runpath)
+                "-DIMGUI_DIR=../imgui-source"
+                "-DOGRE_BUILD_DEPENDENCIES=OFF"
+                "-DOGRE_BUILD_RENDERSYSTEM_VULKAN=ON"
+                "-DOGRE_BUILD_TESTS=TRUE"
+                "-DOGRE_INSTALL_DOCS=TRUE"
+                "-DOGRE_INSTALL_SAMPLES=TRUE"
+                "-DOGRE_INSTALL_SAMPLES_SOURCE=TRUE"))))
+    (native-inputs
+     (list doxygen
+           (package-source imgui-1.91)
+           googletest
+           pkg-config
+           python
+           vulkan-headers
+           xorg-server-for-tests))
+    (inputs
+     (list bullet
+           freeimage
+           freetype
+           glslang
+           libxaw
+           libxrandr
+           libxt
+           mesa
+           pugixml
+           sdl2
+           spirv-tools
+           wayland
+           zlib))
+    (synopsis "Scene-oriented, flexible 3D engine written in C++")
+    (description
+     "OGRE (Object-Oriented Graphics Rendering Engine) is a scene-oriented,
+flexible 3D engine written in C++ designed to make it easier and more intuitive
+for developers to produce applications utilising hardware-accelerated 3D
+graphics.")
+    (home-page "https://www.ogre3d.org/")
     (license license:expat)))
 
 (define-public openexr
