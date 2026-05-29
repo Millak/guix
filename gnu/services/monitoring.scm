@@ -225,7 +225,7 @@ HTTP.")
   make-prometheus-node-exporter-configuration
   prometheus-node-exporter-configuration?
   (package prometheus-node-exporter-configuration-package
-           (default go-github-com-prometheus-node-exporter))
+           (default prometheus-node-exporter))
   (web-listen-address prometheus-node-exporter-web-listen-address
                       (default ":9100"))
   (textfile-directory prometheus-node-exporter-textfile-directory
