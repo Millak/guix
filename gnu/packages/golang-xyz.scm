@@ -9799,6 +9799,37 @@ O(1) for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
         #~(modify-phases %standard-phases
             (delete 'remove-submodule)))))))
 
+(define-public go-github-com-elliotchance-orderedmap-v3
+  (package
+    (name "go-github-com-elliotchance-orderedmap-v3")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/elliotchance/orderedmap")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w681qsybcf34g0wn9hm6nnzc9jcdv59ahjiqdq9hs22xq0qgnjj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; Projects includes v1, v2 and v3 in the same source tree.
+      #:import-path "github.com/elliotchance/orderedmap/v3"
+      #:unpack-path "github.com/elliotchance/orderedmap"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/elliotchance/orderedmap")
+    (synopsis "Ordered map in with amortized O(1) for Set, Get, Delete and Len")
+    (description
+     "An @code{*OrderedMap} is a high performance ordered map that maintains
+amortized O(1) for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.
+Internally an @code{*OrderedMap} uses the composite type
+@url{https://go.dev/blog/maps, map} combined with a trimmed down linked list
+to maintain the order.")
+    (license license:expat)))
+
 (define-public go-github-com-elliotwutingfeng-asciiset
   (package
     (name "go-github-com-elliotwutingfeng-asciiset")
