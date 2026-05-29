@@ -1281,6 +1281,14 @@ $(GIT_HOOKS_DIR):
 $(GIT_HOOKS_DIR)/%: etc/git/% | $(GIT_HOOKS_DIR)/
 	if [ -n "$(GIT_HOOKS_DIR)" ]; then cp "$<" "$@"; fi
 
+# Special-case the pre-push hook installation, to ensure it is always
+# up-to-date with its source.
+.PHONY: $(GIT_HOOKS_DIR)/pre-push
+$(GIT_HOOKS_DIR)/pre-push: etc/git/pre-push | $(GIT_HOOKS_DIR)
+	@if [ -n "$(GIT_HOOKS_DIR)" ]; then \
+	  cmp "--silent" "$<" "$@" || cp "$<" "$@"; \
+	fi
+
 $(GIT_CONFIG_FILE): etc/git/gitconfig
 	if [ -n "$(GIT_CONFIG_FILE)" ]; then \
 	  git config --fixed-value --replace-all include.path \
