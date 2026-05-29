@@ -25484,7 +25484,7 @@ instead of servers and network commands.")
 (define-public python-astroid
   (package
     (name "python-astroid")
-    (version "3.3.11")
+    (version "4.0.4")
     (source
      (origin
        (method git-fetch)
@@ -25493,24 +25493,12 @@ instead of servers and network commands.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x5903kmi47pc87r949lym2cwl0xg885xyy730adxv0g6r083zwn"))))
+        (base32 "0dfvih7drm22dvppjangaxlmrq21wazfyglhm3n32rgh6g6m6qms"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; UserWarning: pkg_resources is deprecated as an API. See
-     ;; https://setuptools.pypa.io/en/latest/pkg_resources.html. The
-     ;; pkg_resources package is slated for removal as early as
-     ;; 2025-11-30. Refrain from using this package or pin to Setuptools<81.
-     (list #:test-flags
-           #~(list "-k" "not test_identify_old_namespace_package_protocol")))
     (native-inputs
      (list python-mypy-minimal
            python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-lazy-object-proxy
-           python-typing-extensions
-           python-wrapt))
+           python-setuptools))
     (home-page "https://github.com/PyCQA/astroid")
     (synopsis "Python source code base representation")
     (description "@code{python-astroid} provides a common base representation
