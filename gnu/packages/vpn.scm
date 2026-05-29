@@ -748,8 +748,8 @@ the user specifically asks to proxy, so the @dfn{VPN} interface no longer
     (license license:bsd-3)))
 
 (define-public openconnect
-  (let ((commit "0dcdff87db65daf692dc323732831391d595d98d")
-        (revision "0"))
+  (let ((commit "549fd2d6c4606304e16e222e31b15c15d50e7729")
+        (revision "1"))
     (package
       (name "openconnect")
       (version (git-version "9.12" revision commit))
@@ -761,7 +761,7 @@ the user specifically asks to proxy, so the @dfn{VPN} interface no longer
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0m8zwnnjkxik3sy67zm3ia6dkmz77fansja889zg8pp481831yh2"))))
+                  "0zzhc25988wgw4nqrjmfcwpzs2cxmif0rjd2jc9h5hnnnh07x986"))))
       (outputs '("out" "doc"))
       (build-system gnu-build-system)
       (arguments
