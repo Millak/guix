@@ -28641,26 +28641,23 @@ codecs for use in data storage and communication applications.")
 (define-public python-dill
   (package
     (name "python-dill")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "dill" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/uqfoundation/dill")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1w5w5hlijw7ahqji45ssyvdip5pv074h4nw97bsj8ws7vz9g2cq6"))))
+        (base32 "09ig6820sd68cjixl5vkwkwvvgdii8qhaikc1rxhabhwxfymc7v2"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases #~(modify-phases %standard-phases
-                   (replace 'check
-                     (lambda* (#:key tests? #:allow-other-keys)
-                       (if tests?
-                           ;; Extracted from tox.ini
-                           (invoke "python" "dill/tests/__main__.py")
-                           (format #t "test suite not run~%")))))))
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "dill/tests/__main__.py")))
     (native-inputs
-     (list python-setuptools python-wheel))
-    (home-page "https://pypi.org/project/dill/")
+     (list python-setuptools))
+    (home-page "http://dill.rtfd.io/")
     (synopsis "Serialize all of Python")
     (description "Dill extends Python's @code{pickle} module for serializing
 and de-serializing Python objects to the majority of the built-in Python
