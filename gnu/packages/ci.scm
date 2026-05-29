@@ -72,7 +72,7 @@
 (define-public cuirass
   (package
     (name "cuirass")
-    (version "1.3.4")
+    (version "1.3.5")
     (source
      (origin
        (method git-fetch)
@@ -82,7 +82,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0apzyda8hfnvq07lylvlz7kifkmnvhsc538jjwmzjl60af9f634a"))))
+         "1cf68ijhd83px7dybvyp4wm9r0h2fklc18vwddvygmb4qfpbjry1"))))
     (build-system gnu-build-system)
     (arguments
      (list #:modules `((guix build utils)
@@ -102,21 +102,6 @@
            #:parallel-tests? #f
            #:phases
            #~(modify-phases %standard-phases
-               (add-before 'check 'skip-known-failing-tests
-                 (lambda _
-                   ;; Skip tests that fail with SRFI-64 as found in Guile
-                   ;; 3.0.11.  Remove this phase when
-                   ;; <https://codeberg.org/guix/cuirass/pulls/125> is merged.
-                   (substitute* "tests/database.scm"
-                     (("\\(test-equal \"db-update-specification, \
-missing spec\"" all)
-                      (string-append "(test-skip 1)\n" all)))
-                   (substitute* "tests/forgejo.scm"
-                     (("\\(test-equal \"forgejo-handle-notification\"" all)
-                      (string-append "(test-skip 1)\n" all)))
-                   (substitute* "tests/remote.scm"
-                     (("\\(test-group-with-cleanup")
-                      "(test-group"))))
                (add-after 'install 'wrap-program
                  (lambda* (#:key inputs outputs #:allow-other-keys)
                    ;; Wrap the 'cuirass' command to refer to the right modules.
