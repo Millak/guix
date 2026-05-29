@@ -18770,14 +18770,16 @@ primary use case is APIs defined before keyword-only parameters existed.")
 (define-public python-pyasn1
   (package
     (name "python-pyasn1")
-    (version "0.6.1")
+    (version "0.6.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyasn1" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pyasn1/pyasn1")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0d5h500ig8sp72pabd1wcyglc4951xalbkqahf056dl4vlmhsn3g"))))
+        (base32 "0b22m94j163nikfkl031hgrfasb6wgqp3374b8dbr84jalkl0ykw"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-backend #~'unittest
