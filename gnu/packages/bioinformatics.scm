@@ -17839,94 +17839,99 @@ once.  This package provides tools to perform Drop-seq analyses.")
     (license license:expat)))
 
 (define-public pigx-rnaseq
-  (package
-    (name "pigx-rnaseq")
-    (version "0.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/BIMSBbioinfo/pigx_rnaseq/"
-                                  "releases/download/v" version
-                                  "/pigx_rnaseq-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0mlas0srl04mvgsyydm67gg5syijf1k2f6dy7bdqqxc70fywfd08"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:parallel-tests? #f             ; not supported
-       #:phases
-       (modify-phases %standard-phases
-         ;; "test.sh" runs the whole pipeline, which takes a long time and
-         ;; might fail due to OOM.  The MultiQC is also resource intensive.
-         (add-after 'unpack 'disable-resource-intensive-test
-           (lambda _
-             (substitute* "Makefile.in"
-               (("^  tests/test_multiqc/test.sh") "")
-               (("^  test.sh") ""))))
-         (add-before 'bootstrap 'autoreconf
-           (lambda _
-             (invoke "autoreconf" "-vif")))
-         (add-before 'configure 'set-PYTHONPATH
-           (lambda _
-             (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH"))))
-         (add-before 'check 'set-timezone
-           ;; The readr package is picky about timezones.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "TZ" "UTC+1")
-             (setenv "TZDIR"
-                     (search-input-directory inputs
-                                             "share/zoneinfo"))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Needed for tests
-             (setenv "HOME" "/tmp"))))))
-    (inputs
-     (list coreutils
-           sed
-           gzip
-           snakemake-7
-           megadepth
-           multiqc
-           star-for-pigx
-           hisat2
-           fastp
-           htseq
-           samtools
-           r-minimal
-           r-rmarkdown
-           r-genomeinfodb
-           r-ggplot2
-           r-ggpubr
-           r-ggrepel
-           r-gprofiler2
-           r-deseq2
-           r-dt
-           r-knitr
-           r-pheatmap
-           r-corrplot
-           r-reshape2
-           r-plotly
-           r-scales
-           r-summarizedexperiment
-           r-crosstalk
-           r-tximport
-           r-rtracklayer
-           r-rjson
-           salmon
-           pandoc
-           python-wrapper
-           python-deeptools
-           python-pyyaml))
-    (native-inputs
-     (list tzdata automake autoconf))
-    (home-page "https://bioinformatics.mdc-berlin.de/pigx/")
-    (synopsis "Analysis pipeline for RNA sequencing experiments")
-    (description "PiGX RNAseq is an analysis pipeline for preprocessing and
+  (let ((commit "1605b541da090e13d58dae6fed38ae8dda09f002"))
+    (package
+      (name "pigx-rnaseq")
+      (version (git-version "0.1.1" "0" commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/BIMSBbioinfo/pigx_rnaseq/")
+                       (commit commit)
+                       (recursive? #true)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1j5c0wlasmxvz9z64yga56m2hhbybl149kknsrpvmq0v2gl31rn5"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:parallel-tests? #f             ; not supported
+        #:phases
+        '(modify-phases %standard-phases
+           ;; "test.sh" runs the whole pipeline, which takes a long time and
+           ;; might fail due to OOM.  The MultiQC is also resource intensive.
+           (add-after 'unpack 'disable-resource-intensive-test
+             (lambda _
+               (substitute* "Makefile.am"
+                 (("^  tests/test_multiqc/test.sh.*") "")
+                 (("^  tests/test_hisat2/test.sh.*") "  tests/test_hisat2/test.sh\n")
+                 (("^  test.sh") ""))))
+           (add-before 'bootstrap 'autoreconf
+             (lambda _
+               (invoke "autoreconf" "-vif")))
+           (add-before 'configure 'set-PYTHONPATH
+             (lambda _
+               (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH"))))
+           (add-before 'check 'set-timezone
+             ;; The readr package is picky about timezones.
+             (lambda* (#:key inputs #:allow-other-keys)
+               (setenv "TZ" "UTC+1")
+               (setenv "TZDIR"
+                       (search-input-directory inputs
+                                               "share/zoneinfo"))))
+           (add-before 'check 'pre-check
+             (lambda _
+               ;; Needed for tests
+               (setenv "HOME" "/tmp"))))))
+      (inputs
+       (list coreutils
+             sed
+             gzip
+             snakemake
+             megadepth
+             multiqc
+             star-for-pigx
+             hisat2
+             fastp
+             htseq
+             samtools
+             r-minimal
+             r-rmarkdown
+             r-genomeinfodb
+             r-ggplot2
+             r-ggpubr
+             r-ggrepel
+             r-gprofiler2
+             r-deseq2
+             r-dt
+             r-knitr
+             r-pheatmap
+             r-corrplot
+             r-reshape2
+             r-plotly
+             r-scales
+             r-summarizedexperiment
+             r-crosstalk
+             r-tximport
+             r-rtracklayer
+             r-rjson
+             salmon
+             pandoc
+             python-wrapper
+             python-deeptools
+             python-pyyaml))
+      (native-inputs
+       (list tzdata automake autoconf))
+      (home-page "https://bioinformatics.mdc-berlin.de/pigx/")
+      (synopsis "Analysis pipeline for RNA sequencing experiments")
+      (description "PiGX RNAseq is an analysis pipeline for preprocessing and
 reporting for RNA sequencing experiments.  It is easy to use and produces high
 quality reports.  The inputs are reads files from the sequencing experiment,
 and a configuration file which describes the experiment.  In addition to
 quality control of the experiment, the pipeline produces a differential
 expression report comparing samples in an easily configurable manner.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public pigx-chipseq
   (package
