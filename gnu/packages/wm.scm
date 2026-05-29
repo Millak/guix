@@ -3281,10 +3281,10 @@ works on Wayland compositors supporting the wlr-layer-shell protocol.")
     (description "Swaybg is a wallpaper utility for Wayland compositors.")
     (license license:expat))) ; MIT license
 
-(define-public swww
+(define-public awww
   (package
-    (name "swww")
-    (version "0.11.2")
+    (name "awww")
+    (version "0.12.1")
     (source
      (origin
        (method git-fetch)
@@ -3293,7 +3293,7 @@ works on Wayland compositors supporting the wlr-layer-shell protocol.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vshfdmhp7d4zmq16v41d8fxmx59pcafbphh8wwrpsk8fjjnssjz"))))
+        (base32 "183f84cwlascblqpxmiddph0k7a2jly7yzax1cc4k2xg5ms90353"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -3313,26 +3313,29 @@ works on Wayland compositors supporting the wlr-layer-shell protocol.")
              (lambda args
                (apply (assoc-ref copy:%standard-phases 'install)
                       #:install-plan
-                      '(("completions/swww.bash"
-                         "share/bash-completion/completions/swww")
-                        ("completions/swww.elv"
-                         "share/elvish/lib/swww.elv")
-                        ("completions/swww.fish"
-                         "/share/fish/completions/swww.fish")
-                        ("completions/_swww"
-                         "share/zsh/site-functions/_swww")
+                      '(("completions/awww.bash"
+                         "share/bash-completion/completions/awww")
+                        ("completions/awww.elv"
+                         "share/elvish/lib/awww.elv")
+                        ("completions/awww.fish"
+                         "/share/fish/completions/awww.fish")
+                        ("completions/_awww"
+                         "share/zsh/site-functions/_awww")
                         ("doc/generated"
                          "share/man/man1"))
                       args))))))
     (native-inputs (list pkg-config scdoc))
-    (inputs (cons* lz4 wayland wayland-protocols (cargo-inputs 'swww)))
+    (inputs (cons* lz4 wayland wayland-protocols (cargo-inputs 'awww)))
     (home-page "https://codeberg.org/LGFae/awww")
     (synopsis
      "Efficient animated wallpaper daemon for wayland controlled at runtime")
     (description
-     "A Solution to your Wayland Wallpaper Woes (swww).  It uses minimal
+     "An Answer to your Wayland Wallpaper Woes (awww).  It uses minimal
 resources and provides animations for switching between backgrounds.")
     (license license:gpl3+)))
+
+(define-deprecated-package swww
+  awww)
 
 (define-public swaynotificationcenter
   (package
