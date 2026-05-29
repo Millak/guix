@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2026 orahcio <orahcio@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -249,3 +250,31 @@ multiple return values, Go's native multiple return values are used instead.
 Whenever a native GTK call could return an unexpected NULL pointer, an
 additional error is returned in the Go binding.")
     (license license:isc)))
+
+(define-public go-github-com-sergeymakinen-go-bmp
+  (package
+    (name "go-github-com-sergeymakinen-go-bmp")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sergeymakinen/go-bmp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bglvxqmjvgclcfjpkznxyifj5r0bh837c2iw6x1vylc7lqcq07h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sergeymakinen/go-bmp"))
+    (home-page "https://github.com/sergeymakinen/go-bmp")
+    (synopsis "BMP image decoder and encoder")
+    (description "Package bmp implements a BMP image decoder and encoder.")
+    (license license:bsd-3)))
+
+;;;
+;;; Avoid adding new packages to the end of this file. To reduce the chances
+;;; of a merge conflict, place them above in alphabetic order:
+;;; guix import --insert=gnu/packages/golang-graphics.scm pypi <package-name>.
+;;;
