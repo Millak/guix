@@ -5391,3 +5391,27 @@ calculating integer division by using shift, add and multiply instructions.")
     (description "@code{FunctionalPlus} is a header-only library for
 simplifying functional programming in C++.")
     (license license:boost1.0)))
+
+(define-public yato
+  (let ((commit "68ee8e6bf79bd4cd7cadd1579da6549e6d11f450")
+        (revision "0"))
+    (package
+      (name "yato")
+      (version (git-version "1.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/agruzdev/Yato")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "14rf4nizzk9mw8vv2g7jq5hk6vhmh68xg0n5qyl3fvkrnnwr57fy"))))
+      (build-system cmake-build-system)
+      (native-inputs (list googletest))
+      (home-page "https://github.com/agruzdev/Yato")
+      (synopsis "STL-styled and STL-compatible C++ utility library")
+      (description "This package provides a collection of abstractions for C++
+development, including containers, ranges, iterators, type traits and other
+tools.")
+      (license license:asl2.0))))
