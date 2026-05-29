@@ -39428,18 +39428,32 @@ and @code{tokens_to_src} to roundtrip.")
 (define-public python-tomlkit
   (package
     (name "python-tomlkit")
-    (version "0.13.3")
+    (version "0.15.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "tomlkit" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sdispater/tomlkit")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "18fjmmhiv5jkkg1dwidmxd0sjqnkf675igizxsa2ppspxr3z4323"))))
+        (base32 "00sv5x8j78zkirzh9rl89lkpwfwhkhrq4mql2p4rqws1j37zx88g"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; toml-test is submodule to
+          ;; <https://github.com/toml-lang/toml-test>.
+          (add-after 'unpack 'copy-toml-test-source
+            (lambda _
+              (copy-recursively
+               #$(package-source (this-package-native-input "toml-test"))
+               "tests/toml-test"))))))
     (native-inputs
      (list python-poetry-core
            python-pytest
-           python-pyyaml))
+           toml-test))
     (home-page "https://github.com/sdispater/tomlkit")
     (synopsis "Style-preserving TOML library")
     (description
