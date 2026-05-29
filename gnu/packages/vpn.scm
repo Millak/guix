@@ -809,7 +809,7 @@ others.")
 (define-public openfortivpn
   (package
     (name "openfortivpn")
-    (version "1.24.0")
+    (version "1.24.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -818,7 +818,7 @@ others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dlpn5gma6iqnvc3fymac14h6rsqg6ybyfpgfhc05kkkc5mz7496"))))
+                "17zcn13jyd2zs7v4r3hb8hcwcln4gch2gv3g752d3navz02q956c"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake perl pkg-config python-wrapper))
     (inputs (list openssl ppp))
