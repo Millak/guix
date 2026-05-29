@@ -18266,7 +18266,7 @@ based methods.")
            r-tidyr
            r-viridis
            samtools
-           snakemake-7
+           snakemake
            wget))
     (home-page "https://bioinformatics.mdc-berlin.de/pigx/")
     (synopsis "Analysis pipeline for wastewater sequencing")
