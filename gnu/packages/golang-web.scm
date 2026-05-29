@@ -23390,16 +23390,16 @@ the code or routes.")
 (define-public go-maunium-net-go-mautrix
   (package
     (name "go-maunium-net-go-mautrix")
-    (version "0.22.1")
+    (version "0.28.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mautrix/go")
-             (commit (string-append "v" version))))
+              (url "https://github.com/mautrix/go")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0msqbs3qc9ljckj41hgvp16p0sbfzm25wzldb68av9svimscwnmm"))))
+        (base32 "09isb4q876mkcwm2yk7vgzwhd3yw1n0s78qvdb7wpmab6vvxjnlf"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -23415,27 +23415,32 @@ the code or routes.")
          ;; golang.org/x/net/publicsuffix/table.go:33:12: pattern data/text:
          ;; cannot embed irregular file data/text
          "text")
-    #:test-flags
-    #~(list "-skip" (string-join
-                     ;; Network access is required for the tets.
-                     (list "TestClient_Version"
-                           "TestResolveServerName/RM_Step_3B"
-                           "TestResolveServerName/RM_Step_3C"
-                           "TestResolveServerName/RM_Step_3C_MSC4040"
-                           "TestResolveServerName/RM_Step_3D"
-                           "TestResolveServerName/RM_Step_4"
-                           "TestResolveServerName/RM_Step_4_MSC4040"
-                           "TestResolveServerName/maunium")
-                     "|")
-            "-vet=off")))
-    ;; XXX: The final application needs a "libolm" package.
-    (native-inputs
-     (list olm))
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Network access is required for the tets.
+                       (list "TestCrossSignVerification_ScanQRAndConfirmScan"
+                             "TestSelfVerification_Accept_QRContents"
+                             "TestSelfVerification_ScanQRAndConfirmScan"
+                             "TestSelfVerification_ScanQRTransactionIDCorrup"
+                             "TestSelfVerification_ScanQRKeyCorrupted"
+                             "TestVerification_SAS"
+                             "TestVerification_SAS_BothCallStart"
+                             "TestVerification_Start"
+                             "TestVerification_StartThenCancel"
+                             "TestVerification_Accept_NoSupportedMethods"
+                             "TestVerification_Accept_CorrectMethodsPresented"
+                             "TestVerification_Accept_CancelOnNonParticipati"
+                             "TestVerification_ErrorOnDoubleAccept"
+                             "TestVerification_CancelOnDoubleStart"
+                             "TestClient_Version"
+                             "TestResolveServerName"
+                             "TestServerKeyResponse_VerifySelfSignature"
+                             "TestServerKeyResponse_FailWithFilter")
+                       "|"))))
     (propagated-inputs
      (list go-filippo-io-edwards25519
            go-github-com-chzyer-readline
-           go-github-com-gorilla-mux
-           go-github-com-gorilla-websocket
+           go-github-com-coder-websocket
            go-github-com-lib-pq
            go-github-com-mattn-go-sqlite3
            go-github-com-rs-xid
@@ -23452,7 +23457,9 @@ the code or routes.")
            go-golang-org-x-net
            go-golang-org-x-sync
            go-gopkg-in-yaml-v3
-           go-maunium-net-go-mauflag))
+           go-maunium-net-go-mauflag
+           ;; XXX: The final application needs a "libolm" package.
+           olm))
     (home-page "https://maunium.net/go/mautrix")
     (synopsis "Golang Matrix framework")
     (description
