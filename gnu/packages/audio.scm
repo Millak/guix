@@ -3976,32 +3976,6 @@ operations, as opposed to e.g. submitting sound samples to play and
 player-like clients.")
     (license license:expat)))
 
-(define-public python-pyliblo
-  (package
-    (name "python-pyliblo")
-    (version "0.10.0")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append "https://das.nasophon.de/download/pyliblo-"
-                                 version ".tar.gz"))
-             (sha256
-              (base32
-               "13vry6xhxm7adnbyj28w1kpwrh0kf7nw83cz1yq74wl21faz2rzw"))))
-    (build-system pyproject-build-system)
-    (arguments `(#:tests? #f)) ;no tests
-    (native-inputs
-     (list python-cython-0 python-setuptools python-wheel))
-    (inputs
-     (list liblo))
-    (home-page "https://das.nasophon.de/pyliblo/")
-    (synopsis "Python bindings for liblo")
-    (description
-     "Pyliblo is a Python wrapper for the liblo Open Sound Control (OSC)
-library.  It supports almost the complete functionality of liblo, allowing you
-to send and receive OSC messages using a nice and simple Python API.  Also
-included are the command line utilities @code{send_osc} and @code{dump_osc}.")
-    (license license:lgpl2.1+)))
-
 (define-public python-pyliblo3
   (package
     (name "python-pyliblo3")
@@ -4043,6 +4017,9 @@ library.  It supports almost the complete functionality of liblo, allowing you
 to send and receive OSC messages using a nice and simple Python API.  Also
 included are the command line utilities @code{send_osc} and @code{dump_osc}.")
     (license license:lgpl2.1+)))
+
+;; XXX: Deprecated on <2026-05-02>.
+(define-deprecated-package python-pyliblo python-pyliblo3)
 
 (define-public python-sofa
   (package
@@ -7433,7 +7410,7 @@ as is the case with audio plugins.")
            gtk+-2              ;needed for bridging GTK2 plugins in GTK3 hosts
            gtk+
            pulseaudio
-           python-pyliblo
+           python-pyliblo3
            python-pyqt
            python-rdflib
            ;; python-pyqt shows the following error without python-wrapper:

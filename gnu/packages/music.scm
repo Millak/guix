@@ -4680,7 +4680,7 @@ standard MIDI file with the csvmidi program.")
            python-dbus-1.2
            python-decorator
            python-pyinotify
-           python-pyliblo
+           python-pyliblo3
            python-pysmf))
     (native-inputs
      (list python-pytest
