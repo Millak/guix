@@ -1,5 +1,4 @@
 #!/bin/sh
-# From Gerrit Code Review 3.11.1.
 #
 # Part of Gerrit Code Review (https://www.gerritcodereview.com/)
 #
@@ -70,9 +69,9 @@ dest="$1.tmp.${random}"
 
 trap 'rm -f "$dest" "$dest-2"' EXIT
 
-if ! cat "$1" | sed -e '/>8/q' | git stripspace --strip-comments > "${dest}" ; then
-   echo "cannot strip comments from $1"
-   exit 1
+if ! sed -e '/>8/q' "$1" | git stripspace --strip-comments > "${dest}" ; then
+  echo "cannot strip comments from $1"
+  exit 1
 fi
 
 if test ! -s "${dest}" ; then
@@ -91,7 +90,7 @@ else
   pattern=".*"
 fi
 
-if git interpret-trailers --parse < "$1" | grep -q "^$token: $pattern$" ; then
+if git interpret-trailers --no-divider --parse < "$1" | grep -q "^$token: $pattern$" ; then
   exit 0
 fi
 
@@ -99,6 +98,7 @@ fi
 # sentinel at the end to make sure there is one.
 # Avoid the --in-place option which only appeared in Git 2.8
 if ! git interpret-trailers \
+         --no-divider \
          --trailer "Signed-off-by: SENTINEL" < "$1" > "$dest-2" ; then
   echo "cannot insert Signed-off-by sentinel line in $1"
   exit 1
@@ -110,6 +110,7 @@ fi
 # Avoid the --in-place option which only appeared in Git 2.8
 # Avoid the --where option which only appeared in Git 2.15
 if ! git -c trailer.where=before interpret-trailers \
+         --no-divider \
          --trailer "Signed-off-by: $token: $value" < "$dest-2" |
      sed -e "s/^Signed-off-by: \($token: \)/\1/" \
          -e "/^Signed-off-by: SENTINEL/d" > "$dest" ; then
