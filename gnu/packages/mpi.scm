@@ -100,13 +100,7 @@
      (append (if (%current-target-system)
                  '()              ;fewer dependencies when cross-compiling
                  (list libx11 cairo ncurses expat))
-             (list
-              ;; XXX: rocm-smi requires libdrm/drm.h but doesn't
-              ;; propagate a package providing these. For now, libdrm is
-              ;; used to provide this header.
-              libdrm
-              opencl-icd-loader
-              rocm-smi-lib)))
+             (list opencl-icd-loader)))
     (propagated-inputs
      ;; hwloc.pc lists libze_loader and libxml2 in
      ;; 'Requires.private' in 'hwloc.pc'.
@@ -117,8 +111,6 @@
       #~(list
          (string-append
           "--with-opencl=" #$(this-package-input "opencl-icd-loader"))
-         "--enable-rsmi"
-         (string-append "--with-rocm=" #$(this-package-input "rocm-smi-lib"))
          "--localstatedir=/var")
       #:phases
       #~(modify-phases %standard-phases
