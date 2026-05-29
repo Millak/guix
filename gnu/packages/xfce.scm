@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2024 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2016, 2026 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016 Florian Paul Schmidt <mista.tapas@gmx.net>
 ;;; Copyright © 2016, 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
@@ -68,6 +68,7 @@
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages search)
@@ -1027,7 +1028,7 @@ menu.")
         (base32 "1x39pbdx4186f7bkrc9ab5q7qs783mivm2j1msyf9m1nh09y617f"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list xfce4-dev-tools))
+     (list python-setuptools xfce4-dev-tools))
     (inputs
      (list exo
            thunar
