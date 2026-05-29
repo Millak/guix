@@ -18002,7 +18002,7 @@ expression report comparing samples in an easily configurable manner.")
            fastqc
            bowtie
            idr
-           snakemake-7
+           snakemake
            samtools
            bedtools
            kentutils))
