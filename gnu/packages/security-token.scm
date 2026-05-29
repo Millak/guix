@@ -379,7 +379,7 @@ website for more information about Yubico and the YubiKey.")
 (define-public libp11
   (package
     (name "libp11")
-    (version "0.4.16")
+    (version "0.4.18")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -388,7 +388,7 @@ website for more information about Yubico and the YubiKey.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sjd3jxpyp61d85n4drmw9rf3bh7hwhrplr5nw6lmcpr2xr4gqds"))))
+                "0151j9fxxbaakckaav1brb37nxaz976idh7iyl7wvr9jzy559xbf"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
