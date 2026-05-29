@@ -4434,7 +4434,7 @@ buffers.")
 (define-public igt-gpu-tools
   (package
     (name "igt-gpu-tools")
-    (version "2.3")
+    (version "2.4")
     (source
      (origin
        (method git-fetch)
@@ -4443,7 +4443,7 @@ buffers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vyqrsvxraib98r4i6cjmxq7nis480s2ns95v78dscygcci42i8a"))))
+        (base32 "0ijvfa5wamihzbl8l29sc27ml0kmgzlld83jm5mln6bb4bvny4gs"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f              ; many of the tests try to load kernel modules
@@ -4461,6 +4461,7 @@ buffers.")
            libdrm
            libpciaccess
            libunwind
+           pciutils
            procps
            python))
     (native-inputs
