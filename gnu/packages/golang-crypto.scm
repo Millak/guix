@@ -4293,7 +4293,7 @@ purpose of improving obfs4proxy's meek_lite transport.")
 (define-public go-go-mau-fi-libsignal
   (package
     (name "go-go-mau-fi-libsignal")
-    (version "0.1.2")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -4309,7 +4309,7 @@ purpose of improving obfs4proxy's meek_lite transport.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pd2kijza7dr5nbgfw176ca1r3rmgpx8h22gqjp557awxqhw9lzr"))))
+        (base32 "0jwqhaaqjf5fb322karppisbg5s1la459a0cwvhbii899nzyd59k"))))
     (build-system go-build-system)
     (arguments
      (list
