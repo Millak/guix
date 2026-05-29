@@ -20917,28 +20917,30 @@ state machine.  See @url{https://raft.github.io/raft.pdf} for more info.")
 (define-public go-go-mau-fi-whatsmeow
   (package
     (name "go-go-mau-fi-whatsmeow")
-    (version "0.0.0-20241215104421-68b0856cce22")
+    (version "0.0.0-20260529101937-a7ea56383ec4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/tulir/whatsmeow")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/tulir/whatsmeow")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y3h132g3w6ihc8jn587wvyha9xm3sinjlr0znqq7krvynz3z8id"))))
+        (base32 "0i6vcn6l5sf0wsyr3k856xiz5pq3ivl9a7xd1bzqzlq74jmivivc"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "go.mau.fi/whatsmeow"))
     (propagated-inputs
-     (list go-github-com-google-uuid
-           go-github-com-gorilla-websocket
+     (list go-github-com-beeper-argo-go
+           go-github-com-coder-websocket
+           go-github-com-google-uuid
            go-github-com-rs-zerolog
            go-go-mau-fi-libsignal
            go-go-mau-fi-util
            go-golang-org-x-crypto
            go-golang-org-x-net
+           go-golang-org-x-sync
            go-google-golang-org-protobuf))
     (home-page "https://go.mau.fi/whatsmeow")
     (synopsis "Go library for the WhatsApp web multidevice API")
