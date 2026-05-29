@@ -400,6 +400,30 @@ Lisnoti is available in regular, italic, bold and bold-italic
 variants.")
       (license license:silofl1.1))))
 
+(define-public font-literata
+  (package
+    (name "font-literata")
+    (version "3.103")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/googlefonts/literata")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1nnr5y6fz7da06ihinmna2a1g79q8l41bgr62l6jpl43p1dw93dn"))))
+    (build-system font-build-system)
+    (outputs (list "out" "woff"))
+    (home-page "https://github.com/googlefonts/literata")
+    (synopsis "Contemporary serif typeface for long-form reading")
+    (description
+     "Literata is a serif screen font family.  It was conceived for intensive
+editorial use, especially on screens of all sorts.  Its main potential is in
+digital publishing, whether on the web, electronic press, or mobile
+applications.")
+    (license license:silofl1.1)))
+
 (define-public font-inconsolata
   (package
     (name "font-inconsolata")
