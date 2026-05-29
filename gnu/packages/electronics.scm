@@ -4376,7 +4376,7 @@ input and outputs an XML dataset.")
 (define-public qucs-s
   (package
     (name "qucs-s")
-    (version "26.1.0")                  ;update qucsator-rf accordingly
+    (version "26.1.1")                  ;update qucsator-rf accordingly
     (source
      (origin
        (method git-fetch)
@@ -4386,7 +4386,7 @@ input and outputs an XML dataset.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0aiyrcrxln4v6qm2dmigb54wl0mj499q3g18pz87m1s2lfgicpb1"))))
+         "009siqmn76r2l17hnjqmr6ap8nw969hd5fyqigb4p3i8cvjq7gmx"))))
     (build-system qt-build-system)
     (arguments
      (list
