@@ -445,6 +445,33 @@ a human-readable byte format.")
 time dependencies in tests.")
     (license license:asl2.0)))
 
+(define-public go-code-rocketnine-space-tslocum-cbind
+  (package
+    (name "go-code-rocketnine-space-tslocum-cbind")
+    (version "0.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/tslocum/cbind.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a0gpzapm3jsivdf5h6lvlxhzngrmyj7xp5fdk20l8r4yba7yqsy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "code.rocketnine.space/tslocum/cbind"
+      #:test-flags #~(list "--skip" "TestConfiguration")))
+    (propagated-inputs
+     (list go-github-com-gdamore-tcell-v2))
+    (home-page "https://codeberg.org/tslocum/cbind")
+    (synopsis "Key event handling library for tcell")
+    (description
+     "Package cbind provides a tcell key event encoding, decoding and handling
+as human-readable strings.")
+    (license license:expat)))
+
 (define-public go-codeberg-org-anaseto-gruid
   (package
     (name "go-codeberg-org-anaseto-gruid")
