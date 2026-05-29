@@ -723,16 +723,17 @@ the entire VPN in a network namespace accessible only through SSH.")
 (define-public ocproxy
   (package
     (name "ocproxy")
-    (version "1.60")
+    (version "1.70")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://github.com/cernekee/ocproxy")
-                     (commit (string-append "v" version))))
+                     ;; Unreleased; 9 years old.
+                     (commit "8f1542582e8381de6f19506a12c1c88af645db5c")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03323nnhb4y9nzwva04mq7xg03dvdrgp689g89f69jqc261skcqx"))))
+                "18fbgi8n4w3vl3mm1hmydfzzyh0wqnnjxkfknhmqdn3x7kij2909"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake))
