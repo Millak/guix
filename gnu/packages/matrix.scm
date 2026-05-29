@@ -11,6 +11,7 @@
 ;;; Copyright © 2025 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2026 Zheng Junjie <z572@z572.online>
+;;; Copyright © 2026 orahcio <orahcio@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -59,7 +60,7 @@
 (define-public mautrix-whatsapp
   (package
     (name "mautrix-whatsapp")
-    (version "0.11.2")
+    (version "0.2605.0")
     (source
      (origin
        (method git-fetch)
@@ -68,7 +69,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wn9kldhh865w5mbg3cl61m0db9nr7zl1j8lqs2dixsaihv1lbnx"))))
+        (base32 "02gmzby57vn5cc23m2laqcqqkvghlabm08fzjzqfzx8g18cmymas"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -105,7 +106,13 @@
          ;; go.mau.fi/webp/webp.go:14:12: pattern internal: cannot embed
          ;; directory internal: contains no embeddable files
          ".*\\.c"
-         ".*\\.h")))
+         ".*\\.h"
+         ;; go.mau.fi/whatsmeow/argo/argo.go:16:13:
+         ;; pattern argo-wire-type-store.argo: cannot embed
+         ".*\\.argo"
+         ;; go.mau.fi/whatsmeow/argo/argo.go:19:13:
+         ;; pattern name-to-queryids.json: cannot embed
+         ".*\\.json")))
     (native-inputs
      (list olm
            go-github-com-gorilla-mux
