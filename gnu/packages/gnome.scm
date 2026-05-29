@@ -9679,6 +9679,7 @@ Libadwaita.")
            libadwaita
            libgudev
            libgtop
+           `(,libjxl "pixbuf-loader")       ;for the backgrounds
            libnma
            libpwquality
            (librsvg-for-system)             ;for loading SVG files
