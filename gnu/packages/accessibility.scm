@@ -187,7 +187,7 @@ terminals.")
      (append
        (list clisp
              ;; See: <https://bugzilla.redhat.com/show_bug.cgi?id=2231865>.
-             python-cython-0
+             python-cython
              python-setuptools  ;remove with next update
              doxygen
              gettext-minimal)
