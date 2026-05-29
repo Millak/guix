@@ -340,7 +340,7 @@ compatible to GNU Pth.")
     ;; Note: Odd minor versions are usually for development purposes.  See
     ;; <https://gnupg.org/download/index.html> for how to pick the right
     ;; version.
-    (version "2.4.8")
+    (version "2.5.20")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnupg/gnupg/gnupg-" version
@@ -348,7 +348,7 @@ compatible to GNU Pth.")
               (patches (search-patches "gnupg-default-pinentry.patch"))
               (sha256
                (base32
-                "05l666aha1nxpiiras446zmkhcgqnp33y74wyhzj9lq4kgbq135m"))))
+                "1ipzi64i748hjmjvv2a5dh9i9hjldlsnrgls6yd42263k5p2cqb4"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
