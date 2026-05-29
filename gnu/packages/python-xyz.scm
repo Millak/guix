@@ -23454,20 +23454,22 @@ times.
 (define-public python-lazy-object-proxy
   (package
     (name "python-lazy-object-proxy")
-    (version "1.11.0")
+    (version "1.12.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "lazy_object_proxy" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ionelmc/python-lazy-object-proxy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "174fswfrsqr7yj72f8fyry34qxgagbfw37vzljxbp7schq8l91qq"))))
+        (base32 "1qig879igkjmj4mir26b0n40w3vn5jqn293172s6npxnb4k90kzk"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
            python-pytest-benchmark
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (home-page "https://github.com/ionelmc/python-lazy-object-proxy")
     (synopsis "Lazy object proxy for Python")
     (description
