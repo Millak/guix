@@ -18020,80 +18020,87 @@ in an easily configurable manner.")
     (license license:gpl3+)))
 
 (define-public pigx-bsseq
-  (package
-    (name "pigx-bsseq")
-    (version "0.1.10")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/BIMSBbioinfo/pigx_bsseq/"
-                                  "releases/download/v" version
-                                  "/pigx_bsseq-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1vy3mhbrfdnjbhikwg3mgkfnwnzk96a1n27cxrr7gsffpmz9q6wa"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      ;; TODO: tests currently require 12+GB of RAM.  See
-      ;; https://github.com/BIMSBbioinfo/pigx_bsseq/issues/164
-      #:tests? #f
-      #:phases
-      '(modify-phases %standard-phases
-         (add-before 'configure 'set-PYTHONPATH
-           (lambda _
-             (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH"))))
-         (add-before 'check 'set-timezone
-           ;; The readr package is picky about timezones.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "TZ" "UTC+1")
-             (setenv "TZDIR"
-                     (search-input-directory inputs
-                                             "share/zoneinfo"))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Needed for tests
-             (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list tzdata-for-tests))
-    (inputs
-     (list coreutils
-           sed
-           grep
-           r-minimal
-           r-annotationhub
-           r-dt
-           r-genomation
-           r-ggbio
-           r-ggrepel
-           r-matrixstats
-           r-methylkit
-           r-reshape2
-           r-rtracklayer
-           r-rmarkdown
-           r-bookdown
-           r-ggplot2
-           r-ggbio
-           pandoc
-           python-wrapper
-           python-pyyaml
-           snakemake-7
-           bismark
-           bowtie
-           bwa-meth
-           fastqc
-           methyldackel
-           multiqc
-           trim-galore
-           cutadapt
-           samblaster
-           samtools))
-    (home-page "https://bioinformatics.mdc-berlin.de/pigx/")
-    (synopsis "Bisulfite sequencing pipeline from fastq to methylation reports")
-    (description "PiGx BSseq is a data processing pipeline for raw fastq read
+  (let ((commit "1b3a69bd5363fa882af4193215de7fb475bae066"))
+    (package
+      (name "pigx-bsseq")
+      (version (git-version "0.1.10" "0" commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/BIMSBbioinfo/pigx_bsseq/")
+                       (commit commit)
+                       (recursive? #true)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0r0gjfycgh1hqba7ma03bwxlvr2kz68yzclx5iba3wrxxqmivil6"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        ;; TODO: tests currently require 12+GB of RAM.  See
+        ;; https://github.com/BIMSBbioinfo/pigx_bsseq/issues/164
+        #:tests? #f
+        #:phases
+        '(modify-phases %standard-phases
+           ;; This file is meant for development, but it interferes with
+           ;; Makefile.
+           (add-after 'unpack 'delete-GNUmakefile
+             (lambda _ (delete-file "GNUmakefile")))
+           (add-before 'configure 'set-PYTHONPATH
+             (lambda _
+               (setenv "PYTHONPATH" (getenv "GUIX_PYTHONPATH"))))
+           (add-before 'check 'set-timezone
+             ;; The readr package is picky about timezones.
+             (lambda* (#:key inputs #:allow-other-keys)
+               (setenv "TZ" "UTC+1")
+               (setenv "TZDIR"
+                       (search-input-directory inputs
+                                               "share/zoneinfo"))))
+           (add-before 'check 'pre-check
+             (lambda _
+               ;; Needed for tests
+               (setenv "HOME" "/tmp"))))))
+      (native-inputs
+       (list tzdata-for-tests autoconf automake))
+      (inputs
+       (list coreutils
+             sed
+             grep
+             r-minimal
+             r-annotationhub
+             r-dt
+             r-genomation
+             r-ggbio
+             r-ggrepel
+             r-matrixstats
+             r-methylkit
+             r-reshape2
+             r-rtracklayer
+             r-rmarkdown
+             r-bookdown
+             r-ggplot2
+             r-ggbio
+             pandoc
+             python-wrapper
+             python-pyyaml
+             snakemake
+             bismark
+             bowtie
+             bwa-meth
+             fastqc
+             methyldackel
+             multiqc
+             trim-galore
+             cutadapt
+             samblaster
+             samtools))
+      (home-page "https://bioinformatics.mdc-berlin.de/pigx/")
+      (synopsis "Bisulfite sequencing pipeline from fastq to methylation reports")
+      (description "PiGx BSseq is a data processing pipeline for raw fastq read
 data of bisulfite experiments; it produces reports on aggregate methylation
 and coverage and can be used to produce information on differential
 methylation and segmentation.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public pigx-scrnaseq
   (package
