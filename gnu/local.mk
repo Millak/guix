@@ -1199,6 +1199,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/dbus-helper-search-path.patch		\
   %D%/packages/patches/ddd-build.patch				\
   %D%/packages/patches/debops-setup-py-avoid-git.patch	\
+  %D%/packages/patches/decibels-set-root-dir.patch		\
   %D%/packages/patches/dee-vapi.patch			\
   %D%/packages/patches/dfu-programmer-fix-libusb.patch		\
   %D%/packages/patches/dhclient-script-resolvconf-support.patch \

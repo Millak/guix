@@ -1,0 +1,16 @@
+diff --git a/tsconfig.json b/tsconfig.json
+index 4c4ea15..fd5535c 100644
+--- a/tsconfig.json
++++ b/tsconfig.json
+@@ -7,9 +7,11 @@
+     ],
+     "allowJs": true,
+     "checkJs": true,
++    "rootDir": "src",
+     "outDir": "_build/tsc-out",
+     "strict": true,
+     "moduleResolution": "node",
++    "ignoreDeprecations": "6.0",
+     "baseUrl": ".",
+     "paths": {
+       "*": [

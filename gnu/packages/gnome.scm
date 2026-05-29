@@ -557,7 +557,7 @@ of writing test cases for asynchronous interactions.")
 (define-public decibels
   (package
     (name "decibels")
-    (version "49.0")
+    (version "49.6.1")
     (source
      (origin
        (method url-fetch)
@@ -567,7 +567,9 @@ of writing test cases for asynchronous interactions.")
                        name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1jkkyv9r87skqyjhzflzzczzwf3ycwnavw1r3qa6jzlnwai9pdr9"))))
+         "1m8sh2kv5slax4jv36aj0mciw91sqxjagpngky27ql93vwablrws"))
+       (patches
+        (search-patches "decibels-set-root-dir.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
