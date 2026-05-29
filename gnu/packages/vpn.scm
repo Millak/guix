@@ -1100,7 +1100,7 @@ LocalAgent, server, and python-bindings for that crate.")
 (define-public proton-vpn-cli
   (package
     (name "proton-vpn-cli")
-    (version "0.1.9")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -1109,7 +1109,7 @@ LocalAgent, server, and python-bindings for that crate.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fgib70x0l6hkbidb9qak0sc7158l9rqzmwmrmk0cmxqrknvvxxf"))))
+        (base32 "1x4smaayrprvlhcpmns5bnzpbhxj4jymnya5v3jvyrmpa2s34j8a"))))
     (build-system pyproject-build-system)
     (arguments
      (list
