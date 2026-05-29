@@ -94,6 +94,7 @@
 ;;; Copyright © 2026 Nikita Mitasov <me@ch4og.com>
 ;;; Copyright © 2026 Alissa Istleyeva <awth13@sdf.org>
 ;;; Copyright © 2026 VnPower <vnpower@loang.net>
+;;; Copyright © 2026 Yappaholic <sav.boyar@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -170,6 +171,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages javascript)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libevent)
@@ -2561,7 +2563,7 @@ limited size and a few external dependencies.  It is configurable via
 (define-public mangowm
   (package
     (name "mangowm")
-    (version "0.13.1")
+    (version "0.14.0")
     (source
      (origin
        (method git-fetch)
@@ -2570,7 +2572,7 @@ limited size and a few external dependencies.  It is configurable via
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0szzssar8h80wqh46vxrh87znqnq8rmwrl1a01rg4ww4in0ni20y"))))
+        (base32 "09qnm75yl1j683yfrys37dbzvp7xz3xz4dsrz0yl21h1jm06w3qd"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -2602,6 +2604,7 @@ limited size and a few external dependencies.  It is configurable via
                   libxcb
                   xcb-util-wm
                   wlroots-0.19
+                  cjson
                   scenefx))
     (home-page "https://mangowm.github.io")
     (synopsis "Wayland compositor based on wlroots and scenefx")
