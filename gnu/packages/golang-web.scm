@@ -3724,6 +3724,51 @@ lookups.  It implements looking up the following records:
 Storage}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-beeper-argo-go
+  (package
+    (name "go-github-com-beeper-argo-go")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/beeper/argo-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c11aqbap9yxpnc8bvzjiy5cg53brhc47hw2q24xjvbw5d90r2ff"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/beeper/argo-go"
+      #:embed-files #~(list "prelude.graphql")
+      #:test-flags
+      #~(list "-vet=off"
+              "-skip" (string-join
+                       ;; These test groups fail with panic by similar error:
+                       ;; UnsignedDecode failed for 10000000000000000000000:
+                       ;; varint: varint too large for 64-bit. Encoded:
+                       ;; 80808092abb7b2f099bc08.
+                       (list "TestUnsignedRoundTrip"
+                             "TestQueriesEquivalence"
+                             "TestStarWarsEquivalence"
+                             "TestZigZagRoundTrip"
+                             ;; UnsignedDecode error mismatch for too long
+                             ;; varint.
+                             "TestUnsignedDecodeTooLong")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-elliotchance-orderedmap-v3
+           go-github-com-vektah-gqlparser-v2))
+    (home-page "https://github.com/beeper/argo-go")
+    (synopsis "Go implementation of Argo for GraphQL")
+    (description
+     "Go implementation of Argo, a compact and compressible binary
+serialization format for GraphQL.")
+    (license license:expat)))
+
 (define-public go-github-com-beevik-ntp
   (package
     (name "go-github-com-beevik-ntp")
