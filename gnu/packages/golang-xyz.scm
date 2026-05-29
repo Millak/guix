@@ -114,6 +114,7 @@
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-graphics)
   #:use-module (gnu packages golang-maths)
   #:use-module (gnu packages golang-vcs)
   #:use-module (gnu packages golang-web)
@@ -10949,6 +10950,37 @@ library in go standard library.")
     (synopsis "Go library that pluralizes and singularizes English nouns")
     (description
      "Go library that pluralizes and singularizes English nouns.")
+    (license license:bsd-2)))
+
+(define-public go-github-com-gen2brain-beeep
+  (package
+    (name "go-github-com-gen2brain-beeep")
+    (version "0.11.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gen2brain/beeep")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jvfspz941r93djf83gsjqw8w9v34fa9dys1465iwbq769ayizmw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gen2brain/beeep"
+      #:test-flags #~(list "--skip" "TestAlert|TestNotify")))
+    (propagated-inputs
+     (list go-github-com-esiqveland-notify
+           go-github-com-godbus-dbus-v5
+           go-github-com-jackmordaunt-icns-v3
+           go-github-com-sergeymakinen-go-ico
+           go-golang-org-x-sys))
+    (home-page "https://github.com/gen2brain/beeep")
+    (synopsis "Sending desktop notifications, alerts and beeps")
+    (description
+     "Package beeep provides a cross-platform library for sending desktop
+notifications and beeps.")
     (license license:bsd-2)))
 
 (define-public go-github-com-ghemawat-stream
