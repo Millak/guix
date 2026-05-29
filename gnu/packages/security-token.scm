@@ -1344,7 +1344,7 @@ phone and a running pcscd service are required.")
 (define-public libfido2
   (package
     (name "libfido2")
-    (version "1.16.0")
+    (version "1.17.0")
     (source
      (origin
        (method git-fetch)
@@ -1352,7 +1352,7 @@ phone and a running pcscd service are required.")
              (url "https://github.com/Yubico/libfido2")
              (commit version)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "17m0xvj52nx4yyvljrdxnliblpjnsw716zy0jagc33zflrs4a9jh"))))
+       (sha256 (base32 "0nkdigwry5bwzkxk1piww89rrb0g3zwdvn1nk5iq8hw5d47r5npm"))))
     (native-inputs (list pkg-config))
     (inputs (list eudev libcbor openssl zlib))
     (build-system cmake-build-system)
