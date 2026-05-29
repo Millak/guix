@@ -148,7 +148,7 @@ standard operating system features.")
   (package
     (inherit imgui)
     (name "imgui")
-    (version "1.91.4")
+    (version "1.91.9b")
     (source (origin
               (inherit (package-source imgui))
               (method git-fetch)
@@ -158,7 +158,7 @@ standard operating system features.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lqcsyqj5m4d4g390x7n3jvjanrnsf64fgjxn51v1kc02dw28gpa"))))))
+                "1ji0fw0xb01c60hqzmvqi0ca5cnbm94x4v371f3w03q7zl6a8jvn"))))))
 
 (define-public imgui-1.86
   (package
