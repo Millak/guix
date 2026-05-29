@@ -251,6 +251,39 @@ Whenever a native GTK call could return an unexpected NULL pointer, an
 additional error is returned in the Go binding.")
     (license license:isc)))
 
+(define-public go-github-com-jackmordaunt-icns-v3
+  (package
+    (name "go-github-com-jackmordaunt-icns-v3")
+    (version "3.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/JackMordaunt/icns")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04wnxv79b1xbca16kgz98zc929q60lwcgcc6q784lkz2a1clh2z2"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            (delete-file-recursively "cmd")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jackmordaunt/icns/v3"
+      #:test-flags #~(list "-vet=off")))
+    (propagated-inputs
+     (list go-github-com-nfnt-resize))
+    (home-page "https://github.com/jackmordaunt/icns")
+    (synopsis "Easily create .icns files")
+    (description
+     "This package provides Go library to easily convert @code{.jpg} and
+@code{.png} to @code{.icns}, or to convert from any @code{image.Image} to
+@code{.icns}.")
+    (license license:expat)))
+
 (define-public go-github-com-sergeymakinen-go-bmp
   (package
     (name "go-github-com-sergeymakinen-go-bmp")
