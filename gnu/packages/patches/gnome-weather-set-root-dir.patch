@@ -1,0 +1,18 @@
+diff --git a/tsconfig.json b/tsconfig.json
+index 7fbd63b..af0a8e7 100644
+--- a/tsconfig.json
++++ b/tsconfig.json
+@@ -4,11 +4,13 @@
+         "strict": true,
+         "target": "ES2022",
+         "baseUrl": ".",
++        "rootDir": "src",
+         "moduleResolution": "bundler",
+         "module": "ES2022",
+         "lib": [
+             "es2022"
+         ],
++       "ignoreDeprecations": "6.0",
+         "allowJs": true,
+         "checkJs": true,
+         "skipLibCheck": true,

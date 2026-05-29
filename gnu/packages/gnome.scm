@@ -10301,7 +10301,8 @@ associations for GNOME.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "04xmzmkh39z71k3k6apli2y0axfv71vwwl8582mzk4azc1w7bpjp"))))
+                "04xmzmkh39z71k3k6apli2y0axfv71vwwl8582mzk4azc1w7bpjp"))
+              (patches (search-patches "gnome-weather-set-root-dir.patch"))))
     (build-system meson-build-system)
     (arguments
      (list

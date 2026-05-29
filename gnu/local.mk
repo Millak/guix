@@ -1532,6 +1532,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gnome-shell-restore-desktop-file.patch	\
   %D%/packages/patches/gnome-session-support-elogind.patch	\
   %D%/packages/patches/gnome-tweaks-search-paths.patch		\
+  %D%/packages/patches/gnome-weather-set-root-dir.patch	\
   %D%/packages/patches/gnulib-bootstrap.patch			\
   %D%/packages/patches/gnumach-version.patch			\
   %D%/packages/patches/gnupg-default-pinentry.patch		\
