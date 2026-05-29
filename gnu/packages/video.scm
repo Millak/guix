@@ -3932,38 +3932,21 @@ capabilities.")
 (define-public vapoursynth
   (package
     (name "vapoursynth")
-    (version "61")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/vapoursynth/vapoursynth")
-                    (commit (string-append "R" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0v0dp3hydqzam0dp2d9zbrccrsvhy6n61s4v7ca2qbw69vpsm594"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out    (assoc-ref outputs "out"))
-                    (site   (string-append out "/lib/python"
-                                           ,(version-major+minor
-                                             (package-version python))
-                                           "/site-packages")))
-               (wrap-program (string-append out "/bin/vspipe")
-                 `("PYTHONPATH" ":" = (,site)))))))))
+    (version "76")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/vapoursynth/vapoursynth")
+              (commit (string-append "R" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gckysv75dq5vd6q40wzlb269lfdil2h3p5dvzqck9k63w36j5m7"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list autoconf
-           automake
-           python-cython-0
-           libtool
-           pkg-config
-           yasm))
+     (list python-meson python-pytest pkg-config))
     (inputs
-     (list ffmpeg libass python tesseract-ocr zimg))
+     (list ffmpeg libass tesseract-ocr zimg))
     (home-page "http://www.vapoursynth.com/")
     (synopsis "Video processing framework")
     (description "VapourSynth is a C++ library and Python module for video
