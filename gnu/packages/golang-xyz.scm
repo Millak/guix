@@ -78,6 +78,7 @@
 ;;; Copyright © 2026 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2026 orahcio <orahcio@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30129,6 +30130,31 @@ connections.")
     (description
       "This package provides a pretty printing library for Golang values.")
     (license license:expat)))
+
+(define-public go-github-com-zyedidia-clipboard
+  (package
+    (name "go-github-com-zyedidia-clipboard")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zyedidia/clipboard")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nrs2ll6dh31wyzxh2zbykwvpavhlpzysfk6qgfj5s4rz6ck8glz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f      ;requires clipboard (xclip or xsel)
+      #:import-path "github.com/zyedidia/clipboard"))
+    (home-page "https://github.com/zyedidia/clipboard")
+    (synopsis "Clipboard for Golang")
+    (description
+     "Package clipboard read/write on clipboard.  It's an alternative fork of
+@url{https://github.com/atotto/clipboard}.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-zyedidia-clipper
   (package
