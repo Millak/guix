@@ -259,14 +259,14 @@ with a PKCS #11 Cryptographic Token Interface.")
 (define-public pcsc-lite
   (package
     (name "pcsc-lite")
-    (version "2.4.1")
+    (version "2.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://pcsclite.apdu.fr/files/"
                                   "pcsc-lite-" version ".tar.xz"))
               (sha256
                (base32
-                "19qrm8gsq8padqv0mbzgsaddy4lqkbwjsafw93h2n380r1lbmlxg"))))
+                "14nvalmvj2vpf89qkl3xgqhylm5d8vpv7dfyirljicjapssw9csr"))))
     (build-system meson-build-system)
     (arguments
      (list
