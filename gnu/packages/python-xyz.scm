@@ -12129,49 +12129,41 @@ def load_dynamic(name, path):
 (define-public python-numpy
   (package
     (name "python-numpy")
-    (version "2.3.1")
+    (version "2.4.6")
     (source
      (origin
+       ;; XXX: When switching to Git it fails to find Numpy's fork of Meson
+       ;; git submodule -- <https://github.com/numpy/meson>.
        (method url-fetch)
        (uri (string-append
              "https://github.com/numpy/numpy/releases/download/v"
              version "/numpy-" version ".tar.gz"))
        (sha256
-        (base32 "0aqx8hsw54wfp7iv0h0ljlpsygvmrmi3rjic6rsa6v92lhhaxj8y"))))
+        (base32 "1nkx73blw298dzdk6blhrsann60cgdy7q6n3q9m785ia9865g8zk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 47513 passed, 1740 skipped, 33 xfailed, 5 xpassed, 341 warnings
+      ;; tests: 47255 passed, 1079 skipped, 32 xfailed, 2 xpassed, 318 warnings
       #:modules '((guix build utils)
                   (guix build pyproject-build-system)
                   (ice-9 format))
       #:test-flags
       #~(list "-m" "not slow"
-              "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              ;; See: <https://github.com/numpy/numpy/issues/27531>,
-              ;;      <https://github.com/numpy/numpy/issues/17685>,
-              ;;      <https://github.com/numpy/numpy/issues/17635>.
-              "-k" "not test_api_importable")
+              "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-executable-paths
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "numpy/distutils/exec_command.py"
                 (("'/bin/sh'")
                  (format #f "~s" (which "bash"))))
               (substitute* "numpy/meson.build"
                 ;; Relay on python from the PATH instead of full reference
                 ;; stored in built wheel.
-                (("'py.full_path\\(\\)'") "'python'"))))
-          ;; This isn't architecture specific.
-          ;; TODO: Remove this conditional and apply for all builds.
-          #$@(if (target-ppc64le?)
-                 #~((add-after 'unpack 'patch-bin-true
-                      (lambda* (#:key inputs #:allow-other-keys)
-                        (substitute* "numpy/_core/tests/test_cpu_features.py"
-                          (("/bin/true")
-                           (search-input-file inputs "bin/true"))))))
-                 #~())
+                (("'py.full_path\\(\\)'") "'python'"))
+              (substitute* "numpy/_core/tests/test_cpu_features.py"
+                (("/bin/true")
+                 (search-input-file inputs "bin/true")))))
           (add-before 'build 'parallelize-build
             (lambda _
               (setenv "OMP_NUM_THREAD"
@@ -12191,7 +12183,7 @@ def load_dynamic(name, path):
                                  (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
                          ":")))))
           (add-before 'build 'configure-blas
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda _
               (call-with-output-file "site.cfg"
                 (lambda (port)
                   (format port
@@ -12203,7 +12195,11 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
             (lambda* (#:key tests? test-flags #:allow-other-keys)
               (when tests?
                 (with-directory-excursion #$output
-                  (apply invoke "pytest" test-flags)))))
+                  (apply invoke "pytest" test-flags)
+                  (let ((pytest-cache (string-append #$output
+                                                     "/.pytest_cache")))
+                    (when (access? pytest-cache X_OK)
+                      (delete-file-recursively pytest-cache)))))))
           ;; The executables provided by this package ('f2py' and 'numpy-config')
           ;; only depend on Python.  By customizing the wrap phase we can ensure
           ;; that we don't add all Python packages listed in native-inputs to
@@ -12220,12 +12216,14 @@ include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
                        (find-files (in-vicinity #$output "/bin"))))))))
     (native-inputs
      (list gfortran
+           python-cython
            python-hypothesis
            python-meson
            python-pytest
-           python-pytest-xdist
-           python-setuptools
-           python-typing-extensions))
+           python-pytest-xdist))
+    (inputs
+     (list bash
+           openblas))
     (home-page "https://numpy.org")
     (synopsis "Fundamental package for scientific computing with Python")
     (description "NumPy is the fundamental package for scientific computing
