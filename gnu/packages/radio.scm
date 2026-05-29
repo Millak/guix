@@ -3415,7 +3415,7 @@ of devices than RTL-SDR.")
 (define-public urh
   (package
     (name "urh")
-    (version "2.9.8")
+    (version "2.10.0")
     (source
      (origin
        (method git-fetch)
@@ -3424,7 +3424,7 @@ of devices than RTL-SDR.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wfqdcfip1kg5b5a8d01bip5nqvjhs2x8bgc9vwhghn6vk8pqxxg"))))
+        (base32 "1y8w796j46lnybyb9vfx47xiy5h1zkd8rv8jxav9h9kwixc69pdd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3454,7 +3454,7 @@ of devices than RTL-SDR.")
               (setenv "DISPLAY" ":0")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-cython-0
+     (list python-cython
            python-pytest
            python-setuptools
            xorg-server-for-tests))
@@ -3464,10 +3464,10 @@ of devices than RTL-SDR.")
            gnuradio
            gr-osmosdr
            hackrf
-           python-numpy-1
+           python-numpy
            python-psutil
            python-pyaudio
-           python-pyqt
+           python-pyqt-6
            rtl-sdr))
     (home-page "https://github.com/jopohl/urh")
     (synopsis "Wireless protocol investigation program")
