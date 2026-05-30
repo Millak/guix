@@ -22718,6 +22718,8 @@ and makes it easier to build concurrent applications.")
     (license license:asl2.0)))
 
 ;; WARNING: This package is a dependency of mesa.
+;; XXX: This project was archived by the owner on Dec 21, 2025. It is now
+;; read-only. Consider to remove when nothing depends on it.
 (define-public python-ply
   (package
     (name "python-ply")
@@ -22731,8 +22733,7 @@ and makes it easier to build concurrent applications.")
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f)) ;XXX: not tests in PyPI archive, there are in Git
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (home-page "http://www.dabeaz.com/ply/")
     (synopsis "Python Lex & Yacc")
     (description "PLY is a @code{lex}/@code{yacc} implemented purely in Python.
