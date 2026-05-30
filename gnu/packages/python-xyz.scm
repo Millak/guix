@@ -39773,16 +39773,20 @@ ISO 8859, etc.).")
 (define-public python-trio
   (package
     (name "python-trio")
-    (version "0.32.0")
+    (version "0.33.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "trio" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-trio/trio")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0sw04md83splkb0x37bmd1yj8rbf033p2k0x3qim3k9vjbn2j3qm"))))
+        (base32 "1ibkp7bgdv0k099szk8181rfn7jm60kh8kpfrkfr4pnwjd6abslf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 507 passed, 45 skipped, 37 deselected
       #:test-flags
       #~(list
          #$@(if (package? (this-package-native-input "python-trustme"))
@@ -39809,7 +39813,9 @@ ISO 8859, etc.).")
                 ;; Failure in name resolution.
                 "test_SocketType_resolve"
                 ;; OSError: protocol not found.
-                "test_getprotobyname")
+                "test_getprotobyname"
+                ;; Drop pylint and jedi.
+                "test_static_tool_sees_all_symbols")
                " and not ")
          "src/trio/_tests")
       #:phases
@@ -39837,9 +39843,7 @@ ISO 8859, etc.).")
        (if (supported-package? python-cryptography)
            (list python-cryptography)
            '())
-       (list python-jedi
-             python-pylint
-             python-pytest
+       (list python-pytest
              python-setuptools)))
     (propagated-inputs
      (list python-attrs
@@ -39847,7 +39851,8 @@ ISO 8859, etc.).")
            python-outcome
            python-sniffio
            python-sortedcontainers))
-    (home-page "https://trio.readthedocs.io")
+    (home-page "https://github.com/python-trio/trio")
+    ;; (home-page "https://trio.readthedocs.io")
     (synopsis "Friendly Python library for async concurrency and I/O")
     (description
      "Trio strives to be a production-quality, async/await-native I/O library
