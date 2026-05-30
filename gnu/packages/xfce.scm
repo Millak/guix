@@ -610,7 +610,7 @@ seamlessly with the tiling window manager i3.")
 (define-public xfce4-whiskermenu-plugin
   (package
     (name "xfce4-whiskermenu-plugin")
-    (version "2.10.0")
+    (version "2.10.1")
     (source
      (origin
        (method git-fetch)
@@ -620,7 +620,7 @@ seamlessly with the tiling window manager i3.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wv7ixp3kmfscfyvp37bsaymva2bjlvdqijwywj1sax6zsq04l6q"))))
+        (base32 "1jisbl0a1x91gpn8j4yh55ln82l7gnp6rj8f0s6nvv02pil0484r"))))
     (build-system cmake-build-system)
     (native-inputs
      (list gettext-minimal pkg-config))
