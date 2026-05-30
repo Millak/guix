@@ -204,42 +204,39 @@ Daemon and possibly more in the future.")
      ;; The '--with-gpg-error-prefix' argument is needed because otherwise
      ;; 'configure' uses 'gpg-error-config' to determine the '-L' flag, and
      ;; the 'gpg-error-config' it runs is the native one---i.e., the wrong one.
-     `(#:configure-flags
-       (list (string-append "--with-libgpg-error-prefix="
-                            (assoc-ref %build-inputs "libgpg-error-host"))
-             ;; libgcrypt is transitioning from gpg-error-config to
-             ;; gpgrt-config, and in the process the
-             ;; --with-libgpg-error-config prefix defined above is
-             ;; not respected.  See <https://dev.gnupg.org/T5365>.
-             ;; TODO: transition to pkg-config instead of these scripts.
-             (string-append "ac_cv_path_GPGRT_CONFIG="
-                            (assoc-ref %build-inputs
-                                       "libgpg-error-host")
-                            "/bin/gpgrt-config")
-             ,@(if (%current-target-system)
-                   ;; When cross-compiling, _gcry_mpih_lshift etc are undefined.
-                   `("--disable-asm")
-                   '()))
-       ,@(if (system-hurd?)
-             (list
-              #:phases
-              #~(modify-phases %standard-phases
-                  (add-before 'configure 'setenv
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-libgpg-error-prefix="
+                             (assoc-ref %build-inputs "libgpg-error-host"))
+              ;; libgcrypt is transitioning from gpg-error-config to
+              ;; gpgrt-config, and in the process the
+              ;; --with-libgpg-error-config prefix defined above is
+              ;; not respected.  See <https://dev.gnupg.org/T5365>.
+              ;; TODO: transition to pkg-config instead of these scripts.
+              (string-append "ac_cv_path_GPGRT_CONFIG="
+                             (assoc-ref %build-inputs
+                                        "libgpg-error-host")
+                             "/bin/gpgrt-config")
+              #$@(if (%current-target-system)
+                     ;; When cross-compiling, _gcry_mpih_lshift etc are
+                     ;; undefined.
+                     `("--disable-asm")
+                     '()))
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@(cond
+              ((system-hurd?)
+               #~((add-before 'config 'setenv
+                    (lambda _ (setenv "GCRYPT_NO_BENCHMARKS" "t")))))
+              ((target-arm32?)
+               #~((add-after 'unpack 'apply-upstream-patch
                     (lambda _
-                      (setenv "GCRYPT_NO_BENCHMARKS" "t")))))
-             '())
-       ,@(if (target-arm32?)
-             (list
-               #:phases
-               #~(modify-phases %standard-phases
-                   (add-after 'unpack 'apply-upstream-patch
-                     (lambda _
-                       (let ((patch-file
-                               #$(local-file
-                                   (search-patch
-                                     "libgcrypt-arm32-register-pressure.patch"))))
-                         (invoke "patch" "--force" "-p1" "-i" patch-file))))))
-             '())))
+                      (let ((patch-file
+                             #$(local-file
+                                (search-patch
+                                 "libgcrypt-arm32-register-pressure.patch"))))
+                        (invoke "patch" "--force" "-p1" "-i" patch-file))))))
+              (else #~())))))
     (outputs '("out" "debug"))
     (home-page "https://gnupg.org/")
     (synopsis "Cryptographic function library")
