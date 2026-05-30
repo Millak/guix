@@ -6018,20 +6018,19 @@ cssutils not receiving updates as of 1.0.2.")
 (define-public python-cssselect
   (package
     (name "python-cssselect")
-    (version "1.2.0")
-    (source (origin
-              ;; The PyPI release does not contain tests.
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/scrapy/cssselect")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1x4nrvb1p1byi1whmspik7lbh303akdlh762dayfxam3hycsh5kk"))))
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/scrapy/cssselect")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "110l98x1mz1mxcal89xscsg28vg624sc0y6b5x1n2clwa19q5g4y"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-lxml python-pytest python-setuptools python-wheel))
+     (list python-hatchling python-lxml python-pytest))
     (home-page "https://github.com/scrapy/cssselect")
     (synopsis "CSS3 selector parser and translator to XPath 1.0")
     (description
