@@ -341,17 +341,22 @@ compatible to GNU Pth.")
     ;; <https://gnupg.org/download/index.html> for how to pick the right
     ;; version.
     (version "2.5.20")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnupg/gnupg/gnupg-" version
-                                  ".tar.bz2"))
-              (patches (search-patches "gnupg-default-pinentry.patch"))
-              (sha256
-               (base32
-                "1ipzi64i748hjmjvv2a5dh9i9hjldlsnrgls6yd42263k5p2cqb4"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://dev.gnupg.org/source/gnupg")
+              (commit (string-append "gnupg-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1jjp1yv919b9l9qhgsmbray7g0k8mzmwldp38pm381i8nazr66hw"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config))
+     (list autoconf
+           automake
+           gettext-minimal
+           pkg-config))
     (inputs
      (list gnutls
            libassuan
@@ -388,6 +393,10 @@ compatible to GNU Pth.")
                       "--with-npth-prefix="
                       #$(this-package-input "npth")))
                  #~())
+          ;; TODO: There is a dependency cycle with fig2dev; remove when
+          ;; fixed.
+          "--disable-doc"
+          "--enable-maintainer-mode" ;see README.GIT
           ;; Otherwise, the test suite looks for the `gpg`
           ;; executable in its installation directory in
           ;; /gnu/store before it has been installed.
