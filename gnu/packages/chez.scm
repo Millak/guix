@@ -1184,7 +1184,7 @@ Chez Scheme.")
 (define-public chez-irregex
   (package
     (name "chez-irregex")
-    (version "0.9.11")
+    (version "0.9.12")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1192,14 +1192,8 @@ Chez Scheme.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "026kzl96pmwbjqdc7kh8rdh8ng813sjvdsik0dag5acza20sjm19"))
-              (patches
-               ;; TODO: Remove this patch if upstream release a new version.
-               ;; See https://github.com/ashinn/irregex/issues/49
-               (search-patches "chez-irregex-import-cond-expand.patch"))))
+                "1rmlmkf2pnly7mqi407vi2k6k19m2h44d4jvzfkrizk892qj61yc"))))
     (build-system gnu-build-system)
-    (inputs
-     (list chez-matchable)) ; for tests
     (propagated-inputs
      (list chez-srfi)) ; for irregex-utils
     (native-inputs
