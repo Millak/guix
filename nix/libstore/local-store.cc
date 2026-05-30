@@ -1424,14 +1424,14 @@ Path LocalStore::importPath(bool requireSignature, Source & source)
 }
 
 
-Paths LocalStore::importPaths(bool requireSignature, Source & source)
+Paths LocalStore::importPaths(Source & source)
 {
     Paths res;
     while (true) {
         unsigned long long n = readLongLong(source);
         if (n == 0) break;
         if (n != 1) throw Error("input doesn't look like something created by `nix-store --export'");
-        res.push_back(importPath(requireSignature, source));
+        res.push_back(importPath(true, source));
     }
     return res;
 }

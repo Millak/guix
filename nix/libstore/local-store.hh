@@ -108,7 +108,7 @@ public:
     void exportPath(const Path & path, bool sign,
         Sink & sink);
 
-    Paths importPaths(bool requireSignature, Source & source);
+    Paths importPaths(Source & source);
 
     void buildPaths(const PathSet & paths, BuildMode buildMode);
 

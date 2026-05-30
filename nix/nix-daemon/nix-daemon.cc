@@ -480,7 +480,7 @@ static void performOp(bool trusted, unsigned int clientVersion,
 
         /* Unlike Nix, always require a signature, even for "trusted"
            users.  */
-        Paths paths = store->importPaths(true, source);
+        Paths paths = store->importPaths(source);
         stopWork();
         writeStrings(paths, to);
         break;

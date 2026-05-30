@@ -214,7 +214,7 @@ public:
 
     /* Import a sequence of NAR dumps created by exportPaths() into
        the Nix store. */
-    virtual Paths importPaths(bool requireSignature, Source & source) = 0;
+    virtual Paths importPaths(Source & source) = 0;
 
     /* For each path, if it's a derivation, build it.  Building a
        derivation means ensuring that the output paths are valid.  If
