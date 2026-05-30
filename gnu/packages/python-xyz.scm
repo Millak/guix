@@ -13709,28 +13709,23 @@ persistent queue in Python.")
 (define-public python-pycodestyle
   (package
     (name "python-pycodestyle")
-    (version "2.12.1")
+    (version "2.14.0")
     (source
      (origin
-       (method url-fetch)
+       (method url-fetch)       ;git has no the same version tag as PyPI
        (uri (pypi-uri "pycodestyle" version))
        (sha256
-        (base32 "089mszv65gwnz4nq8vryxqanlqk3bh3p4maxrnngdr5wighflf38"))))
+        (base32 "10xpcy8m54cvnk4a37j4cwrjl9lprlcwkpmbs3wry23qs8bvbdf4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "-m" "pycodestyle" "--statistics" "pycodestyle.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Taken from Tox config
-          ;; <https://github.com/PyCQA/pycodestyle/blob/2.11.0/tox.ini#L16>.
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                  (apply invoke "python" "-v" test-flags)))))))
+      #:test-backend #~'custom
+      #:test-flags
+      ;; Taken from Tox config
+      ;; <https://github.com/PyCQA/pycodestyle/blob/2.11.0/tox.ini#L16>.
+      #~(list "-m" "pycodestyle" "--statistics" "pycodestyle.py")))
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (home-page "https://pycodestyle.readthedocs.io/")
     (synopsis "Python style guide checker")
     (description "@code{pycodestyle} (formerly pep8) is a tool to check
