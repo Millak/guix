@@ -1118,7 +1118,7 @@ window manager.")
 (define-public xfdesktop
   (package
     (name "xfdesktop")
-    (version "4.20.1")
+    (version "4.20.2")
     (source
      (origin
        (method git-fetch)
@@ -1127,7 +1127,7 @@ window manager.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13kzh63dskdl5ayzza8a9db40g16sfzzh0aq7vy6hk0xf4fyq720"))
+        (base32 "0lnf7g1ag4kbygm1avm191mgs4xx1bz2b1zbvgmvym8h3r21zsrc"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
