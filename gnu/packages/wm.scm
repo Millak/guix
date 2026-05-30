@@ -1217,14 +1217,13 @@ to events.")
 (define-public qtile
   (package
     (name "qtile")
-    ;; TODO: Update when Python is upgraded to >=3.12.
-    (version "0.33.0")
+    (version "0.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "qtile" version))
        (sha256
-        (base32 "1kqpf6kc98c7ck5w8xvzlzawnmsckpnwdd3xkv08k81zmai71d44"))))
+        (base32 "07iibhppv6p25wppigaqm0dkga9m9v8cayv4g6fakz24vgbx0dqk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1237,6 +1236,9 @@ to events.")
           (add-after 'unpack 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "libqtile/pangocffi.py"
+                (("^(fontconfig = ffi.dlopen).*" all def)
+                 (format #f "~a(~s)~%" def
+                         (search-input-file inputs "/lib/libfontconfig.so")))
                 (("^(gobject = ffi.dlopen).*" all def)
                  (format #f "~a(~s)~%" def
                          (search-input-file inputs "/lib/libgobject-2.0.so.0")))
@@ -1247,6 +1249,17 @@ to events.")
                  (format #f "~a(~s)~%" def
                          (search-input-file
                           inputs "/lib/libpangocairo-1.0.so.0"))))))
+          (add-before 'build 'build-wayland-backend
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "QTILE_CAIRO_PATH"
+                      (search-input-directory inputs "include/cairo"))
+              (setenv "QTILE_PIXMAN_PATH"
+                      (search-input-directory inputs "include/pixman-1"))
+              (setenv "QTILE_LIBDRM_PATH"
+                      (search-input-directory inputs "include/libdrm"))
+              (setenv "QTILE_WLROOTS_PATH"
+                      (search-input-directory inputs "include/wlroots-0.19"))
+              (invoke "python" "libqtile/backend/wayland/cffi/build.py")))
           (add-after 'install 'install-xsessions
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
@@ -1266,13 +1279,16 @@ to events.")
                 (setenv "XDG_CACHE_HOME" "/tmp")))))))
     (inputs
      (list cairo
+           fontconfig
            gdk-pixbuf
            glib
+           libdrm
            libinput
            libnotify
            (librsvg-for-system)
            lm-sensors
            pango
+           pixman
            pulseaudio
            wayland
            wayland-protocols
