@@ -22496,6 +22496,22 @@ unstructuring data.  @code{cattrs} works best with @code{attrs} classes,
 classes can also be supported by manually registering converters.")
     (license license:expat)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure
+;; size. Tests are left out in the main package to slim down native-inputs and
+;; optional propagated-inputs.
+(define-public python-cattrs-minimal
+  (package/inherit python-cattrs
+    (name "python-cattrs-minimal")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (list python-hatchling
+           python-hatch-vcs))
+    (propagated-inputs
+     (list python-attrs
+           python-typing-extensions))))
+
 (define-public python-cachy
   (package
     (name "python-cachy")
