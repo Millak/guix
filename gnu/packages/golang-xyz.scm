@@ -79,6 +79,7 @@
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2026 orahcio <orahcio@gmail.com>
+;;; Copyright © 2026 Luca Kredel <luca.kredel@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4156,6 +4157,28 @@ Supported Barcode Types:
 @item PDF 417
 @item QR Code
 @end itemize")
+    (license license:expat)))
+
+(define-public go-github-com-boyter-gocodewalker
+  (package
+    (name "go-github-com-boyter-gocodewalker")
+    (version "1.5.2-0.20260227212453-19676720409f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/boyter/gocodewalker")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1v4gm4jll26hl0bb9k7bq0r4sam1crcmlbhrs6jh0kcfzh96yvgb"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "github.com/boyter/gocodewalker"))
+    (home-page "https://github.com/boyter/gocodewalker")
+    (synopsis "Library for walking code directories")
+    (description
+     "This Go library is for walking the directories of a code repository,
+while respecting @file{.gitignore} and @file{.ignore} files.")
     (license license:expat)))
 
 (define-public go-github-com-bradfitz-gomemcache
