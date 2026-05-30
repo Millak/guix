@@ -198,39 +198,35 @@ Daemon and possibly more in the future.")
         (base32
          "0pmxp91sirqmsiy7asnjbz5ksglzbqhh11baz4v086i2j8j3rqvw"))))
     (build-system gnu-build-system)
-    (propagated-inputs
-     `(("libgpg-error-host" ,libgpg-error)))
-    (native-inputs
-     ;; Needed here for the 'gpg-error' program.
-     `(("libgpg-error-native" ,libgpg-error)
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)))
     (arguments
      ;; The '--with-gpg-error-prefix' argument is needed because otherwise
      ;; 'configure' uses 'gpg-error-config' to determine the '-L' flag, and
      ;; the 'gpg-error-config' it runs is the native one---i.e., the wrong one.
      (list
       #:configure-flags
-      #~(list "--enable-maintainer-mode" ;see README.GIT
-              (string-append "--with-libgpg-error-prefix="
-                             (assoc-ref %build-inputs "libgpg-error-host"))
-              ;; libgcrypt is transitioning from gpg-error-config to
-              ;; gpgrt-config, and in the process the
-              ;; --with-libgpg-error-config prefix defined above is
-              ;; not respected.  See <https://dev.gnupg.org/T5365>.
-              ;; TODO: transition to pkg-config instead of these scripts.
-              (string-append "ac_cv_path_GPGRT_CONFIG="
-                             (assoc-ref %build-inputs
-                                        "libgpg-error-host")
-                             "/bin/gpgrt-config")
-              ;; TODO: There is a dependency cycle with fig2dev; remove when
-              ;; fixed.
-              "--disable-doc"
-              #$@(if (%current-target-system)
-                     ;; When cross-compiling, _gcry_mpih_lshift etc are
-                     ;; undefined.
-                     `("--disable-asm")
-                     '()))
+      #~(append
+         (list "--enable-maintainer-mode")  ;see README.GIT
+         (let ((gpgrt-config (search-input-file #$(if (%current-target-system)
+                                                      #~%build-target-inputs
+                                                      #~%build-inputs)
+                                                "bin/gpgrt-config")))
+           (list (string-append "--with-libgpg-error-prefix="
+                                (dirname (dirname gpgrt-config)))
+                 ;; libgcrypt is transitioning from gpg-error-config to
+                 ;; gpgrt-config, and in the process the
+                 ;; --with-libgpg-error-config prefix defined above is
+                 ;; not respected.  See <https://dev.gnupg.org/T5365>.
+                 ;; TODO: transition to pkg-config instead of these scripts.
+                 (string-append "ac_cv_path_GPGRT_CONFIG=" gpgrt-config)))
+
+         ;; TODO: There is a dependency cycle with fig2dev; remove when
+         ;; fixed.
+         (list "--disable-doc")
+         #$@(if (%current-target-system)
+                ;; When cross-compiling, _gcry_mpih_lshift etc are
+                ;; undefined.
+                #~((list "--disable-asm"))
+                #~()))
       #:phases
       #~(modify-phases %standard-phases
           #$@(cond
@@ -247,6 +243,10 @@ Daemon and possibly more in the future.")
                         (invoke "patch" "--force" "-p1" "-i" patch-file))))))
               (else #~())))))
     (outputs '("out" "debug"))
+    (propagated-inputs (list libgpg-error))
+    (native-inputs
+     ;; Needed here for the 'gpg-error' program.
+     (list autoconf automake libgpg-error))
     (home-page "https://gnupg.org/software/libgcrypt")
     (synopsis "Cryptographic function library")
     (description
