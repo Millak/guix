@@ -9860,19 +9860,21 @@ environments and back.")
 (define-public python-pyyaml
   (package
     (name "python-pyyaml")
-    (version "6.0.2")
+    (version "6.0.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "PyYAML" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/yaml/pyyaml")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0gmwggzm0j0iprx074g5hah91y2f68sfhhldq0f8crddj7ndk16m"))))
+        (base32 "0w00gkjqx1g8c5gdm9qqznnj7ijzfjqwqgymppqw5lbw38h2hjld"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-cython
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (inputs
      (list libyaml))
     (home-page "https://pyyaml.org")
