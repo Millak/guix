@@ -10039,16 +10039,23 @@ for Python.")
 (define-public python-jinja2
   (package
     (name "python-jinja2")
-    (version "3.1.2")
+    (version "3.1.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "Jinja2" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pallets/jinja")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0lp86yadzf8dph67f6g3yxmvnhrzzi863z58jmsrx2j059q1ld9i"))))
+        (base32 "01ds59a1cync34xq7s0q6f50k9nvn2n80zh62qa2a8vnr7fz5nlv"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
-    (propagated-inputs (list python-markupsafe))
+    (native-inputs
+     (list python-flit-core
+           python-pytest
+           python-trio))
+    (propagated-inputs
+     (list python-markupsafe))
     (home-page "https://jinja.palletsprojects.com/")
     (synopsis "Python template engine")
     (description
