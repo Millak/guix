@@ -3318,6 +3318,18 @@ needs of scientific users, but can build any sort of package that uses
 CMake.")
     (license license:asl2.0)))
 
+(define-public python-scikit-build-core-bootstrap
+  (hidden-package
+   (package/inherit python-scikit-build-core
+     (arguments
+      (list #:tests? #f))
+     (native-inputs
+      (list python-hatch-vcs
+            python-hatchling))
+     (propagated-inputs
+      (list python-packaging
+            python-pathspec)))))
+
 (define-public python-scikit-fem
   (package
     (name "python-scikit-fem")
