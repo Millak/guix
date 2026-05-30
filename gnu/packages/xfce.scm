@@ -1688,7 +1688,7 @@ A plugin for the Xfce panel is also available.")
 (define-public xfce4-screensaver
   (package
     (name "xfce4-screensaver")
-    (version "4.20.1")
+    (version "4.20.2")
     (source
      (origin
        (method git-fetch)
@@ -1697,7 +1697,7 @@ A plugin for the Xfce panel is also available.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05c1qncnfq6vyil5li6kn5a9yd74r9m7nh9hfbkzh16ajiyvmlqm"))))
+        (base32 "0fc7zvxcgwy189lwa87i6fs3vl5ylvlnpka71xwr04fikbfkil6c"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags #~(list "-Dsession-manager=elogind")))
