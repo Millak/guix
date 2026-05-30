@@ -287,6 +287,13 @@ unsigned char getFileType(const Path & path)
     return DT_UNKNOWN;
 }
 
+bool isPlainFile(const Path & path)
+{
+    struct stat st = lstat(path);
+    return S_ISREG(st.st_mode)
+      && ((st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) == 0);
+}
+
 
 string readFile(int fd)
 {

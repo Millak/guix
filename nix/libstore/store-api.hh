@@ -362,6 +362,12 @@ Path makeFixedOutputPath(bool recursive,
 Path computeStorePathForText(const string & name, const string & s,
     const PathSet & references);
 
+/* Return true if PATH, whose content has the given HASH, refers to a
+   content-addressed file as added by 'addTextToStore' or 'addToStore'.  HASH
+   is interpreted as a SHA256 nar hash when RECURSIVE is true, and as a SHA256
+   file content hash when RECURSIVE is false.  */
+bool isContentAddressedPath(const Path & path, const Hash & hash,
+    const PathSet & references, bool recursive);
 
 /* Remove the temporary roots file for this process.  Any temporary
    root becomes garbage after this point unless it has been registered

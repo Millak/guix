@@ -65,6 +65,9 @@ Path readLink(const Path & path);
 
 bool isLink(const Path & path);
 
+/* Return true if the file at PATH is a regular, non-executable file.  */
+bool isPlainFile(const Path & path);
+
 /* Read the contents of a directory.  The entries `.' and `..' are
    removed. */
 struct DirEntry

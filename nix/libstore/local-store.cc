@@ -1336,6 +1336,8 @@ Path LocalStore::importPath(Source & source)
 
     restorePath(unpacked, hashAndReadSource);
 
+    Hash narHash = hashAndReadSource.hashSink.currentHash().first;
+
     unsigned int magic = readInt(hashAndReadSource);
     if (magic != EXPORT_MAGIC)
         throw Error("normalized archive cannot be imported; wrong format");
@@ -1355,21 +1357,36 @@ Path LocalStore::importPath(Source & source)
     hashAndReadSource.hashing = false;
 
     bool haveSignature = readInt(hashAndReadSource) == 1;
+    string signature;
+    if (haveSignature)
+	signature = readString(hashAndReadSource);
 
-    if (!haveSignature)
-        throw Error(std::format("imported archive of `{}' lacks a signature", dstPath));
-
-    string signature = readString(hashAndReadSource);
-    string hash2 = verifySignature(signature);
-
-    /* Note: runProgram() throws an exception if the signature
-       is invalid. */
-
-    if (printHash(hash) != hash2)
-	throw Error(
-	    "signed hash doesn't match actual contents of imported "
-	    "archive; archive could be corrupt, or someone is trying "
-	    "to import a Trojan horse");
+    try {
+        /* First, check whether there is a valid, authorized, matching
+           signature.  */
+        if (haveSignature) {
+            string hash2 = verifySignature(signature);
+            if (printHash(hash) != hash2)
+                throw AuthenticationError(
+                    "signed hash doesn't match actual contents of imported "
+                    "archive; archive could be corrupt, or someone is trying "
+                    "to import a Trojan horse");
+        }
+        else
+            throw AuthenticationError(std::format("imported archive of `{}' lacks a signature", dstPath));
+    }
+    catch (AuthenticationError &e) {
+        /* Second, check whether 'dstPath' is content-addressed--e.g., a store
+	   item created by 'addToStore' or 'addTextToStore'.  XXX: This can
+	   yield an extra 'hashFile' call and is limited to SHA256.  */
+        if (!(deriver == ""
+              && (isContentAddressedPath(dstPath, narHash, references, true)
+                  || (isPlainFile(unpacked)
+                      && isContentAddressedPath(dstPath, hashFile(htSHA256, unpacked),
+                                                references, false)))))
+            /* Rethrow. */
+            throw;
+    }
 
     /* Do the actual import. */
 

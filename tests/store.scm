@@ -30,7 +30,8 @@
   #:use-module (guix derivations)
   #:use-module ((guix modules)
                 #:select (source-module-closure))
-  #:use-module (guix serialization)
+  #:use-module ((guix serialization)
+                #:hide (store-path read-string))
   #:use-module (guix build utils)
   #:use-module ((gnu build linux-container)
                 #:select (unprivileged-user-namespace-supported?))
@@ -1456,6 +1457,179 @@ System: x86_64-linux~%"
 
 
 (test-assert "import not signed"
+  (let* ((content (random-text))
+         (name "fake-derivation")
+         (store-item (output-path "out"
+                                  (gcrypt:sha256 #vu8())
+                                  name))
+         (dump (call-with-bytevector-output-port
+                (lambda (port)
+                  (write-int 1 port)              ;start
+
+                  (write-file-tree name port      ;contents
+                                   #:file-type+size
+                                   (lambda (_)
+                                     (values 'regular
+                                             (string-length content)))
+                                   #:file-port
+                                   (lambda (_)
+                                     (open-input-string content)))
+                  (write-int #x4558494e port)     ;%export-magic
+                  (write-string store-item port)  ;store item
+                  (write-string-list '() port)    ;references
+                  (write-string "" port)          ;deriver
+                  (write-int 0 port)              ;not signed
+
+                  (write-int 0 port)))))          ;done
+
+    ;; Ensure 'import-paths' raises an exception.
+    (guard (c ((store-protocol-error? c)
+               (and (not (zero? (store-protocol-error-status c)))
+                    (string-contains (store-protocol-error-message c)
+                                     "lacks a signature"))))
+      (let* ((source   (open-bytevector-input-port dump))
+             (imported (import-paths %store source)))
+        (pk 'unsigned-imported imported)
+        #f))))
+
+(test-assert "import signed by unauthorized key"
+  (let* ((content (random-text))
+         (name "fake-derivation")
+         (store-item (output-path "out"
+                                  (gcrypt:sha256 #vu8())
+                                  name))
+         (key  (gcrypt:generate-key
+                (gcrypt:string->canonical-sexp
+                 "(genkey (ecdsa (curve Ed25519) (flags rfc6979)))")))
+         (dump (call-with-bytevector-output-port
+                (lambda (port)
+                  (write-int 1 port)              ;start
+
+                  (write-file-tree name port      ;contents
+                                   #:file-type+size
+                                   (lambda (_)
+                                     (values 'regular
+                                             (string-length content)))
+                                   #:file-port
+                                   (lambda (_)
+                                     (open-input-string content)))
+                  (write-int #x4558494e port)     ;%export-magic
+                  (write-string store-item port)  ;store item
+                  (write-string-list '() port)    ;references
+                  (write-string "" port)          ;deriver
+                  (write-int 1 port)              ;signed
+                  (write-string (gcrypt:canonical-sexp->string
+                                 (signature-sexp
+                                  (gcrypt:bytevector->hash-data
+                                   (gcrypt:sha256 #vu8(0 1 2))
+                                   #:key-type 'ecc)
+                                  (gcrypt:find-sexp-token key 'private-key)
+                                  (gcrypt:find-sexp-token key 'public-key)))
+                                port)
+
+                  (write-int 0 port)))))          ;done
+
+    ;; Ensure 'import-paths' raises an exception.
+    (guard (c ((store-protocol-error? c)
+               (and (not (zero? (store-protocol-error-status c)))
+                    (string-contains (store-protocol-error-message c)
+                                     "unauthorized public key"))))
+      (let* ((source   (open-bytevector-input-port dump))
+             (imported (import-paths %store source)))
+        (pk 'unauthorized-imported imported)
+        #f))))
+
+(test-assert "import with corrupt signature"
+  (let* ((content (random-text))
+         (name "fake-derivation")
+         (store-item (output-path "out"
+                                  (gcrypt:sha256 #vu8())
+                                  name))
+         (dump (call-with-bytevector-output-port
+                (lambda (port)
+                  (write-int 1 port)              ;start
+
+                  (write-file-tree name port      ;contents
+                                   #:file-type+size
+                                   (lambda (_)
+                                     (values 'regular
+                                             (string-length content)))
+                                   #:file-port
+                                   (lambda (_)
+                                     (open-input-string content)))
+                  (write-int #x4558494e port)     ;%export-magic
+                  (write-string store-item port)  ;store item
+                  (write-string-list '() port)    ;references
+                  (write-string "" port)          ;deriver
+                  (write-int 1 port)              ;signed
+                  (write-string (object->string '(signature broken))
+                                port)
+
+                  (write-int 0 port)))))          ;done
+
+    ;; Ensure 'import-paths' raises an exception.
+    (guard (c ((store-protocol-error? c)
+               (and (not (zero? (store-protocol-error-status c)))
+                    (string-contains (store-protocol-error-message c)
+                                     "corrupt signature"))))
+      (let* ((source   (open-bytevector-input-port dump))
+             (imported (import-paths %store source)))
+        (pk 'corrupt-signature-imported imported)
+        #f))))
+
+(test-assert "import signed by authorized key but hash doesn't match"
+  (let* ((content (random-text))
+         (name "fake-derivation")
+         (store-item (output-path "out"
+                                  (gcrypt:sha256 #vu8())
+                                  name))
+         ;; This key is known to be in the ACL by default.
+         (public-key
+           (call-with-input-file (string-append %config-directory "/signing-key.pub")
+             (compose gcrypt:string->canonical-sexp get-string-all)))
+         (private-key
+           (call-with-input-file (string-append %config-directory "/signing-key.sec")
+             (compose gcrypt:string->canonical-sexp get-string-all)))
+
+         (dump (call-with-bytevector-output-port
+                (lambda (port)
+                  (write-int 1 port)              ;start
+
+                  (write-file-tree name port      ;contents
+                                   #:file-type+size
+                                   (lambda (_)
+                                     (values 'regular
+                                             (string-length content)))
+                                   #:file-port
+                                   (lambda (_)
+                                     (open-input-string content)))
+                  (write-int #x4558494e port)     ;%export-magic
+                  (write-string store-item port)  ;store item
+                  (write-string-list '() port)    ;references
+                  (write-string "" port)          ;deriver
+                  (write-int 1 port)              ;signed
+                  (write-string (gcrypt:canonical-sexp->string
+                                 (signature-sexp
+                                  (gcrypt:bytevector->hash-data
+                                   (gcrypt:sha256 #vu8(0 1 2))
+                                   #:key-type 'rsa)
+                                  private-key
+                                  public-key))
+                                port)
+
+                  (write-int 0 port)))))          ;done
+
+    ;; Ensure 'import-paths' raises an exception.
+    (guard (c ((store-protocol-error? c)
+               (and (not (zero? (store-protocol-error-status c)))
+                    (string-contains (store-protocol-error-message c)
+                                     "hash doesn't match"))))
+      (let* ((source   (open-bytevector-input-port dump))
+             (imported (import-paths %store source)))
+        (pk 'hash-mismatch-imported imported)
+        #f))))
+
+(test-assert "import not signed but content-addressed tree"
   (let* ((text (random-text))
          (file (add-file-tree-to-store %store
                                        `("tree" directory
@@ -1474,17 +1648,45 @@ System: x86_64-linux~%"
 
                   (write-int 0 port)))))          ;done
 
-    ;; Ensure 'import-paths' raises an exception.
-    (guard (c ((store-protocol-error? c)
-               (and (not (zero? (store-protocol-error-status c)))
-                    (string-contains (store-protocol-error-message c)
-                                     "lacks a signature"))))
-      (let* ((source   (open-bytevector-input-port dump))
-             (imported (import-paths %store source)))
-        (pk 'unsigned-imported imported)
-        #f))))
+    ;; Ensure 'import-paths' completes despite the lack of signature.
+    (let ((source (open-bytevector-input-port dump)))
+      (match (import-paths %store source)
+        ((imported)
+         (string=? (pk 'imported imported) file))))))
 
-(test-assert "import signed by unauthorized key"
+(test-assert "import not signed but content-addressed regular file"
+  (let* ((name "content-addressed")
+         (content (random-text))
+         (store-item (store-path "text"
+                                 (gcrypt:sha256 (string->utf8 content))
+                                 name))
+         (dump (call-with-bytevector-output-port
+                (lambda (port)
+                  (write-int 1 port)           ;start
+                  (write-file-tree name port   ;contents
+                                   #:file-type+size
+                                   (lambda (_)
+                                     (values 'regular
+                                             (string-length content)))
+                                   #:file-port
+                                   (lambda (_)
+                                     (open-input-string content)))
+                  (write-int #x4558494e port)  ;%export-magic
+                  (write-string store-item port)
+                  (write-string-list '() port) ;references
+                  (write-string "" port)       ;deriver
+                  (write-int 0 port)           ;not signed
+                  (write-int 0 port)))))       ;done
+
+    ;; Ensure 'import-paths' completes despite the lack of signature.
+    (let ((source (open-bytevector-input-port dump)))
+      (match (import-paths %store source)
+        ((imported)
+         (and (string=? (pk 'imported imported) store-item)
+              (string=? (call-with-input-file imported get-string-all)
+                        content)))))))
+
+(test-assert "import signed by unauthorized key but content-addressed"
   (let* ((text (random-text))
          (file (add-file-tree-to-store %store
                                        `("tree" directory
@@ -1514,15 +1716,78 @@ System: x86_64-linux~%"
 
                   (write-int 0 port)))))          ;done
 
-    ;; Ensure 'import-paths' raises an exception.
-    (guard (c ((store-protocol-error? c)
-               (and (not (zero? (store-protocol-error-status c)))
-                    (string-contains (store-protocol-error-message c)
-                                     "unauthorized public key"))))
-      (let* ((source   (open-bytevector-input-port dump))
-             (imported (import-paths %store source)))
-        (pk 'unauthorized-imported imported)
-        #f))))
+    ;; Ensure 'import-paths' succeeds despite the unauthorized signature.
+    (let ((source (open-bytevector-input-port dump)))
+      (match (import-paths %store source)
+        ((imported)
+         (string=? imported file))))))
+
+(test-assert "import with corrupt signature but content-addressed"
+  (let* ((text (random-text))
+         (file (add-file-tree-to-store %store
+                                       `("tree" directory
+                                         ("text" regular (data ,text))
+                                         ("link" symlink "text"))))
+         (dump (call-with-bytevector-output-port
+                (lambda (port)
+                  (write-int 1 port)              ;start
+
+                  (write-file file port)          ;contents
+                  (write-int #x4558494e port)     ;%export-magic
+                  (write-string file port)        ;store item
+                  (write-string-list '() port)    ;references
+                  (write-string "" port)          ;deriver
+                  (write-int 1 port)              ;signed
+                  (write-string (object->string '(signature broken))
+                                port)
+
+                  (write-int 0 port)))))          ;done
+
+    ;; Ensure 'import-paths' succeeds despite the corrupt signature.
+    (let ((source (open-bytevector-input-port dump)))
+      (match (import-paths %store source)
+        ((imported)
+         (string=? imported file))))))
+
+(test-assert "import signed by authorized key, hash doesn't match, but content-addressed"
+  (let* ((text (random-text))
+         (file (add-file-tree-to-store %store
+                                       `("tree" directory
+                                         ("text" regular (data ,text))
+                                         ("link" symlink "text"))))
+         ;; This key is known to be in the ACL by default.
+         (public-key
+           (call-with-input-file (string-append %config-directory "/signing-key.pub")
+             (compose gcrypt:string->canonical-sexp get-string-all)))
+         (private-key
+           (call-with-input-file (string-append %config-directory "/signing-key.sec")
+             (compose gcrypt:string->canonical-sexp get-string-all)))
+         (dump (call-with-bytevector-output-port
+                (lambda (port)
+                  (write-int 1 port)              ;start
+
+                  (write-file file port)          ;contents
+                  (write-int #x4558494e port)     ;%export-magic
+                  (write-string file port)        ;store item
+                  (write-string-list '() port)    ;references
+                  (write-string "" port)          ;deriver
+                  (write-int 1 port)              ;signed
+                  (write-string (gcrypt:canonical-sexp->string
+                                 (signature-sexp
+                                  (gcrypt:bytevector->hash-data
+                                   (gcrypt:sha256 #vu8(0 1 2))
+                                   #:key-type 'rsa)
+                                  private-key
+                                  public-key))
+                                port)
+
+                  (write-int 0 port)))))          ;done
+
+    ;; Ensure 'import-paths' succeeds despite the hash mismatch.
+    (let ((source (open-bytevector-input-port dump)))
+      (match (import-paths %store source)
+        ((imported)
+         (string=? imported file))))))
 
 (test-assert "import corrupt path"
   (let* ((text (random-text))

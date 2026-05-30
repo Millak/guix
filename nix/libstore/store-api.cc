@@ -258,6 +258,29 @@ Path computeStorePathForText(const string & name, const string & s,
     return makeStorePath(type, hash, name);
 }
 
+bool isContentAddressedPath(const Path & path, const Hash & hash,
+			    const PathSet & references, bool recursive)
+{
+    /* Check whether PATH corresponds to something introduced by 'addToStore'
+       or by 'addTextToStore'.  For simplicity, anything with a hash other
+       than SHA256 is omitted: this returns false even though they are
+       content-addressed as well.  */
+    string name = storePathToName(path);
+    if (recursive) {
+      /* HASH is interpreted as the nar hash.  This can only come from
+	 'addToStore'.  */
+      return references.empty() &&
+	path == makeFixedOutputPath(true, htSHA256, hash, name);
+    } else {
+      /* HASH is interpreted as the content hash.  This can come from
+	 'addTextToStore' ("text" type, possibly with references) or from
+	 'addToStore' ("output:out" type).  */
+      string type = textTypeWithReferences(references);
+      return path == makeStorePath(type, hash, name)
+	|| (references.empty() &&
+	    path == makeFixedOutputPath(false, htSHA256, hash, name));
+    }
+}
 
 /* Return a string accepted by decodeValidPathInfo() that
    registers the specified paths as valid.  Note: it's the
