@@ -205,8 +205,8 @@ standard operating system features.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://git.code.sf.net/p/motif/code")
-               (commit commit)))
+                (url "https://git.code.sf.net/p/motif/code")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
@@ -228,11 +228,12 @@ standard operating system features.")
              pkg-config))
       (home-page "https://motif.ics.com/motif")
       (synopsis "Toolkit for the X window system")
-      (description "Motif is a standard graphical user interface, (as defined
-by the IEEE 1295 specification), used on more than 200 hardware and software
-platforms.  It provides application developers, end users, and system vendors
-with a widely used environment for standardizing application presentation on a
-wide range of platforms.")
+      (description
+       "Motif is a standard graphical user interface (as defined by the IEEE
+1295 specification), used on more than 200 hardware and software platforms.
+It provides application developers, end users, and system vendors with a
+widely used environment for standardizing application presentation on a wide
+range of platforms.")
       (license license:lgpl2.1+))))
 
 (define-public nuklear
