@@ -1621,7 +1621,7 @@ of data to either CD/DVD/BD.")
 (define-public mousepad
   (package
     (name "mousepad")
-    (version "0.6.5")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -1630,13 +1630,12 @@ of data to either CD/DVD/BD.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yp0y7bkc9395r9ay70qvrzxkv466w55v05l132phlhair0jjb77"))))
-    (build-system gnu-build-system)
+        (base32 "1k50zm8b2802bc2a902c4whv3nb4zqx5v663y2mphqyzllrg70yf"))))
+    (build-system meson-build-system)
     (arguments
-     '(#:configure-flags '("--enable-maintainer-mode" ;for mousepad-marshal.c
-                           ;; Use the GSettings keyfile backend rather than
-                           ;; DConf.
-                           "--enable-keyfile-settings")
+     '(#:configure-flags
+       ;; Use the GSettings keyfile backend rather than DConf.
+       '("-Dkeyfile-settings=true")
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-program
@@ -1648,7 +1647,7 @@ of data to either CD/DVD/BD.")
                 `("XDG_DATA_DIRS" ":" prefix (,(string-append gtksourceview
                                                               "/share"))))))))))
     (native-inputs
-     (list xfce4-dev-tools))
+     (list gettext-minimal `(,glib "bin") pkg-config))
     (inputs
      (list bash-minimal gspell gtksourceview-4 libxfce4ui xfconf))
     (home-page "https://docs.xfce.org/apps/mousepad/")
