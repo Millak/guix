@@ -236,18 +236,25 @@ Path makeFixedOutputPath(bool recursive,
 }
 
 
-Path computeStorePathForText(const string & name, const string & s,
-    const PathSet & references)
+/* Return the 'type' part of a text store item with the given REFERENCES.  */
+static string textTypeWithReferences(const PathSet & references)
 {
-    Hash hash = hashString(htSHA256, s);
     /* Stuff the references (if any) into the type.  This is a bit
-       hacky, but we can't put them in `s' since that would be
+       hacky, but we can't put them in the file content since that would be
        ambiguous. */
     string type = "text";
     for (const auto& i : references) {
         type += ":";
         type += i;
     }
+    return type;
+}
+
+Path computeStorePathForText(const string & name, const string & s,
+    const PathSet & references)
+{
+    Hash hash = hashString(htSHA256, s);
+    string type = textTypeWithReferences(references);
     return makeStorePath(type, hash, name);
 }
 
