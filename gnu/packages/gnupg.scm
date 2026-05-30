@@ -105,18 +105,32 @@
     (version "1.61")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnupg/libgpg-error/libgpg-error-"
-                          version ".tar.bz2"))
-      (sha256
-       (base32
-        "14sw73317735xq991sz0x5jqkr12y6572aw3mbwg8m635czl31bs"))))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://dev.gnupg.org/source/libgpg-error")
+              (commit (string-append "libgpg-error-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "00nhhyfhljx60xzjmp0lhz7b1zx7psx6hfs138y5q7r2jj2z8h1g"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "--enable-install-gpg-error-config")
+      #:configure-flags #~(list "--enable-install-gpg-error-config"
+                                ;; See README.GIT.
+                                "--enable-maintainer-mode")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'create-version
+            (lambda _
+              (call-with-output-file "doc/version.texi"
+                (lambda (port)
+                  (format port "\
+@set UPDATED
+@set EDITION ~a
+@set VERSION ~a"
+                          #$version
+                          #$version)))))
           #$@(cond
               ((%current-target-system)
                ;; If this is left out, some generated header
@@ -159,8 +173,8 @@
                         (("(^| )main *\\(.*" all)
                          (string-append all "{\n  exit (77);//")))))))
               (else #~())))))
-    (native-inputs (list gettext-minimal))
-    (home-page "https://gnupg.org")
+    (native-inputs (list autoconf automake gettext-minimal texinfo))
+    (home-page "https://gnupg.org/software/libgpg-error")
     (synopsis "Library of error values for GnuPG components")
     (description
      "Libgpg-error is a small library that defines common error values
