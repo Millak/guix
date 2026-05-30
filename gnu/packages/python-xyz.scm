@@ -17495,21 +17495,20 @@ complexity of Python source code.")
 (define-public python-flake8
   (package
     (name "python-flake8")
-    (version "7.1.1")
+    (version "7.3.0")
     (source
      (origin
-       (method git-fetch)   ; no tests data in PyPi package
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/pycqa/flake8")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qbj2m1ljyvpnncnkbm1cscy726c1if4n2c9ysfpmd2zm88rj87a"))))
+        (base32 "0dva22djb3pdrizghvs5r1k7vr1j3khs0k9z8y6dz4ga50dli4bm"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-mccabe
            python-pycodestyle
