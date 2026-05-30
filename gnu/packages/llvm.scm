@@ -2046,29 +2046,42 @@ generator targetting AMD hardware.")
 (define-public python-llvmlite
   (package
     (name "python-llvmlite")
-    (version "0.45.0")
+    (version "0.47.0")
     (source
      (origin
+       ;; XXX: Switching to git require versioneer from python-xyz.
        (method url-fetch)
        (uri (pypi-uri "llvmlite" version))
        (sha256
         (base32
-         "0dl3m9i4hsph77pmnsy47943r7rywy6syy5bsy5ifjd91p9brc6f"))))
+         "1k1wqdq9as876whzkf7hvy7lyi3yhl74nk8qj98fjx7cd3liq0v2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "-m" "llvmlite.tests")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-test
+            (lambda _
+              (substitute* "llvmlite/tests/test_binding.py"
+                ;; This test tries to ensure all dependencies are expected by
+                ;; parsing output of objdump with regex which might not
+                ;; matching Guix variants.
+                (("test_linux" all)
+                 (string-append "__off_" all)))))
           (add-before 'build 'set-compiler/linker-flags
             (lambda _
               (let ((llvm #$(this-package-input "llvm")))
                 ;; Refer to ffi/Makefile.linux.
                 (setenv "CPPFLAGS" "-fPIC")
                 (setenv "LDFLAGS" (string-append "-Wl,-rpath="
-                                                 llvm "/lib"))))))))
+                                                 llvm "/lib")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "LLVMLITE_DIST_TEST" "1"))))))
     (native-inputs
      (list cmake-minimal
-           python-pytest
            python-setuptools))
     (inputs
      (list llvm-20))
@@ -2076,7 +2089,7 @@ generator targetting AMD hardware.")
     (synopsis "Wrapper around basic LLVM functionality")
     (description
      "This package provides a Python binding to LLVM for use in Numba.")
-    (license license:bsd-3)))
+    (license (list license:asl2.0 license:bsd-2))))
 
 (define-public (clang-python-bindings clang)
   "Return a package for the Python bindings of CLANG."
