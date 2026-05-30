@@ -24196,31 +24196,27 @@ pytest-fixtures-style dependency injection.")
 (define-public python-binaryornot
   (package
     (name "python-binaryornot")
-    (version "0.4.4")
+    (version "0.6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "binaryornot" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/audreyr/binaryornot")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0qc006986rb6bcbmiymwgcl1mns2jphr1j7sr7nk41nlr7gh359m"))))
+        (base32 "008r45bbhax8flcc0cp5fm2p9niclf0kg773s2y2p1x1j5qjx1jb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-backend #~'unittest
-      #:test-flags #~(list "discover" "tests")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-tests
-            (lambda _
-              ;; TypeError: binary() got an unexpected keyword argument
-              ;; 'average_size'.
-              (substitute* "tests/test_check.py"
-                (("average_size=512") "")))))))
+      #:test-flags
+      ;; FileNotFoundError: [Errno 2] No such file or directory: 'uv'
+      #~(list (string-append "--deselect=tests/test_sdist.py"
+                             "::TestSdistContents"
+                             "::test_sdist_includes_pyc_fixtures"))))
     (native-inputs
-     (list python-hypothesis
-           python-setuptools))
-    (propagated-inputs
-     (list python-chardet))
+     (list python-hatchling
+           python-pytest))
     (home-page "https://github.com/audreyr/binaryornot")
     (synopsis "Package to check if a file is binary or text")
     (description "Ultra-lightweight pure Python package to check if a file is
