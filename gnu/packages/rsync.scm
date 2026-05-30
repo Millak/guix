@@ -5,6 +5,7 @@
 ;;; Copyright © 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
+;;; Copyright © 2026 Ian Eure <ian@retrospec.tv>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,9 +34,11 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system gnu))
+  #:use-module (guix build-system gnu)
+  #:use-module (guix utils))
 
 (define-public rsync
   (package
@@ -101,3 +104,47 @@ file, without requiring the old and new versions to both be present at the
 sending end.  The library uses a \"streaming\" design similar to that of zlib
 with the aim of allowing it to be embedded into many different applications.")
    (license license:lgpl2.1+)))
+
+(define-public openrsync
+  (let ((base-version "0.5.0")
+        (revision "0")
+        (commit "a257c0f495af2b5ee6b41efc6724850a445f87ed"))
+    (package
+      (name "openrsync")
+      (version (git-version base-version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kristapsdz/openrsync/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1jfz10psi1qw842hwip7p01sgd4ns9n53amdshzqy5brqyinbkd5"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f ;No tests.
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-hurd
+              (lambda _
+                (substitute* "configure"
+                  (("defined\\(__linux__\\)" all)
+                   (string-append all "|| defined(__GNU__)")))))
+            (replace 'configure
+              ;; openrsync has a non-autotools ./configure script which
+              ;; errors under the gnu-build-system's 'configure phase.
+              (lambda _
+                (setenv "DESTDIR" #$output)
+                (setenv "PREFIX" "")
+                (setenv "CFLAGS" "-O2")
+                (setenv "CC" #$(cc-for-target))
+                (invoke "./configure" "PREFIX=\"\""))))))
+      (synopsis "OpenBSD implementation of @command{rsync}")
+      (description
+       "Openrsync is an alternate implementation of @command{rsync},
+originally written for OpenBSD and ported to Linux and other Unix-like
+systems.  It supports a subset of @command{rsync}'s options.")
+      (license license:isc)
+      (home-page "https://github.com/kristapsdz/openrsync"))))
