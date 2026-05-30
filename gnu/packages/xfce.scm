@@ -1265,7 +1265,7 @@ features playback of local media files, DVD/CD and live streams.")
 (define-public xfce4-terminal
   (package
     (name "xfce4-terminal")
-    (version "1.1.5")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -1275,15 +1275,12 @@ features playback of local media files, DVD/CD and live streams.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11xs71vhz1anyyd41fzm2rz99w6pmv1wszyyjfz8xfg6932ypmd8"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:configure-flags
-           #~(list "--enable-maintainer-mode"))) ;for xfce4-terminal.1
+        (base32 "1v00niz49q9f9y84qfhbh3ny3nr91bdg7ci2x89v7ckxkgv72ffv"))))
+    (build-system meson-build-system)
     (native-inputs
-     (list docbook-xsl libxslt xfce4-dev-tools))
+     (list docbook-xsl gettext-minimal `(,glib "bin") libxslt pkg-config))
     (inputs
-     (list libxfce4ui vte/gtk+-3))
+     (list gtk-layer-shell libxfce4ui vte/gtk+-3))
     (home-page "https://docs.xfce.org/apps/xfce4-terminal/")
     (synopsis "Xfce terminal emulator")
     (description
