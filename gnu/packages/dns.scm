@@ -1338,10 +1338,11 @@ local networks.")
   ;; so its contents will change over time.  If you update this commit, please
   ;; make sure that the new commit refers to a list which is identical to the
   ;; officially published list available from the URL above.
-  (let ((commit "d2d3e2e36a8f2b68c4f09e8c87f4f1d685cbf5e7"))
+  (let ((commit "e596036bde712ffb073b948eb8b884c72c94c6e1")
+        (revision "3"))
     (package
       (name "public-suffix-list")
-      (version (git-version "0" "2" commit))
+      (version (git-version "0.0.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1350,7 +1351,7 @@ local networks.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1f6rydx4hdd6lja376f4sdp7iv64vqlmhmnlkg0rb17279dc9483"))))
+                  "1865xbf78ry69wqrds2wxhii3409b5ky2jshkn9cymknfv0vplba"))))
       (build-system copy-build-system)
       (arguments
        (list #:install-plan
