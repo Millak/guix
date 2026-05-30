@@ -12051,47 +12051,84 @@ mp3, Ogg Vorbis and FLAC")
 (define-public soundconverter
   (package
     (name "soundconverter")
-    (version "3.0.2")
+    (version "4.1.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://launchpad.net/soundconverter/trunk/"
-                           version "/+download/"
-                           "soundconverter-" version ".tar.xz"))
-
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kassoulet/soundconverter")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1jv8m82hi23ilrgdznlc1jhp2jm8bw1yrw0chh3qw2l0sixvkl11"))))
-    (build-system glib-or-gtk-build-system)
+        (base32 "1b0vh86fl4ghng5786vh94nm4p6hffrnch1kwcx2k5gdnsvaja0k"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list
-      #:imported-modules (append %glib-or-gtk-build-system-modules
-                                 %pyproject-build-system-modules)
-      #:modules '((guix build glib-or-gtk-build-system)
-                  (guix build utils)
-                  ((guix build pyproject-build-system) #:prefix py:))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'wrap-soundconverter-for-python
-            (assoc-ref py:%standard-phases 'wrap))
-          (add-after 'install 'wrap-soundconverter
-            (lambda _
-              (let ((gi-typelib-path   (getenv "GI_TYPELIB_PATH"))
-                    (gst-plugin-path   (getenv "GST_PLUGIN_SYSTEM_PATH")))
-                (wrap-program (string-append #$output "/bin/soundconverter")
-                  `("GI_TYPELIB_PATH"        ":" prefix (,gi-typelib-path))
-                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
-                    (,gst-plugin-path)))))))))
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "tests/test.py")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'disable-failing-test
+                 (lambda _
+                   (substitute* "tests/testcases/discoverer.py"
+                     (("test_not_audio")
+                      "disable_test_not_audio"))))
+               (add-after 'install 'install-data
+                 (lambda _
+                   (mkdir-p (string-append #$output
+                                           "/lib/python3.12/site-packages/data"))
+                   (install-file "data/soundconverter.glade"
+                                 (string-append #$output
+                                                "/lib/python3.12/site-packages/data/"))
+                   (install-file "data/soundconverter-logo.svg"
+                                 (string-append #$output
+                                                "/lib/python3.12/site-packages/data/"))))
+               (add-before 'check 'pre-tests
+                 (lambda _
+                   ;; To fix "Settings schema 'org.soundconverter' is not
+                   ;; installed" error.
+                   (setenv "GSETTINGS_SCHEMA_DIR"
+                           (string-append #$output
+                                          "/share/glib-2.0/schemas/"))
+
+                   ;; A test using GIO expects some sub-directories in the
+                   ;; user home directory to be writable.
+                   (setenv "HOME" (getcwd))
+
+                   ;; Tests require a running X server.
+                   (system "Xvfb :1 &")
+                   (setenv "DISPLAY" ":1")))
+               (add-after 'install 'wrap-soundconverter
+                 (lambda _
+                   (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH"))
+                         (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                     (wrap-program (string-append #$output
+                                                  "/bin/soundconverter")
+                       `("GI_TYPELIB_PATH"        ":" prefix (,gi-typelib-path))
+                       `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
+                         (,gst-plugin-path))
+                       `("GSETTINGS_SCHEMA_DIR" =
+                         (,(string-append #$output
+                                          "/share/glib-2.0/schemas"))))))))))
     (native-inputs
-     (list intltool
+     (list (list glib "bin")
+           intltool
            pkg-config
-           (list glib "bin")))
+           python-distutils-extra
+           python-pytest
+           python-setuptools
+           xorg-server-for-tests))
     (inputs
      (list bash-minimal
+           gsettings-desktop-schemas
+           gst-libav
+           gst-plugins-bad
+           gst-plugins-base
+           gst-plugins-good
+           gst-plugins-ugly
+           gstreamer
            gtk+
            python
-           python-pygobject-3.50
-           gstreamer
-           gst-plugins-base))
+           python-pygobject-3.50))
     (home-page "https://soundconverter.org/")
     (synopsis "Convert between audio formats with a graphical interface")
     (description
