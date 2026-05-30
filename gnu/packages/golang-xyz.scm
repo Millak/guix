@@ -4181,6 +4181,32 @@ Supported Barcode Types:
 while respecting @file{.gitignore} and @file{.ignore} files.")
     (license license:expat)))
 
+(define-public go-github-com-boyter-simplecache
+  (package
+    (name "go-github-com-boyter-simplecache")
+    (version "0.0.0-20250113230110-8a4c9201822a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/boyter/simplecache")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05jwwm2gzqvnhyyqy26zhrryyw7f8n8198ck32yjclkg8g5pjsfc"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "github.com/boyter/simplecache"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/boyter/simplecache")
+    (synopsis "Simple thread safe cache implementation using Go generics")
+    (description
+     "This cache implementation is a map with some expiration abilities
+over it, for different types with different caching needs, such as
+a small group of items that should never expire, items that should exist
+in cache forever only being removed when the cache is full.
+Most operations should be o(1) as well as all being thread safe.")
+    (license license:expat)))
+
 (define-public go-github-com-bradfitz-gomemcache
   (package
     (name "go-github-com-bradfitz-gomemcache")
