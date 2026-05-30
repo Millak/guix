@@ -24299,32 +24299,36 @@ natural language processing libraries.")
 (define-public python-pymongo
   (package
     (name "python-pymongo")
-    (version "4.16.0")
+    (version "4.17.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pymongo" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mongodb/mongo-python-driver")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0330bj24xl0yq19p330p28x3i3x2jzbn5zkjz2k5iqpncm841a4b"))))
+        (base32 "0ybp4klx2advd0aka4d0915vwvydid3cil16x497amc4wiigndhx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1274 passed, 6231 skipped, 1441 deselected, 2 warnings
+      ;; tests: 1354 passed, 6514 skipped, 838 deselected, 38 subtests passed
       #:test-flags
-      ;; Tests need access to /etc/resolve.conf.
-      #~(list "--ignore=test/asynchronous/test_srv_polling.py"
-              "--ignore=test/test_srv_polling.py"
-              "-k" (string-join
-                    ;; Tests need access to /etc/resolve.conf
-                    (list "not test_connection_timeout_ms_propagates_to_DNS_resolver"
-                          "test_detected_environment_warning"
-                          ;; XXX: Tests fail with assertion is not equal.
-                          "test_test_uri_options_srv-options_SRV_URI_with_custom_srvServiceName"
-                          "test_test_uri_options_srv-options_SRV_URI_with_invalid_type_for_srvMaxHosts"
-                          "test_test_uri_options_srv-options_SRV_URI_with_negative_integer_for_srvMaxHosts"
-                          "test_test_uri_options_srv-options_SRV_URI_with_positive_srvMaxHosts_and_loadBalanced"
-                          "test_test_uri_options_srv-options_SRV_URI_with_srvMaxHosts")
-                    " and not "))))
+      #~(list
+         ;; pytest.PytestDeprecationWarning: Overriding the
+         ;; "event_loop_policy" fixture is deprecated and will be removed in a
+         ;; future version of pytest-asyncio. Use the
+         ;; "pytest_asyncio_loop_factories" hook to customize event loop
+         ;; creation.
+         "-W" "ignore::DeprecationWarning"
+         ;; Run only default unit tests, no benchmark and networking tests.
+         "-m" "default_async or default"
+         ;; Tests need access to /etc/resolve.conf.
+         "--ignore=test/asynchronous/test_srv_polling.py"
+         "--ignore=test/test_client.py"
+         "--ignore=test/test_srv_polling.py"
+         ;; XXX: Tests fail with assertion is not equal.
+         "-k" "not test_test_uri_options_srv-options_SRV_URI")))
     (native-inputs
      (list python-hatch-requirements-txt
            python-hatchling
@@ -24332,11 +24336,16 @@ natural language processing libraries.")
            python-pytest-asyncio
            python-setuptools))
     (propagated-inputs
-     (list python-certifi
-           python-dnspython))
+     (list python-dnspython))
     (home-page "https://github.com/mongodb/mongo-python-driver")
     (synopsis "Python driver for MongoDB")
-    (description "Python driver for MongoDB.")
+    (description
+     "The PyMongo distribution contains tools for interacting with MongoDB
+database from Python.  The @code{bson} package is an implementation of the
+@url{http://bsonspec.org/, BSON format} for Python.  The @code{pymongo}
+package is a native Python driver for MongoDB, offering both synchronous and
+asynchronous APIs.  The @code{gridfs} package is a gridfs implementation on
+top of @code{pymongo}.")
     (license license:asl2.0)))
 
 (define-public python-py-consul
