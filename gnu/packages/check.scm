@@ -2473,36 +2473,24 @@ executed.")
 (define-public python-pytest-asyncio
   (package
     (name "python-pytest-asyncio")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pytest-dev/pytest-asyncio")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pytest-dev/pytest-asyncio")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02ibw934ppy66vkjc9ihwc5zp66pbzcsqg0irf7gnxpi9ck8qqii"))))
+        (base32 "08p5708g0mls4pwchbwd7rgzjyz50998h34rq19kzf62244wpr1j"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 233 passed, 7 deselected
-      #:test-flags
-      #~(list "-k" (string-join
-                    ;; XXX: Not clear why these tests fail:
-                    (list "not test_event_loop_fixture_asyncgen_error"
-                          "test_event_loop_fixture_handles_unclosed_async_gen"
-                          (string-append "test_standalone_test_does_not_"
-                                         "trigger_warning_about_no_current_"
-                                         "event_loop_being_set")
-                          "test_warns_when_scope_argument_is_present")
-                    " and not "))))
+    ;; tests: 292 passed, 7 deselected
     (native-inputs
      (list python-setuptools
            python-setuptools-scm))
     (propagated-inputs
      (list python-pytest
-           python-typing-extensions))
+           python-typing-extensions))   ;Python version < 3.13
     (home-page "https://github.com/pytest-dev/pytest-asyncio")
     (synopsis "Pytest support for asyncio")
     (description "Python asyncio code is usually written in the form of
