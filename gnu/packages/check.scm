@@ -2965,37 +2965,38 @@ each of the environments.")
 (define-public python-pylint
   (package
     (name "python-pylint")
-    (version "3.3.8")
+    (version "4.0.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/PyCQA/pylint")
-             (commit (string-append "v" version))))
+              (url "https://github.com/PyCQA/pylint")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h6ynaxsgb5bidjkbrfwb05nc7dw9paxc0bjgkqaxrkpqfm39baj"))))
+        (base32 "0d66brpy06l5hhzx2z9im771wjxqn8lha6qxpw0rwkvv2kfigjj4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1993 passed, 257 skipped, 5 xfailed
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
-              "-W" "ignore::DeprecationWarning"
               "--ignore=tests/benchmark"
-               ;; The unused but collected 'primer'-related test files require
-               ;; the extraneous 'git' Python module; ignore them.
+              ;; The unused but collected 'primer'-related test files require
+              ;; the extraneous 'git' Python module; ignore them.
               "--ignore=tests/testutils/_primer/test_package_to_lint.py"
               "--ignore=tests/testutils/_primer/test_primer.py"
               "-k" (string-join
                     ;; Test failing with multiple assertion errors.
-                    (list "not test_functional"
-                          "test_functional_relation_extraction")
+                    (list "not test_functional[missing_timeout]"
+                          "test_functional[wrong_import_order]"
+                          "test_progress_reporting")
                     " and not "))
-     #:phases
-       #~(modify-phases %standard-phases
-         (add-before 'check 'set-home
-           (lambda _
-               (setenv "HOME" "/tmp"))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-pytest
            python-pytest-timeout
