@@ -1458,7 +1458,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
 (define-public ristretto
   (package
     (name "ristretto")
-    (version "0.13.4")
+    (version "0.14.0")
     (source
      (origin
        (method git-fetch)
@@ -1467,13 +1467,10 @@ inhibit interface which allows applications to prevent automatic sleep.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0q93qkpqgf39cg5fn5nc74qkx3dy5dr9ywjbldjyq42ysxjn4jaz"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:configure-flags
-           #~(list "--enable-maintainer-mode"))) ;for main_window_ui.h, etc.
+        (base32 "06llbzs5iza4qsj05znyn0h2nqrz7fkqdd9iyh2y8a45zb8nd6fw"))))
+    (build-system meson-build-system)
     (native-inputs
-     (list xfce4-dev-tools))
+     (list gettext-minimal `(,glib "bin") pkg-config))
     (inputs
      (list exo gtk+ libexif libxfce4ui tumbler))
     (home-page "https://docs.xfce.org/apps/ristretto/start")
