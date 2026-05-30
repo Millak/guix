@@ -1323,7 +1323,7 @@ Path LocalStore::createTempDirInStore()
 }
 
 
-Path LocalStore::importPath(bool requireSignature, Source & source)
+Path LocalStore::importPath(Source & source)
 {
     HashAndReadSource hashAndReadSource(source);
 
@@ -1356,25 +1356,20 @@ Path LocalStore::importPath(bool requireSignature, Source & source)
 
     bool haveSignature = readInt(hashAndReadSource) == 1;
 
-    if (requireSignature && !haveSignature)
+    if (!haveSignature)
         throw Error(std::format("imported archive of `{}' lacks a signature", dstPath));
 
-    if (haveSignature) {
-        string signature = readString(hashAndReadSource);
+    string signature = readString(hashAndReadSource);
+    string hash2 = verifySignature(signature);
 
-        if (requireSignature) {
-	    string hash2 = verifySignature(signature);
+    /* Note: runProgram() throws an exception if the signature
+       is invalid. */
 
-            /* Note: runProgram() throws an exception if the signature
-               is invalid. */
-
-            if (printHash(hash) != hash2)
-                throw Error(
-                    "signed hash doesn't match actual contents of imported "
-                    "archive; archive could be corrupt, or someone is trying "
-                    "to import a Trojan horse");
-        }
-    }
+    if (printHash(hash) != hash2)
+	throw Error(
+	    "signed hash doesn't match actual contents of imported "
+	    "archive; archive could be corrupt, or someone is trying "
+	    "to import a Trojan horse");
 
     /* Do the actual import. */
 
@@ -1431,7 +1426,7 @@ Paths LocalStore::importPaths(Source & source)
         unsigned long long n = readLongLong(source);
         if (n == 0) break;
         if (n != 1) throw Error("input doesn't look like something created by `nix-store --export'");
-        res.push_back(importPath(true, source));
+        res.push_back(importPath(source));
     }
     return res;
 }

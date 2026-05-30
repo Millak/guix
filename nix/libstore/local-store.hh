@@ -257,7 +257,7 @@ private:
 
     Path createTempDirInStore();
 
-    Path importPath(bool requireSignature, Source & source);
+    Path importPath(Source & source);
 
     void checkDerivationOutputs(const Path & drvPath, const Derivation & drv);
 
