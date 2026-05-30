@@ -13159,55 +13159,59 @@ time in a visual fashion.")
 (define-public sdlpop
   (package
     (name "sdlpop")
-    (version "1.22")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/NagyD/SDLPoP")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1yy5r1r0hv0xggk8qd8bwk2zy7abpv89nikq4flqgi53fc5q9xl7"))))
-    (build-system gnu-build-system)
+    (version "1.24-rc")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/NagyD/SDLPoP")
+             (commit "v1.24-RC")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16idniqabzwf8kc30mqvkdfvr1kqy26bja3af2c105mhxw3jx77f"))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests provided
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'prepare-build
-           ;; Set correct environment for SDL.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CPATH"
-                     (string-append (assoc-ref inputs "sdl")
-                                    "/include/SDL2:"
-                                    (or (getenv "CPATH") "")))))
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir "src")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (opt (string-append out "/opt/sdlpop"))
-                    (app (string-append out "/usr/share/applications"))
-                    (template "src/SDLPoP.desktop.template"))
-               (chdir "..")
-               (install-file "prince" bin)
-               (substitute* template (("\\$ROOT") out))
-               (substitute* "src/seg009.c"
-                 (("g_argv[0]") (string-append "\"" out "\"")))
-               (install-file template app)
-               (rename-file (string-append app "/SDLPoP.desktop.template")
-                            (string-append app "/SDLPoP.desktop"))
-               (install-file "SDLPoP.ini" opt)
-               (copy-recursively "data" (string-append bin "/data"))
-               (copy-recursively "doc" opt)
-               (copy-recursively "mods" opt)))))))
+     (list
+      #:tests? #f ;no tests provided
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-data-path
+            (lambda _
+              (chdir "src")
+              (substitute* "config.h"
+                (("(#define SHARE_PATH ).*" all first)
+                 (string-append first "\""
+                                #$output "/share\"\n")))))
+          (replace 'install
+            (lambda _
+              (let* ((out #$output)
+                     (bin (string-append out "/bin"))
+                     (opt (string-append out "/share/SDLPoP"))
+                     (app (string-append out "/share/applications"))
+                     (template "src/SDLPoP.desktop.template"))
+                (chdir "..")
+                (for-each mkdir-p
+                          (list bin opt app))
+                (install-file "prince" opt)
+                (symlink (string-append opt "/prince")
+                         (string-append bin "/prince"))
+                (substitute* template
+                  (("\\$ROOT")
+                   out)
+                  (("(Exec=).*" all first)
+                   (string-append first opt "/prince\n"))
+                  (("(Icon=).*" all first)
+                   (string-append first opt "/data/icon.png\n"))
+                  (("(Path=).*" all first)
+                   (string-append first opt "\n")))
+                (copy-file template (string-append app "/SDLPoP.desktop"))
+                (install-file "SDLPoP.ini" opt)
+                (copy-recursively "data"
+                                  (string-append opt "/data"))
+                (copy-recursively "doc" opt)
+                (copy-recursively "mods" opt)))))))
     (native-inputs (list pkg-config))
-    (inputs `(("sdl" ,(sdl-union (list sdl2
-                                       sdl2-image
-                                       sdl2-mixer)))))
+    (inputs (list (sdl-union (list sdl2 sdl2-image))))
     (synopsis "Port of Prince of Persia game")
     (description "This package provides port of Prince of Persia, based on the
 disassembly of the DOS version, extended with new features.")
