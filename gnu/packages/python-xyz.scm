@@ -28009,58 +28009,6 @@ commit, but it also includes some other useful statistics.")
 binding is created using the standard @code{ctypes} library.")
     (license license:isc)))
 
-(define-public pybind11-2
-  (package
-    (name "pybind11")
-    (version "2.13.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pybind/pybind11")
-                    (commit (string-append "v" version))))
-              (sha256
-               (base32
-                "1dbnki0pnky39kr04afd9ks597bzjc530zbk33jjss53nfvdvlj8"))
-              (file-name (git-file-name name version))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(list (string-append "-DCATCH_INCLUDE_DIR="
-                             (assoc-ref %build-inputs "catch2")
-                             "/include/catch"))
-      #:modules '((guix build cmake-build-system)
-                  ((guix build gnu-build-system) #:prefix gnu:)
-                  (guix build utils))
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda args
-              (apply (assoc-ref gnu:%standard-phases 'check) args)))
-          (add-after 'install 'install-python
-            (lambda _
-              (with-directory-excursion "../source"
-                (setenv "PYBIND11_USE_CMAKE" "yes")
-                (invoke "python" "setup.py" "install"
-                        "--single-version-externally-managed"
-                        "--root=/"
-                        (string-append "--prefix=" #$output))))))))
-    (native-inputs
-     (list catch2-1
-           eigen
-           python-pytest
-           python-setuptools
-           python-wrapper))
-    (home-page "https://github.com/pybind/pybind11/")
-    (synopsis "Seamless operability between C++11 and Python")
-    (description
-     "@code{pybind11} is a lightweight header-only library that exposes C++
-types in Python and vice versa, mainly to create Python bindings of existing
-C++ code.  Its goals and syntax are similar to the @code{Boost.Python}
-library: to minimize boilerplate code in traditional extension modules by
-inferring type information using compile-time introspection.")
-    (license license:bsd-3)))
-
 (define-public pybind11
   (package
     (name "pybind11")
@@ -28112,6 +28060,51 @@ C++ code.  Its goals and syntax are similar to the @code{Boost.Python}
 library: to minimize boilerplate code in traditional extension modules by
 inferring type information using compile-time introspection.")
     (license license:bsd-3)))
+
+(define-public pybind11-2
+  (package
+    (inherit pybind11)
+    (name "pybind11")
+    (version "2.13.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pybind/pybind11")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dbnki0pnky39kr04afd9ks597bzjc530zbk33jjss53nfvdvlj8"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "-DCATCH_INCLUDE_DIR="
+                             (assoc-ref %build-inputs "catch2")
+                             "/include/catch"))
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda args
+              (apply (assoc-ref gnu:%standard-phases 'check) args)))
+          (add-after 'install 'install-python
+            (lambda _
+              (with-directory-excursion "../source"
+                (setenv "PYBIND11_USE_CMAKE" "yes")
+                (invoke "python" "setup.py" "install"
+                        "--single-version-externally-managed"
+                        "--root=/"
+                        (string-append "--prefix=" #$output))))))))
+    (native-inputs
+     (list catch2-1
+           eigen
+           python-pytest
+           python-setuptools
+           python-wrapper))
+    (inputs '())))
 
 (define-public python-pooch
   (package
