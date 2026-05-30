@@ -91,7 +91,7 @@
   #:use-module (gnu packages java)
   #:use-module (gnu packages javascript)
   #:use-module (gnu packages kde-frameworks)
-  #:use-module (gnu packages lesstif)
+  #:use-module (gnu packages toolkits)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages linux)

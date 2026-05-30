@@ -75,7 +75,7 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
-  #:use-module (gnu packages lesstif)   ; motif
+  #:use-module (gnu packages toolkits)   ; motif
   #:use-module (gnu packages linux)     ; alsa-lib, gpm
   #:use-module (gnu packages mail)      ; for mailutils
   #:use-module (gnu packages multiprecision)

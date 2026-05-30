@@ -111,7 +111,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages hunspell)
   #:use-module (gnu packages image)
-  #:use-module (gnu packages lesstif)
+  #:use-module (gnu packages toolkits)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp-check)

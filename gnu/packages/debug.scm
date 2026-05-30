@@ -70,7 +70,7 @@
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages java)
-  #:use-module (gnu packages lesstif)
+  #:use-module (gnu packages toolkits)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)

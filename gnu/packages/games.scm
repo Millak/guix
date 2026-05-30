@@ -179,7 +179,7 @@
   #:use-module (gnu packages javascript)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages less)
-  #:use-module (gnu packages lesstif)
+  #:use-module (gnu packages toolkits)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libffi)

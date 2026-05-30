@@ -255,7 +255,7 @@
   #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages xorg)
-  #:use-module (gnu packages lesstif)
+  #:use-module (gnu packages toolkits)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)

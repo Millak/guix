@@ -22,7 +22,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages sml)
-  #:use-module (gnu packages lesstif)
+  #:use-module (gnu packages toolkits)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages xorg)
