@@ -23095,89 +23095,48 @@ interfaces.")
 (define-public python-cattrs
   (package
     (name "python-cattrs")
-    (version "24.1.2")
-    (source (origin
-              (method git-fetch)        ;for tests
-              (uri (git-reference
-                    (url "https://github.com/python-attrs/cattrs")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0l806xs0insnvnd1c2l6f6bcaa7wgfrpvbbcyhhsvf2xy9mzq8rd"))))
+    (version "25.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-attrs/cattrs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zsp1p0wr1qf7yr9fwa60lqxbjfp5g0r3p15gf16ky8hvy6lm187"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 933 passed, 15 xfailed
       #:test-flags
-      '(list "--numprocesses" (number->string (parallel-job-count))
-              ;; Skip all benchmark tests.
-              "--ignore=bench/test_attrs_collections.py"
-              "--ignore=bench/test_attrs_nested.py"
-              "--ignore=bench/test_attrs_primitives.py"
-              "--ignore=bench/test_primitives.py"
-              "-k"
-              (string-join
-               ;; XXX: Tests fail with error: AssertionError: assert ...,
-               ;; check why.
-               (list "not test_msgspec_json_converter"
-                     "test_structure_simple_from_dict_default"
-                     "test_310_optional_field_roundtrip"
-                     "test_310_union_field_roundtrip"
-                     "test_individual_overrides"
-                     "test_nested_roundtrip"
-                     "test_nested_roundtrip_tuple"
-                     "test_omit_default_roundtrip"
-                     "test_optional_field_roundtrip"
-                     "test_renaming"
-                     ;; 'utf-8' codec can't encode character '\ud800' in
-                     ;; position 0: surrogates not allowed
-                     "test_simple_classes"
-                     ;; This test fails with an assertion error on the build
-                     ;; farm, but not on my laptop.
-                     "test_nodefs_generated_unstructuring_cl"
-                     ;; See https://github.com/python-attrs/cattrs/issues/575
-                     "test_simple_roundtrip"
-                     "test_simple_roundtrip_defaults"
-                     "test_simple_roundtrip_defaults_tuple"
-                     "test_simple_roundtrip_tuple"
-                     "test_simple_roundtrip_with_extra_keys_forbidden"
-                     "test_structure_simple_from_dict_default"
-                     "test_union_field_roundtrip"
-                     "test_unmodified_generated_structuring")
-               " and not "))
+      #~(list "-m" "not benchmark"
+              "--numprocesses" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-pyproject
+          (add-after 'unpack 'fix-pytest-config
             (lambda _
               (substitute* "pyproject.toml"
-                ;; Fix version string
-                (("dynamic = \\[\"version\"\\]")
-                 (string-append "version = \"" #$version "\"")))))
-          ;; XXX Our python-hypothesis package is too old.
-          (add-after 'unpack 'compatibility
-            (lambda _
-              (substitute* "tests/typed.py"
-                (("characters\\(codec=codec\\)")
-                 "characters()")))))))
+                ;; All options are benchmark related.
+                (("addopts =.*") "\n")))))))
     (native-inputs
      (list python-hatchling
            python-hatch-vcs
-           python-hypothesis
            python-immutables
-           python-msgpack
-           python-msgspec
-           python-poetry-core
-           python-pymongo               ;for the bson module
            python-pytest
            python-pytest-benchmark
            python-pytest-xdist))
     (propagated-inputs
      (list python-attrs
+           python-typing-extensions
+           ;; [optional]
            python-cbor2
+           python-msgpack
+           python-msgspec
            python-orjson
+           python-pymongo               ;for the bson module
            python-pyyaml
            python-tomlkit
-           python-typing-extensions
            python-ujson))
     (home-page "https://github.com/python-attrs/cattrs")
     (synopsis "Python library for structuring and unstructuring data")
