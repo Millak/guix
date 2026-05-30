@@ -28455,18 +28455,18 @@ validation testing and application logic.")
 (define-public python-numba
   (package
     (name "python-numba")
-    (version "0.62.1")
+    (version "0.65.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numba" version))
        (sha256
         (base32
-         "0qai1npy5x2p68872zi6hr97sxdmwmigr8802b1383l9m9144xvv"))))
+         "08xbfdiqhxkbhbisq2kbrx8kkcaz8vl1bfcs0ljyvs9gqd372d8r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 10723 tests (skipped=708, expected failures=23)
+      ;; tests: 10743 tests (skipped=699, expected failures=23)
       #:test-backend #~'custom
       #:test-flags
       ;; Check <buildscripts> directory for more build/tests examples.
