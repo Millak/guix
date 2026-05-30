@@ -21395,18 +21395,21 @@ Amazon Web Services (AWS) API.")
 (define-public python-mako
   (package
     (name "python-mako")
-    (version "1.3.10")
+    (version "1.3.12")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "mako" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sqlalchemy/mako")
+              (commit (string-append "rel_" (string-replace-substring
+                                             version "." "_")))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0a7ala6k7kn094k3g02b85xfkr20yk0w6a0acgjsfgsq75prlmwr"))))
+        (base32 "1cvx14yvsx13fnxbwjy4jh8yy87pa6lzfgqzkih4j6c8q0zjd0v0"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-markupsafe))
     (home-page "https://www.makotemplates.org/")
