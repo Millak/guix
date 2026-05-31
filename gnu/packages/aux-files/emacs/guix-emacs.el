@@ -59,11 +59,12 @@ The files in the list do not have extensions (.el, .elc)."
   "Load FILE, ignoring any errors."
   (load file 'noerror (not guix-emacs-verbose)))
 
-(defsubst guix-emacs--non-core-load-path ()
-  "Filter out core Elisp directories, which are already handled by Emacs."
-  (seq-filter (lambda (dir)
-                (string-match-p "/share/emacs/site-lisp" dir))
-              load-path))
+(defun guix-emacs--non-core-load-path ()
+  "Return deduplicated non-core Elisp directories from `load-path'."
+  (delete-dups
+   (seq-filter (lambda (dir)
+                 (string-match-p "/share/emacs/site-lisp" dir))
+               load-path)))
 
 (defun guix-emacs--subdirs-files ()
   "Return the Guix subdirs.el files found on the (non-core) load path."
