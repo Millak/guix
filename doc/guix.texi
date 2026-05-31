@@ -46066,11 +46066,11 @@ certain device, whose value must be an
 instantiated in its default configuration with:
 
 @lisp
-;; This will scrub the root (@file{/}) filesystem.
+;; This will scrub the root (/) filesystem.
 (service btrfs-scrub-service-type)
 
-;; This will scrub the @file{/gnu/store} filesystem (assuming it's a
-;; different filesystem from @file{/}).
+;; This will scrub the /gnu/store filesystem (assuming it's a
+;; different filesystem from /).
 
 (service btrfs-scrub-service-type
   (btrfs-scrub-configuration
