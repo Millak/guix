@@ -22131,7 +22131,7 @@ into 22 character URL-safe base64 slug representation.")
 (define-public python-rich
   (package
     (name "python-rich")
-    (version "14.3.3")
+    (version "15.0.0")
     (source
      (origin
        (method git-fetch)
@@ -22140,7 +22140,7 @@ into 22 character URL-safe base64 slug representation.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g8mb51ffn3bw2dhmmimpyhwkn13xmphircc8bg2kvkmncxmbrza"))))
+        (base32 "1qs8n1hcjxcpwbfjjlzfmywfczxzcpvjkk3ay04kdbi1lvlynkaj"))))
     (build-system pyproject-build-system)
     ;; tests: 952 passed, 25 skipped
     (native-inputs
