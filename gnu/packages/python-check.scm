@@ -4434,29 +4434,19 @@ test execution time.")
 (define-public python-pytest-subprocess
   (package
     (name "python-pytest-subprocess")
-    (version "1.5.3")
+    (version "1.5.4")
     (source
      (origin
-       (method git-fetch)               ;no tests in PyPI archive
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/aklajnert/pytest-subprocess")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1yb5y6dqzf6k5a07yzdpw8w50bm7zbsdvv06ii7c7vyg9wx5iw6y"))))
+         "1d135k088c4m92dl385lasllfmggbrbivajgs4qk9jzfx7lxhm2c"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; 134 passed, 4 skipped, 4 deselected
-      #:test-flags
-      ;; XXX: Skip tests fixed on master in
-      ;; be30d9a94ba45afb600717e3fcd95b8b2ff2c60e commit, not critical,
-      ;; re-chech in the next refresh cycle.
-      #~(list "--deselect=tests/test_examples.py::test_documentation[README.rst]"
-              "--deselect=tests/test_examples.py::test_documentation[docs/index.rst]"
-              "--deselect=tests/test_subprocess.py::test_text[False]"
-              "--deselect=tests/test_subprocess.py::test_universal_newlines[False]")))
+    ;; tests: 151 passed, 4 skipped 
     (native-inputs
      (list python-anyio
            python-docutils
