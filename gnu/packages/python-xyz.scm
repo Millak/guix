@@ -11822,7 +11822,7 @@ and integrated feature-set for programming Python effectively.")
 (define-public python-black
   (package
     (name "python-black")
-    (version "26.3.1")
+    (version "26.5.1")
     (source
      (origin
        (method git-fetch)
@@ -11831,15 +11831,17 @@ and integrated feature-set for programming Python effectively.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m2vxwajavhpg34zkwyg4qyhf0lfsbphm9lvqkikal1lr1cymknz"))))
+        (base32 "13fsaasnbgvlnxzsy81mlyp2pjni7fpp1v9gwh7xmq0pzxzai8h8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 232 passed, 3 skipped, 4 subtests
+      ;; tests: 443 passed, 3 skipped, 4 subtests passed
       #:test-flags
       #~(list "--numprocesses" (number->string (min (parallel-job-count) 8))
               ;; Diffs are not equal.
-              "--deselect=tests/test_format.py::test_simple_format")
+              (string-append "--deselect=tests/test_format.py"
+                             "::test_simple_format"
+                             "[module_docstring_after_comment]"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'patch-source-shebangs 'use-absolute-file-names
@@ -11849,19 +11851,20 @@ and integrated feature-set for programming Python effectively.")
                  (string-append
                   "#!" (search-input-file inputs "/bin/python3")))))))))
     (propagated-inputs
-     (list python-aiohttp
-           python-click
+     (list python-click
            python-mypy-extensions
            python-packaging
            python-pathspec
            python-platformdirs
-           python-pytokens))
+           python-pytokens
+           ;; [optional]
+           python-aiohttp))
     (native-inputs
-     (list python-pytest
-           python-pytest-xdist
-           python-hatch-fancy-pypi-readme
+     (list python-hatch-fancy-pypi-readme
            python-hatch-vcs
-           python-hatchling))
+           python-hatchling
+           python-pytest
+           python-pytest-xdist))
     (home-page "https://github.com/psf/black")
     (synopsis "The uncompromising code formatter")
     (description "Black is the uncompromising Python code formatter.")
