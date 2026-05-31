@@ -28012,7 +28012,7 @@ binding is created using the standard @code{ctypes} library.")
 (define-public pybind11
   (package
     (name "pybind11")
-    (version "3.0.2")
+    (version "3.0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -28020,37 +28020,45 @@ binding is created using the standard @code{ctypes} library.")
                      (commit (string-append "v" version))))
               (sha256
                (base32
-                "1ad4fnn4p2m3sradxxd9wfnll3pa44aw081b6ssh3pq95xqpwksg"))
+                "1ad9215jz078al84h43f6fhwg80d7sjdc72r8hi3n419x8hag4j1"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
      (list
+      ;; TODO: Rewrite package definition with pyproject, I had issues to
+      ;; enable tests and install includes, see the discussion in
+      ;; guix/guix!4696 where it was initially proposed.
       #:configure-flags
-      #~(list (string-append "-DCATCH_INCLUDE_DIR="
-                             (assoc-ref %build-inputs "catch2")
-                             "/include/catch"))
-      #:modules '((guix build cmake-build-system)
-                  ((guix build gnu-build-system) #:prefix gnu:)
-                  (guix build utils))
+      #~(list "-DPYBIND11_NOPYTHON=OFF"
+              "-DPYBIND11_PYTEST_ARGS=-v"
+              "-DPYBIND11_TEST_SMART_HOLDER=ON")
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda args
-              (apply (assoc-ref gnu:%standard-phases 'check) args)))
           (add-after 'install 'build-python-library
             (lambda _
               (with-directory-excursion "../source"
                 (setenv "PYBIND11_USE_CMAKE" "yes")
                 (invoke "pip" "install" "--no-deps" "--no-build-isolation"
-                        "--prefix" #$output ".")))))))
+                        "--prefix" #$output "."))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  ;; Steps are taken from <.github/workflows/ci.yml>.
+                  (invoke "cmake" "--build" "."
+                          "--target" "pytest")
+                  (invoke "cmake" "--build" "."
+                          "--target" "cpptest")
+                  (invoke "cmake" "--build" "."
+                          "--target" "test_cmake_build")
+                  (invoke "cmake" "--build" "."
+                          "--target" "test_cross_module_rtti")))))))
     (inputs (list boost))
     (native-inputs
-     (list catch2-1
+     (list catch2-2
            eigen
            python-pytest
-           python-setuptools
            python-wrapper
-           python-scikit-build-core))
+           python-scikit-build-core-bootstrap))
     (home-page "https://github.com/pybind/pybind11/")
     (synopsis "Seamless operability between C++11 and Python")
     (description
