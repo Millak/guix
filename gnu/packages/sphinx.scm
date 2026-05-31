@@ -1104,22 +1104,24 @@ introspection of @code{zope.interface} instances in code.")
     (version "1.1.0")
     (source
      (origin
-       (method url-fetch) ;FIXME use git-fetch instead?
-       (uri (pypi-uri "sphinx_reredirects" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/documatt/sphinx-reredirects")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0acbf7v04wml24f5hrkcqnk7nqzbgq67sa3kh8zv855b6m9ik6zv"))))
+        (base32 "06nflh7j7q7g1vr5pzj1a98y2mdr394l4khcgr72b2smyf7mvpiz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; Test requires network access
       #:test-flags #~(list "-k" "not test_linkcheck")))
-    (native-inputs (list python-pytest python-sphinx python-flit))
+    (native-inputs (list python-pytest python-sphinx python-flit-core))
     (propagated-inputs (list python-linkify-it-py
                              python-myst-parser
                              python-sphinx-copybutton
                              python-sphinx-design
                              python-sphinx-sitemap
-                             python-sphinx-copybutton
                              python-sphinxcontrib-mermaid
                              python-sphinxext-opengraph))
     (home-page "https://documatt.com/sphinx-reredirects/")
