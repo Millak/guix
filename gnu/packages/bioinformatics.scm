@@ -24198,7 +24198,7 @@ assembly (small or mammalian size) and single-cell assembly.")
       (native-inputs
        (list pkg-config))
       (inputs
-       (cons* zlib xz (cargo-inputs 'mudskipper)))
+       (cons* zlib (cargo-inputs 'mudskipper)))
       (home-page "https://github.com/OceanGenomics/mudskipper")
       (synopsis "Convert genomic alignments to transcriptomic BAM/RAD files")
       (description "Mudskipper is a tool for projecting genomic alignments to
