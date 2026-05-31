@@ -250,7 +250,8 @@ Here are some supported systems:
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~(list "--disable-html-docs"
-                                     "--disable-pdf-docs")))
+                                     "--disable-pdf-docs"
+                                     "--enable-arch=no")))
     (native-inputs
      (list bison
            dos2unix
@@ -274,6 +275,7 @@ Here are some supported systems:
 VIC20, practically all PET models, the PLUS4 and the CBM-II (aka
 C610/C510).  An extra emulator is provided for C64 expanded with the CMD
 SuperCPU.")
+    (properties `((tunable? . #t)))
     (license license:gpl2+)))
 
 (define-public blastem
