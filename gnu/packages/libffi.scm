@@ -156,8 +156,7 @@ conversions for values passed between the two languages.")
     (native-inputs
      (list pkg-config
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (inputs
      (list libffi))
     (propagated-inputs ; required at run-time
