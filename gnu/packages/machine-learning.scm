@@ -3034,7 +3034,7 @@ and a few related numerical optimization tools.")
 (define-public python-cmaes
   (package
     (name "python-cmaes")
-    (version "0.12.0")
+    (version "0.13.0")
     (source
      (origin
        (method git-fetch) ;no tests in PyPI
@@ -3042,13 +3042,9 @@ and a few related numerical optimization tools.")
              (url "https://github.com/CyberAgentAILab/cmaes")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1sykjif7dkq3aa2c672sh567i1d69cswrmb7fmkqh912rmxcvz8j"))
+        (base32 "1fqy7829isg3j00849ifya4ncf9qpm0b3jhw47ibjn4jv0kn4zmh"))
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags                      ;see .github/workflows/tests.yml
-      #~(list "tests" "--ignore=" "tests/test_free_threaded.py")))
     (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-numpy))
     (home-page "https://github.com/CyberAgentAILab/cmaes")
