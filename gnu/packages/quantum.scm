@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024 Michal Atlas <michal_atlas+git@posteo.net>
 ;;; Copyright © 2024, 2025 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,13 +20,67 @@
 
 (define-module (gnu packages quantum)
   #:use-module (gnu packages)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages lisp-check)
   #:use-module (gnu packages lisp-xyz)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-science)
+  #:use-module (gnu packages python-xyz)
   #:use-module (guix build-system asdf)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
+
+(define-public python-quimb
+  (package
+    (name "python-quimb")
+    (version "1.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jcmgray/quimb")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13h57cq183nb73j83jc2lrlcyy4km3d297arbps17wawq04wwyiv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 4300 passed, 508 skipped, 85 warnings
+      #:test-flags
+      ;; See: <https://github.com/jcmgray/quimb/issues/354>.
+      #~(list "--ignore=tests/test_tensor/test_tn1d/test_compress.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; QUIMB_NUM_THREAD_WORKERS is read from the environment and
+          ;; must be set otherwise some tests will fail since a default
+          ;; value is not provided in all cases.
+          (add-before 'check 'set-env
+            (lambda _
+              (setenv "QUIMB_NUM_THREAD_WORKERS" "1"))))))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-autoray
+           python-cotengra
+           python-cytoolz
+           python-numba
+           python-numpy
+           python-psutil
+           python-scipy
+           python-tqdm))
+    (home-page "https://quimb.readthedocs.io")
+    (synopsis "Library for quantum information and many-body calculations")
+    (description
+     "This package provides a fast Python libray for performing quantum
+information and many-body calculations, focusing primarily on tensor
+networks.")
+    (license license:asl2.0)))
 
 (define-public sbcl-rpcq
   (package
