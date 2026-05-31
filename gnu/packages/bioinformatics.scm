@@ -18105,14 +18105,24 @@ methylation and segmentation.")
   (package
     (name "pigx-scrnaseq")
     (version "1.1.10")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/BIMSBbioinfo/pigx_scrnaseq/"
-                                  "releases/download/v" version
-                                  "/pigx_scrnaseq-" version ".tar.gz"))
-              (sha256
-               (base32
-                "082im1j6qpd2y8ax4msxw7mfc40zxpl29hx92skqdd55745f58z8"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/BIMSBbioinfo/pigx_scrnaseq/"
+                           "releases/download/v" version
+                           "/pigx_scrnaseq-" version ".tar.gz"))
+       (sha256
+        (base32 "082im1j6qpd2y8ax4msxw7mfc40zxpl29hx92skqdd55745f58z8"))
+       (patches
+        (list
+         (origin
+           (method url-fetch)
+           (uri
+            (let ((commit "fd556e2708b696cd6925f8f74430491afa0377ee"))
+              (string-append "https://github.com/BIMSBbioinfo/pigx_scrnaseq/"
+                             "commit/" commit ".patch")))
+           (sha256
+            (base32 "1lbgq3jskkppw3p6i5h0p09n36bv1lmjifaq6914w4cndddrp3ds")))))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -18143,7 +18153,7 @@ methylation and segmentation.")
            python-loompy
            pandoc
            samtools
-           snakemake-6
+           snakemake
            star-for-pigx
            r-minimal
            r-argparser
