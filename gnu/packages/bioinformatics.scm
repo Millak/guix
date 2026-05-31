@@ -206,8 +206,7 @@
         (base32 "11m2cwpy270dlsw48xgsmrlzmrbac0gxidwgbpahd5jchwnxl26f"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:rust rust-1.88
-           #:install-source? #f))
+     (list #:install-source? #f))
     (native-inputs (list clang pkg-config))
     (inputs (cons* curl openssl zlib (cargo-inputs 'alignoth)))
     (home-page "https://github.com/alignoth/alignoth")
