@@ -7664,28 +7664,29 @@ Python.")
 (define-public python-jsonargparse
   (package
     (name "python-jsonargparse")
-    (version "4.37.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "jsonargparse" version))
-              (sha256
-               (base32
-                "1b9w9j27phj5j00pmhp11lzf53yc4dnwknhxacv2bfyiiaq0af2s"))))
+    (version "4.49.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/omni-us/jsonargparse/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15s7bdgjk3dpmr9202v4nr9826z8zq7vp77nvg4iwwq9nrm8brnn"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags
-           '(list "-k" "not test_env_prefix")))
     (propagated-inputs
      (list python-pyyaml))
     (native-inputs
      (list python-attrs
-           python-pypa-build
            python-pydantic
            python-pytest
            python-pytest-subtests
+           python-requests
            python-responses
            python-setuptools
-           python-wheel))
+           python-types-pyyaml
+           python-types-requests))
     (home-page "https://github.com/omni-us/jsonargparse/")
     (synopsis "Implement minimal boilerplate CLIs derived from type hints")
     (description
