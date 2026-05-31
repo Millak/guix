@@ -113,8 +113,8 @@ found in `load-path' to discover newly installed packages."
 ;; to make tree-sitter grammars available in emacs out-of-the-box.
 (with-eval-after-load 'treesit
   (when-let* ((grammar-path (getenv "TREE_SITTER_GRAMMAR_PATH")))
-    (mapcar (lambda (x) (add-to-list 'treesit-extra-load-path x))
-            (split-string grammar-path ":"))))
+    (mapc (lambda (x) (add-to-list 'treesit-extra-load-path x))
+          (split-string grammar-path ":"))))
 
 (provide 'guix-emacs)
 
