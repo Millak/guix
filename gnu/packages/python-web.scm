@@ -10180,15 +10180,15 @@ the non-map-specific features.  It can be used to generate HTML + JS.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Kozea/tinycss2")
-             (commit (string-append "v" version))
-             (recursive? #true)))
+              (url "https://github.com/Kozea/tinycss2")
+              (commit (string-append "v" version))
+              (recursive? #true)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1ww5m8rmpva9mq04cz1h9rx76vg2h5nnijzi0vprf5wzp8g9snb5"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-flit
+     (list python-flit-core
            python-pytest))
     (propagated-inputs
      (list python-webencodings))
