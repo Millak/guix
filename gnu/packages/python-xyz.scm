@@ -40186,7 +40186,8 @@ Python versions that don't natively support them.")
 (define-public python-typer
   (package
     (name "python-typer")
-    (version "0.22.0")
+    ;; XXX: starting from 0.26.0, Typer vendors Click.
+    (version "0.26.4")
     (source
      (origin
        (method git-fetch)
@@ -40195,7 +40196,7 @@ Python versions that don't natively support them.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17gxqqiafrp5dvqfm6k39zbanvnwb8b9kr7dvnkah17js0rfy1sz"))))
+        (base32 "0cmk9wsnml1yykzs5sxfdww3bchh9f2f63cj6nirw39zilp1jjw0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -40213,10 +40214,7 @@ Python versions that don't natively support them.")
            python-pytest
            python-pytest-xdist))
     (propagated-inputs
-     (list python-click
-           python-typing-extensions
-           python-annotated-doc
-           ;; [optional]
+     (list python-annotated-doc
            python-rich
            python-shellingham))
     (home-page "https://github.com/fastapi/typer")
