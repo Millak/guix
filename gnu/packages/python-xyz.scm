@@ -17319,23 +17319,17 @@ versions number match PEP 440.")
 (define-public python-pyproject-metadata
   (package
     (name "python-pyproject-metadata")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/FFY00/python-pyproject-metadata")
-             (commit version)))
+              (url "https://github.com/FFY00/python-pyproject-metadata")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vz2dx46ag42bqp81frd92pfnryfdry6112g6z5inrywqs8vymkw"))))
+        (base32 "0f838jc5m8f3f4gazzsidhk6x2d359g53ysa0bp0fw11jsv1n2vp"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Two tests fail because the error message slightly changed, so the
-      ;; tests' regular expressions no longer match.
-      '(list "--ignore=tests/test_standard_metadata.py")))
     (propagated-inputs (list python-packaging))
     (native-inputs
      (list python-flit-core python-pytest python-tomli))
