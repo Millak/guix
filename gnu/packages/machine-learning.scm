@@ -5733,13 +5733,16 @@ AI services.")
 (define-public python-lightning-utilities
   (package
     (name "python-lightning-utilities")
-    (version "0.15.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "lightning_utilities" version))
-              (sha256
-               (base32
-                "091f0cng5s228xxn20c16djx3xgcs60g24ypxyn3v9hl099jzwfd"))))
+    (version "0.15.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Lightning-AI/utilities")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0krdvabdi1lcix5jvjjrrqyh6ibjwabc0g724mpi32gsz6g7ppwg"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))        ;XXX: cycles with  python-pytorch-lightning
