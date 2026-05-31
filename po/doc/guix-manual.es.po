@@ -60,16 +60,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-04-24 03:18+0000\n"
-"PO-Revision-Date: 2026-04-29 22:43+0000\n"
-"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
+"POT-Creation-Date: 2026-05-26 03:18+0000\n"
+"PO-Revision-Date: 2026-05-06 23:35+0000\n"
+"Last-Translator: gallegonovato <gallegonovato@noreply.codeberg.org>\n"
 "Language-Team: Spanish <https://translate.codeberg.org/projects/guix/documentation-manual/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17\n"
+"X-Generator: Weblate 5.17.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -5286,9 +5286,6 @@ msgstr "granja de construcción"
 msgid "Substitute URLs can be either HTTP or HTTPS.  HTTPS is recommended because communications are encrypted; conversely, using HTTP makes all communications visible to an eavesdropper, who could use the information gathered to determine, for instance, whether your system has unpatched security vulnerabilities."
 msgstr "Las URLs de sustituciones pueden ser tanto HTTP como HTTPS. Se recomienda HTTPS porque las comunicaciones están cifradas; de modo contrario, usar HTTP hace visibles todas las comunicaciones para alguien que las intercepte, quien puede usar la información obtenida para determinar, por ejemplo, si su sistema tiene vulnerabilidades de seguridad sin parchear."
 
-msgid "Substitutes from the official build farms are enabled by default when using Guix System (@pxref{GNU Distribution}).  However, they are disabled by default when using Guix on a foreign distribution, unless you have explicitly enabled them via one of the recommended installation steps (@pxref{Installation}).  The following paragraphs describe how to enable or disable substitutes for the official build farm; the same procedure can also be used to enable substitutes for any other substitute server."
-msgstr "El uso de sustituciones de las granjas de construcción oficial se realiza de manera predeterminada cuando se usa el sistema Guix (@pxref{GNU Distribution}). No obstante, no se realiza de manera predeterminada cuando se usa Guix en una distribución anfitriona, a menos que las active explícitamente via uno de los pasos recomendados de instalación (@pxref{Installation}). Los siguientes párrafos describen como activar o desactivar las sustituciones para la granja oficial de construcción; el mismo procedimiento puede usarse para activar las sustituciones desde cualquier otro servidor que las proporcione."
-
 msgid "security"
 msgstr "seguridad"
 
@@ -5809,15 +5806,6 @@ msgstr "archivo de configuración de canales"
 msgid "These options are provided for convenience, but you can also specify your configuration in the @file{~/.config/guix/channels.scm} file or using the @option{--channels} option (see below)."
 msgstr "Estas opciones se proporcionan por conveniencia, pero también puede especificar su configuración en el archivo @file{~/.config/guix/channels.scm} o usando la opción @option{--channels} (vea más adelante)."
 
-msgid "--channels=@var{file}"
-msgstr "--channels=@var{archivo}"
-
-msgid "-C @var{file}"
-msgstr "-C @var{archivo}"
-
-msgid "Read the list of channels from @var{file} instead of @file{~/.config/guix/channels.scm} or @file{/etc/guix/channels.scm}.  @var{file} must contain Scheme code that evaluates to a list of channel objects.  @xref{Channels}, for more information."
-msgstr "Lee la lista de canales de @var{archivo} en vez de @file{~/.config/guix/channels.scm} o @file{/etc/guix/channels.scm}. @var{archivo} debe contener código Scheme que evalúe a una lista de objetos ``channel''. @xref{Channels}, para más información."
-
 msgid "-q"
 msgstr "-q"
 
@@ -5928,9 +5916,6 @@ msgstr "guix time-machine @var{opciones}@dots{} -- @var{orden} @var{param}@dots{
 
 msgid "where @var{command} and @var{arg}@dots{} are passed unmodified to the @command{guix} command of the specified revision.  The @var{options} that define this revision are the same as for @command{guix pull} (@pxref{Invoking guix pull}):"
 msgstr "donde @var{orden} and @var{param}@dots{} se proporcionan sin modificar a la orden @command{guix} de la revisión especificada. Las @var{opciones} que definen esta revisión son las mismas que se usan con @command{guix pull} (@pxref{Invoking guix pull}):"
-
-msgid "Read the list of channels from @var{file}.  @var{file} must contain Scheme code that evaluates to a list of channel objects.  @xref{Channels} for more information."
-msgstr "Lee la lista de canales de @var{archivo}. @var{archivo} debe contener código Scheme que evalúe a una lista de objetos ``channel''. @xref{Channels}, para más información."
 
 msgid "Note that @command{guix time-machine} can trigger builds of channels and their dependencies, and these are controlled by the standard build options (@pxref{Common Build Options})."
 msgstr "Tenga en cuenta que @command{guix time-machine} puede desencadenar construcciones de canales y sus dependencias, y que pueden controlarse mediante las opciones de construcción estándar (@pxref{Common Build Options})."
@@ -11169,8 +11154,8 @@ msgstr "Invocación de @command{guix hash}"
 msgid "guix hash"
 msgstr "guix hash"
 
-msgid "When @var{file} is @code{-} (a hyphen), @command{guix hash} computes the hash of data read from standard input.  @command{guix hash} has the following options:"
-msgstr "Cuando @var{archivo} es @code{-} (un guión), @command{guix hash} calcula el hash de los datos leídos por la entrada estándar. @command{guix hash} tiene las siguientes opciones:"
+msgid "Here are a few examples:"
+msgstr "Estos son algunos ejemplos:"
 
 msgid "Compute a hash using the specified @var{algorithm}, @code{sha256} by default."
 msgstr "Calcula un hash usando el @var{algoritmo} especificado, @code{sha256} de manera predeterminada."
@@ -11549,6 +11534,12 @@ msgstr "OCaml"
 msgid "Import metadata from the @uref{https://opam.ocaml.org/, OPAM} package repository used by the OCaml community."
 msgstr "Importa metadatos desde el repositorio de paquetes @uref{https://opam.ocaml.org/, OPAM} usado por la comunidad OCaml."
 
+msgid "the URL of a repository as expected by the"
+msgstr "la URL de un repositorio como esperaba por la"
+
+msgid "@file{packages/} sub-directory)."
+msgstr "sub-directorio @file{packages/})."
+
 msgid "Composer"
 msgstr "Composer"
 
@@ -11557,12 +11548,6 @@ msgstr "PHP"
 
 msgid "Import metadata from the @uref{https://getcomposer.org/, Composer} package archive used by the PHP community, as in this example:"
 msgstr "Importa metadatos desde el repositorio de paquetes @uref{https://getcomposer.org/, Composer} usado por la comunidad PHP, como en este ejemplo:"
-
-msgid "the URL of a repository as expected by the"
-msgstr "la URL de un repositorio como esperaba por la"
-
-msgid "@file{packages/} sub-directory)."
-msgstr "sub-directorio @file{packages/})."
 
 msgid "The structure of the @command{guix import} code is modular.  It would be useful to have more importers for other package formats, and your help is welcome here (@pxref{Contributing})."
 msgstr "La estructura del código de @command{guix import} es modular. Sería útil tener más importadores para otros formatos de paquetes, y su ayuda es bienvenida aquí (@pxref{Contributing})."
@@ -12002,9 +11987,6 @@ msgstr "Avisa de problemas de formato obvios en el código fuente: espacios en b
 
 msgid "guix lint @var{options} @var{package}@dots{}\n"
 msgstr "guix lint @var{opciones} @var{paquete}@dots{}\n"
-
-msgid "If no package is given on the command line, then all packages are checked.  The @var{options} may be zero or more of the following:"
-msgstr "Si no se proporciona ningún paquete en la linea de órdenes, todos los paquetes se comprueban. Las @var{opciones} pueden ser cero o más de las siguientes:"
 
 msgid "--list-checkers"
 msgstr "--list-checkers"
@@ -14048,9 +14030,6 @@ msgstr "Devuelve una distribución de teclado para el @var{nombre} y la @var{var
 
 msgid "@var{name} must be a string such as @code{\"fr\"}; @var{variant} must be a string such as @code{\"bepo\"} or @code{\"nodeadkeys\"}.  See the @code{xkeyboard-config} package for valid options."
 msgstr "@var{nombre} debe ser una cadena como @code{\"fr\"}; @var{variante} debe ser una cadena como @code{\"bepo\"} o @code{\"nodeadkeys\"}. Véase el paquete @code{xkeyboard-config} para las opciones válidas."
-
-msgid "Here are a few examples:"
-msgstr "Estos son algunos ejemplos:"
 
 msgid ""
 ";; The German QWERTZ layout.  Here we assume a standard\n"
@@ -28979,8 +28958,8 @@ msgstr "{Procedimiento} grub-theme"
 msgid "Return the default GRUB theme used by the operating system if no @code{theme} field is specified in @code{bootloader-configuration} record."
 msgstr "Devuelve el tema predeterminado de GRUB que usa el sistema operativo si no se especifica el campo @code{theme} en el registro @code{bootloader-configuration}."
 
-msgid "It comes with a fancy background image displaying the Guix logos."
-msgstr "Incluye una elegante imagen de fondo con los logotipos de Guix."
+msgid "It comes with a fancy background image displaying the Guix logo."
+msgstr "Incluye una elegante imagen de fondo con el logotipo de Guix."
 
 msgid "For example, to override the default resolution, you may use something like"
 msgstr "Por ejemplo, para usar una resolución distinta de la predeterminada, puede usar algo como esto:"

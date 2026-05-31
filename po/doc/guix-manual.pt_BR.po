@@ -17,16 +17,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-04-24 03:18+0000\n"
-"PO-Revision-Date: 2026-03-29 11:50+0000\n"
-"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
+"POT-Creation-Date: 2026-05-26 03:18+0000\n"
+"PO-Revision-Date: 2026-05-23 18:50+0000\n"
+"Last-Translator: barm1 <barm1@noreply.codeberg.org>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.codeberg.org/projects/guix/documentation-manual/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.16.2\n"
+"X-Generator: Weblate 2026.5\n"
 
 msgid "Contributing"
 msgstr "Contribuindo"
@@ -195,6 +195,9 @@ msgstr "@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS} (@pxref{Guile Prep
 
 msgid "@uref{https://codeberg.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, version 0.1.0 or later;"
 msgstr "@uref{https://codeberg.org/guile-sqlite3/guile-sqlite3, Guile-SQLite3}, versão 0.1.0 ou posterior;"
+
+msgid "@uref{https://codeberg.org/guile-compression/guile-zlib, Guile-zlib},"
+msgstr "@uref{https://codeberg.org/guile-compression/guile-zlib, Guile-zlib},"
 
 msgid "version 0.1.0 or later;"
 msgstr "versão 0.1.0 ou posterior;"
@@ -619,6 +622,21 @@ msgstr "Esta é apenas uma nota e você pode ignorá-la com segurança. Você po
 
 msgid "You can run @command{make} automatically as you work using @command{watchexec} from the @code{watchexec} package.  For example, to build again each time you update a package file, run @samp{watchexec -w gnu/packages -- make -j4}."
 msgstr "Você pode executar @command{make} automaticamente enquanto trabalha usando @command{watchexec} do pacote @code{watchexec}. Por exemplo, para compilar novamente cada vez que você atualizar um arquivo de pacote, execute @samp{watchexec -w gnu/packages -- make -j4}."
+
+msgid "editor setup, for Scheme"
+msgstr "configuração de editor, para Scheme"
+
+msgid "Scheme code editing"
+msgstr "Edição de código Scheme"
+
+msgid "All configuration and development in Guix is done in the Scheme language.  Like all languages of the Lisp family, Scheme has a simple syntax.  The perfect setup is one where the editor you choose makes working with that syntax seamless and pleasant; for that it must absolutely support a few things for Scheme:"
+msgstr "Toda a configuração e o desenvolvimento no Guix são feitos na linguagem Scheme. Como todas as linguagens da família Lisp, a Scheme possui uma sintaxe simples. A configuração perfeita é aquela que o faz funcionar com uma sintaxe perfeita e agradável; para isso o Scheme precisa absolutamente suportar algumas coisas:"
+
+msgid "automatic indentation, such that hitting the ``Enter'' key (or @kbd{RET}) places cursor ``at the right place'' on the next line;"
+msgstr "indentação automática, assim que pressionar a tecla ``Enter'' (ou @kbd{RET}) posicione o cursor ``no lugar certo'' na próxima linha;"
+
+msgid "``parentheses matching'', allowing you to jump from a closing parenthesis to the corresponding opening parenthesis and vice-versa;"
+msgstr "``parênteses combinando'', permitindo você pular de um fecha parênteses para o abre parênteses correspondente e vice-versa;"
 
 msgid "Guile Studio"
 msgstr "Guile Estúdio"
@@ -3368,6 +3386,12 @@ msgstr "Suporte a SELinux"
 msgid "Using an SELinux policy for the daemon."
 msgstr "Usando um política SELinux para o daemon."
 
+msgid "AppArmor Support"
+msgstr "Suporte a AppArmor"
+
+msgid "Using an AppArmor profile for the daemon."
+msgstr "Usando um perfil de AppArmor para o daemon."
+
 msgid "Limitations"
 msgstr "Limitações"
 
@@ -4388,6 +4412,15 @@ msgstr "@uref{https://hurd.gnu.org, GNU/Hurd} sobre a arquitetura Intel de 32 bi
 msgid "This configuration is experimental and under development.  The easiest way for you to give it a try is by setting up an instance of @code{hurd-vm-service-type} on your GNU/Linux machine (@pxref{transparent-emulation-qemu, @code{hurd-vm-service-type}}).  @xref{Contributing}, on how to help!"
 msgstr "Esta configuração é experimental e está em desenvolvimento. A maneira mais fácil de você tentar é configurando uma instância de @code{hurd-vm-service-type} na sua máquina GNU/Linux (@pxref{transparent-emulation-qemu, @code{hurd-vm-service-type}}). @xref{Contributing}, sobre como ajudar!"
 
+msgid "x86_64-gnu"
+msgstr "x86_64-gnu"
+
+msgid "@uref{https://hurd.gnu.org, GNU/Hurd} on the @code{x86_64} Intel/AMD 64-bit architecture."
+msgstr "@uref{https://hurd.gnu.org, GNU/Hurd} sobre a arquitetura de 64 bits @code{x86_64} Intel/AMD 64."
+
+msgid "This configuration is even more experimental and under heavy upstream development."
+msgstr "Esta configuração é ainda mais experimental e sob desenvolvimento ativo."
+
 msgid "mips64el-linux (unsupported)"
 msgstr "mips64el-linux (sem suporte)"
 
@@ -4406,11 +4439,17 @@ msgstr "powerpc64le-linux"
 msgid "little-endian 64-bit Power ISA processors, Linux-Libre kernel.  This includes POWER9 systems such as the @uref{https://www.fsf.org/news/talos-ii-mainboard-and-talos-ii-lite-mainboard-now-fsf-certified-to-respect-your-freedom, RYF Talos II mainboard}. This platform is available as a \"technology preview\": although it is supported, substitutes are not yet available from the build farm (@pxref{Substitutes}), and some packages may fail to build (@pxref{Tracking Bugs and Changes}).  That said, the Guix community is actively working on improving this support, and now is a great time to try it and get involved!"
 msgstr "processadores little-endian 64 bits Power ISA, kernel Linux-Libre. Isso inclui sistemas POWER9 como o @uref{https://www.fsf.org/news/talos-ii-mainboard-and-talos-ii-lite-mainboard-now-fsf-certified-to-respect-your-freedom, placa-mãe RYF Talos II}. Esta plataforma está disponível como uma \"prévia de tecnologia\": embora seja suportada, substitutos ainda não estão disponíveis na fazenda de construção (@pxref{Substitutes}), e alguns pacotes podem falhar na construção (@pxref{Tracking Bugs and Changes}). Dito isso, a comunidade Guix está trabalhando ativamente para melhorar esse suporte, e agora é um ótimo momento para experimentá-lo e se envolver!"
 
+msgid "riscv64-linux"
+msgstr "riscv64-linux"
+
 msgid "little-endian 64-bit RISC-V processors, specifically RV64GC, and Linux-Libre kernel. This platform is available as a \"technology preview\": although it is supported, substitutes are not yet available from the build farm (@pxref{Substitutes}), and some packages may fail to build (@pxref{Tracking Bugs and Changes}).  That said, the Guix community is actively working on improving this support, and now is a great time to try it and get involved!"
 msgstr "processadores little-endian RISC-V de 64 bits, especificamente RV64GC, e kernel Linux-Libre. Esta plataforma está disponível como uma \"prévia de tecnologia\": embora seja suportada, substitutos ainda não estão disponíveis na build farm (@pxref{Substitutes}), e alguns pacotes podem falhar na compilação (@pxref{Tracking Bugs and Changes}). Dito isto, a comunidade Guix está trabalhando ativamente para melhorar este suporte, e agora é um ótimo momento para experimentá-lo e se envolver!"
 
 msgid "With Guix@tie{}System, you @emph{declare} all aspects of the operating system configuration and Guix takes care of instantiating the configuration in a transactional, reproducible, and stateless fashion (@pxref{System Configuration}).  Guix System uses the Linux-libre kernel, the Shepherd initialization system (@pxref{Introduction,,, shepherd, The GNU Shepherd Manual}), the well-known GNU utilities and tool chain, as well as the graphical environment or system services of your choice."
 msgstr "Com o Guix@tie{}System, você @emph{declara} todos os aspectos da configuração do sistema operacional, e o Guix cuida de instanciar a configuração de maneira transacional, reproduzível e sem estado (@pxref{System Configuration}). O Guix System usa o kernel Linux-libre, o sistema de inicialização Shepherd (@pxref{Introduction ,,, shepherd, The GNU Shepherd Manual}), os conhecidos utilitários do GNU e cadeia de ferramentas, bem como o ambiente gráfico ou os serviços de sistema do sua escolha."
+
+msgid "Guix System is available on all the above platforms except @code{mips64el-linux}, @code{powerpc-linux}, @code{powerpc64le-linux} and @code{riscv64-linux}."
+msgstr "O Guix System está disponível em todas as plataformas acima, exceto @code{mips64el-linux}, @code{powerpc-linux}, @code{powerpc64le-linux} and @code{riscv64-linux}."
 
 msgid "For information on porting to other architectures or kernels, @pxref{Porting}."
 msgstr "Para obter informações sobre como portar para outras arquiteturas ou kernels, @pxref{Porting}."
@@ -4445,23 +4484,63 @@ msgstr "instalando Guix de binários"
 msgid "installer script"
 msgstr "script de instalação"
 
+msgid "This section describes how to install Guix from a self-contained tarball providing binaries for Guix and for all its dependencies.  This is often quicker than installing from source, described later (@pxref{Building from Git})."
+msgstr "Esta seção descreve como instalar o Guix a partir de um tarball independente que fornece binários para o Guix e para todas as suas dependências. Isso geralmente é mais rápido do que instalar do código-fonte, que será descrito posteriormente (@pxref{Building from Git})."
+
+msgid "The @uref{https://guix.gnu.org/guix-install.sh, @file{guix-install.sh}} shell script automates the binary installation process.  Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget, and Xz.  On systems where systemd is detected, the tool @command{newgidmap} from the @code{uidmap} package is also required."
+msgstr "O script de shell @uref{https://guix.gnu.org/guix-install.sh, @file{guix-install.sh}} automatiza o processo de instalação binária.  O uso do @file{guix-install.sh} depende de Bash, GnuPQ, GNU@tie{}tar, wget, and Xz.  Em sistemas onde systemd for detectado, a ferramenta @command{newgidmap} do pacote @code{uidmap} também é necessária."
+
+msgid "To install Guix on top of your GNU/Linux system, run the following commands as root:"
+msgstr "Para instalar Guix sobre outro sistema GNU/Linux, execute os seguintes comandos como root:"
+
+msgid ""
+"cd /tmp\n"
+"wget https://guix.gnu.org/guix-install.sh\n"
+"chmod +x guix-install.sh\n"
+"./guix-install.sh\n"
+msgstr ""
+"cd /tmp\n"
+"wget https://guix.gnu.org/guix-install.sh\n"
+"chmod +x guix-install.sh\n"
+"./guix-install.sh\n"
+
 msgid "When you're done installing Guix, @pxref{Application Setup} for extra configuration you might need, and @ref{Getting Started} for your first steps!"
-msgstr "Quando terminar de instalar o Guix, @pxref{Application Setup} para configurações extras que você pode precisar e @ref{Getting Started} para seus primeiros passos!"
+msgstr "Quando terminar de instalar Guix, @pxref{Application Setup} para configurações extras que você pode precisar e @ref{Getting Started} para seus primeiros passos!"
+
+msgid "The script goes through the following steps:"
+msgstr "O script segue os seguintes passos:"
+
+msgid "Downloading the binary tarball from @indicateurl{@value{BASE-URL}/guix-binary-@value{VERSION}.x86_64-linux.tar.xz} (where @code{x86_64-linux} can be replaced with @code{i686-linux} for an @code{i686} (32-bits) machine already running the kernel Linux, and so on---@pxref{GNU Distribution}) and extracting it."
+msgstr "Baixa e extraí o tarball com binários de @indicateurl{@value{BASE-URL}/guix-binary-@value{VERSION}.x86_64-linux.tar.xz} (onde @code{x86_64-linux} pode ser substituído por @code{i686-linux} para uma máquina @code{i686} (32-bits) que já esteja rodando o kernel Linux e assim por diante---@pxref{GNU Distribution})."
 
 msgid "Setting up the build daemon (@pxref{Setting Up the Daemon})."
-msgstr "Configurando o daemon (@pxref{Setting Up the Daemon})."
+msgstr "Configura o daemon (@pxref{Setting Up the Daemon})."
 
 msgid "Making the @command{guix} command available to non-root users."
-msgstr "Disponibilizando o comando @command{guix} para usuários não root."
+msgstr "Disponibiliza o comando @command{guix} para usuários não root."
+
+msgid "Configuring substitute servers (@pxref{Official Substitute Servers})."
+msgstr "Configura os servidores de substitutos (@pxref{Official Substitute Servers})."
 
 msgid "By default, @file{guix-install.sh} will configure Guix to download pre-built package binaries, called @dfn{substitutes} (@pxref{Substitutes}), from the project's build farms.  If you choose not to permit this, Guix will build @emph{everything} from source, making each installation and upgrade very expensive.  @xref{On Trusting Binaries} for a discussion of why you may want to build packages from source."
-msgstr "Por padrão, @file{guix-install.sh} configurará o Guix para baixar binários de pacotes pré-construídos, chamados @dfn{substitutes} (@pxref{Substitutes}), das fazendas de construção do projeto. Se você escolher não permitir isso, o Guix construirá @emph{tudo} a partir da fonte, tornando cada instalação e atualização muito cara. @xref{On Trusting Binaries} para uma discussão sobre por que você pode querer construir pacotes a partir da fonte."
+msgstr "Por padrão, @file{guix-install.sh} configurará o Guix para baixar binários de pacotes pré-construídos, chamados @dfn{substitutos} (@pxref{Substitutes}), das fazendas de compilação (build farms) do projeto. Se você escolher não permitir isso, o Guix compilará @emph{tudo} a partir da fonte, tornando cada instalação e atualização muito cara. @xref{On Trusting Binaries} para uma discussão sobre por que você pode querer construir pacotes a partir da fonte."
 
 msgid "substitutes, authorization thereof"
 msgstr "substitutos, autenticação dela"
 
 msgid "To use substitutes from @code{@value{SUBSTITUTE-SERVER-1}}, @code{@value{SUBSTITUTE-SERVER-2}} or a mirror, you must authorize them.  For example,"
 msgstr "Para usar substitutos de @code{@value{SUBSTITUTE-SERVER-1}}, @code{@value{SUBSTITUTE-SERVER-2}} ou um espelho, você deve autorizá-los. Por exemplo,"
+
+msgid ""
+"guix archive --authorize < \\\n"
+"   ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-1}.pub\n"
+"guix archive --authorize < \\\n"
+"   ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-2}.pub\n"
+msgstr ""
+"guix archive --authorize < \\\n"
+"   ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-1}.pub\n"
+"guix archive --authorize < \\\n"
+"   ~root/.config/guix/current/share/guix/@value{SUBSTITUTE-SERVER-2}.pub\n"
 
 msgid "The binary installation tarball can be (re)produced and verified simply by running the following command in the Guix source tree:"
 msgstr "O tarball da instalação binária pode ser (re)produzido e verificado simplesmente executando o seguinte comando na árvore de código-fonte do Guix:"
@@ -4482,8 +4561,17 @@ msgstr ""
 msgid "@xref{Invoking guix pack}, for more info on this handy tool."
 msgstr "@xref{Invoking guix pack}, para mais informações sobre essa ferramenta útil."
 
+msgid "uninstalling Guix"
+msgstr "desinstalando Guix"
+
+msgid "uninstallation, of Guix"
+msgstr "desinstalação, do Guix"
+
 msgid "Should you eventually want to uninstall Guix, run the same script with the @option{--uninstall} flag:"
 msgstr "Caso você queira desinstalar o Guix, execute o mesmo script com o sinalizador @option{--uninstall}:"
+
+msgid "./guix-install.sh --uninstall\n"
+msgstr "./guix-install.sh --uninstall\n"
 
 msgid "With @option{--uninstall}, the script irreversibly deletes all the Guix files, configuration, and services."
 msgstr "Com @option{--uninstall}, o script exclui irreversivelmente todos os arquivos Guix, configuração e serviços."
@@ -4499,6 +4587,9 @@ msgstr "daemon"
 
 msgid "During installation, the @dfn{build daemon} that must be running to use Guix has already been set up and you can run @command{guix} commands in your terminal program, @pxref{Getting Started}:"
 msgstr "Durante a instalação, o @dfn{build daemon} que deve estar em execução para usar o Guix já foi configurado e você pode executar comandos @command{guix} no seu programa de terminal, @pxref{Getting Started}:"
+
+msgid "guix build hello\n"
+msgstr "guix build hello\n"
 
 msgid "If this runs through without error, feel free to skip this section.  You should continue with the following section, @ref{Application Setup}."
 msgstr "Se isso ocorrer sem erros, sinta-se à vontade para pular esta seção. Você deve continuar com a seção seguinte, @ref{Application Setup}."
@@ -4518,8 +4609,20 @@ msgstr "ambiente de compilação"
 msgid "In a standard multi-user setup, Guix and its daemon---the @command{guix-daemon} program---are installed by the system administrator.  Unprivileged users may use Guix tools to build packages or otherwise access the store, and the daemon will do it on their behalf, ensuring that the store is kept in a consistent state, and allowing built packages to be shared among users."
 msgstr "Em uma configuração multiusuário padrão, o Guix e seu daemon – o programa @command{guix-daemon} – são instalados pelo administrador do sistema. Usuários desprivilegiados podem usar ferramentas Guix para criar pacotes ou acessar o armazém, e o daemon fará isso em seu nome, garantindo que o armazém seja mantido em um estado consistente e permitindo que pacotes construídos sejam compartilhados entre os usuários."
 
+msgid "There are currently two ways to set up and run the build daemon:"
+msgstr "Atualmente existem duas maneiras para configurar e executar o daemon de compilação:"
+
+msgid "running @command{guix-daemon} as ``root'', letting it run build processes as unprivileged users taken from a pool of build users---this is the historical approach;"
+msgstr "executar @command{guix-daemon} como ``root'', permitindo-o executar processos de compilação como usuários não privilegiados selecionados de um conjunto de usuários de compilação — essa é a abordagem histórica;"
+
+msgid "running @command{guix-daemon} as a separate unprivileged user, relying on Linux's @dfn{unprivileged user namespace} functionality to set up isolated environments---this is the option chosen when installing Guix on a systemd-based distribution with the installation script (@pxref{Binary Installation})."
+msgstr "executar o @command{guix-daemon} como um usuário sem privilégios, utilizando a funcionalidade @dfn{unprivileged user namespace} do Linux para configurar ambientes isolados --- esta é a opção escolhida ao instalar o Guix em uma distribuição baseada em systemd com o script de instalação (@pxref{Binary Installation})."
+
+msgid "The sections below describe each of these two configurations in more detail and summarize the kind of build isolation they provide."
+msgstr "As seções abaixo descrevem cada uma dessas duas configurações com mais detalhes e resumem o tipo de isolamento de compilação que elas proporcionam."
+
 msgid "Daemon Running as Root"
-msgstr "Daemon se executando como root"
+msgstr "Daemon executado como root"
 
 msgid "build users"
 msgstr "usuários de compilação"
@@ -4530,11 +4633,135 @@ msgstr "Quando @command{guix-daemon} é executado como @code{root}, você pode n
 msgid "On a GNU/Linux system, a build user pool may be created like this (using Bash syntax and the @code{shadow} commands):"
 msgstr "Em um sistema GNU/Linux, um conjunto de usuários de construção pode ser criado assim (usando a sintaxe Bash e os comandos @code{shadow}):"
 
+msgid ""
+"# groupadd --system guixbuild\n"
+"# for i in $(seq -w 1 10);\n"
+"  do\n"
+"    useradd -g guixbuild -G guixbuild           \\\n"
+"            -d /var/empty -s $(which nologin)   \\\n"
+"            -c \"Guix build user $i\" --system    \\\n"
+"            guixbuilder$i;\n"
+"  done\n"
+msgstr ""
+"# groupadd --system guixbuild\n"
+"# for i in $(seq -w 1 10);\n"
+"  do\n"
+"    useradd -g guixbuild -G guixbuild           \\\n"
+"            -d /var/empty -s $(which nologin)   \\\n"
+"            -c \"Guix build user $i\" --system    \\\n"
+"            guixbuilder$i;\n"
+"  done\n"
+
 msgid "The number of build users determines how many build jobs may run in parallel, as specified by the @option{--max-jobs} option (@pxref{Invoking guix-daemon, @option{--max-jobs}}).  To use @command{guix system vm} and related commands, you may need to add the build users to the @code{kvm} group so they can access @file{/dev/kvm}, using @code{-G guixbuild,kvm} instead of @code{-G guixbuild} (@pxref{Invoking guix system})."
 msgstr "O número de usuários de compilação determina quantos trabalhos de compilação podem ser executados em paralelo, conforme especificado pela opção @option{--max-jobs} (@pxref{Invoking guix-daemon, @option{--max-jobs}}). Para usar @command{guix system vm} e comandos relacionados, você pode precisar adicionar os usuários de compilação ao grupo @code{kvm} para que eles possam acessar @file{/dev/kvm}, usando @code{-G guixbuild,kvm} em vez de @code{-G guixbuild} (@pxref{Invoking guix system})."
 
+msgid "The @code{guix-daemon} program may then be run as @code{root} with the following command@footnote{If your machine uses the systemd init system, copying the @file{@var{prefix}/lib/systemd/system/guix-daemon.service} file to @file{/etc/systemd/system} will ensure that @command{guix-daemon} is automatically started.  Similarly, if your machine uses the Upstart init system, copy the @file{@var{prefix}/lib/upstart/system/guix-daemon.conf} file to @file{/etc/init}.}:"
+msgstr "O programa @code{guix-daemon} pode então ser executado como @code{root} com o seguinte comando@footnote{Se sua máquina usa o sistema init systemd, copiando o arquivo @file{@var{prefixo}/lib/systemd/system/guix-daemon.service} para @file{/etc/systemd/system} irá assegurar que @command{guix-daemon} seja iniciado automaticamente. Da mesma forma, se a sua máquina usa o sistema init Upstart, copie o arquivo @file{@var{prefixo}/lib/upstart/system/guix-daemon.conf} para @file{/etc/init}.}:"
+
 msgid "# guix-daemon --build-users-group=guixbuild\n"
 msgstr "# guix-daemon --build-users-group=guixbuild\n"
+
+msgid "In this setup, @file{/gnu/store} is owned by @code{root}."
+msgstr "Nesta configuração, a pasta @file{/gnu/store} pertence ao root."
+
+msgid "Daemon Running Without Privileges"
+msgstr "Daemon sendo executado sem privilégios"
+
+msgid "build daemon, unprivileged"
+msgstr "build daemon, unprivileged"
+
+msgid "The second and preferred option is to run @command{guix-daemon} @emph{as an unprivileged user}.  It has the advantage of reducing the harm that can be done should a build process manage to exploit a vulnerability in the daemon.  This option requires the use of Linux's unprivileged user namespace mechanism; today it is available and enabled by most GNU/Linux distributions but can still be disabled.  The installation script automatically determines whether this option is available on your system (@pxref{Binary Installation})."
+msgstr "A segunda opção, e a preferida, é executar o @command{guix-daemon} @emph{como um usuário sem privilégios}. Isso tem a vantagem de reduzir os danos que podem ser causados caso um processo de compilação consiga explorar uma vulnerabilidade no daemon. Essa opção requer o uso do mecanismo de namespace de usuário sem privilégios do Linux; atualmente, ele está disponível e habilitado na maioria das distribuições GNU/Linux, mas ainda pode ser desabilitado. O script de instalação determina automaticamente se essa opção está disponível em seu sistema (@pxref{Binary Installation})."
+
+msgid "When using this option, you only need to create one user account, and @command{guix-daemon} will run with the authority of that account:"
+msgstr "Ao usar esta opção, você só precisa criar uma conta de usuário, e o @command{guix-daemon} será executado com a autoridade dessa conta:"
+
+msgid ""
+"# groupadd --system guix-daemon\n"
+"# useradd -g guix-daemon -G guix-daemon              \\\n"
+"          -d /var/empty -s $(which nologin)          \\\n"
+"          -c \"Guix daemon privilege separation user\" \\\n"
+"          --system guix-daemon\n"
+msgstr ""
+"# groupadd --system guix-daemon\n"
+"# useradd -g guix-daemon -G guix-daemon              \\\n"
+"          -d /var/empty -s $(which nologin)          \\\n"
+"          -c \"Guix daemon privilege separation user\" \\\n"
+"          --system guix-daemon\n"
+
+msgid "If the @command{nologin} binary is not found by @command{which nologin}, you may need to specify its path manually.  This will usually be @file{/sbin/nologin} or @file{/usr/sbin/nologin}."
+msgstr "Se o binário @command{nologin} não for encontrado por @command{which nologin}, você pode precisar especificar seu caminho manualmente. Normalmente, será @file{/sbin/nologin} ou @file{/usr/sbin/nologin}."
+
+msgid "In this configuration, @file{/gnu/store} is owned by the @code{guix-daemon} user."
+msgstr "Nesta configuração, a pasta @file{/gnu/store} pertence ao usuário @code{guix-daemon}."
+
+msgid "unprivileged-daemon-migration"
+msgstr "unprivileged-daemon-migration"
+
+msgid "Migrating to the Unprivileged Daemon"
+msgstr "Migrando para o daemon sem privilégios"
+
+msgid "unprivileged daemon, migration"
+msgstr "unprivileged daemon, migration"
+
+msgid "rootless daemon, migration"
+msgstr "rootless daemon, migration"
+
+msgid "To switch an existing installation to the unprivileged execution mode, a number of steps must be taken: creating a new dedicated @code{guix-daemon} user account, changing ownership of the relevant files to @code{guix-daemon}, and ensuring that the @command{guix-daemon} program runs as @code{guix-daemon}."
+msgstr "Para alterar uma instalação existente para o modo de execução sem privilégios, é necessário seguir alguns passos: criar uma nova conta de usuário dedicada @code{guix-daemon}, alterar a propriedade dos arquivos relevantes para @code{guix-daemon} e garantir que o programa @command{guix-daemon} seja executado como @code{guix-daemon}."
+
+msgid "On Guix System, these steps are carried out automatically when you set the @code{privileged?} field of the @code{guix-configuration} record to @code{#f} and reconfigure (@pxref{guix-configuration-type, @code{guix-configuration}})."
+msgstr "No Guix System, essas etapas são executadas automaticamente quando você define o campo @code{privileged?} do registro @code{guix-configuration} como @code{#f} e reconfigura (@pxref{guix-configuration-type, @code{guix-configuration}})."
+
+msgid "However, on a foreign distribution, the process is manual.  The following paragraphs describe what you need to do."
+msgstr "No entanto, em uma distribuição estrangeira, o processo é manual.  Os seguintes parágrafos descrevem o que você precisa fazer."
+
+msgid "Follow the instructions below only after making sure you have a recent version of @command{guix-daemon} with support for unprivileged execution."
+msgstr "Siga as instruções abaixo somente depois de garantir que você está usando uma versão recente do @command{guix-daemon} com suporte a execução desprivilegiada."
+
+msgid "File ownership can be changed, after stopping the daemon, by running the following commands as root (the @command{chown} can take a while if there are many files in @file{/gnu/store}):"
+msgstr "Após parar o daemon, mude o dono dos arquivos executando os seguintes comando como root (o comando @command{chown} pode demorar para terminar de ser executado se houver muitos arquivos em @file{/gnu/store}):"
+
+msgid ""
+"groupadd --system guix-daemon\n"
+"useradd -g guix-daemon -G guix-daemon,kvm               \\\n"
+"        -d /var/empty -s $(which nologin)               \\\n"
+"        -c \"Guix daemon privilege separation user\"      \\\n"
+"        --system guix-daemon\n"
+"\n"
+msgstr ""
+"groupadd --system guix-daemon\n"
+"useradd -g guix-daemon -G guix-daemon,kvm               \\\n"
+"        -d /var/empty -s $(which nologin)               \\\n"
+"        -c \"Guix daemon privilege separation user\"      \\\n"
+"        --system guix-daemon\n"
+"\n"
+
+msgid ""
+"# Make the store writable, in case the systemd 'gnu-store.mount'\n"
+"# unit made it read-only.\n"
+"mount -o remount,rw /gnu/store\n"
+"\n"
+msgstr ""
+"# Faça a loja ter permissão de escrita, caso a unidade de\n"
+"# systemd 'gnu-store.mount' transforme-a em somente leitura.\n"
+"mount -o remount,rw /gnu/store\n"
+"\n"
+
+msgid ""
+"chown -R guix-daemon:guix-daemon                        \\\n"
+"  /gnu                                                  \\\n"
+"  /var/guix/@{gc.lock,daemon-socket,db,discover@}         \\\n"
+"  /var/guix/@{gcroots,offload,substitute,temproots@}      \\\n"
+"  /var/log/guix                                         \\\n"
+"  /etc/guix\n"
+msgstr ""
+"chown -R guix-daemon:guix-daemon                        \\\n"
+"  /gnu                                                  \\\n"
+"  /var/guix/@{gc.lock,daemon-socket,db,discover@}         \\\n"
+"  /var/guix/@{gcroots,offload,substitute,temproots@}      \\\n"
+"  /var/log/guix                                         \\\n"
+"  /etc/guix\n"
 
 msgid "chroot"
 msgstr "chroot"
@@ -6815,9 +7042,6 @@ msgstr "@code{@value{SUBSTITUTE-SERVER-1}} e @code{@value{SUBSTITUTE-SERVER-2}} 
 msgid "Substitute URLs can be either HTTP or HTTPS.  HTTPS is recommended because communications are encrypted; conversely, using HTTP makes all communications visible to an eavesdropper, who could use the information gathered to determine, for instance, whether your system has unpatched security vulnerabilities."
 msgstr "URLs substitutos podem ser HTTP ou HTTPS. HTTPS é recomendado porque as comunicações são criptografadas; por outro lado, usar HTTP torna todas as comunicações visíveis para um bisbilhoteiro, que pode usar as informações coletadas para determinar, por exemplo, se seu sistema tem vulnerabilidades de segurança não corrigidas."
 
-msgid "Substitutes from the official build farms are enabled by default when using Guix System (@pxref{GNU Distribution}).  However, they are disabled by default when using Guix on a foreign distribution, unless you have explicitly enabled them via one of the recommended installation steps (@pxref{Installation}).  The following paragraphs describe how to enable or disable substitutes for the official build farm; the same procedure can also be used to enable substitutes for any other substitute server."
-msgstr "Substitutos das build farms oficiais são habilitados por padrão ao usar o Guix System (@pxref{GNU Distribution}). No entanto, eles são desabilitados por padrão ao usar o Guix em uma distribuição estrangeira, a menos que você os tenha habilitado explicitamente por meio de uma das etapas de instalação recomendadas (@pxref{Installation}). Os parágrafos a seguir descrevem como habilitar ou desabilitar substitutos para a build farm oficial; o mesmo procedimento também pode ser usado para habilitar substitutos para qualquer outro servidor substituto."
-
 msgid "security"
 msgstr "segurança"
 
@@ -7559,15 +7783,6 @@ msgstr "arquivo de configuração para canais"
 msgid "These options are provided for convenience, but you can also specify your configuration in the @file{~/.config/guix/channels.scm} file or using the @option{--channels} option (see below)."
 msgstr "Essas opções são fornecidas para sua conveniência, mas você também pode especificar sua configuração no arquivo @file{~/.config/guix/channels.scm} ou usando a opção @option{--channels} (veja abaixo)."
 
-msgid "--channels=@var{file}"
-msgstr "--channels=@var{arquivo}"
-
-msgid "-C @var{file}"
-msgstr "-C @var{arquivo}"
-
-msgid "Read the list of channels from @var{file} instead of @file{~/.config/guix/channels.scm} or @file{/etc/guix/channels.scm}.  @var{file} must contain Scheme code that evaluates to a list of channel objects.  @xref{Channels}, for more information."
-msgstr "Leia a lista de canais de @var{arquivo} em vez de @file{~/.config/guix/channels.scm} ou @file{/etc/guix/channels.scm}. @var{arquivo} deve conter código Scheme que avalia uma lista de objetos de canal. @xref{Channels}, para mais informações."
-
 msgid "--no-channel-files"
 msgstr "--no-channel-files"
 
@@ -7727,9 +7942,6 @@ msgstr "onde @var{comando} e @var{arg}@dots{} são passados sem modificações p
 
 msgid "Use the @code{guix} channel from the specified @var{url}, at the given @var{commit} (a valid Git commit ID represented as a hexadecimal string or the name of a tag), or @var{branch}."
 msgstr "Use o canal @code{guix} do @var{url} especificado, no @var{commit} fornecido (um ID de commit Git válido representado como uma string hexadecimal ou o nome de uma tag) ou @var{ramo}."
-
-msgid "Read the list of channels from @var{file}.  @var{file} must contain Scheme code that evaluates to a list of channel objects.  @xref{Channels} for more information."
-msgstr "Leia a lista de canais de @var{arquivo}. @var{arquivo} deve conter código Scheme que avalia uma lista de objetos de canal. @xref{Channels} para mais informações."
 
 msgid "Thus, @command{guix time-machine -q} is equivalent to the following Bash command, using the ``process substitution'' syntax (@pxref{Process Substitution,,, bash, The GNU Bash Reference Manual}):"
 msgstr "Portanto, @command{guix time-machine -q} é equivalente ao seguinte comando Bash, usando a sintaxe \"substituição de processo\" (@pxref{Process Substitution,,, bash, Manual de referência do GNU Bash}):"
@@ -12998,6 +13210,90 @@ msgstr "Usar o Guix para gerenciar seu ambiente pessoal traz várias vantagens."
 
 msgid "home services"
 msgstr "serviços pessoais"
+
+msgid ""
+"~$ tree -a ./dotfiles/\n"
+"dotfiles/\n"
+"├── .gitconfig\n"
+"├── .gnupg\n"
+"│   ├── gpg-agent.conf\n"
+"│   └── gpg.conf\n"
+"├── .guile\n"
+"├── .config\n"
+"│   ├── guix\n"
+"│   │   └── channels.scm\n"
+"│   └── nixpkgs\n"
+"│       └── config.nix\n"
+"├── .nix-channels\n"
+"├── .tmux.conf\n"
+"└── .vimrc\n"
+msgstr ""
+"~$ tree -a ./dotfiles/\n"
+"dotfiles/\n"
+"├── .gitconfig\n"
+"├── .gnupg\n"
+"│   ├── gpg-agent.conf\n"
+"│   └── gpg.conf\n"
+"├── .guile\n"
+"├── .config\n"
+"│   ├── guix\n"
+"│   │   └── channels.scm\n"
+"│   └── nixpkgs\n"
+"│       └── config.nix\n"
+"├── .nix-channels\n"
+"├── .tmux.conf\n"
+"└── .vimrc\n"
+
+msgid ""
+"~$ tree -a ./dotfiles/\n"
+"dotfiles/\n"
+"├── git\n"
+"│   └── .gitconfig\n"
+"├── gpg\n"
+"│   └── .gnupg\n"
+"│       ├── gpg-agent.conf\n"
+"│       └── gpg.conf\n"
+"├── guile\n"
+"│   └── .guile\n"
+"├── guix\n"
+"│   └── .config\n"
+"│       └── guix\n"
+"│           └── channels.scm\n"
+"├── nix\n"
+"│   ├── .config\n"
+"│   │   └── nixpkgs\n"
+"│   │       └── config.nix\n"
+"│   └── .nix-channels\n"
+"├── tmux\n"
+"│   └── .tmux.conf\n"
+"└── vim\n"
+"    └── .vimrc\n"
+"\n"
+msgstr ""
+"~$ tree -a ./dotfiles/\n"
+"dotfiles/\n"
+"├── git\n"
+"│   └── .gitconfig\n"
+"├── gpg\n"
+"│   └── .gnupg\n"
+"│       ├── gpg-agent.conf\n"
+"│       └── gpg.conf\n"
+"├── guile\n"
+"│   └── .guile\n"
+"├── guix\n"
+"│   └── .config\n"
+"│       └── guix\n"
+"│           └── channels.scm\n"
+"├── nix\n"
+"│   ├── .config\n"
+"│   │   └── nixpkgs\n"
+"│   │       └── config.nix\n"
+"│   └── .nix-channels\n"
+"├── tmux\n"
+"│   └── .tmux.conf\n"
+"└── vim\n"
+"    └── .vimrc\n"
+"\n"
 
 msgid "{Data Type} home-dotfiles-configuration"
 msgstr "{Tipo de dados} home-dotfiles-configuration"

@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-04-24 03:18+0000\n"
-"PO-Revision-Date: 2025-12-10 14:56+0000\n"
+"POT-Creation-Date: 2026-05-18 03:18+0000\n"
+"PO-Revision-Date: 2026-05-31 06:46+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Slovak <https://translate.codeberg.org/projects/guix/documentation-cookbook/sk/>\n"
 "Language: sk\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 5.14.3\n"
+"X-Generator: Weblate 2026.5\n"
 
 msgid "@documentencoding UTF-8"
 msgstr ""
@@ -826,14 +826,11 @@ msgstr "Toto pole obsahuje popis pôvodu zdrojového kódu. Záznam @code{origin
 msgid "The method, here @code{url-fetch} to download via HTTP/FTP, but other methods"
 msgstr "Spôsob, v tomto prípade @code{url-fetch} pre stiahnutie prostredníctvom HTTP/FTP, ale poznáme"
 
-msgid "exist, such as @code{git-fetch} for Git repositories."
-msgstr "aj iné spôsoby, ako napr. @code{git-fetch} pre Git repozitáre."
-
 msgid "The URI, which is typically some @code{https://} location for @code{url-fetch}.  Here"
 msgstr "Prepojenie (URI), čo obyčajne predstavuje nejaké umiestnenie @code{https://} pre @code{url-fetch}. V tomto prípade"
 
-msgid "the special `mirror://gnu` refers to a set of well known locations, all of which can be used by Guix to fetch the source, should some of them fail."
-msgstr "zvláštne „mirror://gnu“ odkazuje na súbor dobre známych umiestnení, ktoré môžu byť všetky použité na získanie zdrojového kódu ak by niektoré z nich nebolo dostupné."
+msgid "the special @code{mirror://gnu} refers to a set of well known locations, all of which can be used by Guix to fetch the source, should some of them fail."
+msgstr "zvláštne @code{mirror://gnu} odkazuje na súbor dobre známych umiestnení, ktoré môžu byť všetky použité na získanie zdrojového kódu ak by niektoré z nich nebolo dostupné."
 
 msgid "The @code{sha256} checksum of the requested file.  This is essential to ensure"
 msgstr "Kontrolný súčet @code{sha256} požadovaného súboru. Je dôležitý pre zaistenie"
@@ -1405,8 +1402,8 @@ msgstr "Pozrime sa teraz na tieto polia zblízka."
 msgid "@code{git-fetch} method"
 msgstr "spôsob @code{git-fetch}"
 
-msgid "Unlike the @code{url-fetch} method, @code{git-fetch} expects a @code{git-reference} which takes a Git repository and a commit.  The commit can be any Git reference such as tags, so if the @code{version} is tagged, then it can be used directly.  Sometimes the tag is prefixed with a @code{v}, in which case you'd use @code{(commit (string-append \"v\" version))}."
-msgstr "Narozdiel od funkcie @code{url-fetch}, @code{git-fetch} vyžaduje @code{git-reference}, ktorú určuje Git repozitár a príslušná úprava. Úpravou sa rozumie akýkoľvek odkaz Git ako napríklad značka. Teda, ak je @code{version} označená, tak je možné použiť priamo číslo verzie. Niekedy majú značky verzií perdponu @code{v}. V tomto prípade môžete použiť @code{(commit (string-append \"v\" version))}."
+msgid "Unlike the @code{url-fetch} method, @code{git-fetch} expects a @code{git-reference} which takes a Git repository and a commit (@pxref{origin Reference,,, guix, GNU Guix Reference Manual}).  The commit can be any Git reference such as tags, so if the @code{version} is tagged, then it can be used directly.  Sometimes the tag is prefixed with a @code{v}, in which case you'd use @code{(commit (string-append \"v\" version))}."
+msgstr "Narozdiel od funkcie @code{url-fetch}, @code{git-fetch} vyžaduje @code{git-reference}, ktorú určuje Git repozitár a príslušná úprava (@pxref{origin Reference,,, guix, GNU Guix Reference Manual}). Úpravou sa rozumie akýkoľvek odkaz Git ako napríklad značka. Teda, ak je @code{version} označená, tak je možné použiť priamo číslo verzie. Niekedy majú značky verzií perdponu @code{v}. V tomto prípade môžete použiť @code{(commit (string-append \"v\" version))}."
 
 msgid "To ensure that the source code from the Git repository is stored in a directory with a descriptive name, we use @code{(file-name (git-file-name name version))}."
 msgstr "Aby sme sa uistili, že sa zdrojový kód z Git repozitára uloží do priečinka s výstižným názvom, použijeme @code{(file-name (git-file-name name version))}."
@@ -1525,9 +1522,6 @@ msgstr "Oddelené výstupy by ste mali používať len vtedy, keď sa to oplatí
 msgid "Build system arguments"
 msgstr "Argumenty zostavovacieho systému"
 
-msgid "The @code{arguments} is a keyword-value list used to configure the build process."
-msgstr "Pole @code{arguments} obsahuje páry kľúč-hodnota používané pri nastavovaní postupu zostavenia."
-
 msgid "The simplest argument @code{#:tests?} can be used to disable the test suite when building the package.  This is mostly useful when the package does not feature any test suite.  It's strongly recommended to keep the test suite on if there is one."
 msgstr "Ten najjednoduchší argument @code{#:tests?} možno použiť na vynechanie testov po zostavení balíka. Je to užitočné najmä v prípade, keď balík neobsahuje žiadnu testovaciu súpravu. Je dôrazne odporúčané ponechať testovaciu súpravu povolenú, ak je nejaká dostupná."
 
@@ -1541,8 +1535,8 @@ msgstr ""
 "#:make-flags (list (string-append \"prefix=\" (assoc-ref %outputs \"out\"))\n"
 "                   \"CC=gcc\")\n"
 
-msgid "translate into"
-msgstr "sú chápané ako"
+msgid "translate into:"
+msgstr "sú chápané ako:"
 
 msgid "$ make CC=gcc prefix=/gnu/store/...-<out>\n"
 msgstr "$ make CC=gcc prefix=/gnu/store/...-<out>\n"
@@ -1558,9 +1552,6 @@ msgstr "#:configure-flags '(\"-DUSE_SHA1DC=ON\")\n"
 
 msgid "The @code{%build-inputs} variable is also generated in scope.  It's an association table that maps the input names to their store directories."
 msgstr "Dostupná je aj premenná @code{%build-inputs}. Predstavuje tabuľku, ktorá priraďuje názvy vstupov k ich priečinkom v úložisku."
-
-msgid "The @code{phases} keyword lists the sequential steps of the build system.  Typically phases include @code{unpack}, @code{configure}, @code{build}, @code{install} and @code{check}.  To know more about those phases, you need to work out the appropriate build system definition in @samp{$GUIX_CHECKOUT/guix/build/gnu-build-system.scm}:"
-msgstr "Kľúčové slovo @code{phases} predstavuje postupnosť krokov zostavovacieho systému. Medzi bežné kroky patria @code{unpack}, @code{configure}, @code{build}, @code{install} a @code{check}. Ak chcete o týchto krokoch zistiť viac, musíte nájsť to správne zadanie zostavovacieho systému v @samp{$GUIX_CHECKOUT/guix/build/gnu-build-system.scm}:"
 
 msgid "Or from the REPL:"
 msgstr "Alebo cez REPL:"
@@ -1616,17 +1607,14 @@ msgstr "@var{Funkcia} prijíma parametre @code{inputs} a @code{outputs} v tvare 
 msgid "Code staging"
 msgstr "Oddialené vykonanie"
 
-msgid "The astute reader may have noticed the quasi-quote and comma syntax in the argument field.  Indeed, the build code in the package declaration should not be evaluated on the client side, but only when passed to the Guix daemon.  This mechanism of passing code around two running processes is called @uref{https://arxiv.org/abs/1709.00833, code staging}."
-msgstr "Ak ste boli pozorní, mohli ste si všimnúť obrátenú úvodzovku a čiarku v poli parametrov.  Vskutku, zdrojový kód zostavenia v zadaní balíka by sa nemal vykonávať na strane klienta, ale až vtedy, keď sa odovzdá démonovi Guixu.  Toto odovzdávanie zdrojového kódu medzi dvoma procesmi nazývame @uref{https://arxiv.org/abs/1709.00833, oddialené vykonanie}."
-
 msgid "Utility functions"
 msgstr "Pomocné funkcie"
 
 msgid "When customizing @code{phases}, we often need to write code that mimics the equivalent system invocations (@code{make}, @code{mkdir}, @code{cp}, etc.)@: commonly used during regular ``Unix-style'' installations."
 msgstr "Pri prispôsobovaní @code{phases} budete často potrebovať funkcie zodpovedajúce systémovým volaniam (@code{make}, @code{mkdir}, @code{cp}, atď.), ktoré sú zvyčajne dostupné na Unixových systémoch."
 
-msgid "Some like @code{chmod} are native to Guile.  @xref{,,, guile, Guile reference manual} for a complete list."
-msgstr "Niektoré z nich, ako napríklad @code{chmod}, sú priamo dostupné v jazyku Guile.  Viď úplný zoznam v @ref{,,, guile, Guile reference manual}."
+msgid "Some like @code{chmod} are native to Guile.  @xref{File System,,, guile, Guile reference manual} for a complete list."
+msgstr "Niektoré z nich, ako napríklad @code{chmod}, sú priamo dostupné v jazyku Guile.  Viď úplný zoznam v @ref{File System,,, guile, Guile reference manual}."
 
 msgid "Guix provides additional helper functions which prove especially handy in the context of package management."
 msgstr "Guix poskytuje ďalšie pomocné funkcie, užitočné najmä v súvislosti so správou balíkov."
@@ -1811,9 +1799,6 @@ msgstr ""
 msgid "The recursive importer won't import packages for which Guix already has package definitions, except for the very first."
 msgstr "Rekurzívny nahrávač nahrá len balíky, pre ktoré Guix ešte nemá zadanie, okrem úplne prvého."
 
-msgid "Not all applications can be packaged this way, only those relying on a select number of supported systems.  Read about the full list of importers in the guix import section of the manual (@pxref{Invoking guix import,,, guix, GNU Guix Reference Manual})."
-msgstr "Takto vytvoriť zadania balíkov nie je možné pre všetky aplikácie, iba pre tie, ktoré sa opierajú o vybraný počet podporovaných systémov.  Viď úplný zoznam nahrávačov v príslušnom oddiele príručky (@pxref{Invoking guix import,,, guix, GNU Guix Reference Manual})."
-
 msgid "Guix can be smart enough to check for updates on systems it knows.  It can report outdated package definitions with"
 msgstr "Guix môže byť dostatočne múdry na to, aby vyhľadal aktualizácie v systémoch, ktoré pozná.  To, ktoré balíky sú zastarané možno zistiť pomocou"
 
@@ -1858,9 +1843,6 @@ msgstr ""
 "                \"17fpahgh5dyckgz7rwqvzgnhx53cx9kr2xw0szprc6bnqy977fi8\"))))\n"
 "    (native-inputs (list `(,gtk+ \"bin\")))))\n"
 
-msgid "All unspecified fields are inherited from the parent package.  This is very convenient to create alternative packages, for instance with different source, version or compilation options."
-msgstr "Všetky neupresnené polia sú zdedené z nadradeného balíka.  Je to veľmi užitočné na vytváranie obmien balíkov, napr. s odlišným zdrojom, verziou alebo voľbami zostavenia."
-
 msgid "Sadly, some applications can be tough to package.  Sometimes they need a patch to work with the non-standard file system hierarchy enforced by the store.  Sometimes the tests won't run properly.  (They can be skipped but this is not recommended.)  Other times the resulting package won't be reproducible."
 msgstr "Nanešťastie, zadanie balíka môže byť pre niektoré aplikácie veľmi zložité.  Niekedy je potrebná záplata, aby mohla aplikácia fungovať v neobyčajnom systéme súborov úložiska. Niekedy sa zase sústava testov nespúšťa správne (môžete ich preskočiť ale neodporúča sa to).  Inokedy nie je výsledný balík opakovateľný."
 
@@ -1881,9 +1863,6 @@ msgstr "Ďalšie funkcie, ktoré sa oplatí preskúmať, sú interaktívna úpra
 
 msgid "Those fancy features are completely optional and can wait; now is a good time to take a well-deserved break.  With what we've introduced here you should be well armed to package lots of programs.  You can get started right away and hopefully we will see your contributions soon!"
 msgstr "Tieto pokročilé funkcie sú len doplnkové a môžu počkať. Teraz je ten správny čas na zaslúženú prestávku.  S tým, čo sme si ukázali, by ste si mali vystačiť pri zadávaní balíkov pre mnoho programov.  Môžete sa do toho hneď pustiť a dúfame, že nás vašim príspevkom potešíte už čoskoro!"
-
-msgid "The @uref{https://guix.gnu.org/manual/en/html_node/Defining-Packages.html, package reference in the manual}"
-msgstr "@uref{https://guix.gnu.org/manual/en/html_node/Defining-Packages.html, odvolávka na „package“ v príručke}"
 
 msgid "@uref{https://gitlab.com/pjotrp/guix-notes/blob/master/HACKING.org, Pjotr’s hacking guide to GNU Guix}"
 msgstr "@uref{https://gitlab.com/pjotrp/guix-notes/blob/master/HACKING.org, Pjotrova príručka na prispôsobenie GNU Guix}"
@@ -2844,21 +2823,6 @@ msgstr "Vypnite všetky pomocné programy pre systém súborov a zavádzanie"
 
 msgid "Now power it back up, booting with the Debian configuration.  Once it's running, ssh to your server via @code{ssh root@@@var{<your-server-IP-here>}}. (You can find your server IP address in your Linode Summary section.) Now you can run the \"install guix from @pxref{Binary Installation,,, guix, GNU Guix}\" steps:"
 msgstr "Teraz opätovne spustite server s nastavením Debianu.  Po spustení sa k vášmu serveru pripojte cez SSH pomocou @code{ssh root@@@var{<IP-adresa-vasho-servera-tu>}} (IP adresu vášho servera môžete nájsť v odseku „Summary“, t.j. zhrnutie, na Linode). Teraz môžete vykonať inštalačné kroky z @pxref{Binary Installation,,, guix, GNU Guix}:"
-
-msgid ""
-"sudo apt-get install gpg\n"
-"wget https://sv.gnu.org/people/viewgpg.php?user_id=15145 -qO - | gpg --import -\n"
-"wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh\n"
-"chmod +x guix-install.sh\n"
-"./guix-install.sh\n"
-"guix pull\n"
-msgstr ""
-"sudo apt-get install gpg\n"
-"wget https://sv.gnu.org/people/viewgpg.php?user_id=15145 -qO - | gpg --import -\n"
-"wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh\n"
-"chmod +x guix-install.sh\n"
-"./guix-install.sh\n"
-"guix pull\n"
 
 msgid "Now it's time to write out a config for the server.  The key information is below. Save the resulting file as @file{guix-config.scm}."
 msgstr "Teraz je čas dať dohromady nastavenia servera.  Kľúčové poznatky sú uvedené nižšie.  Uložte výsledný súbor ako @file{guix-config.scm}."

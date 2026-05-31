@@ -53,8 +53,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-04-24 03:18+0000\n"
-"PO-Revision-Date: 2026-04-26 18:57+0000\n"
+"POT-Creation-Date: 2026-05-26 03:18+0000\n"
+"PO-Revision-Date: 2026-05-31 17:07+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: French <https://translate.codeberg.org/projects/guix/documentation-manual/fr/>\n"
 "Language: fr\n"
@@ -62,7 +62,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.17\n"
+"X-Generator: Weblate 2026.5\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -688,7 +688,7 @@ msgid "Guile integration so you can easily evaluate code, jump to procedure defi
 msgstr "l'intégration de Guile pour pouvoir facilement évaluer du code, sauter aux définitions des procédures, consulter la documentation, etc."
 
 msgid "The following sections look at editor setups that are known to work well.  Do share your setup for these and other editors for inclusion in this manual! @xref{Submitting Patches}."
-msgstr "Les section suivantes permettent de voir des réglages d'éditeurs qui fonctionnent bien. Partagez vos réglages pour ces éditeurs ou d'autres pour qu'ils soient ajoutés à ce manuel ! @xref{Submitting Patches}."
+msgstr "Les sections suivantes permettent de voir des réglages d'éditeurs qui fonctionnent bien. Partagez vos réglages pour ces éditeurs ou d'autres pour qu'ils soient ajoutés à ce manuel ! @xref{Submitting Patches}."
 
 msgid "Emacs"
 msgstr "Emacs"
@@ -835,8 +835,8 @@ msgstr ""
 "(add-hook 'erc-mode-hook #'bug-reference-mode)\n"
 ";; Ajoutez des crochets supplémentaires pour votre agent utilisateur de courriel : Gnus, mu4e, etc.\n"
 
-msgid "When working from a Git checkout of Guix, setup is automatic: @code{bug-reference} automatically detects that the project is hosted on Codeberg@footnote{ As of Emacs@tie{}30.2, auto-detection works if and only if the Git remote is called @code{upstream} or @code{origin}.} and infers the issue and pull request URL from there."
-msgstr "Lorsque vous travaillez depuis une copie Git de Guix, la configuration est automatique : @code{bug-reference} détecte automatiquement que le projet est hébergé sur Codeberg@footnote{Depuis Emacs@tie{}30.2, la détection automatique ne fonctionne que si la distante Git est appelée @code{upstream} ou @code{origin}.} et infère l'URL pour les problèmes et les demandes de fusion à partir de ça."
+msgid "When working from a Git checkout of Guix, setup is automatic: @code{bug-reference} automatically detects that the project is hosted on Codeberg and infers the issue and pull request URL from there."
+msgstr "Lorsque vous travaillez depuis une copie Git de Guix, la configuration est automatique : @code{bug-reference} détecte automatiquement que le projet est hébergé sur Codeberg et infère l'URL pour les problèmes et les demandes de fusion à partir de ça."
 
 msgid "Guile Studio is a pre-configured Emacs with mostly everything you need to start hacking in Guile. If you are not familiar with Emacs it makes the transition easier for you."
 msgstr "Guile Studio est un éditeur Emacs préconfiguré qui contient presque tout ce dont vous avez besoin pour commencer à bidouiller avec Guile. Si vous n'êtes pas familier avec Emacs, cela vous facilitera la transition."
@@ -1799,6 +1799,9 @@ msgstr "Dans la communauté Rust, il est courant d'avoir plusieurs versions inco
 msgid "In practice we often package development snapshots of Rust libraries and can't simply identify them by version.  In this case, the complete version information can be turned into a version string via @code{git-version}, for example @code{rust-pipewire-0.8.0.fd3d8f7} and @code{rust-pubgrub-0.3.0.b70cf70}."
 msgstr "En pratique, nous empaquetons souvent des images de développement des bibliothèques Rust et ne pouvons pas simplement les identifier par leur version. Dans ce cas, l'information de version complète peut devenir une chaîne de version avec @code{git-version}, par exemple @code{rust-pipewire-0.8.0.fd3d8f7} et @code{rust-pubgrub-0.3.0.b70cf70}."
 
+msgid "When contributing Rust packages, we should have all modifications to these two modules, in the same commit as the package we are contributing."
+msgstr "En contribuant des paquets Rust, vous devez mettre toutes les modifications de ces deux modules dans le même commit que le paquet que vous contribuez."
+
 msgid "To avoid merge conflicts with changes from multiple branches, these two modules are maintained by the Rust team (@pxref{Teams})."
 msgstr "Pour éviter des conflits de fusion avec des changements provenant de plusieurs branches, ces deux modules sont maintenus par l'équipe Rust (@pxref{Teams})."
 
@@ -1831,6 +1834,95 @@ msgstr "@var{module} doit exporter une interface publique @code{lookup-cargo-inp
 
 msgid "@xref{Packaging Rust Crates,,, guix-cookbook, GNU Guix Cookbook}, for packaging workflow."
 msgstr "@xref{Empaqueter des crates Rust,,, guix-cookbook.fr, le livre de recettes de GNU Guix}, pour une méthode d'empaquetage."
+
+msgid "Commit messages"
+msgstr "Messages de commit"
+
+msgid "The commit message must have a general brief mention to entry changes in @code{(gnu packages rust-crates)}. For changes in @code{(gnu packages rust-sources)}, the commit message must explicitly mention all changes to the packages."
+msgstr "Le message de commit doit comprendre une brève mention générique de l'entrée modifiée dans @code{(gnu packages rust-crates)}. Pour des changements dans @code{(gnu packages rust-sources)}, le message de commit doit explicitement mentionner tous les changements dans les paquets."
+
+msgid "Here are some examples for different situations:"
+msgstr "Voici quelques exemples pour différentes situations :"
+
+msgid "Adding a new Rust package:"
+msgstr "Ajout d'un nouveau paquet Rust :"
+
+msgid ""
+"gnu: Add catppuccin-whiskers.\n"
+"\n"
+msgstr ""
+"gnu: Add catppuccin-whiskers.\n"
+"\n"
+
+msgid ""
+"* gnu/packages/rust-apps.scm (catppuccin-whiskers): New variable.\n"
+"* gnu/packages/rust-crates.scm (lookup-cargo-inputs)\n"
+"[catppuccin-whiskers]: New entry.\n"
+msgstr ""
+"* gnu/packages/rust-apps.scm (catppuccin-whiskers): New variable.\n"
+"* gnu/packages/rust-crates.scm (lookup-cargo-inputs)\n"
+"[catppuccin-whiskers]: New entry.\n"
+
+msgid "Updating a simple package:"
+msgstr "Mise à jour d'un paquet simple :"
+
+msgid ""
+"gnu: watchexec: Update to 2.3.2.\n"
+"\n"
+msgstr ""
+"gnu: watchexec: Update to 2.3.2.\n"
+"\n"
+
+msgid ""
+"* gnu/packages/rust-apps.scm (watchexec): Update to 2.3.2.\n"
+"* gnu/packages/rust-crates.scm (lookup-cargo-inputs)[watchexec]:\n"
+"Update entry.\n"
+msgstr ""
+"* gnu/packages/rust-apps.scm (watchexec): Update to 2.3.2.\n"
+"* gnu/packages/rust-crates.scm (lookup-cargo-inputs)[watchexec]:\n"
+"Update entry.\n"
+
+msgid "Updating a package with sources:"
+msgstr "Mise à jour d'un paquet avec des sources :"
+
+msgid ""
+"gnu: typst: Update to 0.14.0.\n"
+"\n"
+msgstr ""
+"gnu: typst: Update to 0.14.0.\n"
+"\n"
+
+msgid ""
+"* gnu/packages/rust-apps.scm (typst): Update to 0.14.0.\n"
+"[arguments]<#:rust>: Use rust-1.88.\n"
+"* gnu/packages/rust-crates.scm (lookup-cargo-inputs)[typst]: Update\n"
+"entry.\n"
+"[rust-syntect-5]: Rename to rust-syntect-5.2.\n"
+"[rust-syntect-5.3]: New entry.\n"
+"* gnu/packages/rust-sources.scm (rust-hypher-0.1): Update to 0.1.6.\n"
+"(rust-syntect-5): Rename to rust-syntect-5.2.\n"
+"[inputs]: Rename cargo-inputs rust-syntect-5 to rust-syntect-5.2.\n"
+"(rust-syntect-5.3): New variable.\n"
+msgstr ""
+"* gnu/packages/rust-apps.scm (typst): Update to 0.14.0.\n"
+"[arguments]<#:rust>: Use rust-1.88.\n"
+"* gnu/packages/rust-crates.scm (lookup-cargo-inputs)[typst]: Update\n"
+"entry.\n"
+"[rust-syntect-5]: Rename to rust-syntect-5.2.\n"
+"[rust-syntect-5.3]: New entry.\n"
+"* gnu/packages/rust-sources.scm (rust-hypher-0.1): Update to 0.1.6.\n"
+"(rust-syntect-5): Rename to rust-syntect-5.2.\n"
+"[inputs]: Rename cargo-inputs rust-syntect-5 to rust-syntect-5.2.\n"
+"(rust-syntect-5.3): New variable.\n"
+
+msgid "Resolving merge conflicts in Pull Requests"
+msgstr "Résolution des conflits de fusion dans les demandes d'ajout"
+
+msgid "For Rust crates, the recommended way to solve merge conflicts is to drop all changes to @code{gnu/packages/rust-crates.scm}, rebase onto the desired branch and run the lockfile importer again, manually adding back all relevant snippets (if any)."
+msgstr "Pour les crates Rust, la manière recommandée de résoudre les conflits est d'oublier tous les changements dans @code{gnu/packages/rust-crates.scm}, rebaser sur la branche souhaitée et d'exécuter de nouveau l'importateur, en rajoutant manuellement les bouts de code appropriés (si nécessaire)."
+
+msgid "@xref{Common Workflow for Resolving Merge Conflicts on Existing Pull Requests,,, guix-cookbook, GNU Guix Cookbook} for a suggested workflow on resolving merge conflicts."
+msgstr "@xref{Méthode de travail habituelle pour résoudre des conflits de fusion sur les demandes d'ajout existantes,,, guix-cookbook.fr, le livre de recettes de GNU Guix} pour une méthodologie de résolution de conflit recommandée."
 
 msgid "Elm"
 msgstr "Elm"
@@ -2269,7 +2361,7 @@ msgid "The @url{https://qa.guix.gnu.org/, QA infrastructure} recognizes such iss
 msgstr "L'@url{https://qa.guix.gnu.org/, infrastructure d'assurance qualité} reconnaît ces tickets et liste les demandes de fusions sur sa page d'accueil. Les points suivants s'applique à la gestion de ces branches :"
 
 msgid "The commits on the branch should be a combination of the patches relevant to the branch.  Patches not related to the topic of the branch should go elsewhere."
-msgstr "Les commits de la branche doivent regrouper les correctifs pertinents pour la banche. Les correctifs hors-sujets doivent être mis ailleurs."
+msgstr "Les commits de la branche doivent regrouper les correctifs pertinents pour la branche. Les correctifs hors-sujets doivent être mis ailleurs."
 
 msgid "Any changes that can be made on the master branch, should be made on the master branch.  If a commit can be split to apply part of the changes on master, this is good to do."
 msgstr "Tous les changements pouvant être faits sur la branche master doivent être faits sur la branche master. Si un commit peut être divisé pour appliquer seulement une partie des changements sur master, cela devrait être fait."
@@ -3531,138 +3623,6 @@ msgstr "Manuel de référence de GNU Guix"
 msgid "version.texi"
 msgstr "version-fr.texi"
 
-msgid "Copyright @copyright{} 2012--2026 Ludovic Courtès@* Copyright @copyright{} 2013, 2014, 2016, 2024 Andreas Enge@* Copyright @copyright{} 2013 Nikita Karetnikov@* Copyright @copyright{} 2014, 2015, 2016 Alex Kost@* Copyright @copyright{} 2015, 2016 Mathieu Lirzin@* Copyright @copyright{} 2014 Pierre-Antoine Rault@* Copyright @copyright{} 2015 Taylan Ulrich Bayırlı/Kammer@* Copyright @copyright{} 2015, 2016, 2017, 2019, 2020, 2021, 2023, 2025 Leo Famulari@* Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus@* Copyright @copyright{} 2016 Ben Woodcroft@* Copyright @copyright{} 2016, 2017, 2018, 2021 Chris Marusich@* Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2025 Efraim Flashner@* Copyright @copyright{} 2016 John Darrington@* Copyright @copyright{} 2016, 2017 Nikita Gillmann@* Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025 Janneke Nieuwenhuizen@* Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Julien Lepiller@* Copyright @copyright{} 2016 Alex ter Weele@* Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Christopher Baines@* Copyright @copyright{} 2017, 2018, 2019 Clément Lassieur@* Copyright @copyright{} 2017, 2018, 2020, 2021, 2022 Mathieu Othacehe@* Copyright @copyright{} 2017 Federico Beffa@* Copyright @copyright{} 2017, 2018, 2024, 2025 Carlo Zancanaro@* Copyright @copyright{} 2017 Thomas Danckaert@* Copyright @copyright{} 2017 humanitiesNerd@* Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@* Copyright @copyright{} 2017, 2018, 2019, 2020, 2021, 2022 Marius Bakke@* Copyright @copyright{} 2017, 2019, 2020, 2022 Hartmut Goebel@* Copyright @copyright{} 2017, 2019--2025 Maxim Cournoyer@* Copyright @copyright{} 2017–2022 Tobias Geerinckx-Rice@* Copyright @copyright{} 2017 George Clemmer@* Copyright @copyright{} 2017 Andy Wingo@* Copyright @copyright{} 2017, 2018, 2019, 2020, 2023, 2024, 2025 Arun Isaac@* Copyright @copyright{} 2017 nee@* Copyright @copyright{} 2018 Rutger Helling@* Copyright @copyright{} 2018, 2021, 2023, 2025, 2026 Oleg Pykhalov@* Copyright @copyright{} 2018 Mike Gerwitz@* Copyright @copyright{} 2018 Pierre-Antoine Rouby@* Copyright @copyright{} 2018, 2019 Gábor Boskovits@* Copyright @copyright{} 2018, 2019, 2020, 2022, 2023, 2024 Florian Pelz@* Copyright @copyright{} 2018 Laura Lazzati@* Copyright @copyright{} 2018 Alex Vong@* Copyright @copyright{} 2019 Josh Holland@* Copyright @copyright{} 2019, 2020 Diego Nicola Barbato@* Copyright @copyright{} 2019 Ivan Petkov@* Copyright @copyright{} 2019 Jakob L. Kreuze@* Copyright @copyright{} 2019 Kyle Andrews@* Copyright @copyright{} 2019 Alex Griffin@* Copyright @copyright{} 2019, 2020, 2021, 2022 Guillaume Le Vaillant@* Copyright @copyright{} 2020 Liliana Marie Prikler@* Copyright @copyright{} 2019, 2020, 2021, 2022, 2023 Simon Tournier@* Copyright @copyright{} 2020 Wiktor Żelazny@* Copyright @copyright{} 2020 Damien Cassou@* Copyright @copyright{} 2020 Jakub Kądziołka@* Copyright @copyright{} 2020 Jack Hill@* Copyright @copyright{} 2020 Naga Malleswari@* Copyright @copyright{} 2020, 2021 Brice Waegeneire@* Copyright @copyright{} 2020 R Veera Kumar@* Copyright @copyright{} 2020, 2021, 2022 Pierre Langlois@* Copyright @copyright{} 2020 pinoaffe@* Copyright @copyright{} 2020, 2023 André Batista@* Copyright @copyright{} 2020, 2021 Alexandru-Sergiu Marton@* Copyright @copyright{} 2020 raingloom@* Copyright @copyright{} 2020 Daniel Brooks@* Copyright @copyright{} 2020 John Soo@* Copyright @copyright{} 2020 Jonathan Brielmaier@* Copyright @copyright{} 2020 Edgar Vincent@* Copyright @copyright{} 2021, 2022 Maxime Devos@* Copyright @copyright{} 2021 B. Wilson@* Copyright @copyright{} 2021 Xinglu Chen@* Copyright @copyright{} 2021 Raghav Gururajan@* Copyright @copyright{} 2021 Domagoj Stolfa@* Copyright @copyright{} 2021 Hui Lu@* Copyright @copyright{} 2021 pukkamustard@* Copyright @copyright{} 2021 Alice Brenon@* Copyright @copyright{} 2021-2023 Josselin Poiret@* Copyright @copyright{} 2021, 2023 muradm@* Copyright @copyright{} 2021, 2022 Andrew Tropin@* Copyright @copyright{} 2021 Sarah Morgensen@* Copyright @copyright{} 2022 Remco van 't Veer@* Copyright @copyright{} 2022 Aleksandr Vityazev@* Copyright @copyright{} 2022 Philip M@sup{c}Grath@* Copyright @copyright{} 2022 Karl Hallsby@* Copyright @copyright{} 2022 Justin Veilleux@* Copyright @copyright{} 2022 Reily Siegel@* Copyright @copyright{} 2022 Simon Streit@* Copyright @copyright{} 2022 (@* Copyright @copyright{} 2022 John Kehayias@* Copyright @copyright{} 2022⁠–⁠2023 Bruno Victal@* Copyright @copyright{} 2022 Ivan Vilata-i-Balaguer@* Copyright @copyright{} 2023-2026 Giacomo Leidi@* Copyright @copyright{} 2022 Antero Mejr@* Copyright @copyright{} 2023 Karl Hallsby@* Copyright @copyright{} 2023 Nathaniel Nicandro@* Copyright @copyright{} 2023 Tanguy Le Carrour@* Copyright @copyright{} 2023-2024 Zheng Junjie@* Copyright @copyright{} 2023 Brian Cully@* Copyright @copyright{} 2023 Felix Lechner@* Copyright @copyright{} 2023 Foundation Devices, Inc.@* Copyright @copyright{} 2023 Thomas Ieong@* Copyright @copyright{} 2023 Saku Laesvuori@* Copyright @copyright{} 2023 Graham James Addis@* Copyright @copyright{} 2023-2025 Tomas Volf@* Copyright @copyright{} 2024, 2025 Herman Rimm@* Copyright @copyright{} 2024 Matthew Trzcinski@* Copyright @copyright{} 2024 Richard Sent@* Copyright @copyright{} 2024 Dariqq@* Copyright @copyright{} 2024 Denis 'GNUtoo' Carikli@* Copyright @copyright{} 2024 Fabio Natali@* Copyright @copyright{} 2024 Arnaud Daby-Seesaram@* Copyright @copyright{} 2024 Wilko Meyer@* Copyright @copyright{} 2024-2025 Nigko Yerden@* Copyright @copyright{} 2024 Troy Figiel@* Copyright @copyright{} 2024 Sharlatan Hellseher@* Copyright @copyright{} 2024 45mg@* Copyright @copyright{} 2024 Greg Hogan@* Copyright @copyright{} 2025 Sören Tempel@* Copyright @copyright{} 2025 Rostislav Svoboda@* Copyright @copyright{} 2025 Zacchaeus@* Copyright @copyright{} 2025 Sergio Pastor Pérez@* Copyright @copyright{} 2024 Evgeny Pisemsky@* Copyright @copyright{} 2025 jgart@* Copyright @copyright{} 2025 Artur Wroblewski@* Copyright @copyright{} 2025 Edouard Klein@* Copyright @copyright{} 2025 Rodion Goritskov@* Copyright @copyright{} 2025 dan@* Copyright @copyright{} 2025 Noé Lopez@* Copyright @copyright{} 2026 David Elsing@* Copyright @copyright{} 2026 Nguyễn Gia Phong@* Copyright @copyright{} 2026 Yarl Baudig@*"
-msgstr ""
-"Copyright @copyright{} 2012--2026 Ludovic Courtès@*\n"
-"Copyright @copyright{} 2013, 2014, 2016, 2024 Andreas Enge@*\n"
-"Copyright @copyright{} 2013 Nikita Karetnikov@*\n"
-"Copyright @copyright{} 2014, 2015, 2016 Alex Kost@*\n"
-"Copyright @copyright{} 2015, 2016 Mathieu Lirzin@*\n"
-"Copyright @copyright{} 2014 Pierre-Antoine Rault@*\n"
-"Copyright @copyright{} 2015 Taylan Ulrich Bayırlı/Kammer@*\n"
-"Copyright @copyright{} 2015, 2016, 2017, 2019, 2020, 2021, 2023, 2025 Leo Famulari@*\n"
-"Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus@*\n"
-"Copyright @copyright{} 2016 Ben Woodcroft@*\n"
-"Copyright @copyright{} 2016, 2017, 2018, 2021 Chris Marusich@*\n"
-"Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2025 Efraim Flashner@*\n"
-"Copyright @copyright{} 2016 John Darrington@*\n"
-"Copyright @copyright{} 2016, 2017 Nikita Gillmann@*\n"
-"Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025 Janneke Nieuwenhuizen@*\n"
-"Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Julien Lepiller@*\n"
-"Copyright @copyright{} 2016 Alex ter Weele@*\n"
-"Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021 Christopher Baines@*\n"
-"Copyright @copyright{} 2017, 2018, 2019 Clément Lassieur@*\n"
-"Copyright @copyright{} 2017, 2018, 2020, 2021, 2022 Mathieu Othacehe@*\n"
-"Copyright @copyright{} 2017 Federico Beffa@*\n"
-"Copyright @copyright{} 2017, 2018, 2024, 2025 Carlo Zancanaro@*\n"
-"Copyright @copyright{} 2017 Thomas Danckaert@*\n"
-"Copyright @copyright{} 2017 humanitiesNerd@*\n"
-"Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@*\n"
-"Copyright @copyright{} 2017, 2018, 2019, 2020, 2021, 2022 Marius Bakke@*\n"
-"Copyright @copyright{} 2017, 2019, 2020, 2022 Hartmut Goebel@*\n"
-"Copyright @copyright{} 2017, 2019--2025 Maxim Cournoyer@*\n"
-"Copyright @copyright{} 2017–2022 Tobias Geerinckx-Rice@*\n"
-"Copyright @copyright{} 2017 George Clemmer@*\n"
-"Copyright @copyright{} 2017 Andy Wingo@*\n"
-"Copyright @copyright{} 2017, 2018, 2019, 2020, 2023, 2024, 2025 Arun Isaac@*\n"
-"Copyright @copyright{} 2017 nee@*\n"
-"Copyright @copyright{} 2018 Rutger Helling@*\n"
-"Copyright @copyright{} 2018, 2021, 2023, 2025, 2026 Oleg Pykhalov@*\n"
-"Copyright @copyright{} 2018 Mike Gerwitz@*\n"
-"Copyright @copyright{} 2018 Pierre-Antoine Rouby@*\n"
-"Copyright @copyright{} 2018, 2019 Gábor Boskovits@*\n"
-"Copyright @copyright{} 2018, 2019, 2020, 2022, 2023, 2024 Florian Pelz@*\n"
-"Copyright @copyright{} 2018 Laura Lazzati@*\n"
-"Copyright @copyright{} 2018 Alex Vong@*\n"
-"Copyright @copyright{} 2019 Josh Holland@*\n"
-"Copyright @copyright{} 2019, 2020 Diego Nicola Barbato@*\n"
-"Copyright @copyright{} 2019 Ivan Petkov@*\n"
-"Copyright @copyright{} 2019 Jakob L. Kreuze@*\n"
-"Copyright @copyright{} 2019 Kyle Andrews@*\n"
-"Copyright @copyright{} 2019 Alex Griffin@*\n"
-"Copyright @copyright{} 2019, 2020, 2021, 2022 Guillaume Le Vaillant@*\n"
-"Copyright @copyright{} 2020 Liliana Marie Prikler@*\n"
-"Copyright @copyright{} 2019, 2020, 2021, 2022, 2023 Simon Tournier@*\n"
-"Copyright @copyright{} 2020 Wiktor Żelazny@*\n"
-"Copyright @copyright{} 2020 Damien Cassou@*\n"
-"Copyright @copyright{} 2020 Jakub Kądziołka@*\n"
-"Copyright @copyright{} 2020 Jack Hill@*\n"
-"Copyright @copyright{} 2020 Naga Malleswari@*\n"
-"Copyright @copyright{} 2020, 2021 Brice Waegeneire@*\n"
-"Copyright @copyright{} 2020 R Veera Kumar@*\n"
-"Copyright @copyright{} 2020, 2021, 2022 Pierre Langlois@*\n"
-"Copyright @copyright{} 2020 pinoaffe@*\n"
-"Copyright @copyright{} 2020, 2023 André Batista@*\n"
-"Copyright @copyright{} 2020, 2021 Alexandru-Sergiu Marton@*\n"
-"Copyright @copyright{} 2020 raingloom@*\n"
-"Copyright @copyright{} 2020 Daniel Brooks@*\n"
-"Copyright @copyright{} 2020 John Soo@*\n"
-"Copyright @copyright{} 2020 Jonathan Brielmaier@*\n"
-"Copyright @copyright{} 2020 Edgar Vincent@*\n"
-"Copyright @copyright{} 2021, 2022 Maxime Devos@*\n"
-"Copyright @copyright{} 2021 B. Wilson@*\n"
-"Copyright @copyright{} 2021 Xinglu Chen@*\n"
-"Copyright @copyright{} 2021 Raghav Gururajan@*\n"
-"Copyright @copyright{} 2021 Domagoj Stolfa@*\n"
-"Copyright @copyright{} 2021 Hui Lu@*\n"
-"Copyright @copyright{} 2021 pukkamustard@*\n"
-"Copyright @copyright{} 2021 Alice Brenon@*\n"
-"Copyright @copyright{} 2021-2023 Josselin Poiret@*\n"
-"Copyright @copyright{} 2021, 2023 muradm@*\n"
-"Copyright @copyright{} 2021, 2022 Andrew Tropin@*\n"
-"Copyright @copyright{} 2021 Sarah Morgensen@*\n"
-"Copyright @copyright{} 2022 Remco van 't Veer@*\n"
-"Copyright @copyright{} 2022 Aleksandr Vityazev@*\n"
-"Copyright @copyright{} 2022 Philip M@sup{c}Grath@*\n"
-"Copyright @copyright{} 2022 Karl Hallsby@*\n"
-"Copyright @copyright{} 2022 Justin Veilleux@*\n"
-"Copyright @copyright{} 2022 Reily Siegel@*\n"
-"Copyright @copyright{} 2022 Simon Streit@*\n"
-"Copyright @copyright{} 2022 (@*\n"
-"Copyright @copyright{} 2022 John Kehayias@*\n"
-"Copyright @copyright{} 2022⁠–⁠2023 Bruno Victal@*\n"
-"Copyright @copyright{} 2022 Ivan Vilata-i-Balaguer@*\n"
-"Copyright @copyright{} 2023-2026 Giacomo Leidi@*\n"
-"Copyright @copyright{} 2022 Antero Mejr@*\n"
-"Copyright @copyright{} 2023 Karl Hallsby@*\n"
-"Copyright @copyright{} 2023 Nathaniel Nicandro@*\n"
-"Copyright @copyright{} 2023 Tanguy Le Carrour@*\n"
-"Copyright @copyright{} 2023-2024 Zheng Junjie@*\n"
-"Copyright @copyright{} 2023 Brian Cully@*\n"
-"Copyright @copyright{} 2023 Felix Lechner@*\n"
-"Copyright @copyright{} 2023 Foundation Devices, Inc.@*\n"
-"Copyright @copyright{} 2023 Thomas Ieong@*\n"
-"Copyright @copyright{} 2023 Saku Laesvuori@*\n"
-"Copyright @copyright{} 2023 Graham James Addis@*\n"
-"Copyright @copyright{} 2023-2025 Tomas Volf@*\n"
-"Copyright @copyright{} 2024, 2025 Herman Rimm@*\n"
-"Copyright @copyright{} 2024 Matthew Trzcinski@*\n"
-"Copyright @copyright{} 2024 Richard Sent@*\n"
-"Copyright @copyright{} 2024 Dariqq@*\n"
-"Copyright @copyright{} 2024 Denis 'GNUtoo' Carikli@*\n"
-"Copyright @copyright{} 2024 Fabio Natali@*\n"
-"Copyright @copyright{} 2024 Arnaud Daby-Seesaram@*\n"
-"Copyright @copyright{} 2024 Wilko Meyer@*\n"
-"Copyright @copyright{} 2024-2025 Nigko Yerden@*\n"
-"Copyright @copyright{} 2024 Troy Figiel@*\n"
-"Copyright @copyright{} 2024 Sharlatan Hellseher@*\n"
-"Copyright @copyright{} 2024 45mg@*\n"
-"Copyright @copyright{} 2024 Greg Hogan@*\n"
-"Copyright @copyright{} 2025 Sören Tempel@*\n"
-"Copyright @copyright{} 2025 Rostislav Svoboda@*\n"
-"Copyright @copyright{} 2025 Zacchaeus@*\n"
-"Copyright @copyright{} 2025 Sergio Pastor Pérez@*\n"
-"Copyright @copyright{} 2024 Evgeny Pisemsky@*\n"
-"Copyright @copyright{} 2025 jgart@*\n"
-"Copyright @copyright{} 2025 Artur Wroblewski@*\n"
-"Copyright @copyright{} 2025 Edouard Klein@*\n"
-"Copyright @copyright{} 2025 Rodion Goritskov@*\n"
-"Copyright @copyright{} 2025 dan@*\n"
-"Copyright @copyright{} 2025 Noé Lopez@*\n"
-"Copyright @copyright{} 2026 David Elsing@*\n"
-"Copyright @copyright{} 2026 Nguyễn Gia Phong@*\n"
-"Copyright @copyright{} 2026 Yarl Baudig@*"
-
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license is included in the section entitled ``GNU Free Documentation License''."
 msgstr "Vous avez la permission de copier, distribuer ou modifier ce document sous les termes de la Licence GNU Free Documentation, version 1.3 ou toute version ultérieure publiée par la Free Software Foundation ; sans section invariante, texte de couverture et sans texte de quatrième de couverture.  Une copie de la licence est incluse dans la section intitulée « GNU Free Documentation License »."
 
@@ -3951,6 +3911,9 @@ msgstr "Mettre à niveau Guix"
 msgid "Upgrading Guix and its build daemon."
 msgstr "Mettre à niveau Guix et son démon de construction."
 
+msgid "Installation with a pre-mounted store"
+msgstr "Installation avec un dépôt pré-monté"
+
 msgid "Build Environment Setup"
 msgstr "Réglages de l'environnement de construction"
 
@@ -3968,6 +3931,12 @@ msgstr "Support de SELinux"
 
 msgid "Using an SELinux policy for the daemon."
 msgstr "Utiliser une politique SELinux pour le démon."
+
+msgid "AppArmor Support"
+msgstr "Prise en charge d'AppArmor"
+
+msgid "Using an AppArmor profile for the daemon."
+msgstr "Utiliser un profil AppArmor pour le démon."
 
 msgid "Limitations"
 msgstr "Limitations"
@@ -4968,6 +4937,15 @@ msgstr "Média : Services personnels multimédia"
 msgid "Services for managing media."
 msgstr "Services pour gérer vos médias."
 
+msgid "mpv Media Player"
+msgstr "Le lecteur multimédia mpv"
+
+msgid "Niri: Niri window manager"
+msgstr "Niri : Gestionnaire de fenêtre Niri"
+
+msgid "Setting up the Niri."
+msgstr "Configuration de Niri."
+
 msgid "Sway: Sway window manager"
 msgstr "Sway : Gestionnaire de fenêtre Sway"
 
@@ -5336,6 +5314,15 @@ msgstr "Certaines distributions GNU/Linux, comme OpenSUSE, Alpine et NixOS fourn
 msgid "We advise system administrators who install Guix, both from the installation script or @i{via} the native package manager of their foreign distribution, to also regularly read and follow security notices, as shown by @command{guix pull}."
 msgstr "Nous conseillons aux administrateurs et administratrices système qui installent Guix, aussi bien par le script d'installation que via le gestionnaire de paquets natif de leur distribution externe, de régulièrement lire et suivre les notices de sécurité, affichées par @command{guix pull}."
 
+msgid "pre-mounted store, installation on small root file system"
+msgstr "dépôt pré-monté, installation sur un petit système de fichiers racine"
+
+msgid "bind mounted store, binary installation"
+msgstr "montage dupliqué du dépôt, installation binaire"
+
+msgid "binary installation using an alternative storage device"
+msgstr "installation binaire avec un périphérique de stockage alternatif"
+
 msgid "daemon"
 msgstr "démon"
 
@@ -5356,12 +5343,6 @@ msgstr "Les opérations comme la construction d'un paquet ou le lancement du ram
 
 msgid "The following sections explain how to prepare the build daemon's environment.  @xref{Substitutes} for how to allow the daemon to download pre-built binaries."
 msgstr "Les sections suivantes expliquent comment préparer l'environnement du démon de construction.  @xref{Substituts} pour apprendre comment permettre le téléchargement de binaires pré-construits."
-
-msgid "AppArmor Support"
-msgstr "Prise en charge d'AppArmor"
-
-msgid "Using an AppArmor profile for the daemon."
-msgstr "Utiliser un profil AppArmor pour le démon."
 
 msgid "build environment"
 msgstr "environnement de construction"
@@ -8029,9 +8010,6 @@ msgstr "@code{@value{SUBSTITUTE-SERVER-1}} et @code{@value{SUBSTITUTE-SERVER-2}}
 msgid "Substitute URLs can be either HTTP or HTTPS.  HTTPS is recommended because communications are encrypted; conversely, using HTTP makes all communications visible to an eavesdropper, who could use the information gathered to determine, for instance, whether your system has unpatched security vulnerabilities."
 msgstr "Les URL des substituts peuvent être soit en HTTP soit en HTTPS.  Le HTTPS est recommandé parce que les communications sont chiffrées ; à l'inverse HTTP rend les communications visibles pour un espion qui peut utiliser les informations accumulées sur vous pour déterminer par exemple si votre système a des vulnérabilités de sécurités non corrigées."
 
-msgid "Substitutes from the official build farms are enabled by default when using Guix System (@pxref{GNU Distribution}).  However, they are disabled by default when using Guix on a foreign distribution, unless you have explicitly enabled them via one of the recommended installation steps (@pxref{Installation}).  The following paragraphs describe how to enable or disable substitutes for the official build farm; the same procedure can also be used to enable substitutes for any other substitute server."
-msgstr "Les substituts des fermes de construction officielles sont activés par défaut dans la distribution système Guix (@pxref{GNU Distribution}).  Cependant, ils sont désactivés par défaut lorsque vous utilisez Guix sur une distribution externe, à moins que vous ne les ayez explicitement activés via l'une des étapes d'installation recommandées (@pxref{Installation}).  Les paragraphes suivants décrivent comment activer ou désactiver les substituts pour la ferme de construction officielle ; la même procédure peut être utilisée pour activer les substituts de n'importe quel autre serveur de substituts."
-
 msgid "security"
 msgstr "sécurité"
 
@@ -8819,15 +8797,6 @@ msgstr "fichier de configuration pour les canaux"
 msgid "These options are provided for convenience, but you can also specify your configuration in the @file{~/.config/guix/channels.scm} file or using the @option{--channels} option (see below)."
 msgstr "Ces options sont fournies pour votre confort, mais vous pouvez aussi spécifier votre configuration dans le fichier @file{~/.config/guix/channels.scm} ou en utilisant l'option @option{--channels} (voir plus bas)."
 
-msgid "--channels=@var{file}"
-msgstr "--channels=@var{file}"
-
-msgid "-C @var{file}"
-msgstr "-C @var{file}"
-
-msgid "Read the list of channels from @var{file} instead of @file{~/.config/guix/channels.scm} or @file{/etc/guix/channels.scm}.  @var{file} must contain Scheme code that evaluates to a list of channel objects.  @xref{Channels}, for more information."
-msgstr "Lit la liste des canaux dans @var{file} plutôt que dans @file{~/.config/guix/channels.scm} ou @file{/etc/guix/channels.scm}.  @var{file} doit contenir un code Scheme qui s'évalue en une liste d'objets de canaux.  @xref{Channels} pour plus d'informations."
-
 msgid "--no-channel-files"
 msgstr "--no-channel-files"
 
@@ -8996,9 +8965,6 @@ msgstr "où @var{command} et @var{arg}@dots{} sont passés sans modification à 
 
 msgid "Use the @code{guix} channel from the specified @var{url}, at the given @var{commit} (a valid Git commit ID represented as a hexadecimal string or the name of a tag), or @var{branch}."
 msgstr "Utiliser le canal @code{guix} depuis l'@var{url} spécifiée, au @var{commit} donné (un commit Git valide représenté par une chaîne hexadécimale ou le nom d'une étiquette) ou à la branche @var{branch}."
-
-msgid "Read the list of channels from @var{file}.  @var{file} must contain Scheme code that evaluates to a list of channel objects.  @xref{Channels} for more information."
-msgstr "Lit la liste des canaux dans @var{file}.  @var{file} doit contenir un code Scheme qui s'évalue en une liste d'objets de canaux.  @xref{Channels} pour plus d'informations."
 
 msgid "Thus, @command{guix time-machine -q} is equivalent to the following Bash command, using the ``process substitution'' syntax (@pxref{Process Substitution,,, bash, The GNU Bash Reference Manual}):"
 msgstr "Ainsi, @command{guix time-machine -q} est équivalent à la commande Bash suivante, en utilisant la syntaxe de « substitution de processus » (@pxref{Process Substitution,,, bash, le manuel de référence de GNU Bash}) :"
@@ -17882,8 +17848,8 @@ msgstr "La commande @command{guix hash} calcule le hash d'un fichier.  C'est sur
 msgid "guix hash @var{option} @var{file} ...\n"
 msgstr "guix hash @var{option} @var{fichier} …\n"
 
-msgid "When @var{file} is @code{-} (a hyphen), @command{guix hash} computes the hash of data read from standard input.  @command{guix hash} has the following options:"
-msgstr "Lorsque @var{fichier} est @code{-} (un tiret), @command{guix hash} calcul le hash des données lues depuis l'entrée standard.  @command{guix hash} a les options suivantes :"
+msgid "Here are a few examples:"
+msgstr "Voici quelques exemples :"
 
 msgid "Compute a hash using the specified @var{algorithm}, @code{sha256} by default."
 msgstr "Calcule un hash en utilisant l' @var{algorithme} spécifié, @code{sha256} par défaut."
@@ -18349,12 +18315,6 @@ msgstr "OCaml"
 msgid "Import metadata from the @uref{https://opam.ocaml.org/, OPAM} package repository used by the OCaml community."
 msgstr "Importe les métadonnées du répertoire de paquets @uref{https://opam.ocaml.org/, OPAM} utilisé par la communauté OCaml."
 
-msgid "Composer"
-msgstr "Composer"
-
-msgid "PHP"
-msgstr "PHP"
-
 msgid "--repo"
 msgstr "--repo"
 
@@ -18384,6 +18344,12 @@ msgstr "Les dépôts sont passés à cette commande par ordre de préférence. L
 
 msgid "Also, please note that versions are not compared across repositories.  The first repository (from left to right) that has at least one version of a given package will prevail over any others, and the version imported will be the latest one found @emph{in this repository only}."
 msgstr "Ainsi, remarquez que les versions ne sont pas comparées entre dépôts. Le premier dépôt (de gauche à droite) qui a au moins une version d'un paquet donné prendra le pas sur les autres, et la version importée sera la plus récente trouvée @emph{dans ce dépôt uniquement}."
+
+msgid "Composer"
+msgstr "Composer"
+
+msgid "PHP"
+msgstr "PHP"
 
 msgid "go"
 msgstr "go"
@@ -18872,51 +18838,6 @@ msgstr "formatage, du style du code"
 msgid "format conventions"
 msgstr "Conventions de formatage"
 
-msgid "The @command{guix style} command helps users and packagers alike style their package definitions and configuration files according to the latest fashionable trends.  It can either reformat whole files, with the @option{--whole-file} option, or apply specific @dfn{styling rules} to individual package definitions.  The command currently provides the following styling rules:"
-msgstr "La commande @command{guix style} aide aussi bien les utilisateur·ices que les auteur·ices de paquets à présenter leurs définitions de paquets et leurs fichiers de configuration suivant la toute dernière mode. Elle peut aussi bien reformater des fichiers entiers, avec l'option @option{--whole-file}, qu'appliquer des @dfn{règles de style} spécifiques à des définitions de paquets individuelles. La commande fournit actuellement les règles stylistiques suivantes :"
-
-msgid "formatting package definitions according to the project's conventions (@pxref{Formatting Code});"
-msgstr "formater les définitions de paquets suivant les conventions du projet (@pxref{Formatting Code}) ;"
-
-msgid "rewriting package inputs to the ``new style'', as explained below."
-msgstr "réécrire les entrées d'un paquet dans le « nouveau style » expliqué plus bas."
-
-msgid "The way package inputs are written is going through a transition (@pxref{package Reference}, for more on package inputs).  Until version 1.3.0, package inputs were written using the ``old style'', where each input was given an explicit label, most of the time the package name:"
-msgstr "La manière dont les entrées des paquets sont écrites est en phase de transition  (@pxref{package Reference}, pour plus d'information sur les entrées des paquets). Jusqu'à la version 1.3.0, les entrées des paquets étaient écrites avec l'« ancien style », où chaque entrée était associée à une étiquette explicite, la plupart du temps le nom du paquet :"
-
-msgid ""
-"(package\n"
-"  ;; @dots{}\n"
-"  ;; The \"old style\" (deprecated).\n"
-"  (inputs `((\"libunistring\" ,libunistring)\n"
-"            (\"libffi\" ,libffi))))\n"
-msgstr ""
-"(package\n"
-"  ;; @dots{}\n"
-"  ;; L'« ancien style » (obsolète).\n"
-"  (inputs `((\"libunistring\" ,libunistring)\n"
-"            (\"libffi\" ,libffi))))\n"
-
-msgid "Today, the old style is deprecated and the preferred style looks like this:"
-msgstr "Aujourd'hui, l'ancien style est obsolète et le style de préférence ressemble à ceci :"
-
-msgid ""
-"(package\n"
-"  ;; @dots{}\n"
-"  ;; The \"new style\".\n"
-"  (inputs (list libunistring libffi)))\n"
-msgstr ""
-"(package\n"
-"  ;; @dots{}\n"
-"  ;; Le « nouveau style ».\n"
-"  (inputs (list libunistring libffi)))\n"
-
-msgid "Likewise, uses of @code{alist-delete} and friends to manipulate inputs is now deprecated in favor of @code{modify-inputs} (@pxref{Defining Package Variants}, for more info on @code{modify-inputs})."
-msgstr "De la même manière, l'utilisation de @code{alist-delete} et compagnie pour manipuler les entrées est maintenant obsolète en faveur de @code{modify-inputs} (@pxref{Defining Package Variants}, pour plus d'information sur @code{modify-inputs})."
-
-msgid "In the vast majority of cases, this is a purely mechanical change on the surface syntax that does not even incur a package rebuild.  Running @command{guix style -S inputs} can do that for you, whether you're working on packages in Guix proper or in an external channel."
-msgstr "Dans la grande majorité des cas, c'est un changement purement mécanique de la syntaxe qui ne provoque même pas de reconstruction du paquet. Lancer @command{guix style -S inputs} peut le faire pour vous, que vous travailliez sur des paquets dans Guix ou dans un canal externe."
-
 msgid "guix style [@var{options}] @var{package}@dots{}\n"
 msgstr "guix style [@var{options}] @var{paquet}@dots{}\n"
 
@@ -18971,11 +18892,44 @@ msgstr "./pre-inst-env guix style coreutils\n"
 msgid "inputs"
 msgstr "inputs"
 
-msgid "Rewrite package inputs to the ``new style'', as described above.  This is how you would rewrite inputs of package @code{whatnot} in your own channel:"
-msgstr "Réécrit les entrées du paquet en le « nouveau style », décrit plus haut. Vous pouvez réécrire les entrées d'un paquet @code{toto} dans votre propre canal de cette manière :"
-
 msgid "guix style -L ~/my/channel -S inputs whatnot\n"
 msgstr "guix style -L ~/mon/canal -S inputs toto\n"
+
+msgid "The way package inputs are written is going through a transition (@pxref{package Reference}, for more on package inputs).  Until version 1.3.0, package inputs were written using the ``old style'', where each input was given an explicit label, most of the time the package name:"
+msgstr "La manière dont les entrées des paquets sont écrites est en phase de transition  (@pxref{package Reference}, pour plus d'information sur les entrées des paquets). Jusqu'à la version 1.3.0, les entrées des paquets étaient écrites avec l'« ancien style », où chaque entrée était associée à une étiquette explicite, la plupart du temps le nom du paquet :"
+
+msgid ""
+"(package\n"
+"  ;; @dots{}\n"
+"  ;; The \"old style\" (deprecated).\n"
+"  (inputs `((\"libunistring\" ,libunistring)\n"
+"            (\"libffi\" ,libffi))))\n"
+msgstr ""
+"(package\n"
+"  ;; @dots{}\n"
+"  ;; L'« ancien style » (obsolète).\n"
+"  (inputs `((\"libunistring\" ,libunistring)\n"
+"            (\"libffi\" ,libffi))))\n"
+
+msgid "Today, the old style is deprecated and the preferred style looks like this:"
+msgstr "Aujourd'hui, l'ancien style est obsolète et le style de préférence ressemble à ceci :"
+
+msgid ""
+"(package\n"
+"  ;; @dots{}\n"
+"  ;; The \"new style\".\n"
+"  (inputs (list libunistring libffi)))\n"
+msgstr ""
+"(package\n"
+"  ;; @dots{}\n"
+"  ;; Le « nouveau style ».\n"
+"  (inputs (list libunistring libffi)))\n"
+
+msgid "Likewise, uses of @code{alist-delete} and friends to manipulate inputs is now deprecated in favor of @code{modify-inputs} (@pxref{Defining Package Variants}, for more info on @code{modify-inputs})."
+msgstr "De la même manière, l'utilisation de @code{alist-delete} et compagnie pour manipuler les entrées est maintenant obsolète en faveur de @code{modify-inputs} (@pxref{Defining Package Variants}, pour plus d'information sur @code{modify-inputs})."
+
+msgid "In the vast majority of cases, this is a purely mechanical change on the surface syntax that does not even incur a package rebuild.  Running @command{guix style -S inputs} can do that for you, whether you're working on packages in Guix proper or in an external channel."
+msgstr "Dans la grande majorité des cas, c'est un changement purement mécanique de la syntaxe qui ne provoque même pas de reconstruction du paquet. Lancer @command{guix style -S inputs} peut le faire pour vous, que vous travailliez sur des paquets dans Guix ou dans un canal externe."
 
 msgid "Rewriting is done in a conservative way: preserving comments and bailing out if it cannot make sense of the code that appears in an inputs field.  The @option{--input-simplification} option described below provides fine-grain control over when inputs should be simplified."
 msgstr "La réécriture s'effectue de manière prudente : les commentaires sont préservés et le processus s'arrête s'il n'arrive pas à comprendre le code du champ inputs. L'option @option{--input-simplification} décrite plus bas fournit un contrôle plus fin sur les entrées qui devraient être simplifiées."
@@ -19227,9 +19181,6 @@ msgstr "Rapport les étiquettes de l'ancien style qui ne correspondent pas au no
 
 msgid "guix lint @var{options} @var{package}@dots{}\n"
 msgstr "guix lint @var{options} @var{package}@dots{}\n"
-
-msgid "If no package is given on the command line, then all packages are checked.  The @var{options} may be zero or more of the following:"
-msgstr "Si aucun paquet n'est donné par la ligne de commande, tous les paquets seront vérifiés.  Les @var{options} peuvent contenir aucune ou plus des options suivantes :"
 
 msgid "--list-checkers"
 msgstr "--list-checkers"
@@ -22110,9 +22061,6 @@ msgstr "Renvoie une nouvelle disposition de clavier avec les @var{nom} et @var{v
 
 msgid "@var{name} must be a string such as @code{\"fr\"}; @var{variant} must be a string such as @code{\"bepo\"} or @code{\"nodeadkeys\"}.  See the @code{xkeyboard-config} package for valid options."
 msgstr "@var{nom} doit être une chaine comme @code{\"fr\"} ; @var{variante} doit être une chaine comme @code{\"bepo\"} ou @code{\"nodeadkeys\"}.  Vois le paquet @code{xkeyboard-config} pour les options valides."
-
-msgid "Here are a few examples:"
-msgstr "Voici quelques exemples :"
 
 msgid ""
 ";; The German QWERTZ layout.  Here we assume a standard\n"
@@ -30124,9 +30072,6 @@ msgstr ""
 msgid "@code{log-destination} (default: @code{\"syslog\"})"
 msgstr "@code{log-destination} (par défaut : @code{\"syslog\"})"
 
-msgid "The logging method to use for PostgreSQL@.  Multiple values are accepted, separated by commas."
-msgstr "La méthode de journalisation de PostgreSQL@.  Plusieurs valeurs sont possibles, séparées par des virgules."
-
 msgid "@code{hba-file} (default: @code{%default-postgres-hba})"
 msgstr "@code{hba-file} (par défaut : @code{%default-postgres-hba})"
 
@@ -30144,9 +30089,6 @@ msgstr "@code{socket-directory} (par défaut : @code{\"/var/run/postgresql\"})"
 
 msgid "Specifies the directory of the Unix-domain socket(s) on which PostgreSQL is to listen for connections from client applications. If set to @code{\"\"} PostgreSQL does not listen on any Unix-domain sockets, in which case only TCP/IP sockets can be used to connect to the server."
 msgstr "Spécifie le répertoire des sockets Unix-domain sur lesquels PostgreSQL écoutera les connexion d'applications clientes. Si la valeur est @code{\"\"}, PostgreSQL n'écoute sur aucun socket Unix-domain, auquel cas seuls les socket TCP/IP permettent de se connecter au serveur."
-
-msgid "By default, the @code{#false} value means the PostgreSQL default value will be used, which is currently @samp{/tmp}."
-msgstr "Par défaut, la valeur @code{#false} signifie que la valeur par défaut de PostgreSQL sera utilisée, actuellement @samp{/tmp}."
 
 msgid "List of additional keys and values to include in the PostgreSQL config file.  Each entry in the list should be a list where the first element is the key, and the remaining elements are the values."
 msgstr "Liste de clés et valeurs supplémentaires à inclure dans le fichier de configuration de PostgreSQL.  Chaque entrée dans la liste devrait être une liste où le premier élément est la clé, et les autres éléments sont les valeurs."
@@ -46104,6 +46046,9 @@ msgstr "{Procédure} grub-theme"
 msgid "Return the default GRUB theme used by the operating system if no @code{theme} field is specified in @code{bootloader-configuration} record."
 msgstr "Renvoie le thème par défaut de GRUB utilisé par le système d'exploitation si aucun champ @code{theme} n'est spécifié dans l'enregistrement @code{bootloader-configuration}."
 
+msgid "It comes with a fancy background image displaying the Guix logo."
+msgstr "Il contient une image de fond sympathique avec le logo de Guix."
+
 msgid "For example, to override the default resolution, you may use something like"
 msgstr "Par exemple, pour changer la résolution par défaut, vous pouvez utiliser quelque chose comme"
 
@@ -48362,9 +48307,6 @@ msgstr ""
 "mount --rbind /sys /mnt/sys\n"
 "mount --rbind /dev /mnt/dev\n"
 
-msgid "If your system is EFI-based, you must also mount the ESP partition.  Assuming it is @file{/dev/sda1}, you can do so with:"
-msgstr "Si votre système est basé sur EFI, vous devez aussi monter la partition ESP. En supposant qu'elle est sur @file{/dev/sda1}, vous pouvez le faire avec :"
-
 msgid "mount /dev/sda1 /mnt/boot/efi\n"
 msgstr "mount /dev/sda1 /mnt/boot/efi\n"
 
@@ -49513,6 +49455,9 @@ msgstr "@code{profiles} (par défaut : @code{()})"
 
 msgid "@code{extra-config} (default: @code{#f})"
 msgstr "@code{extra-config} (par défaut : @code{#f})"
+
+msgid "Niri window manager"
+msgstr "Gestionnaire de fenêtre Niri"
 
 msgid "Sway window manager"
 msgstr "Gestionnaire de fenêtre Sway"

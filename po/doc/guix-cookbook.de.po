@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.0.1.4876-09145-dirty\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-04-24 03:18+0000\n"
-"PO-Revision-Date: 2026-03-29 11:50+0000\n"
+"POT-Creation-Date: 2026-05-18 03:18+0000\n"
+"PO-Revision-Date: 2026-05-31 19:14+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/documentation-cookbook/de/>\n"
 "Language: de\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.16.2\n"
+"X-Generator: Weblate 2026.5\n"
 
 msgid "@documentencoding UTF-8"
 msgstr ""
@@ -850,14 +850,14 @@ msgstr "Dieses Feld enthält eine Beschreibung, was der Ursprung des Quellcodes 
 msgid "The method, here @code{url-fetch} to download via HTTP/FTP, but other methods"
 msgstr "Die Methode. Wir verwenden hier @code{url-fetch}, um über HTTP/FTP herunterzuladen,"
 
-msgid "exist, such as @code{git-fetch} for Git repositories."
-msgstr "aber es gibt auch andere Methoden wie @code{git-fetch} für Git-Repositorys."
+msgid "exist, such as @code{git-fetch} for Git repositories.  @xref{origin Reference,,, guix, GNU Guix Reference Manual}, for more info on the available download methods."
+msgstr "aber es gibt auch andere Methoden wie @code{git-fetch} für Git-Repositorys. Siehe @ref{„origin“-Referenz,,, guix.de, Referenzhandbuch zu GNU Guix} für mehr Informationen zu Methoden, etwas herunterzuladen."
 
 msgid "The URI, which is typically some @code{https://} location for @code{url-fetch}.  Here"
 msgstr "Die URI, welche bei @code{url-fetch} normalerweise eine Ortsangabe mit @code{https://} ist."
 
-msgid "the special `mirror://gnu` refers to a set of well known locations, all of which can be used by Guix to fetch the source, should some of them fail."
-msgstr "In diesem Fall verweist die besondere URI ‚mirror://gnu‘ auf eine von mehreren wohlbekannten Ortsangaben, von denen Guix jede durchprobieren kann, um den Quellcode herunterzuladen, wenn es bei manchen davon nicht klappt."
+msgid "the special @code{mirror://gnu} refers to a set of well known locations, all of which can be used by Guix to fetch the source, should some of them fail."
+msgstr "In diesem Fall verweist die besondere URI @code{mirror://gnu} auf eine von mehreren wohlbekannten Ortsangaben, von denen Guix jede durchprobieren kann, um den Quellcode herunterzuladen, wenn es bei manchen davon nicht klappt."
 
 msgid "The @code{sha256} checksum of the requested file.  This is essential to ensure"
 msgstr "Die @code{sha256}-Prüfsumme der angefragten Datei."
@@ -1429,8 +1429,8 @@ msgstr "Reden wir über diese Felder im Detail."
 msgid "@code{git-fetch} method"
 msgstr "@code{git-fetch}-Methode"
 
-msgid "Unlike the @code{url-fetch} method, @code{git-fetch} expects a @code{git-reference} which takes a Git repository and a commit.  The commit can be any Git reference such as tags, so if the @code{version} is tagged, then it can be used directly.  Sometimes the tag is prefixed with a @code{v}, in which case you'd use @code{(commit (string-append \"v\" version))}."
-msgstr "Anders als die @code{url-fetch}-Methode erwartet @code{git-fetch} eine @code{git-reference}, welche ein Git-Repository und einen Commit entgegennimmt. Der Commit kann eine beliebige Art von Git-Referenz sein, z.B.@: ein Tag. Wenn die @code{version} also mit einem Tag versehen ist, kann sie einfach benutzt werden. Manchmal ist dem Tag ein Präfix @code{v} vorangestellt. In diesem Fall würden Sie @code{(commit (string-append \"v\" version))} schreiben."
+msgid "Unlike the @code{url-fetch} method, @code{git-fetch} expects a @code{git-reference} which takes a Git repository and a commit (@pxref{origin Reference,,, guix, GNU Guix Reference Manual}).  The commit can be any Git reference such as tags, so if the @code{version} is tagged, then it can be used directly.  Sometimes the tag is prefixed with a @code{v}, in which case you'd use @code{(commit (string-append \"v\" version))}."
+msgstr "Anders als die @code{url-fetch}-Methode erwartet @code{git-fetch} eine @code{git-reference}, welche ein Git-Repository und einen Commit entgegennimmt (siehe @ref{„origin“-Referenz,,, guix.de, Referenzhandbuch zu GNU Guix}). Der Commit kann eine beliebige Art von Git-Referenz sein, z.B.@: ein Tag. Wenn die @code{version} also mit einem Tag versehen ist, kann sie einfach benutzt werden. Manchmal ist dem Tag ein Präfix @code{v} vorangestellt. In diesem Fall würden Sie @code{(commit (string-append \"v\" version))} schreiben."
 
 msgid "To ensure that the source code from the Git repository is stored in a directory with a descriptive name, we use @code{(file-name (git-file-name name version))}."
 msgstr "Um sicherzustellen, dass der Quellcode aus dem Git-Repository in einem Verzeichnis mit nachvollziehbarem Namen landet, schreiben wir @code{(file-name (git-file-name name version))}."
@@ -1546,11 +1546,14 @@ msgstr "Typische Namen für getrennte Ausgaben sind @code{debug} und @code{doc}.
 msgid "It's advised to separate outputs only when you've shown it's worth it: if the output size is significant (compare with @code{guix size}) or in case the package is modular."
 msgstr "Es wird empfohlen, getrennte Ausgaben nur dann anzubieten, wenn Sie gezeigt haben, dass es sich lohnt, d.h.@: wenn die Ausgabengröße signifikant ist (vergleichen Sie sie mittels @code{guix size}) oder das Paket modular aufgebaut ist."
 
+msgid "@xref{Packages with Multiple Outputs,,, guix, GNU Guix Reference Manual}, for more info."
+msgstr "Siehe @ref{Pakete mit mehreren Ausgaben,,, guix.de, Referenzhandbuch zu GNU Guix} für mehr Informationen."
+
 msgid "Build system arguments"
 msgstr "Argumente ans Erstellungssystem"
 
-msgid "The @code{arguments} is a keyword-value list used to configure the build process."
-msgstr "@code{arguments} ist eine Liste aus Schlüsselwort-Wert-Paaren (eine „keyword-value list“), mit denen der Erstellungsprozess konfiguriert wird."
+msgid "The @code{arguments} is a keyword-value list used to configure the build process; these arguments are passed to the @dfn{build system} (@pxref{Build Systems,,, guix, GNU Guix Reference Manual})."
+msgstr "@code{arguments} ist eine Liste aus Schlüsselwort-Wert-Paaren (eine „keyword-value list“), mit denen der Erstellungsprozess konfiguriert wird. Diese Argumente werden ans @dfn{Erstellungssystem} übergeben (siehe @ref{Erstellungssysteme,,, guix.de, Referenzhandbuch zu GNU Guix})."
 
 msgid "The simplest argument @code{#:tests?} can be used to disable the test suite when building the package.  This is mostly useful when the package does not feature any test suite.  It's strongly recommended to keep the test suite on if there is one."
 msgstr "Das einfachste Argument @code{#:tests?} kann man benutzen, um den Testkatalog bei der Erstellung des Pakets nicht zu prüfen. Das braucht man meistens dann, wenn das Paket überhaupt keinen Testkatalog hat. Wir empfehlen sehr, den Testkatalog zu benutzen, wenn es einen gibt."
@@ -1565,8 +1568,8 @@ msgstr ""
 "#:make-flags (list (string-append \"prefix=\" (assoc-ref %outputs \"out\"))\n"
 "                   \"CC=gcc\")\n"
 
-msgid "translate into"
-msgstr "übersetzt zu"
+msgid "translate into:"
+msgstr "übersetzt zu:"
 
 msgid "$ make CC=gcc prefix=/gnu/store/...-<out>\n"
 msgstr "$ make CC=gcc prefix=/gnu/store/...-<out>\n"
@@ -1583,8 +1586,8 @@ msgstr "#:configure-flags '(\"-DUSE_SHA1DC=ON\")\n"
 msgid "The @code{%build-inputs} variable is also generated in scope.  It's an association table that maps the input names to their store directories."
 msgstr "Die Variable @code{%build-inputs} wird auch in diesem Sichtbarkeitsbereich erzeugt. Es handelt sich um eine assoziative Liste, die von den Namen der Eingaben auf ihre Verzeichnisse im Store abbildet."
 
-msgid "The @code{phases} keyword lists the sequential steps of the build system.  Typically phases include @code{unpack}, @code{configure}, @code{build}, @code{install} and @code{check}.  To know more about those phases, you need to work out the appropriate build system definition in @samp{$GUIX_CHECKOUT/guix/build/gnu-build-system.scm}:"
-msgstr "Das @code{phases}-Schlüsselwort listet der Reihe nach die vom Erstellungssystem durchgeführten Schritte auf. Zu den üblichen Phasen gehören @code{unpack}, @code{configure}, @code{build}, @code{install} und @code{check}. Um mehr über diese Phasen zu lernen, müssen Sie sich die Definition des zugehörigen Erstellungssystems in @samp{$GUIX_CHECKOUT/guix/build/gnu-build-system.scm} anschauen:"
+msgid "The @code{phases} keyword lists the sequential steps of the build system.  @xref{Build Phases,,, guix, GNU Guix Reference Manual}, for details; in a nutshell, phases include @code{unpack}, @code{configure}, @code{build}, @code{install} and @code{check}.  To know more about those phases, you need to work out the appropriate build system definition in @samp{$GUIX_CHECKOUT/guix/build/gnu-build-system.scm}:"
+msgstr "Das @code{phases}-Schlüsselwort listet der Reihe nach die vom Erstellungssystem durchgeführten Schritte auf. Siehe @ref{Erstellungsphasen,,, guix.de, Referenzhandbuch zu GNU Guix} für Details; kurz erklärt gehören zu den üblichen Phasen @code{unpack}, @code{configure}, @code{build}, @code{install} und @code{check}. Um mehr über diese Phasen zu lernen, müssen Sie sich die Definition des zugehörigen Erstellungssystems in @samp{$GUIX_CHECKOUT/guix/build/gnu-build-system.scm} anschauen:"
 
 msgid ""
 "(define %standard-phases\n"
@@ -1753,8 +1756,8 @@ msgstr "Ihr Rückgabewert wird ignoriert."
 msgid "Code staging"
 msgstr "Code-Staging"
 
-msgid "The astute reader may have noticed the quasi-quote and comma syntax in the argument field.  Indeed, the build code in the package declaration should not be evaluated on the client side, but only when passed to the Guix daemon.  This mechanism of passing code around two running processes is called @uref{https://arxiv.org/abs/1709.00833, code staging}."
-msgstr "Aufmerksame Leser könnten die Syntax mit @code{quasiquote} und Komma im Argumentefeld bemerkt haben. Tatsächlich sollte der Erstellungscode in der Paketdeklaration @emph{nicht} auf Client-Seite ausgeführt werden, sondern erst, wenn er an den Guix-Daemon übergeben worden ist. Der Mechanismus, über den Code zwischen zwei laufenden Prozessen weitergegeben wird, nennen wir @uref{https://arxiv.org/abs/1709.00833, Code-Staging}."
+msgid "The astute reader may have noticed the hash-tilde and hash-dollar syntax in the argument field.  Indeed, the build code in the package declaration should not be evaluated on the client side, but only when passed to the Guix daemon.  This mechanism of passing code around two running processes is called @uref{https://arxiv.org/abs/1709.00833, code staging}.  @xref{G-Expressions,,, guix, GNU Guix Reference Manual}, for info on the this mechanism, which is called @dfn{g-expressions}."
+msgstr "Aufmerksame Leser könnten die Syntax mit Doppelkreuz-Tilde und Doppelkreuz-Dollar im Argumentefeld bemerkt haben. Tatsächlich sollte der Erstellungscode in der Paketdeklaration @emph{nicht} auf Client-Seite ausgeführt werden, sondern erst, wenn er an den Guix-Daemon übergeben worden ist. Der Mechanismus, über den Code zwischen zwei laufenden Prozessen weitergegeben wird, nennen wir @uref{https://arxiv.org/abs/1709.00833, Code-Staging}. Siehe @ref{G-Ausdrücke,,, guix.de, Referenzhandbuch zu GNU Guix} für Informationen zu dieser Technik, die @dfn{G-Ausdrücke} genannt wird."
 
 msgid "Utility functions"
 msgstr "Hilfsfunktionen"
@@ -1762,8 +1765,8 @@ msgstr "Hilfsfunktionen"
 msgid "When customizing @code{phases}, we often need to write code that mimics the equivalent system invocations (@code{make}, @code{mkdir}, @code{cp}, etc.)@: commonly used during regular ``Unix-style'' installations."
 msgstr "Beim Anpassen der @code{phases} müssen wir oft Code schreiben, der analog zu den äquivalenten Systemaufrufen funktioniert (@code{make}, @code{mkdir}, @code{cp}, etc.), welche in regulären „Unix-artigen“ Installationen oft benutzt werden."
 
-msgid "Some like @code{chmod} are native to Guile.  @xref{,,, guile, Guile reference manual} for a complete list."
-msgstr "Manche, wie @code{chmod}, sind Teil von Guile. Siehe das @ref{,,, guile, Referenzhandbuch zu Guile} für eine vollständige Liste."
+msgid "Some like @code{chmod} are native to Guile.  @xref{File System,,, guile, Guile reference manual} for a complete list."
+msgstr "Manche, wie @code{chmod}, sind Teil von Guile. Siehe das @ref{File System,,, guile, Referenzhandbuch zu Guile} für eine vollständige Liste."
 
 msgid "Guix provides additional helper functions which prove especially handy in the context of package management."
 msgstr "Guix stellt zusätzliche Hilfsfunktionen zur Verfügung, die bei der Paketverwaltung besonders praktisch sind."
@@ -1948,8 +1951,8 @@ msgstr ""
 msgid "The recursive importer won't import packages for which Guix already has package definitions, except for the very first."
 msgstr "Der rekursive Importer wird keine Pakete importieren, für die es in Guix bereits eine Paketdefinition gibt, außer dem Paket, mit dem er anfängt."
 
-msgid "Not all applications can be packaged this way, only those relying on a select number of supported systems.  Read about the full list of importers in the guix import section of the manual (@pxref{Invoking guix import,,, guix, GNU Guix Reference Manual})."
-msgstr "Nicht für alle Anwendungen können auf diesem Weg Pakete erzeugt werden, nur für jene, die auf ausgewählten Systemen aufbauen. Im Handbuch können Sie Informationen über die vollständige Liste aller Importer bekommen (siehe @ref{Aufruf von guix import,,, guix.de, Referenzhandbuch zu GNU Guix})."
+msgid "Not all applications can be packaged this way, only those relying on a select number of supported systems.  @xref{Invoking guix import,,, guix, GNU Guix Reference Manual} for the full list of importers."
+msgstr "Nicht für alle Anwendungen können auf diesem Weg Pakete erzeugt werden, nur für jene, die auf ausgewählten Systemen aufbauen. Siehe die vollständige Liste aller Importer in @ref{Aufruf von guix import,,, guix.de, Referenzhandbuch zu GNU Guix}."
 
 msgid "Guix can be smart enough to check for updates on systems it knows.  It can report outdated package definitions with"
 msgstr "Guix ist klug genug, um verfügbare Aktualisierungen auf bekannten Systemen zu erkennen. Es kann über veraltete Paketdefinitionen Bericht erstatten, wenn man dies eingibt:"
@@ -1962,6 +1965,9 @@ msgstr "In den meisten Fällen muss man zur Aktualisierung auf eine neuere Versi
 
 msgid "$ guix refresh hello --update\n"
 msgstr "$ guix refresh hello --update\n"
+
+msgid "@xref{Invoking guix refresh,,, guix, GNU Guix Reference Manual}, for more info."
+msgstr "Siehe @ref{Aufruf von guix refresh,,, guix.de, Referenzhandbuch zu GNU Guix} für mehr Informationen."
 
 msgid "If you've started browsing the existing package definitions, you might have noticed that a significant number of them have a @code{inherit} field:"
 msgstr "Wenn Sie anfangen, bestehende Paketdefinitionen anzuschauen, könnte es Ihnen auffallen, dass viele von ihnen über ein @code{inherit}-Feld verfügen."
@@ -1995,8 +2001,8 @@ msgstr ""
 "                \"17fpahgh5dyckgz7rwqvzgnhx53cx9kr2xw0szprc6bnqy977fi8\"))))\n"
 "    (native-inputs (list `(,gtk+ \\\"bin\\\")))))\n"
 
-msgid "All unspecified fields are inherited from the parent package.  This is very convenient to create alternative packages, for instance with different source, version or compilation options."
-msgstr "Alle @emph{nicht} aufgeführten Felder werden vom Elternpaket geerbt. Das ist ziemlich praktisch, um alternative Pakete zu erzeugen, zum Beispiel solche mit geänderten Quellorten, Versionen oder Kompilierungsoptionen."
+msgid "All unspecified fields are inherited from the parent package.  This is very convenient to create alternative packages, for instance with different source, version or compilation options.  @xref{Defining Package Variants,,, guix, GNU Guix Reference Manual}, for a discussion of inheritance and of other ways to create package variants."
+msgstr "Alle @emph{nicht} aufgeführten Felder werden vom Elternpaket geerbt. Das ist ziemlich praktisch, um alternative Pakete zu erzeugen, zum Beispiel solche mit geänderten Quellorten, Versionen oder Kompilierungsoptionen. Siehe @ref{Paketvarianten definieren,,, guix.de, Referenzhandbuch zu GNU Guix} für eine Erörterung von Vererbung und anderweitigen Methoden, Paketvarianten zu erschaffen."
 
 msgid "Sadly, some applications can be tough to package.  Sometimes they need a patch to work with the non-standard file system hierarchy enforced by the store.  Sometimes the tests won't run properly.  (They can be skipped but this is not recommended.)  Other times the resulting package won't be reproducible."
 msgstr "Leider ist es für manche Anwendungen schwierig, Pakete zu schreiben. Manchmal brauchen sie einen Patch, um mit vom Standard abweichenden Dateisystemhierarchien klarzukommen, wie sie der Store erforderlich macht. Manchmal funktionieren die Tests nicht richtig. (Man kann sie überspringen, aber man sollte nicht.) Ein andermal ist das sich ergebende Paket nicht reproduzierbar."
@@ -2019,8 +2025,8 @@ msgstr "Andere Funktionalitäten, die es wert sind, erkundet zu werden, sind Gui
 msgid "Those fancy features are completely optional and can wait; now is a good time to take a well-deserved break.  With what we've introduced here you should be well armed to package lots of programs.  You can get started right away and hopefully we will see your contributions soon!"
 msgstr "Diese eindrucksvollen Funktionalitäten sind völlig optional und können warten; jetzt ist die Zeit für eine wohlverdiente Pause. Mit dem Wissen, in das wir hier eingeführt haben, sollten Sie für das Paketieren vieler Programme gut gerüstet sein. Sie können gleich anfangen und hoffentlich bekommen wir bald Ihre Beiträge zu sehen!"
 
-msgid "The @uref{https://guix.gnu.org/manual/en/html_node/Defining-Packages.html, package reference in the manual}"
-msgstr "Die @uref{https://guix.gnu.org/manual/de/html_node/Pakete-definieren.html, Paketreferenz im Handbuch}"
+msgid "@xref{Defining Packages,,, guix, GNU Guix Reference Manual}, for the @code{package} reference in the manual."
+msgstr "Siehe @ref{Pakete definieren,,, guix.de, Referenzhandbuch zu GNU Guix} als Referenz des @code{package}-Datentyps im Handbuch."
 
 msgid "@uref{https://gitlab.com/pjotrp/guix-notes/blob/master/HACKING.org, Pjotr’s hacking guide to GNU Guix}"
 msgstr "@uref{https://gitlab.com/pjotrp/guix-notes/blob/master/HACKING.org, Pjotr’s Hacking-Leitfaden für GNU Guix}"
@@ -3073,21 +3079,6 @@ msgstr "Schalten Sie alle Dateisystem-/Boot-Helfer ab."
 msgid "Now power it back up, booting with the Debian configuration.  Once it's running, ssh to your server via @code{ssh root@@@var{<your-server-IP-here>}}. (You can find your server IP address in your Linode Summary section.) Now you can run the \"install guix from @pxref{Binary Installation,,, guix, GNU Guix}\" steps:"
 msgstr "Starten Sie den Knoten jetzt wieder mit der Debian-Konfiguration. Sobald er wieder läuft, verbinden Sie sich mittels SSH zu Ihrem Server über @code{ssh root@@@var{<IP-Adresse-Ihres-Servers>}}. (Die IP-Adresse Ihres Servers finden Sie in Linodes Übersichtsseite bei „Summary“.) Nun können Sie mit den Schritten aus dem @ref{Aus Binärdatei installieren,,, guix.de, Referenzhandbuch zu GNU Guix} weitermachen:"
 
-msgid ""
-"sudo apt-get install gpg\n"
-"wget https://sv.gnu.org/people/viewgpg.php?user_id=15145 -qO - | gpg --import -\n"
-"wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh\n"
-"chmod +x guix-install.sh\n"
-"./guix-install.sh\n"
-"guix pull\n"
-msgstr ""
-"sudo apt-get install gpg\n"
-"wget https://sv.gnu.org/people/viewgpg.php?user_id=15145 -qO - | gpg --import -\n"
-"wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh\n"
-"chmod +x guix-install.sh\n"
-"./guix-install.sh\n"
-"guix pull\n"
-
 msgid "Now it's time to write out a config for the server.  The key information is below. Save the resulting file as @file{guix-config.scm}."
 msgstr "Nun wird es Zeit, eine Konfiguration für den Server anzulegen. Die wichtigsten Informationen finden Sie hierunter. Speichern Sie die Konfiguration als @file{guix-config.scm}."
 
@@ -3352,17 +3343,6 @@ msgstr "OVH wird Ihnen eine E-Mail mit den Anmeldedaten schicken, damit Sie sich
 
 msgid "Now you can run the \"install guix from @pxref{Binary Installation,,, guix, GNU Guix}\" steps:"
 msgstr "Folgen Sie nun den Anweisungen zur Installation von Guix aus einer Binärdatei (siehe @ref{Aus Binärdatei installieren,,, guix.de, Referenzhandbuch zu GNU Guix}):"
-
-msgid ""
-"wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh\n"
-"chmod +x guix-install.sh\n"
-"./guix-install.sh\n"
-"guix pull\n"
-msgstr ""
-"wget https://git.savannah.gnu.org/cgit/guix.git/plain/etc/guix-install.sh\n"
-"chmod +x guix-install.sh\n"
-"./guix-install.sh\n"
-"guix pull\n"
 
 msgid "Partition the drives and format them, first stop the raid array:"
 msgstr "Partitionieren Sie nun die Laufwerke und formatieren Sie sie, aber erst nachdem Sie das RAID-Array angehalten haben:"
@@ -4894,9 +4874,6 @@ msgstr "# nmcli con add type bridge con-name br0 ifname br0\n"
 msgid "To have this bridge be part of your network, you must associate your network bridge with the Ethernet interface used to connect with the network.  Assuming your interface is named @samp{enp2s0}, the following command can be used to do so:"
 msgstr "Um diese Brücke zu Ihrem Netzwerk hinzuzufügen, müssen Sie Ihre Netzwerkbrücke der Ethernet-Schnittstelle zuordnen, über die Sie sich mit dem Netzwerk verbinden. Wenn Ihre Schnittstelle z.B.@: die Bezeichnung @samp{enp2s0} hat, dann wird die Zuordnung mit folgendem Befehl hergestellt:"
 
-msgid "# nmcli con add type bridge-slave ifname enp2s0 master br0\n"
-msgstr "# nmcli con add type bridge-slave ifname enp2s0 master br0\n"
-
 msgid "Important"
 msgstr "Wichtig"
 
@@ -4936,17 +4913,6 @@ msgstr "Wenn Sie QEMU aufrufen, müssen Sie die folgenden Optionen angeben, dami
 
 msgid "By default, a single MAC address is used for all guests, unless provided.  Failing to provide different MAC addresses to each virtual machine making use of the bridge would cause networking issues."
 msgstr "Nach Voreinstellung wird dieselbe MAC-Adresse für alle Gastsysteme benutzt, wenn Sie keine angeben. Wenn sich die MAC-Adressen mehrerer virtueller Maschinen aber nicht unterscheiden, kommt es zu Netzwerkfehlern, wenn Sie die Netzwerkbrücke benutzen."
-
-msgid ""
-"$ qemu-system-x86_64 [...] \\\n"
-"    -device virtio-net-pci,netdev=user0,mac=XX:XX:XX:XX:XX:XX \\\n"
-"    -netdev bridge,id=user0,br=br0 \\\n"
-"    [...]\n"
-msgstr ""
-"$ qemu-system-x86_64 […] \\\n"
-"    -device virtio-net-pci,netdev=user0,mac=XX:XX:XX:XX:XX:XX \\\n"
-"    -netdev bridge,id=user0,br=br0 \\\n"
-"    […]\n"
 
 msgid "To generate MAC addresses that have the QEMU registered prefix, the following snippet can be employed:"
 msgstr "Um MAC-Adressen mit dem für QEMU registrierten Präfix zu erzeugen, können Sie folgendes Code-Schnipsel eintippen:"

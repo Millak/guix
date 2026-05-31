@@ -1320,7 +1320,7 @@ must be the Guix top-level source directory, from which PO files are taken."
                                                   language))
                                ".html")))
                          "HTML, entirely on one page"))
-                  ,@(if (member language '("ko" "ru" "ta"))
+                  ,@(if (member language '("ko" "ru" "sk" "ta"))
                         '()
                         `((li (a (@ (href ,(string-append
                                             #$manual

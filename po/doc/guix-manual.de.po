@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-04-24 03:18+0000\n"
-"PO-Revision-Date: 2026-04-29 22:43+0000\n"
+"POT-Creation-Date: 2026-05-26 03:18+0000\n"
+"PO-Revision-Date: 2026-05-08 15:42+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/documentation-manual/de/>\n"
 "Language: de\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17\n"
+"X-Generator: Weblate 5.17.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -775,9 +775,6 @@ msgstr ""
 "(add-hook 'prog-mode-hook #'bug-reference-prog-mode)\n"
 "(add-hook 'erc-mode-hook #'bug-reference-mode)\n"
 ";; Fügen Sie weitere Hooks je nach Ihrem Mail User Agent hinzu: Gnus, mu4e etc.\n"
-
-msgid "When working from a Git checkout of Guix, setup is automatic: @code{bug-reference} automatically detects that the project is hosted on Codeberg@footnote{ As of Emacs@tie{}30.2, auto-detection works if and only if the Git remote is called @code{upstream} or @code{origin}.} and infers the issue and pull request URL from there."
-msgstr "Wenn Sie aus einem Git-Checkout von Guix heraus arbeiten, wird dies automatisch eingerichtet: @code{bug-reference} stellt automatisch fest, dass das Projekt auf Codeberg zu finden ist@footnote{Stand Emacs@tie{}30.2 funktioniert die automatische Erkennung nur, wenn die Git-Remote @code{upstream} oder @code{origin} genannt wurde.} und erkennt daran die URL für ein Issue oder einen Pull Request."
 
 msgid "Guile Studio is a pre-configured Emacs with mostly everything you need to start hacking in Guile. If you are not familiar with Emacs it makes the transition easier for you."
 msgstr "Guile Studio ist ein voreingestellter Emacs mit ziemlich allem, um in Guile loszulegen. Wenn Sie Emacs nicht kennen, ist es ein leichterer Einstieg."
@@ -3077,6 +3074,12 @@ msgstr "SELinux-Unterstützung"
 msgid "Using an SELinux policy for the daemon."
 msgstr "Wie man eine SELinux-Richtlinie für den Daemon einrichtet."
 
+msgid "AppArmor Support"
+msgstr "AppArmor-Unterstützung"
+
+msgid "Using an AppArmor profile for the daemon."
+msgstr "Wie man ein AppArmor-Profil für den Daemon einrichtet."
+
 msgid "Limitations"
 msgstr "Einschränkungen"
 
@@ -4437,12 +4440,6 @@ msgstr "Operationen wie das Erstellen eines Pakets oder Laufenlassen des Müllsa
 
 msgid "The following sections explain how to prepare the build daemon's environment.  @xref{Substitutes} for how to allow the daemon to download pre-built binaries."
 msgstr "Folgende Abschnitte beschreiben, wie Sie die Umgebung des Erstellungs-Daemons ausstatten sollten. @xref{Substitutes} für Informationen darüber, wie Sie es dem Daemon ermöglichen, vorerstellte Binärdateien herunterzuladen."
-
-msgid "AppArmor Support"
-msgstr "AppArmor-Unterstützung"
-
-msgid "Using an AppArmor profile for the daemon."
-msgstr "Wie man ein AppArmor-Profil für den Daemon einrichtet."
 
 msgid "build environment"
 msgstr "Erstellungsumgebung"
@@ -7111,9 +7108,6 @@ msgstr "@code{@value{SUBSTITUTE-SERVER-1}} und @code{@value{SUBSTITUTE-SERVER-2}
 msgid "Substitute URLs can be either HTTP or HTTPS.  HTTPS is recommended because communications are encrypted; conversely, using HTTP makes all communications visible to an eavesdropper, who could use the information gathered to determine, for instance, whether your system has unpatched security vulnerabilities."
 msgstr "Substitut-URLs können entweder HTTP oder HTTPS sein. HTTPS wird empfohlen, weil die Kommunikation verschlüsselt ist; umgekehrt kann bei HTTP die Kommunikation belauscht werden, wodurch der Angreifer zum Beispiel erfahren könnte, ob Ihr System über noch nicht behobene Sicherheitsschwachstellen verfügt."
 
-msgid "Substitutes from the official build farms are enabled by default when using Guix System (@pxref{GNU Distribution}).  However, they are disabled by default when using Guix on a foreign distribution, unless you have explicitly enabled them via one of the recommended installation steps (@pxref{Installation}).  The following paragraphs describe how to enable or disable substitutes for the official build farm; the same procedure can also be used to enable substitutes for any other substitute server."
-msgstr "Substitute von den offiziellen Erstellungsfarmen sind standardmäßig erlaubt, wenn Sie Guix System verwenden (siehe @ref{GNU Distribution}). Auf Fremddistributionen sind sie allerdings standardmäßig ausgeschaltet, solange Sie sie nicht ausdrücklich in einem der empfohlenen Installationsschritte erlaubt haben (siehe @ref{Installation}). Die folgenden Absätze beschreiben, wie Sie Substitute für die offizielle Erstellungsfarm an- oder ausschalten; dieselbe Prozedur kann auch benutzt werden, um Substitute für einen beliebigen anderen Substitutserver zu erlauben."
-
 msgid "security"
 msgstr "Sicherheit"
 
@@ -7901,15 +7895,6 @@ msgstr "Konfigurationsdatei für Kanäle"
 msgid "These options are provided for convenience, but you can also specify your configuration in the @file{~/.config/guix/channels.scm} file or using the @option{--channels} option (see below)."
 msgstr "Diese Befehlszeilenoptionen sind manchmal bequemer, aber Sie können Ihre Konfiguration auch in der Datei @file{~/.config/guix/channels.scm} oder über die Option @option{--channels} angeben (siehe unten)."
 
-msgid "--channels=@var{file}"
-msgstr "--channels=@var{Datei}"
-
-msgid "-C @var{file}"
-msgstr "-C @var{Datei}"
-
-msgid "Read the list of channels from @var{file} instead of @file{~/.config/guix/channels.scm} or @file{/etc/guix/channels.scm}.  @var{file} must contain Scheme code that evaluates to a list of channel objects.  @xref{Channels}, for more information."
-msgstr "Die Liste der Kanäle aus der angegebenen @var{Datei} statt aus @file{~/.config/guix/channels.scm} oder aus @file{/etc/guix/channels.scm} auslesen. Die @var{Datei} muss Scheme-Code enthalten, der zu einer Liste von Kanalobjekten ausgewertet wird. Siehe @ref{Channels} für nähere Informationen."
-
 msgid "--no-channel-files"
 msgstr "--no-channel-files"
 
@@ -8078,9 +8063,6 @@ msgstr "Dabei werden der @var{Befehl} und jedes @var{Argument}…@: unverändert
 
 msgid "Use the @code{guix} channel from the specified @var{url}, at the given @var{commit} (a valid Git commit ID represented as a hexadecimal string or the name of a tag), or @var{branch}."
 msgstr "Den @code{guix}-Kanal von der angegebenen @var{URL} benutzen, für den angegebenen @var{Commit} (eine gültige Commit-ID, dargestellt als hexadezimale Zeichenkette oder Namen eines Git-Tags) oder @var{Branch}."
-
-msgid "Read the list of channels from @var{file}.  @var{file} must contain Scheme code that evaluates to a list of channel objects.  @xref{Channels} for more information."
-msgstr "Die Liste der Kanäle aus der angegebenen @var{Datei} auslesen. Die @var{Datei} muss Scheme-Code enthalten, der zu einer Liste von Kanalobjekten ausgewertet wird. Siehe @ref{Channels} für nähere Informationen."
 
 msgid "Thus, @command{guix time-machine -q} is equivalent to the following Bash command, using the ``process substitution'' syntax (@pxref{Process Substitution,,, bash, The GNU Bash Reference Manual}):"
 msgstr "Anstelle von @command{guix time-machine -q} können Sie daher auch den folgenden Bash-Befehl verwenden, der die Syntax für „Prozesssubstitutionen“ verwendet (siehe @ref{Process Substitution,,, bash, Referenzhandbuch zu GNU Bash}):"
@@ -9572,6 +9554,15 @@ msgstr "--no-cwd"
 msgid "For containers, the default behavior is to share the current working directory with the isolated container and immediately change to that directory within the container.  If this is undesirable, @option{--no-cwd} will cause the current working directory to @emph{not} be automatically shared and will change to the user's home directory within the container instead.  See also @option{--user}."
 msgstr "In isolierten Umgebungen („Containern“) ist das vorgegebene Verhalten, das aktuelle Arbeitsverzeichnis mit dem isolierten Container zu teilen und in der Umgebung sofort in dieses Verzeichnis zu wechseln. Wenn das nicht gewünscht wird, kann das Angeben von @option{--no-cwd} dafür sorgen, dass das Arbeitsverzeichnis @emph{nicht} automatisch geteilt wird und stattdessen in das Persönliche Verzeichnis („Home“-Verzeichnis) gewechselt wird. Siehe auch @option{--user}."
 
+msgid "--cwd=@var{directory}"
+msgstr "--cwd=@var{Verzeichnis}"
+
+msgid "For containers, change to @var{directory} inside the container instead of the default location.  The default location is the current working directory when @option{--no-cwd} is not used, or the user's home directory when @option{--no-cwd} is used.  When @var{directory} is a relative file name, it is interpreted relative to the current working directory on the host.  Note that @option{--cwd} does not automatically share @var{directory}---you must ensure it is accessible via the default current directory sharing or explicit @option{--share}/@option{--expose} options.  For example:"
+msgstr "Für isolierte Umgebungen („Container“) wird innerhalb des Containers in das genannte @var{Verzeichnis} gewechselt statt des Ortes in der Vorgabeeinstellung. Die Vorgabeeinstellung wäre das aktuelle Arbeitsverzeichnis, außer @option{--no-cwd} wird benutzt, dann ist es das Persönliche Verzeichnis des Benutzers, wenn @option{--no-cwd} angegeben wird. Wenn @var{Verzeichnis} ein relativer Dateiname ist, wird er relativ zum aktuellen Arbeitsverzeichnis auf dem Wirtssystem interpretiert. Beachten Sie, dass @option{--cwd} das @var{Verzeichnis} @emph{nicht} automatisch teilt@tie{}– das geht über das vorgegebene Teilen des Persönlichen Verzeichnisses oder Sie müssen das übergebene Verzeichnis ausdrücklich mittels der Befehlszeilenoptionen @option{--share} oder @option{--expose} freigeben. Zum Beispiel:"
+
+msgid "guix shell --container --cwd=/tmp --share=/tmp coreutils\n"
+msgstr "guix shell --container --cwd=/tmp --share=/tmp coreutils\n"
+
 msgid "--writable-root"
 msgstr "--writable-root"
 
@@ -9876,6 +9867,9 @@ msgstr ""
 "guix environment --container --user=foo \\\n"
 "     --expose=$HOME/test \\\n"
 "     --expose=/tmp/target=$HOME/target\n"
+
+msgid "For containers, change to @var{directory} inside the container instead of the default location.  The default location is the current working directory when @option{--no-cwd} is not used, or the user's home directory when @option{--no-cwd} is used.  When @var{directory} is a relative file name, it is interpreted relative to the current working directory on the host.  Note that @option{--cwd} does not automatically share @var{directory}---you must ensure it is accessible via the default current directory sharing or explicit @option{--share}/@option{--expose} options."
+msgstr "Für isolierte Umgebungen („Container“) wird innerhalb des Containers in das genannte @var{Verzeichnis} gewechselt statt des Ortes in der Vorgabeeinstellung. Die Vorgabeeinstellung wäre das aktuelle Arbeitsverzeichnis, außer @option{--no-cwd} wird benutzt, dann ist es das Persönliche Verzeichnis des Benutzers, wenn @option{--no-cwd} angegeben wird. Wenn @var{Verzeichnis} ein relativer Dateiname ist, wird er relativ zum aktuellen Arbeitsverzeichnis auf dem Wirtssystem interpretiert. Beachten Sie, dass @option{--cwd} das @var{Verzeichnis} @emph{nicht} automatisch teilt@tie{}– das geht über das vorgegebene Teilen des Persönlichen Verzeichnisses oder Sie müssen das übergebene Verzeichnis ausdrücklich mittels der Befehlszeilenoptionen @option{--share} oder @option{--expose} freigeben."
 
 msgid "guix environment --container --expose=$HOME=/exchange --ad-hoc guile -- guile\n"
 msgstr "guix environment --container --expose=$HOME=/austausch --ad-hoc guile -- guile\n"
@@ -16568,8 +16562,8 @@ msgstr "Der Befehl @command{guix hash} berechnet den Hash einer Datei. Er ist pr
 msgid "guix hash @var{option} @var{file} ...\n"
 msgstr "guix hash @var{Option} @var{Datei} ...\n"
 
-msgid "When @var{file} is @code{-} (a hyphen), @command{guix hash} computes the hash of data read from standard input.  @command{guix hash} has the following options:"
-msgstr "Wird als @var{Datei} ein Bindestrich @code{-} angegeben, berechnet @command{guix hash} den Hash der von der Standardeingabe gelesenen Daten. @command{guix hash} unterstützt die folgenden Optionen:"
+msgid "Here are a few examples:"
+msgstr "Hier sind ein paar Beispiele:"
 
 msgid "Compute a hash using the specified @var{algorithm}, @code{sha256} by default."
 msgstr "Mit dem angegebenen @var{Algorithmus} einen Hash berechnen. Die Vorgabe ist, @code{sha256} zu benutzen."
@@ -17113,21 +17107,6 @@ msgstr "OCaml"
 msgid "Import metadata from the @uref{https://opam.ocaml.org/, OPAM} package repository used by the OCaml community."
 msgstr "Metadaten aus der Paketsammlung @uref{https://opam.ocaml.org/, OPAM} der OCaml-Gemeinde importieren."
 
-msgid "composer"
-msgstr "composer"
-
-msgid "Composer"
-msgstr "Composer"
-
-msgid "PHP"
-msgstr "PHP"
-
-msgid "Import metadata from the @uref{https://getcomposer.org/, Composer} package archive used by the PHP community, as in this example:"
-msgstr "Metadaten aus dem Paketarchiv @uref{https://getcomposer.org/, Composer}, das die PHP-Gemeinschaft verwendet, importieren."
-
-msgid "guix import composer phpunit/phpunit\n"
-msgstr "guix import composer phpunit/phpunit\n"
-
 msgid "--repo"
 msgstr "--repo"
 
@@ -17157,6 +17136,21 @@ msgstr "Die an diese Befehlszeilenoption übergebenen Repositorys sind in der Re
 
 msgid "Also, please note that versions are not compared across repositories.  The first repository (from left to right) that has at least one version of a given package will prevail over any others, and the version imported will be the latest one found @emph{in this repository only}."
 msgstr "Beachten Sie ebenso, dass Versionsnummern mehrerer Repositorys @emph{nicht} verglichen werden, sondern einfach das Paket aus dem ersten Repository (von links nach rechts), das mindestens eine Version des angeforderten Pakets enthält, genommen wird und die importierte Version der neuesten @emph{aus nur diesem Repository} entspricht."
+
+msgid "composer"
+msgstr "composer"
+
+msgid "Composer"
+msgstr "Composer"
+
+msgid "PHP"
+msgstr "PHP"
+
+msgid "Import metadata from the @uref{https://getcomposer.org/, Composer} package archive used by the PHP community, as in this example:"
+msgstr "Metadaten aus dem Paketarchiv @uref{https://getcomposer.org/, Composer}, das die PHP-Gemeinschaft verwendet, importieren."
+
+msgid "guix import composer phpunit/phpunit\n"
+msgstr "guix import composer phpunit/phpunit\n"
 
 msgid "go"
 msgstr "go"
@@ -17758,51 +17752,6 @@ msgstr "Formatierung, Code-Stil"
 msgid "format conventions"
 msgstr "Formatierungskonventionen"
 
-msgid "The @command{guix style} command helps users and packagers alike style their package definitions and configuration files according to the latest fashionable trends.  It can either reformat whole files, with the @option{--whole-file} option, or apply specific @dfn{styling rules} to individual package definitions.  The command currently provides the following styling rules:"
-msgstr "Mit dem Befehl @command{guix style} können sowohl Nutzer als auch Paketentwickler ihre Paketdefinitionen und Konfigurationsdateien entsprechend der aktuell modischen Trends umgestalten. Sie können entweder ganze Dateien mit der Befehlszeilenoption @option{--whole-file} umformatieren oder die gewählten @dfn{Stilregeln} auf einzelne Paketdefinitionen anwenden. Im Moment werden Regeln für die folgenden Stilfragen angeboten:"
-
-msgid "formatting package definitions according to the project's conventions (@pxref{Formatting Code});"
-msgstr "Den Stil der Paketeingaben nach den Projektkonventionen auszurichten (siehe @ref{Formatting Code}), sowie"
-
-msgid "rewriting package inputs to the ``new style'', as explained below."
-msgstr "Paketeingaben in den „neuen Stil“ umzuschreiben, wie unten erklärt wird."
-
-msgid "The way package inputs are written is going through a transition (@pxref{package Reference}, for more on package inputs).  Until version 1.3.0, package inputs were written using the ``old style'', where each input was given an explicit label, most of the time the package name:"
-msgstr "Zurzeit läuft eine Umstellung der Notation, wie Paketeingaben aufgeschrieben werden (siehe @ref{package Reference}, für weitere Informationen zu Paketeingaben). Bis Version 1.3.0 wurden Paketeingaben im „alten Stil“ verfasst, d.h.@: man schrieb zu jeder Eingabe ausdrücklich eine Bezeichnung dazu, in der Regel der Paketname:"
-
-msgid ""
-"(package\n"
-"  ;; @dots{}\n"
-"  ;; The \"old style\" (deprecated).\n"
-"  (inputs `((\"libunistring\" ,libunistring)\n"
-"            (\"libffi\" ,libffi))))\n"
-msgstr ""
-"(package\n"
-"  ;; …\n"
-"  ;; Der „alte Stil“ (veraltet).\n"
-"  (inputs `((\"libunistring\" ,libunistring)\n"
-"            (\"libffi\" ,libffi))))\n"
-
-msgid "Today, the old style is deprecated and the preferred style looks like this:"
-msgstr "Der alte Stil gilt heute als veraltet. Der bevorzugte Stil sieht so aus:"
-
-msgid ""
-"(package\n"
-"  ;; @dots{}\n"
-"  ;; The \"new style\".\n"
-"  (inputs (list libunistring libffi)))\n"
-msgstr ""
-"(package\n"
-"  ;; …\n"
-"  ;; Der „neue Stil“.\n"
-"  (inputs (list libunistring libffi)))\n"
-
-msgid "Likewise, uses of @code{alist-delete} and friends to manipulate inputs is now deprecated in favor of @code{modify-inputs} (@pxref{Defining Package Variants}, for more info on @code{modify-inputs})."
-msgstr "Ebenso gilt als veraltet, Eingaben mit @code{alist-delete} und seinen Freunden zu verarbeiten; bevorzugt wird @code{modify-inputs} (siehe @ref{Defining Package Variants} für weitere Informationen zu @code{modify-inputs})."
-
-msgid "In the vast majority of cases, this is a purely mechanical change on the surface syntax that does not even incur a package rebuild.  Running @command{guix style -S inputs} can do that for you, whether you're working on packages in Guix proper or in an external channel."
-msgstr "In den allermeisten Fällen ist das eine rein mechanische Änderung der oberflächlichen Syntax und die Pakete müssen dazu nicht einmal neu erstellt werden. Diese kann @command{guix style -S inputs} für Sie übernehmen, egal ob Sie an Paketen innerhalb des eigentlichen Guix oder in einem externen Kanal arbeiten."
-
 msgid "guix style [@var{options}] @var{package}@dots{}\n"
 msgstr "guix style [@var{Optionen}] @var{Paket}…\n"
 
@@ -17857,11 +17806,44 @@ msgstr "./pre-inst-env guix style coreutils\n"
 msgid "inputs"
 msgstr "inputs"
 
-msgid "Rewrite package inputs to the ``new style'', as described above.  This is how you would rewrite inputs of package @code{whatnot} in your own channel:"
-msgstr "Paketeingaben in den oben beschriebenen „neuen Stil“ umschreiben. Hiermit würden Sie die Eingaben des Pakets @code{oderso} in Ihrem eigenen Kanal umschreiben:"
-
 msgid "guix style -L ~/my/channel -S inputs whatnot\n"
 msgstr "guix style -L ~/eigener/kanal -S inputs oderso\n"
+
+msgid "The way package inputs are written is going through a transition (@pxref{package Reference}, for more on package inputs).  Until version 1.3.0, package inputs were written using the ``old style'', where each input was given an explicit label, most of the time the package name:"
+msgstr "Zurzeit läuft eine Umstellung der Notation, wie Paketeingaben aufgeschrieben werden (siehe @ref{package Reference}, für weitere Informationen zu Paketeingaben). Bis Version 1.3.0 wurden Paketeingaben im „alten Stil“ verfasst, d.h.@: man schrieb zu jeder Eingabe ausdrücklich eine Bezeichnung dazu, in der Regel der Paketname:"
+
+msgid ""
+"(package\n"
+"  ;; @dots{}\n"
+"  ;; The \"old style\" (deprecated).\n"
+"  (inputs `((\"libunistring\" ,libunistring)\n"
+"            (\"libffi\" ,libffi))))\n"
+msgstr ""
+"(package\n"
+"  ;; …\n"
+"  ;; Der „alte Stil“ (veraltet).\n"
+"  (inputs `((\"libunistring\" ,libunistring)\n"
+"            (\"libffi\" ,libffi))))\n"
+
+msgid "Today, the old style is deprecated and the preferred style looks like this:"
+msgstr "Der alte Stil gilt heute als veraltet. Der bevorzugte Stil sieht so aus:"
+
+msgid ""
+"(package\n"
+"  ;; @dots{}\n"
+"  ;; The \"new style\".\n"
+"  (inputs (list libunistring libffi)))\n"
+msgstr ""
+"(package\n"
+"  ;; …\n"
+"  ;; Der „neue Stil“.\n"
+"  (inputs (list libunistring libffi)))\n"
+
+msgid "Likewise, uses of @code{alist-delete} and friends to manipulate inputs is now deprecated in favor of @code{modify-inputs} (@pxref{Defining Package Variants}, for more info on @code{modify-inputs})."
+msgstr "Ebenso gilt als veraltet, Eingaben mit @code{alist-delete} und seinen Freunden zu verarbeiten; bevorzugt wird @code{modify-inputs} (siehe @ref{Defining Package Variants} für weitere Informationen zu @code{modify-inputs})."
+
+msgid "In the vast majority of cases, this is a purely mechanical change on the surface syntax that does not even incur a package rebuild.  Running @command{guix style -S inputs} can do that for you, whether you're working on packages in Guix proper or in an external channel."
+msgstr "In den allermeisten Fällen ist das eine rein mechanische Änderung der oberflächlichen Syntax und die Pakete müssen dazu nicht einmal neu erstellt werden. Diese kann @command{guix style -S inputs} für Sie übernehmen, egal ob Sie an Paketen innerhalb des eigentlichen Guix oder in einem externen Kanal arbeiten."
 
 msgid "Rewriting is done in a conservative way: preserving comments and bailing out if it cannot make sense of the code that appears in an inputs field.  The @option{--input-simplification} option described below provides fine-grain control over when inputs should be simplified."
 msgstr "Die Umschreibung geschieht auf konservative Art: Kommentare bleiben erhalten und wenn es den Code in einem @code{inputs}-Feld @emph{nicht} erfassen kann, gibt @command{guix style} auf. Die Befehlszeilenoption @option{--input-simplification} ermöglicht, genau zu bestimmen, unter welchen Voraussetzungen Eingaben vereinfacht werden sollen."
@@ -18099,9 +18081,6 @@ msgstr "Eingabebezeichnungen im alten Stil melden, die nicht dem Namen des damit
 
 msgid "guix lint @var{options} @var{package}@dots{}\n"
 msgstr "guix lint @var{Optionen} @var{Pakete}…\n"
-
-msgid "If no package is given on the command line, then all packages are checked.  The @var{options} may be zero or more of the following:"
-msgstr "Wird kein Paket auf der Befehlszeile angegeben, dann werden alle Pakete geprüft, die es gibt. Als @var{Optionen} können null oder mehr der folgenden Befehlszeilenoptionen übergeben werden:"
 
 msgid "--list-checkers"
 msgstr "--list-checkers"
@@ -21301,9 +21280,6 @@ msgstr "Liefert eine neue Tastaturbelegung mit dem angegebenen @var{Name}n in de
 
 msgid "@var{name} must be a string such as @code{\"fr\"}; @var{variant} must be a string such as @code{\"bepo\"} or @code{\"nodeadkeys\"}.  See the @code{xkeyboard-config} package for valid options."
 msgstr "Der @var{Name} muss eine Zeichenkette wie @code{\"fr\"} sein und die @var{Variante} eine Zeichenkette wie @code{\"bepo\"} oder @code{\"nodeadkeys\"}. Siehe das Paket @code{xkeyboard-config} für Informationen, welche Optionen gültig sind."
-
-msgid "Here are a few examples:"
-msgstr "Hier sind ein paar Beispiele:"
 
 msgid ""
 ";; The German QWERTZ layout.  Here we assume a standard\n"
@@ -30044,9 +30020,6 @@ msgstr ""
 msgid "@code{log-destination} (default: @code{\"syslog\"})"
 msgstr "@code{log-destination} (Vorgabe: @code{\"syslog\"})"
 
-msgid "The logging method to use for PostgreSQL@.  Multiple values are accepted, separated by commas."
-msgstr "Welche Protokollierungsmethode für PostgreSQL benutzt werden soll. Hier können mehrere Werte kommagetrennt angegeben werden."
-
 msgid "@code{hba-file} (default: @code{%default-postgres-hba})"
 msgstr "@code{hba-file} (Vorgabe: @code{%default-postgres-hba})"
 
@@ -30064,9 +30037,6 @@ msgstr "@code{socket-directory} (Vorgabe: @code{\"/var/run/postgresql\"})"
 
 msgid "Specifies the directory of the Unix-domain socket(s) on which PostgreSQL is to listen for connections from client applications. If set to @code{\"\"} PostgreSQL does not listen on any Unix-domain sockets, in which case only TCP/IP sockets can be used to connect to the server."
 msgstr "Gibt an, in welchem Verzeichnis der oder die Unix-Socket(s) zu finden sind, auf denen PostgreSQL auf Verbindungen von Client-Anwendungen lauscht. Ist dies auf @code{\"\"} gesetzt, so lauscht PostgreSQL auf gar keinem Unix-Socket, so dass Verbindungen zum Server nur mit TCP/IP-Sockets aufgebaut werden können."
-
-msgid "By default, the @code{#false} value means the PostgreSQL default value will be used, which is currently @samp{/tmp}."
-msgstr "Der Vorgabewert @code{#false} bedeutet, dass der voreingestellte Wert von PostgreSQL benutzt wird. Derzeit ist die Voreinstellung @samp{/tmp}."
 
 msgid "List of additional keys and values to include in the PostgreSQL config file.  Each entry in the list should be a list where the first element is the key, and the remaining elements are the values."
 msgstr "Eine Liste zusätzlicher Schlüssel-Wert-Kombinationen, die in die PostgreSQL-Konfigurationsdatei aufgenommen werden sollen. Jeder Eintrag in der Liste muss eine Liste von Listen sein, deren erstes Element dem Schlüssel entspricht und deren übrige Elemente die Werte angeben."
@@ -36780,6 +36750,13 @@ msgstr "Der Cat Avatar Generator („Katzenavatargenerator“) ist ein einfacher
 
 msgid "{Procedure} cat-avatar-generator-service @"
 msgstr "{Prozedur} cat-avatar-generator-service @"
+
+msgid "[#:cache-dir \"/var/cache/cat-avatar-generator/\"] @ [#:package cat-avatar-generator] @ [#:configuration (nginx-server-configuration)] Returns an nginx-server-configuration that inherits @code{configuration}.  It extends the nginx configuration to add a server block that serves @code{package}, a version of cat-avatar-generator.  During execution, cat-avatar-generator will be able to use @code{cache-dir} as its cache directory, which must end with a slash, be created manually, and be writable by php-fpm."
+msgstr ""
+"[#:cache-dir \"/var/cache/cat-avatar-generator/\"] @\n"
+"[#:package cat-avatar-generator] @\n"
+"[#:configuration (nginx-server-configuration)]\n"
+"Liefert ein nginx-server-configuration-Objekt, das von der in @code{configuration} angegebenen Konfiguration erbt. Es erweitert die Nginx-Konfiguration, indem es einen Server-Block hinzufügt, der die in @code{package} angegebene Version vom cat-avatar-generator anbietet. Bei der Ausführung wird dem cat-avatar-generator Zugriff auf sein in @code{cache-dir} angegebenes Zwischenspeicherverzeichnis gewährt, das auf einen Schrägstrich enden muss, manuell erzeugt worden sein muss und auf das php-fpm Schreibrechte haben muss."
 
 msgid "A simple setup for cat-avatar-generator can look like this:"
 msgstr "Eine einfache Konfiguration des cat-avatar-generator kann so aussehen:"
@@ -44325,6 +44302,15 @@ msgstr "@code{unused-removal-duration} (Vorgabe: @code{#f})"
 msgid "@var{unused-removal-duration} must denote a duration: @code{5d} means 5 days, @code{1m} means 1 month, and so on."
 msgstr "@var{unused-removal-duration} muss eine Dauer angeben: @code{5d} bedeutet 5 Tage, @code{1m} bedeutet 1 Monat und so weiter."
 
+msgid "solid state drives, periodic trim"
+msgstr "SSD-Speicher, regelmäßiger TRIM"
+
+msgid "solid state drives, trim"
+msgstr "Solid State Drives, TRIM"
+
+msgid "@code{extra-arguments} (type: maybe-list-of-strings)"
+msgstr "@code{extra-arguments} (Typ: Vielleicht-Liste-von-Zeichenketten)"
+
 msgid "oom"
 msgstr "OOM"
 
@@ -44418,12 +44404,6 @@ msgstr "fstrim-Dienst"
 msgid "fstrim service"
 msgstr "fstrim-Dienst"
 
-msgid "solid state drives, periodic trim"
-msgstr "SSD-Speicher, regelmäßiger TRIM"
-
-msgid "solid state drives, trim"
-msgstr "Solid State Drives, TRIM"
-
 msgid "The command @command{fstrim} can be used to discard (or @dfn{trim})  unused blocks on a mounted file system."
 msgstr "Mit dem Befehl @command{fstrim} können Sie unbenutzte Blöcke über einen TRIM-Steuerbefehl auf einem eingebundenen Dateisystem freigeben."
 
@@ -44468,9 +44448,6 @@ msgstr "@code{quiet-unsupported?} (Vorgabe: @code{#t}) (Typ: Boolescher-Ausdruck
 
 msgid "Suppress error messages if trim operation (ioctl) is unsupported."
 msgstr "Keine Fehlermeldungen bringen, wenn die TRIM-Operation (ioctl) @emph{nicht} unterstützt wird."
-
-msgid "@code{extra-arguments} (type: maybe-list-of-strings)"
-msgstr "@code{extra-arguments} (Typ: Vielleicht-Liste-von-Zeichenketten)"
 
 msgid "Extra options to append to @command{fstrim} (run @samp{man fstrim} for more information)."
 msgstr "Zusätzliche Befehlszeilenoptionen, die an @command{fstrim} angehängt werden. Führen Sie @command{man fstrim} aus, um weitere Informationen zu erhalten."
@@ -46868,6 +46845,9 @@ msgstr "{Prozedur} grub-theme"
 msgid "Return the default GRUB theme used by the operating system if no @code{theme} field is specified in @code{bootloader-configuration} record."
 msgstr "Liefert das vorgegebene GRUB-Thema, das vom Betriebssystem benutzt wird, wenn kein @code{theme}-Feld im @code{bootloader-configuration}-Verbundsobjekt angegeben wurde."
 
+msgid "It comes with a fancy background image displaying the Guix logo."
+msgstr "Es wird von einem feschen Hintergrundbild begleitet, das das Logo von Guix zeigt."
+
 msgid "For example, to override the default resolution, you may use something like"
 msgstr "Um zum Beispiel eine andere Auflösung als vorgegeben zu verwenden, würden Sie so etwas schreiben:"
 
@@ -47735,9 +47715,6 @@ msgstr "enable-ipv6?"
 
 msgid "Whether or not the droplet should be created with IPv6 networking."
 msgstr "Ob das Droplet mit IPv6-Netzanbindung erzeugt werden soll."
-
-msgid "If specified, the file name of the SSH private key to use to authenticate with the remote host."
-msgstr "Wenn dies angegeben wird, ist es der Dateiname des privaten SSH-Schlüssels, um sich beim entfernten Rechner zu authentisieren."
 
 msgid "Running Guix in a Virtual Machine"
 msgstr "Guix in einer virtuellen Maschine betreiben"
@@ -49340,9 +49317,6 @@ msgstr ""
 "mount --rbind /proc /mnt/proc\n"
 "mount --rbind /sys /mnt/sys\n"
 "mount --rbind /dev /mnt/dev\n"
-
-msgid "If your system is EFI-based, you must also mount the ESP partition.  Assuming it is @file{/dev/sda1}, you can do so with:"
-msgstr "Sofern Ihr System EFI benutzt, müssen Sie auch die als ESP dienende Partition einbinden. Wenn Sie bei Ihnen @file{/dev/sda1} heißt, lautet der Befehl:"
 
 msgid "mount /dev/sda1 /mnt/boot/efi\n"
 msgstr "mount /dev/sda1 /mnt/boot/efi\n"

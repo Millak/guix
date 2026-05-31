@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-04-30 03:18+0000\n"
-"PO-Revision-Date: 2026-04-30 03:29+0000\n"
+"POT-Creation-Date: 2026-05-18 03:18+0000\n"
+"PO-Revision-Date: 2026-05-28 20:43+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: French <https://translate.codeberg.org/projects/guix/documentation-cookbook/fr/>\n"
 "Language: fr\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.17\n"
+"X-Generator: Weblate 2026.5\n"
 
 msgid "@documentencoding UTF-8"
 msgstr ""
@@ -930,14 +930,14 @@ msgstr "Ce champ contient une description de l'origine du code source. L'enregis
 msgid "The method, here @code{url-fetch} to download via HTTP/FTP, but other methods"
 msgstr "La méthode, ici @code{url-fetch} pour télécharger via HTTP/FTP, mais d'autres méthodes"
 
-msgid "exist, such as @code{git-fetch} for Git repositories."
-msgstr "existent, comme @code{git-fetch} pour les dépôts Git."
+msgid "exist, such as @code{git-fetch} for Git repositories.  @xref{origin Reference,,, guix, GNU Guix Reference Manual}, for more info on the available download methods."
+msgstr "existent, comme @code{git-fetch} pour les dépôts Git. @xref{Référence de origin,,, guix.fr, le manuel de référence de GNU Guix}, pour plus d'information sur les méthodes de téléchargement disponibles."
 
 msgid "The URI, which is typically some @code{https://} location for @code{url-fetch}.  Here"
 msgstr "L'URI, qui est typiquement un emplacement @code{https://} pour @code{url-fetch}. Ici"
 
-msgid "the special `mirror://gnu` refers to a set of well known locations, all of which can be used by Guix to fetch the source, should some of them fail."
-msgstr "le code spécial « mirror://gnu » fait référence à une ensemble d'emplacements bien connus, qui peuvent tous être utilisés par Guix pour récupérer la source, si l'un d'entre eux échoue."
+msgid "the special @code{mirror://gnu} refers to a set of well known locations, all of which can be used by Guix to fetch the source, should some of them fail."
+msgstr "le code spécial @code{mirror://gnu} fait référence à une ensemble d'emplacements bien connus, qui peuvent tous être utilisés par Guix pour récupérer la source, si l'un d'entre eux échoue."
 
 msgid "The @code{sha256} checksum of the requested file.  This is essential to ensure"
 msgstr "La somme de contrôle @code{sha256} du fichier demandé. C'est essentiel pour s'assurer"
@@ -1539,8 +1539,8 @@ msgstr "Parlons maintenant de ces champs en détail."
 msgid "@code{git-fetch} method"
 msgstr "La méthode @code{git-fetch}"
 
-msgid "Unlike the @code{url-fetch} method, @code{git-fetch} expects a @code{git-reference} which takes a Git repository and a commit.  The commit can be any Git reference such as tags, so if the @code{version} is tagged, then it can be used directly.  Sometimes the tag is prefixed with a @code{v}, in which case you'd use @code{(commit (string-append \"v\" version))}."
-msgstr "Contrairement à la méthode @code{url-fetch}, @code{git-fetch} a besoin d'un @code{git-reference} qui prend un dépôt Git et un commit. Le commit peut être n'importe quelle référence Git comme des tags, donc si la @code{version} a un tag associé, vous pouvez l'utiliser directement. Parfois le tag est précédé de @code{v}, auquel cas vous pouvez utiliser @code{(commit (string-append \"v\" version))}."
+msgid "Unlike the @code{url-fetch} method, @code{git-fetch} expects a @code{git-reference} which takes a Git repository and a commit (@pxref{origin Reference,,, guix, GNU Guix Reference Manual}).  The commit can be any Git reference such as tags, so if the @code{version} is tagged, then it can be used directly.  Sometimes the tag is prefixed with a @code{v}, in which case you'd use @code{(commit (string-append \"v\" version))}."
+msgstr "Contrairement à la méthode @code{url-fetch}, @code{git-fetch} a besoin d'un @code{git-reference} qui prend un dépôt Git et un commit (@pxref{Référence de origin,,, guix.fr, le manuel de référence de GNU Guix}). Le commit peut être n'importe quelle référence Git comme des tags, donc si la @code{version} a un tag associé, vous pouvez l'utiliser directement. Parfois le tag est précédé de @code{v}, auquel cas vous pouvez utiliser @code{(commit (string-append \"v\" version))}."
 
 msgid "To ensure that the source code from the Git repository is stored in a directory with a descriptive name, we use @code{(file-name (git-file-name name version))}."
 msgstr "Pour vous assurer que le code source du dépôt Git est stocké dans un répertoire avec un nom descriptif, utilisez @code{(file-name (git-file-name name version))}."
@@ -1656,11 +1656,14 @@ msgstr "Les sorties séparées sont en général @code{debug} et @code{doc}."
 msgid "It's advised to separate outputs only when you've shown it's worth it: if the output size is significant (compare with @code{guix size}) or in case the package is modular."
 msgstr "Vous devriez séparer les sorties seulement si vous pouvez montrer que c'est utile : si la taille de la sortie est importante (vous pouvez comparer avec @code{guix size}) ou si le paquet est modulaire."
 
+msgid "@xref{Packages with Multiple Outputs,,, guix, GNU Guix Reference Manual}, for more info."
+msgstr "@xref{Des paquets avec plusieurs résultats,,, guix.fr, le manuel de référence de GNU Guix} pour plus de détails."
+
 msgid "Build system arguments"
 msgstr "Arguments du système de construction"
 
-msgid "The @code{arguments} is a keyword-value list used to configure the build process."
-msgstr "Le champ @code{arguments} est une liste de mot-clés et de valeurs utilisés pour configurer le processus de construction."
+msgid "The @code{arguments} is a keyword-value list used to configure the build process; these arguments are passed to the @dfn{build system} (@pxref{Build Systems,,, guix, GNU Guix Reference Manual})."
+msgstr "@code{arguments} est une liste de mot-clé et de valeur utilisée pour configurer le processus de construction. Ces arguments sont passés au @dfn{système de construction} (@pxref{Systèmes de construction,,, guix.fr, le manuel de référence de GNU Guix})."
 
 msgid "The simplest argument @code{#:tests?} can be used to disable the test suite when building the package.  This is mostly useful when the package does not feature any test suite.  It's strongly recommended to keep the test suite on if there is one."
 msgstr "L'argument le plus simple est @code{#:tests?} et on l'utilise pour désactiver la suite de tests pendant la construction du paquet. C'est surtout utile si le paquet n'a pas de suite de tests. Nous vous recommandons fortement de laisser tourner la suite de tests s'il y en a une."
@@ -1675,8 +1678,8 @@ msgstr ""
 "#:make-flags (list (string-append \"prefix=\" (assoc-ref %outputs \"out\"))\n"
 "                   \"CC=gcc\")\n"
 
-msgid "translate into"
-msgstr "se traduisent en"
+msgid "translate into:"
+msgstr "se traduisent en :"
 
 msgid "$ make CC=gcc prefix=/gnu/store/...-<out>\n"
 msgstr "$ make CC=gcc prefix=/gnu/store/...-<out>\n"
@@ -1693,8 +1696,8 @@ msgstr "#:configure-flags '(\"-DUSE_SHA1DC=ON\")\n"
 msgid "The @code{%build-inputs} variable is also generated in scope.  It's an association table that maps the input names to their store directories."
 msgstr "La variable @code{%build-inputs} est aussi générée dans cette portée. C'est une liste d'association qui fait correspondre les noms des entrées à leur répertoire dans le dépôt."
 
-msgid "The @code{phases} keyword lists the sequential steps of the build system.  Typically phases include @code{unpack}, @code{configure}, @code{build}, @code{install} and @code{check}.  To know more about those phases, you need to work out the appropriate build system definition in @samp{$GUIX_CHECKOUT/guix/build/gnu-build-system.scm}:"
-msgstr "Le mot-clé @code{phases} liste la séquence d'étapes du système de construction. Les phases usuelles sont @code{unpack}, @code{configure}, @code{build}, @code{install} et @code{check}. Pour en savoir plus, vous devez trouver la bonne définition du système de construction dans @samp{$GUIX_CHECKOUT/guix/build/gnu-build-system.scm} :"
+msgid "The @code{phases} keyword lists the sequential steps of the build system.  @xref{Build Phases,,, guix, GNU Guix Reference Manual}, for details; in a nutshell, phases include @code{unpack}, @code{configure}, @code{build}, @code{install} and @code{check}.  To know more about those phases, you need to work out the appropriate build system definition in @samp{$GUIX_CHECKOUT/guix/build/gnu-build-system.scm}:"
+msgstr "Le mot-clé @code{phases} liste la séquence d'étapes du système de construction. @xref{Phases de construction,,, guix.fr, le manuel de référence de GNU Guix} pour plus de détails. En résumé, les phases comprennent @code{unpack}, @code{configure}, @code{build}, @code{install} et @code{check}. Pour en savoir plus, vous devez trouver la bonne définition du système de construction dans @samp{$GUIX_CHECKOUT/guix/build/gnu-build-system.scm} :"
 
 msgid ""
 "(define %standard-phases\n"
@@ -1863,8 +1866,8 @@ msgstr "Sa valeur de retour est ignorée."
 msgid "Code staging"
 msgstr "Échelonnage du code"
 
-msgid "The astute reader may have noticed the quasi-quote and comma syntax in the argument field.  Indeed, the build code in the package declaration should not be evaluated on the client side, but only when passed to the Guix daemon.  This mechanism of passing code around two running processes is called @uref{https://arxiv.org/abs/1709.00833, code staging}."
-msgstr "Si vous avez été attentif, vous aurez remarqué la quasi-quote et la virgule dans le champ argument. En effet, le code de construction dans la déclaration du paquet ne doit pas être évalué côté client, mais seulement après avoir été passé au démon Guix. Ce mécanisme de passage de code entre deux processus s'appelle @uref{https://arxiv.org/abs/1709.00833, l'échelonnage de code}."
+msgid "The astute reader may have noticed the hash-tilde and hash-dollar syntax in the argument field.  Indeed, the build code in the package declaration should not be evaluated on the client side, but only when passed to the Guix daemon.  This mechanism of passing code around two running processes is called @uref{https://arxiv.org/abs/1709.00833, code staging}.  @xref{G-Expressions,,, guix, GNU Guix Reference Manual}, for info on the this mechanism, which is called @dfn{g-expressions}."
+msgstr "Si vous avez été attentif, vous aurez remarqué la syntaxe qui utilise un dièse-tilde et un dièse-dollar dans le champ argument. En effet, le code de construction dans la déclaration du paquet ne doit pas être évalué côté client, mais seulement après avoir été passé au démon Guix. Ce mécanisme de passage de code entre deux processus s'appelle @uref{https://arxiv.org/abs/1709.00833, l'échelonnage de code}. @xref{G-Expressions,,, guix.fr, le manuel de référence de GNU Guix} pour plus d'information sur le mécanisme de @dfn{g-expression}."
 
 msgid "Utility functions"
 msgstr "Fonctions utilitaires"
@@ -1872,8 +1875,8 @@ msgstr "Fonctions utilitaires"
 msgid "When customizing @code{phases}, we often need to write code that mimics the equivalent system invocations (@code{make}, @code{mkdir}, @code{cp}, etc.)@: commonly used during regular ``Unix-style'' installations."
 msgstr "Lorsque vous modifiez les @code{phases}, vous aurez souvent besoin d'écrire du code qui ressemble aux invocation équivalentes (@code{make}, @code{mkdir}, @code{cp}, etc) couramment utilisées durant une installatio plus standard dans le monde Unix."
 
-msgid "Some like @code{chmod} are native to Guile.  @xref{,,, guile, Guile reference manual} for a complete list."
-msgstr "Certaines comme @code{chmod} sont natives dans Guile. @xref{,,, guile, Guile reference manual} pour une liste complète."
+msgid "Some like @code{chmod} are native to Guile.  @xref{File System,,, guile, Guile reference manual} for a complete list."
+msgstr "Certaines comme @code{chmod} sont natives dans Guile. @xref{File System,,, guile, Guile reference manual (en anglais)} pour une liste complète."
 
 msgid "Guix provides additional helper functions which prove especially handy in the context of package management."
 msgstr "Guix fournit des fonctions utilitaires supplémentaires qui sont particulièrement utiles pour la gestion des paquets."
@@ -2058,8 +2061,8 @@ msgstr ""
 msgid "The recursive importer won't import packages for which Guix already has package definitions, except for the very first."
 msgstr "L'importateur récursif n'importera pas les paquets pour lesquels Guix a déjà une définition, sauf pour le tout premier."
 
-msgid "Not all applications can be packaged this way, only those relying on a select number of supported systems.  Read about the full list of importers in the guix import section of the manual (@pxref{Invoking guix import,,, guix, GNU Guix Reference Manual})."
-msgstr "Toutes les applications ne peuvent pas être empaquetées de cette manière, seules celles qui s'appuient sur un nombre restreint de systèmes pris en charge le peuvent. Vous trouverez la liste complète des importateurs dans la section dédiée du manuel (@pxref{Invoquer guix import,,, guix.fr, le manuel de référence de GNU})."
+msgid "Not all applications can be packaged this way, only those relying on a select number of supported systems.  @xref{Invoking guix import,,, guix, GNU Guix Reference Manual} for the full list of importers."
+msgstr "Toutes les applications ne peuvent pas être empaquetées de cette manière, seules celles qui s'appuient sur un nombre restreint de systèmes pris en charge le peuvent. @xref{Invoquer guix import,,, guix.fr, le manuel de référence de GNU} pour la liste complète des outils d'import."
 
 msgid "Guix can be smart enough to check for updates on systems it knows.  It can report outdated package definitions with"
 msgstr "Guix peut être assez intelligent pour vérifier s'il y a des mises à jour sur les systèmes qu'il connaît. Il peut rapporter les paquets anciens avec"
@@ -2072,6 +2075,9 @@ msgstr "La plupart du temps, mettre à jour un paquet vers une nouvelle version 
 
 msgid "$ guix refresh hello --update\n"
 msgstr "$ guix refresh hello --update\n"
+
+msgid "@xref{Invoking guix refresh,,, guix, GNU Guix Reference Manual}, for more info."
+msgstr "@xref{Invoquer guix refresh,,, guix.fr, le manuel de référence de GNU Guix}, pour plus d'information."
 
 msgid "If you've started browsing the existing package definitions, you might have noticed that a significant number of them have a @code{inherit} field:"
 msgstr "Si vous avez commencé à regarder des définitions de paquets existantes, vous avez peut-être remarqué qu'un certain nombre d'entre elles ont un champ @code{inherit} :"
@@ -2105,8 +2111,8 @@ msgstr ""
 "                \"17fpahgh5dyckgz7rwqvzgnhx53cx9kr2xw0szprc6bnqy977fi8\"))))\n"
 "    (native-inputs (list `(,gtk+ \"bin\")))))\n"
 
-msgid "All unspecified fields are inherited from the parent package.  This is very convenient to create alternative packages, for instance with different source, version or compilation options."
-msgstr "Tous les champs non spécifiés héritent du paquet parent. C'est très pratique pour créer un paquet alternatif, par exemple avec une source, une version ou des options de compilation différentes."
+msgid "All unspecified fields are inherited from the parent package.  This is very convenient to create alternative packages, for instance with different source, version or compilation options.  @xref{Defining Package Variants,,, guix, GNU Guix Reference Manual}, for a discussion of inheritance and of other ways to create package variants."
+msgstr "Tous les champs non spécifiés héritent du paquet parent. C'est très pratique pour créer un paquet alternatif, par exemple avec une source, une version ou des options de compilation différentes. @xref{Définition de variantes de paquets,,, guix.fr, le manuel de référence de GNU Guix}, pour une discussion sur l'héritage et les manières de créer des variantes de paquets."
 
 msgid "Sadly, some applications can be tough to package.  Sometimes they need a patch to work with the non-standard file system hierarchy enforced by the store.  Sometimes the tests won't run properly.  (They can be skipped but this is not recommended.)  Other times the resulting package won't be reproducible."
 msgstr "Malheureusement, certaines applications peuvent être difficiles à empaqueter. Parfois elles ont besoin d'un correctif pour fonctionner avec la hiérarchie du système de fichiers non standard imposée par de dépôt. Parfois les tests ne se lancent pas correctement (vous pouvez les passer mais ce n'est pas recommandé). Parfois le paquet n'est pas reproductible."
@@ -2129,8 +2135,8 @@ msgstr "D'autres fonctionnalités que vous devriez explorer sont l'édition inte
 msgid "Those fancy features are completely optional and can wait; now is a good time to take a well-deserved break.  With what we've introduced here you should be well armed to package lots of programs.  You can get started right away and hopefully we will see your contributions soon!"
 msgstr "Ces fonctionnalités avancées sont complètement facultatives et peuvent attendre ; maintenant vous devriez prendre une pause bien méritée. Avec ce dont nous venons de parler ici vous devriez être bien armé·e pour empaqueter de nombreux paquets. Vous pouvez commencer dès maintenant et on espère voir votre contribution bientôt !"
 
-msgid "The @uref{https://guix.gnu.org/manual/en/html_node/Defining-Packages.html, package reference in the manual}"
-msgstr "La @uref{https://guix.gnu.org/manual/devel/fr/html_node/Definition-des-paquets.html, référence des paquets dans le manuel}"
+msgid "@xref{Defining Packages,,, guix, GNU Guix Reference Manual}, for the @code{package} reference in the manual."
+msgstr "@xref{Définition des paquets,,, guix.fr, le manuel de référence de GNU Guix} pour la référence de @code{package} dans le manuel."
 
 msgid "@uref{https://gitlab.com/pjotrp/guix-notes/blob/master/HACKING.org, Pjotr’s hacking guide to GNU Guix}"
 msgstr "@uref{https://gitlab.com/pjotrp/guix-notes/blob/master/HACKING.org, le guide de bidouillage de GNU Guix de Pjotr}"
@@ -2139,7 +2145,7 @@ msgid "@uref{https://guix.gnu.org/guix-ghm-andreas-20130823.pdf, ``GNU Guix: Pac
 msgstr "@uref{https://guix.gnu.org/guix-ghm-andreas-20130823.pdf, « GNU Guix: Package without a scheme! »}, d'Andreas Enge"
 
 msgid "The following sections provide real-life examples on working with specific build systems, serving as extensions to the concise packaging guidelines (@pxref{Packaging Guidelines,,, guix, GNU Guix Reference Manual})."
-msgstr "Les section suivantes montrent des exemples réels de la manière de travailler avec des systèmes de construction particuliers, et servent d'extension au guide d'empaquetage (@pxref{Consignes d'empaquetage,,, guix.fr, le manuel de référence de GNU Guix})."
+msgstr "Les sections suivantes montrent des exemples réels de la manière de travailler avec des systèmes de construction particuliers, et servent d'extension au guide d'empaquetage (@pxref{Consignes d'empaquetage,,, guix.fr, le manuel de référence de GNU Guix})."
 
 msgid "In preparation, add the following packages to our environment:"
 msgstr "Pour commencer, ajoutez les paquets suivants à votre environnement :"
@@ -2801,6 +2807,199 @@ msgstr "Ce message TODO spécifique nous indique qu'il y a une forte probabilit�
 
 msgid "We then check if there are any bundled sources within the @code{rust-libdisplay-info-sys-0.3.0} crate. Since there are none (in our example), we can simply remove the TODO line, and continue to the next TODO."
 msgstr "Nous vérifions ensuite s'il y a des sources embarquées dans le crate @code{rust-libdisplay-info-sys-0.3.0}. Comme il n'y en a pas (dans notre exemple), nous pouvez simplement supprimer la ligne TODO, et continuer avec le TODO suivant."
+
+msgid "If there were any bundled sources inside the crate, we would have to patch it with a snippet, in order to unbundle it. You can see some examples on how to unbundle inside @file{gnu/packages/rust-crates.scm} (search for the @code{#:snippet} keyword)."
+msgstr "S'il y avait des sources embarquées dans le crate, nous aurions du corriger cela avec un bout de code (snippet), pour les retirer. Vous pouvez consulter des exemples de ce procédé dans @file{gnu/packages/rust-crates.scm} (recherchez le mot-clé @code{#:snippet})."
+
+msgid "If the unbundle is considered too difficult to be executed (e.g. the effort needed to unbundle is unreasonable), the @code{TODO REVIEW} line should be converted to a regular TODO comment explicitly stating the unbundle was not done (e.g. @code{TODO: Unbundle rust-libdisplay-info-sys.})."
+msgstr "Si cela est trop difficile (par exemple l'effort requis n'est pas raisonnable), la ligne @code{TODO REVIEW} devrait être convertie en un simple commentaire TODO qui indique explicitement que le nettoyage n'a pas été fait (par exemple @code{TODO: Unbundle rust-libdisplay-info-sys})."
+
+msgid "Continuing, another TODO message we encounter in this example is the following:"
+msgstr "Ensuite, le message TODO suivant que nous rencontrons dans cet exemple est le suivant :"
+
+msgid ""
+"(define rust-smithay-0.7.0.d743e1a\n"
+"  ;; TODO REVIEW: Define standalone package if this is a workspace.\n"
+"  (origin\n"
+"    (method git-fetch)\n"
+"    (uri (git-reference (url \"https://github.com/Smithay/smithay.git\")\n"
+"                        (commit \"d743e1a317fa0f01d1c4cadd96d277a1ec7b59d9\")))\n"
+"    (file-name (git-file-name \"rust-smithay\" \"0.7.0.d743e1a\"))\n"
+"    (sha256 (base32 \"11327mhxxf844bs0v5bw1g9bzjssnzhidsissywy6kwng16x727v\"))))\n"
+msgstr ""
+"(define rust-smithay-0.7.0.d743e1a\n"
+"  ;; TODO REVIEW: Define standalone package if this is a workspace.\n"
+"  (origin\n"
+"    (method git-fetch)\n"
+"    (uri (git-reference (url \"https://github.com/Smithay/smithay.git\")\n"
+"                        (commit \"d743e1a317fa0f01d1c4cadd96d277a1ec7b59d9\")))\n"
+"    (file-name (git-file-name \"rust-smithay\" \"0.7.0.d743e1a\"))\n"
+"    (sha256 (base32 \"11327mhxxf844bs0v5bw1g9bzjssnzhidsissywy6kwng16x727v\"))))\n"
+
+msgid "This specific TODO message tells us that there is a high probability of the @code{rust-smithay-0.7.0.d743e1a} crate being a workspace."
+msgstr "Ce message TODO spécifique nous indique qu'il y a de fortes chances que @code{rust-smithay-0.7.0.d743e1a} soit un espace de travail."
+
+msgid "After verifying that it is indeed a workspace, we now need to make it an actual package in @file{gnu/packages/rust-sources.scm}, referencing it in the crate-source definition (see @ref{Common Workflow for Rust Packaging} for more details)."
+msgstr "Après vérification qu'il s'agit bien d'un espace de travail, nous devons maintenant en faire un paquet effectif dans @file{gnu/packages/rust-sources.scm}, et le référencer dans la définition crate-source (consultez @ref{Common Workflow for Rust Packaging} pour plus de détails)."
+
+msgid "You can verify if a crate is a workspace by cloning the crate repository (in this case @code{https://github.com/Smithay/smithay.git}), checking out the specific revision (in this case @command{git checkout d743e1a}), and looking for @code{[workspace]} in its main @file{Cargo.toml} file. If it does not have a TOML @code{[workspace]} section, then it is not a workspace."
+msgstr "Vous pouvez vérifier si un crate est un espace de travail en clonant le dépôt du crate (dans ce cas @code{https://github.com/Smithay/smithay.git}), puis en vérifiant la révision spécifique (dans ce cas @command{git checkout d743e1a}), et en cherchant @code{[workspace]} dans son fichier @file{Cargo.toml} principal. S'il n'a pas de section TOML @code{[workspace]}, ce n'est pas un espace de travail."
+
+msgid "After defining the separate source package for the workspace in @file{gnu/packages/rust-sources.scm} (see @ref{Common Workflow for Rust Packaging} for more details on how to do this), the crate definition for @code{rust-smithay-0.7.0.d743e1a} would then become the following (notice we also remove the TODO line):"
+msgstr "Après avoir défini le paquet source séparé pour l'espace de travail dans @file{gnu/packages/rust-sources.scm} (consultez @ref{Common Workflow for Rust Packaging} pour plus de détails sur la manière de le faire), la définition du crate de @code{rust-smithay-0.7.0.d743e1a} devrait être modifiée de cette manière (remarquez que nous avons également retiré la ligne TODO) :"
+
+msgid "(define rust-smithay-0.7.0.d743e1a package:rust-smithay-0.7.0.d743e1a)\n"
+msgstr "(define rust-smithay-0.7.0.d743e1a package:rust-smithay-0.7.0.d743e1a)\n"
+
+msgid "If @code{rust-smithay-0.7.0.d743e1a} was not a workspace, we would simply remove the TODO line and move on."
+msgstr "Si @code{rust-smithay-0.7.0.d743e1a} n'était pas un espace de travail, nous aurions simplement supprimé la ligne TODO et serions passé à la suite."
+
+msgid "We then try to build the package with @command{guix build niri}, and make sure whether it builds successfully, which it does."
+msgstr "Nous essayons ensuite de construire le paquet avec @command{guix build niri}, et nous assurons que sa construction se déroule correctement, ce qui est le cas."
+
+msgid "As a good practice, we can further check the output of the @code{check-for-pregenerated-files} phase to ensure there are no extraneous pregenerated files inside the crates. If there are any, it is important to snippet them out, like these:"
+msgstr "Une bonne pratique consiste à vérifier également la sortie de la phase @code{check-for-pregenerated-files} pour s'assurer qu'il n'y a pas de fichiers prégénérés supplémentaires dans les crates. Si c'est le cas, il est important de les retirer avec un snippet, de cette manière :"
+
+msgid ""
+"(define rust-winapi-x86-64-pc-windows-gnu-0.4.0\n"
+"  (crate-source \"winapi-x86_64-pc-windows-gnu\" \"0.4.0\"\n"
+"                \"0gqq64czqb64kskjryj8isp62m2sgvx25yyj3kpc2myh85w24bki\"\n"
+"                #:snippet '(delete-file-recursively \"lib\")))\n"
+"\n"
+msgstr ""
+"(define rust-winapi-x86-64-pc-windows-gnu-0.4.0\n"
+"  (crate-source \"winapi-x86_64-pc-windows-gnu\" \"0.4.0\"\n"
+"                \"0gqq64czqb64kskjryj8isp62m2sgvx25yyj3kpc2myh85w24bki\"\n"
+"                #:snippet '(delete-file-recursively \"lib\")))\n"
+"\n"
+
+msgid ""
+"(define rust-flate2-1.1.4\n"
+"  (crate-source \"flate2\" \"1.1.4\"\n"
+"                \"1a8a3pk2r2dxays4ikc47ygydhpd1dcxlgqdi3r9kiiq9rb4wnnw\"\n"
+"                #:snippet '(for-each delete-file-recursively '(\"examples\" \"tests\"))))\n"
+"\n"
+msgstr ""
+"(define rust-flate2-1.1.4\n"
+"  (crate-source \"flate2\" \"1.1.4\"\n"
+"                \"1a8a3pk2r2dxays4ikc47ygydhpd1dcxlgqdi3r9kiiq9rb4wnnw\"\n"
+"                #:snippet '(for-each delete-file-recursively '(\"examples\" \"tests\"))))\n"
+"\n"
+
+msgid ""
+"(define rust-flo-curves-0.3.1\n"
+"  (crate-source \"flo_curves\" \"0.3.1\"\n"
+"                \"16x293dp8825jh465kgms4yyvl4960j26gh37h3skflq9zxpy8hw\"\n"
+"                #:snippet '(for-each delete-file '(\"logo-small.png\" \"logo.png\"))))\n"
+"\n"
+msgstr ""
+"(define rust-flo-curves-0.3.1\n"
+"  (crate-source \"flo_curves\" \"0.3.1\"\n"
+"                \"16x293dp8825jh465kgms4yyvl4960j26gh37h3skflq9zxpy8hw\"\n"
+"                #:snippet '(for-each delete-file '(\"logo-small.png\" \"logo.png\"))))\n"
+"\n"
+
+msgid ""
+"(define rust-interception-sys-0.1.3\n"
+"  (crate-source \"interception-sys\" \"0.1.3\"\n"
+"                \"1lgwbml7gzq5a5rriy708w68gx6yiw9cdg7xy2c5vsrrck7pbs5b\"\n"
+"                #:snippet '(for-each delete-file (find-files \".\" \"\\\\.(dll|lib)$\"))))\n"
+msgstr ""
+"(define rust-interception-sys-0.1.3\n"
+"  (crate-source \"interception-sys\" \"0.1.3\"\n"
+"                \"1lgwbml7gzq5a5rriy708w68gx6yiw9cdg7xy2c5vsrrck7pbs5b\"\n"
+"                #:snippet '(for-each delete-file (find-files \".\" \"\\\\.(dll|lib)$\"))))\n"
+
+msgid "Whenever a Rust package change is merged into our target branch from a different Pull Request, we often encounter many merge conflicts in @code{(gnu packages rust-crates)} when rebasing the Pull Request on top of the target branch. Since we should avoid modifying the rust-crates file manually (e.g. using the git interface to solve merge conflicts), it is recommended (and often much faster)  to drop all changes to @code{(gnu packages rust-crates)} and run the lockfile importer once again, manually adding back all the manual changes."
+msgstr "Lorsqu'un chargement dans un paquet Rust est fusionné dans notre branche cible depuis une autre demande d'ajout, nous rencontrons régulièrement des conflits de fusion dans @code{(gnu packages rust-crates)} en rebasant la demande de fusion sur la branche cible. Comme nous devrions éviter de modifier le fichier rust-crates manuellement (par exemple avec l'interface git pour résoudre les conflits de fusion), il est recommandé (et souvent bien plus rapide) d'ignorer tous les changements dans @code{(gnu pacages rust-crates)} et d'exécuter l'outil d'import de lockfile de nouveau, et d'appliquer de nouveau tous les changements manuels."
+
+msgid "This workflow describes one of many ways to do the described procedure."
+msgstr "Cette méthode de travail décrit l'une de nombreuses manières d'effectuer la procédure décrite."
+
+msgid "In this example we'll update the @code{codeberg-cli} package, which has produced some merge conflicts in @file{gnu/packages/rust-crates.scm} when we tried a git pull rebase."
+msgstr "Dans cet exemple nous allons mettre à jour le paquet @code{codeberg-cli}, qui a produit des conflits de fusion dans @file{gnu/packages/rust-crates.scm} lorsqu'on a essayé d'exécuter @code{git pull rebase}."
+
+msgid "Before starting, make sure we're not in a rebase environment, by aborting the rebase we tried previously (the one which created the merge conflicts by git pulling):"
+msgstr "Avant de démarrer, assurez-vous de ne pas vous trouver dans un environnement de rebasage, en annulant le rebasage que nous avons essayé d'effectuer (celui qui a créé le conflit de fusion en exécutant @code{git pull}) :"
+
+msgid "$ git rebase --abort\n"
+msgstr "$ git rebase --abort\n"
+
+msgid "git rebase --interactive"
+msgstr "git rebase --interactive"
+
+msgid "interactive rebase"
+msgstr "rebasage interactif"
+
+msgid "To begin, we interactively rebase our PR branch by marking as @code{edit} the commit we want to edit, which is the one containing the @file{gnu/packages/rust-crates.scm} changes:"
+msgstr "Pour commencer, nous effectuons un rebasage interactif de notre demande d'ajout en marquant les commits à modifier avec @code{edit}. Il s'agit de celui qui contient les changements dans @file{gnu/packages/rust-crates.scm} :"
+
+msgid ""
+"# Change 1 to the number of relevant commits\n"
+"$ git rebase -i HEAD~1\n"
+msgstr ""
+"# Modifiez « 1 » en le nombre de commits adéquat\n"
+"$ git rebase -i HEAD~1\n"
+
+msgid "In our example, we would mark the @code{codeberg-cli} commit like so:"
+msgstr "Dans notre exemple, nous marquons le commit @code{codeberg-cli} de cette manière :"
+
+msgid "edit 6ef4f1ad043 # gnu: codeberg-cli: Update to 0.5.4.\n"
+msgstr "edit 6ef4f1ad043 # gnu: codeberg-cli: Update to 0.5.4.\n"
+
+msgid "After that, we'll be in rebase mode, where we can restore the changes made to @file{gnu/packages/rust-crates.scm}:"
+msgstr "Ensuite, nous serons en mode de rebasage, où nous pouvons restaurer les modifications effectuées dans @file{gnu/packages/rust-crates.scm} :"
+
+msgid "Notice that we will lose all manual changes we have previously made to @file{gnu/packages/rust-crates.scm} (e.g. snippets, deleting TODO comments, if there were any). We'll need to manually add them back after we run the guix lockfile importer once again, so make sure you have them saved somewhere, for example in your PR link under the @code{Files changed} tab."
+msgstr "Remarquez que cela perdra tous les changements manuels apportés à @file{gnu/packages/rust-crates.scm} (par exemple les bouts de code, la suppression des commentaires TODO, s'il y en a). Nous devrons les rajouter de nouveau manuellement après avoir ré-exécuté l'importateur de lockfile de guix, alors assurez-vous de les avoir sauvegardé quelque part, par exemple dans votre page de demande d'ajout dans l'onglet @code{Fichiers Modifiés}."
+
+msgid "$ git restore --source=HEAD~ gnu/packages/rust-crates.scm\n"
+msgstr "$ git restore --source=HEAD~ gnu/packages/rust-crates.scm\n"
+
+msgid "Having restored the file, we can stage the changes, commit, finish the rebase and pull rebase from the target branch:"
+msgstr "Après avoir restauré le fichier, nous pouvons indexer les changements, commiter, finir le rebasage et récupérer les changements en rebasant depuis la branche cible :"
+
+msgid ""
+"$ git add gnu/packages/rust-crates.scm\n"
+"$ git commit --amend --no-edit\n"
+"$ git rebase --continue\n"
+"$ git pull <remote> <target branch>\n"
+msgstr ""
+"$ git add gnu/packages/rust-crates.scm\n"
+"$ git commit --amend --no-edit\n"
+"$ git rebase --continue\n"
+"$ git pull <remote> <branche cible>\n"
+
+msgid "We then proceed to run the guix lockfile importer:"
+msgstr "Nous continuons ensuite en exécutant l'importateur lockfile de guix :"
+
+msgid "Remember to checkout the correct tag you're packaging in the package repository checkout. Don't forget to run @code{cargo generate-lockfile} before running the lockfile importer, see @ref{Common Workflow for Rust Packaging} for more detailed steps on what to do before running the guix lockfile importer."
+msgstr "Rappelez-vous de récupérer la bonne étiquette dans le dépôt du paquet. N'oubliez pas d'exécuter @code{cargo generate-lockfile} avant d'exécuter l'importateur, consultez @ref{Common Workflow for Rust Packaging} pour un guide pas à pas plus détaillé de ce que vous devez faire avant d'exécuter l'importateur lockfile de guix."
+
+msgid ""
+"$ guix import --insert=gnu/packages/rust-crates.scm \\\n"
+"      crate --lockfile=/path/to/Cargo.lock codeberg-cli\n"
+msgstr ""
+"$ guix import --insert=gnu/packages/rust-crates.scm \\\n"
+"      crate --lockfile=/path/to/Cargo.lock codeberg-cli\n"
+
+msgid "Now is the time we manually add back the snippets and remove the relevant TODOs we have already checked (if there are any)."
+msgstr "Maintenant nous pouvons manuellement ajouter de nouveau les bouts de code et supprimer les TODO que nous avions déjà vérifiés (s'il y en a)."
+
+msgid "After running the lockfile importer and checking if there are any changes to manually add back, we can finally:"
+msgstr "Après avoir exécuté l'importateur lockfile et vérifié s'il y avait des changements à rajouter de nouveau, nous pouvons enfin :"
+
+msgid ""
+"$ git add gnu/packages/rust-crates.scm\n"
+"# Our target commit is the last one:\n"
+"$ git commit --amend --no-edit\n"
+msgstr ""
+"$ git add gnu/packages/rust-crates.scm\n"
+"# Notre commit cible est le dernier :\n"
+"$ git commit --amend --no-edit\n"
+
+msgid "We now have a non-conflicting tree, from which we can now update our PR with."
+msgstr "Nous avons maintenant un arbre sans conflit, à partir duquel nous pouvons mettre à jour notre demande d'ajout."
 
 msgid "Guix offers a flexible language for declaratively configuring your Guix System.  This flexibility can at times be overwhelming.  The purpose of this chapter is to demonstrate some advanced configuration concepts."
 msgstr "Guix propose un langage flexible pour déclarer la configuration de votre système Guix. Cette flexibilité peut parfois paraître écrasante. Le but de ce chapitre est de vous montrer quelques concepts de configuration avancés."
@@ -3873,6 +4072,21 @@ msgstr "Désactivez tous les programmes d'aide pour les systèmes de fichiers et
 msgid "Now power it back up, booting with the Debian configuration.  Once it's running, ssh to your server via @code{ssh root@@@var{<your-server-IP-here>}}. (You can find your server IP address in your Linode Summary section.) Now you can run the \"install guix from @pxref{Binary Installation,,, guix, GNU Guix}\" steps:"
 msgstr "Maintenant démarrez le serveur avec la configuration Debian. Une fois lancé, connectez vous en ssh au serveur avec @code{ssh root@@@var{<IP-de-votre-serveur-ici>}}. (Vous pouvez trouver l'adresse IP de votre serveur dans la section résumé de Linode). Maintenant vous pouvez lancer les étapes d'installation de @pxref{Installation binaire,,, guix.fr, GNU Guix} :"
 
+msgid ""
+"sudo apt-get install gpg\n"
+"wget https://codeberg.org/efraim.gpg -qO - | gpg --import -\n"
+"wget https://guix.gnu.org/guix-install.sh\n"
+"chmod +x guix-install.sh\n"
+"./guix-install.sh\n"
+"guix pull\n"
+msgstr ""
+"sudo apt-get install gpg\n"
+"wget https://codeberg.org/efraim.gpg -qO - | gpg --import -\n"
+"wget https://guix.gnu.org/guix-install.sh\n"
+"chmod +x guix-install.sh\n"
+"./guix-install.sh\n"
+"guix pull\n"
+
 msgid "Now it's time to write out a config for the server.  The key information is below. Save the resulting file as @file{guix-config.scm}."
 msgstr "Maintenant il est temps d'écrire une configuration pour le serveur. Voici ce que vous devrez obligatoirement écrire, en plus de vos propres configurations. Enregistrez le fichier avec le nom @file{guix-config.scm}."
 
@@ -4136,6 +4350,17 @@ msgstr "OVH vous enverra un courriel avec les identifiants requis pour vous conn
 
 msgid "Now you can run the \"install guix from @pxref{Binary Installation,,, guix, GNU Guix}\" steps:"
 msgstr "Maintenant vous pouvez exécuter les étapes de « installer guix de @pxref{Installation binaire,,, guix.fr, GNU Guix} » :"
+
+msgid ""
+"wget https://guix.gnu.org/guix-install.sh\n"
+"chmod +x guix-install.sh\n"
+"./guix-install.sh\n"
+"guix pull\n"
+msgstr ""
+"wget https://guix.gnu.org/guix-install.sh\n"
+"chmod +x guix-install.sh\n"
+"./guix-install.sh\n"
+"guix pull\n"
 
 msgid "Partition the drives and format them, first stop the raid array:"
 msgstr "Partitionnez les lecteurs et formatez-les, en commençant par arrêter la grappe raid :"
@@ -5666,8 +5891,8 @@ msgstr "# nmcli con add type bridge con-name br0 ifname br0\n"
 msgid "To have this bridge be part of your network, you must associate your network bridge with the Ethernet interface used to connect with the network.  Assuming your interface is named @samp{enp2s0}, the following command can be used to do so:"
 msgstr "Pour que ce pont fasse partie de votre réseau, vous devez associer votre pont réseau à l’interface Ethernet utilisée pour vous connecter au réseau. En supposant que cette interface est nommée @samp{enp2s0}, la commande suivante peut être utilisée pour cela :"
 
-msgid "# nmcli con add type bridge-slave ifname enp2s0 master br0\n"
-msgstr "# nmcli con add type bridge-slave ifname enp2s0 master br0\n"
+msgid "# nmcli con add type bridge-slave autoconnect yes ifname enp2s0 master br0\n"
+msgstr "# nmcli con add type bridge-slave autoconnect yes ifname enp2s0 master br0\n"
 
 msgid "Important"
 msgstr "Important"
@@ -5701,11 +5926,11 @@ msgid "The file @file{/etc/qemu/bridge.conf} must also be made to allow the brid
 msgstr "Vous devez configurer le fichier @file{/etc/qemu/bridge.conf} pour qu’il autorise l’interface de pont réseau, car il la refuse par défaut. Pour ce faire, ajoutez l’élément suivant à votre liste de services :"
 
 msgid ""
-"(extra-special-file \"/etc/qemu/host.conf\"\n"
-"                    (plain-file \"host.conf\" \"allow br0\\n\"))\n"
+"(extra-special-file \"/etc/qemu/bridge.conf\"\n"
+"                    (plain-file \"bridge.conf\" \"allow br0\\n\"))\n"
 msgstr ""
-"(extra-special-file \"/etc/qemu/host.conf\"\n"
-"                    (plain-file \"host.conf\" \"allow br0\\n\"))\n"
+"(extra-special-file \"/etc/qemu/bridge.conf\"\n"
+"                    (plain-file \"bridge.conf\" \"allow br0\\n\"))\n"
 
 msgid "Invoking QEMU with the right command line options"
 msgstr "Invoquer QEMU avec les bonnes options de la ligne de commande"
@@ -5719,12 +5944,12 @@ msgstr "Par défaut, une seule adresse MAC est utilisée pour tous les invités,
 msgid ""
 "$ qemu-system-x86_64 [...] \\\n"
 "    -device virtio-net-pci,netdev=user0,mac=XX:XX:XX:XX:XX:XX \\\n"
-"    -netdev bridge,id=user0,br=br0 \\\n"
+"    -netdev bridge,helper=/run/privileged/bin/qemu-bridge-helper,id=user0,br=br0 \\\n"
 "    [...]\n"
 msgstr ""
 "$ qemu-system-x86_64 [...] \\\n"
 "    -device virtio-net-pci,netdev=user0,mac=XX:XX:XX:XX:XX:XX \\\n"
-"    -netdev bridge,id=user0,br=br0 \\\n"
+"    -netdev bridge,helper=/run/privileged/bin/qemu-bridge-helper,id=user0,br=br0 \\\n"
 "    [...]\n"
 
 msgid "To generate MAC addresses that have the QEMU registered prefix, the following snippet can be employed:"
@@ -6962,7 +7187,7 @@ msgstr ""
 "  \"Renvoie P avec FLAGS en tant que drapeaux supplémentaires pour « configure ».\"\n"
 "  (package/inherit p\n"
 "    (arguments\n"
-"     (substitute-keyword-arguments (arguments)\n"
+"     (substitute-keyword-arguments arguments\n"
 "       ((#:configure-flags original-flags #~(list))\n"
 "        #~(append #$original-flags #$flags))))))\n"
 "\n"
