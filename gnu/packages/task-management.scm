@@ -647,6 +647,37 @@ there are a lot of convenient features and abstractions like task groups, task
 scheduling and background process execution.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public vit
+  (package
+    (name "vit")
+    (version "2.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vit-project/vit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0045zys5iy08ijlfc92vd54x5x0kq5hy0pn4iqh2bbypfs46h5rb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'sanity-check 'set-environment-variables
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TERM" "xterm"))))))
+    (inputs (list python-tasklib python-urwid))
+    (native-inputs (list ncurses python-setuptools))
+    (home-page "https://github.com/vit-project/vit")
+    (synopsis "Visual Interactive Taskwarrior full-screen terminal interface")
+    (description
+     "@code{vit} is a minimalistic full-screen terminal interface for the
+Taskwarrior task manager.  It ships with customizable Vim-like key bindings.")
+    (license license:expat)))
+
 (define-public wtime
   (package
     (name "wtime")
