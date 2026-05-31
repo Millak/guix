@@ -482,16 +482,16 @@ to code blocks.")
 (define-public python-sphinx-design
   (package
     (name "python-sphinx-design")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
-       (method git-fetch)               ; no tests in PyPI release
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/executablebooks/sphinx-design")
-             (commit (string-append "v" version))))
+              (url "https://github.com/executablebooks/sphinx-design")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n3bxibg9p16i3c3l0w8j0aw9pi9dggz1ixllgrmd9d5hdn6kl57"))))
+        (base32 "0565y4nfpdgjbi49d7m0lfbwjgn6dg0iv4ipgav0bnhp1wih0l1n"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-flit-core
