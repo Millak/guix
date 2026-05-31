@@ -25,7 +25,7 @@
 ;;; Copyright © 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2020 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
-;;; Copyright © 2020, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2023, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
@@ -1625,6 +1625,55 @@ supplies a generic doubly-linked list and some string functions.")
 graphics image formats like PNG, BMP, JPEG, TIFF and others.")
     (license (list license:gpl2+ license:gpl3+)) ;dual-licensed
     (home-page "https://freeimage.sourceforge.io/")))
+
+(define-public freeimagere
+  (let ((commit "97e3a992298d1b4c7d87c79ca3c8a735837b628e")
+        (revision "0"))
+    (package
+      (name "freeimagere")
+      (version (git-version "4.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/agruzdev/FreeImageRe")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1lx94mgbwzhgi5hrj9dinaizyxlwvapfiz5c58bifkgpy3ab58an"))
+                (modules '((guix build utils)))
+                (snippet '(delete-file-recursively "3rdParty"))))
+      (build-system cmake-build-system)
+      ;; The libjxr support depends on the bundled 3rdParty/LibJXR source.
+      (arguments
+       (list
+        #:tests? #f                       ;also disabled upstream
+        #:cmake cmake-minimal-4
+        #:configure-flags
+        #~(list
+           "-DUSE_SYSTEM_LIBS=ON"
+           "-DFREEIMAGE_WITH_LIBJXR=OFF"           ;relies on bundled 3rdParty
+           "-DFREEIMAGE_WITH_LIBOPENJPEG=OFF"      ;not packaged
+           "-DFREEIMAGE_WITH_LIBJPEGXL=OFF"        ;not packaged
+           "-DFREEIMAGE_WITH_LIBJPEG_TRANSFORMS=OFF" ;requires private headers
+           "-DFREEIMAGE_WITH_LIBTIFF=OFF")))         ;requires private headers
+      (native-inputs (list pkg-config))
+      (inputs
+       (list libheif
+             libjpeg-turbo
+             libpng
+             libraw
+             libwebp
+             openexr
+             openjph
+             yato
+             zlib))
+      (home-page "https://github.com/agruzdev/FreeImageRe")
+      (synopsis "Library for handling popular graphics image formats")
+      (description "FreeImage Re(surrected) is a fork of FreeImage, a library
+that supports popular graphics image formats like PNG, BMP, JPEG, TIFF and
+others.")
+      (license (list license:gpl3+ license:gpl2+))))) ;dual-licensed
 
 (define-public ggg
   (package
