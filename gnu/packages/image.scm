@@ -1623,7 +1623,7 @@ supplies a generic doubly-linked list and some string functions.")
     (description
      "FreeImage is a library for developers who would like to support popular
 graphics image formats like PNG, BMP, JPEG, TIFF and others.")
-    (license license:gpl2+)
+    (license (list license:gpl2+ license:gpl3+)) ;dual-licensed
     (home-page "https://freeimage.sourceforge.io/")))
 
 (define-public ggg
