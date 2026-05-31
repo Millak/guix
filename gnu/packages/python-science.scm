@@ -3281,31 +3281,19 @@ packages that follow these design patterns.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 296 passed, 66 skipped, 1 xfailed
-      #:test-flags
-      ;; XXX: Check why the most of the tests fail in these files.
-      #~(list "--ignore=tests/test_cmake_config.py"
-              "--ignore=tests/test_custom_modules.py"
-              "--ignore=tests/test_editable.py"
-              "--ignore=tests/test_editable_generated.py"
-              "--ignore=tests/test_get_requires.py"
-              "--ignore=tests/test_hatchling.py"
-              "--ignore=tests/test_prepare_metadata.py"
-              "--ignore=tests/test_program_search.py"
-              "--ignore=tests/test_pyproject_pep518.py"
-              "--ignore=tests/test_pyproject_pep660.py"
-              "--ignore=tests/test_settings_overrides.py"
-              "--ignore=tests/test_setuptools_pep518.py")))
+      ;; tests: 414 passed, 63 skipped, 75 deselected, 1 xfailed
+      #:test-flags #~(list "-m" "not isolated and not network")))
     (native-inputs
-     (list python-cattrs
+     (list python-cattrs-minimal
            python-hatch-vcs
            python-hatchling
            python-pypa-build
            python-pytest
+           python-pytest-subprocess
            python-virtualenv))
     (propagated-inputs
      (list cmake-minimal
-           ;; pybind11           ;XXX: cycles, bootstrapping is required
+           pybind11
            python-packaging
            python-pathspec))
     (home-page "https://github.com/scikit-build/scikit-build-core")
