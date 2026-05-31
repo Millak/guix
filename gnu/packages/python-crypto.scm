@@ -530,16 +530,16 @@ for example, for recording or replaying web content.")
 (define-public python-certifi
   (package
     (name "python-certifi")
-    (version "2025.06.15")
+    (version "2026.05.20")
     (source
      (origin
-       (method git-fetch)   ; no tests in PyPI package
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/certifi/python-certifi")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yyy3c64xbwfg2b8hi1fd6vwh56fzc90jfy3czimv5i91gwrl7ba"))
+        (base32 "0ck8frybbqnpda0cmkryw3fqxx07rx90nj26dwxmhnkrim58fb5d"))
        (snippet #~(begin
                     (delete-file "certifi/cacert.pem")
                     (delete-file "certifi/core.py")
@@ -573,8 +573,7 @@ def contents() -> str:
     (native-inputs
      (list nss-certs-for-test
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://certifi.io/")
     (synopsis "Python CA certificate bundle")
     (description
