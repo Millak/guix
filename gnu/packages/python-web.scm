@@ -7897,14 +7897,14 @@ OAuth request-signing logic.")
 (define-public python-urllib3
   (package
     (name "python-urllib3")
-    (version "2.5.0")
+    (version "2.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "urllib3" version))
        (sha256
         (base32
-         "0q17z6zlpyjv9ax5c3d30qwp9fwhz2sc4gbb7yyd86g4qwrpgi1z"))))
+         "0k2za0kdl4y8mdhay0wbnf6522n4ybr61gk7gik19srwnv1hw7i3"))))
     (build-system pyproject-build-system)
     (arguments `(#:tests? #f))
     (native-inputs
@@ -7914,17 +7914,17 @@ OAuth request-signing logic.")
     (propagated-inputs
      (append
       ;; These 5 inputs are used to build urrlib3[secure]
-      (list python-certifi)
+      (list python-certifi
+            python-idna
+            python-pysocks)
       (if (member (%current-system)
                   (package-transitive-supported-systems python-cryptography))
           (list python-cryptography)
           '())
-      (list python-idna)
       (if (member (%current-system)
                   (package-transitive-supported-systems python-pyopenssl))
           (list python-pyopenssl)
-          '())
-      (list python-pysocks)))
+          '())))
     (home-page "https://urllib3.readthedocs.io/")
     (synopsis "HTTP library with thread-safe connection pooling")
     (description
