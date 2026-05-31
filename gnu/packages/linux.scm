@@ -6506,9 +6506,7 @@ in a digital read-out.")
      (list pkg-config
            bison
            flex
-           ;; There are build scripts written in these languages.
-           perl
-           python-2
+           ;; For build scripts.
            python-3
            ;; Documentation
            docbook-xsl
@@ -6518,7 +6516,7 @@ in a digital read-out.")
      (list slang ;for the interactive TUI
            zlib
            ;; newt
-           python-2                            ;'perf' links against libpython
+           python-3                            ;'perf' links against libpython
            elfutils
            libiberty                 ;used alongside BDF for symbol demangling
            libunwind                 ;better stack walking
