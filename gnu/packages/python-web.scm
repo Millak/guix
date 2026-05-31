@@ -7481,13 +7481,13 @@ APIs.")
 (define-public python-requests
   (package
     (name "python-requests")
-    (version "2.32.5")
+    (version "2.34.2")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri "requests" version))
              (sha256
               (base32
-               "1kypqz701x9s7j4shm1pdnzy4pzx9lmvhwgan0yqa071asn0pfnv"))))
+               "1vdrc3lq9x848760n7mdhn8whsfslk30pmnnk0v4caafmr69527j"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
