@@ -242,14 +242,14 @@ kits.  It is near-compatible with Atmel's own assembler, AVRASM32.")
 (define-public nasm
   (package
     (name "nasm")
-    (version "2.15.05")
+    (version "2.16.03")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://www.nasm.us/pub/nasm/releasebuilds/"
                            version "/nasm-" version ".tar.xz"))
        (sha256
-        (base32 "0gqand86b0r86k3h46dh560lykxmxqqywz5m55kgjfq7q4lngbrw"))))
+        (base32 "0j31c6md9iiwyyvdsg56s0f67mpzg9jx3h5n4sq5vl5vc33s24hl"))))
     (build-system gnu-build-system)
     (arguments
      (list
