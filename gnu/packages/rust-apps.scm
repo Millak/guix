@@ -4013,8 +4013,6 @@ configuration-free.")
      (list
       #:install-source? #f
       #:cargo-install-paths ''("vhdl_ls")
-      ;; Remove this line when ‘rustdoc’ is available in #:rust.
-      #:cargo-test-flags ''("--lib" "--bins" "--tests" "--examples")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-libraries
