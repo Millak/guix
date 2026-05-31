@@ -666,6 +666,16 @@ useful tools for testing Django applications and projects.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
+               ;; Patch out tests for the abandoned "whoosh" project.
+               (delete-file-recursively "test_haystack/whoosh_tests")
+               (let ((port (open-file "test_haystack/settings.py" "a")))
+                 (display "
+del HAYSTACK_CONNECTIONS[\"whoosh\"]
+del HAYSTACK_CONNECTIONS[\"filtered_whoosh\"]
+" port)
+                 (close port))
+               (substitute* "test_haystack/test_management_commands.py"
+                 (("whoosh") "solr"))
                (invoke "python" "test_haystack/run_tests.py"))))
          ;; Importing this module requires setting up a Django project.
          (delete 'sanity-check))))
@@ -679,7 +689,6 @@ useful tools for testing Django applications and projects.")
            python-requests
            python-setuptools
            python-setuptools-scm
-           python-whoosh
            tzdata-for-tests))
     (home-page "https://haystacksearch.org/")
     (synopsis "Pluggable search for Django")
