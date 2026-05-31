@@ -2603,6 +2603,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ucx-tcp-iface-ioctl.patch		\
   %D%/packages/patches/uftrace-fix-tests.patch			\
   %D%/packages/patches/ultrastar-deluxe-no-freesans.patch		\
+  %D%/packages/patches/umockdev-disable-tests.patch		\
   %D%/packages/patches/unity-test-set-subdir-correctly.patch		\
   %D%/packages/patches/unity-test-support-int64.patch		\
   %D%/packages/patches/ungoogled-chromium-custom-compiler.patch 	\

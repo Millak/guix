@@ -3480,7 +3480,7 @@ pre-condition.")
 (define-public umockdev
   (package
     (name "umockdev")
-    (version "0.19.1")
+    (version "0.19.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/martinpitt/umockdev/"
@@ -3488,23 +3488,14 @@ pre-condition.")
                                   "umockdev-" version ".tar.xz"))
               (sha256
                (base32
-                "09plskc0rqwngqssbn2nr8da4zwzkhwg6x5yf109pf36wglf1v1c"))))
+                "0w0845ws7827xbc8xcj24hwp4bq814hz3y3mqna0xg0k34ajxxy8"))
+              (patches
+               (search-patches "umockdev-disable-tests.patch"))))
     (build-system meson-build-system)
+    (outputs '("out" "debug"))
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'skip-test-umockdev.c
-                 ;; This test depends on /sys being available, among other
-                 ;; things.
-                 (lambda _
-                   (call-with-output-file "tests/test-umockdev.c"
-                     (lambda (port)
-                       (format port "int main(void) { return 0; }")))))
-               ;; https://github.com/martinpitt/umockdev/issues/228#issuecomment-1968397286
-               (add-after 'unpack 'compat-with-meson-1.4
-                 (lambda _
-                   (substitute* "meson.build"
-                     (("-Werror=unused-variable") "-Wno-error=unused-variable"))))
                ;; Avoid having to set 'LD_LIBRARY_PATH' to use umockdev
                ;; via introspection.
                (add-after 'unpack 'absolute-introspection-library

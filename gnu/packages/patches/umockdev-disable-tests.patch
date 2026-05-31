@@ -1,0 +1,28 @@
+From a6c53f3af297cb5e48405c0b0b67fbf4e6b06eba Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?No=C3=A9=20Lopez?= <noelopez@free.fr>
+Date: Sun, 31 May 2026 22:19:16 +0200
+Subject: [PATCH] Disable test that depends on /sys.
+
+/sys is not available in the build environment.
+
+Upstream-Status: Not submitted
+---
+ tests/test-umockdev.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/tests/test-umockdev.c b/tests/test-umockdev.c
+index 623f4ab..304b827 100644
+--- a/tests/test-umockdev.c
++++ b/tests/test-umockdev.c
+@@ -2549,8 +2549,6 @@ main(int argc, char **argv)
+ 	       t_testbed_add_from_string_errors, t_testbed_fixture_teardown);
+     g_test_add("/umockdev-testbed/add_from_file", UMockdevTestbedFixture, NULL, t_testbed_fixture_setup,
+ 	       t_testbed_add_from_file, t_testbed_fixture_teardown);
+-    g_test_add("/umockdev-testbed/libc", UMockdevTestbedFixture, NULL, t_testbed_fixture_setup,
+-	       t_testbed_libc, t_testbed_fixture_teardown);
+ 
+     /* tests for mocking uevents */
+     g_test_add("/umockdev-testbed/uevent/libudev", UMockdevTestbedFixture, NULL, t_testbed_fixture_setup,
+-- 
+2.54.0
+
