@@ -4085,13 +4085,16 @@ focused in simplicity and extensibility.")
 (define-public python-pytest-rerunfailures
   (package
     (name "python-pytest-rerunfailures")
-    (version "15.1")
+    (version "16.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_rerunfailures" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pytest-dev/pytest-rerunfailures")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "106fiqn3d86xcl2cwmc76svi2mkfgphqna37bf617f6pmdl06166"))))
+        (base32 "1k0q1swva0sqh1prlrww332x7wyyq1j2p4bwij33xg87hl17i2ag"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest-bootstrap
