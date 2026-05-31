@@ -4584,7 +4584,7 @@ that best match text queries.")
     (version "0.1.2")
     (source
      (origin
-       (method git-fetch)   ; no tests data in PyPi package
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/executablebooks/mdurl")
              (commit version)))
@@ -4592,7 +4592,7 @@ that best match text queries.")
        (sha256
         (base32 "0csc777q42jzv4zgdzxmwp8xqlb92ws1jvj09m2smh4klw67q5f3"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-flit python-pytest))
+    (native-inputs (list python-flit-core python-pytest))
     (home-page "https://github.com/executablebooks/mdurl")
     (synopsis "Markdown URL utilities")
     (description
