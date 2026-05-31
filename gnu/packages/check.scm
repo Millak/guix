@@ -1584,14 +1584,16 @@ available via the @code{unittest.mock} module.")
 (define-public python-nose2
   (package
     (name "python-nose2")
-    (version "0.15.1")
-      (source
-        (origin
-          (method url-fetch)
-          (uri (pypi-uri "nose2" version))
-          (sha256
-           (base32
-            "1pzhqk7yzdw2s9hk7q5l9rmrz6xzpymy9gp0pwycvgpmkm8hyxrn"))))
+    (version "0.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nose-devs/nose2")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wpi4dw60pknbdj4aq4z00gbq6sgid4klr2jw6vc9n4ma259aayz"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
