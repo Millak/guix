@@ -103,31 +103,18 @@ a large chunk of the Python ecosystem.")
 (define-public python-sphinx
   (package
     (name "python-sphinx")
-    (version "9.0.3")
+    (version "9.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinx" version))
        (sha256
-        (base32 "03rhacplvxh6rsvzhc6l1pyhmcignn41kgdfq8if5grzivhldslq"))))
+        (base32 "1nqdjfaxl12lvzadgljdqw8w5gfkzrqn14k60wczhxfxawip4hbp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              "-k" (string-join
-                    ;; XXX: Assertions fail in these tests, check why.
-                    (list "not test_additional_targets_should_be_translated"
-                          "test_additional_targets_should_not_be_translated"
-                          "test_customize_system_message"
-                          "test_html_code_role"
-                          "test_html_sidebar"
-                          "test_latex_code_role"
-                          "test_linenothreshold"
-                          "test_literal_include_linenos"
-                          "test_viewcode"
-                          "test_viewcode_linenos")
-                    " and not "))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
