@@ -4836,7 +4836,7 @@ match, cannon keep, and grave-itation pit.")
               (url "https://github.com/libsdl-org/Maelstrom")
               (commit (string-append "release-" version))))
        (sha256
-        (base32 "1vry9vqb8sijyl10b7cbyxlx1sadykw3zgvg28lz92qk4p406jpy"))
+        (base32 "140qr4hlg63kjy3ns5d2qix0xpaq72z5yisjnmslrkxrq42ch2fk"))
        (file-name (git-file-name name version))
        (snippet
         #~(begin
