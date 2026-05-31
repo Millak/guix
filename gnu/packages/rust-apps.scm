@@ -341,7 +341,7 @@ textual.")
 (define-public atuin
   (package
     (name "atuin")
-    (version "18.4.0")
+    (version "18.16.1")
     (source
      (origin
        (method git-fetch)
@@ -350,7 +350,13 @@ textual.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zi7ar999ycvig9c9crylab540xdgr0h6v99q9j8ypk9i1fviyiz"))))
+        (base32 "1q4d7z9yhdz7adxr0fp80acnay47zr47mcchbwdkpvgcsdx4bcjy"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; No new Rust features are actually used.
+            (substitute* "Cargo.toml"
+              (("^rust-version = \"1\\.95\\.0\"") "rust-version = \"1.93.0\""))))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -360,22 +366,33 @@ textual.")
         (ice-9 match))
       #:install-source? #f
       #:cargo-test-flags
-      '(list "--no-default-features" "--"
-             ;; These tests requiere a Postgresql database connection.
+      '(list "--no-default-features"
+             ;; Include all workspace tests except features we disable and an
+             ;; unused benchmark.
+             "--workspace"
+             "--exclude=atuin-nucleo-bench"
+             "--exclude=atuin-ai"
+             "--exclude=atuin-daemon"
+             "--exclude=atuin-pty-proxy"
+             "--"
+             ;; These tests require a Postgresql database connection.
              "--skip=sync"
              "--skip=change_password"
              "--skip=multi_user_test"
              "--skip=registration")
-      ;; Remove experimental daemon mode.
+      ;; Atuin’s workspace members explicitly include all package
+      ;; subdirectories, meaning cargo build will build each package
+      ;; regardless of feature selection and install paths. Specify just the
+      ;; top level package so we don’t build unused packages.
       #:cargo-build-flags
-      '(list "--no-default-features")
+      '(list "--no-default-features" "--package" "atuin")
       #:cargo-install-paths ''("crates/atuin")
+      ;; Disable experimental daemon, ai, and pty-proxy features. Disable
+      ;; check-update since updates are managed by Guix.
       #:features
       '(list "client"
              "sync"
-             "server"
-             "clipboard"
-             "check-update")
+             "clipboard")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -437,8 +454,11 @@ database, and records additional context for your commands.  With this context,
 Atuin gives you faster and better search of your shell history.
 
 Additionally, Atuin (optionally) syncs your shell history between all of your
-machines, fully end-to-end encrypted.")
-    (license license:expat)))
+machines, fully end-to-end encrypted.
+
+Please note the Guix package currently disables several default features,
+including the daemon, PTY proxy, and Atuin AI.")
+    (license (list license:expat license:mpl2.0))))
 
 (define-public bat
   (package
