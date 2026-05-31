@@ -243,40 +243,50 @@ kits.  It is near-compatible with Atmel's own assembler, AVRASM32.")
   (package
     (name "nasm")
     (version "2.15.05")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://www.nasm.us/pub/nasm/releasebuilds/"
-                                  version "/nasm-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0gqand86b0r86k3h46dh560lykxmxqqywz5m55kgjfq7q4lngbrw"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.nasm.us/pub/nasm/releasebuilds/"
+                           version "/nasm-" version ".tar.xz"))
+       (sha256
+        (base32 "0gqand86b0r86k3h46dh560lykxmxqqywz5m55kgjfq7q4lngbrw"))))
     (build-system gnu-build-system)
-    (native-inputs (list perl ;for doc and test target
-                         texinfo))
     (arguments
-     `(#:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'dont-build-ps-pdf-outputs
-           (lambda _
-             (substitute* "doc/Makefile.in"
-               (("html nasmdoc.txt nasmdoc.pdf \\$\\(XZFILES\\)")
-                "html nasmdoc.txt")
-               (("\\$\\(INSTALL_DATA\\) nasmdoc.pdf")
-                "$(INSTALL_DATA)"))))
-         (add-after 'install 'install-info
-           (lambda _
-             (invoke "make" "install_doc"))))))
+     (list
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'dont-build-ps-pdf-outputs
+            (lambda _
+              (substitute* "doc/Makefile.in"
+                (("(html nasmdoc.txt) nasmdoc.pdf \\$\\(XZFILES\\)" all keep)
+                 keep)
+                (("(\\$\\(INSTALL_DATA\\)) nasmdoc.pdf" all keep)
+                 keep))))
+          (add-after 'install 'install-info
+            (lambda _
+              (invoke "make" "install_doc"))))))
+    (native-inputs (list perl           ;for doc and test targets.
+                         texinfo))
     (home-page "https://www.nasm.us/")
     (synopsis "80x86 and x86-64 assembler")
     (description
-     "NASM, the Netwide Assembler, is an 80x86 and x86-64 assembler designed
-for portability and modularity.  It supports a range of object file formats,
-including Linux and *BSD a.out, ELF, COFF, Mach-O, Microsoft 16-bit OBJ,
-Windows32 and Windows64.  It will also output plain binary files.  Its syntax
-is designed to be simple and easy to understand, similar to Intel's but less
-complex.  It supports all currently known x86 architectural extensions, and
-has strong support for macros.")
+     "@acronym{NASM,Netwide ASseMbler} is an 80x86 and x86-64 assembler
+designed for portability and modularity.  It supports a range of object file
+formats, including:
+
+@itemize
+@item Linux and *BSD a.out;
+@item ELF;
+@item COFF;
+@item Mach-O;
+@item Microsoft 16-bit;
+@item plain binary files.
+@end itemize
+
+Its syntax is designed to be simple and easy to understand, similar to Intel's
+but less complex.  It supports all currently known x86 architectural
+extensions, and has strong support for macros.")
     (license license:bsd-2)))
 
 (define* (maybe-nasm #:optional
