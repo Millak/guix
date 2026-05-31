@@ -19977,25 +19977,16 @@ automatically detect a wide range of file encodings.")
 (define-public python-charset-normalizer
   (package
     (name "python-charset-normalizer")
-    (version "3.4.2")
+    (version "3.4.7")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "charset_normalizer" version))
-       (sha256
-        (base32 "0qqfk84ka3d9hh0yf7n8y0qa0yn08ncdacjjckzix8ybkv5cxbjv"))))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ousret/charset_normalizer")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "0faqj59d0z0yzgvsxndy48xrlvj05lfdqaf9fsc61ckwzzhlkrvl"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; https://github.com/jawah/charset_normalizer/issues/625
-          ;; https://github.com/jawah/charset_normalizer/pull/626
-          (add-after 'unpack 'fix-scripts
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("charset_normalizer:cli.cli_detect")
-                 "charset_normalizer.cli:cli_detect")))))))
     (native-inputs
      (list python-pytest
            python-setuptools))
