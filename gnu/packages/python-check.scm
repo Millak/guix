@@ -3894,7 +3894,7 @@ reported in a previous test run.")
 (define-public python-pytest-randomly
   (package
     (name "python-pytest-randomly")
-    (version "4.0.1")
+    (version "4.1.0")
     (source
      (origin
        (method git-fetch)
@@ -3903,7 +3903,7 @@ reported in a previous test run.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zglnyl3wc2ri9dhkvd1z0ywksk2v1abpdlclc253c8xivv4c3ai"))))
+        (base32 "1wmykvydwznjla95gc5yxwrrd9mnj1s7p9mmx4jfzpy2cxd24ggr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
