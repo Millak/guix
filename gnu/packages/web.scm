@@ -401,7 +401,7 @@ one.")
 (define-public miniflux
   (package
     (name "miniflux")
-    (version "2.2.19")
+    (version "2.3.1")
     (source
      (origin
        (method git-fetch)
@@ -410,7 +410,7 @@ one.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12mm95x7xrmc6ck39xizjyv44ibknvwq2kdjd2315q0kp3l0wc7z"))))
+        (base32 "07b81rxhz9qqhipwl54qngaj11975136fxm95sfzmkl5h68rwh3i"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -459,7 +459,8 @@ one.")
            go-golang-org-x-image
            go-golang-org-x-net
            go-golang-org-x-oauth2
-           go-golang-org-x-term))
+           go-golang-org-x-term
+           go-golang-org-x-text))
     (home-page "https://miniflux.app/")
     (synopsis "Minimalist and opinionated feed reader")
     (description
