@@ -1584,7 +1584,7 @@ frames per second (FPS), temperatures, CPU/GPU load and more.")
                 "-DOGRE_INSTALL_SAMPLES_SOURCE=TRUE"))))
     (native-inputs
      (list doxygen
-           (package-source imgui-1.91)
+           (package-source imgui-1.91)  ;FIXME: link to library directly
            googletest
            pkg-config
            python
@@ -1595,6 +1595,7 @@ frames per second (FPS), temperatures, CPU/GPU load and more.")
            freeimage
            freetype
            glslang
+           imgui-1.91
            libxaw
            libxrandr
            libxt
