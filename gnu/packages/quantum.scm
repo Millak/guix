@@ -39,10 +39,12 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (guix build-system asdf)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system cmake)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages))
+  #:use-module (guix packages)
+  #:use-module (guix utils))
 
 
 
@@ -430,3 +432,66 @@ a flexible and efficient simulator for Quil.")
 
 (define-public cl-qvm
   (sbcl-package->cl-source-package sbcl-qvm))
+
+(define-public stim
+  (package
+    (name "stim")
+    (version "1.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/quantumlib/Stim")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02qw118y5fw9fjpn7c5xwh80gkj814pfmkff8y4drqp36qd6v8rk"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; Not providing a -DSIMD_WIDTH option defaults to using
+     ;; -march=native, which would correspond to the build machine
+     ;; On x86-64 less than 128 causes test ErrorAnalyzer.too_many_symptoms
+     ;; to fail due to a rounding error.
+     (list
+      #:configure-flags
+      #~(list #$(if (target-x86-64?)
+                    "-DSIMD_WIDTH=128"
+                    "-DSIMD_WIDTH=64"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'increase-resource-limits
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; XXX: Copied from ungoogled-chromium.  Try increasing the
+                ;; soft resource limit of max open files to 2048, or equal to
+                ;; the hard limit, whichever is lower.
+                (call-with-values (lambda () (getrlimit 'nofile))
+                  (lambda (soft hard)
+                    (when (and soft (< soft 2048))
+                      (if hard
+                          (setrlimit 'nofile (min hard 2048) hard)
+                          (setrlimit 'nofile 2048 #f))
+                      (format #t
+                              "increased maximum number of open files from ~d to ~d~%"
+                              soft (if hard (min hard 2048) 2048))))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The test suite expects to find testdata/ relative
+                ;; to the current working directory
+                (let ((test-bin (string-append (getcwd) "/out/stim_test")))
+                  (with-directory-excursion "../source"
+                    (invoke test-bin)))))))))
+    (native-inputs (list googletest))
+    (home-page "https://github.com/quantumlib/Stim")
+    (synopsis "Fast stabilizer circuit library")
+    (description
+     "This package provides a tool for high performance simulation and
+analysis of quantum stabilizer circuits, especially quantum error
+correction (QEC) circuits.")
+    ;; Upstream supports the following compiler options:
+    ;; 64-bit (native): -DSIMD_WIDTH=64
+    ;; SSE: -DSIMD_WIDTH=128
+    ;; AVX: -DSIMD_WIDTH=256
+    (properties '((tunable? . #t)))
+    (license license:asl2.0)))
