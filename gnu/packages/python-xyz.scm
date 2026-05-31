@@ -299,6 +299,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages statistics)
+  #:use-module (gnu packages task-management)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
@@ -37575,6 +37576,32 @@ data in Python.")
      "This package implements a functionality for time taking using context
 managers.")
     (license license:expat)))
+
+(define-public python-tasklib
+  (package
+    (name "python-tasklib")
+    (version "2.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/GothenburgBitFactory/tasklib")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vhqqbkci485m663vbfq0wki6qzrmb0hn1yaszc19kxvp3j8d7zc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend
+      #~'unittest))
+    (inputs (list taskwarrior))
+    (native-inputs (list python-setuptools tzdata-for-tests))
+    (home-page "https://github.com/GothenburgBitFactory/tasklib")
+    (synopsis "Official Taskwarrior library for Python")
+    (description "@code{tasklib} is a Python library for interacting with
+Taskwarrior databases, using a queryset API similar to that of Django's ORM.")
+    (license license:bsd-3)))
 
 (define-public python-tasklogger
   (package
