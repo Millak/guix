@@ -6105,18 +6105,21 @@ torch-serialized objects from Python.")
 (define-public python-geomloss
   (package
     (name "python-geomloss")
-    (version "0.2.6")
+    (version "0.3.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "geomloss" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jeanfeydy/geomloss")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1szsjpcwjlvqiiws120fwn581a6hs8gm9si8c75v40ahbh44f729"))))
+        (base32 "0sx851d54iagvfmdlpwh4559hms4gr2kabsirbd4ib2m7118p7jb"))))
     (build-system pyproject-build-system)
     ;; There are no automated tests.
     (arguments (list #:tests? #false))
     (propagated-inputs (list python-numpy python-pytorch))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (home-page "https://www.kernel-operations.io/geomloss/")
     (synopsis
      "Geometric loss functions between point clouds, images and volumes")
