@@ -13274,7 +13274,7 @@ comparison.
 (define-public python-matplotlib
   (package
     (name "python-matplotlib")
-    (version "3.10.8")
+    (version "3.10.9")
     (source
      (origin
        (method git-fetch)
@@ -13283,7 +13283,7 @@ comparison.
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rlday52hcyrp7xfbdf4z8lzgnxkpfvjxnl9qmq0jvc3ph3n8k5i"))))
+        (base32 "1mff6s0nldfgdczjrfkkg68j2sx9l7jpslbcyq0d4slhnkx1lp2g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -13363,7 +13363,7 @@ comparison.
     (native-inputs
      (list pkg-config
            python-meson
-           pybind11-2
+           pybind11
            python-pytest
            python-pytest-timeout
            python-pytest-xdist
