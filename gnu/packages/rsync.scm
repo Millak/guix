@@ -5,7 +5,6 @@
 ;;; Copyright © 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,7 +28,6 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages digest)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages python)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages tls)
   #:use-module ((guix licenses) #:prefix license:)
@@ -42,14 +40,14 @@
 (define-public rsync
   (package
    (name "rsync")
-   (version "3.4.3")
+   (version "3.4.1")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://rsync.samba.org/ftp/rsync/src/rsync-"
                                 version ".tar.gz"))
             (sha256
              (base32
-              "1lsk5bw5hf9vfwpbb4n4zcqmck1zfw103hvfm05wijr163566bn7"))))
+              "0llcv1gxcl4qyry689sh24mj02pyy2wl1xq1q4gmb2zdl6rvq919"))))
    (build-system gnu-build-system)
    (arguments
     `(#:configure-flags
@@ -57,7 +55,7 @@
       (list "--without-included-zlib"
             "--without-included-popt")))
    (native-inputs
-    (list perl python)) ;; needed for tests
+    (list perl))
    (inputs
     (list acl
           lz4
