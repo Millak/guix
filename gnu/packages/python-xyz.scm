@@ -17840,14 +17840,16 @@ Python.")
 (define-public python-markdown
   (package
     (name "python-markdown")
-    (version "3.10")
+    (version "3.10.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "markdown" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Python-Markdown/markdown")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "03lcnvr39pmfiids6jdr1iwwr0hg62m0zf7g5arvdcm4597js1ip"))))
+        (base32 "1i7hn91zhg5blykvsdzr1hq00p8xqysdh1l73iypx9pd2pdvk7w9"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pyyaml
