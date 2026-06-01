@@ -3677,7 +3677,7 @@ cross-validation.")
 (define-public python-scipy
   (package
     (name "python-scipy")
-    (version "1.16.3")
+    (version "1.17.1")
     ;; TODO: PyPI archive bundles extra in subprojects:
     ;; - https://github.com/boostorg/math
     ;; - https://github.com/scipy/HiGHS
@@ -3688,16 +3688,16 @@ cross-validation.")
        (method url-fetch)
        (uri (pypi-uri "scipy" version))
        (sha256
-        (base32 "1jxf6mjr3whbh23p8bnlcyiss5rsamq37qgys8xz8qi781cpds01"))))
+        (base32 "1h4pn8i33cf5jzlh6hs6sjg10i8x1ch35y5f4v11d26bv09f1n4m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 78689 passed, 4982 skipped, 319 xfailed, 19 xpassed, 2660 warnings
+      ;; tests: 81362 passed, 7493 skipped, 313 xfailed, 28 xpassed, 225 warnings
       #:configure-flags
       ''(("setup-args" . #("-Duse-system-libraries=all")))
       #:test-flags
       #~(list "--durations=10"
-              "--numprocesses" (number->string (min 4 (parallel-job-count)))
+              "--numprocesses" (number->string (min 8 (parallel-job-count)))
               "--pyargs" "scipy"
               "-k" (string-join
                     ;; Network access is required.
@@ -3711,26 +3711,20 @@ cross-validation.")
                           ;; AssertionError: Items are not equal: ACTUAL:
                           ;; np.complex128(inf+nanj) DESIRED: (inf+0j)
                           "test_expm1_complex"
-                          ;; AssertionError: Not equal to tolerance rtol=1e-07, atol=0
-                          "test_log1p_complex"
-                          ;; AssertionError: Not equal to tolerance rtol=5e-09, atol=0
-                          "test_nctdtr_accuracy[3.0-5.0--2.0-1.5645373999149622e-09-5e-09]"
                           ;; Bad results (X out of Y) for the following points
                           ;; (in output 0):
                           "test_spherical_in_complex"
                           "test_spherical_jn_complex"
                           "test_spherical_kn"
                           "test_spherical_yn_complex"
-                          ;; Not equal to tolerance rtol=1e-07, atol=0
+                          ;; Not equal to tolerance <...>
+                          "test_log1p_complex"
                           "test_negative_real_gh14582[spherical_in-False]"
                           "test_negative_real_gh14582[spherical_in-True]"
-                          "test_negative_real_gh14582[spherical_jn-False]"
+                          "test_negative_real_gh14582[spherical_jn-False"
                           "test_negative_real_gh14582[spherical_jn-True]"
                           "test_negative_real_gh14582[spherical_yn-False]"
-                          "test_negative_real_gh14582[spherical_yn-True]"
-                          ;; Failed: DID NOT WARN. No warnings of type (<class
-                          ;; 'RuntimeWarning'>,) were emitted.
-                          "test_boost_eval_issue_14606")
+                          "test_negative_real_gh14582[spherical_yn-True]")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
@@ -3756,26 +3750,19 @@ cross-validation.")
     (native-inputs
      (list gfortran
            pkg-config
-           python-click
-           python-doit
            python-hypothesis
            python-meson
            python-mpmath
-           python-numpydoc
            python-pooch
-           python-pycodestyle
-           python-pydevtool
            python-pytest
            python-pytest-timeout
            python-pytest-xdist
            python-pythran
-           python-rich-click
-           python-threadpoolctl
-           python-typing-extensions))
+           python-threadpoolctl))
     (inputs
-     (list boost-1.88
+     (list boost
            openblas
-           pybind11-2
+           pybind11
            qhull
            xsimd))
     (propagated-inputs
