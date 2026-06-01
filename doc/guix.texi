@@ -53164,11 +53164,13 @@ in @file{.bashrc} for use by interactive shells.  A typical example of
 such variables is @code{HISTSIZE} and related history variables
 (@pxref{Bash Variables,,, bash,Bash Reference Manual}).
 
-@item @code{aliases} (type: alist)
-Association list of aliases to set for the Bash session.  The aliases
-will be defined after the contents of the @code{bashrc} field has been
-put in the @file{.bashrc} file.  The alias will automatically be quoted,
-so something like this:
+@item @code{aliases} (default: %default-bash-aliases) (type: alist)
+Association list of aliases to set for the Bash session.  If you want to
+preserve the default ones, you should append your alist to
+@code{%default-bash-aliases}, a variable from the @code{(gnu system
+shadow)} module.  The aliases will be defined after the contents of the
+@code{bashrc} field has been put in the @file{.bashrc} file.  The alias
+will automatically be quoted, so something like this:
 
 @lisp
 '(("ls" . "ls -alF"))
