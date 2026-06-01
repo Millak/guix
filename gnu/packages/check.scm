@@ -3066,18 +3066,20 @@ tests written in a natural language style, backed up by Python code.")
 (define-public python-freezegun
   (package
     (name "python-freezegun")
-    (version "1.5.3")
+    (version "1.5.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "freezegun" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spulec/freezegun")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0pmwcjf0vxmars4kncb35pvrckp0j97lya5aqzbzy2m56d721inp"))))
+        (base32 "0jh2fvf1zq0h8mv2mqfhfpgzhbn9ybjrp412g0zzapyfbc2a8kph"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-dateutil))
     (home-page "https://github.com/spulec/freezegun")
