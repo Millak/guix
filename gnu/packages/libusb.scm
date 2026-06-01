@@ -546,18 +546,37 @@ Apple Property List files in binary or XML.")
 (define-public libusbmuxd
   (package
     (name "libusbmuxd")
-    (version "2.0.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/libimobiledevice"
-                                  "/libusbmuxd/releases/download/" version
-                                  "/libusbmuxd-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "084vg570g1qb506jd7axg6c080mfsmbf52v3lngzlknsaf2q0snc"))))
+    (version "2.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/libimobiledevice/libusbmuxd")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dlqvg65r43hl7jzjzawlksb76dk1kn3qvzc34mr9yigyxihald3"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "git-version-gen"
+                (("/bin/sh")
+                 (which "sh")))
+              (call-with-output-file ".tarball-version"
+                (lambda (port)
+                  (display #$version port))))))))
     (native-inputs
-     (list pkg-config libplist))
+     (list autoconf
+           automake
+           libplist
+           libtool
+           pkg-config))
+    (inputs
+     (list libimobiledevice-glue))
     (home-page "https://libimobiledevice.org/")
     (synopsis "Library to multiplex connections from and to iOS devices")
     (description "This package provides a client library to multiplex
