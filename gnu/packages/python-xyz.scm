@@ -22241,27 +22241,34 @@ secure handling files and support encryption.")
 (define-public python-pkgconfig
   (package
     (name "python-pkgconfig")
-    (version "1.5.5")
+    (version "1.6.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pkgconfig" version))
-        (sha256
-          (base32
-            "16dqm2g7b2c6s09vf6wv62s629s63xf51n92v0hbax8zy4z1dd6y"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/matze/pkgconfig")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xlfghjbx04gls3ad1ncggpi4xvjxcirrm3bamv5gp9wv3z5ln8s"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #false                   ;there are none
       #:phases
-      '(modify-phases %standard-phases
-         (add-before 'build 'patch
-           ;; Hard-code the path to pkg-config.
-           (lambda _
-             (substitute* "pkgconfig/pkgconfig.py"
-               (("'pkg-config'")
-                (string-append "'" (which "pkg-config") "'"))))))))
-    (native-inputs (list python-poetry-core))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-test-data
+            (lambda _
+              (substitute* "tests/data/fake-openssl.pc"
+                (("Requires: libssl libcrypto") ""))))
+          (add-before 'build 'set-pkg-config-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "PKG_CONFIG"
+                      (search-input-file inputs "/bin/pkg-config"))
+              (substitute* "src/pkgconfig/pkgconfig.py"
+                (("'pkg-config'")
+                 (format #f "~s"
+                         (search-input-file inputs "/bin/pkg-config")))))))))
+    (native-inputs (list python-poetry-core python-pytest))
     (inputs (list pkg-config))
     (home-page "https://github.com/matze/pkgconfig")
     (synopsis "Python interface for pkg-config")
