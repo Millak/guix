@@ -25428,13 +25428,16 @@ instead of servers and network commands.")
 (define-public python-attrs
   (package
     (name "python-attrs")
-    (version "25.3.0")
+    (version "26.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "attrs" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-attrs/attrs/")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "06xgyhxzsc0h3l0pqlkk168f072a9lnl9d415ixp8xmmgzycxmvm"))))
+        (base32 "17gagrqbg4fg7prpsqx746frfzcml13lnzqjjsah0jqc5qxd8yaf"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-hatch-fancy-pypi-readme
