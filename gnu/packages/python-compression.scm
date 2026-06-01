@@ -1090,6 +1090,45 @@ efficient as possible on all supported Python versions.")
 generator")
     (license license:lgpl3)))
 
+(define-public python-zlib-ng
+  (package
+    (name "python-zlib-ng")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pycompression/python-zlib-ng")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05s0023hhdk59339mmd20yycy6ldssa2kmxmzflkqlab5mpx5wxp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-system-zlib-ng
+            (lambda _
+              (copy-recursively
+               #$(package-source (this-package-input "zlib-ng"))
+               "src/zlib_ng/zlib-ng")
+              (setenv "PYTHON_ZLIB_NG_LINK_DYNAMIC " "true"))))))
+    (native-inputs
+     (list cmake-minimal
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (inputs
+     (list zlib-ng))
+    (home-page "https://github.com/pycompression/python-zlib-ng")
+    (synopsis "Drop-in replacement for zlib and gzip modules using zlib-ng")
+    (description
+     "This package provides a faster @code{zlib} and @code{gzip} compatible
+compression and decompression by providing Python bindings for the
+@code{zlib-ng} library.")
+    (license license:psfl)))
+
 (define-public python-zopfli
   (package
     (name "python-zopfli")
