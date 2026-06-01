@@ -256,9 +256,7 @@ applications, and several support tools.")
     (inputs (list tzdata))
     (native-inputs
      (list python-pytest
-           python-pytest-subtests
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/python/tzdata")
     (synopsis "Python wrapper of IANA time zone data")
     (description "This package provides a thin Python wrapper around tzdata.")
