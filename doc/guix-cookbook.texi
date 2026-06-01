@@ -1998,7 +1998,8 @@ set @code{#:cargo-target} for @code{cargo-build-system}'s build phases.
                              ;; For cross-compilation.
                              #:cargo-target #$(cargo-triplet)
                              args))
-                    '(unpack-rust-crates
+                    '(prepare-rust-crates
+                      unpack-rust-crates
                       configure
                       check-for-pregenerated-files
                       patch-cargo-checksums)))))))
