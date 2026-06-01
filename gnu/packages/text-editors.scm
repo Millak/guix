@@ -1430,34 +1430,6 @@ Octave.  TeXmacs is completely extensible via Guile.")
     (license license:gpl3+)
     (home-page "https://www.texmacs.org/tmweb/home/welcome.en.html")))
 
-(define-public texmacs-guile3
-  (package
-    (inherit texmacs)
-    (name "texmacs-guile3")
-    (version "2.1.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/texmacs/texmacs.git")
-             (commit "guile3_branch_2.1")))
-       (sha256
-        (base32 "0f7l1sfbii25gawqsg27m31myvixb3xdxnsg5njlrnmp8xh1rs3v"))
-       (patches
-        (search-patches "texmacs-wayland-hidpi.patch"))))
-    (inputs
-     (list freetype
-           guile-3.0
-           gmp
-           libjpeg-turbo
-           libxcrypt
-           perl
-           python-wrapper
-           qtbase-5
-           qtsvg-5
-           qtwayland-5
-           sqlite))))
-
 (define-public moe
   (package
     (name "moe")
