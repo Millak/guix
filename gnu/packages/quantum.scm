@@ -33,6 +33,13 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
 
+;;; Commentary:
+;;;
+;;; Quantum computing and tensor operation module. For quantum mechanics
+;;; select (gnu packages physics) module.
+;;;
+;;; Code:
+
 (define-public python-quimb
   (package
     (name "python-quimb")
