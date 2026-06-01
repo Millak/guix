@@ -417,7 +417,7 @@ another process for example)."))
           '())))
 
   (filter
-   (compose not null?)
+   (negate null?)
    `((".bash_profile"
       ,(mixed-text-file
         "bash_profile"
