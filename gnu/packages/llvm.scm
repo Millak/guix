@@ -2311,6 +2311,7 @@ C/C++/Obj-C code according to a set of style options, see
     (build-system emacs-build-system)
     (inputs
      (list clang))
+    (propagated-inputs '())
     (arguments
      `(#:phases
        (modify-phases %standard-phases
