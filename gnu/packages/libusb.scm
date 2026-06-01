@@ -718,20 +718,43 @@ iOS devices and access their contents.")
 (define-public usbmuxd
   (package
     (name "usbmuxd")
-    (version "1.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/libimobiledevice"
-                                  "/usbmuxd/releases/download/" version
-                                  "/usbmuxd-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "17idzpxrvkbff0jpynf35df95lh7wsm8vndynp63bxib2w09gv60"))))
+    ;; 1.1.1 (2020-06-15): it's no longer compatible with libplist and
+    ;; libimobiledevice developed by the same author, the latest git changes
+    ;; provide compatibilities. Revert back on git version when released.
+    (properties '((commit . "3ded00c9985a5108cfc7591a309f9a23d57a8cba")
+                  (revision . "0")))
+    (version (git-version "1.1.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/libimobiledevice/usbmuxd")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dqcdpyc7k8j657c4v0vbd7l489039qlk21d9cyzc7ns1q2iggpb"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "git-version-gen"
+                (("/bin/sh")
+                 (which "sh")))
+              (call-with-output-file ".tarball-version"
+                (lambda (port)
+                  (display #$version port))))))))
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           pkg-config))
     (inputs
      (list libplist libusb libimobiledevice))
-    (native-inputs
-     (list pkg-config))
-    (build-system gnu-build-system)
     (home-page "https://libimobiledevice.org/")
     (synopsis "Multiplex connections over USB to an iOS device")
     (description "This package provides the @code{usbmuxd} daemon
