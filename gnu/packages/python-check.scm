@@ -3367,27 +3367,32 @@ import them in their actual tests to use them.")
 (define-public python-pytest-httpx
   (package
     (name "python-pytest-httpx")
-    (version "0.35.0")
+    (version "0.36.2")
     (source
      (origin
-       ;; pypi package doesn't include the tests
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/Colin-b/pytest_httpx")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w8qwhcaq1l63kfj4ncsi3355ln37ws6066mxr0b9646g68wp69v"))))
+        (base32 "1g3xlaldc3hrkjv627qlmlmp8njr8jh5jspv5b00845fw9i1pyl0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: 261 failed, 170 errors
-      #:tests? #f))
+      ;; XXX: 284 failed, 14 passed, 175 errors
+      ;; The following responses are mocked but not requested <...>
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; See: <https://github.com/Colin-b/pytest_httpx/issues/201>.
+                (("httpx==0\\.28.\\*") "httpx>=0.28.0")
+                (("pytest==9\\.\\*") "pytest>=9.0.0")))))))
     (native-inputs
-     (list python-pytest-8
-           python-pytest-asyncio
-           python-setuptools
-           python-wheel))
+     (list python-pytest-bootstrap python-setuptools))
     (propagated-inputs (list python-httpx))
     (home-page "https://colin-b.github.io/pytest_httpx/")
     (synopsis "Pytest plugin to mock httpx")
