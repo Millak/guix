@@ -4466,58 +4466,6 @@ Google services and binaries removed, and adds modular support for using
 system libraries.")
     (license license:lgpl2.1+)))
 
-(define-public single-application-qt5
-  ;; Change in function signature, nheko requires at least this commit
-  (let ((commit "dc8042b5db58f36e06ba54f16f38b16c5eea9053")
-        (revision "1"))
-    (package
-      (name "single-application-qt5")
-      (version (git-version "3.2.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri
-          (git-reference
-           (url "https://github.com/itay-grudev/SingleApplication")
-           (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "163aa2x2qb0h8w26si5ql833ilj427jjbdwlz1p2p8iaq6dh0vq1"))))
-      (build-system cmake-build-system)
-      (arguments
-       (list
-        #:tests? #f                     ; no check target
-        ;; Projects can decide how to build this library.  You might need to
-        ;; override this flag (QApplication, QGuiApplication or
-        ;; QCoreApplication).
-        #:configure-flags #~(list "-DQAPPLICATION_CLASS=QApplication")
-        #:phases
-        #~(modify-phases %standard-phases
-            ;; No install target, install things manually
-            (replace 'install
-              (lambda* (#:key source #:allow-other-keys)
-                (install-file
-                 "libSingleApplication.a" (string-append #$output "/lib"))
-                (for-each
-                 (lambda (file)
-                   (install-file (string-append source "/" file)
-                                 (string-append #$output "/include")))
-                 '("SingleApplication"
-                   "singleapplication.h" "singleapplication_p.h")))))))
-      (inputs
-       (list qtbase-5))
-      (home-page "https://github.com/itay-grudev/SingleApplication")
-      (synopsis "Replacement of QtSingleApplication for Qt5 and Qt6")
-      (description
-       "SingleApplication is a replacement of the QtSingleApplication for Qt5 and Qt6.
-
-It keeps the Primary Instance of your Application and kills each subsequent
-instances.  It can (if enabled) spawn secondary (non-related to the primary)
-instances and can send data to the primary instance from secondary
-instances.")
-      (license license:expat))))
-
 (define-public single-application
   (package
     (name "single-application")
