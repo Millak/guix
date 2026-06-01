@@ -31,12 +31,10 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh))
 
-;;; Do not forget running:
-;;; 'make check-system TESTS='forgejo forgejo-mysql forgejo-postgres' when updating.
 (define-public forgejo
   (package
     (name "forgejo")
-    (version "15.0.2")
+    (version "15.0.0")
     (source
      (origin
        (method url-fetch)
@@ -50,7 +48,7 @@
                            "/forgejo-src-" version ".tar.gz"))
        (sha256
         (base32
-         "16d142hfcz2mf3l0b4nc7dkgn1cf4hvg6vf0gdjjcx6ya7vpsan5"))))
+         "1b25zhlr81b577swfzxlhc7hiaxnznfygxbiv125vabjmahdmffy"))))
     (build-system gnu-build-system)
     (outputs (list "out" "data"))
     (arguments
