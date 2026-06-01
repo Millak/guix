@@ -3800,6 +3800,20 @@ the SciPy stack.  It provides many user-friendly and efficient numerical
 routines such as routines for numerical integration and optimization.")
     (license license:bsd-3)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure
+;; size. Tests are left out in the main package to slim down native-inputs.
+(define-public python-scipy-minimal
+  (package/inherit python-scipy
+    (name "python-scipy-minimal")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (list gfortran
+           pkg-config
+           python-meson
+           python-pythran))))
+
 (define-public python-simple-pid
   (package
     (name "python-simple-pid")
