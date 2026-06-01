@@ -942,7 +942,7 @@ of PROVENANCE-SERVICE-TYPE to its services."
         guix-icons))
 
 (define %base-packages-utils
-  ;; Default set of  utilities packages.
+  ;; Default set of utility packages.
  (cons* procps psmisc which
         shadow                          ;for 'passwd'
 
