@@ -10614,7 +10614,7 @@ via commands such as @command{rst2man}, as well as supporting Python code.")
                 (base32
                  "1rprvir116g5rz2bgzkzgyn6mv0z8582rz7bgxbpy2y3adkmm69k"))))
      (native-inputs
-      (list python-setuptools python-wheel)))))
+      (list python-setuptools)))))
 
 (define-public python-docx
   (package
