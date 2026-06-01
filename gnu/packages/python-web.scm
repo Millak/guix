@@ -14099,12 +14099,11 @@ list, create, update, or delete resources (e.g. Order, Product, Collection).")
       #~'("-k"
           ;; Disable network dependent tests.
           "not test_changes and not test_not_image_url and not test_http_url")))
-    (propagated-inputs (list python-jinja2 python-requests))
+    (propagated-inputs (list python-jinja2 python-requests python-setuptools))
     (native-inputs (list python-flask
                          python-fonttools
                          python-pillow
                          python-pytest
-                         python-setuptools
                          python-wheel
                          python-xmldiff))
     (home-page "https://github.com/google/pybadges")
