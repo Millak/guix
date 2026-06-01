@@ -304,7 +304,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/fluidplug.scm			\
   %D%/packages/fonts.scm			\
   %D%/packages/fontutils.scm			\
-  %D%/packages/forgejo.scm			\
   %D%/packages/forth.scm			\
   %D%/packages/fortran-check.scm			\
   %D%/packages/fortran-xyz.scm			\
