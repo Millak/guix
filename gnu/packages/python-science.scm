@@ -4332,7 +4332,7 @@ tissue-specificity metrics for gene expression.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 174059 passed, 24280 skipped, 990 xfailed, 77 xpassed, 110 warnings
+      ;; tests: 173093 passed, 24265 skipped, 990 xfailed, 77 xpassed, 110 warnings
       #:test-flags
       #~(list "-m" (string-join
                     (list "not db" "network" "single_cpu" "slow" "slow_arm")
@@ -4342,6 +4342,20 @@ tissue-specificity metrics for gene expression.")
                     (list "not test_git_version"
                           "test_parsing_tzlocal_deprecated"
                           "test_show_versions_console"
+                          ;; XXX: Introduced by NumPy 2.4.6 and Cython 3.2.5:
+                          ;;    NotImplementedError
+                          ;; See:
+                          ;; <https://github.com/pandas-dev/pandas/issues/62820>,
+                          ;; <https://github.com/pandas-dev/pandas/issues/63078>.
+                          "test_categorical_block_pickle"
+                          "test_pickle"
+                          "test_pickle_freq"
+                          "test_pickle_preserves_block_ndim"
+                          "test_pickle_preserves_name"
+                          "test_pickle_round_trip"
+                          "test_pickle_roundtrip"
+                          "test_pickle_roundtrip_containers"
+                          "test_round_trip_current"
                           ;; AssertionError: Series are different.
                           #$@(if (target-64bit?)
                                  '()
