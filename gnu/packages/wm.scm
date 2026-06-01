@@ -3016,6 +3016,36 @@ modules for building a Wayland compositor.")
               (lambda _
                 (setenv "CFLAGS" "-Wno-error=calloc-transposed-args")))))))))
 
+(define-public wlrsetroot
+  (package
+    (name "wlrsetroot")
+    ;; Package has no release, using latest commit.
+    (properties '((commit . "1b9c2bc5a4e05cd1a9944f309dde1a0880bf99b9")
+                  (revision . "0")))
+    ;; meson.build shows 0.1.0 version.
+    (version (git-version "0.1.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/9lbw/wlrsetroot")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10wxzcf7am6pw4wkyw9g34cx37iyzbp99pkgd50gyk81kjbfgi02"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list wayland wayland-protocols))
+    (home-page "https://github.com/9lbw/wlrsetroot")
+    (synopsis "xsetroot emulator for wlroots-based compositors")
+    (description
+     "@code{wlrsetroot} is a wayland wallpaper utility using
+@code{wlr-layer-shell}.  It sets tiled XBM patterns or solid
+colors as your desktop background.")
+    (license license:gpl3)))
+
 (define-public wl-mirror
   (package
     (name "wl-mirror")
