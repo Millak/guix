@@ -532,6 +532,12 @@ of Rebar and Mix build systems and Hex.pm importer."
                       "gnu/packages/ninja.scm"
                       "gnu/packages/valgrind.scm")))
 
+(define-team codeberg
+  (team 'codeberg
+        #:name "Codeberg Project Owners"
+        #:description
+        "Hackers with Owner status on our Codeberg Organization"))
+
 (define-team community
   (team 'community
         #:name "Community"
@@ -1272,13 +1278,12 @@ the \"texlive\" importer."
 (define-member (person "Ludovic Courtès"
                        "ludo@gnu.org"
                        "civodul")
-  core core-packages hpc installer
-  guile)
+  codeberg core core-packages guile hpc installer)
 
 (define-member (person "Andreas Enge"
                        "andreas@enge.fr"
                        "enge")
-  bootstrap c++ core-packages crypto lxqt science tex)
+  bootstrap c++ codeberg core-packages crypto lxqt science tex)
 
 (define-member (person "Tanguy Le Carrour"
                        "tanguy@bioneland.org"
@@ -1288,22 +1293,22 @@ the \"texlive\" importer."
 (define-member (person "Tobias Geerinckx-Rice"
                        "me@tobias.gr"
                        "nckx")
-  mentors)
+  codeberg mentors)
 
 (define-member (person "Steve George"
                        "steve@futurile.net"
                        "futurile")
-  rust)
+  codeberg rust)
 
 (define-member (person "Leo Famulari"
                        "leo@famulari.name"
                        "lfam")
-  linux-libre)
+  codeberg linux-libre)
 
 (define-member (person "Efraim Flashner"
                        "efraim@flashner.co.il"
                        "efraim")
-  embedded bootstrap release rust)
+  codeberg embedded bootstrap release rust)
 
 (define-member (person "jgart"
                        "jgart@dismail.de"
@@ -1328,7 +1333,7 @@ the \"texlive\" importer."
 (define-member (person "Mathieu Othacehe"
                        "othacehe@gnu.org"
                        "mothacehe")
-  installer mentors)
+  codeberg installer mentors)
 
 (define-member (person "Florian Pelz"
                        "pelzflorian@pelzflorian.de"
@@ -1343,12 +1348,12 @@ the \"texlive\" importer."
 (define-member (person "Ricardo Wurmus"
                        "rekado@elephly.net"
                        "rekado")
-  bioinformatics r sugar)
+  bioinformatics codeberg r sugar)
 
 (define-member (person "Christopher Baines"
                        "guix@cbaines.net"
                        "cbaines")
-  core mentors ruby)
+  codeberg core mentors ruby)
 
 (define-member (person "Andrew Tropin"
                        "andrew@trop.in"
@@ -1393,7 +1398,7 @@ the \"texlive\" importer."
 (define-member (person "Maxim Cournoyer"
                        "maxim@guixotic.coop"
                        "apteryx")
-  core documentation electronics gnome qt telephony)
+  codeberg core documentation electronics gnome qt telephony)
 
 (define-member (person "Katherine Cox-Buday"
                        "cox.katherine.e+guix@gmail.com"
@@ -1458,7 +1463,8 @@ the \"texlive\" importer."
 (define-member (person "Janneke Nieuwenhuizen"
                        "janneke@gnu.org"
                        "janneke")
-  bootstrap build-tools core-packages home hurd installer qa-packages)
+  bootstrap build-tools codeberg core-packages home hurd installer
+  qa-packages)
 
 (define-member (person "Ian Eure"
                        "ian@retrospec.tv"
