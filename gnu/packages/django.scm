@@ -57,6 +57,7 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages search)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages time)
@@ -697,6 +698,63 @@ unified, familiar API that allows you to plug in different search backends
 (such as Solr, Elasticsearch, Whoosh, Xapian, etc.) without having to modify
 your code.")
     (license license:bsd-3)))
+
+(define-public python-xapian-haystack
+  (package
+    (name "python-xapian-haystack")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/notanumber/xapian-haystack")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gviamx1kqn18hpv2vgr15gj00iaflak5h7xir09fs39ncqvz3bp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; CI runs tests after copying them into django-haystack tests, see e.g.
+     ;; https://github.com/notanumber/xapian-haystack/blob/16fd168b704958056c581e86427358d1e732a39a/.github/workflows/test.yml#L89
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-inmemory-db-handling
+            (lambda _
+              (substitute* "xapian_backend.py"
+                (("inmemory_open\\(\\)")
+                 "WritableDatabase('', xapian.DB_BACKEND_INMEMORY)")
+                (("database.close\\(\\)")
+                 "if not self.inmemory_db: database.close()"))))
+          ;; Raises django.core.exceptions.ImproperlyConfigured.
+          (delete 'sanity-check)
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "PYTHONPATH" ".")
+                (setenv "DJANGO_SETTINGS_MODULE" "test_haystack.xapian_settings")
+                (with-directory-excursion "/tmp"
+                  (invoke "tar" "xf" #$(package-source python-django-haystack)))
+                (invoke "cp" "xapian_backend.py"
+                        "/tmp/django_haystack-3.3.0/haystack/backends/")
+                (invoke "cp" "-r"
+                        "tests/xapian_settings.py"
+                        "tests/xapian_tests"
+                        "/tmp/django_haystack-3.3.0/test_haystack/")
+                (with-directory-excursion "/tmp/django_haystack-3.3.0"
+                  (invoke "django-admin" "test" "test_haystack.xapian_tests"))))))))
+    (propagated-inputs
+     (list
+      python-django
+      python-django-haystack
+      python-filelock
+      python-xapian-bindings
+      xapian))
+    (native-inputs (list python-setuptools tzdata-for-tests))
+    (home-page "https://github.com/notanumber/xapian-haystack")
+    (synopsis "A Xapian backend for Haystack")
+    (description "This package provides a Xapian backend for Haystack.")
+    (license license:gpl2)))
 
 (define-public python-django-filter
   (package
