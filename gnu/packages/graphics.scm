@@ -1785,7 +1785,7 @@ with strong support for multi-part, multi-channel use cases.")
 (define-public openimageio
   (package
     (name "openimageio")
-    (version "2.5.19.0")
+    (version "2.5.19.1")
     (source
      (origin
        (method git-fetch)
@@ -1795,7 +1795,7 @@ with strong support for multi-part, multi-channel use cases.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1s4275iik6gpbyzh703acm440csg9ff8w5l5drnz1gl6mx5946kz"))))
+         "1nqqw8n8hagp5s29hpmcb4pripkzn8w7vk3jcyw7xjb8h8gxxapq"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f ; half the tests require online data or use redirection
