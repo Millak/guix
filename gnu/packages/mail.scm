@@ -3722,7 +3722,14 @@ which sends emails to HyperKitty, the official Mailman3 web archiver.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 362 passed, 3 skipped, 2 deselected, 2 xfailed, 10 warnings
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'replace-whoosh
+            (lambda _
+              (substitute* "hyperkitty/tests/settings_test.py"
+                (("haystack.backends.whoosh_backend.WhooshEngine")
+                 "xapian_backend.XapianEngine")))))
+      ;; tests: 342 passed, 23 skipped, 2 deselected, 2 xfailed, 10 warnings
       #:test-flags
       #~(list #$@(map (lambda (test)
                         (string-append "--deselect=hyperkitty/tests/views/"
@@ -3753,15 +3760,14 @@ which sends emails to HyperKitty, the official Mailman3 web archiver.")
            python-mistune
            python-networkx
            python-robot-detection
-           python-tzdata
-           python-whoosh))
+           python-tzdata))
     (native-inputs
      (list tzdata-for-tests
            python-beautifulsoup4
            python-pdm-backend
            python-pytest
            python-pytest-django
-           python-whoosh))
+           python-xapian-haystack))
     (home-page "https://gitlab.com/mailman/hyperkitty")
     (synopsis "Web interface to access GNU Mailman v3 archives")
     (description
