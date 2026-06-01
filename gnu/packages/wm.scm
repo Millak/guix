@@ -205,6 +205,7 @@
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages stb)
   #:use-module (gnu packages suckless)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
@@ -2798,6 +2799,58 @@ functionality to display information about the most commonly used services.")
     (synopsis "CPU usage module for menubars")
     (description "Polycat is a menubar (polybar or waybar) module displaying
 a running cat (runcat) for CPU usage.")
+    (license license:expat)))
+
+(define-public wawa
+  (package
+    (name "wawa")
+    ;; Package has no release tag, using latest commit
+    (properties '((commit . "249f43876d05f73cc1ba9c51235a32f058478e8c")
+                  (revision . "0")))
+    ;; Makefile shows 1.0 version
+    (version (git-version "1.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/sewn/wawa")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xvv9px2cmdr2lwcsly2c8y175z9cm5zhyay2k00cphxh59pkwfx"))
+       (snippet '(begin
+                   (for-each delete-file
+                             '("stb_image.h"
+                               "stb_image_resize2.h"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests provided
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "CPATH=" #$(this-package-input "stb"))
+              (string-append "PREFIX="
+                             #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (native-inputs (list pkg-config))
+    (inputs (list stb wayland wayland-protocols))
+    (home-page "https://codeberg.org/sewn/wawa")
+    (synopsis "Distinctive simpler wlroots wallpaper setter")
+    (description
+     "Wawa is a minimal, hackable, and distinctive Wayland wallpaper
+setter utilizing @code{stb_image} that targets @code{wlr-layer-shell}
+supported compositors, featuring tiling, spreading across monitors,
+along with fill, fit and stretching the wallpaper.
+
+In wawa, the image is loaded only for monitors that need it, and is
+immediately freed when all monitors have been configured; this keeps
+the memory usage of wawa extremely low (7x less than wbg, almost 24x
+less than swaybg), which may be a performance hit if you are constantly
+resizing the monitor.")
     (license license:expat)))
 
 (define-public wlclock
