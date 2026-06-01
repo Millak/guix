@@ -1700,6 +1700,12 @@ the \"texlive\" importer."
                        "fnat")
   emacs)
 
+(define-member
+  (person "Arun Isaac"
+          "arunisaac@systemreboot.net"
+          "arunisaac")
+  codeberg)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
