@@ -1558,20 +1558,20 @@ for every Python test framework.  It supports nose, py.test, and unittest.")
 (define-public python-mock
   (package
     (name "python-mock")
-    (version "5.1.0")
+    (version "5.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "mock" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/testing-cabal/mock")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0zbnp1kmf7ykc9bvlxamsp15rxsd0ar99v99lbh1hiysrkasm5jy"))))
+        (base32 "1ph3g75znd4k10vzmcrv0jqzhqmi6ps1a2icvxv7p6yn1sbbcb3b"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-six))
+           python-setuptools))
     (home-page "https://github.com/testing-cabal/mock")
     (synopsis "Python mocking and patching library for testing")
     (description
