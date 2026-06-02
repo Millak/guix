@@ -3052,16 +3052,16 @@ Jellyfin.  It has support for various media files without transcoding.")
 (define-public gallery-dl
   (package
     (name "gallery-dl")
-    (version "1.31.10")
+    (version "1.32.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://codeberg.org/mikf/gallery-dl")
-              (commit (string-append "v" version))))
+             (url "https://codeberg.org/mikf/gallery-dl")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yv7nvljrpfd8w1jnsxmn1h1jd294kc89ck68va0h7j1n26pv6wy"))))
+        (base32 "0d4ygppic3s2m3p0jrg60jznvf6ip6dx9qaiv6vr1ik8b84p0rg4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
