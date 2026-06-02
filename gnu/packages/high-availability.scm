@@ -542,7 +542,7 @@ Virtually anything that can be scripted can be managed as part of a Pacemaker cl
 (define-public rabbitmq
   (package
     (name "rabbitmq")
-    (version "4.2.4")
+    (version "4.3.1")
     (source
      (origin
        (method url-fetch)
@@ -551,7 +551,7 @@ Virtually anything that can be scripted can be managed as part of a Pacemaker cl
              version "/rabbitmq-server-" version ".tar.xz"))
        (file-name (string-append name "-" version ".tar.xz"))
        (sha256
-        (base32 "1dd4kadvadipgf914xxrii1yd2d8hgc05wl6gck5wi36bh7nr02w"))
+        (base32 "1pnyp6zryaj705sk64bsz1w6xxrz44iy77jdkm1xdr8fnfnng8rf"))
        (patches (search-patches "rabbitmq-defaults.patch"))))
     (build-system gnu-build-system)
     (arguments
