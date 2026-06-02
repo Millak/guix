@@ -801,7 +801,7 @@ high-performance computing} clusters.")
 (define-public toys
   (package
     (name "toys")
-    (version "0.1.1")
+    (version "0.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -810,7 +810,7 @@ high-performance computing} clusters.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05zkvjs3wkwdswl4irkqaxgdassiji5pq8qaqcrzscvp24vkjjja"))))
+                "1lk5dd5ilicil580qxp8blprzall1nlwg10qqn2i28d53mja4c6h"))))
     (build-system guile-build-system)
     (arguments
      (list
