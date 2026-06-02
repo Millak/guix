@@ -8100,48 +8100,49 @@ Icecast server.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/bleskodev/siggen")
-             (commit "a407611b59d59c7770bbe62ba9b8e9a948cf3210")))
+              (url "https://github.com/bleskodev/siggen")
+              (commit "a407611b59d59c7770bbe62ba9b8e9a948cf3210")))
        (file-name (git-file-name name version))
        (sha256
         (base32
          "0szhgfd9kddr6qsz0imp0x66jjn6ry236f35vjl82ivc1v2bllcb"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list (string-append "INSDIR=" %output "/bin")
-                          (string-append "MANDIR=" %output "/share/man"))
-       #:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         ;; Patch misc.c to prevent a segfault.
-         (add-after 'unpack 'patch-segfault
-           (lambda _
-             (substitute* "misc.c"
-               (("#include <stdio.h>\n" all)
-                (string-append all "#include <string.h>\n")))
-             (substitute* "wavsubs.c"
-               (("#include \"wavsubs.h\"\n" all)
-                (string-append all "#include <stdlib.h>")))
-             (substitute* "wavfile.c"
-               (("#include \"wavsubs.h\"\n" all)
-                (string-append all "#include <stdlib.h>")))
-             (substitute* "generator.c"
-               (("#include \"wavsubs.h\"\n" all)
-                (string-append all "#include <stdlib.h>")))))
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key make-flags outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (dir)
-                           (mkdir-p (string-append out dir)))
-                         (list "/bin" "/share/man/man1" "/share/man/man5"))
-               (apply invoke "make" "sysinstall" make-flags)))))))
+     (list
+      #:make-flags
+      #~(list (string-append "INSDIR=" #$output "/bin")
+              (string-append "MANDIR=" #$output "/share/man"))
+      #:tests? #f                      ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Patch misc.c to prevent a segfault.
+          (add-after 'unpack 'patch-segfault
+            (lambda _
+              (substitute* "misc.c"
+                (("#include <stdio.h>\n" all)
+                 (string-append all "#include <string.h>\n")))
+              (substitute* "wavsubs.c"
+                (("#include \"wavsubs.h\"\n" all)
+                 (string-append all "#include <stdlib.h>")))
+              (substitute* "wavfile.c"
+                (("#include \"wavsubs.h\"\n" all)
+                 (string-append all "#include <stdlib.h>")))
+              (substitute* "generator.c"
+                (("#include \"wavsubs.h\"\n" all)
+                 (string-append all "#include <stdlib.h>")))))
+          (delete 'configure)
+          (replace 'install
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (for-each (lambda (dir)
+                          (mkdir-p (string-append #$output dir)))
+                        (list "/bin" "/share/man/man1" "/share/man/man5"))
+              (apply invoke "make" "sysinstall" make-flags))))))
     (inputs
      (list ncurses))
     (native-inputs
-     `(("gcc" ,gcc-9)
-       ("groff" ,groff-minimal)         ; for nroff
-       ("util-linux" ,util-linux)))     ; for col
+     (list gcc-9
+           groff-minimal    ; for nroff
+           util-linux))     ; for col
     (home-page "https://github.com/bleskodev/siggen")
     (synopsis "Signal generation tools")
     (description "siggen is a set of tools for imitating a laboratory signal
