@@ -6103,6 +6103,43 @@ interface utility to parse @url{https://hjson.github.io/, HJSON}) documents.")
 approximate nearest neighbor search with Python bindings.")
     (license license:asl2.0)))
 
+(define-public python-pylatex
+  (package
+    (name "python-pylatex")
+    (version "1.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JelteF/PyLaTeX")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1daciv5dx9nhiai8bz75bwfvnfv40dq118lfnhjw8kpvr0m7hrm6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+      #~(modify-phases %standard-phases
+          ;; some tests attempt to create directories
+          (add-before 'check 'set-home-directory
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-ordered-set))
+    (native-inputs (list python-matplotlib
+                         python-pytest
+                         python-quantities
+                         python-setuptools
+                         (texlive-local-tree
+                          (list texlive-lastpage
+                                texlive-latexmk
+                                texlive-parskip))))
+    (home-page "https://github.com/JelteF/PyLaTeX")
+    (synopsis "Library for creating LaTeX files and snippets")
+    (description
+     "This package provides a Python library for creating LaTeX files and
+snippets.")
+    (license license:expat)))
+
 (define-public python-pylatexenc
   (package
     (name "python-pylatexenc")
