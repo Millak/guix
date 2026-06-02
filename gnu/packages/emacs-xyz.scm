@@ -32064,7 +32064,7 @@ decreasing the default font size in all GUI Emacs frames.")
        "Emacs package for stepping through effective default face heights")
       (description
        "Interactively decrease or increase the attribute @code{:height} of the
-face @{default} in the theme @{user} to the next effective value.")
+face @code{default} in the theme @code{user} to the next effective value.")
       (license license:gpl3+))))
 
 (define-public emacs-fixed-pitch
