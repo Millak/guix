@@ -9792,7 +9792,7 @@ and can be extended with the use of external commands.")
        (uri (fossil-reference
              (uri "https://chim.loan/xoa")
              (check-in version)))
-       (sha256 (base32 "0lybgayfafqdm043vnv74lzhcbay9hr1jrgpd0bfdssyyby8km9g"))
+       (sha256 (base32 "1dl274bl88nhcjp4si2wm49nlsidg0222yy7w2dzfdvjrn0nm20n"))
        (modules '((guix build utils)))
        (snippet #~(delete-file-recursively "doc/djot")))) ;bundled docs
     (build-system gnu-build-system)

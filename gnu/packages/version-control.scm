@@ -3534,7 +3534,7 @@ modification time.")
              (uri "https://fossil.wanderinghorse.net/r/libfossil")
              (check-in version)))
        (sha256
-        (base32 "0haaczpjnjpkiikf0q70nfabm2csdk6dl9rh80j0sh90wfvkyqwm"))
+        (base32 "0agnjs014bbg98xp9hv2vw6kbp7zwz8d045hmd9scqjdwixkf37d"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
@@ -3602,7 +3602,7 @@ intended for new ways to access and manipulate fossil repositories.")
                (check-in check-in)))
          (file-name (fossil-file-name name version))
          (sha256
-          (base32 "09m0bgzy0yjglsgrqq03sdq4p2rwi3y8m84979j066z1c5b444iz"))
+          (base32 "00n3qrd34nccxdwwbvs9zikhz6wps6qgbvk4mfww46mshvg7mxdn"))
          (modules '((guix build utils)))
          (snippet #~(begin
                       (delete-file-recursively "lib")

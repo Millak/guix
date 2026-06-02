@@ -87,7 +87,7 @@
              (uri "https://chim.loan/fead")
              (check-in version)))
        (sha256
-        (base32 "0fzxabmxpyd04v5ym20xhjcnh0vqdwc6z1xjrq676d2k0hr2rzz2"))))
+        (base32 "0pkj8wkxgm3jzkxfviagwi23kiypidavxpb4fi5mmcsp9k8wbpl4"))))
     (build-system gnu-build-system)
     (arguments
      (list
