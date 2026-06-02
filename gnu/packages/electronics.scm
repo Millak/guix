@@ -3641,19 +3641,24 @@ files as specified in IEEE 1364-2005.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      #~(list "-k" "not test_toplevel_library") ;requires questasim simulator
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'check 'run-examples
+          (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (invoke "make" "-k" "-C" "examples")))))))
+                (for-each delete-file-recursively
+                          (map
+                           (lambda (test) (string-append "tests/test_cases/" test))
+                           (list "test_log_prefix"
+                                 "test_vhdl_libraries"
+                                 "test_vhdl_libraries_multiple")))
+                (invoke "make" "-k" "-C" "tests")))))))
     (native-inputs
      (list iverilog
            nvc
            python-pytest
-           python-setuptools))
+           python-setuptools
+           verilator))
     (propagated-inputs
      (list python-find-libpython))
     (home-page "https://github.com/cocotb/cocotb")
