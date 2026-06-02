@@ -7151,14 +7151,14 @@ config files---you only have to specify the www root.")
 (define-public goaccess
   (package
     (name "goaccess")
-    (version "1.9.3")
+    (version "1.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://tar.goaccess.io/goaccess-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0dvqxk9rbsp24fp1r5xdz7rcnvvl0q26p07nfmgmzaf4wd4yxw29"))
+                "03ma9v60nmqqzig76f6ilb05bjwxq7a7vp4jgly8cy9j8554idxr"))
               (modules '((guix build utils)))
               (snippet '(substitute* '("src/error.h"
                                        "src/parser.c")
@@ -7169,9 +7169,11 @@ config files---you only have to specify the www root.")
      (list
       #:configure-flags
       '(list "--enable-geoip=mmdb"
-             "--enable-utf8")))
+             "--enable-utf8"
+             "--with-openssl"
+             "--with-zlib")))
     (inputs
-     (list glib ncurses libmaxminddb openssl))
+     (list glib ncurses libmaxminddb openssl zlib))
     (native-inputs
      (list pkg-config))
     (home-page "https://goaccess.io")
