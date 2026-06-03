@@ -276,11 +276,7 @@ a server that supports the SSH-2 protocol.")
         ;; cross-compiled binaries because it invokes 'strip' instead of
         ;; 'TRIPLET-strip'.  Work around this.
         (if #$(%current-target-system)
-            (append (list "--disable-strip")
-                    (let ((xauth #$(this-package-input "xauth")))
-                      (if xauth
-                          (list (string-append "--with-xauth=" xauth "/bin/xauth"))
-                          '())))
+            (list "--disable-strip")
             '()))
      #:phases
      #~(modify-phases %standard-phases
