@@ -65983,9 +65983,9 @@ fn main() {
                                   rust-glib-0.21.3
                                   rust-glib-macros-0.21.2
                                   rust-glib-sys-0.21.2
-                                  rust-glycin-3.0.7
-                                  rust-glycin-common-1.0.3
-                                  rust-glycin-utils-4.0.4
+                                  rust-glycin-3.1.0
+                                  rust-glycin-common-1.0.4
+                                  rust-glycin-utils-4.1.0
                                   rust-gobject-sys-0.21.2
                                   rust-graphene-rs-0.21.5
                                   rust-graphene-sys-0.21.5
