@@ -5048,7 +5048,7 @@ parallel computing platforms.  It also supports serial execution.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.65")
+    (version "0.66")
     (source
      (origin
        (method git-fetch)
@@ -5056,19 +5056,21 @@ parallel computing platforms.  It also supports serial execution.")
               (url "https://github.com/YosysHQ/yosys")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "04sks9hj8h9vy6zii29zjgq38h2h4nz8a7xxiq33p1aivwq7bz8q"))
+        (base32 "0nhaidrbl7awaq28mij64c6na64rmkd6zciizd5swg5nn5ssk7j1"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
     (arguments
      (list
-      #:test-target "all"
+      #:test-target "vanilla-test"
       #:make-flags
       #~(list (string-append "PREFIX=" #$output)
               "ENABLE_FUNCTIONAL_TESTS=1"
               "ENABLE_EDITLINE=1"
               "ENABLE_LIBYOSYS=1"
               "ENABLE_PYOSYS=1"
+              (string-append
+               "CXX=" #$(this-package-native-input "clang") "/bin/clang++")
               (format #f "PYTHON_DESTDIR=~a"
                       (string-append
                        #$output "/lib/python"
@@ -5097,18 +5099,7 @@ parallel computing platforms.  It also supports serial execution.")
               (substitute* '("passes/cmds/show.cc" "passes/cmds/viz.cc")
                 (("fuser")
                  (search-input-file inputs "bin/fuser")))))
-          (replace 'configure
-            (lambda* (#:key (configure-flags '()) #:allow-other-keys)
-              ;; Default to clang-toolchain.
-              ;; Fall back to gcc-toolchain with:
-              ;;     "--with-configure-flag=yosys=config-gcc"
-              (let* ((flags (if (null? configure-flags)
-                                (list "config-clang" "CC=clang" "CXX=clang++")
-                                `(,@configure-flags
-                                  ,(string-append "CC="#$(cc-for-target))
-                                  ,(string-append "CXX="#$(cxx-for-target))))))
-                (format #t "CONFIGURE FLAGS: ~s~%" flags)
-                (apply invoke "make" flags))))
+          (delete 'configure)
           (add-after 'install 'add-symbolic-link
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Previously this package provided a copy of the "abc"
@@ -5157,6 +5148,7 @@ parallel computing platforms.  It also supports serial execution.")
                 #$output:doc "/share/info/yosyshqyosys-figures")))))))
     (native-inputs
      (list bison
+           clang-21
            cmake-minimal
            cxxopts ;header-only library
            flex
@@ -5166,6 +5158,7 @@ parallel computing platforms.  It also supports serial execution.")
            iverilog ;for the tests
            perl
            pkg-config
+           python-pytest
            python-sphinxcontrib-bibtex
            python-sphinx-inline-tabs
            texinfo
@@ -5175,7 +5168,7 @@ parallel computing platforms.  It also supports serial execution.")
               (git-reference
                 (url "https://github.com/povik/yosys-slang")
                 ;; No tags, nor releases.
-                (commit "cf20b1ba0d2c9df0508f927930a87565e7e0d220")
+                (commit "35de04061a71c6260f5879ae13855937baad58e1")
                 (recursive? #t)))  ;requires slang and fmt
              (file-name "yosys-slang")
              (sha256
@@ -5187,7 +5180,6 @@ parallel computing platforms.  It also supports serial execution.")
     (inputs
      (list abc-yosyshq
            bash-minimal
-           clang
            editline
            libffi
            psmisc
