@@ -3953,9 +3953,6 @@ capabilities.")
 manipulation.  It aims to be a modern rewrite of Avisynth, supporting
 multithreading, generalized colorspaces, per frame properties, and videos with
 format changes.")
-    ;; src/core/cpufeatures only allows x86, ARM or PPC
-    (supported-systems (fold delete %supported-systems
-                             '("mips64el-linux" "aarch64-linux")))
     ;; As seen from the source files.
     (license license:lgpl2.1+)))
 
@@ -4216,7 +4213,7 @@ be used for realtime video capture via Linux-specific APIs.")
                 "-DENABLE_QSV11=OFF"
                 "-DENABLE_NVENC=OFF"
                 ;; Requires a custom version of websocketpp in inputs, that's
-                ;; patched to be compatible with recent versions of Boost 
+                ;; patched to be compatible with recent versions of Boost
                 "-DENABLE_WEBSOCKET=ON"
                 ;; Browser plugin requires cef, but it is not packaged yet.
                 ;; <https://bitbucket.org/chromiumembedded/cef/src/master/>
