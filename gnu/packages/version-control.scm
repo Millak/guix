@@ -3481,10 +3481,10 @@ accessed and migrated on modern systems.")
           (add-after 'install 'install-completions
             (lambda _
               (let ((share (string-append #$output "/share")))
-                (mkdir-p (string-append #$output "/etc/bash_completion.d"))
+                (mkdir-p (string-append share "/bash-completion/completions"))
                 (mkdir-p (string-append share "/zsh/site-functions"))
                 (copy-file "contrib/tig-completion.bash"
-                           (string-append #$output "/etc/bash_completion.d/tig"))
+                           (string-append share "/bash-completion/completions/tig"))
                 (copy-file "contrib/tig-completion.zsh"
                            (string-append share "/zsh/site-functions/_tig"))))))
       #:test-target "test"
