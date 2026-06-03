@@ -256,32 +256,32 @@ a server that supports the SSH-2 protocol.")
      #:make-flags
      #~(list "REGRESSTMP=\"$${BUILDDIR}/regress\"")
      #:configure-flags
-     #~(append
-        (list "--sysconfdir=/etc/ssh"
-              ;; Default value of 'PATH' used by sshd.
-              "--with-default-path=/run/current-system/profile/bin"
-              ;; configure needs to find krb5-config.
-              (string-append "--with-kerberos5="
-                             #$(this-package-input "mit-krb5")
-                             "/bin")
-              ;; libedit is needed for sftp completion.
-              "--with-libedit")
+     #~(list
+        "--sysconfdir=/etc/ssh"
+        ;; Default value of 'PATH' used by sshd.
+        "--with-default-path=/run/current-system/profile/bin"
+        ;; configure needs to find krb5-config.
+        (string-append "--with-kerberos5="
+                       #$(this-package-input "mit-krb5")
+                       "/bin")
+        ;; libedit is needed for sftp completion.
+        "--with-libedit"
         ;; Enable PAM support in sshd.
-        (if #$(target-hurd?)
-            '()
-            (list "--with-pam"
+        #$@(if (target-hurd?)
+               #~()
+               #~("--with-pam"
                   ;; Support creation and use of ecdsa-sk, ed25519-sk keys.
                   "--with-security-key-builtin"))
         ;; "make install" runs "install -s" by default, which doesn't work for
         ;; cross-compiled binaries because it invokes 'strip' instead of
         ;; 'TRIPLET-strip'.  Work around this.
-        (if #$(%current-target-system)
-            (append (list "--disable-strip")
-                    (let ((xauth #$(this-package-input "xauth")))
-                      (if xauth
-                          (list (string-append "--with-xauth=" xauth "/bin/xauth"))
-                          '())))
-            '()))
+        #$@(if (%current-target-system)
+               #~("--disable-strip"
+                  #$@(let ((xauth (this-package-input "xauth")))
+                       (if xauth
+                           #~((string-append "--with-xauth=" #$xauth "/bin/xauth"))
+                           #~())))
+               #~()))
      #:phases
      #~(modify-phases %standard-phases
          (add-after 'configure 'set-store-location
