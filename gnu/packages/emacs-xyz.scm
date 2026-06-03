@@ -559,6 +559,30 @@ compatible.")
 @code{global-activity-watch-mode}.")
     (license license:gpl3+)))
 
+(define-public emacs-hel
+  (package
+    (name "emacs-hel")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/anuvyklack/hel")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w3szydrwgjhy4as7snrkys7biixyvnfdgf0xdwmcspw3khljfcw"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-avy
+           emacs-dash
+           emacs-pcre2el))
+    (home-page "https://github.com/anuvyklack/hel")
+    (synopsis "Helix emulation layer for Emacs")
+    (description
+     "This package provides a Helix emulation layer for Emacs.")
+    (license license:gpl3)))
+
 (define-public emacs-helix
   (package
     (name "emacs-helix")
