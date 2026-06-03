@@ -2247,7 +2247,7 @@ versus schematic} tests and can assist with automatic routing.")
 (define-public mcy
   (package
     (name "mcy")
-    (version "0.65")
+    (version "0.66")
     (source
      (origin
        (method git-fetch)
