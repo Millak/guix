@@ -1744,33 +1744,33 @@ The basic features of Geany are:
     ;; Stable release is 1.9.  However, this development version
     ;; introduces support for UTF-8.
     (version "2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://www.moria.de/~michael/fe/"
-                                  "fe-" version ".tar.gz"))
-              (sha256
-               (base32
-                "10mk5wc3dsdp46b3hkjyd740gcdv6m1gvlr3p8xjxf55b3vfs0la"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.moria.de/~michael/fe/"
+                           "fe-" version ".tar.gz"))
+       (sha256
+        (base32 "10mk5wc3dsdp46b3hkjyd740gcdv6m1gvlr3p8xjxf55b3vfs0la"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       ;; Sendmail is only used to send a crash log.  Disable the
-       ;; feature since it is (1) undocumented (2) not very useful.
-       #:configure-flags (list "--disable-sendmail")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
-               (for-each (lambda (f) (install-file f doc))
-                         '("fe.doc" "fe.html" "fe.ps" "feref.ps" "README"))
-               #t))))))
-    (native-inputs
-     `(("gettext" ,gettext-minimal)))
-    (inputs
-     (list ncurses))
-    (home-page "http://www.moria.de/~michael/fe/")
+     (list
+      #:tests? #f                       ;no test
+      ;; Sendmail is only used to send a crash log.  Disable the
+      ;; feature since it is (1) undocumented (2) not very useful.
+      #:configure-flags #~'("--disable-sendmail")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            (lambda _
+              (let ((doc (string-append #$output "/share/doc/"
+                                        #$name "-" #$version)))
+                (for-each (lambda (f)
+                            (install-file f doc))
+                          '("fe.doc" "fe.html" "fe.ps"
+                            "feref.ps" "README"))))))))
+    (native-inputs (list gettext-minimal))
+    (inputs (list ncurses))
+    (home-page "https://www.moria.de/~michael/fe/")
     (synopsis "Small folding editor")
     (description "Fe is a small folding editor.  It folds
 arbitrary text regions; it is not bound to syntactic units.
