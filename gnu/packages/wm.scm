@@ -675,14 +675,14 @@ its looks.")
 (define-public i3status
   (package
     (name "i3status")
-    (version "2.14")
+    (version "2.15")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://i3wm.org/i3status/i3status-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0929chhvyq9hg4scpcz8r9zn3s9jvbg6a86k3wqa77qg85rh4kaw"))
+                "0192mxpc0d1znl9c46vra1vzkq1baqvcf75dckvrs4sgmqngarvc"))
               (snippet
                ;; Delete the pregenerated man page, to be rebuilt from source.
                '(delete-file "man/i3status.1"))))
