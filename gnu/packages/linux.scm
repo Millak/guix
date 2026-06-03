@@ -3185,7 +3185,7 @@ GnuPG-based password manager like @code{pass}.")
                      (lambda* (#:key parallel-build? #:allow-other-keys)
                        (substitute* "Documentation/Makefile"
                          ;; Remove problematic environment check script.
-                         ((".*scripts/sphinx-pre-install.*") ""))
+                         ((".*sphinx-pre-install --version-check") ""))
                        (invoke "make" "infodocs"
                                "-j" (if parallel-build?
                                         (number->string (parallel-job-count))
