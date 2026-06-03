@@ -235,6 +235,7 @@
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages haskell)
   #:use-module (gnu packages haskell-apps)
@@ -856,15 +857,45 @@ renderer, @code{shr}.")
        (sha256
         (base32 "01wd7qglz3z5ip9mviy92bhfvmnhfm3mwfirxrhjb9y4jxyq9da3"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command
+      #~(list "emacs" "--batch"
+              "-L" "."
+              "-l" "test/sops-test.el"
+              "--eval"
+              ;; Skip a test whose expected cache key is hard-coded to "sops"
+              ;; or "/usr/bin/sops"; `patch-sops-executable' makes it a store
+              ;; path.
+              "(ert-run-tests-batch-and-exit
+ '(not \"sops-test--ensure-version-recomputes-on-path-change\"))")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sops-executable
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "sops.el"
+                ("sops-executable"
+                 (search-input-file inputs "/bin/sops")))))
+          (add-before 'check 'set-sops-age-key-file
+            (lambda _
+              ;; Decrypt tests need the matching age identity; upstream gets
+              ;; this from mise.toml.
+              (setenv "SOPS_AGE_KEY_FILE"
+                      (string-append
+                       (getcwd)
+                       "/test/test-fixtures/age-test-key.txt")))))))
+    ;; Tests shell out to age-keygen to generate an ephemeral fixture key.
+    (native-inputs (list age))
+    (inputs (list sops))
     (home-page "https://github.com/djgoku/sops")
     (synopsis "SOPS encrypt and decrypt without leaving the editor")
     (description
-     "This package provides a minor mode for editing @acronym{SOPS, Secret
-OPerationS}-encrypted files.  To enable it automatically, set
-@code{global-sops-mode}.  Users can decrypt with @code{sops-edit-file}, save
-changes with @code{sops-save-file}, or discard them with @code{sops-cancel}.
-The files are displayed in read-only mode to prevent accidental corruption,
-which is useful for partly encrypted files with only one encrypted line.")
+     "This package provides transparent editing of @acronym{SOPS, Secret
+OPerationS} encrypted @acronym{YAML, YAML Ain't Markup Language},
+@acronym{JSON, JavaScript Object Notation}, ENV, INI, and binary files in
+Emacs.  Visiting such a file decrypts it into the buffer, and saving
+re-encrypts it back to disk.  New encrypted files can be created with the
+@code{sops-find-file} command.")
     (license license:gpl3+)))
 
 (define-public emacs-age
