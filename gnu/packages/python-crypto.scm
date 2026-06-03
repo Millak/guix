@@ -695,35 +695,6 @@ OpenSSL library.")
                   (updater-extra-native-inputs . ("libfaketime"))))
     (license license:asl2.0)))
 
-(define-public python-ed25519
-  (package
-    (name "python-ed25519")
-    (version "1.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/warner/python-ed25519")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0adxfm12wygh2gdsn83xmp1sw7w96ni7mr7v3z3y6q0mvh9n5x0p"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Use custom test back-end on python-team branch.
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests? (invoke "python" "test_ed25519_kat.py")))))))
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/warner/python-ed25519")
-    (synopsis "Ed25519 public-key signatures")
-    (description
-     "This package provides Ed25519 public-key signatures in Python.")
-    (license license:expat)))
-
 (define-public python-axolotl-curve25519
   (package
     (name "python-axolotl-curve25519")
