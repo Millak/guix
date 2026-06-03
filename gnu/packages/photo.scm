@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2017, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015, 2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2025, 2026 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2017 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016-2019, 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
@@ -272,19 +272,20 @@ phones and memory cards and generate meaningful file and folder names.")
 (define-public libraw
   (package
     (name "libraw")
-    (version "0.21.2")
+    (version "0.22.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.libraw.org/data/LibRaw-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "00sbscniqrwj341gyvzkgcidfkmscgxx05s4dsplp186680qhwpy"))))
+                "11nprxm63dqfhlfdfsngjw6rvd67h05lwfkrjcfr1qh94i7dr2d7"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
     (inputs
-     (list libjpeg-turbo))     ;for lossy DNGs and old Kodak cameras
+     (list libjpeg-turbo ;for lossy DNGs and old Kodak cameras
+           zlib))
     (propagated-inputs
      (list lcms))                 ;for color profiles
     (home-page "https://www.libraw.org")
