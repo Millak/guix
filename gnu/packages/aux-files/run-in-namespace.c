@@ -74,6 +74,21 @@ concat (const char *directory, const char *file)
   return result;
 }
 
+/* Return a heap-allocated mkdtemp(3) template string for the sandbox
+   directory, honoring the TMPDIR environment variable if set, 
+   but falling back to "/tmp" if not. The caller must free the result.  */
+static char *
+make_tmp_template (void)
+{
+  static const char suffix[] = "guix-exec-XXXXXX";
+  const char *tmpdir = getenv ("TMPDIR");
+
+  if (tmpdir == NULL || tmpdir[0] == '\0')
+    tmpdir = "/tmp";
+
+  return concat (tmpdir, suffix);
+}
+
 static void
 mkdir_p (const char *directory)
 {
@@ -283,7 +298,7 @@ exec_in_user_namespace (const char *store, int argc, char *argv[])
   /* Spawn @WRAPPED_PROGRAM@ in a separate namespace where STORE is
      bind-mounted in the right place.  */
   int err, is_tmpfs;
-  char *new_root = mkdtemp (strdup ("/tmp/guix-exec-XXXXXX"));
+  char *new_root = mkdtemp (make_tmp_template ());
   char *new_store = concat (new_root, original_store);
   char *cwd = get_current_dir_name ();
 
@@ -507,7 +522,7 @@ exec_with_loader (const char *store, int argc, char *argv[])
 
   /* Set up the root directory.  */
   int err;
-  char *new_root = mkdtemp (strdup ("/tmp/guix-exec-XXXXXX"));
+  char *new_root = mkdtemp (make_tmp_template ());
   mirror_directory ("/", new_root, make_symlink);
 
   /* 'mirror_directory' created a symlink for the ancestor of ORIGINAL_STORE,
