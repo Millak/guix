@@ -569,7 +569,7 @@ individual low-level driver modules.")
 (define-public eqy
   (package
     (name "eqy")
-    (version "0.65")
+    (version "0.66")
     (source
      (origin
        (method git-fetch)
@@ -614,7 +614,8 @@ individual low-level driver modules.")
           (add-after 'install 'python:wrap
             (assoc-ref py:%standard-phases 'wrap)))))
     (native-inputs
-     (list clang python-minimal-wrapper python-sphinx texinfo yosys))
+     ;; Same clang version as in yosys.
+     (list clang-21 python-minimal-wrapper python-sphinx texinfo yosys))
     (inputs
      (list python-click python-json5 readline))
     (home-page "https://yosyshq.readthedocs.io/projects/eqy/en/latest/")
