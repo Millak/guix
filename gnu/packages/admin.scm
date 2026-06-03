@@ -3044,13 +3044,13 @@ more stress mechanisms.")
 (define-public tree
   (package
     (name "tree")
-    (version "2.2.1")
+    (version "2.3.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://oldmanprogrammer.net/tar/tree/"
                                   "tree-" version ".tgz"))
               (sha256
-               (base32 "1v5j8igc5yjzs7w63010p8il5rw5qb1zy032l2ni3hy0g3f4bb38"))))
+               (base32 "088f60s44x0dp5l4ipc1i5453hp0v044s3kha0r4vyzcrgb1v53b"))))
     (build-system gnu-build-system)
     (arguments
      (list
