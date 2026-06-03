@@ -5906,50 +5906,6 @@ for long polling, WebSockets, and other applications that require a long-lived
 connection to each user.")
     (license license:asl2.0)))
 
-(define-public python-tornado-5
-  (package
-    (inherit python-tornado)
-    (version "5.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tornado" version))
-       (sha256
-        (base32
-         "02clqk2116jbnq8lnaqmdw3p52nqrd9ib59r4xz2ll43fpcmhlaf"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'fix-collections
-           (lambda _
-             (substitute* "tornado/httputil.py"
-               (("collections.MutableMapping")
-                "collections.abc.MutableMapping"))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (substitute* "tornado/test/runtests.py"
-                 (("\"error\", category=DeprecationWarning")
-                  "\"ignore\", category=DeprecationWarning")
-                 ;; Disable tests that use SSL.
-                 (("'tornado.test.simple_httpclient_test',") "")
-                 (("'tornado.test.iostream_test',") "")
-                 (("'tornado.test.httpserver_test',") "")
-                 ;; Some timeouts are triggered in these two modules
-                 (("'tornado.test.queues_test',") "")
-                 (("'tornado.test.locks_test',") ""))
-               ;; Skip all network tests
-               (setenv "NO_NETWORK" "1")
-               ;; Skip timing-relevant tests
-               (setenv "TRAVIS" "1")
-               (invoke "python" "-m" "tornado.test.runtests"
-                       "--verbose=yes")))))))
-    (native-inputs
-     (list python-certifi
-           python-setuptools))))
-
 ;; XXX: Deprecated on <2026-01-23>.
 (define-deprecated-package python-tornado-6 python-tornado)
 
