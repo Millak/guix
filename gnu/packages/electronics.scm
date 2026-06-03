@@ -245,8 +245,8 @@ are also taken from the original.")
       (license license:gpl3+))))
 
 (define-public abc
-  (let ((commit "7bf1177d3900212df9e5c32ffc3ff2f59bc9b02b")
-        (revision "11"))
+  (let ((commit "a917c1af9fca6fa21328b63853f6e8ee0a046c81")
+        (revision "12"))
     (package
       (name "abc")
       (version (git-version "0.0" revision commit))
@@ -258,7 +258,7 @@ are also taken from the original.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1zyip7x3av03mp766m60md2a8g8xp4divpgxj6n4760i753i9b85"))))
+                  "103piw223zwc1jz4ripvb41rf9lwadvca2b6san7csh7kq0yn5s5"))))
       (build-system gnu-build-system)
       (inputs
        (list readline))
