@@ -681,7 +681,7 @@ driven and does not detract you from your daily work.")
 (define-public lagrange
   (package
     (name "lagrange")
-    (version "1.19.3")
+    (version "1.20.5")
     (source
      (origin
        (method url-fetch)
@@ -689,7 +689,7 @@ driven and does not detract you from your daily work.")
         (string-append "https://git.skyjake.fi/skyjake/lagrange/releases/"
                        "download/v" version "/lagrange-" version ".tar.gz"))
        (sha256
-        (base32 "0srd5ahkls1kdf6waszjaayjgk7jd58i8hjlzh636d26h0vmy0k5"))
+        (base32 "1kha8p9bfhfr7bs3ihpzji3jz9qgwizz1f580nylnlrz418x9wkr"))
        (modules '((guix build utils)))
        (snippet
         '(begin
