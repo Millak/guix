@@ -3460,7 +3460,7 @@ accessed and migrated on modern systems.")
 (define-public tig
   (package
     (name "tig")
-    (version "2.5.12")
+    (version "2.6.0")
     (source
      (origin
        (method git-fetch)
@@ -3469,7 +3469,7 @@ accessed and migrated on modern systems.")
              (commit (string-append "tig-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ncrxvn7vbcyfvcczra6jx4mr5hv6p5xfa1wdvdfzwgfkj16hhys"))))
+        (base32 "02rk1809qmz8rdsjhyd8lkmxkay9hybh3zy0xs63rz825vilm59c"))))
     (build-system gnu-build-system)
     (arguments
      (list
