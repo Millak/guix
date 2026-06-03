@@ -1132,7 +1132,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.24)
     (name "go")
-    (version "1.26.3")
+    (version "1.26.4")
     (source
      (origin
        (method git-fetch)
@@ -1141,7 +1141,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
              (commit (string-append "go" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16yrb9si7swc6vnxjj5ga5pvyjkab5w8z589fqml61q0rypnn6ay"))))
+        (base32 "143qz6hikkh08gfm9md7r1na8mj404a27a4cidq3zkj6qc54jrm1"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:phases phases)
