@@ -68,6 +68,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
+  #:use-module (gnu packages groff)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
@@ -105,6 +106,48 @@
   #:use-module (gnu packages xml)
   #:use-module ((srfi srfi-1) #:hide (zip))
   #:use-module (srfi srfi-26))
+
+(define-public focus-stack
+  (package
+    (name "focus-stack")
+    (version "1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/PetteriAimonen/focus-stack")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y90s0iwqph4amziva0xyjwrkykxrqqz9qf9zyqfxfny33r8m1l4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false ;requires idiff
+      #:make-flags
+      #~(list (string-append "prefix=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (substitute* "Makefile"
+                (("^VERSION =.*")
+                 (string-append "VERSION = \"" #$version "\"\n"))
+                (("-DGIT_VERSION=.*")
+                 (string-append "-DGIT_VERSION=\\\"" #$version "\\\"\n")))
+              (substitute* "src/main.cc"
+                ((", built \" __DATE__ \" \" __TIME__ \"")
+                 ", built with Guix")))))))
+    (native-inputs
+     (list opencl-headers pkg-config ronn-ng which))
+    (inputs (list opencv))
+    (home-page "https://github.com/PetteriAimonen/focus-stack")
+    (synopsis "Fast and easy focus stacking")
+    (description
+     "This project implements a tool for focus stacking images.  The
+application takes a set of images captured at different focus distances and
+combines them so that the complete subject is in focus.")
+    (license license:expat)))
 
 (define-public rapid-photo-downloader
   (package
