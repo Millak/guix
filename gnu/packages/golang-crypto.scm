@@ -48,6 +48,16 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Golang modules (libraries) related to Cryptography: encryption algorithms,
+;;; hashing functions, TLS, key management, digital signatures, password
+;;; hashing etc.
+;;;
+;;; Please: Try to add new module packages in alphabetic order.
+;;;
+;;; Code:
+
 (define-module (gnu packages golang-crypto)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system go)
@@ -70,15 +80,6 @@
   #:use-module (gnu packages specifications)
   #:use-module (gnu packages tls))
 
-;;; Commentary:
-;;;
-;;; Golang modules (libraries) related to Cryptography: encryption algorithms,
-;;; hashing functions, TLS, key management, digital signatures, password
-;;; hashing etc.
-;;;
-;;; Please: Try to add new module packages in alphabetic order.
-;;;
-;;; Code:
 
 ;;;
 ;;; Libraries:

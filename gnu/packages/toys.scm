@@ -25,6 +25,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Please: Try to add new module packages in alphabetic order.
+;;;
+;;; Code:
+
 (define-module (gnu packages toys)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system copy)
@@ -54,11 +60,6 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
-;;; Commentary:
-;;;
-;;; Please: Try to add new module packages in alphabetic order.
-;;;
-;;; Code:
 
 (define-public cbonsai
     (package

@@ -21,6 +21,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module contains DuckDB - an analytical in-process SQL database
+;;; management system (https://www.duckdb.org/) and it's binding in different
+;;; programming languages with other related to DuckDB packages.
+;;;
+;;; Code:
+
 (define-module (gnu packages duckdb)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
@@ -43,13 +51,6 @@
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages time))
 
-;;; Commentary:
-;;;
-;;; This module contains DuckDB - an analytical in-process SQL database
-;;; management system (https://www.duckdb.org/) and it's binding in different
-;;; programming languages with other related to DuckDB packages.
-;;;
-;;; Code:
 
 (define %duckdb-version "1.5.3")
 

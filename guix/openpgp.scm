@@ -25,6 +25,20 @@
 ;;; Ludovic Courtès for use in GNU Guix: turned into a native Guile module,
 ;;; ported to Guile-Gcrypt, and extended and simplified in other ways.
 
+;;; Commentary:
+;;;
+;;; This module contains code to read OpenPGP messages as described in
+;;; <https://tools.ietf.org/html/rfc4880>, with extensions from
+;;; <https://tools.ietf.org/html/draft-ietf-openpgp-rfc4880bis-06> (notably
+;;; EdDSA support and extra signature sub-packets).
+;;;
+;;; Currently this module does enough to verify detached signatures of binary
+;;; data.  It does _not_ perform sanity checks on self-signatures, subkey
+;;; binding signatures, etc., among others.  Use only in a context where this
+;;; limitations are acceptable!
+;;;
+;;; Code:
+
 (define-module (guix openpgp)
   #:export (get-openpgp-detached-signature/ascii
             (get-packet . get-openpgp-packet)
@@ -84,20 +98,6 @@
   #:use-module (gcrypt base64)
   #:use-module (gcrypt base16)
   #:use-module ((guix build utils) #:select (dump-port)))
-
-;;; Commentary:
-;;;
-;;; This module contains code to read OpenPGP messages as described in
-;;; <https://tools.ietf.org/html/rfc4880>, with extensions from
-;;; <https://tools.ietf.org/html/draft-ietf-openpgp-rfc4880bis-06> (notably
-;;; EdDSA support and extra signature sub-packets).
-;;;
-;;; Currently this module does enough to verify detached signatures of binary
-;;; data.  It does _not_ perform sanity checks on self-signatures, subkey
-;;; binding signatures, etc., among others.  Use only in a context where this
-;;; limitations are acceptable!
-;;;
-;;; Code:
 
 (define-syntax print
   (syntax-rules ()

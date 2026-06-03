@@ -17,13 +17,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix glob)
-  #:use-module (ice-9 match)
-  #:export (string->sglob
-            compile-sglob
-            string->compiled-sglob
-            glob-match?))
-
 ;;; Commentary:
 ;;;
 ;;; This is a minimal implementation of "glob patterns" (info "(libc)
@@ -31,6 +24,13 @@
 ;;; support braces, for instance.
 ;;;
 ;;; Code:
+
+(define-module (guix glob)
+  #:use-module (ice-9 match)
+  #:export (string->sglob
+            compile-sglob
+            string->compiled-sglob
+            glob-match?))
 
 (define (parse-bracket chars)
   "Parse CHARS, a list of characters that extracted from a '[...]' sequence."

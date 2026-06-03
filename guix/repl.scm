@@ -16,13 +16,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix repl)
-  #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-26)
-  #:use-module (ice-9 match)
-  #:export (send-repl-response
-            machine-repl))
-
 ;;; Commentary:
 ;;;
 ;;; This module implements the "machine-readable" REPL provided by
@@ -30,6 +23,13 @@
 ;;; embedded in any Guile process providing REPL functionality.
 ;;;
 ;;; Code:
+
+(define-module (guix repl)
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
+  #:use-module (ice-9 match)
+  #:export (send-repl-response
+            machine-repl))
 
 (define (self-quoting? x)
   "Return #t if X is self-quoting."

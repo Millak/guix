@@ -19,6 +19,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides extensions to the GNU Shepherd.  In particular, it
+;;; provides a helper to start services in a container.
+;;;
+;;; Code:
+
 (define-module (gnu build shepherd)
   #:use-module (gnu system file-systems)
   #:use-module (gnu build linux-container)
@@ -34,13 +41,6 @@
   #:autoload (shepherd system) (unblock-signals)
   #:export (default-mounts
             fork+exec-command/container))
-
-;;; Commentary:
-;;;
-;;; This module provides extensions to the GNU Shepherd.  In particular, it
-;;; provides a helper to start services in a container.
-;;;
-;;; Code:
 
 (define (clean-up file)
   (when file

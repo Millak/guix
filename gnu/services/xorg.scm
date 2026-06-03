@@ -33,6 +33,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Services that relate to the X Window System.
+;;;
+;;; Code:
+
 (define-module (gnu services xorg)
   #:autoload   (gnu services sddm) (sddm-service-type)
   #:use-module (gnu artwork)
@@ -144,12 +150,6 @@
 
             handle-xorg-configuration
             set-xorg-configuration))
-
-;;; Commentary:
-;;;
-;;; Services that relate to the X Window System.
-;;;
-;;; Code:
 
 (define* (default-xorg-modules
            #:optional

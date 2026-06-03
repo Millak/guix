@@ -19,6 +19,16 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides a service definition for the Cgit a web frontend for
+;;; Git repositories written in C.
+;;;
+;;; Note: fields of <cgit-configuration> and <repository-cgit-configuration>
+;;; should be specified in the specific order.
+;;;
+;;; Code:
+
 (define-module (gnu services cgit)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages version-control)
@@ -41,16 +51,6 @@
             cgit-configuration-nginx-config
             opaque-cgit-configuration
             cgit-service-type))
-
-;;; Commentary:
-;;;
-;;; This module provides a service definition for the Cgit a web frontend for
-;;; Git repositories written in C.
-;;;
-;;; Note: fields of <cgit-configuration> and <repository-cgit-configuration>
-;;; should be specified in the specific order.
-;;;
-;;; Code:
 
 (define %cgit-configuration-nginx
   (nginx-server-configuration

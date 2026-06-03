@@ -16,6 +16,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides tools to execute programs with the least authority
+;;; necessary, using Linux namespaces.
+;;;
+;;; Code:
+
 (define-module (guix least-authority)
   #:use-module (guix gexp)
   #:use-module (guix modules)
@@ -28,13 +35,6 @@
                                           file-system-mapping->bind-mount)
   #:export (least-authority-wrapper
             %default-preserved-environment-variables))
-
-;;; Commentary:
-;;;
-;;; This module provides tools to execute programs with the least authority
-;;; necessary, using Linux namespaces.
-;;;
-;;; Code:
 
 (define %default-preserved-environment-variables
   ;; Environment variables preserved by the wrapper by default.

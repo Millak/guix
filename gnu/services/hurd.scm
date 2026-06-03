@@ -16,6 +16,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module implements services for the Hurd.
+;;;
+;;; Code:
+
 (define-module (gnu services hurd)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages hurd)
@@ -32,12 +38,6 @@
 
             hurd-login-configuration
             hurd-login-service-type))
-
-;;; Commentary:
-;;;
-;;; This module implements services for the Hurd.
-;;;
-;;; Code:
 
 ;;;
 ;;; The Hurd VGA console service.

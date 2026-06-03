@@ -26,44 +26,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix import go)
-  #:use-module (guix build-system go)
-  #:use-module (guix git)
-  #:use-module (guix hash)
-  #:use-module (guix i18n)
-  #:use-module ((guix utils) #:select (version>?))
-  #:use-module (guix diagnostics)
-  #:use-module (guix import utils)
-  #:use-module (guix import json)
-  #:use-module (guix packages)
-  #:use-module (guix http-client)
-  #:use-module (guix memoization)
-  #:autoload   (htmlprag) (html->sxml)            ;from Guile-Lib
-  #:autoload   (guix ui) (warning)
-  #:autoload   (git structs) (git-error-message)
-  #:use-module (ice-9 format)
-  #:use-module (ice-9 match)
-  #:use-module (ice-9 peg)
-  #:use-module (ice-9 receive)
-  #:use-module (ice-9 regex)
-  #:use-module (ice-9 textual-ports)
-  #:use-module ((rnrs io ports) #:select (call-with-port))
-  #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-9)
-  #:use-module (srfi srfi-11)
-  #:use-module (srfi srfi-26)
-  #:use-module (srfi srfi-34)
-  #:use-module (srfi srfi-35)
-  #:use-module (sxml match)
-  #:use-module ((sxml xpath) #:renamer (lambda (s)
-                                         (if (eq? 'filter s)
-                                             'xfilter
-                                             s)))
-  #:use-module (web uri)
-  #:export (go-module->guix-package
-            go-module->guix-package*
-            go-module-recursive-import))
-
 ;;; Commentary:
 ;;;
 ;;; (guix import go) attempts to make it easier to create Guix package
@@ -93,11 +55,49 @@
 ;;;
 ;;; The Go module paths are translated to a Guix package name under the
 ;;; assumption that there will be no collision.
-
+;;;
 ;;; TODO list
 ;;; - get correct hash in vcs->origin for Mercurial and Subversion
-
+;;;
 ;;; Code:
+
+(define-module (guix import go)
+  #:use-module (guix build-system go)
+  #:use-module (guix git)
+  #:use-module (guix hash)
+  #:use-module (guix i18n)
+  #:use-module ((guix utils) #:select (version>?))
+  #:use-module (guix diagnostics)
+  #:use-module (guix import utils)
+  #:use-module (guix import json)
+  #:use-module (guix packages)
+  #:use-module (guix http-client)
+  #:use-module (guix memoization)
+  #:autoload   (htmlprag) (html->sxml)  ;from Guile-Lib
+  #:autoload   (guix ui) (warning)
+  #:autoload   (git structs) (git-error-message)
+  #:use-module (ice-9 format)
+  #:use-module (ice-9 match)
+  #:use-module (ice-9 peg)
+  #:use-module (ice-9 receive)
+  #:use-module (ice-9 regex)
+  #:use-module (ice-9 textual-ports)
+  #:use-module ((rnrs io ports) #:select (call-with-port))
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-9)
+  #:use-module (srfi srfi-11)
+  #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
+  #:use-module (sxml match)
+  #:use-module ((sxml xpath) #:renamer (lambda (s)
+                                         (if (eq? 'filter s)
+                                             'xfilter
+                                             s)))
+  #:use-module (web uri)
+  #:export (go-module->guix-package
+            go-module->guix-package*
+            go-module-recursive-import))
 
 (define (go-package)
   "Return the 'go' package.  This is a lazy reference so that we don't

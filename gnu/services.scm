@@ -26,6 +26,31 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module defines a broad notion of "service types" and "services."
+;;;
+;;; A service type describe how its instances extend instances of other
+;;; service types.  For instance, some services extend the instance of
+;;; ACCOUNT-SERVICE-TYPE by providing it with accounts and groups to create;
+;;; others extend SHEPHERD-ROOT-SERVICE-TYPE by passing it instances of
+;;; <shepherd-service>.
+;;;
+;;; When applicable, the service type defines how it can itself be extended,
+;;; by providing one procedure to compose extensions, and one procedure to
+;;; extend itself.
+;;;
+;;; A notable service type is SYSTEM-SERVICE-TYPE, which has a single
+;;; instance, which is the root of the service DAG.  Its value is the
+;;; derivation that produces the 'system' directory as returned by
+;;; 'operating-system-derivation'.
+;;;
+;;; The 'fold-services' procedure can be passed a list of procedures, which it
+;;; "folds" by propagating extensions down the graph; it returns the root
+;;; service after the applying all its extensions.
+;;;
+;;; Code:
+
 (define-module (gnu services)
   #:use-module (guix derivations)
   #:use-module (guix gexp)
@@ -148,31 +173,6 @@
                ;; in 'modify-services' forms.  See
                ;; <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=26805#16>.
                delete))
-
-;;; Comment:
-;;;
-;;; This module defines a broad notion of "service types" and "services."
-;;;
-;;; A service type describe how its instances extend instances of other
-;;; service types.  For instance, some services extend the instance of
-;;; ACCOUNT-SERVICE-TYPE by providing it with accounts and groups to create;
-;;; others extend SHEPHERD-ROOT-SERVICE-TYPE by passing it instances of
-;;; <shepherd-service>.
-;;;
-;;; When applicable, the service type defines how it can itself be extended,
-;;; by providing one procedure to compose extensions, and one procedure to
-;;; extend itself.
-;;;
-;;; A notable service type is SYSTEM-SERVICE-TYPE, which has a single
-;;; instance, which is the root of the service DAG.  Its value is the
-;;; derivation that produces the 'system' directory as returned by
-;;; 'operating-system-derivation'.
-;;;
-;;; The 'fold-services' procedure can be passed a list of procedures, which it
-;;; "folds" by propagating extensions down the graph; it returns the root
-;;; service after the applying all its extensions.
-;;;
-;;; Code:
 
 (define-record-type <service-extension>
   (service-extension target compute)

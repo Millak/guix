@@ -28,6 +28,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Database services.
+;;;
+;;; Code:
+
 (define-module (gnu services databases)
   #:use-module (gnu services)
   #:use-module (gnu services base)
@@ -105,12 +111,6 @@
             redis-configuration
             redis-configuration?
             redis-service-type))
-
-;;; Commentary:
-;;;
-;;; Database services.
-;;;
-;;; Code:
 
 (define %default-postgres-hba
   (plain-file "pg_hba.conf"

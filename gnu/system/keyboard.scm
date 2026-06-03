@@ -16,6 +16,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides a data structure to represent keyboard layouts
+;;; according to the XKB naming and classification (see the 'xkeyboard-config'
+;;; package).
+;;;
+;;; Code:
+
 (define-module (gnu system keyboard)
   #:use-module (guix gexp)
   #:use-module ((gnu packages xorg)
@@ -30,14 +38,6 @@
             keyboard-layout-options
 
             keyboard-layout->console-keymap))
-
-;;; Commentary:
-;;;
-;;; This module provides a data structure to represent keyboard layouts
-;;; according to the XKB naming and classification (see the 'xkeyboard-config'
-;;; package).
-;;;
-;;; Code:
 
 (define-immutable-record-type <keyboard-layout>
   (%keyboard-layout name variant model options)

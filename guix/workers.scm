@@ -16,20 +16,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix workers)
-  #:use-module (ice-9 threads)
-  #:use-module (ice-9 match)
-  #:use-module (ice-9 q)
-  #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-9)
-  #:use-module (srfi srfi-26)
-  #:use-module ((guix build syscalls) #:select (set-thread-name))
-  #:export (pool?
-            make-pool
-            pool-enqueue!
-            pool-idle?
-            eventually))
-
 ;;; Commentary:
 ;;;
 ;;; This module implements "worker pools".  Worker pools are the low-level
@@ -43,6 +29,20 @@
 ;;; eventually complete.
 ;;;
 ;;; Code:
+
+(define-module (guix workers)
+  #:use-module (ice-9 threads)
+  #:use-module (ice-9 match)
+  #:use-module (ice-9 q)
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-9)
+  #:use-module (srfi srfi-26)
+  #:use-module ((guix build syscalls) #:select (set-thread-name))
+  #:export (pool?
+            make-pool
+            pool-enqueue!
+            pool-idle?
+            eventually))
 
 (define-record-type <pool>
   (%make-pool queue mutex condvar workers busy)

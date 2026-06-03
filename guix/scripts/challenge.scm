@@ -16,6 +16,18 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Challenge substitute servers, checking whether they provide the same
+;;; binaries as those built locally.
+;;;
+;;; Here we completely bypass the daemon to access substitutes.  This is
+;;; because we want to be able to report fine-grain information about
+;;; discrepancies: We need to show the URL of the offending nar, its hash, and
+;;; so on.
+;;;
+;;; Code:
+
 (define-module (guix scripts challenge)
   #:use-module (guix ui)
   #:use-module (guix colors)
@@ -61,18 +73,6 @@
             call-with-mismatches
 
             guix-challenge))
-
-;;; Commentary:
-;;;
-;;; Challenge substitute servers, checking whether they provide the same
-;;; binaries as those built locally.
-;;;
-;;; Here we completely bypass the daemon to access substitutes.  This is
-;;; because we want to be able to report fine-grain information about
-;;; discrepancies: We need to show the URL of the offending nar, its hash, and
-;;; so on.
-;;;
-;;; Code:
 
 (define ensure-store-item                         ;XXX: move to (guix ui)?
   (@@ (guix scripts size) ensure-store-item))

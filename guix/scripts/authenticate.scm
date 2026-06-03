@@ -16,6 +16,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This program is used internally by the daemon to sign exported archive
+;;; (the 'export-paths' RPC), and to authenticate imported archives (the
+;;; 'import-paths' RPC.)
+;;;
+;;; Code:
+
 (define-module (guix scripts authenticate)
   #:use-module (guix scripts)
   #:use-module (guix base16)
@@ -33,14 +41,6 @@
   #:use-module (ice-9 vlist)
   #:use-module (ice-9 iconv)
   #:export (guix-authenticate))
-
-;;; Commentary:
-;;;
-;;; This program is used internally by the daemon to sign exported archive
-;;; (the 'export-paths' RPC), and to authenticate imported archives (the
-;;; 'import-paths' RPC.)
-;;;
-;;; Code:
 
 (define read-canonical-sexp
   ;; Read a gcrypt sexp from a port and return it.

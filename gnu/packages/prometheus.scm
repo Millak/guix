@@ -24,6 +24,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Libraries and commands related to, or provided by Prometheus project
+;;; <https://prometheus.io>.
+;;;
+;;; Please: Try to add new module packages in alphabetic order.
+;;;
+;;; Code:
+
 (define-module (gnu packages prometheus)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system go)
@@ -40,14 +49,6 @@
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz))
 
-;;; Commentary:
-;;;
-;;; Libraries and commands related to, or provided by Prometheus project
-;;; <https://prometheus.io>.
-;;;
-;;; Please: Try to add new module packages in alphabetic order.
-;;;
-;;; Code:
 
 ;;;
 ;;; Libraries:

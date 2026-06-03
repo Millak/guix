@@ -21,6 +21,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; General code for Guix scripts.
+;;;
+;;; Code:
+
 (define-module (guix scripts)
   #:use-module (guix utils)
   #:use-module (guix ui)
@@ -51,12 +57,6 @@
             warn-about-old-distro
             %disk-space-warning
             warn-about-disk-space))
-
-;;; Commentary:
-;;;
-;;; General code for Guix scripts.
-;;;
-;;; Code:
 
 ;; Syntactic keywords.
 (define synopsis 'command-synopsis)

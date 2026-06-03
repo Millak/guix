@@ -17,6 +17,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Tools to deal with Chromium extensions.
+;;;
+;;; Code:
+
 (define-module (gnu build chromium-extension)
   #:use-module (guix gexp)
   #:use-module (guix packages)
@@ -25,12 +31,6 @@
   #:use-module (gnu packages node-xyz)
   #:use-module (guix build-system trivial)
   #:export (make-chromium-extension))
-
-;;; Commentary:
-;;;
-;;; Tools to deal with Chromium extensions.
-;;;
-;;; Code:
 
 (define (make-signing-key seed)
   "Return a derivation for a deterministic PKCS #8 private key using SEED."

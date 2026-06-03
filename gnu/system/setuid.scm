@@ -17,6 +17,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Do not use this module in new code.  It used to define data structures
+;;; representing setuid/setgid programs, but is now a mere compatibility shim
+;;; wrapping a subset of (gnu system privilege).
+;;;
+;;; Code:
+
 (define-module (gnu system setuid)
   #:use-module (gnu system privilege)
   #:use-module (ice-9 match)
@@ -29,14 +37,6 @@
             setuid-program-setgid?
             setuid-program-user
             setuid-program-group))
-
-;;; Commentary:
-;;;
-;;; Do not use this module in new code.  It used to define data structures
-;;; representing setuid/setgid programs, but is now a mere compatibility shim
-;;; wrapping a subset of (gnu system privilege).
-;;;
-;;; Code:
 
 (define-syntax setuid-program
   (lambda (fields)

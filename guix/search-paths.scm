@@ -18,6 +18,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module defines "search path specifications", which allow packages to
+;;; declare environment variables that they use to define search paths.  For
+;;; instance, GCC has the 'CPATH' variable, Guile has the 'GUILE_LOAD_PATH'
+;;; variable, etc.
+;;;
+;;; Code:
+
 (define-module (guix search-paths)
   #:use-module (guix records)
   #:use-module (guix build utils)
@@ -58,15 +67,6 @@
             environment-variable-definition
             search-path-definition
             set-search-paths))
-
-;;; Commentary:
-;;;
-;;; This module defines "search path specifications", which allow packages to
-;;; declare environment variables that they use to define search paths.  For
-;;; instance, GCC has the 'CPATH' variable, Guile has the 'GUILE_LOAD_PATH'
-;;; variable, etc.
-;;;
-;;; Code:
 
 ;; The specification of a search path.
 (define-record-type* <search-path-specification>

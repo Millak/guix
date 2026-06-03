@@ -18,6 +18,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Quantum computing and tensor operation module. For quantum mechanics
+;;; select (gnu packages physics) module.
+;;;
+;;; Code:
+
 (define-module (gnu packages quantum)
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
@@ -37,12 +44,6 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
 
-;;; Commentary:
-;;;
-;;; Quantum computing and tensor operation module. For quantum mechanics
-;;; select (gnu packages physics) module.
-;;;
-;;; Code:
 
 
 (define %cirq-version "1.7.0")

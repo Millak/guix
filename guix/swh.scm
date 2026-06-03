@@ -19,6 +19,18 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides bindings to the HTTP interface of Software Heritage.
+;;; It allows you to browse the archive, look up revisions (such as SHA1
+;;; commit IDs), "origins" (code hosting URLs), content (files), etc.  See
+;;; <https://archive.softwareheritage.org/api/> for more information.
+;;;
+;;; The high-level 'swh-download' procedure allows you to download a Git
+;;; revision from Software Heritage, provided it is available.
+;;;
+;;; Code:
+
 (define-module (guix swh)
   #:use-module (guix base16)
   #:use-module (guix build utils)
@@ -127,18 +139,6 @@
             swh-download-directory
             swh-download-directory-by-nar-hash
             swh-download))
-
-;;; Commentary:
-;;;
-;;; This module provides bindings to the HTTP interface of Software Heritage.
-;;; It allows you to browse the archive, look up revisions (such as SHA1
-;;; commit IDs), "origins" (code hosting URLs), content (files), etc.  See
-;;; <https://archive.softwareheritage.org/api/> for more information.
-;;;
-;;; The high-level 'swh-download' procedure allows you to download a Git
-;;; revision from Software Heritage, provided it is available.
-;;;
-;;; Code:
 
 (define %swh-base-url
   ;; Presumably we won't need to change it.

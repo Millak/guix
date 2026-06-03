@@ -16,6 +16,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides the tools to report diagnostics to the user in a
+;;; consistent way: errors, warnings, and notes.
+;;;
+;;; Code:
+
 (define-module (guix diagnostics)
   #:use-module (guix colors)
   #:use-module (guix i18n)
@@ -59,13 +66,6 @@
             program-name
 
             define-with-syntax-properties))
-
-;;; Commentary:
-;;;
-;;; This module provides the tools to report diagnostics to the user in a
-;;; consistent way: errors, warnings, and notes.
-;;;
-;;; Code:
 
 (define (trivial-format-string? fmt)
   (define len

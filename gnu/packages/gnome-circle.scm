@@ -25,7 +25,7 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; Comment:
+;;; Commentary:
 
 ;;; This module is for packages that are part of GNOME Circle
 ;;; <https://circle.gnome.org/>.

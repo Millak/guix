@@ -22,29 +22,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix import egg)
-  #:use-module (ice-9 ftw)
-  #:use-module (ice-9 match)
-  #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-26)
-  #:use-module (srfi srfi-71)
-  #:use-module (gcrypt hash)
-  #:use-module (guix git)
-  #:use-module (guix base32)
-  #:use-module (guix memoization)
-  #:use-module (guix packages)
-  #:use-module (guix upstream)
-  #:use-module (guix build-system chicken)
-  #:use-module (guix store)
-  #:use-module ((guix download) #:select (download-to-store url-fetch))
-  #:use-module (guix import utils)
-  #:export (egg->guix-package
-            egg-recursive-import
-            %egg-updater
-
-            ;; For tests.
-            guix-package->egg-name))
-
 ;;; Commentary:
 ;;;
 ;;; (guix import egg) provides package importer for CHICKEN eggs.  See the
@@ -72,6 +49,29 @@
 ;;;   PACKAGE.egg file, how should we handle this?
 ;;;
 ;;; Code:
+
+(define-module (guix import egg)
+  #:use-module (ice-9 ftw)
+  #:use-module (ice-9 match)
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-71)
+  #:use-module (gcrypt hash)
+  #:use-module (guix git)
+  #:use-module (guix base32)
+  #:use-module (guix memoization)
+  #:use-module (guix packages)
+  #:use-module (guix upstream)
+  #:use-module (guix build-system chicken)
+  #:use-module (guix store)
+  #:use-module ((guix download) #:select (download-to-store url-fetch))
+  #:use-module (guix import utils)
+  #:export (egg->guix-package
+            egg-recursive-import
+            %egg-updater
+
+            ;; For tests.
+            guix-package->egg-name))
 
 
 ;;;

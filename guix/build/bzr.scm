@@ -16,16 +16,16 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix build bzr)
-  #:use-module (guix build utils)
-  #:export (bzr-fetch))
-
 ;;; Commentary:
 ;;;
 ;;; This is the build-side support code of (guix bzr-download).  It allows a
 ;;; Bazaar repository to be branched at a specific revision.
 ;;;
 ;;; Code:
+
+(define-module (guix build bzr)
+  #:use-module (guix build utils)
+  #:export (bzr-fetch))
 
 (define* (bzr-fetch url revision directory
                     #:key (bzr-command "brz"))

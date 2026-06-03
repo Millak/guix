@@ -16,6 +16,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides a comment-preserving reader and a comment-preserving
+;;; pretty-printer smarter than (ice-9 pretty-print).
+;;;
+;;; Code:
+
 (define-module (guix read-print)
   #:use-module (ice-9 control)
   #:use-module (ice-9 match)
@@ -52,13 +59,6 @@
             comment->string
             comment-margin?
             canonicalize-comment))
-
-;;; Commentary:
-;;;
-;;; This module provides a comment-preserving reader and a comment-preserving
-;;; pretty-printer smarter than (ice-9 pretty-print).
-;;;
-;;; Code:
 
 
 ;;;

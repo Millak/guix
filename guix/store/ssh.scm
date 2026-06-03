@@ -16,18 +16,18 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix store ssh)
-  #:use-module (guix ssh)
-  #:use-module (web uri)
-  #:export (connect-to-daemon))
-
 ;;; Commentary:
 ;;;
 ;;; This modules provides the entry point for 'open-connection' in (guix
 ;;; store).  Passing an 'ssh://' URI to 'open-connection' triggers the use of
 ;;; the code in this module.
 ;;;
-;;; End:
+;;; Code:
+
+(define-module (guix store ssh)
+  #:use-module (guix ssh)
+  #:use-module (web uri)
+  #:export (connect-to-daemon))
 
 (define (connect-to-daemon uri)
   "Connect to the SSH daemon at URI, a URI object with the 'ssh' scheme."

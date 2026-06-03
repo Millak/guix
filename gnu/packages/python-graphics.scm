@@ -30,6 +30,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Python modules which are meant to be used in GUI creation or mainly are
+;;; bindings to low level libraries such as Glue, Mesa, OpenGL, Xorg etc.
+;;;
+;;; Please: Try to add new module packages in alphabetic order.
+;;;
+;;; Code:
+
 (define-module (gnu packages python-graphics)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system pyproject)
@@ -70,14 +79,6 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
-;;; Commentary:
-;;;
-;;; Python modules which are meant to be used in GUI creation or mainly are
-;;; bindings to low level libraries such as Glue, Mesa, OpenGL, Xorg etc.
-;;;
-;;; Please: Try to add new module packages in alphabetic order.
-;;;
-;;; Code:
 
 (define-public python-asyncgui
   (package

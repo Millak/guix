@@ -18,6 +18,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This command provides a Guile script runner and REPL in an environment
+;;; that contains all the modules comprising Guix.
+;;;
+;;; Code:
+
 (define-module (guix scripts repl)
   #:use-module (guix ui)
   #:use-module (guix scripts)
@@ -30,11 +37,6 @@
   #:autoload   (system repl server)
                   (make-tcp-server-socket make-unix-domain-server-socket)
   #:export (guix-repl))
-
-;;; Commentary:
-;;;
-;;; This command provides a Guile script runner and REPL in an environment
-;;; that contains all the modules comprising Guix.
 
 (define %default-options
   `((type . guile)))

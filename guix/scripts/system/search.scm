@@ -17,6 +17,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Implement the 'guix system search' command, which searches among the
+;;; available service types.
+;;;
+;;; Code:
+
 (define-module (guix scripts system search)
   #:use-module (guix ui)
   #:use-module (guix utils)
@@ -34,13 +41,6 @@
   #:export (service-type->recutils
             find-service-types
             guix-system-search))
-
-;;; Commentary:
-;;;
-;;; Implement the 'guix system search' command, which searches among the
-;;; available service types.
-;;;
-;;; Code:
 
 (define service-type-name*
   (compose symbol->string service-type-name))

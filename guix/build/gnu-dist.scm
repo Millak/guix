@@ -18,18 +18,18 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix build gnu-dist)
-  #:use-module (guix build utils)
-  #:use-module (guix build gnu-build-system)
-  #:use-module (srfi srfi-1)
-  #:export (%dist-phases))
-
 ;;; Commentary:
 ;;;
 ;;; Build phases to build a source tarball with the GNU build system, as with
 ;;; "make distcheck".
 ;;;
 ;;; Code:
+
+(define-module (guix build gnu-dist)
+  #:use-module (guix build utils)
+  #:use-module (guix build gnu-build-system)
+  #:use-module (srfi srfi-1)
+  #:export (%dist-phases))
 
 (define* (build #:key build-before-dist? make-flags (dist-target "distcheck")
                 #:allow-other-keys

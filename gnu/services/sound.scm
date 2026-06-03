@@ -20,6 +20,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Sound services.
+;;;
+;;; Code:
+
 (define-module (gnu services sound)
   #:use-module (gnu services base)
   #:use-module (gnu services configuration)
@@ -80,12 +86,6 @@
             speakersafetyd-configuration-speakersafetyd
             speakersafetyd-configuration?
             speakersafetyd-service-type))
-
-;;; Commentary:
-;;;
-;;; Sound services.
-;;;
-;;; Code:
 
 
 ;;;

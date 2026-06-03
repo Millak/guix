@@ -19,6 +19,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; GnuPG interface.
+;;;
+;;; Code:
+
 (define-module (guix gnupg)
   #:use-module (ice-9 popen)
   #:use-module (ice-9 match)
@@ -38,12 +44,6 @@
             gnupg-verify*
             gnupg-status-good-signature?
             gnupg-status-missing-key?))
-
-;;; Commentary:
-;;;
-;;; GnuPG interface.
-;;;
-;;; Code:
 
 (define %gpg-command
   ;; The GnuPG 2.x command-line program name.

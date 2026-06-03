@@ -22,6 +22,19 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module implements "channels."  A channel is usually a source of
+;;; package definitions.  There's a special channel, the 'guix' channel, that
+;;; provides all of Guix, including its commands and its documentation.
+;;; User-defined channels are expected to typically provide a bunch of .scm
+;;; files meant to be added to the '%package-search-path'.
+;;;
+;;; This module provides tools to fetch and update channels from a Git
+;;; repository and to build them.
+;;;
+;;; Code:
+
 (define-module (guix channels)
   #:autoload   (git commit) (commit-lookup
                              commit-id)
@@ -124,19 +137,6 @@
             channel-news-entry-body
 
             channel-news-for-commit))
-
-;;; Commentary:
-;;;
-;;; This module implements "channels."  A channel is usually a source of
-;;; package definitions.  There's a special channel, the 'guix' channel, that
-;;; provides all of Guix, including its commands and its documentation.
-;;; User-defined channels are expected to typically provide a bunch of .scm
-;;; files meant to be added to the '%package-search-path'.
-;;;
-;;; This module provides tools to fetch and update channels from a Git
-;;; repository and to build them.
-;;;
-;;; Code:
 
 (define-record-type* <channel> channel make-channel
   channel?

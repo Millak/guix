@@ -21,6 +21,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; General utilities for the software distribution---i.e., the modules under
+;;; (gnu packages ...).
+;;;
+;;; Code:
+
 (define-module (gnu packages)
   #:use-module (guix packages)
   #:use-module (guix ui)
@@ -73,13 +80,6 @@
             package-unique-version-prefix
 
             generate-package-cache))
-
-;;; Commentary:
-;;;
-;;; General utilities for the software distribution---i.e., the modules under
-;;; (gnu packages ...).
-;;;
-;;; Code:
 
 ;; By default, we store patches and auxiliary files
 ;; alongside Guile modules.  This is so that these extra files can be

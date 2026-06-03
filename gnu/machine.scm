@@ -17,6 +17,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides the types used to declare individual machines in a
+;;; heterogeneous Guix deployment. The interface allows users to specify system
+;;; configurations and the means by which resources should be provisioned on a
+;;; per-host basis.
+;;;
+;;; Code:
+
 (define-module (gnu machine)
   #:use-module (gnu system)
   #:use-module (guix derivations)
@@ -47,15 +56,6 @@
             deploy-error?
             deploy-error-should-roll-back
             deploy-error-captured-args))
-
-;;; Commentary:
-;;;
-;;; This module provides the types used to declare individual machines in a
-;;; heterogeneous Guix deployment. The interface allows users to specify system
-;;; configurations and the means by which resources should be provisioned on a
-;;; per-host basis.
-;;;
-;;; Code:
 
 
 ;;;

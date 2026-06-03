@@ -22,6 +22,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Messaging services.
+;;;
+;;; Code:
+
 (define-module (gnu services messaging)
   #:use-module ((gnu home services utils) #:select (object->camel-case-string))
   #:use-module (gnu packages admin)
@@ -253,12 +259,6 @@
 
             zulip-irc-bridge-configuration
             zulip-irc-bridge-service-type))
-
-;;; Commentary:
-;;;
-;;; Messaging services.
-;;;
-;;; Code:
 
 (define-syntax define-all-configurations
   (lambda (stx)

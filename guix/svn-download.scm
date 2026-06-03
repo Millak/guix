@@ -18,6 +18,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; An <origin> method that fetches a specific revision from a Subversion
+;;; repository.  The repository URL and REVISION are specified with a
+;;; <svn-reference> object.  REVISION should be specified as a number.
+;;;
+;;; Code:
+
 (define-module (guix svn-download)
   #:use-module (guix records)
   #:use-module (guix gexp)
@@ -51,14 +59,6 @@
             svn-multi-reference-password
             svn-multi-fetch
             download-multi-svn-to-store))
-
-;;; Commentary:
-;;;
-;;; An <origin> method that fetches a specific revision from a Subversion
-;;; repository.  The repository URL and REVISION are specified with a
-;;; <svn-reference> object.  REVISION should be specified as a number.
-;;;
-;;; Code:
 
 (define-record-type* <svn-reference>
   svn-reference make-svn-reference

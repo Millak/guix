@@ -27,6 +27,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Configuration of GNU GRUB.
+;;;
+;;; Code:
+
 (define-module (gnu bootloader grub)
   #:use-module (guix build union)
   #:use-module (guix deprecation)
@@ -72,12 +78,6 @@
             grub-minimal-bootloader
 
             grub-configuration))
-
-;;; Commentary:
-;;;
-;;; Configuration of GNU GRUB.
-;;;
-;;; Code:
 
 (define* (normalize-file file mount-point store-directory-prefix)
   "Strip MOUNT-POINT and prepend STORE-DIRECTORY-PREFIX, if any, to FILE, a

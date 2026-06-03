@@ -23,6 +23,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Generate a package declaration template for the latest version of an R
+;;; package on CRAN, using the DESCRIPTION file downloaded from
+;;; cran.r-project.org.
+;;;
+;;; Code:
+
 (define-module (guix import cran)
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 match)
@@ -77,14 +85,6 @@
 
             description->alist
             description->package))
-
-;;; Commentary:
-;;;
-;;; Generate a package declaration template for the latest version of an R
-;;; package on CRAN, using the DESCRIPTION file downloaded from
-;;; cran.r-project.org.
-;;;
-;;; Code:
 
 (define %input-style
   (make-parameter 'variable)) ; or 'specification

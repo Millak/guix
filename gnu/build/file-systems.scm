@@ -26,6 +26,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This modules provides tools to deal with disk partitions, and to mount and
+;;; check file systems.
+;;;
+;;; Code:
+
 (define-module (gnu build file-systems)
   #:use-module (gnu system uuid)
   #:use-module (gnu system file-systems)
@@ -79,13 +86,6 @@
             mount-file-system
 
             swap-space->flags-bit-mask))
-
-;;; Commentary:
-;;;
-;;; This modules provides tools to deal with disk partitions, and to mount and
-;;; check file systems.
-;;;
-;;; Code:
 
 (define (system*/console program . args)
   "Run PROGRAM with ARGS in a tty on top of /dev/console.  The return value is

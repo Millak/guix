@@ -16,6 +16,16 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides supporting code to allow a Guix instance to find, at
+;;; run time, which profile it's in (profiles created by 'guix pull').  That
+;;; allows it to read meta-information about itself (e.g., repository URL and
+;;; commit ID) and to find other channels available in the same profile.  It's
+;;; a bit like ELPA's pkg-info.el.
+;;;
+;;; Code:
+
 (define-module (guix describe)
   #:use-module (guix memoization)
   #:use-module (guix profiles)
@@ -43,16 +53,6 @@
             package-channels
             manifest-entry-with-provenance
             manifest-entry-provenance))
-
-;;; Commentary:
-;;;
-;;; This module provides supporting code to allow a Guix instance to find, at
-;;; run time, which profile it's in (profiles created by 'guix pull').  That
-;;; allows it to read meta-information about itself (e.g., repository URL and
-;;; commit ID) and to find other channels available in the same profile.  It's
-;;; a bit like ELPA's pkg-info.el.
-;;;
-;;; Code:
 
 (define initial-program-arguments
   ;; Save the initial program arguments.  This allows us to see the "real"

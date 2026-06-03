@@ -28,6 +28,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides "activation" helpers.  Activation is the process that
+;;; consists in setting up system-wide files and directories so that an
+;;; 'operating-system' configuration becomes active.
+;;;
+;;; Code:
+
 (define-module (gnu build activation)
   #:use-module (gnu system accounts)
   #:use-module (gnu system privilege)
@@ -52,14 +60,6 @@
             activate-ptrace-attach
             activate-current-system
             mkdir-p/perms))
-
-;;; Commentary:
-;;;
-;;; This module provides "activation" helpers.  Activation is the process that
-;;; consists in setting up system-wide files and directories so that an
-;;; 'operating-system' configuration becomes active.
-;;;
-;;; Code:
 
 (define %skeleton-directory
   ;; Directory containing skeleton files for new accounts.

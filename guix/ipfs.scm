@@ -16,6 +16,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module implements bindings for the HTTP interface of the IPFS
+;;; gateway, documented here: <https://docs.ipfs.io/reference/api/http/>.  It
+;;; allows you to add and retrieve files over IPFS, and a few other things.
+;;;
+;;; Code:
+
 (define-module (guix ipfs)
   #:use-module (json)
   #:use-module (srfi srfi-1)
@@ -38,14 +46,6 @@
             add-to-directory
             read-contents
             publish-name))
-
-;;; Commentary:
-;;;
-;;; This module implements bindings for the HTTP interface of the IPFS
-;;; gateway, documented here: <https://docs.ipfs.io/reference/api/http/>.  It
-;;; allows you to add and retrieve files over IPFS, and a few other things.
-;;;
-;;; Code:
 
 (define %ipfs-base-url
   ;; URL of the IPFS gateway.

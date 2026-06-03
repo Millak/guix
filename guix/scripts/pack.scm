@@ -28,6 +28,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module implements the 'guix pack' command and the various supported
+;;; formats.  Where feasible, the builders of the packs should be implemented
+;;; as single derivations to minimize storage requirements.
+;;;
+;;; Code:
+
 (define-module (guix scripts pack)
   #:use-module (guix scripts)
   #:autoload   (guix import json) (json->scheme-file)
@@ -84,14 +92,6 @@
             guix-pack
 
             wrapped-manifest))
-
-;;; Commentary:
-
-;;; This module implements the 'guix pack' command and the various supported
-;;; formats.  Where feasible, the builders of the packs should be implemented
-;;; as single derivations to minimize storage requirements.
-
-;;; Code:
 
 ;; This one is only for use in this module, so don't put it in %compressors.
 (define (bootstrap-xz)

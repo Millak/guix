@@ -16,6 +16,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; A gremlin is sort-of like an elf, you know, and this module provides tools
+;;; to deal with dynamic-link information from ELF files.
+;;;
+;;; Code:
+
 (define-module (guix build gremlin)
   #:use-module (guix elf)
   #:use-module ((guix build utils) #:select (store-file-name?))
@@ -54,13 +61,6 @@
 
             validate-needed-in-runpath
             strip-runpath))
-
-;;; Commentary:
-;;;
-;;; A gremlin is sort-of like an elf, you know, and this module provides tools
-;;; to deal with dynamic-link information from ELF files.
-;;;
-;;; Code:
 
 (define-condition-type &elf-error &error
   elf-error?

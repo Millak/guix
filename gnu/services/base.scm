@@ -40,6 +40,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Base system services---i.e., services that 99% of the users will want to
+;;; use.
+;;;
+;;; Code:
+
 (define-module (gnu services base)
   #:use-module (guix store)
   #:use-module (guix deprecation)
@@ -320,13 +327,6 @@
             greetd-nwg-hello-sway-session-nwg-hello-style
 
             %base-services))
-
-;;; Commentary:
-;;;
-;;; Base system services---i.e., services that 99% of the users will want to
-;;; use.
-;;;
-;;; Code:
 
 
 

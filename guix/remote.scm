@@ -16,6 +16,17 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Note: This API is experimental and subject to change!
+;;;
+;;; Evaluate a gexp on a remote machine, over SSH, ensuring that all the
+;;; elements the gexp refers to are deployed beforehand.  This is useful for
+;;; expressions that have side effects; for pure expressions, you would rather
+;;; build a derivation remotely or offload it.
+;;;
+;;; Code:
+
 (define-module (guix remote)
   #:use-module (guix ssh)
   #:use-module (guix gexp)
@@ -35,17 +46,6 @@
   #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-71)
   #:export (remote-eval))
-
-;;; Commentary:
-;;;
-;;; Note: This API is experimental and subject to change!
-;;;
-;;; Evaluate a gexp on a remote machine, over SSH, ensuring that all the
-;;; elements the gexp refers to are deployed beforehand.  This is useful for
-;;; expressions that have side effects; for pure expressions, you would rather
-;;; build a derivation remotely or offload it.
-;;;
-;;; Code:
 
 (define* (remote-pipe-for-gexp lowered session #:optional become-command)
   "Return a remote pipe for the given SESSION to evaluate LOWERED.  If

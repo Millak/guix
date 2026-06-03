@@ -16,11 +16,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu packages cross-toolchain)
-  #:use-module (gnu packages cross-base)
-  #:use-module (gnu packages gcc)
-  #:use-module (guix packages))
-
 ;;; Commentary:
 ;;;
 ;;; This module provides packages for cross compilation toolchains.  These
@@ -32,6 +27,11 @@
 ;;; and other packages should make use of the toolchain through the usual cross
 ;;; compilation methods. For example, by using the `#:target' argument on
 ;;; packages or `--target' on the command line.
+
+(define-module (gnu packages cross-toolchain)
+  #:use-module (gnu packages cross-base)
+  #:use-module (gnu packages gcc)
+  #:use-module (guix packages))
 
 (define-public gcc-cross-avr-toolchain
   (cross-gcc-toolchain "avr"))

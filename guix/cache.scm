@@ -17,6 +17,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides tools to manage a simple on-disk cache consisting of
+;;; individual files.
+;;;
+;;; Code:
+
 (define-module (guix cache)
   #:autoload   (guix build syscalls) (lock-file unlock-file)
   #:use-module (srfi srfi-19)
@@ -28,13 +35,6 @@
             file-expiration-time
             remove-expired-cache-entries
             maybe-remove-expired-cache-entries))
-
-;;; Commentary:
-;;;
-;;; This module provides tools to manage a simple on-disk cache consisting of
-;;; individual files.
-;;;
-;;; Code:
 
 (define (obsolete? date now ttl)
   "Return #t if DATE is obsolete compared to NOW + TTL seconds."

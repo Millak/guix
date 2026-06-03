@@ -17,6 +17,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Authenticate a Git checkout by reading '.guix-authorizations' files and
+;;; following the "authorizations invariant" also used by (guix channels).
+;;;
+;;; Code:
+
 (define-module (guix scripts git authenticate)
   #:use-module (git)
   #:use-module (guix build utils)
@@ -39,13 +46,6 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (guix-git-authenticate))
-
-;;; Commentary:
-;;;
-;;; Authenticate a Git checkout by reading '.guix-authorizations' files and
-;;; following the "authorizations invariant" also used by (guix channels).
-;;;
-;;; Code:
 
 (define %options
   ;; Specifications of the command-line options.

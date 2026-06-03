@@ -23,6 +23,23 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module implements "G-expressions", or "gexps".  Gexps are like
+;;; S-expressions (sexps), with two differences:
+;;;
+;;;   1. References (un-quotations) to derivations or packages in a gexp are
+;;;      replaced by the corresponding output file name; in addition, the
+;;;      'ungexp-native' unquote-like form allows code to explicitly refer to
+;;;      the native code of a given package, in case of cross-compilation;
+;;;
+;;;   2. Gexps embed information about the derivations they refer to.
+;;;
+;;; Gexps make it easy to write to files Scheme code that refers to store
+;;; items, or to write Scheme code to build derivations.
+;;;
+;;; Code:
+
 (define-module (guix gexp)
   #:use-module (guix store)
   #:use-module (guix monads)
@@ -141,23 +158,6 @@
             &gexp-input-error
             gexp-input-error?
             gexp-error-invalid-input))
-
-;;; Commentary:
-;;;
-;;; This module implements "G-expressions", or "gexps".  Gexps are like
-;;; S-expressions (sexps), with two differences:
-;;;
-;;;   1. References (un-quotations) to derivations or packages in a gexp are
-;;;      replaced by the corresponding output file name; in addition, the
-;;;      'ungexp-native' unquote-like form allows code to explicitly refer to
-;;;      the native code of a given package, in case of cross-compilation;
-;;;
-;;;   2. Gexps embed information about the derivations they refer to.
-;;;
-;;; Gexps make it easy to write to files Scheme code that refers to store
-;;; items, or to write Scheme code to build derivations.
-;;;
-;;; Code:
 
 ;; "G expressions".
 (define-record-type <gexp>

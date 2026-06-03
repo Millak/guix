@@ -37,6 +37,19 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Available licenses.
+;;;
+;;; This list is based on these links:
+;;; https://github.com/NixOS/nixpkgs/blob/master/lib/licenses.nix
+;;; https://www.gnu.org/licenses/license-list
+;;;
+;;; Please update spdx-string->license from guix/import/utils.scm
+;;; when modifying this list to avoid mismatches.
+;;;
+;;; Code:
+
 (define-module (guix licenses)
   #:use-module (srfi srfi-9)
   #:export (license license? license-name license-uri license-comment
@@ -118,19 +131,6 @@
             wxwindows3.1+
             hpnd
             fsdg-compatible))
-
-;;; Commentary:
-;;;
-;;; Available licenses.
-;;;
-;;; This list is based on these links:
-;;; https://github.com/NixOS/nixpkgs/blob/master/lib/licenses.nix
-;;; https://www.gnu.org/licenses/license-list
-;;;
-;;; Please update spdx-string->license from guix/import/utils.scm
-;;; when modifying this list to avoid mismatches.
-;;;
-;;; Code:
 
 (define-record-type <license>
   (license name uri comment)

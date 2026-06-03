@@ -19,6 +19,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;;; Commentary:
+;;;
+;;; This module implements a service that to run instances of Laminar, a
+;;; continuous integration tool.
+;;;
+;;;; Code:
+
 (define-module (gnu services ci)
   #:use-module (guix gexp)
   #:use-module (guix records)
@@ -58,13 +65,6 @@
             forgejo-runner-configuration-report-interval
 
             forgejo-runner-service-type))
-
-;;;; Commentary:
-;;;
-;;; This module implements a service that to run instances of Laminar, a
-;;; continuous integration tool.
-;;;
-;;;; Code:
 
 (define-record-type* <laminar-configuration>
   laminar-configuration make-laminar-configuration

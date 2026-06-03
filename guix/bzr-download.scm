@@ -17,6 +17,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; An <origin> method that fetches a specific revision from a Bazaar
+;;; repository.  The repository URL and revision identifier are specified with
+;;; a <bzr-reference> object.
+;;;
+;;; Code:
+
 (define-module (guix bzr-download)
   #:use-module (guix gexp)
   #:use-module (guix modules)   ;for 'source-module-closure'
@@ -31,14 +39,6 @@
             bzr-reference-revision
 
             bzr-fetch))
-
-;;; Commentary:
-;;;
-;;; An <origin> method that fetches a specific revision from a Bazaar
-;;; repository.  The repository URL and revision identifier are specified with
-;;; a <bzr-reference> object.
-;;;
-;;; Code:
 
 (define-record-type* <bzr-reference>
   bzr-reference make-bzr-reference

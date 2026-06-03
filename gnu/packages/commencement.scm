@@ -32,6 +32,28 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This is the commencement, this is where things start.  Before the
+;;; commencement, of course, there's the 'bootstrap' module, which provides us
+;;; with the initial binaries.  This module uses those bootstrap binaries to
+;;; actually build up the whole tool chain that make up the implicit inputs of
+;;; 'gnu-build-system'.
+;;;
+;;; To avoid circular dependencies, this module should not be imported
+;;; directly from anywhere.
+;;;
+;;; Below, we frequently use "inherit" to create modified packages.  The
+;;; reason why we use "inherit" instead of "package/inherit" is because we do
+;;; not want these commencement packages to inherit grafts.  By definition,
+;;; these packages are not depended on at run time by any of the packages we
+;;; use.  Thus it does not make sense to inherit grafts.  Furthermore, those
+;;; grafts would often lead to extra overhead for users who would end up
+;;; downloading those "-boot0" packages just to build package replacements
+;;; that are in fact not going to be used.
+;;;
+;;; Code:
+
 (define-module (gnu packages commencement)
   #:use-module (gnu packages)
   #:use-module (gnu packages bootstrap)
@@ -75,28 +97,6 @@
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 vlist)
   #:use-module (ice-9 match))
-
-;;; Commentary:
-;;;
-;;; This is the commencement, this is where things start.  Before the
-;;; commencement, of course, there's the 'bootstrap' module, which provides us
-;;; with the initial binaries.  This module uses those bootstrap binaries to
-;;; actually build up the whole tool chain that make up the implicit inputs of
-;;; 'gnu-build-system'.
-;;;
-;;; To avoid circular dependencies, this module should not be imported
-;;; directly from anywhere.
-;;;
-;;; Below, we frequently use "inherit" to create modified packages.  The
-;;; reason why we use "inherit" instead of "package/inherit" is because we do
-;;; not want these commencement packages to inherit grafts.  By definition,
-;;; these packages are not depended on at run time by any of the packages we
-;;; use.  Thus it does not make sense to inherit grafts.  Furthermore, those
-;;; grafts would often lead to extra overhead for users who would end up
-;;; downloading those "-boot0" packages just to build package replacements
-;;; that are in fact not going to be used.
-;;;
-;;; Code:
 
 (define built-in-builders*
   (store-lift built-in-builders))

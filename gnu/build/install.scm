@@ -19,6 +19,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module supports the installation of the GNU system on a hard disk.
+;;; It is meant to be used both in a build environment (in derivations that
+;;; build VM images), and on the bare metal (when really installing the
+;;; system.)
+;;;
+;;; Code:
+
 (define-module (gnu build install)
   #:use-module (guix build syscalls)
   #:use-module (guix build utils)
@@ -32,15 +41,6 @@
             populate-single-profile-directory
             mount-cow-store
             unmount-cow-store))
-
-;;; Commentary:
-;;;
-;;; This module supports the installation of the GNU system on a hard disk.
-;;; It is meant to be used both in a build environment (in derivations that
-;;; build VM images), and on the bare metal (when really installing the
-;;; system.)
-;;;
-;;; Code:
 
 (define (install-boot-config bootcfg bootcfg-location mount-point)
   "Atomically copy BOOTCFG into BOOTCFG-LOCATION on the MOUNT-POINT.  Note

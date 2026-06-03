@@ -16,14 +16,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix build-system channel)
-  #:use-module ((guix store) #:select (%store-monad store-lift))
-  #:use-module ((guix gexp) #:select (lower-object))
-  #:use-module (guix monads)
-  #:use-module (guix channels)
-  #:use-module (guix build-system)
-  #:export (channel-build-system))
-
 ;;; Commentary:
 ;;;
 ;;; The "channel" build system lets you build Guix instances from channel
@@ -31,6 +23,14 @@
 ;;; packages.
 ;;;
 ;;; Code:
+
+(define-module (guix build-system channel)
+  #:use-module ((guix store) #:select (%store-monad store-lift))
+  #:use-module ((guix gexp) #:select (lower-object))
+  #:use-module (guix monads)
+  #:use-module (guix channels)
+  #:use-module (guix build-system)
+  #:export (channel-build-system))
 
 (define latest-channel-instances*
   (store-lift latest-channel-instances))

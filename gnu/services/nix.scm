@@ -17,6 +17,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides a service definition for the Nix daemon.
+;;;
+;;; Code:
+
 (define-module (gnu services nix)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages bash)
@@ -41,12 +47,6 @@
 
             nix-configuration
             nix-configuration?))
-
-;;; Commentary:
-;;;
-;;; This module provides a service definition for the Nix daemon.
-;;;
-;;; Code:
 
 (define-record-type* <nix-configuration>
   nix-configuration make-nix-configuration

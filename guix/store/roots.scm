@@ -16,6 +16,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides tools to list and access garbage collector roots ("GC
+;;; roots").
+;;;
+;;; Code:
+
 (define-module (guix store roots)
   #:use-module (guix config)
   #:use-module ((guix store) #:select (store-path? %gc-roots-directory))
@@ -33,13 +40,6 @@
   #:export (gc-roots
             user-owned?
             busy-store-items))
-
-;;; Commentary:
-;;;
-;;; This module provides tools to list and access garbage collector roots ("GC
-;;; roots").
-;;;
-;;; Code:
 
 (define %profile-directory
   ;; Directory where user profiles are stored.

@@ -16,6 +16,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides the tools to copy store items and their dependencies
+;;; to another store.  It relies on the availability of "reference graph"
+;;; files as produced by 'gexp->derivation' et al. with the
+;;; #:references-graphs parameter.
+;;;
+;;; Code:
+
 (define-module (guix build store-copy)
   #:use-module ((guix build utils) #:hide (copy-recursively))
   #:use-module (guix sets)
@@ -40,15 +49,6 @@
             closure-size
             copy-store-item
             populate-store))
-
-;;; Commentary:
-;;;
-;;; This module provides the tools to copy store items and their dependencies
-;;; to another store.  It relies on the availability of "reference graph"
-;;; files as produced by 'gexp->derivation' et al. with the
-;;; #:references-graphs parameter.
-;;;
-;;; Code:
 
 ;; Information about a store item as produced by #:references-graphs.
 (define-record-type <store-info>

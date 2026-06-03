@@ -17,6 +17,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Data structures representing user accounts and user groups.  This is meant
+;;; to be used both on the host side and at run time--e.g., in activation
+;;; snippets.
+;;;
+;;; Code:
+
 (define-module (gnu system accounts)
   #:use-module (guix records)
   #:use-module (ice-9 match)
@@ -54,15 +62,6 @@
             sexp->subid-range
 
             default-shell))
-
-
-;;; Commentary:
-;;;
-;;; Data structures representing user accounts and user groups.  This is meant
-;;; to be used both on the host side and at run time--e.g., in activation
-;;; snippets.
-;;;
-;;; Code:
 
 (define default-shell
   ;; Default shell for user accounts (a string or string-valued gexp).

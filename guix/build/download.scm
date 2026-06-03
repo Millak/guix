@@ -19,6 +19,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Fetch data such as tarballs over HTTP or FTP (builder-side code).
+;;;
+;;; Code:
+
 (define-module (guix build download)
   #:use-module (web uri)
   #:use-module (web http)
@@ -56,12 +62,6 @@
             uri-abbreviation
             nar-uri-abbreviation
             store-path-abbreviation))
-
-;;; Commentary:
-;;;
-;;; Fetch data such as tarballs over HTTP or FTP (builder-side code).
-;;;
-;;; Code:
 
 (define %http-receive-buffer-size
   ;; Size of the HTTP receive buffer.

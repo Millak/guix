@@ -16,6 +16,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Download a normalized archive or "nar", similar to what 'guix substitute'
+;;; does.  The intent here is to use substitute servers as content-addressed
+;;; mirrors of VCS checkouts.  This is mostly useful for users who have
+;;; disabled substitutes.
+;;;
+;;; Code:
+
 (define-module (guix build download-nar)
   #:use-module (guix build download)
   #:use-module ((guix serialization) #:hide (dump-port*))
@@ -27,15 +36,6 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (download-nar))
-
-;;; Commentary:
-;;;
-;;; Download a normalized archive or "nar", similar to what 'guix substitute'
-;;; does.  The intent here is to use substitute servers as content-addressed
-;;; mirrors of VCS checkouts.  This is mostly useful for users who have
-;;; disabled substitutes.
-;;;
-;;; Code:
 
 (define (urls-for-item item)
   "Return the fallback nar URL for ITEM--e.g.,

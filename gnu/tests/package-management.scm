@@ -16,6 +16,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides a test definition for the nix-daemon
+;;;
+;;; Code:
+
 (define-module (gnu tests package-management)
   #:use-module (gnu packages base)
   #:use-module (gnu packages package-management)
@@ -28,12 +34,6 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:export (%test-nix))
-
-;;; Commentary:
-;;;
-;;; This module provides a test definition for the nix-daemon
-;;;
-;;; Code:
 
 (define* (run-nix-test name test-os)
   "Run tests in TEST-OS, which has nix-daemon running."

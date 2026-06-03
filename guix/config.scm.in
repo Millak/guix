@@ -17,6 +17,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Compile-time configuration of Guix.  When adding a substitution variable
+;;; here, make sure to equip (guix scripts pull) to substitute it.
+;;;
+;;; Code:
+
 (define-module (guix config)
   #:export (%guix-package-name
             %guix-version
@@ -39,13 +46,6 @@
             %gzip
             %bzip2
             %xz))
-
-;;; Commentary:
-;;;
-;;; Compile-time configuration of Guix.  When adding a substitution variable
-;;; here, make sure to equip (guix scripts pull) to substitute it.
-;;;
-;;; Code:
 
 (define %guix-package-name
   "@PACKAGE_NAME@")

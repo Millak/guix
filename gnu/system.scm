@@ -32,6 +32,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module supports whole-system configuration.
+;;;
+;;; Code:
+
 (define-module (gnu system)
   #:use-module (guix inferior)
   #:use-module (guix store)
@@ -190,12 +196,6 @@
             %base-packages-utils
             %base-firmware
             %default-kernel-arguments))
-
-;;; Commentary:
-;;;
-;;; This module supports whole-system configuration.
-;;;
-;;; Code:
 
 (define* (bootable-kernel-arguments system root-device version)
   "Return a list of kernel arguments (gexps) to boot SYSTEM from ROOT-DEVICE.

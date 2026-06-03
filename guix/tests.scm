@@ -16,6 +16,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provide shared infrastructure for the test suite.  For
+;;; internal use only.
+;;;
+;;; Code:
+
 (define-module (guix tests)
   #:use-module ((guix config) #:select (%storedir %localstatedir))
   #:use-module (guix store)
@@ -65,13 +72,6 @@
             gnu-make-for-tests
 
             test-file))
-
-;;; Commentary:
-;;;
-;;; This module provide shared infrastructure for the test suite.  For
-;;; internal use only.
-;;;
-;;; Code:
 
 (define %tests-build-timeout
   ;; Timeout limit for guix unit tests (default: 5 minutes)

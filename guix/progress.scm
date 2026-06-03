@@ -19,6 +19,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Helper to write progress report code for downloads, etc.
+;;;
+;;; Code:
+
 (define-module (guix progress)
   #:use-module (guix records)
   #:autoload   (guix build syscalls) (terminal-string-width)
@@ -50,12 +56,6 @@
             current-terminal-columns
 
             dump-port*))
-
-;;; Commentary:
-;;;
-;;; Helper to write progress report code for downloads, etc.
-;;;
-;;; Code:
 
 (define-record-type* <progress-reporter>
   progress-reporter make-progress-reporter progress-reporter?

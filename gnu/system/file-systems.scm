@@ -21,6 +21,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Declaring file systems to be mounted.
+;;;
+;;; Note: this file system is used both in the Shepherd and on the "host
+;;; side", so it must not include (gnu packages …) modules.
+;;;
+;;; Code:
+
 (define-module (gnu system file-systems)
   #:use-module (ice-9 match)
   #:use-module (rnrs bytevectors)
@@ -108,15 +117,6 @@
             swap-space-dependencies
             swap-space-priority
             swap-space-discard?))
-
-;;; Commentary:
-;;;
-;;; Declaring file systems to be mounted.
-;;;
-;;; Note: this file system is used both in the Shepherd and on the "host
-;;; side", so it must not include (gnu packages …) modules.
-;;;
-;;; Code:
 
 (eval-when (expand load eval)
   (define invalid-file-system-flags

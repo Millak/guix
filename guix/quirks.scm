@@ -16,6 +16,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Time traveling is a challenge!  Sometimes, going back to the past requires
+;;; adjusting the old source code so it can be evaluated with our modern day
+;;; Guile and against our modern Guix APIs.  This file describes quirks found
+;;; in old Guix revisions, along with ways to address them or patch them.
+;;;
+;;; Code:
+
 (define-module (guix quirks)
   #:use-module ((guix build utils) #:select (substitute*))
   #:use-module (srfi srfi-9)
@@ -28,15 +37,6 @@
             apply-patch
 
             %patches))
-
-;;; Commentary:
-;;;
-;;; Time traveling is a challenge!  Sometimes, going back to the past requires
-;;; adjusting the old source code so it can be evaluated with our modern day
-;;; Guile and against our modern Guix APIs.  This file describes quirks found
-;;; in old Guix revisions, along with ways to address them or patch them.
-;;;
-;;; Code:
 
 (define (syscalls-reexports-local-variables? source)
   "Return true if (guix build syscalls) contains the bug described at

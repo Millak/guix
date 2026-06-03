@@ -34,6 +34,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; GNU Guile, and modules and extensions.
+;;;
+;;; Code:
+
 (define-module (gnu packages guile)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
@@ -66,12 +72,6 @@
   #:use-module (guix build-system guile)
   #:use-module (guix deprecation)
   #:use-module (guix utils))
-
-;;; Commentary:
-;;;
-;;; GNU Guile, and modules and extensions.
-;;;
-;;; Code:
 
 (define-public guile-1.8
   (package

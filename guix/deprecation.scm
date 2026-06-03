@@ -17,6 +17,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Provide a mechanism to mark bindings as deprecated.
+;;;
+;;; Code:
+
 (define-module (guix deprecation)
   #:use-module (guix i18n)
   #:use-module (guix diagnostics)
@@ -29,12 +35,6 @@
 
             warn-about-old-daemon
             warn-about-deprecation))
-
-;;; Commentary:
-;;;
-;;; Provide a mechanism to mark bindings as deprecated.
-;;;
-;;; Code:
 
 (define (warn-about-old-daemon)
   (warning (G_ "Your Guix daemon is severely outdated, and will soon cease to

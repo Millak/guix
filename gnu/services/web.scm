@@ -37,6 +37,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Web services.
+;;;
+;;; Code:
+
 (define-module (gnu services web)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
@@ -389,12 +395,6 @@
             miniflux-configuration-extra-settings
 
             miniflux-service-type))
-
-;;; Commentary:
-;;;
-;;; Web services.
-;;;
-;;; Code:
 
 (define-record-type* <httpd-module>
   httpd-module make-httpd-module

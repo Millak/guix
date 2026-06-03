@@ -19,6 +19,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module supports "device mapping", a concept implemented by Linux's
+;;; device-mapper.
+;;;
+;;; Code:
+
 (define-module (gnu system mapped-devices)
   #:use-module (guix gexp)
   #:use-module (guix records)
@@ -71,13 +78,6 @@
             luks-device-mapping-with-options
             raid-device-mapping
             lvm-device-mapping))
-
-;;; Commentary:
-;;;
-;;; This module supports "device mapping", a concept implemented by Linux's
-;;; device-mapper.
-;;;
-;;; Code:
 
 (define-record-type* <mapped-device> %mapped-device
   make-mapped-device

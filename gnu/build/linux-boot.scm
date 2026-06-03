@@ -20,6 +20,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Utility procedures useful in a Linux initial RAM disk (initrd).  Note that
+;;; many of these use procedures not yet available in vanilla Guile (`mount',
+;;; `load-linux-module', etc.); these are provided by a Guile patch used in
+;;; the GNU distribution.
+;;;
+;;; Code:
+
 (define-module (gnu build linux-boot)
   #:use-module (rnrs io ports)
   #:use-module (system repl error-handling)
@@ -66,15 +75,6 @@
             linux-console-virtual?
 
             read-linux-consoles))
-
-;;; Commentary:
-;;;
-;;; Utility procedures useful in a Linux initial RAM disk (initrd).  Note that
-;;; many of these use procedures not yet available in vanilla Guile (`mount',
-;;; `load-linux-module', etc.); these are provided by a Guile patch used in
-;;; the GNU distribution.
-;;;
-;;; Code:
 
 (define* (mount-essential-file-systems #:key (root "/"))
   "Mount /dev, /proc, and /sys under ROOT."

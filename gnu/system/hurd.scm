@@ -17,6 +17,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides system-specifics for the GNU/Hurd operating system
+;;; and virtual machine.
+;;;
+;;; Code:
+
 (define-module (gnu system hurd)
   #:use-module (ice-9 match)
   #:use-module (guix gexp)
@@ -54,13 +61,6 @@
             %hurd-default-operating-system
             %hurd-default-operating-system-kernel
             %setuid-programs/hurd))
-
-;;; Commentary:
-;;;
-;;; This module provides system-specifics for the GNU/Hurd operating system
-;;; and virtual machine.
-;;;
-;;; Code:
 
 (define %hurd-default-operating-system-kernel
   gnumach)

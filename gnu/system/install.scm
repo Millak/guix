@@ -24,6 +24,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides an 'operating-system' definition for use on images
+;;; for USB sticks etc., for the installation of the GNU system.
+;;;
+;;; Code:
+
 (define-module (gnu system install)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu)
@@ -87,13 +94,6 @@
             rk3399-puma-installation-os
             wandboard-installation-os
             os-with-u-boot))
-
-;;; Commentary:
-;;;
-;;; This module provides an 'operating-system' definition for use on images
-;;; for USB sticks etc., for the installation of the GNU system.
-;;;
-;;; Code:
 
 
 ;;;

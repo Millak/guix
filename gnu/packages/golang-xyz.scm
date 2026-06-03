@@ -100,6 +100,20 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Nomad Golang modules (libraries) are welcome here.
+;;;
+;;; There are two sections her: Libraries - for any source only Golang
+;;; libraries which are meant to be imported by other packages; Executables -
+;;; should contain inherited packages where commands need to be built.
+;;;
+;;; Please: Try to add new module packages in alphabetic order and avoid stand
+;;; alone final executables which are not inherited from sources presented in
+;;; this module.
+;;;
+;;; Code:
+
 (define-module (gnu packages golang-xyz)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system go)
@@ -141,19 +155,6 @@
   #:use-module (gnu packages kubernetes)
   #:use-module (gnu packages prometheus))
 
-;;; Commentary:
-;;;
-;;; Nomad Golang modules (libraries) are welcome here.
-;;;
-;;; There are two sections her: Libraries - for any source only Golang
-;;; libraries which are meant to be imported by other packages; Executables -
-;;; should contain inherited packages where commands need to be built.
-;;;
-;;; Please: Try to add new module packages in alphabetic order and avoid stand
-;;; alone final executables which are not inherited from sources presented in
-;;; this module.
-;;;
-;;; Code:
 
 ;;;
 ;;; Libraries:

@@ -19,6 +19,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Audio related services
+;;;
+;;; Code:
+
 (define-module (gnu services audio)
   #:use-module (guix gexp)
   #:use-module (guix deprecation)
@@ -165,12 +171,6 @@
             snapserver-configuration-send-to-muted?
             snapserver-configuration-extra-content
             snapserver-service-type))
-
-;;; Commentary:
-;;;
-;;; Audio related services
-;;;
-;;; Code:
 
 (define (uglify-field-name field-name)
   (let ((str (symbol->string field-name)))

@@ -17,6 +17,18 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module implements the general mechanism of monads, and provides in
+;;; particular an instance of the "state" monad.  The API was inspired by that
+;;; of Racket's "better-monads" module (see
+;;; <http://planet.racket-lang.org/package-source/toups/functional.plt/1/1/planet-docs/better-monads-guide/index.html>).
+;;; The implementation and use case were influenced by Oleg Kysielov's
+;;; "Monadic Programming in Scheme" (see
+;;; <http://okmij.org/ftp/Scheme/monad-in-Scheme.html>).
+;;;
+;;; Code:
+
 (define-module (guix monads)
   #:use-module ((system syntax)
                 #:select (syntax-local-binding))
@@ -62,18 +74,6 @@
             run-with-state
             state-parameterize
             mparameterize))
-
-;;; Commentary:
-;;;
-;;; This module implements the general mechanism of monads, and provides in
-;;; particular an instance of the "state" monad.  The API was inspired by that
-;;; of Racket's "better-monads" module (see
-;;; <http://planet.racket-lang.org/package-source/toups/functional.plt/1/1/planet-docs/better-monads-guide/index.html>).
-;;; The implementation and use case were influenced by Oleg Kysielov's
-;;; "Monadic Programming in Scheme" (see
-;;; <http://okmij.org/ftp/Scheme/monad-in-Scheme.html>).
-;;;
-;;; Code:
 
 ;; Record type for monads manipulated at run time.
 (define-record-type <monad>

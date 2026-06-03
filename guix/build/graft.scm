@@ -17,20 +17,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix build graft)
-  #:use-module (guix build utils)
-  #:use-module (guix build debug-link)
-  #:use-module (rnrs bytevectors)
-  #:use-module (ice-9 vlist)
-  #:use-module (ice-9 match)
-  #:use-module (ice-9 threads)
-  #:use-module (ice-9 binary-ports)
-  #:use-module (srfi srfi-1)   ; list library
-  #:use-module (srfi srfi-26)  ; cut and cute
-  #:export (replace-store-references
-            rewrite-directory
-            graft))
-
 ;;; Commentary:
 ;;;
 ;;; This module supports "grafts".  Grafting a directory means rewriting it,
@@ -43,6 +29,20 @@
 ;;; 'replace-dependency' implemented by Shea Levy in Nixpkgs.
 ;;;
 ;;; Code:
+
+(define-module (guix build graft)
+  #:use-module (guix build utils)
+  #:use-module (guix build debug-link)
+  #:use-module (rnrs bytevectors)
+  #:use-module (ice-9 vlist)
+  #:use-module (ice-9 match)
+  #:use-module (ice-9 threads)
+  #:use-module (ice-9 binary-ports)
+  #:use-module (srfi srfi-1)            ; list library
+  #:use-module (srfi srfi-26)           ; cut and cute
+  #:export (replace-store-references
+            rewrite-directory
+            graft))
 
 (define-constant hash-length %store-hash-string-length)
 

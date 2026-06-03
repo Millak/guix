@@ -17,6 +17,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Utility procedures for copying secrets into a VM.
+;;;
+;;; Note: This code runs within the 'shepherd' process, hence the use of
+;;; Fibers.
+;;;
+;;; Code:
+
 (define-module (gnu build secret-service)
   #:autoload   (fibers io-wakeup) (wait-until-port-readable-operation)
   #:autoload   (fibers operations) (perform-operation
@@ -32,15 +41,6 @@
 
   #:export (secret-service-receive-secrets
             secret-service-send-secrets))
-
-;;; Commentary:
-;;;
-;;; Utility procedures for copying secrets into a VM.
-;;;
-;;; Note: This code runs within the 'shepherd' process, hence the use of
-;;; Fibers.
-;;;
-;;; Code:
 
 (define-syntax log
   (lambda (s)

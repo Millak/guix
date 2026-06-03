@@ -20,6 +20,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Tools to deal with Linux kernel modules.
+;;;
+;;; Code:
+
 (define-module (gnu build linux-modules)
   #:use-module (guix elf)
   #:use-module (guix glob)
@@ -77,12 +83,6 @@
             write-module-device-database
 
             make-linux-module-directory))
-
-;;; Commentary:
-;;;
-;;; Tools to deal with Linux kernel modules.
-;;;
-;;; Code:
 
 (define current-module-debugging-port
   (make-parameter (%make-void-port "w")))

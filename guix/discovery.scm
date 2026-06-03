@@ -16,6 +16,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides tools to discover Guile modules and the variables
+;;; they export.
+;;;
+;;; Code:
+
 (define-module (guix discovery)
   #:use-module (guix i18n)
   #:use-module (guix modules)
@@ -31,13 +38,6 @@
             all-modules
             fold-module-public-variables
             fold-module-public-variables*))
-
-;;; Commentary:
-;;;
-;;; This module provides tools to discover Guile modules and the variables
-;;; they export.
-;;;
-;;; Code:
 
 (define* (scheme-files directory)
   "Return the list of Scheme files found under DIRECTORY, recursively.  The

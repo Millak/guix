@@ -32,6 +32,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This modules contains toolchain generators as well as packages for use in
+;;; embedded contexts.  Note: the toolchain and specialized packages are
+;;; procedures, so as to delay their references to top level bindings such as
+;;; 'gcc' or 'cross-gcc', etc.
+;;;
+;;; Code:
+
 (define-module (gnu packages embedded)
   #:use-module (guix utils)
   #:use-module (guix packages)
@@ -120,14 +129,6 @@
             make-propeller-gcc-4
             make-propeller-gcc-6
             make-propeller-toolchain))
-
-;;; Commentary:
-;;;
-;;; This modules contains toolchain generators as well as packages for use in
-;;; embedded contexts.  Note: the toolchain and specialized packages are
-;;; procedures, so as to delay their references to top level bindings such as
-;;; 'gcc' or 'cross-gcc', etc.
-;;;
 
 ;; We must not use the released GCC sources here, because the cross-compiler
 ;; does not produce working binaries.  Instead we take the very same SVN

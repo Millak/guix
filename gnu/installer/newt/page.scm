@@ -19,6 +19,17 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Some helpers around guile-newt to draw or run generic pages. The
+;;; difference between 'draw' and 'run' terms comes from newt library. A page
+;;; is drawn when the form it contains does not expect any user
+;;; interaction. In that case, it is necessary to call (newt-refresh) to force
+;;; the page to be displayed. When a form is 'run', it is blocked waiting for
+;;; any action from the user (press a button, input some text, ...).
+;;;
+;;; Code:
+
 (define-module (gnu installer newt page)
   #:use-module (gnu installer steps)
   #:use-module (gnu installer utils)
@@ -51,17 +62,6 @@
             run-dump-page
 
             run-form-with-clients))
-
-;;; Commentary:
-;;;
-;;; Some helpers around guile-newt to draw or run generic pages. The
-;;; difference between 'draw' and 'run' terms comes from newt library. A page
-;;; is drawn when the form it contains does not expect any user
-;;; interaction. In that case, it is necessary to call (newt-refresh) to force
-;;; the page to be displayed. When a form is 'run', it is blocked waiting for
-;;; any action from the user (press a button, input some text, ...).
-;;;
-;;; Code:
 
 (define* (watch-clients! form #:optional (clients (current-clients)))
   "Have FORM watch the file descriptors corresponding to current client

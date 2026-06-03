@@ -28,6 +28,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides a high-level mechanism to define packages in a
+;;; Guix-based distribution.
+;;;
+;;; Code:
+
 (define-module (guix packages)
   #:autoload   (guix build utils) (compressor tarball? strip-store-file-name)
   #:use-module (guix utils)
@@ -218,13 +225,6 @@
                (>= (string->number (micro-version)) 7)))
       (module-re-export! (current-module) '(delete) #:replace? #t)
       (module-re-export! (current-module) '(delete))))
-
-;;; Commentary:
-;;;
-;;; This module provides a high-level mechanism to define packages in a
-;;; Guix-based distribution.
-;;;
-;;; Code:
 
 (define-syntax-rule (define-compile-time-decoder name string->bytevector)
   "Define NAME as a macro that runs STRING->BYTEVECTOR at macro expansion time

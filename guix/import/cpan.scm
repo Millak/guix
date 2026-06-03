@@ -21,6 +21,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Generate a package declaration template for the latest version of a CPAN
+;;; module, using meta-data from metacpan.org.
+;;;
+;;; Code:
+
 (define-module (guix import cpan)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
@@ -47,13 +54,6 @@
             %cpan-updater
 
             %metacpan-base-url))
-
-;;; Commentary:
-;;;
-;;; Generate a package declaration template for the latest version of a CPAN
-;;; module, using meta-data from metacpan.org.
-;;;
-;;; Code:
 
 (define %metacpan-base-url
   ;; Base URL of the MetaCPAN API.

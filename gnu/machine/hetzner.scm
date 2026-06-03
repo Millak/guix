@@ -19,6 +19,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module implements a high-level interface for provisioning machines on
+;;; the Hetzner Cloud service https://docs.hetzner.cloud.
+;;;
+
 (define-module (gnu machine hetzner)
   #:use-module (gnu bootloader grub)
   #:use-module (gnu bootloader)
@@ -90,12 +96,6 @@
             hetzner-configuration-user
             hetzner-configuration?
             hetzner-environment-type))
-
-;;; Commentary:
-;;;
-;;; This module implements a high-level interface for provisioning machines on
-;;; the Hetzner Cloud service https://docs.hetzner.cloud.
-;;;
 
 
 ;;;

@@ -24,6 +24,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Version Control related services.
+;;;
+;;; Code:
+
 (define-module (gnu services version-control)
   #:use-module (gnu services)
   #:use-module (gnu services base)
@@ -134,12 +140,6 @@
             fossil-configuration-tls-private-key
 
             fossil-service-type))
-
-;;; Commentary:
-;;;
-;;; Version Control related services.
-;;;
-;;; Code:
 
 
 ;;;

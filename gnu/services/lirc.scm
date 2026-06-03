@@ -17,6 +17,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; LIRC service.
+;;;
+;;; Code:
+
 (define-module (gnu services lirc)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
@@ -29,12 +35,6 @@
             lirc-configuation?
             lirc-service  ; deprecated
             lirc-service-type))
-
-;;; Commentary:
-;;;
-;;; LIRC service.
-;;;
-;;; Code:
 
 (define-record-type* <lirc-configuration>
   lirc-configuration make-lirc-configuration

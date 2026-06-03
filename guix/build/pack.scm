@@ -16,6 +16,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module contains build-side common procedures used by the host-side
+;;; (guix scripts pack) module, mostly to allow for code reuse.  Due to making
+;;; use of the (guix build store-copy) module, it transitively requires the
+;;; sqlite and gcrypt extensions to be available.
+;;;
+;;; Code:
+
 (define-module (guix build pack)
   #:use-module (gnu build install)
   #:use-module (guix build utils)
@@ -27,15 +36,6 @@
   #:export (tar-base-options
             populate-profile-root
             build-self-contained-tarball))
-
-;;; Commentary:
-
-;;; This module contains build-side common procedures used by the host-side
-;;; (guix scripts pack) module, mostly to allow for code reuse.  Due to making
-;;; use of the (guix build store-copy) module, it transitively requires the
-;;; sqlite and gcrypt extensions to be available.
-
-;;; Code:
 
 (define* (tar-base-options #:key tar compressor)
   "Return the base GNU tar options required to produce deterministic archives

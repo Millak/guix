@@ -19,6 +19,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module implements remote evaluation and system deployment for
+;;; machines that are accessible over SSH and have a known host-name. In the
+;;; sense of the broader "machine" interface, we describe the environment for
+;;; such machines as 'managed-host.
+;;;
+;;; Code:
+
 (define-module (gnu machine ssh)
   #:use-module (gnu bootloader)
   #:use-module (gnu machine)
@@ -69,15 +78,6 @@
             machine-ssh-configuration-user
             machine-ssh-configuration-host-key
             machine-ssh-configuration-session))
-
-;;; Commentary:
-;;;
-;;; This module implements remote evaluation and system deployment for
-;;; machines that are accessible over SSH and have a known host-name. In the
-;;; sense of the broader "machine" interface, we describe the environment for
-;;; such machines as 'managed-host.
-;;;
-;;; Code:
 
 
 ;;;

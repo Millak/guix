@@ -18,6 +18,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Locale definitions, and compilation thereof.
+;;;
+;;; Code:
+
 (define-module (gnu system locale)
   #:use-module (guix gexp)
   #:use-module (guix store)
@@ -42,12 +48,6 @@
             %default-locale-definitions
 
             glibc-supported-locales))
-
-;;; Commentary:
-;;;
-;;; Locale definitions, and compilation thereof.
-;;;
-;;; Code:
 
 (define-record-type* <locale-definition> locale-definition
   make-locale-definition

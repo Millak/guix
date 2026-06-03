@@ -17,17 +17,17 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix amd-gpu)
-  #:autoload (guix packages) (this-package package-properties)
-  #:export (%default-amd-gpu-targets
-            current-amd-gpu-targets
-            current-amd-gpu-targets-string))
-
 ;;; Commentary:
 ;;;
 ;;; This module provides helpers for packages targeting AMD GPUs.
 ;;;
 ;;; Code:
+
+(define-module (guix amd-gpu)
+  #:autoload (guix packages) (this-package package-properties)
+  #:export (%default-amd-gpu-targets
+            current-amd-gpu-targets
+            current-amd-gpu-targets-string))
 
 (define %default-amd-gpu-targets
   '("gfx908" "gfx90a" "gfx942" "gfx1030" "gfx1100" "gfx1101" "gfx1200" "gfx1201"))

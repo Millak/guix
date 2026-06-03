@@ -21,6 +21,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Test the installation of Guix using the documented approach at the
+;;; command line.
+;;;
+;;; Code:
+
 (define-module (gnu tests install)
   #:use-module (gnu)
   #:use-module (gnu bootloader extlinux)
@@ -88,13 +95,6 @@
             %test-gui-uefi-installed-os
             %test-gui-installed-os-encrypted
             %test-gui-installed-desktop-os-encrypted))
-
-;;; Commentary:
-;;;
-;;; Test the installation of Guix using the documented approach at the
-;;; command line.
-;;;
-;;; Code:
 
 (define-os-with-source (%minimal-os %minimal-os-source)
   ;; The OS we want to install.

@@ -19,13 +19,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu home services mcron)
-  #:use-module (gnu home services)
-  #:use-module (gnu home services shepherd)
-  #:use-module (gnu services mcron)               ;for the service mapping
-  #:export (home-mcron-configuration
-            home-mcron-service-type))
-
 ;;; Commentary:
 ;;
 ;; Service for the GNU mcron cron job manager.
@@ -48,6 +41,13 @@
 ;;                                      (display "Mcron service" port)))))))))
 ;;
 ;;; Code:
+
+(define-module (gnu home services mcron)
+  #:use-module (gnu home services)
+  #:use-module (gnu home services shepherd)
+  #:use-module (gnu services mcron)     ;for the service mapping
+  #:export (home-mcron-configuration
+            home-mcron-service-type))
 
 (define-syntax-rule (home-mcron-configuration fields ...)
   ;; Macro provided for backward compatibility.

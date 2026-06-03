@@ -19,13 +19,7 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu home services symlink-manager)
-  #:use-module (gnu home services)
-  #:use-module (guix gexp)
-  #:use-module (guix modules)
-  #:export (home-symlink-manager-service-type))
-
-;;; Comment:
+;;; Commentary:
 ;;;
 ;;; symlink-manager cares about xdg configurations and other files: it backs
 ;;; up files created by user, removes symlinks and directories created by a
@@ -34,6 +28,13 @@
 ;;; the current home environment generation.
 ;;;
 ;;; Code:
+
+(define-module (gnu home services symlink-manager)
+  #:use-module (gnu home services)
+  #:use-module (guix gexp)
+  #:use-module (guix modules)
+  #:export (home-symlink-manager-service-type))
+
 
 (define (update-symlinks-script)
   (program-file

@@ -21,6 +21,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides tools to build a cross-compiler.
+;;;
+;;; Code:
+
 (define-module (gnu build cross-toolchain)
   #:use-module (guix build utils)
   #:use-module (guix build gnu-build-system)
@@ -29,12 +35,6 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 ftw)
   #:export (cross-gcc-build-phases))
-
-;;; Commentary:
-;;;
-;;; This module provides tools to build a cross-compiler.
-;;;
-;;; Code:
 
 (define %gcc-include-paths
   ;; Environment variables for header search paths.

@@ -16,17 +16,17 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix profiling)
-  #:use-module (ice-9 match)
-  #:autoload   (ice-9 format) (format)
-  #:export (profiled?
-            register-profiling-hook!))
-
 ;;; Commentary:
 ;;;
 ;;; Basic support for Guix-specific profiling.
 ;;;
 ;;; Code:
+
+(define-module (guix profiling)
+  #:use-module (ice-9 match)
+  #:autoload   (ice-9 format) (format)
+  #:export (profiled?
+            register-profiling-hook!))
 
 (define profiled?
   (let ((profiled

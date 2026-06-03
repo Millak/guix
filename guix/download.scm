@@ -23,6 +23,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Produce fixed-output derivations with data fetched over HTTP or FTP.
+;;;
+;;; Code:
+
 (define-module (guix download)
   #:use-module (ice-9 match)
   #:use-module (guix derivations)
@@ -43,12 +49,6 @@
             url-fetch/tarbomb
             url-fetch/zipbomb
             download-to-store))
-
-;;; Commentary:
-;;;
-;;; Produce fixed-output derivations with data fetched over HTTP or FTP.
-;;;
-;;; Code:
 
 (define %mirrors
   ;; Mirror lists used when `mirror://' URLs are passed.  The first mirror

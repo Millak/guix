@@ -16,6 +16,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Service for the getmail mail retriever.
+;;;
+;;; Code:
+
 (define-module (gnu services getmail)
   #:use-module (gnu services)
   #:use-module (gnu services base)
@@ -40,12 +46,6 @@
             getmail-configuration-file
             getmail-configuration
             getmail-service-type))
-
-;;; Commentary:
-;;;
-;;; Service for the getmail mail retriever.
-;;;
-;;; Code:
 
 (define (uglify-field-name field-name)
   (let ((str (symbol->string field-name)))

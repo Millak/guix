@@ -19,6 +19,18 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Attempt to offload builds to the machines listed in
+;;; /etc/guix/machines.scm, transferring missing dependencies over SSH, and
+;;; retrieving the build output(s) over SSH upon success.
+;;;
+;;; This command should not be used directly; instead, it is called on-demand
+;;; by the daemon, unless it was started with '--no-offload' or a client
+;;; inhibited build hooks.
+;;;
+;;; Code:
+
 (define-module (guix scripts offload)
   #:autoload   (ssh key) (private-key-from-file
                           public-key-from-file)
@@ -75,18 +87,6 @@
             build-requirements?
 
             guix-offload))
-
-;;; Commentary:
-;;;
-;;; Attempt to offload builds to the machines listed in
-;;; /etc/guix/machines.scm, transferring missing dependencies over SSH, and
-;;; retrieving the build output(s) over SSH upon success.
-;;;
-;;; This command should not be used directly; instead, it is called on-demand
-;;; by the daemon, unless it was started with '--no-offload' or a client
-;;; inhibited build hooks.
-;;;
-;;; Code:
 
 (define-record-type* <build-machine>
   build-machine make-build-machine

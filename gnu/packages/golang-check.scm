@@ -45,6 +45,16 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Golang packages providing tools to unit-test, mock, assert, and lint
+;;; processes for the Golang itself. They may provide executables and
+;;; libraries, for which there are marked sections.
+;;;
+;;; Please: Try to add new module packages in alphabetic order.
+;;;
+;;; Code:
+
 (define-module (gnu packages golang-check)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -59,15 +69,6 @@
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages version-control))
 
-;;; Commentary:
-;;;
-;;; Golang packages providing tools to unit-test, mock, assert, and lint
-;;; processes for the Golang itself. They may provide executables and
-;;; libraries, for which there are marked sections.
-;;;
-;;; Please: Try to add new module packages in alphabetic order.
-;;;
-;;; Code:
 
 ;;;
 ;;; Libraries:

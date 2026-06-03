@@ -17,16 +17,16 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu artwork)
-  #:use-module (guix packages)
-  #:use-module (guix git-download)
-  #:export (%artwork-repository))
-
 ;;; Commentary:
 ;;;
 ;;; Common place for the definition of the Guix artwork repository.
 ;;;
 ;;; Code:
+
+(define-module (gnu artwork)
+  #:use-module (guix packages)
+  #:use-module (guix git-download)
+  #:export (%artwork-repository))
 
 (define %artwork-repository
   (let ((commit "08259679a0faef63e3ba169df5b937d836bd9262"))

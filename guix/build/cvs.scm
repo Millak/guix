@@ -17,18 +17,18 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix build cvs)
-  #:use-module (guix build utils)
-  #:use-module (ice-9 regex)
-  #:use-module (ice-9 ftw)
-  #:export (cvs-fetch))
-
 ;;; Commentary:
 ;;;
 ;;; This is the build-side support code of (guix cvs-download).  It allows a
 ;;; CVS repository to be checked out at a specific revision or date.
 ;;;
 ;;; Code:
+
+(define-module (guix build cvs)
+  #:use-module (guix build utils)
+  #:use-module (ice-9 regex)
+  #:use-module (ice-9 ftw)
+  #:export (cvs-fetch))
 
 (define (find-cvs-directories)
   (define (enter? path st result)

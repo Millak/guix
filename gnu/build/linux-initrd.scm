@@ -16,6 +16,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Tools to create Linux initial RAM disks ("initrds").  Initrds are
+;;; essentially gzipped cpio archives, with a '/init' executable that the
+;;; kernel runs at boot time.
+;;;
+;;; Code:
+
 (define-module (gnu build linux-initrd)
   #:use-module ((guix cpio) #:prefix cpio:)
   #:use-module (guix build utils)
@@ -26,14 +34,6 @@
   #:use-module (ice-9 ftw)
   #:export (write-cpio-archive
             build-initrd))
-
-;;; Commentary:
-;;;
-;;; Tools to create Linux initial RAM disks ("initrds").  Initrds are
-;;; essentially gzipped cpio archives, with a '/init' executable that the
-;;; kernel runs at boot time.
-;;;
-;;; Code:
 
 (define* (write-cpio-archive output directory
                              #:key

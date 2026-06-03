@@ -16,6 +16,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module defines a pseudo updater whose sole purpose is to allow
+;;; testing of the whole 'guix refresh' command.
+;;;
+;;; Code:
+
 (define-module (guix import test)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
@@ -26,13 +33,6 @@
   #:use-module (ice-9 vlist)
   #:use-module (ice-9 match)
   #:export (%test-updater))
-
-;;; Commentary:
-;;;
-;;; This module defines a pseudo updater whose sole purpose is to allow
-;;; testing of the whole 'guix refresh' command.
-;;;
-;;; Code:
 
 (define test-target-version
   ;; VHash that maps package names to version/URL tuples.

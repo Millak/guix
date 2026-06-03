@@ -20,6 +20,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; An <origin> method that fetches a specific commit from an Android repo
+;;; repository.
+;;; The repository's manifest (URL and revision) can be specified with a
+;;; <android-repo-reference> object.
+;;;
+;;; Code:
+
 (define-module (guix android-repo-download)
   #:use-module (guix gexp)
   #:use-module (guix store)
@@ -38,15 +47,6 @@
             android-repo-fetch
             android-repo-version
             android-repo-file-name))
-
-;;; Commentary:
-;;;
-;;; An <origin> method that fetches a specific commit from an Android repo
-;;; repository.
-;;; The repository's manifest (URL and revision) can be specified with a
-;;; <android-repo-reference> object.
-;;;
-;;; Code:
 
 (define-record-type* <android-repo-reference>
   android-repo-reference make-android-repo-reference

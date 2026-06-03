@@ -18,6 +18,21 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module implements a service that to run instances of GNU mcron, a
+;;; periodic job execution daemon.  Example of a service:
+;;
+;;  (service mcron-service-type
+;;           (mcron-configuration
+;;            (jobs (list #~(job next-second-from
+;;                               (lambda ()
+;;                                 (call-with-output-file "/dev/console"
+;;                                   (lambda (port)
+;;                                     (display "hello!\n" port)))))))))
+;;;
+;;; Code:
+
 (define-module (gnu services mcron)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
@@ -38,21 +53,6 @@
             mcron-configuration-home-service?
 
             mcron-service-type))
-
-;;; Commentary:
-;;;
-;;; This module implements a service that to run instances of GNU mcron, a
-;;; periodic job execution daemon.  Example of a service:
-;;
-;;  (service mcron-service-type
-;;           (mcron-configuration
-;;            (jobs (list #~(job next-second-from
-;;                               (lambda ()
-;;                                 (call-with-output-file "/dev/console"
-;;                                   (lambda (port)
-;;                                     (display "hello!\n" port)))))))))
-;;;
-;;; Code:
 
 ;; Configuration of mcron.
 ;; XXX: 'define-configuration' cannot be used here due to the need for

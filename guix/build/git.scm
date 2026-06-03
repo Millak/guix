@@ -17,6 +17,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This is the build-side support code of (guix git-download).  It allows a
+;;; Git repository to be cloned and checked out at a specific commit.
+;;;
+;;; Code:
+
 (define-module (guix build git)
   #:use-module (guix build utils)
   #:use-module ((guix build download)
@@ -29,13 +36,6 @@
   #:use-module (ice-9 format)
   #:export (git-fetch
             git-fetch-with-fallback))
-
-;;; Commentary:
-;;;
-;;; This is the build-side support code of (guix git-download).  It allows a
-;;; Git repository to be cloned and checked out at a specific commit.
-;;;
-;;; Code:
 
 (define* (git-fetch url commit directory
                     #:key (git-command "git")

@@ -20,29 +20,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix build pyproject-build-system)
-  #:autoload (json builder) (scm->json scm->json-string)
-  #:use-module ((guix build gnu-build-system) #:prefix gnu:)
-  #:use-module (guix build utils)
-  #:use-module (guix build toml)
-  #:use-module (ice-9 match)
-  #:use-module (ice-9 ftw)
-  #:use-module (ice-9 format)
-  #:use-module (ice-9 rdelim)
-  #:use-module (ice-9 regex)
-  #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-2)
-  #:use-module (srfi srfi-26)
-  #:use-module (srfi srfi-34)
-  #:use-module (srfi srfi-35)
-  #:use-module (srfi srfi-71)
-  #:export (%standard-phases
-            add-installed-pythonpath
-            ensure-no-mtimes-pre-1980
-            site-packages
-            python-version
-            pyproject-build))
-
 ;;; Commentary:
 ;;;
 ;;; PEP 517-compatible build system for Python packages.
@@ -71,7 +48,29 @@
 ;;; overridden by #:backend-path.
 ;;;
 ;;; Code:
-;;;
+
+(define-module (guix build pyproject-build-system)
+  #:autoload (json builder) (scm->json scm->json-string)
+  #:use-module ((guix build gnu-build-system) #:prefix gnu:)
+  #:use-module (guix build utils)
+  #:use-module (guix build toml)
+  #:use-module (ice-9 match)
+  #:use-module (ice-9 ftw)
+  #:use-module (ice-9 format)
+  #:use-module (ice-9 rdelim)
+  #:use-module (ice-9 regex)
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-2)
+  #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
+  #:export (%standard-phases
+            add-installed-pythonpath
+            ensure-no-mtimes-pre-1980
+            site-packages
+            python-version
+            pyproject-build))
 
 ;; Copy these procedures from python-build-system as many packages
 ;; rely on these.

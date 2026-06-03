@@ -17,6 +17,16 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Scan gzipped man pages and create a man-db database.  The database is
+;;; meant to be used by 'man -k KEYWORD'.
+;;;
+;;; The implementation here aims to be simpler than that of 'man-db', and to
+;;; produce deterministic output.  See <https://bugs.gnu.org/29654>.
+;;;
+;;; Code:
+
 (define-module (guix man-db)
   #:autoload (zlib) (call-with-gzip-input-port)
   #:autoload (zstd) (call-with-zstd-input-port)
@@ -36,16 +46,6 @@
 
             mandb-entries
             write-mandb-database))
-
-;;; Comment:
-;;;
-;;; Scan gzipped man pages and create a man-db database.  The database is
-;;; meant to be used by 'man -k KEYWORD'.
-;;;
-;;; The implementation here aims to be simpler than that of 'man-db', and to
-;;; produce deterministic output.  See <https://bugs.gnu.org/29654>.
-;;;
-;;; Code:
 
 (define-record-type <mandb-entry>
   (mandb-entry file-name name section synopsis kind)

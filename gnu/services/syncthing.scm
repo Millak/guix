@@ -18,6 +18,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides a service definition for the syncthing service.
+;;;
+;;; Code:
+
 (define-module (gnu services syncthing)
   #:use-module (gnu packages syncthing)
   #:use-module (gnu services)
@@ -40,12 +46,6 @@
             syncthing-service-type
             syncthing-shepherd-service
             syncthing-files-service))
-
-;;; Commentary:
-;;;
-;;; This module provides a service definition for the syncthing service.
-;;;
-;;; Code:
 
 (define (bool->xml-string bool)
   ;; add compatibility for the short duration where #f was specified as

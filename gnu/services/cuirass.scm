@@ -21,6 +21,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;;; Commentary:
+;;;
+;;; This module implements a service that to run instances of Cuirass, a
+;;; continuous integration tool.
+;;;
+;;;; Code:
+
 (define-module (gnu services cuirass)
   #:use-module (guix channels)
   #:use-module (guix gexp)
@@ -49,13 +56,6 @@
             cuirass-remote-worker-configuration
             cuirass-remote-worker-configuration?
             cuirass-remote-worker-service-type))
-
-;;;; Commentary:
-;;;
-;;; This module implements a service that to run instances of Cuirass, a
-;;; continuous integration tool.
-;;;
-;;;; Code:
 
 (define %cuirass-default-database
   "dbname=cuirass")

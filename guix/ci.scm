@@ -17,6 +17,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides a client to the HTTP interface of the Hydra and
+;;; Cuirass continuous integration (CI) tools.
+;;;
+;;; Code:
+
 (define-module (guix ci)
   #:use-module (guix http-client)
   #:use-module (guix utils)
@@ -83,13 +90,6 @@
             evaluations-for-commit
 
             channel-with-substitutes-available))
-
-;;; Commentary:
-;;;
-;;; This module provides a client to the HTTP interface of the Hydra and
-;;; Cuirass continuous integration (CI) tools.
-;;;
-;;; Code:
 
 (define (seconds->date seconds)
   "Given SECONDS, a number of seconds since 1970-01-01, return the

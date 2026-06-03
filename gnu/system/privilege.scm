@@ -17,6 +17,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Data structures representing privileged programs: binaries with additional
+;;; permissions such as setuid/setgid, or POSIX capabilities.  This is meant to
+;;; be used both on the host side and at run time--e.g., in activation snippets.
+;;;
+;;; Code:
+
 (define-module (gnu system privilege)
   #:use-module (guix records)
   #:export (privileged-program
@@ -29,14 +37,6 @@
             privileged-program-capabilities
 
             file-like->setuid-program))
-
-;;; Commentary:
-;;;
-;;; Data structures representing privileged programs: binaries with additional
-;;; permissions such as setuid/setgid, or POSIX capabilities.  This is meant to
-;;; be used both on the host side and at run time--e.g., in activation snippets.
-;;;
-;;; Code:
 
 (define-record-type* <privileged-program>
   privileged-program make-privileged-program

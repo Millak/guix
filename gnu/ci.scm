@@ -20,6 +20,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This file defines build jobs for Cuirass.
+;;;
+;;; Code:
+
 (define-module (gnu ci)
   #:use-module (guix build-system channel)
   #:use-module (guix config)
@@ -81,12 +87,6 @@
 
             arguments->systems
             cuirass-jobs))
-
-;;; Commentary:
-;;;
-;;; This file defines build jobs for Cuirass.
-;;;
-;;; Code:
 
 (define* (derivation->job name drv
                           #:key

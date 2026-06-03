@@ -17,6 +17,18 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;;  With this image, VisionFive2 can boot from MMC1 (MicroSD card) with
+;;;  SDIO3.0 boot mode (RPIO_1:L, RGPIO_0:H -- see [1]), in this case the
+;;;  board will use U-Boot from Guix System instead of the vendor U-Boot.
+;;;  Booting from eMMC and NVME is still work-in-progress.
+;;;
+;;; References:
+;;;  1. <https://doc-en.rvspace.org/VisionFive2/Boot_UG/VisionFive2_SDK_QSG/boot_mode_settings.html>
+;;;
+;;; Code:
+
 (define-module (gnu system images visionfive2)
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader u-boot)
@@ -45,18 +57,6 @@
   #:export (visionfive2-barebones-os
             visionfive2-image-type
             visionfive2-barebones-raw-image))
-
-;;; Commentary:
-;;;
-;;;  With this image, VisionFive2 can boot from MMC1 (MicroSD card) with
-;;;  SDIO3.0 boot mode (RPIO_1:L, RGPIO_0:H -- see [1]), in this case the
-;;;  board will use U-Boot from Guix System instead of the vendor U-Boot.
-;;;  Booting from eMMC and NVME is still work-in-progress.
-;;;
-;;; References:
-;;;  1. <https://doc-en.rvspace.org/VisionFive2/Boot_UG/VisionFive2_SDK_QSG/boot_mode_settings.html>
-;;;
-;;; Code:
 
 (define visionfive2-barebones-os
   (operating-system

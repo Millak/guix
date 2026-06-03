@@ -16,6 +16,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; A generic, customizable to convert bytevectors to/from a base32
+;;; representation.
+;;;
+;;; Code:
+
 (define-module (guix base32)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -33,13 +40,6 @@
             invalid-base32-character?
             invalid-base32-character-value
             invalid-base32-character-string))
-
-;;; Commentary:
-;;;
-;;; A generic, customizable to convert bytevectors to/from a base32
-;;; representation.
-;;;
-;;; Code:
 
 (define-syntax bit-field
   (lambda (s)

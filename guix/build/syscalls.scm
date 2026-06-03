@@ -27,6 +27,25 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides bindings to libc's syscall wrappers.  It uses the
+;;; FFI, and thus requires a dynamically-linked Guile.
+;;;
+;;; Some syscalls are already defined in statically-linked Guile by applying
+;;; 'guile-linux-syscalls.patch'.
+;;;
+;;; Visibility of syscall's symbols shared between this module and static Guile
+;;; is a bit delicate. It is handled by 'define-as-needed' macro.
+;;;
+;;; This macro is used to export symbols in dynamic Guile context, and to
+;;; re-export them in static Guile context.
+;;;
+;;; This way, even if they don't appear in #:export list, it is safe to use
+;;; syscalls from this module in static or dynamic Guile context.
+;;;
+;;; Code:
+
 (define-module (guix build syscalls)
   #:use-module (system foreign)
   #:use-module (system base target)
@@ -227,25 +246,6 @@
             login-type
             utmpx-entries
             (read-utmpx-from-port . read-utmpx)))
-
-;;; Commentary:
-;;;
-;;; This module provides bindings to libc's syscall wrappers.  It uses the
-;;; FFI, and thus requires a dynamically-linked Guile.
-;;;
-;;; Some syscalls are already defined in statically-linked Guile by applying
-;;; 'guile-linux-syscalls.patch'.
-;;;
-;;; Visibility of syscall's symbols shared between this module and static Guile
-;;; is a bit delicate. It is handled by 'define-as-needed' macro.
-;;;
-;;; This macro is used to export symbols in dynamic Guile context, and to
-;;; re-export them in static Guile context.
-;;;
-;;; This way, even if they don't appear in #:export list, it is safe to use
-;;; syscalls from this module in static or dynamic Guile context.
-;;;
-;;; Code:
 
 
 ;;;

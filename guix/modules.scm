@@ -16,6 +16,16 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides introspection tools for Guile modules at the source
+;;; level.  Namely, it allows you to determine the closure of a module; it
+;;; does so just by reading the 'define-module' clause of the module and its
+;;; dependencies.  This is primarily useful as an argument to
+;;; 'with-imported-modules'.
+;;;
+;;; Code:
+
 (define-module (guix modules)
   #:use-module (guix memoization)
   #:use-module (guix sets)
@@ -34,16 +44,6 @@
             source-module-closure
             live-module-closure
             guix-module-name?))
-
-;;; Commentary:
-;;;
-;;; This module provides introspection tools for Guile modules at the source
-;;; level.  Namely, it allows you to determine the closure of a module; it
-;;; does so just by reading the 'define-module' clause of the module and its
-;;; dependencies.  This is primarily useful as an argument to
-;;; 'with-imported-modules'.
-;;;
-;;; Code:
 
 ;; The error corresponding to a missing module.
 (define-condition-type &missing-dependency-error &error

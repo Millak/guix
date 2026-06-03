@@ -36,6 +36,16 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; User interface facilities for command-line tools.
+;;;
+;;; Note: This module is meant to be imported by user interfaces only and not
+;;; be "regular" modules.  It depends on lots of modules that may be
+;;; relatively heavyweight dependencies for non-UI modules.
+;;;
+;;; Code:
+
 (define-module (guix ui)                       ;import in user interfaces only
   #:use-module (guix i18n)
   #:use-module (guix colors)
@@ -151,16 +161,6 @@
             run-guix-command
             run-guix
             guix-main))
-
-;;; Commentary:
-;;;
-;;; User interface facilities for command-line tools.
-;;;
-;;; Note: This module is meant to be imported by user interfaces only and not
-;;; be "regular" modules.  It depends on lots of modules that may be
-;;; relatively heavyweight dependencies for non-UI modules.
-;;;
-;;; Code:
 
 (define (print-unbound-variable-error port key args default-printer)
   ;; Print unbound variable errors more nicely, and in the right language.

@@ -21,6 +21,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Utilities for configuring the Shadow tool suite ('login', 'passwd', etc.)
+;;;
+;;; Code:
+
 (define-module (gnu system shadow)
   #:use-module ((guix diagnostics) #:select (formatted-message))
   #:use-module (guix records)
@@ -96,12 +102,6 @@
             subids-extension-subuids
 
             subids-service-type))
-
-;;; Commentary:
-;;;
-;;; Utilities for configuring the Shadow tool suite ('login', 'passwd', etc.)
-;;;
-;;; Code:
 
 ;; Change the default shell used by new <user-account> records.
 (default-shell (file-append bash "/bin/bash"))

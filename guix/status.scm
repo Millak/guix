@@ -19,6 +19,16 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides facilities to track the status of ongoing builds and
+;;; downloads in a given session, as well as tools to report about the current
+;;; status to user interfaces.  It does so by analyzing the output of
+;;; 'current-build-output-port'.  The build status is maintained in a
+;;; <build-status> record.
+;;;
+;;; Code:
+
 (define-module (guix status)
   #:use-module (guix records)
   #:use-module (guix i18n)
@@ -76,16 +86,6 @@
 
             with-status-report
             with-status-verbosity))
-
-;;; Commentary:
-;;;
-;;; This module provides facilities to track the status of ongoing builds and
-;;; downloads in a given session, as well as tools to report about the current
-;;; status to user interfaces.  It does so by analyzing the output of
-;;; 'current-build-output-port'.  The build status is maintained in a
-;;; <build-status> record.
-;;;
-;;; Code:
 
 
 ;;;

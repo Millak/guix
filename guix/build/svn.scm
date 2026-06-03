@@ -19,17 +19,17 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix build svn)
-  #:use-module (guix build utils)
-  #:use-module (srfi srfi-34)
-  #:export (svn-fetch))
-
 ;;; Commentary:
 ;;;
 ;;; This is the build-side support code of (guix svn-download).  It allows a
 ;;; Subversion repository to be cloned and checked out at a specific revision.
 ;;;
 ;;; Code:
+
+(define-module (guix build svn)
+  #:use-module (guix build utils)
+  #:use-module (srfi srfi-34)
+  #:export (svn-fetch))
 
 (define* (svn-fetch url revision directory
                     #:key (svn-command "svn")

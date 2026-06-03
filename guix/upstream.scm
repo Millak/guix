@@ -21,6 +21,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides tools to represent and manipulate a upstream source
+;;; code, and to auto-update package recipes.
+;;;
+;;; Code:
+
 (define-module (guix upstream)
   #:use-module (guix records)
   #:use-module (guix utils)
@@ -95,13 +102,6 @@
             package-latest-release*
             package-update
             update-package-source))
-
-;;; Commentary:
-;;;
-;;; This module provides tools to represent and manipulate a upstream source
-;;; code, and to auto-update package recipes.
-;;;
-;;; Code:
 
 ;; Representation of upstream's source.  There can be several URLs--e.g.,
 ;; tar.gz, tar.gz, etc.  There can be correspond signature URLs, one per

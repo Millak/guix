@@ -41,6 +41,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Networking services.
+;;;
+;;; Code:
+
 (define-module (gnu services networking)
   #:use-module (gnu home services utils)
   #:use-module (gnu services)
@@ -296,12 +302,6 @@
             keepalived-configuration
             keepalived-configuration?
             keepalived-service-type))
-
-;;; Commentary:
-;;;
-;;; Networking services.
-;;;
-;;; Code:
 
 (define %unroutable-ipv4
   ;; Unroutable address, as per <https://www.rfc-editor.org/rfc/rfc5737>.

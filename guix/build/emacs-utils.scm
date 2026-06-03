@@ -20,6 +20,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Tools to programmatically edit files using Emacs,
+;;; e.g. to replace entire s-expressions in elisp files.
+;;;
+;;; Code:
+
 (define-module (guix build emacs-utils)
   #:use-module (guix build utils)
   #:use-module (ice-9 format)
@@ -46,13 +53,6 @@
             as-display
             emacs-substitute-sexps
             emacs-substitute-variables))
-
-;;; Commentary:
-;;;
-;;; Tools to programmatically edit files using Emacs,
-;;; e.g. to replace entire s-expressions in elisp files.
-;;;
-;;; Code:
 
 (define %emacs
   ;; The `emacs' command.

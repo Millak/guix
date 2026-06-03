@@ -38,6 +38,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Python packages to build... Python packages.  Since they are bound to be
+;;; relied on by many, their dependencies should be kept minimal, and this
+;;; module should not depend on other modules containing Python packages.
+;;;
+;;; Code:
+
 (define-module (gnu packages python-build)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
@@ -49,14 +57,6 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages))
-
-;;; Commentary:
-;;;
-;;; Python packages to build... Python packages.  Since they are bound to be
-;;; relied on by many, their dependencies should be kept minimal, and this
-;;; module should not depend on other modules containing Python packages.
-;;;
-;;; Code:
 
 
 ;;; These are dependencies used by the build systems contained herein; they

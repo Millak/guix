@@ -18,6 +18,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This is a super minimal Bourne-like shell language for Guile.  It is meant
+;;; to be used at the REPL as a rescue shell.  In a way, this is to Guile what
+;;; eshell is to Emacs.
+;;;
+;;; Code:
+
 (define-module (guix build bournish)
   #:use-module (system base language)
   #:use-module (system base compile)
@@ -30,14 +38,6 @@
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:export (%bournish-language))
-
-;;; Commentary:
-;;;
-;;; This is a super minimal Bourne-like shell language for Guile.  It is meant
-;;; to be used at the REPL as a rescue shell.  In a way, this is to Guile what
-;;; eshell is to Emacs.
-;;;
-;;; Code:
 
 (define (expand-variable str)
   "Return STR or code to obtain the value of the environment variable STR

@@ -18,6 +18,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This package provides not an actual importer but simply an updater for
+;;; GNOME packages.  It grabs package meta-data from 'cache.json' files
+;;; available on ftp.gnome.org.
+;;;
+;;; Code:
+
 (define-module (guix import gnome)
   #:use-module ((guix import utils) #:select (find-version))
   #:use-module (guix upstream)
@@ -33,14 +41,6 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
   #:export (%gnome-updater))
-
-;;; Commentary:
-;;;
-;;; This package provides not an actual importer but simply an updater for
-;;; GNOME packages.  It grabs package meta-data from 'cache.json' files
-;;; available on ftp.gnome.org.
-;;;
-;;; Code:
 
 (define (jsonish->upstream-source name jsonish)
   "Return an <upstream-source> object for package NAME, using JSONISH as the

@@ -20,6 +20,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This program provides a command-line interface to (gnu machine), allowing
+;;; users to perform remote deployments through specification files.
+;;;
+;;; Code:
+
 (define-module (guix scripts deploy)
   #:use-module (gnu machine)
   #:use-module (guix discovery)
@@ -40,13 +47,6 @@
   #:use-module (srfi srfi-37)
   #:use-module (srfi srfi-71)
   #:export (guix-deploy))
-
-;;; Commentary:
-;;;
-;;; This program provides a command-line interface to (gnu machine), allowing
-;;; users to perform remote deployments through specification files.
-;;;
-;;; Code:
 
 
 

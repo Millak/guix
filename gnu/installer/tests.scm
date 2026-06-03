@@ -18,6 +18,17 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides tools to test the guided "graphical" installer in a
+;;; non-interactive fashion.  The core of it is 'converse': it allows you to
+;;; state Expect-style dialogues, which happen over the Unix-domain socket the
+;;; installer listens to.  Higher-level procedures such as
+;;; 'choose-locale+keyboard' are provided to perform specific parts of the
+;;; dialogue.
+;;;
+;;; Code:
+
 (define-module (gnu installer tests)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
@@ -43,17 +54,6 @@
             complete-installation
 
             edit-configuration-file))
-
-;;; Commentary:
-;;;
-;;; This module provides tools to test the guided "graphical" installer in a
-;;; non-interactive fashion.  The core of it is 'converse': it allows you to
-;;; state Expect-style dialogues, which happen over the Unix-domain socket the
-;;; installer listens to.  Higher-level procedures such as
-;;; 'choose-locale+keyboard' are provided to perform specific parts of the
-;;; dialogue.
-;;;
-;;; Code:
 
 (define %installer-socket-file
   ;; Socket the installer listens to.

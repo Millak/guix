@@ -19,6 +19,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Test <operating-system> kernel-loadable-modules.
+;;;
+;;; Code:
+
 (define-module (gnu tests linux-modules)
   #:use-module (gnu packages linux)
   #:use-module (gnu services)
@@ -39,12 +45,6 @@
             %test-loadable-kernel-modules-service-0
             %test-loadable-kernel-modules-service-1
             %test-loadable-kernel-modules-service-2))
-
-;;; Commentary:
-;;;
-;;; Test <operating-system> kernel-loadable-modules.
-;;;
-;;; Code:
 
 (define* (modules-loaded?-program os modules)
   "Return an executable store item that, upon being evaluated, will verify

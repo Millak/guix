@@ -16,6 +16,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides procedures for talking with the connman daemon.
+;;; The best approach would have been using connman dbus interface.
+;;; However, as Guile dbus bindings are not available yet, the console client
+;;; "connmanctl" is used to talk with the daemon.
+;;;
+
 (define-module (gnu installer connman)
   #:use-module (gnu installer utils)
   #:use-module (guix records)
@@ -69,14 +77,6 @@
             connman-disconnect
             connman-online?
             connman-connect-with-auth))
-
-;;; Commentary:
-;;;
-;;; This module provides procedures for talking with the connman daemon.
-;;; The best approach would have been using connman dbus interface.
-;;; However, as Guile dbus bindings are not available yet, the console client
-;;; "connmanctl" is used to talk with the daemon.
-;;;
 
 
 ;;;

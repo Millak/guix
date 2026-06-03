@@ -17,6 +17,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides a <home-environment> record for managing
+;;; per-user packages and configuration files in the similar way as
+;;; <operating-system> do for system packages and configuration files.
+;;;
+;;; Code:
+
 (define-module (gnu home)
   #:use-module (gnu home services)
   #:use-module (gnu home services symlink-manager)
@@ -49,14 +57,6 @@
             home-generation-base
 
             %base-home-services))
-
-;;; Comment:
-;;;
-;;; This module provides a <home-environment> record for managing
-;;; per-user packages and configuration files in the similar way as
-;;; <operating-system> do for system packages and configuration files.
-;;;
-;;; Code:
 
 (define-record-type* <home-environment> home-environment
   make-home-environment

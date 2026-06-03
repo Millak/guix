@@ -27,6 +27,13 @@
 ;;;
 ;;; Some of the help text was taken from the default dovecot.conf files.
 
+;;; Commentary:
+;;;
+;;; This module provides service definitions for the Dovecot POP3 and IMAP
+;;; mail server.
+;;;
+;;; Code:
+
 (define-module (gnu services mail)
   #:use-module (gnu services)
   #:use-module (gnu services base)
@@ -104,13 +111,6 @@
             %default-rspamd-account
             %default-rspamd-config-file
             %default-rspamd-group))
-
-;;; Commentary:
-;;;
-;;; This module provides service definitions for the Dovecot POP3 and IMAP
-;;; mail server.
-;;;
-;;; Code:
 
 (define (uglify-field-name field-name)
   (let ((str (symbol->string field-name)))

@@ -18,6 +18,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This composite module re-exports core parts the (gnu …) public modules.
+;;;
+;;; Code:
+
 (define-module (gnu)
   #:use-module (guix i18n)
   #:use-module (guix diagnostics)
@@ -30,12 +36,6 @@
   #:export (use-package-modules
             use-service-modules
             use-system-modules))
-
-;;; Commentary:
-;;;
-;;; This composite module re-exports core parts the (gnu …) public modules.
-;;;
-;;; Code:
 
 (eval-when (eval load compile)
   (begin

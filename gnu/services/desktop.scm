@@ -40,6 +40,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module contains service definitions for a "desktop" environment.
+;;;
+;;; Code:
+
 (define-module (gnu services desktop)
   #:use-module ((gnu home services utils) #:select (object->camel-case-string))
   #:use-module (gnu services)
@@ -242,12 +248,6 @@
             seatd-service-type
 
             %desktop-services))
-
-;;; Commentary:
-;;;
-;;; This module contains service definitions for a "desktop" environment.
-;;;
-;;; Code:
 
 
 ;;;

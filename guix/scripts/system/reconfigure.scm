@@ -24,6 +24,16 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module implements the "effectful" parts of system
+;;; reconfiguration. Although building a system derivation is a pure
+;;; operation, a number of impure operations must be carried out for the
+;;; system configuration to be realized -- chiefly, creation of generation
+;;; symlinks and invocation of activation scripts.
+;;;
+;;; Code:
+
 (define-module (guix scripts system reconfigure)
   #:autoload   (gnu packages gnupg) (guile-gcrypt)
   #:use-module (gnu bootloader)
@@ -63,16 +73,6 @@
             check-forward-update
             ensure-forward-reconfigure
             warn-about-backward-reconfigure))
-
-;;; Commentary:
-;;;
-;;; This module implements the "effectful" parts of system
-;;; reconfiguration. Although building a system derivation is a pure
-;;; operation, a number of impure operations must be carried out for the
-;;; system configuration to be realized -- chiefly, creation of generation
-;;; symlinks and invocation of activation scripts.
-;;;
-;;; Code:
 
 
 ;;;

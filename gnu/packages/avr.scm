@@ -21,6 +21,17 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module defines a procedure that can be used to create a complete
+;;; avr-toolchain package.  The procedure must not be used at the top level,
+;;; to avoid cyclic module dependencies caused by the (gnu packages
+;;; cross-base) module referring to top level bindings from (gnu packages
+;;; gcc).
+;;;
+;;; It also contains packages for working with or targeting the AVR system.
+;;;
+
 (define-module (gnu packages avr)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix gexp)
@@ -35,17 +46,6 @@
   #:use-module (gnu packages gcc)
   #:export (make-avr-libc
             make-avr-toolchain))
-
-;;; Commentary:
-;;;
-;;; This module defines a procedure that can be used to create a complete
-;;; avr-toolchain package.  The procedure must not be used at the top level,
-;;; to avoid cyclic module dependencies caused by the (gnu packages
-;;; cross-base) module referring to top level bindings from (gnu packages
-;;; gcc).
-;;;
-;;; It also contains packages for working with or targeting the AVR system.
-;;;
 
 (define make-avr-binutils
   (mlambda ()

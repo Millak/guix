@@ -16,6 +16,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Unit tests for the (gnu services vpn) module.
+;;;
+;;; Code:
+
 (define-module (tests services vpn)
   #:use-module (gnu packages vpn)
   #:use-module (gnu services vpn)
@@ -23,12 +29,6 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64))
-
-;;; Commentary:
-;;;
-;;; Unit tests for the (gnu services vpn) module.
-;;;
-;;; Code:
 
 ;;; Access some internals for whitebox testing.
 (define ipv4-address? (@@ (gnu services vpn) ipv4-address?))

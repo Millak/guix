@@ -16,6 +16,20 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; When loaded, this module returns a monadic procedure of at least one
+;;; argument: the source tree to build.  It returns a derivation that
+;;; builds it.
+;;;
+;;; This file uses modules provided by the already-installed Guix.  Those
+;;; modules may be arbitrarily old compared to the version we want to
+;;; build.  Because of that, it must rely on the smallest set of features
+;;; that are likely to be provided by the (guix) and (gnu) modules, and by
+;;; Guile itself, forever and ever.
+;;;
+;;; Code:
+
 (define-module (build-self)
   #:use-module (gnu)
   #:use-module (guix)
@@ -31,20 +45,6 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 popen)
   #:export (build))
-
-;;; Commentary:
-;;;
-;;; When loaded, this module returns a monadic procedure of at least one
-;;; argument: the source tree to build.  It returns a derivation that
-;;; builds it.
-;;;
-;;; This file uses modules provided by the already-installed Guix.  Those
-;;; modules may be arbitrarily old compared to the version we want to
-;;; build.  Because of that, it must rely on the smallest set of features
-;;; that are likely to be provided by the (guix) and (gnu) modules, and by
-;;; Guile itself, forever and ever.
-;;;
-;;; Code:
 
 (define (date-version-string)
   "Return the current date and hour in UTC timezone, for use as a poor

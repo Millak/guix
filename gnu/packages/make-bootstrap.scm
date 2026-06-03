@@ -23,6 +23,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides tools to build tarballs of the "bootstrap binaries"
+;;; used in (gnu packages bootstrap).  These statically-linked binaries are
+;;; taken for granted and used as the root of the whole bootstrap procedure.
+;;;
+;;; Code:
+
 (define-module (gnu packages make-bootstrap)
   #:use-module (guix gexp)
   #:use-module (guix utils)
@@ -57,14 +65,6 @@
 
             %guile-static-stripped
             %guile-static-initrd))
-
-;;; Commentary:
-;;;
-;;; This module provides tools to build tarballs of the "bootstrap binaries"
-;;; used in (gnu packages bootstrap).  These statically-linked binaries are
-;;; taken for granted and used as the root of the whole bootstrap procedure.
-;;;
-;;; Code:
 
 (define glibc-for-bootstrap
   (mlambdaq (base)

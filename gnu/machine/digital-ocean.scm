@@ -19,6 +19,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module implements a high-level interface for provisioning "droplets"
+;;; from the Digital Ocean virtual private server (VPS) service.
+;;;
+;;; Code:
+
 (define-module (gnu machine digital-ocean)
   #:use-module (gnu machine ssh)
   #:use-module (gnu machine)
@@ -62,13 +69,6 @@
             digital-ocean-configuration-enable-ipv6?
 
             digital-ocean-environment-type))
-
-;;; Commentary:
-;;;
-;;; This module implements a high-level interface for provisioning "droplets"
-;;; from the Digital Ocean virtual private server (VPS) service.
-;;;
-;;; Code:
 
 (define %api-base "https://api.digitalocean.com")
 

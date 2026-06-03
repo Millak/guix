@@ -19,6 +19,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; HTTP client portable among Guile versions, and with proper error condition
+;;; reporting.
+;;;
+;;; Code:
+
 (define-module (guix http-client)
   #:use-module (web uri)
   #:use-module (web http)
@@ -64,13 +71,6 @@
 
             %http-cache-ttl
             http-fetch/cached))
-
-;;; Commentary:
-;;;
-;;; HTTP client portable among Guile versions, and with proper error condition
-;;; reporting.
-;;;
-;;; Code:
 
 ;; HTTP GET error.
 (define-condition-type &http-get-error &error

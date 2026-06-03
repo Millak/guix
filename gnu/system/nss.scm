@@ -16,6 +16,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Bindings for libc's name service switch (NSS) configuration.
+;;;
+;;; Code:
+
 (define-module (gnu system nss)
   #:use-module (rnrs enums)
   #:use-module (guix records)
@@ -37,12 +43,6 @@
             %dns
 
             name-service-switch->string))
-
-;;; Commentary:
-;;;
-;;; Bindings for libc's name service switch (NSS) configuration.
-;;;
-;;; Code:
 
 (define-record-type* <name-service> name-service
   make-name-service

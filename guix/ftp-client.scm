@@ -16,6 +16,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Simple FTP client (RFC 959).
+;;;
+;;; Code:
+
 (define-module (guix ftp-client)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
@@ -35,12 +41,6 @@
             ftp-size
             ftp-list
             ftp-retr))
-
-;;; Commentary:
-;;;
-;;; Simple FTP client (RFC 959).
-;;;
-;;; Code:
 
 ;; TODO: Use SRFI-3{4,5} error conditions.
 

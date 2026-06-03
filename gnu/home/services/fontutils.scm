@@ -19,6 +19,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Services related to fonts.  home-fontconfig service provides
+;;; fontconfig configuration, which allows fc-* utilities to find
+;;; fonts in Guix Home's profile and regenerates font cache on
+;;; activation.
+;;;
+;;; Code:
+
 (define-module (gnu home services fontutils)
   #:use-module (gnu home services)
   #:use-module (gnu packages fontutils)
@@ -28,15 +37,6 @@
   #:use-module (sxml simple)
 
   #:export (home-fontconfig-service-type))
-
-;;; Commentary:
-;;;
-;;; Services related to fonts.  home-fontconfig service provides
-;;; fontconfig configuration, which allows fc-* utilities to find
-;;; fonts in Guix Home's profile and regenerates font cache on
-;;; activation.
-;;;
-;;; Code:
 
 (define (write-fontconfig-doctype)
   "Prints fontconfig's DOCTYPE to current-output-port."

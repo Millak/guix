@@ -16,6 +16,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Build a user profile (essentially the union of all the installed packages)
+;;; with its associated meta-data.
+;;;
+;;; Code:
+
 (define-module (guix build profiles)
   #:use-module (guix build union)
   #:use-module (guix build utils)
@@ -29,13 +36,6 @@
   #:re-export (symlink-relative)                  ;for convenience
   #:export (ensure-writable-directory
             build-profile))
-
-;;; Commentary:
-;;;
-;;; Build a user profile (essentially the union of all the installed packages)
-;;; with its associated meta-data.
-;;;
-;;; Code:
 
 (define (abstract-profile profile)
   "Return a procedure that replaces PROFILE in VALUE with a reference to the

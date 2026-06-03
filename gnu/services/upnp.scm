@@ -16,6 +16,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; UPnP services.
+;;;
+;;; Code:
+
 (define-module (gnu services upnp)
   #:use-module (gnu build linux-container)
   #:use-module (gnu packages admin)
@@ -53,12 +59,6 @@
             readymedia-service-type
             readymedia-activation
             readymedia-shepherd-service))
-
-;;; Commentary:
-;;;
-;;; UPnP services.
-;;;
-;;; Code:
 
 (define* (%readymedia-default-cache-directory #:key (home-service? #f))
   (if home-service?

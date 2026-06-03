@@ -17,6 +17,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Read and write Nix archives, aka. ‘nar’.
+;;;
+;;; Code:
+
 (define-module (guix nar)
   #:use-module (guix serialization)
   #:autoload   (guix build syscalls) (lock-file unlock-file)
@@ -47,12 +53,6 @@
             nar-signature-error-signature
 
             restore-file-set))
-
-;;; Comment:
-;;;
-;;; Read and write Nix archives, aka. ‘nar’.
-;;;
-;;; Code:
 
 (define-condition-type &nar-signature-error &nar-error
   nar-signature-error?

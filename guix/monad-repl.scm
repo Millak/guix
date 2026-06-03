@@ -17,6 +17,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This modules provides a couple of REPL meta-commands that make it easier
+;;; to work with monadic procedures in the store monad.
+;;;
+;;; Code:
+
 (define-module (guix monad-repl)
   #:use-module (guix store)
   #:use-module (guix monads)
@@ -39,13 +46,6 @@
   #:use-module (srfi srfi-26)
   #:export (run-in-store
             enter-store-monad))
-
-;;; Comment:
-;;;
-;;; This modules provides a couple of REPL meta-commands that make it easier
-;;; to work with monadic procedures in the store monad.
-;;;
-;;; Code:
 
 (define* (monad-language monad run #:optional (name 'monad))
   "Return a language with a special evaluator that causes monadic values

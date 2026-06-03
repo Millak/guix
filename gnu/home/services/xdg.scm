@@ -19,6 +19,17 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;
+;; This module contains services related to XDG directories and
+;; applications.
+;;
+;; - XDG base directories
+;; - XDG user directories
+;; - XDG MIME applications
+;;
+;;; Code:
+
 (define-module (gnu home services xdg)
   #:use-module (gnu services configuration)
   #:use-module (gnu home services)
@@ -61,17 +72,6 @@
             xdg-desktop-entry
             home-xdg-mime-applications-service-type
             home-xdg-mime-applications-configuration))
-
-;;; Commentary:
-;;
-;; This module contains services related to XDG directories and
-;; applications.
-;;
-;; - XDG base directories
-;; - XDG user directories
-;; - XDG MIME applications
-;;
-;;; Code:
 
 
 ;;;

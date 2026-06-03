@@ -19,6 +19,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides the infrastructure to run operating system tests.
+;;; The most important part of that is tools to instrument the OS under test,
+;;; essentially allowing it to run in a virtual machine controlled by the host
+;;; system--hence the name "marionette".
+;;;
+;;; Code:
+
 (define-module (gnu tests)
   #:use-module (guix gexp)
   #:use-module (guix diagnostics)
@@ -64,15 +73,6 @@
 
             fold-system-tests
             all-system-tests))
-
-;;; Commentary:
-;;;
-;;; This module provides the infrastructure to run operating system tests.
-;;; The most important part of that is tools to instrument the OS under test,
-;;; essentially allowing it to run in a virtual machine controlled by the host
-;;; system--hence the name "marionette".
-;;;
-;;; Code:
 
 (define %default-marionette-device
   ;; Default marionette device in the guest.

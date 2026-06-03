@@ -20,6 +20,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides utilities for generating home service
+;;; configurations from existing "dotfiles".
+;;;
+;;; Code:
+
 (define-module (guix scripts home import)
   #:use-module (guix profiles)
   #:use-module (guix ui)
@@ -38,13 +45,6 @@
 
             ;; For tests.
             manifest+configuration-files->code))
-
-;;; Commentary:
-;;;
-;;; This module provides utilities for generating home service
-;;; configurations from existing "dotfiles".
-;;;
-;;; Code:
 
 (define (basename+remove-dots file-name)
   "Remove the dot from the dotfile FILE-NAME; replace the other dots in

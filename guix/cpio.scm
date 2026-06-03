@@ -17,6 +17,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module implements the cpio "new ASCII" format, bit-for-bit identical
+;;; to GNU cpio with the '-H newc' option.
+;;;
+;;; Code:
+
 (define-module (guix cpio)
   #:use-module ((guix build syscalls) #:select (device-number
                                                 device-number->major+minor))
@@ -35,13 +42,6 @@
             read-cpio-header
 
             write-cpio-archive))
-
-;;; Commentary:
-;;;
-;;; This module implements the cpio "new ASCII" format, bit-for-bit identical
-;;; to GNU cpio with the '-H newc' option.
-;;;
-;;; Code:
 
 ;; Values for 'mode', OR'd together.
 

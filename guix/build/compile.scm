@@ -17,6 +17,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Support code to compile Guile code as efficiently as possible (with 2.2).
+;;;
+;;; Code:
+
 (define-module (guix build compile)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
@@ -30,12 +36,6 @@
   #:use-module (language tree-il optimize)
   #:use-module (language cps optimize)
   #:export (compile-files))
-
-;;; Commentary:
-;;;
-;;; Support code to compile Guile code as efficiently as possible (with 2.2).
-;;;
-;;; Code:
 
 (define (clear-keyword-arguments keywords args)
   "Set to #f the value associated with each of the KEYWORDS in ARGS."

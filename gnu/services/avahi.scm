@@ -16,6 +16,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides service definitions for the Avahi
+;;; "zero-configuration" tool set.
+;;;
+;;; Code:
+
 (define-module (gnu services avahi)
   #:use-module (gnu services)
   #:use-module (gnu services base)
@@ -41,13 +48,6 @@
             avahi-configuration-domains-to-browse
 
             avahi-service-type))
-
-;;; Commentary:
-;;;
-;;; This module provides service definitions for the Avahi
-;;; "zero-configuration" tool set.
-;;;
-;;; Code:
 
 (define-record-type* <avahi-configuration>
   avahi-configuration make-avahi-configuration

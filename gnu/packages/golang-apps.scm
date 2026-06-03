@@ -21,6 +21,18 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Golang (Go) specific applications which are not inherited from their
+;;; source live here e.g linters, language servers, REPL implementations etc.
+;;;
+;;; If the <cmd/APP> is inherited from its source place it in corresponded
+;;; golang-*.scm file in the end after the section "Executables".
+;;;
+;;; Please: Try to add new variable in alphabetical order.
+;;;
+;;; Code:
+
 (define-module (gnu packages golang-apps)
   #:use-module (guix build-system go)
   #:use-module (guix gexp)
@@ -34,17 +46,6 @@
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz))
 
-;;; Commentary:
-;;;
-;;; Golang (Go) specific applications which are not inherited from their
-;;; source live here e.g linters, language servers, REPL implementations etc.
-;;;
-;;; If the <cmd/APP> is inherited from its source place it in corresponded
-;;; golang-*.scm file in the end after the section "Executables".
-;;;
-;;; Please: Try to add new variable in alphabetical order.
-;;;
-;;; Code:
 
 (define-public go-chroma
   (package

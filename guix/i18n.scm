@@ -16,6 +16,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Internationalization support.
+;;;
+;;; Code:
+
 (define-module (guix i18n)
   #:use-module (srfi srfi-26)
   #:export (G_
@@ -23,12 +29,6 @@
             P_
             %gettext-domain
             %package-text-domain))
-
-;;; Commentary:
-;;;
-;;; Internationalization support.
-;;;
-;;; Code:
 
 (define %gettext-domain
   ;; Text domain for strings used in the tools.

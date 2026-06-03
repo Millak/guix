@@ -20,6 +20,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Code for dealing with the maintenance of GNU packages, such as
+;;; auto-updates.
+;;;
+;;; Code:
+
 (define-module (guix gnu-maintenance)
   #:use-module (web uri)
   #:use-module (web client)
@@ -81,13 +88,6 @@
             %xorg-updater
             %kernel.org-updater
             %generic-html-updater))
-
-;;; Commentary:
-;;;
-;;; Code for dealing with the maintenance of GNU packages, such as
-;;; auto-updates.
-;;;
-;;; Code:
 
 
 ;;;

@@ -19,6 +19,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This package provides not an actual importer but simply an updater for
+;;; KDE packages.  It grabs available files from the 'ls-lR.bz2' file
+;;; available on download.kde.org.
+;;;
+;;; Code:
+
 (define-module (guix import kde)
   #:use-module ((guix import utils) #:select (find-version))
   #:use-module (guix http-client)
@@ -34,14 +42,6 @@
   #:use-module (web uri)
 
   #:export (%kde-updater))
-
-;;; Commentary:
-;;;
-;;; This package provides not an actual importer but simply an updater for
-;;; KDE packages.  It grabs available files from the 'ls-lR.bz2' file
-;;; available on download.kde.org.
-;;;
-;;; Code:
 
 (define (tarball->version tarball)
   "Return the version TARBALL corresponds to.  TARBALL is a file name like

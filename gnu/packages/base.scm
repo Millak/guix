@@ -40,6 +40,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Base packages of the Guix-based GNU user-land software distribution.
+;;;
+;;; Code:
+
 (define-module (gnu packages base)
   #:use-module ((guix licenses)
                 #:select (gpl3+ lgpl2.0+ lgpl3+ public-domain))
@@ -89,12 +95,6 @@
             ;; introducing circular module dependencies.
             canonical-package
             %final-inputs))
-
-;;; Commentary:
-;;;
-;;; Base packages of the Guix-based GNU user-land software distribution.
-;;;
-;;; Code:
 
 (define-public hello
   (package

@@ -17,6 +17,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module implements a lower-level interface for interacting with the
+;;; Hetzner Cloud API https://docs.hetzner.cloud.
+;;;
+
 (define-module (gnu machine hetzner http)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
@@ -178,12 +184,6 @@
             make-hetzner-server
             make-hetzner-server-type
             make-hetzner-ssh-key))
-
-;;; Commentary:
-;;;
-;;; This module implements a lower-level interface for interacting with the
-;;; Hetzner Cloud API https://docs.hetzner.cloud.
-;;;
 
 (define %hetzner-default-api-token
   (make-parameter (getenv "GUIX_HETZNER_API_TOKEN")))

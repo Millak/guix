@@ -17,6 +17,16 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides an abstract way to represent graphs and to manipulate
+;;; them.  It comes with several such representations for packages,
+;;; derivations, and store items.  It also provides a generic interface for
+;;; exporting graphs in an external format, including a Graphviz
+;;; implementation thereof.
+;;;
+;;; Code:
+
 (define-module (guix graph)
   #:use-module (guix store)
   #:use-module (guix monads)
@@ -60,16 +70,6 @@
             graph-backend-description
 
             export-graph))
-
-;;; Commentary:
-;;;
-;;; This module provides an abstract way to represent graphs and to manipulate
-;;; them.  It comes with several such representations for packages,
-;;; derivations, and store items.  It also provides a generic interface for
-;;; exporting graphs in an external format, including a Graphviz
-;;; implementation thereof.
-;;;
-;;; Code:
 
 
 ;;;

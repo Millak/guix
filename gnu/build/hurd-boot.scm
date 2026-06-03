@@ -17,6 +17,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This modules provides tools to deal with disk partitions, and to mount and
+;;; check file systems.
+;;;
+;;; Code:
+
 (define-module (gnu build hurd-boot)
   #:use-module (system repl error-handling)
   #:autoload   (system repl repl) (start-repl)
@@ -28,12 +35,6 @@
                 #:hide (file-system-type))
   #:export (make-hurd-device-nodes
             boot-hurd-system))
-
-;;; Commentary:
-;;;
-;;; Utility procedures useful to boot a Hurd system.
-;;;
-;;; Code:
 
 ;; XXX FIXME c&p from linux-boot.scm
 (define (find-long-option option arguments)

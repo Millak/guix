@@ -16,6 +16,17 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; A simple (simplistic?) implementation of unordered persistent sets based
+;;; on vhashes that seems to be good enough so far.
+;;;
+;;; Another option would be to use "bounded balance trees" (Adams 1992) as
+;;; implemented by Ian Price in 'pfds', which has faster union etc. but needs
+;;; an order on the objects of the set.
+;;;
+;;; Code:
+
 (define-module (guix sets)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
@@ -31,17 +42,6 @@
             set->list
             list->set
             list->setq))
-
-;;; Commentary:
-;;;
-;;; A simple (simplistic?) implementation of unordered persistent sets based
-;;; on vhashes that seems to be good enough so far.
-;;;
-;;; Another option would be to use "bounded balance trees" (Adams 1992) as
-;;; implemented by Ian Price in 'pfds', which has faster union etc. but needs
-;;; an order on the objects of the set.
-;;;
-;;; Code:
 
 (define-record-type <set>
   (%make-set vhash insert ref)

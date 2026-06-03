@@ -17,12 +17,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix build android-repo)
-  #:use-module (guix build utils)
-  #:use-module (srfi srfi-34)
-  #:use-module (ice-9 format)
-  #:export (android-repo-fetch))
-
 ;;; Commentary:
 ;;;
 ;;; This is the build-side support code of (guix android-repo-download).
@@ -30,6 +24,12 @@
 ;;; checked out at a specific revision.
 ;;;
 ;;; Code:
+
+(define-module (guix build android-repo)
+  #:use-module (guix build utils)
+  #:use-module (srfi srfi-34)
+  #:use-module (ice-9 format)
+  #:export (android-repo-fetch))
 
 (define* (android-repo-fetch manifest-url manifest-revision directory
                              #:key (git-repo-command "git-repo"))

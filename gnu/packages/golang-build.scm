@@ -37,6 +37,19 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Modules (libraries) which are part of the Golang project but outside the
+;;; main Golang tree, see <https://pkg.go.dev/golang.org/x>
+;;;
+;;; Since they are bound to be relied on by many, their dependencies should be
+;;; kept minimal, and this module should not depend on other modules
+;;; containing Golang packages.
+;;;
+;;; Please: Try to add new module packages in alphabetic order.
+;;;
+;;; Code:
+
 (define-module (gnu packages golang-build)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system go)
@@ -50,18 +63,6 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages protobuf))
 
-;;; Commentary:
-;;;
-;;; Modules (libraries) which are part of the Golang project but outside the
-;;; main Golang tree, see <https://pkg.go.dev/golang.org/x>
-;;;
-;;; Since they are bound to be relied on by many, their dependencies should be
-;;; kept minimal, and this module should not depend on other modules
-;;; containing Golang packages.
-;;;
-;;; Please: Try to add new module packages in alphabetic order.
-;;;
-;;; Code:
 
 (define-public go-buf-build-gen-go-bufbuild-protovalidate-protocolbuffers-go
   (package

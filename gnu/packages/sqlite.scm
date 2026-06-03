@@ -31,6 +31,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module has been separated from (gnu packages databases) to reduce the
+;;; number of module references for core packages.
+;;;
+;;; Code:
+
 (define-module (gnu packages sqlite)
   #:use-module (gnu packages)
   #:use-module (gnu packages hurd)
@@ -44,11 +51,6 @@
   #:use-module (guix deprecation)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-26))
-
-;;; Commentary:
-;;;
-;;; This module has been separated from (gnu packages databases) to reduce the
-;;; number of module references for core packages.
 
 (define (sqlite-uri version year)
   (let ((numeric-version

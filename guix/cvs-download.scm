@@ -18,6 +18,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; An <origin> method that fetches a specific revision or date from a CVS
+;;; repository.  The CVS-ROOT-DIRECTORY, MODULE and REVISION are specified
+;;; with a <cvs-reference> object.  REVISION should be specified as either a
+;;; date string in ISO-8601 format (e.g. "2012-12-21") or a CVS tag.
+;;;
+;;; Code:
+
 (define-module (guix cvs-download)
   #:use-module (guix records)
   #:use-module (guix gexp)
@@ -33,15 +42,6 @@
             cvs-reference-module
             cvs-reference-revision
             cvs-fetch))
-
-;;; Commentary:
-;;;
-;;; An <origin> method that fetches a specific revision or date from a CVS
-;;; repository.  The CVS-ROOT-DIRECTORY, MODULE and REVISION are specified
-;;; with a <cvs-reference> object.  REVISION should be specified as either a
-;;; date string in ISO-8601 format (e.g. "2012-12-21") or a CVS tag.
-;;;
-;;; Code:
 
 (define-record-type* <cvs-reference>
   cvs-reference make-cvs-reference

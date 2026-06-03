@@ -17,6 +17,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides tools to determine the micro-architecture supported
+;;; by the CPU and to map it to a name known to GCC's '-march'.
+;;;
+;;; Code:
+
 (define-module (guix cpu)
   #:use-module (guix sets)
   #:use-module (guix memoization)
@@ -34,13 +41,6 @@
 
             cpu->gcc-architecture
             gcc-architecture->micro-architecture-level))
-
-;;; Commentary:
-;;;
-;;; This module provides tools to determine the micro-architecture supported
-;;; by the CPU and to map it to a name known to GCC's '-march'.
-;;;
-;;; Code:
 
 ;; CPU description.
 (define-record-type <cpu>

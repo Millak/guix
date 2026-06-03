@@ -16,6 +16,17 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides tests for the image creation process that is
+;;; performed by "genimage" under the hood.
+;;;
+;;; The image partitionment is checked using Guile-Parted.  The content of the
+;;; images is out of the scope of this module.  Other test modules such as
+;;; (gnu tests installation) make sure that the produced images are viable.
+;;;
+;;; Code:
+
 (define-module (gnu tests image)
   #:use-module (gnu)
   #:use-module (gnu image)
@@ -29,17 +40,6 @@
   #:use-module (guix monads)
   #:use-module (ice-9 format)
   #:export (%test-images))
-
-;;; Commentary:
-;;;
-;;; This module provides tests for the image creation process that is
-;;; performed by "genimage" under the hood.
-;;;
-;;; The image partitionment is checked using Guile-Parted.  The content of the
-;;; images is out of the scope of this module.  Other test modules such as
-;;; (gnu tests installation) make sure that the produced images are viable.
-;;;
-;;; Code:
 
 ;; A dummy initializer creating a simple file in the partition.
 (define dummy-initializer

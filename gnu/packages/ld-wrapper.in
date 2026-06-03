@@ -39,12 +39,6 @@ exec @GUILE@ -c "(load-compiled \"@SELF@.go\") ($main (command-line))" "$@"
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (gnu build-support ld-wrapper)
-  #:use-module (srfi srfi-1)
-  #:use-module (ice-9 match)
-  #:autoload   (ice-9 rdelim) (read-delimited)
-  #:export (ld-wrapper))
-
 ;;; Commentary:
 ;;;
 ;;; This is a wrapper for the linker.  Its purpose is to inspect the -L and
@@ -69,6 +63,12 @@ exec @GUILE@ -c "(load-compiled \"@SELF@.go\") ($main (command-line))" "$@"
 ;;; libraries outside the store.
 ;;;
 ;;; Code:
+
+(define-module (gnu build-support ld-wrapper)
+  #:use-module (srfi srfi-1)
+  #:use-module (ice-9 match)
+  #:autoload   (ice-9 rdelim) (read-delimited)
+  #:export (ld-wrapper))
 
 (define %real-ld
   ;; Name of the linker that we wrap.

@@ -16,6 +16,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; A Guix Home service to configure Beets, a music file and metadata manager.
+;;;
+;;; Code:
+
 (define-module (gnu home services music)
   #:use-module (guix gexp)
   #:use-module (guix records)
@@ -24,12 +30,6 @@
   #:use-module (gnu packages video)
   #:export (home-beets-configuration
             home-beets-service-type))
-
-;;; Commentary:
-;;;
-;;; A Guix Home service to configure Beets, a music file and metadata manager.
-;;;
-;;; Code:
 
 (define-record-type* <home-beets-configuration>
   home-beets-configuration make-home-beets-configuration

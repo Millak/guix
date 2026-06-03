@@ -16,6 +16,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module defines the remote procedure interface between the build
+;;; daemon and clients (also known as "remote procedure calls" or RPCs).  It
+;;; is used to generate client stubs in (guix store) and can also be used to
+;;; generate server stubs.
+;;;
+;;; Code:
+
 (define-module (guix remote-procedures)
   #:use-module (guix serialization)
   #:export (%protocol-version
@@ -34,15 +43,6 @@
             hash-algo
             build-mode
             gc-action))
-
-;;; Comment:
-;;;
-;;; This module defines the remote procedure interface between the build
-;;; daemon and clients (also known as "remote procedure calls" or RPCs).  It
-;;; is used to generate client stubs in (guix store) and can also be used to
-;;; generate server stubs.
-;;;
-;;; Code:
 
 (define %protocol-version
   ;; Version of the currently-implemented protocol.

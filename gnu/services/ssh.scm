@@ -24,6 +24,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module implements secure shell (SSH) services.
+;;;
+;;; OpenSSH.
+;;;
+
 (define-module (gnu services ssh)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages admin)
@@ -89,13 +96,6 @@
             webssh-configuration?
             webssh-service-type
             %webssh-configuration-nginx))
-
-;;; Commentary:
-;;;
-;;; This module implements secure shell (SSH) services.
-;;;
-;;; OpenSSH.
-;;;
 
 (define-record-type* <openssh-configuration>
   openssh-configuration make-openssh-configuration

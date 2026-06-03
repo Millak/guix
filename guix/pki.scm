@@ -16,6 +16,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Public key infrastructure for the authentication and authorization of
+;;; archive imports.  This is essentially a subset of SPKI for our own
+;;; purposes (see <http://theworld.com/~cme/spki.txt> and
+;;; <http://www.ietf.org/rfc/rfc2693.txt>.)
+;;;
+;;; Code:
+
 (define-module (guix pki)
   #:use-module (guix config)
   #:use-module (gcrypt pk-crypto)
@@ -38,15 +47,6 @@
             signature-signed-data
             valid-signature?
             signature-case))
-
-;;; Commentary:
-;;;
-;;; Public key infrastructure for the authentication and authorization of
-;;; archive imports.  This is essentially a subset of SPKI for our own
-;;; purposes (see <http://theworld.com/~cme/spki.txt> and
-;;; <http://www.ietf.org/rfc/rfc2693.txt>.)
-;;;
-;;; Code:
 
 (define (public-keys->acl keys)
   "Return an ACL that lists all of KEYS with a '(guix import)'

@@ -19,6 +19,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This package provides not an actual importer but simply an updater for
+;;; ASF packages.  It grabs available files from the 'find-ls2.txt.gz' file
+;;; available on dlcdn.apache.org.
+;;;
+;;; Code:
+
 (define-module (guix import apache)
   #:use-module ((guix import utils) #:select (find-version))
   #:use-module (guix http-client)
@@ -34,14 +42,6 @@
   #:use-module (web uri)
 
   #:export (%apache-updater))
-
-;;; Commentary:
-;;;
-;;; This package provides not an actual importer but simply an updater for
-;;; ASF packages.  It grabs available files from the 'find-ls2.txt.gz' file
-;;; available on dlcdn.apache.org.
-;;;
-;;; Code:
 
 (define (tarball->version tarball)
   "Return the version TARBALL corresponds to.  TARBALL is a file name like

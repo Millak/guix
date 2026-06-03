@@ -17,6 +17,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Code to spawn a Web server for testing purposes.
+;;;
+;;; Code:
+
 (define-module (guix tests http)
   #:use-module (ice-9 threads)
   #:use-module (web server)
@@ -31,12 +37,6 @@
             call-with-http-server
             %http-server-port
             %local-url))
-
-;;; Commentary:
-;;;
-;;; Code to spawn a Web server for testing purposes.
-;;;
-;;; Code:
 
 (define %http-server-port
   ;; TCP port to use for the stub HTTP server.

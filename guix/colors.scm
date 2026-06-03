@@ -19,6 +19,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides tools to produce colored output using ANSI escapes.
+;;;
+;;; Code:
+
 (define-module (guix colors)
   #:use-module (guix memoization)
   #:use-module (srfi srfi-1)
@@ -44,12 +50,6 @@
             supports-hyperlinks?
             file-hyperlink
             hyperlink))
-
-;;; Commentary:
-;;;
-;;; This module provides tools to produce colored output using ANSI escapes.
-;;;
-;;; Code:
 
 ;; Record type for "colors", which are actually lists of color attributes.
 (define-record-type <color>

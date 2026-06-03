@@ -24,6 +24,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Syntax for creating Scheme bindings to complex configuration files.
+;;;
+;;; Code:
+
 (define-module (gnu services configuration)
   #:use-module (guix packages)
   #:use-module (guix records)
@@ -91,12 +97,6 @@
             serialize-text-config
             generic-serialize-alist-entry
             generic-serialize-alist))
-
-;;; Commentary:
-;;;
-;;; Syntax for creating Scheme bindings to complex configuration files.
-;;;
-;;; Code:
 
 (define-condition-type &configuration-error &error
   configuration-error?)

@@ -48,6 +48,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Please: Try to add new module packages in alphabetic order.
+;;;
+;;; Code:
+
 (define-module (gnu packages ruby-check)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system ruby)
@@ -61,11 +67,6 @@
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages ruby-xyz))
 
-;;; Commentary:
-;;;
-;;; Please: Try to add new module packages in alphabetic order.
-;;;
-;;; Code:
 
 
 ;; Bundler is yet another source of circular dependencies, so we must disable

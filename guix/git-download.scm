@@ -21,6 +21,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; An <origin> method that fetches a specific commit from a Git repository.
+;;; The repository URL and commit hash are specified with a <git-reference>
+;;; object.
+;;;
+;;; Code:
+
 (define-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix store)
@@ -60,14 +68,6 @@
             git-version
             git-file-name
             git-predicate))
-
-;;; Commentary:
-;;;
-;;; An <origin> method that fetches a specific commit from a Git repository.
-;;; The repository URL and commit hash are specified with a <git-reference>
-;;; object.
-;;;
-;;; Code:
 
 (define-record-type* <git-reference>
   git-reference make-git-reference

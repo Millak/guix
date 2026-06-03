@@ -22,6 +22,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Service defininition for the CUPS printing system.
+;;;
+;;; Code:
+
 (define-module (gnu services cups)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
@@ -46,12 +52,6 @@
             location-access-control
             operation-access-control
             method-access-control))
-
-;;; Commentary:
-;;;
-;;; Service defininition for the CUPS printing system.
-;;;
-;;; Code:
 
 (define %cups-accounts
   (list (or

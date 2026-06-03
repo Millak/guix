@@ -18,6 +18,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Build a directory that is the union of a set of directories, using
+;;; symbolic links.
+;;;
+;;; Code:
+
 (define-module (guix build union)
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
@@ -31,13 +38,6 @@
 
             relative-file-name
             symlink-relative))
-
-;;; Commentary:
-;;;
-;;; Build a directory that is the union of a set of directories, using
-;;; symbolic links.
-;;;
-;;; Code:
 
 ;; This code can be used with the bootstrap Guile, which is Guile 2.0, so
 ;; provide a compatibility layer.

@@ -18,6 +18,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Utilities for dealing with Scheme records.
+;;;
+;;; Code:
+
 (define-module (guix records)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
@@ -34,12 +40,6 @@
             recutils->alist
             match-record
             match-record-lambda))
-
-;;; Commentary:
-;;;
-;;; Utilities for dealing with Scheme records.
-;;;
-;;; Code:
 
 (define-syntax record-error
   (syntax-rules ()

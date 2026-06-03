@@ -18,6 +18,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; An <origin> method that fetches a specific changeset from a Mercurial
+;;; repository.  The repository URL and changeset ID are specified with a
+;;; <hg-reference> object.
+;;;
+;;; Code:
+
 (define-module (guix hg-download)
   #:use-module (guix gexp)
   #:use-module (guix store)
@@ -39,14 +47,6 @@
             hg-fetch
             hg-version
             hg-file-name))
-
-;;; Commentary:
-;;;
-;;; An <origin> method that fetches a specific changeset from a Mercurial
-;;; repository.  The repository URL and changeset ID are specified with a
-;;; <hg-reference> object.
-;;;
-;;; Code:
 
 (define-record-type* <hg-reference>
   hg-reference make-hg-reference

@@ -19,6 +19,17 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Instrumentation tools for QEMU virtual machines (VMs).  A "marionette" is
+;;; essentially a VM (a QEMU instance) with its monitor connected to a
+;;; Unix-domain socket, and with a REPL inside the guest listening on a
+;;; virtual console, which is itself connected to the host via a Unix-domain
+;;; socket--these are the marionette's strings, connecting it to the almighty
+;;; puppeteer.
+;;;
+;;; Code:
+
 (define-module (gnu build marionette)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
@@ -43,17 +54,6 @@
 
             system-test-runner
             qemu-command))
-
-;;; Commentary:
-;;;
-;;; Instrumentation tools for QEMU virtual machines (VMs).  A "marionette" is
-;;; essentially a VM (a QEMU instance) with its monitor connected to a
-;;; Unix-domain socket, and with a REPL inside the guest listening on a
-;;; virtual console, which is itself connected to the host via a Unix-domain
-;;; socket--these are the marionette's strings, connecting it to the almighty
-;;; puppeteer.
-;;;
-;;; Code:
 
 (define-record-type <marionette>
   (marionette command pid monitor repl)

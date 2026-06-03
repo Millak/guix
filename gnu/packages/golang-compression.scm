@@ -23,6 +23,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Please: Try to add new module packages in alphabetic order.
+;;;
+;;; Code:
+
 (define-module (gnu packages golang-compression)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system go)
@@ -38,11 +44,6 @@
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages pkg-config))
 
-;;; Commentary:
-;;;
-;;; Please: Try to add new module packages in alphabetic order.
-;;;
-;;; Code:
 
 (define-public go-code-forgejo-org-forgejo-go-rpmutils
   (package

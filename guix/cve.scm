@@ -17,6 +17,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides the tools to fetch, parse, and digest part of the
+;;; Common Vulnerabilities and Exposures (CVE) feeds provided by the US NIST
+;;; at <https://nvd.nist.gov/vuln/data-feeds>.
+;;;
+;;; Code:
+
 (define-module (guix cve)
   #:use-module (guix utils)
   #:use-module (guix http-client)
@@ -53,14 +61,6 @@
             json->vulnerabilities
             current-vulnerabilities
             vulnerabilities->lookup-proc))
-
-;;; Commentary:
-;;;
-;;; This module provides the tools to fetch, parse, and digest part of the
-;;; Common Vulnerabilities and Exposures (CVE) feeds provided by the US NIST
-;;; at <https://nvd.nist.gov/vuln/data-feeds>.
-;;;
-;;; Code:
 
 (define (string->date* str)
   (string->date str "~Y-~m-~dT~H:~M:~S"))

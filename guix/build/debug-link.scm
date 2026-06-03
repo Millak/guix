@@ -16,6 +16,20 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides tools to deal with '.gnu_debuglink' sections in ELF
+;;; files.  These sections are created by 'objcopy --add-gnu-debuglink' to
+;;; create separate debug files (info "(gdb) Separate Debug Files").
+;;;
+;;; The main facility of this module is 'graft-debug-links', which allows us
+;;; to update the cyclic redundancy check (CRC) that appears in
+;;; '.gnu_debuglink' sections when grafting, such that separate debug files
+;;; remain usable after grafting.  Failing to do that, GDB would complain
+;;; about CRC mismatch---see <https://issues.guix.gnu.org/19973>.
+;;;
+;;; Code:
+
 (define-module (guix build debug-link)
   #:use-module (guix elf)
   #:use-module ((guix build utils)
@@ -30,20 +44,6 @@
             set-debuglink-crc
 
             graft-debug-links))
-
-;;; Commentary:
-;;;
-;;; This module provides tools to deal with '.gnu_debuglink' sections in ELF
-;;; files.  These sections are created by 'objcopy --add-gnu-debuglink' to
-;;; create separate debug files (info "(gdb) Separate Debug Files").
-;;;
-;;; The main facility of this module is 'graft-debug-links', which allows us
-;;; to update the cyclic redundancy check (CRC) that appears in
-;;; '.gnu_debuglink' sections when grafting, such that separate debug files
-;;; remain usable after grafting.  Failing to do that, GDB would complain
-;;; about CRC mismatch---see <https://issues.guix.gnu.org/19973>.
-;;;
-;;; Code:
 
 (define %crc32-table
   ;; CRC table taken from "(gdb) Separate Debug Files".

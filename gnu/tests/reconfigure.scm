@@ -17,6 +17,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Test in-place system reconfiguration: advancing the system generation on a
+;;; running instance of the Guix System.
+;;;
+;;; Code:
+
 (define-module (gnu tests reconfigure)
   #:use-module (gnu bootloader)
   #:use-module (gnu services)
@@ -37,13 +44,6 @@
             %test-upgrade-services
             %test-upgrade-kexec
             %test-install-bootloader))
-
-;;; Commentary:
-;;;
-;;; Test in-place system reconfiguration: advancing the system generation on a
-;;; running instance of the Guix System.
-;;;
-;;; Code:
 
 (define* (run-switch-to-system-test)
   "Run a test of an OS running SWITCH-SYSTEM-PROGRAM, which creates a new

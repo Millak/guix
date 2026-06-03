@@ -29,6 +29,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Tools to create and manipulate profiles---i.e., the representation of a
+;;; set of installed packages.
+;;;
+;;; Code:
+
 (define-module (guix profiles)
   #:use-module ((guix config) #:select (%state-directory))
   #:use-module ((guix utils) #:hide (package-name->name+version))
@@ -166,13 +173,6 @@
             user-friendly-profile
 
             linux-module-database))
-
-;;; Commentary:
-;;;
-;;; Tools to create and manipulate profiles---i.e., the representation of a
-;;; set of installed packages.
-;;;
-;;; Code:
 
 
 ;;;

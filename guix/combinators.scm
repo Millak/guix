@@ -18,6 +18,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides useful combinators that complement SRFI-1 and
+;;; friends.
+;;;
+;;; Code:
+
 (define-module (guix combinators)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
@@ -27,13 +34,6 @@
             compile-time-value
             procedure-call-location
             define-compile-time-procedure))
-
-;;; Commentary:
-;;;
-;;; This module provides useful combinators that complement SRFI-1 and
-;;; friends.
-;;;
-;;; Code:
 
 (define fold2
   (case-lambda

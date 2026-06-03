@@ -19,6 +19,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module contains shell related services like Zsh.
+;;;
+;;; Code:
+
 (define-module (gnu home services shells)
   #:use-module (gnu services configuration)
   #:use-module ((gnu services) #:select (%default-bash-aliases))
@@ -51,12 +57,6 @@
 
             home-inputrc-service-type
             home-inputrc-configuration))
-
-;;; Commentary:
-;;;
-;;; This module contains shell related services like Zsh.
-;;;
-;;; Code:
 
 
 ;;;

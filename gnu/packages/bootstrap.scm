@@ -23,6 +23,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Pre-built packages that are used to bootstrap the
+;;; distribution--i.e., to build all the core packages from scratch.
+;;;
+;;; Code:
+
 (define-module (gnu packages bootstrap)
   #:use-module (guix licenses)
   #:use-module (gnu packages)
@@ -63,14 +70,6 @@
             %bootstrap-inputs
 
             %bootstrap-inputs-for-tests))
-
-;;; Commentary:
-;;;
-;;; Pre-built packages that are used to bootstrap the
-;;; distribution--i.e., to build all the core packages from scratch.
-;;;
-;;; Code:
-
 
 
 ;;;

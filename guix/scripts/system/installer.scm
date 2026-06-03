@@ -16,6 +16,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Implement the 'guix system installer' command, which runs the installer,
+;;; directly as a Guix command, also in dry-run mode.
+;;;
+;;; Code:
+
 (define-module (guix scripts system installer)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-37)
@@ -24,13 +31,6 @@
   #:use-module (guix ui)
   #:use-module (guix utils)
   #:export (guix-system-installer))
-
-;;; Commentary:
-;;;
-;;; Implement the 'guix system installer' command, which runs the installer,
-;;; directly as a Guix command, also in dry-run mode.
-;;;
-;;; Code:
 
 (define %options
   (list (option '(#\n "dry-run") #f #f

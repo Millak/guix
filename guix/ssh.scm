@@ -16,6 +16,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides tools to support communication with remote stores
+;;; over SSH, using Guile-SSH.
+;;;
+;;; Code:
+
 (define-module (guix ssh)
   #:use-module (guix store)
   #:use-module (guix inferior)
@@ -55,13 +62,6 @@
             remote-store-host
 
             report-guile-error))
-
-;;; Commentary:
-;;;
-;;; This module provides tools to support communication with remote stores
-;;; over SSH, using Guile-SSH.
-;;;
-;;; Code:
 
 (define %compression
   "zlib@openssh.com,zlib,none")

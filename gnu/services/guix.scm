@@ -19,6 +19,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;;; Commentary:
+;;;
+;;; Services specifically related to GNU Guix.
+;;;
+;;;; Code:
+
 (define-module (gnu services guix)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
@@ -164,12 +170,6 @@
             shared-cache-service-type
             shared-cache-configuration
             user-cache))
-
-;;;; Commentary:
-;;;
-;;; Services specifically related to GNU Guix.
-;;;
-;;;; Code:
 
 (define-record-type* <guix-build-coordinator-configuration>
   guix-build-coordinator-configuration make-guix-build-coordinator-configuration

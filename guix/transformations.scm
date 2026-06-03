@@ -20,6 +20,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module implements "package transformation options"---tools for
+;;; package graph rewriting.  It contains the graph rewriting logic, but also
+;;; the tip of its user interface: command-line option handling.
+;;;
+;;; Code:
+
 (define-module (guix transformations)
   #:use-module ((guix config) #:select (%system))
   #:use-module (guix i18n)
@@ -74,14 +82,6 @@
             transformation-option-key?
             cacheable-transformation-option-key?
             %transformation-options))
-
-;;; Commentary:
-;;;
-;;; This module implements "package transformation options"---tools for
-;;; package graph rewriting.  It contains the graph rewriting logic, but also
-;;; the tip of its user interface: command-line option handling.
-;;;
-;;; Code:
 
 (module-autoload! (current-module) '(gnu packages)
                   '(specification->package))

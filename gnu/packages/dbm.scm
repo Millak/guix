@@ -26,6 +26,11 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module has been separated from (gnu packages databases) to reduce the
+;;; number of module references for core packages.
+
 (define-module (gnu packages dbm)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -36,11 +41,6 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix utils)
   #:use-module (ice-9 match))
-
-;;; Commentary:
-;;;
-;;; This module has been separated from (gnu packages databases) to reduce the
-;;; number of module references for core packages.
 
 (define bdb-snippet
   ;; Remove some bundled and generated files.  Some of the old

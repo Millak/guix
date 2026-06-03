@@ -18,6 +18,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Generate a package declaration template for the latest version of a GNU
+;;; package, using meta-data available upstream for the package.
+;;;
+;;; Code:
+
 (define-module (guix import gnu)
   #:use-module ((guix diagnostics) #:select (formatted-message))
   #:use-module (guix gnu-maintenance)
@@ -32,13 +39,6 @@
   #:use-module (web uri)
   #:use-module (ice-9 match)
   #:export (gnu->guix-package))
-
-;;; Commentary:
-;;;
-;;; Generate a package declaration template for the latest version of a GNU
-;;; package, using meta-data available upstream for the package.
-;;;
-;;; Code:
 
 (define (qualified-url url)
   "Return a fully-qualified URL based on URL."

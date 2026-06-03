@@ -16,26 +16,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix build elm-build-system)
-  #:use-module ((guix build gnu-build-system) #:prefix gnu:)
-  #:use-module (guix build utils)
-  #:use-module (guix build union)
-  #:use-module (ice-9 ftw)
-  #:use-module (ice-9 rdelim)
-  #:use-module (ice-9 regex)
-  #:use-module (ice-9 match)
-  #:use-module (ice-9 popen)
-  #:use-module (ice-9 vlist)
-  #:use-module (json)
-  #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-26)
-  #:use-module (srfi srfi-71)
-  #:export (%standard-phases
-            patch-application-dependencies
-            patch-json-string-escapes
-            read-offline-registry->vhash
-            elm-build))
-
 ;;; Commentary:
 ;;;
 ;;; Elm draws a sharp distinction between "projects" with `{"type":"package"}`
@@ -89,6 +69,26 @@
 ;;;
 ;;; Code:
 ;;;
+
+(define-module (guix build elm-build-system)
+  #:use-module ((guix build gnu-build-system) #:prefix gnu:)
+  #:use-module (guix build utils)
+  #:use-module (guix build union)
+  #:use-module (ice-9 ftw)
+  #:use-module (ice-9 rdelim)
+  #:use-module (ice-9 regex)
+  #:use-module (ice-9 match)
+  #:use-module (ice-9 popen)
+  #:use-module (ice-9 vlist)
+  #:use-module (json)
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-71)
+  #:export (%standard-phases
+            patch-application-dependencies
+            patch-json-string-escapes
+            read-offline-registry->vhash
+            elm-build))
 
 (define %essential-elm-packages
   ;; elm/json isn't essential in a fundamental sense,

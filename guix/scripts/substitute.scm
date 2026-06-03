@@ -19,6 +19,17 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This is the "binary substituter".  It is invoked by the daemon do check
+;;; for the existence of available "substitutes" (pre-built binaries), and to
+;;; actually use them as a substitute to building things locally.
+;;;
+;;; If possible, substitute a binary for the requested store path, using a Nix
+;;; "binary cache".  This program implements the Nix "substituter" protocol.
+;;;
+;;; Code:
+
 (define-module (guix scripts substitute)
   #:use-module (guix ui)
   #:use-module (guix scripts)
@@ -63,17 +74,6 @@
 
             substitute-urls
             guix-substitute))
-
-;;; Comment:
-;;;
-;;; This is the "binary substituter".  It is invoked by the daemon do check
-;;; for the existence of available "substitutes" (pre-built binaries), and to
-;;; actually use them as a substitute to building things locally.
-;;;
-;;; If possible, substitute a binary for the requested store path, using a Nix
-;;; "binary cache".  This program implements the Nix "substituter" protocol.
-;;;
-;;; Code:
 
 (define %narinfo-expired-cache-entry-removal-delay
   ;; How often we want to remove files corresponding to expired cache entries.

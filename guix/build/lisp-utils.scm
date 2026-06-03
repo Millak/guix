@@ -18,6 +18,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Tools to evaluate lisp programs within a lisp session, generate wrapper
+;;; systems for executables. Compile, test, and produce images for systems and
+;;; programs, and link them with their dependencies.
+;;;
+;;; Code:
+
 (define-module (guix build lisp-utils)
   #:use-module (ice-9 format)
   #:use-module (ice-9 hash-table)
@@ -44,14 +52,6 @@
             valid-char-set
             normalize-string
             library-output))
-
-;;; Commentary:
-;;;
-;;; Tools to evaluate lisp programs within a lisp session, generate wrapper
-;;; systems for executables. Compile, test, and produce images for systems and
-;;; programs, and link them with their dependencies.
-;;;
-;;; Code:
 
 (define %lisp
   ;; File name of the Lisp compiler.

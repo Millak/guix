@@ -16,6 +16,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides the building blocks required to construct RPM
+;;; archives.  It is intended to be importable on the build side, so shouldn't
+;;; depend on (guix diagnostics) or other host-side-only modules.
+;;;
+;;; Code:
+
 (define-module (guix rpm)
   #:autoload (gcrypt hash) (hash-algorithm file-hash md5)
   #:use-module (guix build utils)
@@ -44,14 +52,6 @@
             bytevector->hex-string
 
             fhs-directory?))
-
-;;; Commentary:
-;;;
-;;; This module provides the building blocks required to construct RPM
-;;; archives.  It is intended to be importable on the build side, so shouldn't
-;;; depend on (guix diagnostics) or other host-side-only modules.
-;;;
-;;; Code:
 
 (define (gnu-system-triplet->machine-type triplet)
   "Return the machine component of TRIPLET, a GNU system triplet."

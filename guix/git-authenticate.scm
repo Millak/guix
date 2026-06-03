@@ -17,6 +17,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides tools to authenticate a range of Git commits.  A
+;;; commit is considered "authentic" if and only if it is signed by an
+;;; authorized party.  Parties authorized to sign a commit are listed in the
+;;; '.guix-authorizations' file of the parent commit.
+;;;
+;;; Code:
+
 (define-module (guix git-authenticate)
   #:autoload   (git oid) (oid->string
                           string->oid)
@@ -80,15 +89,6 @@
             signature-verification-error-signature
             missing-key-error?
             missing-key-error-signature))
-
-;;; Commentary:
-;;;
-;;; This module provides tools to authenticate a range of Git commits.  A
-;;; commit is considered "authentic" if and only if it is signed by an
-;;; authorized party.  Parties authorized to sign a commit are listed in the
-;;; '.guix-authorizations' file of the parent commit.
-;;;
-;;; Code:
 
 (define-condition-type &git-authentication-error &error
   git-authentication-error?

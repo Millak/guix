@@ -19,12 +19,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix build hg)
-  #:use-module (guix build utils)
-  #:use-module (srfi srfi-34)
-  #:use-module (ice-9 format)
-  #:export (hg-fetch))
-
 ;;; Commentary:
 ;;;
 ;;; This is the build-side support code of (guix hg-download).  It allows a
@@ -32,6 +26,12 @@
 ;;; identifier.
 ;;;
 ;;; Code:
+
+(define-module (guix build hg)
+  #:use-module (guix build utils)
+  #:use-module (srfi srfi-34)
+  #:use-module (ice-9 format)
+  #:export (hg-fetch))
 
 (define* (hg-fetch url changeset directory
                    #:key (hg-command "hg"))

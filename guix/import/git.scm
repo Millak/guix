@@ -19,24 +19,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix import git)
-  #:use-module (guix i18n)
-  #:use-module (guix diagnostics)
-  #:use-module (guix git)
-  #:use-module (guix git-download)
-  #:use-module (guix packages)
-  #:use-module (guix upstream)
-  #:use-module ((guix import utils) #:select (find-version))
-  #:use-module (ice-9 match)
-  #:use-module (ice-9 regex)
-  #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-26)
-  #:use-module (srfi srfi-34)
-  #:use-module (srfi srfi-35)
-  #:use-module (srfi srfi-71)
-  #:export (%generic-git-updater
-            get-tags))
-
 ;;; Commentary:
 ;;;
 ;;; This module provides a generic package updater for packages hosted on Git
@@ -56,6 +38,24 @@
 ;;;   2021.12.31.  Honor a `release-tag-date-scheme?' property?
 ;;;
 ;;; Code:
+
+(define-module (guix import git)
+  #:use-module (guix i18n)
+  #:use-module (guix diagnostics)
+  #:use-module (guix git)
+  #:use-module (guix git-download)
+  #:use-module (guix packages)
+  #:use-module (guix upstream)
+  #:use-module ((guix import utils) #:select (find-version))
+  #:use-module (ice-9 match)
+  #:use-module (ice-9 regex)
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
+  #:export (%generic-git-updater
+            get-tags))
 
 ;;; Errors & warnings
 

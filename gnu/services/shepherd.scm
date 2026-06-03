@@ -20,6 +20,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Instantiating system services as a shepherd configuration file.
+;;;
+;;; Code:
+
 (define-module (gnu services shepherd)
   #:use-module (guix ui)
   #:use-module (guix sets)
@@ -100,13 +106,6 @@
             shepherd-system-log-service-type
 
             assert-valid-graph))
-
-;;; Commentary:
-;;;
-;;; Instantiating system services as a shepherd configuration file.
-;;;
-;;; Code:
-
 
 (define-record-type* <shepherd-configuration>
   shepherd-configuration make-shepherd-configuration

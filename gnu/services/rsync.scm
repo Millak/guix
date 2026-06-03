@@ -18,6 +18,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;;; Commentary:
+;;;
+;;; This module implements a service that to run instance of Rsync,
+;;; files synchronization tool.
+;;;
+;;;; Code:
+
 (define-module (gnu services rsync)
   #:use-module ((gnu build linux-container) #:select (%namespaces))
   #:use-module (gnu services)
@@ -49,13 +56,6 @@
             rsync-module-timeout
 
             rsync-service-type))
-
-;;;; Commentary:
-;;;
-;;; This module implements a service that to run instance of Rsync,
-;;; files synchronization tool.
-;;;
-;;;; Code:
 
 (define-record-type* <rsync-configuration>
   rsync-configuration

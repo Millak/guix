@@ -18,6 +18,15 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides an interface to the GNU Shepherd, similar to the
+;;; 'herd' command.  Essentially it implements a subset of the (shepherd comm)
+;;; module, but focusing only on the parts relevant to 'guix system
+;;; reconfigure'.
+;;;
+;;; Code:
+
 (define-module (gnu services herd)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
@@ -62,15 +71,6 @@
             stop-service
             restart-service
             wait-for-service))
-
-;;; Commentary:
-;;;
-;;; This module provides an interface to the GNU Shepherd, similar to the
-;;; 'herd' command.  Essentially it implements a subset of the (shepherd comm)
-;;; module, but focusing only on the parts relevant to 'guix system
-;;; reconfigure'.
-;;;
-;;; Code:
 
 (define %shepherd-socket-file
   (let ((uid (getuid)))

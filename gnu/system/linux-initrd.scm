@@ -20,6 +20,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Tools to build initial RAM disks (initrd's) for Linux-Libre, and in
+;;; particular initrd's that run Guile.
+;;;
+;;; Code:
+
 (define-module (gnu system linux-initrd)
   #:use-module (guix deprecation)
   #:use-module (guix gexp)
@@ -56,14 +63,6 @@
             base-initrd))
 
 
-;;; Commentary:
-;;;
-;;; Tools to build initial RAM disks (initrd's) for Linux-Libre, and in
-;;; particular initrd's that run Guile.
-;;;
-;;; Code:
-
-
 (define* (expression->initrd exp
                              #:key
                              (guile %guile-static-initrd)

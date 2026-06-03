@@ -16,6 +16,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; This module provides a way to spawn Guix "inferior" processes and to talk
+;;; to them.  It allows us, from one instance of Guix, to interact with
+;;; another instance of Guix coming from a different commit.
+;;;
+;;; Code:
+
 (define-module (guix inferior)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-9 gnu)
@@ -102,14 +110,6 @@
             %inferior-cache-directory
             cached-channel-instance
             inferior-for-channels))
-
-;;; Commentary:
-;;;
-;;; This module provides a way to spawn Guix "inferior" processes and to talk
-;;; to them.  It allows us, from one instance of Guix, to interact with
-;;; another instance of Guix coming from a different commit.
-;;;
-;;; Code:
 
 ;; Inferior Guix process.
 (define-record-type <inferior>

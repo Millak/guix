@@ -18,6 +18,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Generate a package declaration template for corresponding package in the
+;;; Tex Live Package Database (tlpdb).  We fetch all sources from different
+;;; locations in the SVN repository of the Texlive project.
+;;;
+;;; Code:
+
 (define-module (guix import texlive)
   #:use-module (gcrypt hash)
   #:use-module (guix base32)
@@ -50,14 +58,6 @@
   #:export (texlive->guix-package
             texlive-recursive-import
             %texlive-updater))
-
-;;; Commentary:
-;;;
-;;; Generate a package declaration template for corresponding package in the
-;;; Tex Live Package Database (tlpdb).  We fetch all sources from different
-;;; locations in the SVN repository of the Texlive project.
-;;;
-;;; Code:
 
 ;; Generic locations are parts of the tree shared by multiple packages.
 ;; Package definitions should single out files stored there, or all files in

@@ -16,6 +16,14 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+
+;;; Commentary:
+;;;
+;;; Serialization procedures used by the RPCs and the Nar format.  This module
+;;; is for internal consumption.
+;;;
+;;; Code:
+
 (define-module (guix serialization)
   #:autoload   (guix base16) (base16-string->bytevector
                               bytevector->base16-string)
@@ -77,13 +85,6 @@
             fold-archive
             restore-file
             dump-file))
-
-;;; Comment:
-;;;
-;;; Serialization procedures used by the RPCs and the Nar format.  This module
-;;; is for internal consumption.
-;;;
-;;; Code:
 
 ;; Similar to serialize.cc in Nix.
 

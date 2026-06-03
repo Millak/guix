@@ -18,6 +18,12 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;;;
+;;; Please: Try to add new module packages in alphabetic order.
+;;;
+;;; Code:
+
 (define-module (gnu packages golang-graphics)
   #:use-module (guix build-system go)
   #:use-module (guix gexp)
@@ -33,11 +39,6 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages xorg))
 
-;;; Commentary:
-;;;
-;;; Please: Try to add new module packages in alphabetic order.
-;;;
-;;; Code:
 
 ;;;
 ;;; Libraries:
