@@ -3259,7 +3259,7 @@ Wayland and @code{wlroots} by leveraging @command{grim} and @command{slurp}.")
 (define-public wl-clipboard
   (package
     (name "wl-clipboard")
-    (version "2.2.1")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -3268,23 +3268,14 @@ Wayland and @code{wlroots} by leveraging @command{grim} and @command{slurp}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09l6dv3qsqscbr98vxi4wg4rkx0wlhnsc40n21mx3ds6balmg105"))))
+        (base32 "0rrh7nyyavl2g6g1p61c0z3sjj35garmi5flg4ig67rqn271zwbk"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
-           #~(list (string-append "-Dzshcompletiondir=" #$output
-                                  "/share/zsh/site-functions")
-                   (string-append "-Dfishcompletiondir=" #$output
+           #~(list (string-append "-Dfishcompletiondir=" #$output
                                   "/share/fish/vendor_completions.d"))
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-bash-completion-dir
-                 (lambda _
-                   (substitute* "completions/bash/meson.build"
-                     (("bash_completion_dir =.*")
-                      (string-append "bash_completion_dir = "
-                                     "join_paths(get_option('sysconfdir'), "
-                                     "'bash_completion.d')\n")))))
                (add-after 'unpack 'patch-file-names
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* (find-files "src" "\\.c$")
