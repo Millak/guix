@@ -50,7 +50,7 @@
 ;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
-;;; Copyright © 2022, 2026 jgart <jgart@dismail.de>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2023 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -1454,7 +1454,7 @@ and auto-mapping slices to MIDI note numbers.")
 (define-public lilypond
   (package
     (name "lilypond")
-    (version "2.26.0")
+    (version "2.24.4")
     (source
      (origin
        (method url-fetch)
@@ -1462,7 +1462,7 @@ and auto-mapping slices to MIDI note numbers.")
                            "v" (version-major+minor version) "/"
                            "lilypond-" version ".tar.gz"))
        (sha256
-        (base32 "01gy0s5j1x01pgjzs5gqx2kaz76ql0sa27wdrpfrjzvzpaz2vs5v"))))
+        (base32 "073qa7m9xkghad4x37rxb9v45vp4vfmsylwnjzhj17y7f4ss0vz9"))))
     (build-system gnu-build-system)
     (arguments
       (list #:tests? #f                      ;out-test/collated-files.html fails
