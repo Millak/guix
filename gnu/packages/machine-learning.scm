@@ -4145,10 +4145,10 @@ learning libraries.")
         (base32 "16fbm5y3hn6ccflmbdlmn7krrdq7c0az3mxd8j1d23s9ky8niw05"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags (list "-DGOOGLE_TEST=ON")))
+     (list #:configure-flags #~(list "-DGOOGLE_TEST=ON")))
     (native-inputs
-     `(("googletest" ,googletest)
-       ("python" ,python-wrapper)))
+     (list googletest
+           python-wrapper))
     (inputs
      (list dmlc-core))
     (home-page "https://xgboost.ai/")
