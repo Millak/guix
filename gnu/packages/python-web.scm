@@ -1485,6 +1485,39 @@ Its features include
 @end itemize")
     (license license:expat)))
 
+(define-public python-habanero
+  (package
+    (name "python-habanero")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sckott/habanero")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a842izcc8l4wb8004v92zsq1h4yc7qc2wi9am6x0f7idlx993sw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Run only a small portion of unit tests without network access
+     ;; requirement.
+     (list #:test-flags #~(list "test/test-filters.py")))
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-httpx
+           python-packaging
+           python-tqdm
+           python-urllib3))
+    (home-page "https://github.com/sckott/habanero")
+    (synopsis "Low Level Client for Crossref Search API")
+    (description
+     "Low Level Client for
+@url{https://api.crossref.org/swagger-ui/index.html, Crossref Search API}.")
+    (license license:expat)))
+
 (define-public python-hookdns
   (package
     (name "python-hookdns")
