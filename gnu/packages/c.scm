@@ -541,7 +541,7 @@ compiler while still keeping it small, simple, fast and understandable.")
 (define-public qbe
   (package
     (name "qbe")
-    (version "1.2")
+    (version "1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -550,7 +550,7 @@ compiler while still keeping it small, simple, fast and understandable.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1sxz5dn788n5c4v6mxa2kg3hf0a4qryg8wp0w3wx0qkzj6flj2sj"))))
+                "0nzz9xyj0znrz54km2mmd501sg4ls15qdmc0qbqnxm7wckjcwc93"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
