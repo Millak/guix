@@ -3249,17 +3249,17 @@ to download videos from Austria's national television broadcaster.")
 (define-public yle-dl
   (package
     (name "yle-dl")
-    (version "20250126")
+    (version "20260520")
     (source (origin
               ;; PyPI release doesn't include tests.
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/aajanki/yle-dl")
-                    (commit version)))
+                    (commit (string-append "releases/" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dinny2amqnln5dgp83x32p54mq7j0x4jy6d48wf26c8d4gkkqbh"))))
+                "0apll6raix3c7naa12wwdiygaj7hyij0p3bdq7abzv2hy6rmkyix"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3278,7 +3278,7 @@ to download videos from Austria's national television broadcaster.")
               (delete-file-recursively "tests/integration"))))))
     (native-inputs
      (list python-flit-core python-pytest))
-    (inputs (list bash-minimal ffmpeg-5 wget))
+    (inputs (list bash-minimal ffmpeg wget))
     (propagated-inputs
      (list python-attrs
            python-configargparse
