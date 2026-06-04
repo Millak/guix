@@ -31,6 +31,7 @@
 ;;; Copyright © 2023 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
+;;; Copyright © 2026 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -724,7 +725,7 @@ of user-specified directories similar to how shells look up executables.")
                   (invoke "ruby" "generate-ptex-patterns.rb"))))))))
     (native-inputs
      (list ruby
-           ruby-hydra-minimal/pinned
+           ruby-hydra-minimal
            ;; Build phase requires "docstrip.tex" from TEXLIVE-LATEX.
            ;; However, adding this package to native inputs would initiate
            ;; a circular dependency.  To work around this, use TEXLIVE-LATEX
