@@ -40,6 +40,7 @@
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 John Khoo <johnkhootf@gmail.com>
+;;; Copyright © 2026 orahcio <orahcio@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -692,6 +693,75 @@ files.  This file format is more compact and more readable than XML.  And
 unlike XML, it is type-aware, so it is not necessary to do string parsing in
 application code.")
     (license license:lgpl2.1+)))
+
+(define-public papis
+  (package
+    (name "papis")
+    (version "0.15.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/papis/papis")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ijy39ixgkzm43nsi6ff1hh3hgbd366dkbkga2qv24alq18g5shv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "--pyargs" "papis")))
+    (native-inputs
+     (list python-docutils
+           python-hatchling
+           python-pytest
+           python-sphinx-click))
+    (inputs
+     (list python-arxiv
+           python-beautifulsoup4
+           python-bibtexparser-for-cobib        ;refresh on the next release
+           python-click
+           python-colorama
+           python-doi
+           python-dominate
+           python-filetype
+           python-habanero
+           python-isbnlib
+           python-lxml
+           python-platformdirs
+           python-prompt-toolkit
+           python-pygments
+           python-pyparsing
+           python-pyyaml
+           python-requests
+           python-slugify))
+    (home-page "https://github.com/papis/papis")
+    (synopsis "Command-line Bibliography Manager")
+    (description
+     "With Papis, you can search your library for books and papers, add
+documents and notes, import and export to and from other formats, and much
+much more. Papis uses a human-readable and easily hackable @code{.yaml} file
+to store each entry's bibliographical data.  It strives to be easy to use
+while providing a wide range of features. And for those who still want more,
+Papis makes it easy to write scripts that extend its features even further.
+
+Features:
+
+@itemize
+@item Add documents and automatically fetch their metadata.
+@item Search by author, title, tags, and so on.
+@item Synchronize your library with whatever software you're already using.
+@item Share your documents with colleagues without having to force some
+proprietary service onto them.
+@item Import your data from other bibliography managers.
+@item Export to BibTeX and other formats.
+@item Integrate with your editor with plugins for (Neo)vim and Emacs.
+@item TUIs make it easy to get a quick overview of your library.
+@item Use the web app when the CLI doesn't quite cut it (for example on your
+tablet).
+@item Hacking Papis is easy! Use the API to easily create your own custom
+Python scripts.
+@end itemize")
+    (license license:expat)))
 
 (define-public pfff
   (package
