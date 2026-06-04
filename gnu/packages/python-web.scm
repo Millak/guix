@@ -997,6 +997,30 @@ Async mode for @url{https://domainconnect.org/, Domain Connect protocol}.")
 @url{https://www.domainconnect.org/, Domain Connect} protocol.")
     (license license:expat)))
 
+(define-public python-dominate
+  (package
+    (name "python-dominate")
+    (version "2.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Knio/dominate")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kv5ly8w2026pwvgamfjxav1g58wmgim30nr9w9qfwcipfjxwn5c"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/Knio/dominate")
+    (synopsis "Python library for creating and manipulating HTML documents")
+    (description
+     "Dominate is a Python library for creating and manipulating HTML
+documents using an elegant DOM API.")
+    (license license:lgpl3+)))
+
 (define-public python-dropbox
   (package
     (name "python-dropbox")
