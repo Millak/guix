@@ -2830,45 +2830,40 @@ performance and customizability.")
                    ((".*bundled.*") ""))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f
+     (list
+      #:install-source? #f
+      #:imported-modules (append %copy-build-system-modules
+                                 %cargo-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build copy-build-system) #:prefix copy:)
+                  (guix build utils))
       #:phases
-      (modify-phases %standard-phases
-        (add-before 'build 'pre-build
-          (lambda* (#:key inputs #:allow-other-keys)
-            (setenv "OUCH_ARTIFACTS_FOLDER" "target")
-            ;; Uses nonfree library.
-            (invoke "cargo" "remove" "unrar")
-            ;; Set the location for bzip3
-            (setenv "BZIP3_LIB_DIR"
-                    (dirname (search-input-file inputs "/lib/libbzip3.so")))
-            (setenv "BZIP3_INCLUDE_DIR"
-                    (dirname (search-input-file inputs "/include/libbz3.h")))))
-        (add-after 'install 'install-extras
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let* ((out (assoc-ref outputs "out"))
-                   (share (string-append out "/share"))
-                   (bash-completions-dir
-                    (string-append out "/share/bash-completion/completions"))
-                   (zsh-completions-dir
-                    (string-append share "/zsh/site-functions"))
-                   (fish-completions-dir
-                    (string-append share "/fish/vendor_completions.d"))
-                   (elvish-completions-dir
-                    (string-append share "/elvish/lib"))
-                   (man1 (string-append share "/man/man1")))
-              (mkdir-p bash-completions-dir)
-              (mkdir-p elvish-completions-dir)
-              (copy-file "target/ouch.bash"
-                         (string-append bash-completions-dir "/ouch"))
-              (install-file "target/_ouch"
-                            (string-append zsh-completions-dir "/_ouch"))
-              (install-file "target/ouch.fish"
-                            fish-completions-dir)
-              (copy-file "target/ouch.elv"
-                         (string-append elvish-completions-dir "/ouch"))
-              (for-each (lambda (manpage)
-                          (install-file manpage man1))
-                        (find-files "target" "\\.1$"))))))))
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pre-build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "OUCH_ARTIFACTS_FOLDER" "target")
+              ;; Uses nonfree library.
+              (invoke "cargo" "remove" "unrar")
+              ;; Set the location for bzip3
+              (setenv "BZIP3_LIB_DIR"
+                      (dirname (search-input-file inputs "/lib/libbzip3.so")))
+              (setenv "BZIP3_INCLUDE_DIR"
+                      (dirname (search-input-file inputs "/include/libbz3.h")))))
+          (add-after 'install 'install-extras
+            (lambda args
+              (apply (assoc-ref copy:%standard-phases 'install)
+                     #:install-plan
+                     '(("target/ouch.bash"
+                        "share/bash-completion/completions/ouch")
+                       ("target/ouch.elv"
+                        "share/elvish/lib/ouch")
+                       ("target/ouch.fish"
+                        "share/fish/vendor_completions.d/")
+                       ("target/_ouch"
+                        "share/zsh/site-functions/")
+                       ("target/" "share/man/man1/"
+                        #:include-regexp ("\\.1$")))
+                     args))))))
     (native-inputs (list git-minimal/pinned pkg-config))
     (inputs (cons* bzip2 bzip3-1.4 clang xz zlib `(,zstd "lib")
                    (cargo-inputs 'ouch)))
