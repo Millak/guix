@@ -438,6 +438,7 @@ input stdin as a menubar for Wayland and @code{wlroots}.")
       #:make-flags
       #~(list
          (string-append "CC=" #$(cc-for-target))
+         (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
          (string-append "TERMINFO=" #$output "/share/terminfo")
          (string-append "PREFIX=" #$output))
       #:phases
