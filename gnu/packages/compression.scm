@@ -83,6 +83,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages benchmark)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
@@ -97,8 +98,8 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages java)
-  #:use-module (gnu packages llvm)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages perl)
@@ -551,6 +552,79 @@ compressed with pbzip2 can be decompressed with bzip2).")
      "Shrinkwrap provides a @code{std::streambuf} wrapper for various compression
 formats, including zstd, xz, gzip, and bgzf.")
     (license license:expat)))
+
+(define-public bzip3
+  (package
+    (name "bzip3")
+    (version "1.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/iczelia/bzip3")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jbnx381jq3myr3p96caf7dwl9k886rf4z2bfq4w1iid8wqjxsj8"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; unbundle libsais
+            (delete-file "include/libsais.h")
+            (delete-file-recursively "3rdparty/")
+            (substitute* "src/libbz3.c"
+              (("^#include \"libsais.h\".*$" include-libsais)
+               (string-append "#include \"common.h\"\n" include-libsais)))
+            (substitute* "CMakeLists.txt"
+              (("^set\\(PACKAGE_VERSION.*$" line)
+               (string-append line "find_package(libsais REQUIRED)\n"
+                              "find_package(OpenMP REQUIRED)\n"))
+              (("^target_sources\\(bz3.*$" line)
+               (string-append line
+                "target_link_libraries(bz3 PRIVATE OpenMP::OpenMP_C libsais)
+"))
+              (("(target_link_libraries\\(bz3) (Threads::Threads\\))" _ prefix
+                suffix)
+               (string-append prefix " PRIVATE " suffix)))
+            ;; set MAN_DATE
+            (let ((release-date "13 August 2025"))
+              (substitute* "CMakeLists.txt"
+                (("set\\(MAN_DATE.*\\)")
+                 (string-append "set(MAN_DATE \"" release-date "\")"))))
+            ;; fix out-of-source build
+            ;; see https://github.com/iczelia/bzip3/commit/2b9b3b504bdfe16e8cc08addd8f7931f66c9cd59
+            (substitute* "CMakeLists.txt"
+              (("(if\\(EXISTS\\s)\\$\\{BZIP3_MAN\\}" _ prefix)
+               (string-append prefix
+                              "${CMAKE_CURRENT_SOURCE_DIR}/${BZIP3_MAN}"))
+              (("(configure_file\\()\\$\\{BZIP3_MAN\\}" _ prefix)
+               (string-append prefix
+                              "${CMAKE_CURRENT_SOURCE_DIR}/${BZIP3_MAN}")))
+            ;; fix shared-object version
+            ;; see https://github.com/iczelia/bzip3/commit/3ac85a6c4ee44573f6d8932d9d5d1bc3351f81db
+            (substitute* "CMakeLists.txt"
+              (("(SOVERSION\\s\").*(\")" _ prefix suffix)
+               (string-append prefix "1" suffix))
+              (("(VERSION\\s\").*(\"\\))" _ prefix suffix)
+               (string-append prefix "1.0.0" suffix)))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; no tests
+      #:tests? #f))
+    (inputs (list bash-minimal libsais))
+    (home-page "https://github.com/iczelia/bzip3")
+    (synopsis "Text compression program")
+    (description
+     "BZip3 is a spiritual successor to BZip2.  Features higher compression
+ratios and better performance thanks to a order-0 context mixing entropy coder,
+a fast Burrows-Wheeler transform code making use of suffix arrays and a RLE with
+Lempel Ziv+Prediction pass based on LZ77-style string matching and PPM-style
+context modeling.
+
+Like its ancestor, BZip3 excels at compressing text or code.")
+    (properties '((tunable? . #t)))
+    (license license:lgpl3)))
 
 (define-public xz
   (package
