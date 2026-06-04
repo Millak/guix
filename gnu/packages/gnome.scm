@@ -8980,7 +8980,7 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
 (define-public network-manager-l2tp
   (package
     (name "network-manager-l2tp")
-    (version "1.20.20")
+    (version "1.52.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8989,7 +8989,7 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0znv57fkg2l7pjbgdn9g3issvf5mb252d8hfm3pxf6wl21cc6rh2"))))
+                "0p6ymx2vmrvyqgz1i1v80r9jydpbhm72yq0np0vfrr279jdlqhb5"))))
     (build-system gnu-build-system)
     (arguments
      (list
