@@ -1178,6 +1178,35 @@ Sorensen distance, plus some bonuses.  All distance computations are
 implemented in pure Python, and most of them are also implemented in C.")
       (license license:gpl2+))))
 
+(define-public python-doi
+  (package
+    (name "python-doi")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-doi" version))
+       (sha256
+        (base32 "16pxc7llqb14f2n5ccd88pz4sygwl51slssqm2g23g8rndpya09f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           #~(list "-vv"
+                   (string-append "-k not (test_validate_doi "
+                                  "or test_get_real_url_from_doi)"))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-sphinx
+           python-sphinx-autobuild
+           python-sphinx-rtd-theme))
+    (home-page "https://github.com/papis/python-doi")
+    (synopsis "Python package to work with Document Object Identifier (doi)")
+    (description
+     "Python package to work with Document Object Identifier (doi).")
+    (license license:gpl3)))
+
 (define-public python-domdf-python-tools
   (package
     (name "python-domdf-python-tools")
