@@ -3635,53 +3635,6 @@ engine.")
     (home-page "https://haml.info/")
     (license license:expat)))
 
-(define-public ruby-hamster
-  (package
-  (name "ruby-hamster")
-  (version "3.0.0")
-  (source
-    (origin
-      (method url-fetch)
-      (uri (rubygems-uri "hamster" version))
-      (sha256
-        (base32
-          "1n1lsh96vnyc1pnzyd30f9prcsclmvmkdb3nm5aahnyizyiy6lar"))))
-  (build-system ruby-build-system)
-  (arguments
-   (list
-    ;; Only supports Ruby 2 currently
-    #:ruby ruby-2.7
-    #:phases
-    #~(modify-phases %standard-phases
-        (add-after 'unpack 'remove-unnecessary-dependencies
-          (lambda _
-            ;; pry is a debugging tool, and is unnecessary when running the
-            ;; tests
-            (substitute* "spec/lib/hamster/vector/insert_spec.rb"
-              (("require 'pry'") ""))
-            (substitute* "spec/spec_helper.rb"
-              (("require \"pry\"") "")
-              ;; CodeClimate is an online service, and is unnecessary for
-              ;; running the tests
-              (("require \"codeclimate-test-reporter\"") "")
-              (("CodeClimate.*\n") ""))))
-        ;; No Rakefile is included, so run rspec directly.
-        (replace 'check
-          (lambda* (#:key tests? #:allow-other-keys)
-            (when tests?
-              (invoke "ruby" (which "rspec"))))))))
-  (propagated-inputs
-   (list ruby-concurrent-ruby))
-  (native-inputs
-   (list ruby-rspec))
-  (synopsis "Efficient, immutable, thread-safe collection classes for Ruby")
-  (description
-    "Hamster provides six persistent data structures: @code{Hash}, @code{Vector},
-@code{Set}, @code{SortedSet}, @code{List}, and @code{Deque} (which works as an
-immutable queue or stack).")
-  (home-page "https://github.com/hamstergem/hamster")
-  (license license:expat)))
-
 (define-public ruby-hashdiff
   (package
     (name "ruby-hashdiff")
