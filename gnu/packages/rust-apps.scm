@@ -2822,17 +2822,27 @@ performance and customizability.")
        (uri (crate-uri "ouch" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gslgyv63jq66w5pymsn7jnkmh2b8s8wzqvhs6k2iywzc4nm3gxd"))))
+        (base32 "1gslgyv63jq66w5pymsn7jnkmh2b8s8wzqvhs6k2iywzc4nm3gxd"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   ;; Don't try to use a bundled copy of bzip3.
+                   ((".*bundled.*") ""))))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
       #:phases
       (modify-phases %standard-phases
         (add-before 'build 'pre-build
-          (lambda _
+          (lambda* (#:key inputs #:allow-other-keys)
             (setenv "OUCH_ARTIFACTS_FOLDER" "target")
             ;; Uses nonfree library.
-            (invoke "cargo" "remove" "unrar")))
+            (invoke "cargo" "remove" "unrar")
+            ;; Set the location for bzip3
+            (setenv "BZIP3_LIB_DIR"
+                    (dirname (search-input-file inputs "/lib/libbzip3.so")))
+            (setenv "BZIP3_INCLUDE_DIR"
+                    (dirname (search-input-file inputs "/include/libbz3.h")))))
         (add-after 'install 'install-extras
           (lambda* (#:key outputs #:allow-other-keys)
             (let* ((out (assoc-ref outputs "out"))
@@ -2860,7 +2870,7 @@ performance and customizability.")
                           (install-file manpage man1))
                         (find-files "target" "\\.1$"))))))))
     (native-inputs (list git-minimal/pinned pkg-config))
-    (inputs (cons* clang `(,zstd "lib") zlib (cargo-inputs 'ouch)))
+    (inputs (cons* bzip3-1.4 clang `(,zstd "lib") zlib (cargo-inputs 'ouch)))
     (home-page "https://github.com/ouch-org/ouch")
     (synopsis "Compression and decompression utility")
     (description
