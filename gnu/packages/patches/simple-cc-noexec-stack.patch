@@ -1,0 +1,19 @@
+Make the stack non-executable
+
+Otherwise, binutil's ld will emit the following warning on each scc(1) invocation:
+
+	ld: warning: _sys_brk.6l: missing .note.GNU-stack section implies executable stack
+	ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+
+diff --git a/include/scc/bits/scc/sys-scc.h b/include/scc/bits/scc/sys-scc.h
+index 9d6ae86b..85a37ecd 100644
+--- a/include/scc/bits/scc/sys-scc.h
++++ b/include/scc/bits/scc/sys-scc.h
+@@ -13,6 +13,7 @@ char *sysincludes[] = {
+ /* configure below your system linker command line */
+ char *ldcmd[] = {
+ 	"-static",
++	"-z","noexecstack",
+ 	"-z","nodefaultlib",
+ 	%NOPIE%
+ 	"-o","%o",

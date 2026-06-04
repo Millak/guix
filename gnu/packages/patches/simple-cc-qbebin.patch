@@ -1,0 +1,61 @@
+Make name of QBE binary configurable via macro as well
+
+Eases patching the code to refer to QBE by full path on Guix.
+
+diff --git a/README b/README
+index 67840799..1475edd7 100644
+--- a/README
++++ b/README
+@@ -208,6 +208,8 @@ file `include/bits/scc/sys.h` and it included basically 5 elements:
+ 
+ 	- ASBIN: macro with the name of the assembler binary.
+ 
++	- QBEBIN: macro with the name of the qbe binary.
++
+ 	- sysincludes: It is a list of diretories used to locate
+ 	  the system headers
+ 
+diff --git a/include/scc/bits/scc/sys-musl.h b/include/scc/bits/scc/sys-musl.h
+index 1cb1a12d..31267125 100644
+--- a/include/scc/bits/scc/sys-musl.h
++++ b/include/scc/bits/scc/sys-musl.h
+@@ -1,5 +1,6 @@
+ #define LDBIN "ld"
+ #define ASBIN "as"
++#define QBEBIN "qbe"
+ 
+ /* configure below your system linker command line */
+ #define GCCLIBPATH "/usr/lib/gcc/x86_64-unknown-linux-gnu/10.2/"
+diff --git a/include/scc/bits/scc/sys-scc.h b/include/scc/bits/scc/sys-scc.h
+index 9d6ae86b..2948c5b2 100644
+--- a/include/scc/bits/scc/sys-scc.h
++++ b/include/scc/bits/scc/sys-scc.h
+@@ -1,5 +1,6 @@
+ #define LDBIN "ld"
+ #define ASBIN "as"
++#define QBEBIN "qbe"
+ 
+ /* configure below your standard sys include paths */
+ char *sysincludes[] = {
+diff --git a/src/cmd/scc-cc/posix/cc.c b/src/cmd/scc-cc/posix/cc.c
+index 40a3c109..49372777 100644
+--- a/src/cmd/scc-cc/posix/cc.c
++++ b/src/cmd/scc-cc/posix/cc.c
+@@ -53,7 +53,7 @@ static struct tool {
+ 	[TEEIR]  = {.bin = "tee"},
+ 	[CC2]    = {.bin = "cc2"},
+ 	[TEEQBE] = {.bin = "tee"},
+-	[QBE]    = {.bin = "qbe"},
++	[QBE]    = {.bin = QBEBIN},
+ 	[TEEAS]  = {.bin = "tee"},
+ 	[AS]     = {.bin = ASBIN},
+ 	[LD]     = {.bin = LDBIN},
+@@ -239,7 +239,7 @@ settool(int tool, char *infile, int nexttool)
+ 			die("scc-cc: target tool path is too long");
+ 		break;
+ 	case QBE:
+-		strcpy(t->cmd, "qbe");
++		strcpy(t->cmd, QBEBIN);
+ 
+ 		if (!strcmp(arch, "amd64") && !strcmp(abi, "sysv"))
+ 			fmt = "amd64_sysv";

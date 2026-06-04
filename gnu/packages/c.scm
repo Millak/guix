@@ -58,6 +58,7 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix store)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages bootstrap)
@@ -83,6 +84,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages text-editors)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
@@ -340,6 +342,92 @@ common extended features of widespread compilers like @code{gcc} and
      "minIni is a portable and configurable library for reading and writing
 @file{.ini} files.")
     (license license:asl2.0)))
+
+(define-public simple-cc
+  (package
+    (name "simple-cc")
+    (version "0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "git://git.simple-cc.org/scc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bza722flyb8j2wirjrp45hvfip0ayhx2l1d3qcrbhc124hi356r"))
+       (patches (search-patches "simple-cc-wcsrtombs.patch"
+                                "simple-cc-qbebin.patch"
+                                "simple-cc-path-max.patch"
+                                "simple-cc-noexec-stack.patch"))))
+    (build-system gnu-build-system)
+    ;; TODO: Upstream only supports a limited set of architectures.
+    ;; aarch64 could be supported as well but fails 'check currently.
+    (supported-systems '("x86_64-linux"))
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target))
+              ;; By default, simple-cc is build using its own make(1)
+              ;; implementation.  However, as of now, it does not support
+              ;; parallel builds.  To speedup the build we use GNU make.
+              "SCCMAKE=make")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The simple-cc codebase makes several assumptions that do not hold
+          ;; on Guix.  For example, it assumes that c99(1) exists, we thus fix
+          ;; those references here.
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/cmd/scc-make/defaults.c"
+                (("c99") "gcc -std=c99")
+                (("/bin/sh") (search-input-file inputs "/bin/sh")))
+              (substitute* "src/libc/gcc-scc.sh"
+                (("}cc") "}gcc"))
+              (substitute* "src/cmd/scc-cc/posix/scc.sh"
+                (("dirname") (search-input-file inputs "/bin/dirname")))
+              (substitute* "scripts/build/host/linux.mk"
+                (("c99") "gcc -std=c99"))
+              (let ((str (lambda (x)
+                           (string-append "\"" x "\""))))
+                (substitute* "include/scc/bits/scc/sys-scc.h"
+                  (("\"ld\"") (str (search-input-file inputs "/bin/ld")))
+                  (("\"as\"") (str (search-input-file inputs "/bin/as")))
+                  (("\"qbe\"") (str (search-input-file inputs "/bin/qbe")))))
+
+              ;; Fixes for the simple-cc test suite.
+              (for-each (lambda (file)
+                          (substitute* file
+                            (("/bin/sh") (search-input-file inputs "/bin/sh"))
+                            (("c99") "gcc -std=c99")
+                            ;; Bash emits a different error message.
+                            ((": not found") ": command not found")))
+                        (find-files "tests/make" "\\.sh$"))))
+          (delete 'configure)
+          (add-before 'check 'setenv
+            (lambda _
+              (setenv "PATH"
+                      (string-append (getenv "PATH") ":"
+                                     #$source "/bin"))))
+          ;; Tests fail when not run via GNU make, which we don't use for build
+          ;; as scc-make does not support parallel builds.  Therefore, we need a
+          ;; custom 'check phase here which invokes the tests target without
+          ;; setting SCCMAKE.  Further, we also need to unset MAKEFLAGS then.
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "-j1" "tests" "MAKEFLAGS=")))))))
+    (inputs (list ed qbe sed))
+    (home-page "https://www.simple-cc.org/")
+    (synopsis "Portable C toolchain that can be compiled on any UNIX system")
+    (description
+     "Portable C toolchain with a focus on simplicity.  Includes, among other
+things, a compiler, a @code{make} implementation, and an implementation of
+several utilities normally provided by @code{binutils} (e.g., @code{nm(1)} or
+@code{addr2line(1)}).  Further, it also comes with its own C standard
+library implementation.")
+    (license license:isc)))
 
 (define-public stringzilla
   (package

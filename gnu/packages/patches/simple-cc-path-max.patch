@@ -1,0 +1,17 @@
+Allow binary names of PATH_MAX length
+
+Required for Guix as otherwise our store paths don't fit here.
+
+diff --git a/src/cmd/scc-cc/posix/cc.c b/src/cmd/scc-cc/posix/cc.c
+index 2758d006..319d4b2f 100644
+--- a/src/cmd/scc-cc/posix/cc.c
++++ b/src/cmd/scc-cc/posix/cc.c
+@@ -43,7 +43,7 @@ enum {
+ 
+ static struct tool {
+ 	char   cmd[PATH_MAX];
+-	char   bin[32];
++	char   bin[PATH_MAX];
+ 	char  *outfile;
+ 	struct items args;
+ 	int    in, out;
