@@ -385,6 +385,39 @@ broad range of notification services, such as Telegram, Discord, Slack, Amazon
 SNS, Gotify, etc.")
     (license license:bsd-2)))
 
+(define-public python-arxiv
+  (package
+    (name "python-arxiv")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lukasschwab/arxiv.py")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18kn8q1lbql1w8jm5clla6za2zpijhs5hi2kpz41x5skps96lrd3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           #~(list "-k" ;to skip intenet connection tests
+                   (string-append "not (TestAPIBugs "
+                                  "or TestClient "
+                                  "or TestResult "
+                                  "or TestDownload)"))))
+    (native-inputs
+     (list python-pytest
+           python-hatch-vcs
+           python-hatchling))
+    (propagated-inputs
+     (list python-feedparser
+           python-requests))
+    (home-page "https://github.com/lukasschwab/arxiv.py")
+    (synopsis "Python wrapper for the arXiv API")
+    (description "Python wrapper for the @code{arXiv} API.")
+    (license license:expat)))
+
 (define-public python-asyncudp
   (package
     (name "python-asyncudp")
