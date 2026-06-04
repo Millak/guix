@@ -672,30 +672,6 @@ In short, SCons is an easier, more reliable and faster way to build
 software.")
     (license license:x11)))
 
-(define-public scons-3
-  (package
-    (inherit scons)
-    (version "3.1.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/SCons/scons")
-             (commit version)))
-       (file-name (git-file-name "scons" version))
-       (sha256
-        (base32 "0q6xq2y280fci3kay1z6638v7sv5p43vs7lsl1rrkgmxpwvkhx8b"))))
-    (arguments
-     (list
-      #:tests? #f                         ; no 'python setup.py test' command
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'bootstrap
-            (lambda _
-              (invoke "python" "bootstrap.py" "build/scons" "DEVELOPER=guix")
-              (chdir "build/scons"))))))
-    (native-inputs (list python-setuptools python-wheel))))
-
 (define-public tup
   (package
     (name "tup")
