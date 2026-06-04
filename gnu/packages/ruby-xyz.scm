@@ -3698,31 +3698,6 @@ two hashes.")
 It is a low-dependency variant of ruby-hydra.")
       (license license:expat))))
 
-;; Pinned variant for use by texlive
-(define-public ruby-hydra-minimal/pinned
-  (let ((commit "5abfa378743756ae4d9306cc134bcc482f5c9525")
-        (revision "0"))
-    (hidden-package
-     (package
-       (inherit ruby-hydra-minimal)
-       (version (git-version "0.0" revision commit))
-       (source (origin
-                 (method git-fetch)
-                 (uri (git-reference
-                       (url "https://github.com/hyphenation/hydra")
-                       (commit commit)))
-                 (file-name (git-file-name "ruby-hydra-minimal" version))
-                 ;; byebug is a non-essential debugging utility that brings in
-                 ;; many dependencies.
-                 (patches (search-patches "ruby-hydra-minimal-no-byebug.patch"))
-                 (sha256
-                  (base32
-                   "1cik398l2765y3d9sdhjzki3303hkry58ac6jlkiy7iy62nm529f"))))
-       (arguments
-        (list
-         #:tests? #f
-         #:ruby ruby-2.7))))))
-
 (define-public ruby-hydra
   (package
     (inherit ruby-hydra-minimal)
