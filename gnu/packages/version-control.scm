@@ -69,6 +69,7 @@
 ;;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2026 Ingar <ingar@onionmail.info>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
+;;; Copyright © 2026 Luca Kredel <luca.kredel@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1026,6 +1027,35 @@ changelog template} can be customized with a
 @url{https://git-cliff.org/docs/configuration, configuration file} to match the
 desired format.")
     (license (list license:expat license:asl2.0))))
+
+(define-public git-pages-cli
+  (package
+    (name "git-pages-cli")
+    (version "1.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/git-pages/git-pages-cli")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ijkbc9d4jh5hn9lmcb39v0x03nbrf4zgzm0mb0c1p132py8p2mn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "codeberg.org/git-pages/git-pages-cli"))
+    (native-inputs
+     (list go-github-com-google-uuid
+           go-github-com-klauspost-compress
+           go-github-com-spf13-pflag))
+    (home-page "https://codeberg.org/git-pages/git-pages-cli")
+    (synopsis "Command-line tool for publishing a site to a git-pages server")
+    (description
+     "@command{git-pages-cli} is a command-line application for publishing
+sites to @url{https://codeberg.org/git-pages/git-pages, git-pages}.")
+    (license license:bsd-0)))
 
 (define-public git-tools
   (package
