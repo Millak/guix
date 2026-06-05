@@ -2106,7 +2106,12 @@ dist_patch_DATA =						\
   %D%/packages/patches/pounce-readable-checks.patch             \
   %D%/packages/patches/ppsspp-disable-upgrade-and-gold.patch		\
   %D%/packages/patches/procps-strtod-test.patch                 \
-  %D%/packages/patches/prusa-slicer-add-cmake-module.patch \
+  %D%/packages/patches/prusa-slicer-add-cmake-module.patch 	\
+  %D%/packages/patches/prusa-slicer-boost-1.87.patch	 	\
+  %D%/packages/patches/prusa-slicer-boost-1.88.patch	 	\
+  %D%/packages/patches/prusa-slicer-boost-1.89.patch	 	\
+  %D%/packages/patches/prusa-slicer-cgal-6.patch	 	\
+  %D%/packages/patches/prusa-slicer-opencascade-7.8.patch 	\
   %D%/packages/patches/pthreadpool-system-libraries.patch	\
   %D%/packages/patches/python-3.11-fix-tests.patch		\
   %D%/packages/patches/python-3.12-fix-tests.patch		\

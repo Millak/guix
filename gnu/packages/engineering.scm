@@ -24,7 +24,7 @@
 ;;; Copyright © 2020, 2021, 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
-;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2022, 2026 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -4009,7 +4009,7 @@ G-codes to binary and vice versa.")
 (define-public prusa-slicer
   (package
     (name "prusa-slicer")
-    (version "2.9.4")
+    (version "2.9.5")
     (source
      (origin
        (method git-fetch)
@@ -4018,8 +4018,13 @@ G-codes to binary and vice versa.")
          (url "https://github.com/prusa3d/PrusaSlicer")
          (commit (string-append "version_" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "008rnwld4i59xh8jg7kdqd8x8f2ynk6mbhs4iypqa8jssjpn0afn"))
-       (patches (search-patches "prusa-slicer-add-cmake-module.patch"))
+       (sha256 (base32 "08kqfr3dfj0y1fzvpq2ri5b09996bn3hgq6ifgjlg0x4ij2byl5m"))
+       (patches (search-patches "prusa-slicer-add-cmake-module.patch"
+                                "prusa-slicer-boost-1.87.patch"
+                                "prusa-slicer-boost-1.88.patch"
+                                "prusa-slicer-boost-1.89.patch"
+                                "prusa-slicer-cgal-6.patch"
+                                "prusa-slicer-opencascade-7.8.patch"))
        (modules '((guix build utils)))
        (snippet
         `(begin
@@ -4068,12 +4073,16 @@ G-codes to binary and vice versa.")
                    "-DSLIC3R_GTK=3" ;; Use GTK+
                    ;; Use wxWidgets 3.0.x.x to prevent GUI crashes when adding support enforcers.
                    "-DSLIC3R_WX_STABLE=1"
+                   ;; FIXME: tests fail to build with cgal-6.
+                   ;; prusa-slicer-cgal-6.patch needs updating.
+                   "-DSLIC3R_BUILD_TESTS=0"
                    (format #f "-Dlibigl_DIR=~a"
                            (search-input-directory %build-inputs
                                                    "lib/cmake/igl/"))
                    (format #f "-DCatch2_DIR=~a"
                            (search-input-directory %build-inputs
                                                    "lib/cmake/Catch2/")))
+           #:tests? #f
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-include-paths
@@ -4081,6 +4090,15 @@ G-codes to binary and vice versa.")
                    (substitute* "tests/libslic3r/test_quadric_edge_collapse.cpp"
                      (("#include <libigl/igl/qslim.h>")
                       "#include <igl/qslim.h>"))))
+               (add-after 'unpack 'fix-for-glew-on-wayland
+                 (lambda _
+                   ;; GLEW's glewInit() function attempts to use GLX,
+                   ;; which fails on Wayland.
+                   ;; Ignoring the error code GLEW_ERROR_NO_GLX_DISPLAY
+                   ;; solves the issue.
+                   (substitute* "src/slic3r/GUI/OpenGLManager.cpp"
+                     (("err != GLEW_OK")
+                      "err != GLEW_OK && err != GLEW_ERROR_NO_GLX_DISPLAY"))))
                (add-after 'install 'wrap-program
                  (lambda _
                    (wrap-program (string-append #$output "/bin/prusa-slicer")
@@ -4092,9 +4110,9 @@ G-codes to binary and vice versa.")
      (list pkg-config catch2-3.8))
     (inputs
      (list bash-minimal
-           boost-1.83
+           boost
            cereal
-           cgal-5
+           cgal
            curl
            dbus
            eigen
@@ -4115,7 +4133,7 @@ G-codes to binary and vice versa.")
            nanosvg
            nlohmann-json
            nlopt
-           opencascade-occt-7.6.1
+           opencascade-occt
            openssl
            openvdb
            pango
