@@ -2181,7 +2181,7 @@ printers.")
     (native-inputs
      (list pkgconf))
     (inputs
-     (list graphviz libzip openssl qtsvg-5 qttools-5 rizin zlib))
+     (list graphviz libzip openssl qtsvg-5 qttools-5 qtwayland-5 rizin zlib))
     (home-page "https://cutter.re")
     (synopsis "Software reverse engineering platform")
     (description
