@@ -3829,6 +3829,7 @@ growing set of geoscientific methods.")
                                "PyQgsLayoutMap"
                                "PyQgsLayoutPage"
                                "PyQgsLineburstSymbolLayer"
+                               "PyQgsMapBoxGlStyleConverter"
                                "PyQgsMapCanvas"
                                "PyQgsMapCanvasAnnotationItem"
                                "PyQgsMapHitTest"
