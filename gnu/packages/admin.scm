@@ -2048,7 +2048,7 @@ on the attached networks without trouble and mostly without configuration.")
 (define-public radvd
   (package
     (name "radvd")
-    (version "2.20")
+    (version "2.21")
     (source
      (origin
        (method git-fetch)
@@ -2057,7 +2057,7 @@ on the attached networks without trouble and mostly without configuration.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "090b8953cq7pvxf8i5wsippsi3zc8jxy559k6jpfjjmbbvl8zlmk"))))
+        (base32 "18f0qznd2bksxgsnb5wf4ddy1x90skyr10yfsivlw2i7kwn6hrnk"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
