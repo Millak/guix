@@ -1384,6 +1384,73 @@ for syntax highlighting or a linting tool.")
     (native-inputs (list pandoc))
     (inputs (list luajit))))
 
+(define (make-lua-readline name lua)
+  (package
+    (name name)
+    (version "3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference              ;Peter Billam's Lua module monorepo
+             (url "https://gitlab.com/peterbillam/pjb_lua.git")
+             (commit "c558b912032cb81508f1f41fcd1fa417ba9ea4f3")))
+       (file-name (git-file-name "pjb-lua" "2023.11.26"))
+       (sha256 (base32 "00xwfyf7p6lvm51msv67sjxw3xkjydfr32dq4p0wfn0ig3xz8m63"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;test_rl.lua is manual
+      #:phases
+      #~(let* ((lua-api-version #$(version-major+minor (package-version lua)))
+               (lua-cpath (string-append #$output "/lib/lua/" lua-api-version))
+               (lua-path (string-append #$output "/share/lua/" lua-api-version))
+               (shared-object "C-readline.so"))
+          (modify-phases %standard-phases
+            (add-after 'unpack 'change-dir
+              (lambda _
+                (chdir "readline-0.0")))
+            (delete 'configure)
+            (replace 'build
+              (lambda _
+                (invoke #$(cc-for-target) "-O2" "-fPIC" "C-readline.c"
+                        "-llua" "-lreadline" "-shared" "-o" shared-object)))
+            (replace 'install
+              (lambda _
+                (install-file shared-object lua-cpath)
+                (install-file "readline.lua" lua-path)))))))
+    (inputs (list lua readline))
+    (home-page "https://peterbillam.gitlab.io/pjb_lua/lua/readline.html")
+    (synopsis "Simple Lua interface to the readline and history libraries")
+    (description
+     "This Lua module offers an interface to the GNU readline library.
+
+The function @code{readline()} is a wrapper, which invokes the GNU readline,
+adds the line to the end of the history list, and then returns the line.
+Usually you call @code{save_history()} before the program exits,
+so that the history list is saved to the @code{histfile}.
+
+This Lua module can dialogue with the user on the controlling-terminal
+of the process (typically @file{/dev/tty}) as returned by @code{ctermid()}.
+It also support most of readline's alternative interface, namely
+@code{handler_install}, @code{read_char} and @code{handler_remove},
+and readline's custom completion.")
+    (license license:expat)))
+
+(define-public lua5.1-readline
+  (make-lua-readline "lua5.1-readline" lua-5.1))
+
+(define-public lua5.2-readline
+  (make-lua-readline "lua5.2-readline" lua-5.2))
+
+(define-public lua-readline
+  (make-lua-readline "lua-readline" lua))
+
+(define-public lua5.4-readline
+  (make-lua-readline "lua5.4-readline" lua-5.4))
+
+(define-public lua5.5-readline
+  (make-lua-readline "lua5.5-readline" lua-5.5))
+
 (define (make-lua-scintillua name lua lua-lpeg lua-filesystem)
   (package
     (name name)
