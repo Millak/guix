@@ -934,6 +934,14 @@ eigenvectors, and structure factors.")
                   (ice-9 textual-ports))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* '("Framework/PythonInterface/test/python/mantid/kernel/ConfigServiceTest.py"
+                             "qt/python/mantidqtinterfaces/test/Muon/grouping_tab/grouping_tab_presenter_test.py"
+                             "qt/python/mantidqtinterfaces/test/Muon/muon_context_test.py"
+                             "qt/python/mantidqtinterfaces/test/Muon/muon_context_with_frequency_test.py")
+                (("assert_\\(not") "assertFalse(")
+                (("assert_") "assertTrue"))))
           (add-after 'unpack 'fix-boost-system
             (lambda _
               ;; Enable core dumps.
