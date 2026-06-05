@@ -427,6 +427,14 @@ embedded systems.")
               "--ignore=tests/elementary/test_02_image_icon.py")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              ;; This is addressed in upstream commit
+              ;; d8830f38ced3413166e13cdab510f1d89f689eec, which is not yet
+              ;; included in a release.
+              (substitute* "tests/evas/test_01_rect.py"
+                (("assert_\\(not") "assertFalse(")
+                (("assert_") "assertTrue"))))
           (add-before 'build 'set-flags
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((include-dir (search-input-directory inputs
