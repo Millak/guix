@@ -1973,10 +1973,17 @@ multiple local rocks trees.")
                               (("/usr/bin/env .*lua")
                                (search-input-file inputs "/bin/lua")))))
                         (delete 'check)
-                        (add-after 'install 'check
+                        (add-after 'install 'wrap
+                         (lambda _
+                           (wrap-program (string-append #$output "/bin/fennel")
+                             `("GUIX_LUA_CPATH" ";" suffix
+                               (,(getenv "GUIX_LUA_CPATH")))
+                             `("GUIX_LUA_PATH" ";" suffix
+                               (,(getenv "GUIX_LUA_PATH"))))))
+                        (add-after 'wrap 'check
                           (assoc-ref %standard-phases
                                      'check)))))
-    (inputs (list lua))
+    (inputs (list lua lua-readline))
     (home-page "https://fennel-lang.org/")
     (synopsis "Lisp that compiles to Lua")
     (description
