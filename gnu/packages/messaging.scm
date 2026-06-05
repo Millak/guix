@@ -1688,34 +1688,6 @@ of the most common use cases is to define avatars for MUC rooms.")))
 serialization format.")
     (license license:expat)))
 
-(define-public libtoxcore
-  (let ((revision "2")
-        (commit "bf69b54f64003d160d759068f4816b2d9b2e1e21"))
-    (package
-      (name "libtoxcore")
-      (version (string-append "0.0.0" "-"
-                              revision "."(string-take commit 7)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/irungentoo/toxcore")
-                      (commit commit)))
-                (file-name (string-append name "-" version "-checkout"))
-                (sha256
-                 (base32
-                  "11lqra4yd7v293cp286ynff5lqz1pprzg8vn3wq6vryj08g88zqb"))))
-      (build-system gnu-build-system)
-      (arguments `(#:tests? #f)) ; FIXME: tests hang, some fail.
-      (native-inputs
-       (list autoconf automake libtool check pkg-config))
-      (inputs
-       (list libsodium opus libvpx))
-      (synopsis "Library for the Tox encrypted messenger protocol")
-      (description
-       "C library implementation of the Tox encrypted messenger protocol.")
-      (license license:gpl3+)
-      (home-page "https://tox.chat"))))
-
 ;; Some tox clients move to c-toxcore, which seems to be where all the
 ;; recent development happens. It is run by the same developers as toxcore,
 ;; forked into a group namespace.
