@@ -143,11 +143,11 @@
                                (list this-package)
                                '())
                            (list autoconf libyaml)))
-    (inputs (list readline
-                  openssl-3.0
-                  libffi ;to build fiddle
-                  gmp ;to accelerate Bignum operations
-                  rust)) ;to build YJIT
+    (inputs (append (list readline openssl-3.0 libffi ;to build fiddle
+                          gmp) ;to accelerate Bignum operations
+                    (if (supported-package? rust)
+                        (list rust) ;to build YJIT, ZJIT, and MMTk
+                        '())))
     (propagated-inputs (list zlib))
     (native-search-paths
      (list (search-path-specification
