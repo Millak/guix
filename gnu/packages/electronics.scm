@@ -245,39 +245,61 @@ are also taken from the original.")
       (license license:gpl3+))))
 
 (define-public abc
-  (let ((commit "a917c1af9fca6fa21328b63853f6e8ee0a046c81")
-        (revision "12"))
+  (let ((commit "21b2d8959a7f0cf61cc1975eabb0489d901a47f8")
+        (revision "0")
+        (version "1.01"))     ;see ABC_VERSION in src/base/main/mainInt.h
     (package
       (name "abc")
-      (version (git-version "0.0" revision commit))
+      (version (git-version version revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                        (url "https://github.com/berkeley-abc/abc")
                        (commit commit)))
                 (file-name (git-file-name name version))
+                ;; Remove *.dll and *.lib binaries.
+                (snippet
+                 #~(begin
+                     (use-modules (guix build utils))
+                     (with-directory-excursion "lib"
+                       (for-each delete-file-recursively '("x64" "x86")))))
                 (sha256
                  (base32
-                  "103piw223zwc1jz4ripvb41rf9lwadvca2b6san7csh7kq0yn5s5"))))
-      (build-system gnu-build-system)
-      (inputs
-       (list readline))
+                  "1dcfxnvmfjka628x1i5v4913yl07mk3dkfzmp6qfnxpjl1zssmlh"))
+                (patches
+                 (search-patches "abc-tests.patch"))))
+      (build-system cmake-build-system)
       (arguments
-       (list #:license-file-regexp "copyright.txt"
-             #:tests? #f ; no tests
+       (list #:configure-flags
+             #~(list (string-append "-DCMAKE_C_COMPILER=" #$(cc-for-target))
+                     (string-append "-DCMAKE_CXX_COMPILER="
+                                    #$(cxx-for-target)))
              #:phases
              #~(modify-phases %standard-phases
-                 (delete 'configure)
                  (replace 'install
                    (lambda _
-                     (install-file "abc" (string-append #$output "/bin")))))))
+                     (install-file "abc" (string-append #$output "/bin"))))
+                 (add-after 'install 'install-license
+                   (lambda _
+                     (install-file
+                      "../source/copyright.txt"
+                      (string-append
+                       #$output "/share/doc/" #$name "-" #$version)))))))
+      (inputs
+       (list readline))
+      (native-inputs
+       (list googletest perl))
       (home-page "https://people.eecs.berkeley.edu/~alanmi/abc/")
       (synopsis "Sequential logic synthesis and formal verification")
       (description "ABC is a program for sequential logic synthesis and
 formal verification.")
       (license
-       (license:non-copyleft
-        "https://people.eecs.berkeley.edu/~alanmi/abc/copyright.htm")))))
+       (list license:expat              ;abc - the mit-modern-variant is used
+             license:expat              ;btor, glucose, glucose2, kissat,
+                                        ;bsat2, cadical, bsat
+             license:bsd-3              ;bzlib
+             license:bsd-2              ;satoko
+             license:zlib)))))          ;zlib
 
 (define-public abc-yosyshq
   (package

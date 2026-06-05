@@ -1,0 +1,46 @@
+From bf99566d041b8131e263a879d83057dc6b0c5a6f Mon Sep 17 00:00:00 2001
+Message-ID: <bf99566d041b8131e263a879d83057dc6b0c5a6f.1780653867.git.csantosb@inventati.org>
+From: Cayetano Santos <csantosb@inventati.org>
+Date: Fri, 5 Jun 2026 11:34:34 +0200
+Subject: [PATCH] test
+
+---
+ CMakeLists.txt | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index bbb153e64..60f9aebdf 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -117,14 +117,16 @@ set_property(TARGET libabc-pic PROPERTY OUTPUT_NAME abc-pic)
+ 
+ if(NOT DEFINED ABC_SKIP_TESTS)
+     enable_testing()
+-    include(FetchContent)
+-    FetchContent_Declare(
+-    googletest
+-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+-    # Specify the commit you depend on and update it regularly.
+-    URL "https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip"
+-    )
+-    FetchContent_MakeAvailable(googletest)
+-    include(GoogleTest)
+-    add_subdirectory(test)
+-endif()
+\ No newline at end of file
++  # include(FetchContent)
++  # FetchContent_Declare(
++  # googletest
++  # DOWNLOAD_EXTRACT_TIMESTAMP TRUE
++  # # Specify the commit you depend on and update it regularly.
++  # URL "https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip"
++  # )
++  # FetchContent_MakeAvailable(googletest)
++  # include(GoogleTest)
++  find_package(GTest)
++  add_library(gtest_main ALIAS GTest::gtest_main)
++  add_subdirectory(test)
++endif()
+--
+2.54.0
+

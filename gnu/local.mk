@@ -983,6 +983,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/389-ds-base-legacy-version.patch		\
   %D%/packages/patches/8mq-enable-imx_hab_handler.patch		\
   %D%/packages/patches/8mq-move-stack-to-ocram_s.patch		\
+  %D%/packages/patches/abc-tests.patch				\
   %D%/packages/patches/abcl-fix-build-xml.patch	\
   %D%/packages/patches/ableton-link-system-libraries-debian.patch	\
   %D%/packages/patches/abiword-explictly-cast-bools.patch	\
