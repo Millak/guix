@@ -917,16 +917,28 @@ MIPS target, targeting mips-linux-gnu or mips-elf.")
                   "1cva0ns650v17lfn8in095zci6lc43d23f1x3mlzc41qfqa6mbd1"))))
       (build-system cmake-build-system)
       (arguments
-       '(#:tests? #f)) ; no tests
+       (list
+        #:tests? #f ; no tests
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'boost-compatibility
+             (lambda _
+               ;; Boost 1.89 no longer provides the system stub.
+               (substitute* "CMakeLists.txt"
+                 (("Boost REQUIRED COMPONENTS system")
+                  "Boost REQUIRED COMPONENTS"))
+               (substitute* "es-app/src/views/gamelist/ISimpleGameListView.h"
+                 (("#include \"views/gamelist/IGameListView.h\"" m)
+                  (string-append m "\n#include <stack>"))))))))
       (inputs
-       `(("alsa-lib" ,alsa-lib)
-         ("boost" ,boost)
-         ("curl" ,curl)
-         ("eigin" ,eigen)
-         ("freeimage" ,freeimage)
-         ("freetype" ,freetype)
-         ("mesa" ,mesa)
-         ("sdl2" ,sdl2)))
+       (list alsa-lib
+             boost
+             curl
+             eigen
+             freeimage
+             freetype
+             mesa
+             sdl2))
       (synopsis "Video game console emulator front-end")
       (description "EmulationStation provides a graphical front-end to a large
 number of video game console emulators.  It features an interface that is
