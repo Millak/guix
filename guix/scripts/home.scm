@@ -24,6 +24,7 @@
 
 (define-module (guix scripts home)
   #:use-module ((gnu services) #:hide (delete))
+  #:autoload   (gnu services guix) (guix-home-service-type)
   #:autoload   (gnu packages base) (coreutils)
   #:autoload   (gnu packages bash) (bash)
   #:autoload   (gnu packages gnupg) (guile-gcrypt)
@@ -494,11 +495,13 @@ resulting from command-line parsing."
                 (passwd:name (getpwnam (getuid)))))
            (os-home-env-config
             (and (operating-system? obj)
-                 (and=> (find (lambda (%service)
-                                (eq? (service-type-name (service-kind %service))
-                                     'guix-home))
-                              (operating-system-user-services obj))
-                        service-value)))
+                 (find (lambda (service)
+                         (eq? (service-type-name (service-kind service))
+                              'guix-home))
+                       (operating-system-user-services obj))
+                 (service-value
+                  (fold-services (operating-system-services obj)
+                                 #:target-type guix-home-service-type))))
            (os-home-env
             (and os-home-env-config
                  (and=> (find (lambda (home-env-config)
@@ -508,11 +511,16 @@ resulting from command-line parsing."
            (home-env
             (or os-home-env obj)))
       (unless (home-environment? home-env)
-        (if (operating-system? obj)
-            (leave (G_ "'~a' does not contain a home environment for user '~a'~%")
-                   file-or-exp username)
-            (leave (G_ "'~a' does not return a home environment~%")
-                   file-or-exp)))
+        (cond
+         ((and (operating-system? obj) os-home-env-config)
+          (leave (G_ "'~a' does not contain a home environment for user '~a'~%")
+                 file-or-exp username))
+         ((operating-system? obj)
+          (leave (G_ "'~a' does not have a service of type 'guix-home-service-type'~%")
+                 file-or-exp))
+         (else
+          (leave (G_ "'~a' does not return a home environment~%")
+                 file-or-exp))))
       home-env))
 
   (let* ((file   (match args
