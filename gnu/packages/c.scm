@@ -209,8 +209,8 @@ common extended features of widespread compilers like @code{gcc} and
                    license:lgpl2.1+))))
 
 (define-public cproc
-  (let ((commit "14a8916e23bc6daebcb54f1384fa0eb2455072e3")
-        (revision "3"))
+  (let ((commit "d1c53ddf56571573a7025324c8dd5c6d547a4d1f")
+        (revision "4"))
     (package
       (name "cproc")
       (version (git-version "0.0" revision commit))
@@ -222,8 +222,7 @@ common extended features of widespread compilers like @code{gcc} and
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1yrs1ccsjypfsjsmxxjspaggn0bjwifs2slalnpvsrgzxw5559bx"))
-         (patches (search-patches "cproc-extra-linkflags.patch"))))
+          (base32 "1mca1wna724acjz0mj7sw6ls00zjvh7mni3v14bvaf0dilqfbp5v"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -232,12 +231,6 @@ common extended features of widespread compilers like @code{gcc} and
                 (string-append "PREFIX=" #$output))
         #:phases
         #~(modify-phases %standard-phases
-            (add-after 'unpack 'set-glibc-library-directory
-              (lambda* (#:key inputs #:allow-other-keys)
-                (setenv "LINKFLAGS_EXTRA"
-                        (string-append
-                          "-L"
-                          (dirname (search-input-file inputs "/lib/libc.so"))))))
             (replace 'configure
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((gcc-lib (assoc-ref inputs "gcc:lib"))
@@ -256,10 +249,20 @@ common extended features of widespread compilers like @code{gcc} and
                                                              "/bin/"
                                                              #$(as-for-target))))
                           (string-append "--with-ld="
-                                         (search-input-file inputs
-                                                            (string-append
-                                                             "/bin/"
-                                                             #$(ld-for-target))))
+                                         (string-append
+                                           (search-input-file inputs
+                                                              (string-append
+                                                               "/bin/"
+                                                               #$(ld-for-target))))
+                                           " "
+                                           ;; Contrary to other distros, the glibc
+                                           ;; files are not in the standard ld(1)
+                                           ;; search path on Guix. cproc only allows
+                                           ;; us to specify the gcc libdir;  hence, we
+                                           ;; change the default linkflags.
+                                           "-L"
+                                           (dirname
+                                             (search-input-file inputs "/lib/libc.so")))
                           (string-append "--with-ldso="
                                          (search-input-file inputs
                                                             #$(glibc-dynamic-linker)))
