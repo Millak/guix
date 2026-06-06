@@ -11,6 +11,7 @@
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 chris <chris@bumblehead.com>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -486,32 +487,44 @@ in Bash, but you can use it to test any UNIX program.")
     (license license:expat)))
 
 (define-public bash-ctypes
-  (package
-    (name "bash-ctypes")
-    (version "1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/taviso/ctypes.sh/releases/download/v"
-                           version "/ctypes-sh-" version ".tar.gz"))
-       (sha256
-        (base32 "0s1sifqzqmr0dnciv06yqrpzgj11d7n0gy5zaxh6b3x8bx7k75l8"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list elfutils
-           libelf
-           libffi
-           zlib
-           ;; Require a bash with C plugin support to build.
-           bash))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://github.com/taviso/ctypes.sh")
-    (synopsis "Foreign function interface for Bash")
-    (description "Bash-ctypes is a Bash plugin that provides a foreign
+  (let ((revision "0")
+        (commit "d8e1af5fdc1e1955f28eceec965b03e2538eea32"))
+    (package
+      (name "bash-ctypes")
+      (version (git-version "1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/taviso/ctypes.sh")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1pw01azl4kbgqz4xwx2x64dqby30ba2khnn6wdd421x6hildyhm5"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'bootstrap
+                   (lambda _
+                     (substitute* "autogen.sh"
+                       (("/bin/sh") (which "sh")))
+                     (invoke "./autogen.sh"))))))
+      (inputs
+       (list elfutils
+             libelf
+             libffi
+             zlib
+             ;; Require a bash with C plugin support to build.
+             bash))
+      (native-inputs
+       (list autoconf automake libltdl libtool pkg-config))
+      (home-page "https://github.com/taviso/ctypes.sh")
+      (synopsis "Foreign function interface for Bash")
+      (description "Bash-ctypes is a Bash plugin that provides a foreign
 function interface (FFI) directly in your shell.  In other words, it allows
 you to call routines in shared libraries from within Bash.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public blesh
   (package
