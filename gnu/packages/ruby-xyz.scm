@@ -3666,8 +3666,8 @@ two hashes.")
 
 (define-public ruby-hydra-minimal
   ;; No releases yet.
-  (let ((commit "d985443af5ea81f4ca13559380d20e96140de56e")
-        (revision "2"))
+  (let ((commit "a4cab705a8a281e4356cb6a05a1946443ad9d53b")
+        (revision "1"))
     (package
       (name "ruby-hydra-minimal")
       (version (git-version "0.0.0" revision commit))
@@ -3681,11 +3681,18 @@ two hashes.")
                 (patches (search-patches "ruby-hydra-minimal-no-byebug.patch"))
                 (sha256
                  (base32
-                  "0mlc6zw9vwxx4zgxjdpk8qn6ibplm80k6w4axc6k7m1l5dg65jqd"))))
+                  "1swzab7i4cqk1bck7p5m3bh526jh0v6m9qq720r3270zbjc8x8z3"))))
       (build-system ruby-build-system)
       (arguments
        (list
-        #:tests? #f)) ;avoid rspec dependency.
+        #:tests? #f ; Avoid rspec dependency.
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-ruby-3.3-build
+              (lambda _
+                (substitute* "lib/hydra.rb"
+                  (("exists\\?")
+                   "exist?")))))))
       (synopsis "Ruby hyphenation patterns")
       (description
        "ruby-hydra-minimal is a Ruby library for working with hyphenation patterns.
