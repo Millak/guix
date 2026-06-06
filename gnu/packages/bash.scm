@@ -569,7 +569,7 @@ suggestions, vim modes, and more to Bash interactive sessions.")
 (define-public bash-unit
   (package
     (name "bash-unit")
-    (version "2.3.2")
+    (version "2.3.3")
     (home-page "https://github.com/pgrange/bash_unit")
     (source
      (origin
@@ -579,7 +579,7 @@ suggestions, vim modes, and more to Bash interactive sessions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gb6vfr5m84bn1gbv7w3jr06fspylj1i3yqkvgxq0n3bncvs35wz"))))
+        (base32 "0k48r1qdkwjg6fldh6akhyfkwl1jxhj8yjfggb1pas8pmdmjl5dr"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan '(("bash_unit" "bin/"))
