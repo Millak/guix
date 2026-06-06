@@ -43403,10 +43403,10 @@ service, and connect it with Emacs via inter-process communication.")
       (license license:gpl3+))))
 
 (define-public emacs-telega
-  (let ((commit "8078beccf88c132d504ba9031062a6a2c65a1c8b"))
+  (let ((commit "d81b669afbe3e4361178e548df9e2e00b04c5337"))
     (package
       (name "emacs-telega")
-      (version "0.8.620")               ; see telega-version in telega.el
+      (version "0.8.640")               ; see telega-version in telega.el
       (source
        (origin
          (method git-fetch)
@@ -43414,7 +43414,7 @@ service, and connect it with Emacs via inter-process communication.")
                (url "https://github.com/zevlg/telega.el")
                (commit commit)))
          (sha256
-          (base32 "1m7gs90hrmmwm7pvf5iz3y4v39psp6kbnw1d97q6v55hhgq3isxz"))
+          (base32 "0h61cfp2fwklhcja775rx41wljkggqzbr4i5xgdpm5g7148bgr09"))
          (file-name (git-file-name "emacs-telega" version))
          (patches
           (search-patches "emacs-telega-test-env.patch"))))
@@ -43429,7 +43429,6 @@ service, and connect it with Emacs via inter-process communication.")
         #:include #~(cons "^etc/" %default-include)
         #:exclude #~(list "etc/telega-make.el"
                           "Dockerfile" "asound\\.conf"
-                          "etc/telegram-msgin\\.wav"
                           "TODO.*org$" "\\.tl$" "^test\\.el")
         #:phases
         #~(modify-phases %standard-phases
@@ -43495,7 +43494,11 @@ for the Telegram messaging platform.")
     (inputs '())
     (native-inputs '())
     (propagated-inputs
-     (list emacs-alert emacs-all-the-icons emacs-dashboard emacs-telega))
+     (list emacs-alert
+           emacs-all-the-icons
+           emacs-company
+           emacs-dashboard
+           emacs-telega))
     (synopsis "Contributed packages to Telega")
     (description "Telega-contrib is a collection of third-party
 contributed packages to Telega.")))
