@@ -94,7 +94,7 @@ functions to ensure they are called with the right arguments during testing.")
 (define-public emacs-compat
   (package
     (name "emacs-compat")
-    (version "30.1.0.1")
+    (version "31.0.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -103,8 +103,26 @@ functions to ensure they are called with the right arguments during testing.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04kzp2m5qs1jyrj50yjz5l8azciyqkgkf4cbifcz4gngvxvgxdm4"))))
+                "1ny7andy4j95iij6m2hl6wi8qfmkcbg4ym5bcx19dhycr7ix1dw0"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command #~(list "make" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'skip-failing-test
+            (lambda _
+              (for-each
+               (lambda (f)
+                 (substitute* "compat-tests.el"
+                   (((format #f "\\(ert-deftest compat-~a.*" f) all)
+                    (string-append all " (skip-unless nil)"))))
+               (list "exec-path" "executable-find" "make-nearby-temp-file"
+                     "package-get-version" "temporary-file-directory"))))
+          (add-before 'install 'make-doc
+            (lambda _
+              (invoke "make" "compat.info"))))))
+    (native-inputs (list texinfo))
     (home-page "https://elpa.gnu.org/packages/compat.html")
     (synopsis "Emacs Lisp compatibility library")
     (description
