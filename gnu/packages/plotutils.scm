@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013-2021, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2016-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2016-2026 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
@@ -49,6 +49,7 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -61,6 +62,7 @@
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xorg))
@@ -68,19 +70,15 @@
 (define-public asymptote
   (package
     (name "asymptote")
-    (version "3.05")
+    (version "3.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asymptote/"
                            version "/asymptote-" version ".src.tgz"))
        (sha256
-        (base32 "11wsqvsdn58h8ybd2r5nysr8hfhwz0w4dzzgwib9m1nx7c56vh9m"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Remove bundled RapidJSON.
-        #~(begin
-            (delete-file-recursively "LspCpp/third_party/rapidjson")))))
+        (base32 "06wgkff6ah0jp5icj0wliy0v0y1llxkd9263jfii7wiy8sbixv7a"))
+       (modules '((guix build utils)))))
     (build-system gnu-build-system)
     ;; Note: The 'asy' binary retains a reference to docdir for use with its
     ;; "help" command in interactive mode, so adding a "doc" output is not
@@ -94,6 +92,7 @@
            emacs-minimal
            flex
            ghostscript                  ;for tests
+           libtool
            perl
            pkg-config
            rapidjson
@@ -111,22 +110,28 @@
                   texlive-parskip
                   texlive-pdftexcmds
                   texlive-texinfo
-                  texlive-type1cm))))
+                  texlive-type1cm))
+           vulkan-headers))
     (inputs
      (list bash-minimal
            eigen
            fftw
            freeglut
            glew
+           glfw
            glm
+           glslang
            gsl
-           libgc
+           libglvnd
            libtirpc
+           ncurses
            python
            python-cson
            python-numpy
            python-pyqt
            readline
+           spirv-tools
+           vulkan-loader
            zlib))
     (arguments
      (list
@@ -137,27 +142,17 @@
       #:imported-modules `(,@%default-gnu-imported-modules
                            (guix build emacs-utils))
       #:configure-flags
-      #~(list (string-append "--enable-gc=" #$(this-package-input "libgc"))
-              (string-append "--with-latex=" #$output "/share/texmf/tex/latex")
+      #~(list (string-append "--with-latex=" #$output "/share/texmf-dist/tex/latex")
               (string-append "--with-context="
                              #$output
-                             "/share/texmf/tex/context/third"))
+                             "/share/texmf-dist/tex/context/third"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'locate-tirpc
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* (list "configure.ac")
-                (("GCLIB=\".*/libgc.a\"") "GCLIB=\"-lgc\"")
-                (("/usr/include/tirpc")
-                 (search-input-directory inputs "include/tirpc")))))
-          (add-after 'unpack 'unbundle-rapidjson
+          (add-after 'unpack 'use-system-rapidjson
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* (list "Makefile.in")
                 (("\\$\\(CMAKE\\)" all)
                  (string-append all " -DUSE_SYSTEM_RAPIDJSON=ON")))))
-          (replace 'bootstrap
-            (lambda _
-              (invoke "autoreconf" "-vfi")))
           (add-after 'unpack 'move-info-location
             ;; Build process installs info file in the unusual
             ;; "%out/share/info/asymptote/" location.  Move it to
@@ -167,6 +162,21 @@
                 (("(\\$\\(infodir\\))/asymptote" _ infodir) infodir))
               (substitute* "doc/asymptote.texi"
                 (("asymptote/asymptote") "asymptote"))))
+          (add-before 'bootstrap 'prepare-bootstrap
+            ;; Bootstrap happens before /bin/sh is replaced with an
+            ;; appropriate location, so set it.  Also clear
+            ;; "-lMachineIndependent -lOSDependent -lGenericCodeGen" from
+            ;; VULKAN_LIBS.
+            (lambda _
+              (setenv "CONFIG_SHELL" (which "bash"))
+              (substitute* (list "autogen.sh" "gc/autogen.sh" "gc/configure")
+                (("/bin/sh") (which "sh")))
+              (substitute* "configure.ac"
+                (("(^[ \t]*VULKAN_LIBS=\").*" _ pre)
+                 (string-append pre "\"\n")))))
+          (replace 'bootstrap
+            (lambda _
+              (invoke "./autogen.sh")))
           (add-before 'build 'patch-pdf-viewer
             (lambda _
               ;; Default to a free pdf viewer.
