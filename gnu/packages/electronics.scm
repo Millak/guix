@@ -1258,7 +1258,7 @@ characterization result in a liberty library file.")
                          desktop-file-utils
                          gettext-minimal
                          pkg-config
-                         swig-4.0
+                         swig-4.4
                          unixodbc
                          zlib))
     (inputs (list bash-minimal
