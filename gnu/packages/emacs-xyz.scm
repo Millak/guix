@@ -18851,7 +18851,7 @@ and tooling.")
 (define-public emacs-elfeed
   (package
     (name "emacs-elfeed")
-    (version "3.4.2")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -18860,29 +18860,36 @@ and tooling.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yq93abyadzrmcd40pi06wcr4jg9ddhlz2phg0wjypprqvv4q49z"))))
+        (base32 "0p2wygrk9hich45y2d091f0rxlvsfksiwk7vil0c3wbmgbkbzg56"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:test-command '("make" "test")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-program-calls
-           (lambda* (#:key inputs #:allow-other-keys)
-             (emacs-substitute-variables "elfeed-curl.el"
-               ("elfeed-curl-program-name"
-                (search-input-file inputs "/bin/curl")))
-             (substitute* "elfeed-lib.el"
-               (("\\(executable-find \"gzip\"\\)")
-                (string-append
-                 "\"" (search-input-file inputs "/bin/gzip") "\""))))))))
+     (list
+      #:test-command #~(list "make" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-program-calls
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "elfeed-curl.el"
+                ("elfeed-curl-program-name"
+                 (search-input-file inputs "/bin/curl")))
+              (substitute* "elfeed-lib.el"
+                (("\\(executable-find \"gzip\"\\)")
+                 (string-append
+                  "\"" (search-input-file inputs "/bin/gzip") "\"")))))
+          (add-before 'install 'makeinfo
+            (lambda _ (emacs-makeinfo))))))
+    (native-inputs
+     (list texinfo))
     (inputs
      (list curl gzip))
+    (propagated-inputs
+     (list emacs-compat))
     (home-page "https://github.com/skeeto/elfeed")
     (synopsis "Atom/RSS feed reader for Emacs")
     (description
      "Elfeed is an extensible web feed reader for Emacs, supporting both Atom
 and RSS, with a user interface inspired by notmuch.")
-    (license license:gpl3+)))
+    (license license:unlicense)))
 
 (define-public emacs-elfeed-goodies
   (let ((commit "544ef42ead011d960a0ad1c1d34df5d222461a6b")
