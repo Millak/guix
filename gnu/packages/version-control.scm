@@ -3525,7 +3525,7 @@ modification time.")
 (define-public libfossil
   (package
     (name "libfossil")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method fossil-fetch)
@@ -3533,7 +3533,7 @@ modification time.")
              (uri "https://fossil.wanderinghorse.net/r/libfossil")
              (check-in version)))
        (sha256
-        (base32 "0agnjs014bbg98xp9hv2vw6kbp7zwz8d045hmd9scqjdwixkf37d"))
+        (base32 "16zrha8vb4dwfmyq86iaz2xz4k91dh018bk94xkxgqbyrr33nm7y"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
@@ -3546,13 +3546,7 @@ modification time.")
                        (items (scandir "." pred)))
                   (for-each (cut delete-file-recursively <>) items))))
             (delete-all-but "autosetup" "proj.tcl" "wh-common.tcl")
-            (delete-file-recursively "extsrc")
-            ;; Re-create Fossil check-out manifests,
-            ;; whose content does not affect in semantics.
-            (for-each
-              (lambda (file)
-                (call-with-output-file file (const #t)))
-              '("manifest" "manifest.uuid"))))))
+            (delete-file-recursively "extsrc")))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
