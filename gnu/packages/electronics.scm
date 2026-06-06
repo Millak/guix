@@ -4756,25 +4756,18 @@ using different abstraction levels.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0nsy385frxz5v7i757h1x59xkl21asz3h2fk1nyvx37z8cj0kd3z"))))
-    (build-system gnu-build-system)
+    (build-system cmake-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; there is no configure stage, as for INSTALL.md
-          (delete 'configure))
-      #:test-target "test"
-      #:make-flags
-      #~(list
-         (string-append
-          "ADDITIONAL_CMAKE_OPTIONS=-DUHDM_USE_HOST_CAPNP=On"
-          ;; " -DUHDM_WITH_PYTHON=On"      ;FIXME
-          " -DUHDM_USE_HOST_GTEST=On")
-         (string-append "PREFIX=" #$output))))
+      #:configure-flags
+      #~(list "-DUHDM_USE_HOST_CAPNP=ON"
+              "-DCMAKE_CXX_FLAGS=-fPIC"
+              "-DCMAKE_C_FLAGS=-fPIC"
+              "-DUHDM_USE_HOST_GTEST=ON")))
     (native-inputs
-     (list cmake-minimal googletest pkg-config python-wrapper swig-4.0))
+     (list googletest python-minimal-wrapper))
     (inputs
-     (list capnproto openssl python-orderedmultidict zlib))
+     (list capnproto python-orderedmultidict))
     (home-page "https://github.com/chipsalliance/UHDM/")
     (synopsis "Universal Hardware Data Model")
     (description
