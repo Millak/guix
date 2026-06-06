@@ -54,6 +54,7 @@
 ;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
+;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -104,6 +105,7 @@
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages file)
   #:use-module (gnu packages freedesktop)
@@ -386,6 +388,53 @@ and other types of content.")
      "This package provides useful C++ classes and routines such as argument
 parser, IO and conversion utilities.")
     (license license:gpl2+)))
+
+(define-public cpptrace
+  (package
+    (name "cpptrace")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jeremy-rifkin/cpptrace")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11lnfjgch6849p9ajk2j6pi0xfwnn5a9d0g1jnq34s9m8l80jq1a"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "-DCPPTRACE_USE_EXTERNAL_ZSTD=ON"
+         "-DCPPTRACE_USE_EXTERNAL_LIBDWARF=ON"
+         "-DCPPTRACE_FIND_LIBDWARF_WITH_PKGCONFIG=ON"
+         "-DBUILD_SHARED_LIBS=ON"
+         "-DCPPTRACE_USE_EXTERNAL_GTEST=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Fails with "zlib and zstd are missing, cannot decompress section".
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (substitute* "test/CMakeLists.txt"
+                ((".*stacktrace.*") "")
+                ((".*object_trace.*") "")
+                ((".*from_current.*") "")
+                ((".*try_catch.*") "")
+                ((".*traced_exception.*") "")
+                ((".*rethrow.*") "")))))))
+    (native-inputs
+     (list googletest pkg-config))
+    (inputs
+     (list libdwarf zlib zstd))
+    (home-page "https://github.com/jeremy-rifkin/cpptrace")
+    (synopsis "Stacktrace library for C++11 and newer")
+    (description "@code{cpptrace} is a simple and portable C++ stacktrace
+library supporting C++11 and greater.  In addition to providing access to
+stack traces, @code{cpptrace} also provides a mechanism for getting
+stacktraces from thrown exceptions for debugging and triaging.")
+    (license license:expat)))
 
 (define-public rang
   (package
