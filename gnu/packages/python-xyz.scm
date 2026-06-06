@@ -182,6 +182,7 @@
 ;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;; Copyright © 2026 Akiyoshi Suda <code@akiyoshisuda.com>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2026 orahcio <orahcio@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28113,6 +28114,46 @@ data.")
      "Locket implements a lock that can be used by multiple processes provided
 they use the same path.")
     (license license:bsd-2)))
+
+(define-public python-loky
+  (package
+    (name "python-loky")
+    (version "3.5.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/joblib/loky")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02za5z0hcy2mhinl1449ws6z475ydgm1mjxwj345f4kc7x7hj9jz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list
+                     ;; Requires process control.
+                     "not (test_kill_process_tree"
+                     ;; Hardware dependent tests.
+                     "test_only_physical_cores_error"
+                     ;; Depends on previous results.
+                     "test_wait_result)")
+                    " or "))))
+    (native-inputs
+     (list python-packaging
+           python-psutil
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-cloudpickle))
+    (home-page "https://loky.readthedocs.io")
+    (synopsis "Robust and reusable Executor for joblib")
+    (description
+     "This package provides a robust implementation of
+@code{concurrent.futures.ProcessPoolExecutor}.")
+    (license license:bsd-3)))
 
 (define-public python-partd
   (package
