@@ -4844,7 +4844,7 @@ VPI Interface, Elaborator, Serialization, Visitor and Listener.")
               "-DTPL_ENABLE_BLAS=ON"
               "-DTPL_ENABLE_LAPACK=ON"
               "-DTPL_ENABLE_DLlib:BOOL=OFF")))
-    (native-inputs (list gfortran perl python-minimal-wrapper swig-4.0 tcsh))
+    (native-inputs (list gfortran perl python-minimal-wrapper swig-4.4 tcsh))
     (inputs (list boost lapack openblas suitesparse-amd))
     (home-page "https://trilinos.github.io/")
     (synopsis "Engineering and scientific problems algorithms")
