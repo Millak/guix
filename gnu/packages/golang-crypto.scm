@@ -2006,6 +2006,35 @@ cryptographic hash as specified in
 hash.")
     (license license:expat)))
 
+(define-public go-github-com-klauspost-crc32
+  (package
+    (name "go-github-com-klauspost-crc32")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/klauspost/crc32")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a3dc0aj9qd12ynhpy1hccjij306h0dc5y1fz90kamsv68qbzi26"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/klauspost/crc32"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/klauspost/crc32")
+    (synopsis "CRC32 hash with x64 optimizations")
+    (description
+     "This package is a drop-in replacement for the standard library
+@code{hash/crc32} package, that features AVX 512 optimizations on x64
+platforms, for a 2x speedup for IEEE CRC32 checksums.  See
+@url{https://en.wikipedia.org/wiki/Cyclic_redundancy_check, Cyclic redundancy
+check} for information.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-letsencrypt-pkcs11key-v4
   (package
     (name "go-github-com-letsencrypt-pkcs11key-v4")
