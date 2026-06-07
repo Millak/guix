@@ -16604,6 +16604,95 @@ authentication of ProtonMail users.")
 Golang crypto library.")
     (license license:expat)))
 
+(define-public go-github-com-psiphon-labs-psiphon-tunnel-core
+  (package
+    (name "go-github-com-psiphon-labs-psiphon-tunnel-core")
+    (version "1.0.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Psiphon-Labs/psiphon-tunnel-core")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10j1harhjzkkmyjnxbx8wapz5zcfjnibqpx5d7j79gqf9mzbf9dk"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/Psiphon-Labs/psiphon-tunnel-core"
+      #:test-subdirs
+      ;; XXX: Remove when all inputs are packaged.
+      #~(list "psiphon/common/crypto/acme"
+              "psiphon/common/crypto/bcrypt"
+              "psiphon/common/crypto/blowfish"
+              "psiphon/common/crypto/bn256"
+              "psiphon/common/crypto/cast5"
+              "psiphon/common/crypto/cryptobyte"
+              "psiphon/common/crypto/curve25519"
+              "psiphon/common/crypto/ed25519"
+              "psiphon/common/crypto/hkdf"
+              "psiphon/common/crypto/internal/chacha20"
+              "psiphon/common/crypto/internal/subtle"
+              "psiphon/common/crypto/md4"
+              "psiphon/common/crypto/nacl/auth"
+              "psiphon/common/crypto/nacl/box"
+              "psiphon/common/crypto/nacl/secretbox"
+              "psiphon/common/crypto/nacl/sign"
+              "psiphon/common/crypto/ocsp"
+              "psiphon/common/crypto/openpgp"
+              "psiphon/common/crypto/openpgp/armor"
+              "psiphon/common/crypto/openpgp/elgamal"
+              "psiphon/common/crypto/openpgp/packet"
+              "psiphon/common/crypto/openpgp/s2k"
+              "psiphon/common/crypto/otr"
+              "psiphon/common/crypto/pbkdf2"
+              "psiphon/common/crypto/pkcs12"
+              "psiphon/common/crypto/pkcs12/internal/rc2"
+              "psiphon/common/crypto/poly1305"
+              "psiphon/common/crypto/ripemd160"
+              "psiphon/common/crypto/salsa20"
+              "psiphon/common/crypto/salsa20/salsa"
+              "psiphon/common/crypto/scrypt"
+              "psiphon/common/crypto/sha3"
+              "psiphon/common/crypto/tea"
+              "psiphon/common/crypto/twofish"
+              "psiphon/common/crypto/xtea"
+              "psiphon/common/crypto/xts"
+              "psiphon/common/sss"
+              "psiphon/upstreamproxy/go-ntlm/ntlm/md4")))
+    (propagated-inputs
+     (list go-github-com-juju-ratelimit
+
+           ;; TODO: Complete packaging.
+           ;; go-github-com-psiphon-labs-bolt
+           ;; go-github-com-psiphon-labs-dns
+           ;; go-github-com-psiphon-labs-goarista-monotime
+           ;; go-github-com-psiphon-labs-goptlib
+           ;; go-github-com-psiphon-labs-net-http2
+           ;; go-github-com-psiphon-labs-tls-tris
+           ;; go-github-com-psiphon-labs-utls
+           ;; go-github-com-yawning-chacha20
+           ;; go-github-com-creack-goselect
+           ;; go-github-com-grafov-m3u8
+           ;; go-github-com-lucas-clemente-quic-go
+           ;; go-github-com-lucas-clemente-quic-go-qerr
+           ;; go-github-com-syndtr-gocapability-capability
+           #;go-github-com-zach-klippenstein-goregen))
+    (home-page "https://github.com/Psiphon-Labs/psiphon-tunnel-core")
+    (synopsis "Internet censorship circumvention system")
+    (description
+     "Psiphon is an Internet censorship circumvention system.  The tunnel core
+project includes a tunneling client and server, which together implement key
+aspects of evading blocking and relaying client traffic through Psiphon and
+beyond censorship.")
+    (license license:gpl3)))
+
 (define-public go-github-com-puerkitobio-goquery
   (package
     (name "go-github-com-puerkitobio-goquery")
