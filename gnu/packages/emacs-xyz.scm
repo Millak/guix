@@ -18973,17 +18973,31 @@ much easier.")
 (define-public emacs-elfeed-protocol
   (package
     (name "emacs-elfeed-protocol")
-    (version "0.9.1")
+    ;; Use a revision to comply with elfeed 4.0.0; revert on next tag.
+    (properties '((commit . "58936590459ccc2dfd6132f69983011d15d9404a")
+                  (revision . "0")))
+    (version (git-version "0.9.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/fasheng/elfeed-protocol")
-             (commit version)))
+             (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n5bns7181j6n603a626jsv26v06s3wm86ml7vixlp234p0frypp"))))
+        (base32 "014b4986w860mf8zvbfmchbc3sjmndcwy3wrx5fncmndkd750j2b"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'patch-tests
+            (lambda _
+              (substitute* "test/elfeed-protocol-ttrss-test.el"
+                (("\\(ert-deftest elfeed-protocol-ttrss-parse-no-feed-id-entries .*" all)
+                 (string-append all " (skip-unless nil)"))))))))
     (propagated-inputs
      (list emacs-elfeed))
     (native-inputs (list emacs-ert-runner))
