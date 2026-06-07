@@ -863,7 +863,7 @@ format.")
     (build-system cmake-build-system)
     (arguments
      '(#:parallel-tests? #f
-       #:configure-flags '("-DBUILD_TESTS=ON"
+       #:configure-flags '("-DBUILD_TESTING=ON"
                            "-DUSE_BUNDLED_TINYXML2=OFF")
        #:phases
        (modify-phases %standard-phases
