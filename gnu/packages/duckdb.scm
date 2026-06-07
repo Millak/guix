@@ -33,8 +33,10 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages check)     ;python-pytest
   #:use-module (gnu packages cran)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
@@ -85,61 +87,61 @@ Multi-Version Concurrency Control}.  Data can be stored in persistent,
 single-file databases with support for secondary indexes.")
     (license license:expat)))
 
-;; XXX: Try to inherit from duckdb and build from source with all extensions.
 (define-public python-duckdb
   (package
     (name "python-duckdb")
-    (version "1.3.2")
+    (version %duckdb-version)
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "duckdb" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/duckdb/duckdb-python")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1x8zb47y8lzc4w0g013sim8x9vd1h96ra3dd0bvh91y73f5dyn66"))))
+        (base32 "1d0zbg86kfpknx50zjmz9j6hcycfy8pwb2h2w5rxw741iihdyj5g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f ;FIXME: See <https://codeberg.org/guix/guix/issues/1436>.
+      ;; Overwrite duckdb_packaging.build_backend.
+      #:build-backend "scikit_build_core.build"
+      ;; tests: 3269 passed, 42 skipped, 2 deselected, 9 xfailed
       #:test-flags
+      ;; Network access is required.
       #~(list "--ignore=tests/slow/test_h2oai_arrow.py"
-              ;; Do not relay on mypy.
-              "--ignore=tests/stubs/test_stubs.py"
-              "-k" (string-append
-                    ;; Don't install anything, thank you.
-                    "not test_install_non_existent_extension"
-                    ;; _pybind11_conduit_v1_ not found.
-                    " and not test_wrap_coverage"
-                    ;; See <https://github.com/duckdb/duckdb/issues/11961>.
-                    " and not test_fetchmany"
-                    ;; See <https://github.com/duckdb/duckdb/issues/10702>.
-                    " and not test_connection_interrupt"
-                    " and not test_query_interruption"))
+              ;; Flaky test.
+              (string-append "--deselect=tests/fast/api/"
+                             "test_query_progress.py::TestQueryProgress"
+                             "::test_query_progress"))
       #:phases
       #~(modify-phases %standard-phases
-          ;; Tests need this
-          (add-before 'check 'set-HOME
-            (lambda _ (setenv "HOME" "/tmp")))
-          ;; Later versions of pybind replace "_" with "const_name".
-          (add-after 'unpack 'pybind-compatibility
+          (add-before 'build 'link-duckdb-source
             (lambda _
-              (with-directory-excursion "src/include/duckdb_python"
-                (substitute* '("python_objects.hpp"
-                               "pyfilesystem.hpp"
-                               "pybind11/conversions/pyconnection_default.hpp")
-                  (("const_name") "_"))))))))
-    (propagated-inputs
-     (list python-adbc-driver-manager))
+              (rmdir "external/duckdb")
+              (symlink #+(package-source (this-package-native-input "duckdb"))
+                       "external/duckdb")))
+          (add-before 'build 'pre-build
+            (lambda _
+              (setenv "DUCKDB_BUILD_UNITY" "1")
+              (setenv "CMAKE_DEFINE_DUCKDB_EXTENSION_AUTOLOAD_DEFAULT" "0")
+              (setenv "CMAKE_DEFINE_DUCKDB_EXTENSION_AUTOINSTALL_DEFAULT" "0")))
+          (add-before 'check 'set-HOME
+            (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list pybind11-2
+     (list duckdb
+           ninja
+           pybind11
+           python-pytest
+           python-scikit-build-core
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-adbc-driver-manager
            python-fsspec
-           ;; python-google-cloud-storage ;python-grpcio fails (see: guix/guix#1436)
+           python-ipython
            python-numpy
            python-pandas
            python-psutil
-           ;; python-pytest
-           python-setuptools-scm
-           python-setuptools
-           python-wheel))
+           python-pyarrow))
     (home-page "https://www.duckdb.org")
     (synopsis "DuckDB embedded database")
     (description "DuckDB is an in-process SQL OLAP database management
