@@ -160,6 +160,8 @@
 
 (define %test-prosody
   (let* ((config (prosody-configuration
+                  (modules-enabled
+                   (cons "admin_shell" %default-modules-enabled))
                   (insecure-sasl-mechanisms '())
                   (virtualhosts
                    (list
