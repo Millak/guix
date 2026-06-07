@@ -1806,45 +1806,78 @@ supports AGit-Flow and lifts the requirement to use a manifest file.")
               ;; sigstore-go TUF repository files (root.json, staging_root.json)
               ".*_?root\\.json" "trusted_root\\.json"
               ;; go-openapi/spec schema files
-              "jsonschema-draft-04\\.json" "schema\\.json")))
+              "jsonschema-draft-04\\.json" "schema\\.json")
+      #:modules
+      '((guix build go-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-extras
+            (lambda* (#:key unpack-path native-inputs #:allow-other-keys)
+              (for-each
+               (match-lambda
+                 ((shell . path)
+                  (mkdir-p (in-vicinity #$output (dirname path)))
+                  (let ((binary
+                         (if #$(%current-target-system)
+                             (search-input-file native-inputs "bin/gh")
+                             (in-vicinity #$output "bin/gh"))))
+                    (with-output-to-file (in-vicinity #$output path)
+                      (lambda _
+                        (invoke binary "completion" "--shell" shell))))))
+               '(("bash" . "share/bash-completion/completions/gh")
+                 ("fish" . "share/fish/vendor_completions.d/gh.fish")
+                 ("zsh"  . "share/zsh/site-functions/_gh")))
+              ;; Also install the manpages
+              ;; taken from script/build.go
+              (mkdir-p (in-vicinity #$output "share/man/man1"))
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (invoke "go" "run" "./cmd/gen-docs"
+                        "--man-page" "--doc-path"
+                        (in-vicinity #$output "share/man/man1"))))))))
     (native-inputs
-     (list go-github-com-atotto-clipboard
-           go-github-com-briandowns-spinner
-           go-github-com-cenkalti-backoff-v4
-           go-github-com-cenkalti-backoff-v5
-           go-github-com-charmbracelet-glamour
-           go-github-com-charmbracelet-huh
-           go-github-com-charmbracelet-lipgloss
-           go-github-com-cli-go-gh-v2
-           go-github-com-cli-oauth
-           go-github-com-cli-safeexec
-           go-github-com-digitorus-timestamp
-           go-github-com-distribution-reference
-           go-github-com-gabriel-vasile-mimetype
-           go-github-com-gdamore-tcell-v2
-           go-github-com-gorilla-websocket
-           go-github-com-hashicorp-go-multierror
-           go-github-com-hashicorp-go-version
-           go-github-com-itchyny-timefmt-go
-           go-github-com-joho-godotenv
-           go-github-com-makenowjust-heredoc
-           go-github-com-masterminds-sprig-v3
-           go-github-com-microsoft-dev-tunnels
-           go-github-com-muhammadmuzzammil1998-jsonc
-           go-github-com-opentracing-opentracing-go
-           go-github-com-rivo-tview
-           go-github-com-shurcool-githubv4
-           go-github-com-sigstore-sigstore-go
-           go-github-com-spf13-cobra
-           go-github-com-spf13-pflag
-           go-github-com-stretchr-testify
-           go-github-com-vmihailenco-msgpack-v5
-           go-github-com-zalando-go-keyring
-           go-golang-org-x-sys
-           go-golang-org-x-term
-           go-golang-org-x-text
-           go-google-golang-org-grpc
-           go-gopkg-in-yaml-v3))
+     (append
+       (if (%current-target-system)
+           (list this-package)
+           '())
+       (list go-github-com-atotto-clipboard
+             go-github-com-briandowns-spinner
+             go-github-com-cenkalti-backoff-v4
+             go-github-com-cenkalti-backoff-v5
+             go-github-com-charmbracelet-glamour
+             go-github-com-charmbracelet-huh
+             go-github-com-charmbracelet-lipgloss
+             go-github-com-cli-go-gh-v2
+             go-github-com-cli-oauth
+             go-github-com-cli-safeexec
+             go-github-com-digitorus-timestamp
+             go-github-com-distribution-reference
+             go-github-com-gabriel-vasile-mimetype
+             go-github-com-gdamore-tcell-v2
+             go-github-com-gorilla-websocket
+             go-github-com-hashicorp-go-multierror
+             go-github-com-hashicorp-go-version
+             go-github-com-itchyny-timefmt-go
+             go-github-com-joho-godotenv
+             go-github-com-makenowjust-heredoc
+             go-github-com-masterminds-sprig-v3
+             go-github-com-microsoft-dev-tunnels
+             go-github-com-muhammadmuzzammil1998-jsonc
+             go-github-com-opentracing-opentracing-go
+             go-github-com-rivo-tview
+             go-github-com-shurcool-githubv4
+             go-github-com-sigstore-sigstore-go
+             go-github-com-spf13-cobra
+             go-github-com-spf13-pflag
+             go-github-com-stretchr-testify
+             go-github-com-vmihailenco-msgpack-v5
+             go-github-com-zalando-go-keyring
+             go-golang-org-x-sys
+             go-golang-org-x-term
+             go-golang-org-x-text
+             go-google-golang-org-grpc
+             go-gopkg-in-yaml-v3)))
     (home-page "https://cli.github.com/")
     (synopsis "GitHub's official command-line tool")
     (description
