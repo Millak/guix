@@ -27284,6 +27284,30 @@ Python's @url{https://docs.python.org/3/library/shutil.html, shutil} package
 for high-level filesystem operations.")
     (license license:expat)))
 
+(define-public go-github-com-tevino-abool
+  (package
+    (name "go-github-com-tevino-abool")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tevino/abool")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w5x2zq648ahjin2wlv00q5621p2d3y1466x4n51pxjlcy2hwsxf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tevino/abool"))
+    (home-page "https://github.com/tevino/abool")
+    (synopsis "Atomic Boolean library for cleaner Go code")
+    (description
+     "Package abool provides atomic Boolean type for cleaner code and better
+performance.")
+    (license license:expat)))
+
 (define-public go-github-com-texttheater-golang-levenshtein
   (package
     (name "go-github-com-texttheater-golang-levenshtein")
