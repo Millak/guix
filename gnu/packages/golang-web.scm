@@ -22934,6 +22934,69 @@ Middleware (composable shared functionality applied to every request) and uses
 the standard @code{context} package to store request-scoped values.")
     (license license:expat)))
 
+(define-public go-golang-getoutline-org-sdk
+  (package
+    (name "go-golang-getoutline-org-sdk")
+    (version "0.0.23")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/OutlineFoundation/outline-sdk")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gvw5mw57kcbcjc6mh22w2gnjlb1gz4m5dal6vs6sfqdmhw0zqiy"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;; Outline Experimental.
+            (delete-file-recursively "x")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "golang.getoutline.org/sdk"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Network tests.
+                       (list "TestAllCustom"
+                             "TestDomain"
+                             "TestExpired"
+                             "TestFakeSNI"
+                             "TestHostSelector"
+                             "TestIP"
+                             "TestIPOverride"
+                             "TestNewHTTPSResolver"
+                             "TestNewTCPResolver"
+                             "TestNewTLSResolver"
+                             "TestNewUDPResolver"
+                             "TestNoSNI"
+                             "TestUntrustedRoot")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (setenv "GODEBUG" "asynctimerchan=0"))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-eycorsican-go-tun2socks
+           go-github-com-google-gopacket
+           go-github-com-shadowsocks-go-shadowsocks2
+           go-github-com-things-go-go-socks5
+           go-golang-org-x-crypto
+           go-golang-org-x-net))
+    (home-page "https://getoutline.org/for-developers/")
+    (synopsis "SDK to build network tools based on Outline components")
+    (description
+     "This package provides a Go library and set of tools for app developers
+to easily reuse Outline's advanced networking strategies to mitigate even the
+most complex network-level interference.")
+    (license license:asl2.0)))
+
 (define-public go-golang-org-x-oauth2
   (package
     (name "go-golang-org-x-oauth2")
