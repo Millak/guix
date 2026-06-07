@@ -23086,6 +23086,70 @@ to easily reuse Outline's advanced networking strategies to mitigate even the
 most complex network-level interference.")
     (license license:asl2.0)))
 
+(define-public go-golang-getoutline-org-sdk-x
+  (package
+    (name "go-golang-getoutline-org-sdk-x")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/OutlineFoundation/outline-sdk")
+              (commit (go-version->git-ref version #:subdir "x"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01hgmz80292q6sd4p43ldvnq1fwkknq6hzsg671nxfhzz99v30dx"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "x")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "golang.getoutline.org/sdk/x"
+      #:unpack-path "golang.getoutline.org/sdk"
+      #:test-subdirs
+      ;; XXX: Remove when all inputs are packaged.
+      #~(list "httpproxy"
+              "report"
+              "sockopt"
+              "websocket")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (setenv "GODEBUG" "asynctimerchan=0"))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-goccy-go-yaml
+           go-github-com-gorilla-websocket
+           go-github-com-lmittmann-tint
+           go-github-com-psiphon-labs-psiphon-tunnel-core
+           go-github-com-quic-go-quic-go
+           go-github-com-songgao-water
+           go-github-com-things-go-go-socks5
+           go-github-com-vishvananda-netlink
+           go-golang-getoutline-org-sdk
+           go-golang-org-x-mobile
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-golang-org-x-term))
+    (home-page "https://golang.getoutline.org/sdk")
+    (synopsis "Outline Experimental Go SDK")
+    (description
+     "This package contains experimental code for Outline SDK.")
+    (license license:asl2.0)))
+
 (define-public go-golang-org-x-oauth2
   (package
     (name "go-golang-org-x-oauth2")
