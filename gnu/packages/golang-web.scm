@@ -6967,6 +6967,35 @@ against documents, as well as for calculating & applying
 building with WebAssembly.")
     (license license:bsd-3)))
 
+(define-public go-github-com-eycorsican-go-tun2socks
+  (package
+    (name "go-github-com-eycorsican-go-tun2socks")
+    (version "1.16.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/eycorsican/go-tun2socks")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s41sap5gxxi5p86c3h9ifysiiws6457z2cyx2zmh2zwdqa7sxsy"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/eycorsican/go-tun2socks"
+      #:test-flags #~(list "-vet=off")))
+    (propagated-inputs
+     (list go-github-com-songgao-water
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/eycorsican/go-tun2socks")
+    (synopsis "Go implementation of tun2socks")
+    (description
+     "This package provides a tun2socks implementation written in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-fasthttp-router
   (package
     (name "go-github-com-fasthttp-router")
