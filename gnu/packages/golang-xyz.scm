@@ -23859,6 +23859,7 @@ https://en.wikipedia.org/wiki/Extended_file_attributes}.")
     (license license:bsd-2)))
 
 (define-public go-github-com-pmezard-go-difflib
+  ;; TODO: Move to (gnu packages golang-check).
   (package
     (name "go-github-com-pmezard-go-difflib")
     (version "1.0.0")
@@ -23866,8 +23867,8 @@ https://en.wikipedia.org/wiki/Extended_file_attributes}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pmezard/go-difflib")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pmezard/go-difflib")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0c1cn55m4rypmscgf0rrb88pn58j3ysvc2d0432dp3c6fqg6cnzw"))))
@@ -23878,9 +23879,11 @@ https://en.wikipedia.org/wiki/Extended_file_attributes}.")
       #:unpack-path "github.com/pmezard/go-difflib/"
       #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/pmezard/go-difflib")
-    (synopsis "Go diff implementation")
+    (synopsis "Partial port of Python difflib package to Go")
     (description
-     "This package provides unified and context-aware diffs in Go.")
+     "Go-difflib is a partial port of Python 3 @code{difflib} package.  Its
+main goal was to make unified and context diff available in pure Go, mostly
+for testing purposes.")
     (license license:bsd-3)))
 
 (define-public go-github-com-polydawn-refmt
