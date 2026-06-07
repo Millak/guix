@@ -4242,7 +4242,7 @@ per-user clean-up when the user logs out.")
 (define-public pam-krb5
   (package
     (name "pam-krb5")
-    (version "4.8")
+    (version "4.11")
     (source (origin
               (method url-fetch)
               (uri
@@ -4252,22 +4252,23 @@ per-user clean-up when the user logs out.")
                       (string-append
                         "https://archives.eyrie.org/software/ARCHIVE/"
                         "pam-krb5/pam-krb5-" version ".tar.xz")))
-              (patches (search-patches "pam-krb5-CVE-2020-10595.patch"))
               (sha256
                (base32
-                "1qjp8i1s9bz7g6kiqrkzzkxn5pfspa4sy53b6z40fqmdf9przdfb"))))
+                "1a16506j35475mps9v3srh54fxcdvypw5gjlmf9vdbwrpykns998"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'disable-tests
-           (lambda _
-             ;; The build container seems to interfere with some tests.
-             (substitute* "tests/TESTS"
-               (("module/basic\n")  ""))
-             (substitute* "tests/TESTS"
-               (("pam-util/vector\n")  ""))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'disable-tests
+            (lambda _
+              ;; The build container seems to interfere with some tests.
+              (substitute* "tests/TESTS"
+                (("module/basic +valgrind\n")  ""))
+              (substitute* "tests/TESTS"
+                (("module/long +valgrind\n")  ""))
+              (substitute* "tests/TESTS"
+                (("pam-util/vector +valgrind\n")  "")))))))
     (inputs
      (list linux-pam mit-krb5))
     (native-inputs

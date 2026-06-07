@@ -2088,7 +2088,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/pnet-fix-off-by-one.patch		\
   %D%/packages/patches/pnet-newer-libgc-fix.patch		\
   %D%/packages/patches/pnet-newer-texinfo-fix.patch		\
-  %D%/packages/patches/pam-krb5-CVE-2020-10595.patch		\
   %D%/packages/patches/password-store-tree-compat.patch		\
   %D%/packages/patches/pciutils-hurd64.patch			\
   %D%/packages/patches/pcsxr-find-harfbuzz.patch			\
