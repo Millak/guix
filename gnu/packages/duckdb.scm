@@ -4,7 +4,7 @@
 ;;; Copyright © 2024 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024, 2025 Ekaitz Zarraga <ekaitz@elenq.tech>
-;;; Copyright © 2024, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,10 +48,12 @@
 ;;;
 ;;; Code:
 
+(define %duckdb-version "1.5.3")
+
 (define-public duckdb
   (package
     (name "duckdb")
-    (version "1.4.1")
+    (version %duckdb-version)
     (source
      (origin
        (method git-fetch)
@@ -60,7 +62,7 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vywdhn930z4aw2ljxp5mx3cfivpvv1d88kq4rhizq3c4hpq9yf3"))))
+        (base32 "0020lv9dxcrng34f0c6ibp20pxll7pyjg0p3080qgw6jf5hsvfck"))))
     (build-system cmake-build-system)
     (arguments
      (list
