@@ -3933,7 +3933,7 @@ Congruential Generator} (PCG) algorithm.")
 (define-public go-github-com-zeebo-xxh3
   (package
     (name "go-github-com-zeebo-xxh3")
-    (version "1.0.2")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -3942,7 +3942,7 @@ Congruential Generator} (PCG) algorithm.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gy666r5v1d1n2cfig9plhyp7z09f06k6mr5lrf0mk6psk6bnwgi"))
+        (base32 "1fx1id14jk3lrrr5pnmdhbnfdg5r047g2nc4hgq9b61z5adbn17m"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
