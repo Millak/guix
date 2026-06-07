@@ -186,7 +186,7 @@ Daemon and possibly more in the future.")
 (define-public libgcrypt
   (package
     (name "libgcrypt")
-    (version "1.11.0")
+    (version "1.12.2")
     (source
      (origin
        (method git-fetch)
@@ -196,7 +196,7 @@ Daemon and possibly more in the future.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0pmxp91sirqmsiy7asnjbz5ksglzbqhh11baz4v086i2j8j3rqvw"))))
+         "1mrh5dwzvw63pdl2jvahgd5vacrk684qjzlhimm58gj68shndssh"))))
     (build-system gnu-build-system)
     (arguments
      ;; The '--with-gpg-error-prefix' argument is needed because otherwise
@@ -233,14 +233,6 @@ Daemon and possibly more in the future.")
               ((system-hurd?)
                #~((add-before 'config 'setenv
                     (lambda _ (setenv "GCRYPT_NO_BENCHMARKS" "t")))))
-              ((target-arm32?)
-               #~((add-after 'unpack 'apply-upstream-patch
-                    (lambda _
-                      (let ((patch-file
-                             #$(local-file
-                                (search-patch
-                                 "libgcrypt-arm32-register-pressure.patch"))))
-                        (invoke "patch" "--force" "-p1" "-i" patch-file))))))
               (else #~())))))
     (outputs '("out" "debug"))
     (propagated-inputs (list libgpg-error))
