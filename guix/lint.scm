@@ -16,6 +16,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2024 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -401,7 +402,8 @@ superfluous when building natively and incorrect when cross-compiling."
     "Checks that a description field ends with a period."
     (if (not (or (string-null? description)       ;check-not-empty
                  (string-suffix? " " description) ;check-no-trailing-whitespace
-                 (string-suffix? "." description)))
+                 (string-suffix? "." description)
+                 (string-suffix? "@end itemize" description)))
         (list
          (make-warning package
                        (G_ "description should end with a period")
