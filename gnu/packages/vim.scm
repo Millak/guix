@@ -579,7 +579,7 @@ commit or run any Git arbitrary command.")
 (define-public vim-airline
   (package
     (name "vim-airline")
-    (version "0.11")
+    (version "0.12")
     (source
      (origin
        (method git-fetch)
@@ -589,7 +589,7 @@ commit or run any Git arbitrary command.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1aksmr73648pvyc75pfdz28k2d4ky52rn7xiwcv7lz87q3vqld7k"))))
+         "075frqpr54b4shrf78cam6g7kchycbfnmn61mplqk8dj246phfxq"))))
     (build-system vim-build-system)
     (arguments
      (list #:plugin-name "airline"))
