@@ -6536,7 +6536,7 @@ language package should be included in the shell invocation.
 
 @quotation Note
 @cindex shebang, for @command{guix shell}
-@command{guix shell} can be also be used as a script interpreter, also
+@command{guix shell} can also be used as a script interpreter, also
 known as @dfn{shebang}.  Here is an example self-contained Python script
 making use of this feature:
 
