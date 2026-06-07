@@ -91,6 +91,7 @@
   #:use-module (gnu packages nss)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages physics)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -3103,69 +3104,8 @@ to work with @code{numpy.ufuncs}, many of which are already supported.")
     ;; OSI approved, BSD like, see doc/user/license.rst.
     (license license:bsd-3)))
 
-(define-public python-qutip
-  (package
-    (name "python-qutip")
-    (version "5.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "qutip" version))
-       (sha256
-        (base32 "0rl4piaj13g7g5i9wgdqc60q59dhk4lr34hw8v7xgnw6wkhiflb2"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            (use-modules (ice-9 string-fun))
-            ;; Delete cythonized files.  Not all cpp files are generated
-            ;; by Cython, delete only those with accompanying Cython
-            ;; file extensions (.pyx, .pxd).
-            (for-each (lambda (file)
-                        (when (or-map
-                               (lambda (cython-ext)
-                                 (file-exists? (string-replace-substring
-                                                file ".cpp" cython-ext)))
-                               (list ".pyx" ".pxd"))
-                          (delete-file file)))
-                      (find-files "." ".cpp"))))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 15987 passed, 167 skipped, 95 deselected, 5 xfailed, 71 warnings
-      #:test-flags
-      #~(list "-m" "not flaky and not slow"      ;ignore flaky and slow tests
-              "--ignore=tests/solver/")          ;depends on loky
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'remove-local-source
-            (lambda _
-              (copy-recursively "qutip/tests" "tests")
-              (delete-file-recursively "qutip"))))))
-    (native-inputs
-     (list python-cython
-           python-pytest
-           python-pytest-rerunfailures
-           python-setuptools))
-    (propagated-inputs
-     (list python-numpy
-           python-packaging
-           python-scipy
-           ;; [optional]
-           python-cvxopt
-           python-cvxpy
-           ;; python-loky       ;not packaged yet in Guix
-           python-mpi4py
-           python-mpmath
-           python-tqdm))
-    (home-page "https://qutip.org")
-    (synopsis "Quantum Toolbox in Python")
-    (description
-     "QuTiP is a library for simulating the dynamics of closed and open quantum
-systems.  It aims to provide numerical simulations of a wide variety of quantum
-mechanical problems, including those with Hamiltonians and/or collapse operators
-with arbitrary time-dependence, commonly found in a wide range of physics
-applications.")
-    (license license:bsd-3)))
+;; XXX: Deprecated on <2026-06-08>.
+(define-deprecated/public-alias hugs (@ (gnu packages physiscs) python-qutip))
 
 (define-public python-ruffus
   (package

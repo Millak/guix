@@ -1,5 +1,7 @@
 ;;; Copyright © 2026 Danny Milosavljevic <dannym@friendly-machines.com>
+;;; Copyright © 2025, 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
+;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -665,6 +667,70 @@ original Fortran code was written by Dr. Devinder Sivia in the 1980s.")
      "QuickBayes provides Bayesian analysis tools for analyzing neutron
 scattering data.  It is designed for use with the Mantid framework for
 neutron and muon data analysis.")
+    (license license:bsd-3)))
+
+(define-public python-qutip
+  (package
+    (name "python-qutip")
+    (version "5.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "qutip" version))
+       (sha256
+        (base32 "0rl4piaj13g7g5i9wgdqc60q59dhk4lr34hw8v7xgnw6wkhiflb2"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (use-modules (ice-9 string-fun))
+            ;; Delete cythonized files.  Not all cpp files are generated
+            ;; by Cython, delete only those with accompanying Cython
+            ;; file extensions (.pyx, .pxd).
+            (for-each (lambda (file)
+                        (when (or-map
+                               (lambda (cython-ext)
+                                 (file-exists? (string-replace-substring
+                                                file ".cpp" cython-ext)))
+                               (list ".pyx" ".pxd"))
+                          (delete-file file)))
+                      (find-files "." ".cpp"))))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 15987 passed, 167 skipped, 95 deselected, 5 xfailed, 71 warnings
+      #:test-flags
+      #~(list "-m" "not flaky and not slow"      ;ignore flaky and slow tests
+              "--ignore=tests/solver/")          ;depends on loky
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (copy-recursively "qutip/tests" "tests")
+              (delete-file-recursively "qutip"))))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-pytest-rerunfailures
+           python-setuptools))
+    (propagated-inputs
+     (list python-numpy
+           python-packaging
+           python-scipy
+           ;; [optional]
+           python-cvxopt
+           python-cvxpy
+           ;; python-loky       ;not packaged yet in Guix
+           python-mpi4py
+           python-mpmath
+           python-tqdm))
+    (home-page "https://qutip.org")
+    (synopsis "Quantum Toolbox in Python")
+    (description
+     "QuTiP is a library for simulating the dynamics of closed and open quantum
+systems.  It aims to provide numerical simulations of a wide variety of quantum
+mechanical problems, including those with Hamiltonians and/or collapse operators
+with arbitrary time-dependence, commonly found in a wide range of physics
+applications.")
     (license license:bsd-3)))
 
 (define-public python-shiver
