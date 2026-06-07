@@ -187,26 +187,32 @@ Daemon and possibly more in the future.")
   (package
     (name "libgcrypt")
     (version "1.11.0")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnupg/libgcrypt/libgcrypt-"
-                                 version ".tar.bz2"))
-             (sha256
-              (base32
-               "172vd1c1zn27mqd7cdb14hpjz35rhr9pg8dass0j0zyfcyc0q4h9"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://dev.gnupg.org/source/libgcrypt")
+              (commit (string-append "libgcrypt-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0pmxp91sirqmsiy7asnjbz5ksglzbqhh11baz4v086i2j8j3rqvw"))))
     (build-system gnu-build-system)
     (propagated-inputs
      `(("libgpg-error-host" ,libgpg-error)))
     (native-inputs
      ;; Needed here for the 'gpg-error' program.
-     `(("libgpg-error-native" ,libgpg-error)))
+     `(("libgpg-error-native" ,libgpg-error)
+       ("autoconf" ,autoconf)
+       ("automake" ,automake)))
     (arguments
      ;; The '--with-gpg-error-prefix' argument is needed because otherwise
      ;; 'configure' uses 'gpg-error-config' to determine the '-L' flag, and
      ;; the 'gpg-error-config' it runs is the native one---i.e., the wrong one.
      (list
       #:configure-flags
-      #~(list (string-append "--with-libgpg-error-prefix="
+      #~(list "--enable-maintainer-mode" ;see README.GIT
+              (string-append "--with-libgpg-error-prefix="
                              (assoc-ref %build-inputs "libgpg-error-host"))
               ;; libgcrypt is transitioning from gpg-error-config to
               ;; gpgrt-config, and in the process the
@@ -217,6 +223,9 @@ Daemon and possibly more in the future.")
                              (assoc-ref %build-inputs
                                         "libgpg-error-host")
                              "/bin/gpgrt-config")
+              ;; TODO: There is a dependency cycle with fig2dev; remove when
+              ;; fixed.
+              "--disable-doc"
               #$@(if (%current-target-system)
                      ;; When cross-compiling, _gcry_mpih_lshift etc are
                      ;; undefined.
@@ -238,7 +247,7 @@ Daemon and possibly more in the future.")
                         (invoke "patch" "--force" "-p1" "-i" patch-file))))))
               (else #~())))))
     (outputs '("out" "debug"))
-    (home-page "https://gnupg.org/")
+    (home-page "https://gnupg.org/software/libgcrypt")
     (synopsis "Cryptographic function library")
     (description
      "Libgcrypt is a general-purpose cryptographic library.  It provides the
