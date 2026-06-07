@@ -2173,15 +2173,28 @@ printers.")
     (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:configure-flags
       #~(list "-DCUTTER_USE_BUNDLED_RIZIN=OFF"
-              "-DCUTTER_ENABLE_PYTHON_BINDINGS=ON"
-              "-DCUTTER_QT=5")
+              "-DCUTTER_ENABLE_PYTHON=ON"
+              "-DCUTTER_ENABLE_PYTHON_BINDINGS=ON")
       #:tests? #f)) ;no tests
     (native-inputs
      (list pkgconf))
     (inputs
-     (list graphviz libzip openssl qtsvg-5 qttools-5 qtwayland-5 rizin zlib))
+     (list graphviz
+           ksyntaxhighlighting
+           libzip
+           openssl
+           python
+           python-pyside-6
+           python-shiboken-6
+           qt5compat
+           qtsvg
+           qttools
+           qtwayland
+           rizin
+           zlib))
     (home-page "https://cutter.re")
     (synopsis "Software reverse engineering platform")
     (description
