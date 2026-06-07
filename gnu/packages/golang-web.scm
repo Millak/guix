@@ -14178,16 +14178,16 @@ compatible object storage.")
   (package
     (inherit go-github-com-minio-minio-go)
     (name "go-github-com-minio-minio-go-v7")
-    (version "7.0.86")
+    (version "7.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/minio/minio-go")
-             (commit (string-append "v" version))))
+              (url "https://github.com/minio/minio-go")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0k9ab0nqdfgwf1h46wsv0i5d207pdyw7dc6ccdj8i7adfbxa1zwa"))))
+        (base32 "0c2bl16s3smqz1g3i88xkp9d325lyqfch8l8fxzd793i4c9y7ixl"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -14214,16 +14214,20 @@ compatible object storage.")
                                    import-path)
                 (("/bin/cat") (which "cat"))))))))
     (propagated-inputs
-     (list go-github-com-dustin-go-humanize
-           go-github-com-go-ini-ini
-           go-github-com-goccy-go-json
+     (list go-github-com-cespare-xxhash-v2
+           go-github-com-dustin-go-humanize
            go-github-com-google-uuid
            go-github-com-klauspost-compress
+           go-github-com-klauspost-crc32
            go-github-com-minio-crc64nvme
            go-github-com-minio-md5-simd
            go-github-com-rs-xid
+           go-github-com-tinylib-msgp
+           go-github-com-zeebo-xxh3
+           go-go-yaml-in-yaml-v3
            go-golang-org-x-crypto
-           go-golang-org-x-net))))
+           go-golang-org-x-net
+           go-gopkg-in-ini-v1))))
 
 (define-public go-github-com-moby-ipvs
   (package
