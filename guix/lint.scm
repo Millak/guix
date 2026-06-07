@@ -680,6 +680,7 @@ of a package, and INPUT-NAMES, a list of package specifications such as
   ;; with their minimal variant.
   (let ((input-names '("bash"
                        "cmake"
+                       "coreutils"
                        "gettext"
                        "po4a")))
     (map (lambda (input)
