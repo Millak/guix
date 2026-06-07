@@ -31747,6 +31747,32 @@ functions.")
 time is being spent during Emacs startup in order to optimize startup time.")
     (license license:gpl3+)))
 
+(define-public emacs-magit-difftastic
+  ;; No release tag.
+  (let ((commit "1e2a1f60288341893a9d21d8a900739be9f34e40")
+        (revision "0"))
+    (package
+      (name "emacs-magit-difftastic")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/rschmukler/magit-difftastic")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1g2jqczijjyxkindbi7xw4k3g3qvvzgf3mwn6nbbs2jpa03ypx1s"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-difftastic))
+      (home-page "https://github.com/rschmukler/magit-difftastic")
+      (synopsis "Difftastic integration for Magit")
+      (description "Magit-difftastic render diffs with @command{difftastic}
+inside Magit's own buffers (@code{magit-status}, @code{magit-diff-mode},
+@code{magit-revision-mode}), as collapsible, navigable Magit sections with
+full staging support.")
+      (license license:expat))))
+
 (define-public emacs-magit-gerrit
   (let ((commit "a97521574c5b7d4b7ab89e25c358c87fd5b1887f")
         (revision "1"))
