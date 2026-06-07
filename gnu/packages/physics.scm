@@ -2,6 +2,7 @@
 ;;; Copyright © 2025, 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2026 orahcio <orahcio@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -672,35 +673,25 @@ neutron and muon data analysis.")
 (define-public python-qutip
   (package
     (name "python-qutip")
-    (version "5.2.2")
+    (version "5.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "qutip" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/qutip/qutip")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0rl4piaj13g7g5i9wgdqc60q59dhk4lr34hw8v7xgnw6wkhiflb2"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            (use-modules (ice-9 string-fun))
-            ;; Delete cythonized files.  Not all cpp files are generated
-            ;; by Cython, delete only those with accompanying Cython
-            ;; file extensions (.pyx, .pxd).
-            (for-each (lambda (file)
-                        (when (or-map
-                               (lambda (cython-ext)
-                                 (file-exists? (string-replace-substring
-                                                file ".cpp" cython-ext)))
-                               (list ".pyx" ".pxd"))
-                          (delete-file file)))
-                      (find-files "." ".cpp"))))))
+        (base32 "1bka535j8py3r3izrcnkj2ivbv48692by1wqfa30zycmfg5kfdj6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 15987 passed, 167 skipped, 95 deselected, 5 xfailed, 71 warnings
+      ;; Tests: 26944 passed, 205 skipped, 135 deselected,
+      ;; 7 xfailed, 472 warnings.
       #:test-flags
-      #~(list "-m" "not flaky and not slow"      ;ignore flaky and slow tests
-              "--ignore=tests/solver/")          ;depends on loky
+      #~(list "-m" "not (flaky or slow)"
+              ;; Ignoring very slow tests.
+              "--ignore" "tests/solver/test_parallel.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'remove-local-source
@@ -719,7 +710,7 @@ neutron and muon data analysis.")
            ;; [optional]
            python-cvxopt
            python-cvxpy
-           ;; python-loky       ;not packaged yet in Guix
+           python-loky
            python-mpi4py
            python-mpmath
            python-tqdm))
