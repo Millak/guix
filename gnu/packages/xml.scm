@@ -1416,7 +1416,8 @@ C++ programming language.")
     (arguments
      (list
       #:configure-flags
-      #~(list "-DCMAKE_POSITION_INDEPENDENT_CODE=ON")))
+      #~(list "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
+              "-DBUILD_SHARED_LIBS=ON")))
     (synopsis "Small XML parser for C++")
     (description "TinyXML2 is a small and simple XML parsing library for the
 C++ programming language.")
