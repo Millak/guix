@@ -13504,16 +13504,16 @@ SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
 (define-public python-sse-starlette
   (package
     (name "python-sse-starlette")
-    (version "3.1.2")
+    (version "3.4.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/sysid/sse-starlette")
-             (commit (string-append "v" version))))
+              (url "https://github.com/sysid/sse-starlette")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cs4218jc8fa9x362vdigdpz2nn1l4qav9yizj3psklvwiq2z1as"))))
+        (base32 "0jzy3mjszl7fr524cggyf8k97x6jpykvmxldmm2ckmrqjpyj8jmz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -13522,19 +13522,10 @@ SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
          ;; XXX: Server fails to start.
          "--ignore=tests/experimentation/test_multiple_consumers_asyncio.py"
          "--ignore=tests/experimentation/test_multiple_consumers_threads.py"
-         ;; XXX: Missing test dependency.
-         "--ignore=tests/integration/test_multiple_consumers.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("\"anyio>=.*\"")
-                 "\"anyio\"")))))))
-    (propagated-inputs (list python-anyio python-starlette))
+         ;; XXX: Missing test dependency - testcontainers, Docker is required.
+         "--ignore=tests/integration/test_multiple_consumers.py")))
     (native-inputs
      (list python-asgi-lifespan
-           python-async-timeout
            python-httpx
            python-portend
            python-pytest
@@ -13543,6 +13534,9 @@ SendGrid Web API v3 endpoints, including the new v3 /mail/send.")
            python-setuptools
            python-tenacity
            python-uvicorn))
+    (propagated-inputs
+     (list python-anyio
+           python-starlette))
     (home-page "https://github.com/sysid/sse-starlette")
     (synopsis "SSE plugin for Starlette")
     (description
