@@ -52,6 +52,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages shells)
@@ -493,7 +494,7 @@ signals and slots system.")
 (define-public mdds
   (package
     (name "mdds")
-    (version "2.1.1")
+    (version "3.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -502,9 +503,9 @@ signals and slots system.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0866020brc1kmiryh7dmhjamnywlsd56ks649hy87283k0p7d3bb"))))
+                "0p6k281cymfa9ndkjl82xh6yp4brnlx80sqknsq9c92b4v72fg9c"))))
     (build-system gnu-build-system)
-    (native-inputs (list autoconf automake))
+    (native-inputs (list autoconf automake pkg-config))
     (propagated-inputs
       (list boost-1.83)) ; inclusion of header files
     (home-page "https://gitlab.com/mdds/mdds")

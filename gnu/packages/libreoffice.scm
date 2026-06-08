@@ -469,11 +469,11 @@ CorelDRAW documents of all versions.")
                "16hy60ws29pb4pz3z5l4920yn9hnk2vlij0xfs5qi1w4drd46c5l"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:configure-flags
-           #~(list (string-append "--with-mdds="
-                                  #$(version-major+minor
-                                     (package-version
-                                      (this-package-input "mdds")))))))
+     (list
+      #:configure-flags
+      ;; To update, check the MDDS_API_VERSION in mdds checkout.
+      ;; This is not necessarily the same as the package-version of mdds.
+      #~(list "--with-mdds=3.0")))
     (native-inputs
      (list cppunit doxygen gperf pkg-config))
     (propagated-inputs ; in Requires or Requires.private field of .pkg
