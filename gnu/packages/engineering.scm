@@ -4185,16 +4185,18 @@ controllers.")
     (version "0.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "wireviz" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/wireviz/WireViz")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1qbh0pknpymc42k4661b8ghbfk9him75xx57siyrl9is5s6as98f"))))
+        (base32 "0ggh2xmf60b84pi0q2bxjpq1ivgrm0wklgjdyqh1h7i51avhxcf1"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f)) ; no tests in git checkout or PyPI archive
+     (list #:tests? #f)) ; no tests in git checkout
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (inputs
      (list python-click
            python-graphviz
