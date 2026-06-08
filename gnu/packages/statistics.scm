@@ -971,17 +971,16 @@ sampler for Markov chain Monte Carlo (MCMC).")
 (define-public python-george
   (package
     (name "python-george")
-    (version "0.4.3")
+    (version "0.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "george" version))
        (sha256
-        (base32 "1zvbdq50ds820aj06lr2nrzwg121bkd9bg0aq83gvk7lf8yqgp4v"))))
+        (base32 "1s01nnlwrffqp935jxzj9wm5a8v5cgavwlnw91yac4nhvq5f3xfv"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list cmake-minimal
-           pybind11-2
+     (list pybind11     ;XXX: remove when python-team is merged
            python-pytest
            python-scikit-build-core
            python-setuptools-scm))
