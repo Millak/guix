@@ -23969,7 +23969,6 @@ and revert them selectively.")
       (license license:gpl3+))))
 
 (define-public emacs-difftastic
-  ;; No releases or tags.
   (package
     (name "emacs-difftastic")
     (version "1.0.0")
