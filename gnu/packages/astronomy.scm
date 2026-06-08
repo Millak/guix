@@ -7696,6 +7696,14 @@ and the use of a modern programming language, techniques, and libraries
         (base32 "0v0q4i1s8d0z5iigw60v8gvsaqs9xmf2l7bpx0bvg8xysindzwyg"))))
     (build-system pyproject-build-system)
     ;; tests: 42 passed, 1 warning
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-time-based-tests
+            (lambda _
+              (substitute* "tests/test_pixell.py"
+                (("assert time_eval") "#")))))))
     (native-inputs
      (list gfortran
            perl ; fortran/Makefile
