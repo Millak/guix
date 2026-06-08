@@ -2155,43 +2155,36 @@ Xarray Datatree.")
 (define-public python-narwhals
   (package
     (name "python-narwhals")
-    (version "2.15.0")
+    (version "2.22.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "narwhals" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/narwhals-dev/narwhals")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0rd9z4pmp7cm1l11iahwxwkgl48ki3fiynj4d110i5cxp5smjn59"))))
+        (base32 "0rq7asql365iv40jdbdnp05jja3y304pr2xd85ng83ly24h2bidx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2846 passed, 215 skipped, 59 xfailed
+      #:build-backend "hatchling.build" ; recent versions use uv-build
+      ;; 3054 passed, 238 skipped, 72 xfailed
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; Run a minimal portion of tests, the complete test suite
               ;; requires Polars, PySpark and SqlFrame packages.
-              "--constructors=pandas"
-              "-k" (string-join
-                    ;; XXX: ValueError: Minimum version of modin supported by Narwhals is
-                    ;; (0, 8, 2), found: (0,)
-                    (list "not test_allow_series"
-                          "test_cross_join_non_pandas"
-                          "test_eager_only_eager"
-                          "test_from_native_roundtrip_identity"
-                          "test_namespace_series_from_iterable"
-                          "test_series_only"
-                          "test_to_native_namespace")
-                    " and not "))))
+              "--constructors=pandas")))
     (native-inputs
-     (list python-pytest
-           python-pytest-xdist
+     (list python-hatchling
+           python-pytest
            python-pytest-env
-           python-hatchling))
+           python-pytest-xdist))
     (propagated-inputs
      ;;    [core]
      (list python-duckdb
            python-pandas
-           ;; python-polars ;https://codeberg.org/guix/guix/pulls/2570
+           python-polars
            python-pyarrow
            ;; python-sqlframe
            ;; [optional]
