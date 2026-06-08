@@ -98,7 +98,7 @@
 (define-public ixion
   (package
     (name "ixion")
-    (version "0.19.0")
+    (version "0.20.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -107,7 +107,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nycbs3765wkaw9ff7aflm56ayxkn15dlfl5pbbb9b5i2rcv3dq6"))))
+                "1330gsyazlmfls3bbx822pas11i99kgg5phivg65rnym1y2a5gdz"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake libtool pkg-config))
     (inputs (list mdds python spdlog))
