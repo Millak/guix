@@ -12086,7 +12086,7 @@ realtime client and server.")
 (define-public python-socks
   (package
     (name "python-socks")
-    (version "2.7.2")
+    (version "2.8.1")
     (source
      (origin
        (method git-fetch)
@@ -12095,12 +12095,11 @@ realtime client and server.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1alrfjkir69006qmr2ax3inrffk2bllpljwmprwczb44r0mya77m"))))
+        (base32 "1x95i9w3izivdgz6hadh5kiil12i4ljk4ashgh3g0rjv2rw33vhj"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-trio))
     (native-inputs
      (list python-anyio
-           python-async-timeout
            python-flask
            python-pytest
            python-pytest-asyncio
