@@ -213,6 +213,26 @@ Format (@file{.odt}, @file{.ods}, @file{.odp})), Portable Document Format
 All required fonts must be installed on the converting system.")
     (license license:gpl2)))
 
+(define-public libeot
+  (package
+    (name "libeot")
+    (version "0.01")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://dev-www.libreoffice.org/src/libeot-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32 "0sm06rbhb7adwknd3j67z3l3y2nxryi91srmfdkbxkbxivx92l6g"))))
+    (build-system gnu-build-system)
+    (home-page "https://github.com/umanwizard/libeot")
+    (synopsis "Library for parsing embedded OpenType files")
+    (description
+     "This package provides a library for parsing embedded OpenType files
+(Microsoft embedded font \"standard\"), and converting them to other
+formats.")
+    (license license:mpl2.0)))
+
 (define-public librevenge
   (package
     (name "librevenge")
