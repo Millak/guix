@@ -2374,17 +2374,19 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
 (define-public python-pyvisa-py
   (package
     (name "python-pyvisa-py")
-    (version "0.7.2")
+    (version "0.8.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "PyVISA-py" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pyvisa/pyvisa-py")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0lg8a041yg4yl31bxyyy51nh92rdp8ps94pzpyz7siaqg235npsc"))))
+        (base32 "1673azf2y72rza8k1i109x8ad8p0ziz6cc5rw3w0w79wdvfx6wkx"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-wheel
            python-setuptools))
     (propagated-inputs
      (list python-pyvisa
