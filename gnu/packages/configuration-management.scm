@@ -233,30 +233,35 @@ Features:
   (package
     (name "rcm")
     (version "1.3.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://thoughtbot.github.io/rcm/dist/rcm-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32 "0bdyksrd9i3lkmr9kq6dwa0l4g2403vnma5s4j9h8spi4rziwx14"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://thoughtbot.github.io/rcm/dist/rcm-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "0bdyksrd9i3lkmr9kq6dwa0l4g2403vnma5s4j9h8spi4rziwx14"))))
     (build-system gnu-build-system)
-    (arguments '(#:phases
-                 (modify-phases %standard-phases
-                   (add-after 'patch-source-shebangs 'patch-tests
-                     (lambda _
-                       (substitute* '("test/rcrc-tilde.t"
-                                      "test/rcdn-hooks-run-in-order.t"
-                                      "test/rcup-hooks-run-in-order.t")
-                         (("/bin/sh") (which "sh")))
-                       (substitute* "test/rcup-hooks.t"
-                         (("/usr/bin/env") (which "env"))))))
-                  #:parallel-tests? #f))
+    (arguments
+     (list
+      #:parallel-tests? #f              ;multiple tests write to /tmp/test
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-source-shebangs 'patch-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("test/rcrc-tilde.t"
+                             "test/rcdn-hooks-run-in-order.t"
+                             "test/rcup-hooks-run-in-order.t")
+                (("/bin/sh") (search-input-file inputs "/bin/sh")))
+              (substitute* "test/rcup-hooks.t"
+                (("/usr/bin/env") (search-input-file inputs "/bin/env"))))))))
     (native-inputs (list perl python-cram))
     (home-page "https://github.com/thoughtbot/rcm")
     (synopsis "Management suite for dotfiles")
-    (description "The rcm suite of tools is for managing dotfiles directories.  This is
-a directory containing all the @code{.*rc} files in your home directory
-(@code{.zshrc}, @code{.vimrc}, and so on). These files have gone by many
+    (description
+     "The rcm suite of tools is for managing dotfiles directories.  This is
+a directory containing all the @file{.*rc} files in your home directory
+(@file{.zshrc}, @file{.vimrc}, and so on).  These files have gone by many
 names in history, such as “rc files” because they typically end in rc
 or “dotfiles” because they begin with a period.  This suite is useful
 for committing your rc files to a central repository to share, but it also
