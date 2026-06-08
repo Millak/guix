@@ -807,7 +807,22 @@ them do this.")
       ;; tests: 1812 passed, 9 warnings
       #:test-flags
       ;; XXX: KeyError: location
-      #~(list "--ignore=allauth/socialaccount/providers/openid/tests.py")))
+      #~(list "--ignore=allauth/socialaccount/providers/openid/tests.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'include-package-data
+            (lambda _
+              ;; XXX: Report upstream.
+              (substitute* "pyproject.toml"
+                (("\"\\*\\.mo\"" all)
+                 (string-join
+                  (list all "'*.html'" "'*.md'" "'*.txt'" "'*.yaml'"
+                        "'*.xml'")
+                  ", ")))))
+          (add-before 'check 'remove-local-source
+            (lambda _
+              ;; To force tests using installed package.
+              (delete-file-recursively "allauth"))))))
     (propagated-inputs
      (list python-asgiref
            python-django
