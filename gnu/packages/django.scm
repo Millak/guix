@@ -791,7 +791,7 @@ them do this.")
 (define-public python-django-allauth
   (package
     (name "python-django-allauth")
-    (version "65.13.1")
+    (version "65.18.0")
     (source
      (origin
        (method git-fetch)
@@ -800,14 +800,11 @@ them do this.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w98sd0hj96qgxqa6q7a80h5w800yshqlhli2pplkwb5bqkqwq5n"))))
+        (base32 "171z6v1nd7v0y0ar87ixibci9zpx0blmrfqbnvp29p2x57dkhi9r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1812 passed, 9 warnings
-      #:test-flags
-      ;; XXX: KeyError: location
-      #~(list "--ignore=allauth/socialaccount/providers/openid/tests.py")
+      ;; tests: 2050 passed, 17 warnings, 6 subtests passed
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'include-package-data
