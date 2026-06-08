@@ -736,8 +736,7 @@ covariance @url{https://github.com/vnmabus/dcor#sr14,[SR14]}
         (base32 "1j35v849yx6bq9w4bvlgbw9b2g3f1zlqxf63vv257dfx5qsa5x62"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list cmake-minimal ;TODO: propagate from python-scikit-build-core
-           pybind11-2
+     (list pybind11     ;XXX: remove when python-team is merged
            python-pytest
            python-scikit-build-core))
     (propagated-inputs
