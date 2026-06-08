@@ -2238,7 +2238,7 @@ are both supported).")
 (define-public profanity
   (package
     (name "profanity")
-    (version "0.18.1")
+    (version "0.18.2")
     (source
      (origin
        (method git-fetch)
@@ -2249,7 +2249,7 @@ are both supported).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rbdyw1pmszmmxalcjb2w9ph60yq270wgw0fs2g1mqhhmqpg0g3s"))))
+         "07m91fgkk8qjybql93m6k83ggpmc893k1x7jch95zyj57r5mkmi2"))))
     (build-system meson-build-system)
     (arguments
      (list
