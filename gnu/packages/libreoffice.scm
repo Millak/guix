@@ -936,7 +936,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
 (define-public libreoffice
   (package
     (name "libreoffice")
-    (version "25.2.5.2")               ;keep in sync with hunspell dictionaries
+    (version "25.8.7.3")               ;keep in sync with hunspell dictionaries
     (source
      (origin
        (method url-fetch)
@@ -949,7 +949,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
           "https://downloadarchive.documentfoundation.org/libreoffice/old/"
           version "/src/libreoffice-" version ".tar.xz")))
        (sha256
-        (base32 "0fdkn9lf2q5d7kminsbcn1g2ih2ilaw2jnyarsns4jczch4v57wc"))))
+        (base32 "0bd0zh2pdigqv3ml8mfifnfz579kk4kyyhdndv0nbazcmdyq3xdg"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -1170,6 +1170,7 @@ os.putenv('URE_BOOTSTRAP', \
            libcdr
            libcmis
            libcuckoo
+           libeot
            libfixmath
            libjpeg-turbo
            libe-book
@@ -1223,6 +1224,7 @@ os.putenv('URE_BOOTSTRAP', \
            xdg-utils
            xmlsec-nss
            zip
+           (list zstd "lib")
            zxcvbn-c
            zxing-cpp))
     (home-page "https://www.libreoffice.org/")
