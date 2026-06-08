@@ -2402,7 +2402,7 @@ some well developed, easy to deploy and cross platform libraries.")
 (define-public python-pandapower
   (package
     (name "python-pandapower")
-    (version "3.3.0")
+    (version "3.3.3")
     (source
      (origin
        (method git-fetch)
@@ -2411,7 +2411,7 @@ some well developed, easy to deploy and cross platform libraries.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01ybwvbzld202yhhi9l3djp1nr0k57lrqh7k5819n58brv3hcki9"))))
+        (base32 "1rryjz5qf33vsa0dvpvpbvc65kv5kj9qwzrs4ql7gz6mamwpkj5k"))))
     (build-system pyproject-build-system)
     (arguments
      (list
