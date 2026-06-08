@@ -13617,13 +13617,22 @@ libavif.")
 (define-public python-pillow-heif
   (package
     (name "python-pillow-heif")
-    (version "1.1.1")
+    ;; The tagged version 1.3.0 fails tests with libheif version 1.22.2.  This
+    ;; commit is taken from the master branch.
+    (properties '((commit . "4366788c5eff15cf3d3c66d262224dac27f8efc4")
+                  (revision . "0")))
+    (version (git-version "1.3.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pillow_heif" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bigcat88/pillow_heif")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1pkbkg88jg6f24xvbg95aq8dm8fa8ffz7zy4rq262m98i658q3pn"))))
+        (base32 "1dj35h2q2ng7hhv9nyqs0dd0x66kq0a5sgn1f6mc5d191qb90dy3"))))
     (build-system pyproject-build-system)
     (inputs (list libheif))
     (propagated-inputs (list python-pillow))
