@@ -1118,7 +1118,7 @@ if a word is missing or mispelled, the detection will fail.")
 ;; are needed for building certain packages.
 ;; This package is not intended to be installed directly.
 (define arnastofnun-dim
-  (let ((version "May2026"))
+  (let ((version "June2026"))
     (origin
       (method git-fetch)
       (uri (git-reference
@@ -1126,7 +1126,7 @@ if a word is missing or mispelled, the detection will fail.")
              (commit version)))
       (file-name (git-file-name "arnastofnun-dim" version))
       (sha256
-       (base32 "1ribxkdj9clafdqa572bp0qh73spv4wagyx49jqdivq8r3b631n6")))))
+       (base32 "07jjgi4ivk98pvapm3xirn5pi714hgvi8rag4r8bb74z2qjfjqrj")))))
 
 (define-public python-islenska-bootstrap
   (hidden-package
