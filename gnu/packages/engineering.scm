@@ -2333,13 +2333,15 @@ internal TSP Lua functions.")
 (define-public python-pyvisa
   (package
     (name "python-pyvisa")
-    (version "1.14.1")
+    (version "1.16.2")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "PyVISA" version))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/pyvisa/pyvisa")
+                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
-               (base32
-                "0ybsxpc4339434ha5anix511ckdyp12cym3ld1vsspacxm0h00vi"))
+               (base32 "1yg3g358y725fahqh18yf46dydam5d9cv9dnis2lnam79mmsy5f3"))
               (modules '((guix build utils)))
               ;; Delete bundled python-prettytable.
               (snippet '(delete-file-recursively "pyvisa/thirdparty"))))
@@ -2347,7 +2349,7 @@ internal TSP Lua functions.")
     (arguments
      (list
       #:test-flags
-      '(list "--pyargs" "pyvisa")
+      #~(list "--pyargs" "pyvisa")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-system-prettytable
@@ -2358,8 +2360,7 @@ internal TSP Lua functions.")
     (native-inputs
      (list python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-prettytable
            python-typing-extensions))
