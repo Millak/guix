@@ -51,7 +51,7 @@
 (define-public lean4
   (package
     (name "lean4")
-    (version "4.28.0")
+    (version "4.29.0")
     (home-page "https://lean-lang.org" )
     (source (origin
               (method git-fetch)
@@ -61,7 +61,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "012x0zpans6liwwcs6zx797zdhl4gslhj8y9svylnm0pkxfmda9b"))))
+                "09f347n99iicvq3gnjkxxf0ym2964c9fwalmb1dp0x4bn170xznj"))))
     (build-system cmake-build-system)
     (native-inputs
      (list git ; for the tests
