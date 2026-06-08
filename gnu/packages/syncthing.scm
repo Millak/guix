@@ -50,7 +50,7 @@
 (define-public syncthing
   (package
     (name "syncthing")
-    (version "2.0.16")
+    (version "2.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/syncthing/syncthing"
@@ -58,7 +58,7 @@
                                   "/syncthing-source-v" version ".tar.gz"))
               (sha256
                (base32
-                "0sgij3i2mhl6m9n2d98cz86f17215kfdc3z913k8yz4n8gwkcf7r"))))
+                "0aplv52qzdl5pq87w6nd8a0h6jlirz86kdq3whqbyjj85x2rk2j1"))))
     ;; TODO: Build from git, remove vendor.
     (build-system go-build-system)
     ;; The primary Syncthing executable goes to "out", while the auxiliary
