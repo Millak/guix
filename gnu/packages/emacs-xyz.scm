@@ -31763,6 +31763,12 @@ time is being spent during Emacs startup in order to optimize startup time.")
                  (base32
                   "1g2jqczijjyxkindbi7xw4k3g3qvvzgf3mwn6nbbs2jpa03ypx1s"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command
+        #~(list "emacs" "--batch"
+                "-l" "test/magit-difftastic-test.el"
+                "-f" "ert-run-tests-batch-and-exit")))
       (propagated-inputs (list emacs-difftastic))
       (home-page "https://github.com/rschmukler/magit-difftastic")
       (synopsis "Difftastic integration for Magit")
