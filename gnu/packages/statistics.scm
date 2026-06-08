@@ -724,7 +724,7 @@ covariance @url{https://github.com/vnmabus/dcor#sr14,[SR14]}
 (define-public python-diptest
   (package
     (name "python-diptest")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
@@ -733,7 +733,7 @@ covariance @url{https://github.com/vnmabus/dcor#sr14,[SR14]}
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j35v849yx6bq9w4bvlgbw9b2g3f1zlqxf63vv257dfx5qsa5x62"))))
+        (base32 "1rkynhlk8dkr5nf03za37hxcgxalqq9l2gagw5q8c9gml57fiw5v"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list pybind11     ;XXX: remove when python-team is merged
