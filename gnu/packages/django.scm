@@ -809,12 +809,14 @@ them do this.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'include-package-data
             (lambda _
-              ;; XXX: Report upstream.
+              ;; setuptools-scm works only with VCS tracked files, and any non
+              ;; "*.py" data files are ignored, see:
+              ;; allauth/django-allauth#4705 and guix/guix#8975.
               (substitute* "pyproject.toml"
                 (("\"\\*\\.mo\"" all)
                  (string-join
-                  (list all "'*.html'" "'*.md'" "'*.txt'" "'*.yaml'"
-                        "'*.xml'")
+                  (list all "'*.js'" "'*.html'" "'*.md'" "'*.txt'"
+                        "'*.yaml'" "'*.xml'")
                   ", ")))))
           (add-before 'check 'remove-local-source
             (lambda _
