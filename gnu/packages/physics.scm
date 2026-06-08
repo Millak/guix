@@ -43,6 +43,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages jemalloc)
@@ -60,6 +61,7 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-graphics)
   #:use-module (gnu packages python-science)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -397,6 +399,73 @@ data from the VESUVIO spectrometer.  It is a script library meant to be
 imported in Mantid Workbench's script editor (@code{import mvesuvio as mv}),
 not a GUI application.")
     (license license:gpl3)))
+
+(define-public python-physics-tenpy
+  (package
+    (name "python-physics-tenpy")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tenpy/tenpy")
+              (commit (string-append "v" version))
+              (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b1yky4gn2s1h0yl7l3a6mq1ji2zj0a74fyflhlapii7awmwas5q"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-docs
+            (lambda _
+              (invoke "make" "-C" "doc" "html")))
+          (add-after 'install 'install-docs
+            (lambda _
+              (copy-recursively
+               "doc/sphinx_build/html"
+               (string-append #$output:doc "/share/doc/"
+                              #$name "-" #$version)))))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools
+           ;; [docbuild]
+           pandoc
+           python-pybtex
+           python-sphinx
+           python-sphinx-rtd-theme
+           python-sphinxcontrib-bibtex
+           python-matplotlib
+           python-ipykernel
+           python-nbsphinx
+           python-sphinx-copybutton))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy
+           ;; [optional]
+           python-matplotlib
+           python-h5py
+           python-pyyaml
+           python-psutil
+           python-bottleneck))
+    (outputs '("out" "doc"))
+    (home-page "https://github.com/xtenpy/tenpy")
+    (synopsis "Simulation of quantum many-body systems with tensor networks")
+    (description
+     "@acronym{TeNPy, Tensor Network Python} is a Python library for the
+simulation of strongly correlated quantum systems with tensor networks.
+
+The philosophy of this library is to get a new balance of a good readability
+and usability for new-comers, and at the same time powerful algorithms and
+fast development of new algorithms for experts.  For good readability, we
+include an extensive documentation next to the code, both in Python doc
+strings and separately as \"user guides\", as well as simple example codes and
+even toy codes, which just demonstrate various algorithms (like TEBD and DMRG)
+in ~100 lines per file.")
+    (license license:asl2.0)))
 
 (define-public python-pycifrw
   (package
