@@ -2525,10 +2525,13 @@ Microwave engineering.")
     (version "1.26")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "lcapy" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mph-/lcapy")
+              (commit (string-append "V" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "084jbrjzii1n5v91jnqiah0n4m9g3sq4iz4f0d8j7ihsrhsrdz7d"))))
+        (base32 "1lv67sb0qfadj9ppdi7vvgngi19nq0ywyrlpind5s9ncjzpikhlf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
