@@ -250,7 +250,7 @@ of the Transmission BitTorrent client, using its HTTP RPC protocol.")
 (define-public stig
   (package
     (name "stig")
-    (version "0.14.1a0")
+    (version "0.14.2a0")
     (source
      (origin
        (method git-fetch)
@@ -259,30 +259,43 @@ of the Transmission BitTorrent client, using its HTTP RPC protocol.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0196brcasdyn0mx3h2cqlgrx8x9fyv2n7bmx13nj58vnf3y4c1hg"))))
+        (base32 "0gwq5ikwqc4h3r3yndpyqzpmjvxlkpb2ibif32kh3f92q5xxnzl3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f ;tests require network access
+      ;; Tests are broken, see <https://github.com/rndusr/stig/issues/206>.
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'loosen-version-restrictions
+          (add-after 'unpack 'use-default-asyncio
+            ;; async_timeout is deprecated, upstream recommends to use
+            ;; asyncio, available since Python 3.11.
+            (lambda _
+              (substitute* "stig/client/aiotransmission/rpc.py"
+                (("async_timeout") "asyncio"))
+              (substitute* "stig/client/utils.py"
+                (("from async_timeout import timeout as async_timeout")
+                 "asyncio")
+                (("async_timeout") "asyncio.timeout"))))
+          (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "setup.py"
-                (("urwidtrees==1.0.3")
-                 "urwidtrees>=1.0.3")))))))
-    (propagated-inputs
-     (list python-urwid
-           python-urwidtrees
-           python-aiohttp
+                (("urwidtrees==1\\.0\\.3") "urwidtrees>=1.0.3")
+                (("aiohttp==3\\.\\*") "aiohttp>=3.13.5")
+                ;; It's a part of Python 3.11+.
+                (("'async_timeout',") "")))))))
+    (native-inputs
+     (list python-setuptools))
+    (inputs
+     (list python-aiohttp
            python-aiohttp-socks
-           python-pyxdg
            python-blinker
            python-natsort
-           python-async-timeout
-           python-setproctitle))
-    (inputs (list python))
-    (native-inputs (list python-setuptools))
+           python-pyxdg
+           python-setproctitle
+           python-urwid
+           python-urwidtrees
+           python-wcwidth))
     (synopsis "TUI and CLI for the BitTorrent client Transmission")
     (description
      "Stig is a @acronym{TUI, Text User Interface} and @acronym{CLI, Command
