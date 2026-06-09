@@ -863,6 +863,119 @@ interactive environment for the functional language Haskell.")
     (native-inputs
      (list ghc-6.10 perl))))
 
+(define-public ghc-7.2
+  (package
+    (inherit ghc-7.0)
+    (name "ghc")
+    (version "7.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://downloads.haskell.org/~ghc/"
+                           version "/" name "-" version "-src.tar.bz2"))
+       (sha256
+        (base32
+         "0g87d3z9275dniaqzkf56qfgzp1msd89nqqhhm2gkc6iga072spz"))))
+    (arguments
+     (list
+      #:system "i686-linux"
+      #:test-target "test"
+      #:tests? #false           ;not yet
+      #:parallel-build? #false  ;fails when building libraries/*
+      ;; Don't pass --build=<triplet>, because the configure script
+      ;; auto-detects slightly different triplets for --host and --target and
+      ;; then complains that they don't match.
+      #:build #f
+      #:validate-runpath? #f    ; libraries can't find each other.
+      #:configure-flags
+      #~(list
+         (string-append "--with-gmp-libraries="
+                        (assoc-ref %build-inputs "gmp") "/lib")
+         (string-append "--with-gmp-includes="
+                        (assoc-ref %build-inputs "gmp") "/include"))
+      #:make-flags
+      #~(list (string-append "CONFIG_SHELL=" (assoc-ref %build-inputs "bash")
+                             "/bin/bash"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-environment
+            (lambda _
+              (unsetenv "GHC_PACKAGE_PATH")
+              (setenv "CONFIG_SHELL" (which "bash"))))
+          (replace 'bootstrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bash (which "bash")))
+                ;; Use our libffi package
+                (substitute* "rts/ghc.mk"
+                  (("-Ilibffi/build/include")
+                   (string-append "-I" #$(this-package-input "libffi") "/include"))
+                  (("-Llibffi/build/include")
+                   (string-append "-L" #$(this-package-input "libffi") "/lib"))
+                  (("-DDEBUG") "")
+                  (("libffi/dist-install/build/ffi.h ") ""))
+                (substitute* "rts/package.conf.in"
+                  (("depends:	 	builtin_ffi") "")
+                  (("extra-libraries:") "extra-libraries:\n                \t\tffi")
+                  (("\"m\"") ",\"m\""))
+                (substitute* "ghc.mk"
+                  (("rts/package.conf.inplace : libffi/package.conf.inplace") "")
+                  (("   libffi \\\\") "\\")
+                  (("^.*OTHER_LIBS.*$") "")
+                  (("^.*--global-conf.*update libffi/package.conf.install.*$") "")
+                  (("install_packages: libffi/package.conf.install") "install_packages:")
+                  (("libffi includes") "includes"))
+                (substitute* '("Makefile"
+                               "distrib/Makefile")
+                  (("SUBDIRS = gmp libffi")
+                   "SUBDIRS = gmp")
+                  (("\\$\\(MAKE\\) -C libffi.*") ""))
+                (substitute* "compiler/ghc.cabal.in"
+                  (("../libffi/build/include")
+                   (string-append #$(this-package-input "libffi") "/include")))
+
+                ;; Do not use libbfd, because it complicates the build and
+                ;; requires more patching.  Disable all debug and profiling
+                ;; builds.
+                (substitute* "mk/config.mk.in"
+                  (("GhcRTSWays \\+= debug") "")
+                  (("thr thr_debug thr_l") "thr thr_l")
+                  (("dyn debug_dyn") "dyn")
+                  (("thr_dyn thr_debug_dyn") "thr_dyn")
+                  (("GhcLibWays \\+= p") "GhcLibWays +="))
+
+                ;; Patch out -XGADTs requirement for GADT pattern matching
+                ;; (otherwise it can't build 7.6.x)
+                (substitute* "compiler/typecheck/TcPat.lhs"
+                  (("gadts_on <- xoptM Opt_GADTs") "let gadts_on = True"))
+
+                ;; Replace /bin/sh.
+                (substitute* '("configure"
+                               "distrib/configure.ac")
+                  (("`/bin/sh") (string-append "`" bash))
+                  (("SHELL=/bin/sh") (string-append "SHELL=" bash))
+                  (("#! /bin/sh") (string-append "#! " bash)))
+                (substitute* '("mk/config.mk.in")
+                  (("^SHELL.*=.*/bin/sh") (string-append "SHELL = " bash)))
+                (substitute* "aclocal.m4"
+                  (("SHELL=/bin/sh") (string-append "SHELL=" bash)))
+                (substitute* "utils/ghc-pkg/ghc.mk"
+                  (("#!/bin/sh") (string-append "#!" bash)))
+                (substitute* '("libraries/unix/cbits/execvpe.c"
+                               "libraries/Cabal/cabal/Distribution/Simple/Hugs.hs"
+                               "libraries/Cabal/cabal/Distribution/Simple/Program/Script.hs"
+                               "libraries/process/System/Process/Internals.hs")
+                  (("/bin/sh") bash)
+                  (("\"sh\"") (string-append "\"" bash "\"")))))))))
+    (native-search-paths (list (search-path-specification
+                                (variable "GHC_PACKAGE_PATH")
+                                (files (list
+                                        (string-append "lib/ghc-" version)))
+                                (file-pattern ".*\\.conf\\.d$")
+                                (file-type 'directory))))
+    (inputs (list gmp ncurses libffi perl))
+    (native-inputs
+     (list ghc-7.0 perl))))
+
 (define ghc-bootstrap-x86_64-7.8.4
   (origin
     (method url-fetch)
