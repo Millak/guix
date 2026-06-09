@@ -1114,7 +1114,7 @@ It also includes runtime support libraries for these languages.")
                     (("arm_prog_mode") "arm_prgmode"))))))
     (supported-systems (fold delete %supported-systems
                              '("powerpc64le-linux" "riscv64-linux")))
-    (native-inputs (list texinfo dejagnu))
+    (native-inputs (list gcc-4.8 texinfo dejagnu))
     (inputs '())
     (propagated-inputs '())
     (outputs '("out"))
