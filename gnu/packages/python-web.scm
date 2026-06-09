@@ -2492,7 +2492,7 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
 (define-public python-aiohttp-client-cache
   (package
     (name "python-aiohttp-client-cache")
-    (version "0.14.2")
+    (version "0.14.3")
     (source
      (origin
        (method git-fetch)
@@ -2502,32 +2502,31 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "17qa2sh63wa7b9ma40y2b6k9sjscc5vfwlmf46sv36l1mz9rmd4y"))))
+         "13xbmjjvcbzh3yh5z92mc0gwicwfjfq2av5jbqv09sbfzhggs92y"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      ;; Run unit tests only which not require networking or additional setup.
-      #~(list "--ignore=test/integration")))
+      #:test-flags #~(list "--ignore=test/integration/")))
     (native-inputs
-     (list python-hatchling
-           ;; TODO: Missing packages: pytest-clarity,
-           ;; nox-poetry, types-aiofiles.
-           python-async-timeout
-           python-brotli
+     (list python-brotli
            python-faker
+           python-hatchling
            python-pytest
            python-pytest-aiohttp
            python-pytest-asyncio
-           python-pytest-xdist))
+           python-types-aiofiles))
     (propagated-inputs
-     (list python-aiofiles
-           python-aiohttp
-           python-aiosqlite
+     (list python-aiohttp
            python-attrs
            python-itsdangerous
-           python-redis
-           python-url-normalize))
+           python-url-normalize
+           ;; [optional]
+           python-aioboto3
+           python-aiobotocore
+           python-aiofiles
+           python-aiosqlite
+           python-pymongo
+           python-redis))
     (home-page "https://github.com/requests-cache/aiohttp-client-cache")
     (synopsis "Persistent cache for aiohttp requests")
     (description
