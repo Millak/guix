@@ -24,6 +24,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2024 Gábor Stefanik <netrolller.3d@gmail.com>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Yarl Baudig <yarl-baudig@mailoo.org>
 ;;;
@@ -759,7 +760,8 @@ interactive environment for the functional language Haskell.")
          "1vfhdvf9nls4pn1vy48ndy2s81klp1my6ch9dkg2373csvcpi6qs"))
        (snippet
         #~(begin (use-modules (guix build utils))
-                 (delete-file-recursively "utils/ghc-pwd/dist-boot")))))
+                 (delete-file-recursively "utils/ghc-pwd/dist-boot")
+                 (delete-file-recursively "libffi")))))
     (arguments
      (list
       #:system "i686-linux"
@@ -787,11 +789,23 @@ interactive environment for the functional language Haskell.")
               (let ((bash (which "bash")))
                 ;; Use our libffi package
                 (substitute* "rts/ghc.mk"
-                  (("-I../libffi/build/include")
+                  (("-Ilibffi/build/include")
                    (string-append "-I" #$(this-package-input "libffi") "/include"))
-                  (("-L../libffi/build/include")
+                  (("-Llibffi/build/include")
                    (string-append "-L" #$(this-package-input "libffi") "/lib"))
-                  (("-DDEBUG") ""))
+                  (("-DDEBUG") "")
+                  (("libffi/dist-install/build/ffi.h ") ""))
+                (substitute* "rts/package.conf.in"
+                  (("depends:	 	builtin_ffi") "")
+                  (("extra-libraries:") "extra-libraries:\n                \t\tffi")
+                  (("\"m\"") ",\"m\""))
+                (substitute* "ghc.mk"
+                  (("rts/package.conf.inplace : libffi/package.conf.inplace") "")
+                  (("   libffi \\\\") "\\")
+                  (("^.*OTHER_LIBS.*$") "")
+                  (("^.*--global-conf.*update libffi/package.conf.install.*$") "")
+                  (("install_packages: libffi/package.conf.install") "install_packages:")
+                  (("libffi includes") "includes"))
                 (substitute* '("Makefile"
                                "distrib/Makefile")
                   (("SUBDIRS = gmp libffi")
@@ -803,13 +817,19 @@ interactive environment for the functional language Haskell.")
 
                 ;; Do not use libbfd, because it complicates the build and
                 ;; requires more patching.  Disable all debug and profiling
-                ;; builds.
+                ;; builds. Also disable dynamic builds for a faster bootstrap.
                 (substitute* "mk/config.mk.in"
                   (("GhcRTSWays \\+= debug") "")
                   (("thr thr_debug thr_l") "thr thr_l")
                   (("dyn debug_dyn") "dyn")
                   (("thr_dyn thr_debug_dyn") "thr_dyn")
-                  (("GhcLibWays += p") "GhcLibWays +="))
+                  (("GhcLibWays \\+= dyn") "GhcLibWays +=")
+                  (("GhcLibWays \\+= p") "GhcLibWays +="))
+
+                ;; Patch out -XGADTs requirement for GADT pattern matching
+                ;; (otherwise it can't build 7.6.x)
+                (substitute* "compiler/typecheck/TcPat.lhs"
+                  (("gadts_on <- xoptM Opt_GADTs") "let gadts_on = True"))
 
                 ;; Replace /bin/sh.
                 (substitute* '("configure"
@@ -828,7 +848,10 @@ interactive environment for the functional language Haskell.")
                                "libraries/Cabal/Distribution/Simple/Program/Script.hs"
                                "libraries/process/System/Process/Internals.hs")
                   (("/bin/sh") bash)
-                  (("\"sh\"") (string-append "\"" bash "\"")))))))))
+                  (("\"sh\"") (string-append "\"" bash "\""))))))
+          (add-before 'build 'build-bootstrap
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "bootstrapping-files" make-flags))))))
     (native-search-paths (list (search-path-specification
                                 (variable "GHC_PACKAGE_PATH")
                                 (files (list
@@ -838,7 +861,7 @@ interactive environment for the functional language Haskell.")
     (inputs
      (list gmp libffi ncurses perl))
     (native-inputs
-     (list perl ghc-6.10))))
+     (list ghc-6.10 perl))))
 
 (define ghc-bootstrap-x86_64-7.8.4
   (origin
