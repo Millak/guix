@@ -642,7 +642,7 @@ interactive environment for the functional language Haskell.")
                 ;; expressions that require multi-line matching.  Hard to tell.
                 perl-5.6
                 ghc-6.0
-                gcc-4.9)))
+                gcc-4.8)))
     (home-page "https://www.haskell.org/ghc")
     (synopsis "The Glasgow Haskell Compiler")
     (description
