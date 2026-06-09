@@ -221,7 +221,6 @@
                (base32
                 "1nggbgnns7lvxn68gzlcsgwh3bigvrbn45kh6dqia9yxlqc6zwxk"))
               (patches (search-patches "emacs-disable-jit-compilation.patch"
-                                       "emacs-exec-path.patch"
                                        "emacs-fix-scheme-indent-function.patch"
                                        "emacs-native-comp-driver-options.patch"
                                        "emacs-native-comp-fix-filenames.patch"
@@ -249,7 +248,9 @@
                 (string-append "RUN_TEMACS= "
                                #$(this-package-native-input "libfaketime")
                                "/bin/faketime -m -f '" release-date "'"
-                               " ./temacs")))
+                               ;; Reduce closure size by cleaning the
+                               ;; environment of the emacs dumper
+                               " env -i ./temacs")))
       #:parallel-build? #f
       #:phases
       #~(modify-phases %standard-phases
@@ -732,7 +733,6 @@ editor (with wide ints)" )
         (base32 "111cxlhdpxyvyj2mhqcx0s5s2nkdr3q2vhly1csq5d44p24c4yyy"))
        (patches
         (search-patches "emacs-next-disable-jit-compilation.patch"
-                        "emacs-next-exec-path.patch"
                         "emacs-fix-scheme-indent-function.patch"
                         "emacs-native-comp-driver-options.patch"
                         "emacs-next-native-comp-fix-filenames.patch"
