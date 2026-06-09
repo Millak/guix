@@ -34673,27 +34673,43 @@ for styling strings in the terminal.")
   (package
     (name "python-aiopg")
     (version "1.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "aiopg" version))
-              (sha256
-               (base32
-                "0wcxcfazjsknr7hv46374rzh7502k8g1hvbi2r0rakbbz2z56qhi"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aio-libs/aiopg")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sbf5vfbxivi7fmh99xiviwgq46z5ypi0vsf0vq280934m2naghq"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f))        ;they need Docker
+     (list
+      #:tests? #f       ;they need Docker
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-default-asyncio
+            ;; async_timeout is deprecated, upstream recommends to use
+            ;; asyncio, available since Python 3.11.
+            (lambda _
+              (substitute* "aiopg/pool.py"
+                (("async_timeout") "asyncio"))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                (("psycopg2-binary") "psycopg2")
+                ;; It's a part of Python 3.11+.
+                ((", \"async_timeout>=3.0,<5.0\"") "")))))))
     (native-inputs
-     (list python-setuptools
-           python-sqlalchemy))
+     (list python-setuptools))
     (propagated-inputs
-     (list python-async-timeout-4
-           python-psycopg2-binary))
+     (list python-psycopg2))
     (home-page "https://aiopg.readthedocs.io")
     (synopsis "Postgres integration with asyncio")
     (description
      "aiopg is a library for accessing a PostgreSQL database from the
-asyncio (PEP-3156/tulip) framework.  It wraps asynchronous
-features of the Psycopg database driver.")
+asyncio (PEP-3156/tulip) framework.  It wraps asynchronous features of the
+Psycopg database driver.")
     (license license:bsd-3)))
 
 (define-public python-shtab
