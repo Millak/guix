@@ -4578,18 +4578,18 @@ sequencing.")
 (define-public python-biopython
   (package
     (name "python-biopython")
-    (version "1.86")
+    (version "1.87")
     (source (origin
               (method url-fetch)
               ;; use PyPi rather than biopython.org to ease updating
               (uri (pypi-uri "biopython" version))
               (sha256
                (base32
-                "1zwj1lfpinl1iv5kamdsiwfpdic3ylzd169gmdlfqb2dd9c0p9ck"))))
+                "1gxxr5m98xxhyf2v16znkc42z7w0v5zmlbj22abrlrwv8l1whml4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 500 passed
+      ;; tests: 501 passed
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-home
