@@ -8100,7 +8100,14 @@ visualization on the WashU Epigenome Browser.")
                             " and not test_merged_id"
                             " and not test_ncbi_compare"
                             " and not test_ncbiquery")
-             "ete3/test/test_api.py")))
+             "ete3/test/test_api.py")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'python312-compatibility
+           (lambda _
+             (substitute* '("ete3/test/test_arraytable.py"
+                            "ete3/test/test_evol.py")
+               (("assert_") "assertTrue")))))))
     (propagated-inputs
      (list python-lxml
            python-numpy
