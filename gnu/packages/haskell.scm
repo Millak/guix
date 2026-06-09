@@ -736,7 +736,7 @@ interactive environment for the functional language Haskell.")
     (inputs
      (list gmp libffi))
     (native-inputs
-     (list perl ghc-6.6))
+     (list perl gcc-4.8 ghc-6.6))
     (home-page "https://www.haskell.org/ghc")
     (synopsis "The Glasgow Haskell Compiler")
     (description
