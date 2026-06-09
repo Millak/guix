@@ -7304,9 +7304,18 @@ adapter for use with the Requests library.")
        (sha256
         (base32 "1lshyac5zk1w4x7ygkim3726f8gbkvpvlyiqkn9cs6qjxhxn5bxc"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-default-asyncio
+            ;; async_timeout is deprecated, upstream recommends to use
+            ;; asyncio, available since Python 3.11.
+            (lambda _
+              (substitute* "tests/conftest.py"
+                (("async_timeout") "asyncio")))))))
     (native-inputs
-     (list python-async-timeout
-           python-pytest
+     (list python-pytest
            python-pytest-mock
            python-pytest-asyncio
            python-setuptools
