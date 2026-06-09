@@ -312,9 +312,27 @@ formal verification.")
                      (url "https://github.com/YosysHQ/abc/")
                      (commit (string-append "v" version))))
               (file-name (git-file-name name version))
+              ;; Remove *.dll and *.lib binaries.
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (with-directory-excursion "lib"
+                     (for-each delete-file-recursively '("x64" "x86")))))
               (sha256
                (base32
-                "11viizz5kxh93a56fqxq0ma4945whzlfagw5bb61aw2jlyqym9ka"))))
+                "11viizz5kxh93a56fqxq0ma4945whzlfagw5bb61aw2jlyqym9ka"))
+              (patches
+               (search-patches "abc-tests.patch"))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'install-license
+              (lambda _
+                (install-file
+                 "../source/copyright.txt"
+                 (string-append
+                  #$output "/share/doc/" #$name "-" #$version))))))))
     (home-page "https://github.com/YosysHQ/abc/")
     (description "ABC is a program for sequential logic synthesis and
 formal verification.  This is the Yosyshq fork of ABC.")
