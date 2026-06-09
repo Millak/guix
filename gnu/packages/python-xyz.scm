@@ -6225,15 +6225,17 @@ Unicode-to-LaTeX conversion.")
 (define-public python-pylsp-mypy
   (package
     (name "python-pylsp-mypy")
-    (version "0.6.9")
+    (version "0.7.1")
     (source
      (origin
+       ;; "The newest version on PyPI is indeed not published on GitHub."
+       ;; See <https://github.com/python-lsp/pylsp-mypy/issues/113>.
        (method url-fetch)
        (uri (pypi-uri "pylsp_mypy" version))
        (sha256
-        (base32 "1amvqzb5lhhw2011003mwm88chb8sz5aax1jrqc3jg0jpak992fj"))))
+        (base32 "0rmp8bi599g76nmrraiagln9alz9r9ly760kkxbh4vw1yyssjra4"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-mypy python-lsp-server))
     (home-page "https://github.com/python-lsp/pylsp-mypy")
     (synopsis "Mypy linter for the Python LSP Server")
