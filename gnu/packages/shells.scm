@@ -117,7 +117,10 @@
     (inputs
      (list libedit))
     (arguments
-     '(#:configure-flags '("--with-libedit")))
+     `(#:configure-flags '("--with-libedit"
+                           ,@(if (target-hurd?)
+                                 '("CPPFLAGS=-DPATH_MAX=4096")
+                                 '()))))
     (home-page "http://gondor.apana.org.au/~herbert/dash")
     (synopsis "POSIX-compliant shell optimised for size")
     (description
