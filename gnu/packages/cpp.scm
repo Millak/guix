@@ -2128,6 +2128,50 @@ its own version of the tool, this is a fork that aims to be more responsive
 and make @code{cpplint} usable in wider contexts.")
     (license license:bsd-3)))
 
+(define-public readerwriterqueue
+  (package
+    (name "readerwriterqueue")
+    (version "1.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cameron314/readerwriterqueue")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0dy77avwfcidxhzj249b1qfg0m86fzz624gi62ddpvm0dmds0h0m"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no make instructions
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'keep-license-out-of-include-dir
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("(readerwritercircularbuffer\\.h )LICENSE.md" _ f) f)))))))
+    (home-page "https://github.com/cameron314/readerwriterqueue")
+    (synopsis "Fast single-producer single-consumer lock free queue")
+    (description "readerwriterqueue provides a lock free queue supporting
+a two-thread use case (one consuming, one producing).  Features include:
+@itemize
+@item compatible with C++11 (supports moving objects instead of making copies)
+@item fully generic (templated container of any type); just like
+@code{std::queue}, you never need to allocate memory for elements yourself
+@item allocates memory up front, in contiguous blocks
+@item provides a @code{try_enqueue} method which is guaranteed never to allocate
+memory
+@item provides an enqueue method which can dynamically grow the size of the
+queue as needed
+@item Completely wait-free (no compare-and-swap loop).  Enqueue and dequeue are
+always O(1) (not counting memory allocation)
+@item On x86, the memory barriers compile down to no-ops
+@end itemize")
+    (license (list license:bsd-2
+                   license:zlib))))     ;embedded in atomicops.h
+
 (define-public reproc
   (package
     (name "reproc")
