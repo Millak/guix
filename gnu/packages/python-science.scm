@@ -5303,17 +5303,29 @@ two-dimensional renderings such as scatter plots and histograms.
 (define-public python-xarray
   (package
     (name "python-xarray")
-    (version "2025.12.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "xarray" version))
-              (sha256
-               (base32
-                "1vczqm5daz79n7w3ycd0m1wf0bf78wd84w6xbgac8sfcvkxadxkk"))))
+    (version "2026.04.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pydata/xarray")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ma0k5gw5frldms4zrgp5ww0l1m5h5620ks5sdljbjz4wqbsf9di"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 6677 passed, 9632 skipped, 14 xfailed, 4 xpassed, 53 warnings
+      ;; tests: 7500 passed, 9135 skipped, 24 xfailed, 6 xpassed, 45 warnings
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; Regression in Pandas 3.0.3.
+              ;; See: <https://github.com/pydata/xarray/issues/11359>.
+              (string-append "--deselect=properties/test_pandas_roundtrip.py"
+                             "::test_roundtrip_pandas_dataframe_datetime")
+              ;; See: <https://github.com/pydata/xarray/issues/10548>.
+              (string-append "--deselect=xarray/tests/test_dataset.py"
+                             "::TestDataset::test_repr"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-pytest-config
@@ -5323,12 +5335,35 @@ two-dimensional renderings such as scatter plots and histograms.
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
+           python-pytest-xdist
+           python-pytz
            python-setuptools
-           python-setuptools-scm))
+           python-setuptools-scm
+           tzdata-for-tests))
     (propagated-inputs
      (list python-numpy
            python-packaging
-           python-pandas))
+           python-pandas
+           ;; [optional]
+           python-bottleneck
+           ;; python-cartopy
+           ;; python-cftime
+           ;; python-dask
+           ;; python-flox
+           ;; python-fsspec
+           ;; python-h5netcdf
+           ;; python-matplotlib
+           ;; python-nc-time-axis
+           ;; python-netcdf4
+           python-numba
+           ;; python-numbagg            ;blocked by guix/guix#9344
+           ;; python-opt-einsum
+           ;; python-pooch
+           ;; python-pydap
+           python-scipy-minimal         ;to slim down closure size
+           ;; python-seaborn
+           ;; python-sparse
+           #;python-zarr))
     (home-page "https://github.com/pydata/xarray")
     (synopsis "N-D labeled arrays and datasets")
     (description "Xarray (formerly xray) makes working with labelled
