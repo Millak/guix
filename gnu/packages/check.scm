@@ -2594,10 +2594,13 @@ enables you to test server connections locally.")
     (version "1.0.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-xprocess" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pytest-dev/pytest-xprocess/")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "03y61h42sc343ddhsz7glxmv9ga83k4grrayfmbbrsl6fmip1qhm"))))
+        (base32 "06bxk48k67pkf629ndq0x3qfpllzz2blqqyj226yxdnbggq1slix"))))
     (build-system pyproject-build-system)
     (arguments
      (if (target-riscv64?)
@@ -2609,11 +2612,11 @@ enables you to test server connections locally.")
                                  " and not test_startup_with_pattern_and_callback")))
          '()))
     (native-inputs
-     (list python-setuptools
-           python-setuptools-scm
-           python-wheel))
+     (list python-pytest-bootstrap
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-pytest python-psutil))
+     (list python-psutil))
     (home-page "https://github.com/pytest-dev/pytest-xprocess/")
     (synopsis "Pytest plugin to manage external processes across test runs")
     (description
