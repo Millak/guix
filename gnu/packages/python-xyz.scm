@@ -28128,55 +28128,30 @@ inferring type information using compile-time introspection.")
 (define-public python-pooch
   (package
     (name "python-pooch")
-    (version "1.8.1")
+    (version "1.9.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pooch" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fatiando/pooch")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0w32fhfp67k0ip0gxjpw8kxdx9ghybxmqkv9sbwy99nrgl4n7vr7"))))
+        (base32 "0k8s9npjym80wpac77fvf1vnx5qm5c2pr7x39j8hh0cglfxmgii8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      '(list "-k"
-             (string-append
-              ;; We don't have the test archives
-              "not test_decompress"
-              " and not test_multiple_unpacking"
-              " and not test_unpack_members_with_leading_dot"
-              " and not test_unpacking"
-              " and not test_unpacking_members_then_no_members"
-              " and not test_unpacking_wrong_members_then_no_members"
-              ;; These all require access to the internet
-              " and not test_check_availability"
-              " and not test_check_availability_invalid_downloader"
-              " and not test_check_availability_on_ftp"
-              " and not test_create_and_fetch"
-              " and not test_downloader_arbitrary_progressbar"
-              " and not test_fetch_with_downloader"
-              " and not test_figshare_data_repository_versions"
-              " and not test_load_registry_from_doi"
-              " and not test_pooch_corrupted"
-              " and not test_pooch_custom_url"
-              " and not test_pooch_download"
-              " and not test_pooch_download_retry"
-              " and not test_pooch_download_retry_fails_eventually"
-              " and not test_pooch_download_retry_off_by_default"
-              " and not test_pooch_logging_level"
-              " and not test_pooch_update"
-              " and not test_retrieve"
-              " and not test_retrieve_default_path"
-              " and not test_retrieve_fname"
-              " and not test_stream_download")
-             "--ignore=pooch/tests/test_downloaders.py")))
+      #:test-flags #~(list "-m" "not network")))
     (native-inputs
      (list python-pytest
-           python-setuptools-scm
+           python-pytest-httpserver
+           python-pytest-localftpserver
            python-setuptools
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-packaging python-platformdirs python-requests))
+     (list python-packaging
+           python-platformdirs
+           python-requests))
     (home-page "https://github.com/fatiando/pooch")
     (synopsis "Manage your Python library's sample data files")
     (description
