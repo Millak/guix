@@ -2122,15 +2122,17 @@ bound.")
     (version "1.7.0" )
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "jsonpath-ng" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/h2non/jsonpath-ng")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0g5bpq02pl9mv7mbqixvnagq8f9v0jab6wqmbxw9rxsz9vyzgxgn"))))
+        (base32 "0z0qm5sgzal0qzml2fmc9h5nim8m3x6sz55gqhcd9c2jrq8jmwmi"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-ply))
     (home-page "https://github.com/h2non/jsonpath-ng")
