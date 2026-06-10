@@ -613,25 +613,31 @@ one of the fastest libraries for histogramming.")
 (define-public python-bottleneck
   (package
     (name "python-bottleneck")
-    (version "1.4.2")
+    (version "1.6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "bottleneck" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pydata/bottleneck")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1x29yj4yr12v646si63gkxj9b6lx1xk65536wqy4i9fyk4bqx3ps"))))
+        (base32 "1p2ixxwdll1bhaqg68iywrb6n8kwscbnbx08q47fjslwzy8vkh7i"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags #~(list "--pyargs" "bottleneck")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'rebuild-ext
+          (add-before 'check 'remove-local-source
             (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (native-inputs (list python-pytest
-                         python-setuptools
-                         python-wheel))
-    (propagated-inputs (list python-numpy))
+              (delete-file-recursively "bottleneck"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-versioneer))
+    (propagated-inputs
+     (list python-numpy))
     (home-page "https://github.com/pydata/bottleneck")
     (synopsis "Fast NumPy array functions written in C")
     (description
