@@ -26007,22 +26007,25 @@ conversion: Gamut A, B, and C.")
 (define-public python-jsonpointer
   (package
     (name "python-jsonpointer")
-    (version "3.0.0")
+    (version "3.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "jsonpointer" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/stefankoegl/python-json-pointer")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1vsrmwrbix3bnxf71g1zyil0pxkh33hq47xkqdhjslli42gp4b9b"))))
+        (base32 "1k7szx4k2h3zidw01i96fg9x5gnir5fdvlnpgb48xhg0si12ly1y"))))
     (build-system pyproject-build-system)
     (arguments (list #:test-backend #~'unittest))
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (home-page "https://github.com/stefankoegl/python-json-pointer")
     (synopsis "Identify specific nodes in a JSON document")
-    (description "@code{jsonpointer} allows you to access specific nodes
-     by path in a JSON document (see RFC 6901).")
+    (description
+     "@code{jsonpointer} allows you to access specific nodes by path in a JSON
+document (see RFC 6901).")
     (license license:bsd-3)))
 
 (define-public python-jsonpatch
