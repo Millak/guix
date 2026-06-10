@@ -1039,30 +1039,25 @@ provides handling of symlinks, and exception management.")
     (version "3.23.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zipp" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jaraco/zipp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0rj182i2d7d2bz067zrk39s19j09xsxkzprl82fqql8ji9c5fwd0"))))
+        (base32 "1r8yk1flzlblif7z5ib94mvl12vvwlzhi42vnzrdnaimr80kpal9"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))       ;TODO: Tests require extra packaging
     (native-inputs
-     (list ;; python-big-o
-           ;; python-coherent-licensed
-           ;; python-jaraco-functools ; introduces cycle
-           ;; python-jaraco-itertools
-           ;; python-jaraco-test ; introduces cycle
-           python-more-itertools
+     (list python-jaraco-itertools
+           python-jaraco-test
            python-pytest
-           ;; python-pytest-ignore-flaky
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (home-page "https://github.com/jaraco/zipp")
-    (synopsis
-     "Backport of pathlib-compatible object wrapper for zip files")
+    (synopsis "Backport of pathlib-compatible object wrapper for zip files")
     (description
      "This package provides a @code{pathlib}-compatible @code{Zipfile} object
-wrapper.  It provides a backport of the @code{Path} object.")
+wrapper.  It provides a backport of the @code{zipfile.Path} object.")
     (license license:expat)))
 
 (define-public python-deflate
