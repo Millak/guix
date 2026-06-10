@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2026 Kristiyan Kanchev <skrechy@gmail.com>
+;;; Copyright © 2026 Mathieu Lirzin <mthl@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -344,7 +345,9 @@ Maven Wagon, for use in Maven.")))
              (mkdir-p "build/classes/META-INF/sisu")
              (with-output-to-file "build/classes/META-INF/sisu/javax.inject.Named"
                (lambda _
-                 (display "org.eclipse.aether.transport.file.FileTransporterFactory\n"))))))))
+                 (display "org.eclipse.aether.transport.file.FileTransporterFactory\n")))))
+         (replace 'install
+           (install-from-pom "maven-resolver-transport-file/pom.xml")))))
     (inputs
      (list java-eclipse-sisu-inject
            java-eclipse-sisu-plexus
