@@ -2446,19 +2446,30 @@ The supported distributions are:
        (sha256
         (base32 "1frx10rdyklp0zbd8bckl63i0vmj0z93nkx1i7dylbv99iw27215"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-numba python-numpy))
-    (native-inputs (list python-bottleneck
-                         python-pandas
-                         python-pytest
-                         python-pytest-benchmark ; runs by default
-                         python-setuptools
-                         python-setuptools-scm
-                         python-tabulate))
+    (arguments
+     (list
+      ;; tests: 613 passed, 1543 skipped, 1 xfailed, 1 warning
+      #:test-flags
+      #~(list "--benchmark-disable"
+              "--benchmark-skip"
+              "--durations=10")))
+    (native-inputs
+     (list python-bottleneck
+           python-pandas-minimal        ;to slim down closure size
+           python-pytest
+           python-pytest-benchmark
+           python-setuptools
+           python-setuptools-scm
+           python-tabulate))
+    (propagated-inputs
+     (list python-numba
+           python-numpy))
     (home-page "https://github.com/numbagg/numbagg")
     (synopsis "Fast N-dimensional aggregation functions with Numba")
-    (description "Numbagg provides high-performance implementations for moving
-window, aggregation, and grouping functions.  It leverages Numba's JIT
-compilation and is especially performant on multi-core parallelism.")
+    (description
+     "Numbagg provides high-performance implementations for moving window,
+aggregation, and grouping functions.  It leverages Numba's JIT compilation and
+is especially performant on multi-core parallelism.")
     (license license:bsd-3)))
 
 (define-public python-numdifftools
