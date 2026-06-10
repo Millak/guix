@@ -490,7 +490,7 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
 (define-public ciel
   (package
     (name "ciel")
-    (version "2.4.1")
+    (version "2.5.0")
     (source
      (origin
        (method git-fetch)
@@ -499,7 +499,7 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08r30ighn86995dcf7278k9nrci8wbp6kglgk011y6g80z9m2zm7"))))
+        (base32 "1gxbs0x05w8x5im4cbixa96pyzq276kr3kqzwacwylq1cx3yqd8h"))))
     (arguments
      (list
       #:tests? #f ;no tests
@@ -515,7 +515,7 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
     (native-inputs (list python-poetry-core))
     (inputs
      (list bash-minimal
-           git-minimal
+           git-minimal/pinned
            python-click
            python-httpx
            python-pcpp
