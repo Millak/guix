@@ -1548,23 +1548,29 @@ totally avoiding a sort or shuffle operation.  @code{flox} can use either
 (define-public python-formulaic
   (package
     (name "python-formulaic")
-    (version "1.0.1")
+    (version "1.2.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "formulaic" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/matthewwardrop/formulaic")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "18gvd3f2x358jj0df8vx5fhhnvzw047rsrs03vmvqnxaly97kpb4"))))
+        (base32 "0iifwsbsqwg4lx8m9b2rclr9jzpg7zgnly0iaf1nsva15jxi90hb"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-astor
-                             python-cached-property
-                             python-interface-meta
-                             python-numpy
-                             python-pandas
-                             python-scipy
-                             python-typing-extensions
-                             python-wrapt))
-    (native-inputs (list python-hatchling python-hatch-vcs python-pytest))
+    (native-inputs
+     (list python-hatchling
+           python-hatch-vcs
+           python-pytest))
+    (propagated-inputs
+     (list python-interface-meta
+           python-narwhals
+           python-numpy
+           python-pandas
+           python-scipy
+           python-typing-extensions
+           python-wrapt))
     (home-page "https://github.com/matthewwardrop/formulaic")
     (synopsis "Implementation of Wilkinson formulas")
     (description "Formulaic is a high-performance implementation of Wilkinson
