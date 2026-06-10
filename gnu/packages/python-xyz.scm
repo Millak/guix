@@ -13122,21 +13122,23 @@ apply unified diffs.  It has features such as:
     (version "2.14.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "numexpr" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pydata/numexpr")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "12xla8qkza3xjrqb2yc517z460mqnwi82m9i5v1sbdy7hq80pq2b"))))
+        (base32 "1zbpi7whjh6sccn1fndii735gv14kjaaqm3c3w1g2ry0z9948v9v"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 6039 passed, 8 warnings
+      ;; tests: 6039 passed, 1 warning
+      #:test-flags #~(list "--pyargs" "numexpr")
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion #$output
-                  (apply invoke "pytest" "-vv" test-flags))))))))
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "numexpr"))))))
     (native-inputs
      (list python-pytest
            python-setuptools))
