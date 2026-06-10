@@ -25536,19 +25536,30 @@ short version, is suitable to be include as a dependency in other projects.")
     (license license:lgpl3+)))
 
 (define-public python-isoduration
+  ;; XXX: The project might be abandoned, consider to remove when nothing
+  ;; depends on it.
   (package
     (name "python-isoduration")
     (version "20.11.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "isoduration" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bolsote/isoduration")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1n8vpa9fckhc5934kp7m83wq81dhkvw987v7mjg2fdbr2car0bxc"))))
+        (base32 "1naml13qa1inr6k0j25jgw49r3wnkvwq5xc0v4navz6mxlgsrfp8"))))
     (build-system pyproject-build-system)
-    (arguments '(#:tests? #f))          ;no tests in PyPI archive
-    (propagated-inputs (list python-arrow))
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list
+      ;; E   ModuleNotFoundError: No module named 'isodate'
+      #:test-flags #~(list "--ignore=tests/test_benchmark.py")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-arrow))
     (home-page "https://github.com/bolsote/isoduration")
     (synopsis "Operations with ISO 8601 durations")
     (description "ISO 8601 is most commonly known as a way to exchange
