@@ -1660,18 +1660,18 @@ expensive calculations.  It was started as part of
     (version "0.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "flexparser" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hgrecco/flexparser")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1cpn5scxnxbd2jrnany4znzzn9im5h5gwr59bp62rglman89hv96"))))
+        (base32 "1aj6b2a5w0z814x4gr8z4lmpf4ivp41gikx998lkk7rbdgh2kryh"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-pytest-mpl
-           python-pytest-subtests
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-typing-extensions))
     (home-page "https://github.com/hgrecco/flexparser")
