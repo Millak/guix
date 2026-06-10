@@ -6917,7 +6917,7 @@ It provides packages in the @code{javax.annotations} namespace.")
 (define-public java-error-prone-annotations
   (package
     (name "java-error-prone-annotations")
-    (version "2.18.0")
+    (version "2.50.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6926,17 +6926,31 @@ It provides packages in the @code{javax.annotations} namespace.")
               (file-name (git-file-name "java-error-prone" version))
               (sha256
                (base32
-                "19sqsz0b308rhadr3ff10azdbqjq37nvrn9c06224dwpxap0931f"))))
+                "0bsk701n5qbnx5dcjxvq9fvs1nakw27nxxwcvkbgdjyhchjmb6fi"))))
     (build-system ant-build-system)
     (arguments
      `(#:tests? #f; no tests
+       #:jdk ,openjdk11
        #:jar-name (string-append ,name "-" ,version ".jar")
        #:source-dir "annotations/src/main/java"
        #:test-dir "annotations/src/altest"
+       #:make-flags (list "-Dant.build.javac.source=1.8"
+                          "-Dant.build.javac.target=1.8")
        #:phases
        (modify-phases %standard-phases
+         ;; Compile the module descriptor while keeping compatibility with
+         ;; java 1.8.
+         (add-before 'build 'module-info
+           (lambda _
+             (let ((classes-dir (string-append (getcwd) "/build/classes"))
+                   (source-dir "annotations/src/main/java"))
+               (mkdir-p classes-dir)
+               (invoke "javac" "--release" "9" "-implicit:none"
+                       "-sourcepath" source-dir "-d" classes-dir
+                       (string-append source-dir "/module-info.java"))
+               (delete-file (string-append source-dir "/module-info.java")))))
          (replace 'install (install-from-pom "annotations/pom.xml")))))
-    (propagated-inputs (list java-error-prone-parent-pom java-jsr305))
+    (propagated-inputs (list java-error-prone-parent-pom))
     (home-page "https://errorprone.info")
     (synopsis "Java static analyzer at compile-time")
     (description "Error Prone is a static analysis tool for Java that catches
