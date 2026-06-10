@@ -4377,6 +4377,23 @@ and intuitive.  It aims to be the fundamental high-level building block for
 doing practical, real world data analysis in Python.")
     (license license:bsd-3)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure size.
+;; Tests are left out in the main package to slim down native-inputs and
+;; propagated-inputs.
+(define-public python-pandas-minimal
+  (package/inherit python-pandas
+    (name "python-pandas-minimal")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (list python-meson
+           python-versioneer))
+    (propagated-inputs
+     (list python-numpy
+           python-dateutil
+           python-pytz))))
+
 (define-public python-pandas-stubs
   (package
     (name "python-pandas-stubs")
