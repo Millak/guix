@@ -9406,33 +9406,29 @@ Forked from and using the same API as the publicsuffix package.")
 (define-public python-werkzeug
   (package
     (name "python-werkzeug")
-    (version "3.1.3")
+    (version "3.1.8")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "werkzeug" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pallets/werkzeug")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0ij7si3aa3ykac7k7fz481h4majqqwn2iqwhjxkji4y18plkqwk0"))))
+        (base32 "1jwrrjv50n5rcfzax4qf0237znkcpcafd17hx0r77f997yv3ghlv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; Test requiring networking setup.
-      #~(list "--ignore=tests/test_serving.py"
-              "--deselect=tests/test_debug.py::test_basic"
-              "--deselect=tests/test_exceptions.py::test_response_body"
-              "--deselect=tests/middleware/test_http_proxy.py::test_http_proxy")))
+      #~(list "-m" "not dev_server")))
     (native-inputs
-     (list python-flit-core
+     (list python-ephemeral-port-reserve
+           python-flit-core
            python-pytest
-           python-watchdog
-           python-ephemeral-port-reserve
            python-pytest-timeout
-           python-pytest-xprocess))
+           python-watchdog))
     (propagated-inputs
-     (list python-markupsafe
-           python-requests))
+     (list python-markupsafe))
     (home-page "https://palletsprojects.com/p/werkzeug/")
     (synopsis "Utilities for WSGI applications")
     (description "One of the most advanced WSGI utility modules.  It includes a
