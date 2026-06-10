@@ -9578,21 +9578,23 @@ Schemas for use in python.")
 (define-public python-jsonschema-specifications
   (package
     (name "python-jsonschema-specifications")
-    (version "2024.10.1")
+    (version "2025.9.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "jsonschema_specifications" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-jsonschema/jsonschema-specifications")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0wp2g90jsaa48g1v0n6m43ywhh9cj1ig19q25lay334m74vbhf0g"))))
+        (base32 "0fxjcq2qqzahfi9jinns2gmrnjq1zf216dr3i480aphabdx1c67z"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
            python-pytest))
     (propagated-inputs
-     (list python-importlib-resources
-           python-referencing-bootstrap))
+     (list python-referencing))
     (home-page "https://github.com/python-jsonschema/jsonschema-specifications")
     (synopsis
      "JSON Schema meta-schemas and vocabularies, exposed as a Registry")
