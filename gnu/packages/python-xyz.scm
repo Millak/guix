@@ -300,6 +300,7 @@
   #:use-module (gnu packages search)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
+  #:use-module (gnu packages specifications)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages statistics)
@@ -32888,32 +32889,35 @@ integration, human-readable errors, and standard OS-specific locations.")
 (define-public python-referencing
   (package
     (name "python-referencing")
-    (version "0.35.1")
+    (version "0.37.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "referencing" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-jsonschema/referencing")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0g3hvzz6ci6dcf701q7ilr4b7vw3fw428kqp4nj35dn8lqj23d15"))))
+        (base32 "1h9mlzpgqy3grby4f57qxhlmxy25qvz84g9w5r4g1d8g5qsvvv3j"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      '(list "--pyargs" "referencing/tests")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-pyproject
-           (lambda _
-             ;; The build system does not like this.
-             (substitute* "pyproject.toml"
-               (("  \"Topic :: File Formats.*") "")))))))
-    (propagated-inputs (list python-attrs python-rpds-py))
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "REFERENCING_SUITE"
+                      (string-append #$(this-package-native-input
+                                        "specification-referencing-suite")
+                                     "/share")))))))
     (native-inputs
      (list python-hatchling
            python-hatch-vcs
-           python-jsonschema
            python-pytest
-           python-pytest-subtests))
+           specification-referencing-suite))
+    (propagated-inputs
+     (list python-attrs
+           python-rpds-py))
     (home-page "https://github.com/python-jsonschema/referencing")
     (synopsis "JSON Referencing + Python")
     (description "This package provides an implementation-agnostic
