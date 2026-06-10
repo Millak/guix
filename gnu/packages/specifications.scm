@@ -317,6 +317,35 @@ Offline Interop}. Outputs produced by various encoders are stored in
 @code{encoded/} directory.")
     (license license:expat))))
 
+(define-public specification-referencing-suite
+  (package
+    (name "specification-referencing-suite")
+    (version "2025.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-jsonschema/referencing-suite")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "128ffd1waks07i9qhv6qqhdrhjj2lgwykfca8jm78szkh7kmblwq"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("./tests" "share/tests"))))
+    (home-page "https://github.com/python-jsonschema/referencing-suite")
+    (synopsis "Language agnostic test suite for the referencing specifications")
+    (description
+     "This package contains a set of JSON objects that implementers of JSON
+referencing specifications can use to test their implementations.
+
+It is meant to be language agnostic and should require only a JSON parser.
+The conversion of the JSON objects into tests within a specific language and
+test framework of choice is left to be done by the implementer.")
+    (license license:expat)))
+
 (define-public specification-runtime-spec
   (package
     (name "specification-runtime-spec")
