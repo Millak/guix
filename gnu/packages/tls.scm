@@ -952,13 +952,13 @@ protocol, written in plain C with minimal dependencies.")
     (build-system perl-build-system)
     (inputs (list openssl))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before
-          'configure 'set-ssl-prefix
-          (lambda* (#:key inputs #:allow-other-keys)
-            (setenv "OPENSSL_PREFIX" (assoc-ref inputs "openssl"))
-            #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before
+           'configure 'set-ssl-prefix
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "OPENSSL_PREFIX" (assoc-ref inputs "openssl")))))))
     (synopsis "Perl extension for using OpenSSL")
     (description
      "This module offers some high level convenience functions for accessing
