@@ -940,17 +940,17 @@ protocol, written in plain C with minimal dependencies.")
 (define-public perl-net-ssleay
   (package
     (name "perl-net-ssleay")
-    (version "1.94")
+    (version "1.96")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cpan/authors/id/C/CH/CHRISN/"
                                   "Net-SSLeay-" version ".tar.gz"))
               (sha256
                (base32
-                "0pfrpi77964cg15dm6y0w03l64xs0k2nqc15qh2xmv8vdnjyhywx"))
+                "0lq7zjnr82q3qjvibbb32ninb0bg4vcwijv9qrvabcjzd28kc8db"))
               (patches (search-patches "perl-net-ssleay-colon-parsing.patch"))))
     (build-system perl-build-system)
-    (inputs (list openssl-3.0))
+    (inputs (list openssl))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
