@@ -267,7 +267,7 @@ and line numbers not only to lists, but also to symbols, vectors and maps.")
                                          clojure-tools-reader)))
     (package
       (name "clojure")
-      (version "1.12.4")
+      (version "1.12.6")
       (source (let ((name+version (string-append name "-" version)))
                 (origin
                   (method git-fetch)
@@ -277,7 +277,7 @@ and line numbers not only to lists, but also to symbols, vectors and maps.")
                   (file-name (string-append name+version "-checkout"))
                   (sha256
                    (base32
-                    "072dv6s2gxcg8snlgkpjk6bp1cb17bgfshdq6ijsa4yslpqbf9wc")))))
+                    "0gfdrb5dkvy6vc7fabih7kabwgw9by9xxd5l8msspknql1immqvw")))))
       (build-system ant-build-system)
       (arguments
        `(#:imported-modules ((guix build clojure-utils)
