@@ -3988,14 +3988,17 @@ documentation of programming languages.")
     (version "1.5.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fqdn" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ypcrts/fqdn")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "17yqckhymnamszhg06751c83rg3fnr5iy33a135bazvngrkx6phh"))))
+        (base32 "1cfxpvlvfi9s20v93m3rgw7jn6ybc5ga5rwxhrap59zwd9crsh2g"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #false)) ;there are none
-    (propagated-inputs (list python-cached-property))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/ypcrts/fqdn")
     (synopsis "Validate domain names against RFC 1123")
     (description
