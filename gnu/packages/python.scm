@@ -1315,7 +1315,7 @@ data types.")
     (license license:psfl)))
 
 ;; Next 3.x version.
-(define-public python-next python-3.12)
+(define-public python-next python-3.13)
 
 ;; Current 3.x version.
 (define-public python-3 python-3.12)
