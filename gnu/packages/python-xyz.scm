@@ -1632,18 +1632,18 @@ system.")
     (version "0.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "flexcache" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hgrecco/flexcache")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0mh6c3s0ykmnnhzys72xq5ls4myzpz1y86fmz0ngw6v2l3aknx0q"))))
+        (base32 "08b1i79q6gxcn6c5gkgscwjnzwlwaaz9vmlgrr7z9kbindxx61ih"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-pytest-mpl
-           python-pytest-subtests
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-typing-extensions))
     (home-page "https://github.com/hgrecco/flexcache")
