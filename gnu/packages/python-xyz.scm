@@ -10261,16 +10261,20 @@ bookmarks using a declarative input in the form of a markdown file.")
 (define-public python-joblib
   (package
     (name "python-joblib")
-    (version "1.5.2")
+    (version "1.5.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "joblib" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/joblib/joblib")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0mbvch9pzadf0vrm666381ic0ryy5zsv5abxak506bsb0lwmraiz"))))
+        (base32 "0vblgi0mb1jcwgf8f3rslw82g28fjl6n52mwgsm7p7y2nrixdrjb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1319 passed, 103 skipped, 3 xpassed, 563 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; Disabled to avoid having to depend on ipython/jupyter.
@@ -10279,8 +10283,7 @@ bookmarks using a declarative input in the form of a markdown file.")
      (list python-pytest
            python-pytest-asyncio
            python-pytest-xdist
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://joblib.readthedocs.io/")
     (synopsis "Using Python functions as pipeline jobs")
     (description
