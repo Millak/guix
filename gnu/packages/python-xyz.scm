@@ -15148,6 +15148,35 @@ finding unresolved symbols in Python code and their corresponding imports.")
 enforced method signatures and consistent documentation.")
     (license license:expat)))
 
+(define-public python-jaraco-itertools
+  (package
+    (name "python-jaraco-itertools")
+    (version "6.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jaraco/jaraco.itertools")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nf674j28nlqszcvjhjdgbmy92xbwhylvg2rlic11w28iz4s8d9f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-inflect
+           python-more-itertools))
+    (home-page "https://github.com/jaraco/jaraco.itertools")
+    (synopsis "Tools for working with iterables")
+    (description
+     "This package provides an utility collection based on no longer
+maintained @code{jaraco.util}.")
+    (license license:expat)))
+
 (define-public python-jaraco-packaging
   (package
     (name "python-jaraco-packaging")
