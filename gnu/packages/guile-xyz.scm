@@ -84,9 +84,11 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages aspell)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages check)
   #:use-module (gnu packages crypto)
@@ -6540,6 +6542,92 @@ implementations.")
 text-oriented consoles with keyboard and mouse input.")
       (license license:expat))))
 
+(define guile-osc-lib
+  ;; Shared object library needed for guile-osc.
+  (package
+    (name "guile-osc-lib")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/taw10/guile-osc")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1agw5mgp20lncipyw8kpp0n203a09wms26wbxhwka15c18i55yfz"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'omit-building-go
+            (lambda _
+              (substitute* "../source/meson.build"
+                (("foreach file : scm_files")  ; Do not compile scheme files.
+                 "foreach file : []")
+                (("guile_sitedir = .*")
+                 (format #f "guile_sitedir = '~a/share/guile/site/~a/'\n"
+                         #$output
+                         #$((@ (guix build guile-build-system)
+                               target-guile-effective-version))))
+                (("guile_extdir = .*")
+                 (format #f "guile_extdir = '~a/lib/guile/~a/extensions'"
+                         #$output
+                         #$((@ (guix build guile-build-system)
+                               target-guile-effective-version)))))))
+          (delete 'shrink-runpath))))
+    (native-inputs (list pkg-config cmake))
+    (inputs (list guile-3.0-latest liblo))
+    (home-page "https://github.com/taw10/guile-osc")
+    (synopsis "Shared object library of OSC API Implementation")
+    (description "Guile OSC is a wrapper around liblo, implementing both
+client and server API of the @acronym{OSC, Open Sound Control} format.")
+    (license license:lgpl2.1)))
+
+(define-public guile-osc
+  (package
+    (inherit guile-osc-lib)
+    (name "guile-osc")
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-build-recipe
+            (lambda _
+              (substitute* "meson.build"
+                (("depends: .*") ""))))
+          (add-before 'build 'patch-install-paths
+            (lambda _
+              (substitute* "../source/open-sound-control/api.scm"
+                (("\\(load-extension.*")
+                 (format #f
+                         "(load-extension \"~a/lib/guile/~a/extensions/libguile-osc.so\"\n"
+                         #$(this-package-input "guile-osc-lib")
+                         #$((@ (guix build guile-build-system)
+                               target-guile-effective-version)))))))
+          (add-before 'check 'set-sitedir
+            (lambda _
+              (substitute* "../source/meson.build"
+                (("guile_sitedir = .*")
+                 (format #f "guile_sitedir = '~a/share/guile/site/~a/'\n"
+                         #$output
+                         #$((@ (guix build guile-build-system)
+                               target-guile-effective-version))))
+                (("guile_cachedir = .*")
+                 (format #f "guile_cachedir = '~a/lib/guile/~a/site-ccache'\n"
+                         #$output
+                         #$((@ (guix build guile-build-system)
+                               target-guile-effective-version))))
+                (("guile_extdir = .*")
+                 (format #f "guile_extdir = '~a/lib/'" #$output)))))
+          (delete 'shrink-runpath))))
+    (inputs (list guile-3.0-latest guile-osc-lib liblo))
+    (home-page "https://github.com/taw10/guile-osc")
+    (synopsis "OSC API Implementation")
+    (description "Guile OSC is a wrapper around liblo, implementing both
+client and server API of the @acronym{OSC, Open Sound Control} format.")
+    (license license:lgpl2.1)))
 
 (define-public guile-ac-d-bus
   (package
