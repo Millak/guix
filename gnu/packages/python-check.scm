@@ -1566,7 +1566,7 @@ to establish class invariants.")
 (define-public python-inline-snapshot
   (package
     (name "python-inline-snapshot")
-    (version "0.32.6")
+    (version "0.34.1")
     (source
      (origin
        (method git-fetch)
@@ -1575,11 +1575,11 @@ to establish class invariants.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xcn26z1c7awkfpbjnr579vk7nchvl7vn3c2i88ihyabjblmy0d5"))))
+        (base32 "0r4hy9d7iqgmbnqrqm42dgkicg4mamxd632vf3ipcmxsszlz6yvh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1329 passed, 7 skipped, 1 xfailed
+      ;; tests: 1298 passed, 7 skipped
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; To prevent adding mypy and pyright.
@@ -1596,12 +1596,12 @@ to establish class invariants.")
            python-pytest-bootstrap
            python-pytest-freezer
            python-pytest-mock
-           python-pytest-subtests
            python-pytest-xdist))
     (propagated-inputs
      (list python-asttokens
            python-executing
-           python-rich))
+           python-rich
+           python-typing-extensions))
     (home-page "https://github.com/15r10nk/inline-snapshot/")
     (synopsis "Golden master/snapshot/approval testing library")
     (description
