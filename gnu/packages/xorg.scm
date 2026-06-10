@@ -828,30 +828,6 @@ operates very much like the xauth program for X11 connection
 authentication records.")
     (license license:x11)))
 
-(define-public kbproto
-  (package
-    (name "kbproto")
-    (version "1.0.7")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/proto/kbproto-"
-               version
-               ".tar.bz2"))
-        (sha256
-          (base32
-            "0mxqj1pzhjpz9495vrjnpi10kv2n1s4vs7di0sh3yvipfq5j30pq"))))
-    (build-system gnu-build-system)
-    (native-inputs (list pkg-config))
-    (home-page "https://www.x.org/wiki/")
-    (synopsis "Xorg KBProto protocol headers")
-    (description
-     "X Keyboard (XKB) Extension defines a protocol to provide a number
-of new capabilities and controls for text keyboards.")
-    (license license:x11)
-    (properties `((superseded . ,xorgproto)))))
-
 (define-public libdmx
   (package
     (name "libdmx")
@@ -1191,7 +1167,7 @@ configuration files.")
      '(#:configure-flags '("--disable-static")))
     (propagated-inputs
      ;; Required in xkbfile.pc.
-     (list libx11 kbproto))
+     (list libx11 xorgproto))
     (native-inputs
      (list pkg-config))
     (home-page "https://www.x.org/wiki/")
