@@ -967,7 +967,7 @@ work with command-line arguments.")
 (define-public clojure-tools-deps-edn
   (package
     (name "clojure-tools-deps-edn")
-    (version "0.9.22")
+    (version "0.9.57")
     (home-page "https://github.com/clojure/tools.deps.edn")
     (source (origin
               (method git-fetch)
@@ -977,7 +977,7 @@ work with command-line arguments.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "082p6zpbb8vvdc9ncc0d66h3g7sax4pp0h4fymwiv0lakzyq3g9g"))))
+                "0q0dy3rylqvcmgp14xqr84j5qgsr0j4v4yiap29gz5y20xklhi3v"))))
     (build-system clojure-build-system)
     (arguments
      `(#:source-dirs '("src/main/clojure" "src/main/resources")
