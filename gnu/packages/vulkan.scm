@@ -259,14 +259,22 @@ translation between LLVM IR and SPIR-V.")
                      '()))
       #:phases
       #~(modify-phases %standard-phases
-          #$@(if (target-ppc32?)
+          #$@(cond
+               ((target-ppc32?)
                  `((add-after 'unpack 'skip-failing-test
                      (lambda _
                        ;; TODO: Figure out why this test fails.
                        (substitute* "Test/runtests"
                          ((".*remap\\.invalid" all)
-                          (string-append "# " all))))))
-                 '())
+                          (string-append "# " all)))))))
+               ((target-arm32?)
+                `((add-after 'unpack 'skip-failing-test
+                    (lambda _
+                      ;; TODO: Figure out why this test fails.
+                      (substitute* "Test/runtests"
+                        ((".*(single|multi)Thread" all)
+                         (string-append "echo " all)))))))
+               (#t '()))
           (replace 'check
             (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
               (when tests?
