@@ -4359,3 +4359,38 @@ techniques for generating static and dynamic content, supporting a variety of
 markup languages.
 
 This package contains Doxia core classes and interfaces.")))
+
+(define-public maven-mima-context
+  (package
+    (name "maven-mima-context")
+    (version "2.4.48")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/maveniverse/mima")
+                    (commit (string-append "release-" version))))
+              (file-name (git-file-name "mima" version))
+              (sha256
+               (base32
+                "1blnib3vkhap4fycj1yxv098pyh00rws4bqx6rsdbygkmq6ppnm4"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "mima-context.jar"
+       #:source-dir "context/src/main/java"
+       #:test-dir "context/src/test"
+       #:tests? #f ; tests require JUnit5
+       #:phases (modify-phases %standard-phases
+                  (replace 'install
+                    (install-from-pom "context/pom.xml")))))
+    (propagated-inputs
+     (list maven-resolver-api
+           maven-resolver-util))
+    (home-page "https://github.com/maveniverse/mima")
+    (synopsis "Maven Resolver context API of MIMA")
+    (description "MIMA (MIni MAven) is a library that makes the Maven
+Resolver usable as a library, both inside and outside of Maven.  This package
+provides the MIMA @code{context} artifact, the API against which client code
+is compiled.  It makes the Maven Resolver API available as a transitive
+dependency and is meant to be complemented at run time by one of the MIMA
+runtime implementations.")
+    (license license:epl2.0)))
