@@ -8495,7 +8495,7 @@ definition intended to be inherited by other packages.")
     (native-inputs
      (list java-junit))
     (inputs
-     `(("java-gson" ,java-gson-2.8.6)
+     `(("java-gson" ,java-gson-latest)
        ("java-eclipse-lsp4j-generaor" ,java-eclipse-lsp4j-generator)
        ("java-eclipse-lsp4j-jsonrpc" ,java-eclipse-lsp4j-jsonrpc)
        ("java-eclipse-lsp4j-jsonrpc-debug" ,java-eclipse-lsp4j-jsonrpc-debug)
@@ -8533,7 +8533,7 @@ LSP4J code generator for Language Server Protocol classes.")))
     (native-inputs
      (list java-junit))
     (inputs
-     (list java-gson-2.8.6))
+     (list java-gson-latest))
     (synopsis "Java JSON-RPC implementation")
     (description "Eclipse LSP4J provides Java bindings for the Language
 Server Protocol and the Debug Adapter Protocol.  This package contains its
@@ -8551,7 +8551,7 @@ JSON-RPC implementation.")))
     (native-inputs
      (list java-junit))
     (inputs
-     (list java-eclipse-lsp4j-jsonrpc java-gson-2.8.6))
+     (list java-eclipse-lsp4j-jsonrpc java-gson-latest))
     (synopsis "Java JSON-RPC implementation (debug protocol)")
     (description "Eclipse LSP4J provides Java bindings for the Language
 Server Protocol and the Debug Adapter Protocol.  This package contains its
@@ -14012,7 +14012,7 @@ including pre-existing objects that you do not have source-code of.")
     (license license:asl2.0)))
 
 ;; This requires a different Java version than 2.8.2 above
-(define-public java-gson-2.8.6
+(define-public java-gson-latest
   (package
     (inherit java-gson)
     (name "java-gson")
@@ -16750,7 +16750,7 @@ can be interpreted by IDEs and static analysis tools to improve code analysis.")
        (list java-junit java-easymock))
       (inputs
        (list java-javax-mail
-             java-gson-2.8.6
+             java-gson-latest
              java-jline-terminal
              java-jline-reader
              java-eclipse-lsp4j-jsonrpc
