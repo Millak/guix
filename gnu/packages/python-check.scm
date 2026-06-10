@@ -3460,6 +3460,42 @@ requests to be replied to with user provided responses.")
 isort.")
     (license license:bsd-3)))
 
+(define-public python-pytest-localftpserver
+  (package
+    (name "python-pytest-localftpserver")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/oz123/pytest-localftpserver")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1am6hxizr57fg59fgqmkclwd3hj2p65jpma9jv6l8jl39cqyl4xa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Taken from tox.ini.
+      #~(list "--basetemp=/tmp/pytest_localftpserver"
+              "tests/test_pytest_localftpserver.py"
+              "tests/test_helper_functions.py"
+              "tests/test_pytest_localftpserver_TLS.py")))
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-pyftpdlib))
+    (home-page "https://github.com/oz123/pytest-localftpserver")
+    (synopsis "Pytest plugin which provides an FTP fixture for tests")
+    (description
+     "This package provides the fixtures @code{ftpserver} and
+@code{ftpserver_TLS}, which are threaded instances of a FTP server, with which
+you can upload files and test FTP functionality.")
+    (license license:expat)))
+
 (define-public python-pytest-metadata
   (package
     (name "python-pytest-metadata")
