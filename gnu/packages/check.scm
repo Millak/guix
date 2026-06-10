@@ -1848,18 +1848,21 @@ update print statements
 (define-public python-pytest-httpserver
   (package
     (name "python-pytest-httpserver")
-    (version "1.1.0")
+    (version "1.1.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_httpserver" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/csernazs/pytest-httpserver")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "00c7vki5qpl40qn5riyppkjnmgrvhsbg0hsdp6qm3m9fkqcv073b"))))
+        (base32 "0ak1dgwc88ayav933qs46immhlrpyc5a7xflh6f1dr5j00pknrg8"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-poetry-core
-           python-toml
-           python-pytest))
+           python-pytest
+           python-requests))
     (propagated-inputs
      (list python-werkzeug))
     (home-page "https://github.com/csernazs/pytest-httpserver")
