@@ -22,7 +22,7 @@
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2026 Junker <dk@junkeria.club>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -550,8 +550,7 @@ OpenSSL for TARGET."
   ;; LTS series with EOL 2030-04-08
   (package
     (name "openssl")
-    (version "3.5.5")
-    (replacement openssl-3.5.7)
+    (version "3.5.7")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -564,7 +563,7 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-3.0-c-rehash-in.patch"))
               (sha256
                (base32
-                "129aphl9yy5xd67cwacf000llkhpi1s8phmlhgws2rcb599r335j"))))
+                "1s4qmjp33ai43ahlm3iw59aq86fj5hp7kxbcygwq194waa5d5h58"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"
@@ -672,24 +671,6 @@ OpenSSL for TARGET."
     (synopsis "SSL/TLS implementation")
     (description "OpenSSL is an implementation of SSL/TLS.")
     (license license:asl2.0)))
-
-(define-public openssl-3.5.7
-  (package
-    (inherit openssl-3.5)
-    (version "3.5.7")
-    (source
-     (origin
-       (inherit (package-source openssl-3.5))
-       (uri (list (string-append "https://www.openssl.org/source/openssl-"
-                                        version ".tar.gz")
-                  (string-append "ftp://ftp.openssl.org/source/"
-                                 "openssl-" version ".tar.gz")
-                  (string-append "ftp://ftp.openssl.org/source/old/"
-                                 (string-trim-right version char-set:letter)
-                                 "/openssl-" version ".tar.gz")))
-       (sha256
-        (base32
-         "1s4qmjp33ai43ahlm3iw59aq86fj5hp7kxbcygwq194waa5d5h58"))))))
 
 (define-public openssl-3.0
   ;; LTS series with EOL 2026-09-07
