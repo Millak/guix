@@ -41264,23 +41264,21 @@ package updates.")
     (version "1.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "uri-template" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.linss.com/open-source/python/uri-template")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1ixczlgnsjv2850r6w0cb2npwcwzdqri8njr1pi7v371cpmzh00f"))))
+        (base32 "0z1g5hpxzi5rh4xsra6bsvyg5qzmnx7a8j5q7rngmj9slcbcbhfz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python3" "test.py")))))))
+      #:test-backend #~'custom
+      #:test-flags #~(list "test.py")))
     (native-inputs
      (list python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (home-page "https://gitlab.linss.com/open-source/python/uri-template")
     (synopsis "RFC 6570 URI Template Processor")
     (description "This package implements URI Template expansion in strict
