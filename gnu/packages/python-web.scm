@@ -8252,24 +8252,37 @@ WSGI.")
 (define-public python-flask
   (package
     (name "python-flask")
-    (version "3.1.0")
+    (version "3.1.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "flask" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pallets/flask")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1b1nb250jxrjplbs21wnwq69250vs3iz2pdhs7cwi5y8hi8kr1sz"))))
+        (base32 "006s5rm4syg48ymmwlnrkx8f8j758waksvhdsfiqx51zv52c0p8l"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; assert 404 == 400
+      ;; This test is removed on master branch.
+      #~(list (string-append "--deselect=tests/test_reqctx.py"
+                             "::test_bad_environ_raises_bad_request"))))
     (native-inputs
      (list python-flit-core
            python-pytest))
     (propagated-inputs
-     (list python-asgiref               ;async extra
+     (list python-blinker
            python-click
-           python-blinker
            python-itsdangerous
            python-jinja2
-           python-werkzeug))
+           python-markupsafe
+           python-werkzeug
+           ;; [optional]
+           python-asgiref
+           python-dotenv))
     (home-page "https://palletsprojects.com/p/flask/")
     (synopsis "Microframework based on Werkzeug, Jinja2 and good intentions")
     (description "Flask is a micro web framework based on the Werkzeug toolkit
