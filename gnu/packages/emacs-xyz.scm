@@ -47511,8 +47511,10 @@ execute code split into cells according to certain magic comments.")
                                  "response-with-control-and-unicode-text")
                          (concat "mcp-script-starts-with-"
                                  "optional-server-name-flag"))))))))))
+    (inputs
+     (list python-wrapper))
     (native-inputs (list zsh))
-    (propagated-inputs (list emacs-transient python))
+    (propagated-inputs (list emacs-transient))
     (home-page "https://github.com/dgillis/emacs-codex-ide")
     (synopsis "Codex app-server integration for Emacs")
     (description
