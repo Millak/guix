@@ -41638,28 +41638,25 @@ valid and really exists.")
     (license license:lgpl3+)))
 
 (define-public python-validators
+  ;; TODO: Move to (gnu packages python-web) or (gnu packages python-crypto).
   (package
     (name "python-validators")
-    (version "0.34.0")
+    (version "0.35.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "validators" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kvesteri/validators")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "07vq3s77f5yndn7jfx39jbsaq5m8wqc3p52v4i6sgyasnh3y8zv4"))))
+        (base32 "1q4mhcr10f22f8lwbsplhjyy0m3axddawd3mcax7qzm6p8lj6ybg"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; python-eth-hash is not packed yet.
-      #:test-flags #~(list "--ignore=tests/crypto_addresses/test_eth_address.py")))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
-     (list python-decorator
-           ;; python-eth-hash ; optional, not packed yet.
-           python-six))
+     (list python-eth-hash))
     (home-page "https://github.com/kvesteri/validators")
     (synopsis "Data validation library")
     (description
