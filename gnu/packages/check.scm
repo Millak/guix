@@ -3093,12 +3093,15 @@ time by mocking the datetime module.")
   (package
     (name "python-flaky")
     (version "3.8.1")  ; On bump, remove some skipped tests in python-cherrypy.
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "flaky" version))
-              (sha256
-               (base32
-                "1xcrjrr63131n2ydj5hn0gagka5dpkmdlqdxrxd3spwhxj0ll827"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/box/flaky")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fyqrcny7v6wnyir2ys242cabxh42j39716fn890dig9ik2f86ck"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3115,8 +3118,7 @@ time by mocking the datetime module.")
                     " and not test_something_flaky"))))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/box/flaky")
     (synopsis "Automatically rerun flaky tests")
     (description
