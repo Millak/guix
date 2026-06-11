@@ -89,6 +89,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages file)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -272,6 +273,43 @@ the @code{zlib} source.")
 adding and extracting files to/from a tar archive.")
    (home-page "https://repo.or.cz/libtar.git")
    (license license:bsd-3)))
+
+(define-public ls-qpack
+  (package
+    (name "ls-qpack")
+    (version "2.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/litespeedtech/ls-qpack")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gipc7lvxxj8wnzbx4mrw4c78x78qf9j6k4j4pnfsanvin219vmi"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "deps/xxhash")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DLSQPACK_XXH=OFF"
+              "-DLSQPACK_TESTS=ON")))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list xxhash))
+    (home-page "https://github.com/litespeedtech/ls-qpack")
+    (synopsis "QPACK compression library for use with HTTP/3")
+    (description
+     "QPACK is the compression mechanism used by
+@url{https://en.wikipedia.org/wiki/HTTP/3, HTTP/3} to compress HTTP headers.
+It's based on specification
+@url{https://tools.ietf.org/html/draft-ietf-quic-qpack-11, QPACK
+Internet-Draft}.")
+    (license license:expat)))
 
 (define-public gzip
   (package
