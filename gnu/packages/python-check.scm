@@ -4633,24 +4633,35 @@ plain (undecoratored) native coroutine tests.")
 (define-public python-pytest-trio
   (package
     (name "python-pytest-trio")
-    (version "0.8.0")
+    ;; 0.8.0 (2022-11-01), no longer compatible with Pytest 9, use the latest
+    ;; commit for now.
+    (properties '((commit . "f0168502bc3340f22b8b80ed388efa1a26883aa8")
+                  (revision . "0")))
+    (version (git-version "0.8.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-trio" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-trio/pytest-trio")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0bmmdyjqj5v4a637i4rzm55crv6v3nj268as6x9nr7m76rixnqw3"))))
+        (base32 "1lblg06lsrm0hfrc9nn4zksxqyvigah1ibaibwsvqyfm1kl15jhz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Tests are broken, see
-      ;; <https://github.com/python-trio/pytest-trio/issues/84>.
-      #:tests? #f))
+      ;; tests: 55 passed, 2 deselected, 2 xfailed, 1 warning
+      #:test-flags
+      #~(list
+         ;; Assertion Error for 2 tests.
+         "--deselect=_tests/test_basic.py::test_skip_and_xfail"
+         "--deselect=_tests/test_fixture_ordering.py::test_error_collection")))
     (native-inputs
      (list python-hypothesis
-           python-pytest
-           python-setuptools
-           python-wheel))
+           python-pytest-bootstrap
+           python-setuptools))
     (propagated-inputs
      (list python-async-generator
            python-outcome
