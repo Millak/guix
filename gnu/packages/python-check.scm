@@ -3666,21 +3666,27 @@ were inadvertently left open at the end of a unit test.")
 (define-public python-pytest-order
   (package
     (name "python-pytest-order")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_order" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pytest-dev/pytest-order")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1pixy83l6hcg16gjc04vp4misk2w989alkd9msnw1s9y7pn8yq2i"))))
+        (base32 "0yvmlkgzs14d7icdby94wlddj6hrz6anq9yp85qxqjkkls8za8i2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: 4 failed, 18 errors
-      #:tests? #f))
+      #:test-flags
+      ;; This test needs python-xdist which is overkill for 134 tests suit.
+      #~(list "--deselect=tests/test_xdist_handling.py::test_xdist_ordering")))
     (native-inputs
-     (list python-pytest python-pytest-xdist
-           python-setuptools python-wheel))
+     (list python-pytest-bootstrap
+           python-pytest-dependency
+           python-pytest-mock
+           python-setuptools))
     (home-page "https://github.com/pytest-dev/pytest-order")
     (synopsis "Pytest plugin to run your tests in a specific order")
     (description
