@@ -6203,25 +6203,29 @@ Wikidata}.")
 (define-public python-wsproto
   (package
     (name "python-wsproto")
-    (version "1.2.0")
+    (version "1.3.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "wsproto" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-hyper/wsproto/")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0rahm1j9danv1l6i6as80acwv16ycihxkhrvwjiqh9drxhk5ymmd"))))
+        (base32 "1n67xnnq3mvnxp61r4d8730hh8hzrq8i9bdrv8jivhj369fhndn9"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-setuptools python-wheel))
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-h11))
     (home-page "https://github.com/python-hyper/wsproto/")
     (synopsis "WebSockets state-machine based protocol implementation")
     (description
      "@code{wsproto} is a pure-Python implementation of a WebSocket protocol
-stack.  It's written from the ground up to be embeddable in whatever program you
-choose to use, ensuring that you can communicate via WebSockets, as defined in
-RFC6455, regardless of your programming paradigm.")
+stack.  It's written from the ground up to be embeddable in whatever program
+you choose to use, ensuring that you can communicate via WebSockets, as
+defined in RFC6455, regardless of your programming paradigm.")
     (license license:expat)))
 
 (define-public hypercorn
