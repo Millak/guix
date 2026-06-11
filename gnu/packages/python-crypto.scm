@@ -163,6 +163,33 @@ Hierarchical Deterministic wallets
 (BIP0032).")
     (license license:expat)))
 
+(define-public python-eth-hash
+  (package
+    (name "python-eth-hash")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ethereum/eth-hash")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g4zlg134glfdxx8hzsmiq10lnl110c3fdgxk0kyq4r3msn7fa57"))))
+    (build-system pyproject-build-system)
+   (arguments
+    (list #:test-flags #~(list "tests/core" "tests/backends/pycryptodome")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-pycryptodome))
+    (home-page "https://github.com/ethereum/eth-hash")
+    (synopsis "Ethereum hashing function")
+    (description
+     "This package provides a Ethereum hashing function - keccak256 (sha3).")
+    (license license:expat)))
+
 (define-public python-murmurhash
   (package
     (name "python-murmurhash")
