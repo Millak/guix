@@ -7701,23 +7701,26 @@ endpoint responses are JSON-encoded.")
     (license license:isc)))
 
 (define-public python-pytest-httpbin
+  ;; TODO: Move to (gnu packages python-check).
   (package
     (name "python-pytest-httpbin")
     (version "2.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_httpbin" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kevin1024/pytest-httpbin")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1iikdji2136mybjk7sczqa2qivlb6gchhkzyz4kq68j3hj1pj1fl"))))
+        (base32 "1d5r21mr6cfwfqgjfrh35sjidkaq4nbihp34y0n29ag943ar8i40"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-pytest-bootstrap
+           python-requests
+           python-setuptools))
     (propagated-inputs
-     (list python-httpbin
-           python-pytest
-           python-six))
+     (list python-httpbin))
     (home-page "https://github.com/kevin1024/pytest-httpbin")
     (synopsis "Test your HTTP library against a local copy of httpbin")
     (description
