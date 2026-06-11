@@ -22460,34 +22460,30 @@ responding to click events and updating clock every second.")
 (define-public python-greenlet
   (package
     (name "python-greenlet")
-    (version "3.1.1")
+    (version "3.5.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "greenlet" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-greenlet/greenlet")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0rsla5f2vgc6g450fziprjy98vf2fwbz6zjx8x37kpvavdnarqsc"))))
+        (base32 "1hvnpkmd9r9li62p5gmidkyq4zazi5adw5c2cah8w2f4n47zg7ix"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; AssertionError: 'Exception' not found in ''
-      #:test-flags
-      #~(list (string-join
-               (list "--deselect=src/greenlet/tests/test_greenlet.py"
-                     "TestGreenlet"
-                     "test_dealloc_catches_GreenletExit_throws_other")
-               "::"))
+      #:test-flags #~(list "--pyargs" "greenlet")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
+          (add-before 'check 'remove-local-source
             (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+              (delete-file-recursively "src/greenlet"))))))
     (native-inputs
      (list python-objgraph
            python-pytest
            python-psutil
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://greenlet.readthedocs.io/")
     (synopsis "Lightweight in-process concurrent programming")
     (description
