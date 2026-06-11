@@ -11048,7 +11048,7 @@ files.")
 (define-public python-websockets
   (package
     (name "python-websockets")
-    (version "13.1")
+    (version "16.0")
     (source
      (origin
        (method git-fetch)
@@ -11058,7 +11058,7 @@ files.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1dx3rf6fmg4ir9cfcn1fil446qz879cwrjq2rcz5zvl71xkw6hb3"))))
+         "1f71siwmjxn8b671x8lkkxx56q3xm99f2kmjqpzfcv3air9n94gg"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-backend #~'unittest
@@ -11072,8 +11072,7 @@ files.")
                           #~((setenv "WEBSOCKETS_TESTS_TIMEOUT_FACTOR" "100"))
                           #~((setenv "WEBSOCKETS_TESTS_TIMEOUT_FACTOR" "10"))))))))
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (home-page "https://github.com/aaugustin/websockets")
     (synopsis
      "Python implementation of the WebSocket Protocol (RFC 6455 & 7692)")
