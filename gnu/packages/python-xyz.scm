@@ -23876,19 +23876,27 @@ etc.")
 (define-public python-pyserial
   (package
     (name "python-pyserial")
-    (version "3.5")
+    ;; 3.5 (2020-11-23), use the latest commit as upstream stopped publishing
+    ;; releases on PyPI or tagging new versions.
+    (properties '((commit . "a5c48d445fbc1943d4fabf8d9090a50fda3172fd")
+                  (revision . "0")))
+    (version (git-version "3.5"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pyserial" version))
-        (sha256
-          (base32
-            "1nyd4m4mnrz8scbfqn4zpq8gnbl4x42w5zz62vcgpzqd2waf0xrw"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pyserial/pyserial")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mfqs5g4qgp6lll859hy3i4gz7nn95g057s80k01jn2mza12swjp"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
+     (list python-pyfakefs
+           python-pytest
+           python-setuptools))
     (home-page "https://github.com/pyserial/pyserial")
     (synopsis "Python Serial Port Bindings")
     (description
