@@ -22,6 +22,7 @@
 
 (define-module (gnu packages configuration-management)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
@@ -38,7 +39,6 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -232,15 +232,22 @@ Features:
 (define-public rcm
   (package
     (name "rcm")
-    (version "1.3.5")
+    (version "1.3.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://thoughtbot.github.io/rcm/dist/rcm-"
-                           version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thoughtbot/rcm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0bdyksrd9i3lkmr9kq6dwa0l4g2403vnma5s4j9h8spi4rziwx14"))))
+        (base32 "0zkajv5qk3snfmnnhv9y2qwgvcg5cai9dzcns6n8g30xnjdlhpvj"))
+       (modules '((guix build utils)))
+       (snippet #~(substitute* "autogen.sh"
+                    ;; Contributor list would be generated from git shortlog.
+                    (("./maint/autocontrib ((man/rcm.7).mustache)" _ in out)
+                     (simple-format #f "sed '/^\\.Sh CONTRIBUTORS/,$d' ~a > ~a"
+                       in out))))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -249,13 +256,19 @@ Features:
       #~(modify-phases %standard-phases
           (add-after 'patch-source-shebangs 'patch-tests
             (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "test/rcdn-hooks-failure.t"
+                (("\\$ rcdn\\>") "$ $TESTDIR/../bin/rcdn"))
+              (substitute* "test/rcup-hooks-failure.t"
+                (("\\$ rcup\\>") "$ $TESTDIR/../bin/rcup"))
               (substitute* '("test/rcrc-tilde.t"
+                             "test/rcdn-hooks-failure.t"
                              "test/rcdn-hooks-run-in-order.t"
+                             "test/rcup-hooks-failure.t"
                              "test/rcup-hooks-run-in-order.t")
                 (("/bin/sh") (search-input-file inputs "/bin/sh")))
               (substitute* "test/rcup-hooks.t"
                 (("/usr/bin/env") (search-input-file inputs "/bin/env"))))))))
-    (native-inputs (list perl python-cram))
+    (native-inputs (list autoconf automake perl python-cram))
     (home-page "https://github.com/thoughtbot/rcm")
     (synopsis "Management suite for dotfiles")
     (description
