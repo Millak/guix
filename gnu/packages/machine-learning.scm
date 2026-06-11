@@ -1008,7 +1008,7 @@ generation, etc.")
 (define-public whisper-cpp
   (package
     (name "whisper-cpp")
-    (version "1.8.4")                   ;keep in sync with ggml-for-whisper
+    (version "1.8.6")                   ;keep in sync with ggml-for-whisper
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1017,7 +1017,7 @@ generation, etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vgx2jibmfkk77n912p4iavql2q3x50dmvfxzbqidbm568l9cav0"))))
+                "0akcmzy4krhdwrzv6y4d8gp02ir7dmfwv6glm6zhbdiq0g0za1w3"))))
     (build-system cmake-build-system)
     (arguments
      (list
