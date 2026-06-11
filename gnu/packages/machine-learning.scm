@@ -483,7 +483,7 @@ CTranslate2, which is a inference engine for transformer models.")
 (define-public python-funsor
   (package
     (name "python-funsor")
-    (version "0.4.6")
+    (version "0.4.7")
     (source
      (origin
        (method git-fetch)
@@ -492,7 +492,7 @@ CTranslate2, which is a inference engine for transformer models.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17ys6qbrg2alv6sz9q140gfm2jh4m5417hya7z087jplljqzbf1y"))))
+        (base32 "1ragxy19qfaczn3wfpamg0giqyiscxvm366r3md255lfafzwj96i"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -560,7 +560,7 @@ CTranslate2, which is a inference engine for transformer models.")
     (propagated-inputs
      (list python-makefun
            python-multipledispatch
-           python-numpy-1
+           python-numpy
            python-opt-einsum
            python-typing-extensions
            ;; [optional]
