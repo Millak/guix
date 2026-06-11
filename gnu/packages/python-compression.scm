@@ -460,13 +460,16 @@ Jump conversion filter by CFFI for Python.")
 (define-public python-brotlicffi
   (package
     (name "python-brotlicffi")
-    (version "1.1.0.0")
+    (version "1.2.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "brotlicffi" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-hyper/brotlicffi")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "04rw11qllb43si8g6gnliy41gavkna9hnc8mg7w46lchi6k2fy5p"))
+        (base32 "1jal6gz3crca61gnmxjl37dycak0rsj46kvyfqhkmc15s17f64rm"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
@@ -495,8 +498,7 @@ Jump conversion filter by CFFI for Python.")
                    (format #f "open(~s)" brotli-version-source)))))))))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (inputs
      (list brotli))
     (propagated-inputs
