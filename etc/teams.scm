@@ -1706,6 +1706,11 @@ the \"texlive\" importer."
           "arunisaac")
   codeberg)
 
+(define-member (person "Florian Korbacher"
+                       "reband.florian@googlemail.com"
+                       "SilverlightningY")
+  audio)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
