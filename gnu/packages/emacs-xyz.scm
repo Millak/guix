@@ -18969,18 +18969,13 @@ much easier.")
 (define-public emacs-elfeed-protocol
   (package
     (name "emacs-elfeed-protocol")
-    ;; Use a revision to comply with elfeed 4.0.0; revert on next tag.
-    (properties '((commit . "58936590459ccc2dfd6132f69983011d15d9404a")
-                  (revision . "0")))
-    (version (git-version "0.9.1"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/fasheng/elfeed-protocol")
-             (commit (assoc-ref properties 'commit))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "014b4986w860mf8zvbfmchbc3sjmndcwy3wrx5fncmndkd750j2b"))))
