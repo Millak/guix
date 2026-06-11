@@ -4614,16 +4614,20 @@ and that could be anything you want.")
 (define-public python-h2
   (package
     (name "python-h2")
-    (version "4.1.0")
+    (version "4.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "h2" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-hyper/h2")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1fraip114fm1ha5w37pdc0sk8dn9pb0ck267zrwwpap7zc4clfm8"))))
+        (base32 "00rf0ii4xgdczx5xmv1k6b65q1axvxizbnl20d5vpr512zdix36k"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1594 passed, 5 deselected
       ;; AssertionError: assert '<RemoteSettingsChanged
       ;; changed_settings:{ChangedSetting(setting=4, original_value=65536,
       ;; new_value=32768)}>' == '<RemoteSettingsChanged
@@ -4649,8 +4653,7 @@ and that could be anything you want.")
                " and not "))))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-hpack
            python-hyperframe))
