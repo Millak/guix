@@ -3029,38 +3029,26 @@ resolutions with a synchronous looking interface by using
 (define-public python-aioquic
   (package
     (name "python-aioquic")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "aioquic" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aiortc/aioquic")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "16bigrn5b46c7nmpzxhnlhh4y03hwc7dbd0mi5f8r53i7yxn64pr"))))
+        (base32 "0dyzh8xipxbd7fcykfz8g5bgri38prwg050szqawq2p0pg538dgb"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k" (string-join
-                    ;; AssertionError: AlertBadCertificate not raised
-                    (list "not test_verify_subject_no_subjaltname"
-                          ;; AttributeError: module
-                          ;; 'service_identity.cryptography' has no attribute
-                          ;; 'extract_patterns'
-                          "test_verify_subject_with_subjaltname"
-                          ;; AttributeError: module
-                          ;; 'service_identity.cryptography' has no attribute
-                          ;; 'extract_patterns'
-                          "test_verify_subject_with_subjaltname_ipaddress")
-                    " and not "))))
     (native-inputs
      (list nss-certs-for-test
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (inputs
      (list openssl))
     (propagated-inputs
      (list python-certifi
+           python-cryptography
            python-pylsqpack
            python-pyopenssl
            python-service-identity))
