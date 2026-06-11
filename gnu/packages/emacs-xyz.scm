@@ -28904,7 +28904,7 @@ Guix commit message.")
 (define-public emacs-emacsql
   (package
     (name "emacs-emacsql")
-    (version "4.3.6")
+    (version "4.4.1")
     (source
      (origin
        (method git-fetch)
@@ -28913,7 +28913,7 @@ Guix commit message.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hm6g2ad8bsfrl7gqcb5psphcgvak8608b6vw1rc5rrsr7j6rdsl"))))
+        (base32 "0spinavna6k6b43lcj92w1sc0jlffzqyj9byxyayg4g6md995dhi"))))
     (build-system emacs-build-system)
     (arguments
      (list
