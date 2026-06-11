@@ -6705,7 +6705,7 @@ searches.  Unlike @code{emacs-wiki.el}, it can be combined with any format.")
 (define-public emacs-mediawiki
   (package
     (name "emacs-mediawiki")
-    (version "2.4.10")
+    (version "3.1.1")
     (source
      (origin
        (method git-fetch)
@@ -6714,13 +6714,12 @@ searches.  Unlike @code{emacs-wiki.el}, it can be combined with any format.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "199vkks9adkw7rvac960sz2625n0pa7zr2bixrb552dvh29c1lxc"))))
+        (base32 "0kmrbj82hdada6vvncavk0zmjiv5zkyvfhkkhjrl7ggflq8pggf2"))))
     (build-system emacs-build-system)
     (arguments
      (list
       #:test-command
-      #~(list "make" "test-mediawiki-simple" "test-mediawiki-core"
-              "test-mediawiki-utils" "test-mediawiki-mode")))
+      #~(list "make" "test")))
     (synopsis "Mediawiki editor for Emacs")
     (description
      "This package provides a way to edit mediawiki sites from within emacs.")
