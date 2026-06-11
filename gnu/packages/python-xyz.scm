@@ -24603,8 +24603,7 @@ Its features include
      (list
       #:tests? #f)) ; no tests
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (home-page "https://github.com/shibukawa/snowball_py")
     (synopsis "Snowball stemming library collection for Python")
     (description
