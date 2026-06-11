@@ -283,7 +283,7 @@ libraries such as PyTorch and TensorFlow.")
   (package
     (inherit ggml)
     (name "ggml-for-whisper")
-    (version "0.10.2")                  ;sync whisper.cpp
+    (version "0.13.1")                  ;sync whisper.cpp
     (source
      (origin
        (method git-fetch)
@@ -292,7 +292,7 @@ libraries such as PyTorch and TensorFlow.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12g83g6ja1j9jj6hlbp6nsriiak2p880bxyqpi0z40rshiqjbvg2"))))))
+        (base32 "18sbbglh1p2yaslzsbrlnfm4rg0bfxnjs2vy9sa5vpq8shnyx61r"))))))
 
 (define-public python-apricot-select
   (package
