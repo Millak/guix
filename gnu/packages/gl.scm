@@ -252,7 +252,7 @@ generate a GL/GLES/EGL/GLX/WGL loader tailored for specific requirements.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "xvfb-run" "utility/test.sh")))))))
-    (native-inputs (list python-setuptools python-wheel xvfb-run-for-tests))
+    (native-inputs (list python-setuptools xvfb-run-for-tests))
     (propagated-inputs (list python-jinja2))
     (home-page "https://github.com/Dav1dde/glad")
     (synopsis "Multi-language GL/GLES/EGL/GLX/WGL loader generator")
