@@ -10252,20 +10252,24 @@ hard or impossible to fix in cssselect.")
 (define-public python-uvloop
   (package
     (name "python-uvloop")
-    (version "0.21.0")
+    (version "0.22.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "uvloop" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/MagicStack/uvloop")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1qq46ym3ymzfn4j6fnykfmr1f4qnb7x7p15dlw37hi38v87jpw9v"))
+        (base32 "1qbykwwz4ac3f7472g22z4i5rrd5kcr8hmxn5kswmja57j1nxlpl"))
        (modules '((guix build utils)))
        (snippet
-        '(begin (delete-file-recursively "vendor")
-          (delete-file  "uvloop/loop.c")))))
+        '(begin
+           (delete-file-recursively "vendor")))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 470 passed, 32 skipped, 8 deselected, 5 warnings, 104 subtests passed
       #:test-flags
       ;; The tests are prone to get stuck. Use pytest-timeout’s --timeout flag
       ;; to get a meaningful idea about where.
@@ -10278,19 +10282,6 @@ hard or impossible to fix in cssselect.")
                      "test_signals_sigint_pycode_stop"
                      "test_signals_sigint_uvcode"
                      "test_signals_sigint_uvcode_two_loop_runs"
-                     ;; This test is racy and prone to get stuck on
-                     ;; various platforms, possibly a aiohttp issue:
-                     ;;  https://github.com/MagicStack/uvloop/issues/412
-                     "test_remote_shutdown_receives_trailing_data"
-                     ;; It looks like pytest is preventing
-                     ;; custom stdout/stderr redirection,
-                     ;; even with -s.
-                     "test_process_streams_redirect"
-                     ;; FileNotFoundError: [Errno 2] No such file or
-                     ;; directory
-                     "test_process_env_2"
-                     ;; socket.gaierror: [Errno -2] Name or service not known
-                     "test_getaddrinfo_21"
                      #$@(if (target-riscv64?)
                             `("test_renegotiation")
                             `()))
@@ -10304,7 +10295,9 @@ hard or impossible to fix in cssselect.")
                                        "self.use_system_libuv = True"))
               ;; Replace hardcoded shell command.
               (substitute* "uvloop/loop.pyx"
-                (("b'/bin/sh'") (string-append "b'" (which "sh") "'")))))
+                (("b'/bin/sh'") (string-append "b'" (which "sh") "'")))
+              (substitute* "tests/test_process.py"
+                (("'env'") (string-append "'" (which "env") "'")))))
           #$@(if (target-riscv64?)
                  `((add-after 'unpack 'adjust-test-timeouts
                     (lambda _
@@ -10326,8 +10319,7 @@ hard or impossible to fix in cssselect.")
            python-pyopenssl
            python-pytest
            python-pytest-timeout
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (inputs
      (list libuv))
     (home-page "https://github.com/MagicStack/uvloop")
