@@ -39904,12 +39904,18 @@ programs that do multiple things at the same time with parallelized I/O.")
     (version "0.10.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "trio-typing" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-trio/trio-typing")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1hvsj3w500i33ykfgh3sfkjnxhxf05incx131smshlkd562fcph6"))))
+        (base32 "127zpngp6r87kapvx5bwcl5awhyrsykwmvnxrb67qv7yz1s4z278"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (arguments
+     (list #:tests? #f ))    ;no proper tests
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-async-generator
            python-importlib-metadata
