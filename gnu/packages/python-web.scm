@@ -3139,17 +3139,20 @@ stream is an enhanced asynchronous iterable.")
   (package
     (name "python-asgiref")
     (version "3.11.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "asgiref" version))
-              (sha256
-               (base32 "1km4xlaa21z2h0gz8x84gfgrq8k2mhg48rc0hkz3wxky7g24s62z"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/django/asgiref/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19l03mx81dqhnnqa98073x1q243ndlknax0kva7azr9g12ixl69j"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/django/asgiref/")
     (synopsis "ASGI specs, helper code, and adapters")
     (description
