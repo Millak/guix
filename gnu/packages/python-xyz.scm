@@ -41883,8 +41883,7 @@ add the log levels NOTICE, SPAM, SUCCESS and VERBOSE.")
     (native-inputs
      (list git-minimal/pinned
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-tomli))
     (home-page "https://github.com/python-versioneer/python-versioneer")
