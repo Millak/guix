@@ -222,7 +222,7 @@ to access its data, so it can be used as a drop-in replacement.")
 (define-public python-brotli
   (package
     (name "python-brotli")
-    (version "1.0.9")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -231,7 +231,7 @@ to access its data, so it can be used as a drop-in replacement.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fikasxf7r2dwlk8mv8w7nmjkn0jw5ic31ky3mvpkdzwgd4xfndl"))
+        (base32 "0vv7r7m7m6hqhbwb017s4rvc378mjxxvigg37r76imsqlyafbxvq"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
