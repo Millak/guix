@@ -15136,7 +15136,7 @@ the same content bi-directionally.")
 (define-public emacs-zenburn-theme
   (package
     (name "emacs-zenburn-theme")
-    (version "2.9.0")
+    (version "2.10.0")
     (source
      (origin
        (method git-fetch)
@@ -15145,7 +15145,7 @@ the same content bi-directionally.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17rl292240j2c8db01irpp5khsqwwwwcjlzwa52adyirc5bdb74v"))))
+        (base32 "0g54j3n2khc470i80diqqdxds0xiysvwdjss3jmgdf73argslj1q"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/bbatsov/zenburn-emacs")
     (synopsis "Low contrast color theme for Emacs")
