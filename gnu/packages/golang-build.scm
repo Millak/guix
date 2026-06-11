@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 HiPhish <hiphish@posteo.de>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
-;;; Copyright © 2020, 2022, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2022-2024, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -1230,7 +1230,26 @@ low-level interaction with the operating system.")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0hdysrba8imiifb4ksjgbhkzhk1mksm1g3fj59i3bas1zdc5lbgp")))))))
+         (base32 "0hdysrba8imiifb4ksjgbhkzhk1mksm1g3fj59i3bas1zdc5lbgp"))))
+     (arguments
+     (list
+      #:skip-build? #t
+      #:test-flags
+      #~(list #$@(cond
+                   ;; TODO: Remove this branch of the conditional,
+                   ;; it is not necessary to skip these tests.
+                   ((target-aarch64?)
+                    '("-skip" (string-join
+                                (list "TestParseOrigDstAddr/udp4"
+                                      "TestIoctlGetEthtoolDrvinfo"
+                                      "TestIoctlGetEthtoolTsInfo"
+                                      "TestRlimitAs")
+                                "|")))
+                   ((or (target-arm32?)
+                        (target-riscv64?))
+                    '("-skip" "TestSockaddrALG"))
+                   (#t '())))
+      #:import-path "golang.org/x/sys")))))
 
 (define-public go-golang-org-x-telemetry
   (package
