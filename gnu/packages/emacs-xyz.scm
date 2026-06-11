@@ -6727,9 +6727,6 @@ searches.  Unlike @code{emacs-wiki.el}, it can be combined with any format.")
     (home-page "https://github.com/hexmode/mediawiki-el")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-mediawiki-el
-  emacs-mediawiki)
-
 (define-public emacs-bm
   (package
     (name "emacs-bm")
