@@ -45,6 +45,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages pkg-config)
@@ -594,16 +595,39 @@ data.  It is geared towards dealing with data streams.")
 (define-public python-pylsqpack
   (package
     (name "python-pylsqpack")
-    (version "0.3.22")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pylsqpack" version))
-              (sha256
-               (base32
-                "1npcdj416gqc5zvlkyh9z808k381lrm56zvz1zsdjw437hdp2zxn"))))
-    ;; FIXME: Unbundle ls-qpack and xxhash!
+    (version "0.3.24")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aiortc/pylsqpack")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mv48f6n2cflibjbkxx8cig6rblfdbpj969h5wm2s2nb1zbjmc54"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file-recursively "vendor")))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'use-system-libs
+            (lambda _
+              (mkdir-p "vendor/ls-qpack/deps/xxhash")
+              (copy-recursively
+               #$(package-source (this-package-native-input "ls-qpack"))
+               "vendor/ls-qpack")
+              (copy-recursively
+               #$(package-source (this-package-native-input "xxhash"))
+               "vendor/ls-qpack/deps/xxhash"))))))
+    (native-inputs
+     (list ls-qpack
+           python-pytest
+           python-setuptools
+           xxhash))
     (home-page "https://github.com/aiortc/pylsqpack")
     (synopsis "Python bindings for @code{ls-qpack}")
     (description
