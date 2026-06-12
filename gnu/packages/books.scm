@@ -9,7 +9,7 @@
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2023 宋文武 <iyzsong@envs.net>
-;;; Copyright © 2023-2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023-2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
@@ -161,7 +161,7 @@ metalinguistic abstraction, recursion, interpreters, and modular programming.")
 (define-public book-sparc
   (package
     (name "book-sparc")
-    (version "5.0.0")
+    (version "6.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -169,7 +169,7 @@ metalinguistic abstraction, recursion, interpreters, and modular programming.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1vln9fvd2ajb55alm0bq3hgkaakfmrvws0f9sshywffclpnj7lnj"))
+                "1lvaa4265ddbasf8kzk0s6m3ylsjm4ckgg0hk86fapvk2dfzdvgp"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))))
     (build-system gnu-build-system)
@@ -199,6 +199,7 @@ metalinguistic abstraction, recursion, interpreters, and modular programming.")
                   texlive-glossaries
                   texlive-glossaries-english
                   texlive-glossaries-extra
+                  texlive-imakeidx
                   texlive-koma-script
                   texlive-libkpathsea
                   texlive-lilyglyphs
@@ -211,6 +212,7 @@ metalinguistic abstraction, recursion, interpreters, and modular programming.")
                   texlive-svg
                   texlive-t1utils
                   texlive-textpos
+                  texlive-tikz-timing
                   texlive-transparent
                   texlive-trimspaces
                   texlive-upquote
