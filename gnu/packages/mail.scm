@@ -2150,7 +2150,6 @@ delivery.")
            bzip2
            gnutls/dane
            gzip
-           libnsl
            libxaw
            libxcrypt
            libxt
