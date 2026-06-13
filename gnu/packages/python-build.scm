@@ -236,7 +236,7 @@ invoked on those path objects directly.")
 (define-public python-pathspec
   (package
     (name "python-pathspec")
-    (version "1.0.4")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
@@ -245,7 +245,7 @@ invoked on those path objects directly.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xjli6hl8588ki48s4mgx2nn5whnmikxngpfgjbfw4af92j4x5cr"))))
+        (base32 "0mhbc0i67m9j2lis37z1a1gnmamirvgcdnb2zpxdxba4j61w5c6k"))))
     (build-system pyproject-build-system)
     (arguments (list #:test-backend #~'unittest))
     (native-inputs
