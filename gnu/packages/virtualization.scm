@@ -36,7 +36,7 @@
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
-;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2024-2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -2927,7 +2927,7 @@ virtual machines.")
 (define-public bubblewrap
   (package
     (name "bubblewrap")
-    (version "0.11.0")
+    (version "0.11.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2936,7 +2936,7 @@ virtual machines.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rb7dih12s9liwq2lfjdm1br6jaxkmdwsqjr6zx9wfyy0cnwr07h"))
+                "1ccrg1ixv1ydbq3n2dlrqj65isrjvyy07ai18ccdnhvw28rcjj1i"))
               (patches (search-patches "bubblewrap-fix-locale-in-tests.patch"))))
     (build-system meson-build-system)
     (arguments
