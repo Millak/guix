@@ -5108,6 +5108,95 @@ git commands for repository metrics and summarization, commit and log editing,
 developer workflow, and project and release management.")
     (license license:expat)))
 
+(define-public ngit-cli
+  (package
+    (name "ngit-cli")
+    (version "2.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://ngit.dev/ngit.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (patches
+               (search-patches "ngit-cli-tests-libgit2-version.patch"))
+              (sha256
+               (base32
+                "1k3h0rkm9zfpyzwvfp0aix3b8lphz1y5pb431jl2jg8wrarpf4bz"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      ;; Integration tests drive loopback network services, including an
+      ;; external ngit-grasp binary; run only self-contained unit tests.
+      #:cargo-test-flags ''("--lib" "--bins" "--benches" "--examples")
+      ;; cargo-build-system checks packages[0] from `cargo metadata` when
+      ;; deciding whether to run `cargo install`.  This workspace lists the
+      ;; library-only test_harness package first, so force installing the root
+      ;; package that provides the ngit and git-remote-nostr binaries.
+      #:cargo-install-paths ''(".")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Replace the bare "git" command names (and the self-referential
+          ;; "ngit" one) with absolute store references so that ngit never
+          ;; resolves these executables through the ambient $PATH.
+          (add-after 'unpack 'hardcode-executable-paths
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((git (search-input-file inputs "bin/git"))
+                    (ngit (string-append (assoc-ref outputs "out")
+                                         "/bin/ngit")))
+                (substitute* '("src/bin/ngit/sub_commands/apply.rs"
+                               "src/bin/ngit/sub_commands/list.rs"
+                               "src/bin/ngit/sub_commands/pr_merge.rs")
+                  (("Command::new\\(\"git\"\\)")
+                   (string-append "Command::new(\"" git "\")")))
+                (substitute* "src/bin/ngit/sub_commands/init.rs"
+                  (("let command = \"git\";")
+                   (string-append "let command = \"" git "\";"))
+                  (("let command = \"ngit\";")
+                   (string-append "let command = \"" ngit "\";"))))))
+          ;; The invocation sites above use absolute store paths, but two
+          ;; lookups still go by name:
+          ;;   - git finds the `git-remote-nostr' remote helper on $PATH;
+          ;;   - the credentials callback that ngit's shared library
+          ;;     installs (src/lib/fetch.rs, push.rs, list.rs) makes git2
+          ;;     run `sh -c "git credential-<name> get"'.  That command is
+          ;;     built in the git2 crate, not in ngit, so the substitution
+          ;;     above cannot reach it.
+          ;; Prepend the directories that provide those programs.
+          (add-after 'install 'wrap-programs
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin (string-append out "/bin"))
+                     (git (dirname (search-input-file inputs "bin/git")))
+                     (bash (dirname (search-input-file inputs "bin/bash"))))
+                ;; ngit-cli's bin provides git-remote-nostr, git's bin
+                ;; provides `git', and bash's bin provides `sh'.  Prepend
+                ;; (not replace) so the caller's PATH stays: git invokes
+                ;; user-configured programs by name (credential helpers,
+                ;; askpass, hooks, editors, filters)--which replacing PATH
+                ;; would break.
+                (wrap-program (string-append bin "/ngit")
+                  `("PATH" ":" prefix (,bin ,git ,bash)))
+                ;; git-remote-nostr gets no entry for ngit-cli's bin: git
+                ;; already found it, and it never looks up itself or a
+                ;; sibling.  git's and bash's bins are here for the `git'
+                ;; and `sh' that the credential invocation needs.
+                (wrap-program (string-append bin "/git-remote-nostr")
+                  `("PATH" ":" prefix (,git ,bash)))))))))
+    (inputs
+     (cons* bash-minimal git-minimal libgit2-1.9 libsecp256k1 libssh2
+            openssl zlib
+            (cargo-inputs 'ngit-cli)))
+    (native-inputs
+     (list pkg-config))
+    (synopsis "Put Git and collaboration metadata on Nostr")
+    (description
+     "This package provides a way to store git metadata on Nostr
+(including collaboration stuff like PRs, issues, statuses, ...).")
+    (home-page "https://gitworkshop.dev/danconwaydev.com/ngit")
+    (license license:expat)))
+
 (define-public git-quick-stats
   (package
     (name "git-quick-stats")

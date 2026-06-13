@@ -1,0 +1,60 @@
+Upstream-status: https://gitworkshop.dev/danconwaydev.com/ngit/issues/nevent1qy28wumn8ghj7un9d3shjtnwva5hgtnyv4mqqgyy4qx0pln24rlzq7jthk2s8p5v99yelt0k82nr90jtnzf28c0decntt55l
+From: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: Thu Sep 10 11:15:17 PM CEST 2026
+Subject: Use the linked libgit2 version in patch-generation test expectations.
+
+Guix links ngit against its packaged libgit2, which can be a different version
+than the version that had been bundled with libgit2-sys.
+Preserve the complete patch-content assertions while deriving the version
+footer from the library actually in use.
+
+--- a/src/lib/git/mod.rs
++++ b/src/lib/git/mod.rs
+@@ -1742,9 +1742,10 @@
+             let oid = test_repo.populate()?;
+ 
+             let git_repo = Repo::from_path(&test_repo.dir)?;
++            let (major, minor, patch) = git2::Version::get().libgit2_version();
+ 
+             assert_eq!(
+-                "\
++                format!("\
+                 From 431b84edc0d2fa118d63faa3c2db9c73d630a5ae Mon Sep 17 00:00:00 2001\n\
+                 From: Joe Bloggs <joe.bloggs@pm.me>\n\
+                 Date: Thu, 1 Jan 1970 00:00:00 +0000\n\
+@@ -1764,9 +1765,9 @@
+                 +some content1\n\\ \
+                 No newline at end of file\n\
+                 --\n\
+-                libgit2 1.9.2\n\
++                libgit2 {major}.{minor}.{patch}\n\
+                 \n\
+-                ",
++                "),
+                 git_repo.make_patch_from_commit(&oid_to_sha1(&oid), &None)?,
+             );
+             Ok(())
+@@ -1778,9 +1779,10 @@
+             let oid = test_repo.populate()?;
+ 
+             let git_repo = Repo::from_path(&test_repo.dir)?;
++            let (major, minor, patch) = git2::Version::get().libgit2_version();
+ 
+             assert_eq!(
+-                "\
++                format!("\
+                 From 431b84edc0d2fa118d63faa3c2db9c73d630a5ae Mon Sep 17 00:00:00 2001\n\
+                 From: Joe Bloggs <joe.bloggs@pm.me>\n\
+                 Date: Thu, 1 Jan 1970 00:00:00 +0000\n\
+@@ -1800,9 +1802,9 @@
+                 +some content1\n\\ \
+                 No newline at end of file\n\
+                 --\n\
+-                libgit2 1.9.2\n\
++                libgit2 {major}.{minor}.{patch}\n\
+                 \n\
+-                ",
++                "),
+                 git_repo.make_patch_from_commit(&oid_to_sha1(&oid), &Some((3, 5)))?,
+             );
+             Ok(())
