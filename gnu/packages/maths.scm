@@ -4610,22 +4610,22 @@ radio interferometry data.")
 (define-public python-kiwisolver
   (package
     (name "python-kiwisolver")
-    (version "1.4.6")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "kiwisolver" version))
-              (sha256
-               (base32
-                "1q77r6cl9m4vh8lsvmsm1ijh3r9aijdhmnc03yhnlpj407b2kniw"))))
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nucleic/kiwi")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18fxn3nvc6917mkm0as7088m794fqdp8rlk4qgypva9fir1br1r6"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-cppy
            python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-typing-extensions))
+           python-setuptools-scm))
     (home-page "https://github.com/nucleic/kiwi")
     (synopsis "Fast implementation of the Cassowary constraint solver")
     (description
