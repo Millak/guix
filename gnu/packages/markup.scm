@@ -700,22 +700,23 @@ one-click export to web browser.")
 (define-public python-mistletoe
   (package
     (name "python-mistletoe")
-    (version "1.3.0")
+    (version "1.5.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "mistletoe" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/miyuchina/mistletoe")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1sfv79fway4iya9i3rmz1bkj12lhzgazd4n7kv8phi4vvn57h3mx"))))
+        (base32 "1r279m8c0rx2vm7bhnax0q5zfzz3yf44qn057wa9bqng3nz0ls47"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; FileNotFoundError (not distributed in PyPI).
-     (list #:test-flags #~(list "-k" "not test_main")))
     (native-inputs
      (list python-parameterized
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
+    (propagated-inputs
+     (list python-pygments))
     (home-page "https://github.com/miyuchina/mistletoe")
     (synopsis "Extensible Markdown parser in pure Python")
     (description
