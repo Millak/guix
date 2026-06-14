@@ -997,7 +997,7 @@ that client code uses to construct the grammar directly in Python code.")
     (version "1.0.9")
     (source
      (origin
-       (method git-fetch)       ;no tests in PyPI archive
+       (method git-fetch)
        (uri (git-reference
               (url "https://github.com/alex/pretend")
               (commit (string-append "v" version))))
@@ -1006,8 +1006,7 @@ that client code uses to construct the grammar directly in Python code.")
         (base32 "156l685r9mg7i4xyrk9ql3sxk088irxlg8x7md5i0d05hdw1z8rs"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-packaging-bootstrap
-           python-pytest-bootstrap
+     (list python-pytest-bootstrap
            python-setuptools-bootstrap))
     (home-page "https://github.com/alex/pretend")
     (synopsis "Library for stubbing in Python")
