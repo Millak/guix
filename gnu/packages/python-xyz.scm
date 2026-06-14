@@ -19941,6 +19941,7 @@ JavaScript, leveraging popular online obfuscators.")
 (define-public python-chardet
   (package
     (name "python-chardet")
+    ;; XXX: Before update, check status of guix/guix#9242.
     (version "5.2.0")
     (source
      (origin
@@ -19950,7 +19951,7 @@ JavaScript, leveraging popular online obfuscators.")
         (base32
          "1xqwkjijq2fxn8rhcvfddl14lp39jllqbh527yy19i58g7s6yfqv"))))
     (native-inputs
-     (list python-pytest python-setuptools python-wheel))
+     (list python-pytest python-setuptools))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
