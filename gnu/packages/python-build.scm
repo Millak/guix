@@ -126,19 +126,29 @@ run simple @code{argparse} parsers from function signatures.")
 (define-public python-distlib
   (package
     (name "python-distlib")
-    (version "0.3.7")
+    (version "0.4.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "distlib" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pypa/distlib")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1a27f5p93j9i1l3324qgahs3g8ai91fmx783jpyyla506i5ybbwx"))))
+        (base32 "116qm6gr1frgdwq5agyyggi346a3cjdsni3rh2z7kxaf83aq70pk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests/test_all.py")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests-on-unprivileged-daemon
+            (lambda _
+              (substitute* "tests/test_util.py"
+                ;; /etc may be writable under unprivileged daemon (sandbox).
+                (("self\\.assertFalse\\(self.*is_writable\\('/etc'\\)\\)" all)
+                 (string-append "pass # " all)))))
           (add-before 'build 'no-/bin/sh
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((/bin/sh (search-input-file inputs "bin/sh")))
@@ -150,8 +160,7 @@ run simple @code{argparse} parsers from function signatures.")
               ;; NOTE: Any value works, the variable just has to be present.
               (setenv "SKIP_ONLINE" "1"))))))
     (native-inputs
-     (list python-pytest-bootstrap
-           python-setuptools-bootstrap))
+     (list python-setuptools-bootstrap))
     (inputs
      (list bash-minimal))
     (home-page "https://github.com/pypa/distlib")
