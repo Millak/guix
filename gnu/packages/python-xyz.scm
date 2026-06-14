@@ -40860,18 +40860,18 @@ progress, among other things.")
 (define-public python-uc-micro-py
   (package
     (name "python-uc-micro-py")
-    (version "1.0.1")
+    (version "2.0.0")
     (source (origin
-              (method git-fetch)        ;for tests
+              (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/tsutsu3/uc.micro-py")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17f55gi55rg47nm88fn3f8851ph03dgykdp011lxr3j6hk18lyfv"))))
+                "06dx8zh0fa13aldqxhzghdnbbaqbb1dklbyqzdxy14dcbqmx92m3"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/tsutsu3/uc.micro-py")
     (synopsis "Unicode data files for linkify-it-py projects")
     (description "This package contains a micro subset of Unicode data files
