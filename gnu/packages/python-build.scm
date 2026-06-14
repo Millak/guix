@@ -957,19 +957,35 @@ that client code uses to construct the grammar directly in Python code.")
 (define-public python-packaging
   (package
     (name "python-packaging")
-    (version "25.0")
+    (version "26.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "packaging" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pypa/packaging")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0kzwn2ar4ndm90qrvgyjcbkqz3klrg0ziwm1yrhbyxynk0n8fhyl"))))
+        (base32 "0wyfra7qd1ksnnpbvz3srf1cshbrg1lfzfyb541vndryb25jyhzy"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 61450 passed
+      #:test-flags
+      ;; Tests depending on hypothesis and tomli_w.
+      #~(list "--ignore=tests/property/test_specifier_comparison.py"
+              "--ignore=tests/property/test_specifier_extended.py"
+              "--ignore=tests/property/test_specifier_implied.py"
+              "--ignore=tests/property/test_specifier_matching.py"
+              "--ignore=tests/property/test_version_format.py"
+              "--ignore=tests/property/test_version_normalization.py"
+              "--ignore=tests/property/test_version_ordering.py"
+              "--ignore=tests/property/test_version_releases.py"
+              "--ignore=tests/test_pylock.py")))
     (native-inputs
      (list python-flit-core
            python-pretend
            python-pytest-bootstrap))
-    (propagated-inputs (list python-pyparsing python-six))
     (home-page "https://github.com/pypa/packaging")
     (synopsis "Core utilities for Python packages")
     (description "Packaging is a Python module for dealing with Python packages.
