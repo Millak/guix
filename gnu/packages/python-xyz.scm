@@ -13619,16 +13619,19 @@ and generate a data structure representing the class﻿.")
     (version "1.3.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "cppy" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nucleic/cppy")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0s3d7bjgr9af571y7czswjymnymnihwnyf9ml4p28kw725y31dam"))))
+        (base32 "16g0f9kjyybmlxy9w5bbxm98g7wqhcvh4pw77r0jk3dgd11lkvzy"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))  ;there is just one test coping include directory
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+     (list python-setuptools
+           python-setuptools-scm))
     (home-page "https://github.com/nucleic/cppy")
     (synopsis "C++ header library for Python extension modules")
     (description "This package is a small C++ header library which makes it
