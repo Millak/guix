@@ -1294,31 +1294,36 @@ application suites.")
           (add-after 'install 'check
             (assoc-ref %standard-phases 'check)))))
     (native-inputs
-     (list docbook-xml-4.3
-           docbook-xsl
-           gettext-minimal
-           `(,glib "bin")
-           glibc-utf8-locales           ;some tests require en_US.UTF-8
-           gobject-introspection        ;for building introspection data
-           graphene
-           gtk-doc/stable               ;for building documentation
-           intltool
-           libxslt                      ;for building man-pages
-           pkg-config
-           python-pygobject
-           ;; These python modules are required for building documentation.
-           python-docutils-0.19
-           python-jinja2
-           python-markdown
-           python-markupsafe
-           python-pygments
-           python-toml
-           python-typogrify
-           sassc                        ;for building themes
-           shaderc
-           tzdata-for-tests
-           vala
-           xorg-server-for-tests))
+     (append (if (supported-package? librsvg)
+                 ;; Only needed for tests
+                 (list librsvg)
+                 '())
+             (list
+              docbook-xml-4.3
+              docbook-xsl
+              gettext-minimal
+              `(,glib "bin")
+              glibc-utf8-locales               ;some tests require en_US.UTF-8
+              gobject-introspection            ;for building introspection data
+              graphene
+              gtk-doc/stable                   ;for building documentation
+              intltool
+              libxslt                          ;for building man-pages
+              pkg-config
+              python-pygobject
+              ;; These python modules are required for building documentation.
+              python-docutils-0.19
+              python-jinja2
+              python-markdown
+              python-markupsafe
+              python-pygments
+              python-toml
+              python-typogrify
+              sassc                            ;for building themes
+              shaderc
+              tzdata-for-tests
+              vala
+              xorg-server-for-tests)))
     (inputs
      (list colord                       ;for color printing support
            cups                         ;for CUPS print-backend
@@ -1342,7 +1347,7 @@ application suites.")
      ;; Following dependencies are referenced in .pc files.
      (list cairo
            fontconfig
-           (librsvg-for-system)
+           gdk-pixbuf
            glib
            graphene
            libepoxy
