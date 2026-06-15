@@ -25,7 +25,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages ftp)
-  #:use-module ((guix licenses) #:select (gpl2 gpl2+ gpl3+ clarified-artistic))
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -121,7 +121,7 @@ supporting a number of network protocols.  Like Bash, it has job control and
 uses the Readline library for input.  It has bookmarks, a built-in mirror
 command, and can transfer several files in parallel.  It was designed with
 reliability in mind.")
-    (license gpl3+)))
+    (license license:gpl3+)))
 
 (define-public ncftp
   (package
@@ -178,7 +178,7 @@ reliability in mind.")
 File Transfer Protocol (FTP) servers.  This includes @code{ncftp}, an interactive
 FTP browser, as well as non-interactive commands such as @code{ncftpput} and
 @code{ncftpget}.")
-    (license clarified-artistic)))
+    (license license:clarified-artistic)))
 
 
 (define-public weex
@@ -217,7 +217,7 @@ FTP browser, as well as non-interactive commands such as @code{ncftpput} and
 maintaining a web page or other FTP archive.  It synchronizes a set of
 local files to a remote server by performing uploads and remote deletes
 as required.")
-    (license gpl2+)))
+    (license license:gpl2+)))
 
 (define-public libfilezilla
   (let ((revision 11287))
@@ -265,7 +265,7 @@ which simplifies dealing with timestamps originating from different sources.
 Simple process handling for spawning child processes with redirected input and
 output.
 @end itemize\n")
-      (license gpl2+))))
+      (license license:gpl2+))))
 
 (define-public filezilla
   (let ((revision 11290))
@@ -304,7 +304,7 @@ output.
 SSH File Transfer Protocol (SFTP), HTTP/1.1, SOCKS5, FTP-Proxy, IPv6
 and others features such as bookmarks, drag and drop, filename filters,
 directory comparison and more.")
-      (license gpl2+)
+      (license license:gpl2+)
       (properties '((upstream-name . "FileZilla"))))))
 
 (define-public vsftpd
@@ -358,4 +358,4 @@ server that listens on a TCP socket for clients and gives them access to local
 files via @acronym{FTP, the File Transfer Protocol}.  Security is a goal; not a
 guarantee.")
     (home-page "https://security.appspot.com/vsftpd.html")
-    (license gpl2)))                    ; with OpenSSL exception
+    (license license:gpl2)))            ; with OpenSSL exception
