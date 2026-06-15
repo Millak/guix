@@ -3034,8 +3034,8 @@ ontinuous-time and discret-time expressions.")
     (license license:lgpl2.1+)))
 
 (define-public openscad
-  (let ((commit "5d6e37dd177d9d9329234cb5d3c0491ab0f23dcd")
-        (version "2025.09.02")
+  (let ((commit "04834adb1ba3c9a6e4160747c91cbadbce9c37b3")
+        (version "2026.07.26")
         (revision "0"))
     (package
       (name "openscad")
@@ -3051,16 +3051,17 @@ ontinuous-time and discret-time expressions.")
                ;; deleted in the patch-source build phase.
                (recursive? #t)))
          (sha256
-          (base32 "1cga32b65wbap59nmw37f75ys3gj9bk09nqzq7949x9kqlal13mx"))
+          (base32 "05dym56zd2r5wrwq58lblhwa3b0xzh443pgsyambpjf9p534zi1k"))
          (file-name (git-file-name name version))))
       (build-system qt-build-system)
       (arguments
        (list
+        #:qtbase qtbase                 ;for qt-6
         ;; OpenSCAD doesn't cope well with out-of-source builds.
         #:out-of-source? #f
+        #:build-type "Release"
         #:configure-flags
-        #~(list "-DCMAKE_BUILD_TYPE=Release"
-                "-DUSE_BUILTIN_CLIPPER2=OFF"
+        #~(list "-DUSE_BUILTIN_CLIPPER2=OFF"
                 "-DUSE_BUILTIN_MANIFOLD=OFF"
                 "-DUSE_BUILTIN_OPENCSG=OFF"
                 "-DMANIFOLD_PYBIND=OFF"
@@ -3093,11 +3094,11 @@ ontinuous-time and discret-time expressions.")
                    "")
                   ;; Fix detection of EGL (see
                   ;; https://github.com/openscad/openscad/issues/5880).
-                  (("target_link_libraries\\(OpenSCAD PRIVATE OpenGL::EGL\\)")
+                  (("target_link_libraries\\(OpenSCADLibInternal PUBLIC OpenGL::EGL\\)")
                    "find_package(ECM REQUIRED NO_MODULE)
       list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
       find_package(EGL REQUIRED)
-      target_link_libraries(OpenSCAD PRIVATE EGL::EGL)")
+      target_link_libraries(OpenSCADLibInternal PRIVATE EGL::EGL)")
                   ;; Use the system sanitizers-cmake module.
                   (("\\$\\{CMAKE_SOURCE_DIR\\}/submodules/sanitizers-cmake/cmake")
                    (string-append (assoc-ref inputs "sanitizers-cmake")
@@ -3112,7 +3113,7 @@ ontinuous-time and discret-time expressions.")
               (lambda _
                 ;; Required for fontconfig
                 (setenv "HOME" "/tmp"))))))
-      (inputs (list boost-1.83
+      (inputs (list boost
                     cairomm
                     cgal
                     clipper2
@@ -3137,15 +3138,15 @@ ontinuous-time and discret-time expressions.")
                     mpfr
                     nettle
                     opencsg
+                    openssl
                     python
                     python-numpy
                     python-pillow
-                    qscintilla-qt5
-                    qtbase-5
-                    qtgamepad-5
-                    qtmultimedia-5
-                    qtsvg-5
-                    qtwayland-5
+                    qscintilla-qt6
+                    qt5compat
+                    qtmultimedia
+                    qtsvg
+                    qtwayland
                     sanitizers-cmake
                     onetbb))
       (native-inputs (list bison
@@ -3153,7 +3154,6 @@ ontinuous-time and discret-time expressions.")
                            flex
                            gettext-minimal
                            pkg-config
-                           which
                            xvfb-run
                            ;; the following are only needed for tests
                            imagemagick
