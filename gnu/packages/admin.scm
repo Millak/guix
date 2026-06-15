@@ -1287,15 +1287,14 @@ re-executing them as necessary.")
 (define-public inetutils
   (package
     (name "inetutils")
-    (version "2.7")
+    (version "2.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/inetutils/inetutils-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "11n01vsd51r7qraaaylhhx04hq4s6vcq0896zkz0yp1wvqfbwmm1"))
-              (patches (search-patches "inetutils-drop-test.patch"))))
+                "1dchhf9lapsv63a0x9j2cg2s4nmhcfda18jv3s494namfx7wzcsp"))))
     (build-system gnu-build-system)
     (arguments
      (list
