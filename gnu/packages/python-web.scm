@@ -10473,32 +10473,27 @@ cython_always = true"))))))))
 (define-public python-uvicorn
   (package
     (name "python-uvicorn")
-    (version "0.40.0")
+   ;; 0.49.0 (2026-06-03), release does not work with python-websockets 16.0,
+   ;; see: <https://github.com/Kludex/uvicorn/pull/2985>.
+    (properties '((commit . "e8a31bca03254b8457c4c89596e310282cc33edc")
+                  (revision . "0")))
+    (version (git-version "0.49.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/encode/uvicorn")
-              (commit version)))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0laplrb2sf9jxv4prhrsqf8kpynipqml2idqq4fr7ikij8qsz6b2"))))
+        (base32 "1vd1680a1k3jcdgc3jd5p3a6zmhz4r8bgzb7v7zhpxrkkdsisrxj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-o" "asyncio_mode=auto"
-              ;; After tests have been passed successfully some sockets leave
-              ;; unclosed, causing Pytest to raise warning on teardown.
-              "-W" "ignore::ResourceWarning"
-              "-W" "ignore::pytest.PytestUnraisableExceptionWarning"
-              ;; For some reason tests stacked in infinity re-invocation loop:
-              ;; AssertionError where is_alive =
-              ;; <uvicorn.supervisors.multiprocess.Process object at
-              ;; 0x7ffff39b6110>.is_alive.
-              ;; Maybe this <https://github.com/encode/uvicorn/issues/2466>.
-              "--ignore=tests/supervisors/test_multiprocess.py"
-
+      #~(list "--ignore=tests/benchmarks"
               #$@(cond
                   ((or (target-aarch64?)
                        (target-riscv64?))
