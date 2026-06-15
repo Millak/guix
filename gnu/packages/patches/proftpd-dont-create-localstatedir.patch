@@ -1,0 +1,12 @@
+diff -Naur a/Makefile.in b/Makefile.in
+--- a/Makefile.in	2026-09-13 20:09:45.350029671 -0300
++++ b/Makefile.in	2026-09-13 20:11:22.303537200 -0300
+@@ -132,7 +132,7 @@
+ 		chmod 0755 $@; \
+ 	fi
+ 
+-install-proftpd: $(DESTDIR)$(includedir) $(DESTDIR)$(localstatedir) $(DESTDIR)$(sysconfdir) $(DESTDIR)$(sbindir)
++install-proftpd: $(DESTDIR)$(includedir) $(DESTDIR)$(sysconfdir) $(DESTDIR)$(sbindir)
+ 	$(INSTALL_SBIN) $(top_builddir)/proftpd $(DESTDIR)$(sbindir)/proftpd
+ 	if [ -f $(DESTDIR)$(sbindir)/in.proftpd ] ; then \
+ 		rm -f $(DESTDIR)$(sbindir)/in.proftpd ; \

@@ -41,6 +41,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages sqlite)
@@ -180,6 +181,53 @@ FTP browser, as well as non-interactive commands such as @code{ncftpput} and
 @code{ncftpget}.")
     (license license:clarified-artistic)))
 
+(define-public proftpd
+  (package
+    (name "proftpd")
+    (version "1.3.9d")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/proftpd/proftpd")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       ;; TODO: regenerate configure script
+       (patches
+        (search-patches "proftpd-dont-create-localstatedir.patch"
+                        "proftpd-dont-install-user.patch"))
+       (sha256
+        (base32 "1z8j2d4zjash5p7dnni3ragri49l77k7aannrd5lgybwkbpknhbv"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--enable-openssl"
+              "--localstatedir=/var"
+              "--with-modules=mod_sftp")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-samples
+            (lambda _
+              (let ((samples-dir (string-append #$output "/share/doc/proftpd/sample-configurations")))
+                (mkdir-p samples-dir)
+                (copy-recursively "sample-configurations" samples-dir)))))))
+    (inputs
+     (list libcap
+           libsodium
+           libxcrypt
+           linux-pam
+           ncurses
+           openssl
+           perl
+           zlib))
+    (home-page "http://proftpd.org")
+    (synopsis "Highly configurable FTP server")
+    (description
+     "ProFTPD is a highly configurable FTP daemon for Unix and Unix-like
+operating systems.")
+    ;; TODO: clarify the licenses of individual files.
+    (license license:gpl2+)))
 
 (define-public weex
   (package

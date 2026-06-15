@@ -2153,6 +2153,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/pounce-readable-checks.patch             \
   %D%/packages/patches/ppsspp-disable-upgrade-and-gold.patch		\
   %D%/packages/patches/procps-strtod-test.patch                 \
+  %D%/packages/patches/proftpd-dont-create-localstatedir.patch	\
+  %D%/packages/patches/proftpd-dont-install-user.patch	\
   %D%/packages/patches/prusa-slicer-add-cmake-module.patch 	\
   %D%/packages/patches/prusa-slicer-boost-1.87.patch	 	\
   %D%/packages/patches/prusa-slicer-boost-1.88.patch	 	\
