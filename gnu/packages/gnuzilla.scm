@@ -106,361 +106,6 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages time))
 
-(define-public mozjs
-  (package
-    (name "mozjs")
-    (version "140.3.0")
-    (source (origin
-              (method url-fetch)
-              ;; TODO: Switch to IceCat source once available on ftp.gnu.org.
-              (uri (string-append "https://ftp.mozilla.org/pub/firefox"
-                                  "/releases/" version "esr/source/firefox-"
-                                  version "esr.source.tar.xz"))
-              (sha256
-               (base32
-                "05i3czn3v2qnhir8apcphbqy7rmy1dn7kcwx5yyi2qvmjcyfpipg"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:imported-modules %cargo-utils-modules ;for `generate-all-checksums'
-      #:modules `((guix build cargo-utils)
-                  ,@%default-gnu-modules)
-      #:test-target "check-jstests"
-      #:configure-flags
-      #~(list
-         ;; Disable debugging symbols to save space.
-         "--disable-debug"
-         "--disable-debug-symbols"
-         ;; This is important because without it gjs will segfault during the
-         ;; configure phase.  With jemalloc only the standalone mozjs console
-         ;; will work.
-         "--disable-jemalloc"
-         "--enable-tests"
-         "--enable-hardening"
-         "--enable-optimize"
-         "--enable-release"
-         "--enable-readline"
-         "--enable-rust-simd"
-         "--enable-shared-js"
-         "--with-system-icu"
-         "--with-system-nspr"
-         "--with-system-zlib"
-         "--with-intl-api")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'python-3.11-compatibility
-            (lambda _
-              (substitute* '("python/mozbuild/mozpack/files.py"
-                             "python/mozbuild/mozbuild/util.py"
-                             "python/mozbuild/mozbuild/action/process_define_files.py"
-                             "python/mozbuild/mozbuild/backend/base.py"
-                             "python/mozbuild/mozbuild/preprocessor.py")
-                (("\"rU\"") "\"r\""))))
-          (add-after 'patch-source-shebangs 'patch-cargo-checksums
-            (lambda _
-              (let ((null-hash
-                     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"))
-                (for-each (lambda (file)
-                            (format #t "patching checksums in ~a~%" file)
-                            (substitute* file
-                              (("^checksum = \".*\"")
-                               (string-append "checksum = \"" null-hash "\""))))
-                          (find-files "." "Cargo\\.lock$"))
-                (for-each generate-all-checksums
-                          '("js" "third_party/rust")))))
-          (replace 'configure
-            (lambda* (#:key configure-flags #:allow-other-keys)
-              ;; The configure script does not accept environment variables as
-              ;; arguments.  It also must be run from a different directory,
-              ;; but not the root directory either.
-              (mkdir "run-configure-from-here")
-              (chdir "run-configure-from-here")
-              ;; Configure script writes to $HOME.
-              (setenv "HOME" (getcwd))
-              (setenv "SHELL" (which "sh"))
-              (setenv "CONFIG_SHELL" (which "sh"))
-              (setenv "AUTOCONF" (which "autoconf"))
-              (apply invoke "python" "../configure.py"
-                     "--enable-project=js"
-                     (string-append "--prefix=" #$output)
-                     configure-flags)))
-          (add-before 'check 'adjust-tests
-            (lambda _
-              (with-directory-excursion "../js/src/tests"
-                (substitute* "shell/os.js"
-                  ;; FIXME: Why does the killed process have an exit status?
-                  ((".*killed process should not have exitStatus.*")
-                   ""))
-
-                ;; Most of the timezone related failures are probably
-                ;; attributable to our use of a system-provided icu4c library
-                ;; instead of the bundled one.
-                (for-each
-                 delete-file
-                 '( ;; FIXME: An one-hour difference is produced after DST
-                   ;; starting in the timezone the test suite uses.
-                   "non262/Date/15.9.5.7.js"
-
-                   ;; The test suite expects a lightly patched ICU.  Disable tests
-                   ;; that do not work with the system version.  See
-                   ;; "intl/icu-patches" for clues.
-
-                   ;; See <https://unicode-org.atlassian.net/browse/ICU-20992> and
-                   ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=1636984> and
-                   ;; related patch for why this is failing.
-                   "non262/Intl/DateTimeFormat/fractional-second-digits-append-item.js"
-                   ;; FIXME: got "0 \u251CAM/PM: noon\u2524", expected "0 (AM/PM: noon)"
-                   "non262/Intl/DateTimeFormat/day-period-hour-cycle.js"
-                   ;; FIXME: got "en-US-posix", expected "en-US-POSIX".
-                   "non262/Intl/available-locales-supported.js"
-                   ;; FIXME: got "en-US", expected "en-US-POSIX"
-                   "non262/Intl/available-locales-resolved.js"
-
-;;; Since 115:
-                   ;; Mismatching array lengths
-                   "non262/Intl/supportedValuesOf-timeZones-canonical.js"
-                   ;; TODO: tzdata 2024a expected – find a way to regenerate
-                   ;; these generated tests
-                   "non262/Intl/DateTimeFormat/timeZone_version.js"
-
-                   ;; FIXME: got "\uD840\uDDF2", expected "\u5047"
-                   "non262/Intl/Collator/implicithan.js"
-                   ;; FIXME: got "\uD840\uDDF2", expected "\u3467"
-                   "non262/Intl/Collator/big5han-gb2312han.js"
-
-                   ;; Since 128:
-                   ;; FIXME: got (void 0), expected "GMT"
-                   "non262/Intl/DateTimeFormat/formatRange-timeZoneName-matches-format.js"
-                   ;; FIXME: got 7, expected 9: parts count mismatch
-                   "non262/Intl/DateTimeFormat/formatRange-timeZone-offset.js"
-                   "non262/Intl/DateTimeFormat/formatRange-timeZoneName.js"
-
-                   ;; Since 140:
-                   ;; RangeError: invalid time zone: America/Coyhaique
-                   "non262/Temporal/ZonedDateTime/zones-and-links.js"
-                   ;; got 2042, expected 2043
-                   "non262/Temporal/Intl/consistent-dates.js"
-                   ;;  got "Pacific/Auckland", expected "Antarctica/McMurdo"
-                   "non262/Intl/DateTimeFormat/timeZone_links.js"
-                   "test262/staging/sm/Temporal/ZonedDateTime/zones-and-links.js"
-                   ;; Test262Error: Expected true but got false
-                   "test262/staging/Intl402/Temporal/old/zoneddatetime-dst-corner-cases.js"
-                   ;; Test262Error: getTimeZoneTransition(next) does not return its input
-                   "test262/intl402/Temporal/ZonedDateTime/prototype/\
-getTimeZoneTransition/result-type.js"
-                   ;; Expected SameValue («1912-01-01T00:16:08+00:00[Africa/Abidjan]», «null»
-                   "test262/intl402/Temporal/ZonedDateTime/prototype/\
-getTimeZoneTransition/transition-at-instant-boundaries.js"
-                   ;; Expected SameValue(«1762063200000000000n», «1572760800000000000n»
-                   "test262/intl402/Temporal/ZonedDateTime/prototype/\
-getTimeZoneTransition/specific-tzdb-values.js"
-                   ;; Expected SameValue(«"2025-03-30T03:00:00+02:00[Europe/Berlin]"»,
-                   ;; «"2020-10-25T02:00:00+01:00[Europe/Berlin]"»
-                   "test262/intl402/Temporal/ZonedDateTime/prototype/\
-getTimeZoneTransition/nanoseconds-subtracted-or-added-at-dst-transition.js"
-                   ;; TypeError: can't access property "epochNanoseconds",
-                   ;; before.getTimeZoneTransition(...) is null
-                   "test262/intl402/Temporal/ZonedDateTime/prototype/\
-getTimeZoneTransition/transitions-close-together.js")))))
-          (add-before 'check 'pre-check
-            (lambda _
-              (setenv "JSTESTS_EXTRA_ARGS"
-                      (string-join
-                       (list
-                        ;; Do not run tests marked as "random".
-                        "--exclude-random"
-                        ;; Exclude web platform tests.
-                        "--wpt=disabled"
-                        ;; Respect the daemons configured number of jobs.
-                        (string-append "--worker-count="
-                                       (number->string (parallel-job-count)))))))))))
-    (native-inputs
-     (list autoconf
-           llvm                      ;for llvm-objdump
-           m4
-           perl
-           pkg-config
-           python-wrapper
-           rust
-           `(,rust "cargo")
-           rust-cbindgen))
-    (inputs
-     (list icu4c-77 readline zlib))
-    (propagated-inputs
-     (list nspr))                ; in the Requires.private field of mozjs-*.pc
-    (home-page
-     "https://spidermonkey.dev/")
-    (synopsis "Mozilla JavaScript engine")
-    (description "SpiderMonkey is Mozilla's JavaScript engine written
-in C/C++.")
-    (license license:mpl2.0))) ; and others for some files
-
-(define-public mozjs-128
-  (package
-    (inherit mozjs)
-    (version "128.3.1")
-    (source (origin
-              (method url-fetch)
-              ;; TODO: Switch to IceCat source once available on ftp.gnu.org.
-              (uri (string-append "https://ftp.mozilla.org/pub/firefox"
-                                  "/releases/" version "esr/source/firefox-"
-                                  version "esr.source.tar.xz"))
-              (sha256
-               (base32
-                "1a3h7p7126pxzpidb1lqckvhfh1had805mai4l96mnc878phbx61"))
-              ;; 0ad requires this version of mozjs, which surfaces a bug
-              ;; related to improper garbage collection.
-              ;; See https://gitea.wildfiregames.com/0ad/0ad/issues/8757,
-              ;; https://codeberg.org/guix/guix/issues/10467.
-              (patches
-               (search-patches "mozjs-fix-garbage-collector-tracer.patch"))))
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:configure-flags flags)
-        #~(delete "--enable-rust-simd" #$flags))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-          (replace 'adjust-tests
-            (lambda _
-              (with-directory-excursion "../js/src/tests"
-                (substitute* "shell/os.js"
-                  ;; FIXME: Why does the killed process have an exit status?
-                  ((".*killed process should not have exitStatus.*")
-                   ""))
-
-                ;; This was fixed sometime between 102.15.1 and 115.11.0.
-                ;; These tests are supposed to be skipped on all 64-bit systems.
-                #$@(if (target-riscv64?)
-                       #~((substitute* '("non262/Array/regress-157652.js"
-                                         "non262/regress/regress-422348.js")
-                            (("mips64") "mips64|riscv64")))
-                       #~())
-
-                ;; FIXME: An one-hour difference is produced after DST
-                ;; starting in the timezone the test suite uses.
-                (delete-file "non262/Date/15.9.5.7.js")
-
-                ;; The test suite expects a lightly patched ICU.  Disable tests
-                ;; that do not work with the system version.  See
-                ;; "intl/icu-patches" for clues.
-
-                ;; See <https://unicode-org.atlassian.net/browse/ICU-20992> and
-                ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=1636984> and
-                ;; related patch for why this is failing.
-                (delete-file "non262/Intl/DateTimeFormat/\
-fractional-second-digits-append-item.js")
-                ;; FIXME: got "0 \u251CAM/PM: noon\u2524", expected "0 (AM/PM: noon)"
-                (delete-file "non262/Intl/DateTimeFormat/day-period-hour-cycle.js")
-                ;; FIXME: got "en-US-posix", expected "en-US-POSIX".
-                (delete-file "non262/Intl/available-locales-supported.js")
-                ;; FIXME: got "en-US", expected "en-US-POSIX"
-                (delete-file "non262/Intl/available-locales-resolved.js")
-
-                ;;; Since 115:
-                ;; Mismatching array lengths
-                (delete-file "non262/Intl/supportedValuesOf-timeZones-canonical.js")
-                ;; FIXME: got "America/Santa_Isabel", expected "America/Tijuana":
-                ;; America/Santa_Isabel -> America/Tijuana
-                (delete-file "non262/Intl/DateTimeFormat/timeZone_backward_links.js")
-                ;; TODO: tzdata 2024a expected – find a way to regenerate
-                ;; these generated tests
-                (delete-file "non262/Intl/DateTimeFormat/timeZone_version.js")
-
-                ;; FIXME: got "\uD840\uDDF2", expected "\u5047"
-                (delete-file "non262/Intl/Collator/implicithan.js")
-                ;; FIXME: got "\uD840\uDDF2", expected "\u3467"
-                (delete-file "non262/Intl/Collator/big5han-gb2312han.js")
-
-                ;; Since 128:
-                ;; FIXME: got (void 0), expected "GMT"
-                (delete-file "non262/Intl/DateTimeFormat/formatRange-timeZoneName-matches-format.js")
-                ;; FIXME: got 7, expected 9: parts count mismatch
-                (delete-file "non262/Intl/DateTimeFormat/formatRange-timeZone-offset.js")
-                (delete-file "non262/Intl/DateTimeFormat/formatRange-timeZoneName.js"))))))))
-    (inputs
-     (list icu4c-73 readline zlib))))
-
-(define-public mozjs-115
-  (package
-    (inherit mozjs)
-    (version "115.26.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://archive.mozilla.org/pub/firefox"
-                                  "/releases/" version "esr/source/firefox-"
-                                  version "esr.source.tar.xz"))
-              (sha256
-               (base32
-                "0xvwk3vkbxnybpi3gwk48nxffg44lbv58mbk2xq6cz50ffq0k5k2"))))
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:configure-flags flags)
-        #~(delete "--enable-rust-simd" #$flags))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (replace 'adjust-tests
-              (lambda _
-                (with-directory-excursion "../js/src/tests"
-                ;; The test suite expects a lightly patched ICU.  Disable tests
-                ;; that do not work with the system version.  See
-                ;; "intl/icu-patches" for clues.
-
-                ;; See <https://unicode-org.atlassian.net/browse/ICU-20992> and
-                ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=1636984> and
-                ;; related patch for why this is failing.
-                (delete-file "non262/Intl/DateTimeFormat/\
-fractional-second-digits-append-item.js")
-                ;; FIXME: got "0 \u251CAM/PM: noon\u2524", expected "0 (AM/PM: noon)"
-                (delete-file "non262/Intl/DateTimeFormat/day-period-hour-cycle.js")
-                ;; FIXME: got "en-US-posix", expected "en-US-POSIX".
-                (delete-file "non262/Intl/available-locales-supported.js")
-                ;; FIXME: got "en-US", expected "en-US-POSIX"
-                (delete-file "non262/Intl/available-locales-resolved.js")
-
-                ;;; Since 115:
-                ;; Mismatching array lengths
-                (delete-file "non262/Intl/supportedValuesOf-timeZones-canonical.js")
-                ;; FIXME: got "America/Santa_Isabel", expected "America/Tijuana":
-                ;; America/Santa_Isabel -> America/Tijuana
-                (delete-file "non262/Intl/DateTimeFormat/timeZone_backward_links.js")
-                ;; TODO: tzdata 2024a expected – find a way to regenerate
-                ;; these generated tests
-                (delete-file "non262/Intl/DateTimeFormat/timeZone_version.js")
-
-                ;; FIXME: got "\uD840\uDDF2", expected "\u5047"
-                (delete-file "non262/Intl/Collator/implicithan.js")
-                ;; FIXME: got "\uD840\uDDF2", expected "\u3467"
-                (delete-file "non262/Intl/Collator/big5han-gb2312han.js"))))
-
-            (replace 'pre-check
-              (lambda _
-                (with-directory-excursion "../js/src/tests"
-                  (substitute* "shell/os.js"
-                    ;; FIXME: Why does the killed process have an exit status?
-                    ((".*killed process should not have exitStatus.*")
-                     ""))
-
-                  ;; XXX: Delete all tests that test time zone functionality,
-                  ;; because the test suite uses /etc/localtime to figure out
-                  ;; the offset from the hardware clock, which does not work
-                  ;; in the build container.  See <tests/non262/Date/shell.js>.
-                  (delete-file-recursively "non262/Date")
-                  (delete-file "non262/Intl/DateTimeFormat/tz-environment-variable.js")
-
-                  (setenv "JSTESTS_EXTRA_ARGS"
-                          (string-join
-                           (list
-                            ;; Do not run tests marked as "random".
-                            "--exclude-random"
-                            ;; Exclude web platform tests.
-                            "--wpt=disabled"
-                            ;; Respect the daemons configured number of jobs.
-                            (string-append "--worker-count="
-                                           (number->string
-                                            (parallel-job-count)))))))))))))
-    (inputs
-     (list icu4c-73 readline zlib))))
-
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
 (define mozilla-compare-locales
@@ -2192,6 +1837,361 @@ associated with their name."))
               ((#$icedove-minimal) #$output))))))
     (native-inputs '())
     (inputs '())))
+
+(define-public mozjs
+  (package
+    (name "mozjs")
+    (version "140.3.0")
+    (source (origin
+              (method url-fetch)
+              ;; TODO: Switch to IceCat source once available on ftp.gnu.org.
+              (uri (string-append "https://ftp.mozilla.org/pub/firefox"
+                                  "/releases/" version "esr/source/firefox-"
+                                  version "esr.source.tar.xz"))
+              (sha256
+               (base32
+                "05i3czn3v2qnhir8apcphbqy7rmy1dn7kcwx5yyi2qvmjcyfpipg"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:imported-modules %cargo-utils-modules ;for `generate-all-checksums'
+      #:modules `((guix build cargo-utils)
+                  ,@%default-gnu-modules)
+      #:test-target "check-jstests"
+      #:configure-flags
+      #~(list
+         ;; Disable debugging symbols to save space.
+         "--disable-debug"
+         "--disable-debug-symbols"
+         ;; This is important because without it gjs will segfault during the
+         ;; configure phase.  With jemalloc only the standalone mozjs console
+         ;; will work.
+         "--disable-jemalloc"
+         "--enable-tests"
+         "--enable-hardening"
+         "--enable-optimize"
+         "--enable-release"
+         "--enable-readline"
+         "--enable-rust-simd"
+         "--enable-shared-js"
+         "--with-system-icu"
+         "--with-system-nspr"
+         "--with-system-zlib"
+         "--with-intl-api")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'python-3.11-compatibility
+            (lambda _
+              (substitute* '("python/mozbuild/mozpack/files.py"
+                             "python/mozbuild/mozbuild/util.py"
+                             "python/mozbuild/mozbuild/action/process_define_files.py"
+                             "python/mozbuild/mozbuild/backend/base.py"
+                             "python/mozbuild/mozbuild/preprocessor.py")
+                (("\"rU\"") "\"r\""))))
+          (add-after 'patch-source-shebangs 'patch-cargo-checksums
+            (lambda _
+              (let ((null-hash
+                     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"))
+                (for-each (lambda (file)
+                            (format #t "patching checksums in ~a~%" file)
+                            (substitute* file
+                              (("^checksum = \".*\"")
+                               (string-append "checksum = \"" null-hash "\""))))
+                          (find-files "." "Cargo\\.lock$"))
+                (for-each generate-all-checksums
+                          '("js" "third_party/rust")))))
+          (replace 'configure
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              ;; The configure script does not accept environment variables as
+              ;; arguments.  It also must be run from a different directory,
+              ;; but not the root directory either.
+              (mkdir "run-configure-from-here")
+              (chdir "run-configure-from-here")
+              ;; Configure script writes to $HOME.
+              (setenv "HOME" (getcwd))
+              (setenv "SHELL" (which "sh"))
+              (setenv "CONFIG_SHELL" (which "sh"))
+              (setenv "AUTOCONF" (which "autoconf"))
+              (apply invoke "python" "../configure.py"
+                     "--enable-project=js"
+                     (string-append "--prefix=" #$output)
+                     configure-flags)))
+          (add-before 'check 'adjust-tests
+            (lambda _
+              (with-directory-excursion "../js/src/tests"
+                (substitute* "shell/os.js"
+                  ;; FIXME: Why does the killed process have an exit status?
+                  ((".*killed process should not have exitStatus.*")
+                   ""))
+
+                ;; Most of the timezone related failures are probably
+                ;; attributable to our use of a system-provided icu4c library
+                ;; instead of the bundled one.
+                (for-each
+                 delete-file
+                 '( ;; FIXME: An one-hour difference is produced after DST
+                   ;; starting in the timezone the test suite uses.
+                   "non262/Date/15.9.5.7.js"
+
+                   ;; The test suite expects a lightly patched ICU.  Disable tests
+                   ;; that do not work with the system version.  See
+                   ;; "intl/icu-patches" for clues.
+
+                   ;; See <https://unicode-org.atlassian.net/browse/ICU-20992> and
+                   ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=1636984> and
+                   ;; related patch for why this is failing.
+                   "non262/Intl/DateTimeFormat/fractional-second-digits-append-item.js"
+                   ;; FIXME: got "0 \u251CAM/PM: noon\u2524", expected "0 (AM/PM: noon)"
+                   "non262/Intl/DateTimeFormat/day-period-hour-cycle.js"
+                   ;; FIXME: got "en-US-posix", expected "en-US-POSIX".
+                   "non262/Intl/available-locales-supported.js"
+                   ;; FIXME: got "en-US", expected "en-US-POSIX"
+                   "non262/Intl/available-locales-resolved.js"
+
+;;; Since 115:
+                   ;; Mismatching array lengths
+                   "non262/Intl/supportedValuesOf-timeZones-canonical.js"
+                   ;; TODO: tzdata 2024a expected – find a way to regenerate
+                   ;; these generated tests
+                   "non262/Intl/DateTimeFormat/timeZone_version.js"
+
+                   ;; FIXME: got "\uD840\uDDF2", expected "\u5047"
+                   "non262/Intl/Collator/implicithan.js"
+                   ;; FIXME: got "\uD840\uDDF2", expected "\u3467"
+                   "non262/Intl/Collator/big5han-gb2312han.js"
+
+                   ;; Since 128:
+                   ;; FIXME: got (void 0), expected "GMT"
+                   "non262/Intl/DateTimeFormat/formatRange-timeZoneName-matches-format.js"
+                   ;; FIXME: got 7, expected 9: parts count mismatch
+                   "non262/Intl/DateTimeFormat/formatRange-timeZone-offset.js"
+                   "non262/Intl/DateTimeFormat/formatRange-timeZoneName.js"
+
+                   ;; Since 140:
+                   ;; RangeError: invalid time zone: America/Coyhaique
+                   "non262/Temporal/ZonedDateTime/zones-and-links.js"
+                   ;; got 2042, expected 2043
+                   "non262/Temporal/Intl/consistent-dates.js"
+                   ;;  got "Pacific/Auckland", expected "Antarctica/McMurdo"
+                   "non262/Intl/DateTimeFormat/timeZone_links.js"
+                   "test262/staging/sm/Temporal/ZonedDateTime/zones-and-links.js"
+                   ;; Test262Error: Expected true but got false
+                   "test262/staging/Intl402/Temporal/old/zoneddatetime-dst-corner-cases.js"
+                   ;; Test262Error: getTimeZoneTransition(next) does not return its input
+                   "test262/intl402/Temporal/ZonedDateTime/prototype/\
+getTimeZoneTransition/result-type.js"
+                   ;; Expected SameValue («1912-01-01T00:16:08+00:00[Africa/Abidjan]», «null»
+                   "test262/intl402/Temporal/ZonedDateTime/prototype/\
+getTimeZoneTransition/transition-at-instant-boundaries.js"
+                   ;; Expected SameValue(«1762063200000000000n», «1572760800000000000n»
+                   "test262/intl402/Temporal/ZonedDateTime/prototype/\
+getTimeZoneTransition/specific-tzdb-values.js"
+                   ;; Expected SameValue(«"2025-03-30T03:00:00+02:00[Europe/Berlin]"»,
+                   ;; «"2020-10-25T02:00:00+01:00[Europe/Berlin]"»
+                   "test262/intl402/Temporal/ZonedDateTime/prototype/\
+getTimeZoneTransition/nanoseconds-subtracted-or-added-at-dst-transition.js"
+                   ;; TypeError: can't access property "epochNanoseconds",
+                   ;; before.getTimeZoneTransition(...) is null
+                   "test262/intl402/Temporal/ZonedDateTime/prototype/\
+getTimeZoneTransition/transitions-close-together.js")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "JSTESTS_EXTRA_ARGS"
+                      (string-join
+                       (list
+                        ;; Do not run tests marked as "random".
+                        "--exclude-random"
+                        ;; Exclude web platform tests.
+                        "--wpt=disabled"
+                        ;; Respect the daemons configured number of jobs.
+                        (string-append "--worker-count="
+                                       (number->string (parallel-job-count)))))))))))
+    (native-inputs
+     (list autoconf
+           llvm                      ;for llvm-objdump
+           m4
+           perl
+           pkg-config
+           python-wrapper
+           rust
+           `(,rust "cargo")
+           rust-cbindgen))
+    (inputs
+     (list icu4c-77 readline zlib))
+    (propagated-inputs
+     (list nspr))                ; in the Requires.private field of mozjs-*.pc
+    (home-page
+     "https://spidermonkey.dev/")
+    (synopsis "Mozilla JavaScript engine")
+    (description "SpiderMonkey is Mozilla's JavaScript engine written
+in C/C++.")
+    (license license:mpl2.0))) ; and others for some files
+
+(define-public mozjs-128
+  (package
+    (inherit mozjs)
+    (version "128.3.1")
+    (source (origin
+              (method url-fetch)
+              ;; TODO: Switch to IceCat source once available on ftp.gnu.org.
+              (uri (string-append "https://ftp.mozilla.org/pub/firefox"
+                                  "/releases/" version "esr/source/firefox-"
+                                  version "esr.source.tar.xz"))
+              (sha256
+               (base32
+                "1a3h7p7126pxzpidb1lqckvhfh1had805mai4l96mnc878phbx61"))
+              ;; 0ad requires this version of mozjs, which surfaces a bug
+              ;; related to improper garbage collection.
+              ;; See https://gitea.wildfiregames.com/0ad/0ad/issues/8757,
+              ;; https://codeberg.org/guix/guix/issues/10467.
+              (patches
+               (search-patches "mozjs-fix-garbage-collector-tracer.patch"))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:configure-flags flags)
+        #~(delete "--enable-rust-simd" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+          (replace 'adjust-tests
+            (lambda _
+              (with-directory-excursion "../js/src/tests"
+                (substitute* "shell/os.js"
+                  ;; FIXME: Why does the killed process have an exit status?
+                  ((".*killed process should not have exitStatus.*")
+                   ""))
+
+                ;; This was fixed sometime between 102.15.1 and 115.11.0.
+                ;; These tests are supposed to be skipped on all 64-bit systems.
+                #$@(if (target-riscv64?)
+                       #~((substitute* '("non262/Array/regress-157652.js"
+                                         "non262/regress/regress-422348.js")
+                            (("mips64") "mips64|riscv64")))
+                       #~())
+
+                ;; FIXME: An one-hour difference is produced after DST
+                ;; starting in the timezone the test suite uses.
+                (delete-file "non262/Date/15.9.5.7.js")
+
+                ;; The test suite expects a lightly patched ICU.  Disable tests
+                ;; that do not work with the system version.  See
+                ;; "intl/icu-patches" for clues.
+
+                ;; See <https://unicode-org.atlassian.net/browse/ICU-20992> and
+                ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=1636984> and
+                ;; related patch for why this is failing.
+                (delete-file "non262/Intl/DateTimeFormat/\
+fractional-second-digits-append-item.js")
+                ;; FIXME: got "0 \u251CAM/PM: noon\u2524", expected "0 (AM/PM: noon)"
+                (delete-file "non262/Intl/DateTimeFormat/day-period-hour-cycle.js")
+                ;; FIXME: got "en-US-posix", expected "en-US-POSIX".
+                (delete-file "non262/Intl/available-locales-supported.js")
+                ;; FIXME: got "en-US", expected "en-US-POSIX"
+                (delete-file "non262/Intl/available-locales-resolved.js")
+
+                ;;; Since 115:
+                ;; Mismatching array lengths
+                (delete-file "non262/Intl/supportedValuesOf-timeZones-canonical.js")
+                ;; FIXME: got "America/Santa_Isabel", expected "America/Tijuana":
+                ;; America/Santa_Isabel -> America/Tijuana
+                (delete-file "non262/Intl/DateTimeFormat/timeZone_backward_links.js")
+                ;; TODO: tzdata 2024a expected – find a way to regenerate
+                ;; these generated tests
+                (delete-file "non262/Intl/DateTimeFormat/timeZone_version.js")
+
+                ;; FIXME: got "\uD840\uDDF2", expected "\u5047"
+                (delete-file "non262/Intl/Collator/implicithan.js")
+                ;; FIXME: got "\uD840\uDDF2", expected "\u3467"
+                (delete-file "non262/Intl/Collator/big5han-gb2312han.js")
+
+                ;; Since 128:
+                ;; FIXME: got (void 0), expected "GMT"
+                (delete-file "non262/Intl/DateTimeFormat/formatRange-timeZoneName-matches-format.js")
+                ;; FIXME: got 7, expected 9: parts count mismatch
+                (delete-file "non262/Intl/DateTimeFormat/formatRange-timeZone-offset.js")
+                (delete-file "non262/Intl/DateTimeFormat/formatRange-timeZoneName.js"))))))))
+    (inputs
+     (list icu4c-73 readline zlib))))
+
+(define-public mozjs-115
+  (package
+    (inherit mozjs)
+    (version "115.26.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://archive.mozilla.org/pub/firefox"
+                                  "/releases/" version "esr/source/firefox-"
+                                  version "esr.source.tar.xz"))
+              (sha256
+               (base32
+                "0xvwk3vkbxnybpi3gwk48nxffg44lbv58mbk2xq6cz50ffq0k5k2"))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:configure-flags flags)
+        #~(delete "--enable-rust-simd" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'adjust-tests
+              (lambda _
+                (with-directory-excursion "../js/src/tests"
+                ;; The test suite expects a lightly patched ICU.  Disable tests
+                ;; that do not work with the system version.  See
+                ;; "intl/icu-patches" for clues.
+
+                ;; See <https://unicode-org.atlassian.net/browse/ICU-20992> and
+                ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=1636984> and
+                ;; related patch for why this is failing.
+                (delete-file "non262/Intl/DateTimeFormat/\
+fractional-second-digits-append-item.js")
+                ;; FIXME: got "0 \u251CAM/PM: noon\u2524", expected "0 (AM/PM: noon)"
+                (delete-file "non262/Intl/DateTimeFormat/day-period-hour-cycle.js")
+                ;; FIXME: got "en-US-posix", expected "en-US-POSIX".
+                (delete-file "non262/Intl/available-locales-supported.js")
+                ;; FIXME: got "en-US", expected "en-US-POSIX"
+                (delete-file "non262/Intl/available-locales-resolved.js")
+
+                ;;; Since 115:
+                ;; Mismatching array lengths
+                (delete-file "non262/Intl/supportedValuesOf-timeZones-canonical.js")
+                ;; FIXME: got "America/Santa_Isabel", expected "America/Tijuana":
+                ;; America/Santa_Isabel -> America/Tijuana
+                (delete-file "non262/Intl/DateTimeFormat/timeZone_backward_links.js")
+                ;; TODO: tzdata 2024a expected – find a way to regenerate
+                ;; these generated tests
+                (delete-file "non262/Intl/DateTimeFormat/timeZone_version.js")
+
+                ;; FIXME: got "\uD840\uDDF2", expected "\u5047"
+                (delete-file "non262/Intl/Collator/implicithan.js")
+                ;; FIXME: got "\uD840\uDDF2", expected "\u3467"
+                (delete-file "non262/Intl/Collator/big5han-gb2312han.js"))))
+
+            (replace 'pre-check
+              (lambda _
+                (with-directory-excursion "../js/src/tests"
+                  (substitute* "shell/os.js"
+                    ;; FIXME: Why does the killed process have an exit status?
+                    ((".*killed process should not have exitStatus.*")
+                     ""))
+
+                  ;; XXX: Delete all tests that test time zone functionality,
+                  ;; because the test suite uses /etc/localtime to figure out
+                  ;; the offset from the hardware clock, which does not work
+                  ;; in the build container.  See <tests/non262/Date/shell.js>.
+                  (delete-file-recursively "non262/Date")
+                  (delete-file "non262/Intl/DateTimeFormat/tz-environment-variable.js")
+
+                  (setenv "JSTESTS_EXTRA_ARGS"
+                          (string-join
+                           (list
+                            ;; Do not run tests marked as "random".
+                            "--exclude-random"
+                            ;; Exclude web platform tests.
+                            "--wpt=disabled"
+                            ;; Respect the daemons configured number of jobs.
+                            (string-append "--worker-count="
+                                           (number->string
+                                            (parallel-job-count)))))))))))))
+    (inputs
+     (list icu4c-73 readline zlib))))
 
 (define-public firefox-decrypt
   (package
