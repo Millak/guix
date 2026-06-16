@@ -1038,23 +1038,18 @@ dask-gateway server.")
 (define-public python-dask-image
   (package
     (name "python-dask-image")
-    (version "2025.11.0")
+    (version "2026.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "dask_image" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dask/dask-image")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1cx07dh09yqq6swyziiy9mb2f27ywja18gylfly1874a7af1mks5"))))
+        (base32 "0vz4f7c3fhj6lw4nvskdkjif13ymzibpvww8w21fzqkifrnxlij8"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 2171 passed, 177 skipped, 3405 warnings
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("--flake8") "")))))))
+    ;; tests: 2171 passed, 178 skipped, 119 warnings
     (native-inputs
      (list python-pytest
            python-pytest-timeout
@@ -1063,10 +1058,11 @@ dask-gateway server.")
     (propagated-inputs
      (list python-dask
            python-numpy
-           python-pandas
            python-pims
            python-scipy
-           python-tifffile))
+           python-tifffile
+           ;; [optional]
+           python-pandas))
     (home-page "https://github.com/dask/dask-image")
     (synopsis "Distributed image processing")
     (description "This is a package for image processing with Dask arrays.
