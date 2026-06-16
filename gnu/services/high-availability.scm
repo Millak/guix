@@ -20,8 +20,10 @@
 
 (define-module (gnu services high-availability)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages erlang)
   #:use-module (gnu packages high-availability)
   #:use-module (gnu services)
+  #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system shadow)
   #:use-module (guix gexp)
@@ -30,13 +32,78 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
 
-  #:export (rabbitmq-configuration rabbitmq-configuration?
-                                   rabbitmq-configuration-rabbitmq
-                                   rabbitmq-configuration-node-name
-                                   rabbitmq-configuration-config-file
-                                   rabbitmq-configuration-env-config-file
-                                   rabbitmq-configuration-plugins
-                                   rabbitmq-service-type))
+  #:export (epmd-configuration
+            epmd-configuration-fields
+            epmd-configuration?
+            epmd-configuration-user
+            epmd-configuration-group
+            epmd-configuration-address
+            epmd-configuration-port
+            epmd-service-type
+
+            rabbitmq-configuration
+            rabbitmq-configuration?
+            rabbitmq-configuration-rabbitmq
+            rabbitmq-configuration-node-name
+            rabbitmq-configuration-config-file
+            rabbitmq-configuration-env-config-file
+            rabbitmq-configuration-plugins
+            rabbitmq-service-type))
+
+(define-configuration/no-serialization epmd-configuration
+  (user (string "epmd") "The user running epmd.")
+  (group (string "epmd") "The user group running epmd.")
+  ;; The address default works for IPv4-only or IPv6-only systems. For example,
+  ;; epmd shows warning for ::1 on IPv4-only system, but starts anyway.
+  (address (list-of-strings (list "127.0.0.1" "::1"))
+           "List of addresses for epmd to listen on.  Set it to false
+(@code{#f}) to listen on all available addresses.  Note that epmd cannot start
+on @code{\"0.0.0.0\"} address.")
+  (port (integer 4369) "Default port for epmd to listen on."))
+
+(define (epmd-accounts config)
+  (match-record config <epmd-configuration> (user group)
+    (list (user-group (name group)
+                      (system? #t))
+          (user-account (name user)
+                        (group group)
+                        (system? #t)
+                        (comment "Erlang Port Mapper Daemon user")
+                        (home-directory "/var/empty")
+                        (shell (file-append shadow "/sbin/nologin"))))))
+
+(define (epmd-shepherd-service config)
+  (match-record config <epmd-configuration>
+    (address port)
+    (let ((address-list (if address (string-join address ",") #f)))
+      (with-imported-modules
+        (source-module-closure '((gnu build shepherd)))
+        (list
+          (shepherd-service
+            (provision '(epmd))
+            (documentation "Run the Erlang Port Mapper Daemon (epmd).")
+            (requirement '(user-processes loopback))
+            (modules '((gnu build shepherd)))
+            (start
+             #~(make-forkexec-constructor
+                 (append (list #$(file-append erlang "/bin/epmd")
+                               "-port"
+                               #$(number->string port))
+                         (if #$address-list
+                           (list "-address" #$address-list)
+                           (list)))
+                 #:user "epmd"
+                 #:group "epmd"))
+            (stop #~(make-kill-destructor))))))))
+
+(define epmd-service-type
+  (service-type
+    (name 'epmd)
+    (description "Run the Erlang Port Mapper Daemon (epmd).")
+    (extensions (list (service-extension shepherd-root-service-type
+                                         epmd-shepherd-service)
+                      (service-extension account-service-type epmd-accounts)))
+    (default-value (epmd-configuration))))
 
 ;; By default, start messaging and inter-node RabbitMQ listeners on local
 ;; interfaces only, see also:

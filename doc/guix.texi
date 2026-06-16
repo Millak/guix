@@ -37746,16 +37746,60 @@ Extra configuration parameters as a list of strings.
 @node High Availability Services
 @subsection High Availability Services
 
-@cindex Message broker
-@cindex Message streaming
-The @code{(gnu services high-availability)} module provides RabbitMQ
-message broker service.
+The @code{(gnu services high-availability)} module provides services for
+Erlang Port Mapper Daemon (epmd) and RabbitMQ broker.
+
+@anchor{epmd}
+@subsubheading Erlang Port Mapper Daemon (epmd)
+
+@defvar epmd-service-type
+Service type for the
+@uref{https://www.erlang.org/doc/apps/erts/epmd_cmd.html,Erlang Port Mapper
+Daemon (epmd)}.
+The value for this service type is a @code{<epmd-configuration>} record.
+
+Below is an example configuration:
+
+@lisp
+(service epmd-service-type)
+@end lisp
+@end defvar
+
+@c %start of fragment
+
+@deftp {Data Type} epmd-configuration
+Available @code{epmd-configuration} fields are:
+
+@table @asis
+@item @code{user} (default: @code{"epmd"}) (type: string)
+The user running epmd.
+
+@item @code{group} (default: @code{"epmd"}) (type: string)
+The user group running epmd.
+
+@item @code{address} (default: @code{("127.0.0.1" "::1")}) (type: list-of-strings)
+List of addresses for epmd to listen on.  Set it to false (@code{#f}) to
+listen on all available addresses.  Note that epmd cannot start on
+@code{"0.0.0.0"} address.
+
+@item @code{port} (default: @code{4369}) (type: integer)
+Default port for epmd to listen on.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
 
 @anchor{RabbitMQ}
 @subsubheading RabbitMQ
 
+@cindex Message broker
+@cindex Message streaming
+
 @defvar rabbitmq-service-type
-Service type for the @uref{https://www.rabbitmq.com/,RabbitMQ} web server.
+Service type for the @uref{https://www.rabbitmq.com/,RabbitMQ} server.
 The value for this service type is a @code{<rabbitmq-configuration>} record.
 
 A simple example configuration is given below.
