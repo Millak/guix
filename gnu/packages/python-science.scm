@@ -925,7 +925,7 @@ optimization problems in Python.")
 (define-public python-dask
   (package
     (name "python-dask")
-    (version "2025.11.0")
+    (version "2026.3.0")
     (source
      (origin
        (method git-fetch)
@@ -934,11 +934,11 @@ optimization problems in Python.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12m4p4zfm96fjsm45wppdrylsi71vjr0ywplz6q7fhw9vbhk0kki"))))
+        (base32 "10w6ipxhx9gg14489gka4r0isp55xz3szgrx9f59424j240a5w15"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 15277 passed, 751 skipped, 261 xfailed, 280 xpassed, 90 warnings
+      ;; tests: 15272 passed, 765 skipped, 313 xfailed, 280 xpassed, 7 warnings
       #:test-flags
       #~(list "-m" "not gpu and not slow and not network"
               "--pyargs" "dask"
@@ -950,7 +950,13 @@ optimization problems in Python.")
                           ;; AttributeError: 'Array' object has no attribute
                           ;; 'expr'
                           "test_blockwise"
-                          "test_is_dask_collection_doesnt_materialize")
+                          "test_is_dask_collection_doesnt_materialize"
+                          ;; FileNotFoundError: [Errno 2] No such file or
+                          ;; directory: 'taskset'
+                          "test_cpu_affinity_taskset[affinity0]"
+                          "test_cpu_affinity_taskset[affinity1]"
+                          "test_cpu_affinity_taskset[affinity2]"
+                          "test_cpu_affinity_taskset[affinity3]")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
@@ -959,7 +965,6 @@ optimization problems in Python.")
               (delete-file-recursively "dask"))))))
     (native-inputs
      (list python-pytest
-           python-pytest-asyncio
            python-pytest-mock
            python-pytest-rerunfailures
            python-pytest-timeout
@@ -971,7 +976,6 @@ optimization problems in Python.")
      (list python-click
            python-cloudpickle
            python-fsspec
-           python-importlib-metadata
            python-packaging
            python-partd
            python-pyyaml
@@ -981,7 +985,7 @@ optimization problems in Python.")
            python-numpy
            python-pandas
            python-pyarrow))
-    (home-page "https://github.com/dask/dask/")
+    (home-page "https://www.dask.org/")
     (synopsis "Parallel computing with task scheduling")
     (description
      "Dask is a flexible parallel computing library for analytics.  It
