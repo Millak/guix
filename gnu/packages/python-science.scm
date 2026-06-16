@@ -2087,7 +2087,9 @@ spheres, cubes, etc.")
      (list python-fsspec
            python-numpy
            python-packaging
-           python-pandas
+           ;; Modin is not ready for Pandas 3 yet, see:
+           ;; <https://codeberg.org/guix/guix/issues/9336>.
+           python-pandas-2
            python-psutil
            python-typing-extensions
            ;; [optinoal]
