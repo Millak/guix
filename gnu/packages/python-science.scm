@@ -1101,16 +1101,16 @@ given to programs dedicated to amplitude analyses.")
 (define-public python-distributed
   (package
     (name "python-distributed")
-    (version "2025.11.0")
+    (version "2026.3.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/dask/distributed")
-             (commit version)))
+              (url "https://github.com/dask/distributed")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ljzgbbs61si8b3qvxf7fb74wdhnj2mfg9a5nfngqv662fnibabg"))))
+        (base32 "1pdf3misfd9iycrd03prajmyvzp9j9p74nxk4zp27fz1jv04jawm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
