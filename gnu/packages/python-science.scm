@@ -4318,7 +4318,7 @@ tissue-specificity metrics for gene expression.")
 (define-public python-pandas
   (package
     (name "python-pandas")
-    (version "2.3.3")
+    (version "3.0.3")
     (source
      (origin
        (method git-fetch)
@@ -4327,35 +4327,25 @@ tissue-specificity metrics for gene expression.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qf4frgj31kd9i544n8v03a0bv9mgml3f7n9n1rik187q3r8ygfg"))
-       (patches (search-patches "python-pandas-2-no-pytz_datetime.patch"))))
+        (base32 "1qagfjf4rrpx4xdw0bwg3q9g4k5vjplvifnx6k2frm8z2ws9hgds"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 173093 passed, 24265 skipped, 990 xfailed, 77 xpassed, 110 warnings
+      ;; tests: 185854 passed, 12827 skipped, 776 xfailed, 86 xpassed
       #:test-flags
       #~(list "-m" (string-join
                     (list "not db" "network" "single_cpu" "slow" "slow_arm")
                     " and not ")
+              "-vv"
+              ;; See: <https://github.com/pandas-dev/pandas/issues/54907>.
+              "--no-strict-data-files"
               "--numprocesses" (number->string (min 4 (parallel-job-count)))
               "-k" (string-join
                     (list "not test_git_version"
-                          "test_parsing_tzlocal_deprecated"
                           "test_show_versions_console"
-                          ;; XXX: Introduced by NumPy 2.4.6 and Cython 3.2.5:
-                          ;;    NotImplementedError
-                          ;; See:
-                          ;; <https://github.com/pandas-dev/pandas/issues/62820>,
-                          ;; <https://github.com/pandas-dev/pandas/issues/63078>.
-                          "test_categorical_block_pickle"
-                          "test_pickle"
-                          "test_pickle_freq"
-                          "test_pickle_preserves_block_ndim"
-                          "test_pickle_preserves_name"
-                          "test_pickle_round_trip"
-                          "test_pickle_roundtrip"
-                          "test_pickle_roundtrip_containers"
-                          "test_round_trip_current"
+                          ;; DeprecationWarning: Bitwise inversion '~' on bool
+                          ;; is deprecated and will be removed in Python 3.16.
+                          "test_scalar_unary[numexpr-pandas]"
                           ;; AssertionError: Series are different.
                           #$@(if (target-64bit?)
                                  '()
@@ -4372,18 +4362,20 @@ tissue-specificity metrics for gene expression.")
                 (("git_version =.*")
                  (format #f "git_version = ~s~%" #$version)))))
           (replace 'check
-            (lambda* (#:key inputs outputs test-flags tests? #:allow-other-keys)
+            (lambda* (#:key test-flags tests? #:allow-other-keys)
               (when tests?
+                ;; Tests don't work with "--pyargs pandas" or changing
+                ;; directory to output, script is taken from pyproject.toml
+                ;; file.
                 (setenv "HOME" "/tmp")
-                (with-directory-excursion
-                    (string-append (string-append (site-packages inputs outputs)
-                                                  "/pandas"))
-                  (apply invoke "pytest" "-vv" test-flags))))))))
+                (delete-file-recursively "pandas")
+                (invoke "python" "-c" (format #f "~a; ~a=[~{'~a', ~}]);"
+                                              "import pandas as pd"
+                                              "pd.test(extra_args"
+                                              test-flags))))))))
     (propagated-inputs
      (list python-numpy
            python-dateutil
-           python-pytz
-           python-tzdata
            ;; XXX: Pandas lists a lot of optional dependencies which are not
            ;; hard requirements, leave them listed here and commented out for
            ;; the reference purpose. Try to keep closure as bare minimal as
@@ -4393,17 +4385,17 @@ tissue-specificity metrics for gene expression.")
            ;; python-adbc-driver-postgresql
            ;; python-adbc-driver-sqlite
            ;; python-beautifulsoup4
-           ;; python-bottleneck
+           python-bottleneck
            ;; python-fastparquet
            ;; python-fsspec
            ;; python-gcsfs
            ;; python-html5lib
            ;; python-hypothesis
            ;; python-jinja2
-           ;; python-lxml
+           python-lxml
            ;; python-matplotlib
-           ;; python-numba
-           ;; python-numexpr
+           python-numba
+           python-numexpr
            ;; python-odfpy
            ;; python-openpyxl
            ;; python-psycopg2
@@ -4413,7 +4405,6 @@ tissue-specificity metrics for gene expression.")
            ;; python-pyqt5
            ;; python-pyreadstat
            ;; python-python-calamine
-           ;; python-pytz
            ;; python-pyxlsb
            ;; python-qtpy
            ;; python-s3fs
@@ -4428,11 +4419,12 @@ tissue-specificity metrics for gene expression.")
     (inputs
      (list xclip xsel))
     (native-inputs
-     (list python-meson
-           python-lxml
+     (list python-hypothesis
+           python-meson
            python-pytest
-           python-pytest-asyncio
+           python-pytest-localserver
            python-pytest-xdist
+           python-pytz
            python-versioneer
            tzdata-for-tests))
     (home-page "https://pandas.pydata.org")
