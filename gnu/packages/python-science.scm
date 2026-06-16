@@ -4934,7 +4934,15 @@ y, z)}.")
       ;; FIXME: find more reliable tests file(s), all tests from
       ;; test_typing.py fail with error: ModuleNotFoundError: No module named
       ;; 'distutils.msvccompiler'.
-      #:tests? #f))
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'unvendor-xsimd
+            (lambda _
+              (delete-file-recursively "pythran/xsimd")
+              (symlink #$(package-source
+                          (this-package-input "xsimd"))
+                       "pythran/xsimd"))))))
     (native-inputs
      (list python-setuptools))
     (propagated-inputs
