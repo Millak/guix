@@ -4437,6 +4437,87 @@ and intuitive.  It aims to be the fundamental high-level building block for
 doing practical, real world data analysis in Python.")
     (license license:bsd-3)))
 
+(define-public python-pandas-2
+  (package
+    (inherit python-pandas)
+    (name "python-pandas")
+    (version "2.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pandas-dev/pandas")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qf4frgj31kd9i544n8v03a0bv9mgml3f7n9n1rik187q3r8ygfg"))
+       (patches (search-patches "python-pandas-2-no-pytz_datetime.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 173093 passed, 24265 skipped, 990 xfailed, 77 xpassed, 110 warnings
+      #:test-flags
+      #~(list "-m" (string-join
+                    (list "not db" "network" "single_cpu" "slow" "slow_arm")
+                    " and not ")
+              "--numprocesses" (number->string (min 4 (parallel-job-count)))
+              "-k" (string-join
+                    (list "not test_git_version"
+                          "test_parsing_tzlocal_deprecated"
+                          "test_show_versions_console"
+                          ;; XXX: Introduced by NumPy 2.4.6 and Cython 3.2.5:
+                          ;;    NotImplementedError
+                          ;; See:
+                          ;; <https://github.com/pandas-dev/pandas/issues/62820>,
+                          ;; <https://github.com/pandas-dev/pandas/issues/63078>.
+                          "test_categorical_block_pickle"
+                          "test_pickle"
+                          "test_pickle_freq"
+                          "test_pickle_preserves_block_ndim"
+                          "test_pickle_preserves_name"
+                          "test_pickle_round_trip"
+                          "test_pickle_roundtrip"
+                          "test_pickle_roundtrip_containers"
+                          "test_round_trip_current"
+                          ;; AssertionError: Series are different.
+                          #$@(if (target-64bit?)
+                                 '()
+                                 '("test_rolling_var_numerical_issues")))
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-generate-version
+            (lambda _
+              ;; See: <https://github.com/pandas-dev/pandas/issues/59459>.
+              (substitute* "generate_version.py"
+                (("version =.*")
+                 (format #f "version = ~s~%" #$version))
+                (("git_version =.*")
+                 (format #f "git_version = ~s~%" #$version)))))
+          (replace 'check
+            (lambda* (#:key inputs outputs test-flags tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (with-directory-excursion
+                    (string-append (string-append (site-packages inputs outputs)
+                                                  "/pandas"))
+                  (apply invoke "pytest" "-vv" test-flags))))))))
+    (propagated-inputs
+     (list python-numpy
+           python-dateutil
+           python-pytz
+           python-tzdata))
+    (inputs
+     (list xclip xsel))
+    (native-inputs
+     (list python-meson
+           python-lxml
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-xdist
+           python-versioneer
+           tzdata-for-tests))))
+
 ;; A bare minimal package, mainly to use in tests and reduce closure size.
 ;; Tests are left out in the main package to slim down native-inputs and
 ;; propagated-inputs.
