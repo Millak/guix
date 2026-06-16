@@ -4912,16 +4912,22 @@ y, z)}.")
 (define-public python-pythran
   (package
     (name "python-pythran")
-    (version "0.17.0")
+    ;; 0.18.1 (2025-11-15), released version does not support gast 0.7.0 and
+    ;; beniget 0.5.0.
+    (properties '((commit . "1159b80a09ece110a369729507ba5d0bc8e895b2")
+                  (revision . "0")))
+    (version (git-version "0.18.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/serge-sans-paille/pythran")
-              (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rm9lfbz5qvah1m0rr5gaaahkf1gzwlw1ysvym2l2yh0clglav94"))))
+        (base32 "0w9vbfqsazrl7zv4b7mh8alib4kihk9gn6xmxp2w39jg5wpk2bdi"))))
     (build-system pyproject-build-system)
     (arguments
      (list
