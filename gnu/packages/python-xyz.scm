@@ -21585,13 +21585,13 @@ CPUs required per given input size, and parameters for CWL workflows.")
 (define-public python-beniget
   (package
     (name "python-beniget")
-    (version "0.4.2.post1")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "beniget" version))
        (sha256
-        (base32 "1bjjl12pqbz4amnn8wvcpd4zjrx6cpw04s586gn18zjywqvqa9d0"))))
+        (base32 "08ig66dp3xjl3nhqlpdkv0bl1m0m5mr1x2yrncz3vpn7ivx13bz7"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
