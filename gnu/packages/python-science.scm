@@ -996,6 +996,45 @@ larger-than-memory or distributed environments.  These parallel collections
 run on top of the dynamic task schedulers.")
     (license license:bsd-3)))
 
+(define-public python-dask-gateway
+  (package
+    (name "python-dask-gateway")
+    (version "2026.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dask/dask-gateway")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "030693nl1rbsc9mpbny4hvx4rp44gw9cq242jwc6m97rj0n0cb5d"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "dask-gateway"))))))
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-aiohttp
+           python-click
+           python-dask
+           python-distributed
+           python-pyyaml
+           python-tornado))
+    (home-page "https://gateway.dask.org/")
+    (synopsis "Client library for interacting with a dask-gateway server")
+    (description
+     "This package provides a client library for interacting with a
+dask-gateway server.")
+    (license license:bsd-3)))
+
 (define-public python-dask-image
   (package
     (name "python-dask-image")
