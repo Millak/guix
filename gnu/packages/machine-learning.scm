@@ -2618,7 +2618,7 @@ performance computing environments.")
 (define-public python-scikit-learn
   (package
     (name "python-scikit-learn")
-    (version "1.7.2")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -2627,14 +2627,15 @@ performance computing environments.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11lrlw8bm6f8r67043v2gc4wfpgiyvzp8ya6sds5858ddizjjxs3"))))
+        (base32 "0ay9zqlv1gimi6smxxjf29rvq3d923hdp34x731gd57rvbf22h3p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 34005 passed, 4844 skipped, 150 xfailed, 65 xpassed, 4545 warnings
+      ;; tests: 35838 passed, 11167 skipped, 226 xfailed, 119 xpassed, 5155 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              "-m" "not network")
+              "-m" "not network"
+              "--pyargs" "sklearn")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-pyproject
@@ -2646,18 +2647,14 @@ performance computing environments.")
             (lambda _
               (setenv "SKLEARN_BUILD_PARALLEL"
                       (number->string (parallel-job-count)))))
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
+          (add-before 'check 'pre-check
+            (lambda _
                 ;; Restrict OpenBLAS threads to prevent segfaults while
                 ;; testing!
                 (setenv "OPENBLAS_NUM_THREADS" "1")
                 ;; Some tests require write access to $HOME.
                 (setenv "HOME" "/tmp")
-                ;; Step out of the source directory to avoid interference; we
-                ;; want to run the installed code with extensions etc.
-                (with-directory-excursion "/tmp"
-                  (apply invoke "pytest" "--pyargs" "sklearn" test-flags))))))))
+                (delete-file-recursively "sklearn"))))))
     (inputs
      (list openblas))
     (native-inputs
@@ -2668,6 +2665,7 @@ performance computing environments.")
            python-pytest-xdist))
     (propagated-inputs
      (list python-joblib
+           python-narwhals-minimal      ;to reduce closure size
            python-numpy
            python-scipy
            python-threadpoolctl))
