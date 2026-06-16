@@ -1204,6 +1204,8 @@ projections and coordinate transformations library.")
      (origin
        (method git-fetch)
        (uri (git-reference
+              ;; TODO: Unvedor fiona/_vendor/snuggs.py and
+              ;; fiona/_vendor/munch.
               (url "https://github.com/Toblerity/Fiona")
               (commit version)))
        (file-name (git-file-name name version))
@@ -1254,6 +1256,7 @@ projections and coordinate transformations library.")
            python-boto3
            python-cython
            python-fsspec
+           python-pyparsing     ;for vendored snuggs
            python-pytest
            python-pytz
            python-setuptools
