@@ -4702,46 +4702,46 @@ idea of the remaining amount of computation to be done.")
 (define-public python-pandera
   (package
     (name "python-pandera")
-    (version "0.27.1")
+    (version "0.31.1")
     (source
      (origin
+       ;; XXX: Sanity-check fails to load when switched to git-fetch.
        (method url-fetch)
        (uri (pypi-uri "pandera" version))
        (sha256
-        (base32 "1x5vjp1ra252ncyfsfrc7vck5snx807mpwzd0hvv0vpi9v096934"))))
+        (base32 "04qgmcfvw78ccfnmidhy3zw1i99nyjkz3b0klsd4ypgiia3a6nn7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 3033 passed, 51 skipped, 11 xfailed, 8385 warnings
+      ;; tests: 3810 passed, 22 skipped, 21 xfailed, 5923 warnings
       #:test-flags
       ;; With higher threads count tests randomly fail during collection.
       #~(list "--numprocesses" (number->string (min 4 (parallel-job-count)))
               ;; TODO: Ignore tests for not packaged python-ibis-framework,
-              ;; python-polars, and python-pyspark.
+              ;; and python-pyspark.
               "--ignore=tests/ibis"
-              "--ignore=tests/polars"
               "--ignore=tests/pyspark"
-              ;; E ModuleNotFoundError: No module named 'sphinx'
-              "--ignore=tests/pandas/test_docs_setting_column_widths.py"
-              ;; Network access is required.
-              "--ignore=tests/fastapi/test_app.py"
-              ;; TypeError: __class__ assignment: 'GeoDataFrame' object layout
-              ;; differs from 'DataFrame'
-              "-k" (string-join
-                    (list "not test_schema_model[data0-True]"
-                          "test_schema_from_dataframe[data1-True]"
-                          "test_schema_no_geometry"
-                          ;; The most of the tests from this group XFAIL or fail.
-                          "test_pandas_stubs_false_positives")
-                    " and not "))))
+              ;; Not compatible with Pandas 3 yet.
+              "--ignore=tests/modin"
+              ;; Tests fail to connect to 127.0.0.1:52245, connection refused.
+              "--deselect=tests/fastapi/test_app.py::test_items_endpoint"
+              "--deselect=tests/fastapi/test_app.py::test_transactions_endpoint"
+              "--deselect=tests/fastapi/test_app.py::test_upload_file_endpoint"
+              ;; frictionless is not packaged yet.
+              "-k" "not test_frictionless_schema_")))
     (native-inputs
      (list python-joblib
+           python-black         ;some tets depent on it
+           python-mypy-for-tests
            python-pytest
            python-pytest-asyncio
            python-pytest-xdist
+           python-pytz
            python-setuptools
            python-setuptools-scm
-           python-uvicorn))
+           python-sphinx        ;some tets depent on it
+           python-uvicorn
+           tzdata-for-tests))
     (inputs
      ;; [optional]
      ;; Pandera comes with a lot of extras. We test as many as possible, but do
@@ -4753,10 +4753,10 @@ idea of the remaining amount of computation to be done.")
            python-geopandas
            python-hypothesis
            ;; python-ibis-framework ;missing from Guix
-           python-modin
+           ;; python-modin          ;blocked by guix/guix#9336
            python-numpy
            python-pandas
-           ;; python-polars         ;missing from Guix
+           python-polars
            ;; python-pyspark        ;missing from Guix
            ;; python-ray            ;missing from Guix
            python-scipy
