@@ -1316,29 +1316,33 @@ readily with other Python GIS packages such as pyproj, Rtree, and Shapely.")
 (define-public python-geopandas
   (package
     (name "python-geopandas")
-    (version "1.1.1")
+    (version "1.1.3")
     (source
       (origin
-        (method url-fetch)
-        (uri (pypi-uri "geopandas" version))
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/geopandas/geopandas")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
         (sha256
-          (base32
-            "0g993nzdxf6dp0fy1wi49cjph5i7plypb3p0f8zc95fhchzp2i8p"))))
+         (base32 "1p584nc6h2bnr8nmfffc4dl447i2zkh6wmvalcmbm8v04slriqci"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-       #:test-flags
-       '(list
-         ;; Test files are missing
-         "--ignore=geopandas/tests/test_overlay.py"
-         "--ignore=geopandas/io/tests/test_file.py"
-         ;; Number of open figures changed during test
-         "-k" (string-append "not test_pandas_kind"
-                           ;; OSError: Baseline image '<...>' does not exist.
-                           " and not test_plot_polygon_with_holes[png]"
-                           " and not test_multipolygons_with_interior[png]")
-         ;; Disable tests that require internet access.
-         "-m" "not web")))
+      ;; tests: 2021 passed, 400 skipped, 25 xfailed, 2 xpassed, 174 warnings
+      #:test-flags
+      ;; Disable tests that require internet access.
+      #~(list "-m" "not web"
+              "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; AttributeError: Can only use .dt accessor with datetimelike
+              ;; values.
+              (string-append "--deselect=geopandas/io/tests/test_file.py"
+                             "::test_read_file_datetime_mixed_offsets"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (propagated-inputs
       (list python-numpy
             python-packaging
@@ -1348,8 +1352,9 @@ readily with other Python GIS packages such as pyproj, Rtree, and Shapely.")
             python-shapely))
     (native-inputs
       (list python-pytest
+            python-pytest-xdist
             python-setuptools
-            python-wheel))
+            tzdata-for-tests))
     (home-page "https://geopandas.org")
     (synopsis "Geographic pandas extensions")
     (description "The goal of GeoPandas is to make working with
