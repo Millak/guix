@@ -33,6 +33,8 @@
   #:use-module (json)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
   #:export (with-atomic-json-file-replacement
             modify-json
             modify-json-fields
@@ -41,7 +43,10 @@
             replace-fields
             replace-json-fields
             add-fields
-            add-json-fields))
+            add-json-fields
+
+            &modify-json-invalid-field-value-error
+            &modify-json-missing-key-error))
 
 ;;;
 ;;; JSON modification procedures
@@ -110,6 +115,18 @@ as '(#:foo 1 #:bar 2)."
       (warning (G_ "'modify-json' requires a file as the first argument~%"))
       (apply modify-json* "package.json" args)))))
 
+(define-condition-type &modify-json-error &error
+  modify-json-error?)
+
+(define-condition-type &modify-json-invalid-field-value-error &modify-json-error
+  modify-json-invalid-field-value-error?
+  (field-path modify-json-invalid-field-value-error-field-path))
+
+(define-condition-type &modify-json-missing-key-error &modify-json-error
+  modify-json-missing-key-error?
+  (key modify-json-missing-key-error-key)
+  (data modify-json-missing-key-error-data))
+
 (define* (modify-json-fields fields field-modifier
                              #:key
                              (field-path-mapper identity)
@@ -141,9 +158,13 @@ thrown if the exact field-path is not found in the data."
                             (string-split field-path #\.))
                            ((and (list? field-path) (every string? field-path))
                             field-path)
-                           (else (error (format #f "\
-invalid field value provided, expected string or list of strings, got ~s~%"
-                                                field-path))))))
+                           (else
+                            (raise (make-compound-condition
+                                    (condition (&modify-json-invalid-field-value-error
+                                                (field-path field-path)))
+                                    (formatted-message (G_ "\
+invalid field value provided, expected string or list of strings, got ~s~%")
+                                                       field-path)))))))
          (let loop ((data package)
                     (field-path field-path))
            (let* ((key (car field-path))
@@ -153,8 +174,13 @@ invalid field value provided, expected string or list of strings, got ~s~%"
                             data)))
              (if field-missing?
                  (if strict?
-                     (error (format #f "key ~s was not found in data: ~y~%"
-                                    key data))
+                     (raise (make-compound-condition
+                             (condition (&modify-json-missing-key-error
+                                         (key key)
+                                         (data data)))
+                             (formatted-message
+                              (G_ "key ~s was not found in data: ~y~%")
+                              key data)))
                      data)
                  (if (= (length field-path) 1)
                      (field-modifier field data key)
