@@ -185,7 +185,7 @@ distribution.listener.interface = 127.0.0.1
         (shepherd-service
           (provision '(rabbitmq))
           (documentation "Run the RabbitMQ daemon.")
-          (requirement '(user-processes loopback))
+          (requirement '(epmd))
           (modules '((gnu build shepherd)))
           (start
            #~(make-forkexec-constructor

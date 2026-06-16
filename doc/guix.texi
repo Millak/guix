@@ -37811,6 +37811,7 @@ A simple example configuration is given below.
                       "rabbitmq_management"
                       "rabbitmq_prometheus"))))
 @end lisp
+This service depends on the @code{epmd} service.
 
 At startup, RabbitMQ broker logs its initialization messages into
 @file{/var/log/messages} file.  Once running, the logging messages can be

@@ -120,6 +120,7 @@ distribution.listener.interface = 127.0.0.1
 
 (define %rabbitmq-os
   (simple-operating-system
+    (service epmd-service-type)
     (service rabbitmq-service-type
              (rabbitmq-configuration (node-name "rabbit@komputilo")
                                      (config-file %rabbitmq-config-file)))))
