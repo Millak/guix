@@ -28835,15 +28835,26 @@ they use the same path.")
     (version "1.4.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "partd" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dask/partd/")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0b7h42dfvbrwpg75wzszv1rq3237h1g026v24v10b16wzcxc68nh"))))
+        (base32 "0mwcr2cy0j5j8c9n2wlrlpc5v4za2cdh8jwhm7vpai53lqyvfjlf"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; AttributeError: 'StringDtype' object has no attribute 'str'.
+      ;; See: <https://github.com/dask/partd/issues/82>.
+      #~(list "--deselect=partd/tests/test_pandas.py::test_PandasColumns"
+              "--deselect=partd/tests/test_pandas.py::test_column_selection")))
     (native-inputs
      (list python-pytest
            python-setuptools
-           python-versioneer))
+           python-versioneer
+           tzdata-for-tests))
     (propagated-inputs
      (list python-locket
            python-toolz
