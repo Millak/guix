@@ -40,7 +40,8 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
-  #:use-module (gnu packages statistics))
+  #:use-module (gnu packages statistics)
+  #:use-module (gnu packages time))
 
 ;;; Commentary:
 ;;;
@@ -130,10 +131,11 @@ single-file databases with support for secondary indexes.")
     (native-inputs
      (list duckdb
            ninja
-           pybind11
            python-pytest
+           python-pytz
            python-scikit-build-core
-           python-setuptools-scm))
+           python-setuptools-scm
+           tzdata-for-tests))
     (propagated-inputs
      (list python-adbc-driver-manager
            python-fsspec
