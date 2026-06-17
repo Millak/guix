@@ -96,6 +96,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages monitoring)
   #:use-module (gnu packages mpi)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages oneapi)
@@ -119,6 +120,8 @@
   #:use-module (gnu packages regex)
   #:use-module (gnu packages rocm)
   #:use-module (gnu packages rpc)
+  #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
@@ -6230,68 +6233,102 @@ definite approximations of Optimal Transport (Wasserstein) distances.
 (define-public python-tokenizers
   (package
     (name "python-tokenizers")
-    (version "0.19.1")
+    (version "0.22.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "tokenizers" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/huggingface/tokenizers/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1qw8mjp0q9w7j1raq1rvcbfw38000kbqpwscf9mvxzfh1rlfcngf"))
+        (base32 "0mcivkmhdpqg872yvp77505apaylml808lbq2i3i5pln2rhgf1jw"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet
         #~(begin  ;; Only keeping bindings.
             (for-each (lambda (file)
-                        (unless (member file '("." ".." "bindings" "PKG-INFO"))
+                        (unless (member file
+                                        '("." ".." "bindings" "tokenizers"))
                           (delete-file-recursively file)))
                       (scandir "."))
-            (for-each (lambda (file)
-                        (unless (member file '("." ".."))
-                          (rename-file (string-append "bindings/python/" file) file)))
-                      (scandir "bindings/python"))
-            (delete-file-recursively ".cargo")
-            (substitute* "Cargo.toml"
-              (("^path = .*")
-               (format #f "version = ~s~%" #$version)))))))
-    (build-system cargo-build-system)
+            (delete-file-recursively "bindings/node")
+            (delete-file "bindings/python/Cargo.lock")))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:install-source? #f
-      #:cargo-test-flags ''("--no-default-features")
-      #:imported-modules `(,@%cargo-build-system-modules
-                           ,@%pyproject-build-system-modules)
-      #:modules '((guix build cargo-build-system)
-                  ((guix build pyproject-build-system) #:prefix py:)
+      #:imported-modules (append %cargo-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
                   (guix build utils))
+      #:test-flags
+      #~(list
+         "--ignore=benches"
+         ;; This test requires the python-datasets package.
+         "--ignore=tests/documentation/test_tutorial_train_from_iterators.py"
+         ;; XXX: Tests below fail because they require a network connection.
+         ;; "-m" "not network" is respected from version 0.23 onwards
+         ;; and makes the flags below unecessary.
+         "-k" (string-join
+               (list "not TestEncoding"
+                     "TestBPE"
+                     "TestWordLevel"
+                     "TestByteLevelProcessing"
+                     "TestAsyncTokenizer"
+                     "TestUnigram"
+                     "TestPipeline"
+                     "TestCharBPETokenizer"
+                     "TestSerialization"
+                     "TestByteLevelBPE"
+                     "TestBertWordPieceTokenizer"
+                     "TestQuicktour"
+                     "test_encode_formats"
+                     "test_encode_add_special_tokens"
+                     "test_decode_stream_fallback"
+                     "test_decode_skip_special_tokens"
+                     "test_from_pretrained"
+                     "test_from_pretrained_revision"
+                     "test_encode_special_tokens"
+                     "test_instantiate"
+                     "test_splitting")
+               " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'check 'python-check
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each (lambda (phase)
+                          (format #t "Running cargo phase: ~a~%" phase)
+                          (apply (assoc-ref cargo:%standard-phases phase)
+                                 #:cargo-target #$(cargo-triplet)
+                                 args))
+                        '(prepare-rust-crates
+                          unpack-rust-crates
+                          configure
+                          check-for-pregenerated-files
+                          patch-cargo-checksums))))
+          (add-after 'prepare-cargo-build-system 'chdir
             (lambda _
-              (copy-file "target/release/libtokenizers.so"
-                         "py_src/tokenizers/tokenizers.so")
-              (invoke "python3"
-                      "-c" (format #f
-                                   "import sys; sys.path.append(\"~a/py_src\")"
-                                   (getcwd))
-                      "-m" "pytest"
-                      "-s" "-v" "./tests/")))
-          (add-after 'install 'install-python
-            (lambda _
-              (let* ((pversion #$(version-major+minor (package-version python)))
-                     (lib (string-append #$output "/lib/python" pversion
-                                         "/site-packages/"))
-                     (info (string-append lib "tokenizers-"
-                                        #$(package-version this-package)
-                                        ".dist-info")))
-                (mkdir-p info)
-                (copy-file "PKG-INFO" (string-append info "/METADATA"))
-                (copy-recursively
-                 "py_src/tokenizers"
-                 (string-append lib "tokenizers"))))))))
+              (chdir "bindings/python"))))))
     (native-inputs
-     (list pkg-config python-minimal python-pytest))
+     (append (list python-httpx
+                   python-huggingface-hub
+                   python-numpy
+                   python-pytest
+                   python-pytest-asyncio
+                   python-pytest-timeout
+                   python-requests
+                   python-tqdm)
+             (list maturin
+                   nss-certs-for-test
+                   pkg-config
+                   rust
+                   `(,rust "cargo"))
+             (or (and=> (%current-target-system)
+                        (compose list make-rust-sysroot))
+                 '())))
     (inputs
-     (cons oniguruma (cargo-inputs 'python-tokenizers)))
+     (cons oniguruma (cargo-inputs 'tokenizers-python)))
     (home-page "https://huggingface.co/docs/tokenizers")
     (synopsis "Implementation of various popular tokenizers")
     (description
