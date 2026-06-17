@@ -2015,6 +2015,67 @@ libraries.")
 not require C extensions or system dependencies.")
     (license license:expat)))
 
+(define-public python-hf-xet
+  (package
+    (name "python-hf-xet")
+    (version "1.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/huggingface/xet-core")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bczy0a8g7fnscpz2plq2pq0b8vapx9q5sny13rs2fa04ypq992f"))
+       (modules '((guix build utils)))
+       (snippet #~(for-each delete-file
+                            (find-files "." "Cargo\\.lock$")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:imported-modules (append %cargo-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each (lambda (phase)
+                          (format #t "Running cargo phase: ~a~%" phase)
+                          (apply (assoc-ref cargo:%standard-phases phase)
+                                 #:cargo-target #$(cargo-triplet)
+                                 args))
+                        '(prepare-rust-crates
+                          unpack-rust-crates
+                          configure
+                          check-for-pregenerated-files
+                          patch-cargo-checksums))))
+          (add-after 'prepare-cargo-build-system 'chdir
+            (lambda _
+              (chdir "hf_xet"))))))
+    (native-inputs
+     (append (list maturin
+                   python-pytest
+                   rust
+                   `(,rust "cargo"))
+             (or (and=> (%current-target-system)
+                        (compose list make-rust-sysroot))
+                 '())))
+    (inputs (cargo-inputs 'hf_xet))
+    (home-page "https://github.com/huggingface/xet-core")
+    (synopsis "Transfer large files with the Hugging Face Hub")
+    (description
+     "This package enables @code{python-huggingface-hub} to utilize xet
+storage for uploading and downloading to HF Hub.  Xet storage provides
+chunk-based deduplication, efficient storage/retrieval with local disk
+caching, and backwards compatibility with Git LFS.  This library is not meant
+to be used directly, and is instead intended to be used from
+@code{python-huggingface-hub}.")
+    (license license:asl2.0)))
+
 (define-public python-huggingface-hub
   (package
     (name "python-huggingface-hub")
