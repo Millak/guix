@@ -23244,7 +23244,7 @@ please.")
          (sha256
           (base32 "10w1ldgijdhfsrazp0y3bm76jv5wvdn94k1yp0pmc2m1896b58ak"))))
       (build-system emacs-build-system)
-      (inputs
+      (propagated-inputs
        (list emacs-stream emacs-cl-print))
       (home-page "https://github.com/emacsmirror/el-search")
       (synopsis "Expression based interactive search for emacs-lisp-mode")
