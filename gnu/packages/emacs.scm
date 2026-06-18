@@ -236,7 +236,8 @@
                             (append (find-files "." "\\.elc$")
                                     (find-files "." "loaddefs\\.el$")
                                     (find-files "eshell" "^esh-groups\\.el$")))))))
-    (outputs '("out" "doc"))
+    ;; Don't use doc to avoid keeping a reference via EMACS_CONFIG_OPTIONS
+    (outputs '("out" "src"))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -378,8 +379,8 @@
                   (("/usr/bin/env") (search-input-file inputs "bin/env"))))))
           (add-before 'configure 'install-c-source
             (lambda _
-              (let ((dest (string-append #$output:doc "/share/emacs/c-source"))
-                    (lisp-dir (string-append #$output:doc
+              (let ((dest (string-append #$output:src "/share/emacs/c-source"))
+                    (lisp-dir (string-append #$output:src
                                              "/share/emacs/site-lisp")))
                 (mkdir-p dest)
                 (copy-recursively "src" dest)
@@ -422,7 +423,7 @@
                       "  (advice-add 'package-load-all-descriptors"
                       " :after #'guix-emacs-load-package-descriptors))\n\n"
                       ";; The file guix-emacs-c-source.el is available from the"
-                      " 'doc' output.\n"
+                      " 'src' output.\n"
                       "(require 'guix-emacs-c-source nil t)"))))
                 ;; Remove the extraneous subdirs.el file, as it causes Emacs to
                 ;; add recursively all the the sub-directories of a profile's
@@ -493,7 +494,8 @@ languages.")
            (search-path-specification
             (variable "TREE_SITTER_GRAMMAR_PATH")
             (files '("lib/tree-sitter")))))
-    (properties `((upstream-name . "emacs")))))
+    (properties `((upstream-name . "emacs")
+                  (output-synopsis "src" "C source files")))))
 
 (define-public emacs-no-x
   (package/inherit emacs-minimal
