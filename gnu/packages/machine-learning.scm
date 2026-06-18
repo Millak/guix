@@ -6339,27 +6339,35 @@ with a focus on performance and versatility.")
 (define-public python-transformers
   (package
     (name "python-transformers")
-    (version "4.44.2")
+    (version "4.57.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "transformers" version))
        (sha256
-        (base32 "09h84wqqk2bgi4vr9d1m3dsliard99l53n96wic405gfjb61gain"))))
+        (base32 "1lw90svznnmbp48acf33fvr6wbjp5d4ybdr12llhmp79xhk43r2m"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Missing inputs.
      (list #:test-flags
            '(list "--ignore=tests/test_modeling_tf_common.py"
+                  "--ignore=tests/test_modeling_common.py"  ; ImportError
+                  "--ignore=tests/test_processing_common.py"  ; ImportError
                   "--ignore=tests/test_configuration_common.py"
                   "--ignore=tests/test_pipeline_mixin.py"
-                  "--ignore=tests/test_sequence_feature_extraction_common.py")))
+                  "--ignore=tests/test_sequence_feature_extraction_common.py"
+                  "--ignore=tests/test_tokenization_mistral_common.py"
+                   ;; Requires python-accelerate
+                  "--ignore=tests/test_training_args.py"
+                  ;; Requires network access
+                  "--ignore=tests/test_executorch.py")))
     ;; The imported package contains ~60 more inputs, but they don't seem
     ;; necessary to build a minimal version of the package.
     (propagated-inputs
      (list python-filelock
            python-huggingface-hub
            python-numpy
+           python-packaging
            python-pytorch
            python-pyyaml
            python-regex
@@ -6369,7 +6377,9 @@ with a focus on performance and versatility.")
            python-tqdm))
     (native-inputs
      (list python-parameterized
-           python-pytest python-setuptools python-wheel))
+           python-pytest
+           python-pytest-asyncio
+           python-setuptools))
     (home-page "https://github.com/huggingface/transformers")
     (synopsis "Machine Learning for PyTorch and TensorFlow")
     (description
