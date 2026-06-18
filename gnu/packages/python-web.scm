@@ -2079,7 +2079,7 @@ to be used directly, and is instead intended to be used from
 (define-public python-huggingface-hub
   (package
     (name "python-huggingface-hub")
-    (version "0.31.4")
+    (version "0.36.2")
     (source
      (origin
        (method git-fetch)
@@ -2088,7 +2088,7 @@ to be used directly, and is instead intended to be used from
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rjkrmvvyzxlbnbndrg4v9qq39grn46c26zrdjgpf114gci5pwap"))))
+        (base32 "0hgdkfp7472sp0fjm5mwsx2rdlbr2ms8mzfzs0zr501gdwr7jjki"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2140,6 +2140,7 @@ to be used directly, and is instead intended to be used from
     (propagated-inputs
      (list python-filelock
            python-fsspec
+           python-hf-xet
            python-packaging
            python-pyyaml
            python-requests
@@ -2165,8 +2166,7 @@ to be used directly, and is instead intended to be used from
            python-types-toml
            python-types-urllib3
            python-typing-extensions
-           python-urllib3
-           python-wheel))
+           python-urllib3))
     (home-page "https://huggingface.co/docs/huggingface_hub/")
     (synopsis "Client library for accessing the huggingface.co hub")
     (description
