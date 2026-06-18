@@ -287,6 +287,7 @@
             yggdrasil-configuration?
             yggdrasil-configuration-autoconf?
             yggdrasil-configuration-config-file
+            yggdrasil-configuration-http-proxy
             yggdrasil-configuration-log-level
             yggdrasil-configuration-log-to
             yggdrasil-configuration-json-config
@@ -2615,7 +2616,9 @@ local servers publicly accessible on the web, even behind NATs and firewalls."))
   (log-level yggdrasil-configuration-log-level
              (default 'info))
   (log-to yggdrasil-configuration-log-to
-          (default 'stdout)))
+          (default 'stdout))
+  (http-proxy yggdrasil-configuration-http-proxy
+              (default #f)))
 
 (define (yggdrasil-configuration-file config)
   (define (scm->yggdrasil-json x)
@@ -2672,10 +2675,18 @@ local servers publicly accessible on the web, even behind NATs and firewalls."))
          (documentation "Connect to the Yggdrasil mesh network")
          (provision '(yggdrasil))
          (requirement '(networking))
-         (start #~(make-forkexec-constructor
-                   #$yggdrasil-command
-                   #:log-file "/var/log/yggdrasil.log"
-                   #:group "yggdrasil"))
+         (start (let ((proxy (yggdrasil-configuration-http-proxy config)))
+                  #~(make-forkexec-constructor
+                     #$yggdrasil-command
+                     #:log-file "/var/log/yggdrasil.log"
+                     #:group "yggdrasil"
+                     #:environment-variables
+                     (append
+                      (if #$proxy
+                          (list #$(string-append "http_proxy=" proxy)
+                                #$(string-append "https_proxy=" proxy))
+                          '())
+                      (default-environment-variables)))))
          (stop #~(make-kill-destructor)))))
 
 (define %yggdrasil-accounts

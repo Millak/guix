@@ -25962,6 +25962,9 @@ defined in this file take precedence over @code{json-config}.  Use the output
 of @code{yggdrasil -genconf} as a starting point.  To configure a static
 address, delete everything except PrivateKey option.
 
+@item @code{http-proxy} (default: @code{#f})
+The URL of the HTTP and HTTPS proxy used by Yggdrasil to connect to the Internet.
+
 @end table
 @end deftp
 
