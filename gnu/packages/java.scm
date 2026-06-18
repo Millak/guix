@@ -8529,7 +8529,18 @@ LSP4J code generator for Language Server Protocol classes.")))
      `(#:jar-name "eclipse-lsp4j-jsonrpc.jar"
        #:jdk ,openjdk11
        #:source-dir "org.eclipse.lsp4j.jsonrpc/src/main/java"
-       #:test-dir "org.eclipse.lsp4j.jsonrpc/src/test"))
+       #:test-dir "org.eclipse.lsp4j.jsonrpc/src/test"
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'delete-failing-tests
+           ;; The testMalformedJson* tests expect the exact error messages
+           ;; of an older gson.  Removing IntegrationTest.java also drops
+           ;; the other tests it contains.
+           (lambda _
+             (delete-file
+              (string-append
+               "org.eclipse.lsp4j.jsonrpc/src/test/java/org/"
+               "eclipse/lsp4j/jsonrpc/test/IntegrationTest.java")))))))
     (native-inputs
      (list java-junit))
     (inputs
@@ -14011,12 +14022,12 @@ string to an equivalent Java object.  Gson can work with arbitrary Java objects
 including pre-existing objects that you do not have source-code of.")
     (license license:asl2.0)))
 
-;; This requires a different Java version than 2.8.2 above
+;; Unlike java-gson above, this requires openjdk11.
 (define-public java-gson-latest
   (package
     (inherit java-gson)
     (name "java-gson")
-    (version "2.8.6")
+    (version "2.14.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -14025,12 +14036,13 @@ including pre-existing objects that you do not have source-code of.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kk5p3vichdb0ph1lzknrcpbklgnmq455mngmjpxvvj29p3rgpk3"))))
+                "19xbgfh3i6j3vbjnrap057gnrgnc5gf41vgmwqg920cq95cvimab"))))
     (arguments
      `(#:jar-name "gson.jar"
        #:jdk ,openjdk11
+       #:use-java-modules? #t
        #:source-dir "gson/src/main/java"
-       #:test-dir "gson/src/test"
+       #:tests? #f                      ;need Junit 5
        #:phases
        (modify-phases %standard-phases
          ;; avoid Maven dependency
@@ -14040,7 +14052,11 @@ including pre-existing objects that you do not have source-code of.")
                (copy-file "java-templates/com/google/gson/internal/GsonBuildConfig.java"
                           "java/com/google/gson/internal/GsonBuildConfig.java")
                (substitute* "java/com/google/gson/internal/GsonBuildConfig.java"
-                 (("\\$\\{project.version\\}") ,version))))))))))
+                 (("\\$\\{project.version\\}") ,version)))))
+         (replace 'install
+           (install-from-pom "gson/pom.xml")))))
+    (propagated-inputs
+     (list java-error-prone-annotations))))
 
 (define-public java-hawtjni
   (package
