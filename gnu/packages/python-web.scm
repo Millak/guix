@@ -4456,16 +4456,18 @@ object graph to and from JSON.")
       ;; XXX: 186 failed, 648 passed, 94 skipped, 54 errors
       ;; A lot of tests fail for unclear reasons.
       #:tests? #f))
-    (propagated-inputs (list python-httpx python-pydantic))
+    (propagated-inputs
+     (list python-httpx
+           python-httpx-sse
+           python-pydantic
+           python-sse-starlette))
     (native-inputs
      (list python-hatchling
-           python-httpx-sse
            python-jsonschema
            python-pydantic-settings
            python-pytest
            python-pytest-examples
            python-pytest-xdist
-           python-sse-starlette
            python-starlette
            python-typer
            python-typing-inspection
