@@ -23576,14 +23576,6 @@ required to authenticate against encrypted WiFi networks.
 @end defvar
 
 @quotation Warning
-By default @code{iwd} removes and re-creates interfaces it manages.  It
-doesn't play nicely with @code{dhcpcd-service-type} that enumerates
-wireless interfaces before starting the Shepherd service.  Use either
-@code{dhcpcd-service-type} or the @code{iwd}'s built-in DHCP client (see
-@code{enable-network-configuration} option below).
-@end quotation
-
-@quotation Warning
 @code{iwd-service-type} conflicts with @code{wpa-supplicant-service-type}.
 Make sure only one is configured.
 @end quotation
