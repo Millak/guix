@@ -191,7 +191,7 @@ Daemon and possibly more in the future.")
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://dev.gnupg.org/source/libgcrypt")
+              (url "https://github.com/gpg/libgcrypt")
               (commit (string-append "libgcrypt-" version))))
        (file-name (git-file-name name version))
        (sha256
