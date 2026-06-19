@@ -73,19 +73,15 @@ can be used as an alternative to GNU Readline.")
 (define-public libedit
   (package
     (name "libedit")
-    (version "20191231-3.1")
+    (version "20260512-3.1")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://thrysoee.dk/editline"
                           "/libedit-" version ".tar.gz"))
       (sha256
-       (base32 "0wch48nml28jj6ild889745dsg2agm7mpvrmbl1gi98nw6vjrf6v"))))
+       (base32 "18547v10g6g8mhkaazmplvx7gv8f3p0ppjifkz9ns4dhm1z5wba3"))))
     (build-system gnu-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types")))
     (inputs
      (list ncurses))
     (home-page "https://thrysoee.dk/editline/")
