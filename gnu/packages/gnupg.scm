@@ -28,6 +28,7 @@
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -343,7 +344,7 @@ compatible to GNU Pth.")
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://dev.gnupg.org/source/gnupg")
+              (url "https://github.com/gpg/gnupg")
               (commit (string-append "gnupg-" version))))
        (file-name (git-file-name name version))
        (sha256
