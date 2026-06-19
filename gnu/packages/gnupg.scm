@@ -107,7 +107,7 @@
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://dev.gnupg.org/source/libgpg-error")
+              (url "https://github.com/gpg/libgpg-error")
               (commit (string-append "libgpg-error-" version))))
        (file-name (git-file-name name version))
        (sha256
