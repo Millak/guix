@@ -378,6 +378,49 @@ It includes functions for posterior analysis, data storage, model checking,
 comparison and diagnostics.")
     (license license:asl2.0)))
 
+(define-public python-arviz-base
+  (package
+    (name "python-arviz-base")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/arviz-devs/arviz-base")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l4j6d9afdpkzcfl9nqnyqswbq0vzdskwd0r0w5q00mkwyvvki10"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-flit-core
+           python-pytest
+           python-scipy-minimal))
+    (propagated-inputs
+     (list python-lazy-loader
+           python-numpy
+           python-typing-extensions
+           python-xarray
+           ;; [optional]
+           python-netcdf4
+           python-h5netcdf
+           python-zarr))
+    (home-page "https://github.com/arviz-devs/arviz-base")
+    (synopsis "Base ArviZ features and converters")
+    (description
+     "ArviZ (pronounced @code{AR-vees}) is a Python package for exploratory
+analysis of Bayesian models.  It includes functions for posterior analysis,
+data storage, model checking, comparison and diagnostics.  @code{arviz-base}
+is the subpackage in charge of converters and base manipulation.")
+    (license license:asl2.0)))
+
 ;; Update this package together with the set of recommended packages: r-boot,
 ;; r-class, r-cluster, r-codetools, r-foreign, r-kernsmooth, r-lattice,
 ;; r-mass, r-matrix, r-mgcv, r-nlme, r-nnet, r-rpart, r-spatial, r-survival.
