@@ -13176,25 +13176,16 @@ translate entities on HTML strings, among other things.")
 (define-public python-webcolors
   (package
     (name "python-webcolors")
-    (version "24.11.1")
+    (version "25.10.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "webcolors" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ubernostrum/webcolors")
+              (commit version)))
        (sha256
-        (base32 "1xl0vn4xa03vjwx6fj19q9kgb94g65gvdf3p0ivsy0i2ydldgczc"))))
+        (base32 "1wknzir5252y30wcpwxb04ngmrdw1llzqmrpiajyhkm81x2lgrym"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-pyproject
-           (lambda _
-             ;; XXX Our version of python-pdm-backend does not recognize
-             ;; "dependency-groups", but is fine with the bogus
-             ;; "tool.whatever".
-             (substitute* "pyproject.toml"
-               (("\\[dependency-groups\\]") "[tool.whatever]")))))))
     (native-inputs
      (list python-pdm-backend python-pytest))
     (home-page "https://github.com/ubernostrum/webcolors")
