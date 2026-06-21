@@ -11214,7 +11214,7 @@ GNOME Shell appearance and extension, etc.")
 (define-public gnome-shell-extensions
   (package
     (name "gnome-shell-extensions")
-    (version "48.3")
+    (version "49.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -11222,7 +11222,7 @@ GNOME Shell appearance and extension, etc.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1m52ykbqja9i3i4fcwa8968002jm6pi1f7bgpq8k9dj0iz039pmd"))))
+                "0qkakhm2j2fms6s6w906iyrvkmfv3cx3yj70b6bkid3cg1jf0w0m"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -11242,7 +11242,7 @@ GNOME Shell appearance and extension, etc.")
                      (display
                       (string-append
                        "path => imports.gi.GIRepository.Repository"
-                       ".prepend_search_path(path));\n")
+                       ".dup_default().prepend_search_path(path));\n")
                       wrapped)
                      (dump-port source wrapped))))
                (find-files "extensions" "(extension|prefs)\\.js")))))))
