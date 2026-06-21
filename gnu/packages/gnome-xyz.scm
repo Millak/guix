@@ -819,7 +819,7 @@ faster window switching.")
 (define-public gnome-shell-extension-dock-ng
   (package
     (name "gnome-shell-extension-dock-ng")
-    (version "1.1.2")
+    (version "1.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -828,7 +828,7 @@ faster window switching.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0q0v86n832kgqz0x3m0k75m09yy7r8qk3rf3niq06cs00ypm3xl6"))))
+                "0mwxl3i9hb4ln8m9i7y19w88i6nr6b5zb6zrrclgf7v0hrakym38"))))
     (build-system copy-build-system)
     (arguments
      (list
