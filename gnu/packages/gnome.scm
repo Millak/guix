@@ -9719,7 +9719,7 @@ properties, screen resolution, and other GNOME parameters.")
                     (("^import " all)
                      (string-append "'" gi-typelib-path "'.split(':').forEach("
                                     "path => imports.gi.GIRepository.Repository."
-                                    "prepend_search_path(path));\n"
+                                    "dup_default().prepend_search_path(path));\n"
                                     all)))
                   ;; Screencast requires a pipewire service running
                   ;; (i.e. as provided by home-pipewire-service-type)
@@ -9728,7 +9728,7 @@ properties, screen resolution, and other GNOME parameters.")
                     (("^import " all)
                      (string-append "'" gi-typelib-path "'.split(':').forEach("
                                     "path => imports.gi.GIRepository.Repository."
-                                    "prepend_search_path(path));\n"
+                                    "dup_default().prepend_search_path(path));\n"
                                     "imports.gi.GLib.setenv('GST_PLUGIN_SYSTEM_PATH',"
                                     "[imports.gi.GLib.getenv('GST_PLUGIN_SYSTEM_PATH'),"
                                     "'" gst-plugin-path "'].filter(v => v).join(':'),"
