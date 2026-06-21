@@ -421,6 +421,55 @@ data storage, model checking, comparison and diagnostics.  @code{arviz-base}
 is the subpackage in charge of converters and base manipulation.")
     (license license:asl2.0)))
 
+(define-public python-arviz-plots
+  (package
+    (name "python-arviz-plots")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/arviz-devs/arviz-plots")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mrvz0916ks93fbpyrqrhn0xisc8gdiqmyf8g3g1m2y2d4nhfkqb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; RuntimeWarning: numpy.ndarray size changed, may indicate binary
+      ;; incompatibility. Expected 16 from C header, got 96 from PyObject
+      #~(list "--deselect=tests/test_plots.py::TestPlots::test_plot_khat_visuals"
+              ;; RuntimeWarning: numpy.ndarray size changed, may indicate
+              ;; binary incompatibility. Expected 16 from C header, got 96
+              ;; from PyObject
+              "--deselect=tests/test_hypothesis_plots.py::test_plot_khat"
+              "--deselect=tests/test_plot_collection.py::TestFacetMap::test_aes"
+              "--deselect=tests/test_plot_collection.py::TestFacetMap::test_coords"
+              "--deselect=tests/test_plot_collection.py::TestMap::test_map_nan")))
+    (native-inputs
+     (list python-flit-core
+           python-h5netcdf
+           python-hypothesis
+           python-pytest))
+    (propagated-inputs
+     (list python-arviz-base
+           python-arviz-stats
+           ;; [optional]
+           python-bokeh
+           python-matplotlib
+           python-plotly
+           python-webcolors))
+    (home-page "https://github.com/arviz-devs/arviz-plots")
+    (synopsis "ArviZ modular plotting")
+    (description
+     "ArviZ (pronounced @code{AR-vees}) is a Python package for exploratory
+analysis of Bayesian models.  It includes functions for posterior analysis,
+data storage, model checking, comparison and diagnostics.  @code{arviz-plots}
+is the subpackage in charge of the visualizations.")
+    (license license:asl2.0)))
+
 (define-public python-arviz-stats
   (package
     (name "python-arviz-stats")
