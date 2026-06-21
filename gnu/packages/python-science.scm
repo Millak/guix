@@ -5210,7 +5210,10 @@ readable.")
                 ;; "dask!=2022.4.0,<2024.9"; there is a note "fingerprinting
                 ;; in no longer deterministic as of 2024.9.0" which may be
                 ;; resolved in 2024.12.1.
-                ((",<2024.9") ""))))
+                ((",<2024.9") "")
+                ;; There is no a fresh version supporting Pandas 3 yet, built
+                ;; has passed but sanity-check fails.
+                (("pandas>=1.0,<3") "pandas>=1.0"))))
           (add-before 'build 'patch-missing-include
             (lambda _
               ;; See: <https://github.com/vaexio/vaex/issues/2382>.
@@ -5219,7 +5222,7 @@ readable.")
                 (("#include <nonstd/string_view.hpp>")
                  "#include <cstdint>\n#include <nonstd/string_view.hpp>")))))))
     (native-inputs
-     (list pybind11-2
+     (list pybind11
            python-cython
            python-setuptools))
     (inputs
