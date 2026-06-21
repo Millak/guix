@@ -9669,6 +9669,13 @@ properties, screen resolution, and other GNOME parameters.")
               (lambda _
                 (substitute* (find-files "subprojects/jasmine-gjs/bin")
                   (("/usr/bin/env") (which "env")))))
+            (add-after 'unpack 'patch-shew
+              (lambda _
+                (substitute* "subprojects/libshew/src/meson.build"
+                   (("extra_args: \\[(.*)\\]" all args)
+                    (string-append "extra_args: ['--fallback-library-path="
+                                   #$output "/lib/gnome-shell/'," args
+                                   "]")))))
             (add-after 'unpack 'skip-gtk-update-icon-cache
               ;; Don't create 'icon-theme.cache'.
               (lambda _
