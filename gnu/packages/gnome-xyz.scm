@@ -1511,7 +1511,7 @@ directly inside GNOME Shell.  It can manage stations and play streams.")
 (define-public gnome-shell-extension-vitals
   (package
     (name "gnome-shell-extension-vitals")
-    (version "72.0.0")
+    (version "77.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1520,7 +1520,7 @@ directly inside GNOME Shell.  It can manage stations and play streams.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ikiq2vmmsjr13788xhmbqid1im19gnp86xxqx1q047v6kikvjy4"))
+                "18ilc10j6rbh23fgi08zl27r4s5x30yx1w2ihbsfk9qjhphczirw"))
               (modules '((guix build utils)))
               (snippet '(begin
                           (delete-file "schemas/gschemas.compiled")
