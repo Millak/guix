@@ -98,6 +98,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-science)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby-check)
@@ -322,7 +323,7 @@ be output in text, PostScript, PDF or HTML.")
 (define-public python-arviz
   (package
     (name "python-arviz")
-    (version "0.22.0")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -331,45 +332,20 @@ be output in text, PostScript, PDF or HTML.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04l1zsr2m80avvrh73v34sp4p9fzakmgliszsww2wmv99cl5jdk7"))))
+        (base32 "071a00mlpxx5fffz98iknj2ifhagsw0h4amjgdyhck61hzv1rdm5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 3384 passed, 147 skipped, 10 deselected
       #:test-flags
-      #~(list "-k" (string-join
-                    ;; Network access is required.
-                    (list "not test_plot_ppc_transposed"
-                          "test_plot_separation[kwargs0]"
-                          "test_plot_separation[kwargs1]"
-                          "test_plot_separation[kwargs2]"
-                          "test_plot_separation[kwargs3]"
-                          "test_plot_separation[kwargs4]"
-                          "test_plot_trace_legend[False-False]"
-                          "test_plot_trace_legend[False-True]"
-                          "test_plot_trace_legend[True-False]"
-                          "test_plot_trace_legend[True-True]")
-                    " and not ")
-              "arviz/tests/base_tests/")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'check 'pre-check
-                 (lambda _
-                   (setenv "HOME" "/tmp"))))))
+      ;; XXX: AssertionError: arviz_cetrino_template.
+      #~(list "--deselect=tests/test_namespace.py::test_aliases")))
     (native-inputs
-     (list python-cloudpickle
-           python-pytest
+     (list python-pytest
            python-setuptools))
     (propagated-inputs
-     (list python-h5netcdf
-           python-matplotlib
-           python-numpy
-           python-packaging
-           python-pandas
-           python-scipy
-           python-typing-extensions
-           python-xarray
-           python-xarray-einstats))
+     (list python-arviz-base
+           python-arviz-plots
+           python-arviz-stats))
     (home-page "https://github.com/arviz-devs/arviz")
     (synopsis "Exploratory analysis of Bayesian models")
     (description
