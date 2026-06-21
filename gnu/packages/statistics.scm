@@ -421,6 +421,41 @@ data storage, model checking, comparison and diagnostics.  @code{arviz-base}
 is the subpackage in charge of converters and base manipulation.")
     (license license:asl2.0)))
 
+(define-public python-arviz-stats
+  (package
+    (name "python-arviz-stats")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/arviz-devs/arviz-stats")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09q9k94khlqd1ndqgfnx9zlx0i862gdrsh2xghwqpcd0d8jgl398"))))
+    (build-system pyproject-build-system)
+    ;; tests: 2666 passed, 2 skipped
+    (native-inputs
+     (list python-flit-core
+           python-pytest))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy
+           ;; [optional]
+           python-arviz-base
+           python-numba
+           python-xarray
+           python-xarray-einstats))
+    (home-page "https://github.com/arviz-devs/arviz-stats")
+    (synopsis "Statistical computation and diagnostics for ArviZ")
+    (description
+     "ArviZ (pronounced @code{AR-vees}) is a Python package for exploratory
+analysis of Bayesian models.  It includes functions for posterior analysis,
+data storage, model checking, comparison and diagnostics.  @code{arviz-stats}
+is the subpackage in charge of the statistical and diagnostics computations.")
+    (license license:asl2.0)))
+
 ;; Update this package together with the set of recommended packages: r-boot,
 ;; r-class, r-cluster, r-codetools, r-foreign, r-kernsmooth, r-lattice,
 ;; r-mass, r-matrix, r-mgcv, r-nlme, r-nnet, r-rpart, r-spatial, r-survival.
