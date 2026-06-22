@@ -11414,6 +11414,15 @@ handling the startup notification side.")
               (substitute* "meson.build"
                 (("gtk_update_icon_cache: true")
                  "gtk_update_icon_cache: false"))))
+          (add-after 'unpack 'set-absolute-paths
+            (lambda _
+              (define calculator
+                (string-append #$output "/bin/gnome-calculator"))
+              (substitute* "search-provider/search-provider.vala"
+                (("argv0 = .*;")
+                 "argv0 = \"/proc/self/exe\";")
+                (("gnome-calculator --equation")
+                 (string-append calculator " --equation")))))
           (add-before 'check 'pre-check
             (lambda _
               ;; Tests require a writable HOME.
