@@ -35,6 +35,10 @@
                              (replace "graphviz"
                                (specification->package "graphviz")))))))
 
+       ;; For convenience.  You can have it used in a containerized
+       ;; environment with the '--expose=$HOME/.guile' option.
+       (specifications->manifest (list "guile-readline"))
+
        ;; Extra packages used by unit tests.
        (specifications->manifest (list "gnupg"))
 
