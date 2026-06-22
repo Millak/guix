@@ -1566,7 +1566,7 @@ bar of the GNOME Shell.")
 (define-public gnome-shell-extension-weather-oclock
   (package
     (name "gnome-shell-extension-weather-oclock")
-    (version "49.0")
+    (version "50.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1574,7 +1574,7 @@ bar of the GNOME Shell.")
                      (commit (string-append "v" version))))
               (sha256
                (base32
-                "0p8wv3gsz2398ddk7c3v0rsafx86q7m5lhg0vj4knrml7nl1mshp"))
+                "1cxjgp46ij9y3dghb787qix1sa2c6n0rjq83hx67scgws0ja7a70"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
