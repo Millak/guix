@@ -89,8 +89,8 @@
                (base32
                 "05p5gfcas34zc2hyl2mwcr189b04jy9y8bqbsvmplws2mm5g0rf0"))))
     (build-system gnu-build-system)
-    (inputs (list bdb cyrus-sasl gnutls libgcrypt zlib))
-    (native-inputs (list libtool groff bdb-5.3))
+    (inputs (list cyrus-sasl gnutls libgcrypt zlib))
+    (native-inputs (list libtool groff bdb))
     (arguments
      (list
       #:tests? #f
