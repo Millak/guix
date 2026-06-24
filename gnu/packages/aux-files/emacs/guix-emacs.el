@@ -1,5 +1,4 @@
-;;; -*- lexical-binding: t; -*-
-;;; guix-emacs.el --- Emacs packages installed with Guix
+;;; guix-emacs.el --- Emacs packages installed with Guix -*- lexical-binding: t; -*-
 
 ;; Copyright © 2014, 2015, 2016, 2017 Alex Kost <alezost@gmail.com>
 ;; Copyright © 2017 Kyle Meyer <kyle@kyleam.com>
@@ -31,7 +30,7 @@
 (declare-function package-load-descriptor "package" (pkg-dir))
 
 (defvar guix-emacs-autoloads-regexp
-  (rx (* any) "-autoloads.el" (zero-or-one "c") string-end)
+  (rx (* not-newline) "-autoloads.el" (zero-or-one "c") string-end)
   "Regexp to match files containing autoload definitions.
 
 Historically, this used to be the package name followed by \"-autoloads.el\".
