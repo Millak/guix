@@ -47,14 +47,25 @@
 ;;; JSON modification procedures
 ;;;
 
-(define* (with-atomic-json-file-replacement proc
-                                            #:optional (file "package.json"))
+;; This is the function we eventually want to migrate to.
+(define (with-atomic-json-file-replacement* file proc)
   "Like 'with-atomic-file-replacement', but PROC is called with a single
 argument---the result of parsing FILE's contents as JSON---and should produce
 a value to be written as JSON to the replacement FILE."
   (with-atomic-file-replacement file
     (lambda (in out)
       (scm->json (proc (json->scm in #:ordered #t)) out #:pretty #t))))
+
+;; This is a deprecated version of the function that ought to be
+;; removed in favor of with-atomic-json-file-replacement*'s content eventually.
+;; On removal, also remove the (guix deprecation) modules and their closures
+;; from node-build-system imported-modules.
+(define* (with-atomic-json-file-replacement proc
+                                            #:optional (file "package.json"))
+  (with-atomic-json-file-replacement* file proc))
+
+(define-deprecated/public-alias with-atomic-json-file-replacement
+  with-atomic-json-file-replacement*)
 
 ;; This is the function we eventually want to migrate to.
 (define* (modify-json* file #:rest modifications)
