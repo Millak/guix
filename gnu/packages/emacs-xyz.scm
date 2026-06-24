@@ -23205,29 +23205,6 @@ editing nginx config files.")
 Streams are implemented as delayed evaluation of cons cells.")
     (license license:gpl3+)))
 
-(define-public emacs-cl-print
-  (let ((commit "1a70c553dfb04352afb5b8696fe0cef8acc8f991")
-        (revision "1"))
-    (package
-      (name "emacs-cl-print")
-      (version (git-version "1.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/emacsmirror/cl-print")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "164zbnsi5mssvcpy0158fm7fw5cmd1r5nkpn29fmd2b2scy3gm79"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/emacsmirror/cl-print")
-      (synopsis "CL-style generic printing")
-      (description "This package provides a generic function,
-@code{cl-print-object}, to which the programmer can add any method they
-please.")
-      (license license:gpl3+))))
-
 (define-public emacs-el-search
   (let ((commit "07bed84dd8ae9e4c6c648834224b1d33fdbd51e0")
         (revision "2"))
@@ -23245,7 +23222,7 @@ please.")
           (base32 "10w1ldgijdhfsrazp0y3bm76jv5wvdn94k1yp0pmc2m1896b58ak"))))
       (build-system emacs-build-system)
       (propagated-inputs
-       (list emacs-stream emacs-cl-print))
+       (list emacs-stream))
       (home-page "https://github.com/emacsmirror/el-search")
       (synopsis "Expression based interactive search for emacs-lisp-mode")
       (description "This package provides expression based interactive search
