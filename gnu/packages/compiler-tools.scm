@@ -138,8 +138,7 @@ prefixes of other terminals.")
                    "ac_cv_func_realloc_0_nonnull=yes"))
          '()))
     (native-inputs
-     (list help2man
-           ;; m4 is not present in PATH when cross-building
+     (list ;; m4 is not present in PATH when cross-building
            m4))
     (inputs
      (list
