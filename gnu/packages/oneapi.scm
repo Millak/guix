@@ -151,7 +151,7 @@ performance library of basic building blocks for deep learning applications.")
 (define-public onetbb
   (package
     (name "onetbb")
-    (version "2022.3.0")
+    (version "2023.1.0")
     (source
      (origin
        (method git-fetch)
@@ -161,7 +161,7 @@ performance library of basic building blocks for deep learning applications.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ibwr5cw0zw5dfcdhavr5zbmwqqf7vnsai0gh4mqw475l7lcb08w"))
+         "15knh7rwdvwjylk4kcxlkhgdwla4m3k5zkxg4xvznnqh0zds2bpc"))
        (patches (search-patches "onetbb-other-arches.patch"))))
     (build-system cmake-build-system)
     (arguments
