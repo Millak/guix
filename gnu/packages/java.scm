@@ -7098,7 +7098,10 @@ more!")
                     "AvalonLogger.java"
                     "LogKitLogger.java"))
              (delete-file-recursively "src/test")
-             #t)))))
+             #t))
+
+         (replace 'install
+           (install-from-pom "pom.xml")))))
     (home-page "https://commons.apache.org/logging/")
     (synopsis "Common API for logging implementations")
     (description "The Logging package is a thin bridge between different
