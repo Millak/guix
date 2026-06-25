@@ -7187,7 +7187,9 @@ it records all mock invocations, including methods arguments.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'chdir
-           (lambda _ (chdir "httpcore") #t)))))
+           (lambda _ (chdir "httpcore") #t))
+         (replace 'install
+           (install-from-pom "pom.xml")))))
     (inputs
      (list java-commons-logging-minimal java-commons-lang3))
     (native-inputs
