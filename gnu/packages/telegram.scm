@@ -282,8 +282,8 @@
       "1v33nsggz8fk3bnky9di5ggi8jc96y8yfrxf3pjvw239qfi3m9lz"))))
 
 (define-public webrtc-for-telegram-desktop
-  (let ((commit "d067233a845e387e63d480d0d846da5fcb6a40cb")
-        (revision "489"))
+  (let ((commit "5c5c71258777d0196dbb3a09cc37d2f56ead28ab")
+        (revision "490"))
     (hidden-package
      (package
        (name "webrtc-for-telegram-desktop")
@@ -299,7 +299,7 @@
           (file-name
            (git-file-name name version))
           (sha256
-           (base32 "1zv79jvzw82gh1vn5g8p2i914lsanfbi4i6w9x04vqyi52ng4cl7"))
+           (base32 "0ab0w5bhkxs3ainp88k4wlcfscycyfhkdsqisdqkf16czkk5sjyx"))
           (modules '((guix build utils)
                      (ice-9 ftw)
                      (srfi srfi-1)))
@@ -333,7 +333,7 @@
                                      libyuv-to)))))))
        (native-inputs (list pkg-config python-wrapper yasm))
        (inputs
-        (list abseil-cpp
+        (list abseil-cpp-20250127
               crc32c
               ffmpeg
               glib
