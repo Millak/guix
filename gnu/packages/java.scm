@@ -7287,7 +7287,10 @@ This package provides... some tests.")))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'chdir
-           (lambda _ (chdir "httpclient") #t)))))
+           (lambda _ (chdir "httpclient") #t))
+
+         (replace 'install
+           (install-from-pom "pom.xml")))))
     (inputs
      (list java-commons-logging-minimal
            java-commons-codec
