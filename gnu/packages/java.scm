@@ -9179,6 +9179,52 @@ discards all logging messages.")
 framework.")
     (license license:expat)))
 
+(define-public java-jcl-over-slf4j
+  (package
+    (name "java-jcl-over-slf4j")
+    (version "1.7.36")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/qos-ch/slf4j")
+                    (commit (string-append "v_" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05kdsrvacvgdsqj812jhar813asgl2i2xlvh4i4p4i5cxg17bkq3"))
+              (modules '((guix build utils)))
+              ;; Delete bundled jars.
+              (snippet
+               '(for-each delete-file (find-files "." "\\.jar$")))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "jcl-over-slf4j.jar"
+       #:source-dir "jcl-over-slf4j/src/main/java"
+       #:test-dir "jcl-over-slf4j/src/test"
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'add-resources
+           (lambda _
+             ;; The default ant build does not include resources in the jar,
+             ;; but the JCL LogFactory service provider is required for
+             ;; commons-logging to discover the SLF4J implementation.  Stage
+             ;; the resources into the classes directory before the build
+             ;; phase so that "build/jar/jcl-over-slf4j.jar" includes them.
+             (copy-recursively
+              "jcl-over-slf4j/src/main/resources/META-INF/services"
+              "build/classes/META-INF/services")))
+         (replace 'install
+           (install-from-pom "jcl-over-slf4j/pom.xml")))))
+    (propagated-inputs (list java-slf4j-api))
+    (native-inputs (list java-junit java-hamcrest-core java-slf4j-jdk14))
+    (home-page "https://www.slf4j.org/")
+    (synopsis "Apache Commons Logging implemented over SLF4J")
+    (description "This package provides a drop-in replacement for Apache
+Commons Logging (JCL) version 1.2.  It redirects all calls made to the
+@code{commons-logging} API to SLF4J, allowing the user to plug in the desired
+SLF4J binding at deployment time.")
+    (license license:asl2.0)))
+
 (define-public antlr2
   (package
     (name "antlr2")
