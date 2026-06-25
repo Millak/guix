@@ -14011,7 +14011,11 @@ entirely from source.")
     (arguments
      `(#:jar-name "gson.jar"
        #:source-dir "gson/src/main/java"
-       #:test-dir "gson/src/test"))
+       #:test-dir "gson/src/test"
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (install-from-pom "gson/pom.xml")))))
     (native-inputs
      (list java-junit java-hamcrest-core))
     (home-page "https://github.com/google/gson")
