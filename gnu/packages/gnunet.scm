@@ -188,15 +188,21 @@ authentication and support for SSL3 and TLS.")
 (define-public gnunet
   (package
     (name "gnunet")
-    (version "0.27.0")
+    (version "0.28.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "mirror://gnu/gnunet/gnunet-" version
-                           ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.gnunet.org/gnunet.git")
+              (commit (string-append "v" version))
+              ;; The build system expects a gnunet-handbook submodule
+              ;; containing pre-built documentation.
+              ;; TODO: Build it separately.
+              (recursive? #t)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "01ra62bp6sc4v9nmnydwycbk1f8bz0cbd6m4cqvrkl5qyfrzxn4x"))))
+         "02vswv02cwqkysypj1nammh109in9qi2aflsrh883ls7w4w07svq"))))
     (build-system meson-build-system)
     (inputs
      (list bluez
@@ -221,13 +227,14 @@ authentication and support for SSL3 and TLS.")
            zlib))
     (native-inputs
      (list curl
+           gettext-minimal
            openssl
            pkg-config
            python
            python-sphinx
            python-sphinx-rtd-theme
-           xxd
-           which))
+           which
+           xxd))
     (arguments
      (list
       ;; Only running util tests until the p2p tests stop being flaky.
