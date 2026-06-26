@@ -474,6 +474,38 @@ org.eclipse.aether.transport.http.XChecksumChecksumExtractor
     (description "This package contains a transport implementation based on
 HTTP, for use in Maven.")))
 
+(define-public maven-resolver-supplier
+  (package
+    (inherit maven-resolver-api)
+    (name "maven-resolver-supplier")
+    (arguments
+     `(#:jar-name "maven-resolver-supplier.jar"
+       #:source-dir "maven-resolver-supplier/src/main/java"
+       ;; The only test downloads from repo.maven.apache.org.
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (install-from-pom "maven-resolver-supplier/pom.xml")))))
+    (propagated-inputs
+     (list maven-resolver-api
+           maven-resolver-connector-basic
+           maven-resolver-impl
+           maven-resolver-named-locks
+           maven-resolver-spi
+           maven-resolver-transport-file
+           maven-resolver-transport-http
+           maven-resolver-util
+           maven-resolver-provider
+           maven-model-builder
+           java-slf4j-api))
+    (native-inputs '())
+    (synopsis "Maven repository system supplier")
+    (description "This package supplies a ready-made
+@code{RepositorySystem} instance for use outside of a Maven runtime,
+wiring up the Maven repository system components without relying on any
+dependency injection container.")))
+
 ;; aether is the parent project that was forked into maven-resolver.  It used
 ;; to be used with older versions of Maven, and is still required for some
 ;; plugins and their dependencies.  This version is required for the plugins,
