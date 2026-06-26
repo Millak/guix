@@ -2329,25 +2329,6 @@ publication are all controlled from the @file{pom.xml} declarative file.  Maven
 can be extended by plugins to utilise a number of other development tools for
 reporting or the build process.")))
 
-;;; maven-core 3.8.* and its dependencies are needed by clojure-tools-deps.
-
-(define maven-resolver-1.6-parent-pom
-  (package
-    (inherit maven-resolver-parent-pom)
-    (version "1.6.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/apache/maven-resolver")
-                    (commit (string-append "maven-resolver-" version))))
-              (file-name (git-file-name "maven-resolver" version))
-              (sha256
-               (base32
-                "0hbbbxj14qyq8pccyab96pjqq90jnjmid1pml9kx55c5smfpjn37"))))
-    (propagated-inputs
-     (modify-inputs propagated-inputs
-       (replace "maven-parent-pom" maven-parent-pom-34)))))
-
 ;; Many plugins require maven 3.0 as a dependency.
 (define maven-3.0-pom
   (package
