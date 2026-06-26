@@ -5672,6 +5672,12 @@ including java-asm.")
            #:tests? #f))
     (inputs (list java-asm-8 java-asm-analysis-8 java-asm-tree-8))))
 
+(define (generate-asm-pom package)
+  "Return a build phase generating the pom.xml of org.ow2.asm:asm at the
+version of PACKAGE."
+  #~(generate-pom.xml "pom.xml" "org.ow2.asm" "asm"
+                      #$(package-version package)))
+
 (define-public java-asm-9
   (package
     (inherit java-asm)
@@ -5680,19 +5686,23 @@ including java-asm.")
               (method git-fetch)
               (uri (git-reference
                      (url "https://gitlab.ow2.org/asm/asm")
-                     (commit (string-append
-                               "ASM_" (string-join (string-split version #\.)
-                                                   "_")))))
+                     (commit "ASM_9_4")))
               (file-name (git-file-name "java-asm" version))
               (sha256
                (base32
                 "0c00m638skr5md1p6y1c2xn11kj5w6sjapyvwp9mh70rw095bwzk"))))
     (arguments
-     `(#:jar-name "asm9.jar"
-       #:source-dir "asm/src/main/java"
-       #:test-dir "asm/src/test"
-       ;; tests depend on junit5
-       #:tests? #f))
+     (list #:jar-name "asm9.jar"
+           #:source-dir "asm/src/main/java"
+           #:test-dir "asm/src/test"
+           ;; tests depend on junit5
+           #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'install 'generate-pom.xml
+                 #$(generate-asm-pom this-package))
+               (replace 'install
+                 (install-from-pom "pom.xml")))))
     (propagated-inputs '())
     (native-inputs '())))
 
@@ -5808,6 +5818,10 @@ including java-asm.")
         (base32 "0rshbybb6piw2s9lp8qmsnz3qvd69ks83fn2ci5kams8cmyyma4a"))))
     (arguments
      (substitute-keyword-arguments (package-arguments java-asm-9)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'generate-pom.xml
+              #$(generate-asm-pom this-package))))
        ((#:jdk _ #f) openjdk11)
        ((#:make-flags _ #f)
         ;; Compile with openjdk11 (for the 'Deprecated.forRemoval' API) but
@@ -15398,7 +15412,8 @@ Java method invocation.")
          (add-before 'build 'fix-build.xml
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((ant-jar (search-input-file inputs "/lib/ant.jar"))
-                   (asm-jar (search-input-file inputs "/share/java/asm9.jar")))
+                   (asm-jar (car (find-files (assoc-ref inputs "java-asm")
+                                             "asm.*\\.jar$"))))
                (substitute* "build.xml"
                  (("lib/ant\\.jar") ant-jar)
                  (("\\$lib/asm-8\\.0\\.1\\.jar") asm-jar)
@@ -15491,8 +15506,9 @@ simplify native access.")))
          (add-after 'chdir 'fix-ant
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((jna-jar (car (find-files (assoc-ref inputs "java-native-access")
-                                            "jna-jpms.*\\.jar$")))
-                   (asm-jar (search-input-file inputs "/share/java/asm9.jar"))
+                                             "jna-jpms.*\\.jar$")))
+                   (asm-jar (car (find-files (assoc-ref inputs "java-asm")
+                                             "asm.*\\.jar$")))
                    (ant-jar (search-input-file inputs "/lib/ant.jar")))
                (mkdir-p "../../build")
                (mkdir-p "../../lib")

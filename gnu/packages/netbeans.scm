@@ -802,7 +802,7 @@ clusters.config.guix.list=\\
                                "jsch-[0-9.]*\\.jar$"
                                "ide/c.jcraft.jsch/external/jsch-0.1.72.jar")
               (symlink-input-file "java-asm"
-                               "asm9\\.jar$"
+                               "asm-9\\.7\\.1\\.jar$"
                                "platform/libs.asm/external/asm-9.7.1.jar")
               (symlink-input-file "java-asm-tree"
                                "asm-tree\\.jar$"
