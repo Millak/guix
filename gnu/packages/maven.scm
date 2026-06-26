@@ -1182,13 +1182,13 @@ gets and puts artifacts through HTTP(S) using Apache HttpClient-4.x.")))
 (define maven-pom
   (package
     (name "maven-pom")
-    (version "3.9.0")
+    (version "3.9.16")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/maven/"
                                   "maven-3/" version "/source/"
                                   "apache-maven-" version "-src.tar.gz"))
-              (sha256 (base32 "0s8ds2bqkdi2yrcwbd3mkszh6l4hf56j9jz47hkpd7i3zh1hmr4n"))
+              (sha256 (base32 "0g6hvdi6nv3yk7dfch6i2vydqq2qy35r5h500rm24nnp384in0zp"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1277,6 +1277,7 @@ tool.  This package contains the Maven pom file, used by all maven components.")
        #:source-dir "maven-artifact/src/main/java"
        #:test-dir "maven-artifact/src/test"
        #:main-class "org.apache.maven.artifact.versioning.ComparableVersion"
+       #:tests? #f                      ; tests require JUnit5
        #:phases
        (modify-phases %standard-phases
          (replace 'install
@@ -1296,46 +1297,31 @@ and compares versions:")))
     (inherit maven-artifact)
     (name "maven-model")
     (arguments
-     `(#:jar-name "maven-model.jar"
-       #:source-dir "maven-model/src/main/java"
-       #:test-dir "maven-model/src/test"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'generate-models
-           (lambda* (#:key inputs #:allow-other-keys)
-             (define (modello-single-mode file version mode)
-               (invoke "java" "org.codehaus.modello.ModelloCli"
-                       file mode "maven-model/src/main/java" version
-                       "false" "true"))
-             (let ((file "maven-model/src/main/mdo/maven.mdo"))
-               (modello-single-mode file "4.0.0" "java")
-               (modello-single-mode file "4.0.0" "xpp3-reader")
-               (modello-single-mode file "4.0.0" "xpp3-extended-reader")
-               (modello-single-mode file "4.0.0" "xpp3-writer")
-               (modello-single-mode file "4.0.0" "xpp3-extended-writer"))
-             #t))
-         (replace 'install (install-from-pom "maven-model/pom.xml")))))
+     (list
+      #:jar-name "maven-model.jar"
+      #:source-dir "maven-model/src/main/java"
+      #:test-dir "maven-model/src/test"
+      #:tests? #f                       ; tests require JUnit5
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'generate-models
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (modello-single-mode file version mode)
+                (invoke "java" "org.codehaus.modello.ModelloCli"
+                        file mode "maven-model/src/main/java" version
+                        "false" "true"))
+              (let ((file "maven-model/src/main/mdo/maven.mdo"))
+                (modello-single-mode file "4.0.0" "java")
+                (modello-single-mode file "4.0.0" "xpp3-reader")
+                (modello-single-mode file "4.0.0" "xpp3-extended-reader")
+                (modello-single-mode file "4.0.0" "xpp3-writer")
+                (modello-single-mode file "4.0.0" "xpp3-extended-writer"))
+              #t))
+          (replace 'install (install-from-pom "maven-model/pom.xml")))))
     (propagated-inputs
-     (list java-commons-lang3 java-plexus-utils maven-pom))
+     (list java-plexus-utils))
     (native-inputs
-     (list java-modello-core
-           ;; for modello:
-           java-eclipse-sisu-plexus
-           java-plexus-component-annotations
-           java-guice
-           java-cglib
-           java-eclipse-sisu-inject
-           java-javax-inject
-           java-plexus-classworlds
-           java-guava
-           java-geronimo-xbean-reflect
-           java-plexus-build-api
-           ;; modello plugins:
-           java-modello-plugins-java
-           java-modello-plugins-xml
-           java-modello-plugins-xpp3
-           ;; for tests
-           java-junit))
+     (list java-modello-plugins-xpp3))
     (description "Apache Maven is a software project management and comprehension
 tool.  This package contains the model for Maven @dfn{POM} (Project Object Model),
 so really just plain Java objects.")))
@@ -1349,6 +1335,7 @@ so really just plain Java objects.")))
        #:source-dir "maven-builder-support/src/main/java"
        #:jdk ,icedtea-8
        #:test-dir "maven-builder-support/src/test"
+       #:tests? #f                      ; tests require JUnit5
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'fix-paths
@@ -1424,6 +1411,7 @@ simply plain java objects.")))
        #:source-dir "maven-settings-builder/src/main/java"
        #:jdk ,icedtea-8
        #:test-dir "maven-settings-builder/src/test"
+       #:tests? #f                      ; tests require JUnit5
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'generate-sisu-named
@@ -1455,6 +1443,7 @@ inheritance, interpolation, @dots{}")))
        #:source-dir "src/main/java"
        #:jdk ,icedtea-8
        #:test-dir "src/test"
+       #:tests? #f                      ; tests require JUnit5
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'chdir
@@ -1476,7 +1465,8 @@ inheritance, interpolation, @dots{}")))
          (replace 'install
            (install-from-pom "pom.xml")))))
     (propagated-inputs
-     (list java-plexus-interpolation
+     (list java-asm-9.7.1
+           java-plexus-interpolation
            java-plexus-utils
            maven-artifact
            maven-builder-support
@@ -1593,6 +1583,7 @@ so really just plain objects.")))
        #:source-dir "maven-plugin-api/src/main/java"
        #:jdk ,icedtea-8
        #:test-dir "maven-plugin-api/src/test"
+       #:tests? #f                      ; tests require JUnit5
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'generate-models
@@ -1694,7 +1685,8 @@ generally generated from plugin sources using maven-plugin-plugin.")))
            (replace 'install
              (install-from-pom "pom.xml")))))
       (propagated-inputs
-       `(("maven-artifact" ,maven-artifact)
+       `(("java-asm" ,java-asm-9.7.1)
+         ("maven-artifact" ,maven-artifact)
          ("maven-resolver-provider" ,maven-resolver-provider)
          ("maven-builder-support" ,maven-builder-support)
          ("maven-model" ,maven-model)
@@ -1982,6 +1974,7 @@ logging support.")))
        #:source-dir "src/main/java"
        #:jdk ,icedtea-8
        #:test-dir "src/test"
+       #:tests? #f                      ; tests require JUnit5
        #:phases
        (modify-phases %standard-phases
          ;; Tests assume we're in this directory
@@ -2107,24 +2100,6 @@ logging support.")))
                      "--classes" "build/classes"
                      "--descriptors" "build/classes/META-INF")
              #t))
-         (add-before 'check 'build-tests
-          (lambda _
-            (invoke "ant" "compile-tests")
-            #t))
-         (add-after 'build-tests 'generate-test-metadata
-           (lambda _
-             (invoke "java" "-cp" (string-append (getenv "CLASSPATH")
-                                                 ":build/classes"
-                                                 ":build/test-classes")
-                     "org.codehaus.plexus.metadata.PlexusMetadataGeneratorCli"
-                     "--source" "src/test/java"
-                     "--output" "build/test-classes/META-INF/plexus/components.xml"
-                     "--classes" "build/test-classes"
-                     "--descriptors" "build/test-classes/META-INF")
-             #t))
-         (add-before 'check 'disable-failing-test
-           (lambda _
-             (delete-file "src/test/java/org/apache/maven/profiles/manager/DefaultProfileManagerTest.java")))
          (add-after 'generate-metadata 'rebuild
            (lambda _
              (invoke "ant" "jar")
@@ -2195,7 +2170,8 @@ layer for plugins that need to keep Maven2 compatibility.")))
     (inherit maven-artifact)
     (name "maven")
     (arguments
-     `(#:phases
+     `(#:tests? #f                      ; tests require JUnit5
+       #:phases
        (modify-phases %standard-phases
          (replace 'build
            (lambda* (#:key inputs #:allow-other-keys)
