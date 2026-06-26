@@ -2388,20 +2388,6 @@ reporting or the build process.")))
      (modify-inputs native-inputs
        (replace "maven-resolver-test-util" maven-resolver-1.6-test-util)))))
 
-(define-public maven-resolver-1.6-connector-basic
-  (package
-    (inherit maven-resolver-connector-basic)
-    (version (package-version maven-resolver-1.6-parent-pom))
-    (source (package-source maven-resolver-1.6-parent-pom))
-    (propagated-inputs
-     (modify-inputs propagated-inputs
-       (replace "maven-resolver-api" maven-resolver-1.6-api)
-       (replace "maven-resolver-spi" maven-resolver-1.6-spi)
-       (replace "maven-resolver-util" maven-resolver-1.6-util)))
-    (native-inputs
-     (modify-inputs native-inputs
-       (replace "maven-resolver-test-util" maven-resolver-1.6-test-util)))))
-
 ;; Many plugins require maven 3.0 as a dependency.
 (define maven-3.0-pom
   (package
