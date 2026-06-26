@@ -207,24 +207,17 @@ authentication and support for SSL3 and TLS.")
     (inputs
      (list bluez
            glpk
-           curl
            gnutls/dane
            gstreamer
-           jansson
            libextractor
-           libidn2
-           libgcrypt
            libjpeg-turbo
            libltdl
-           libmicrohttpd
            libogg
            libsodium
            libunistring
            opus
            pulseaudio
-           sqlite
-           zbar
-           zlib))
+           zbar))
     (native-inputs
      (list curl
            gettext-minimal
@@ -235,6 +228,17 @@ authentication and support for SSL3 and TLS.")
            python-sphinx-rtd-theme
            which
            xxd))
+    (propagated-inputs
+     ;; These are in Requires.private of gnunetutil.pc, and are necessary for
+     ;; propagating required headers.
+     (list curl
+           jansson
+           libgcrypt
+           libidn2
+           libmicrohttpd
+           libsodium
+           sqlite
+           zlib))
     (arguments
      (list
       ;; Only running util tests until the p2p tests stop being flaky.
