@@ -4426,3 +4426,30 @@ is compiled.  It makes the Maven Resolver API available as a transitive
 dependency and is meant to be complemented at run time by one of the MIMA
 runtime implementations.")
     (license license:epl2.0)))
+
+(define-public maven-mima-runtime-standalone-shared
+  (package
+    (inherit maven-mima-context)
+    (name "maven-mima-runtime-standalone-shared")
+    (arguments
+     `(#:jar-name "mima-runtime-standalone-shared.jar"
+       #:source-dir "runtime/standalone-shared/src/main/java"
+       #:tests? #f ; no tests
+       #:phases (modify-phases %standard-phases
+                  (replace 'install
+                    (install-from-pom "runtime/standalone-shared/pom.xml")))))
+    (propagated-inputs
+     (list maven-mima-context
+           maven-model-builder
+           maven-resolver-api
+           maven-resolver-provider
+           maven-resolver-util
+           maven-settings
+           maven-settings-builder
+           java-plexus-utils
+           java-slf4j-api))
+    (synopsis "Shared classes for MIMA standalone runtimes")
+    (description "MIMA (MIni MAven) is a library that makes the Maven
+Resolver usable as a library, both inside and outside of Maven.  This package
+provides the support classes shared by the MIMA standalone runtime
+implementations, that boot the Maven Resolver outside of a Maven runtime.")))
