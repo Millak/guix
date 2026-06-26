@@ -1002,7 +1002,7 @@ the @code{tools.deps} library is not needed for dep expansion.")
 (define-public clojure-tools-deps
   (package
     (name "clojure-tools-deps")
-    (version "0.29.1598")
+    (version "0.31.1646")
     (home-page "https://github.com/clojure/tools.deps")
     (source (origin
               (method git-fetch)
@@ -1012,25 +1012,22 @@ the @code{tools.deps} library is not needed for dep expansion.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qds0ri6y8s7419x3pzl9yhhr19qli3l52yg9a78w47h0w6dd1kv"))))
+                "16yp2vg5cm83b85pg0dnb5pjn97wdqi5czz4nmzs8jlwb0jl4385"))))
     (build-system clojure-build-system)
     (arguments
      `(#:source-dirs '("src/main/clojure" "src/main/resources")
-       #:java-source-dirs '("src/main/java")
        #:test-dirs '("src/test/clojure")
        #:doc-dirs '()
        ;; FIXME: Could not initialize class
        ;; org.eclipse.aether.transport.http.SslSocketFactory
        #:tests? #f))
-    (propagated-inputs (list maven-3.8-core
-                             maven-resolver-1.6-connector-basic
-                             maven-resolver-1.6-transport-http
-                             maven-resolver-1.6-transport-file
-                             clojure-tools-gitlibs
+    (propagated-inputs (list clojure-tools-gitlibs
                              clojure-tools-cli
                              clojure-tools-deps-edn
                              clojure-data-xml
-                             cognitect-aws-api))
+                             maven-mima-extensions-mhc4
+                             maven-mima-extensions-mmr
+                             maven-mima-runtime-standalone-static))
     (synopsis "Clojure library supporting clojure-tools")
     (description "This package provides a functional API for transitive
 dependency graph expansion and the creation of classpaths.")
