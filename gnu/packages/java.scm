@@ -7363,7 +7363,9 @@ resources.")))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'chdir
-           (lambda _ (chdir "httpmime") #t)))))
+           (lambda _ (chdir "httpmime") #t))
+         (replace 'install
+           (install-from-pom "pom.xml")))))
     (inputs
      (list java-httpcomponents-httpclient java-httpcomponents-httpcore
            java-junit java-hamcrest-core))))
