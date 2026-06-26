@@ -41,6 +41,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -216,6 +217,7 @@ authentication and support for SSL3 and TLS.")
            libsodium
            libunistring
            opus
+           postgresql
            pulseaudio
            zbar))
     (native-inputs
