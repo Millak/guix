@@ -4493,3 +4493,34 @@ Resolver usable as a library, both inside and outside of Maven.  This package
 provides the MIMA @code{standalone-static} runtime, which boots the Maven
 Resolver outside of a Maven runtime by statically wiring up its components,
 without using any dependency injection container.")))
+
+(define-public maven-mima-extensions-mhc4
+  (package
+    (inherit maven-mima-context)
+    (name "maven-mima-extensions-mhc4")
+    (arguments
+     `(#:jar-name "mima-extensions-mhc4.jar"
+       #:source-dir "extensions/mhc4/src/main/java"
+       #:test-dir "extensions/mhc4/src/test"
+       #:tests? #f ; tests require JUnit5
+       #:phases (modify-phases %standard-phases
+                  (replace 'install
+                    (install-from-pom "extensions/mhc4/pom.xml")))))
+    (propagated-inputs
+     (list maven-mima-context
+           maven-resolver-api
+           maven-resolver-spi
+           maven-resolver-util
+           java-httpcomponents-httpclient
+           java-httpcomponents-httpcore
+           java-httpcomponents-httpmime
+           java-commons-codec
+           java-jcl-over-slf4j
+           java-slf4j-api))
+    (synopsis "Apache HttpClient 4 based transport factory for MIMA")
+    (description "MIMA (MIni MAven) is a library that makes the Maven
+Resolver usable as a library, both inside and outside of Maven.  This package
+provides the MIMA @code{mhc4} extension, a factory that exposes an Apache
+@code{HttpClient} 4 instance configured according to the current MIMA
+@code{context}, honouring the resolver's proxy, authentication and connection
+settings.")))
