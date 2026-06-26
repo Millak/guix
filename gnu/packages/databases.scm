@@ -1639,7 +1639,8 @@ and high-availability (HA).")
            pkg-config
            texinfo))
     (inputs
-     (list icu4c readline `(,util-linux "lib") openssl zlib))
+     (list icu4c readline `(,util-linux "lib") zlib))
+    (propagated-inputs (list openssl))  ;in Requires.private of libpq.pc
     (home-page "https://www.postgresql.org/")
     (synopsis "Powerful object-relational database system")
     (description
