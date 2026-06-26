@@ -4453,3 +4453,43 @@ runtime implementations.")
 Resolver usable as a library, both inside and outside of Maven.  This package
 provides the support classes shared by the MIMA standalone runtime
 implementations, that boot the Maven Resolver outside of a Maven runtime.")))
+
+(define-public maven-mima-runtime-standalone-static
+  (package
+    (inherit maven-mima-context)
+    (name "maven-mima-runtime-standalone-static")
+    (arguments
+     `(#:jar-name "mima-runtime-standalone-static.jar"
+       #:source-dir "runtime/standalone-static/src/main/java"
+       #:tests? #f ; no tests
+       #:phases (modify-phases %standard-phases
+                  (add-before 'build 'copy-resources
+                    (lambda _
+                      (copy-recursively
+                       "runtime/standalone-static/src/main/resources"
+                       "build/classes")))
+                  (replace 'install
+                    (install-from-pom "runtime/standalone-static/pom.xml")))))
+    (propagated-inputs
+     (list maven-mima-context
+           maven-mima-runtime-standalone-shared
+           maven-model-builder
+           maven-resolver-api
+           maven-resolver-connector-basic
+           maven-resolver-impl
+           maven-resolver-named-locks
+           maven-resolver-provider
+           maven-resolver-spi
+           maven-resolver-supplier
+           maven-resolver-transport-file
+           maven-resolver-transport-http
+           maven-resolver-util
+           maven-settings-builder
+           java-plexus-cipher
+           java-plexus-sec-dispatcher))
+    (synopsis "Self-contained static runtime of MIMA")
+    (description "MIMA (MIni MAven) is a library that makes the Maven
+Resolver usable as a library, both inside and outside of Maven.  This package
+provides the MIMA @code{standalone-static} runtime, which boots the Maven
+Resolver outside of a Maven runtime by statically wiring up its components,
+without using any dependency injection container.")))
