@@ -4524,3 +4524,33 @@ provides the MIMA @code{mhc4} extension, a factory that exposes an Apache
 @code{HttpClient} 4 instance configured according to the current MIMA
 @code{context}, honouring the resolver's proxy, authentication and connection
 settings.")))
+
+(define-public maven-mima-extensions-mmr
+  (package
+    (inherit maven-mima-context)
+    (name "maven-mima-extensions-mmr")
+    (arguments
+     `(#:jar-name "mima-extensions-mmr.jar"
+       #:source-dir "extensions/mmr/src/main/java"
+       #:test-dir "extensions/mmr/src/test"
+       #:tests? #f ; tests require JUnit5
+       #:phases (modify-phases %standard-phases
+                  (replace 'install
+                    (install-from-pom "extensions/mmr/pom.xml")))))
+    (propagated-inputs
+     (list maven-mima-context
+           maven-resolver-api
+           maven-resolver-spi
+           maven-resolver-util
+           maven-resolver-provider
+           maven-core
+           maven-model
+           maven-model-builder
+           maven-builder-support
+           java-slf4j-api))
+    (synopsis "Maven Model Reader extension for MIMA")
+    (description "MIMA (MIni MAven) is a library that makes the Maven
+Resolver usable as a library, both inside and outside of Maven.  This package
+provides the MIMA @code{mmr} (Maven Model Reader) extension, used to load the
+raw or effective Maven @code{Model} of @emph{resolvable} (deployed) artifacts
+without building the corresponding Maven projects.")))
