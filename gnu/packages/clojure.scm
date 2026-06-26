@@ -1200,62 +1200,6 @@ asynchronous support.")
     (home-page "https://github.com/http-kit/http-kit")
     (license license:asl2.0)))
 
-(define-public cognitect-aws-api
-  (package
-    (name "cognitect-aws-api")
-    (version "0.8.824")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/cognitect-labs/aws-api")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0ivlcmsr7rvr7741k9wzniv2zxijida0b588nqngm5vrgna816yl"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (for-each delete-file
-                            (list
-                             ;; Require Cognitect http client
-                             "src/cognitect/aws/http/cognitect.clj"
-                             ;; Requires Babashka.
-                             "test/src/bb_test_runner.clj"
-                             ;; Requires  AWS Java SDK v2.
-                             "test/src/cognitect/aws/jdk_v2.clj"
-                             "test/src/cognitect/aws/signers_test.clj"
-                             ;; Remove integration tests.
-                             "test/src/cognitect/aws/client/shared_test.clj"
-                             "test/src/cognitect/aws/api_test.clj"
-                             "test/src/cognitect/client/impl_test.clj"
-                             "test/src/cognitect/client/test_double_test.clj"))
-                  ;; Remove integration tests
-                  (delete-file-recursively "test/src/cognitect/aws/integration")))))
-    (build-system clojure-build-system)
-    (propagated-inputs (list clojure-core-async
-                             clojure-tools-logging
-                             clojure-data-json
-                             clojure-data-xml))
-    (native-inputs (list clojure-test-check
-                         http-kit))
-    (arguments `(#:source-dirs '("src")
-                 #:doc-dirs '()
-                 #:test-dirs '("test/src" "test/resources")
-                 ;; Allow using java.net.http client.
-                 #:jdk ,openjdk11))
-    (synopsis
-     "Programmatic access to AWS services from Clojure programs")
-    (description
-     "This package is an idiomatic, data-oriented Clojure library for invoking AWS
-APIs.  While the library offers some helper and documentation functions you'll
-use at development time, the only functions you ever need at runtime are
-client, which creates a client for a given service and invoke, which invokes
-an operation on the service. invoke takes a map and returns a map, and works
-the same way for every operation on every service.")
-    (home-page "https://github.com/cognitect-labs/aws-api")
-    (license license:asl2.0)))
-
 (define-public let-go
   (package
     (name "let-go")
