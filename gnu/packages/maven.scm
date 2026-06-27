@@ -2924,7 +2924,10 @@ reporting or the build process.")))
                      ('components x ...))) x))))
              (use-modules (sxml simple))
              (delete-file "build/classes/META-INF/plexus/components.xml")
-             (invoke "java" "-cp" (string-append (getenv "CLASSPATH") ":build/classes")
+             ;; XXX: CLASSPATH contains some references to newer maven
+             ;; jars. As a consequence build/classes needs to be prepended to
+             ;; ensure that Maven 3.0 classes are preferred.
+             (invoke "java" "-cp" (string-append "build/classes:" (getenv "CLASSPATH"))
                      "org.codehaus.plexus.metadata.PlexusMetadataGeneratorCli"
                      "--source" "build/classes/META-INF/plexus"
                      "--output" "build/classes/META-INF/plexus/components.t.xml"
