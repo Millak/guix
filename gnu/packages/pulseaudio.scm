@@ -431,7 +431,8 @@ volume levels of the sinks (get, set, decrease, increase, toggle mute, etc).")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zf79pfmm7wa1l9yyab2g6lf0j81v1mrp406262rd21g4prx1921"))))
+        (base32 "1zf79pfmm7wa1l9yyab2g6lf0j81v1mrp406262rd21g4prx1921"))
+       (patches (search-patches "pasystray-check-x11.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -444,7 +445,7 @@ volume levels of the sinks (get, set, decrease, increase, toggle mute, etc).")
     (native-inputs
      (list autoconf automake pkg-config))
     (inputs
-     (list avahi gtk+ libnotify libx11 pulseaudio))
+     (list avahi gtk+ libnotify libx11 pulseaudio libappindicator))
     (home-page "https://github.com/christophgysin/pasystray")
     (synopsis "PulseAudio controller for the system tray")
     (description "@command{pasystray} enables control of various

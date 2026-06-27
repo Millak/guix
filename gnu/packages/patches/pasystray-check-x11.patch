@@ -1,0 +1,29 @@
+This patch should fix the instant segfault behavior observed when running in a
+Wayland environment. The patch is as used in Debian[1], itself derived from
+this[2] finding, according to the same effort made in nixpkgs[3]; This patch
+should be retired once the corresponding pull request[4] is merged.
+
+[1] https://sources.debian.org/data/main/p/pasystray/0.8.1-1/debian/patches/0002-Require-X11-backend.patch
+[2] https://github.com/christophgysin/pasystray/issues/90#issuecomment-636364122
+[3] https://github.com/NixOS/nixpkgs/pull/220365
+[4] https://github.com/christophgysin/pasystray/pull/171
+
+From: Scott Leggett <scott@sl.id.au>
+Date: Mon, 29 Oct 2018 22:40:16 +1100
+Subject: Require X11 backend
+Forwarded: not-needed
+
+---
+ src/pasystray.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/src/pasystray.c
++++ b/src/pasystray.c
+@@ -38,6 +38,7 @@ static menu_infos_t* mis;
+ 
+ int main(int argc, char *argv[])
+ {
++		gdk_set_allowed_backends ("x11");
+     GOptionEntry* options = get_options();
+     GError *error = NULL;
+     gtk_init_with_args(&argc, &argv, NULL, options, NULL, &error);
