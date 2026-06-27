@@ -5745,9 +5745,9 @@ faster results and to avoid unnecessary server load.")
       #:glib-or-gtk? #t
       #:configure-flags
       #~(list "-Dsystemdsystemunitdir=no"
-              ;; If not specified, udev will try putting history information
-              ;; in /gnu/store.
-              "-Dhistorydir=/var/lib/upower"
+              ;; If not specified, udev will try putting history information and
+              ;; state files in /gnu/store.
+              "-Dlocalstatedir=/var"
               (string-append "-Dudevrulesdir=" #$output "/bin/udev/rules.d")
               (string-append "-Dudevhwdbdir=" #$output "/lib/udev/hwdb.d"))
       #:phases
