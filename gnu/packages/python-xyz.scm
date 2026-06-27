@@ -28512,16 +28512,16 @@ tool).")
 (define-public python-numcodecs
   (package
     (name "python-numcodecs")
-    (version "0.13.1")
-    ;; python-zarr does not want versions 0.14.0 or 0.14.1.
-    ;;(version "0.14.1")
+    (version "0.15.1")  ;newer version needs c-blosc 1.26+
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "numcodecs" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zarr-developers/numcodecs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1g09fwhgmhmw66x5gzmzhm8yhgqki3gpfi0dkhx8z2gh3n43gkx3"))
+        (base32 "19i30k4zn6rjqlrfk20yh75r1di3j7mli2mn9n3pyxmwaq7hiasz"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -28536,48 +28536,50 @@ tool).")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      ;; zarr isn't available, because it dependes on this package.
-      '(list "-k" "not test_zarr3_import")
+      ;; tests: 714 passed, 39 skipped, 36 xfailed, 20 warnings
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-avx2
-           (lambda _
-             (setenv "DISABLE_NUMCODECS_AVX2" "1")))
-         (add-after 'unpack 'unbundle
-           (lambda _
-             (substitute* "setup.py"
-               (("sources=sources \\+ blosc_sources,")
-                "sources=sources,")
-               (("extra_compile_args=extra_compile_args")
-                "extra_compile_args=list(base_compile_args)")
-               (("'numcodecs.zstd',")
-                "'numcodecs.zstd', libraries=['zstd'], ")
-               (("'numcodecs.lz4',")
-                "'numcodecs.lz4', libraries=['lz4'], ")
-               (("'numcodecs.blosc',")
-                "'numcodecs.blosc', libraries=['blosc'], "))))
-         (add-before 'check 'build-extensions
-           (lambda _
-             ;; Cython extensions have to be built before running the tests.
-             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (inputs
-     (list c-blosc lz4 zlib
-           `(,zstd "lib")))
-    (propagated-inputs
-     (list python-google-crc32c
-           python-importlib-metadata
-           python-msgpack
-           python-numpy))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-avx2
+            (lambda _
+              (setenv "DISABLE_NUMCODECS_AVX2" "1")))
+          (add-after 'unpack 'unbundle
+            (lambda _
+              (substitute* "setup.py"
+                (("sources=sources \\+ blosc_sources,")
+                 "sources=sources,")
+                (("extra_compile_args=extra_compile_args")
+                 "extra_compile_args=list(base_compile_args)")
+                (("'numcodecs.zstd',")
+                 "'numcodecs.zstd', libraries=['zstd'], ")
+                (("'numcodecs.lz4',")
+                 "'numcodecs.lz4', libraries=['lz4'], ")
+                (("'numcodecs.blosc',")
+                 "'numcodecs.blosc', libraries=['blosc'], "))))
+          (add-before 'build 'substitute-git-submodules
+            (lambda _
+              (symlink #$(package-source (this-package-input "c-blosc"))
+                       "c-blosc")))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (with-directory-excursion #$output
+                (apply invoke "pytest" "-vv" test-flags)
+                (delete-file-recursively ".pytest_cache")))))))
     (native-inputs
      (list python-cython
            python-py-cpuinfo
-           python-pydata-sphinx-theme
            python-pytest
            python-setuptools
-           python-setuptools-scm ;for correct version
-           python-sphinx
-           python-sphinx-issues))
+           python-setuptools-scm))
+    (inputs
+     (list c-blosc
+           lz4
+           zlib
+           (list zstd "lib")))
+    (propagated-inputs
+     (list python-deprecated
+           python-numpy
+           ;; [optional]
+           python-msgpack))
     (home-page "https://github.com/zarr-developers/numcodecs")
     (synopsis "Buffer compression and transformation codecs")
     (description
