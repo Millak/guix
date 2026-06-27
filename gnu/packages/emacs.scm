@@ -567,31 +567,35 @@ editor (console only)")
                           (search-auxiliary-file "emacs/comp-integrity.el"))
                        "-f" "ert-run-tests-batch-and-exit")))))))))
     (inputs
-     (modify-inputs inputs
-       (prepend gnutls
-                ;; For native compilation
-                libgccjit
+     (let ((inputs
+            (modify-inputs inputs
+              (prepend gnutls
+                       ;; For native compilation
+                       libgccjit
+                       ;; Avoid Emacs's limited movemail substitute that retrieves POP3
+                       ;; email only via insecure channels.
+                       ;; This is not needed for (modern) IMAP.
+                       mailutils
 
-                ;; Avoid Emacs's limited movemail substitute that retrieves POP3
-                ;; email only via insecure channels.
-                ;; This is not needed for (modern) IMAP.
-                mailutils
-
-                acl
-                alsa-lib
-                elogind
-                ghostscript
-                gpm
-                jansson
-                lcms
-                libice
-                libselinux
-                libsm
-                libxml2
-                m17n-lib
-                sqlite
-                tree-sitter
-                zlib)))))
+                       acl
+                       ghostscript
+                       jansson
+                       lcms
+                       libice
+                       libsm
+                       libxml2
+                       m17n-lib
+                       sqlite
+                       tree-sitter
+                       zlib))))
+       (if (target-hurd?)
+           inputs
+           (modify-inputs inputs
+             (prepend
+              alsa-lib
+              elogind
+              gpm
+              libselinux)))))))
 
 (define-public emacs
   (package/inherit emacs-no-x
