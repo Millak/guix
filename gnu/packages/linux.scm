@@ -3093,7 +3093,7 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
 (define-public util-linux
   (package
     (name "util-linux")
-    (version "2.42")
+    (version "2.42.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/linux/utils/"
@@ -3101,7 +3101,7 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
                                   "util-linux-" version ".tar.xz"))
               (sha256
                (base32
-                "1saqlzgjdnn84l09fi7lq4zh118p24ibphwsfip5sxxapdhb4lil"))
+                "12nfg4300x0g6z03fmqy6l6fcp10nf25p81diw9fy0lnvwx5v803"))
               (patches (search-patches "util-linux-tests.patch"))
               (modules '((guix build utils)))
               (snippet
