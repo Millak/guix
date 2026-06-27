@@ -13656,19 +13656,24 @@ and provides convenience methods for performing common object operations.")
   (package
     (name "python-perfplot")
     (version "0.10.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "perfplot" version))
-              (sha256
-               (base32
-                "0hbyv17f9ra6l6albcrqx4rylmfv2m6z4qsnhb4bar256dralvfp"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nschloe/perfplot")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j73m8v9l8bhf79qa9apj6lcw1afxbvdq4mrn0yb31541dhrxvkf"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-matplotlib
-                             python-matplotx
-                             python-numpy-1
-                             python-rich))
-    (native-inputs (list python-flit-core
-                         python-pytest))
+    (native-inputs
+     (list python-flit-core
+           python-pytest))
+    (propagated-inputs
+     (list python-matplotlib
+           python-matplotx
+           python-numpy
+           python-rich))
     (home-page "https://github.com/nschloe/perfplot")
     (synopsis "Performance plots for Python code snippets")
     (description "@code{perfplot} extends Python's timeit by testing
