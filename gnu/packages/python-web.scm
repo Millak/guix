@@ -3755,24 +3755,25 @@ for resource properties and best practices.")
 (define-public python-requests-cache
   (package
     (name "python-requests-cache")
-    (version "1.2.1")
+    (version "1.3.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "requests_cache" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/requests-cache/requests-cache")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1l8i4l2pd26gbrlcdb5z056wvsqfr3vvbyqq2f8x1f65zn3ckav8"))))
+        (base32 "1yhvidmmd02c95i1hamyy34rb3wfzgzxil2k8ay1p4r4kv7pjada"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 429 passed, 1051 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
               ;; These tests require access to external services, e.g. MongoDB
               ;; and Redis.
-              "--ignore=tests/integration"
-              ;; AttributeError: <class 'requests.adapters.HTTPAdapter'> does
-              ;; not have the attribute 'get_connection_with_tls_context'
-              "-k" "not test_mock_session")
+              "--ignore=tests/integration")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -3781,7 +3782,7 @@ for resource properties and best practices.")
               ;; '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-poetry-core
+     (list python-hatchling
            python-pytest
            python-pytest-rerunfailures
            python-pytest-xdist
@@ -3793,19 +3794,20 @@ for resource properties and best practices.")
            python-timeout-decorator))
     (propagated-inputs
      (list python-attrs
-           python-boto3
-           python-bson
            python-cattrs
-           python-itsdangerous
-           python-orjson
            python-platformdirs
+           python-requests
+           python-url-normalize
+           python-urllib3
+           ;; [optional]
+           python-boto3
+           python-botocore
+           python-itsdangerous
+           python-orjson        ;Python version < 3.14
            python-pymongo
            python-pyyaml
            python-redis
-           python-requests
-           python-ujson
-           python-url-normalize
-           python-urllib3))
+           python-ujson))
     (home-page "https://github.com/requests-cache/requests-cache")
     (synopsis "Persistent HTTP cache for Python requests")
     (description
