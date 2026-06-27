@@ -1526,7 +1526,7 @@ implements RFC 6125 fully and plans to add other relevant RFCs too.")
 (define-public python-google-crc32c
   (package
     (name "python-google-crc32c")
-    (version "1.3.0")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -1535,10 +1535,13 @@ implements RFC 6125 fully and plans to add other relevant RFCs too.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "005ra4pfv71rq53198k7q6k63f529q3g6hkbxbwfcf82jr77hxga"))))
+        (base32 "01wb7c6mfjlqqdsfd059q36n8bn8qb9yhjcvi97mnyx2wp4ddm3c"))))
     (build-system pyproject-build-system)
-    (inputs (list crc32c))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (inputs
+     (list crc32c))
     (home-page "https://github.com/googleapis/python-crc32c")
     (synopsis "Python wrapper of Google CRC32C")
     (description
