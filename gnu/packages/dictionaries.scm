@@ -911,11 +911,11 @@ format compatible with dicod and similar programs.")
     (license license:unlicense)))
 
 (define-public goldendict-ng
-  (let ((commit "673d1b905e4844375125d6e0dda99342636662ac")
+  (let ((commit "f21b03390771b7482a367c3e62b82946b2dffd6d")
         (revision "0"))
     (package
       (name "goldendict-ng")
-      (version (git-version "25.10.2" revision commit))
+      (version (git-version "26.6.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -924,22 +924,24 @@ format compatible with dicod and similar programs.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0g6l4652q6v208fqa2h4yi9db1wdzj3b5fpv8akg3xil999crz39"))
+          (base32 "0x9r4y746cpkz4hry1w3n88xhfyg5rpnfp8zz0lxy24il866fpc1"))
          (modules '((guix build utils)))
-         (snippet #~(for-each delete-file-recursively
-                              (list "thirdparty/eb"
-                                    "thirdparty/fmt"
-                                    "thirdparty/tomlplusplus")))))
+         (snippet #~(delete-file-recursively "thirdparty/eb"))))
       (build-system qt-build-system)
       (arguments
-       (list #:qtbase qtbase
-             #:configure-flags
-             #~(list
-                ;; use system fmt and toml++ instead of the bundled ones
-                "-DUSE_SYSTEM_FMT=ON"
-                "-DUSE_SYSTEM_TOML=ON")
-             ;; no tests
-             #:tests? #f))
+       (list
+        #:qtbase qtbase
+        #:tests? #f                     ; no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'install-icon
+              (lambda _
+                (let* ((share (string-append #$output "/share"))
+                       (dir (string-append share "/icons/hicolor/256x256/apps"))
+                       (old (string-append share "/pixmaps/goldendict.png"))
+                       (new (string-append dir "/goldendict.png")))
+                  (mkdir-p dir)
+                  (symlink old new)))))))
       (native-inputs (list pkg-config qttools))
       (inputs (list `(,zstd "lib")
                     bzip2
@@ -957,6 +959,7 @@ format compatible with dicod and similar programs.")
                     qt5compat
                     qtmultimedia
                     qtsvg
+                    qtwayland
                     qtwebchannel
                     qtwebengine
                     tomlplusplus
