@@ -23099,7 +23099,7 @@ interfaces.")
 (define-public python-cattrs
   (package
     (name "python-cattrs")
-    (version "25.2.0")
+    (version "26.1.0")
     (source
      (origin
        (method git-fetch)
@@ -23108,11 +23108,11 @@ interfaces.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zsp1p0wr1qf7yr9fwa60lqxbjfp5g0r3p15gf16ky8hvy6lm187"))))
+        (base32 "0msn1zgv7shlh7nnmhydg7gv6j0y9yy1061f7qcj31jhzd7bnl4b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 933 passed, 15 xfailed
+      ;; tests: 1010 passed, 15 xfailed
       #:test-flags
       #~(list "-m" "not benchmark"
               "--numprocesses" (number->string (parallel-job-count)))
@@ -23140,6 +23140,7 @@ interfaces.")
            python-orjson
            python-pymongo               ;for the bson module
            python-pyyaml
+           python-tomli-w
            python-tomlkit
            python-ujson))
     (home-page "https://github.com/python-attrs/cattrs")
