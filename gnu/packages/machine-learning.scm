@@ -2879,6 +2879,17 @@ to return meaningful clusters (if there are any).")
        (sha256
         (base32 "1x94mjdf62f2yqql50qn0qjh4bkhwdvx7xx9aph421s0bgxy1zbz"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Error from ScikitLearn: The 'metric' parameter of pairwise_distances
+      ;; must be a str among <...>. Fixed in upcomming release of pynndescent.
+      #~(list (string-append "--deselect=pynndescent/tests/test_distances.py"
+                             "::test_binary_check[sokalmichener]")
+              (string-append "--deselect=ynndescent/tests/test_distances.py"
+                             "::test_sparse_binary_check[sokalmichener]")
+              (string-append "--deselect=pynndescent/tests/test_distances.py"
+                             "::test_sparse_binary_check[sokalmichener]"))))
     (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-joblib
                              python-llvmlite
