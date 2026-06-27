@@ -272,7 +272,7 @@ possibility to differentiate functions that contain matrix functions as
 (define-public python-anndata
   (package
     (name "python-anndata")
-    (version "0.12.7")
+    (version "0.13.0rc3")
     (source
      (origin
        (method git-fetch)
@@ -281,58 +281,18 @@ possibility to differentiate functions that contain matrix functions as
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1404x0z37z7xfdzkkafh62amchikrz0ssyc83rn6pv3dd4nn8nid"))))
+        (base32 "0hbnp4pw8wpn2lcds0wa92kb8x4bdkiv76dijg7g4pj0v86qm034"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 4167 passed, 1208 skipped, 12 xfailed, 2225 warnings
+      ;; tests: 6677 passed, 1842 skipped, 195 xfailed, 4842 warnings, 98
+      ;; subtests passed
       #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+      #~(list "-m" "not gpu"
+              "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; XXX: AttributeError: module 'pyarrow.lib' has no attribute
               ;; 'PyExtensionType'
-              "--ignore=tests/test_awkward.py"
-              ;; These tests require CUDA backed package:
-              ;; <https://github.com/cupy/cupy>.
-              "--deselect=sts/test_views.py::test_view_of_view"
-              #$@(map (lambda (test) (string-append "--deselect="
-                                                    "tests/"
-                                                    test))
-                      (list "test_concatenate.py::test_concatenate_layers"
-                            "test_concatenate.py::test_concat_different_types_dask"
-                            "test_concatenate.py::test_concat_on_var_outer_join"
-                            "test_concatenate.py::test_concatenate_layers_misaligned"
-                            "test_concatenate.py::test_concatenate_layers_outer"
-                            "test_concatenate.py::test_concatenate_roundtrip"
-                            "test_concatenate.py::test_error_on_mixed_device"
-                            "test_concatenate.py::test_nan_merge"
-                            "test_concatenate.py::test_pairwise_concat"
-                            "test_concatenate.py::test_transposed_concat"
-                            "test_dask.py::test_dask_to_disk_view"
-                            "test_dask.py::test_dask_to_memory_unbacked"
-                            "test_gpu.py::test_adata_raw_gpu"
-                            "test_gpu.py::test_gpu"
-                            "test_gpu.py::test_raw_gpu"
-                            "test_helpers.py::test_as_cupy_dask"
-                            "test_helpers.py::test_as_dask_functions"
-                            "test_io_elementwise.py::test_io_spec_cupy"
-                            "test_obsmvarm.py::test_1d_declaration"
-                            "test_obsmvarm.py::test_1d_set"
-                            "test_views.py::test_ellipsis_index"
-                            "test_views.py::test_modify_view_component"
-                            "test_views.py::test_set_scalar_subset_X"
-                            "test_views.py::test_view_different_type_indices"
-                            "test_views.py::test_view_of_view"))
-              "-k" (string-join
-                    ;; TypeError: _fix_co_filename() argument 2 must be str,
-                    ;; not PosixPath
-                    (list "not test_hints"
-                          ;; ValueError: Cannot convert. CSC format must be
-                          ;; 2D. Got 1D
-                          "test_backed_modification_sparse[csc_matrix]"
-                          ;; Failed: DID NOT WARN. No warnings of type (<class
-                          ;; 'FutureWarning'>,) were emitted.
-                          "test_old_format_warning_thrown")
-                    " and not "))
+              "--ignore=tests/test_awkward.py")
       #:phases
       #~(modify-phases %standard-phases
           ;; Doctests require scanpy from (gnu packages bioinformatics)
@@ -354,6 +314,7 @@ possibility to differentiate functions that contain matrix functions as
            python-hatch-vcs
            python-hatchling
            python-joblib
+           python-jsonschema
            python-loompy
            python-matplotlib
            python-openpyxl
@@ -373,6 +334,8 @@ possibility to differentiate functions that contain matrix functions as
            python-packaging
            python-pandas
            python-scipy
+           python-scverse-misc
+           python-typing-extensions     ;Python version < 3.13
            python-zarr))
     (home-page "https://github.com/theislab/anndata")
     (synopsis "Annotated data for data analysis pipelines")
