@@ -696,7 +696,7 @@ applications.")
 (define-public openvdb
   (package
     (name "openvdb")
-    (version "11.0.0")
+    (version "13.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -706,15 +706,15 @@ applications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r6q7bl8513ggrvx3n73j1s3f7n5x1rxy5xi471qyrya95gy6c60"))))
+                "0q9ri8mjfyj0wq39d04pjnc5ijv0x28qc7lsfzcr7wmbz1jxvmzs"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f
-       #:configure-flags
-       (list (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib"))))
+     (list #:tests? #f
+           #:configure-flags
+           #~(list (string-append "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-rpath="
+                                  #$output "/lib"))))
     (inputs
-     (list boost c-blosc jemalloc onetbb zlib))
+     (list boost c-blosc jemalloc onetbb-2022 zlib))
     (native-inputs
      (list pkg-config))
     (home-page "https://www.openvdb.org/")
