@@ -1278,28 +1278,44 @@ files.")
 (define-public python-eventlet
   (package
     (name "python-eventlet")
-    (version "0.40.4")
+    (version "0.41.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "eventlet" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/eventlet/eventlet")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0vzjrb7n3x7gdrxiw4dacdxvz0m8saaw9w7n1n9v865yn49gggk9"))))
+        (base32 "1rn8f5v08n48dh6aycdxfwz17w4xwkgny7bhy5llqn5dl0g2dw43"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 618 passed, 121 skipped, 20 deselected, 52 warnings
       #:test-flags
-      '(list "-k"
-             (string-append
-              "not TestGetaddrinfo"
-              " and not TestProxyResolver"
-              " and not test_noraise_dns_tcp"
-              " and not test_raise_dns_tcp"
-              " and not test_hosts_no_network"
-              " and not test_import_rdtypes_then_eventlet"
-              " and not test_patcher_existing_locks"
-              " and not test_dns_methods_are_green"))
+      #~(list
+         #$@(map (lambda (test)
+                   (string-append "--deselect=tests/" test))
+                 (list
+                  ;; dns.resolver.NoResolverConfiguration: cannot open
+                  ;; /etc/resolv.conf
+                  "greendns_test.py::TestProxyResolver::test_clear"
+                  "greendns_test.py::TinyDNSTests::test_noraise_dns_tcp"
+                  "greendns_test.py::TinyDNSTests::test_raise_dns_tcp"
+                  ;; assert <built-in function gethostbyname> is <function
+                  ;; gethostbyname at 0x7ffff3491120>
+                  "socket_test.py::test_dns_methods_are_green"
+                  ;; socket.gaierror: [Errno -8] Servname not supported for
+                  ;; ai_socktype
+                  "greendns_test.py::TestGetaddrinfo::test_getaddrinfo"
+                  "greendns_test.py::TestGetaddrinfo::test_getaddrinfo_idn"
+                  "greendns_test.py::TestGetaddrinfo::test_getaddrinfo_inet"
+                  "greendns_test.py::TestGetaddrinfo::test_getaddrinfo_inet6"
+                  "greendns_test.py::test_hosts_no_network"
+                  ;; AssertionError: Expected single line "pass" in stdout
+                  "asyncio_test.py::test_asyncio_does_not_use_greendns"
+                  "greendns_test.py::test_import_rdtypes_then_eventlet"
+                  "patcher_test.py::test_patcher_existing_logging_module_lock")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'avoid-OSError
@@ -1311,13 +1327,18 @@ files.")
               ;; changed default.
               (substitute* "eventlet/green/socket.py"
                 (("os\\.environ\\.get\\(\"EVENTLET_NO_GREENDNS\", ''\\)")
-                 "os.environ.get(\"EVENTLET_NO_GREENDNS\", \"yes\")")))))))
+                 "os.environ.get(\"EVENTLET_NO_GREENDNS\", \"yes\")"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "EVENTLET_HUB" "asyncio"))))))
     (native-inputs
      (list python-hatchling
            python-hatch-vcs
-           python-pytest))
+           python-pytest
+           python-pytest-aiohttp))
     (propagated-inputs
-     (list python-dnspython python-greenlet))
+     (list python-dnspython
+           python-greenlet))
     (home-page "https://eventlet.net")
     (synopsis "Concurrent networking library for Python")
     (description
