@@ -43166,48 +43166,47 @@ and XML respectively.  The processing is done through @command{jq},
 (define-public python-zarr
   (package
     (name "python-zarr")
-    (version "2.18.7")
+    (version "3.2.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zarr" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zarr-developers/zarr-python")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1xbjjpjskykbdskck5p1f0grh6wq36437ll0n5kazi6s2ipzdf5j"))))
+        (base32 "1qzbpy6j8mgpr6wb69j8yyjyr95rmagn64v8pcdljjl3969rmjf6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 5339 passed, 384 skipped, 1 deselected, 7 xfailed
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              ;; This tests are flaky.  The pass several times on my laptop
-              ;; but occasionally fail.  They fail pretty reliably on the
-              ;; build farm.
-              "-k" (string-append "not test_lazy_loader and not open_array"
-                                  ;; File not found.
-                                  " and not test_filesystem_path"))
+      #~(list "--ignore=tests/benchmarks/"
+              ;; This test wants uv.
+              (string-append "--deselect=tests/test_examples.py"
+                             "::test_scripts_can_run[script_path0]"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("^version_file.*") "")
-                (("dynamic = \\[\"version\"\\]")
-                 (string-append "version = \"" #$version "\"")))))
           (add-after 'unpack 'disable-service-tests
             (lambda _
               (setenv "ZARR_TEST_ABS" "0")
               (setenv "ZARR_TEST_MONGO" "0")
               (setenv "ZARR_TEST_REDIS" "0"))))))
-    (propagated-inputs
-     (list python-asciitree
-           python-fasteners
-           python-numcodecs
-           python-numpy))
     (native-inputs
-     (list python-pytest
-           python-pytest-xdist
-           python-setuptools
-           python-wheel))
+     (list python-hatch-vcs
+           python-hatchling
+           python-numpydoc      ;tests/test_api/test_synchronous.py
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-benchmark
+           python-tomlkit))
+    (propagated-inputs
+     (list python-donfig
+           python-google-crc32c
+           python-numcodecs
+           python-numpy
+           python-packaging
+           python-typing-extensions))
     (home-page "https://github.com/zarr-developers/zarr-python")
     (synopsis "Chunked, compressed, N-dimensional arrays for Python")
     (description
