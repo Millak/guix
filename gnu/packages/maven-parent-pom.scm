@@ -108,6 +108,10 @@
   (make-apache-parent-pom
     "35" "0rj04bw9sdqv239gz2ihgqvrv0mpv7h58lbym1kyfh1rqa44m7x4"))
 
+(define-public apache-parent-pom-38
+  (make-apache-parent-pom
+    "38" "00n9j2sn1q76pp4z7dj78dcsb7jy5ai237n5chdfwyawyrd4xf6z"))
+
 (define* (make-apache-commons-parent-pom version hash parent
                                          #:key (tag-prefix "commons-parent-"))
   (hidden-package
@@ -502,6 +506,29 @@ other projects as their parent pom.")
       (description "Apache Maven is a software project management and comprehension
 tool.  This package contains the Maven parent POM.")
       (license license:asl2.0))))
+
+(define-public maven-parent-pom-48
+  (let ((base
+          (make-maven-parent-pom
+            "48" "0jxr14982l09vj25066zsjispa7znjnkha0pgi57vm5dmsy3zkms"
+            apache-parent-pom-38
+            #:replacements
+            (delay
+              `(("org.codehaus.plexus"
+                 ("plexus-component-annotations" .
+                  ,(package-version java-plexus-component-annotations))))))))
+    (package
+      (inherit base)
+      (arguments
+        (substitute-keyword-arguments (package-arguments base)
+          ((#:phases phases)
+           `(modify-phases ,phases
+              (add-before 'fix-pom 'fix-junit-bom
+                (lambda _
+                  ;; Prevent junit-bom from leaking from the parent pom, since
+                  ;; we don't package it yet.
+                  (substitute* "pom.xml"
+                    (("<scope>import</scope>") "<scope>test</scope>")))))))))))
 
 (define-public maven-parent-pom-39
   (make-maven-parent-pom
