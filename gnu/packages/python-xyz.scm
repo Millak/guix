@@ -13540,8 +13540,8 @@ three-way Venn diagrams in @code{matplotlib}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/nschloe/matplotx")
-             (commit (string-append "v" version))))
+              (url "https://github.com/nschloe/matplotx")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1j301mr7ai2jmbm5mkva0jd99fzxhyq585pqzqfmrf5pil8j4q8i"))))
@@ -13553,24 +13553,23 @@ three-way Venn diagrams in @code{matplotlib}.")
       #~(list "--deselect" "tests/test_spy.py::test_cli"
               ;; XXX: unknown failure
               "--deselect" "tests/test_spy.py::test_png")))
-    (propagated-inputs
-     (list python-matplotlib
-           python-numpy
-           ;; optional dependencies
+    (native-inputs
+     (list python-imageio
+           python-meshzoo
            python-networkx
            python-pypng
-           python-scipy))
-    (native-inputs (list python-imageio
-                         python-meshzoo
-                         python-pytest
-                         python-scikit-fem
-                         python-setuptools
-                         python-wheel))
+           python-pytest
+           python-scipy-minimal
+           python-setuptools
+           python-scikit-fem))
+    (propagated-inputs
+     (list python-matplotlib
+           python-numpy))
     (home-page "https://github.com/nschloe/matplotx")
     (synopsis "Minimal matplotlib styles")
     (description
-      "This package includes some extensions for Matplotlib to create
-clean plots with a minimalistic style.")
+     "This package includes some extensions for Matplotlib to create clean
+plots with a minimalistic style.")
     (license license:expat)))
 
 (define-public python-cplot
