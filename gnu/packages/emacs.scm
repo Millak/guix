@@ -556,8 +556,8 @@ editor (console only)")
                 #$(cond
                    ((%current-target-system)
                     #~(display "Cannot validate native-comp on cross builds.\n"))
-                   ((member (%current-system) '("armhf-linux" "i686-linux"))
-                    #~(display "Integrity test is broken on armhf.\n"))
+                   ((member (%current-system) '("armhf-linux" "i686-linux" "i586-gnu"))
+                    #~(display "Integrity test is broken on 32bit systems.\n"))
                    (else
                     #~(invoke
                        (string-append (assoc-ref outputs "out") "/bin/emacs")
