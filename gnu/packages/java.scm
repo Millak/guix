@@ -5848,6 +5848,23 @@ including java-asm.")
      (list java-asm-9.10
            java-asm-tree-9.10))))
 
+(define-public java-asm-commons-9.10
+  (package
+    (inherit java-asm-commons-9)
+    (name "java-asm-commons")
+    (version (package-version java-asm-9.10))
+    (source (package-source java-asm-9.10))
+    (arguments
+     (substitute-keyword-arguments (package-arguments java-asm-commons-9)
+       ((#:jdk _ #f) openjdk11)
+       ((#:make-flags _ #f)
+        #~(list "-Dant.build.javac.source=8"
+                "-Dant.build.javac.target=8"))))
+    (inputs
+     (list java-asm-9.10
+           java-asm-analysis-9.10
+           java-asm-tree-9.10))))
+
 (define-public java-cglib
   (package
     (name "java-cglib")
