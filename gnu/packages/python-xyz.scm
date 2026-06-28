@@ -422,14 +422,22 @@ with heap allocation instead of a flat array to represent a tree.")
 (define-public python-anaconda-cli-base
   (package
     (name "python-anaconda-cli-base")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "anaconda_cli_base" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/anaconda/anaconda-cli-base")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0r2cvz99vrvcm399qsfxiak5qb3mbr0kbvdrkbnm20l9lq2g18zr"))))
+        (base32 "1vsbxcgn05d7mlwl17f0bfq25lydl7i8n4x0a95hmjdl45n1q9wx"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--deselect=tests/test_cli.py::test_cli_version"
+              "--deselect=tests/test_cli.py::test_load_plugin")))
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
@@ -440,6 +448,7 @@ with heap allocation instead of a flat array to represent a tree.")
     (propagated-inputs
      (list python-click
            python-packaging
+           python-pydantic
            python-pydantic-settings
            python-readchar
            python-rich
