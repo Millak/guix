@@ -2827,16 +2827,21 @@ particle information and extra goodies.")
 (define-public python-pint
   (package
     (name "python-pint")
-    (version "0.24.4")
+    (version "0.25.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pint" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hgrecco/pint")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "100vp5jg2sqj5wxaflj1rqjv2pk4fd55l2h2sdn7m0vlnlwm89rm"))))
+        (base32 "0ra25yfvjm5fpc47wm2dk8vicpdblvjjizbs0n1ak5d65mqinv4p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 2191 passed, 142 skipped, 11 xfailed, 9 warnings, 298 subtests
+      ;; passed
       #:test-flags #~(list "--ignore=pint/testsuite/benchmarks")
       #:phases
       #~(modify-phases %standard-phases
@@ -2846,12 +2851,11 @@ particle information and extra goodies.")
               ;; '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-pytest
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest
            python-pytest-mpl
-           python-pytest-subtests
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-pytest-subtests))
     (propagated-inputs
      (list python-flexcache
            python-flexparser
