@@ -13343,6 +13343,36 @@ everything as database, including class objects, text format data, data
 streams, etc.")
     (license license:asl2.0)))
 
+(define-public java-asm-jdk-bridge
+  (package
+    (name "java-asm-jdk-bridge")
+    (version "0.0.13")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/raphw/asm-jdk-bridge")
+                     (commit (string-append "asm-jdk-bridge-parent-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1f9x94drnjdr1k6wr49g9vn0prx5s5a4qfx91rx19w136cmx92yc"))))
+    (build-system ant-build-system)
+    (arguments
+     (list #:jar-name "asm-jdk-bridge.jar"
+           #:tests? #f ; tests require JUnit 5
+           #:source-dir "asm-jdk-bridge/src/main/java"))
+    (inputs (list java-asm-9.10))
+    (home-page "https://github.com/raphw/asm-jdk-bridge")
+    (synopsis "Bridge between the ASM API and the OpenJDK Class File API")
+    (description
+     "This package implements adapters to translate between ASM visitors and
+the OpenJDK Class File API.  It allows plugging the OpenJDK reader and writer
+into existing ASM-based code with little change: an instance of ASM's
+@code{ClassReader} or @code{ClassWriter} can be replaced with
+@code{JdkClassReader} or @code{JdkClassWriter}, which use the Class File API
+internally while exposing APIs equal to ASM.")
+    (license license:asl2.0)))
+
 (define-public java-byte-buddy-dep
   (package
     (name "java-byte-buddy-dep")
