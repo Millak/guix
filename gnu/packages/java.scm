@@ -6989,6 +6989,65 @@ namespaces.")
 It provides packages in the @code{javax.annotations} namespace.")
     (license license:asl2.0)))
 
+(define-public java-findbugs-annotations
+  (package
+    (name "java-findbugs-annotations")
+    (version "3.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/findbugsproject/findbugs")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zdf5hqj2g1ivxia8kw4g6gk98x6dsn4hfx8rl478150905kbq4y"))
+              (modules '((guix build utils)))
+              ;; Delete bundled jars.
+              (snippet
+               '(for-each delete-file (find-files "." "\\.jar$")))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no tests for the annotations
+      #:jar-name "findbugs-annotations.jar"
+      #:source-dir "annotations-src"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Pick only the namespace for the annotation classes.
+          (add-after 'unpack 'select-annotation-sources
+            (lambda _
+              (let ((dir "annotations-src/edu/umd/cs/findbugs"))
+                (mkdir-p dir)
+                (copy-recursively
+                 "findbugs/src/java/edu/umd/cs/findbugs/annotations"
+                 (string-append dir "/annotations"))
+                ;; The Confidence and Priority enums refer to this class,
+                ;; which only defines constants.
+                (install-file
+                 "findbugs/src/java/edu/umd/cs/findbugs/Priorities.java" dir)
+                ;; Remove dependency to the BugRanker class.
+                (substitute* (find-files dir "\\.java$")
+                  (("import edu.umd.cs.findbugs.BugRanker;") "")
+                  (("BugRanker.VISIBLE_RANK_MAX") "20"))
+                #t)))
+          (add-before 'install 'create-pom
+            (generate-pom.xml "pom.xml" "com.google.code.findbugs" "annotations"
+                              #$version))
+          (replace 'install
+            (install-from-pom "pom.xml")))))
+    (propagated-inputs (list java-jsr305))
+    (home-page "https://findbugs.sourceforge.net/")
+    (synopsis "Annotations for the FindBugs static analysis tool")
+    (description "FindBugs is a static analysis tool that looks for bugs in
+Java programs.  This package provides the annotations from the
+@code{edu.umd.cs.findbugs.annotations} namespace, most notably
+@code{@@SuppressFBWarnings}, which suppresses individual FindBugs warnings on a
+class or method, as well as annotations such as @code{@@CheckForNull} and
+@code{@@Nullable}.  Only the annotation classes are built, not the FindBugs
+analysis engine itself.")
+    (license license:lgpl2.1+)))
+
 (define-public java-error-prone-annotations
   (package
     (name "java-error-prone-annotations")
