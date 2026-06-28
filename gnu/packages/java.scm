@@ -5830,6 +5830,24 @@ including java-asm.")
     (inputs
      (list java-asm-9.10))))
 
+(define-public java-asm-analysis-9.10
+  (package
+    (inherit java-asm-analysis-9)
+    (name "java-asm-analysis")
+    (version (package-version java-asm-9.10))
+    (source (package-source java-asm-9.10))
+    (arguments
+     (list #:jar-name "asm-analysis.jar"
+           #:source-dir "asm-analysis/src/main/java"
+           #:test-dir "asm-analysis/src/test"
+           #:tests? #f
+           #:jdk openjdk11
+           #:make-flags #~(list "-Dant.build.javac.source=8"
+                                "-Dant.build.javac.target=8")))
+    (inputs
+     (list java-asm-9.10
+           java-asm-tree-9.10))))
+
 (define-public java-cglib
   (package
     (name "java-cglib")
