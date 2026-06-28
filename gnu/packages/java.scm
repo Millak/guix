@@ -5790,6 +5790,29 @@ including java-asm.")
            java-asm-analysis-9.7.1
            java-asm-tree-9.7.1))))
 
+(define-public java-asm-9.10
+  (package
+    (inherit java-asm-9)
+    (name "java-asm")
+    (version "9.10.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.ow2.org/asm/asm.git")
+             (commit "ASM_9_10_1")))
+       (file-name (git-file-name "java-asm" version))
+       (sha256
+        (base32 "0rshbybb6piw2s9lp8qmsnz3qvd69ks83fn2ci5kams8cmyyma4a"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments java-asm-9)
+       ((#:jdk _ #f) openjdk11)
+       ((#:make-flags _ #f)
+        ;; Compile with openjdk11 (for the 'Deprecated.forRemoval' API) but
+        ;; emit Java 8 byte code so the jars stay usable by icedtea-8 builds.
+        #~(list "-Dant.build.javac.source=8"
+                "-Dant.build.javac.target=8"))))))
+
 (define-public java-cglib
   (package
     (name "java-cglib")
