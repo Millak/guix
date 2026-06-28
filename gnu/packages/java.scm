@@ -7344,6 +7344,35 @@ it records all mock invocations, including methods arguments.")
 testing libraries and frameworks for the JVM can use to report test failures.")
     (license license:asl2.0)))
 
+(define-public java-mockito-4
+  (package
+    (inherit java-mockito-1)
+    (version "4.11.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://repo1.maven.org/maven2/"
+                                  "org/mockito/mockito-core/" version
+                                  "/mockito-core-" version "-sources.jar"))
+              (sha256
+               (base32
+                "1gvqghx4xlgk1snl01csdj3wlrwl2zg9acasiwsqgcff5jgisx1l"))))
+    (arguments
+     (list #:tests? #f ; no tests included
+           #:jar-name "mockito.jar"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'reference-unshaded-asm
+                 (lambda _
+                   (substitute* (find-files "src" "\\.java$")
+                     (("net\\.bytebuddy\\.jar\\.asm") "org.objectweb.asm")))))))
+    (inputs '())
+    (propagated-inputs
+     (list java-byte-buddy-agent
+           java-byte-buddy-dep
+           java-objenesis
+           java-junit
+           java-opentest4j))))
+
 (define-public java-httpcomponents-httpcore
   (package
     (name "java-httpcomponents-httpcore")
