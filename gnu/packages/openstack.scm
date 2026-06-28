@@ -144,14 +144,16 @@ manner.")
 (define-public python-hacking
   (package
     (name "python-hacking")
-    (version "7.0.0")
+    (version "8.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "hacking" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/openstack-dev/hacking")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1dya2mbnm8cbkwrzmhsacdpmp37nhfcy13y5hbx58z8g53jw5dmr"))))
+        (base32 "1pb2sp2c588kgq15xk78fy3hcd7rzkcqnnmsn6rlr2w6c5b08wqb"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-flake8))
@@ -159,12 +161,11 @@ manner.")
      (list python-ddt
            python-eventlet
            python-fixtures
-           python-setuptools
+           python-pbr
            python-stestr
            python-subunit
            python-testscenarios
-           python-testtools
-           python-wheel))
+           python-testtools))
     (home-page "https://github.com/openstack-dev/hacking")
     (synopsis "OpenStack hacking guideline enforcement")
     (description
