@@ -7169,6 +7169,47 @@ tests with a clean and simple API.  It generates mocks using reflection, and
 it records all mock invocations, including methods arguments.")
     (license license:asl2.0)))
 
+(define-public java-opentest4j
+  (package
+    (name "java-opentest4j")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ota4j-team/opentest4j")
+                     (commit (string-append "r" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1z7krrl8j7l2v3c1qadbl7bydigbh4gqv9gqm7xcizq2iq2hgav5"))))
+    (build-system ant-build-system)
+    (arguments
+     (list
+      #:jar-name "opentest4j.jar"
+      #:source-dir "src/main/java"
+      #:test-include (list "**/*Tests.java")
+      ;; Tests use local variable type inference ('var'), which requires
+      ;; Java 10 or later.
+      #:jdk openjdk11
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-release
+            (lambda _
+              ;; Only the tests require JDK 10+.  Target Java 8 for the
+              ;; main classes so that the jar stays usable by packages built
+              ;; with the default JDK.
+              (substitute* "build.xml"
+                (("(<javac )([^>]+srcdir=\"src/main/java\"[^>]+/?>)"
+                  _ prefix suffix)
+                 (string-append prefix "release=\"8\" " suffix))))))))
+    (home-page "https://github.com/ota4j-team/opentest4j")
+    (native-inputs
+     (list java-junit-4.13.2))
+    (synopsis "Java assertion library")
+    (description "This package provides a common set of exceptions that
+testing libraries and frameworks for the JVM can use to report test failures.")
+    (license license:asl2.0)))
+
 (define-public java-httpcomponents-httpcore
   (package
     (name "java-httpcomponents-httpcore")
