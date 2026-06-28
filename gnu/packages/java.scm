@@ -13465,6 +13465,26 @@ creating and modifying Java classes during the runtime of a Java application
 and without the help of a compiler.")
     (license license:asl2.0)))
 
+(define-public java-byte-buddy-agent
+  (package
+    (inherit java-byte-buddy-dep)
+    (name "java-byte-buddy-agent")
+    (arguments
+     (list #:jar-name "byte-buddy-agent.jar"
+           #:tests? #f; tests require attaching to a running JVM
+           #:source-dir "byte-buddy-agent/src/main/java"
+           #:test-dir "byte-buddy-agent/src/test"))
+    (propagated-inputs
+     (list java-native-access
+           java-native-access-platform))
+    (native-inputs
+     (list java-findbugs-annotations))
+    (synopsis "Attach Byte Buddy agents to a running Java virtual machine")
+    (description "The Byte Buddy agent allows the attachment of a Java agent to
+the current or to a remote Java virtual machine.  It enables Byte Buddy to
+redefine and retransform classes that are already loaded, making it possible to
+manipulate the bytecode of a running application.")))
+
 (define-public java-powermock-reflect
   (package
     (name "java-powermock-reflect")
