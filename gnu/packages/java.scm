@@ -4057,7 +4057,9 @@ sharing common test data, and test runners for running tests.")
              (commit (string-append "r" version))))
        (file-name (git-file-name "java-junit" version))
        (sha256
-        (base32 "1r7k4zzscc8019np3is3bzfigw8fxd6s3259cbhzzh02q6d5p9h3"))))))
+        (base32 "1r7k4zzscc8019np3is3bzfigw8fxd6s3259cbhzzh02q6d5p9h3"))))
+    (propagated-inputs
+     (list java-hamcrest))))
 
 (define-public java-junitparams
   (package
