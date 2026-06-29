@@ -23,4 +23,6 @@
 
 (match (command-line)
   ((program texi pofile)
-   (translate-cross-references texi pofile)))
+   (with-fluids ((%default-port-encoding "UTF-8")
+                 (%default-port-conversion-strategy 'error))
+       (translate-cross-references texi pofile))))
