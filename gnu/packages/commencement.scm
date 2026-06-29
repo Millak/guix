@@ -3657,6 +3657,13 @@ COREUTILS-FINAL vs. COREUTILS, etc."
                                                   ((_ . directory) directory))
                                                 %build-inputs))
 
+                       ;; Create 'cc' so that one can use it as a drop-in
+                       ;; replacement for the default tool chain and have
+                       ;; configure scripts find the compiler. GCC already
+                       ;; provides 'c++' out of the box, strangely.
+                       (symlink "gcc" (string-append out "/bin/cc"))
+
+
                        (union-build (assoc-ref %outputs "debug")
                                     (list (assoc-ref %build-inputs
                                                      "libc-debug")))
