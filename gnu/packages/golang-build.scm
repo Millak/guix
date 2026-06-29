@@ -1332,6 +1332,21 @@ low-level interaction with the operating system.")
      (arguments
      (list
       #:skip-build? #t
+      #:phases
+      (if (target-ppc32?)
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'patch-for-unsupported-architecture
+                (lambda* (#:key import-path #:allow-other-keys)
+                  (with-directory-excursion (string-append "src/" import-path)
+                    (with-output-to-file "cpu/cpu_ppc.go"
+                      (lambda ()
+                        (format #t "//go:build ppc~@
+                                ~@
+                                package cpu~@
+                                ~@
+                                const cacheLineSize = 32~@
+                                func initOptions() {}~%")))))))
+          #~%standard-phases)
       #:test-flags
       #~(list #$@(cond
                    ;; TODO: Remove this branch of the conditional,
