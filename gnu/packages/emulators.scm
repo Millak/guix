@@ -472,21 +472,76 @@ It aims to support Nintendo DSi and 3DS as well.")
     (method git-fetch)
     (uri (git-reference
            (url "https://github.com/RetroAchievements/rcheevos")
-           (commit "b443902b1cdfee5a66b09fec20a94d2d2afaf2ec")))
+           (commit "926e4608f8dca7989267c787bbefb3ab1c835ac5")))
     (file-name "dolphin-rcheevos-submodule-checkout")
     (sha256
      (base32
-      "1118l6ln73rjj7hw45712lm2i24m96nygiiw57hlcyaxijppl1vj"))))
+      "0vj6har1l5izmirvzv2qs28qmjfshx6awn3zilq99pk66nx9xsdy"))))
+
+(define dolphin-glslang-submodule
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+           (url "https://github.com/KhronosGroup/glslang")
+           (commit "a57276bf558f5cf94d3a9854ebdf5a2236849a5a")))
+    (file-name "dolphin-glslang-submodule-checkout")
+    (sha256
+     (base32
+      "05lg4k0m79lx9lrz9k5giaq9yh2c8v3avnf5rsv1s2w6wk51sg7w"))))
+
+(define dolphin-cpp-ipc-submodule
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+           (url "https://github.com/mutouyun/cpp-ipc")
+           (commit "ce0773b3e6d5abaa8d104100c5704321113853ca")))
+    (file-name "dolphin-cpp-ipc-submodule-checkout")
+    (sha256
+     (base32
+      "09dkkax3nri604y77820pnq7vp29v1knybv6b4wm567ha2rnby6c"))))
+
+(define dolphin-cpp-optparse-submodule
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+           (url "https://github.com/weisslj/cpp-optparse.git")
+           (commit "2265d647232249a53a03b411099863ceca35f0d3")))
+    (file-name "dolphin-cpp-optparse-submodule-checkout")
+    (sha256
+     (base32
+      "11409rai8inia1rjl3kig5rcs4sfmschf9jrb0q22v7pdlaqmxw5"))))
+
+(define dolphin-imgui-submodule
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+           (url "https://github.com/ocornut/imgui.git")
+           (commit "45acd5e0e82f4c954432533ae9985ff0e1aad6d5")))
+    (file-name "dolphin-imgui-submodule-checkout")
+    (sha256
+     (base32
+      "108dvbsqyf9am0f744z3ymgfppw1ad0amqkbwwwg2kqdm85dq1wv"))))
+
+(define dolphin-implot-submodule
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+           (url "https://github.com/epezent/implot.git")
+           (commit "3da8bd34299965d3b0ab124df743fe3e076fa222")))
+    (file-name "dolphin-implot-submodule-checkout")
+    (sha256
+     (base32
+      "0vgh3vs60my4blfn0ryjmas2q62466c8hx7smf0w4lgf2kkmqyag"))))
 
 (define-public dolphin-emu
   ;; Note: make sure to update the above rcheevos commit to match that of the
   ;; corresponding git submodule in dolphin (see:
   ;; <https://github.com/dolphin-emu/dolphin/tree/master/Externals/>).
-  (let ((commit "64d4c4020cf444d5afea708b38d1b363e532c7ba")
-        (revision "0"))
+  (let ((commit "6094cfcf7b8fba733b3116fdf3414d51c1c0e4a4")
+        (revision "1"))
     (package
       (name "dolphin-emu")
-      (version (git-version "2506" revision commit))
+      (version (git-version "2606" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -495,7 +550,7 @@ It aims to support Nintendo DSi and 3DS as well.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "095326n1dznaplll5crlfdg2d39qxxlhgch5fn7vz8majz0qb5pg"))
+          (base32 "15fcpr3a1y55iwkr1fvcwk6hxmw39fch2a3nnbgy52kdabvm4y0f"))
          (modules '((guix build utils)
                     (ice-9 ftw)
                     (ice-9 regex)
@@ -516,6 +571,7 @@ It aims to support Nintendo DSi and 3DS as well.")
                               "Bochs_disasm"
                               "FatFs"
                               "FreeSurround"
+                              "cpp-ipc"
                               "cpp-optparse"
                               "expr"
                               "glslang"
@@ -525,11 +581,18 @@ It aims to support Nintendo DSi and 3DS as well.")
                               "rangeset"
                               "rcheevos") ;submodule
               (with-directory-excursion "Externals"
-                ;; Note: Not copying implot sources here, which would
-                ;; introduce a top-level circular dependency.
                 (copy-recursively #$dolphin-rcheevos-submodule
-                                  "rcheevos/rcheevos"))
-
+                                  "rcheevos/rcheevos")
+                (copy-recursively #$dolphin-glslang-submodule
+                                  "glslang/glslang")
+                (copy-recursively #$dolphin-cpp-ipc-submodule
+                                  "cpp-ipc/cpp-ipc")
+                (copy-recursively #$dolphin-cpp-optparse-submodule
+                                  "cpp-optparse/cpp-optparse")
+                (copy-recursively #$dolphin-imgui-submodule
+                                  "imgui/imgui")
+                (copy-recursively #$dolphin-implot-submodule
+                                  "implot/implot"))
               (for-each delete-file
                         (find-files
                          "."
@@ -552,10 +615,6 @@ It aims to support Nintendo DSi and 3DS as well.")
                     (guix build utils))
         #:phases
         #~(modify-phases %standard-phases
-            (add-after 'unpack 'copy-implot-source
-              (lambda _
-                (copy-recursively #$(package-source implot)
-                                  "Externals/implot/implot")))
             (add-before 'configure 'generate-fonts&hardcode-libvulkan-path
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((fontfile
@@ -604,7 +663,9 @@ It aims to support Nintendo DSi and 3DS as well.")
                   (rename-file "dsp_coef.bin" "Data/Sys/GC/dsp_coef.bin")))))
         #:configure-flags
         #~(list "-DUSE_DISCORD_PRESENCE=OFF" ;avoid bundled discord-rpc lib
-                "-DDSPTOOL=ON")))
+                "-DDSPTOOL=ON"
+                ;; The bundled CMakeLists.txt had defined those--but we unbundled it.
+                "-DCMAKE_CXX_FLAGS=-DHAVE_CRC32 -DENABLE_VFS -DENABLE_DIRECTORIES")))
       (native-inputs
        (list (cross-gcc "powerpc-linux-gnu")
              gettext-minimal
@@ -1190,8 +1251,8 @@ The following systems are supported:
 (define-public mgba-for-dolphin
   ;; The commit should match that of the mgba git submodule in dolphin (see:
   ;; <https://github.com/dolphin-emu/dolphin/tree/master/Externals/mGBA>).
-  (let ((commit "8739b22fbc90fdf0b4f6612ef9c0520f0ba44a51")
-        (revision "0"))
+  (let ((commit "0b40863f64d0940f333fa1c638e75f86f8a26a33")
+        (revision "1"))
     (hidden-package
      (package
        (inherit mgba)
@@ -1207,7 +1268,7 @@ The following systems are supported:
           (file-name (git-file-name name version))
           (sha256
            (base32
-            "1bbcsikgcycf3cp9ciicg4yckjyamdfvgk4fgw079la59q8aw13q"))))
+            "1l4iv0p5aah8adhf5fpjil883mhiabk88yfy05p6h3650nj8n9v7"))))
        (arguments
         (substitute-keyword-arguments arguments
           ((#:configure-flags flags ''())
