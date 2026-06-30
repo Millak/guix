@@ -180,7 +180,8 @@ to easily create cross-compiled binaries.")
                 "gnustep-base-search-paths.patch"
                 "gnustep-base-no-builtin-tz.patch"
                 "gnustep-base-disable-network-tests.patch"
-                "gnustep-base-chroot-tests.patch"))))
+                "gnustep-base-chroot-tests.patch"
+                "gnustep-base-hurd-tests.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list

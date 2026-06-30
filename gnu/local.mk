@@ -1547,6 +1547,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gnustep-base-autogsdoc-reproducibility.patch	\
   %D%/packages/patches/gnustep-base-chroot-tests.patch		\
   %D%/packages/patches/gnustep-base-disable-network-tests.patch	\
+  %D%/packages/patches/gnustep-base-hurd-tests.patch	\
   %D%/packages/patches/gnustep-base-no-builtin-tz.patch		\
   %D%/packages/patches/gnustep-base-search-paths.patch		\
   %D%/packages/patches/gnustep-base-tzdir.patch 		\
