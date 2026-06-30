@@ -1329,15 +1329,19 @@ documentation in the TeX format."
               (add-before 'unpack 'initialize-tree
                 (lambda* (#:key inputs #:allow-other-keys)
                   ;; Build complete TeX Live tree in #$output, barring the
-                  ;; files going to be regenerated.
-                  (let ((texlive-outputs
+                  ;; files going to be regenerated.  Tree includes both
+                  ;; genuine TeX Live packages and packages providing
+                  ;; TeX-related file among inputs.
+                  (let ((texlive-inputs
                          (filter-map
                           (match-lambda
                             (`(,label . ,dir)
-                             (and (string-prefix? "texlive-" label)
+                             (and (or (string-prefix? "texlive-" label)
+                                      (file-exists?
+                                       (string-append dir "/share/texmf-dist")))
                                   dir)))
                           inputs)))
-                    (union-build #$output texlive-outputs
+                    (union-build #$output texlive-inputs
                                  #:create-all-directories? #t
                                  #:log-port (%make-void-port "w")))
                   ;; Remove files that are going to be regenerated.
