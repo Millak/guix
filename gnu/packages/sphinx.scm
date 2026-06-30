@@ -297,6 +297,32 @@ sources.")
            (texlive-local-tree
             (list texlive-anyfontsize texlive-cm-super texlive-tex-gyre))))))
 
+(define-public python-sphinx-multitoc-numbering
+  (package
+    (name "python-sphinx-multitoc-numbering")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/executablebooks/sphinx-multitoc-numbering")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1vpdc19jl0y2lxhpgq4d42wvmd3by6sga6zybfxm09dm557wq0p6"))))
+    (build-system pyproject-build-system)
+    ;; The tests currently rely on an obsolete sphinx.testing version (see:
+    ;; <https://github.com/executablebooks/sphinx-multitoc-numbering/issues/28>).
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-sphinx))
+    (home-page "https://sphinx-multitoc-numbering.readthedocs.io/en/latest")
+    (synopsis "Sphinx extension for continuous HTML section numbering")
+    (description "This package provides a Sphinx extension adding support for
+continuous HTML section numbering.")
+    (license license:expat)))
+
 (define-public python-sphinx-tags
   (package
     (name "python-sphinx-tags")
