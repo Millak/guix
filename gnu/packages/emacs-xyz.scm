@@ -3600,7 +3600,7 @@ displayed at the bottom or at the top.")
 
 (define-public emacs-nethack
   ;; 0.15.1 does not support Nethack 5.0.0 yet.  Use newest commit.
-  (let ((commit "a666c5917a44458a103e99587239fa7db67b9072")
+  (let ((commit "1c8475d3d3061c71705b8cfb696c40a38ff745ae")
         (revision "0"))
     (package
       (name "emacs-nethack")
@@ -3613,7 +3613,7 @@ displayed at the bottom or at the top.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1h2akkw5hg7d2ffra94gam2zm5al4lxxhd2indkap8ppnjiidl32"))))
+          (base32 "0yfha0pw4g382g08scrma1iqhg27wj6w8w15xd8iz64ms1ml0812"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -3633,14 +3633,40 @@ displayed at the bottom or at the top.")
               (lambda* (#:key inputs #:allow-other-keys)
                 (emacs-substitute-variables "nethack.el"
                   ("nethack-program"
-                   (search-input-file inputs "bin/nethack-lisp"))))))))
+                   (search-input-file inputs "bin/nethack-lisp")))))
+            (add-after 'unpack 'make-tiles
+              ;; Build, install, and point to "nethack-guix-tiles.el.gz".
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((tile-file "nethack-guix")
+                      (nethack-source (dirname
+                                       (dirname (search-input-file
+                                                 inputs "doc/nethack.txt")))))
+                  (invoke "emacs" "--batch" "-l"
+                          "nethack-gen-tiles.el"
+                          "--eval"
+                          (format #f
+                                  "(nethack-gen-tiles \"~a\" \"~a\")"
+                                  nethack-source tile-file))
+                  (install-file
+                   "nethack-guix-tiles.el.gz"
+                   (in-vicinity #$output
+                                (string-append "share/emacs/site-lisp/"
+                                               "nethack-" #$version)))
+                  (emacs-substitute-variables "../source/nethack.el"
+                    ("nethack-use-tiles" tile-file))))))))
       (inputs
        (list (make-nethack+lisp nethack this-package)))
+      ;; We need to snatch some tiledata out of here.
+      (native-inputs
+       (list (package-source nethack)))
       (home-page "https://github.com/Feyorsh/nethack-el")
       (synopsis "Run Nethack inside Emacs")
       (description
        "This package provides an Emacs Lisp interface for NetHack, the classic
-single-player dungeon crawling game.")
+single-player dungeon crawling game.
+
+It supports ASCII play or custom tilesets.  To play with the default tiles, call
+@code{nethack-toggle-tiles}.")
       (license
        (list
         ;; Emacs Lisp code is under GPL3 or later.
