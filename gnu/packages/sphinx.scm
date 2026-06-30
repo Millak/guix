@@ -17,7 +17,7 @@
 ;;; Copyright © 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
-;;; Copyright © 2021, 2022, 2024, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021-2022, 2024-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2026 Yan Abu Arab <yanabuarab@gmail.com>
@@ -48,25 +48,26 @@
   #:use-module (guix build-system pyproject)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
-  #:use-module (gnu packages nss)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages graph)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages jupyter)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages time)
-  #:use-module (gnu packages python-science)
-  #:use-module (gnu packages graph)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages web)
@@ -604,6 +605,31 @@ users from Sphinx docs.")
      "@code{sphinxcontrib-htmlhelp} is a Sphinx extension which renders
 HTML help files.")
     (license license:bsd-2)))
+
+(define-public python-sphinxcontrib-httpdomain
+  (package
+    (name "python-sphinxcontrib-httpdomain")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sphinx-contrib/httpdomain")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "056l5h5ykmdh1nlrxsqp548m6fdky6638w9vfc8c1g911xhvjc8c"))
+       (patches
+        (search-patches "python-sphinxcontrib-httpdomain-texinfo.patch"))))
+    (arguments (list #:tests? #f))      ;no real tests
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-sphinx))
+    (native-inputs (list python-uv-build))
+    (home-page "https://github.com/sphinx-contrib/httpdomain")
+    (synopsis "Sphinx extension for documenting HTTP APIs")
+    (description "The @code{sphinxcontrib.httpdomain} extension provides a
+Sphinx domain for documenting RESTful HTTP APIs.")
+    (license license:bsd-3)))
 
 (define-public python-sphinxcontrib-jsmath
   (package
