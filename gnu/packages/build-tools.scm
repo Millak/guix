@@ -17,7 +17,7 @@
 ;;; Copyright © 2020 Yuval Kogman <nothingmuch@woobling.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
-;;; Copyright © 2021, 2023, 2024, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2023-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022, 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -1795,3 +1795,43 @@ package.")))
 written in Rust, known for its execution speed and compatibility with existing
 tools.")
     (license (list license:asl2.0 license:expat)))) ;dual-licensed
+
+(define-public python-uv-build
+  (package
+    (inherit uv)
+    (name "python-uv-build")
+    (version "0.11.25")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "uv_build" version))
+       (sha256
+        (base32 "15v20b8xdkd3jzr8jibvf73kah32wb4xpgiglr9q6jz0hyry6plb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-uv-command
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; This package uses maturin to rebuild a more minimal variant
+              ;; of 'uv'.  Since we already build the whole uv as a separate
+              ;; package, reuse it directly.
+              (substitute* "python/uv_build/__init__.py"
+                (("USE_UV_EXECUTABLE = False")
+                 "USE_UV_EXECUTABLE = True")
+                (("uv_bin_name = \"uv\"")
+                 (format #f "uv_bin_name = ~s"
+                         (search-input-file inputs "bin/uv"))))))
+          (delete 'build)               ;avoid building uv again
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (copy-recursively "python/uv_build"
+                                (string-append (site-packages inputs outputs)
+                                               "/uv_build"))))
+          (delete 'create-entrypoints)))) ;leaves empty bin directory
+    (inputs (list uv))
+    (synopsis "Python build backend using uv")
+    (description "This package provides a Python build backend that uses the
+@command{uv} command.")))
