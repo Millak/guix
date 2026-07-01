@@ -54909,6 +54909,10 @@ Pinentry program to use.  Pinentry is a small user interface that
 passphrase or @acronym{PIN,personal identification number}
 (@pxref{Top,,, pinentry,Using the PIN-Entry}).
 
+@item @code{home} (default: @code{"~/.gnupg"}) (type: string)
+The GnuPG home directory, relative to @var{$HOME}.  Defaults to
+@file{~/.gnupg}.
+
 @item @code{ssh-support?} (default: @code{#f}) (type: boolean)
 Whether to enable @acronym{SSH,secure shell} support.  When true,
 @command{gpg-agent} acts as a drop-in replacement for OpenSSH's
@@ -54929,9 +54933,9 @@ Time a cache entry for SSH keys is valid, in seconds.
 Maximum time a cache entry for SSH keys is valid, in seconds.
 
 @item @code{extra-content} (default: @code{""}) (type: raw-configuration-string)
-Raw content to add to the end of @file{~/.gnupg/gpg-agent.conf}.
+Raw content to add to the end of @file{gpg-agent.conf}.
 
-@item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbols)
+@item @code{shepherd-requirement} (default: @code{()}) (type: list-of-symbols)
 List of services that should be started before this service.
 
 @end table

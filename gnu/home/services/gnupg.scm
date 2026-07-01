@@ -30,6 +30,7 @@
             home-gpg-agent-configuration?
             home-gpg-agent-configuration-gnupg
             home-gpg-agent-configuration-pinentry-program
+            home-gpg-agent-configuration-home
             home-gpg-agent-configuration-ssh-support?
             home-gpg-agent-configuration-default-cache-ttl
             home-gpg-agent-configuration-max-cache-ttl
@@ -60,6 +61,9 @@
 @command{gpg-agent} delegates to anytime it needs user input for a passphrase
 or @acronym{PIN, personal identification number} (@pxref{Top,,, pinentry,
 Using the PIN-Entry}).")
+  (home
+   (string ".gnupg")
+   "The GnuPG home directory, relative to @var{$HOME}. Defaults to @file{.gnupg}.")
   (ssh-support?
    (boolean #f)
    "Whether to enable @acronym{SSH, secure shell} support.  When true,
@@ -81,7 +85,7 @@ entry will be expired even if it has been accessed recently.")
    "Maximum time a cache entry for SSH keys is valid, in seconds.")
   (extra-content
    (raw-configuration-string "")
-   "Raw content to add to the end of @file{~/.gnupg/gpg-agent.conf}.")
+   "Raw content to add to the end of @file{gpg-agent.conf}.")
   (shepherd-requirement
    (list-of-symbols '())
    "List of services that should be started before this service."))
@@ -147,25 +151,29 @@ agent, with support for handling OpenSSH material."))))
         '())))
 
 (define (home-gpg-agent-files config)
-  `((".gnupg/gpg-agent.conf" ,(home-gpg-agent-configuration-file config))))
+  `((,(in-vicinity
+       (home-gpg-agent-configuration-home config) "gpg-agent.conf")
+     ,(home-gpg-agent-configuration-file config))))
 
 (define (home-gpg-agent-environment-variables config)
   "Return GnuPG environment variables needed for @var{config}."
-  (if (home-gpg-agent-configuration-ssh-support? config)
-      `(("SSH_AUTH_SOCK"
-         . "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"))
-      '()))
+  (let ((home (getenv "HOME"))
+        (gnupghome (home-gpg-agent-configuration-home config)))
+   `(,@(if (home-gpg-agent-configuration-ssh-support? config)
+           '(("SSH_AUTH_SOCK" . "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"))
+           '())
+     ("GNUPGHOME" . ,(in-vicinity home gnupghome)))))
 
-(define gpg-agent-activation
+(define (gpg-agent-activation config)
   (with-imported-modules (source-module-closure
                           '((gnu build activation)))
     #~(begin
         (use-modules (gnu build activation))
 
-        ;; Make sure ~/.gnupg is #o700.
-        (let* ((home (getenv "HOME"))
-               (dot-ssh (string-append home "/.gnupg")))
-          (mkdir-p/perms dot-ssh (getpw (getuid)) #o700)))))
+        ;; Make sure GnuPG home is #o700.
+        (let ((home (getenv "HOME"))
+              (gnupghome #$(home-gpg-agent-configuration-home config)))
+          (mkdir-p/perms (in-vicinity home gnupghome) (getpw (getuid)) #o700)))))
 
 (define home-gpg-agent-service-type
   (service-type
@@ -176,7 +184,7 @@ agent, with support for handling OpenSSH material."))))
           (service-extension home-shepherd-service-type
                              home-gpg-agent-shepherd-services)
           (service-extension home-activation-service-type
-                             (const gpg-agent-activation))
+                             gpg-agent-activation)
           (service-extension home-environment-variables-service-type
                              home-gpg-agent-environment-variables)))
    (default-value (home-gpg-agent-configuration))
