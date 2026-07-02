@@ -1208,7 +1208,7 @@ static std::string readAuthenticateReply(int fd)
     if (code == 0)
 	return str;
     else
-	throw Error(str);
+	throw AuthenticationError(str);
 }
 
 /* Sign HASH with the key stored in file SECRETKEY.  Return the signature as a

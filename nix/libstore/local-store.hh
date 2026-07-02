@@ -291,6 +291,7 @@ void canonicalisePathMetaData(const Path & path, uid_t fromUid);
 void canonicaliseTimestampAndPermissions(const Path & path);
 
 MakeError(PathInUse, Error);
+MakeError(AuthenticationError, Error);
 
 /* Size below which a file is not considered for deduplication.  */
 /* Any file smaller than this is not considered for deduplication.
