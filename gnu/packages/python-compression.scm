@@ -639,7 +639,7 @@ headers compressed with QPACK.")
 (define-public python-pyppmd
   (package
     (name "python-pyppmd")
-    (version "1.2.0")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -648,7 +648,7 @@ headers compressed with QPACK.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a3cqa6l1ip3kdd9d2h94znzrmgrhdbica83b494m9i3vl4i3glz"))))
+        (base32 "172b4x115sv10amlmjjg3g4nvq5vh8sqvkkdi04w6a3v7yh66rrp"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags #~(list "--benchmark-disable")))
