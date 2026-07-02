@@ -698,8 +698,7 @@ several possible methods.")
 (define-public python-py7zr
   (package
     (name "python-py7zr")
-    ;; Last version that still works with python-brotli 1.0.9.
-    (version "1.0.0")
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch)
@@ -709,19 +708,12 @@ several possible methods.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "15mjxf9168iq4gvzpygdm7pv04a7p4fdww6y3340nv6a8qfl6z06"))))
+         "061m163ffcjc686bgz949cqajj61ncj532wx9vngd6kambzlm0a8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "--ignore=tests/test_benchmark.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("(brotli|brotlicffi)>=.*;" _ name)
-                 (string-append name ";"))))))))
+      #~(list "--ignore=tests/test_benchmark.py")))
     (propagated-inputs
      (list python-backports-zstd
            python-brotli
@@ -741,6 +733,7 @@ several possible methods.")
            python-pytest-httpserver
            python-pytest-remotedata
            python-pytest-timeout
+           python-requests
            python-setuptools
            python-setuptools-scm))
     (home-page "https://github.com/miurahr/py7zr")
