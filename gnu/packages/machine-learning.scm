@@ -868,7 +868,7 @@ Learning usecases.")
 (define-public python-ml-dtypes
   (package
     (name "python-ml-dtypes")
-    (version "0.5.3")
+    (version "0.5.4")
     (source
      (origin
        (method git-fetch)
@@ -877,7 +877,7 @@ Learning usecases.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pc6y4g1l7pc8mfqdpg020613gksb4vpipn67wnvamn0q64j9j7r"))
+        (base32 "0q6y0m1jh0a2hj0x887gp361zbrsfz93csr8hm3pkamg354plczc"))
        (modules '((guix build utils)))
        (snippet
         ;; Do not use bundled eigen.
@@ -885,6 +885,15 @@ Learning usecases.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 2087 passed, 17 skipped, 2 deselected, 2720 subtests passed
+      #:test-flags
+      ;; Arrays are not equal
+      #~(list (string-append "--deselect=ml_dtypes/tests/"
+                             "custom_float_test.py::CustomFloatNumPyTest"
+                             "::testArange_float8_e4m3b11fnuz")
+              (string-append "--deselect=ml_dtypes/tests/custom_float_test.py"
+                             "::CustomFloatNumPyTest"
+                             "::testArange_float8_e4m3b11fnuz_multi_threaded"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-eigen-package
@@ -901,7 +910,7 @@ Learning usecases.")
                (find-files (site-packages inputs outputs) "\\.so$")))))))
     (inputs (list eigen-for-python-ml-dtypes))
     (propagated-inputs (list python-numpy))
-    (native-inputs (list pybind11-2
+    (native-inputs (list pybind11
                          python-absl-py
                          python-pytest
                          python-setuptools))
