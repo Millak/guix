@@ -16783,31 +16783,36 @@ PNG and terminal output.")
     (license license:bsd-3)))
 
 (define-public python-seaborn
+  ;; TODO: Move to (gnu packages statistics).
   (package
     (name "python-seaborn")
-    (version "0.13.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "seaborn" version))
-              (sha256
-               (base32
-                "1xzzxrbxsmmk39647vcx7avzdbzxw9vz8pc8yklnakcgk100mrlk"))))
+    ;; 0.13.2 (2024-01-25), the latest release contains known
+    ;; incompatibilities, see:
+    ;; <https://github.com/mwaskom/seaborn/issues/3892>,
+    ;; <https://github.com/mwaskom/seaborn/issues/3893>.
+    (properties '((commit . "32088bbc3adc611b7118e57fce6d4ed096a76a29")
+                  (revision . "0")))
+    (version (git-version "0.13.2"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mwaskom/seaborn")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d2aig4kpjc8lcvk1sp824ksy1vl17dd36s4zryhjhmz5b0idqx3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2354 passed, 16 skipped, 6 xfailed, 224 warnings
+      ;; tests: 2359 passed, 16 skipped, 6 xfailed
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              ;; XXX: See: <https://github.com/mwaskom/seaborn/issues/3892>.
-              ;; KeyError: 'labelleft'
-              "--deselect=tests/_core/test_plot.py::TestLabelVisibility::test_1d_column_wrapped"
-              "--deselect=tests/_core/test_plot.py::TestLabelVisibility::test_1d_row_wrapped"
-              ;; AttributeError: module 'numpy' has no attribute
-              ;; 'VisibleDeprecationWarning'
-              "--deselect=tests/test_distributions.py::TestKDEPlotBivariate::test_weights")))
+      #~(list "--numprocesses" (number->string (parallel-job-count)))))
     (native-inputs
      (list python-flit-core
-           python-pytest-8
+           python-pytest
            python-pytest-xdist))
     (propagated-inputs
      (list python-matplotlib
