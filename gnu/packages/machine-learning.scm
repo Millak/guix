@@ -2125,6 +2125,31 @@ parts of speech and entities, do syntactic analysis, and more.")
       (->bool (member (or (%current-target-system)
                           (%current-system))
                       (package-transitive-supported-systems python-nbval)))
+      ;; tests: 4610 passed, 3044 skipped, 7 deselected, 13 warnings, 98
+      ;; subtests passed
+      #:test-flags
+      ;; XXX: Onnx is on old version and might need to be updated, see:
+      ;; <https://codeberg.org/guix/guix/issues/9443>.
+      #~(list #$@(map (lambda (ls) (string-append "--deselect=onnx/"
+                                                  (string-join ls "::")))
+                      '(("test/test_backend_reference.py"
+                         "OnnxBackendNodeModelTest"
+                         "test_affine_grid_2d_align_corners_expanded_cpu")
+                        ("test/test_backend_reference.py"
+                         "OnnxBackendNodeModelTest"
+                         "test_affine_grid_2d_expanded_cpu")
+                        ("test/test_backend_reference.py"
+                         "OnnxBackendNodeModelTest"
+                         "test_affine_grid_3d_align_corners_expanded_cpu")
+                        ("test/test_backend_reference.py"
+                         "OnnxBackendNodeModelTest"
+                         "test_affine_grid_3d_expanded_cpu")
+                        ("test/tools_test.py" "TestToolsFunctions"
+                         "test_replace_range")
+                        ("test/tools_test.py"
+                         "TestToolsFunctions" "test_replace_range_function")
+                        ("test/tools_test.py"
+                         "TestToolsFunctions" "test_replace_range_graph"))))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'pass-cmake-arguments
