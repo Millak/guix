@@ -3564,7 +3564,15 @@ astronomy and astrophysics.")
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "1kamyh9xndli5a2ia8af83dbcqam6h0rqfv0jh2k78bgccjn13fl"))))))
+        (base32 "1kamyh9xndli5a2ia8af83dbcqam6h0rqfv0jh2k78bgccjn13fl"))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:test-flags test-flags #~(list))
+        #~(list "--pyargs" "astropy"
+                "--numprocesses" (number->string (min 8 (parallel-job-count)))
+                ;; AssertionError: assert dtype('O') == 'U3'
+                (string-append "--deselect=io/misc/tests/test_parquet.py"
+                               "::test_parquet_read_pandas")))))))
 
 (define-public python-astropy-healpix
   (package
