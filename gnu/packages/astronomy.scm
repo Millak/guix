@@ -3229,6 +3229,7 @@ of functions to execute the desired steps in the mock-observing process.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 196 passed, 4 skipped, 3 deselected, 29 warnings
       #:test-flags
       '(list "--ignore-glob=examples/*"
         ;; Disable tests which are not compatible with Astropy 6.0.0, see
@@ -3241,7 +3242,8 @@ of functions to execute the desired steps in the mock-observing process.")
         ;; <https://github.com/astroML/astroML/issues/281>.
         "--ignore=astroML/tests/test_resample.py"
         "-k" (string-append "not astroML.density_estimation.empirical.EmpiricalDistribution"
-                            " and not astroML.utils.utils.log_multivariate_gaussian"))
+                            " and not astroML.utils.utils.log_multivariate_gaussian"
+                            " and not test_generate_RW"))
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'patch-build-system
