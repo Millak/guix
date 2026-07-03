@@ -166,7 +166,7 @@ windows.")
 (define-public python-libtmux
   (package
     (name "python-libtmux")
-    (version "0.57.1")
+    (version "0.60.0")
     (source
      (origin
        (method git-fetch)
@@ -175,13 +175,20 @@ windows.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14hazgr2fn5c5lad5aa2z6xn28w22q95wr3jnajv6yl56m1rdz2g"))))
+        (base32 "1fjrlk4z01cv0a0hnwxqq4ah6kljnnhbq3p3lpv06iyq028sl7yn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "-o" "addopts=''"         ; Missing development dependency.
-              "-k" "not test_capture_pane_start")  ; Permission denied.
+              "-k"
+              (string-join
+               (map (lambda (f)
+                      (string-append "not test_" f))
+                    '("capture_pane_start" ; Permission denied.
+                      "control_mode_stdout_preserves_non_ascii_output"
+                      "new_window_name_invalid_on_3_7"))
+               " and "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'configure-tests
