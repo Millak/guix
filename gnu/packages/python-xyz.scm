@@ -32940,7 +32940,8 @@ integration, human-readable errors, and standard OS-specific locations.")
            specification-referencing-suite))
     (propagated-inputs
      (list python-attrs
-           python-rpds-py))
+           python-rpds-py
+           python-typing-extensions))   ;Python version < 3.13
     (home-page "https://github.com/python-jsonschema/referencing")
     (synopsis "JSON Referencing + Python")
     (description "This package provides an implementation-agnostic
