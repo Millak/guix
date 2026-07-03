@@ -7680,14 +7680,16 @@ files are easily readable and they work nicely with version control systems.")
 (define-public dosage
   (package
     (name "dosage")
-    (version "3.2")
+    (version "3.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "dosage" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/webcomics/dosage")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0hi5rl17rj9gay7yw7ikrkyp5qhyw5bzp4ig1sj6ahzclsia8y1h"))))
+        (base32 "1111hs9f9k0w303vgidlxdngbfp71x6fnc5lfb62jc5kw2sgfn6z"))))
     (build-system pyproject-build-system)
     (arguments
      ;; It requires additional modules for integration tests.
