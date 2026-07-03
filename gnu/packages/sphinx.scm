@@ -405,7 +405,7 @@ Apple help books.")
 (define-public python-sphinxcontrib-bibtex
   (package
     (name "python-sphinxcontrib-bibtex")
-    (version "2.6.5")
+    (version "2.7.0")
     (source
      (origin
        (method git-fetch)
@@ -414,10 +414,14 @@ Apple help books.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1shs4gk5cm6s44c2aw2ih87fa725ynyp8iahf3vwc98z887bfgdi"))))
+        (base32 "18h68vj535fxy80b3jdyazn375lg7xi5q5fsdza99y35px78nngi"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools))
-    (propagated-inputs (list python-pybtex-docutils python-sphinx-autoapi))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-pybtex-docutils
+           python-sphinx-autoapi))
     (home-page "https://github.com/mcmtroffaes/sphinxcontrib-bibtex/")
     (synopsis "Sphinx extension for bibtex style references")
     (description "This package allows bibtex citations to be inserted into
