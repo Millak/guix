@@ -487,9 +487,16 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
         (base32 "1aqc68v57sx9grl311f5j6sg72a0rajbjrz40b9zchymvy51pyxc"))))
     (arguments
      (list
-      #:tests? #f ;no tests
+      ;; No unit tests, there are some integration tests, see:
+      ;; <.github/workflows/ci.yml>.
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; rich = ">=12,<15"
+                ((">=12,<15") ">=12"))))
           (add-after 'wrap 'wrap-ciel
             (lambda* (#:key inputs #:allow-other-keys)
               (wrap-program (string-append #$output "/bin/ciel")
@@ -497,11 +504,13 @@ standard-cells.  It is compatible with @code{ngspice} and @code{Xyce}.")
                   (,(string-append
                      (assoc-ref inputs "git-minimal") "/bin")))))))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-poetry-core))
+    (native-inputs
+     (list python-poetry-core))
     (inputs
      (list bash-minimal
-           git-minimal/pinned
-           python-click
+           git-minimal/pinned))
+    (propagated-inputs
+     (list python-click
            python-httpx
            python-pcpp
            python-rich
