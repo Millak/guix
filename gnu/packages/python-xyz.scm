@@ -25816,24 +25816,28 @@ parts of the lines that were modified.")
 (define-public python-levenshtein
   (package
     (name "python-levenshtein")
-    (version "0.27.1")
+    ;; 0.27.3 (2025-11-01), the latest changes provide compatibility with
+    ;; Cython 3.2.x, see: <https://github.com/rapidfuzz/Levenshtein/pull/84>.
+    (properties '((commit . "7c905d9f4e788a95f5f1696517e6ff06d639943f")
+                  (revision . "0")))
+    (version (git-version "0.27.3"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/rapidfuzz/Levenshtein")
-             (commit (string-append "v" version))))
+              (url "https://github.com/rapidfuzz/Levenshtein")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1khr1vjmrwakjfdsb22k508h3g8awjp0yb398ca8n1xanwzk4l8h"))))
+        (base32 "14jdpxyc28bqjv3rmj4a5nrg0p6v6hazqilh1hdwjrd71hlxa6s3"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-rapidfuzz))
     (native-inputs
-     (list cmake-minimal
-           python-cython
+     (list python-cython
            python-pytest
            python-scikit-build-core
-           python-setuptools
            rapidfuzz-cpp))
     (home-page "https://github.com/rapidfuzz/Levenshtein")
     (synopsis "Fast computation of Levenshtein distance and string similarity")
