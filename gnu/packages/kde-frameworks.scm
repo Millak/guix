@@ -1506,10 +1506,12 @@ re-coloring and on-disk caching.")
                (base32
                 "13n3ch1k3jrj7wyi021xpjqgy53swkzkjng597hhp95ymcmsqpn9"))))
     (build-system cmake-build-system)
+    (propagated-inputs
+     (list qtdeclarative)) ;required by kquicksyntaxhighlightingplugin.qmltypes
     (native-inputs
      (list extra-cmake-modules perl qttools))
     (inputs
-     (list qtbase qtdeclarative))
+     (list qtbase))
     (arguments
      (list
       #:tests? #f ;; XXX: Fix tests.
