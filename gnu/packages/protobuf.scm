@@ -294,33 +294,6 @@ internal RPC protocols and file formats.")
                 (substitute* "CMakeLists.txt"
                   (("CMAKE_CXX_STANDARD 11") "CMAKE_CXX_STANDARD 17"))))))))))
 
-;; Needed for python-mysql-connector-python
-(define-public protobuf-3.20
-  (package
-    (inherit protobuf)
-    (name "protobuf")
-    (version "3.20.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/protocolbuffers/"
-                    "protobuf/releases/download/v" version
-                    "/protobuf-cpp-" version ".tar.gz"))
-              (modules '((guix build utils)))
-              (snippet '(delete-file-recursively "third_party"))
-              (sha256
-               (base32
-                "0ggyfrfal7wms4n8pba224jwpjxn19rigd5y90m3x2bg97ych775"))))
-    (build-system gnu-build-system)
-    (arguments (substitute-keyword-arguments arguments
-                 ;; XXX: insists on using bundled googletest
-                 ((#:tests? _ #f) #false)
-                 ((#:configure-flags _ #f)
-                  #~(list))
-                 ((#:phases phases)
-                  #~(modify-phases #$phases
-                      (delete 'set-c++-standard)))))))
-
 ;; Tensorflow requires version 3.6 specifically.
 (define-public protobuf-3.6
   (package
