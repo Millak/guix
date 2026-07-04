@@ -3128,13 +3128,12 @@ using the XBEL format.")
     (propagated-inputs
      (list kconfigwidgets
            kcoreaddons
+           kirigami        ;required by the QML modules
            qtdeclarative))
     (native-inputs
      (list extra-cmake-modules
            gettext-minimal
-           qttools
-           ;; required by kcmloadtest test
-           kirigami))
+           qttools))
     (inputs
      (list kio
            kcompletion
