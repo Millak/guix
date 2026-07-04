@@ -2324,10 +2324,12 @@ integrated it into your application's other widgets.")
     (native-inputs (list extra-cmake-modules
                          ;; for test
                          iso-codes))
-    (inputs (list qtdeclarative))
     (propagated-inputs
-     (list ;; As required by KF6ContactsConfig.cmake.
-      kcodecs kconfig kcoreaddons ki18n))
+     (list
+      ;; As required by KF6ContactsConfig.cmake.
+      kcodecs kconfig kcoreaddons ki18n
+      ;; As required by kcontactsqml.qmltypes.
+      qtdeclarative))
     (arguments
      (list
       #:qtbase qtbase
