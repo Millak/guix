@@ -294,27 +294,6 @@ internal RPC protocols and file formats.")
                 (substitute* "CMakeLists.txt"
                   (("CMAKE_CXX_STANDARD 11") "CMAKE_CXX_STANDARD 17"))))))))))
 
-;; Tensorflow requires version 3.6 specifically.
-(define-public protobuf-3.6
-  (package
-    (inherit protobuf)
-    (version "3.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/google/protobuf/releases/"
-                                  "download/v" version "/protobuf-cpp-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0a955bz59ihrb5wg7dwi12xajdi5pmz4bl0g147rbdwv393jwwxk"))))
-    (build-system gnu-build-system)
-    (arguments (substitute-keyword-arguments arguments
-                 ((#:configure-flags _ #f)
-                  #~(list))
-                 ((#:phases phases)
-                  #~(modify-phases #$phases
-                      (delete 'set-c++-standard)))))))
-
 (define-public protobuf-c
   (package
     (name "protobuf-c")
