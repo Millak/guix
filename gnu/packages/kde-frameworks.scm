@@ -2991,7 +2991,9 @@ between feed formats.")
                 "04q1s93ccbnzjz7dxwxbfjyx2ywx9cnsqkfrm4hk821dfzmc7kk1"))))
     (build-system cmake-build-system)
     (propagated-inputs
-     (list kcoreaddons kfilemetadata))
+     (list kcoreaddons     ;required by KF6BalooConfig.cmake
+           kfilemetadata   ;required by KF6BalooConfig.cmake
+           qtdeclarative)) ;required by QML modules
     (native-inputs
      (list dbus extra-cmake-modules))
     (inputs
