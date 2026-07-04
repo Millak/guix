@@ -1379,6 +1379,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ganeti-lens-compat.patch			\
   %D%/packages/patches/ganeti-shepherd-master-failover.patch	\
   %D%/packages/patches/ganeti-shepherd-support.patch		\
+  %D%/packages/patches/gavinhoward-bc-7.1.0-fix-memleak.patch	\
   %D%/packages/patches/gawk-shell.patch				\
   %D%/packages/patches/gcc-arm-bug-71399.patch			\
   %D%/packages/patches/gcc-arm-link-spec-fix.patch		\

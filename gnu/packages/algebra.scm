@@ -750,6 +750,53 @@ syntax is similar to that of C, so basic usage is familiar.  It also includes
 \"dc\", a reverse-polish calculator.")
     (license license:gpl3+)))
 
+(define-public gavinhoward-bc
+  (package
+    (name "gavinhoward-bc")
+    (version "7.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gavinhoward/bc")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n2cz4jxy05n04a70szx50l8czyncf8hx8lgpd4vvk6lgk82913c"))
+       (patches
+        (search-patches "gavinhoward-bc-7.1.0-fix-memleak.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:configure-flags
+      #~(list
+         ;; INFO: These tests require GNU bc.
+         "--disable-generated-tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-environment-variables
+            (lambda _
+              (setenv "CC" #$(cc-for-target))))
+          (replace 'configure
+            ;; INFO: Most certainly the custom-made configure.sh script
+            ;; silently breaks when called with unrecognized arguments.
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (apply invoke "./configure.sh"
+                     (string-append "--prefix=" #$output)
+                     configure-flags))))))
+    (home-page "https://github.com/gavinhoward/bc")
+    (synopsis "Alternative POSIX-compliant implementation of bc")
+    (description
+     "This package provides an alternative implementation of bc calculator.")
+    (license
+     (list license:bsd-2
+           ;; src/rand.c, include/rand.h, scripts/safe-install.sh
+           license:expat
+           ;; scripts/ministat.c; Beer-ware
+           (license:non-copyleft "file://LICENSE.md"
+                                 "See LICENSE.md for details.")))))
+
 ;; The original kiss-fft does not have a complete build system and does not
 ;; build any shared libraries.  This is a fork used by Extempore.
 (define-public kiss-fft-for-extempore

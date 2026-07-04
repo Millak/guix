@@ -1,0 +1,39 @@
+From c6f257329de5a02e79c6a7a999fbd6574c9c23d6 Mon Sep 17 00:00:00 2001
+From: "Gavin D. Howard" <gavin@gavinhoward.com>
+Date: Tue, 23 Jun 2026 09:27:36 -0600
+Subject: [PATCH] Fix a memory leak in the library
+
+The jmp_bufs vector was only freed when built under debug mode. However,
+each thread will have its own jmp_bufs, so it needs to be freed every
+time so that client code that creates and destroys a lot of threads does
+not run into the memory leak.
+
+Closes #100.
+
+Signed-off-by: Gavin D. Howard <gavin@gavinhoward.com>
+---
+ src/vm.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/src/vm.c b/src/vm.c
+index a1693e0a..f4150310 100644
+--- a/src/vm.c
++++ b/src/vm.c
+@@ -1801,17 +1801,11 @@ bc_vm_init(void)
+ void
+ bc_vm_atexit(void)
+ {
+-#if BC_DEBUG
+-#if BC_ENABLE_LIBRARY
+ 	BcVm* vm = bcl_getspecific();
+-#endif // BC_ENABLE_LIBRARY
+-#endif // BC_DEBUG
+ 
+ 	bc_vm_shutdown();
+ 
+-#if BC_DEBUG
+ 	bc_vec_free(&vm->jmp_bufs);
+-#endif // BC_DEBUG
+ }
+ #else // BC_ENABLE_LIBRARY
+ BcStatus
