@@ -1632,9 +1632,6 @@ and high-availability (HA).")
               (invoke "make" "-C" "contrib" "install"))))))
     (native-inputs
      (list bison
-           docbook-xml-4.5
-           docbook-xsl
-           docbook2x
            flex
            libxml2
            libxslt
@@ -1680,8 +1677,9 @@ pictures, sounds, or video.")
                   (install-file "postgres.info"
                                 (string-append #$output "/share/info")))))))))
     (native-inputs (modify-inputs (package-native-inputs postgresql-17)
+                     (append docbook-xml-4.5)
+                     (append docbook2x)
                      (delete "bison")
-                     (delete "docbook-xsl")
                      (delete "flex")
                      (delete "libxslt")))))
 
