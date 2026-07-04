@@ -3950,17 +3950,23 @@ KIO enabled infrastructure.")
      (list
       #:qtbase qtbase
       #:tests? #f)) ;failing tests
+    ;; These packages are required by the QML modules.
+    (propagated-inputs
+     (list kconfig
+           kirigami
+           kitemmodels
+           qqc2-desktop-style
+           qtdeclarative
+           qtmultimedia
+           sonnet))
     (native-inputs (list extra-cmake-modules))
     (inputs (list kcolorscheme
-                  kconfig
                   kcoreaddons
                   kcrash
                   kglobalaccel
                   kguiaddons
                   ki18n
-                  kiconthemes
-                  kirigami
-                  qtdeclarative))
+                  kiconthemes))
     (home-page "https://invent.kde.org/libraries/kirigami-addons")
     (synopsis "Add-ons for the Kirigami framework")
     (description
