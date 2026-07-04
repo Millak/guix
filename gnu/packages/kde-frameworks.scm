@@ -4203,6 +4203,8 @@ widgets with a user-interface defined in terms of actions.")
                (base32
                 "0f5f0jfn5ls7r1zbrxwz11hsz6z5abdvb6wxfmlf9nzjkrcgfqcq"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list qtdeclarative)) ;required by KF6PeopleDeclarative.qmltypes
     (native-inputs
      (list extra-cmake-modules))
     (inputs
@@ -4212,8 +4214,7 @@ widgets with a user-interface defined in terms of actions.")
            ki18n
            kservice
            kcontacts
-           kwidgetsaddons
-           qtdeclarative))
+           kwidgetsaddons))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))                    ; FIXME: 1/3 tests fail.
