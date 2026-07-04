@@ -436,11 +436,12 @@ http://freedesktop.org/wiki/Specifications/open-collaboration-services/")
                (base32
                 "1vrb0q1pryl87v41q64056dfb75sqw00bdbc9nsgi4w0mvcc1x1p"))))
     (build-system cmake-build-system)
+    (propagated-inputs
+     (list qtdeclarative)) ;required by bluezqtextensionplugin.qmltypes
     (native-inputs
      (list dbus extra-cmake-modules))
     (inputs
-     (list qtdeclarative
-           qtbase))
+     (list qtbase))
     (arguments
      (list #:test-exclude "bluezqt-qmltests"
            #:phases
