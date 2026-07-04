@@ -342,22 +342,6 @@ internal RPC protocols and file formats.")
                   #~(modify-phases #$phases
                       (delete 'set-c++-standard)))))))
 
-;; XXX Remove this old version when no other packages depend on it.
-(define-public protobuf-2
-  (package (inherit protobuf)
-    (version "2.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/google/protobuf/releases/"
-                                  "download/v" version "/protobuf-"
-                                  version ".tar.bz2"))
-              (sha256
-               (base32
-                "040rcs9fpv4bslhiy43v7dcrzakz4vwwpyqg4jp8bn24sl95ci7f"))))
-    (build-system gnu-build-system)
-    (arguments '())
-    (outputs '("out"))))
-
 (define-public protobuf-c
   (package
     (name "protobuf-c")
