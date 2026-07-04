@@ -1335,9 +1335,6 @@ using compilers other than GCC."
         (inputs `(("libstdc++" ,libstdc++)))
         (synopsis "Headers of GNU libstdc++")))))
 
-(define-public libstdc++-4.9
-  (make-libstdc++ gcc-4.9))
-
 (define (make-libiberty gcc)
   "Return a libiberty package based on GCC."
   (package
