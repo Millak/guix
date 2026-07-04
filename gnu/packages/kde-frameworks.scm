@@ -1145,8 +1145,10 @@ interfaces in the areas of colors, fonts, text, images, keyboard input.")
               (sha256
                (base32 "0wafckbsc770rx7gnav2bb507c552a9jbslp2gnpxi05cp59mjal"))))
     (build-system cmake-build-system)
+    ;; As required by kholidaysdeclarativeplugin.qmltypes.
+    (propagated-inputs (list qtdeclarative))
     (native-inputs (list extra-cmake-modules qttools))
-    (inputs (list qtbase qtdeclarative))
+    (inputs (list qtbase))
     (home-page "https://invent.kde.org/frameworks/kholidays")
     (synopsis "Library for regional holiday information")
     (description "This library provides a C++ API that determines holiday and
