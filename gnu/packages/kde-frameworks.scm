@@ -1170,11 +1170,12 @@ other special events for a geographical region.")
                 "0bqqwdbqc8ck85pisgvp29lshfyvvd9kmjyx59rlrn2qj9far4n4"))))
     (build-system cmake-build-system)
     (propagated-inputs
-     (list gettext-minimal))
+     (list gettext-minimal ;required by KF6I18nConfig.cmake
+           qtdeclarative)) ;required by the QML modules
     (native-inputs
      (list extra-cmake-modules python-minimal tzdata-for-tests))
     (inputs
-     (list qtbase qtdeclarative iso-codes/pinned))
+     (list qtbase iso-codes/pinned))
     (arguments
      (list
       #:test-exclude
