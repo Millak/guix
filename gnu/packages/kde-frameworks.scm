@@ -1462,11 +1462,12 @@ pixel units.")
                (base32
                 "0bi3cfbsmq5wsdlpw4bs50r0jkmw6va01nc4722n3fzfi7yh5qs4"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list qtdeclarative)) ;required by corebindingsplugin.qmltypes
     (native-inputs
      (list extra-cmake-modules qttools))
     (inputs
      (list
-      qtdeclarative
       qtsvg
       karchive
       kconfig
