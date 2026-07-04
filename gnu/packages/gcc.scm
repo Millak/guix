@@ -1781,47 +1781,6 @@ provides the GNU compiler for the Go programming language.")
 (define-public gccgo-16
   (make-gccgo gcc-16))
 
-(define (make-libstdc++-doc gcc)
-  "Return a package with the libstdc++ documentation for GCC."
-  (package
-    (inherit gcc)
-    (name "libstdc++-doc")
-    (version (package-version gcc))
-    (synopsis "GNU libstdc++ documentation")
-    (outputs '("out"))
-    (native-inputs (list doxygen
-                         texinfo
-                         libxml2
-                         libxslt
-                         docbook-xml
-                         docbook-xsl
-                         docbook2x
-                         graphviz)) ;for 'dot', invoked by 'doxygen'
-    (inputs '())
-    (propagated-inputs '())
-    (arguments
-     (list
-      #:out-of-source? #t
-      #:tests? #f                                ;it's just documentation
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'chdir
-            (lambda _
-              (chdir "libstdc++-v3")))
-          (replace 'build
-            (lambda* (#:key make-flags #:allow-other-keys)
-              (apply invoke `("make" ,@make-flags
-                              "doc-info"
-                              "doc-html"
-                              "doc-man"))))
-          (replace 'install
-            (lambda* (#:key make-flags #:allow-other-keys)
-              (apply invoke `("make" ,@make-flags
-                              "doc-install-info"
-                              "doc-install-html"
-                              "doc-install-man")))))))
-    (properties (alist-delete 'hidden? (package-properties gcc)))))
-
 (define-public isl
   (package
     (name "isl")
