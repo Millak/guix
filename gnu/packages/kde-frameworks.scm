@@ -1281,13 +1281,15 @@ or user activity.")
           (add-before 'check 'set-offscreen-display
             (lambda _
               (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+    ;; As required by KF6KirigamiConfig.cmake.
+    (propagated-inputs
+     (list qtdeclarative))
     (native-inputs
      (list extra-cmake-modules qttools))
     (inputs
      (list kwindowsystem
            qtshadertools
            qtbase
-           qtdeclarative
            qtsvg
            libxkbcommon))
     (home-page "https://community.kde.org/Frameworks")
