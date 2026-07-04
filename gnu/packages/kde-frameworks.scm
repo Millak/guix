@@ -3560,6 +3560,8 @@ window does not need focus for them to be activated.")
                (base32
                 "0zh1m4n52zfwxlx0lz040sldl54hdf9mhl8ypij31vszz2xgrvvn"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list qtdeclarative)) ;required by iconthemesplugin.qmltypes
     (native-inputs
      (list extra-cmake-modules qttools shared-mime-info))
     (inputs
@@ -3575,7 +3577,6 @@ window does not need focus for them to be activated.")
            kitemviews
            kwidgetsaddons
            libxkbcommon
-           qtdeclarative
            qtsvg
            qtwayland))
     (arguments
