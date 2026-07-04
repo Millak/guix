@@ -2891,11 +2891,13 @@ were traditional plugins.")
                (base32
                 "0ldrln2h4cxdf41qcnfprqnp3inpb223z4j73rnz4lncp6v8w8d1"))))
     (build-system cmake-build-system)
+    (propagated-inputs
+     (list kcoreaddons)) ;required by KF6PtyConfig.cmake
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      ;; TODO: utempter, for managing UTMP entries
-     (list kcoreaddons ki18n qtbase))
+     (list ki18n qtbase))
     (arguments
      (list #:tests? #f ; FIXME: 1/1 tests fail.
            #:phases #~(modify-phases %standard-phases
