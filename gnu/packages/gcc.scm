@@ -1822,9 +1822,6 @@ provides the GNU compiler for the Go programming language.")
                               "doc-install-man")))))))
     (properties (alist-delete 'hidden? (package-properties gcc)))))
 
-(define-public libstdc++-doc-9
-  (make-libstdc++-doc gcc-9))
-
 (define-public isl
   (package
     (name "isl")
