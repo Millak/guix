@@ -4839,6 +4839,9 @@ script engines.")
                (base32
                 "0pcxw9fiq23k35mc9lh278q7wggqsfynj07hvaa4fffxsrs4amfi"))))
     (build-system cmake-build-system)
+    (propagated-inputs
+     (list kcoreaddons ;required by KF6PurposeConfig.cmake
+           kirigami kitemmodels qtdeclarative)) ;required by the QML modules
     (native-inputs
      (list extra-cmake-modules gettext-minimal))
     (inputs
@@ -4846,19 +4849,15 @@ script engines.")
       ;;TODO: accounts-qml-module
       ;;TODO: kaccounts
       kconfig
-      kcoreaddons
       kdeclarative
       knotifications
       ki18n
       kio
-      kirigami
       kwidgetsaddons
-      kitemmodels
       kitemviews
       kcompletion
       kservice
       qtbase
-      qtdeclarative
       prison))
     (arguments
      (list #:tests? #f)) ;; seem to require network; don't find QTQuick components
