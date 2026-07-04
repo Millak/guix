@@ -1089,6 +1089,8 @@ infrastructure.")
                (base32
                 "1ypvvb707piyviq9as1dr3fjdabdk1dscplpv9a668db8n4whab5"))))
     (build-system qt-build-system)
+    ;; As required by kguiaddonsqml.qmltypes.
+    (propagated-inputs (list qtdeclarative))
     ;; TODO: Build packages for the Python bindings.  Ideally this will be
     ;; done for all versions of python guix supports.  Requires python,
     ;; python-sip, clang-python, libclang.  Requires python-2 in all cases for
@@ -1098,7 +1100,6 @@ infrastructure.")
                          wayland-protocols))
     (inputs
      (list libxkbcommon
-           qtdeclarative
            qtwayland
            plasma-wayland-protocols
            wayland))
