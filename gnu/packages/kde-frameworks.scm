@@ -1342,9 +1342,11 @@ of applications that follow the Kirigami Human Interface Guidelines.")
                (base32
                 "1hiy4z3xc4a01pkvq0h3v0ipm6whfb142rv9dqqw4icqyxvdyqpg"))))
     (build-system qt-build-system)
+    ;; As required by itemmodelsplugin.qmltypes.
+    (propagated-inputs
+     (list qtdeclarative))
     (native-inputs
      (list extra-cmake-modules))
-    (inputs (list qtdeclarative))
     (arguments (list #:qtbase qtbase))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Set of item models extending the Qt model-view framework")
