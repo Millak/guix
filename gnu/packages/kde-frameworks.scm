@@ -1730,6 +1730,8 @@ kwidgetsaddons-kcolumnresizertest)")))))))))
                (base32
                 "09yndnhpjsqdd0ync27mj97sfh5brvs818b8k9ax14qnsq2r8xsg"))))
     (build-system cmake-build-system)
+    (propagated-inputs
+     (list qtdeclarative)) ;required by KWindowSystem.qmltypes
     (native-inputs
      (list extra-cmake-modules
            pkg-config
@@ -1740,7 +1742,6 @@ kwidgetsaddons-kcolumnresizertest)")))))))))
            xorg-server-for-tests)) ; for the tests
     (inputs
      (list qtbase
-           qtdeclarative
            qtwayland
            wayland-protocols
            plasma-wayland-protocols
