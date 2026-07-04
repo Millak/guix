@@ -2660,10 +2660,13 @@ formats.")
                (base32
                 "033b85llijj24pdxbd119z4zalfxfr8bdx9m15izvjldfaq706dv"))))
     (build-system cmake-build-system)
+    ;; As required by KF6JobWidgetsConfig.cmake.
+    (propagated-inputs
+     (list kcoreaddons))
     (native-inputs
      (list extra-cmake-modules qttools))
     (inputs
-     (list libxkbcommon kcoreaddons knotifications kwidgetsaddons qtbase))
+     (list libxkbcommon knotifications kwidgetsaddons qtbase))
     (arguments
      (list #:tests? #f
            #:configure-flags
