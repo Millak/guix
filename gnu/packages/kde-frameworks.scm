@@ -211,8 +211,10 @@ common build settings used in software produced by the KDE community.")
                 "0gmfzlrbjgxnv9cf35v0aap06qg8s0x7lfijpqg4ynany29q4i7p"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
+    ;; These packages are required by the QML modules.
+    (propagated-inputs (list kirigami qtdeclarative))
     (native-inputs (list extra-cmake-modules glslang pkg-config))
-    (inputs (list qtdeclarative qtshadertools))
+    (inputs (list qtshadertools))
     (home-page "https://api.kde.org/frameworks/kquickcharts/html/index.html")
     (synopsis "QtQuick plugin providing high-performance charts")
     (description
