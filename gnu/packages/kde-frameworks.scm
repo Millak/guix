@@ -3736,6 +3736,7 @@ consumption.")
            kitemviews
            kjobwidgets
            kservice
+           kwidgetsaddons
            kwindowsystem
            solid))
     (native-inputs
@@ -3751,7 +3752,6 @@ consumption.")
                   kiconthemes
                   ki18n
                   kwallet
-                  kwidgetsaddons
                   libxml2
                   libxslt
                   qt5compat
