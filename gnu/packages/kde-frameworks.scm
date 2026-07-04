@@ -2022,14 +2022,17 @@ feel.")
                (base32
                 "1k502z9h0czx03kvby15ky3pzklgfrf4rwyasgmlkq686bm051a4"))))
     (build-system cmake-build-system)
+    (propagated-inputs
+     (list qtdeclarative)) ;required by sonnetquickplugin.qmltypes
     (native-inputs
      (list bison dbus extra-cmake-modules flex pkg-config qttools))
     ;; TODO: Add runtime-only dependency MediaPlayerInfo
     (inputs
-     (list `(,util-linux "lib")
+     (list eudev
            libxkbcommon
-           vulkan-headers
-           qtbase qtdeclarative eudev))
+           qtbase
+           `(,util-linux "lib")
+           vulkan-headers))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Desktop hardware abstraction")
     (description "Solid is a device integration framework.  It provides a way of
