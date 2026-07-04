@@ -3989,18 +3989,18 @@ and desktop experiences.")
                 "1595rrsydg0r76k853v2d5gapfs5xls6rvdcxan99x7i3nvvvx62"))))
     (build-system qt-build-system)
     (propagated-inputs
-     (list attica
-           kcoreaddons))
+     (list ;; Required by KF6NewStuffCoreConfig.cmake.
+           attica kcoreaddons
+           ;; Required by the QML modules.
+           kcmutils kirigami qtdeclarative))
     (native-inputs
      (list extra-cmake-modules qttools))
     (inputs
      (list karchive
            kconfig
-           kirigami
            ki18n
            kpackage
            kwidgetsaddons
-           qtdeclarative
            qtwayland
            syndication))
     (arguments
