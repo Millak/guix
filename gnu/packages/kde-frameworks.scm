@@ -871,8 +871,9 @@ kconfiggui-kstandardshortcutwatchertest)"
                (base32
                 "0g9jkk2dkqxck0m30bn1f6h04cdzj2ykpjxgsqsifmr4ywnsj11d"))))
     (build-system qt-build-system)
+    ;; As required by kcoreaddonsplugin.qmltypes.
+    (propagated-inputs (list qtdeclarative))
     (native-inputs (list extra-cmake-modules qttools shared-mime-info))
-    (inputs (list qtdeclarative))
     (arguments
      (list
       #:qtbase qtbase
