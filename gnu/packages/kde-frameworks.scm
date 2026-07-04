@@ -1916,10 +1916,12 @@ which are used in DBus communication.")
        (sha256
         (base32 "0dh2105m0cz7sv7s50mv7w0yws88d1s8cadrs5gni6zk95v9234x"))))
     (build-system cmake-build-system)
+    (propagated-inputs
+     (list qtdeclarative)) ;required by the QML modules
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list libdmtx zxing-cpp qrencode qtbase qtdeclarative qtmultimedia))
+     (list libdmtx zxing-cpp qrencode qtbase qtmultimedia))
     (home-page "https://api.kde.org/frameworks/prison/html/index.html")
     (synopsis "Barcode generation abstraction layer")
     (description "Prison is a Qt-based barcode abstraction layer/library and
