@@ -4957,6 +4957,9 @@ applications.")
                (base32
                 "1kb69wv6hkdrswbi5jxlz0wvzcakfvkf6xmkhqldrsdq7h86wibk"))))
     (build-system cmake-build-system)
+    ;; As required by KF6FrameworkIntegrationConfig.cmake.
+    (propagated-inputs
+     (list kcolorscheme kiconthemes kwidgetsaddons))
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs (list packagekit-qt6
@@ -4965,12 +4968,10 @@ applications.")
                   kconfigwidgets
                   kcoreaddons
                   ki18n
-                  kiconthemes
                   kitemviews
                   knewstuff
                   knotifications
                   kpackage
-                  kwidgetsaddons
                   qtbase))
     (arguments
      (list #:phases
