@@ -1381,20 +1381,22 @@ test and recovery certificates.")
        (sha256
         (base32 "11wyshrwd4b62ybcf2g3csszz9hxrsrcgmqcgdhmxnvgplilrchq"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list ;; As required by KPim6IdentityManagementCoreConfig.cmake.
+           kcoreaddons kpimtextedit
+           ;; As required by the QML modules.
+           kirigami kirigami-addons qtdeclarative))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      (list kcodecs
            kcompletion
            kconfig
-           kcoreaddons
            kiconthemes
            kio
-           kpimtextedit
            ktextwidgets
            ktextaddons
-           kxmlgui
-           kirigami-addons))
+           kxmlgui))
     (arguments
      (list #:qtbase qtbase
            #:phases
