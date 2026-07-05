@@ -197,25 +197,25 @@ multi-floor indoor maps.")
     (inputs
      (list boost
            libaccounts-qt6
-           kconfig
-           kconfigwidgets
-           kcoreaddons
            kcrash
            ki18n
            kiconthemes
            kio
-           kitemmodels
            kitemviews
            kwidgetsaddons
            kwindowsystem
-           kxmlgui
            libxml2
            libxslt
            ;; Do NOT add mysql or postgresql to the inputs. Otherwise the binaries
            ;; and wrapped files will refer to them, even if the user choices none
            ;; of these.  Executables are searched on $PATH then.
            signond-qt6))
-    (propagated-inputs (list sqlite kaccounts-integration))
+    (propagated-inputs
+     (list sqlite kaccounts-integration
+           ;; As required by KPim6AkonadiConfig.cmake.
+           kconfig kconfigwidgets kcoreaddons kitemmodels kxmlgui
+           ;; As required by the QML modules.
+           kirigami kirigami-addons qtdeclarative))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f
