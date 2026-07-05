@@ -945,15 +945,14 @@ calendaring applications.")
        (sha256
         (base32 "0d520aalixqvc624kyag7s93figr6ii2pfjjkffrr4mp8gpxym4d"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list kcoreaddons kconfig kcalendarcore))
     (native-inputs
      (list extra-cmake-modules libxml2)) ;; xmllint required for tests
     (inputs
      (list breeze-icons ; default icon set, required for tests
-           kcalendarcore
            kcodecs
-           kconfig
            kconfigwidgets
-           kcoreaddons
            ki18n
            kiconthemes
            kidentitymanagement
