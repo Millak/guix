@@ -2539,11 +2539,12 @@ standard protocols for e-mail transmission.")
        (sha256
         (base32 "0iy73ryjdnxa8bg19lx45c32bak5dgcryrj7aihhlf1bqq4906pk"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list kcalendarcore)) ;required by KPim6TnefConfig.cmake
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list kcalendarcore
-           kcalutils
+     (list kcalutils
            kcodecs
            kconfig
            kcontacts
