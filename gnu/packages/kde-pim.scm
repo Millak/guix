@@ -1946,10 +1946,12 @@ mail transport.")
        (sha256
         (base32 "14zzabwwx38vv4qnam4b3j969114wph52lr1anl4sdw6asw8i3h8"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list kmime)) ;required by KPim6MboxConfig.cmake
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list kcodecs kmime))
+     (list kcodecs))
     (arguments (list #:qtbase qtbase))
     (home-page "https://api.kde.org/kdepim/kmbox/html/index.html")
     (synopsis "Library for handling mbox mailboxes")
