@@ -839,17 +839,16 @@ CalDAV server.")
                (base32
                 "1dn3izdas01b8q7inb8z4m7dildjhn4294iwrhrgfn8lrbjhmhki"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list kcoreaddons libaccounts-qt6 signond-qt6))
     (native-inputs (list extra-cmake-modules))
     (inputs (list kcmutils
                   ki18n
-                  kcoreaddons
                   kdbusaddons
                   kdeclarative
                   kwallet
                   kio
-                  libaccounts-qt6
-                  qcoro-qt6
-                  signond-qt6))
+                  qcoro-qt6))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
