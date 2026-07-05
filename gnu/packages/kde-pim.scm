@@ -2467,13 +2467,14 @@ unnecessary network operations.")
        (sha256
         (base32 "1idr8w7dqc90n04q022xspkx9wzgl0s515zjcf7rismd0gbms3qh"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list ktextaddons)) ;required by KPim6TextEditConfig.cmake
     (native-inputs
      (list extra-cmake-modules qttools))
     (inputs
      (list kcodecs
            kconfigwidgets
            kcoreaddons
-           ktextaddons
            ki18n
            kiconthemes
            kio
