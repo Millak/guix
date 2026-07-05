@@ -2396,19 +2396,25 @@ pass files.")
                             (setenv "TZDIR"
                                     (search-input-directory inputs
                                                             "share/zoneinfo")))))))
+    (propagated-inputs
+     (list ;; As required by KPublicTransportConfig.cmake.
+           zlib
+
+           ;; As required by the QML modules.
+           kcoreaddons
+           ki18n
+           kirigami
+           kirigami-addons
+           kitemmodels
+           qtdeclarative
+           qtlocation
+           qtpositioning))
     (native-inputs (list extra-cmake-modules pkg-config tzdata-for-tests))
     ;; TODO: clipper and osmctools are not detected
     (inputs (list clipper
-                  ki18n
-                  kirigami-addons
-                  kitemmodels
                   networkmanager-qt
                   osmctools
-                  protobuf
-                  qtdeclarative
-                  qtlocation
-                  qtpositioning
-                  zlib))
+                  protobuf))
     (home-page "https://api.kde.org/kdepim/kpublictransport/html/index.html")
     (synopsis "Library for accessing realtime public transport data")
     (description
