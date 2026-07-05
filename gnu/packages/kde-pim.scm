@@ -1034,6 +1034,9 @@ verifiedserverdialogtest" ;SEGFAULT
                    (setenv "HOME" "/tmp")
                    (when tests?
                      (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
+    ;; These packages are required by the QML modules.
+    (propagated-inputs
+     (list kcmutils kirigami kirigami-addons kitemmodels qtdeclarative))
     (native-inputs
      (list corrosion
            dbus
@@ -1056,7 +1059,6 @@ verifiedserverdialogtest" ;SEGFAULT
             kcalendarcore
             kcalendarsupport
             kcalutils
-            kcmutils
             kconfig
             kcontacts
             kdbusaddons
@@ -1070,7 +1072,6 @@ verifiedserverdialogtest" ;SEGFAULT
             kimap
             kincidenceeditor
             kio
-            kitemmodels
             kitinerary
             kldap
             kmailcommon
