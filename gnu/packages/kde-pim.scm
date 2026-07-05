@@ -123,13 +123,17 @@ opening hours expressions.")
                (base32
                 "06rklrm6gv5jlngigpn8rrk7whb7md24v89j4xr3zgczqaclr9hx"))))
     (build-system cmake-build-system)
+    ;; As required by the QML modules.
+    (propagated-inputs
+     (list kcontacts
+           kirigami
+           kirigami-addons
+           kopeninghours
+           kpublictransport
+           qtdeclarative))
     (native-inputs (list bison extra-cmake-modules flex python-minimal))
     (inputs (list ki18n
-                  kirigami-addons
-                  kopeninghours
-                  kpublictransport
                   qtbase
-                  qtdeclarative
                   libxkbcommon
                   zlib))
     (home-page "https://invent.kde.org/libraries/kosmindoormap")
