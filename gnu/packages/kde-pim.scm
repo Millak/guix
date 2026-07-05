@@ -2319,8 +2319,6 @@ pass files.")
      (list extra-cmake-modules qttools))
     (inputs
      (list karchive
-           akonadi
-           akonadi-contacts
            akonadi-mime
            akonadi-search
            boost
@@ -2329,13 +2327,10 @@ pass files.")
            kcalendarcore
            kcmutils
            kcodecs
-           kconfig
            kconfigwidgets
-           kcontacts
            kcoreaddons
            ki18n
            kiconthemes
-           kio
            kirigami ;; run-time dependency
            kitemmodels
            kitemviews
@@ -2351,10 +2346,18 @@ pass files.")
            kwindowsystem
            kxmlgui
            libxslt
-           plasma-activities
            purpose
            qtwebengine))
-    (propagated-inputs (list kimap ktextaddons libkdepim))
+    (propagated-inputs
+     (list akonadi
+           akonadi-contacts
+           kconfig
+           kcontacts
+           kimap
+           kio
+           ktextaddons
+           libkdepim
+           plasma-activities))
     (arguments
      (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/pim/pimcommon")
