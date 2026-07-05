@@ -519,6 +519,8 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
        (sha256
         (base32 "1dh4cjmc2p81zqxg7kznkhm476kak03pksdg429s2kmh71mjrl91"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list kmailtransport))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
@@ -544,7 +546,6 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
            kitemmodels
            kmailcommon
            kmailimporter
-           kmailtransport
            kmessagelib
            kmime
            kpimcommon
