@@ -2058,10 +2058,12 @@ kwebengineviewer.")
        (sha256
         (base32 "0vc28fgk53b3kdrm42znp03wwan3hnbw80g1y2iwkzn3r81wdqzw"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list kcodecs)) ;required by KPim6MimeConfig.cmake
     (native-inputs
      (list extra-cmake-modules qttools tzdata-for-tests))
     (inputs
-     (list kcodecs ki18n))
+     (list ki18n))
     (arguments
      (list #:qtbase qtbase
            #:phases
