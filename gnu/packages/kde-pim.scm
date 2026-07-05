@@ -2634,7 +2634,6 @@ various Google services.")
      (list extra-cmake-modules kdoctools qttools))
     (inputs
      (list boost
-           gpgme-2
            kcodecs
            kcompletion
            kconfig
@@ -2648,7 +2647,7 @@ various Google services.")
            kpimtextedit
            qgpgme))
     (propagated-inputs
-     (list gpgme-2 qgpgme))
+     (list gpgmepp qgpgme))
     (arguments
      (list
       #:qtbase qtbase
