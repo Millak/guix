@@ -3174,6 +3174,12 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
                      (substitute* "tests/helpers/test_mkfds.c"
                        (("/etc/fstab")
                         (which "sh")))
+                     (substitute* "tests/ts/coresched/coresched"
+                       (("/bin/bash -c")
+                        (string-append (which "bash") " -c")))
+                     (substitute* "tests/ts/fincore/count"
+                       (("\"\\$FS\" = \"overlay\"")
+                        "\"$FS\" = \"overlay\" || \"$FS\" = \"btrfs\""))
                      (substitute* "tests/helpers/test_enosys.c"
                        (("/bin/false")
                         (which "false"))))))
