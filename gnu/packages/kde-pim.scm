@@ -1422,15 +1422,15 @@ test and recovery certificates.")
        (sha256
         (base32 "12k7aqzyzlsp8llm7jhy6flr76msxzvr7g5zd1g915xzy9l32c4n"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list kcoreaddons kmime))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      (list cyrus-sasl
-           kcoreaddons
            kcodecs
            ki18n
-           kio
-           kmime))
+           kio))
     (arguments (list #:qtbase qtbase))
     (home-page "https://api.kde.org/kdepim/kimap/html/index.html")
     (synopsis "Library for handling IMAP")
