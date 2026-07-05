@@ -1901,6 +1901,8 @@ e-mail client programs into KMail and KDE PIM.")
        (sha256
         (base32 "00dm3rsb12yw8nma0d71mhmnv0adi21gwcgg2xdg30bz8cb37h7h"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list kconfig)) ;required by KPim6MailTransportConfig.cmake
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
