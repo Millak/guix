@@ -2734,7 +2734,7 @@ on the GNOME Desktop with a single simple application.")
             libspelling
             libtiff
             nautilus                    ; for nautilus extension
-            poppler-next
+            poppler
             zlib
             (cargo-inputs 'papers)))
     (home-page "https://apps.gnome.org/Papers")
