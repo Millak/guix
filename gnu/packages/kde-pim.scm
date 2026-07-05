@@ -348,18 +348,17 @@ collection and item views.")
        (sha256
         (base32 "13w9a31abkpr45vpcz783xhgi4l4hwv9dnnfxarjppmzlqcv8nsp"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list akonadi kcontacts grantleetheme))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list akonadi
-           boost
-           grantleetheme
+     (list boost
            kauth
            kcmutils
            kcodecs
            kcompletion
            kconfigwidgets
-           kcontacts
            kcoreaddons
            kdbusaddons
            kguiaddons
