@@ -4587,7 +4587,7 @@ the passwords on KDE work spaces.")
     (native-inputs
      (list extra-cmake-modules kdoctools-5))
     (inputs
-     (list gpgme-2
+     (list gpgmepp
            kauth-5
            kcodecs-5
            kconfig-5
