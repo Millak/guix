@@ -713,24 +713,22 @@ information.")
         (base32 "0ylpv3sm0jmb050nj0k2fjxgdahsnjqabhl7qb1y92z68h5iray4"))))
     (properties `((upstream-name . "incidenceeditor")))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list akonadi-mime kcalendarcore kcalendarsupport keventviews kmime))
     (native-inputs
      (list extra-cmake-modules dbus))
     (inputs
      (list akonadi
            akonadi-calendar
            akonadi-contacts
-           akonadi-mime
            boost
            grantleetheme
-           kcalendarcore
-           kcalendarsupport
            kcalutils
            kcodecs
            kcontacts
            kconfigwidgets
            kdbusaddons
            kdiagram
-           keventviews
            kguiaddons
            ki18n
            kiconthemes
@@ -740,7 +738,6 @@ information.")
            kitemmodels
            kldap
            kmailtransport
-           kmime
            kpimcommon
            kpimtextedit
            ktextaddons
