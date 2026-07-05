@@ -405,12 +405,12 @@ to list and filter contacts.")
        (sha256
         (base32 "185zpy6wwjf210g1c0q14vdxv7bsp2gzry5kff9ksgzsa7zwgr0m"))))
     (build-system qt-build-system)
+    (propagated-inputs (list akonadi))
     (native-inputs
      (list extra-cmake-modules libxslt ;; xslt for generating interface descriptions
            shared-mime-info))
     (inputs
-     (list akonadi
-           boost
+     (list boost
            kcodecs
            kconfig
            kconfigwidgets
