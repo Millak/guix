@@ -2507,13 +2507,14 @@ text in the text edit to all kinds of markup, like HTML or BBCODE.")
        (sha256
         (base32 "17jsqid2isz7xp0cb02v2fxdkqix79ih9sl6q0l8h7a7lbinv9x4"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list kcoreaddons)) ;required by KPim6SMTPConfig.cmake
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      (list cyrus-sasl
            kcodecs
            kconfig
-           kcoreaddons
            ki18n
            kio))
     (arguments
