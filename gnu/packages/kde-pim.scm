@@ -2292,8 +2292,9 @@ and exchanging calendar data, vCalendar and iCalendar.")
                (base32
                 "1yaxi20vayzanp6hkmjky6dysmrldlra2xpf4z2hqx0igk1vs5pr"))))
     (build-system qt-build-system)
+    (propagated-inputs (list karchive)) ;required by KPim6PkPassConfig.cmake
     (native-inputs (list extra-cmake-modules))
-    (inputs (list karchive qtdeclarative shared-mime-info))
+    (inputs (list qtdeclarative shared-mime-info))
     (arguments (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/pim/kpkpass")
     (synopsis "Apple Wallet Pass reader")
