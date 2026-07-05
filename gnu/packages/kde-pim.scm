@@ -870,15 +870,16 @@ management system and its Plasma integration components.")
                (base32
                 "1g76wgpgil10cmaya36gfxix7ia45nhhhf4x2z8jl4hwc1g4brhc"))))
     (build-system qt-build-system)
+    ;; These packages are required by the QML modules.
+    (propagated-inputs
+     (list kaccounts-integration kirigami qtdeclarative qtwebengine))
     (native-inputs (list extra-cmake-modules intltool))
-    (inputs (list kaccounts-integration
-                  kcoreaddons
+    (inputs (list kcoreaddons
                   kdeclarative
                   kpackage
                   ki18n
                   kio
                   libaccounts-qt6
-                  qtwebengine
                   qcoro-qt6
                   signond-qt6))
     (arguments
