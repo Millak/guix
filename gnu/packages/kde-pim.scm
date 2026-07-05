@@ -456,24 +456,26 @@ with emails through Akonadi easier.")
        (sha256
         (base32 "028x283lhxwxz164m2qrci4dk5hgzvrg0am7ls15inxrib1sdv3m"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list akonadi
+           akonadi-mime
+           kcalendarcore
+           kcontacts
+           kcoreaddons
+           kmime))
     (native-inputs
      (list extra-cmake-modules
            ;; For tests.
            dbus))
     (inputs
-     (list akonadi
-           akonadi-mime
-           boost
-           kcalendarcore
+     (list boost
            kcmutils
-           kcontacts
            kcrash
            kdbusaddons
            ktextaddons
            ki18n
            kio
            kitemmodels
-           kmime
            kxmlgui
            krunner
            kwindowsystem
