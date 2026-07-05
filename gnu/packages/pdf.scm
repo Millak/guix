@@ -32,6 +32,7 @@
 ;;; Copyright © 2025 Jussi Timperi <jussi.timperi@iki.fi>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
+;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -502,14 +503,14 @@ Poppler gives access to the following binary programs:
 (define-public poppler-data
   (package
     (name "poppler-data")
-    (version "0.4.11")
+    (version "0.4.12")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://poppler.freedesktop.org/poppler-data"
                                   "-" version ".tar.gz"))
               (sha256
                (base32
-                "137h4m48gc4v0srnr0gkwaqna6kfdqpy5886if5gjfmh3g6hbv1c"))))
+                "0x5brm8vibb3zzdbhjfxvm6s5zzdjnyslrinp3hmgqqcli0bcdf8"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                      ; no test suite
@@ -527,7 +528,8 @@ When present, Poppler is able to correctly render CJK and Cyrillic text.")
     ;; See COPYING in the source distribution for more information about
     ;; the licensing.
     (license (list license:bsd-3
-                   license:gpl2))))
+                   license:gpl2
+                   license:expat)))) ;Makefile
 
 (define-public poppler-qt5
   (package/inherit poppler
