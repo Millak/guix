@@ -2810,7 +2810,9 @@ is a Sieve parser and interpreter library for KDE.")
                   libkdepim
                   libkleo
                   mimetreeparser
+                  prison
                   qqc2-desktop-style
+                  qt5compat
                   qtdeclarative
                   qtlocation
                   qtpositioning
