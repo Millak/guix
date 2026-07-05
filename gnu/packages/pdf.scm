@@ -394,18 +394,17 @@ please install the @code{flyer-composer-gui} package.")))
 (define-public poppler
   (package
    (name "poppler")
-   (version "22.09.0")
+   (version "26.07.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://poppler.freedesktop.org/poppler-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "0bhyli95h3dkirjc0ibh08s4nim6rn7f38sbfzdwln8k454gga6p"))))
+              "1qh1rbs9vjpl8prjc1ws1k0kg3z6hkvd3dn6j35gsiwaizs34j1h"))))
    (build-system cmake-build-system)
-   ;; FIXME:
-   ;;  use libcurl:        no
-   (inputs (list fontconfig
+   (inputs (list curl
+                 fontconfig
                  freetype
                  libjpeg-turbo
                  libpng
@@ -440,16 +439,23 @@ please install the @code{flyer-composer-gui} package.")))
      #:tests? #f
      #:configure-flags
      #~(list "-DENABLE_UNSTABLE_API_ABI_HEADERS=ON" ;to install header files
-             "-DENABLE_ZLIB=ON"
              "-DENABLE_BOOST=OFF"      ;disable Boost to save size
              (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib")
-             (string-append "-DCMAKE_INSTALL_RPATH=" #$output "/lib"))
+             (string-append "-DCMAKE_INSTALL_RPATH=" #$output "/lib")
+             "-DENABLE_GPGME=OFF"
+             "-DENABLE_QT5=OFF"
+             "-DENABLE_QT6=OFF")
      #:phases
-     (if (%current-target-system) #~%standard-phases
-         #~(modify-phases %standard-phases
-             (add-after 'unpack 'set-PKG_CONFIG
-               (lambda _
-                 (setenv "PKG_CONFIG" #$(pkg-config-for-target))))))))
+     #~(modify-phases %standard-phases
+         (add-after 'unpack 'set-PKG_CONFIG
+           (lambda _
+             (when (not #$(%current-target-system))
+               (setenv "PKG_CONFIG" #$(pkg-config-for-target)))))
+         (add-after 'install 'sanitize-pkg-config-files
+           (lambda _
+             (substitute* (find-files #$output "\\.pc$")
+               (("^Requires.private:.*" all)
+                 (string-append "# " all))))))))
    (synopsis "PDF rendering library")
    (description
     "Poppler is a PDF rendering library based on the xpdf-3.0 code base.
@@ -483,22 +489,7 @@ Poppler gives access to the following binary programs:
                                   version ".tar.xz"))
               (sha256
                (base32
-                "14q69q6ipy3m4ywdhlr48qlscwzrv8jcns3g2306pyaa25im35dh"))))
-    (arguments (substitute-keyword-arguments arguments
-                 ((#:configure-flags flags)
-                  #~(cons*
-                     "-DENABLE_GPGME=OFF"
-                     "-DENABLE_QT5=OFF"
-                     "-DENABLE_QT6=OFF"
-                     #$flags))
-                 ((#:phases phases)
-                  #~(modify-phases #$phases
-                      (add-after 'install 'sanitize-pkg-config-files
-                        (lambda _
-                          (substitute* (find-files #$output "\\.pc$")
-                            (("^Requires.private:.*" all)
-                             (string-append "# " all)))))))))
-    (inputs (modify-inputs inputs (prepend curl)))))
+                "14q69q6ipy3m4ywdhlr48qlscwzrv8jcns3g2306pyaa25im35dh"))))))
 
 (define-public poppler-data
   (package
@@ -534,6 +525,10 @@ When present, Poppler is able to correctly render CJK and Cyrillic text.")
 (define-public poppler-qt5
   (package/inherit poppler
    (name "poppler-qt5")
+   (arguments
+    (substitute-keyword-arguments arguments
+      ((#:configure-flags flags)
+       #~(delete "-DENABLE_QT5=OFF" #$flags))))
    (inputs `(("qtbase" ,qtbase-5)
              ,@(package-inputs poppler)))
    (synopsis "Qt5 frontend for the Poppler PDF rendering library")))
@@ -541,6 +536,10 @@ When present, Poppler is able to correctly render CJK and Cyrillic text.")
 (define-public poppler-qt6
   (package/inherit poppler
     (name "poppler-qt6")
+   (arguments
+    (substitute-keyword-arguments arguments
+      ((#:configure-flags flags)
+       #~(delete "-DENABLE_QT6=OFF" #$flags))))
     (inputs (modify-inputs inputs
               (append qtbase)))
     (synopsis "Qt6 frontend for the Poppler PDF rendering library")))
