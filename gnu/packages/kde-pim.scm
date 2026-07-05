@@ -2709,6 +2709,8 @@ KDE using certificate-based crypto.")
         (base32
 	 "039yk6jzw9nxf6pcs6g4cnz2nvmxz0rcqni3q72cdwk0z86ydzad"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list ksyntaxhighlighting)) ;required by KPim6KManageSieveConfig.cmake
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -2727,7 +2729,6 @@ KDE using certificate-based crypto.")
            knewstuff
            kpimcommon
            kpimtextedit
-           ksyntaxhighlighting
            ktextaddons
            ktextwidgets
            kwallet
