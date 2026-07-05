@@ -1479,15 +1479,12 @@ easier to do so.")
                      (setenv "TZDIR"
                              (search-input-directory inputs "share/zoneinfo"))
                      (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
+    (propagated-inputs (list kcalendarcore kcontacts kmime kpkpass))
     (native-inputs (list dbus extra-cmake-modules tzdata-for-tests))
     (inputs (list karchive
-                  kcalendarcore
-                  kcontacts
                   kcoreaddons
                   ki18n
-                  kmime
                   knotifications
-                  kpkpass
                   libphonenumber
                   libxml2
                   openssl
