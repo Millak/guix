@@ -2095,13 +2095,14 @@ information in non-ASCII character sets.")
        (sha256
         (base32 "1447sy0a2qwbkrzwpma9hgz403c3x2xjd6b5d8s12f1945qbjfay"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list kparts)) ;required by KPim6KontactInterfaceConfigVersion.cmake
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      (list kcoreaddons
            ki18n
            kiconthemes
-           kparts
            kwindowsystem
            kxmlgui
            libxkbcommon))
