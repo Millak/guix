@@ -1986,7 +1986,6 @@ using a Qt/KMime C++ API.")
            kcompletion
            kconfig
            kconfigwidgets
-           kcontacts
            kdbusaddons
            kguiaddons
            ki18n
@@ -2001,7 +2000,6 @@ using a Qt/KMime C++ API.")
            kmbox
            knewstuff
            knotifications
-           kservice
            ksyntaxhighlighting
            ktextwidgets
            ktexttemplate
@@ -2015,18 +2013,21 @@ using a Qt/KMime C++ API.")
            qgpgme
            qtdeclarative
            qtwebchannel
-           qtwebengine
            sonnet))
     (propagated-inputs
      (list akonadi
            akonadi-mime
+           kcontacts
            kidentitymanagement
            kmime
            kpimcommon
            kpimtextedit
+           kservice
            ktextaddons
            libkdepim
-           libkleo))
+           libkleo
+           mimetreeparser
+           qtwebengine))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f     ;TODO many test fail for quite different reasons
