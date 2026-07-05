@@ -1855,7 +1855,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/libtgvoip-disable-sse2.patch 		\
   %D%/packages/patches/libtgvoip-disable-webrtc.patch 		\
   %D%/packages/patches/libtheora-config-guess.patch		\
-  %D%/packages/patches/libtiff-CVE-2022-34526.patch		\
   %D%/packages/patches/libtirpc-hurd.patch			\
   %D%/packages/patches/libtool-grep-compat.patch		\
   %D%/packages/patches/libtool-skip-tests2.patch		\

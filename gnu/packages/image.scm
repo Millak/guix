@@ -965,16 +965,17 @@ extracting icontainer icon files.")
 (define-public libtiff
   (package
    (name "libtiff")
-   (version "4.4.0")
+   (version "4.7.2")
    (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://download.osgeo.org/libtiff/tiff-"
-                           version ".tar.xz"))
-       (patches (search-patches "libtiff-CVE-2022-34526.patch"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/libtiff/libtiff.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1h8xrcpbyf9id2hw2ms0cmpgx0li8gladjzj82ycgk28018pnc29"))))
+         "0q6q1kzam5fki7biip3yhrhfb8p8h87m03pajhrn6zcijn1yjhpb"))))
    (build-system gnu-build-system)
    (outputs '("out"
               "doc"))                           ;1.8 MiB of HTML documentation
@@ -984,6 +985,8 @@ extracting icontainer icon files.")
           #~(list (string-append "--with-docdir=" #$output:doc "/share/doc/"
                                  #$name "-" #$(package-version this-package))
                 "--disable-static")))
+   (native-inputs
+    (list autoconf-2.72 automake libtool))
    (inputs
     (list libjpeg-turbo xz zlib))
    (synopsis "Library for handling TIFF files")
