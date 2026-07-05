@@ -2849,7 +2849,8 @@ NOTE: plsase add akonadi and kdepim-runtime to system package.")
            libkleo
            kwidgetsaddons
            qtdeclarative))
-    (propagated-inputs (list ki18n kmime kmbox))
+    (propagated-inputs
+     (list ki18n kirigami kmime kmbox qtdeclarative qtwebengine))
     (arguments
      (list #:tests? #f ;; FIXME: 7/9 tests fail.
            #:qtbase qtbase))
