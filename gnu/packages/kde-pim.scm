@@ -2620,11 +2620,11 @@ and allows one to view/extract message formatted text in Rich Text Format.")
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules qttools))
+    (propagated-inputs
+     (list kcalendarcore kcontacts)) ;required by KPim6GAPIConfig.cmake
     (inputs
      (list cyrus-sasl
            ki18n
-           kcontacts
-           kcalendarcore
            kio
            kwallet
            kwindowsystem
