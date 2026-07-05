@@ -478,18 +478,7 @@ Poppler gives access to the following binary programs:
    (license license:gpl2+)
    (home-page "https://poppler.freedesktop.org/")))
 
-(define-public poppler-next
-  (package
-    (inherit poppler)
-    (name "poppler-next")
-    (version "26.04.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://poppler.freedesktop.org/poppler-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "14q69q6ipy3m4ywdhlr48qlscwzrv8jcns3g2306pyaa25im35dh"))))))
+(define-deprecated-package poppler-next poppler)
 
 (define-public poppler-data
   (package
