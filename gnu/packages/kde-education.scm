@@ -97,8 +97,10 @@ charts.")
                            version "/src/analitza-" version ".tar.xz"))
        (sha256
         (base32 "1dzx7ff4bx1ma3am7928y3qp99lxxd1zk4czfpcm66fn2q8w02sg"))))
+    ;; As required by the QML modules.
+    (propagated-inputs (list qtdeclarative))
     (native-inputs (list extra-cmake-modules qttools))
-    (inputs (list eigen qtbase qtdeclarative qtsvg))
+    (inputs (list eigen qtbase qtsvg))
     (build-system qt-build-system)
     (home-page "https://invent.kde.org/education/analitza")
     (synopsis "Library to add mathematical features to a program")
