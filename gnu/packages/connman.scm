@@ -165,16 +165,16 @@ sharing) to clients via USB, ethernet, WiFi, cellular and Bluetooth.")
 (define-public cmst
   (package
     (name "cmst")
-    (version "2020.11.01")
+    (version "2023.03.14")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/andrew-bibb/cmst")
-              (commit (string-append "" version))))
+              (commit (string-append "cmst-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vpxmssn003igj9w98yb8k3hd8a04wi9vs4b3j41gmv3i70dg3y8"))))
+        (base32 "00a0mvcb15w4yd0a51sayfj7s1hcx6agzk8mnn9wd6gxc1fhywc0"))))
     (inputs
      (list qtbase-5))
     (native-inputs
