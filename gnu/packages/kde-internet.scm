@@ -972,6 +972,12 @@ desktop.  It supports:
                 #:qtbase qtbase
                 #:tests? #f
                 #:configure-flags #~(list "-DSMB4K_WITH_WS_DISCOVERY=ON")))
+    ;; These packages are required by the QML modules.
+    (propagated-inputs
+     (list kirigami
+           libplasma
+           qtbase          ;for QML_IMPORT_PATH and QT_PLUGIN_PATH
+           qtdeclarative))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -989,7 +995,6 @@ desktop.  It supports:
            ki18n
            kiconthemes
            kio
-           kirigami
            kjobwidgets
            knotifications
            knotifyconfig
@@ -999,8 +1004,6 @@ desktop.  It supports:
            kwidgetsaddons
            kwindowsystem
            kxmlgui
-           libplasma
-           qtdeclarative
            qtkeychain-qt6
            qtwayland
            samba
