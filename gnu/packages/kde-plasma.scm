@@ -188,6 +188,11 @@ script engines.")
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
+    ;; These packages are required by the QML modules.
+    (propagated-inputs
+     (list kirigami
+           ksvg
+           qtdeclarative))
     (native-inputs
      (list extra-cmake-modules qttools))
     (inputs
@@ -197,9 +202,7 @@ script engines.")
            kdecoration
            ki18n
            knewstuff
-           kpackage
-           ksvg
-           qtdeclarative))
+           kpackage))
     (synopsis "Themeable window decoration for KWin")
     (description
      "Aurorae is a themeable window decoration for KWin.  It supports theme
