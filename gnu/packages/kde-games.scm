@@ -308,13 +308,15 @@ if (!x.isEmpty()) {
 d->buildElementIdTable();"
                          (string-append
                           (assoc-ref outputs "out") "/share")))))))))
+    ;; As required by KMahjongglib6Config.cmake.
+    (propagated-inputs
+     (list kconfigwidgets))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      (list kauth
            kcompletion
            kcodecs
-           kconfigwidgets
            kcoreaddons
            ki18n
            kwidgetsaddons
