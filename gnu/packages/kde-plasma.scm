@@ -739,30 +739,36 @@ KDE Frameworks 5 to better interact with the system.")
                             (setenv "TZDIR"
                                     (search-input-directory
                                      inputs "share/zoneinfo")))))))
+    ;; These packages are required by th QML modules.
+    (propagated-inputs (list kcmutils
+                             kconfig
+                             kcoreaddons ;PlasmaPotdProviderConfig.cmake
+                             kcoreaddons
+                             kdeclarative
+                             kirigami
+                             kitemmodels
+                             ksvg
+                             kwindowsystem
+                             libplasma
+                             plasma5support
+                             qt5compat
+                             qtdeclarative))
     (native-inputs (list extra-cmake-modules tzdata-for-tests))
     (inputs (list karchive
                   kauth
-                  kconfig
-                  kcoreaddons
-                  kdeclarative
                   kdbusaddons
                   kholidays
                   ki18n
                   kio
-                  kcmutils
                   kglobalaccel
                   kxmlgui
                   knotifications
                   krunner
                   kservice
-                  ksvg
                   kunitconversion
                   knewstuff
-                  libplasma
-                  plasma5support
                   purpose
                   sonnet
-                  qt5compat
                   ;; qtwebengine ; Optional for online dictionary
                   qtdeclarative))
     (synopsis "Add-ons to improve your Plasma experience")
