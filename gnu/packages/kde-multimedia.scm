@@ -1192,10 +1192,8 @@ CDs.")
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
-    (inputs
-     (list qtdeclarative))
     (propagated-inputs
-     (list mpv))
+     (list mpv qtdeclarative)) ;as required by MpvQtConfig.cmake
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
