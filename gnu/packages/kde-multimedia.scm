@@ -1123,11 +1123,12 @@ Its features include:
        (sha256
         (base32 "0wyfcwdfd9xs7j67w91ay5knlpfygnyl8qyqd94h0wsi91in0j74"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list kconfig)) ;as required by KCddb6Config.cmake
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
      (list kcodecs
-           kconfig
            ki18n
            kio
            kcmutils
