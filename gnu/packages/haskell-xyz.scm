@@ -2468,36 +2468,6 @@ and daemons.  The features include:
 ")
     (license license:bsd-3)))
 
-(define-public ghc-connection
-  (package
-    (name "ghc-connection")
-    (version "0.3.1")
-    (source (origin
-              (method url-fetch)
-              (uri (hackage-uri "connection" version))
-              (sha256
-               (base32
-                "1nbmafhlg0wy4aa3p7amjddbamdz6avzrxn4py3lvhrjqn4raxax"))))
-    (build-system haskell-build-system)
-    (properties '((upstream-name . "connection")))
-    (inputs
-     (list ghc-byteable
-           ghc-data-default-class
-           ghc-network
-           ghc-tls
-           ghc-socks
-           ghc-x509
-           ghc-x509-store
-           ghc-x509-system
-           ghc-x509-validation))
-    (home-page "https://github.com/vincenthz/hs-connection")
-    (synopsis "Simple and easy network connections API")
-    (description
-     "This package provides a simple network library for all your connection
-needs.  It provides a very simple API to create sockets to a destination with
-the choice of SSL/TLS, and SOCKS.")
-    (license license:bsd-3)))
-
 (define-public ghc-constraints
   (package
     (name "ghc-constraints")
