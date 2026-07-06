@@ -737,15 +737,13 @@ a full-featured client for BitTorrent.")
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list boost
-           gmp
-           kcrash
+     (list kcrash
            ki18n
-           kio
-           libgcrypt
            qca-qt6
            solid))
-    (propagated-inputs (list karchive qt5compat))
+    ;; As required by KTorrent6Config.cmake.
+    (propagated-inputs
+     (list boost gmp karchive kconfig kio libgcrypt qt5compat))
     (home-page "https://invent.kde.org/network/libktorrent")
     (synopsis "BitTorrent protocol library for C++ / Qt 6 / KDE Frameworks")
     (description "The KTorrent library supports connectivity to HTTP and UDP
