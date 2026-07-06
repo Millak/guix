@@ -839,6 +839,9 @@ picture metadata as EXIF/IPTC and XMP.")
                         (string-append
                          share ":" (getenv "XDG_DATA_DIRS")))
                 (invoke "update-desktop-database" "-v" share)))))))
+    ;; As required by Okular6Config.cmake.
+    (propagated-inputs
+     (list kconfig kcoreaddons kxmlgui))
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config
            ;; for test
@@ -855,7 +858,6 @@ picture metadata as EXIF/IPTC and XMP.")
            karchive
            kbookmarks
            kcompletion
-           kconfig
            libjpeg-turbo
            libtiff
            kirigami
