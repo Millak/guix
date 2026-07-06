@@ -100,6 +100,8 @@ This package contains GUI widgets for baloo.")
        (sha256
         (base32 "0fws10g06bm75gs32ch9cw2s5yxwvspm6zxvk3axgnbnq1ydwqcr"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list kio))
     (native-inputs
      (list extra-cmake-modules kdoctools ruby ruby-test-unit))
     (inputs
@@ -116,7 +118,6 @@ This package contains GUI widgets for baloo.")
            kguiaddons
            ki18n
            kiconthemes
-           kio
            knewstuff
            knotifications
            kparts
