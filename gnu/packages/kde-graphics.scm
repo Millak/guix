@@ -110,12 +110,15 @@
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
+    ;; As required by the QML modules.
+    (propagated-inputs
+     (list kirigami
+           qtdeclarative))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      (list kconfig
-           opencv
-           qtdeclarative))
+           opencv))
     (home-page "https://invent.kde.org/libraries/kquickimageeditor/")
     (synopsis "QtQuick components for image editing")
     (description "KQuickImageEditor is a set of QtQuick components providing
