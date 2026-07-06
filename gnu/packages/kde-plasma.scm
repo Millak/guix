@@ -119,7 +119,13 @@
                 "06m7p25860ka49yqrm8f1a0z6ykyyfh8zkch496hzfch1yyzk23x"))))
     (build-system qt-build-system)
     (propagated-inputs
-     (list kpackage kwindowsystem))
+     (list kconfig         ;PlasmaConfig.cmake
+           kirigami        ;QML module dependency
+           kpackage        ;PlasmaConfig.cmake
+           ksvg            ;QML module dependency
+           kwindowsystem   ;PlasmaConfig.cmake
+           qt5compat       ;QML module dependency
+           qtdeclarative)) ;PlasmaConfig.cmake and PlasmaQuickConfig.cmake
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config
            gettext-minimal
@@ -131,15 +137,12 @@
              kglobalaccel
              kguiaddons
              kiconthemes
-             kirigami
              kio
              ki18n
-             ksvg
              kglobalaccel
              knotifications
              plasma-wayland-protocols
              plasma-activities
-             qtdeclarative
              qtsvg
              qtwayland
              wayland
