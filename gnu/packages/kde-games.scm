@@ -62,14 +62,17 @@
         (base32 "070lixb7iz4n1zb4w6xsj7xmjkbvcd6zmryq0k2pv9c7n1c5lq34"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
+    (propagated-inputs
+     (list ;; As required by KDEGames6Config.cmake.
+           kcompletion kconfig kconfigwidgets
+           ;; As required by the QML modules.
+           qtdeclarative))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
      (list karchive
            kbookmarks
            kcodecs
-           kcompletion
-           kconfigwidgets
            kcrash
            kdbusaddons
            kdeclarative
@@ -87,7 +90,6 @@
            kxmlgui
            libsndfile
            openal
-           qtdeclarative
            qtsvg))
     (home-page "https://apps.kde.org/categories/games/")
     (synopsis "Runtime library for kdegames")
