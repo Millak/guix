@@ -74,6 +74,8 @@
                (base32
                 "0jywd5s5l9bj4bv1jvbjghgdmiac4q1infxr1mfs7z4fd6408nbc"))))
     (build-system qt-build-system)
+    ;; As required by KQtQuickChartsConfig.cmake.
+    (propagated-inputs (list qtdeclarative))
     (native-inputs (list extra-cmake-modules))
     (inputs (list qtdeclarative))
     (arguments
