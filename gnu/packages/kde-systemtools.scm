@@ -73,10 +73,12 @@
        (sha256
         (base32 "04f769ij3hp5ljfb3xfqq7mib1qhp4my5d9znpp6v97dvw5gq0qb"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list kcoreaddons kio))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list baloo kconfig ki18n kio))
+     (list baloo kconfig ki18n))
     (arguments
      (list #:configure-flags #~(list "-DBUILD_WITH_QT6=ON")
            #:qtbase qtbase))
