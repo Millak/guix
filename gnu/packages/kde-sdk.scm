@@ -123,15 +123,15 @@ PO template files.")
                            "/src/libkomparediff2-" version ".tar.xz"))
        (sha256
         (base32 "1b3j4kb0147qcjk6h715qa212i2039gabd4i64yygfn8fw7yjr5q"))))
+    (propagated-inputs
+     (list kconfig kxmlgui)) ;as required by KompareDiff2Config.cmake
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
      (list kcodecs
-           kconfig
            kcoreaddons
            ki18n
            kio
-           kxmlgui
            qtbase))
     (build-system cmake-build-system)
     (home-page "https://kde.org")
