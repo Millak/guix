@@ -279,6 +279,9 @@ for some KDevelop language plugins (Ruby, PHP, CSS...).")
        (sha256
         (base32 "1mgwglrnxigyf0h0rff0kl1xgxg3vsm17nif46r47f1s5fhgds5n"))))
     (build-system qt-build-system)
+    ;; As required by KDevPlatformConfig.cmake.
+    (propagated-inputs
+     (list ktexteditor qt5compat qtwebengine threadweaver))
     (native-inputs
      (list extra-cmake-modules pkg-config shared-mime-info qttools))
     (inputs (list boost
@@ -300,18 +303,14 @@ for some KDevelop language plugins (Ruby, PHP, CSS...).")
                   kparts
                   kservice
                   ksyntaxhighlighting
-                  ktexteditor
                   ktexttemplate
                   ktextwidgets
                   kwindowsystem
                   kxmlgui
                   libkomparediff2
                   breeze-icons
-                  qt5compat
                   qtdeclarative
                   qtwayland
-                  qtwebengine
-                  threadweaver
                   ;; recommendes
                   astyle
                   kdevelop-pg-qt
