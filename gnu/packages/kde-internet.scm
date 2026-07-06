@@ -460,6 +460,7 @@ communicate with each other.  Here's a few things KDE Connect can do:
                        (("Exec=.*$")
                         (string-append "Exec=" kio "/libexec/kf" kf-version
                                        "/kiod" kf-version "\n")))))))))
+    (propagated-inputs (list kio)) ;required by KioArchive6Config.cmake
     (native-inputs (list extra-cmake-modules dbus kdoctools pkg-config qttools))
     ;; TODO: libappimage
     (inputs (list gperf
@@ -478,7 +479,6 @@ communicate with each other.  Here's a few things KDE Connect can do:
                   kdsoap-ws-discovery-client
                   knotifications
                   ki18n
-                  kio
                   ksyntaxhighlighting
                   libimobiledevice
                   libkexiv2
