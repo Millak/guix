@@ -93,9 +93,9 @@
        (sha256
         (base32 "0yj2ngw4li5r6zhmkh2lb8fdf8ixz6pp5hxsb4342pz72g04glic"))))
     (build-system qt-build-system)
+    (inputs (list kdsoap)) ;required by KDSoapWSDiscoveryClientConfig.cmake
     (native-inputs
      (list extra-cmake-modules))
-    (inputs (list kdsoap))
     (arguments (list
                 ;; test require network.
                 #:tests? #f
