@@ -481,10 +481,10 @@ PostScript, PDF, RAW, Mobipocket, and Blender files.")
        (patches (search-patches
                  "kdiagram-Fix-missing-link-libraries.patch"))))
     (build-system qt-build-system)
+    (propagated-inputs
+     (list qtsvg)) ;required by KGantt6Config.cmake
     (native-inputs
      (list extra-cmake-modules qttools))
-    (inputs
-     (list qtsvg))
     (arguments (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/graphics/kdiagram")
     (synopsis "Libraries for creating business diagrams")
