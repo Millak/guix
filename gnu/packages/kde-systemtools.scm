@@ -530,11 +530,13 @@ This package is part of the KDE administration module.")
            #:tests? #f ;no tests
            #:configure-flags
            #~(list "-DQT_MAJOR_VERSION=6")))
+    ;; These packages are required by the QML modules.
+    (propagated-inputs
+     (list kcmutils kirigami libplasma plasma5support qtdeclarative))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
-     (list kcmutils
-           kconfig
+     (list kconfig
            kcoreaddons
            kdbusaddons
            ki18n
@@ -545,8 +547,6 @@ This package is part of the KDE administration module.")
            kwidgetsaddons
            kxmlgui
            libgit2
-           libplasma
-           plasma5support
            qtwayland
            solid))
     (home-page "https://apps.kde.org/kup/")
