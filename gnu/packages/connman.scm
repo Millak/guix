@@ -180,29 +180,27 @@ sharing) to clients via USB, ethernet, WiFi, cellular and Bluetooth.")
      (list qttools-5))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "qmake"
-                     (string-append "PREFIX="
-                                    (assoc-ref outputs "out")))))
-         (add-before 'build 'fix-Makefiles
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* (find-files "." "Makefile")
-                 (("INSTALL_ROOT)")
-                  (string-append "INSTALL_ROOT)" out))
-                 (("/usr") ""))
-               (substitute* '("apps/cmstapp/cmstapp.pro"
-                              "apps/cmstapp/code/control_box/controlbox.cpp"
-                              "apps/rootapp/rootapp.pro"
-                              "apps/rootapp/system/org.cmst.roothelper.service"
-                              "cmst.pri"
-                              "cmst.pro")
-                 (("/usr") out)
-                 (("/etc") (string-append out "/etc")))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (invoke "qmake"
+                      (string-append "PREFIX=" #$output))))
+          (add-before 'build 'fix-references
+            (lambda _
+              (substitute* (find-files "." "Makefile")
+                (("INSTALL_ROOT)")
+                 (string-append "INSTALL_ROOT)" #$output))
+                (("/usr") ""))
+              (substitute* (list "apps/cmstapp/cmstapp.pro"
+                                 "apps/cmstapp/code/control_box/controlbox.cpp"
+                                 "apps/rootapp/rootapp.pro"
+                                 "apps/rootapp/system/org.cmst.roothelper.service"
+                                 "cmst.pri"
+                                 "cmst.pro")
+                (("/usr") #$output)
+                (("/etc") (string-append #$output "/etc"))))))))
     (home-page "https://github.com/andrew-bibb/cmst")
     (synopsis "Qt frontend for Connman")
     (description
