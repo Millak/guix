@@ -168,12 +168,13 @@ sharing) to clients via USB, ethernet, WiFi, cellular and Bluetooth.")
     (version "2020.11.01")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/andrew-bibb/cmst/releases/download/"
-             version "/cmst-" version ".tar.xz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/andrew-bibb/cmst")
+              (commit (string-append "" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0jn12wxwjznady6aniwmvahg1dj25p902sdwj0070biv6vx5c7dq"))))
+        (base32 "1vpxmssn003igj9w98yb8k3hd8a04wi9vs4b3j41gmv3i70dg3y8"))))
     (inputs
      (list qtbase-5))
     (native-inputs
