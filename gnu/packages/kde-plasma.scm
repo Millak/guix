@@ -1587,6 +1587,12 @@ you login.")
                 (system "Xvfb :1 &")
                 (sleep 5)
                 (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
+    ;; As required by KWinConfig.cmake.
+    (propagated-inputs (list kconfig
+                             kcoreaddons
+                             kwindowsystem
+                             libepoxy
+                             wayland))
     (native-inputs (list extra-cmake-modules
                          dbus
                          kdoctools
@@ -1607,8 +1613,6 @@ you login.")
                   kauth
                   kcmutils
                   kcompletion
-                  kconfig
-                  kcoreaddons
                   kcrash
                   kdbusaddons
                   kdeclarative
@@ -1630,7 +1634,6 @@ you login.")
                   kscreenlocker
                   ktextwidgets
                   kwayland
-                  kwindowsystem
                   kxmlgui
                   ksvg
                   lcms
@@ -1638,7 +1641,6 @@ you login.")
                   libcap
                   libdisplay-info
                   libei
-                  libepoxy
                   libinput
                   libplasma
                   libqaccessibilityclient
@@ -1652,7 +1654,6 @@ you login.")
                   qtwayland
                   qtsensors
                   qtsvg
-                  wayland
                   xcb-util ;fails at build time without this
                   xcb-util-cursor
                   xcb-util-keysyms
