@@ -2732,9 +2732,9 @@ install an implementation package such as gwcs.")
 (define-public python-asdf-zarr
   (package
     (name "python-asdf-zarr")
-    ;; To support latest ASDF.
-    (properties '((commit . "df31d9008b07d2a2c0f47df2d550a0bbd4151bb5")
-                  (revision . "0")))
+    ;; 0.0.4 (2024-06-28); to support latest Zarr.
+    (properties '((commit . "06a7b4baf6d98c95dc03bb76de671e614f771a4f")
+                  (revision . "1")))
     (version (git-version "0.0.4"
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
@@ -2746,10 +2746,11 @@ install an implementation package such as gwcs.")
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09ba9740wf0vlmyql2pv6ll8vf76p2w6nc28m8dnpmbyqib7cx2v"))))
+        (base32 "11gj9d3lhv3a3ygfpyiddrfqridg6f363s9mjdl8ygji08lz5mrb"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
+           python-pytest-asyncio
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
