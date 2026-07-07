@@ -1263,11 +1263,12 @@ the running system.")
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
+    (propagated-inputs
+     (list qtdeclarative)) ;as required by LayerShellQtConfig.cmake
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
      (list libxkbcommon
-           qtdeclarative
            qtwayland
            wayland
            wayland-protocols))
