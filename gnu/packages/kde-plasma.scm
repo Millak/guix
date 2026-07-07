@@ -1403,13 +1403,16 @@ basic needs and easy to configure for those who want special setups.")
                            "/libksysguard-" version ".tar.xz"))
        (sha256
         (base32 "0kbkvab6355b92p0q9fvwjrh4xvddnk2nzgj33pnmyhx5f0y9f12"))))
+    (propagated-inputs
+     (list ;; As required by KSysGuardConfig.cmake.
+           kconfig ki18n
+           ;; As required by the QML modules.
+           kirigami kitemmodels kquickcharts qt5compat qtdeclarative))
     (native-inputs
      (list bash-minimal extra-cmake-modules pkg-config qttools))
     (inputs
      (list kauth
-           kconfig
            kcoreaddons
-           ki18n
            knewstuff
            kpackage
            kservice
@@ -1417,7 +1420,6 @@ basic needs and easy to configure for those who want special setups.")
            libcap
            libpcap
            `(,lm-sensors "lib")
-           qtdeclarative
            solid
            zlib))
     (build-system qt-build-system)
