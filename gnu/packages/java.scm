@@ -6347,12 +6347,12 @@ available in the Java programming language or Commons Lang.")
      `(#:exclude
        (("org.apache.maven.plugins" .
          ("maven-source-plugin" "maven-archetype-plugin" "maven-shade-plugin"
-          "maven-site-plugin" "maven-javadoc-plugin" "maven-eclipse-plugin"))
+          "maven-site-plugin" "maven-javadoc-plugin" "maven-eclipse-plugin"
+          ;; Only checks the Maven version, which is fixed by the build
+          ;; system.
+          "maven-enforcer-plugin"))
         ("com.mycila.maven-license-plugin" . ("maven-license-plugin"))
         ("org.apache.maven.wagon" . ("wagon-ssh")))
-       #:maven-plugins
-       (("maven-enforcer-plugin" ,maven-enforcer-plugin)
-        ,@(default-maven-plugins))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'remove-unnecessary
