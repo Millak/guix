@@ -43255,6 +43255,30 @@ takes the code and reformats it to the best formatting that conforms to the
 style guide, even if the original code didn't violate the style guide.")
     (license license:asl2.0)))
 
+(define-public python-yappi
+  (package
+    (name "python-yappi")
+    (version "1.7.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sumerc/yappi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08jhsflxyj3vf1m06vngsw9d6qyblykcx1j2mq4qn0ray0s7v8qj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest
+           #:test-flags #~'("discover" "tests")))
+    (native-inputs (list python-gevent python-setuptools))
+    (home-page "https://github.com/sumerc/yappi")
+    (synopsis "Python Profiler")
+    (description "@acronym{YAPPI, Yet Another Python Profiler} is a robust and
+intuitive, standard compliant Python profiler.")
+    (license license:expat)))
+
 (define-public python-yapsy
   (package
     (name "python-yapsy")
