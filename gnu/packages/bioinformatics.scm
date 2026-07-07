@@ -4286,20 +4286,27 @@ use-case, we encourage users to compose functions to achieve their goals.")
 (define-public python-biom-format
   (package
     (name "python-biom-format")
-    (version "2.1.17")
+    ;; 2.1.17 (2025-08-26); the latest changes provide support for fresh NumPy
+    ;; and Pandas., see: <https://github.com/biocore/biom-format/issues/1003>,
+    ;; <https://github.com/biocore/biom-format/issues/1001>.
+    (properties '((commit . "0f3855c4af5dd5f33766badd8a6ba2dbdccf29dd")
+                  (revision . "0")))
+    (version (git-version "2.1.17"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/biocore/biom-format")
-              (commit version)))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fmlrxcn8bgh8wccs2qzz5q08ivd3r3zva9h8zzr1jsbff7904fz"))))
+        (base32 "1hqihr1hkx3g0p71vkzx5sk2k1cwrxhskxzxss6z9vxg1hwn27k0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 380 passed, 4 skipped, 16 warnings
+      ;; tests: 378 passed, 7 skipped, 7 warnings
       #:test-flags
       ;; Doctests depend on Nose.
       #~(list "--ignore=doc/sphinxext/numpydoc/numpydoc/tests/")
@@ -4322,9 +4329,7 @@ use-case, we encourage users to compose functions to achieve their goals.")
            python-h5py
            python-numpy
            python-pandas
-           python-scipy
-           ;; [optional]
-           python-anndata))
+           python-scipy))
     (home-page "https://www.biom-format.org")
     (synopsis "Biological Observation Matrix (BIOM) format utilities")
     (description
