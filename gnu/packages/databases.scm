@@ -5872,7 +5872,7 @@ other traditional Python scientific computing packages.")
 (define-public python-fastparquet
   (package
     (name "python-fastparquet")
-    (version "2025.12.0")
+    (version "2026.5.0")
     (source
      (origin
        (method git-fetch)
@@ -5881,11 +5881,11 @@ other traditional Python scientific computing packages.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15zd2khsazrbi6p4lzbwp2x96sk2zk2adxj3905wac9xzwlkbvrc"))))
+        (base32 "1x7c25pqrishmskc2k56yh15af4fmsqj4gwxf33d26p2flqyh6xn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 382 passed, 124 skipped, 2 warnings
+      ;; tests: 362 passed, 123 skipped, 15 xfailed, 6 xpassed, 2 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
@@ -5903,11 +5903,11 @@ other traditional Python scientific computing packages.")
            python-pytest
            python-pytest-xdist
            python-setuptools
-           python-setuptools-scm))
+           python-setuptools-scm
+           tzdata-for-tests))
     (propagated-inputs
      (list python-cramjam
            python-fsspec
-           python-lzo
            python-numpy
            python-packaging
            python-pandas))
