@@ -12659,7 +12659,12 @@ those in Perl and JavaScript.")
                (("<class name=\"test.serviceloader.ServiceLoaderTest\" />") "")
                ;; This is a parallel test and we've observed that it fails
                ;; sometimes.
-               (("<class name=\"test.dataprovider.DataProviderTest\"/>") ""))))
+               (("<class name=\"test.dataprovider.DataProviderTest\"/>") "")
+               ;; Another flaky parallel test: testParallelMode() fails
+               ;; intermittently on assertions about which before/after
+               ;; groups methods were run.  This also drops
+               ;; testInSequentialMode().
+               (("<class name=\"test.beforegroups.BeforeGroupsTest\"/>") ""))))
          ;; We don't have groovy
          (add-after 'unpack 'delete-groovy-tests
            (lambda _
