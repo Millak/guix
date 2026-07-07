@@ -11591,7 +11591,13 @@ implementing calibration pipeline software.")
        ;;
        ;; See: <https://stpsf.readthedocs.io/en/stable/installation.html>,
        ;; <https://github.com/spacetelescope/stpsf/issues/76>.
-      #:tests? #f))
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("numpy>=1.21.6,<2.4.0") "numpy")))))))
     (native-inputs
      (list python-setuptools
            python-setuptools-scm))
