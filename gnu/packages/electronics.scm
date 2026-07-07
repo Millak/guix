@@ -3841,6 +3841,31 @@ testing to @code{cocotb}, removing the need of manipulating Makefiles.")
 form of AXI, AXI lite, and AXI stream modules.")
     (license license:expat)))
 
+(define-public python-forastero
+  (package
+    (name "python-forastero")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Intuity/forastero")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j6mrh435xknx055llzqikh1bcrxjcn0difa6g1bflr4nxd2498g"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (propagated-inputs (list python-cocotb python-tabulate python-yappi))
+    (native-inputs (list python-poetry-core))
+    (home-page "https://forastero.intuity.io/")
+    (synopsis "Cocotb verification framework")
+    (description "Forastero is a Python library for writing testbenches with cocotb
+a Python framework for writing testbenches for hardware designs written in a
+@acronym{HDL, Hardware Description Language}, taking inspiration from the
+@acronym{UVM, Unified Verification Methodology}.")
+    (license license:asl2.0)))
+
 (define-public python-edalize
   (package
     (name "python-edalize")
