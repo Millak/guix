@@ -1746,11 +1746,14 @@ on top of Baloo.")
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
+    (propagated-inputs
+     (list ;; As required by QQC2BreezeStyleConfig.cmake.
+           kiconthemes kcolorscheme
+           ;; As required by the QML modules.
+           kguiaddons kirigami qtdeclarative))
     (native-inputs
      (list extra-cmake-modules))
-    (inputs (list qtdeclarative
-                  kiconthemes kguiaddons kconfig kirigami
-                  kcolorscheme kquickcharts))
+    (inputs (list kconfig kquickcharts))
     (home-page "https://invent.kde.org/plasma/qqc2-breeze-style")
     (synopsis "Breeze inspired Qt Quick Controls Style")
     (description "This package provides Breeze inspired Qt Quick Controls Style.")
