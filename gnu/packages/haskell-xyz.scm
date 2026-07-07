@@ -13018,8 +13018,9 @@ variant of @code{These}.
         (base32 "17jaq8gn5p3pgvwvswam379vdmdcq2241n3kwy6mmrisa45db564"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "threads")))
-    (native-inputs (list ghc-concurrent-extra ghc-hunit ghc-test-framework
-                         ghc-test-framework-hunit))
+    (arguments
+     (list
+      #:tests? #f)) ;depend on ghc-concurrent-extra, which stopped building
     (home-page "https://github.com/basvandijk/threads")
     (synopsis "Fork threads and wait for their result")
     (description
