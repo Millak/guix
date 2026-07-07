@@ -1711,17 +1711,17 @@ conjunction with the KDE Plasma Desktop.")
                (base32
                 "1pc97l90l7fw6s6lmqkh22rci24d8b48ycwpv404iyyr0ad0j7g8"))))
     (build-system qt-build-system)
+    ;; As required to be imported by the plasmoid on runtime.
+    (propagated-inputs (list kirigami libplasma qtdeclarative))
     (native-inputs (list extra-cmake-modules))
     (inputs (list kcoreaddons
                   ki18n
                   kdeclarative
                   kitemmodels
                   kservice
-                  libplasma
                   kwindowsystem
                   krunner
-                  ksvg
-                  qtdeclarative))
+                  ksvg))
     (arguments (list #:qtbase qtbase
                      #:tests? #f))
     (synopsis "Dedicated search application built on top of Baloo")
