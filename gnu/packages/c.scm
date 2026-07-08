@@ -91,10 +91,10 @@
 
 (define-public c-intro-and-ref
   (let ((revision "1")
-        (commit "47e5a234a7c036392e0f9e1e8e48ff3e6855840d"))
+        (commit "4a8cc3c3b2e9db9056ec44e3ef3434067f47f5f9"))
     (package
       (name "c-intro-and-ref")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version "0.1" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -103,7 +103,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0aza4vvlg2w0ss6n5xp741ycvg16d041c1x87yh5hpnzcb6y0ii3"))))
+                  "1qrldk5x2pm5v77kbca2k7c48m2mc7jmwhs50rqhlq9ispsvkir0"))))
       (build-system copy-build-system)
       (arguments
        (list #:phases #~(modify-phases %standard-phases
