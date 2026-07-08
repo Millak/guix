@@ -416,90 +416,148 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
        ;; different version (major+minor) of Linux, even if no errors
        ;; are signaled during execution.
        (error "deblob major+minor version mismatch"))
+     (define unchecked-source
+       (make-linux-source
+        version upstream-source
+        (delay
+          (with-imported-modules '((guix build utils))
+            #~(begin
+                (use-modules (guix build utils))
+
+                (mkdir "/tmp/bin")
+                (set-path-environment-variable
+                 "PATH" '("bin")
+                 (list "/tmp"
+                       #+(canonical-package bash)
+                       #+(canonical-package coreutils)
+                       #+(canonical-package diffutils)
+                       #+(canonical-package findutils)
+                       #+(canonical-package patch)
+                       #+(canonical-package xz)
+                       #+(canonical-package sed)
+                       #+(canonical-package grep)
+                       #+(canonical-package bzip2)
+                       #+(canonical-package gzip)
+                       #+(canonical-package tar)
+                       #+(canonical-package gawk)
+                       #+python-wrapper))
+
+                (with-directory-excursion "/tmp/bin"
+                  (copy-file #+deblob "deblob")
+                  (chmod "deblob" #o755)
+                  (substitute* "deblob"
+                    (("/bin/sh") (which "sh")))
+
+                  (copy-file #+deblob-check "deblob-check")
+                  (chmod "deblob-check" #o755)
+                  (substitute* "deblob-check"
+                    (("/bin/sh") (which "sh"))
+                    (("/bin/sed") (which "sed"))
+                    (("/usr/bin/python") (which "python"))))
+
+                (format #t "Running deblob script...~%")
+                (invoke "/tmp/bin/deblob"))))))
      (origin
        (method computed-origin-method)
-       (file-name (string-append "linux-libre-" version "-guix.tar.xz"))
+       (file-name (string-append "linux-" version "-guix.tar.xz"))
        (sha256 #f)
        (uri
         (delay
           (with-imported-modules '((guix build utils))
             #~(begin
-                (use-modules (guix build utils)
-                             (srfi srfi-1)
-                             (ice-9 match)
-                             (ice-9 ftw))
+                (use-modules (guix build utils))
 
-                (setvbuf (current-output-port) 'line)
+                (mkdir "/tmp/bin")
+                (set-path-environment-variable
+                 "PATH" '("bin")
+                 (list "/tmp"
+                       #+(canonical-package bash)
+                       #+(canonical-package coreutils)
+                       #+(canonical-package diffutils)
+                       #+(canonical-package findutils)
+                       #+(canonical-package patch)
+                       #+(canonical-package xz)
+                       #+(canonical-package sed)
+                       #+(canonical-package grep)
+                       #+(canonical-package bzip2)
+                       #+(canonical-package gzip)
+                       #+(canonical-package tar)
+                       #+(canonical-package gawk)
+                       #+python-wrapper))
 
-                (let ((dir (string-append "linux-" #$version)))
+                (with-directory-excursion "/tmp/bin"
+                  (copy-file #+deblob-check "deblob-check")
+                  (chmod "deblob-check" #o755)
+                  (substitute* "deblob-check"
+                    (("/bin/sh") (which "sh"))
+                    (("/bin/sed") (which "sed"))
+                    (("/usr/bin/python") (which "python"))))
 
-                  (mkdir "/tmp/bin")
-                  (set-path-environment-variable
-                   "PATH" '("bin")
-                   (list "/tmp"
-                         #+(canonical-package bash)
-                         #+(canonical-package coreutils)
-                         #+(canonical-package diffutils)
-                         #+(canonical-package findutils)
-                         #+(canonical-package patch)
-                         #+(canonical-package xz)
-                         #+(canonical-package sed)
-                         #+(canonical-package grep)
-                         #+(canonical-package bzip2)
-                         #+(canonical-package gzip)
-                         #+(canonical-package tar)
-                         #+(canonical-package gawk)
-                         #+python-wrapper))
+                (copy-file #$unchecked-source #$output)
 
-                  (with-directory-excursion "/tmp/bin"
+                (format #t "~%Scanning the generated tarball for blobs...~%")
+                (invoke "/tmp/bin/deblob-check" "--use-awk" "--list-blobs"
+                        #$output)))))))))
 
-                    (copy-file #+deblob "deblob")
-                    (chmod "deblob" #o755)
-                    (substitute* "deblob"
-                      (("/bin/sh") (which "sh")))
+(define (make-linux-source version upstream-source transformation)
+  "Return a 'computed' origin that generates a modified Linux tarball from the
+corresponding UPSTREAM-SOURCE (an origin), using the given TRANSFORMATION (a
+GEXP)."
+  (origin
+    (method computed-origin-method)
+    (file-name (string-append "linux-" version "-guix.tar.xz"))
+    (sha256 #f)
+    (uri
+     (delay
+       (with-imported-modules '((guix build utils))
+         ;; NOTE: it's very important not to introduce local symbols inside
+         ;; the gexp as they will shadow symbols used in TRANSFORMATION.
+         (let ((dir (string-append "linux-" version))
+               (cp (file-append (canonical-package coreutils) "/bin/cp"))
+               (tar (file-append (canonical-package tar) "/bin/tar"))
+               (change-mode (file-append (canonical-package coreutils) "/bin/chmod")))
+           #~(begin
+               (use-modules (guix build utils)
+                            (srfi srfi-1)
+                            (ice-9 match)
+                            (ice-9 ftw))
 
-                    (copy-file #+deblob-check "deblob-check")
-                    (chmod "deblob-check" #o755)
-                    (substitute* "deblob-check"
-                      (("/bin/sh") (which "sh"))
-                      (("/bin/sed") (which "sed"))
-                      (("/usr/bin/python") (which "python"))))
+               ;; Required for tar gz decompression.
+               (setenv "PATH" #+(file-append (canonical-package xz) "/bin"))
 
-                  (if (file-is-directory? #+upstream-source)
-                      (begin
-                        (format #t "Copying upstream linux source...~%")
-                        (invoke "cp" "--archive" #+upstream-source dir)
-                        (invoke "chmod" "--recursive" "u+w" dir))
-                      (begin
-                        (format #t "Unpacking upstream linux tarball...~%")
-                        (invoke "tar" "xf" #$upstream-source)
-                        (match (scandir "."
-                                        (lambda (name)
-                                          (and (not (member name '("." "..")))
-                                               (file-is-directory? name))))
-                          ((unpacked-dir)
-                           (unless (string=? dir unpacked-dir)
-                             (rename-file unpacked-dir dir)))
-                          (dirs
-                           (error "multiple directories found" dirs)))))
+               (if (file-is-directory? #+upstream-source)
+                   (begin
+                     (format #t "Copying upstream Linux source...~%")
+                     (copy-recursively #+upstream-source #$dir)
+                     (for-each (cut make-file-writable <>)
+                               (find-files #$dir)))
+                   (begin
+                     (format #t "Unpacking upstream Linux tarball...~%")
+                     (invoke #+tar "xf" #$upstream-source)
+                     (match (scandir "."
+                                     (lambda (name)
+                                       (and (not (member name '("." "..")))
+                                            (file-is-directory? name))))
+                       ((unpacked-dir)
+                        (unless (string=? #$dir unpacked-dir)
+                          (rename-file unpacked-dir #$dir)))
+                       (dirs
+                        (error "multiple directories found" dirs)))))
 
-                  (with-directory-excursion dir
-                    (format #t "Running deblob script...~%")
-                    (invoke "/tmp/bin/deblob"))
+               (with-directory-excursion #$dir
+                 #$(if (promise? transformation)
+                       (force transformation)
+                       transformation))
 
-                  (format #t "~%Packing new Linux-libre tarball...~%")
-                  (invoke "tar" "cvfa" #$output
-                          ;; Avoid non-determinism in the archive.
-                          "--mtime=@0"
-                          "--owner=root:0"
-                          "--group=root:0"
-                          "--sort=name"
-                          "--hard-dereference"
-                          dir)
-
-                  (format #t "~%Scanning the generated tarball for blobs...~%")
-                  (invoke "/tmp/bin/deblob-check" "--use-awk" "--list-blobs"
-                          #$output))))))))))
+               (format #t "~%Packing new Linux tarball...~%")
+               (invoke #+tar "cvfa" #$output
+                       ;; Avoid non-determinism in the archive.
+                       "--mtime=@0"
+                       "--owner=root:0"
+                       "--group=root:0"
+                       "--sort=name"
+                       "--hard-dereference"
+                       #$dir))))))))
 
 
 ;;;
@@ -989,46 +1047,18 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
   (and (version>=? version "5.10")
        (not (version>=? version "6.2")))) ;patch applied upstream
 
-
-(define* (make-linux-libre version gnu-revision hash-string supported-systems
-                           #:key
-                           (extra-version #f)
-                           ;; A function that takes an arch and a variant, and
-                           ;; return a file-like object.  See kernel-config
-                           ;; for an example.
-                           (configuration-file #f)
-                           (defconfig "defconfig")
-                           (extra-options (default-extra-linux-options version))
-                           (patches
-                            `(,%boot-logo-patch
-                              ,@(if (apply-infodoc-patch? version)
-                                    (list (search-patch
-                                           "linux-libre-infodocs-target.patch"))
-                                    '()))))
-  (make-linux-libre* version gnu-revision
-                     (origin
-                       (method url-fetch)
-                       (uri (linux-libre-urls version gnu-revision))
-                       (sha256 (base32 hash-string))
-                       (patches patches))
-                     supported-systems
-                     #:extra-version extra-version
-                     #:configuration-file configuration-file
-                     #:defconfig defconfig
-                     #:extra-options extra-options))
-
-(define* (make-linux-libre* version gnu-revision source supported-systems
-                            #:key
-                            (extra-version #f)
-                            ;; A function that takes an arch and a variant.
-                            ;; See kernel-config for an example.
-                            (configuration-file #f)
-                            (defconfig "defconfig")
-                            (extra-options (default-extra-linux-options version)))
+(define* (make-linux* version source supported-systems
+                      #:key
+                      (extra-version #f)
+                      ;; A function that takes an arch and a variant.
+                      ;; See kernel-config for an example.
+                      (configuration-file #f)
+                      (defconfig "defconfig")
+                      (extra-options (default-extra-linux-options version)))
   (package
     (name (if extra-version
-              (string-append "linux-libre-" extra-version)
-              "linux-libre"))
+              (string-append "linux-" extra-version)
+              "linux"))
     (version version)
     (source source)
     (supported-systems supported-systems)
@@ -1178,6 +1208,55 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
            zlib
            ;; For Zstd compression of kernel modules.
            zstd))
+    (home-page #f)
+    (synopsis #f)
+    (description #f)
+    (license #f)))
+
+(define* (make-linux-libre version gnu-revision hash-string supported-systems
+                           #:key
+                           (extra-version #f)
+                           ;; A function that takes an arch and a variant, and
+                           ;; return a file-like object.  See kernel-config
+                           ;; for an example.
+                           (configuration-file #f)
+                           (defconfig "defconfig")
+                           (extra-options (default-extra-linux-options version))
+                           (patches
+                            `(,%boot-logo-patch
+                              ,@(if (apply-infodoc-patch? version)
+                                    (list (search-patch
+                                           "linux-libre-infodocs-target.patch"))
+                                    '()))))
+  (make-linux-libre* version gnu-revision
+                     (origin
+                       (method url-fetch)
+                       (uri (linux-libre-urls version gnu-revision))
+                       (sha256 (base32 hash-string))
+                       (patches patches))
+                     supported-systems
+                     #:extra-version extra-version
+                     #:configuration-file configuration-file
+                     #:defconfig defconfig
+                     #:extra-options extra-options))
+
+(define* (make-linux-libre* version gnu-revision source supported-systems
+                            #:key
+                            (extra-version #f)
+                            ;; A function that takes an arch and a variant.
+                            ;; See kernel-config for an example.
+                            (configuration-file #f)
+                            (defconfig "defconfig")
+                            (extra-options (default-extra-linux-options version)))
+  (package
+    (inherit (make-linux* version source supported-systems
+                          #:extra-version extra-version
+                          #:configuration-file configuration-file
+                          #:defconfig defconfig
+                          #:extra-options extra-options))
+    (name (if extra-version
+              (string-append "linux-libre-" extra-version)
+              "linux-libre"))
     (home-page "https://www.gnu.org/software/linux-libre/")
     (synopsis "100% free redistribution of a cleaned Linux kernel")
     (description "GNU Linux-Libre is a free (as in freedom) variant of the
