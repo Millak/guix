@@ -2840,6 +2840,9 @@ sensors, process information and other system resources.")
                          xorg-server-for-tests
                          python-minimal
                          python-pygobject))
+    ;; As required by LibTaskManagerConfig.cmake and
+    ;; LibNotificationManagerConfig.cmake.
+    (propagated-inputs (list kitemmodels))
     (inputs (list appmenu-gtk-module
                   appstream-qt6
                   baloo
@@ -2873,7 +2876,6 @@ sensors, process information and other system resources.")
                   kirigami
                   kirigami-addons
                   kirigami-addons
-                  kitemmodels
                   knewstuff
                   knighttime
                   knotifications
