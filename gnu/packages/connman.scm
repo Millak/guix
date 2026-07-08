@@ -130,28 +130,30 @@ sharing) to clients via USB, ethernet, WiFi, cellular and Bluetooth.")
      (origin
        (method url-fetch)
        (uri (string-append "https://download.enlightenment.org/rel/apps/"
-                           "econnman/econnman-" version ".tar.gz"))
+                           "econnman/econnman-" version ".tar.xz"))
        (sha256
         (base32
-         "057pwwavlvrrq26bncqnfrf449zzaim0zq717xv86av4n940gwv0"))))
+         "11gd35v8kqr5gqqm8w3j6k1ppwgxcnpf1kv33q7sfz5f3xl8gkhc"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--localstatedir=/var")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-home-directory
-           ;; FATAL: Cannot create run dir '/homeless-shelter/.run' - errno=2
-           (lambda _ (setenv "HOME" "/tmp") #t))
-         (add-after 'install 'wrap-binary
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin/econnman-bin")))
-               (wrap-program bin
-                 `("GUIX_PYTHONPATH" ":" prefix
-                   (,(getenv "GUIX_PYTHONPATH"))))))))))
-    (native-inputs (list pkg-config))
+     (list
+      #:configure-flags
+      #~(list "--localstatedir=/var")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-home-directory
+            ;; FATAL: Cannot create run dir '/homeless-shelter/.run' - errno=2
+            (lambda _ (setenv "HOME" "/tmp")))
+          (add-after 'install 'wrap-binary
+            (lambda _
+              (let* ((bin (string-append #$output "/bin/econnman-bin")))
+                (wrap-program bin
+                  `("GUIX_PYTHONPATH" ":" prefix
+                    (,(getenv "GUIX_PYTHONPATH"))))))))))
+    (native-inputs
+     (list pkg-config))
     (inputs
-     (list bash-minimal                 ;for wrap-program
+     (list bash-minimal                 ; wrap-program
            efl
            python-wrapper
            python-dbus-1.2
