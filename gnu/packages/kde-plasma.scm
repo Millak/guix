@@ -2436,18 +2436,18 @@ integration of Qt applications when running on a KDE Plasma workspace.")
      (list #:qtbase qtbase))
     (native-inputs (list extra-cmake-modules pkg-config))
     (home-page "https://invent.kde.org/plasma/plasma-nm")
+    ;; These packages are required by the QML modules.
+    (propagated-inputs
+     (list kcmutils kirigami libplasma qtdeclarative))
     (inputs (list kconfigwidgets
                   kcompletion
                   kcoreaddons
-                  kcmutils
                   kdeclarative
                   kdbusaddons
                   kio
                   ki18n
                   networkmanager-qt
                   knotifications
-                  kirigami
-                  libplasma
                   lz4
                   mobile-broadband-provider-info
                   modemmanager-qt
@@ -2462,8 +2462,7 @@ integration of Qt applications when running on a KDE Plasma workspace.")
                   ksvg
                   qcoro-qt6
                   openconnect
-                  qtwebengine
-                  qtdeclarative))
+                  qtwebengine))
     (synopsis "Plasma applet for managing network connections")
     (description "This package provides Plasma applet for managing network
 connections.")
