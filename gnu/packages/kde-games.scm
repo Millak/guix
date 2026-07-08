@@ -1217,6 +1217,9 @@ This package is part of the KDE games module.")
        (sha256
         (base32 "1r95rl398k9ja8qhdcbp6175wd8wllbq9053mnfz5a4gmvb5r3ss"))))
     (build-system qt-build-system)
+    ;; As required by PalaConfig.cmake.
+    (propagated-inputs
+     (list ki18n))
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
@@ -1227,7 +1230,6 @@ This package is part of the KDE games module.")
            kcoreaddons
            kcrash
            kdbusaddons
-           ki18n
            kiconthemes
            kio
            kitemviews
