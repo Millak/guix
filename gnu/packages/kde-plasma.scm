@@ -2742,24 +2742,27 @@ vaults.")
                 "1zpi7v9mmnwvd0cy8cinmy0583m1dbkgg1lami9jn3sibnlkzscb"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
+    ;; These packages are required by the QML modules.
+    (propagated-inputs
+     (list kdeclarative
+           kiconthemes
+           kirigami
+           kitemmodels
+           knewstuff
+           kquickcharts
+           qtdeclarative))
     (inputs (list ki18n
                   kconfig
                   kcrash
-                  kdeclarative
                   kservice
-                  kiconthemes
                   kglobalaccel
                   kio
                   kdbusaddons
                   kpackage
-                  kirigami
                   kirigami-addons
-                  knewstuff
                   ksystemstats
-                  kitemmodels
                   libksysguard
                   qqc2-desktop-style
-                  qtdeclarative
                   qtwayland))
     (arguments
      (list #:qtbase qtbase
