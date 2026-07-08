@@ -2037,7 +2037,8 @@ by which applications, and what documents have been linked to which activity.")
     (arguments (list #:qtbase qtbase
                      #:tests? #f)) ;no tests
     (native-inputs (list extra-cmake-modules pkg-config))
-    (propagated-inputs (list kcoreaddons))
+    ;; As required by Plasma5SupportConfig.cmake.
+    (propagated-inputs (list kcoreaddons kservice))
     (inputs (list
              kconfig
              ki18n
@@ -2046,7 +2047,6 @@ by which applications, and what documents have been linked to which activity.")
              kguiaddons
              kholidays
              knotifications
-             kservice
              kunitconversion
              libksysguard
              networkmanager-qt
