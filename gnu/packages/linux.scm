@@ -174,6 +174,7 @@
   #:use-module (gnu packages nss)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages oneapi)
+  #:use-module (gnu packages patchutils)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
@@ -772,6 +773,52 @@ GEXP)."
                        (list %boot-logo-patch
                              %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
+
+;; Debian sources.
+
+(define (linux-debian-patches version hash)
+  (package
+    (name "linux-debian-patches")
+    (version version)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://salsa.debian.org/kernel-team/linux.git")
+                     (commit (string-append "debian/" version))))
+              (file-name (git-file-name name version))
+              (sha256 hash)))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      ''(("debian/patches" "")
+         ("debian/config" ""))))
+    (home-page "Debian patches")
+    (synopsis "Debian patches")
+    (description "Debian patches")
+    (license license:gpl2)))
+
+(define-public linux-debian-6.12-version "6.12.95")
+(define debian-patches-6.12
+  (linux-debian-patches
+   (string-append linux-debian-6.12-version "-1")
+   (base32 "0mfygp0pc4h8wk4rx874anxv1al5vhprj2m64zfry1z5akwg8mn0")))
+(define-public linux-debian-6.12-pristine-source
+  (let ((version linux-debian-6.12-version)
+        (hash (base32 "1xmrsi0kimirky4cailnkkrbd72pp9n8irfx6lfmss8yrcgwbs59")))
+    (make-linux-source
+     version (%upstream-linux-source version hash)
+     (delay
+       #~(begin
+           (format #t "Patching kernel...~%")
+           (setenv "QUILT_PATCHES" #$(file-append debian-patches-6.12
+                                                  "/patches"))
+           (invoke #$(file-append quilt "/bin/quilt") "push" "-a"))))))
+
+(define-public linux-debian-6.12-source
+  (source-with-patches linux-debian-6.12-pristine-source
+                       (search-patches "linux-shmem-hurd-xattr.patch")))
+
 
 ;;;
 ;;; Kernel headers.
@@ -1332,11 +1379,108 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
       (properties (append %linux-libre-timeout-properties
                           (package-properties linux))))))
 
+(define default-linux-debian-initrd-modules
+  ;; Default set of modules that need to be available in the initrd when
+  ;; booting Linux-debian.
+  (let* ((generic `("ext4" "crc32c_generic"                    ; Compiled as a module by 'CONFIG_EXT4_FS=m'.
+                    "usb-storage" "uas"                        ;for the installation image etc.
+                    "usbhid" "hid-generic"                     ;keyboards during early boot
+                    "dm-crypt" "xts" "serpent_generic" "wp512" ;for encrypted root partitions
+                    "nls_iso8859-1"                            ;for `mkfs.fat`, et.al
+                    ,@virtio-modules))
+         (others (cons*
+                  "hid-apple"
+                  generic)))
+    `(("x86_64-linux"      . ,others)
+      ("i686-linux"        . ,others)
+      ("armhf-linux"       . ,others)
+      ("aarch64-linux"     . ,others)
+      ("mips64el-linux"    . ,others)
+      ("powerpc-linux"     . ,others)
+      ("powerpc64le-linux" . ,others)
+      ("riscv64-linux"     . ,generic))))
+
+(define* (make-linux-debian* version source supported-systems
+                             #:key
+                             (extra-version #f)
+                             ;; A function that takes an arch and a variant.
+                             ;; See kernel-config for an example.
+                             (configuration-file #f)
+                             (defconfig "defconfig")
+                             (extra-options (append
+                                             ;; Required for enabling CIRRUS
+                                             '(("CONFIG_PCI" . #t)
+                                               ("CONFIG_DRM" . #t)
+                                               ;; Required for QEMU virt
+                                               ;; support.
+                                               ("CONFIG_DRM_CIRRUS_QEMU" . m)
+                                               ("CONFIG_DRM_VIRTIO_GPU" . m)
+                                               ("CONFIG_DRM_BOCHS" . m))
+                                             (default-extra-linux-options version))))
+  (package
+    (inherit (make-linux* version source supported-systems
+                          default-linux-debian-initrd-modules
+                          #:extra-version extra-version
+                          #:configuration-file configuration-file
+                          #:defconfig defconfig
+                          #:extra-options extra-options))
+    (name (if extra-version
+              (string-append "linux-debian-" extra-version)
+              "linux-debian"))
+    (home-page "https://www.debian.org")
+    (synopsis "Debian's free redistribution of a cleaned Linux kernel")
+    (description "Linux-Debian is a free (as in freedom) variant of the
+Linux kernel.  It has been modified to remove all non-free binary blobs
+following the @uref{https://www.debian.org/social_contract#guidelines,
+DFSDG}.")
+    (license license:gpl2)))
 
 
 ;;;
 ;;; Generic kernel packages.
 ;;;
+
+(define-public linux-debian-6.12
+  (make-linux-debian* linux-debian-6.12-version
+                      linux-debian-6.12-source
+                      '("x86_64-linux" "armhf-linux" "aarch64-linux"
+                        "powerpc64le-linux" "riscv64-linux")
+                      #:defconfig
+                      ;; XXX: this snippet merges the different configuration
+                      ;; files provided by Debian to construct a Debian
+                      ;; configuration for the given architecture. The
+                      ;; complete Debian configuration is composed by a
+                      ;; generic configuration 'config/config', an
+                      ;; architecture specific one ('armhf', 'arm64',
+                      ;; 'riscv64', 'amd64') that follows debian architecture
+                      ;; naming and sometimes an additionaly configuration
+                      ;; following the pattern 'kernelarch-xxx'.
+                      (delay
+                        #~(let* ((arch->debian-arch
+                                  (lambda (arch)
+                                    ;; Case comparison is done with 'eqv?'
+                                    ;; which doesn't work with strings.
+                                    (case (string->symbol arch)
+                                      ((arm)        '("kernelarch-arm" "armhf"))
+                                      ((arm64)      '("arm64"))
+                                      ((powerpc)    '("kernelarch-powerpc" "ppc64el"))
+                                      ((riscv)      '("riscv64"))
+                                      ((x86_64)     '("kernelarch-x86" "amd64"))
+                                      (else         '()))))
+                                 (arch-confs (arch->debian-arch (getenv "ARCH"))))
+                            (apply invoke "scripts/kconfig/merge_config.sh"
+                                   #$(file-append debian-patches-6.12
+                                                  "/config/config")
+                                   (map (lambda (arch-conf)
+                                          (string-append #$debian-patches-6.12
+                                                         "/config/"
+                                                         arch-conf
+                                                         "/config"))
+                                        arch-confs))
+                            (invoke #$(file-append gnu-make "/bin/make")
+                                    "olddefconfig")))))
+
+(define-public linux-debian linux-debian-6.12)
 
 (define-public linux-libre-7.2
   (make-linux-libre* linux-libre-7.2-version

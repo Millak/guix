@@ -58,6 +58,7 @@
             %test-linux-libre-6.12
             %test-linux-libre-6.6
             %test-linux-libre-6.1
+            %test-linux-debian-6.12
             %test-halt
             %test-root-unmount
             %test-cleanup
@@ -676,6 +677,9 @@ test \"$BASHRC_D_OK\" = yes"))
 
 (define %test-linux-libre-6.1
   (test-basic-os linux-libre-6.1))
+
+(define %test-linux-debian-6.12
+  (test-basic-os linux-debian-6.12))
 
 
 ;;;
