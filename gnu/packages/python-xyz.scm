@@ -23478,6 +23478,7 @@ until the object is actually required, and caches the result of said call.")
     (license license:bsd-2)))
 
 (define-public python-dnspython
+  ;; TODO: Move to (gnu packages python-web).
   (package
     (name "python-dnspython")
     (version "2.8.0")
@@ -23533,6 +23534,19 @@ until the object is actually required, and caches the result of said call.")
 types.  It can be used for queries, zone transfers, and dynamic updates.
 It supports TSIG authenticated messages and EDNS0.")
     (license license:expat)))
+
+;; A bare minimal package, mainly to use in tests and reduce closure size.
+;; Tests are left out in the main package to slim down native-inputs and
+;; propagated-inputs.
+(define-public python-dnspython-minimal
+  (package/inherit python-dnspython
+    (name "python-dnspython-minimal")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (list python-hatchling))
+    (propagated-inputs '())))
 
 (define-public python-py3dns
   (package
