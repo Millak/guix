@@ -2693,17 +2693,17 @@ KDED module to handle authorization of Thunderbolt devices.")
                 "0w7sraf7dq5rksqqkg43sa11ln9jksg7lkv2531vfv5wcgscy79x"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules pkg-config))
+    ;; These packages are required by the QML modules.
+    (propagated-inputs
+     (list kirigami kitemmodels libplasma qtdeclarative))
     (inputs (list kio
                   ki18n
                   kconfig
                   plasma-activities
                   kdbusaddons
                   kiconthemes
-                  kitemmodels
                   libksysguard
                   networkmanager-qt
-                  libplasma
-                  qtdeclarative
 
                   fuse
                   gocryptfs))
