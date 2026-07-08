@@ -397,7 +397,7 @@ following features:
                     python-cryptography))
            (list python-cryptography)
            '())
-       (list python-dnspython
+       (list python-dnspython-minimal
              python-iso8601/pinned
              python-markdown
              rpcsvc-proto               ;for 'rpcgen'
