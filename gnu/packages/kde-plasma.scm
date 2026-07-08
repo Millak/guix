@@ -3329,24 +3329,27 @@ of a Plasma shell.")
                  (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
                    (when tests?
                      (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
+    ;; These packages are required by the QML modules of the plasmoid.
+    (propagated-inputs (list kcmutils
+                             kconfig
+                             kirigami
+                             ksvg
+                             libplasma
+                             plasma5support
+                             qtdeclarative))
     (native-inputs (list dbus extra-cmake-modules kdoctools pkg-config))
     (inputs (list kcoreaddons
                   ki18n
                   kio
                   kglobalaccel
-                  kconfig
-                  kcmutils
                   kxmlgui
                   kwidgetsaddons
                   kwindowsystem
                   knotifications
                   kdbusaddons
-                  plasma5support
-                  qtdeclarative
                   libwacom
                   libxi
                   libxkbcommon
-                  libplasma
                   qtwayland
                   xf86-input-wacom))
     (home-page "https://invent.kde.org/plasma/wacomtablet")
