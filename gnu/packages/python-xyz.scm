@@ -9535,6 +9535,25 @@ and convert DDL to BigQuery JSON schema.")
      (list python-setuptools-scm python-twisted
            python-setuptools python-wheel))))
 
+;; A bare minimal package, mainly to use in tests and reduce closure size.
+;; Tests are left out in the main package to slim down native-inputs and
+;; propagated-inputs.
+(define-public python-jsonschema-minimal
+  (package/inherit python-jsonschema
+    (name "python-jsonschema-minimal")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (list python-hatchling
+           python-hatch-fancy-pypi-readme
+           python-hatch-vcs))
+    (propagated-inputs
+     (list python-attrs
+           python-jsonschema-specifications
+           python-referencing
+           python-rpds-py))))
+
 (define-public python-jsonschema-path
   (package
     (name "python-jsonschema-path")
