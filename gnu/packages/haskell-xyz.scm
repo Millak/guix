@@ -2178,48 +2178,6 @@ postfix notation.  For more information on stack based languages, see
 @uref{https://concatenative.org}.")
     (license license:bsd-3)))
 
-(define-public ghc-concurrent-extra
-  (package
-    (name "ghc-concurrent-extra")
-    (version "0.7.0.12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "concurrent-extra" version))
-       (sha256
-        (base32 "1y8xk460fvnw0idzdiylmm874sjny4q9jxb1js9fjz8lw2wns3h4"))))
-    (build-system haskell-build-system)
-    (properties '((upstream-name . "concurrent-extra")))
-    (inputs (list ghc-unbounded-delays))
-    (native-inputs (list ghc-hunit ghc-random ghc-test-framework
-                         ghc-test-framework-hunit ghc-async))
-    (home-page "https://github.com/basvandijk/concurrent-extra")
-    (synopsis "Extra concurrency primitives")
-    (description
-     "This Haskell library offers (among other things) the
-following selection of synchronisation primitives:
-
-@itemize
-@item @code{Broadcast}: Wake multiple threads by broadcasting a value.
-@item @code{Event}: Wake multiple threads by signalling an event.
-@item @code{Lock}: Enforce exclusive access to a resource.  Also known
-as a binary semaphore or mutex.  The package additionally provides an
-alternative that works in the STM monad.
-@item @code{RLock}: A lock which can be acquired multiple times by the
-same thread.  Also known as a reentrant mutex.
-@item @code{ReadWriteLock}: Multiple-reader, single-writer locks.  Used
-to protect shared resources which may be concurrently read, but only
-sequentially written.
-@item @code{ReadWriteVar}: Concurrent read, sequential write variables.
-@end itemize
-
-Please consult the API documentation of the individual modules for more
-detailed information.
-
-This package was inspired by the concurrency libraries of Java and
-Python.")
-    (license license:bsd-3)))
-
 (define-public ghc-concurrent-output
   (package
     (name "ghc-concurrent-output")
