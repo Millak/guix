@@ -537,7 +537,7 @@ bytes of memory space, where n is the length of the string.")
 (define-public robin-map
   (package
     (name "robin-map")
-    (version "0.6.3")
+    (version "1.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -546,7 +546,7 @@ bytes of memory space, where n is the length of the string.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1li70vwsksva9c4yly90hjafgqfixi1g6d52qq9p6r60vqc4pkjj"))))
+                "1d17psbkp1jpq61rlddshg1ryly3z1qznq6dcyjyk3qhj3130acc"))))
     (build-system cmake-build-system)
     (native-inputs
      (list boost))  ; needed for tests
@@ -554,12 +554,15 @@ bytes of memory space, where n is the length of the string.")
      `(#:phases
        (modify-phases %standard-phases
          (replace 'check
-           (lambda _
-             (mkdir "tests")
-             (with-directory-excursion "tests"
-               (invoke "cmake" "../../source/tests")
-               (invoke "cmake" "--build" ".")
-               (invoke "./tsl_robin_map_tests")))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (mkdir "tests")
+               (substitute* "../source/tests/CMakeLists.txt"
+                 (("set\\(Boost_USE_STATIC_LIBS.*") ""))
+               (with-directory-excursion "tests"
+                 (invoke "cmake" "../../source/tests")
+                 (invoke "cmake" "--build" ".")
+                 (invoke "./tsl_robin_map_tests"))))))))
     (home-page "https://github.com/Tessil/robin-map")
     (synopsis "C++ implementation of a fast hash map and hash set")
     (description "The robin-map library is a C++ implementation of a fast hash
