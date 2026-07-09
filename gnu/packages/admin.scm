@@ -6956,44 +6956,6 @@ with which other processes.  It provides more usable versions of @command{ps},
 @command{top} and @command{pstree}.")
     (license license:expat)))
 
-(define-public wakelan
-  (package
-    (name "wakelan")
-    (version "1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "ftp://ftp.gwdg.de/pub/linux/metalab/system/network/misc/wakelan-"
-                    version ".tar.gz"))
-              (sha256
-               (base32
-                "0vydqpf44146ir6k87gmqaq6xy66xhc1gkr3nsd7jj3nhy7ypx9x"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             (mkdir-p (string-append #$output "/bin"))
-             (mkdir-p (string-append #$output "/share/man/man1"))
-
-             ;; It's an old configure script that doesn't understand
-             ;; the extra options we pass.
-             (setenv "CONFIG_SHELL"
-                     (search-input-file %build-inputs "bin/bash"))
-             (invoke "./configure"
-                     (string-append "--prefix=" #$output)
-                     (string-append "--mandir=" #$output
-                                    "/share/man")))))))
-    (home-page "https://www.kernel.org") ; really, no home page
-    (synopsis "Send a wake-on-LAN packet")
-    (description
-     "WakeLan broadcasts a properly formatted UDP packet across the local area
-network, which causes enabled computers to power on.")
-    (license license:gpl2+)))
-
 (define-public witr
   (package
     (name "witr")
