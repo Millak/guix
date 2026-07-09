@@ -104,7 +104,7 @@ to easily create cross-compiled binaries.")
 (define-public libobjc2
   (package
     (name "libobjc2")
-    (version "2.2.1")
+    (version "2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -112,7 +112,7 @@ to easily create cross-compiled binaries.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "1srbmxfz906x1myblr0vzl5rzlw4cyn1sh11fhxwk2nvhvbzdlzq"))
+                "0790mxwq1na5gm5czi3phw384r44lfckb7wcp1hx1hjyksmg1c0b"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -123,8 +123,12 @@ to easily create cross-compiled binaries.")
       #:configure-flags #~(list "-DCMAKE_C_COMPILER=clang"
                                 "-DCMAKE_CXX_COMPILER=clang++"
                                 "-DTESTS=ON")))
+    (native-inputs
+     ;; With newer clangs some test segfault on i686-linux
+     ;; BlockImpTest_optimised and  BlockImpTest_legacy_optimised
+     (list clang-13))
     (inputs
-     (list clang-13 robin-map))
+     (list robin-map))
     (home-page "https://www.gnustep.org/")
     (synopsis "Objective-C runtime library for Clang")
     (description "Libobjc2 is an Objective-C runtime library designed as a
