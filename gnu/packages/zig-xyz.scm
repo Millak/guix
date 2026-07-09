@@ -220,6 +220,43 @@ mission-critical safety and performance for financial services.")
 @code{ext-session-lock-v1} protocol.")
     (license license:expat)))
 
+(define-public zig-arocc
+  ;; This is on a commit that is required by zig-translate-c.
+  ;; No releases as of yet.
+  (let ((commit "5f5a050569a95ecc40a426f0c3666ae7ef987ede")
+        (revision "0")
+        (gcc-toolchain* (delay (module-ref (resolve-interface
+                                          '(gnu packages commencement))
+                                         'gcc-toolchain))))
+    (package
+      (name "zig-arocc")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Vexu/arocc")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "073ky6pbs9z9v0vnjs972pxvrhx5jja0g31hv6d4irdifm4p9ikz"))))
+      (build-system zig-build-system)
+      (arguments
+       (list #:zig zig-0.16
+             #:tests? #f ;; XXX: Make tests pass.
+             #:zig-build-flags
+             #~(list (string-append "-Dgcc-install-prefix="
+                                    #$(this-package-input "gcc-toolchain"))
+                     ;; The binary produced with the default backend
+                     ;; is not reproducible, due to mismatched symbols.
+                     "-Dllvm")))
+      (inputs (list (force gcc-toolchain*)))
+      (home-page "https://github.com/Vexu/arocc")
+      (synopsis "C compiler written in Zig")
+      (description "Aro is a C compiler written in Zig with a complete
+implementation of multiple C standards.")
+      (license license:expat))))
+
 (define-public zig-clap
   (package
     (name "zig-clap")
