@@ -587,6 +587,29 @@ Scripty supports only the basic syntax necessary to build expressions that can:
 profiler (@pxref{https://tracy.nereid.pl}).")
       (license license:expat))))
 
+(define-public zig-translate-c
+  (package
+    (name "zig-translate-c")
+    (version "1.0.0") ;; There's a 2.0.0 release that requires zig-0.17.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://codeberg.org/ziglang/translate-c")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0hjzgskrxzqy1c3smg2iqbd7834g9s2nckzswnl4ll5qy6xpgmmm"))))
+    (build-system zig-build-system)
+    (arguments (list #:zig zig-0.16))
+    (propagated-inputs (list zig-arocc))
+    (home-page "https://codeberg.org/ziglang/translate-c")
+    (synopsis "Zig library for translating C code into Zig code")
+    (description "translate-c is a Zig library maintained by Zig Software
+Foundation that allows translation of C code into Zig.  It is intended to
+replace built-in implementations of this functionality.")
+    (license license:expat)))
+
 (define-public zig-wayland
   (package
     (name "zig-wayland")
