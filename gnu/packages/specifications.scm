@@ -32,8 +32,8 @@
     (name "specification-astropy-data")
     ;; XXX: There are no release or tags, total size is about 403MiB, where we
     ;; need some portion of it e.g. coordinates/sites.json.
-    (properties '((commit . "c07c19f15ecfcc285107ba09f07e6ad6ace3c1c6")
-                  (revision . "2")))
+    (properties '((commit . "7db2a3fef77343cc3007d25c79fcc905b48dc96d")
+                  (revision . "3")))
     (version (git-version "0.0.0"
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
@@ -45,7 +45,7 @@
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x54hdk7dy5wrbqwv96nf2g9dyvamxdxi0vcss73xnbi3sxy2gb2"))
+        (base32 "0wl2mxyv974q7si33irl6jvfd432ymnbrsxyrz9xvczlvn87f67b"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
