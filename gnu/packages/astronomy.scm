@@ -11251,33 +11251,40 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "5.0.2")
+    (version "6.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "stdatamodels" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacetelescope/stdatamodels")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1pzsk3ahc9qm08a0jyhc506m35vahc87vflz1y2wd87qahkh3yxz"))))
+        (base32 "1d4iml3v20aba5fcicnd1dw6s028bbqxx4isfpjvksq5mq52l53i"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1878 passed
+      ;; tests: 1966 passed, 4 xfailed
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              "-k" (string-append
-                    ;; Disable tests requiring access to CRDS servers to
-                    ;; download ~500MiB of data.
-                    "not test_crds_selectors_vs_datamodel and not test_report"
-                    ;; XXX: Might be Astropy 8 incompatibility:
-                    ;; astropy.utils.exceptions.AstropyUserWarning: Column
-                    ;; 'FLAG' contains NULL (undefined) values which will be
-                    ;; converted to False. To preserve NULL information,
-                    ;; reopen the file with logical_as_bytes=True and check
-                    ;; for bytes values of b'\x00' (NULL), b'T' (True), and
-                    ;; b'F' (False).
-                    " and not test_amioi_model_"))
+              ;; Disable tests requiring access to CRDS servers to download
+              ;; ~500MiB of data.
+              (string-append "--deselect=tests/jwst/datamodels/"
+                             "test_schema_against_crds.py"
+                             "::test_crds_selectors_vs_datamodel"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-manifest.in
+            ;; See: <https://codeberg.org/guix/guix/issues/4393>.
+            (lambda* (#:key name source inputs #:allow-other-keys)
+              (let ((port (open-file "MANIFEST.in" "w")))
+                (for-each
+                 (lambda (file)
+                   (display "include " port)
+                   (display file port)
+                   (display "\n" port))
+                 (find-files "."))
+                (close port))))
           (add-before 'check 'set-home
             (lambda _
               (setenv "HOME" "/tmp"))))))
