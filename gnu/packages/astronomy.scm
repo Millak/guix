@@ -3382,13 +3382,13 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "8.0.0")
+    (version "8.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "1hzxl7xkr19kkjlgiy9ph2dw3hdzi92pipgd6c218vzj87dyakbz"))
+        (base32 "1nji4flblxsq9mgiahx3r3wyfkdr5nir2iqab76r98hzp7ak3jj5"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -3404,7 +3404,7 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 31946 passed, 410 skipped, 261 xfailed
+      ;; tests: 31959 passed, 410 skipped, 261 xfailed
       #:test-flags
       #~(list "--pyargs" "astropy"
               ;; XXX: Tests are not thread save when they are more than 8.
