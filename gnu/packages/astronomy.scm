@@ -10242,13 +10242,16 @@ well as ephemerides services
 (define-public python-sgp4
   (package
     (name "python-sgp4")
-    (version "2.25")
+    (version "2.27")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sgp4" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/brandon-rhodes/python-sgp4")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0x06mxdmk2rsbp7ymjvvbj8pwkf4y2w6g8p0znw9zmi5rinxr7p1"))))
+        (base32 "0k55j7ki2w4bv04hr7ds9pv69hkcg8a0br4wf9mfzp2bpkjajk42"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-backend #~'custom
