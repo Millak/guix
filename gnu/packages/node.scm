@@ -319,7 +319,6 @@
            libuv-for-node
            `(,nghttp2-for-node-bootstrap "lib")
            openssl
-           python-wrapper               ;for node-gyp (supports python3)
            zlib))
     (synopsis "Evented I/O for V8 JavaScript")
     (description
