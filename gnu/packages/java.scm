@@ -12392,6 +12392,33 @@ Java 6 and above.")
 Java projects.")
     (license license:asl2.0)))
 
+(define java-guice-parent-pom-5
+  (package
+    (inherit java-guice)
+    (name "java-guice-parent-pom")
+    (version "5.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/google/guice")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05w8g9lmj8623b6f6c2xyriyhf44vwvqg0i1dszhrsnhk5f1jv71"))))
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (delete 'build)
+         (add-after 'install 'install-extensions
+           (install-pom-file "extensions/pom.xml"))
+         (replace 'install
+           (install-pom-file "pom.xml")))))
+    (propagated-inputs
+     (list java-google-parent-pom-5))))
+
 (define-public java-assertj
   (package
     (name "java-assertj")
