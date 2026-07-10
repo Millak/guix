@@ -6249,6 +6249,19 @@ The jMock library
        #:jar-name "jopt-simple.jar"
        #:phases
        (modify-phases %standard-phases
+         (add-before 'build 'copy-resources
+           ;; The message bundles (ExceptionMessages.properties,
+           ;; HelpFormatterMessages.properties) live next to the sources and
+           ;; are loaded at run time.
+           (lambda _
+             (let ((classes-dir (string-append (getcwd) "/build/classes")))
+               (with-directory-excursion "src"
+                 (for-each
+                  (lambda (resource)
+                    (install-file resource
+                                  (string-append classes-dir "/"
+                                                 (dirname resource))))
+                  (find-files "." "\\.properties$"))))))
          (add-before 'install 'create-pom
            (generate-pom.xml "pom.xml" "net.sf.jopt-simple" "jopt-simple" ,version))
          (replace 'install
