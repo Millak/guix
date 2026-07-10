@@ -147,6 +147,53 @@ Bourne shell script instead of m4.")
     (home-page "https://github.com/radareorg/acr")
     (license license:gpl2)))
 
+(define-public autosetup-boot0
+  (hidden-package
+   (package
+     (name "autosetup-boot0")
+     (version "0.7.3")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/msteveb/autosetup")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name "autosetup" version))
+        (sha256
+         (base32
+          "1ymzsrms3d5vf0vpwsfhapw4f462cjqbmic5pvr27451ifj0fybn"))
+        (modules '((guix build utils)))
+        (snippet #~(delete-file "jimsh0.c"))))
+     (build-system gnu-build-system)
+     (arguments
+      (list
+       #:tests? #f                       ;no need for a bootstrap package
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-tclsh-path
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "sys-find-tclsh"
+                 (("jimsh tclsh")
+                  (search-input-file inputs "bin/jimsh")))
+               ;; Skip testing on specific Tcl versions
+               ;; that are no longer found by the patched script.
+               (substitute* "Makefile"
+                 (("^.*tclsh8\\..*") ""))))
+           (delete 'configure)
+           (delete 'build)
+           (replace 'install
+             (lambda* (#:key inputs #:allow-other-keys)
+               (invoke "jimsh" "autosetup"
+                       (string-append "--sysinstall=" #$output)))))))
+     (inputs
+      (list jimtcl-boot0))
+     (home-page "https://msteveb.github.io/autosetup/")
+     (synopsis "Bootstrap Autosetup")
+     (description
+     "This package bootstrap Autosetup for building Jim Tcl,
+which in turn is used by Autosetup.")
+     (license license:bsd-2))))
+
 (define-public autosetup
   (package
     (name "autosetup")
