@@ -12419,6 +12419,28 @@ Java projects.")
     (propagated-inputs
      (list java-google-parent-pom-5))))
 
+(define-public java-guice-5
+  (package
+    (inherit java-guice-parent-pom-5)
+    (name "java-guice")
+    (arguments
+     `(#:jar-name "java-guice.jar"
+       #:tests? #f              ; FIXME: tests are not in a java sub directory
+       #:source-dir "core/src"
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (install-from-pom "core/pom.xml")))))
+    (inputs
+     (list java-jsr305
+           java-error-prone-annotations))
+    (propagated-inputs
+     (list java-aopalliance
+           java-asm-9
+           java-guava
+           java-javax-inject
+           java-guice-parent-pom-5))))
+
 (define-public java-assertj
   (package
     (name "java-assertj")
