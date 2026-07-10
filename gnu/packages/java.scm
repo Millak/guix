@@ -6345,7 +6345,7 @@ available in the Java programming language or Commons Lang.")
 (define-public java-jmh
   (package
     (name "java-jmh")
-    (version "1.32")
+    (version "1.37")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6354,7 +6354,7 @@ available in the Java programming language or Commons Lang.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i7fa7l3gdqkkgz5ddayp6m46dgbj9rqlz35xffrcbyiz3gpljy0"))))
+                "06hfgnzqh1qg736s8ibznn6wljyjqg6yw1y14g8b0vrr5ivdm0ws"))))
     (build-system maven-build-system)
     (arguments
      `(#:exclude
@@ -6373,11 +6373,18 @@ available in the Java programming language or Commons Lang.")
              ;; requires org.apache.maven.archetype:archetype-packaging.
              ;; Its subprojects also require groovy, kotlin and scala,
              ;; respectively.
-             (delete-file-recursively "jmh-archetypes"))))))
+             (delete-file-recursively "jmh-archetypes")
+             ;; jmh-core-benchmarks depends on net.java.dev.jna:jna, whereas
+             ;; java-native-access is installed as net.java.dev.jna:jna-jpms.
+             ;; It is only JMH's own self-benchmark module and is not needed
+             ;; to build or use the library.
+             (delete-file-recursively "jmh-core-benchmarks"))))))
     (propagated-inputs
-     (list java-jopt-simple-4 java-commons-math3))
+     (list java-jopt-simple
+           java-commons-math3))
     (native-inputs
-     (list java-junit java-hamcrest-core))
+     (list java-junit
+           java-hamcrest-core))
     (home-page "https://openjdk.java.net/projects/code-tools/jmh/")
     (synopsis "Benchmark harness for the JVM")
     (description "JMH is a Java harness for building, running, and analysing
