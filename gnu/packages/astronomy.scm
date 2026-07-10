@@ -3502,17 +3502,18 @@ astronomy and astrophysics.")
     (license license:bsd-3)))
 
 (define-public python-astropy-7
+  ;; tests: 31440 passed, 426 skipped, 262 xfailed
   (package
     (inherit python-astropy)
     (name "python-astropy")
-    (version "7.2.1")
+    (version "7.2.2")
     (source
      (origin
        (inherit (package-source python-astropy))
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "1jvj3z21ihi6gnrb6c8mcrnyxhqfm9b75ga98mwyd0wixhpfpqy0"))))))
+        (base32 "1kamyh9xndli5a2ia8af83dbcqam6h0rqfv0jh2k78bgccjn13fl"))))))
 
 (define-public python-astropy-healpix
   (package
