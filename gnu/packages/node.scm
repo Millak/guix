@@ -539,72 +539,72 @@ Node.js and web browsers.")
     (license license:expat)))
 
 (define-public node-llparse-builder-bootstrap
-  (package
-    (name "node-llparse-builder")
-    (version "1.5.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/nodejs/llparse-builder.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0r82iiwqsb73k2fxw7842rjjiixllxpyc6yl9cq4ma6ybkf6xmzm"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Fix imports for esbuild.
-           ;; https://github.com/evanw/esbuild/issues/477
-           (substitute* '("src/node/invoke.ts"
-                          "src/node/base.ts"
-                          "src/node/consume.ts"
-                          "src/node/match.ts"
-                          "src/node/error.ts"
-                          "src/node/pause.ts"
-                          "src/edge.ts"
-                          "src/utils.ts"
-                          "src/loop-checker/index.ts"
-                          "src/loop-checker/lattice.ts"
-                          "src/code/field.ts"
-                          "src/span-allocator.ts")
-             (("\\* as assert") "assert")
-             (("\\* as debugAPI") "debugAPI"))
-           #t))))
-    (build-system node-build-system)
-    (arguments
-     `(#:node ,node-bootstrap
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-dependencies 'delete-dependencies
-           (lambda _
-             (modify-json (delete-dependencies
-                           `("@types/debug"
-                             "@types/mocha"
-                             "@types/node"
-                             "mocha"
-                             "ts-node"
-                             "tslint"
-                             "typescript")))))
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((esbuild (search-input-file inputs "/bin/esbuild")))
-               (invoke esbuild
-                       "--platform=node"
-                       "--outfile=lib/builder.js"
-                       "--bundle"
-                       "src/builder.ts")))))))
-    (inputs
-     (list node-binary-search-bootstrap node-debug-bootstrap))
-    (native-inputs
-     (list esbuild))
-    (home-page "https://github.com/nodejs/llparse-builder#readme")
-    (properties '((hidden? . #t)))
-    (synopsis "Graph builder for consumption by llparse")
-    (description "This package builds graphs for consumption by llparse.")
-    (license license:expat)))
+  ;; The binary-search package is vendored in 1351b75.  It's not unvendored
+  ;; here because it's small, and as a bootstrap package doesn't bring
+  ;; deduplication to a profile.
+  (let ((commit "b04a70c8a3344adcfb8f5132528f7ae9852af79b")
+        (revision "1"))
+    (package
+      (name "node-llparse-builder")
+      (version (git-version "1.5.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/nodejs/llparse-builder.git")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "08wsxyz7hhaf1n3jgvlnhhaaafq576wmpf4k4whihz012i4sxncg"))
+         (modules '((guix build utils)))
+         (snippet
+          '(begin
+             ;; Fix imports for esbuild.
+             ;; https://github.com/evanw/esbuild/issues/477
+             (substitute* '("src/node/invoke.ts"
+                            "src/node/base.ts"
+                            "src/node/consume.ts"
+                            "src/node/match.ts"
+                            "src/node/error.ts"
+                            "src/node/pause.ts"
+                            "src/edge.ts"
+                            "src/utils.ts"
+                            "src/loop-checker/index.ts"
+                            "src/loop-checker/lattice.ts"
+                            "src/code/field.ts"
+                            "src/span-allocator.ts")
+               (("\\* as assert") "assert"))))))
+      (build-system node-build-system)
+      (arguments
+       `(#:node ,node-bootstrap
+         #:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'patch-dependencies 'delete-dependencies
+             (lambda _
+               (modify-json (delete-dependencies
+                             `("@types/debug"
+                               "@types/mocha"
+                               "@types/node"
+                               "mocha"
+                               "ts-node"
+                               "tslint"
+                               "typescript")))))
+           (replace 'build
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((esbuild (search-input-file inputs "/bin/esbuild")))
+                 (invoke esbuild
+                         "--platform=node"
+                         "--outfile=lib/builder.js"
+                         "--bundle"
+                         "src/builder.ts")))))))
+      (native-inputs
+       (list esbuild))
+      (home-page "https://github.com/nodejs/llparse-builder#readme")
+      (properties '((hidden? . #t)))
+      (synopsis "Graph builder for consumption by llparse")
+      (description "This package builds graphs for consumption by llparse.")
+      (license license:expat))))
 
 (define-public node-llparse-frontend-bootstrap
   (package
