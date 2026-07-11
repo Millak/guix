@@ -579,7 +579,7 @@ Node.js and web browsers.")
 
 (define-public node-llparse-frontend-bootstrap
   (package
-    (name "node-llparse-frontend")
+    (name "node-llparse-frontend-bootstrap")
     (version "3.0.0")
     (source
      (origin
@@ -589,51 +589,58 @@ Node.js and web browsers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rm9g4ifyip30svm5cgnf0gx7d45jgh4mpf2hkd092xhngmfvicc"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Fix imports for esbuild.
-           ;; https://github.com/evanw/esbuild/issues/477
-           (substitute* '("src/frontend.ts"
-                          "src/code/field-value.ts"
-                          "src/container/index.ts"
-                          "src/container/wrap.ts"
-                          "src/node/sequence.ts"
-                          "src/node/single.ts"
-                          "src/node/table-lookup.ts"
-                          "src/trie/index.ts")
-             (("\\* as assert") "assert")
-             (("\\* as debugAPI") "debugAPI"))
-           #t))))
-    (build-system node-build-system)
+        (base32 "1rm9g4ifyip30svm5cgnf0gx7d45jgh4mpf2hkd092xhngmfvicc"))))
+    (build-system gnu-build-system)
     (arguments
-     `(#:node ,node-bootstrap
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-dependencies 'delete-dependencies
-           (lambda args
-             (modify-json (delete-dependencies
-                           `("@types/debug"
-                             "@types/mocha"
-                             "@types/node"
-                             "mocha"
-                             "ts-node"
-                             "tslint"
-                             "typescript")))))
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((esbuild (search-input-file inputs "/bin/esbuild")))
-               (invoke esbuild
-                       "--platform=node"
-                       "--outfile=lib/frontend.js"
-                       "--bundle"
-                       "src/frontend.ts")))))))
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases #$bootstrap-node-phases
+          (add-after 'unpack 'fix-imports-for-esbuild
+            ;; https://github.com/evanw/esbuild/issues/477
+            (lambda _
+              (substitute* '("src/frontend.ts"
+                             "src/code/field-value.ts"
+                             "src/container/index.ts"
+                             "src/container/wrap.ts"
+                             "src/node/sequence.ts"
+                             "src/node/single.ts"
+                             "src/node/table-lookup.ts"
+                             "src/trie/index.ts")
+                (("\\* as assert") "assert")
+                (("\\* as debugAPI") "debugAPI"))))
+          (add-before 'configure 'patch-dependencies
+            (lambda* (#:key inputs #:allow-other-keys)
+              #$(delete-dependencies* (list "@types/debug"
+                                            "@types/mocha"
+                                            "@types/node"
+                                            "mocha"
+                                            "ts-node"
+                                            "tslint"
+                                            "typescript"))
+              ;; Resolve dependencies manually.
+              (let* ((debug-path "lib/node_modules/debug")
+                     (debug (search-input-directory inputs debug-path))
+                     (builder-path "lib/node_modules/llparse-builder")
+                     (builder (search-input-directory inputs builder-path)))
+                (substitute* "package.json"
+                  (("\"debug\": \".*")
+                   (format #f "\"debug\": \"file://~a\"," debug))
+                  (("\"llparse-builder\": \".*")
+                   (format #f "\"llparse-builder\": \"file://~a\""
+                           builder))))))
+          (add-before 'repack 'build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((esbuild (search-input-file inputs "/bin/esbuild")))
+                (invoke esbuild
+                        "--platform=node"
+                        "--outfile=lib/frontend.js"
+                        "--bundle"
+                        "src/frontend.ts")))))))
     (inputs
      (list node-debug-bootstrap node-llparse-builder-bootstrap))
     (native-inputs
-     (list esbuild))
+     (list esbuild node-bootstrap))
     (home-page "https://github.com/nodejs/llparse-frontend#readme")
     (properties '((hidden? . #t)))
     (synopsis "Frontend for the llparse compiler")
