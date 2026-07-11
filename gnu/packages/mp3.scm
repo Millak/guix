@@ -439,7 +439,7 @@ This package contains the binary.")
 (define-public mpg123
   (package
     (name "mpg123")
-    (version "1.33.5")
+    (version "1.33.7")
     (source
      (origin
        (method url-fetch)
@@ -448,7 +448,7 @@ This package contains the binary.")
                   (string-append "https://www.mpg123.org/download/mpg123-"
                                  version ".tar.bz2")))
        (sha256
-        (base32 "1pfnz4wsgwwraj65ns2nn9dyw0p4vdm5lswc7hwcmwxgl26vqzhd"))))
+        (base32 "1vh3via7ipfajl6yzmmc7rnmshxl5c3c79mxbsdyqrx59idf7l1i"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -465,8 +465,7 @@ This package contains the binary.")
     (license license:lgpl2.1)))
 
 (define-public libmpg123
-  (package
-    (inherit mpg123)
+  (package/inherit mpg123
     (name "libmpg123")
     (arguments
      (list
@@ -479,8 +478,7 @@ This package contains the binary.")
 and 3 (MPEG 1.0 layer 3 aka MP3 most commonly tested).")))
 
 (define-public libout123
-  (package
-    (inherit mpg123)
+  (package/inherit mpg123
     (name "libout123")
     (arguments
      (list
@@ -497,8 +495,7 @@ focus of the library is to ease the use case of just getting raw audio data out
 there, without interruptions.")))
 
 (define-public libsyn123
-  (package
-    (inherit mpg123)
+  (package/inherit mpg123
     (name "libsyn123")
     (arguments
      (list
