@@ -429,7 +429,7 @@ devices.")
 
 (define-public node-ms-bootstrap
   (package
-    (name "node-ms")
+    (name "node-ms-bootstrap")
     (version "2.1.2")
     (source
      (origin
@@ -439,22 +439,21 @@ devices.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1pjxzbi4j8pinlsc7yxvfrh0b47kb2dc4lfc2rjq4wx5bdwl33fj"))))
-    (build-system node-build-system)
+        (base32 "1pjxzbi4j8pinlsc7yxvfrh0b47kb2dc4lfc2rjq4wx5bdwl33fj"))))
+    (build-system gnu-build-system)
     (arguments
-     `(#:node ,node-bootstrap
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-dependencies 'delete-dependencies
-           (lambda args
-             (modify-json (delete-dependencies
-                           '("eslint"
-                             "expect.js"
-                             "husky"
-                             "lint-staged"
-                             "mocha"))))))))
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases #$bootstrap-node-phases
+          (add-before 'configure 'patch-dependencies
+            (lambda _
+              #$(delete-dependencies* (list "eslint"
+                                            "expect.js"
+                                            "husky"
+                                            "lint-staged"
+                                            "mocha")))))))
+    (native-inputs (list node-bootstrap))
     (home-page "https://github.com/zeit/ms#readme")
     (properties '((hidden? . #t)))
     (synopsis "Tiny millisecond conversion utility")
