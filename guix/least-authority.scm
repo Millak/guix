@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022-2023, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -82,6 +82,12 @@ resulting wrapper be executed as root so it can call setgid(2) and setuid(2)."
                                  (string-append variable "=" value))))
                         '#$preserved-environment-variables))
 
+          (define listen-pid?
+            ;; The 'LISTEN_PID' variable, used for socket activation, needs to
+            ;; point to the correct PID.
+            (eqv? (and=> (getenv "LISTEN_PID") string->number)
+                  (getpid)))
+
           (define (read-file file)
             (call-with-input-file file read))
 
@@ -135,6 +141,10 @@ resulting wrapper be executed as root so it can call setgid(2) and setuid(2)."
              (lambda ()
                (chdir #$directory)
                (environ variables)
+
+               (when listen-pid?
+                 ;; Set 'LISTEN_PID' to the PID in this namespace.
+                 (setenv "LISTEN_PID" (number->string (getpid))))
 
                (unless (memq 'user namespaces)
                  ;; This process lives in its parent user namespace,
