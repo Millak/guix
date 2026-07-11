@@ -52,6 +52,7 @@
   #:use-module (guix derivations)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -336,7 +337,65 @@ devices.")
                   (cpe-name . "node.js")
                   (hidden? . #t)))))
 
-;; Duplicate of node-semver
+;; Stripped down version of the node-build-system, avoids (json) and some
+;; niceties, resulting in a simpler but brittle phases.  This allows us to work
+;; on node-build-system without recompiling node-lts for each edit.
+(define bootstrap-node-phases
+  #~(modify-phases %standard-phases
+      (add-after 'unpack 'set-home
+        (lambda _
+          (with-directory-excursion ".."
+            (let loop ((i 0))
+              (let ((dir (string-append "npm-home-" (number->string i))))
+                (if (directory-exists? dir)
+                    (loop (1+ i))
+                    (begin
+                      (mkdir dir)
+                      (setenv "HOME" (string-append (getcwd) "/" dir))
+                      (format #t "set HOME to ~s~%" (getenv "HOME")))))))))
+      (add-before 'configure 'delete-lockfiles
+        (lambda _
+          (let ((lock "package-lock.json"))
+            (when (file-exists? lock)
+            (delete-file lock)))))
+      (replace 'configure
+        (lambda* (#:key inputs #:allow-other-keys)
+          (let ((npm (string-append (assoc-ref inputs "node") "/bin/npm")))
+            (invoke npm "--offline"
+                    "--ignore-scripts"
+                    "--install-links"
+                    "--no-audit"
+                    "install"))))
+      (add-before 'install 'repack
+        (lambda _
+          (invoke "tar"
+                  ;; Add options suggested by https://reproducible-builds.org/docs/archives/
+                  "--sort=name"
+                  (string-append "--mtime=@" (getenv "SOURCE_DATE_EPOCH"))
+                  "--owner=0"
+                  "--group=0"
+                  "--numeric-owner"
+                  "-czf" "../package.tgz" ".")))
+      (delete 'build)
+      (replace 'install
+        (lambda* (#:key inputs outputs #:allow-other-keys)
+          (let ((out (assoc-ref outputs "out"))
+                (npm (string-append (assoc-ref inputs "node") "/bin/npm")))
+            (invoke npm "--prefix" #$output
+                    "--global"
+                    "--offline"
+                    "--loglevel" "info"
+                    "--production"
+                    "--install-links"
+                    "install" "../package.tgz"))))))
+
+(define (delete-dependencies* dependencies)
+  #~(substitute* "package.json"
+      (((string-append " *\"("
+                       (string-join (list #$@dependencies) "|")
+                       ")\": \".*"))
+       "")))
+
 (define-public node-semver-bootstrap
   (package
     (name "node-semver")
