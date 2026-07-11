@@ -516,7 +516,7 @@ Node.js and web browsers.")
   (let ((commit "b04a70c8a3344adcfb8f5132528f7ae9852af79b")
         (revision "1"))
     (package
-      (name "node-llparse-builder")
+      (name "node-llparse-builder-bootstrap")
       (version (git-version "1.5.2" revision commit))
       (source
        (origin
@@ -526,51 +526,51 @@ Node.js and web browsers.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "08wsxyz7hhaf1n3jgvlnhhaaafq576wmpf4k4whihz012i4sxncg"))
-         (modules '((guix build utils)))
-         (snippet
-          '(begin
-             ;; Fix imports for esbuild.
-             ;; https://github.com/evanw/esbuild/issues/477
-             (substitute* '("src/node/invoke.ts"
-                            "src/node/base.ts"
-                            "src/node/consume.ts"
-                            "src/node/match.ts"
-                            "src/node/error.ts"
-                            "src/node/pause.ts"
-                            "src/edge.ts"
-                            "src/utils.ts"
-                            "src/loop-checker/index.ts"
-                            "src/loop-checker/lattice.ts"
-                            "src/code/field.ts"
-                            "src/span-allocator.ts")
-               (("\\* as assert") "assert"))))))
-      (build-system node-build-system)
+          (base32 "08wsxyz7hhaf1n3jgvlnhhaaafq576wmpf4k4whihz012i4sxncg"))))
+      (build-system gnu-build-system)
       (arguments
-       `(#:node ,node-bootstrap
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'patch-dependencies 'delete-dependencies
-             (lambda _
-               (modify-json (delete-dependencies
-                             `("@types/debug"
-                               "@types/mocha"
-                               "@types/node"
-                               "mocha"
-                               "ts-node"
-                               "tslint"
-                               "typescript")))))
-           (replace 'build
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((esbuild (search-input-file inputs "/bin/esbuild")))
-                 (invoke esbuild
-                         "--platform=node"
-                         "--outfile=lib/builder.js"
-                         "--bundle"
-                         "src/builder.ts")))))))
+       (list
+        #:tests? #f
+        #:phases
+        #~(modify-phases #$bootstrap-node-phases
+            (add-after 'unpack 'fix-imports-for-esbuild
+              ;; https://github.com/evanw/esbuild/issues/477
+              (lambda _
+                (substitute* '("src/node/invoke.ts"
+                               "src/node/base.ts"
+                               "src/node/consume.ts"
+                               "src/node/match.ts"
+                               "src/node/error.ts"
+                               "src/node/pause.ts"
+                               "src/edge.ts"
+                               "src/utils.ts"
+                               "src/loop-checker/index.ts"
+                               "src/loop-checker/lattice.ts"
+                               "src/code/field.ts"
+                               "src/span-allocator.ts")
+                  (("\\* as assert") "assert"))))
+            (add-before 'configure 'patch-dependencies
+              (lambda* (#:key inputs #:allow-other-keys)
+                #$(delete-dependencies* (list "@eslint/js"
+                                              "@stylistic/eslint-plugin"
+                                              "@types/eslint__js"
+                                              "@types/node"
+                                              "@typescript-eslint/eslint-plugin"
+                                              "@typescript-eslint/parser"
+                                              "borp"
+                                              "eslint"
+                                              "typescript-eslint"
+                                              "typescript"))))
+            (add-before 'repack 'build
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((esbuild (search-input-file inputs "/bin/esbuild")))
+                  (invoke esbuild
+                          "--platform=node"
+                          "--outfile=lib/builder.js"
+                          "--bundle"
+                          "src/builder.ts")))))))
       (native-inputs
-       (list esbuild))
+       (list esbuild node-bootstrap))
       (home-page "https://github.com/nodejs/llparse-builder#readme")
       (properties '((hidden? . #t)))
       (synopsis "Graph builder for consumption by llparse")
