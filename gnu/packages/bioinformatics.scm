@@ -5961,18 +5961,23 @@ omics data.")
 (define-public python-mofapy2
   (package
     (name "python-mofapy2")
-    (version "0.7.1")
+    ;; Upstream removed all tags.
+    (properties '((commit . "45d7e901b7cfe071476ad849a62944de8732f4d9")
+                  (revision . "0")))
+    (version (git-version "0.7.4"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        ;; The tarball from PyPi doesn't include tests.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/bioFAM/mofapy2")
-             (commit (string-append "v" version))))
+             (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ahhnqk6gjrhyq286mrd5n7mxcv8l6040ffsawbjx9maqx8wbam0"))))
+         "1b2m7bphn06n8bgyqz02f08jwjzqw11zl8nf5zm58vs1v5wq8cnd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
