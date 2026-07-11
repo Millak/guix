@@ -398,7 +398,7 @@ devices.")
 
 (define-public node-semver-bootstrap
   (package
-    (name "node-semver")
+    (name "node-semver-bootstrap")
     (version "7.2.1")
     (source (origin
               (method git-fetch)
@@ -409,15 +409,16 @@ devices.")
               (sha256
                (base32
                 "06biknqb05r9xsmcflm3ygh50pjvdk84x6r79w43kmck4fn3qn5p"))))
-    (build-system node-build-system)
+    (build-system gnu-build-system)
     (arguments
-     `(#:node ,node-bootstrap
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-dependencies 'delete-dependencies
-           (lambda args
-             (modify-json (delete-dependencies '("tap"))))))))
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases #$bootstrap-node-phases
+          (add-before 'configure 'patch-dependencies
+            (lambda _
+              #$(delete-dependencies* (list "tap")))))))
+    (native-inputs (list node-bootstrap))
     (home-page "https://github.com/npm/node-semver")
     (properties '((hidden? . #t)))
     (synopsis "Parses semantic versions strings")
