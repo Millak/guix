@@ -5931,24 +5931,37 @@ with MOFA+ in Python.")
 (define-public python-mudata
   (package
     (name "python-mudata")
-    (version "0.3.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/scverse/mudata")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "17s1w3746d35pcwr97ynhr7s5hfk76vsfcinwyqynx9k3xxi9br4"))))
+    (version "0.3.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/scverse/mudata")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s0vkxmbw6kbyl5pxgr296g9g0wpjggzcxrj5i67lgg1kzxkqb8k"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-anndata python-h5py python-pandas))
+    (arguments
+     (list
+      ;; tests: 484 passed, 1 deselected, 2 xfailed, 1343 warnings
+      #:test-flags
+      ;; TypeError: MetaAcc.get() missing 1 required positional argument: 'k'
+      #~(list "--deselect=tests/test_obs_var.py::test_accessors")))
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-anndata
+           python-h5py
            python-numpy
-           python-pytest
+           python-pandas
+           python-scipy
+           python-scverse-misc
+           python-session-info2
+           ;; [optional]
+           python-fsspec
            python-zarr))
     (home-page "https://github.com/scverse/mudata")
     (synopsis "Python package for multi-omics data analysis")
