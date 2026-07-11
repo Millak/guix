@@ -650,7 +650,7 @@ Node.js and web browsers.")
 (define-public node-llparse-bootstrap
   (package
     (name "node-llparse-bootstrap")
-    (version "7.3.0")
+    (version "7.3.1")
     (source
      (origin
        (method git-fetch)
@@ -659,7 +659,7 @@ Node.js and web browsers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09hqjcynkz5iv7aydzdwgs42r7y2zylplv0ff7w0vkdsgb08j22a"))))
+        (base32 "0srahcyqgnx2f2w0hwsayx7ihvqgll6a6bcwrsiyvccis4hccww2"))))
     (build-system gnu-build-system)
     (arguments
      (list
