@@ -649,7 +649,7 @@ Node.js and web browsers.")
 
 (define-public node-llparse-bootstrap
   (package
-    (name "node-llparse")
+    (name "node-llparse-bootstrap")
     (version "7.3.0")
     (source
      (origin
@@ -659,48 +659,54 @@ Node.js and web browsers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "09hqjcynkz5iv7aydzdwgs42r7y2zylplv0ff7w0vkdsgb08j22a"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Fix imports for esbuild.
-           ;; https://github.com/evanw/esbuild/issues/477
-           (substitute* '("src/compiler/index.ts"
-                          "src/implementation/c/node/base.ts"
-                          "src/implementation/c/node/table-lookup.ts"
-                          "src/implementation/c/compilation.ts"
-                          "src/implementation/c/helpers/match-sequence.ts"
-                          "src/implementation/c/code/mul-add.ts")
-             (("\\* as assert") "assert")
-             (("\\* as debugAPI") "debugAPI"))
-           #t))))
-    (build-system node-build-system)
+        (base32 "09hqjcynkz5iv7aydzdwgs42r7y2zylplv0ff7w0vkdsgb08j22a"))))
+    (build-system gnu-build-system)
     (arguments
-     `(#:node ,node-bootstrap
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-dependencies 'delete-dependencies
-           (lambda args
-             (modify-json (delete-dependencies
-                           `("@stylistic/eslint-plugin"
-                             "@typescript-eslint/eslint-plugin"
-                             "@typescript-eslint/parser"
-                             "@types/debug"
-                             "@types/mocha"
-                             "@types/node"
-                             "esm"
-                             "eslint"
-                             "llparse-test-fixture"
-                             "mocha"
-                             "ts-node"
-                             "tslint"
-                             "typescript")))))
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((esbuild (search-input-file inputs "/bin/esbuild")))
-               (invoke esbuild
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases #$bootstrap-node-phases
+          (add-after 'unpack 'fix-imports-for-esbuild
+            ;; https://github.com/evanw/esbuild/issues/477
+            (lambda _
+              (substitute* '("src/compiler/index.ts"
+                             "src/implementation/c/node/base.ts"
+                             "src/implementation/c/node/table-lookup.ts"
+                             "src/implementation/c/compilation.ts"
+                             "src/implementation/c/helpers/match-sequence.ts"
+                             "src/implementation/c/code/mul-add.ts")
+                (("\\* as assert") "assert")
+                (("\\* as debugAPI") "debugAPI"))))
+          (add-before 'configure 'patch-dependencies
+            (lambda* (#:key inputs #:allow-other-keys)
+              #$(delete-dependencies* (list "@stylistic/eslint-plugin"
+                                            "@typescript-eslint/eslint-plugin"
+                                            "@typescript-eslint/parser"
+                                            "@types/debug"
+                                            "@types/mocha"
+                                            "@types/node"
+                                            "esm"
+                                            "eslint"
+                                            "llparse-test-fixture"
+                                            "mocha"
+                                            "ts-node"
+                                            "tslint"
+                                            "typescript"))
+              ;; Resolve dependencies manually.
+              (let* ((debug-path "lib/node_modules/debug")
+                     (debug (search-input-directory inputs debug-path))
+                     (frontend-path "lib/node_modules/llparse-frontend")
+                     (frontend (search-input-directory inputs frontend-path)))
+                (substitute* "package.json"
+                  (("\"debug\": \".*")
+                   (format #f "\"debug\": \"file://~a\"," debug))
+                  (("\"llparse-frontend\": \".*")
+                   (format #f "\"llparse-frontend\": \"file://~a\""
+                           frontend))))))
+          (add-before 'repack 'build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((esbuild (search-input-file inputs "/bin/esbuild")))
+                (invoke esbuild
                        "--platform=node"
                        "--outfile=lib/api.js"
                        "--bundle"
@@ -708,7 +714,7 @@ Node.js and web browsers.")
     (inputs
      (list node-debug-bootstrap node-llparse-frontend-bootstrap))
     (native-inputs
-     (list esbuild))
+     (list esbuild node-bootstrap))
     (home-page "https://github.com/nodejs/llparse#readme")
     (properties '((hidden? . #t)))
     (synopsis "Compile incremental parsers to C code")
