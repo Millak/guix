@@ -34460,8 +34460,8 @@ key-value pairs from a @code{.env} file and set them as environment variables.")
                (invoke "python" "-m" "pytest")))))))
     (native-inputs
      (modify-inputs native-inputs
-       (append python-mock)
-       (replace "python-sh" python-sh-1)))))
+       (append python-mock
+               python-sh-1)))))
 
 (define-public python-braintree
   (package
