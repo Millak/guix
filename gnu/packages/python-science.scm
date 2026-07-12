@@ -816,14 +816,18 @@ others.")
     (version "1.7.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "cvxpy" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cvxpy/cvxpy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0p9zp2ci1zw56hy2q0w18s3kb1h3j0j4m4gw2sg6a9qw00c24lab"))))
+        (base32 "0xawcpkfvp29wfb8g2dj8vnv6aslbs9mc03ddcdhpz0vdafp7vyd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1344 passed, 391 skipped, 4 deselected, 237 warnings
+      ;; tests: 1361 passed, 373 skipped, 5 deselected, 239 warnings, 29
+      ;; subtests passed
       #:test-flags
       #~(list #$@(map (lambda (test) (string-append "--deselect="
                                                     "cvxpy/tests/"
@@ -842,7 +846,10 @@ others.")
                             ;; cvxpy.error.SolverError: Solver 'CVXOPT'
                             ;; failed. Try another solver, or solve with
                             ;; verbose=True for more information.
-                            "TestOpRelConeQuad::test_oprelcone_2")))
+                            "TestOpRelConeQuad::test_oprelcone_2"))
+              ;; TypeError: Array must be contiguous.  A non-contiguous array
+              ;; was given.
+              "--deselect=cvxpy/tests/test_complex.py::TestComplex::test_sparse")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-ci-environment
@@ -851,7 +858,7 @@ others.")
               ;; HealthCheck.too_slow which fails on slow build machines.
               (setenv "CI" "1"))))))
     (native-inputs
-     (list pybind11-2
+     (list pybind11
            python-pytest
            python-setuptools))
     (propagated-inputs
@@ -863,7 +870,7 @@ others.")
            ;; [optional]
            ;; python-cuopt-cu12
            python-cvxopt
-           ;; python-cylp ;FIXME: <https://codeberg.org/guix/guix/issues/2912>
+           python-cylp
            ;; python-daqp
            ;; python-diffcp
            python-ecos
