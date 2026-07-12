@@ -18462,17 +18462,22 @@ list format (also known as ASCII plist), written in Cython.")
 (define-public python-resolvelib
   (package
     (name "python-resolvelib")
-    (version "1.1.0")
+    ;; Use latest commit, because last release, 1.2.1 is incompatible
+    ;; with python-packaging 26,
+    (properties '((commit . "a0cb7c50b78028f840b238d8e1c391e0546f2325")
+                  (revision . "0")))
+    (version (git-version "1.2.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       ;; Tests are missing from the PyPI release.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/sarugaku/resolvelib")
-             (commit version)))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pw99897mm2y7pa2g35z0f7vcmgh42xglz5szbrvigczvwa605sh"))))
+        (base32 "1f00jlcv7fal4y6iyvqsycc6b5mkvxgc0jdddbkm1jcci1qy1yfl"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-packaging
