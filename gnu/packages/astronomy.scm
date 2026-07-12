@@ -7361,7 +7361,7 @@ astronomical tables
            python-colossus
            python-coolest
            python-emcee
-           python-nestcheck
+           ;; python-nestcheck     ;unmaintained, incompatible with NumPy 2.4.6
            ;; python-pymultinest   ;depends on MultiNest
            python-pytest
            ;; python-starred-astro ;depends on python-jax
