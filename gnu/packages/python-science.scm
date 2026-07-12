@@ -5114,14 +5114,24 @@ NumPy and does not depend on C++ ROOT.")
 (define-public python-upsetplot
   (package
     (name "python-upsetplot")
-    (version "0.9.0")
+    ;; Latest release is incompatible with Pandas 3 and NumPy 2.4.
+    (properties '((commit . "e9603da19d321c047f88d404f687e82be415e52c")
+                  (revision . "1")))
+    (version (git-version "0.9.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "UpSetPlot" version))
+       (method git-fetch)
+       (uri (git-reference
+              ;; Using a fork of https://github.com/jnothman/UpSetPlot
+              ;; original source that is updated for Pandas 3 compatibility,
+              ;; see <https://github.com/kevinpetersavage/UpSetPlot/pull/1>.
+              (url "https://github.com/kevinpetersavage/UpSetPlot")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "14l5gcj88cclkj1mf74bcy1pxq1hgsiy27fa3vxrsk32ik1nmdwm"))))
+        (base32 "155g0x4z0zdfri528spws5mad4d24vadsc827iy92f5br7vbf3j3"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-matplotlib python-pandas))
