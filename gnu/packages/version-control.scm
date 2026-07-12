@@ -3190,9 +3190,13 @@ execution of any hook written in any language before every commit.")
     (native-inputs
      (list python-docutils
            ;; The following inputs are only needed to run the tests.
-           python-setuptools python-setuptools-scm python-wheel unzip which))
+           python-setuptools
+           python-setuptools-scm
+           unzip
+           which))
     (inputs
-     (list python-wrapper))
+     (list python-wrapper
+           python-roman))
     ;; Find third-party extensions.
     (native-search-paths
      (list (search-path-specification
