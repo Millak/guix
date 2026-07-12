@@ -39256,24 +39256,22 @@ approach.")
 (define-public python-throttler
   (package
     (name "python-throttler")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/uburuntu/throttler")
               (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1gn21x0zkm7rr7qijlz7nvw7z0mm1j2r0r2lslg7wln1z36gjkbw"))))
+        (base32 "1k0a3hxih2qk3fxljcwbbpa723bshrvcqgz2lxgll32g1lfa3hnd"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-aiohttp
-           python-codecov
-           python-flake8
            python-pytest
            python-pytest-asyncio
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/uburuntu/throttler")
     (synopsis "Throttling with asyncio support")
     (description
