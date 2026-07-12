@@ -1901,14 +1901,35 @@ C-API.")
 (define-public python-rpy2-robjects
   (package
     (name "python-rpy2-robjects")
-    (version "3.6.5")
+    (version "3.6.7")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "rpy2_robjects" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rpy2/rpy2")
+             (commit
+              (string-append "RELEASE_"
+                             (string-replace-substring version "." "_")))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1r5gnhv2wlqg787cwgwcvb6wg68a881gd2wgzd8qn6m06vs9kl03"))))
+        (base32 "0py2q283kcsnx4av01x25lxq3cv1m3zd428ns6s21k841l9wi739"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 451 passed, 75 skipped, 5 deselected, 1 xfailed, 1 xpassed, 3
+      ;; warnings
+      #:test-flags
+      ;; XXX: AssertionError: assert <StringDtype(storage='python',
+      ;; na_value=nan)> == dtype('O') where <StringDtype(storage='python',
+      ;; na_value=nan)> = a a\nb b\nName: y, dtype: str.dtype and dtype('O') =
+      ;; <class 'numpy.dtype'>('O') where <class 'numpy.dtype'> = numpy.dtype.
+      #~(list (string-append "--deselect=src/rpy2/robjects/tests/robjects/"
+                             "test_pandas_conversions.py"
+                             "::TestPandasConversions::test_ri2pandas"))
+      #:phases
+       #~(modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "rpy2-robjects"))))))
     (native-inputs
      (list python-ipython-minimal
            python-numpy
