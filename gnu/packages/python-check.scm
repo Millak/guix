@@ -3255,20 +3255,34 @@ times and detect flakiness.")
 (define-public python-pytest-harvest
   (package
     (name "python-pytest-harvest")
-    (version "1.10.5")
+    ;; Latest commit does not require python-six and has better test structure.
+    (properties '((commit . "65ca6337462913f5a0d3c960de70ebd5ae042c21")
+                  (revision . "0")))
+    (version (git-version "1.10.5"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-harvest" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/smarie/python-pytest-harvest")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "066lqx46hqlvllq6ppmyi47fjc1dww7jwa4wfkkx2hrf3z7s9kr7"))))
+        (base32 "1wxgn2hb160sknha38gazgk2cvr9h54x4hcjarbpghxfa1qqpghp"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f))        ;XXX: cycle with python-pytest-harvest
+     (list
+      #:test-flags
+      ;; Break dependency cycle with python-pytest-cases.
+      #~(list "--ignore=tests/test_lazy_and_harvest.py")))
     (native-inputs
      (list python-pytest-bootstrap
+           python-numpy
+           python-pandas
            python-setuptools
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-tabulate))
     (propagated-inputs
      (list python-decopatch
            python-makefun
@@ -3276,7 +3290,7 @@ times and detect flakiness.")
     (home-page "https://github.com/smarie/python-pytest-harvest")
     (synopsis "Pytest plugin to store data during runs")
     (description
-     "This package implements a functionality to store data created during your
+     "This package implements functionality to store data created during your
 pytest tests execution, and retrieve it at the end of the session, e.g. for
 applicative benchmarking purposes.")
     (license license:bsd-3)))
