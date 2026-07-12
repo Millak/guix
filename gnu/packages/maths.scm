@@ -4528,16 +4528,16 @@ satisfaction problems} over finite domains in an accessible Python package.")
 (define-public python-cvxopt
   (package
     (name "python-cvxopt")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/cvxopt/cvxopt")
-             (commit version)))
+              (url "https://github.com/cvxopt/cvxopt")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vdfag3rr906w0gk7vxm2yxfy8y92i4wmqxi82cbykpfp5r82i36"))))
+        (base32 "0g2lddikgmvi838b5vgfy7kbdvqsvzxrvw3i8pxq1q378dwsyp0d"))))
     (build-system pyproject-build-system)
     (arguments
      (list
