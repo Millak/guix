@@ -1071,13 +1071,13 @@ Features:
 (define-public python-decaylanguage
   (package
     (name "python-decaylanguage")
-    (version "0.20.2")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "decaylanguage" version))
        (sha256
-        (base32 "1l867w7srvx0hwfys56469lzdkcs2awbwjpj573bjqv2ngdycmwb"))))
+        (base32 "14gam45rs90xg8qgng94fdava2rr17r9ps6mijsw925xdiwljpyh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1094,7 +1094,8 @@ Features:
                              python-plumbum))
     (native-inputs (list python-hatch-vcs
                          python-hatchling
-                         python-pytest))
+                         python-pytest
+                         python-pytest-benchmark))
     (home-page "https://decaylanguage.readthedocs.io/en/latest/")
     (synopsis "Language to describe, manipulate and convert particle decays")
     (description "DecayLanguage implements a language to describe and convert
