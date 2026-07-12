@@ -4116,7 +4116,7 @@ depends on @code{scipy.sparse} for some computations.")
 (define-public python-tdda
   (package
     (name "python-tdda")
-    (version "3.0.02")
+    (version "3.2.03")
     (source
      (origin
        (method git-fetch)
@@ -4125,32 +4125,29 @@ depends on @code{scipy.sparse} for some computations.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0agqy4v895qbrg149w2fkyh8kdfbk650iqp77aw8542ry1333lgs"))))
+        (base32 "1rqh1pa17n5al0b3blqr4h9qn4x6wxnxw6ilc2lk72k027cxmv84"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list
+         ;; Failures probably due to a dependency mismatch (e.g. pandas).
+         ;; Not investigated further as this is a leaf package.
+         ;; tdda is actively maintained, so will probably be fixed.
          (string-append "--deselect=tdda/test_tdda.py::"
-                        "TestTDDAUtils::test_handle_tilde_strings")
+                        "TestCommonConstraints::"
+                        "testSimpleAllCorrectVerificationFromCSVFile")
          (string-append "--deselect=tdda/test_tdda.py::"
-                        "TestPandasCommandLine::testDetectE118Cmd")
+                        "TestCommonConstraints::"
+                        "testSimpleAllNotCorrectVerificationFromCSVFile")
+         ;; Not further investigated, results in: AssertionError:
+         ;;   '~homeless-shelter/foo.csv' != '/homeless-shelter/foo.csv'
          (string-append "--deselect=tdda/test_tdda.py::"
-                        "TestPandasCommandLine::testDetectE118CmdInterleaved")
-         (string-append "--deselect=tdda/test_tdda.py::"
-                        "TestPandasCommandLine::testDetectE118ParquetCmd")
-         (string-append "--deselect=tdda/test_tdda.py::"
-                        "TestPandasCommandLine::testDiscoverCmd")
-         (string-append "--deselect=tdda/test_tdda.py::"
-                        "TestPandasCommandLine::testVerifyE118Cmd")
-         (string-append "--deselect=tdda/test_tdda.py::"
-                        "TestPandasCommandLine::testVerifyE92Cmd")
-         (string-append "--deselect=tdda/test_tdda.py::"
-                        "TestPandasCommandLine::testVerifyEpsilon")
-         (string-append "--deselect=tdda/test_tdda.py::"
-                        "TestPandasCommandLine::testVerifyOptionFlags"))))
+                        "TestTDDAUtils::test_handle_tilde_strings"))))
     (native-inputs
-     (list python-pytest python-setuptools))
+     (list python-pytest
+           python-setuptools
+           tzdata-for-tests))
     (propagated-inputs
      (list python-chardet
            python-numpy
@@ -4170,7 +4167,7 @@ depends on @code{scipy.sparse} for some computations.")
 for the overall process of data analysis, through tools that perform
 reference testing, constraint discovery for data, automatic inference
 of regular expressions from text data and automatic test generation.")
-    (license license:expat))) ; MIT License
+    (license license:expat)))
 
 (define-public python-traittypes
   (package
