@@ -4077,7 +4077,8 @@ plug-in architecture to allow monitoring other system metrics.")
        (list python-colorama
              python-decorator
              python-psutil
-             python-pyte))
+             python-pyte
+             python-six))
       (home-page "https://github.com/nvbn/thefuck")
       (synopsis "Correct mistyped console command")
       (description
