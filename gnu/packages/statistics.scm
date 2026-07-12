@@ -1857,14 +1857,25 @@ functions.")
 (define-public python-rpy2-rinterface
   (package
     (name "python-rpy2-rinterface")
-    (version "3.6.6")
+    (version "3.6.7")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "rpy2_rinterface" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rpy2/rpy2")
+             (commit
+              (string-append "RELEASE_"
+                             (string-replace-substring version "." "_")))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0s9kiaai3l0fzri45g8mfb7gmjp05hxxqh3wqqfxzd2wrr0i7k59"))))
+        (base32 "0py2q283kcsnx4av01x25lxq3cv1m3zd428ns6s21k841l9wi739"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+       #~(modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "rpy2-rinterface"))))))
     (native-inputs
      (list python-cffi
            python-pytest
