@@ -5020,25 +5020,26 @@ with the @code{psycopg} PostgreSQL driver.")
 (define-public python-psycopg
   (package
     (name "python-psycopg")
-    (version "3.2.4")
-    (source (origin
-              ;; Fetch from git because PyPI contains only cythonized sources.
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/psycopg/psycopg")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0fb83fhaa3saapqv37901hlv017bj40q0dmkxd79aaq442sjf9w2"))))
+    (version "3.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/psycopg/psycopg")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kp9pig5hv2378zllmb6kmmabydmp98k8qacmm8098cspb0jqy44"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list "-o" "asyncio_mode=auto"
-             ;; FIXME: Many of the typing tests are failing,
-             ;; conveniently tagged as slow...
-             "-k" "not slow" "..")
+      #~(list "-o" "asyncio_mode=auto"
+              ;; FIXME: Many of the typing tests are failing,
+              ;; conveniently tagged as slow...
+              "-k" "not slow"
+              ;; Tests are in parent directory due to the chdir.
+              "..")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'change-directory
@@ -5063,18 +5064,16 @@ with the @code{psycopg} PostgreSQL driver.")
                           "-o" (string-append "-k " dbdir)
                           "-l" (string-append dbdir "/db.log")
                           "start")
-	          (invoke "psql" "-h" dbdir "-d" "postgres"
+                  (invoke "psql" "-h" dbdir "-d" "postgres"
                           "-c" "CREATE DATABASE nixbld;"))))))))
     (native-inputs
      (list python-cython
-           python-mypy
            python-psycopg-pool
            python-pytest
            python-pytest-asyncio
            python-anyio
            python-setuptools
            python-tenacity
-           python-wheel
            pproxy
            tzdata-for-tests))
     (inputs
