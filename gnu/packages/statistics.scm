@@ -1297,26 +1297,44 @@ building design matrices.")
     (version "1.4.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "kalepy" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lzkelley/kalepy/")
+              ;; Version is not tagged; this commit is "bump version 1.4.3".
+              (commit "6feb380cd4f6face912a4b370c99e03fe3cdca54")))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1a1d98vjkjs8zwx4hdss3gv67jyf25mmsrdc5qi8hpxminkizb6w"))))
+        (base32 "1rpjiak0zcki6plfvdyhmw0km9jd7i5q57gb0hr8m4pmlbam0rk6"))
+       (patches
+        (list
+         (origin
+           ;; Improve compatibility with NumPy 2.
+           ;; https://github.com/lzkelley/kalepy/pull/21
+           (method url-fetch)
+           (uri
+            (string-append "https://github.com/lzkelley/kalepy/commit/"
+                           "ae329546d128532eb6fd1cee0c4e65c1d537e26c.patch"))
+           (file-name "python-kalepy-pull-request-21.patch")
+           (sha256
+            (base32
+             "049mijr4vqckzx7iww9ihpskd135nrl0zfii6sr6ahqglvknj5an")))))))
     (build-system pyproject-build-system)
+    ;; tests: 52 passed
     (arguments
      (list
-      ;; tests: 46 passed, 6 deselected, 214 warnings
-      #:test-flags
-      ;; XXX: See: <https://github.com/lzkelley/kalepy/issues/22>.
-      ;; AttributeError: module 'numpy' has no attribute 'product'
-      #~(list #$@(map (lambda (test) (string-append "--deselect="
-                                                    "kalepy/tests/"
-                                                    "test_utils.py::"
-                                                    test))
-                      (list "Test_Midpoints::test_midpoints_lin"
-                            "Test_Midpoints::test_midpoints_log"
-                            "Test_Trapz::test_nd"
-                            "Test_Trapz_Dens_To_Mass::test_ndim"
-                            "Test_Trapz_Dens_To_Mass::test_ndim_a2")))))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; trapz is removed in NumPy 2.4.6, and is now called trapezoid.
+          ;; See <https://github.com/lzkelley/kalepy/pull/21>.
+          (add-after 'unpack 'fix-trapz
+            (lambda _
+              (substitute*
+                  (list "notebooks/kernels.ipynb"
+                        "kalepy/utils.py"
+                        "kalepy/tests/test_distributions.py"
+                        "kalepy/tests/test_utils.py"
+                        "kalepy/tests/test_kernels.py")
+                (("np.trapz\\(") "np.trapezoid(")))))))
     (native-inputs
      (list python-pytest
            python-setuptools))
