@@ -4670,6 +4670,8 @@ You might also want to install the following optional dependencies:
 ")
     (license license:bsd-3)))
 
+;; python-alchemy-mock is abandoned, last commit in 2019, no maintained fork.
+;; Perhaps deprecate and remove with the python-six cleanup.
 (define-public python-alchemy-mock
   (package
     (name "python-alchemy-mock")
@@ -4696,7 +4698,7 @@ You might also want to install the following optional dependencies:
       #~(list "--doctest-modules" "alchemy_mock")))
     (native-inputs (list python-mock python-pytest python-setuptools
                          python-wheel))
-    (propagated-inputs (list python-sqlalchemy))
+    (propagated-inputs (list python-sqlalchemy python-six))
     (synopsis "Mock helpers for SQLAlchemy")
     (description
      "This package provides mock helpers for SQLAlchemy that makes it easy
