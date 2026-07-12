@@ -2806,17 +2806,16 @@ numerical optimization package.")
 (define-public python-particle
   (package
     (name "python-particle")
-    (version "0.26.1")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "particle" version))
        (sha256
-        (base32 "1iwhfljihqlxacqxx9c782hp5mp54ks6fwzrirbdcmldmp89hxhh"))))
+        (base32 "14h4nndm3pk97q05ic25m07ral501wl05sg8yc3ln15m3kn5s529"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-attrs
-                             python-hepunits
-                             python-typing-extensions))
+                             python-hepunits))
     (native-inputs (list python-hatch-vcs
                          python-hatchling
                          python-pandas
