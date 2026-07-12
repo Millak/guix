@@ -4056,6 +4056,8 @@ counts.")
     (license license:expat)))
 
 (define-public python-scprep
+  ;; XXX: Project has no update since <2023-06-19> and probably is not
+  ;; compatible with Pandas 3 and NumPy 2.4.
   (package
     (name "python-scprep")
     (version "1.2.3")
@@ -4071,7 +4073,7 @@ counts.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 344 passed
+      ;; tests: 326 passed
       #:test-flags
       ;; XXX: Mixture of remote data download and some assertion errors.
       ;;
@@ -4112,7 +4114,18 @@ counts.")
                      "test_conversion_array"
                      "test_conversion_dataframe"
                      "test_conversion_anndata_missing"
-                     "test_r_traceback)")
+                     "test_r_traceback"
+                     ;; Pandas compatibility faileurs, see:
+                     ;; <https://github.com/KrishnaswamyLab/scprep/issues/144>.
+                     "test_batch_mean_center"
+                     "test_batch_mean_center_one_sample"
+                     "test_dense"
+                     "test_libsize_norm_rescale_integer"
+                     "test_libsize_norm_rescale_mean"
+                     "test_libsize_norm_rescale_median"
+                     "test_libsize_norm_rescale_none"
+                     "test_matrix_transpose"
+                     "test_pandas_series_rmatmul)")
                "|")
               "test")
       #:phases
