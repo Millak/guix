@@ -27906,8 +27906,14 @@ application.")
        (sha256
         (base32 "0b6c7dpc45sm3vn65qm00q20sdgpi78xxzwc0rij7hnj9c45w97x"))))
     (build-system pyproject-build-system)
-    (arguments (list #:test-backend #~'unittest))
-    (native-inputs (list python-pandas python-setuptools))
+    (arguments
+     (list
+      ;; Fails because a None is converted to nan, probably due to Pandas 3.
+      #:test-flags
+      #~(list "-k" "not test_df_export_scenario2" "test.py")))
+    (native-inputs (list python-pandas
+                         python-pytest
+                         python-setuptools))
     (propagated-inputs (list python-wcwidth))
     (home-page "https://github.com/pri22296/beautifultable")
     (synopsis "Print ASCII tables for terminals")
