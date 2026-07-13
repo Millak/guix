@@ -4687,7 +4687,7 @@ idea of the remaining amount of computation to be done.")
       ;; tests: 3810 passed, 22 skipped, 21 xfailed, 5923 warnings
       #:test-flags
       ;; With higher threads count tests randomly fail during collection.
-      #~(list "--numprocesses" (number->string (min 4 (parallel-job-count)))
+      #~(list "--numprocesses" (number->string (min 2 (parallel-job-count)))
               ;; TODO: Ignore tests for not packaged python-ibis-framework,
               ;; and python-pyspark.
               "--ignore=tests/ibis"
