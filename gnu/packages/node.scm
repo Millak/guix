@@ -678,16 +678,23 @@ Node.js and web browsers.")
                              "src/implementation/c/compilation.ts"
                              "src/implementation/c/helpers/match-sequence.ts"
                              "src/implementation/c/code/mul-add.ts")
-                (("\\* as assert") "assert")
-                (("\\* as debugAPI") "debugAPI"))))
+                (("\\* as assert") "assert"))))
           (add-before 'configure 'patch-dependencies
             (lambda* (#:key inputs #:allow-other-keys)
+              ;; Drop debug dependency, see
+              ;; https://github.com/nodejs/llparse/pull/87
+              (substitute* "src/compiler/index.ts"
+                (("import \\* as debugAPI from 'debug';")
+                 "import { debuglog } from 'node:util';")
+                (("debugAPI")
+                 "debuglog"))
               #$(delete-dependencies* (list "@stylistic/eslint-plugin"
                                             "@typescript-eslint/eslint-plugin"
                                             "@typescript-eslint/parser"
                                             "@types/debug"
                                             "@types/mocha"
                                             "@types/node"
+                                            "debug"
                                             "esm"
                                             "eslint"
                                             "llparse-test-fixture"
@@ -696,13 +703,9 @@ Node.js and web browsers.")
                                             "tslint"
                                             "typescript"))
               ;; Resolve dependencies manually.
-              (let* ((debug-path "lib/node_modules/debug")
-                     (debug (search-input-directory inputs debug-path))
-                     (frontend-path "lib/node_modules/llparse-frontend")
+              (let* ((frontend-path "lib/node_modules/llparse-frontend")
                      (frontend (search-input-directory inputs frontend-path)))
                 (substitute* "package.json"
-                  (("\"debug\": \".*")
-                   (format #f "\"debug\": \"file://~a\"," debug))
                   (("\"llparse-frontend\": \".*")
                    (format #f "\"llparse-frontend\": \"file://~a\""
                            frontend))))))
@@ -715,7 +718,7 @@ Node.js and web browsers.")
                        "--bundle"
                        "src/api.ts")))))))
     (inputs
-     (list node-debug-bootstrap node-llparse-frontend-bootstrap))
+     (list node-llparse-frontend-bootstrap))
     (native-inputs
      (list esbuild node-bootstrap))
     (home-page "https://github.com/nodejs/llparse#readme")
