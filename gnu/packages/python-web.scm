@@ -388,7 +388,7 @@ SNS, Gotify, etc.")
 (define-public python-arxiv
   (package
     (name "python-arxiv")
-    (version "3.0.0")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -397,7 +397,7 @@ SNS, Gotify, etc.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18kn8q1lbql1w8jm5clla6za2zpijhs5hi2kpz41x5skps96lrd3"))))
+        (base32 "13363igvv3q5aj04jcrrc0cfliinlk8js84h2a9xhpwizsq96l4j"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
@@ -405,13 +405,23 @@ SNS, Gotify, etc.")
                    (string-append "not (TestAPIBugs "
                                   "or TestClient "
                                   "or TestResult "
-                                  "or TestDownload)"))))
+                                  "or TestDownload)"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-dependencies
+                 (lambda _
+                   (substitute* "pyproject.toml"
+                     ;; pyproject.toml wants 6.10, guix has 6.02, seems fine
+                     (("\"lxml.*\"") "\"lxml\"")
+                     ;; artificial capped at <2.34 by dependabot
+                     (("\"requests.*\"") "\"requests\"")))))))
     (native-inputs
      (list python-pytest
            python-hatch-vcs
            python-hatchling))
     (propagated-inputs
      (list python-feedparser
+           python-lxml
            python-requests))
     (home-page "https://github.com/lukasschwab/arxiv.py")
     (synopsis "Python wrapper for the arXiv API")
