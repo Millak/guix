@@ -607,25 +607,28 @@ Node.js and web browsers.")
                              "src/node/single.ts"
                              "src/node/table-lookup.ts"
                              "src/trie/index.ts")
-                (("\\* as assert") "assert")
-                (("\\* as debugAPI") "debugAPI"))))
+                (("\\* as assert") "assert"))))
           (add-before 'configure 'patch-dependencies
             (lambda* (#:key inputs #:allow-other-keys)
+              ;; Drop debug dependency, see
+              ;; https://github.com/nodejs/llparse-frontend/pull/8
+              (substitute* "src/frontend.ts"
+                (("import \\* as debugAPI from 'debug';")
+                 "import { debuglog } from 'node:util';")
+                (("debugAPI")
+                 "debuglog"))
               #$(delete-dependencies* (list "@types/debug"
                                             "@types/mocha"
                                             "@types/node"
+                                            "debug"
                                             "mocha"
                                             "ts-node"
                                             "tslint"
                                             "typescript"))
               ;; Resolve dependencies manually.
-              (let* ((debug-path "lib/node_modules/debug")
-                     (debug (search-input-directory inputs debug-path))
-                     (builder-path "lib/node_modules/llparse-builder")
+              (let* ((builder-path "lib/node_modules/llparse-builder")
                      (builder (search-input-directory inputs builder-path)))
                 (substitute* "package.json"
-                  (("\"debug\": \".*")
-                   (format #f "\"debug\": \"file://~a\"," debug))
                   (("\"llparse-builder\": \".*")
                    (format #f "\"llparse-builder\": \"file://~a\""
                            builder))))))
@@ -638,7 +641,7 @@ Node.js and web browsers.")
                         "--bundle"
                         "src/frontend.ts")))))))
     (inputs
-     (list node-debug-bootstrap node-llparse-builder-bootstrap))
+     (list node-llparse-builder-bootstrap))
     (native-inputs
      (list esbuild node-bootstrap))
     (home-page "https://github.com/nodejs/llparse-frontend#readme")
