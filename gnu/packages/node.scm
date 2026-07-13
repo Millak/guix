@@ -427,40 +427,6 @@ devices.")
 @uref{https://semver.org/, SemVer.org} specification.")
     (license license:isc)))
 
-(define-public node-ms-bootstrap
-  (package
-    (name "node-ms-bootstrap")
-    (version "2.1.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/vercel/ms.git")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1pjxzbi4j8pinlsc7yxvfrh0b47kb2dc4lfc2rjq4wx5bdwl33fj"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f
-      #:phases
-      #~(modify-phases #$bootstrap-node-phases
-          (add-before 'configure 'patch-dependencies
-            (lambda _
-              #$(delete-dependencies* (list "eslint"
-                                            "expect.js"
-                                            "husky"
-                                            "lint-staged"
-                                            "mocha")))))))
-    (native-inputs (list node-bootstrap))
-    (home-page "https://github.com/zeit/ms#readme")
-    (properties '((hidden? . #t)))
-    (synopsis "Tiny millisecond conversion utility")
-    (description "Use this package to easily convert various time
-formats to milliseconds.")
-    (license license:expat)))
-
 (define-public node-llparse-builder-bootstrap
   ;; The binary-search package is vendored in 1351b75.  It's not unvendored
   ;; here because it's small, and as a bootstrap package doesn't bring
