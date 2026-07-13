@@ -2404,6 +2404,14 @@ with a single function call.")
                  (car (string-split #$(package-version
                                        (this-package-input "abseil-cpp"))
                                     #\.))))))
+          (add-after 'unpack 'fix-numpy
+            ;; Prevent TypeError: only 0-dimensional arrays can be converted
+            ;; to Python scalars.
+            ;; Fixed upstream in 71d2cd0173c863ee67b3a6803aea248c563d5427.
+            (lambda _
+              (substitute*
+                  "onnxruntime/python/tools/transformers/fusion_attention.py"
+                (("float\\(mul_val)") "mul_val.item()"))))
           (add-after 'install 'build-python
             (lambda _
               (invoke "python3" "../setup.py" "bdist_wheel")))
