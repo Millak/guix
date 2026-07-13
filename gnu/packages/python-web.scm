@@ -8817,7 +8817,7 @@ S3.")
            python-mock
            python-pytest
            python-setuptools
-           python-wheel))
+           python-six))
     (home-page "https://github.com/flask-restful/flask-restful/")
     (synopsis "Flask module for creating REST APIs")
     (description
