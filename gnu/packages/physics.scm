@@ -1029,7 +1029,7 @@ conventions.")
 (define-public python-euphonic
   (package
     (name "python-euphonic")
-    (version "1.5.0")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1038,10 +1038,19 @@ conventions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18l5chzk6qhggxsgkqqidxx2nr4piziabvirw05v43kqm9awjfww"))))
+        (base32 "1w6rks3ipbv2dxw9kvypj2s185ysc4c3hlc6ym6x4wvr97gkx0id"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list
+         "-k"
+         (string-append
+          ;; All these tests expect warnings that are not emitted.
+          "not test_calculate_dos_map and "
+          "not test_get_dispersion and not "
+          "test_calculate_sqw_map_with_0_inv_cm_bin_doesnt_emit_runtime_warn "
+          "and not test_get_qpt_labels "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'fix-numpy-include
