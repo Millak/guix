@@ -461,54 +461,6 @@ devices.")
 formats to milliseconds.")
     (license license:expat)))
 
-(define-public node-debug-bootstrap
-  (package
-    (name "node-debug-bootstrap")
-    (version "4.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/visionmedia/debug.git")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "08g52r1d4yqcsfdfb7n5if33d4cghaq75gx5n9hj6m6fd8jfp2pi"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f
-      #:phases
-      #~(modify-phases #$bootstrap-node-phases
-          (add-before 'configure 'patch-dependencies
-            (lambda* (#:key inputs #:allow-other-keys)
-              #$(delete-dependencies* (list "brfs"
-                                            "browserify"
-                                            "coveralls"
-                                            "istanbul"
-                                            "karma"
-                                            "karma-browserify"
-                                            "karma-chrome-launcher"
-                                            "karma-mocha"
-                                            "mocha"
-                                            "mocha-lcov-reporter"
-                                            "xo"))
-              ;; Resolve modules manually.
-              (let ((module (search-input-directory inputs
-                                                    "lib/node_modules/ms")))
-                (substitute* "package.json"
-                  (("\"ms\": \".*")
-                   (format #f "\"ms\": \"file://~a\"" module)))))))))
-    (native-inputs (list node-bootstrap))
-    (inputs (list node-ms-bootstrap))
-    (home-page "https://github.com/visionmedia/debug#readme")
-    (properties '((hidden? . #t)))
-    (synopsis "Small debugging utility")
-    (description "This package contains a tiny JavaScript debugging
-utility modelled after Node.js core's debugging technique.  It works in
-Node.js and web browsers.")
-    (license license:expat)))
-
 (define-public node-llparse-builder-bootstrap
   ;; The binary-search package is vendored in 1351b75.  It's not unvendored
   ;; here because it's small, and as a bootstrap package doesn't bring
