@@ -2746,7 +2746,7 @@ parsing of Variant Call Format (VCF) files.")
 (define-public python-decoupler
   (package
     (name "python-decoupler")
-    (version "2.1.4")
+    (version "2.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2755,13 +2755,16 @@ parsing of Variant Call Format (VCF) files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07kpcjbnp5c00p3iw2my6k3bxfivswyxs2dljj0yhgjhxw2900av"))))
+                "1jdlwh0v4lfc750mxqkzvy0wbc7hj8agf5bfmr4abnfxh5ckdfyp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 227 passed, 35 deselected, 37 warnings
+      ;; tests: 237 passed, 1 skipped, 35 deselected, 72 warnings
       #:test-flags
-      '(list "-k" (string-join
+      ;; TypeError: deprecate_kwarg() missing 1 required positional argument:
+      ;; 'new_arg_name'.
+      '(list "--ignore=tests/mt/test_mlm.py"
+             "-k" (string-join
                    ;; Tests requiring internet access to reach out
                    ;; <datasets.cellxgene.cziscience.com>, <ftp.ebi.ac.uk>,
                    ;; <omnipathdb.org>, <raw.githubusercontent.com>,
@@ -2789,12 +2792,6 @@ parsing of Variant Call Format (VCF) files.")
                    " and not "))
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               ;; See: <https://github.com/statsmodels/statsmodels/issues/9584>.
-               ;; Resolved in statsmodels0.14.5, current in Guix.
-               (("scipy<1.16") "scipy"))))
          (add-before 'check 'set-home
            ;; Some tests require a home directory to be set.
            (lambda _ (setenv "HOME" "/tmp")))
@@ -2803,24 +2800,26 @@ parsing of Variant Call Format (VCF) files.")
            (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (propagated-inputs (list python-adjusttext
                              python-anndata
-                             python-dcor
                              python-docrep
-                             python-igraph
-                             python-ipywidgets
                              python-marsilea
                              python-numba
                              python-requests
                              python-scipy
                              python-session-info2
                              python-tqdm
+                             ;; [optional]
+                             python-dcor
+                             python-igraph
+                             python-ipywidgets
+                             ;; python-pydeseq2     ;not packaged yet in Guix
+                             python-scanpy
                              python-xgboost))
     (native-inputs
      (list nss-certs-for-test
            python-hatchling
            python-gseapy
            python-memory-profiler
-           python-pytest
-           python-scanpy))
+           python-pytest))
     (home-page "https://github.com/scverse/decoupler")
     (synopsis
      "Framework for modeling, analyzing and interpreting single-cell RNA-seq data")
