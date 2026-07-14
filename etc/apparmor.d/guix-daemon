@@ -51,7 +51,7 @@ profile guix-daemon @{guix_storedir}/*-{guix-daemon,guix}-*/bin/guix-daemon flag
 
     @{guix_storedir}/** rwlmkux,
 
-    owner /tmp/** rwux,
+    owner /tmp/** rwklmux,
 
     @{PROC}/@{pid}/fd/ r,
 
