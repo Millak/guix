@@ -5071,7 +5071,7 @@ compressed files.")
 (define-public python-circe
   (package
     (name "python-circe")
-    (version "0.3.9")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -5080,7 +5080,7 @@ compressed files.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0psqfkxjvfj3h23xmski0c2h8dx118zr4xshz2dbk2i3hk50ljvr"))))
+        (base32 "0im5h9a759v1mh8a9mz12bn7r1qb9dyds1qcr3q04w71y1jwl1rz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5090,6 +5090,10 @@ compressed files.")
       #~(list "--deselect=tests/test_network/test_network.py::test_network_atac")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("'cmake',") ""))))
           ;; Numba needs a writable dir to cache functions.
           (add-before 'build 'set-numba-cache-dir
             (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
@@ -5100,18 +5104,20 @@ compressed files.")
            python-setuptools))
     (inputs
      (list lapack
-           openblas
-           python-numpy-1))     ;avoid propagating @1 to user profile
+           openblas))
     (propagated-inputs
      (list python-anndata
            python-attrs
            python-dask
            python-distributed
            python-joblib
+           python-numpy
            python-pandas
            python-rich
            python-scanpy
-           python-scikit-learn))
+           python-scikit-learn
+           ;; [optinal]
+           python-pybiomart))
     (home-page "https://github.com/cantinilab/circe")
     (synopsis "Cis-regulatory interactions between chromatin regions")
     (description "Circe is a Python package for inferring co-accessibility
