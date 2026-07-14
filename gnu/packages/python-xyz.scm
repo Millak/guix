@@ -12480,16 +12480,16 @@ include_dirs = ~:*~a/include~%"
 (define-public python-numpysane
   (package
     (name "python-numpysane")
-    (version "0.42")
+    (version "0.43")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/dkogan/numpysane.git")
-             (commit (string-append "v" version))))
+              (url "https://github.com/dkogan/numpysane.git")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s38fm88bmq08j5qxfka1wyjs2r9s9arzd1c3c4ixa8k3pisnihr"))))
+        (base32 "1ls1nrdcizscdpv4712jr7wiaxkmryrai7w0ci06fiq5haq54hrn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -12500,15 +12500,15 @@ include_dirs = ~:*~a/include~%"
               (let* ((numpy (assoc-ref inputs "python-numpy"))
                      (site (site-packages inputs `(("out" . ,numpy)))))
                 (substitute* "Makefile.common.header"
-                ;; numpy 2.0 has this--but we don't use numpy 2.0.
-                (("pkg-config --cflags-only-I numpy")
-                 (format #f "echo -I~a/numpy/core/include" site))))))
+                  ;; See: <https://github.com/dkogan/numpysane/issues/3>.
+                  (("pkg-config --cflags-only-I numpy")
+                   (format #f "echo -I~a/numpy/_core/include" site))))))
           (replace 'check
             (lambda _
               (setenv "CC"
                       #$(cc-for-target))
               (invoke "make" "check"))))))
-    (propagated-inputs (list python-numpy-1))
+    (propagated-inputs (list python-numpy))
     (native-inputs (list perl pkg-config python-setuptools))
     (home-page "https://github.com/dkogan/numpysane")
     (synopsis "More-reasonable core functionality for numpy")
