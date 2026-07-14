@@ -5,7 +5,7 @@
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021-2025 Philip McGrath <philip@philipmcgrath.com>
-;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024, 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2026 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;;
@@ -1384,7 +1384,7 @@ libraries providing most of the functionality of the original.")
 (define-public schemesh
   (package
     (name "schemesh")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -1393,7 +1393,7 @@ libraries providing most of the functionality of the original.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z45xpgh2s6xfgimsjhnwkp0hh8lnaynxlbry9dvqfss0g1vh0iw"))))
+        (base32 "1amzjrmhlfa9wlplvxjb04pmlh6pprcpj1mz29vi943rfxjq0kaa"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1410,7 +1410,9 @@ libraries providing most of the functionality of the original.")
     (inputs
      (list chez-scheme
            lz4
-           ncurses
+           ;; INFO: Makefile supposes terminfo is provided by libtinfo.  Ours
+           ;; is provided by ncurses/tinfo.
+           ncurses/tinfo
            `(,util-linux "lib")
            zlib))
     (home-page "https://github.com/cosmos72/schemesh")
