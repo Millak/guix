@@ -10,6 +10,7 @@
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2026 Orahcio Felício de Sousa <orahcio@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,6 +56,7 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system glib-or-gtk))
 
 (define-public python-pyzbar
@@ -273,6 +275,37 @@ a mobile phone with CCD.  The capacity of QR Code is up to 7000 digits or 4000
 characters, and is highly robust.")
     (license license:lgpl2.1+)
     (home-page "https://fukuchi.org/works/qrencode")))
+
+(define-public go-rsc-io-qr
+  (package
+    (name "go-rsc-io-qr")
+    ;; 0.2.0 (2018-06-05); the latest changes are from <2022-04-17>.
+    (properties '((commit . "b6857d426aa506d5bf7efb8f73928d72bcf4e73d")
+                  (revision . "0")))
+    (version (git-version "0.2.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rsc/qr")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "180njqm6q1yilfknagi862321gq6b9hi27wp8s6v7qxwb5hd5ps1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "rsc.io/qr"
+      ;; See: <https://github.com/rsc/qr/issues/5>.
+      #:test-flags #~(list "-skip" "TestVersion")))
+    (propagated-inputs
+     (list qrencode))
+    (home-page "https://github.com/rsc/qr")
+    (synopsis "Basic QR encoder")
+    (description "Package @code{qr} encodes QR codes.")
+    (license license:bsd-3)))
 
 (define-public libdmtx
   (package
