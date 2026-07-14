@@ -304,6 +304,14 @@ não são mais instalados automaticamente.  Se eles forem requeridos, o pacote
 detectar e utilizar os plugins em tempo de execução.  @code{frei0r} agora
 contém plugins dependentes do OpenCV.")))
 
+ (entry (commit "6fe171b45a46e79241e240dec99c9ff5f93d850a")
+        (title
+         (en "New @option{--spice} flag for emitting Spice configured VMs"))
+        (body
+         (en "The @command{guix system vm} command now accepts the
+@option{--spice} flag to set up a virtual machine that communicates with the
+host enabling clipboard sharing and automatic screen resolution adjustments.")))
+
  (entry (commit "7a9d01dce758b0916bf8b0ac8a972f849f4bf31d")
         (title
          (en "SDDM display manager defaults to the Qt5 variant")
