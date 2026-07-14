@@ -205,18 +205,11 @@ generation also needs to be wrapped within a `faketime' call in the
             (string-join (collect-locations inputs "\\.lua$") ":"))
     (mkdir-p "web2c")
     ;; The ".fmt" format files contain timestamps.  Reset them.
-    ;;
-    ;; XXX: At the moment 32bit systems do not support "faketime" (see
-    ;; <https://issues.guix.gnu.org/72239>), so accept "datefudge" for them.
-    (let* ((inputs (or native-inputs inputs))
-           (command
-            (cond
-             ((assoc-ref inputs "libfaketime") "faketime")
-             ((assoc-ref inputs "datefudge") "datefudge")
-             (else
-              (error "Missing 'libfaketime' or 'datefudge' native input")))))
+    (let ((inputs (or native-inputs inputs)))
+      (unless (assoc-ref inputs "libfaketime")
+        (error "Missing 'libfaketime' native input"))
       (for-each (cut invoke
-                     command "1970-01-01T00:00:00+00:00"
+                     "faketime" "1970-01-01T00:00:00+00:00"
                      "fmtutil-sys" "--byfmt" <> "--fmtdir=web2c")
                 create-formats))
     ;; Remove cruft.
