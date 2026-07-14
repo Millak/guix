@@ -45,6 +45,7 @@
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
+;;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -195,6 +196,7 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix modules)
+  #:use-module (guix search-paths)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
@@ -655,6 +657,10 @@ exec smbd $@")))
             `(,glib "static")
             `(,pcre2 "static")
             `(,zlib "static"))))
+    ;; When using command-line options such as '-display spice-app', QEMU will
+    ;; search 'XDG_DATA_DIRS' for applications that can handle the relevant
+    ;; URI schema.
+    (native-search-paths (list $XDG_DATA_DIRS))
     (home-page "https://www.qemu.org")
     (synopsis "Machine emulator and virtualizer")
     (description

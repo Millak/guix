@@ -6,6 +6,7 @@
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,6 +50,7 @@
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages spice)
 
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader grub)
@@ -62,6 +64,7 @@
   #:use-module (gnu system)
   #:use-module (gnu services)
   #:use-module (gnu services base)
+  #:use-module (gnu services spice)
   #:use-module (gnu system uuid)
 
   #:use-module ((srfi srfi-1) #:hide (partition))
@@ -141,7 +144,10 @@
 
 (define* (virtualized-operating-system os
                                        #:optional (mappings '())
-                                       #:key (full-boot? #f) volatile?
+                                       #:key
+                                       (full-boot? #f)
+                                       spice?
+                                       volatile?
                                        (system (%current-system))
                                        (target (%current-target-system)))
   "Return an operating system based on OS suitable for use in a virtualized
@@ -174,6 +180,17 @@ environment with the store shared with the host.  MAPPINGS is a list of
 
   (operating-system
     (inherit os)
+
+    (services
+     (if (and spice?
+              (not (find (lambda (service)
+                           (eq? (service-kind service)
+                                spice-vdagent-service-type))
+                         services)))
+         (cons (service spice-vdagent-service-type)
+               services)
+         services))
+
     (initrd (lambda (file-systems . rest)
               (apply (operating-system-initrd os)
                      file-systems
@@ -240,6 +257,14 @@ with '-virtfs' options for the host file systems listed in SHARED-FS."
            #~(format #f "file=~a,format=~a,if=virtio,cache=writeback,werror=report,readonly=on"
                      #$image #$image-format))))
 
+(define common-qemu-spice-options
+  '("-device" "virtio-serial"
+    "-chardev" "spicevmc,id=vdagent,name=vdagent"
+    "-device" "virtserialport,chardev=vdagent,name=com.redhat.spice.0"
+    "-display" "spice-app,gl=on"
+    "-device" "virtio-gpu-gl"
+    "-vga" "none"))
+
 (define* (system-qemu-image/shared-store-script os
                                                 #:key
                                                 (system (%current-system))
@@ -250,6 +275,7 @@ with '-virtfs' options for the host file systems listed in SHARED-FS."
                                                 (memory-size 512)
                                                 (mappings '())
                                                 full-boot?
+                                                spice
                                                 (disk-image-size
                                                  (* (if full-boot? 500 70)
                                                     (expt 2 20)))
@@ -269,6 +295,7 @@ parameter specifies the size in bytes of the root disk image; it is mostly
 useful when FULL-BOOT?  is true."
   (mlet* %store-monad ((os ->  (virtualized-operating-system
                                 os mappings
+                                #:spice? spice
                                 #:full-boot? full-boot?
                                 #:volatile? volatile?
                                 #:system system
@@ -297,6 +324,9 @@ useful when FULL-BOOT?  is true."
                                (qemu-command (or target system))))
               ;; Tells qemu to use the terminal it was started in for IO.
               #$@(if graphic? '() #~("-nographic"))
+              #$@(if (and graphic? spice)
+                     common-qemu-spice-options
+                     #~())
               #$@(if full-boot?
                      #~()
                      #~("-kernel" #$(operating-system-kernel-file os)

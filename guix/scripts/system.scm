@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -713,6 +714,7 @@ checking this by themselves in their 'check' procedure."
                                        #:key
                                        full-boot?
                                        volatile?
+                                       (spice #f)
                                        (graphic? #t)
                                        container-shared-network?
                                        mappings)
@@ -732,6 +734,7 @@ checking this by themselves in their 'check' procedure."
        (system-qemu-image/shared-store-script os
                                               #:full-boot? full-boot?
                                               #:volatile? volatile?
+                                              #:spice spice
                                               #:graphic? graphic?
                                               #:disk-image-size image-size
                                               #:mappings mappings))
@@ -794,6 +797,7 @@ and TARGET arguments."
                          load-for-kexec?
                          dry-run? derivations-only?
                          use-substitutes? target
+                         spice
                          full-boot?
                          volatile-vm-root?
                          (graphic? #t)
@@ -851,6 +855,7 @@ static checks."
 
   (mlet* %store-monad
       ((sys       (system-derivation-for-action image action
+                                                #:spice spice
                                                 #:full-boot? full-boot?
                                                 #:volatile?
                                                 volatile-vm-root?
@@ -1050,6 +1055,8 @@ Some ACTIONS support additional ARGS.\n"))
   (display (G_ "
       --full-boot        for 'vm', make a full boot sequence"))
   (display (G_ "
+      --spice            for 'vm', configure for Spice support"))
+  (display (G_ "
       --no-graphic       for 'vm', use the tty that we are started in for IO"))
   (display (G_ "
       --skip-checks      skip file system and initrd module safety checks"))
@@ -1144,6 +1151,9 @@ Some ACTIONS support additional ARGS.\n"))
          (option '("full-boot") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'full-boot? #t result)))
+         (option '("spice") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'spice #t result)))
          (option '("no-graphic") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'no-graphic? #t result)))
@@ -1371,6 +1381,7 @@ resulting from command-line parsing."
                                (assoc-ref opts 'skip-safety-checks?)
                                #:validate-reconfigure
                                (assoc-ref opts 'validate-reconfigure)
+                               #:spice (assoc-ref opts 'spice)
                                #:full-boot? (assoc-ref opts 'full-boot?)
                                #:volatile-vm-root?
                                (assoc-ref opts 'volatile-vm-root?)
