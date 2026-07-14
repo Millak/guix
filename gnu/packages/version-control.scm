@@ -397,14 +397,14 @@ optimized for version control systems.")
 (define-public git-minimal/pinned
   (package
     (name "git-minimal")
-    (version "2.54.0")
+    (version "2.55.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "18w18qay032ir85d5fzd6iz0bsrihzsdpa4sz2gff3f1chiid2gn"))))
+                "0mska0bwrshipx02l3wj4w3nhvrfj7k9b1k8sh3y0a47vh2dnzs5"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -423,6 +423,7 @@ optimized for version control systems.")
           #$(if (%current-target-system) git-cross-configure-flags #~(list)))
       #:make-flags
       #~(list "V=1"                     ;more verbose compilation
+              "NO_RUST=1"               ;enabled by default since 2.55
               (string-append "SHELL_PATH="
                              #+(this-package-native-input "bash-minimal")
                              "/bin/sh")
