@@ -19542,7 +19542,7 @@ implementation differs in these ways:
 (define-public python-scanpy
   (package
     (name "python-scanpy")
-    (version "1.11.5")
+    (version "1.12.2")
     (source
      (origin
        (method git-fetch)
@@ -19552,75 +19552,153 @@ implementation differs in these ways:
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07brcdwpzy2qa950jgiw38qax1xd0yi1zh7jrp1k4s8jksl7axhs"))))
+         "02mmsz267zyx1ndw9qqsrccxhjr65xpyyqbf5i1j761y7mm4aayh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 537 passed, 117 skipped, 15 xfailed, 77 warnings
+      ;; tests: 2052 passed, 101 skipped, 100 xfailed, 12 warnings, 34
+      ;; subtests passed
       #:test-flags
+      ;; XXX: There is an "internet" marker but it has no effect when
+      ;; deselected, forcing to download data from Internet during tests
+      ;; anyway.
       #~(list "-m" "not gpu"
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              ;; Network access is required.
-              #$@(map (lambda (file) (string-append "--ignore=tests/" file))
-                      (list "test_aggregated.py"
-                            "test_highly_variable_genes.py"
-                            "test_normalization.py"
-                            "test_pca.py"
-                            "test_plotting.py"
-                            "test_plotting_embedded/test_embeddings.py"
-                            "test_preprocessing.py"
-                            "test_scaling.py"
-                            "test_score_genes.py"))
-              "--deselect=tests/test_datasets.py::test_download_failure"
-              "--deselect=tests/test_paga.py::test_paga_compare"
-              ;; AssertionError: Image files did not match.
-              #$@(map (lambda (test) (string-append "--deselect=tests/"
-                                                    "test_plotting_embedded/"
-                                                    "test_spatial.py::"
-                                                    test))
-                      (list "test_spatial_general"
-                            "test_spatial_external_img"
-                            "test_visium_empty_img_key"))
-              (string-append "--deselect=plotting/_tools/scatterplots.py::"
-                             "scanpy.plotting._tools.scatterplots.spatial")
-              "--deselect=get/_aggregated.py::scanpy.get._aggregated.aggregate"
-              ;; XXX: When python-dask is added some tests fail with error:
-              ;; ImportError: cannot import name 'as_sparse_dask_array' from
-              ;; 'anndata.tests.helpers'.
-              ;;
-              ;; That functionality was removed from anndata: see
-              ;; <https://github.com/scverse/anndata/pull/2201>.
-              #$@(map (lambda (test) (string-append "--deselect=tests/"
-                                                    "test_utils.py::"
-                                                    test))
-                      (list "test_axis_sum[dask_array_sparse]"
-                            "test_check_nonnegative_integers[middle-dask_array_sparse]"
-                            "test_check_nonnegative_integers[normal-dask_array_sparse]"
-                            "test_check_nonnegative_integers[poisson-float64-dask_array_sparse]"
-                            "test_check_nonnegative_integers[poisson-uint32-dask_array_sparse]"
-                            "test_divide_by_zero[dask_array_sparse]"
-                            "test_elem_mul[dask_array_sparse]"
-                            "test_scale_column[mul-dask_array_sparse]"
-                            "test_scale_column[truediv-dask_array_sparse]"
-                            "test_scale_out_with_dask_or_sparse_raises[dask_array_sparse]"
-                            "test_scale_rechunk[mul-0-dask_array_sparse]"
-                            "test_scale_rechunk[mul-1-dask_array_sparse]"
-                            "test_scale_rechunk[truediv-0-dask_array_sparse]"
-                            "test_scale_rechunk[truediv-1-dask_array_sparse]"
-                            "test_scale_row[mul-dask_array_sparse]"
-                            "test_scale_row[truediv-dask_array_sparse]"))
-              #$@(map (lambda (test) (string-append "--deselect=tests/"
-                                                    "test_qc_metrics.py::"
-                                                    test))
-                      (list "test_dask_against_in_memory[log1p]"
-                            "test_dask_against_in_memory[no_log1p]"
-                            "test_qc_metrics[dask_array_sparse]"
-                            "test_qc_metrics_idempotent[dask_array_sparse]"
-                            "test_qc_metrics_no_log1p[dask_array_sparse]"))
-              ;; XXX: Not equal to tolerance rtol=1e-07, atol=0
-              "--deselect=tests/test_neighbors.py::test_connectivities_euclidean[umap]")
+              #$@(map (lambda (ls) (string-append "--deselect=tests/"
+                                                  (string-join ls "::")))
+                      ;; Tests requiring Internet access.
+                      '(("test_pca.py" "test_pca_rep")
+                        ("test_scaling.py" "test_clip")
+                        ("test_pca.py" "test_pca_n_pcs")
+                        ("test_pca.py" "test_pca_sparse")
+                        ("test_pca.py" "test_pca_chunked")
+                        ("test_paga.py" "test_paga_compare")
+                        ("test_pca.py" "test_pca_reproducible")
+                        ("test_plotting.py" "test_string_mask")
+                        ("notebooks/test_pbmc3k.py" "test_pbmc3k")
+                        ("test_plotting.py" "test_scrublet_plots")
+                        ("test_metrics.py" "test_modularity_adata")
+                        ("test_plotting.py" "test_umap_mask_equal")
+                        ("test_aggregated.py" "test_aggregate_axis")
+                        ("test_datasets.py" "test_download_failure")
+                        ("test_pca.py" "test_covariance_eigh_impls")
+                        ("test_plotting.py" "test_highest_expr_genes")
+                        ("test_pca.py" "test_sparse_dask_input_errors")
+                        ("test_plotting.py" "test_umap_mask_mult_plots")
+                        ("test_plotting.py" "test_violin_scale_warning")
+                        ("test_preprocessing.py" "test_regress_out_int")
+                        ("test_aggregated.py" "test_aggregate_arraytype")
+                        ("test_aggregated.py" "test_aggregate_vs_pandas")
+                        ("test_highly_variable_genes.py" "test_keep_layer")
+                        ("test_score_genes.py" "test_score_with_reference")
+                        ("test_highly_variable_genes.py" "test_cutoff_info")
+                        ("test_aggregated.py" "test_aggregate_incorrect_dim")
+                        ("test_plotting.py" "test_umap_mask_no_modification")
+                        ("test_aggregated.py"
+                         "test_aggregate_bad_dask_array")
+                        ("test_highly_variable_genes.py"
+                         "test_no_filter_genes")
+                        ("test_highly_variable_genes.py"
+                         "test_dask_consistency")
+                        ("test_highly_variable_genes.py"
+                         "test_seurat_v3_warning")
+                        ("test_highly_variable_genes.py"
+                         "test_compare_to_seurat_v3")
+                        ("external/test_harmony_integrate.py"
+                         "test_harmony_integrate")
+                        ("test_plotting.py"
+                         "test_plot_rank_genes_groups_gene_symbols")
+                        ("test_highly_variable_genes.py"
+                         "test_pearson_residuals_batch")
+                        ("test_normalization.py"
+                         "test_normalize_pearson_residuals_pca")
+                        ("test_highly_variable_genes.py"
+                         "test_pearson_residuals_general")
+                        ("test_highly_variable_genes.py"
+                         "test_subset_inplace_consistency")
+                        ("test_normalization.py"
+                         "test_normalize_pearson_residuals_errors")
+                        ("test_normalization.py"
+                         "test_normalize_pearson_residuals_recipe")
+                        ("test_normalization.py"
+                         "test_normalize_pearson_residuals_warnings")
+                        ("test_highly_variable_genes.py"
+                         "test_pearson_residuals_inputchecks")
+                        ("test_plotting_embedded/test_embeddings.py"
+                         "test_raise_save_future_warning")
+                        ("test_highly_variable_genes.py"
+                         "test_seurat_v3_mean_var_output_with_batchkey")
+                        ("test_plotting_embedded/test_embeddings.py"
+                         "test_embedding_colorbar_location")))
+              (string-append "--deselect=tests/test_plotting.py"
+                             "::test_umap_categories_change_"
+                             "when_rerun_with_more_categories")
+              (string-append "--deselect=tests/test_plotting.py"
+                             "::test_umap_categories_dont_change_"
+                             "when_rerun_with_fewer_categories")
+              (string-append "--deselect=get/_aggregated.py"
+                             "::scanpy.get._aggregated.aggregate")
+              (string-append "--deselect=external/pp/_magic.py"
+                             "::scanpy.external.pp._magic.magic")
+              (string-append "--deselect=external/pp/_harmony_integrate.py"
+                             "::scanpy.external.pp."
+                             "_harmony_integrate.harmony_integrate")
+              #$@(map (lambda (ls) (string-append "--deselect=tests/"
+                                                  (string-join ls "::")))
+                      ;; Tests failing with error: Image files did not match.
+                      '(("test_plotting.py" "test_rankings")
+                        ("test_plotting.py" "test_dotplot_obj")
+                        ("test_plotting.py" "test_stacked_violin_obj")
+                        ("test_plotting.py" "test_dotplot_add_totals")
+                        ("test_plotting.py" "test_rank_genes_group_axes")
+                        ("test_plotting.py" "test_scatter_no_basis_per_obs")
+                        ("test_plotting.py"
+                         "test_dotplot_matrixplot_stacked_violin")
+                        ("test_plotting_embedded/test_spatial.py"
+                         "test_spatial_general")
+                        ("test_plotting_embedded/test_spatial.py"
+                         "test_visium_empty_img_key")
+                        ("test_plotting_embedded/test_spatial.py"
+                         "test_spatial_external_img")))
+              #$@(map (lambda (ls) (string-append "--deselect=tests/"
+                                                  (string-join ls "::")))
+                      ;; Failed on deprecation warnings.
+                      '(("external/test_magic.py" "test_magic_copy")
+                        ("external/test_magic.py" "test_magic_default")
+                        ("external/test_magic.py" "test_magic_pca_only")
+                        ("test_preprocessing.py"
+                         "test_regress_out_constants")
+                        ("test_preprocessing.py"
+                         "test_regress_out_reproducible")
+                        ("test_preprocessing.py"
+                         "test_regress_out_constants_equivalent")))
+              #$@(map (lambda (ls) (string-append "--deselect=tests/"
+                                                  (string-join ls "::")))
+                      ;; TypeError: deprecate_kwarg() missing 1 required
+                      ;; positional argument: 'new_arg_name'
+                      '(("test_preprocessing.py" "test_regress_out_categorical")
+                        ;; TypeError: Cannot interpret
+                        ;; '<StringDtype(na_value=nan)>' as a data type
+                        ("test_combat.py" "test_norm")
+                        ;; TypeError: only integer scalar arrays can be
+                        ;; converted to a scalar index
+                        ("test_combat.py" "test_covariates")
+                        ("test_combat.py" "test_combat_obs_names")
+                        ("test_combat.py" "test_silhouette")
+                        ;; [XPASS(strict)] seaborn violin plot is
+                        ;; incompatible with pandas 3
+                        ("test_plotting.py" "test_rank_genes_groups")
+                        ;; pytest.PytestUnhandledThreadExceptionWarning:
+                        ;; Exception in thread ExecutorManagerThread
+                        ("test_preprocessing.py"
+                         "test_regress_out_categorical"))))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; ModuleNotFoundError: No module named 'pyparsing.warnings'
+                ((".*pyparsing.warnings.*") ""))))
           (add-before 'check 'pre-check
             (lambda _
               ;; Numba needs a writable dir to cache functions.
@@ -19629,6 +19707,8 @@ implementation differs in these ways:
               (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-anndata
+           python-certifi
+           python-fast-array-utils
            python-h5py
            python-joblib
            python-legacy-api-wrap
@@ -19643,19 +19723,25 @@ implementation differs in these ways:
            python-pynndescent
            python-scikit-learn
            python-scipy
+           python-scverse-misc
            python-seaborn
            python-session-info2
            python-statsmodels
            python-tqdm
-           python-typing-extensions
+           python-typing-extensions     ;Python version <3.13
            python-umap-learn
            ;; [optional]
            python-dask
+           python-harmonypy
            python-igraph
+           python-leidenalg
            python-louvain
+           python-magic-impute
+           python-scikit-misc
            python-setuptools))                  ;for pkg_resources
     (native-inputs
-     (list python-dependency-groups
+     (list nss-certs-for-test
+           python-dependency-groups
            python-hatch-vcs
            python-hatchling
            python-pytest
@@ -19663,7 +19749,6 @@ implementation differs in these ways:
            python-pytest-randomly
            python-pytest-rerunfailures
            python-pytest-xdist
-           python-setuptools-scm
            #;python-tuna))                      ;no packaged in Guix yet
     (home-page "https://github.com/theislab/scanpy")
     (synopsis "Single-Cell Analysis in Python")
