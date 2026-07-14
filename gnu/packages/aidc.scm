@@ -276,6 +276,32 @@ characters, and is highly robust.")
     (license license:lgpl2.1+)
     (home-page "https://fukuchi.org/works/qrencode")))
 
+(define-public go-github-com-mdp-qrterminal
+  (package
+    (name "go-github-com-mdp-qrterminal")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mdp/qrterminal")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f2zrdv9sw2a6ni1712d27cayr3f8whqagx6f0yglc5gdd9f3i2n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mdp/qrterminal"))
+    (propagated-inputs (list go-rsc-io-qr))
+    (home-page "https://github.com/mdp/qrterminal")
+    (synopsis "QR codes in your terminal")
+    (description
+     "Golang library for generating QR codes in the terminal.  Originally this
+was a port of the NodeJS version.  Recently it's been updated to allow for
+smaller code generation using ASCII 'half blocks'.")
+    (license license:expat)))
+
 (define-public go-rsc-io-qr
   (package
     (name "go-rsc-io-qr")
