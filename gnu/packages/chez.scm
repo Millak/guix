@@ -7,6 +7,7 @@
 ;;; Copyright © 2021-2025 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2026 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1391,28 +1392,31 @@ libraries providing most of the functionality of the original.")
               (url "https://github.com/cosmos72/schemesh")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1z45xpgh2s6xfgimsjhnwkp0hh8lnaynxlbry9dvqfss0g1vh0iw"))))
+       (sha256
+        (base32 "1z45xpgh2s6xfgimsjhnwkp0hh8lnaynxlbry9dvqfss0g1vh0iw"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:tests? #f
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-Makefile
-                 (lambda _
-                   (substitute* "Makefile"
-                     (("CC=cc")
-                      (string-append "CC=" #$(cc-for-target)))
-                     (("^(prefix[^/]*)/.*" all prefix)
-                      (string-append prefix #$output "\n")))))
-               (delete 'configure))))
-    (inputs (list chez-scheme
-                  lz4
-                  zlib
-                  ncurses
-                  `(,util-linux "lib")))
+     (list
+      ;; INFO: Tests are executed unconditionally, and are not fatal.
+      ;; TODO: Report upstream.
+      #:tests? #f
+      #:make-flags
+      #~(list
+         (string-append "prefix=" #$output)
+         (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (inputs
+     (list chez-scheme
+           lz4
+           ncurses
+           `(,util-linux "lib")
+           zlib))
     (home-page "https://github.com/cosmos72/schemesh")
     (synopsis "Unix shell and Lisp REPL, fused together")
-    (description "Schemesh is an interactive shell scriptable in Lisp.  It
-supports interactive line editing, autocompletion, history and the familiar Unix
-shell syntax.")
+    (description
+     "Schemesh is an interactive shell scriptable in Lisp.  It supports
+interactive line editing, autocompletion, history and the familiar Unix shell
+syntax.")
     (license license:gpl2)))
