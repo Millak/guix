@@ -13340,31 +13340,6 @@ rows/columns.  The main goals are speed through vectorization, detailed and
 user-friendly output, and compatibility with tests implemented in R.")
     (license license:gpl2)))
 
-(define-public r-matrix-utils
-  (package
-    (name "r-matrix-utils")
-    (version "0.9.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "Matrix.utils" version))
-       (sha256
-        (base32
-         "0a5fq1scykqk0kc9j051j6fix6j2dqwz5wbgb0amaxsiywz9vigb"))))
-    (properties `((upstream-name . "Matrix.utils")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-grr r-matrix))
-    (native-inputs (list r-testthat))
-    (home-page "https://github.com/cvarrichio/Matrix.utils")
-    (synopsis
-     "Data.frame-Like Operations on Sparse and Dense Matrix Objects")
-    (description
-     "This package implements data manipulation methods such as @code{cast},
-@code{aggregate}, and @code{merge}/@code{join} for Matrix and Matrix-like
-objects.")
-    (license license:gpl3)))
-
 (define-public r-mblm
   (package
     (name "r-mblm")
