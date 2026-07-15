@@ -4646,7 +4646,7 @@ Spectrograph}.")
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "13.2.4")
+    (version "13.2.7")
     (source
      (origin
        (method git-fetch)
@@ -4655,7 +4655,7 @@ Spectrograph}.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g8da42gikkbhn0827dqpkj0npd7g0c61kvf22vz9n2f1abv6r1v"))))
+        (base32 "00f9s4b7vivx5whh443dw7yqcxcw2yd05qpxb5hinxxznyah5rxv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4671,6 +4671,7 @@ Spectrograph}.")
                     " and not "))))
     (native-inputs
      (list python-mock
+           python-moto
            python-pytest
            python-pytest-astropy
            python-pytest-doctestplus
