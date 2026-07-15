@@ -1296,54 +1296,6 @@ code.")
 upload binaries to a Parallax Propeller micro-controller.")
       (license license:expat))))
 
-(define-public spin2cpp
-  (package
-    (name "spin2cpp")
-    (version "3.6.4")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/totalspectrum/spin2cpp")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0wznqvsckzzz4hdy2rpvj6jqpxw4yn7i0c7zxfm6i46k8gg9327b"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f ;; The tests assume that a micro-controller is connected.
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'set-cross-environment-variables
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CROSS_LIBRARY_PATH"
-                     (string-append (assoc-ref inputs "propeller-toolchain")
-                                    "/propeller-elf/lib"))
-             (setenv "CROSS_C_INCLUDE_PATH"
-                     (string-append (assoc-ref inputs "propeller-toolchain")
-                                    "/propeller-elf/include"))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out")
-                                       "/bin")))
-               (for-each (lambda (file)
-                           (install-file (string-append "build/" file)
-                                         bin))
-                         '("testlex" "spin2cpp" "fastspin")))
-             #t)))))
-    (native-inputs
-     (list bison propeller-load (make-propeller-toolchain)))
-    (home-page "https://github.com/totalspectrum/spin2cpp")
-    (synopsis "Convert Spin code to C, C++, or PASM code")
-    (description "This is a set of tools for converting the Spin language for
-the Parallax Propeller micro-controller into C or C++ code, into PASM, or even
-directly into an executable binary.  The binaries produced use LMM PASM, so
-they are much faster than regular Spin bytecodes (but also quite a bit
-larger).")
-    (license license:expat)))
-
 (define-public spinsim
   (let ((commit "66915a7ad1a3a2cf990a725bb341fab8d11eb620")
         (revision "1"))
