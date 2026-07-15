@@ -13047,64 +13047,6 @@ identification of subpopulations, and characterization of further unknown or
 differently labelled data.")
       (license license:gpl3))))
 
-(define-public r-pando
-  (package
-    (name "r-pando")
-    (version "1.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/quadbio/Pando")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1zcsg3my1ka2wprvlx8p08cdz3dqphga54d5rp418zfhcyjy4fkp"))))
-    (properties `((upstream-name . "Pando")))
-    (build-system r-build-system)
-    (arguments
-     (list
-      ;; The test file data/test_seurat.rds is not included.
-      #:tests? #false))
-    (propagated-inputs
-     (list r-bayestestr
-           r-foreach
-           r-genomicranges
-           r-ggplot2
-           r-ggpointdensity
-           r-ggraph
-           r-glmnetutils
-           r-grr
-           r-iranges
-           r-irlba
-           r-matrix
-           r-matrixgenerics
-           r-motifmatchr
-           r-pals
-           r-patchwork
-           r-seurat
-           r-signac
-           r-sparsematrixstats
-           r-tfbstools
-           r-tidygraph
-           r-tidyverse
-           r-uwot))
-    (native-inputs
-     (list r-bsgenome-hsapiens-ucsc-hg38
-           r-devtools
-           r-doparallel
-           r-ensdb-hsapiens-v86
-           r-knitr))
-    (home-page "https://github.com/quadbiolab/Pando")
-    (synopsis "Infer regulomes from multi-modal single-cell genomics data")
-    (description
-     "Pando leverages multi-modal single-cell measurements to infer gene
-regulatory networks using a flexible linear model-based framework.  By
-modeling the relationship between TF-binding site pairs with the expression of
-target genes, Pando simultaneously infers gene modules and sets of regulatory
-regions for each transcription factor.")
-    (license license:expat)))
-
 (define-public r-premessa
   (let ((commit "68b42bb984637d0f3ad6a0ecc83e9278994afc85")
         (revision "1"))
