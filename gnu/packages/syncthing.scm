@@ -50,9 +50,11 @@
 (define-public syncthing
   (package
     (name "syncthing")
-    ;; XXX: During update, refresh the servcies configuration version as well,
-    ;; see: <https://docs.syncthing.net/users/config.html>.
-    (version "2.1.1")
+    ;; XXX: During update, refresh the service configuration if the new
+    ;; release includes a migration, see:
+    ;; <https://docs.syncthing.net/users/config.html>,
+    ;; <https://github.com/syncthing/syncthing/blob/main/lib/config/migrations.go>.
+    (version "2.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/syncthing/syncthing"
@@ -60,7 +62,7 @@
                                   "/syncthing-source-v" version ".tar.gz"))
               (sha256
                (base32
-                "0aplv52qzdl5pq87w6nd8a0h6jlirz86kdq3whqbyjj85x2rk2j1"))))
+                "13k73wlmhxgwrzxf5dwb526dw8c5zw5s2jv29cn9lnvhgkmn2hjq"))))
     ;; TODO: Build from git, remove vendor.
     (build-system go-build-system)
     ;; The primary Syncthing executable goes to "out", while the auxiliary
