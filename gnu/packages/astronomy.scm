@@ -9873,17 +9873,20 @@ PSF} describing how the optical system spreads light from sources.")
 (define-public python-reproject
   (package
     (name "python-reproject")
-    (version "0.20.0")
+    (version "0.21.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "reproject" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/astropy/reproject")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0n94inii7yr1f3ybyfgck4sg04wig0vf4nhvqs864hmps1yim4gg"))))
+        (base32 "09baxyglv327cvsjy7mp9xp4dkm6w78v8gb9afvixqqvj259bq92"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2289 passed, 575 skipped
+      ;; tests: 2293 passed, 573 skipped
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               "--pyargs" "reproject"
@@ -9907,7 +9910,8 @@ PSF} describing how the optical system spreads light from sources.")
            python-pyvo
            python-setuptools-scm
            python-shapely
-           python-sunpy-minimal))
+           python-sunpy-minimal
+           python-tqdm))
     (propagated-inputs
      (list python-astropy
            python-astropy-healpix
@@ -9918,7 +9922,9 @@ PSF} describing how the optical system spreads light from sources.")
            python-pillow
            python-pyavm
            python-scipy
-           python-zarr))
+           python-zarr
+           ;; [optional]
+           python-shapely))
     (home-page "https://reproject.readthedocs.io")
     (synopsis "Astronomical image reprojection in Python")
     (description
