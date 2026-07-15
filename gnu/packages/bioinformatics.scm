@@ -20737,63 +20737,6 @@ together).  It also designed to be used in two phases: a construction
 phase + query phase).")
       (license license:expat))))
 
-(define-public filtlong
-  ;; The recommended way to install is to clone the git repository
-  ;; https://github.com/rrwick/Filtlong#installation
-  ;; and the latest release is more than nine months old
-  (let ((commit "d1bb46dfe8bc7efe6257b5ce222c04bfe8aedaab")
-        (revision "1"))
-    (package
-      (name "filtlong")
-      (version (git-version "0.2.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/rrwick/Filtlong")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1xr92r820x8qlkcr3b57iw223yq8vjgyi42jr79w2xgw47qzr575"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:tests? #f                    ; no check target
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'configure)
-            (replace 'install
-              (lambda _
-                (let ((bin (string-append #$output "/bin"))
-                      (scripts (string-append #$output "/share/filtlong/scripts")))
-                  (install-file "bin/filtlong" bin)
-                  (install-file "scripts/histogram.py" scripts)
-                  (install-file "scripts/read_info_histograms.sh" scripts))))
-            (add-after 'install 'wrap-program
-              (lambda _
-                (let ((path (getenv "GUIX_PYTHONPATH")))
-                  (wrap-program (string-append #$output
-                                               "/share/filtlong/scripts/histogram.py")
-                    `("GUIX_PYTHONPATH" ":" prefix (,path))))))
-            (add-before 'check 'patch-tests
-              (lambda _
-                (substitute* "scripts/read_info_histograms.sh"
-                  (("awk") (which "gawk"))))))))
-      (inputs
-       (list bash-minimal
-             gawk                     ;for read_info_histograms.sh
-             python-wrapper           ;required for histogram.py
-             zlib))
-      (home-page "https://github.com/rrwick/Filtlong/")
-      (synopsis "Tool for quality filtering of Nanopore and PacBio data")
-      (description
-       "The Filtlong package is a tool for filtering long reads by quality.
-It can take a set of long reads and produce a smaller, better subset.  It uses
-both read length (longer is better) and read identity (higher is better) when
-choosing which reads pass the filter.")
-      (license (list license:gpl3       ;filtlong
-                     license:asl2.0))))) ;histogram.py
-
 (define-public nanopolish
   (package
     (name "nanopolish")
