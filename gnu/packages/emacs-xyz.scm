@@ -45924,20 +45924,19 @@ requires no external dependencies.")
       (license license:gpl3+))))
 
 (define-public emacs-ddskk
-  (let ((commit "8c47f46e38a29a0f3eabcd524268d20573102467")
-        (revision "0"))
+  (let ((codename "Mena"))
     (package
       (name "emacs-ddskk")
-      (version (git-version "17.1" revision commit))
+      (version "17.2")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/skk-dev/ddskk")
-               (commit commit)))
+               (commit (string-append "ddskk-" version "_" codename))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0vfdbab3ncns8wwrna8h6y2w0grkphzr9s65sgxq98lpqmxbbr72"))))
+          (base32 "192pg95cv40ymkyk80vjidasn026mkz2y5gly1q1f0r94zqi51ia"))))
       (build-system gnu-build-system)
       (arguments
        (list #:modules '((guix build gnu-build-system)
@@ -45957,12 +45956,10 @@ requires no external dependencies.")
                        ("SKK_INFODIR" '(expand-file-name "info" PREFIX)))))
                  (add-after 'unpack 'fix-test
                    (lambda _
-                     (substitute* "Makefile"
-                       (("/bin/rm") (which "rm")))
-                     (substitute* "nicola/Makefile"
-                       (("/bin/rm") (which "rm"))))))))
+                     (setenv "HOME" "/tmp")
+                     (setenv "LC_ALL" "en_US.UTF-8")))))) ;for skk-tankan-test.el
       (native-inputs
-       (list emacs-minimal ruby))
+       (list emacs-minimal ruby glibc-utf8-locales))
       (home-page "https://github.com/skk-dev/ddskk")
       (synopsis "Simple Kana to Kanji conversion program")
       (description
