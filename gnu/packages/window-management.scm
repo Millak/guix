@@ -2990,20 +2990,6 @@ modules for building a Wayland compositor.")
        (sha256
         (base32 "1l1c4m8m1h8rl00y9yi6qjma5m3lhai9hqv5578q69yg2dcwraxw"))))))
 
-(define-public wlroots-0.17
-  (package
-    (inherit wlroots)
-    (version "0.17.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.freedesktop.org/wlroots/wlroots")
-             (commit version)))
-       (file-name (git-file-name "wlroots" version))
-       (sha256
-        (base32 "0niigjpy8xxrnw3v9b3bsksw2q3yy3qsa2xx0aazwpycw5zrff83"))))))
-
 (define-public wlroots-0.15
   (package
     (inherit wlroots)
