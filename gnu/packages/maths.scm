@@ -8397,7 +8397,8 @@ s-expression-based format.")
              (commit (string-append "symfpu-" version "-dual-license"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13a9y0spyi6pggbhjgwi9g2qy822h1zakzhhwvm8qgk5c4njv3c6"))))
+        (base32 "13a9y0spyi6pggbhjgwi9g2qy822h1zakzhhwvm8qgk5c4njv3c6"))
+       (patches (search-patches "symfpu-fix-rounding-test-case.patch"))))
     (build-system copy-build-system)
     (arguments
      (list
@@ -8407,6 +8408,38 @@ s-expression-based format.")
           ("utils" "include/symfpu/utils" #:exclude ("Makefile")))
       #:phases
       #~(modify-phases %standard-phases
+          ;; Make sure that the tests exit with a zero exit status by default.
+          ;; Generated tests have assert(3) statements which exit with a
+          ;; non-zero exit status on test failure.
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "applications/test.cpp"
+               (("return 1") "return 0"))))
+          (add-before 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; To ensure the test application builds prior to 'install,
+                ;; set up a symlink and modify CXXFLAGS to find the headers.
+                (symlink #$source "symfpu")
+                (invoke "make" "CXXFLAGS=-I." "test")
+
+                ;; Run tests in their breadth (i.e., --allTests) but on a very
+                ;; small value range as otherwise the tests run for a long time.
+                (invoke "./test"
+                        "--allTests"
+                        "--printC"
+                        "--start=0"
+                        "--end=125"
+                        "--verbose")
+
+                ;; Test script generates C code which we then compile & execute.
+                (for-each
+                  (lambda (file)
+                    (let ((case (string-drop-right file (string-length ".c"))))
+                      (format #t "Running test case ~a~%" case)
+                      (invoke "g++" "-std=gnu++11" "-o" case file)
+                      (invoke (string-append "./" case))))
+                  (find-files "." "^testC..*\\.c$")))))
           (add-before 'install 'build-pkgconfig
             (lambda* (#:key outputs #:allow-other-keys)
               (with-output-to-file "symfpu.pc"
@@ -8427,7 +8460,7 @@ s-expression-based format.")
      "Concrete and symbolic implementation of IEEE-754 floating-point numbers")
     (description
      "SoftFPU is a C++ library implementing concrete and symbolic
-mantics for floating point numbers as defined in the IEEE-764 Standard
+mantics for floating point numbers as defined in the IEEE-754 Standard
 r Floating-Point Arithmetic.  It is templated in terms of the
 t-vectors, propositions, floating-point formats and rounding mode types
 ed.  This allow the same code to be executed as an arbitrary precision

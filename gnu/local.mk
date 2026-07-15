@@ -2198,6 +2198,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/stk-5.0.1-fix-typo.patch			\
   %D%/packages/patches/strace-readlink-tests.patch		\
   %D%/packages/patches/sunxi-tools-remove-sys-io.patch	\
+  %D%/packages/patches/symfpu-fix-rounding-test-case.patch	\
   %D%/packages/patches/patch-hurd-path-max.patch		\
   %D%/packages/patches/perl-5.14-autosplit-default-time.patch	\
   %D%/packages/patches/perl-5.14-module-pluggable-search.patch	\
