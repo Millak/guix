@@ -19,6 +19,7 @@
 (define-module (gnu packages kde-xyz)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -33,11 +34,69 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-plasma)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages xorg))
+
+(define-public kde-material-you-colors
+  (package
+    (name "kde-material-you-colors")
+    ;; This commit fixes loading the widget on Qt version 6.9 or older.
+    (properties '((commit . "72421299789ce863d902dec38daaadaddc378b2e")
+                  (revision . "0")))
+    (version (git-version "2.2.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/luisbocanegra/kde-material-you-colors")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kp9ri500pn3x3pwjdik0ciqqpdk8yy749ldmasxjwfvk9ydzjjd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests exist in source
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: stty: 'standard input': Inappropriate ioctl for device
+          (delete 'sanity-check)
+          (add-after 'unpack 'fix-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/kde_material_you_colors/utils/utils.py"
+                (("\"whereis")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/whereis")))
+                (("\"stty")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/stty"))))
+              (substitute* "src/kde_material_you_colors/utils/kwin_utils.py"
+                (("\"gdbus")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/gdbus")))))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list coreutils-minimal       ;for stty
+                  `(,glib "bin")          ;for gdbus
+                  python-dbus
+                  python-materialyoucolor
+                  python-numpy
+                  python-pillow
+                  python-magic
+                  python-pywal16          ;optional
+                  util-linux))            ;for whereis
+    (home-page "https://github.com/luisbocanegra/kde-material-you-colors")
+    (synopsis "Automatic Material You colors generator for the KDE Plasma")
+    (description
+     "KDE Material You Colors is an automatic Material You colors generator
+from your wallpaper for KDE Plasma.")
+    (license license:gpl3)))
 
 (define-public kwin-effects-better-blur-dx
   (package
