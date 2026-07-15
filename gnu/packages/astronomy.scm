@@ -3521,10 +3521,13 @@ astronomy and astrophysics.")
     (version "1.1.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "astropy_healpix" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/astropy/astropy-healpix")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1dxkh5fxfqxq5md0s4azynk3dvki27cjnyx3w7ld65c2pqxdh87m"))))
+        (base32 "1lj91mwxpxhl4i564i13hkx28yvzfvkq8fy9vh866v28j9z52c83"))))
     (build-system pyproject-build-system)
     (arguments
      (list
