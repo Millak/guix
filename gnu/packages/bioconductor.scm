@@ -23000,34 +23000,6 @@ accessibility data.  It also extends the monocle package for use in chromatin
 accessibility data.")
     (license license:expat)))
 
-;; This is the latest commit on the "monocle3" branch.
-(define-public r-cicero-monocle3
-  (let ((commit "495ef0da13cc9ffe55516bfd34f48b671ad55aba")
-        (revision "1"))
-    (package (inherit r-cicero)
-      (name "r-cicero-monocle3")
-      (version (git-version "1.3.9" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/cole-trapnell-lab/cicero-release")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0n1wgjirdfs9vwa37grmfdqmqb1nssa1r5xsssahg4049b126gn3"))))
-      (arguments
-       (list
-        #:skipped-tests
-        '(("test-runCicero.R"
-           ;; "nrow(over) not equal to 98."
-           "find_overlapping_ccans works"))))
-      (propagated-inputs
-       (modify-inputs propagated-inputs
-         (delete "r-monocle")
-         (prepend r-monocle3))))))
-
 (define-public r-circrnaprofiler
   (package
     (name "r-circrnaprofiler")
