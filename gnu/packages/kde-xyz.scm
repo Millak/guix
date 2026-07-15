@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2026 nick <nicholascaitong@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,6 +31,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages kde-frameworks)
@@ -229,6 +231,99 @@ the performance.")
      "This package provides a widget for KDE Plasma that provides a range of
 chatbots such as @uref{https://duck.ai/, Duck.ai}.")
     (license license:gpl2+)))
+
+(define-public plasma-applet-kde-material-you-colors
+  (package
+    (inherit kde-material-you-colors)
+    (name "plasma-applet-kde-material-you-colors")
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:configure-flags
+      #~(list "-DINSTALL_PLASMOID=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "src"
+                (with-directory-excursion "plasmoid/package/contents/ui"
+                  (substitute* "FullRepresentation.qml"
+                    ;; Check for the running process under the real command
+                    ;; name.
+                    (("(ps .* \\+ )execName" _ keep)
+                     (string-append keep "\".\" + execName + \"-real\""))
+                    (("findExecutable\\(execName\\)")
+                     (string-append "findExecutable(execName, \""
+                                    #$(this-package-input
+                                       "kde-material-you-colors")
+                                    "/bin\")"))
+                    (("\\/usr") #$output)
+                    (("(\"|\\$\\()find " _ prefix)
+                     (string-append prefix
+                                    (search-input-file inputs "/bin/find")
+                                    " "))
+                    (("(-exec |')test" _ prefix)
+                     (string-append prefix
+                                    (search-input-file inputs "/bin/test")))
+                    (("(-exec |\\$\\()grep" _ prefix)
+                     (string-append prefix
+                                    (search-input-file inputs "/bin/grep")))
+                    (("(-exec )sh" _ prefix)
+                     (string-append prefix
+                                    (search-input-file inputs "/bin/sh")))
+                    (("(\\| )wc" _ prefix)
+                     (string-append prefix
+                                    (search-input-file inputs "/bin/wc")))
+                    (("(do )echo" _ prefix)
+                     (string-append prefix
+                                    (search-input-file inputs "/bin/echo")))
+                    (("(\\$\\()basename" _ prefix)
+                     (string-append prefix
+                                    (search-input-file inputs
+                                                       "/bin/basename")))
+                    (("(\\| )sed" _ prefix)
+                     (string-append prefix
+                                    (search-input-file inputs "/bin/sed")))
+                    (("(\\| )sort" _ prefix)
+                     (string-append prefix
+                                    (search-input-file inputs "/bin/sort")))
+                    (("(')ps" _ prefix)
+                     (string-append prefix
+                                    (search-input-file inputs "/bin/ps")))
+                    (("(\\| )awk" _ prefix)
+                     (string-append prefix
+                                    (search-input-file inputs "/bin/awk")))
+                    (("(\")sha1sum" _ prefix)
+                     (string-append prefix
+                                    (search-input-file inputs "/bin/sha1sum")))
+                    (("(\")cat" _ prefix)
+                     (string-append prefix
+                                    (search-input-file inputs
+                                                       "/bin/cat")))))))))))
+    (propagated-inputs
+     (list kiconthemes
+           kirigami
+           ksvg
+           libplasma
+           plasma5support
+           qt5compat
+           qtbase
+           qtdeclarative))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list bash-minimal
+           coreutils-minimal
+           findutils
+           gawk
+           grep
+           kde-material-you-colors
+           kservice
+           plasma-workspace
+           procps
+           sed))
+    (home-page "https://store.kde.org/p/2136963")))
 
 (define-public plasma-applet-kurve
   (package
