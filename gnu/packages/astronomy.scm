@@ -10463,38 +10463,25 @@ framework of lens modelling software lenstronomy.")
 (define-public python-sncosmo
   (package
     (name "python-sncosmo")
-    (version "2.12.1")
+    (version "2.13.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sncosmo" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sncosmo/sncosmo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1jvrrrlb37pgsa0zd6519r07hih41nswa7ym3sh49i6bx0pmh4n5"))))
+        (base32 "11a5ip576rfnjinsykwg4r6hcf1alfx1alin31fis3dbskivjfwd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 83 passed, 4 skipped, 19 deselected
+      ;; tests: 84 passed, 4 skipped, 515 deselected
       #:test-flags
       ;; Network access is required.
-      #~(list "--ignore=tests/test_download_builtins.py"
-              "--ignore=tests/test_builtins.py"
-              "-k" (string-join
-                    (list "not test_C11"
-                          "test_G10"
-                          "test_bandflux"
-                          "test_bandflux_multi"
-                          "test_bandflux_zpsys"
-                          "test_bandfluxcov"
-                          "test_bandmag"
-                          "test_compositemagsystem_band_error"
-                          "test_csp_magsystem"
-                          "test_fit_lc_vs_snfit"
-                          "test_megacampsf_bandpass"
-                          "test_salt2source_rcov_vs_snfit"
-                          "test_salt2source_timeseries_vs_snfit"
-                          "test_sugarsource"
-                          "test_ztf_bandpass")
-                    " and not "))
+      #~(list "-m" "not might_download"
+              "--deselect=tests/test_models.py::test_G10"
+              "--deselect=tests/test_models.py::test_C11")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
