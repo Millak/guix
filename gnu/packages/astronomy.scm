@@ -5042,21 +5042,16 @@ Cesium.")
 (define-public python-dkist
   (package
     (name "python-dkist")
-    ;; To support latest ASDF.
-    (properties '((commit . "4369dd7830b29c6bf29f9053852d150eef37d971")
-                  (revision . "0")))
-    (version (git-version "1.17.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "1.18.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/DKISTDC/dkist")
-              (commit (assoc-ref properties 'commit))))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xy5b7h1dcxqxyxg8rzly7q2k6095f8jwdn3pd8541znkcwmahrg"))))
+        (base32 "13mlcqrbydhyfd3z7vzw49wlav83fssr2qwwv5h58djgjqnjmjk1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
