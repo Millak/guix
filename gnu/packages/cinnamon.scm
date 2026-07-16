@@ -907,7 +907,7 @@ window manager for the Cinnamon desktop environment.")
 (define-public nemo
   (package
     (name "nemo")
-    (version "6.4.5")
+    (version "6.6.4")
     (source
      (origin
        (method git-fetch)
@@ -917,7 +917,7 @@ window manager for the Cinnamon desktop environment.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bqii4cxh57knnsl7f76524y88yp37wcrjjyfhdg93aq5q2c55zl"))))
+        (base32 "00iq5jibqrx081b3c5pqa5ha3r3cs1d45l70q4fjfndbdnmyk2hx"))))
     (build-system meson-build-system)
     (arguments
      (list
