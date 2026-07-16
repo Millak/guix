@@ -5494,7 +5494,7 @@ Euclid Consortium should be used.")
 (define-public python-eventio
   (package
     (name "python-eventio")
-    (version "2.1.0")
+    (version "2.1.1")
     (source
      (origin
        (method git-fetch)
@@ -5503,7 +5503,7 @@ Euclid Consortium should be used.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g548pca43iwpq1641w3jzrb3rk2kqjf5gcjbcymfpdif1982zv2"))))
+        (base32 "1mk5ajfg8q3209lq6prqialdz2y9hpwi6pbkcgrrkrxmp0ws0hqf"))))
     (build-system pyproject-build-system)
     ;; tests: 163 passed, 3 skipped, 4 xfailed
     (native-inputs
