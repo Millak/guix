@@ -12380,7 +12380,7 @@ of the old packages.")
 (define-public python-tweakwcs
   (package
     (name "python-tweakwcs")
-    (version "0.9.0")
+    (version "0.9.2")
     (source
      (origin
        (method git-fetch)
@@ -12389,11 +12389,11 @@ of the old packages.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d43p3cpjjvbh3kqhza89aizqy75lmw1j8jyaqamdc2y8jlw7q7i"))))
+        (base32 "0x1f6d7rw51hgg3bpb8dy7v57mnf4vhr7b1m1fz2yl1j0bx8zvlp"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-scipy
+           python-scipy-minimal
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
