@@ -7307,28 +7307,40 @@ quantification of galaxies, quasar-host galaxy decomposition and much more.")
 (define-public python-lephare
   (package
     (name "python-lephare")
-    (version "0.3.1")
+    (version "0.3.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "lephare" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lephare-photoz/lephare")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1nkd807kl2xg25iwb5wj380pxlvrd9abdaznaw5if3qjmjkjx86s"))))
+        (base32 "0z2q0ccxws02hz94di9zvps0g4ixa0gksg2b9jwa0l7qifg95x9j"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       ;; Network access is required to reach <http://svo2.cab.inta-csic.es>.
-      #~(list "--deselect=tests/lephare/test_data_retrieval.py::test_get_auxiliary_data"
+      #~(list (string-append "--deselect=tests/lephare/test_data_retrieval.py"
+                             "::test_get_auxiliary_data")
               "--deselect=tests/lephare/test_filter.py::test_filtersvc")
       #:phases
-      '(modify-phases %standard-phases
-        (add-before 'sanity-check 'set-HOME
-          (lambda _ (setenv "HOME" "/tmp"))))))
+      #~(modify-phases %standard-phases
+          (add-before 'build 'symlink-pybind11
+            (lambda _
+              (rmdir "extern/pybind11")
+              (symlink
+               #+(package-source (this-package-native-input "pybind11"))
+               (string-append (getcwd) "/extern/pybind11"))))
+          (add-before 'sanity-check 'set-HOME
+            (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list cmake-minimal
+           pybind11
            python-pytest
-           python-setuptools))
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-matplotlib
