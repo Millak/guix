@@ -27759,15 +27759,6 @@ elogind when hibernating the system.
 The amount of time the system spends in suspend mode before the system
 is automatically put into hibernate mode.
 
-@item @code{hibernate-state} (type: maybe-list-of-strings)
-Deprecated option.
-
-@item @code{hybrid-sleep-state} (type: maybe-list-of-strings)
-Deprecated option.
-
-@item @code{hybrid-sleep-mode} (type: maybe-list-of-strings)
-Deprecated option.
-
 @end table
 
 @end deftp

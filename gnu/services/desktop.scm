@@ -1412,12 +1412,6 @@ and many other) available for GIO applications.")
 (define-maybe list-of-hibernation-modes
   (prefix elogind-))
 
-(define (elogind-deprecated-empty-serializer name value)
-  (when (maybe-value-set? value)
-    (warn-about-deprecation name #f
-                            #:replacement #f))
-  "")
-
 (define-maybe list-of-strings
   (prefix elogind-))
 
@@ -1471,8 +1465,7 @@ and many other) available for GIO applications.")
 ;;; sleep.conf.
 (define %elogind-configuration-sleep-fields
   '( suspend-state suspend-mode suspend-estimation-seconds
-     hibernate-mode hibernate-delay-seconds hibernate-state
-     hybrid-sleep-state hybrid-sleep-mode
+     hibernate-mode hibernate-delay-seconds
      allow-power-off-interrupts? allow-suspend-interrupts?
      broadcast-power-off-interrupts? broadcast-suspend-interrupts?))
 
@@ -1641,24 +1634,6 @@ the user shall be removed when the user fully logs out.")
    maybe-non-negative-integer
    "The amount of time the system spends in suspend mode before the system is
   automatically put into hibernate mode.")
-
-  ;; TODO: Remove in May 2026.
-  (hibernate-state
-   maybe-list-of-strings
-   "Deprecated option."
-   (serializer elogind-deprecated-empty-serializer))
-
-  ;; TODO: Remove in May 2026.
-  (hybrid-sleep-state
-   maybe-list-of-strings
-   "Deprecated option."
-   (serializer elogind-deprecated-empty-serializer))
-
-  ;; TODO: Remove in May 2026.
-  (hybrid-sleep-mode
-   maybe-list-of-strings
-   "Deprecated option."
-   (serializer elogind-deprecated-empty-serializer))
 
   (prefix elogind-))
 
