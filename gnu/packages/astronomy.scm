@@ -501,6 +501,41 @@ made to get a better separation of core libraries and applications.
 @url{https://casa.nrao.edu/, CASA} is now built on top of Casacore.")
     (license license:gpl2+)))
 
+(define-public casacore-data
+  ;; Meeasures data is updated daily and distributed via Westerbork Synthesis
+  ;; Radio Telescope (WSRT) FTP server.
+  (package
+    (name "casacore-data")
+    (version "20260715-160001")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "ftp://ftp.astron.nl/outgoing/Measures/"
+                           "WSRT_Measures_" version ".ztar"))
+       (sha256
+        (base32 "1mrajq3wjnixm0j7lmfjr8pyn3y5ajviisx24r4vib6ybkg7lq7i"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:patch-shebangs? #f
+      #:strip-binaries? #f
+      #:validate-runpath? #f
+      #:install-plan
+      #~'(("ephemerides" "share/casacore-data/ephemerides")
+          ("geodetic" "share/casacore-data/geodetic"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'unpack-measures
+            (lambda _
+              (invoke "tar" "xvzf"
+                      (string-append "WSRT_Measures_" #$version ".ztar"))
+              (invoke "rm" "-vf"
+                      (string-append "WSRT_Measures_" #$version ".ztar")))))))
+    (home-page "https://astron.nl")
+    (synopsis "Measures data for Casacore")
+    (description "Westerbork Synthesis Radio Telescope (WSRT) measures data.")
+    (license license:public-domain)))
+
 (define-public ccfits
   (package
     (name "ccfits")
