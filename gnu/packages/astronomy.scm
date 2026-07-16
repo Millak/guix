@@ -4124,16 +4124,28 @@ is independent of and does not use @code{casacore}.")
 (define-public python-casacore
   (package
     (name "python-casacore")
-    (version "3.7.1")
+    (version "3.8.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python_casacore" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/casacore/python-casacore")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1hvmlzimkz1v65zmhwg6c6vi437jjymbdd2fjjfsph3kp860ckkc"))))
+        (base32 "03hwv4xc913n2j85rlics88bla0dfrr37yjc5nlq8mwfcgzhdczx"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-casacore-data
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CASACORE_DATA"
+                      (search-input-directory inputs "share/casacore-data")))))))
     (native-inputs
      (list boost
+           casacore-data
            cmake-minimal
            python-pytest
            python-scikit-build-core
