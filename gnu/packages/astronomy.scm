@@ -2171,7 +2171,7 @@ model-fitting photometry or morphological analyses.")
 (define-public python-acstools
   (package
     (name "python-acstools")
-    (version "3.8.1")
+    (version "3.8.2")
     (source
      (origin
        (method git-fetch)
@@ -2180,7 +2180,7 @@ model-fitting photometry or morphological analyses.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ixa977x4rc7glbgid4xr9bnf50wxh5ap02m240sh8jxgyknr26y"))))
+        (base32 "00s4g9fksa0i0w4l4wqc775a5k1lk0r3nf7g8882bkfafqdc9ava"))))
     (build-system pyproject-build-system)
     (arguments
      (list
