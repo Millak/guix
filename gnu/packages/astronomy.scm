@@ -901,7 +901,7 @@ International Astronomical Union}.")
 (define-public esorex
   (package
     (name "esorex")
-    (version "3.13.10")
+    (version "3.13.11")
     (source
      (origin
        (method url-fetch)
@@ -909,7 +909,7 @@ International Astronomical Union}.")
              "https://ftp.eso.org/pub/dfs/pipelines/libraries/esorex/esorex-"
              version ".tar.gz"))
        (sha256
-        (base32 "1mkxjm2rnmviqfblnr4wwb3simvs7f5dly66qylvdfynvg3gk2d9"))))
+        (base32 "04mvmrkannmjcb59v6r30xyd6w3mw4f64lcsrk71083d9i73ijia"))))
     (build-system gnu-build-system)
     (native-inputs
      (list automake
@@ -929,9 +929,9 @@ International Astronomical Union}.")
     (home-page "https://www.eso.org/sci/software/cpl/esorex.html")
     (synopsis "The European Southern Observatory Recipe Execution Tool")
     (description
-     "EsoRex is the @acronym{European Southern Observatory,ESO} Recipe
+     "EsoRex is the @acronym{European Southern Observatory, ESO} Recipe
 Execution Tool.  It can list, configure and execute @acronym{Common Pipeline
-Library,CPL}-based recipes from the command line.")
+Library, CPL}-based recipes from the command line.")
     ;; Set a rerlease-monitoring-url because the ftp directory includes
     ;; prereleases that should not be refreshed to.
     (properties `((release-monitoring-url
