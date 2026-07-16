@@ -23,6 +23,7 @@
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;; Copyright © 2025 dan <i@dan.games>
 ;;; Copyright © 2026 Noé Lopez <noelopez@free.fr>
+;;; Copyright © 2026 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1286,12 +1287,16 @@ and many other) available for GIO applications.")
 (define-maybe non-negative-integer
   (prefix elogind-))
 
-(define (percent? x)
-  (and (non-negative-integer? x)
-       (>= x 0)
-       (<= x 100)))
+(define (non-negative-integer-and-suffix? x)
+  (match-lambda
+    ((x . '%)
+     (and (non-negative-integer? x)
+          (<= x 100)))
+    (((? non-negative-integer?) . suffix)
+     (member suffix '(K M G T)))
+    (x (non-negative-integer? x))))
 
-(define-maybe percent
+(define-maybe non-negative-integer-and-suffix
   (prefix elogind-))
 
 (define char-set:user-name
@@ -1399,7 +1404,13 @@ and many other) available for GIO applications.")
 
 (define elogind-serialize-action elogind-base-serializer)
 (define elogind-serialize-non-negative-integer elogind-base-serializer)
-(define elogind-serialize-percent elogind-base-serializer)
+
+(define (elogind-serialize-non-negative-integer-and-suffix name value)
+  (let ((name (elogind-name->string name)))
+    (match value
+      ((first . second)
+       (format #f "~a=~a~a~%" name first second))
+      (_ (format #f "~a=~a~%" name value)))))
 
 (define (elogind-list-serializer name value)
   (format #f "~a=~{~a~^ ~}~%" (elogind-name->string name) value))
@@ -1541,21 +1552,13 @@ during which elogind will hold off on reacting to lid events.")
    "The delay after which the action configured in @code{idle-action} is
 taken after the system is idle.")
 
-  ;; XXX: Perhaps deprecate in the future and handle all the accepted forms
-  ;; directly in 'runtime-directory-size' instead.
-  (runtime-directory-size-percent
-   maybe-percent
-   "Set the size limit, in percent, on the @env{XDG_RUNTIME_DIR} runtime
-directory for each user who logs in.  This specifies the per-user size limit
-relative to the amount of physical @acronym{RAM, read access memory}.  This
-value takes precedence over that specified via @code{runtime-directory-size}."
-   (serializer empty-serializer))       ;special cased at serialization time
-
   (runtime-directory-size
-   maybe-non-negative-integer
-   "Set the size limit, in bytes, on the @env{XDG_RUNTIME_DIR} runtime
-directory for each user who logs in."
-   (serializer empty-serializer))       ;special cased at serialization time
+   (maybe-non-negative-integer-and-suffix '(10 . %))
+   "Set the size limit on the @env{XDG_RUNTIME_DIR} runtime directory
+for each user who logs in.  The size in bytes can be given as an integer
+and paired with symbols: K, M, G, or T.  When paired with @code{'%}, the
+integer represents the limit as a percentage share of the total amount
+of physical @acronym{RAM, read access memory}.")
 
   (remove-ipc?
    (maybe-boolean #t)
@@ -1620,21 +1623,10 @@ the user shall be removed when the user fully logs out.")
                                  (memq (configuration-field-name field)
                                        %elogind-configuration-sleep-fields))
                                elogind-configuration-fields)))
-    (match-record config <elogind-configuration>
-                  (runtime-directory-size-percent runtime-directory-size)
-      ;; Handle the special-cased
-      ;; runtime-directory-size-percent/runtime-directory-size options pair.
-      (let ((runtime-directory-size
-             (if (maybe-value-set? runtime-directory-size-percent)
-                 (format #f "~a%~%" runtime-directory-size-percent) ;10 -> 10%
-                 runtime-directory-size)))
-        (mixed-text-file
-         "logind.conf"
-         "[Login]\n"
-         (if (maybe-value-set? runtime-directory-size)
-             (list "RuntimeDirectorySize=" runtime-directory-size)
-             "")
-         (serialize-configuration config logind-fields))))))
+    (mixed-text-file
+     "logind.conf"
+     "[Login]\n"
+     (serialize-configuration config logind-fields))))
 
 (define (sleep.conf config)
   (let ((sleep-fields (filter (lambda (field)

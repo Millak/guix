@@ -27671,16 +27671,12 @@ Action to take when the system is idle.
 The delay after which the action configured in @code{idle-action} is
 taken after the system is idle.
 
-@item @code{runtime-directory-size-percent} (type: maybe-percent)
-Set the size limit, in percent, on the @env{XDG_RUNTIME_DIR} runtime
-directory for each user who logs in.  This specifies the per-user size
-limit relative to the amount of physical @acronym{RAM,read access
-memory}.  This value takes precedence over that specified via
-@code{runtime-directory-size}.
-
-@item @code{runtime-directory-size} (type: maybe-non-negative-integer)
-Set the size limit, in bytes, on the @env{XDG_RUNTIME_DIR} runtime
-directory for each user who logs in.
+@item @code{runtime-directory-size} (default: @code{'(10 . %)}) (type: maybe-non-negative-integer-and-suffix)
+Set the size limit on the @env{XDG_RUNTIME_DIR} runtime directory for
+each user who logs in.  The size in bytes can be given as an integer and
+paired with symbols: K, M, G, or T.  When paired with @code{'%}, the
+integer represents the limit as a percentage share of the total amount
+of physical @acronym{RAM, read access memory}.
 
 @item @code{remove-ipc?} (default: @code{#t}) (type: maybe-boolean)
 Whether @acronym{IPC,inter-process communication} objects belonging to
