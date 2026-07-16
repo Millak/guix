@@ -383,21 +383,6 @@ reduces the code overhead typically encountered when using a mostly
 object-oriented library such as @code{scikit-learn}.")
     (license license:bsd-3)))
 
-(define-public python-anndata-0.11
-  (package
-    (inherit python-anndata)
-    (name "python-anndata")
-    (version "0.11.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/theislab/anndata")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "05i805k5kvmwp5k0qw9vxvpgjwys284nq529mfn7vwlryz9d247m"))))))
-
 ;; A bare minimal package, mainly to use in tests and reduce closure
 ;; size. Tests are left out in the main package to slim down native-inputs.
 (define-public python-anndata-minimal
