@@ -170,7 +170,7 @@ cross-DE solutions.")
 (define-public python-xapp
   (package
     (name "python-xapp")
-    (version "2.4.2")
+    (version "3.0.3")
     (source
      (origin
        (method git-fetch)
@@ -179,7 +179,7 @@ cross-DE solutions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06v84bvhhhx7lf7bsl2wdxh7vlkpb2fczjh6717b9jjr7xhvif8r"))))
+        (base32 "0prs8cvj70wsmzwdx12impmkfhk9ydw4r88cpz2zz0sl5776d7i8"))))
     (build-system meson-build-system)
     (arguments (list #:tests? #f))      ; no tests provided
     (native-inputs
