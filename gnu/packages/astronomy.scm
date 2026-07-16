@@ -2298,7 +2298,7 @@ API, or a code-based plotting API, with no alteration.")
 (define-public python-aiapy
   (package
     (name "python-aiapy")
-    (version "0.12.0")
+    (version "0.12.1")
     (source
      (origin
        (method git-fetch)
@@ -2307,21 +2307,13 @@ API, or a code-based plotting API, with no alteration.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b5zvqnjxpdx8830s2f5pziyjqh8isy4y4b7j0xg5rh4vm7zqfhm"))))
+        (base32 "0q5h4rfl9l8linnxmbkj605rd4laczpdjamy1kpw7qgwc3a6aamq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; tests: 47 passed, 82 skipped, 133 warnings
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'include-package-data
-            (lambda _
-              ;; See: <https://github.com/LM-SAL/aiapy/pull/396>.
-              (substitute* "pyproject.toml"
-                (("include-package-data = true.*" all)
-                 (string-append all
-                                "\n[tool.setuptools.package-data]
-aiapy = ['*.rst']")))))
           (add-before 'check 'set-HOME
             (lambda _
               (setenv "HOME" "/tmp"))))))
@@ -2334,7 +2326,10 @@ aiapy = ['*.rst']")))))
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
-     (list python-sunpy))
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-sunpy))
     (home-page "https://aia.lmsal.com/")
     (synopsis "Library for AIA data analysis")
     (description
