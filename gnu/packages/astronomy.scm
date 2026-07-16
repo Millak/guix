@@ -11210,7 +11210,7 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.18.0")
+    (version "1.19.1")
     (source
      (origin
        (method git-fetch)
@@ -11219,11 +11219,11 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05p0pljqd6dpp45vgkirn0qa0r691bdjjb1n19qlqjpbd0jsqv76"))))
+        (base32 "0cvlzb3j1k997z7cihjpx1pqgsi5l6qgb3glg9aqgmfmjmk7d0l5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 683 passed, 12 warnings
+      ;; tests: 694 passed, 12 warnings
       #:test-flags
       #~(list "--pyargs" "stcal"
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
