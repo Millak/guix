@@ -7159,7 +7159,7 @@ it from @file{~/.bashrc} for example.")
 (define-public zeptofetch
   (package
     (name "zeptofetch")
-    (version "1.21")
+    (version "2.1")
     (source
      (origin
        (method git-fetch)
@@ -7168,20 +7168,20 @@ it from @file{~/.bashrc} for example.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f1dm9nrp0z0prqy90csrkbk98ixp0jx76ax473qb0qsbb7ys4g7"))))
+        (base32 "0fg8c5lsvcjspwb64c8hax80i3h0nq1jswf93n3vdgf48l76jpyh"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:tests? #f ; No tests available.
       #:make-flags
-      #~(list (string-append "PREFIX="
-                             #$output))
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target)))
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)))) ; No configure script.
     (home-page "https://gitlab.archlinux.org/gurov/zeptofetch")
     (synopsis
-     "Fast, minimal system information tool for Linux.")
+     "Fast, minimal system information tool for Linux")
     (description
      "This package provides a system fetch tool, similar to
 @command{neofetch}, @command{fastfetch}, etc.  It is lightweight and
