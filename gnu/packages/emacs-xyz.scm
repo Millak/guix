@@ -9023,7 +9023,7 @@ them whenever another command is invoked.")
 (define-public emacs-khalel
   (package
     (name "emacs-khalel")
-    (version "0.1.15")
+    (version "0.1.16")
     (source
      (origin
        (method git-fetch)
@@ -9032,7 +9032,7 @@ them whenever another command is invoked.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06h5272kmg0ykf0zqdy2qwhlzszqsw176l1brk04bg8xyc3a4384"))))
+        (base32 "1g9cjiyajh3j175chf5lr8z857aim0h82sxnjh757cw4jz94kfzl"))))
     (build-system emacs-build-system)
     (arguments
      (list
