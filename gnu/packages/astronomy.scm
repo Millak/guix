@@ -6591,7 +6591,7 @@ scheme and builds with the HEALPix C++ library.")
               "test")))))
 
 ;; Not all of the dependents released updates supporting v1.19.
-(define-public python-healpy python-healpy-1.18)
+(define-public python-healpy python-healpy-1.19)
 
 (define-public python-hierarc
   (package
