@@ -407,7 +407,7 @@ rendering of the atmosphere model and examine its properties.
 (define-public casacore
   (package
     (name "casacore")
-    (version "3.8.0")
+    (version "3.8.1")
     (source
      (origin
        (method git-fetch)
@@ -416,7 +416,7 @@ rendering of the atmosphere model and examine its properties.
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13n39zchslgkh76f2hil68a0xa9p2c2375z5bqynj75fq0f6xv1l"))))
+        (base32 "13h1vkm64fhmdxyc9nnysj12wk5cjghs5pkmdrar6myqfazis2p0"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -486,6 +486,7 @@ rendering of the atmosphere model and examine its properties.
            gfortran
            gsl
            hdf5
+           libdeflate
            ncurses
            openblas
            python
