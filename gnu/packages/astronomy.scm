@@ -9239,13 +9239,16 @@ weather indices as pysat.Instrument objects.")
 (define-public python-pysiaf
   (package
     (name "python-pysiaf")
-    (version "0.26.0")
+    (version "0.28.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pysiaf" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacetelescope/pysiaf")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "19z8kqqkv6qv8dzcq3s593abwdmzhnrapd42fyj03z1j9bhvlmia"))))
+        (base32 "14zacxpc9qjzhs0ncaiyrw04rriy4bb26yp5ca8wbhlkhphpaw9i"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -9254,15 +9257,7 @@ weather indices as pysat.Instrument objects.")
       ;; Disable 2 failing tests, see
       ;; <https://github.com/spacetelescope/pysiaf/issues/338>
       #~(list "-k" (string-append "not test_write_jwst_siaf_xlsx"
-                                  " and not test_write_jwst_siaf_xml" ))
-
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; All tests passed.
-                (("astropy >= 7.0.0, < 8.0.0") "astropy")))))))
+                                  " and not test_write_jwst_siaf_xml" ))))
     (native-inputs
      (list python-pytest
            python-setuptools
@@ -9278,10 +9273,11 @@ weather indices as pysat.Instrument objects.")
     (home-page "https://pysiaf.readthedocs.io/")
     (synopsis "Handling SIAF for space telescopes")
     (description
-     "@code{pysiaf} is a python package to access, interpret, maintain, and
+     "@code{pysiaf} is a Python package to access, interpret, maintain, and
 generate @acronym{Handling of Science Instrument Aperture Files, SIAF}, in
-particular for JWST.  Tools for applying the frame transformations, plotting,
-comparison, and validation are provided.")
+particular for @acronym{JWST, James Webb Space Telescope}.  Tools for applying
+the frame transformations, plotting, comparison, and validation are
+provided.")
     (license license:bsd-3)))
 
 (define-public python-pysiril
