@@ -11643,14 +11643,14 @@ platforms, it is not limited to resource-constrained systems.")
 (define-public kexec-tools
   (package
     (name "kexec-tools")
-    (version "2.0.31")
+    (version "2.0.32")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/linux/utils/kernel"
                                   "/kexec/kexec-tools-" version ".tar.xz"))
               (sha256
                (base32
-                "0c9cj9xvcm81gcwnkvvh9vh82v59kdz5llmblc2wkqb6vh6kb3wa"))))
+                "0p8af7bgws7bnlglbx62687ysramacg526q0rgv2qdnjbwm450cg"))))
     (build-system gnu-build-system)
     (arguments
      ;; There are no automated tests.
@@ -11666,7 +11666,6 @@ platforms, it is not limited to resource-constrained systems.")
 utilities.  Using @code{kexec}, it is possible to boot directly into a new
 kernel from the context of an already-running kernel, bypassing the normal
 system boot process.")
-    (supported-systems (delete "riscv64-linux" %supported-systems))
     (license license:gpl2)))
 
 (define-public cachefilesd
