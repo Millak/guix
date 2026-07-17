@@ -4473,23 +4473,16 @@ interchange and archiving of lidar point cloud data.")
      (origin
        (method url-fetch)
        (uri
-         "https://wias-berlin.de/software/tetgen/1.5/src/tetgen1.6.0.tar.gz")
+        "https://wias-berlin.de/software/tetgen/1.5/src/tetgen1.6.0.tar.gz")
        (sha256
-        (base32 "0fff0l6i3xfjlm0zkcgyyhwndp8i5d615mydyb21yirsplgfddc7"))))
+        (base32 "0fff0l6i3xfjlm0zkcgyyhwndp8i5d615mydyb21yirsplgfddc7"))
+       (patches (search-patches "tetgen-1.6.0-cmake-build-library.patch"))))
     (build-system cmake-build-system)
     (arguments
-      (list
-        #:tests? #f ;; no test suite
-        #:configure-flags #~(list "-DCMAKE_POSITION_INDEPENDENT_CODE=ON")
-        #:phases
-        #~(modify-phases %standard-phases
-         (replace 'install ;; no install target
-           (lambda _
-             (install-file "tetgen"
-                           (string-append #$output "/bin"))))
-         ;; Do not create etc/ld.so.cache. It is a bit mysterious why
-         ;; we have this phase in the first place.
-         (delete 'make-dynamic-linker-cache))))
+     (list
+      #:tests? #f ;no test suite
+      #:configure-flags
+      #~(list "-DBUILD_SHARED_LIBS=ON")))
     (home-page "https://wias-berlin.de/software/tetgen/")
     (synopsis
      "Quality Tetrahedral Mesh Generator and 3D Delaunay Triangulator")

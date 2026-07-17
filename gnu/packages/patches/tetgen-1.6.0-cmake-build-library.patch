@@ -1,0 +1,48 @@
+From d0fba4d3d1b349c2e11b828e8844c81357c92917 Mon Sep 17 00:00:00 2001
+From: Julien Vanharen <julien.vanharen@inria.fr>
+Date: Thu, 17 Sep 2026 11:31:44 +0200
+Subject: [PATCH] Fix CMake build to compile library
+
+---
+ CMakeLists.txt | 26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4e24a36..5e65b5c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,14 +1,20 @@
+-# Set  the minimum  required version  of cmake  for a  project.
+-cmake_minimum_required(VERSION 2.6)
++cmake_minimum_required(VERSION 3.10)
++project(tetgen LANGUAGES CXX)
++
++include(GNUInstallDirs)
+ 
+-# Add an executable to the project using the specified source files.
+ add_executable(tetgen tetgen.cxx predicates.cxx)
++set_source_files_properties(predicates.cxx PROPERTIES COMPILE_OPTIONS "-O0")
++target_compile_options(tetgen PRIVATE -Wno-deprecated-declarations)
+ 
+-#Add a library to the project using the specified source files. 
+-# In Linux/Unix, it will creates the libtet.a
+-add_library(tet STATIC tetgen.cxx predicates.cxx)
++add_library(tet tetgen.cxx predicates.cxx)
++target_compile_definitions(tet PRIVATE TETLIBRARY)
++target_compile_options(tet PRIVATE -Wno-deprecated-declarations)
++set_target_properties(tet PROPERTIES PUBLIC_HEADER tetgen.h)
+ 
+-#Set properties on a target. 
+-#We use this here to set -DTETLIBRARY for when compiling the
+-#library
+-set_target_properties(tet PROPERTIES "COMPILE_DEFINITIONS" TETLIBRARY)
+\ No newline at end of file
++install(TARGETS tetgen RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
++install(
++  TARGETS tet
++  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
++  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
++  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+-- 
+2.53.0
+
