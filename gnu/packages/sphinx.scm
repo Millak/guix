@@ -1733,7 +1733,8 @@ with a simple (opinionated) workflow.")
 (define-public python-sphinx-sitemap
   (package
     (name "python-sphinx-sitemap")
-    (version "2.2.0")
+    ;; 2.7.0 requires sphinx-git-last-updated-by-git
+    (version "2.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1742,7 +1743,7 @@ with a simple (opinionated) workflow.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sxapxcfvdh7vl54ja7wh5rxb4rsfpd2gsfiysyd4qnbfmiz4prm"))))
+        (base32 "03zaxgm50nf7q6mns89fw7hw209r1cp5sh7i8f70vfhmygxmli24"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;No tests despite tox.ini.
     (native-inputs (list python-setuptools))
