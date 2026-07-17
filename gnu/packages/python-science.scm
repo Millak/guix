@@ -5891,7 +5891,7 @@ multiple-axes, polar charts, and bubble charts.")
 (define-public python-plotnine
   (package
     (name "python-plotnine")
-    (version "0.14.5")
+    (version "0.15.7")
     (source
      (origin
        (method git-fetch)
@@ -5900,7 +5900,7 @@ multiple-axes, polar charts, and bubble charts.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02ph0h312qn5a9ivh2qhv0x9sybccgbidzvb8im1hikwcqp8v2fw"))))
+        (base32 "0cf8bv9cjjdd0qa77kq6kpspwmbg8px6s5s5zplrns9awlskn8zg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
