@@ -1350,6 +1350,28 @@ instance in spelling correction, predictive typing, to help disabled people
 write text fast, and for various text generation, statistics, and modeling tasks.")
     (license license:expat)))
 
+(define-public python-tokenizer
+  (package
+    (name "python-tokenizer")
+    (version "3.6.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mideind/Tokenizer")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0acfy1aqf1581vy4d5y6wkjfsx52c6azxx2hy85x9rqv6fpij0m2"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest
+                         python-setuptools))
+    (home-page "https://github.com/mideind/Tokenizer")
+    (synopsis "Tokenizer for Icelandic text with sentence segmentation")
+    (description "This package provides a fast, compact, pure-Python tokenizer
+for Icelandic text with sentence segmentation.")
+    (license license:expat)))
+
 (define-public python-sacremoses
   (package
     (name "python-sacremoses")
