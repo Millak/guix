@@ -186,10 +186,11 @@ internal RPC protocols and file formats.")
     (native-inputs (list python-setuptools python-wheel))
     (inputs (list protobuf-6))))
 
+;; This is the last version that does not depend on abseil
 (define-public protobuf
   (package
     (name "protobuf")
-    (version "3.21.9")
+    (version "3.21.12")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -201,7 +202,7 @@ internal RPC protocols and file formats.")
               (snippet '(delete-file-recursively "third_party"))
               (sha256
                (base32
-                "01cl4l0rnnzjbhjjs2gyg2pk13505gh86ikh22jqjp54dp8mvp5x"))
+                "0q1lyw3wdd6vlvrh21xwh1dgkxsypy52l2xjzxpkr4d59999pasf"))
               (patches (search-patches "protobuf-fix-build-on-32bit.patch"
                                        "protobuf-pathmax.patch"))))
     (outputs (list "out"
