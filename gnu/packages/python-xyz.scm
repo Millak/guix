@@ -15820,6 +15820,15 @@ Python.")
        (sha256
         (base32 "12svnpa5sl3r5lci9bybzy5gb8pd4clfkl65x5hsap00ada2w91r"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; doctest started failing with python-packaging 26.2
+          (add-after 'unpack 'fix-doc-test
+            (lambda _
+              (substitute* "jaraco/versioning.py"
+                (("<Version") "<SummableVersion")))))))
     (propagated-inputs (list python-packaging))
     (native-inputs
      (list python-pytest python-setuptools python-setuptools-scm))
