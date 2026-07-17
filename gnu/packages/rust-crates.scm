@@ -2897,6 +2897,10 @@
   (crate-source "blake3" "1.8.5"
                 "1khz6wq61fnr0gl1kmy4bxadc7gbcv4gbq05z4jdjhr8wqs3ra0a"))
 
+(define rust-blake3-1.8.7
+  (crate-source "blake3" "1.8.7"
+                "1bi7m95sggkkcmlyiykflbb37v84cgzkm283r1yrfxhzq57lb7kd"))
+
 (define rust-blakeout-0.3.0
   (crate-source "blakeout" "0.3.0"
                 "0dxcg3sjxd82mn7mq4ammrfpidqf9zsagvhfzgblsi8g4b2fgvw1"))
@@ -16431,6 +16435,10 @@ fn main() {
 (define rust-insta-1.47.2
   (crate-source "insta" "1.47.2"
                 "0kh9gspras3vhvx8wkygnw2wzlwjln7gwzgks8g4194kxd464jkv"))
+
+(define rust-insta-1.48.0
+  (crate-source "insta" "1.48.0"
+                "10kbxza7vzj4nvkga8r3rfn6z8i3hnh47bnnb1f429n9x3zgiw46"))
 
 (define rust-insta-cmd-0.6.0
   (crate-source "insta-cmd" "0.6.0"
@@ -82323,6 +82331,93 @@ fn main() {
                                  rust-version-compare-0.2.0
                                  rust-version-check-0.9.4
                                  rust-winnow-0.7.13))
+                     (quickenv =>
+                               (list rust-adler2-2.0.1
+                                     rust-aho-corasick-1.1.5
+                                     rust-ansi-width-0.1.0
+                                     rust-anstyle-1.0.14
+                                     rust-anyhow-1.0.104
+                                     rust-arrayvec-0.7.8
+                                     rust-base64-0.22.1
+                                     rust-bitflags-2.13.1
+                                     rust-blake3-1.8.7
+                                     rust-block2-0.6.2
+                                     rust-cc-1.4.4
+                                     rust-cfg-if-1.0.4
+                                     rust-cfg-aliases-0.2.2
+                                     rust-clap-4.6.6
+                                     rust-clap-builder-4.6.6
+                                     rust-clap-derive-4.6.4
+                                     rust-clap-lex-1.1.0
+                                     rust-console-0.16.4
+                                     rust-constant-time-eq-0.4.2
+                                     rust-cpufeatures-0.3.1
+                                     rust-crc32fast-1.5.1
+                                     rust-ctrlc-3.5.2
+                                     rust-dialoguer-0.12.0
+                                     rust-dispatch2-0.3.1
+                                     rust-either-1.18.0
+                                     rust-encode-unicode-1.0.0
+                                     rust-env-filter-2.0.0
+                                     rust-env-home-0.1.0
+                                     rust-env-logger-0.11.11
+                                     rust-errno-0.2.8
+                                     rust-errno-0.3.14
+                                     rust-errno-dragonfly-0.1.2
+                                     rust-exec-0.3.1
+                                     rust-fastrand-2.5.0
+                                     rust-find-msvc-tools-0.1.11
+                                     rust-flate2-1.1.10
+                                     rust-getrandom-0.4.3
+                                     rust-heck-0.5.0
+                                     rust-hex-0.4.3
+                                     rust-insta-1.48.0
+                                     rust-insta-cmd-0.6.0
+                                     rust-itoa-1.0.18
+                                     rust-libc-0.2.189
+                                     rust-linux-raw-sys-0.12.1
+                                     rust-log-0.4.34
+                                     rust-maplit-1.0.2
+                                     rust-memchr-2.8.3
+                                     rust-miniz-oxide-0.9.1
+                                     rust-nix-0.31.3
+                                     rust-objc2-0.6.4
+                                     rust-objc2-encode-4.1.0
+                                     rust-once-cell-1.21.4
+                                     rust-proc-macro2-1.0.107
+                                     rust-quote-1.0.47
+                                     rust-r-efi-6.0.0
+                                     rust-regex-1.13.1
+                                     rust-regex-automata-0.4.18
+                                     rust-regex-syntax-0.8.11
+                                     rust-rustix-1.1.4
+                                     rust-serde-1.0.229
+                                     rust-serde-core-1.0.229
+                                     rust-serde-derive-1.0.229
+                                     rust-serde-json-1.0.151
+                                     rust-shell-words-1.1.1
+                                     rust-shlex-2.0.1
+                                     rust-simd-adler32-0.3.10
+                                     rust-similar-2.7.0
+                                     rust-strip-ansi-escapes-0.2.1
+                                     rust-syn-3.0.4
+                                     rust-tempfile-3.27.0
+                                     rust-thiserror-2.0.20
+                                     rust-thiserror-impl-2.0.20
+                                     rust-unicode-ident-1.0.24
+                                     rust-unicode-width-0.1.14
+                                     rust-unicode-width-0.2.2
+                                     rust-uutils-term-grid-0.7.0
+                                     rust-vte-0.14.1
+                                     rust-which-7.0.3
+                                     rust-winapi-0.3.9
+                                     rust-winapi-i686-pc-windows-gnu-0.4.0
+                                     rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                     rust-windows-link-0.2.1
+                                     rust-windows-sys-0.61.2
+                                     rust-winsafe-0.0.19
+                                     rust-zlib-rs-0.6.7
+                                     rust-zmij-1.0.23))
                      (r-pizzarr =>
                                 (list rust-adler2-2.0.1
                                  rust-ahash-0.8.12

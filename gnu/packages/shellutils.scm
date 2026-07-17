@@ -945,6 +945,48 @@ collection of functions such as basename, replace, contains or is_dir are
 provided as arguments to these commands.")
       (license license:expat))))
 
+(define-public quickenv
+  (package
+    (name "quickenv")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/untitaker/quickenv")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0if082pgy48dm90v5sj6axh684d5rms40rz8nhzqz9sqwwwn9h3k"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-/bin/sh
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; A lot of tests hardcode /bin/sh inside strings!
+              (substitute* "tests/acceptance.rs"
+                (("/bin/sh|/bin/bash")
+                 (search-input-file inputs "bin/bash"))))))))
+    (inputs (cargo-inputs 'quickenv))
+    (native-inputs
+     ;; direnv is required for many tests.
+     (list direnv))
+    (home-page "https://codeberg.org/untitaker/quickenv")
+    (synopsis "Unintrusive environment manager")
+    (description
+     "@code{quickenv} is an unintrusive environment manager, a drop-in
+replacement for @code{direnv} with a different design:
+
+@itemize
+@item @code{quickenv} does not hook into the shell.
+@item @code{quickenv} does not load environment variables into the shell.
+@item @code{quickenv} does not load @file{.envrc} when changing directories.
+@end itemize")
+    (license license:expat)))
+
 (define-public rig
   (package
     (name "rig")
