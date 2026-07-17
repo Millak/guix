@@ -1265,7 +1265,7 @@ maintenance-related files, for convenience.")
 (define-public maak
   (package
     (name "maak")
-    (version "0.2.12")
+    (version "0.8.3")
     (source
      (origin
        (method git-fetch)
@@ -1274,11 +1274,14 @@ maintenance-related files, for convenience.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0566damp7339n8rs2dvvq80h07amygnn3nakj2wwav2fmb1yzgx1"))))
+        (base32 "0rlb643hqysyfpdgg91n0h6p1m78l9pmbf17xh4fqqzvsgng0dms"))))
     (build-system guile-build-system)
     (arguments
      (list
       #:source-directory "src"
+      #:modules '((guix build guile-build-system)
+                  (guix build utils)
+                  (ice-9 match))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'install-program-files
@@ -1288,13 +1291,38 @@ maintenance-related files, for convenience.")
                 (install-file "resources/help.txt"
                               (string-append share "/resources"))
                 (install-file "scripts/maak" bin)
-                (install-file "scripts/log.bash"
-                              (string-append share "/scripts/"))
-                (install-file "scripts/maak-completion.bash"
-                                      (string-append share "/scripts/"))
-                (chmod (string-append bin "/maak") #o755)))))))
-    (native-inputs (list guile-3.0))
-    (inputs (list guile-3.0 bash-minimal))
+                (chmod (string-append bin "/maak") #o755))))
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each (match-lambda
+                          ((pattern program format-string)
+                           (substitute* "scripts/maak"
+                             ((pattern)
+                              (format #f format-string
+                                      (search-input-file inputs
+                                                         (string-append "bin/"
+                                                          program)))))))
+                        '(("readlink -f " "readlink" "~s -f ")
+                          ("realpath " "realpath" "~s ")
+                          ("dirname " "dirname" "~s ")
+                          ("getopt " "getopt" "~s ")
+                          ("exec guile " "guile" "exec ~s ")))))
+          (add-after 'build 'install-completions
+            (lambda _
+              (for-each (match-lambda
+                          ((src-file dest-dir dest-name)
+                           (let ((target-dir (string-append #$output dest-dir)))
+                             (mkdir-p target-dir)
+                             (copy-file src-file
+                                        (string-append target-dir "/"
+                                                       dest-name)))))
+                        '(("scripts/maak-completion.bash"
+                           "/share/bash-completion/completions" "maak")
+                          ("scripts/maak-completion.fish"
+                           "/share/fish/vendor_completions.d" "maak.fish")
+                          ("scripts/maak-completion.zsh"
+                           "/share/zsh/site-functions" "_maak"))))))))
+    (inputs (list guile-3.0 bash-minimal coreutils util-linux))
     (home-page "https://codeberg.org/jjba23/maak")
     (synopsis "Command runner à la Make using Guile Scheme")
     (description
