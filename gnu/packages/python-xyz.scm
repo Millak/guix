@@ -8951,25 +8951,27 @@ processing tasks.")
 (define-public python-mizani
   (package
     (name "python-mizani")
-    (version "0.13.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/has2k1/mizani")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0ij0fk4w0jyyj44ij3i2j1nfa0d7dk783w9r25cpwjkpn690xqfx"))))
+    (version "0.14.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/has2k1/mizani")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00n8jbsk35ywa3saypc83p8624kr65xz6m2sbf5js5n17b9m6438"))))
     (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-matplotlib python-numpy python-pandas python-scipy))
+     (list python-matplotlib
+           python-numpy
+           python-pandas
+           python-scipy))
     (native-inputs
-     (list python-setuptools
+     (list python-pytest
+           python-setuptools
            python-setuptools-scm
-           python-pytest
-           python-wheel
-           tzdata))
+           tzdata-for-tests))
     (home-page "https://github.com/has2k1/mizani")
     (synopsis "Create data visualizations in Python")
     (description
