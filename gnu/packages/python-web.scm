@@ -5738,7 +5738,12 @@ Python’s.")
                           (string-append
                            ;; These require internet access
                            "not test_download_homologene"
-                           " and not test_complex_genes"))
+                           " and not test_complex_genes"
+                           ;; These tests are not compatible with pandas 3
+                           " and not test_no_dtype_conversion"
+                           " and not test_strip_resource_label_no_func"
+                           " and not test_split_unique_join_no_func"
+                           " and not test_auto_dtype"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-home
