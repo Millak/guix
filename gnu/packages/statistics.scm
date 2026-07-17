@@ -1477,13 +1477,13 @@ test and add statistical annotations on plots generated with seaborn.")
 (define-public python-statsmodels
   (package
     (name "python-statsmodels")
-    (version "0.14.5")
+    (version "0.14.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "statsmodels" version))
        (sha256
-        (base32 "1pvd3k3jr9akfl7zk90s7a2wmmikf8smmd9mz3fwxlngric0w9ny"))
+        (base32 "0akck6d1iwqsmg6l9iwzv3ly92ddgbnx8v0jhn5kjzb07qyqf5sd"))
        (modules '((guix build utils)))
        (snippet
         '(for-each delete-file (find-files "." "\\.c$")))))
@@ -1516,7 +1516,7 @@ test and add statistical annotations on plots generated with seaborn.")
      (list python-cython
            python-matplotlib
            python-setuptools
-           python-setuptools-scm))
+           python-setuptools-scm))      ;to ensure the proper version is set
     (home-page
      (string-append "https://www.statsmodels.org/v" version "/"))
     (synopsis "Statistical modeling and econometrics in Python")
