@@ -149,14 +149,15 @@ including custom emoji.")
 (define-public elixir-ex-cldr-dates-times
   (package
     (name "elixir-ex-cldr-dates-times")
-    (version "2.24.0")
+    (version "2.25.6")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "ex_cldr_dates_times" version))
        (sha256
-        (base32 "00zzwr07x8i8dvhqi2vxpa858s874l941h2m41x9ip2k96dgc3nk"))))
+        (base32 "1qk30q1x72p0811f3malbbxb1aln3av6dviji048d7w45dkgavwj"))))
     (build-system mix-build-system)
+    (native-inputs (list elixir-ex-cldr-calendars-japanese))
     (propagated-inputs
      (list elixir-calendar-interval
            elixir-ex-cldr
