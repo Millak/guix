@@ -602,13 +602,13 @@ Erlang-based systems.")
 (define-public erlang-stringprep
   (package
     (name "erlang-stringprep")
-    (version "1.0.33")
+    (version "1.0.34")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "stringprep" version))
        (sha256
-        (base32 "1h4qvajlsfqfg61c9f0rjf3rmha8sahvqiivnc2zd1q8ql5v7y4n"))))
+        (base32 "0iwvijm0nvx670gvqc9ibvzl0irhmp9lbs7vavh685w8f6iqxrr7"))))
     (build-system rebar-build-system)
     (inputs (list erlang-p1-utils))
     (native-inputs (list erlang-pc))
