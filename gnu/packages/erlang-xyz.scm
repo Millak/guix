@@ -427,13 +427,13 @@ Server.")
 (define-public erlang-p1-acme
   (package
     (name "erlang-p1-acme")
-    (version "1.0.28")
+    (version "1.0.31")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "p1_acme" version))
        (sha256
-        (base32 "08v4shjng4gdq6nffsvckhs9lcj5rcipbs5ghp95z79zvs36js6f"))))
+        (base32 "076v6ar5fdshvl4bfgrwdn5fdimdsg55rpk4ks4aakdr1alj4ncv"))))
     (build-system rebar-build-system)
     (inputs (list erlang-base64url erlang-idna erlang-jiffy erlang-jose
                   erlang-yconf))
