@@ -663,13 +663,13 @@ be a useful addition to your projects.")
 (define-public elixir-phoenix
   (package
     (name "elixir-phoenix")
-    (version "1.8.1")
+    (version "1.8.9")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "phoenix" version))
        (sha256
-        (base32 "1cigrl8myx2079mns0ww2k6n11awxw0vv6bhabkwghvp5qmpvmw4"))))
+        (base32 "0in0zk1s2apaq32skgi3k5jmy9r1zsyk340n841q4qagbbfy4xrl"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-mint
