@@ -191,13 +191,13 @@ configuration-driven @code{Ecto} schema extensibility.")
 (define-public elixir-myxql
   (package
     (name "elixir-myxql")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "myxql" version))
        (sha256
-        (base32 "0x6p8hn2lx7lplim4w10l1vq2d7rwkqg972ias3hzkdkdyrcxh0y"))))
+        (base32 "0jqlbnzcr79aln90bsynd41pnsy0jvypa22pj719bad7ca2v65rs"))))
     (build-system mix-build-system)
     (native-inputs
      (list erlang-binpp))
