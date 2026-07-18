@@ -211,13 +211,13 @@ configuration-driven @code{Ecto} schema extensibility.")
 (define-public elixir-needle-ulid
   (package
     (name "elixir-needle-ulid")
-    (version "0.3.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "needle_ulid" version))
        (sha256
-        (base32 "14ryrgsabj08v1a0wyad21aizyy8kcr0n1l1z6ks6fvv4v2hskfm"))))
+        (base32 "0i6scz8ikym7qxb201hb5pxhaqja5ma6g5k5i7j52yzzb2k68sqr"))))
     (build-system mix-build-system)
     (propagated-inputs (list elixir-ecto elixir-ecto-sql elixir-ex-ulid))
     (synopsis
