@@ -329,13 +329,13 @@ printing extending the io:format syntax to add colours.")
 (define-public erlang-zipper
   (package
     (name "erlang-zipper")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "zipper" version))
        (sha256
-        (base32 "0dbmxy5f86pmc85b1maassygnnf7n2bxapnbc2cc1wryx0xchi26"))))
+        (base32 "02ih1pvfwlvq5j2k8pz3hjn06h16khzfxk6klclr87ix1dfcb8rp"))))
     (build-system rebar-build-system)
     (synopsis "Generic Zipper implementation for Erlang")
     (description "This package provides a generic Zipper implementation
