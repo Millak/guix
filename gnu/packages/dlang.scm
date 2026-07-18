@@ -89,9 +89,9 @@
     (arguments
      (list
       #:disallowed-references (list tzdata-for-tests)
+      #:generator "Ninja"
       #:configure-flags
-      #~(list "-GNinja"
-              "-DBUILD_SHARED_LIBS=OFF"); see .github/actions/2-build-bootstrap
+      #~(list "-DBUILD_SHARED_LIBS=OFF"); see .github/actions/2-build-bootstrap
       #:build-type "Release"
       #:make-flags #~(list "all")       ; used as build targets
       #:tests? #f                       ; skip in the bootstrap
@@ -120,7 +120,6 @@
      (list (make-lld-wrapper lld-17 #:lld-as-ld? #t)
            llvm-17
            gdmd
-           ninja
            python-wrapper
            python-setuptools
            tzdata-for-tests
@@ -155,8 +154,7 @@ bootstrapping more recent compilers written in D.")
                 ;; Also build the test runner binaries.
                 "ldc2-unittest" "all-test-runners"))
        ((#:configure-flags _ #~'())
-        #~(list "-GNinja"
-                "-DBUILD_SHARED_LIBS=ON"
+        #~(list "-DBUILD_SHARED_LIBS=ON"
                 #$@(if (target-riscv64?)
                        #~("-DCMAKE_EXE_LINKER_FLAGS=-latomic")
                        #~())))
