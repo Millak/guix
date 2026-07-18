@@ -89,12 +89,12 @@
     (arguments
      (list
       #:disallowed-references (list tzdata-for-tests)
-      #:tests? #f                       ; skip in the bootstrap
-      #:build-type "Release"
       #:configure-flags
       #~(list "-GNinja"
               "-DBUILD_SHARED_LIBS=OFF"); see .github/actions/2-build-bootstrap
+      #:build-type "Release"
       #:make-flags #~(list "all")       ; used as build targets
+      #:tests? #f                       ; skip in the bootstrap
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
