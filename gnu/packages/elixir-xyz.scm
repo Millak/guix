@@ -1164,13 +1164,13 @@ Telemetry events.")
 (define-public elixir-thousand-island
   (package
     (name "elixir-thousand-island")
-    (version "1.4.1")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "thousand_island" version))
        (sha256
-        (base32 "1hdnbxv4015y3hc9aq6zgs6n4y092rkax1kjp24qb0fjwm08cji0"))))
+        (base32 "04mlmsg92gdjd9qs73s3qrm45v5hsjh3gas1j3wkrr130pa272bh"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-jason))
