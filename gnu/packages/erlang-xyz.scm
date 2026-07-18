@@ -291,24 +291,25 @@ Erlang and Elixir.")
 (define-public erlang-hackney
   (package
     (name "erlang-hackney")
-    (version "1.25.0")
+    (version "4.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "hackney" version))
        (sha256
-        (base32 "1m5issgyf7kiardfkknbh6g2lvsdlyggby0z45kj9x6ibzbvy2bj"))))
+        (base32 "1r0hh44z4ny3b09wgbqqgj98in96v3bfksv26gpi263bg993xl7s"))))
     (build-system rebar-build-system)
     (native-inputs
-     (list erlang-cowboy erlang-jsone rebar3-ex-doc))
+     (list erlang-cowboy erlang-jsx rebar3-ex-doc))
     (propagated-inputs
      (list erlang-certifi
+           erlang-h2
            erlang-idna
-           erlang-metrics-1.0
            erlang-mimerl
            erlang-parse-trans
+           erlang-quic
            erlang-ssl-verify-fun
-           erlang-unicode-util-compat))
+           erlang-webtransport))
     (synopsis "Simple HTTP client")
     (description "This package provides @code{erlang-hackney}, a simple HTTP
 client.")
