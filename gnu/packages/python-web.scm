@@ -12528,7 +12528,7 @@ fast.  It allows the usage of the @code{async/await} syntax added in Python
      (inherit python-sanic)
      (name "python-sanic-bootstrap")
      (arguments (list #:tests? #f))
-     (native-inputs (list python-setuptools python-wheel))))
+     (native-inputs (list python-setuptools))))
 
 (define-public python-socketio
   (package
