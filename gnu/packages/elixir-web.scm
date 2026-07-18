@@ -597,13 +597,13 @@ code closer to your data (and ultimately your source of truth):
 (define-public elixir-phoenix-pubsub
   (package
     (name "elixir-phoenix-pubsub")
-    (version "2.1.3")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "phoenix_pubsub" version))
        (sha256
-        (base32 "00p5dvizhawhqbia2cakdn4whaxsm2adq3lzfn3b137xvk0np85v"))))
+        (base32 "15iyzxh99b061jlcn506brva1fvkvs7ndnfgcfgh6dkipyji7hxd"))))
     (build-system mix-build-system)
     (arguments
      ;; Tests require network
