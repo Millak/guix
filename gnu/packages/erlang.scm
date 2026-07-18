@@ -312,13 +312,13 @@ printing extending the io:format syntax to add colours.")
 (define-public erlang-katana-code
   (package
     (name "erlang-katana-code")
-    (version "2.4.1")
+    (version "2.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "katana_code" version))
        (sha256
-        (base32 "0fhbkgs81ym7g6gnkvchls3r49bvgzg0rdfa60iciawxblxwdvsq"))))
+        (base32 "1vnchrqx3jk0bsd06xxmzrmw90x3044yn8vxybgcwidavd1n6k31"))))
     (build-system rebar-build-system)
     (synopsis "Functions useful for processing Erlang code.")
     (description
