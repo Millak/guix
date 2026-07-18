@@ -201,13 +201,13 @@ built-in support for concurrency, distribution and fault tolerance.")
 (define-public erlfmt
   (package
     (name "erlfmt")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "erlfmt" version))
        (sha256
-        (base32 "07wchl0mg27lmxryhhkv13g8yx8wf6hw5f6a33r2d7nsynk7v67v"))))
+        (base32 "1lspp6s72nl2imyzapy4kbrx1vrnqvigxj3mxjb2zjb7hf5cm0zp"))))
     (build-system rebar-build-system)
     (native-inputs
      (list erlang-getopt))
