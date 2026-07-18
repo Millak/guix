@@ -72,13 +72,18 @@
     (name "ldc")
     (version "1.38.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/ldc-developers/ldc/releases"
-                    "/download/v" version "/ldc-" version "-src.tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/ldc-developers/ldc")
+                     (commit (string-append "v" version))
+                     ;; Note: ldc-developers/phobos checked out in
+                     ;; runtime/phobos.
+                     ;; TODO: capture in own variable.
+                     (recursive? #t)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "13pkg69wjj4ali4ikijicccpg8y6f2hghhb70z9lrqr2w3pkhqna"))
+                "068gqv368mhi9jywk9dcx9xssywcix5ypixxs9hi87cz3w913xbp"))
               (patches (search-patches "ldc-i686-int128-alignment.patch"))))
     (build-system cmake-build-system)
     (arguments
