@@ -110,16 +110,16 @@
             (lambda _
               (invoke "cmake" "--install" "."))))))
     (inputs
-     `(("zlib" ,zlib)))
+     (list zlib))
     (native-inputs
-     `(("lld-wrapper" ,(make-lld-wrapper lld-17 #:lld-as-ld? #t))
-       ("llvm" ,llvm-17)
-       ("ldc" ,gdmd)
-       ("ninja" ,ninja)
-       ("python-wrapper" ,python-wrapper)
-       ("python-setuptools" ,python-setuptools)
-       ("tzdata" ,tzdata-for-tests)
-       ("unzip" ,unzip)))
+     (list (make-lld-wrapper lld-17 #:lld-as-ld? #t)
+           llvm-17
+           gdmd
+           ninja
+           python-wrapper
+           python-setuptools
+           tzdata-for-tests
+           unzip))
     (home-page "http://wiki.dlang.org/LDC")
     (synopsis "LLVM-based compiler for the D programming language")
     (description "LDC is an LLVM compiler for the D programming language.  It
@@ -322,7 +322,8 @@ integration tests...\n")
     (native-inputs
      (modify-inputs native-inputs
        (delete "llvm")
-       (replace "ldc" ldc-bootstrap)
+       (delete "gdmd")
+       (append ldc-bootstrap)
        (append clang-17                 ; propagates llvm and clang-runtime
                python-lit)))
     (properties
