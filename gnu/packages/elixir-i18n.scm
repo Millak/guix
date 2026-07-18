@@ -71,13 +71,13 @@ DTIF registry data.")
 (define-public elixir-ex-cldr-calendars
   (package
     (name "elixir-ex-cldr-calendars")
-    (version "2.3.1")
+    (version "2.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "ex_cldr_calendars" version))
        (sha256
-        (base32 "0lxgii8mz86zdlyljq10yk6xr1h86apaw52z8b9b85jkzzi4zlj2"))))
+        (base32 "0s4sn51a4kack2fbc09l5zpj43w8471qq969ni97g75aavn5r8a0"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-stream-data))
