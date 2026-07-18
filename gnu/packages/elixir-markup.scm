@@ -275,13 +275,13 @@ implementing an Elixir lexer for the Makeup syntax highlighter.")
 (define-public elixir-makeup-erlang
   (package
     (name "elixir-makeup-erlang")
-    (version "1.0.2")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "makeup_erlang" version))
        (sha256
-        (base32 "09rpmb9iw49syp62s7pny4ycwijffkkk6y9698z8kmb8ydzgycxg"))))
+        (base32 "0g1wqxhgjwxzxg9mflpx318n5c0j4zl0zvdskabh66nxn47pimhw"))))
     (build-system mix-build-system)
     (propagated-inputs (list elixir-makeup))
     (synopsis "Erlang lexer for the Makeup syntax highlighter")
