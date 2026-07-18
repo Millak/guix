@@ -1125,13 +1125,13 @@ parser for Elixir.")
 (define-public elixir-stream-data
   (package
     (name "elixir-stream-data")
-    (version "1.2.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "stream_data" version))
        (sha256
-        (base32 "1vd9i4zvg4nwk0bf17yss4r4pcd58f4zdva38qqj0sa6wdp58p7b"))))
+        (base32 "1j8xigb0j986d686vqfnahff1lapwwz7caihys61rknw82iy63ib"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-excoveralls))
