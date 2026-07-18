@@ -645,13 +645,13 @@ implementation.")
 (define-public erlang-telemetry
   (package
     (name "erlang-telemetry")
-    (version "1.3.0")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "telemetry" version))
        (sha256
-        (base32 "1rkrbf3z7my9dsz9km7077anp6f0nyapmf5lyij3grnv364zq5bh"))))
+        (base32 "1cgb3zv0mdjlp8k33vkb6aj93n7f15k69lf0c9w0f1k50san93wj"))))
     (build-system rebar-build-system)
     (synopsis "Dynamic dispatching library for metrics and instrumentations")
     (description
