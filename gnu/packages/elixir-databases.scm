@@ -293,13 +293,13 @@ implements unified access to tabular data.")
 (define-public elixir-tds
   (package
     (name "elixir-tds")
-    (version "2.3.5")
+    (version "2.3.8")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "tds" version))
        (sha256
-        (base32 "1wk20rk1fjh16swlkiyl3fs91lj4w4dk77l5z77vp12mvpsm1qsj"))))
+        (base32 "02y4ssdc7hcdxq6mdpc2x28z780wcb0m7y6pvrhfdan4sd6gms7s"))))
     (build-system mix-build-system)
     (propagated-inputs
      (list elixir-db-connection elixir-decimal elixir-jason
