@@ -1240,7 +1240,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/eigen-fix-strict-aliasing-bug.patch	\
   %D%/packages/patches/einstein-build.patch			\
   %D%/packages/patches/elfutils-tests-ptrace.patch		\
-  %D%/packages/patches/elixir-httpoison-tag-network-dependent-test-cases.patch			\
   %D%/packages/patches/elixir-path-length.patch			\
   %D%/packages/patches/elm-ghc9.2.patch	\
   %D%/packages/patches/exaile-gstreamer-1.28.patch	\

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2025, 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -285,7 +285,7 @@ purposes.  Its goal is to be as close as possible to
 (define-public elixir-httpoison
   (package
     (name "elixir-httpoison")
-    (version "2.2.3")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
@@ -294,11 +294,7 @@ purposes.  Its goal is to be as close as possible to
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0k9g4dc6y30wr9ryxjs23izifpg4dqkkqk8xz39ff27jn5s97k8i"))
-       ;; Waiting for upstream inclusion at
-       ;; https://github.com/edgurgel/httpoison/pull/502
-       (patches
-        (search-patches "elixir-httpoison-tag-network-dependent-test-cases.patch"))))
+        (base32 "0y2wih0cyxgkjxcqgmzfxxrcss2zpys8n5nzb19bsdxh8rvrazcv"))))
     (build-system mix-build-system)
     (arguments
      (list
