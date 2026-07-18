@@ -372,13 +372,13 @@ Erlang.")
 (define-public erlang-mimerl
   (package
     (name "erlang-mimerl")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "mimerl" version))
        (sha256
-        (base32 "0i5i4shhlrc8kphz74i72n17vdd7a0fqk8x3ri78hrccyvwibbqk"))))
+        (base32 "1i7cx6drwvxz208m94znrqbr9x227w9dvdd89jl4xqdscph8qr6v"))))
     (build-system rebar-build-system)
     (synopsis "Library to handle mimetypes")
     (description "This package provides a library to handle mimetypes.")
