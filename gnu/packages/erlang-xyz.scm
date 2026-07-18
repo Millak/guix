@@ -388,7 +388,7 @@ Erlang.")
 (define-public erlang-mochiweb
   (package
     (name "erlang-mochiweb")
-    (version "3.3.0")
+    (version "3.4.0")
     (source
      (origin
        (method git-fetch)
@@ -397,7 +397,7 @@ Erlang.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mbq3k7j2vq0846kql3h4iqpf4mzpzbcylcryb23lzw88sv55crn"))
+        (base32 "191c7vzny2f1467ikw8pcdy9bsnm14ydb4ah2kxg2sd75812ymi7"))
        (patches
         (search-patches
          "erlang-mochiweb-disable-known-to-fail-tests.patch"))))
