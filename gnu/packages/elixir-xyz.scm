@@ -500,13 +500,13 @@ implementing function decorators for Elixir.")
 (define-public elixir-erlex
   (package
     (name "elixir-erlex")
-    (version "0.2.7")
+    (version "0.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "1c7gcm9nhf7m3pq0776sav744ak1sph63shcpzvc6i58s5wmzn9y"))))
+        (base32 "12qp031bnb28wk5xb617igw81pk4h1c8mciavrrnv7hmqw7grzwc"))))
     (build-system mix-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (synopsis
