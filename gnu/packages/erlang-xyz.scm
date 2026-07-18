@@ -763,13 +763,13 @@ dispatch them as Telemetry events.")
 (define-public erlang-ezlib
   (package
     (name "erlang-ezlib")
-    (version "1.0.15")
+    (version "1.0.16")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "ezlib" version))
        (sha256
-        (base32 "1arfjvipmfvz52szlsy6gn4s1x25spip6gljwv7za6jj29nbl56x"))))
+        (base32 "01844li2kfdbkg9qhcl9dm3jpnx88bqxypv4mrzcn7ix8109b0dl"))))
     (build-system rebar-build-system)
     (inputs (list erlang-p1-utils))
     (native-inputs (list erlang-pc))
