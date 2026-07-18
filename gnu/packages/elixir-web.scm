@@ -734,13 +734,13 @@ implementing crypto-related functionality for the web, used by Plug.")
 (define-public elixir-plug-cowboy
   (package
     (name "elixir-plug-cowboy")
-    (version "2.7.4")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "plug_cowboy" version))
        (sha256
-        (base32 "18wa2qiy18g9s61anb5krcmmvcmivs201mx5w2x1a9h1swmn71cv"))))
+        (base32 "0bj25jlyg5kfxcfdnznk33nsflxi241dfs4flmamp97klkxvl0i0"))))
     (build-system mix-build-system)
     (arguments
      (list
