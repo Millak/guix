@@ -30,13 +30,13 @@
 (define-public elixir-db-connection
   (package
     (name "elixir-db-connection")
-    (version "2.8.1")
+    (version "2.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "db_connection" version))
        (sha256
-        (base32 "1zd8kp85wh7bbzr5x4kc75l53r5q9xwrhfz04vrpd793kd43s6m6"))))
+        (base32 "14zsy0nhzb12vx3mc5lvab8ka52gipyhxym2j1jazw9h4d4182si"))))
     (build-system mix-build-system)
     (arguments
      (list
