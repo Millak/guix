@@ -250,16 +250,16 @@ implementing an hybrid prefixed UUIDv7 and ULID data type for @code{Ecto}.")
 (define-public elixir-needle
   (package
     (name "elixir-needle")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "needle" version))
        (sha256
-        (base32 "0gf1bniwf650xrczvimmw1drg6cjqz21539nlhqw4la4m91jl7h4"))))
+        (base32 "05x5f3q6f1v0qcczzzh9rw65yxg4fnmkvv5nk08pq87p1whg59hr"))))
     (build-system mix-build-system)
-    (propagated-inputs (list elixir-ecto-sql elixir-exto elixir-needle-ulid
-                             erlang-telemetry))
+    (propagated-inputs (list elixir-ecto-sql elixir-exto elixir-needle-uid
+                             erlang-telemetry elixir-typed-ecto-schema))
     (synopsis
      "Universal foreign keys, virtual schemas, and shared data mixins")
     (description
