@@ -982,13 +982,13 @@ shorter tests.")
 (define-public elixir-recase
   (package
     (name "elixir-recase")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "recase" version))
        (sha256
-        (base32 "072hnq686lhwiwlbcz8hxid0aj0rlvvacdrhfb8qi28jpng599zg"))))
+        (base32 "1wqh8x2qyyf3f9npy609ks5nmla5ksgml0aaximhwx8ip3707fhr"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-excoveralls))
