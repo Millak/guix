@@ -214,6 +214,32 @@ cross-DE solutions.")
 persist XApp settings windows using GSettings.")
     (license license:lgpl2.0+)))
 
+(define-public timezonemap
+  (package
+    (name "timezonemap")
+    (version "0.4.5.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://codeberg.org/dashea/timezonemap")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0fkyqqyl4fwq3yz347ha69wiljz5bv1w4jg9mvz6xj20zhmzc1yw"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf
+                         automake
+                         `(,glib "bin")
+                         gobject-introspection
+                         libtool
+                         pkg-config))
+    (inputs (list gtk+ libsoup json-glib librsvg))
+    (home-page "https://codeberg.org/dashea/timezonemap/")
+    (synopsis "Standalone copy of GNOME 3.0's datetime panel")
+    (description "This package provides a standalone copy of the datetime
+panel used in GNOME 3.0's control center.")
+    (license license:gpl2+)))
+
 (define-public cjs
   (package
     (name "cjs")
