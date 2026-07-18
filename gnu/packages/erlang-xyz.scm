@@ -470,13 +470,13 @@ Server.")
 (define-public erlang-p1-utils
   (package
     (name "erlang-p1-utils")
-    (version "1.0.28")
+    (version "1.0.29")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "p1_utils" version))
        (sha256
-        (base32 "0cq0gwd4vy51j1qq2c6p1i6nv98agvfjdy0sd6bdj2m4qi5x96y4"))))
+        (base32 "1fg1mdjas6h1qlzykxli4crir18l9ya4s7g92kqzzf5mmlf44w90"))))
     (build-system rebar-build-system)
     (synopsis "ProcessOne utility modules for Erlang")
     (description "This package provides ProcessOne utility modules for Erlang.")
