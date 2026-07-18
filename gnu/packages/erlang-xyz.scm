@@ -907,6 +907,26 @@ parsing library.")
     (home-page "https://hex.pm/packages/fast_xml")
     (license license:asl2.0)))
 
+(define-public erlang-webtransport
+  (package
+    (name "erlang-webtransport")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "webtransport" version))
+       (sha256
+        (base32 "17dbgmjgv6waaxya3326hsc375m5l19xh7dg7kp6pdfdjrkcgs1s"))))
+    (build-system rebar-build-system)
+    (native-inputs (list erlang-proper))
+    (propagated-inputs (list erlang-h2 erlang-quic))
+    (synopsis "WebTransport protocol for Erlang (HTTP/2 and HTTP/3)")
+    (description
+     "This package provides the @code{WebTransport} protocol for Erlang, over
+HTTP/2 and HTTP/3.")
+    (home-page "https://hex.pm/packages/webtransport")
+    (license license:asl2.0)))
+
 (define-public erlang-xmpp
   (package
     (name "erlang-xmpp")
