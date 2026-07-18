@@ -892,13 +892,13 @@ library to track ownership of resources across processes.")
 (define-public elixir-owl
   (package
     (name "elixir-owl")
-    (version "0.13.0")
+    (version "0.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "owl" version))
        (sha256
-        (base32 "0xbl5wykss5na8l31vf4kr0vz4qmsszqzdkwyncdp91prq8rvgsr"))))
+        (base32 "034aa12k2w0wf1n052kmj7jinf6nysiabcdarmswbvgjz257c7im"))))
     (build-system mix-build-system)
     (native-inputs (list elixir-excoveralls))
     (propagated-inputs (list elixir-ucwidth))
