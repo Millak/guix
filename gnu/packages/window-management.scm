@@ -3342,7 +3342,7 @@ works on Wayland compositors supporting the wlr-layer-shell protocol.")
 (define-public swaybg
   (package
     (name "swaybg")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method git-fetch)
@@ -3351,7 +3351,7 @@ works on Wayland compositors supporting the wlr-layer-shell protocol.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "164jzs3sw08x92890bcs0sbfa3vs7l3n08fnrc1zzba42940z5r0"))))
+        (base32 "1bnlbj5fcgml82y5ghw25z6pjhqsvwmffsvl6ygmpgx478s1qah7"))))
     (build-system meson-build-system)
     (inputs
      (cons* cairo gdk-pixbuf wayland
