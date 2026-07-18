@@ -6467,7 +6467,7 @@ create smoother and stable videos.")
 (define-public libopenshot
   (package
     (name "libopenshot")
-    (version "0.5.0")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6476,7 +6476,7 @@ create smoother and stable videos.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xkhkmjwidricnzzn5scbwiyiw8zx6nl2ylncyw474gx33jihp62"))
+                "1b0z64ry9ch4kac4b3k0m5ink1pf727mliaw7fwsfn485aq8g5sp"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Allow overriding of the python installation dir
@@ -6489,7 +6489,7 @@ create smoother and stable videos.")
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("python" ,python)
-       ("swig" ,swig-4.0)
+       ("swig" ,swig-4.4)
        ("unittest++" ,unittest-cpp)))
     (inputs
      (list alsa-lib zlib))
@@ -6531,7 +6531,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
 (define-public openshot
   (package
     (name "openshot")
-    (version "3.4.0")
+    (version "3.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6540,7 +6540,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ap322f5l5bxj28nlyfwz2jshsscf03d5ir3s9jw76gshxp59m8g"))
+                "0df8sb7k43m580b50c1g430fqbml6vzszaklp9z7767j4gfz1dl8"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -6560,7 +6560,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (setenv "QT_QPA_PLATFORM" "offscreen")
-                (invoke "python" "src/tests/query_tests.py"))))
+                (invoke "python" "src/tests/test_query.py"))))
           (add-after 'unpack 'patch-font-location
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((font (assoc-ref inputs "font-dejavu")))
