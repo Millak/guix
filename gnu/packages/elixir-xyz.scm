@@ -790,13 +790,13 @@ for Elixir.")
 (define-public elixir-mimic
   (package
     (name "elixir-mimic")
-    (version "2.1.1")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "mimic" version))
        (sha256
-        (base32 "19qd58rag58wrbahscp555j96fq74g05ldxj8fmjksqghk431hx3"))))
+        (base32 "1lshd3j3abmhm06g915pfgr0vq985hffj1bx3kacb64kd0iiyxsj"))))
     (build-system mix-build-system)
     (propagated-inputs (list elixir-ham))
     (synopsis "Mocks for Elixir functions")
