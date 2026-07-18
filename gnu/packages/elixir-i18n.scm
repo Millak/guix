@@ -138,13 +138,13 @@ Repository (CLDR).")
 (define-public elixir-ex-cldr-lists
   (package
     (name "elixir-ex-cldr-lists")
-    (version "2.11.1")
+    (version "2.12.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "ex_cldr_lists" version))
        (sha256
-        (base32 "1qmdnk8am9dy6k4z93svq7lz288cwmi8aswsn4c3zjqca421q5h0"))))
+        (base32 "1s40463m9lxp7xz1s4iy3hk8yyb4vc9hxid2r6h72709cgfbdq0n"))))
     (build-system mix-build-system)
     (arguments
      (list
