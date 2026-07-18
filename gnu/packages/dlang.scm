@@ -786,7 +786,7 @@ to a minimal test case.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f                       ;no test suite
+      #:tests? #f                       ; no test suite
       #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
                            "d_demangle")
       #:phases #~(modify-phases %standard-phases
@@ -796,8 +796,9 @@ to a minimal test case.")
                        (install-file "libd_demangle.so"
                                      (string-append #$output "/lib")))))))
     (native-inputs (list dmd))
+    (home-page "https://github.com/lievenhey/d_demangler")
     (synopsis "D symbol demangling library")
-    (description "@code{libd_demangle.so} is a small shared library that can be used to
-demangle D symbols.  It exposes a C interface that wraps D's @code{std.demangle}.")
-    (license license:gpl3+)
-    (home-page "https://github.com/lievenhey/d_demangler")))
+    (description "@code{libd_demangle.so} is a small shared library that can be
+used to demangle D symbols.  It exposes a C interface that wraps D's
+@code{std.demangle}.")
+    (license license:gpl3+)))
