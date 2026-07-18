@@ -247,13 +247,13 @@ Erlang and Elixir.")
 (define-public erlang-jiffy
   (package
     (name "erlang-jiffy")
-    (version "1.1.2")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "jiffy" version))
        (sha256
-        (base32 "10gkbi48in96bzkv7f2cqw9119krpd40whcsn0yd7fr0lx1bqqdv"))))
+        (base32 "1m7r76l9608x2fs825kvxxz9l2r66mj9q494yanczgahqh9nwrv7"))))
     (build-system rebar-build-system)
     (native-inputs (list erlang-pc
                          python)) ; for tests
