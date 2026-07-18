@@ -906,13 +906,13 @@ for Erlang/Elixir.")
 (define-public erlang-esip
   (package
     (name "erlang-esip")
-    (version "1.0.59")
+    (version "1.0.60")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "esip" version))
        (sha256
-        (base32 "1rpvsfm5y932wfra1mvkqhdabikmwqlh65bky52b3h4x6hy2xpqb"))))
+        (base32 "0kql0gyzli9v9b8rj4dbbdk4zki00viwyc08q291bnn8pgacn106"))))
     (build-system rebar-build-system)
     (inputs (list erlang-fast-tls erlang-p1-utils erlang-stun))
     (native-inputs (list erlang-pc))
