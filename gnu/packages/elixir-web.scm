@@ -176,13 +176,13 @@ functions using the Common Locale Data Repository (CLDR).")
 (define-public elixir-ex-cldr-plugs
   (package
     (name "elixir-ex-cldr-plugs")
-    (version "1.3.4")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "ex_cldr_plugs" version))
        (sha256
-        (base32 "0apm3x98abjnlhzb59p3qnhh2pmzrbk8gh0x209k0h5cgq4rx0ih"))))
+        (base32 "1g3pc821al24bw8kpmxi067hqi6nl85rgsh8c2ih1pdx6gawqn88"))))
     (build-system mix-build-system)
     (propagated-inputs (list elixir-ex-cldr elixir-gettext elixir-jason elixir-plug))
     (synopsis
