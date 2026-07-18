@@ -112,13 +112,13 @@ database tests inside transactions
 (define-public elixir-ecto
   (package
     (name "elixir-ecto")
-    (version "3.13.3")
+    (version "3.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "ecto" version))
        (sha256
-        (base32 "155gk6ik454a0pc9mxjml2l8r6jr8rwvmdi5zx1qia2kixvdn9qr"))))
+        (base32 "0c0an9ky13km8f7vky6xvpwkx2hk0g9z6ghagm30yw4ncyar3f94"))))
     (build-system mix-build-system)
     (propagated-inputs (list elixir-decimal elixir-jason erlang-telemetry))
     (synopsis
