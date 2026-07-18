@@ -534,6 +534,24 @@ Server.")
     (home-page "https://hex.pm/packages/p1_pgsql")
     (license license:asl2.0)))
 
+(define-public erlang-quic
+  (package
+    (name "erlang-quic")
+    (version "1.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "quic" version))
+       (sha256
+        (base32 "17bhmp9w6c92g3fda0q4bwzv1hya90s2rxg5zsnw7xbq3m7pi1cv"))))
+    (build-system rebar-build-system)
+    (native-inputs (list erlang-meck erlang-proper))
+    (synopsis "Erlang QUIC implementation (RFC 9000)")
+    (description "This package provides a pure Erlang QUIC (RFC 9000)
+implementation.")
+    (home-page "https://hex.pm/packages/quic")
+    (license license:asl2.0)))
+
 (define-public erlang-ranch
   (package
     (name "erlang-ranch")
