@@ -4516,7 +4516,7 @@ and web services platform functionality.")
     (build-system pyproject-build-system)
     (arguments
      ;; TODO: tests require a complex setup, see <.github/workflows/main.yml>.
-     (list #:tests? #f)) 
+     (list #:tests? #f))
     (native-inputs
      (list python-pbr))
     (propagated-inputs
@@ -5175,7 +5175,7 @@ files or Python scripts that define a list of migration steps.")
 (define-public mutastructura
   (package
     (name "mutastructura")
-    (version "0.6.0")
+    (version "0.7.1")
     (source
      (origin
        (method git-fetch)
@@ -5184,11 +5184,14 @@ files or Python scripts that define a list of migration steps.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08vzlc5imavqf3bdzgbh70c7z44xjhf05gr7i2g5ksl49lv39gzh"))))
+        (base32 "0rzy7clbzc580xp1mk2qwqv29lq2xn8sfr9lv1rdczk5fj55m4d6"))))
     (build-system guile-build-system)
     (arguments
      (list
       #:source-directory "src"
+      #:modules '((guix build guile-build-system)
+                  (guix build utils)
+                  (ice-9 match))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'install-program-files
@@ -5198,21 +5201,33 @@ files or Python scripts that define a list of migration steps.")
                 (copy-recursively "resources"
                                   (string-append share "/resources"))
                 (install-file "scripts/mutastructura" bin)
-                (install-file "scripts/log.bash"
-                              (string-append share "/scripts/"))
-                (chmod (string-append bin "/mutastructura") #o755)))))))
-    (native-inputs (list guile-3.0))
+                (chmod (string-append bin "/mutastructura") #o755))))
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each (match-lambda
+                          ((pattern program format-string)
+                           (substitute* "scripts/mutastructura"
+                             ((pattern)
+                              (format #f format-string
+                                      (search-input-file inputs
+                                                         (string-append "bin/"
+                                                          program)))))))
+                        '(("readlink -f " "readlink" "~s -f ")
+                          ("realpath " "realpath" "~s ")
+                          ("dirname " "dirname" "~s ")
+                          ("getopt " "getopt" "~s ")
+                          ("exec guile " "guile" "exec ~s "))))))))
     (propagated-inputs (list guile-dbi
                              guile-dbd-mysql
                              guile-dbd-sqlite3
                              guile-dbd-postgresql
                              guile-gcrypt))
-    (inputs (list guile-3.0 bash-minimal))
+    (inputs (list guile-3.0 bash-minimal coreutils util-linux))
     (home-page "https://codeberg.org/jjba23/mutastructura")
     (synopsis "Relational database schema migrations powered by Guile Scheme")
     (description
      "Mutastructura provides a familiar, declarative and transactional
-approach to managing database states. It exposes a user-friendly 
+approach to managing database states. It exposes a user-friendly
 @acronym{CLI, command-line interface} and has support for PostgreSQL, MySQL, and SQLite.
 It also exposes library functions and can be imported and used directly from other Guile code.
 
