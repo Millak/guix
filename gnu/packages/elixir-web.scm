@@ -518,13 +518,13 @@ value.")
 (define-public elixir-phoenix-live-reload
   (package
     (name "elixir-phoenix-live-reload")
-    (version "1.6.1")
+    (version "1.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "phoenix_live_reload" version))
        (sha256
-        (base32 "1875i11fl7nr1hx645cjwq43ziiy7vrrjxf1pgqgxr56sm1kh9vl"))))
+        (base32 "1ffm615gzqkklzznf16y2cf4zqnc52sgyr8kfaad6l2c24c9ry6i"))))
     (build-system mix-build-system)
     (arguments
      ;; Tests fail with:
