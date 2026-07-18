@@ -831,13 +831,13 @@ minimal custom JavaScript.")
 (define-public elixir-websock-adapter
   (package
     (name "elixir-websock-adapter")
-    (version "0.5.8")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "websock_adapter" version))
        (sha256
-        (base32 "10ip7zyvb5nb9qyl9vmw8npk3kk79qcssh2iyfsi48jmclc9lnri"))))
+        (base32 "05s6jgwp3zi80hdi26fk0pmwgqhmah69wpbhhsq07wp8pj2il0jh"))))
     (build-system mix-build-system)
     (propagated-inputs
      (list elixir-bandit
