@@ -51,13 +51,13 @@
 (define-public elixir-digital-token
   (package
     (name "elixir-digital-token")
-    (version "1.0.0")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "digital_token" version))
        (sha256
-        (base32 "1rp9r5jb0db52f969jmgv5sp8k0vd98dnqwrgca0fyzsqalgbmlf"))))
+        (base32 "1kc5ff0mrsr86hy7yb85zv33i5wya974n2jla614la3h4zszzlnb"))))
     (build-system mix-build-system)
     (propagated-inputs (list elixir-cldr-utils elixir-jason))
     (synopsis
