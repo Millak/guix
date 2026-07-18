@@ -1256,13 +1256,13 @@ functional way.")
 (define-public elixir-tzdata
   (package
     (name "elixir-tzdata")
-    (version "1.1.3")
+    (version "1.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "tzdata" version))
        (sha256
-        (base32 "0a0crg70vpxc0bqdnhw7jdjv3prfj6aywls2x7a2jk86b9bqbjnl"))))
+        (base32 "0km2yhn1345mdig3f2k9chpaq6z8mdcdhbsjanig93yyk638hj5b"))))
     (build-system mix-build-system)
     (arguments
      ;; FIXME: Tests fail with:
