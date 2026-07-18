@@ -35,13 +35,13 @@
 (define-public elixir-bandit
   (package
     (name "elixir-bandit")
-    (version "1.8.0")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "bandit" version))
        (sha256
-        (base32 "08jll47yxkj4n08nh7xm8bm36z077a458j4xlqp2mzr0xm7gyn44"))))
+        (base32 "083fqqvfxrjmy1an16cx8v4xk4dpm32rrvkd355cyibgr0nwinj5"))))
     (build-system mix-build-system)
     (arguments
      ;; Tests depend on elixir-req which is not yet packaged.
