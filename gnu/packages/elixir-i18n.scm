@@ -274,13 +274,13 @@ package @code{ex_cldr}.")
 (define-public elixir-ex-cldr-units
   (package
     (name "elixir-ex-cldr-units")
-    (version "3.19.1")
+    (version "3.20.5")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "ex_cldr_units" version))
        (sha256
-        (base32 "1y7i5gwa1d5p11dgyv9il9ii4yhjf79c4l0gwpcmkh8ybip3n0k3"))))
+        (base32 "15b9vdva04hgn83sp4rvb42gypn9zg27qdjqfgg2f4f5s8hrzr2i"))))
     (build-system mix-build-system)
     (arguments
      (list
