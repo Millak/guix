@@ -727,13 +727,13 @@ function arguments and return values against their typespecs.")
 (define-public elixir-igniter
   (package
     (name "elixir-igniter")
-    (version "0.6.30")
+    (version "0.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "igniter" version))
        (sha256
-        (base32 "1q5sm18cy8zf9l8a2ajawd92wjnm94v8q223a8xv02w5gxdlv8bn"))))
+        (base32 "03x3599x37csj8ilg3jpshiqcqb0qygm1bkk12hkw7x2zg9nl549"))))
     (build-system mix-build-system)
     (arguments
      ;; FIXME: Tests depend on elixir-eflame, which is not yet packaged.
