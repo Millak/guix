@@ -426,13 +426,13 @@ having different kinds of processes handle connections.")
 (define-public elixir-phoenix-ecto
   (package
     (name "elixir-phoenix-ecto")
-    (version "4.6.5")
+    (version "4.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "phoenix_ecto" version))
        (sha256
-        (base32 "0jwdybzrsbrxjqsqw5pzzf2x8vsw0i2d1bccfhdz61zlxq435v16"))))
+        (base32 "1k7lzc3566pilnk22hrvx4drlm99jqx8509yhbglvjsl88g02x8x"))))
     (build-system mix-build-system)
     (propagated-inputs
      (list elixir-ecto
