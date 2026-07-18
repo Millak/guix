@@ -545,13 +545,13 @@ value.")
 (define-public elixir-phoenix-live-view
   (package
     (name "elixir-phoenix-live-view")
-    (version "1.1.13")
+    (version "1.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "phoenix_live_view" version))
        (sha256
-        (base32 "1v7p6q0lz9fzfyj9w4kwbyqi1vqdzsdllaw3xvw9whdqfcsyj1lx"))))
+        (base32 "1sz06xikykq7wj2n136cfajm4bxz79i2asc35ipnvjpwlhw7ksb1"))))
     (build-system mix-build-system)
     (arguments
      ;; Tests fail with:
