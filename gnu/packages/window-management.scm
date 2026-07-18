@@ -3266,7 +3266,7 @@ corners, shadows, inactive window dimming, etc.")
 (define-public swaylock
   (package
     (name "swaylock")
-    (version "1.8.3")
+    (version "1.8.6")
     (source
      (origin
        (method git-fetch)
@@ -3275,7 +3275,7 @@ corners, shadows, inactive window dimming, etc.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01zwlfpf3s8wd8gl2sjfch1z66mqx9n2plgbdang7plqc3r01474"))))
+        (base32 "1yw14jy952sp6yq13ccnn6wma7qplf737d1zydk534m0sy5zfh82"))))
     (build-system meson-build-system)
     (inputs (append (if (%current-target-system)
                         (list wayland-protocols)
