@@ -1299,13 +1299,13 @@ width (full-width or half-width) of an Unicode character.")
 (define-public elixir-untangle
   (package
     (name "elixir-untangle")
-    (version "0.3.3")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "untangle" version))
        (sha256
-        (base32 "0p81bzvsbnzdkqjq441xslcryxhpmrl4pqda2h323ivs47ij1wa7"))))
+        (base32 "1bsvpnlfl9s8w40xz9b576x8f0f43xkcscghz5ii0y0akpmp4hwv"))))
     (build-system mix-build-system)
     (propagated-inputs (list elixir-decorator))
     (synopsis "Logging and inspecting with code location information")
