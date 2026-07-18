@@ -319,13 +319,13 @@ logging framework agnostic.")
 (define-public erlang-meck
   (package
     (name "erlang-meck")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "meck" version))
        (sha256
-        (base32 "10iq8csyr7x1w371c54255rqxvjznxgk7c4zxc5kar17wp7rn2k8"))))
+        (base32 "1yaaxqnhacqn6kqg6qpmr6z6licpnwhkbanjgkdr4jgg0s1x1kx2"))))
     (build-system rebar-build-system)
     (arguments
      (list
