@@ -873,13 +873,13 @@ options.")
 (define-public elixir-nimble-ownership
   (package
     (name "elixir-nimble-ownership")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "nimble_ownership" version))
        (sha256
-        (base32 "0bdj7fvkddh8mllicqb92caxqiwcnvws3r7kycczar2l09hy899q"))))
+        (base32 "0yd8h7yr51kv6xxc2ayqrlzms2jrx7lwy9r1cz30k1kg3x7gd2h9"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-castore elixir-excoveralls))
