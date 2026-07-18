@@ -326,13 +326,13 @@ purposes.  Its goal is to be as close as possible to
 (define-public elixir-iconify-ex
   (package
     (name "elixir-iconify-ex")
-    (version "0.6.1")
+    (version "0.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "iconify_ex" version))
        (sha256
-        (base32 "1j6vzp6ayx278s6q7n4rdk849b23sx9wf040h336naxphqxm3qk6"))))
+        (base32 "0lp56picb0x09d6176z0avl4a846cfpj9fnnsy4cj9sxj0nk5yjy"))))
     (build-system mix-build-system)
     (propagated-inputs
      (list elixir-arrows
