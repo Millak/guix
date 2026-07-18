@@ -31,13 +31,13 @@
 (define-public elixir-cldr-utils
   (package
     (name "elixir-cldr-utils")
-    (version "2.28.3")
+    (version "2.29.7")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "cldr_utils" version))
        (sha256
-        (base32 "1dgzaxfj0whv2rjkf57jnzkl63az50wypzjwcwnz31yilpckq220"))))
+        (base32 "0fm73arksyp3dq65zdznwmxdky7ypiifzscshb9f4d7fgxcwvpab"))))
     (build-system mix-build-system)
     (propagated-inputs (list elixir-castore erlang-certifi elixir-decimal))
     (synopsis
