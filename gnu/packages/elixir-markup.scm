@@ -154,13 +154,13 @@ HTML entities in a string.")
 (define-public elixir-html-sanitize-ex
   (package
     (name "elixir-html-sanitize-ex")
-    (version "1.4.3")
+    (version "1.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "html_sanitize_ex" version))
        (sha256
-        (base32 "1dyc9fvkdrihmy32d85jqlzs9jrbijahq5dpdry9r57y98y8sx47"))))
+        (base32 "1bfi31xs23i4j7136i6b9w5f202nw982bql8v26khg6flwicjzc0"))))
     (build-system mix-build-system)
     (propagated-inputs (list erlang-mochiweb))
     (synopsis "HTML sanitizer for Elixir")
