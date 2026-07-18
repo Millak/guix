@@ -198,13 +198,13 @@ locales.")
 (define-public elixir-ex-cldr-minimal
   (package
     (name "elixir-ex-cldr-minimal")
-    (version "2.43.2")
+    (version "2.47.5")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "ex_cldr" version))
        (sha256
-        (base32 "0ai765853c2zjmrwni9j0753c8fv9431na93gpvnc488pnkkfl89"))))
+        (base32 "15bmfxk4adarzvjw7iy57dpksw7wv01zsnknx60q79kgjr5f2dw6"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-stream-data))
