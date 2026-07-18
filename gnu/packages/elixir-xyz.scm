@@ -629,13 +629,13 @@ and decode WKB, WKT, and @code{GeoJSON} formats.")
 (define-public elixir-gettext
   (package
     (name "elixir-gettext")
-    (version "1.0.0")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "gettext" version))
        (sha256
-        (base32 "0x5azw61grknqmn6v7dh1ly8daa1xmxhc1jnsx7lm2an0xj9d0fc"))))
+        (base32 "1czy3gxqbjh6kpy5lvm7dqcifjlcbi8i81r9mmqj10463180bf7a"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-castore
