@@ -756,13 +756,13 @@ implementing crypto-related functionality for the web, used by Plug.")
 (define-public elixir-plug
   (package
     (name "elixir-plug")
-    (version "1.18.1")
+    (version "1.20.3")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "plug" version))
        (sha256
-        (base32 "1hkcahx1l6yi1hcxn7lw6cbcscwdrwrjsza3cjsj5d7j1nvpv9ap"))))
+        (base32 "0xmdfq7am1a408j1pykwqh79yc9166dg736m15jfydl53gp6l9my"))))
     (build-system mix-build-system)
     (propagated-inputs (list elixir-mime elixir-plug-crypto erlang-telemetry))
     (synopsis "Compose web applications with functions")
