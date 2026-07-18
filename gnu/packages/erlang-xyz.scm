@@ -200,13 +200,13 @@ for code instrumentation and metrics collection.")
 (define-public erlang-luerl
   (package
     (name "erlang-luerl")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "luerl" version))
        (sha256
-        (base32 "1124chny6jzzr0srpsyw2875j1x0fz9a941y90pn4gx9jj5jsqbn"))))
+        (base32 "144ka135kqaimwpvnnc1b0yyxqjdimlahidjjg55s3dakf28vy5b"))))
     (build-system rebar-build-system)
     (synopsis "Implementation of Lua on Erlang")
     (description "This package provides implementation of Lua on Erlang.")
