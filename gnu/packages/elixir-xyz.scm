@@ -829,18 +829,20 @@ explicit contracts for Elixir.")
 (define-public elixir-nebulex
   (package
     (name "elixir-nebulex")
-    (version "2.6.3")
+    (version "3.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "nebulex" version))
        (sha256
-        (base32 "1maq362prnjxigj3gkd6j9fy54ff4mj97r6aqz7gyqw45yvcpk89"))))
+        (base32 "1dmabzb0lj08nf00zwsj1r9qiy00qqvfw3pvy68sj6vh7xnzqsj4"))))
     (build-system mix-build-system)
     (arguments
      ;;Tests depend on elixir-ex2ms which is not packaged yet.
      (list #:tests? #f))
-    (propagated-inputs (list elixir-decorator erlang-shards erlang-telemetry))
+    (propagated-inputs
+     (list elixir-decorator elixir-nimble-options erlang-shards
+           erlang-telemetry))
     (synopsis "In-memory and distributed caching toolkit for Elixir")
     (description "In-memory and distributed caching toolkit for Elixir.")
     (home-page "https://hexdocs.pm/nebulex/")
