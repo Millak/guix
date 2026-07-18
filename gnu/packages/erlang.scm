@@ -430,13 +430,13 @@ Markdown.")
 (define-public erlang-erlware-commons
   (package
     (name "erlang-erlware-commons")
-    (version "1.8.1")
+    (version "1.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "erlware_commons" version))
        (sha256
-        (base32 "1yb5b4kkln674k9225sb04kzn4xxvisfwld2hg1zwgqpgyf97ksq"))))
+        (base32 "0i78hh9n7zzajmz5yylzrywyjqkp0mjy3b4phl7fahvpqp916lwr"))))
     (build-system rebar-build-system)
     (propagated-inputs
      (list erlang-cf))
