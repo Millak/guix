@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024, 2025 Igor Goryachev <igor@goryachev.org>
-;;; Copyright © 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2025, 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -196,6 +196,24 @@ for manipulating Web protocols.")
 for code instrumentation and metrics collection.")
     (home-page "https://hexdocs.pm/exometer_core/")
     (license license:mpl2.0)))
+
+(define-public erlang-h2
+  (package
+    (name "erlang-h2")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "h2" version))
+       (sha256
+        (base32 "0n63z9kn80yvf7sqslw5fqdxhd8jw3q2np7kx9sn7iqd3lv287y6"))))
+    (build-system rebar-build-system)
+    (native-inputs (list erlang-proper))
+    (synopsis "HTTP/2 protocol library for Erlang")
+    (description "This package provides an HTTP/2 protocol library for
+Erlang.")
+    (home-page "https://hex.pm/packages/h2")
+    (license license:asl2.0)))
 
 (define-public erlang-luerl
   (package
