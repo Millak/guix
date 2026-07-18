@@ -814,13 +814,13 @@ minimal custom JavaScript.")
 (define-public elixir-tz
   (package
     (name "elixir-tz")
-    (version "0.28.1")
+    (version "0.28.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "tz" version))
        (sha256
-        (base32 "12lchkhdxbv8ai09i2lsy394yx1xrfq1yz5p8dn3qr0236ma3p5z"))))
+        (base32 "11qci9q1kjjv8m7fk0gzmgc022dc69j5dd1ac08pa2izldap7gx6"))))
     (build-system mix-build-system)
     (propagated-inputs (list elixir-castore elixir-mint))
     (synopsis "Time zone support for Elixir")
