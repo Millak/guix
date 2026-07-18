@@ -1090,14 +1090,32 @@ implementing utilities to work with Elixir source code.")
 (define-public elixir-spitfire
   (package
     (name "elixir-spitfire")
-    (version "0.2.1")
+    (version "0.3.13")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "spitfire" version))
        (sha256
-        (base32 "06yr860zhzxmzmljdpjq4c4n81951axl2kc1w6r430x3ai8dgvkf"))))
+        (base32 "1d1ls4r57kdrj1rlm1p0b9axc4hx7vg48r79hjsnfjgdrs4bw09n"))))
     (build-system mix-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-unpackaged-test-deps
+            (lambda _
+              ;; styler (a code-style formatter) and ex_unit_json (a test
+              ;; reporter) are not packaged in Guix and not needed to run
+              ;; the test suite.
+              (substitute* "mix.exs"
+                (("\\{:styler, \"~> 0\\.11\", only: \\[:dev, :test\\]\\},")
+                 "")
+                ;; Drop trailing comma
+                (("\\{:stream_data, \"~> 1\\.0\", only: \\[:dev, :test\\]\\},")
+                 "{:stream_data, \"~> 1.0\", only: [:dev, :test]}")
+                (("\\{:ex_unit_json, \"~> 0\\.4\\.1\", only: \\[:dev, :test\\]\\}")
+                 "")))))))
+    (native-inputs (list elixir-stream-data))
     (synopsis "Error resilient parser for Elixir")
     (description "This package provides @code{spitfire}, an error resilient
 parser for Elixir.")
