@@ -19,6 +19,7 @@
 (define-module (gnu packages elixir-markup)
   #:use-module (gnu packages elixir-xyz)
   #:use-module (gnu packages erlang-xyz)
+  #:use-module (gnu packages web)
   #:use-module (guix build-system mix)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -194,6 +195,54 @@ HTML entities in a string.")
      "Floki is a simple HTML parser that enables search for nodes using CSS selectors.")
     (home-page "https://hexdocs.pm/floki/")
     (license license:expat)))
+
+(define-public elixir-lazy-html
+  (package
+    (name "elixir-lazy-html")
+    (version "0.1.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "lazy_html" version))
+       (sha256
+        (base32 "0fw8cd0vwj1v7qd9sbcjzvflrhg5jrbd4wqnlahyqccwja9fa6rv"))))
+    (build-system mix-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-HOME
+            (lambda _
+              (setenv "HOME" "/tmp")
+              ;; Compile the NIF from source instead of fetching a
+              ;; precompiled binary from GitHub.
+              ;; https://github.com/dashbitco/lazy_html/pull/38
+              (substitute* "mix.exs"
+                (("make_precompiler: \\{:nif, CCPrecompiler\\},") "")
+                ;; elixir_make is only used at build time; keep it out of
+                ;; the application list so dependents need not start it.
+                ;; https://github.com/dashbitco/lazy_html/pull/36
+                (("\\{:elixir_make, \"~> 0\\.9\\.0\"\\}")
+                 "{:elixir_make, \"~> 0.9.0\", runtime: false}"))
+              ;; The Makefile clones and builds a pinned lexbor from
+              ;; GitHub; link against the lexbor package instead.
+              ;; https://github.com/dashbitco/lazy_html/pull/37
+              (substitute* "Makefile"
+                (("^\\$\\(NIF_PATH\\): \\$\\(SOURCES\\) \\$\\(LEXBOR_LIB\\)")
+                 "$(NIF_PATH): $(SOURCES)")
+                (("\\$\\(SOURCES\\) \\$\\(LEXBOR_LIB\\) -o")
+                 "$(SOURCES) -llexbor -o")))))))
+    (native-inputs (list elixir-elixir-make))
+    (inputs (list lexbor))
+    (propagated-inputs (list elixir-fine))
+    (synopsis "Efficient parsing and querying of HTML documents")
+    (description "LazyHTML is designed around lazy HTML documents.  Documents
+are parsed and kept natively in memory for as long as possible.  Query selectors
+are executed in native code for performance and adheres to browser standards.
+Under the hood, LazyHTML uses Lexbor, a fast, dependency-free and comprehensive
+HTML engine, written entirely in C.")
+    (home-page "https://lazy-html.hexdocs.pm/")
+    (license license:asl2.0)))
 
 (define-public elixir-makeup-c
   (package
