@@ -93,26 +93,18 @@ library (just call Earmark.as_html), but can also be used as a command-line tool
 (define-public elixir-easyhtml
   (package
     (name "elixir-easyhtml")
-    (version "0.3.2")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "easyhtml" version))
        (sha256
-        (base32 "01jxhj3hpivf5c0x7d11c8xrx3d0ln6wsa78lc58g90j2vwkdadn"))))
+        (base32 "00wciw1sy9d8mjxaq3xfswg8fqcw1vidc7f7zasj784lqqv52wim"))))
     (build-system mix-build-system)
-    (propagated-inputs (list elixir-floki))
-    (synopsis "Tiny wrapper around Floki")
-    (description "@code{EasyHTML} makes working with HTML easy.  It is a tiny
-wrapper around Floki that adds conveniences:
-
-@itemize
-@item An @code{Inspect} implementation to pretty-print HTML snippets
-@item An @code{Access} implementation to search them
-@item An @code{Enumerable} implementation to traverse them
-item A @code{String.Chars} implementation to convert them to text
-@end itemize
-")
+    (propagated-inputs (list elixir-lazy-html))
+    (synopsis "EasyHTML makes working with HTML easy.")
+    (description "@code{EasyHTML} makes working with HTML easy.  It uses
+LazyHTML.")
     (home-page "https://hexdocs.pm/easyhtml/")
     (license license:asl2.0)))
 
