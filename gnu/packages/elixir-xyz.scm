@@ -557,13 +557,13 @@ Universally Unique Lexicographically Sortable Identifier (ULID).")
 (define-public elixir-expo
   (package
     (name "elixir-expo")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "expo" version))
        (sha256
-        (base32 "0q692ycwn0f5kif55vxhx2bq1swyraypf89n671l9yq08wzzkbgv"))))
+        (base32 "0h0nh72i5khlv1sk0avfn2hklrvqd73kfgg2nw0f56imrfwhicsz"))))
     (build-system mix-build-system)
     (synopsis
      "Low-level Gettext file handling")
