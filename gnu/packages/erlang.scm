@@ -413,13 +413,13 @@ outputs you want to be readable around all that noise they contain.")
 (define-public erlang-edown
   (package
     (name "erlang-edown")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
       (origin
         (method url-fetch)
         (uri (hexpm-uri "edown" version))
         (sha256
-          (base32 "1hl27qnylbjxzmz9w2pnm0wfmkcgyc6bcpmlm6mf35ymkj659ngr"))))
+          (base32 "0kgj0y7dh2r4575ihn3ci5q6zbhm7shd23ia3pn6851hm084r5pg"))))
     (build-system rebar-build-system)
     (home-page "https://github.com/uwiger/edown")
     (synopsis "Markdown extension for EDoc")
