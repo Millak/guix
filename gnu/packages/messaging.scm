@@ -3902,7 +3902,7 @@ a text snippet), using @code{libphonenumber}.")
 (define-public ejabberd
   (package
     (name "ejabberd")
-    (version "26.02")
+    (version "26.04")
     (source
      (origin
        (method git-fetch)
@@ -3911,7 +3911,7 @@ a text snippet), using @code{libphonenumber}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kqqsn5pxlp3h3ydykfjf34x7gar8gvn9cz01h5vwbmr7r3zncwb"))))
+        (base32 "01wz6hhqpnyvp18np04n137bdnx28jashanip62f8agg057bjpiw"))))
     (build-system rebar-build-system)
     (inputs (list bash-minimal coreutils procps sed))
     (native-inputs
@@ -3932,6 +3932,7 @@ a text snippet), using @code{libphonenumber}.")
            erlang-jiffy
            erlang-jose
            erlang-luerl
+           erlang-meck
            erlang-mqtree
            erlang-p1-acme
            erlang-p1-mysql
