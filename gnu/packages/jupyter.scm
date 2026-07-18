@@ -2143,7 +2143,7 @@ rich media output.")
 (define-public python-spyder-kernels
   (package
     (name "python-spyder-kernels")
-    (version "3.1.4")
+    (version "3.1.6")
     (source
      (origin
        (method git-fetch)
@@ -2152,7 +2152,7 @@ rich media output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yhrifh148g93qkwx9ggsh2kr9789apzlw91ais4dyas5yf1xj8w"))))
+        (base32 "02z1p6ivc01hqz6jimw8skpd7vvdfx98mrzlqkr6knjmhkp66m42"))))
     (build-system pyproject-build-system)
     (arguments
      (list
