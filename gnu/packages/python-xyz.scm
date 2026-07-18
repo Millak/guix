@@ -22222,17 +22222,25 @@ syntax highlighting, markdown and more to the terminal.")
 (define-public python-rich-click
   (package
     (name "python-rich-click")
-    (version "1.9.7")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/ewels/rich-click")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "1bw3lsj49dln8q7407gv85y8lzdn9a3jcjl9acax6q6x9l73cgqx"))))
+    (version "1.9.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ewels/rich-click")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xgsblpkp4f43y579614n6cp8br2acms8vdj8gpqxa05csap0fqn"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; python-typer 0.26 vendored python-click and broke a lot of things.
+      ;; See <https://github.com/ewels/rich-click/issues/330> and
+      ;; <https://github.com/ewels/rich-click/commit/989c38cf4ed918a25fa523c8191c66b42315cb10>.
+      ;; 136 passed, 6 skipped, 6 deselected
+      #~(list "-k" "not _typer_")))
     (native-inputs
      (list python-inline-snapshot
            python-pytest
