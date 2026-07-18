@@ -117,13 +117,13 @@ library implementing Telemetry instrumentation for Cowboy.")
 (define-public erlang-cowlib
   (package
     (name "erlang-cowlib")
-    (version "2.16.0")
+    (version "2.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "cowlib" version))
        (sha256
-        (base32 "0lfv0nzjb3pp69345ahiig0gqp34hz0hhxzay1276x3bss08sivz"))))
+        (base32 "06nwaaqj2rff408cfg2pn80ag01darzaz8dmvk7x8qhilqrrvy64"))))
     (build-system rebar-build-system)
     (arguments
      ;; FIXME: tests fail with
