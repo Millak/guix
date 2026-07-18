@@ -50,13 +50,13 @@ Earmark and @code{EarmarkParser} tests.")
 (define-public elixir-earmark-parser
   (package
     (name "elixir-earmark-parser")
-    (version "1.4.44")
+    (version "1.4.46")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "earmark_parser" version))
        (sha256
-        (base32 "0l1758nwqf39yg2mgx3d9zfgz2f9i44h7xqmj9csa0a75dssqy27"))))
+        (base32 "1xc9ivpqpqkcl15zcb5qgbpbrns1v62wsbbba8pwcs0wi9p66i4w"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-earmark-ast-dsl elixir-excoveralls elixir-floki))
