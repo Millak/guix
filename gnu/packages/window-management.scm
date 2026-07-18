@@ -3837,7 +3837,7 @@ Wayland compositors supporting the wlr-output-management protocol.")
 (define-public wdisplays
   (package
     (name "wdisplays")
-    (version "1.1.1")
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch)
@@ -3846,7 +3846,7 @@ Wayland compositors supporting the wlr-output-management protocol.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06ydcmfdics2qqjb14p767xs8khd86nancdd9z8j11h2gpvwznvn"))))
+        (base32 "0as6xnlla03imgbbwr34z0zjg8317hiwr90msc931qs7c1dxm9i9"))))
     (build-system meson-build-system)
     (inputs (list gtk+ libepoxy wayland))
     (native-inputs (list `(,glib "bin") pkg-config))
