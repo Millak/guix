@@ -1173,7 +1173,7 @@ implemented:
           (add-before 'check 'setenv
             (lambda _
               (setenv "QT_QPA_PLATFORM" "offscreen"))))))
-    (propagated-inputs (list python-qtpy python-pyqt))
+    (propagated-inputs (list python-qtpy python-pyqt-6))
     (native-inputs (list python-pytest python-pytest-qt python-setuptools))
     (home-page "https://github.com/spyder-ide/qtawesome")
     (synopsis "FontAwesome icons in PyQt and PySide applications")
