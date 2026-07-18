@@ -783,17 +783,17 @@ show some high-level examples and introduce the Plug's main building blocks.")
 (define-public elixir-surface
   (package
     (name "elixir-surface")
-    (version "0.12.1")
+    (version "0.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "surface" version))
        (sha256
-        (base32 "04yl1k13sd22iwlf90l46dd7a09x3wq0g1iq6caw9y9p4ljl4chk"))))
+        (base32 "12hmq0rv2dhh8pm6s9bwhm3xw669y91gr6mb3v9ks40yc3ddk6pz"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-ecto
-           elixir-floki
+           elixir-lazy-html
            elixir-jason
            elixir-phoenix-ecto
            elixir-sourceror))
