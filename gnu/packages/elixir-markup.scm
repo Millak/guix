@@ -111,13 +111,13 @@ LazyHTML.")
 (define-public elixir-ex-doc
   (package
     (name "elixir-ex-doc")
-    (version "0.38.4")
+    (version "0.40.3")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "ex_doc" version))
        (sha256
-        (base32 "1ck5y70zkppyswpagvla4zh19cryc4slw5c04lf930wa81327dpp"))))
+        (base32 "1pkkp42dgj3dks6p4x9fbx39rscwgkb8b6s8kdsdkv1gfiby6mi7"))))
     (build-system mix-build-system)
     (arguments
      ;; FIXME: tests depend on lazy_html which is not yet packaged.
