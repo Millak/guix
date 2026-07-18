@@ -246,13 +246,13 @@ Data Repository (CLDR).")
 (define-public elixir-ex-cldr-territories
   (package
     (name "elixir-ex-cldr-territories")
-    (version "2.10.0")
+    (version "2.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "ex_cldr_territories" version))
        (sha256
-        (base32 "158f40dgvbzg6ribx4c2g8ll30q0dy9svbpkbfxb32iz53wq9w0k"))))
+        (base32 "0s7pl6kg6v6y1r0v38z683shjd7mv2hddvld4v9sxsqxrhyxsayi"))))
     (build-system mix-build-system)
     (arguments
      (list
