@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Pierre-Henry Fröhring <phfrohring@deeplinks.com>
 ;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
-;;; Copyright © 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2025, 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1001,14 +1001,24 @@ any case.")
 (define-public elixir-recode
   (package
     (name "elixir-recode")
-    (version "0.7.5")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "recode" version))
        (sha256
-        (base32 "1rnvphgp3qaw02vh615hf5kfnm215bw4nc4wh8p8i01yn5p3khxd"))))
+        (base32 "1fpbfkg7g3pfc9qk2nlg4dz7hhimz22pbqpqanfnfq54npmj87f7"))))
     (build-system mix-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-freedom-formatter
+            (lambda _
+              ;; freedom_formatter is not packaged in Guix.
+              (substitute* "mix.exs"
+                (("\\[\\{:freedom_formatter, \"~> 2.1\", only: :test\\}\\]")
+                 "[]")))))))
     (native-inputs
      (list elixir-excoveralls elixir-mox))
     (propagated-inputs
