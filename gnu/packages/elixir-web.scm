@@ -698,13 +698,13 @@ web frameworks like Ruby on Rails or Python's Django.")
 (define-public elixir-phx-new
   (package
     (name "elixir-phx-new")
-    (version "1.8.1")
+    (version "1.8.9")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "phx_new" version))
        (sha256
-        (base32 "05kv8i0w8f1ky6gx3rz0ps5mwp8nkln7dq6565zw660i3cxpnwzn"))))
+        (base32 "186nv9wcs7hdm81nr2yaqgh3hag3xp1j29yk6i1140nj06i1iwib"))))
     (build-system mix-build-system)
     (synopsis
      "Phoenix framework project generator")
