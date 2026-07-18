@@ -1071,13 +1071,13 @@ human-readable.")
 (define-public elixir-sourceror
   (package
     (name "elixir-sourceror")
-    (version "1.10.0")
+    (version "1.12.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "sourceror" version))
        (sha256
-        (base32 "1wdkqiszn0483g2wfp85s15mz08xzhic9zbfisfrqmh45v4xznr9"))))
+        (base32 "1jz9y0a9qr73nrb7c3c2fcchcnjqixm0biq2i1991f6517dd6dys"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-excoveralls))
