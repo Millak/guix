@@ -235,13 +235,13 @@ in HTTP/2.")
 (define-public elixir-hpax
   (package
     (name "elixir-hpax")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "hpax" version))
        (sha256
-        (base32 "0jpkgn2abg0pr1anw7p9v3dkbbwlx243b92brv11hncdz8f6xawf"))))
+        (base32 "1jkpycqdfhrlkwj286qik7klkpg5ijwr0qc1wwfd1hmw5qacpixg"))))
     (build-system mix-build-system)
     (native-inputs
      (list erlang-coveralls
