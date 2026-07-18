@@ -1045,13 +1045,13 @@ library for Erlang < 20.")
 (define-public erlang-idna
   (package
     (name "erlang-idna")
-    (version "6.1.1")
+    (version "7.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "idna" version))
        (sha256
-        (base32 "1sjcjibl34sprpf1dgdmzfww24xlyy34lpj7mhcys4j4i6vnwdwj"))))
+        (base32 "07y7z3fxdzza5pc48k584ra1p2aljs6m1f6am1hxydmz4nh5ksba"))))
     (build-system rebar-build-system)
     (inputs (list erlang-unicode-util-compat))
     (synopsis "Pure Erlang IDNA implementation")
