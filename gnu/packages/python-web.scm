@@ -262,7 +262,7 @@ writing applications that talk to network enabled embedded
 (define-public python-alpaca-py
   (package
     (name "python-alpaca-py")
-    (version "0.43.2")
+    (version "0.43.5")
     (source
      (origin
        (method git-fetch)
@@ -271,7 +271,7 @@ writing applications that talk to network enabled embedded
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0majn27r2s2z5nbqvkpmw04kswhj9xkmvmm0rkvb3fga9lwwivlb"))))
+        (base32 "1kiq8b1v58yj7fypmnfn4mij1n96ym1i9lxsd4gmbv0cgpn10nqv"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-poetry-core
@@ -283,6 +283,7 @@ writing applications that talk to network enabled embedded
      (list python-msgpack
            python-pandas
            python-pydantic
+           python-pytz
            python-requests
            python-sseclient-py
            python-websockets))
