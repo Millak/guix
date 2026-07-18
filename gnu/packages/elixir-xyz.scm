@@ -520,13 +520,13 @@ things like Dialyzer errors and Observer.")
 (define-public elixir-escape
   (package
     (name "elixir-escape")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "escape" version))
        (sha256
-        (base32 "0q9s3i071ijniplgbdimgnns5xg65xwwixwsrk32kr210yx1i6dj"))))
+        (base32 "0n214hgabvdmn4b1kln3zs8azc917kzjx1yz3jxszcgzcqfn8zc6"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-prove))
