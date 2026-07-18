@@ -5354,19 +5354,18 @@ Public Suffix List's private domains as well.")
 (define-public python-tracerite
   (package
     (name "python-tracerite")
-    (version "1.1.3")
+    (version "2.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tracerite" version))
        (sha256
-        (base32 "07mkg0sl0h335kj6yjvxki2c19gxhb7rkks1zgzh7aj0y83c17qi"))))
+        (base32 "087i51ybbj62nx5jzx8znhqb6cd7279mi7v9j6lrxf8lhb81nr3r"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))        ;no tests in PyPI or Git
     (native-inputs
-     (list python-setuptools
-           python-setuptools-scm))
+     (list python-hatch-vcs python-hatchling))
     (propagated-inputs
      (list python-html5tagger))
     (home-page "https://github.com/sanic-org/tracerite")
