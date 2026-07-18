@@ -118,13 +118,13 @@ data.")
 (define-public elixir-ex-cldr-currencies
   (package
     (name "elixir-ex-cldr-currencies")
-    (version "2.16.5")
+    (version "2.17.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "ex_cldr_currencies" version))
        (sha256
-        (base32 "1lrhiyi5ywcvpirf0k4qs6l9pwvijwix1bvqwafki9zh5281g5s3"))))
+        (base32 "04h19bvxcx7r8di4svv2vvkqwbqxzfff4c8mk0r6dzm20v0raw3r"))))
     (build-system mix-build-system)
     (propagated-inputs (list elixir-ex-cldr elixir-jason))
     (synopsis
