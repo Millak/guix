@@ -4986,18 +4986,18 @@ parse times that can be a thirtieth of the html5lib parse times.")
 (define-public python-html5tagger
   (package
     (name "python-html5tagger")
-    (version "1.3.0")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "html5tagger" version))
               (sha256
                (base32
-                "1acd1a4f66gi4plqnsml7cf33qp83mxsnmnqpdwkpj7597xkvyl4"))))
+                "090nmjhr0yj3x5iy9zmbmv07dpxn234dqpi2lglk0fa4aj83rvhd"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))        ;no tests in PyPI or Git
     (native-inputs
-     (list python-setuptools python-setuptools-scm python-wheel))
+     (list python-hatch-vcs python-hatchling))
     (home-page "https://github.com/sanic-org/html5tagger")
     (synopsis "Create HTML documents from Python")
     (description
