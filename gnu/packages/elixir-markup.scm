@@ -171,13 +171,13 @@ HTML entities in a string.")
 (define-public elixir-floki
   (package
     (name "elixir-floki")
-    (version "0.38.0")
+    (version "0.38.4")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "floki" version))
        (sha256
-        (base32 "1ndbs7q8dncxxxiq94l4ira3fvg311asyb31bdijvywk3vlkx555"))))
+        (base32 "0ws94kq53556hg3fr8ylwi780lls17aa5b7dqx2rirz8xr2ldcxx"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-credo elixir-jason))
