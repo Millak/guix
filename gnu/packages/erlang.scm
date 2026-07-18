@@ -793,13 +793,13 @@ applications as a dependent libraries.")
 (define-public rebar3-ex-doc
   (package
     (name "rebar3-ex-doc")
-    (version "0.2.30")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "rebar3_ex_doc" version))
        (sha256
-        (base32 "0n415nq3dia63q9sywmkzm53j13pciw9ss3nd3bgbxr95r93ii3b"))))
+        (base32 "0ypq30xwgz4pndlin23548ba73j6dvi6ii10qjgn25ski2z00q82"))))
     (build-system rebar-build-system)
     (synopsis "Rebar3 plugin for generating docs with ex_doc")
     (description "This plugin provides support for generating docs with
