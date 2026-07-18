@@ -355,13 +355,13 @@ from 100+ icon sets from @uref{https://iconify.design, iconify.design}.")
 (define-public elixir-mint-web-socket
   (package
     (name "elixir-mint-web-socket")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "mint_web_socket" version))
        (sha256
-        (base32 "14d9c2ryqggl2p54bh0rhm3ab17j6l7ir817rsh4nnn455alqz82"))))
+        (base32 "0q9fy6sq9yaxh2ip4sgypa5l3jk7q1m4vkkc6prmiiwg8iimdcq4"))))
     (build-system mix-build-system)
     (arguments
      ;; Tests depend on gun from hex.pm which is not packaged yet.
