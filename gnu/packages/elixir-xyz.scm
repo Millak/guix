@@ -462,13 +462,13 @@ desired coding style.")
 (define-public elixir-decimal
   (package
     (name "elixir-decimal")
-    (version "2.3.0")
+    (version "3.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "decimal" version))
        (sha256
-        (base32 "1b5ffcvvzmzi7gpkahn36z5wyqc3wlli7rrhrz1lgjr9rdan7mm4"))))
+        (base32 "1xpiii4w9pwyzn7qqb4jsg4j9sdqbmcky0p60dymi83lxln5zwn5"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-stream-data))
