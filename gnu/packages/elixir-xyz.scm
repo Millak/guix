@@ -1032,13 +1032,13 @@ autocorrection.")
 (define-public elixir-rewrite
   (package
     (name "elixir-rewrite")
-    (version "1.1.2")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "rewrite" version))
        (sha256
-        (base32 "1m1r7mq14xvxmnlihx7scn599ljrlpnbzdz8nd3hm3ajwfqr92vz"))))
+        (base32 "198l4whhlfg8d186w9rkgg2sj00yhg8vp4ziyhp812m5ydzsq4fi"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-excoveralls))
