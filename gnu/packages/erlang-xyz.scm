@@ -711,13 +711,13 @@ dispatch them as Telemetry events.")
 (define-public erlang-eimp
   (package
     (name "erlang-eimp")
-    (version "1.0.26")
+    (version "1.0.27")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "eimp" version))
        (sha256
-        (base32 "0k04abnna5vqd0r248car4xkfjc83p5z0iqy4w7w9pxrfa2lwvfr"))))
+        (base32 "1z7kazcd1909fwwqw8g4ls2c9f5pc95zqm7h3c5gbymwjgi86ziw"))))
     (build-system rebar-build-system)
     (inputs (list erlang-p1-utils))
     (native-inputs (list erlang-pc))
