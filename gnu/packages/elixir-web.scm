@@ -376,13 +376,13 @@ from 100+ icon sets from @uref{https://iconify.design, iconify.design}.")
 (define-public elixir-mint
   (package
     (name "elixir-mint")
-    (version "1.7.1")
+    (version "1.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "mint" version))
        (sha256
-        (base32 "06r3kb9vkzpx8lgp6fjngaxz9hzidl8sw91hxvfh2hzjs2ja1szw"))))
+        (base32 "0x0yzia7045n54fpy6ph1y3h37iw62839b7fqjxrs1hc91196z2z"))))
     (build-system mix-build-system)
     (arguments
      ;; Tests depend on elixir-mox which is not packaged yet.
