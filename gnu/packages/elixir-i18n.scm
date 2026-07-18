@@ -166,13 +166,13 @@ Repository (CLDR).")
 (define-public elixir-ex-cldr-locale-display
   (package
     (name "elixir-ex-cldr-locale-display")
-    (version "1.6.1")
+    (version "1.7.3")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "ex_cldr_locale_display" version))
        (sha256
-        (base32 "05kh2320r2yc8illlzvn43czbfx01zdpfdwnzf90fjn31ckw69nn"))))
+        (base32 "04mjhjhll8v5m349zf4ajz52sqvkk9j4i03rmp2zbbr48lawc84l"))))
     (build-system mix-build-system)
     (arguments
      (list
