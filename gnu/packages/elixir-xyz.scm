@@ -592,13 +592,13 @@ writer and parser).")
 (define-public elixir-dialyxir
   (package
     (name "elixir-dialyxir")
-    (version "1.4.6")
+    (version "1.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "0kgnis0cn0g49anmg84akys0b14whd1fdahza1ndmhnlbif63xcc"))))
+        (base32 "1zlygpr2i3bz2pgr8h1syjc5hp62jq4i3v7gk3hwxf3f5qh2fidk"))))
     (build-system mix-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (propagated-inputs (list elixir-erlex))
