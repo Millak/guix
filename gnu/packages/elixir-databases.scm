@@ -353,13 +353,13 @@ typespecs without all the boilerplate code.")
 (define-public elixir-uniq
   (package
     (name "elixir-uniq")
-    (version "0.6.1")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "uniq" version))
        (sha256
-        (base32 "05mrzx7g8q5c4jg38pxqcw1x3bysw0i5n4j7d42v6m3hcx6w69k4"))))
+        (base32 "0zbcr9ddl6wri4wb5prlawjp2jjy95883g707mfsbwr0186r0aib"))))
     (build-system mix-build-system)
     (native-inputs (list elixir-stream-data))
     (propagated-inputs (list elixir-ecto))
