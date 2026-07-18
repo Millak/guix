@@ -331,6 +331,25 @@ provides an Elixir implementation of the MS TDS protocol.")
     (home-page "https://hexdocs.pm/tds/")
     (license license:asl2.0)))
 
+(define-public elixir-typed-ecto-schema
+  (package
+    (name "elixir-typed-ecto-schema")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "typed_ecto_schema" version))
+       (sha256
+        (base32 "1h1bkdxgw7gpsf2mgf6zgayp6i6gk6d65bp0b29gm9gxp4srpgfw"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-ecto))
+    (synopsis "Ecto schemas with typespecs without the boilerplate")
+    (description
+     "This package provides a library to define @code{Ecto} schemas with
+typespecs without all the boilerplate code.")
+    (home-page "https://hexdocs.pm/typed_ecto_schema/")
+    (license license:asl2.0)))
+
 (define-public elixir-uniq
   (package
     (name "elixir-uniq")
