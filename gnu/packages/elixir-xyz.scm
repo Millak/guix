@@ -438,13 +438,13 @@ JSON API.")
 (define-public elixir-credo
   (package
     (name "elixir-credo")
-    (version "1.7.12")
+    (version "1.7.19")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "1rci293n3df1wn1sdq7k44s17gcqsjcmn8r9qzcjfm3ccmfd94w4"))))
+        (base32 "1f2plm90644anjifcqjbzp1padbaikqd889nc799vfbvb9fwk2rd"))))
     (build-system mix-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (propagated-inputs (list elixir-bunt elixir-file-system elixir-jason))
