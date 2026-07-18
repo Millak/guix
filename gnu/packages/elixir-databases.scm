@@ -76,7 +76,7 @@ development.")
 (define-public elixir-ecto-sql
   (package
     (name "elixir-ecto-sql")
-    (version "3.13.2")
+    (version "3.14.0")
     (source
      (origin
        (method git-fetch)
@@ -85,7 +85,7 @@ development.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i5jhjv8xqwl887kq7jp880ywpp16glllcfd7y7kpb6h6jc62hnd"))))
+        (base32 "1p91kkc4sr7pyrjfv26w1afh0svz2mr1fq0vw9rcnpdfsxzzrs04"))))
     (build-system mix-build-system)
     (propagated-inputs
      (list elixir-db-connection
