@@ -216,13 +216,13 @@ for code instrumentation and metrics collection.")
 (define-public erlang-jose
   (package
     (name "erlang-jose")
-    (version "1.11.10")
+    (version "1.11.12")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "jose" version))
        (sha256
-        (base32 "0576jdjygby37qmzrs8cm5l6n622b0mi3z28j6r4s5xsz1px6v0d"))))
+        (base32 "0yxb3djf8qygz291s0d9sany2za56xa8ipawfsbbc44j7rjjps9i"))))
     (build-system rebar-build-system)
     (arguments
      (list
