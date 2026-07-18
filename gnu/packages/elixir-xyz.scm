@@ -945,13 +945,13 @@ structures in Elixir.")
 (define-public elixir-process-tree
   (package
     (name "elixir-process-tree")
-    (version "0.2.1")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "process_tree" version))
        (sha256
-        (base32 "04z76m5vpbmhl4apsszy93g2a3iw02kg2dvhvbp1ld8l0nzydvk8"))))
+        (base32 "11pbf0404rz6v5pjpgj4vaxyclsrbl8h63vfky5b4x3xkjzbgcvc"))))
     (build-system mix-build-system)
     (synopsis "Avoid global state in Elixir applications")
     (description
