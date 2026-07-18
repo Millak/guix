@@ -96,6 +96,25 @@ data.")
     (home-page "https://hexdocs.pm/ex_cldr_calendars/")
     (license license:asl2.0)))
 
+(define-public elixir-ex-cldr-calendars-japanese
+  (package
+    (name "elixir-ex-cldr-calendars-japanese")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ex_cldr_calendars_japanese" version))
+       (sha256
+        (base32 "13c6n5lgbpn3cja5aiik9836ki65syyhcv92acxywr53s6bsnsqc"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-ex-cldr-calendars))
+    (synopsis "Japanese calendar implementation for Elixir")
+    (description
+     "This package provides an implementation of the Japanese
+(Gregorian-based with Japanese eras) calendar for Elixir.")
+    (home-page "https://hexdocs.pm/ex_cldr_calendars_japanese/")
+    (license license:asl2.0)))
+
 (define-public elixir-ex-cldr-currencies
   (package
     (name "elixir-ex-cldr-currencies")
