@@ -224,13 +224,13 @@ applications.")
 (define-public elixir-ex-cldr-numbers
   (package
     (name "elixir-ex-cldr-numbers")
-    (version "2.35.2")
+    (version "2.38.3")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "ex_cldr_numbers" version))
        (sha256
-        (base32 "1pan719k511ya67s7vldz3djry5m6vsb4vynkfggwznyly0zrdbd"))))
+        (base32 "0g77ixz2iqq1srx0908966m7cgax84yh4rw9mrw6vij74zpqf39s"))))
     (build-system mix-build-system)
     (propagated-inputs
      (list elixir-decimal elixir-digital-token elixir-ex-cldr
