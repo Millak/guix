@@ -753,13 +753,13 @@ function arguments and return values against their typespecs.")
 (define-public elixir-machete
   (package
     (name "elixir-machete")
-    (version "0.3.11")
+    (version "0.3.12")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "0xxfbk888q2x3fdkh4rl3n53sya7cngxax55md2lcd6ggcn0cn1d"))))
+        (base32 "17i4rwggvyazmgk4mxgzdprhgzx87ibaayd6bnh55y088w95yv8x"))))
     (build-system mix-build-system)
     (native-inputs (list elixir-credo elixir-dialyxir))
     (synopsis "Literate test matchers for ExUnit")
