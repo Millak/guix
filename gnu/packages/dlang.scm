@@ -381,16 +381,16 @@ integration tests...\n")
         (srfi srfi-1)
         (srfi srfi-26))
       #:phases
-      #~(let* ((phase-in-sub-dir (lambda (phase sub-dir)
-                                   (lambda args
-                                     (with-directory-excursion sub-dir
-                                       (apply
-                                        (assoc-ref %standard-phases phase)
-                                        args)))))
-               (target-bin-sh (string-append
-                               #$(this-package-input "bash-minimal")
-                               "/bin/sh")))
-          (modify-phases %standard-phases
+      (let* ((wrap-in-directory-excursion
+              (lambda (sub-dir phase . extra-args)
+                #~(lambda args
+                    (with-directory-excursion #$sub-dir
+                      (apply (assoc-ref %standard-phases '#$phase)
+                             (append args '#$extra-args))))))
+             (target-file (lambda (pkg-name path)
+                            (file-append (this-package-input pkg-name) path)))
+             (target-bin-sh (target-file "bash-minimal" "/bin/sh")))
+        #~(modify-phases %standard-phases
             (replace 'unpack
               (lambda* (#:key source #:allow-other-keys)
                 (let ((dmd-source source)
@@ -426,9 +426,9 @@ integration tests...\n")
                   ;;    (format #f "~s" target-lib-curl)))
                   (substitute* "std/process.d"
                     (("return \"/bin/sh\";")
-                     (format #f "return ~s;" target-bin-sh))
+                     (format #f "return ~s;" #$target-bin-sh))
                     (("#!/bin/sh")
-                     (string-append "#!" target-bin-sh))))))
+                     (string-append "#!" #$target-bin-sh))))))
             (add-after 'unpack 'patch-tests
               (lambda _
                 ;; Since the implementation of SOURCE_DATE_EPOCH support in
@@ -442,7 +442,7 @@ integration tests...\n")
 
                 ;; This test creates a shell script and runs it.
                 (substitute* "dmd/compiler/test/dshell/test6952.d"
-                  (("/usr/bin/env bash") target-bin-sh))
+                  (("/usr/bin/env bash") #$target-bin-sh))
 
                 ;; In the sarif json output, the compiler version string ends
                 ;; with a raw newline for some reason, causing these tests to
@@ -476,9 +476,9 @@ integration tests...\n")
             (delete 'bootstrap)
             (delete 'configure)
             (replace 'build
-              (phase-in-sub-dir 'build "dmd"))
+              #$(wrap-in-directory-excursion "dmd" 'build))
             (add-after 'build 'build-phobos
-              (phase-in-sub-dir 'build "phobos"))
+              #$(wrap-in-directory-excursion "phobos" 'build))
             (add-after 'build-phobos 'build-man
               (lambda* (#:key make-flags #:allow-other-keys)
                 (with-directory-excursion "dmd/compiler/docs"
@@ -489,9 +489,9 @@ integration tests...\n")
                                    (string-append "DMD=" dmd)
                                    make-flags))))))
             (replace 'check
-              (phase-in-sub-dir 'check "dmd"))
+              #$(wrap-in-directory-excursion "dmd" 'check))
             (add-after 'check 'check-phobos
-              (phase-in-sub-dir 'check "phobos"))
+              #$(wrap-in-directory-excursion "phobos" 'check))
             (replace 'install
               (lambda* (#:key outputs #:allow-other-keys)
                 (let* ((platform (cond (#$(target-linux?) "linux")))
@@ -534,7 +534,7 @@ integration tests...\n")
                       (format #t "\n"))))))
             (replace 'install-license-files
               ;; Phobos license is identical.
-              (phase-in-sub-dir 'install-license-files "dmd"))))))
+              #$(wrap-in-directory-excursion "dmd" 'install-license-files))))))
     (inputs
      (list bash-minimal))
     (native-inputs
