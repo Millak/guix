@@ -520,15 +520,15 @@ Server.")
 (define-public erlang-p1-pgsql
   (package
     (name "erlang-p1-pgsql")
-    (version "1.1.35")
+    (version "1.1.41")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "p1_pgsql" version))
        (sha256
-        (base32 "1hjmw82f6k2dpchgdn2i0j0bvi7m6qihcnvrjq36c721di2995g9"))))
+        (base32 "0wm10ijr0awqfdlhlczxpchgqlva5jmrvzxksknn81257nx2mvi6"))))
     (build-system rebar-build-system)
-    (inputs (list erlang-xmpp))
+    (inputs (list erlang-stringprep))
     (synopsis "PostgreSQL driver for Erlang")
     (description "This package provides @code{PostgreSQL} driver for Erlang.")
     (home-page "https://hex.pm/packages/p1_pgsql")
