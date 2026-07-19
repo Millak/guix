@@ -10,6 +10,7 @@
 ;;; Copyright © 2025 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2026 Joan Vilardaga Castro <codeberg-hn80@joanvc.cat>
+;;; Copyright © 2026 Arjan Adriaanse <arjan@adriaan.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1311,8 +1312,16 @@ placed in a udev rules file."
               (let* ((stat (stat #$source))
                      (uid (stat:uid stat))
                      (gid (stat:gid stat))
-                     (source-user (passwd:name (getpwuid uid)))
-                     (source-group (group:name (getgrgid gid))))
+                     (source-user
+                      (catch #t
+                        (lambda () (passwd:name (getpwuid uid)))
+                        ;; In case user does not exist failover to plain uid.
+                        (const (number->string uid))))
+                     (source-group
+                      (catch #t
+                        (lambda () (group:name (getgrgid gid)))
+                        ;; In case group does not exist failover to plain gid.
+                        (const (number->string gid)))))
                 (match (quote #$policy)
                   ('bind
                    (mount #$source #$destination
