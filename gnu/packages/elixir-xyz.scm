@@ -39,6 +39,25 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
 
+(define-public elixir-cc-precompiler
+  (package
+    (name "elixir-cc-precompiler")
+    (version "0.1.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "cc_precompiler" version))
+       (sha256
+        (base32 "1fbml3rskgm3085mqpwass5b8w4a821g1g75h13gjd88mwn269rl"))))
+    (build-system mix-build-system)
+    (inputs (list elixir-elixir-make))
+    (synopsis "Precompiler module for @code{elixir_make}")
+    (description "This package provides a library that supports
+@code{elixir_make}'s precompilation feature for C/C++ (cross) compilation.  It's
+customisble and easy to extend.")
+    (home-page "https://cc-precompiler.hexdocs.pm/")
+    (license license:asl2.0)))
+
 (define-public elixir-nimble-parsec
   (package
     (name "elixir-nimble-parsec")
