@@ -58,6 +58,23 @@ customisble and easy to extend.")
     (home-page "https://cc-precompiler.hexdocs.pm/")
     (license license:asl2.0)))
 
+(define-public elixir-elixir-make
+  (package
+    (name "elixir-elixir-make")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "elixir_make" version))
+       (sha256
+        (base32 "10hrnfripbwjks4rldajkahv2lrmr3rz1mdbhsw6d256gzxhj7yw"))))
+    (build-system mix-build-system)
+    (synopsis "Make compiler for Mix")
+    (description "This package provides @code{elixir_make}, a Make compiler for
+Mix.")
+    (home-page "https://elixir-make.hexdocs.pm/")
+    (license license:asl2.0)))
+
 (define-public elixir-nimble-parsec
   (package
     (name "elixir-nimble-parsec")
