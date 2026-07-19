@@ -75,6 +75,44 @@ Mix.")
     (home-page "https://elixir-make.hexdocs.pm/")
     (license license:asl2.0)))
 
+(define-public elixir-fine
+  (package
+    (name "elixir-fine")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "fine" version))
+       (sha256
+        (base32 "04iv9qffr43ccsvlwd0clphkap1yjxbzlry1prg8i3j8jm2fnf2n"))))
+    (build-system mix-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'resolve-include-dir-at-runtime
+            (lambda _
+              ;; @include_dir is expanded at compile time and would point
+              ;; to the temporary build directory.
+              (substitute* "lib/fine.ex"
+                (("def include_dir\\(\\), do: @include_dir")
+                 "def include_dir(), do: Application.app_dir(:fine, \"c_include\")"))))
+          (add-after 'install 'install-c-include
+            (lambda _
+              (let ((ebin (dirname (car (find-files #$output "^fine\\.app$")))))
+                (copy-recursively "c_include"
+                                  (string-append (dirname ebin)
+                                                 "/c_include"))))))))
+    (synopsis "C++ library enabling more ergonomic NIFs")
+    (description
+     "Fine is a C++ library enabling more ergonomic NIFs, tailored to Elixir.
+
+Erlang provides C API for implementing native functions (@code{erl_nif}).  Fine
+is not a replacement of the C API, instead it is designed as a complementary
+API, enhancing the developer experience when implementing NIFs in C++.")
+    (home-page "https://fine.hexdocs.pm/")
+    (license license:asl2.0)))
+
 (define-public elixir-nimble-parsec
   (package
     (name "elixir-nimble-parsec")
