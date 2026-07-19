@@ -228,6 +228,25 @@ ULID datatype for @code{Ecto} (using @code{ex_ulid}) and related helpers.")
     (home-page "https://hexdocs.pm/needle_ulid/")
     (license license:expat)))
 
+(define-public elixir-needle-uid
+  (package
+    (name "elixir-needle-uid")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "needle_uid" version))
+       (sha256
+        (base32 "040vqqjprzdsr5n8swbbh67g2s7gb5p1mwjjm1mf3x6xs4niidcf"))))
+    (build-system mix-build-system)
+    (propagated-inputs
+     (list elixir-ecto elixir-needle-ulid elixir-untangle))
+    (synopsis "Hybrid prefixed UUIDv7 and ULID data type for Ecto")
+    (description "This package provides @code{elixir-needle-uid}, a library
+implementing an hybrid prefixed UUIDv7 and ULID data type for @code{Ecto}.")
+    (home-page "https://hexdocs.pm/needle_uid/")
+    (license license:expat)))
+
 (define-public elixir-needle
   (package
     (name "elixir-needle")
