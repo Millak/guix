@@ -1462,7 +1462,7 @@ distills complex, animated scenes into a set of baked geometric results.")
 (define-public mangohud
   (package
     (name "mangohud")
-    (version "0.7.0")
+    (version "0.8.4")
     (source
      (origin
        (method git-fetch)
@@ -1471,7 +1471,7 @@ distills complex, animated scenes into a set of baked geometric results.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m4a2dqzqdhk9w1gvzppid7k0fxvplh5hmivvj9sda529s1g24rc"))))
+        (base32 "13zwqam7mqhc7f4gngxcrrfa7ds85nwfms1v4vaccznbfbaa28rn"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -1482,34 +1482,39 @@ distills complex, animated scenes into a set of baked geometric results.")
               "-Dappend_libdir_mangohud=false")
       #:phases
       #~(modify-phases %standard-phases
-          ;; MangoHud tries to build the imgui library as a meson submodule,
-          ;; so we change the dependency to the imgui input instead.
-          (add-after 'unpack 'unbundle-imgui
+          ;; MangoHud tries to build the imgui and implot libraries as a meson
+          ;; submodules, so we change the dependency to the inputs instead.
+          (add-after 'unpack 'unbundle-imgui-implot
             (lambda _
               (substitute* "meson.build"
-                (("dearimgui_sp = .*")
+                (("im.*_sp = .*")
                  "")
-                (("dearimgui_sp.get_variable\\('imgui_dep'\\)")
+                (("imgui_sp.get_variable\\('imgui_dep'\\)")
                  (string-append
                   "declare_dependency(dependencies: "
                   "cpp.find_library('imgui'), include_directories: '"
-                  #$(this-package-input "imgui") "/include/imgui')")))))
-          ;; Likewise, MangoHud bundles a Vulkan headers submodule to use a
-          ;; specific version, which we provide as an input and adjust the
-          ;; build accordingly.
-          (add-after 'unbundle-imgui 'unbundle-vulkan-headers
+                  #$(this-package-input "imgui") "/include/imgui')"))
+                (("implot_sp.get_variable\\('implot_dep'\\)")
+                 (string-append
+                  "declare_dependency(dependencies: "
+                  "cpp.find_library('implot'), include_directories: '"
+                  #$(this-package-input "implot") "/include/implot')")))))
+          ;; Likewise, MangoHud bundles Vulkan submodules to use specific
+          ;; versions, which we provide as inputs and adjust the build
+          ;; accordingly.
+          (add-after 'unbundle-imgui-implot 'unbundle-vulkan
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "meson.build"
-                (("vkh_sp = .*")
+                (("vulkan_.*_sp = .*")
                  "")
-                (("vkh_sp.get_variable\\('vulkan_api_xml'\\)")
+                (("vulkan_headers_sp.get_variable\\('vulkan_api_xml'\\)")
                  (string-append "files('"
                                 (search-input-file inputs "registry/vk.xml")
                                 "')"))
-                (("dep_vulkan = .*")
+                (("dep_vulkan.*")
                  ""))
               (substitute* "src/meson.build"
-                (("dep_vulkan,")
+                (("dep_vulkan.*")
                  ""))))
           (add-after 'unpack 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
@@ -1532,8 +1537,10 @@ distills complex, animated scenes into a set of baked geometric results.")
      (list dbus
            glslang
            hwdata
-           imgui-1.86
+           imgui-1.91
+           implot
            libx11
+           libxkbcommon
            mesa
            mesa-utils
            nlohmann-json
@@ -1543,12 +1550,22 @@ distills complex, animated scenes into a set of baked geometric results.")
              (method git-fetch)
              (uri (git-reference
                    (url "https://github.com/KhronosGroup/Vulkan-Headers")
-                   (commit "v1.2.158")))
-             (file-name (git-file-name "vulkan" "v1.2.158"))
+                   (commit "v1.4.346")))
+             (file-name (git-file-name "vulkan" "v1.4.346"))
              (sha256
               (base32
-               "0jvaqj87792yccpr290djb18pqaisspq9dw6bqim6mrhfgda9v76")))
-           vulkan-loader))
+               "0nv0701qbwxi4p2nvrf1m80nh6pjfhbqv8qhjbb531kr47j5cc15")))
+           vulkan-loader
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/KhronosGroup/Vulkan-Utility-Libraries")
+                   (commit "v1.4.346")))
+             (file-name (git-file-name "vulkan-utility-libraries" "v1.4.346"))
+             (sha256
+              (base32
+               "0fwws98lkrc8df0ikrqh89df9az3pa13idxrvlzn4bk1szl5wrhm")))
+           wayland))
     (native-inputs (list git-minimal/pinned pkg-config python))
     (home-page "https://github.com/flightlessmango/MangoHud/")
     (synopsis "Vulkan and OpenGL overlay for monitoring performance and hardware")
