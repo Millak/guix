@@ -10038,21 +10038,16 @@ pipelines.")
 (define-public python-romancal
   (package
     (name "python-romancal")
-    ;; 1.0.0 (2026-05-15), to support Astropy 8.
-    (properties '((commit . "282aa278db03bdbbbe59f65c6250732abfe92a0a")
-                  (revision . "0")))
-    (version (git-version "1.0.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/spacetelescope/romancal")
-              (commit (assoc-ref properties 'commit))))
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qvlqzk5mzw5d4fwmvklqdmsdfyvvdl8vja5485cg8c9fpsc674s"))))
+        (base32 "0wb6dqk5pj8z1ayankvd0imgm5shkpfa4xycj70yry78dj83rw4a"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -10106,7 +10101,7 @@ pipelines.")
     (propagated-inputs
      (list python-asdf
            python-asdf-astropy
-           python-astropy
+           python-astropy-7
            python-crds
            python-drizzle
            python-gwcs
