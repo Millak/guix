@@ -1104,7 +1104,7 @@ for \"genetic modifications\" as described by e.g.
 (define-public ginga
   (package
     (name "ginga")
-    (version "6.0.0")
+    (version "7.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1113,14 +1113,14 @@ for \"genetic modifications\" as described by e.g.
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l1ima1rif93fa80xb61xfcv72543hqfhi1galphxmnsiy0pl3h4"))))
+        (base32 "0jpp6vnbs8xby9hrz3k07rpgj1g29m2fsmi100371m8fvmnv4d7c"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; tests: 256 passed, 13 skipped
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'set-home
+          (add-before 'sanity-check 'set-home
             (lambda _
               ;; Relax matplotlib warning: ... because the default path
               ;; (/homeless-shelter/.config/matplotlib) is not a writable
