@@ -8769,7 +8769,7 @@ Function} and Sensitivities.")
 (define-public python-pyiri
   (package
     (name "python-pyiri")
-    (version "0.1.6")
+    (version "0.1.7")
     (source
      (origin
        (method git-fetch)
@@ -8778,7 +8778,7 @@ Function} and Sensitivities.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sp9j9i9rf6lmkjx7k60xbpms388gbsqlm5xl2jr1m5x36w2wlz1"))))
+        (base32 "10fwj2h0vn1b8525qhfw607rsjq4q4fcpn2ya1v0iy3rzv6fvbxi"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
