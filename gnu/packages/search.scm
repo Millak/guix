@@ -188,17 +188,19 @@ a CGI web search frontend.")
     (synopsis "Python bindings for the Xapian search engine library")
     (license license:gpl2+)))
 
+;; Note: This package is obsolete, and won't work with Xapian 2.0.
+;; Users are encouraged to migrate to perl-xapian instead.
 (define-public perl-search-xapian
   (package
     (name "perl-search-xapian")
-    (version "1.2.25.5")
+    (version "1.2.25.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/O/OL/OLLY/"
                            "Search-Xapian-" version ".tar.gz"))
        (sha256
-        (base32 "12xs22li1z10rccpxbb4zflkkdh7q37z9hb8nvx1ywfn2b3vskr0"))))
+        (base32 "02cxv5s3651hxb37c6gzi79216sm0vy1vbq739zfrsm9223i76w4"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-devel-leak))
@@ -209,7 +211,9 @@ a CGI web search frontend.")
     (description
      "Search::Xapian wraps most methods of most Xapian classes.  The missing
 classes and methods should be added in the future.  It also provides a
-simplified, more 'perlish' interface to some common operations.")
+simplified, more 'perlish' interface to some common operations.
+
+Note: This package is obsolete.  Please migrate to perl-xapian instead.")
     (license license:perl-license)))
 
 (define-public libtocc
