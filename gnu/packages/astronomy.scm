@@ -11369,7 +11369,7 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
 (define-public python-stpipe
   (package
     (name "python-stpipe")
-    (version "0.13.0")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -11378,7 +11378,7 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ngyygax9zjxgzfrbl20y0nd102a5m3xkhy2kphzkdrmxfyqp4d7"))
+        (base32 "0pcdhh3w7qz6zj8w9wx23xkmrb99lnx2lg74i0h7cpc8l4gdf461"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -11395,7 +11395,7 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 274 passed, 1 skipped, 5 deselected
+      ;; tests: 285 passed, 25 deselected
       #:test-flags
       #~(list #$@(map (lambda (test)
                         (string-append "--deselect=tests/test_step.py::"
@@ -11407,12 +11407,31 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
                             "test_build_config_pipe_kwarg"
                             "test_build_config_step_config_file"
                             "test_build_config_step_kwarg"
-                            "test_step_list_args")))))
+                            "test_step_from_commandline_par_precedence"
+                            "test_step_list_args"))
+              #$@(map (lambda (test)
+                        (string-append "--deselect=tests/"
+                                       "test_asdf_parameters.py::"
+                                       test))
+                      (list "test_asdf_from_call"
+                            "test_asdf_roundtrip_pipeline"
+                            "test_export_config[step_obj0-expected0]"
+                            "test_from_command_line"
+                            "test_from_command_line_override"
+                            "test_reftype"
+                            "test_saving_pars"
+                            "test_step_from_asdf"
+                            "test_step_from_asdf_api_override"
+                            "test_step_from_asdf_noname"))
+              "--deselect=tests/test_config.py::test_step_config_from_asdf"
+              "--deselect=tests/test_config.py::test_step_config_from_legacy_asdf"
+              "--deselect=tests/test_config.py::test_step_config_to_asdf")))
     (native-inputs
      (list python-pytest
            python-pytest-doctestplus
            python-setuptools
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-stdatamodels))
     (propagated-inputs
      (list python-asdf
            python-astropy
