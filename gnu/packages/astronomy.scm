@@ -6921,7 +6921,7 @@ milliarcsecond).")
 (define-public python-jwst
   (package
     (name "python-jwst")
-    (version "2.0.1")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
@@ -6930,7 +6930,7 @@ milliarcsecond).")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gp8s69bc7m1jyvrjm77ik7n6dvd3gh3cpwkdqa9j80pfnvnxpnw"))
+        (base32 "05n44jmw4ddgsjha5x0hazsi7yqlm0xqr81yky49q34i1z2q5k9c"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -6949,14 +6949,7 @@ milliarcsecond).")
      (list
       ;; XXX: Tests require access to https://jwst-crds-pub.stsci.edu server
       ;; for getting data sets.
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("photutils>=2.1.0,<3") "photutils>=2.1.0")
-                (("stdatamodels>=5.0.2,<6") "stdatamodels")))))))
+      #:tests? #f))
     (native-inputs
      (list python-ci-watson
            python-pysiaf
