@@ -21,6 +21,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu system linux-initrd)
+  #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module ((guix store)
@@ -28,6 +29,7 @@
   #:use-module ((guix derivations)
                 #:select (derivation->output-path))
   #:use-module (guix modules)
+  #:use-module (guix packages)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages linux)
@@ -37,6 +39,7 @@
                 #:select (console-setup xkeyboard-config))
   #:use-module ((gnu packages make-bootstrap)
                 #:select (%guile-static-initrd))
+  #:use-module (gnu system)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system mapped-devices)
   #:use-module (gnu system keyboard)
@@ -46,7 +49,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:export (expression->initrd
-            %base-initrd-modules
+            base-initrd-modules
             raw-initrd
             file-system-packages
             file-system-modules
@@ -362,36 +365,18 @@ FILE-SYSTEMS."
   (append-map (compose file-system-type-modules file-system-type)
               file-systems))
 
-(define* (default-initrd-modules
-           #:optional
-           (system (or (%current-target-system)
-                       (%current-system))))
-  "Return the list of modules included in the initrd by default."
-  (define virtio-modules
-    ;; Modules for Linux para-virtualized devices, for use in QEMU guests.
-    '("virtio_pci" "virtio_balloon" "virtio_blk" "virtio_net"
-      "virtio_console" "virtio-rng" "virtio_mmio" "virtio_scsi"))
+(define-deprecated/public-alias %base-initrd-modules
+  (base-initrd-modules linux-libre))
 
-  `("ahci"                                  ;for SATA controllers
-    "nvme"                                  ;for NVMe controllers
-    "usb-storage" "uas"                     ;for the installation image etc.
-    "usbhid" "hid-generic"                  ;keyboards during early boot
-    ,@(if (target-riscv64? system)
-          '()
-          '("hid-apple"))
-    "mmc_block"                                ;for MMC block device driver
-    "dm-crypt" "xts" "serpent_generic" "wp512" ;for encrypted root partitions
-    "nls_iso8859-1"                            ;for `mkfs.fat`, et.al
-    ,@(if (string-match "^(x86_64|i[3-6]86)-" system)
-          '("pata_acpi" "pata_atiixp"    ;for ATA controllers
-            "isci")                      ;for SAS controllers like Intel C602
-          '())
-
-    ,@virtio-modules))
-
-(define-syntax %base-initrd-modules
-  ;; This more closely matches our naming convention.
-  (identifier-syntax (default-initrd-modules)))
+(define* (base-initrd-modules
+          kernel
+          #:optional
+          (system (or (%current-target-system)
+                      (%current-system))))
+  "Return a list of modules tailored to KERNEL for SYSTEM to include in the
+initrd by default."
+  (assoc-ref (assoc-ref (package-properties kernel) 'base-initrd-modules)
+             system))
 
 (define* (base-initrd file-systems
                       #:key

@@ -261,7 +261,8 @@ VERSION is the target version of the boot-parameters record."
           (default base-initrd))
   (initrd-modules operating-system-initrd-modules ; list of strings
                   (thunked)                       ; it's system-dependent
-                  (default %base-initrd-modules))
+                  (default (base-initrd-modules (operating-system-kernel
+                                                 this-operating-system))))
 
   (firmware operating-system-firmware             ; list of packages
             (default %base-firmware))

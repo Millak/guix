@@ -19080,7 +19080,7 @@ Window}, for information on how to specify the keyboard layout used by the X
 Window System.
 @end quotation
 
-@item @code{initrd-modules} (default: @code{%base-initrd-modules})
+@item @code{initrd-modules} (default: @code{(base-initrd-modules (operating-system-kernel this-operating-system))})
 @cindex initrd
 @cindex initial RAM disk
 The list of Linux kernel modules that need to be available in the
@@ -49834,16 +49834,25 @@ file system, you would write:
 @lisp
 (operating-system
   ;; @dots{}
-  (initrd-modules (cons "megaraid_sas" %base-initrd-modules)))
+  (initrd-modules (cons "megaraid_sas"
+                        (base-initrd-modules (operating-system-kernel
+                                              this-operating-system)))))
 @end lisp
 
 Other useful kernel modules include those necessary for a
 @code{raid-device-mapping}, e.g. @code{raid1}, @code{raid456} and
 @code{raid10} (@pxref{Mapped Devices}).
 
-@defvar %base-initrd-modules
-This is the list of kernel modules included in the initrd by default.
-@end defvar
+@vindex %base-initrd-modules
+@deffn {Procedure} base-initrd-modules kernel [system]
+Return a list of modules tailored to @var{kernel} for @var{system} to
+include in the initrd by default.
+@end deffn
+
+@quotation Deprecation notice
+This was formerly known as @var{%base-initrd-modules}. It is recommended
+that you switch to using @code{(base-initrd-modules linux-libre)}.
+@end quotation
 
 Furthermore, if you need lower-level customization, the @code{initrd}
 field of an @code{operating-system} declaration allows
