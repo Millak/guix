@@ -529,18 +529,6 @@ fast arithmetic.")
    (properties
     '((release-monitoring-url . "http://flintlib.org/downloads.html")))))
 
-(define-public flint-3.3
-  (package
-   (inherit flint)
-   (version "3.3.1")
-   (source
-    (origin
-      (method url-fetch)
-      (uri (string-append "https://flintlib.org/download/flint-"
-                          version ".tar.gz"))
-      (sha256
-       (base32 "1yzasdcv90f6w926p9g92cli2daxvb0mh2s1w1qskkvn618hxmv4"))))))
-
 (define-public python-flint
   (package
     (name "python-flint")
