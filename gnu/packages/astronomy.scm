@@ -5789,6 +5789,95 @@ intensity in relation to the total stellar intensity of @code{1.0}.  It is
 ideal for ray-tracing simulations of stars and planetary transits.")
     (license license:expat)))
 
+(define-public python-galpy
+  (package
+    (name "python-galpy")
+    (version "1.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jobovy/galpy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jqwnvldb2pzjh0nbb9h7jfswwznzl6s9j542mf33a3xakghvbdl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Test steps are taken from project's GitHub Actions file. Full test
+      ;; suite might take about 2h to complete.
+      #~(list "tests/test_orbit.py"
+              "tests/test_orbits.py"
+              ;; Network access is required to access the capabilities endpointt
+              ;; at <https://simbad.cds.unistra.fr/simbad/sim-tap/capabilities>.
+              "--deselect=tests/test_orbit.py::test_from_name_errors"
+              "--deselect=tests/test_orbit.py::test_from_name_values"
+              "--deselect=tests/test_orbits.py::test_from_name_values")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Sanity check failes with error: ImportError: dynamic module
+          ;; does not define module export function (PyInit_libgalpy)
+          (delete 'sanity-check)
+          ;; Galpy needs modified source of Torus project which is not bundled
+          ;; with this package, see:
+          ;; <https://docs.galpy.org/en/latest/installation.html>.
+          (add-after 'unpack 'copy-torus-source
+            (lambda _
+              (mkdir-p "galpy/actionAngle/actionAngleTorus_c_ext/torus")
+              (copy-recursively
+               #+(origin
+                   (method git-fetch)
+                   (uri (git-reference
+                          (url "https://github.com/jobovy/Torus")
+                          (commit "b7bf7965db8c3b2034d6a92f5a1c1fefe13e0e5d")))
+                   (file-name (git-file-name
+                               (string-append "torus-source-for-" name) version))
+                   (sha256
+                    (base32 "0qjjj6qw4mjqrcx2kabd7rr621ndr6la329jlz5yh122zpyzz3vq")))
+               "galpy/actionAngle/actionAngleTorus_c_ext/torus")))
+          (add-before 'build 'patch-gsl-config-bin-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "setup.py"
+                (("'gsl-config'")
+                 (format #f "~s" (search-input-file inputs "/bin/gsl-config"))))))
+          (add-before 'build 'pre-build
+            (lambda _
+              (setenv "CC" #$(cc-for-target))))
+          (add-after 'build 'remove-local-source
+            (lambda _
+              (delete-file-recursively "galpy")))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "MPLBACKEND" "Agg"))))))
+    (native-inputs
+     (list python-numexpr
+           python-pytest
+           python-setuptools))
+    (inputs
+     (list gsl))
+    (propagated-inputs
+     (list python-astropy
+           python-astroquery
+           python-matplotlib
+           python-numba
+           python-numpy
+           python-packaging
+           python-pynbody
+           python-scipy
+           python-tqdm))
+    (home-page "https://www.galpy.org/")
+    (synopsis "Galactic Dynamics in Python")
+    (description
+     "Galpy is a Python package for galactic dynamics.  It supports orbit
+integration in a variety of potentials, evaluating and sampling various
+distribution functions, and the calculation of action-angle coordinates for
+all static potentials.  Galpy is an Astropy affiliated package and provides
+full support for Astropy’s Quantity framework for variables with units.")
+    (license (list license:bsd-3
+                   license:gpl2)))) ;for Torus source
+
 (define-public python-galsim
   (package
     (name "python-galsim")
