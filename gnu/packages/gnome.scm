@@ -768,7 +768,7 @@ of known objects without needing a central registrar.")
            telepathy-glib
            python-wrapper
            python-rdflib
-           xapian))
+           xapian-1.4))
     (propagated-inputs (list glib))
     (synopsis "Desktop Activity Logging")
     (description "Zeitgeist is a service which logs the users’s activities and

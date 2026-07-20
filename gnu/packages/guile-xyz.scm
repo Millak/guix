@@ -6668,7 +6668,7 @@ over, or update a value in arbitrary data structures.")
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ; to prevent guild warnings
     (inputs
-     (list guile-3.0 xapian zlib))
+     (list guile-3.0 xapian-1.4 zlib))
     (native-inputs
      (list pkg-config
            lzip

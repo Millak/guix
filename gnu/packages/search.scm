@@ -18,6 +18,7 @@
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © Zheng Junjie <z572@z572.online>
+;;; Copyright © 2026 Marius Bakke <marius.andre.bakke@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -91,7 +92,7 @@
 (define-public xapian
   (package
     (name "xapian")
-    (version "1.4.29")
+    (version "2.1.0")
     ;; Note: When updating Xapian, remember to update omega and
     ;; python-xapian-bindings below.
     (source (origin
@@ -99,25 +100,25 @@
               (uri (string-append "https://oligarchy.co.uk/xapian/" version
                                   "/xapian-core-" version ".tar.xz"))
               (sha256
-               (base32 "1g11wps45rgh7a7z0zmsvk6vg2i1ih4cmbwf44nfrlrsc749np65"))))
+               (base32 "1k5ap1qry8rwbimmchg52sxg442s33lp5xz1nl93sbildmc5j4lf"))))
     (build-system gnu-build-system)
     (inputs (list zlib
                   `(,util-linux "lib")))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (replace 'check
+         (add-after 'unpack 'skip-remotetcp-tests
            ;; As of Xapian 1.3.3, the TCP server implementation uses
            ;; getaddrinfo(). This does not work in the build environment,
-           ;; so exclude those tests. See HACKING for the list of targets.
+           ;; so exclude those tests.
            (lambda _
-             (invoke "make"
-                     "check-inmemory"
-                     "check-remoteprog"
-                     ;"check-remotetcp"
-                     "check-multi"
-                     "check-glass"
-                     "check-chert"))))))
+             (substitute* "tests/harness/testrunner.cc"
+               (("do_tests_for_backend\\(BackendManagerRemoteTcp.*")
+                ""))))
+         (add-before 'check 'set-automated-testing-flag
+           (lambda _
+             ;; Skip timing-sensitive tests to avoid indeterministic failures.
+             (setenv "AUTOMATED_TESTING" "1"))))))
     (synopsis "Search Engine Library")
     (description
      "Xapian is a highly adaptable toolkit which allows developers to easily
@@ -126,6 +127,18 @@ supports the Probabilistic Information Retrieval model and also supports a
 rich set of boolean query operators.")
     (home-page "https://xapian.org/")
     (license (list license:gpl2+ license:bsd-3 license:x11))))
+
+(define-public xapian-1.4
+  (package
+    (inherit xapian)
+    (version "1.4.32")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://oligarchy.co.uk/xapian/" version
+                                  "/xapian-core-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1kmfjxc1k5hcjg8fmi4ars2z4yaas5l94mzmmmb1fc9727l69zf4"))))))
 
 (define-public omega
   (package
@@ -138,7 +151,7 @@ rich set of boolean query operators.")
                            "/xapian-omega-" version ".tar.xz"))
        (sha256
         (base32
-         "0gpq1k1fanx2vpj0xrmkdafacn2r5qsf57201ax4skkb96flxfjg"))))
+         "1glpa00plrzfndn5dfph2i4s9acpjbzj81p9qcl0qyfbbydz5g73"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -168,7 +181,7 @@ a CGI web search frontend.")
                                   "/xapian-bindings-" version ".tar.xz"))
               (sha256
                (base32
-                "1kn8dw0zrlxvc417wmqmdkqz76kw3f5802wsv5kyyl38pckyjh0p"))))
+                "0p47wg5m9nhxj5mbw1n8kqdnbp9jpfafp9i5lrpackrvy64w2bpm"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~(list "--with-python3")
@@ -205,7 +218,7 @@ a CGI web search frontend.")
     (native-inputs
      (list perl-devel-leak))
     (inputs
-     (list xapian))
+     (list xapian-1.4))
     (home-page "https://metacpan.org/release/Search-Xapian")
     (synopsis "Perl XS frontend to the Xapian C++ search library")
     (description

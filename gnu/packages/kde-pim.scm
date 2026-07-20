@@ -474,7 +474,7 @@ with emails through Akonadi easier.")
            kxmlgui
            krunner
            kwindowsystem
-           xapian))
+           xapian-1.4))
     (arguments
      (list
       #:qtbase qtbase
