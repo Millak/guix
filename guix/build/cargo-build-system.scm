@@ -314,18 +314,34 @@ directory = '" vendor-dir "'") port)
                 (skip-build? #f)
                 (features '())
                 (cargo-build-flags '("--release"))
+                (cargo-install-paths '())
                 #:allow-other-keys)
   "Build a given Cargo package."
-  (or skip-build?
-      (apply invoke
-             `("cargo" "build" "--offline"
-               ,@(if parallel-build?
-                     (list "-j" (number->string (parallel-job-count)))
-                     (list "-j" "1"))
-               ,@(if (null? features)
-                     '()
-                     `("--features" ,(string-join features)))
-               ,@cargo-build-flags))))
+  (define common-arguments
+    `("--offline"
+      ,@(if parallel-build?
+            (list "-j" (number->string (parallel-job-count)))
+            (list "-j" "1"))
+      ,@(if (member "--release" cargo-build-flags)
+            '()
+            '("--release"))
+      ,@(if (null? features)
+            '()
+            `("--features" ,(string-join features)))
+      ,@cargo-build-flags))
+
+  (unless skip-build?
+    (if (null? cargo-install-paths)
+        (apply invoke "cargo" "build" common-arguments)
+        (for-each
+         (lambda (path)
+           (apply invoke
+                  `("cargo" "build"
+                    "--bins"
+                    "--manifest-path"
+                    ,(in-vicinity path "Cargo.toml")
+                    ,@common-arguments)))
+         cargo-install-paths))))
 
 (define* (check #:key
                 parallel-build?
@@ -461,7 +477,7 @@ directory = '" vendor-dir "'") port)
              (not (has-executable-target? features)))
         (for-each
          (lambda (path)
-           (invoke "cargo" "install" "--offline" "--no-track"
+           (invoke "cargo" "install" "--offline" "--locked" "--no-track"
                    "--path" path "--root" out
                    "--features" (string-join features)))
          (if (null? cargo-install-paths)
