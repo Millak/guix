@@ -10247,13 +10247,15 @@ email.  It can be used in MUA's like @url{http://aerc-mail.org, aerc} or
            (string-append "-Dtest_data_dir="
                           #+(this-package-native-input testsuite-file-name)
                           "/data"))))
-      (inputs
+      (propagated-inputs
+       ;; In Requires.private of libzim.pc.
        (list icu4c
-             python-wrapper ; for libzim-compile-resources
              xapian
              xz
-             (list util-linux "lib")
-             (list zstd "lib")))
+             (list zstd "lib") ))
+      (inputs
+       (list python-wrapper ; for libzim-compile-resources
+             (list util-linux "lib")))
       (native-inputs
        (list pkg-config
              googletest
