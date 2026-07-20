@@ -19,7 +19,7 @@
 ;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2016–2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
-;;; Copyright © 2016, 2018 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2016, 2018, 2026 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -1792,6 +1792,38 @@ replicas.  A version-vector-based algorithm allows it to exchange only the
 minimum information necessary to bring replicas up to date regardless of which
 pairs have previously synchronized.")
     (license license:gpl2+)))           ; with OpenSSL libcrypto exception
+
+(define-public lieer
+  (package
+    (name "lieer")
+    (version "1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gauteh/lieer")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1da36mhzb7gzfw2xv80c3cnz7hr7xfm4h6zpmv46n6i8gvmrhzsk"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (inputs
+     (list python
+           python-google-api-client
+           python-google-auth-oauthlib
+           python-notmuch2
+           python-tqdm))
+    (home-page "https://lieer.gaute.vetsj.com/")
+    (synopsis "Two-way synchronization between Notmuch and GMail")
+    (description
+     "This program can pull, and send, email and labels (and changes to
+labels) from a GMail account and store them locally in a maildir with the
+labels synchronized with a notmuch database. The changes to tags in the
+notmuch database may be pushed back remotely to your GMail account.")
+    (license license:gpl3+)))
 
 (define-public getmail6
   (package
