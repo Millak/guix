@@ -71,6 +71,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages swig)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
@@ -171,17 +172,20 @@ a CGI web search frontend.")
                    ;; common/keyword.cc, common/keyword.h
                    license:expat))))
 
+(define %xapian-bindings-origin
+  (let ((version (package-version xapian)))
+    (origin
+      (method url-fetch)
+      (uri (string-append "https://oligarchy.co.uk/xapian/" version
+                          "/xapian-bindings-" version ".tar.xz"))
+      (sha256
+       (base32 "0p47wg5m9nhxj5mbw1n8kqdnbp9jpfafp9i5lrpackrvy64w2bpm")))))
+
 (define-public python-xapian-bindings
   (package (inherit xapian)
     (name "python-xapian-bindings")
     (version (package-version xapian))
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://oligarchy.co.uk/xapian/" version
-                                  "/xapian-bindings-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0p47wg5m9nhxj5mbw1n8kqdnbp9jpfafp9i5lrpackrvy64w2bpm"))))
+    (source %xapian-bindings-origin)
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~(list "--with-python3")
@@ -200,6 +204,61 @@ a CGI web search frontend.")
      (list python xapian zlib))
     (synopsis "Python bindings for the Xapian search engine library")
     (license license:gpl2+)))
+
+(define-public perl-xapian
+  (package
+    (inherit xapian)
+    (name "perl-xapian")
+    (source %xapian-bindings-origin)
+    (arguments
+     (list #:modules `((ice-9 popen)
+                       (ice-9 rdelim)
+                       ,@%default-gnu-modules)
+           #:configure-flags #~(list "--with-perl")
+           #:make-flags
+           #~(list (string-append "perllibdir="
+                                  #$output
+                                  "/lib/perl5/site_perl/"
+                                  #$(package-version perl)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda* (#:key (make-flags '()) #:allow-other-keys)
+                   ;; Extract the architecture-dependent install directory
+                   ;; for the solib.
+                   (let* ((port (open-pipe* OPEN_READ
+                                            "perl" "-V:archlib"))
+                          (arch-lib (read-line port))
+                          (arch-lib-sans-suffix
+                           (string-drop-right arch-lib 2))
+                          (arch-lib-sans-prefix
+                           (string-drop arch-lib-sans-suffix
+                                        (string-length "archlib='")))
+                          (arch-lib-sans-store
+                           (string-drop arch-lib-sans-prefix
+                                        (+ (string-length (%store-directory))
+                                           1)))
+                          (arch-lib-sans-perldir
+                           (string-join
+                            (cdr (string-split arch-lib-sans-store #\/))
+                            "/")))
+                     (close-port port)
+                     (apply invoke "make" "install"
+                            (string-append "perlarchdir="
+                                           #$output
+                                           "/" arch-lib-sans-perldir
+                                           "/auto/Xapian")
+                            make-flags)))))))
+    (native-inputs
+     (list perl swig))
+    (inputs
+     (list xapian zlib))
+    (synopsis "Perl bindings for the Xapian search engine library")
+    ;; Note: Xapian.pm says "you can redistribute it and/or modify it
+    ;; under the same terms as Perl itself".  Several source files
+    ;; carry the GPL2 license that's also in COPYING.
+    (license (list license:perl-license
+                   license:gpl2+))))
 
 ;; Note: This package is obsolete, and won't work with Xapian 2.0.
 ;; Users are encouraged to migrate to perl-xapian instead.
