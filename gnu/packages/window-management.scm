@@ -2616,7 +2616,7 @@ limited size and a few external dependencies.  It is configurable via
                   xcb-util-wm
                   wlroots-0.19
                   cjson
-                  scenefx))
+                  scenefx-0.4))
     (home-page "https://mangowm.github.io")
     (synopsis "Wayland compositor based on wlroots and scenefx")
     (description
@@ -3181,7 +3181,7 @@ narrow the items to those matching the tokens in the input.")
                   libxkbcommon
                   pango
                   pcre2
-                  scenefx
+                  scenefx-0.4
                   swaybg
                   wayland
                   wlroots-0.19))
@@ -5649,6 +5649,36 @@ configure input, and customize Wayfire plugins.")
 (define-public scenefx
   (package
     (name "scenefx")
+    (version "0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wlrfx/scenefx")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0klxy73125lp9jab8qghh4v6di91l3y2rgan4m4lhv5flwdwnj5x"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config
+                         ;; for wayland-scanner.
+                         wayland))
+    (inputs (list pixman
+                  mesa
+                  libxkbcommon
+                  libdrm
+                  wlroots-0.20))
+    (home-page "https://github.com/wlrfx/scenefx")
+    (synopsis "Drop-in replacement for the wlroots scene API")
+    (description
+     "A drop-in replacement for the wlroots scene API that allows wayland
+compositors to render surfaces with eye-candy effects.")
+    (license license:expat)))
+
+(define-public scenefx-0.4
+  (package
+    (inherit scenefx)
+    (name "scenefx")
     (version "0.4.1")
     (source (origin
               (method git-fetch)
@@ -5659,20 +5689,7 @@ configure input, and customize Wayfire plugins.")
               (sha256
                (base32
                 "10f4rygnb8qrlcxw6f3gpl4xa20wrykx63cvn8wih74smdr48gjw"))))
-    (build-system meson-build-system)
-    (native-inputs (list pkg-config
-                         ;; for wayland-scanner.
-                         wayland))
-    (inputs (list pixman
-                  mesa
-                  libxkbcommon
-                  libdrm
-                  wlroots-0.19))
-    (home-page "https://github.com/wlrfx/scenefx")
-    (synopsis "Drop-in replacement for the wlroots scene API")
-    (description
-     "A drop-in replacement for the wlroots scene API that allows wayland
-compositors to render surfaces with eye-candy effects.")
-    (license license:expat)))
+    (inputs (modify-inputs (package-inputs scenefx)
+              (replace "wlroots" wlroots-0.19)))))
 
 ;;; window-management.scm ends here
