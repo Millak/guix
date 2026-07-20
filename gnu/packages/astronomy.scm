@@ -5688,22 +5688,16 @@ all the input image headers.")
 (define-public python-fitsio
   (package
     (name "python-fitsio")
-    ;; 1.3.0 (2025-11-12), latest changes support cfitsio 4.6.4, revert back
-    ;; to git tag when released.
-    (properties '((commit . "3a301234b28aeac48f96597c44d6339ad3a19778")
-                  (revision . "0")))
-    (version (git-version "1.3.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "1.4.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/esheldon/fitsio")
-              (commit (assoc-ref properties 'commit))))
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vqin0ixk9div0bjfqh4b63a85n8kg0959ngsaz2qy07r38q9cxx"))
+        (base32 "1gylk2qk49wv24wdq8yzyg6d29hg5kvdnnd2bqq8c7p7qndgqxw8"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove the bundled cfitsio. When update the package check the
@@ -5715,7 +5709,7 @@ all the input image headers.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1882 passed, 904 skipped, 111 xfailed, 2 xpassed, 7 warnings
+      ;; tests: 1884 passed, 905 skipped, 113 xfailed, 2 xpassed, 13 warnings
       #:test-flags
       #~(list "--pyargs" "fitsio")
       #:phases
