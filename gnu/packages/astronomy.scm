@@ -5319,7 +5319,7 @@ implemented using the astropy.modeling framework.")
 (define-public python-edps
   (package
     (name "python-edps")
-    (version "1.7.1")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
@@ -5327,7 +5327,7 @@ implemented using the astropy.modeling framework.")
              "https://ftp.eso.org/pub/dfs/pipelines/libraries/edps/edps-"
              version ".tar.gz"))
        (sha256
-        (base32 "1s2q0z36bkyyz4fi534435bdqaiqxq7q6pfvmamiac0ba3j26csv"))))
+        (base32 "0xhz9x3c86wx3088jm1c6w0dzvyqadv43zpkxggrfmkd3wf9nmqb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
