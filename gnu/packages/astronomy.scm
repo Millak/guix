@@ -4193,13 +4193,13 @@ bad pixel tracking throughout the reduction process.")
 (define-public python-cdasws
   (package
     (name "python-cdasws")
-    (version "1.8.16")
+    (version "1.8.18")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cdasws" version))
        (sha256
-        (base32 "02mfnm0fpzd0nzvba6d3rhxsfv1v2q5ifra8ys7rzfs5ljdlm4bd"))))
+        (base32 "0pnfm96jwdrly4fc1yr1bw4rg8g869by3hli90bb1p1w4y7zsaiw"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))   ;require network, and missing "context" module
