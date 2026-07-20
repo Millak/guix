@@ -10229,7 +10229,7 @@ email.  It can be used in MUA's like @url{http://aerc-mail.org, aerc} or
                                              testsuite-version)))
     (package
       (name "libzim")
-      (version "9.6.0")
+      (version "9.8.1")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -10237,7 +10237,7 @@ email.  It can be used in MUA's like @url{http://aerc-mail.org, aerc} or
                        (commit version)))
                 (sha256
                  (base32
-                  "15cg66djn3f3xivnkr6f9m52qivpj5d4qfl4hf73fwfp6gzng6pw"))
+                  "0daczgl9jyj52mjh2c79zh0zxij77rcsfmzzkpia9vpkvbf021ay"))
                 (file-name (git-file-name name version))))
       (build-system meson-build-system)
       (arguments
