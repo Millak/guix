@@ -6019,13 +6019,16 @@ the Gizmo code, in particular, the FIRE cosmological simulations.")
 (define-public python-glue-astronomy
   (package
     (name "python-glue-astronomy")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "glue_astronomy" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/glue-viz/glue-astronomy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0f2849jyhyxldrxlls00gpq9qckrfvxrkn796j5zb8j92l2qjgnp"))))
+        (base32 "0w4ligr0943yi6dia1qkfwkpdj8gp6mqxnkbz1gd61p9hwwm7paa"))))
     (build-system pyproject-build-system)
     (arguments
      (list
