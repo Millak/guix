@@ -127,6 +127,9 @@ add advanced indexing and search facilities to their own applications.  It
 supports the Probabilistic Information Retrieval model and also supports a
 rich set of boolean query operators.")
     (home-page "https://xapian.org/")
+    (properties
+     '((release-monitoring-url . "https://xapian.org/download.html")
+       (release-file-regexp . "xapian-core-([0-9\\.]+).tar.xz")))
     (license (list license:gpl2+ license:bsd-3 license:x11))))
 
 (define-public xapian-1.4
