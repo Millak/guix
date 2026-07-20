@@ -3534,7 +3534,7 @@ plugin function as a JACK application.")
 (define-public clap
   (package
     (name "clap")
-    (version "1.2.6")
+    (version "1.2.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3543,7 +3543,7 @@ plugin function as a JACK application.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ryg21qm4262n9hv259lfhlg25c8k3i2qgqav37r10q55jx2w8j3"))))
+                "15w83k77vzfw041k47dfsxsrd7bpa3fm71a1czbfdnz2qyjydfzk"))))
     (build-system cmake-build-system)
     (arguments
      ;; FIXME: With "-DCLAP_BUILD_TESTS=ON" the test executables do not build.
