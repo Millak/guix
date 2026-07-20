@@ -589,7 +589,7 @@ Maildir, MH, MMDF or mbox folders.")
 (define-public nmail
   (package
     (name "nmail")
-    (version "5.5.1")
+    (version "5.14.12")
     (source
      (origin
        (method git-fetch)
@@ -598,7 +598,7 @@ Maildir, MH, MMDF or mbox folders.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ikl5n6s08gh62cs54mr874walm440w0nxmi0fgnx8giaj3mc436"))))
+        (base32 "0b95zvk077kl19g7ylcwz15ddvly330ggywj3xwwi77091k5iv6p"))))
     (build-system cmake-build-system)
     (arguments
      (list
