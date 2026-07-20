@@ -11122,16 +11122,16 @@ radio astronomy, e.g. getting total electron content and rotation measure.")
 (define-public python-spisea
   (package
     (name "python-spisea")
-    (version "2.4")
+    (version "2.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/astropy/SPISEA")
+              (url "https://github.com/MovingUniverseLab/SPISEA")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "174kfa9dc14l1r8czf6ghzwxin4lsxg24gsk5qy3a8w6jwslsi4m"))))
+        (base32 "0pb6xf851vc9js7wb8hh9cf7xk7fmzn66f1rxd55zyhbpkcvphyw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -11141,22 +11141,7 @@ radio astronomy, e.g. getting total electron content and rotation measure.")
       ;;   - hlsp_reference-atlases_hst_multi_everything_multi_v10_sed.tar 741MiB
       ;; - https://archive.stsci.edu/hlsps/reference-atlases/
       ;;   - hlsp_reference-atlases_hst_multi_star-galaxy-models_multi_v3_synphot2.tar 84MiB
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-setup.cfg
-            (lambda _
-              (substitute* "setup.cfg"
-                ;; XXX: Report upstream, the template was not adjusted.
-                (("astropy-package-template-example = .*") ""))))
-          (add-after 'unpack 'set-version
-            (lambda _
-              (with-output-to-file "spisea/__init__.py"
-                (lambda _
-                  (display
-                   (string-append "__version__ = \""
-                                  #$(package-version this-package)
-                                  "\"")))))))))
+      #:tests? #f))
     (native-inputs
      (list python-cython
            python-extension-helpers
