@@ -1594,6 +1594,57 @@ encryption password can safely commit changes to the repository's
 non-encrypted files.")
     (license license:expat)))
 
+(define-public cryfs
+  (package
+    (name "cryfs")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/cryfs/cryfs/releases/download/"
+             version "/cryfs-" version ".tar.xz"))
+       (sha256
+        (base32 "1zlxbch22pdwvwpplcgzpx109a4plwc4a5qlpa8190awdr0cqc0z"))
+       (patches (search-patches "cryfs-fuse3-up.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:modules ((guix build cmake-build-system)
+                  (guix build utils)
+                  (srfi srfi-1))
+       #:configure-flags
+       ;; Note: This also disables checking for security issues.
+       '("-DCRYFS_UPDATE_CHECKS=OFF"
+         "-DBUILD_TESTING=ON")
+       ;; crypto++ is still bundled: https://github.com/cryfs/cryfs/issues/369
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-up
+           (lambda* (#:key tests? #:allow-other-keys)
+             (chdir "..") ; We end up in .github somehow
+             ;; Install documentation with Guix defaults.
+             (substitute* "doc/CMakeLists.txt"
+               (("CONFIGURATIONS Release")
+                "CONFIGURATIONS Release RelWithDebInfo"))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" "/tmp")))))))
+    (native-inputs
+     (list googletest pkg-config python-wrapper))
+    (inputs
+     (list boost curl fuse range-v3 spdlog))
+    (home-page "https://www.cryfs.org/")
+    (synopsis "Encrypted FUSE filesystem for the cloud")
+    (description "CryFS encrypts your files, so you can safely store them anywhere.
+It works well together with cloud services like Dropbox, iCloud, OneDrive and
+others.  CryFS creates an encrypted userspace filesystem that can be mounted
+via FUSE without root permissions.  It is similar to EncFS, but provides
+additional security and privacy measures such as hiding file sizes and directory
+structure.  However CryFS is not considered stable yet by the developers.")
+    (license license:lgpl3+)
+    (properties `((tunable? . #t)))))
+
 (define-public b3sum
   (package
     (name "b3sum")

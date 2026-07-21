@@ -1172,6 +1172,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/crawl-upgrade-saves.patch		\
   %D%/packages/patches/crc32c-unbundle-googletest.patch		\
   %D%/packages/patches/crda-optional-gcrypt.patch		\
+  %D%/packages/patches/cryfs-fuse3-up.patch			\
   %D%/packages/patches/clucene-contribs-lib.patch               \
   %D%/packages/patches/csvkit-set-locale-for-tests.patch			\
   %D%/packages/patches/ctranslate2-local-build.patch		\
