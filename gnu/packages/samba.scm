@@ -81,14 +81,14 @@
 (define-public cifs-utils
   (package
     (name "cifs-utils")
-    (version "7.1")
+    (version "7.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.samba.org/pub/linux-cifs/"
                            "cifs-utils/cifs-utils-" version ".tar.bz2"))
        (sha256 (base32
-                "0ajvbc5lbwvzlhq2f2grsgy3rpzb314vm29icp4kcsjadbvj64d2"))))
+                "01k65yyyfl00h8kbc418px614m7g35g2w7nnyjx3zmyxlndax2ig"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config
