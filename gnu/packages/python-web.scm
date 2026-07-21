@@ -9855,12 +9855,12 @@ engine.  Its module is called @code{googlesearch}.")
 (define-public python-google-auth-httplib2
   (package
     (name "python-google-auth-httplib2")
-    (version "0.2.0")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "google-auth-httplib2" version))
+              (uri (pypi-uri "google_auth_httplib2" version))
               (sha256
-               (base32 "018fckshilc6z2qpj1pclh8haanbq3lr85w6p4g4z5wgyjnppaiq"))))
+               (base32 "0dgdzy2ps3z71dc2b4s1fhmyx094nq0sg75sagav995p0ji31c6m"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-google-auth python-httplib2))
