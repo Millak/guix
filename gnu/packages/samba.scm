@@ -50,9 +50,11 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cups)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages docbook)
@@ -302,7 +304,7 @@ following features:
   (hidden-package
    (package
      (name "samba")
-     (version "4.18.1")
+     (version "4.24.4")
      (source
       ;; For updaters: the current PGP fingerprint is
       ;; 81F5E2832BD2545A1897B713AA99442FB680B620.
@@ -311,7 +313,7 @@ following features:
         (uri (string-append "https://download.samba.org/pub/samba/stable/"
                             "samba-" version ".tar.gz"))
         (sha256
-         (base32 "03ncp49pfpzjla205y3xpb9iy61dz4pryyrvyz26422a4hpsmpnf"))))
+         (base32 "1y2z4rl88mfmj5187bmgqxdlda6cxx35k3lqp5m65v318fmm2b6z"))))
      (build-system gnu-build-system)
      (arguments
       (list
@@ -363,10 +365,12 @@ following features:
      (inputs
       (list acl
             avahi
+            bison
             cmocka
             cups
             gamin
             dbus
+            flex
             gpgme
             gnutls
             jansson
