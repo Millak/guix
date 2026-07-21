@@ -721,7 +721,7 @@ transparent to the application.
 (define-public wsdd
   (package
     (name "wsdd")
-    (version "0.7.1")
+    (version "0.9")
     (source
      (origin
        (method git-fetch)
@@ -729,7 +729,7 @@ transparent to the application.
                            (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16kk7x80jlargrvh643m23j277p0drs2yylqz54f9inf5ld5bxn5"))))
+        (base32 "1hshr56mcx5gb5shl4cwda3l9xqivaml9cgh9x8394bzb71qqzwb"))))
     (build-system gnu-build-system)
     (arguments
      (list
