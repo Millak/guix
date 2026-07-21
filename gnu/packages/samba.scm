@@ -650,7 +650,7 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
 (define-public socket-wrapper
   (package
     (name "socket-wrapper")
-    (version "1.5.1")
+    (version "1.5.2")
     (source
      (origin
        (method git-fetch)
@@ -660,7 +660,7 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-          "1bwvvfismcvkmld593nb89ryb0pxjav3a5hzvls5lg52xg6yv8v9"))))
+          "043pjwvbvhc4ip8sf441asp952qws79rzn4zvfgy2231f08ngjcl"))))
     (build-system cmake-build-system)
     (arguments
      (list
