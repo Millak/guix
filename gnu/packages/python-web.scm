@@ -9811,7 +9811,7 @@ engine.  Its module is called @code{googlesearch}.")
 (define-public python-google-api-client
   (package
     (name "python-google-api-client")
-    (version "2.187.0")
+    (version "2.198.0")
     (source
      (origin
        (method git-fetch)
@@ -9820,7 +9820,7 @@ engine.  Its module is called @code{googlesearch}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09vq5d32avri0gl8c7nn5dv2xds1jzjms7vqk3gn66nm2m37x8mv"))))
+        (base32 "1adjr3ylp8bwbvywxm11hs4y913pvaga0dn6nwmb3622y62zxfhg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
