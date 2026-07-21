@@ -9870,8 +9870,7 @@ engine.  Its module is called @code{googlesearch}.")
            python-pytest-localserver
            python-flask
            python-setuptools))
-    (home-page
-     "https://github.com/GoogleCloudPlatform/google-auth-library-python-httplib2")
+    (home-page "https://github.com/googleapis/google-cloud-python")
     (synopsis "Google Authentication Library: httplib2 transport")
     (description "This package provides a Google Authentication Library plugin
 for httplib2 transport.")
