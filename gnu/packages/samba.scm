@@ -607,16 +607,16 @@ key-value pair databases and a real LDAP database.")
 (define-public ppp
   (package
     (name "ppp")
-    (version "2.5.0")
+    (version "2.5.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/ppp-project/ppp")
-                    (commit (string-append "ppp-" version))))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pkvaxi5318lvsadspj603wdkxah01vgjhywri7rv249p249vfr7"))))
+                "1jv5myag33qd8pszk3yml4pxap3638cfs3vjshjv66dmmbfb97dd"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ; no tests
