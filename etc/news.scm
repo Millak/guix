@@ -44,6 +44,28 @@
 (channel-news
  (version 0)
 
+ (entry (commit "0257734a40999bfbbe0daa922e2d0e4928cdd5f0")
+        (title
+         (en "RabbitMQ service requires epmd service"))
+        (body
+         (en "RabbitMQ is an Erlang application.  It uses Erlang Port Mapper
+Daemon (epmd).  To prevent RabbitMQ from starting its own epmd instance,
+the epmd service is added to enable control and configuration of the daemon.
+
+By default, Guix runs epmd service using local network interfaces.
+See the following articles for the rationale.
+@itemize
+@item @url{https://www.rabbitmq.com/blog/2024/12/18/epmd-public-exposure}
+@item @url{https://erlef.org/blog/eef/epmd-public-exposure}
+@end itemize
+
+To use RabbitMQ service, add epmd to the list of services, for example:
+@example
+(services
+  (service epmd-service-type)
+  (service rabbitmq-service-type))
+@end example")))
+
  (entry (commit "d7769178a66b16f6d36aa72f81b2bfff7a254e55")
         (title
          (en "Linux-libre 6.19 and 7.0 are no longer supported"))
