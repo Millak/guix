@@ -1280,7 +1280,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/erlang-binpp-disable-failing-tests.patch	\
   %D%/packages/patches/erlang-man-path.patch			\
   %D%/packages/patches/erlang-mochiweb-disable-known-to-fail-tests.patch	\
-  %D%/packages/patches/esmini-use-pkgconfig.patch		\
   %D%/packages/patches/esmtp-add-lesmtp.patch		\
   %D%/packages/patches/esound-c99.patch         		\
   %D%/packages/patches/exercism-disable-self-update.patch	\

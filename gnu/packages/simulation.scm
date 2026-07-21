@@ -708,31 +708,78 @@ functions in virtual scenarios.")
 (define-public esmini
   (package
     (name "esmini")
-    (version "2.37.11")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/esmini/esmini")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (patches (search-patches "esmini-use-pkgconfig.patch"))
-              (modules '((guix build utils) (ice-9 ftw)))
-              (snippet
-               #~(with-directory-excursion "externals"
-                   (for-each
-                    (lambda (dir) (unless (member dir '("." ".." "expr"))
-                               (delete-file-recursively dir)))
-                    (scandir "."))))
-              (sha256
-               (base32
-                "07pwa34nf0b4ihb9fn1pvfi0b39hd8r630nfa6v3a17dsy66a730"))))
+    (version "3.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/esmini/esmini")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils) (ice-9 ftw)))
+       (snippet
+        #~(begin
+            (with-directory-excursion "externals"
+              (for-each
+               (lambda (dir) (unless (member dir '("." ".." "expr" "yaml"))
+                          (delete-file-recursively dir)))
+               (scandir ".")))
+            (substitute* "CMakeLists.txt"
+              (("add_subdirectory\\(externals/fmt\\)") "")
+              (("set_.*_libs\\(\\)") ""))
+            (with-directory-excursion "EnvironmentSimulator"
+              (with-directory-excursion "Applications/esmini-dyn/"
+                (substitute* "CMakeLists.txt"
+                  (("\\$ORIGIN") "$ORIGIN/../lib")))
+              (with-directory-excursion "Modules/RoadManager"
+                (substitute* (find-files "." "CMakeLists\\.txt$")
+                  (("\\$\\{EXTERNALS_.*\\}/[^ )\n]*") "")
+                  (("add_library\\(\n") "add_library("))
+                (substitute* (find-files "." "CMakeLists\\.txt$")
+                  (("add_library\\(.*pugixml_lib") "find_package(pugixml")
+                  (("pugixml_lib") "pugixml")))
+              (with-directory-excursion "Modules/Controllers"
+                (substitute* "ControllerSumo.cpp"
+                  (("#include <utils/geom/PositionVector\\.h>") ""))))
+            (with-directory-excursion "support/cmake/external"
+              (for-each make-file-writable (scandir "."))
+              (call-with-output-file "gtest.cmake"
+                (lambda (out)
+                  (display "find_package(GTest REQUIRED)" out)))
+              (call-with-output-file "osg.cmake"
+                (lambda (out)
+                  (display "include_guard()\n" out)
+                  (display "include(FindPkgConfig)\n" out)
+                  (format out "pkg_check_modules(OSG REQUIRED~@{ ~a~})"
+                          "openscenegraph"
+                          "osgdb_jpeg"
+                          "osgdb_png"
+                          "osgdb_osg"
+                          "osgdb_serializers_osg"
+                          "osgdb_serializers_osgsim")))
+              (call-with-output-file "osi.cmake"
+                (lambda (out)
+                  (display "\
+find_package(open_simulation_interface REQUIRED)
+set(EXTERNALS_OSI_INCLUDES \"${OPEN_SIMULATION_INTERFACE_INCLUDE_DIRS}\")
+set(OSI_LIBRARIES open_simulation_interface::open_simulation_interface)
+" out)
+                  ))
+              (call-with-output-file "sumo.cmake"
+                (lambda (out)
+                  (display "set(SUMO_LIBRARIES sumocpp tracicpp)"
+                           out))))))
+       (sha256
+        (base32
+         "13xlkhg6z2z1j99l0j5m77lkcvsqkgmy19yjikqy32x1r0hm17df"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags
       #~(list "-DDYN_PROTOBUF=TRUE"
               ;; Missing implot package
-              "-DUSE_IMPLOT=FALSE")
+              "-DUSE_IMPLOT=FALSE"
+              "-DDOWNLOAD_EXTERNALS=FALSE")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-cmake
@@ -754,10 +801,14 @@ functions in virtual scenarios.")
                      (rename-file f (string-append out "/lib/"
                                                    (basename f))))
                    (find-files "." "\\.(a|so)$")))))))))
-    (inputs (list mesa
-                  openscenegraph `(,openscenegraph "pluginlib")
+    (inputs (list fmt
+                  mesa
+                  openscenegraph
+                  `(,openscenegraph "pluginlib")
                   open-simulation-interface
-                  protobuf pugixml sumo))
+                  protobuf
+                  pugixml
+                  sumo))
     (native-inputs (list googletest pkg-config))
     (home-page "https://github.com/esmini/esmini")
     (synopsis "Basic OpenSCENARIO player")
