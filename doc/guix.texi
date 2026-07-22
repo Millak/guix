@@ -55455,7 +55455,10 @@ Extra content to add to the end of @file{~/.config/alsa/asoundrc}.
 The @code{(gnu home services mail)} module provides services that help
 you set up the tools to work with emails in your home environment.
 
+@subsubheading MSMTP Service
 @cindex msmtp
+@cindex mail configuration, for outgoing mail
+
 @uref{https://marlam.de/msmtp, MSMTP} is a @acronym{SMTP, Simple Mail
 Transfer Protocol} client.  It sends mail to a predefined SMTP server
 that takes care of proper delivery.
@@ -55581,6 +55584,172 @@ format.
 @end table
 
 @end deftp
+
+@c %end of fragment
+
+@subsubheading Goimapnotify Service
+@cindex IMAP notifications
+
+@defvar home-goimapnotify-service-type
+This is the type of the service that runs
+@uref{https://gitlab.com/shackra/goimapnotify, Goimapnotify}, a
+command-line application to execute scripts on IMAP mailbox changes
+using @uref{https://www.rfc-editor.org/info/rfc2177, IDLE}.  Its value
+is a @code{home-goimapnotify-configuration} object.
+@end defvar
+
+Here is a snippet of the service with an example configuration that you
+could add to the @code{services} field of your @code{home-environment}:
+
+@lisp
+(service home-goimapnotify-service-type
+         (home-goimapnotify-configuration
+          (configurations
+           (list
+            (goimapnotify-configuration
+             (host "imap.example.com")
+             (tls? #t)
+             (tls-options
+              (goimapnotify-tls-options-configuration
+               (reject-unauthorized? #t)))
+             (user-name "alice@@example.com")
+             (password-command
+              #~(string-append #$(file-append libsecret "/bin/secret-tool")
+                               " lookup user alice@@example.com"))
+             (boxes
+              (list
+               (goimapnotify-box-configuration
+                (mailbox "Inbox")
+                (on-new-mail
+                 #~(string-append #$(file-append isync "/bin/mbsync")
+                                  " alice"))
+                (on-new-mail-post
+                 #~(string-append #$(file-append notmuch "/bin/notmuch")
+                                  " new"))))))))))
+@end lisp
+
+@c %start of fragment
+
+@deftp {Data Type} home-goimapnotify-configuration
+Available @code{home-goimapnotify-configuration} fields are:
+
+@table @asis
+@item @code{goimapnotify} (default: @code{goimapnotify}) (type: file-like)
+The @code{goimapnotify} package to use.
+
+@item @code{configurations} (type: list-of-goimapnotify-configurations)
+A list of @code{goimapnotify-configuration} records which contain
+information about all your accounts configurations.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} goimapnotify-configuration
+Available @code{goimapnotify-configuration} fields are:
+
+@table @asis
+@item @code{host} (type: string)
+The IMAP server hostname.
+
+@item @code{host-command} (type: maybe-string-or-gexp)
+Command to retrieve the IMAP server hostname.
+
+@item @code{port} (default: @code{993}) (type: integer)
+The port that the IMAP server listens on.
+
+@item @code{tls?} (default: @code{#f}) (type: boolean)
+Enable or disable TLS.
+
+@item @code{tls-options} (type: maybe-goimapnotify-tls-options-configuration)
+TLS options for the IMAP connection.
+
+@item @code{idle-logout-timeout} (type: maybe-integer)
+The idle logout timeout in minutes.
+
+@item @code{user-name} (type: maybe-string)
+The user-name for authentication.
+
+@item @code{user-name-command} (type: maybe-string-or-gexp)
+Command to retrieve the user-name.
+
+@item @code{alias} (type: maybe-string)
+An alias for the account.
+
+@item @code{password} (type: maybe-string)
+The password for authentication.
+
+@item @code{password-command} (type: maybe-string-or-gexp)
+Command to retrieve the password.
+
+@item @code{xo-auth2?} (default: @code{#f}) (type: boolean)
+Enable or disable XOAUTH2 authentication.
+
+@item @code{boxes} (type: list-of-goimapnotify-boxes-configurations)
+The mailboxes to monitor.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} goimapnotify-box-configuration
+Available @code{goimapnotify-box-configuration} fields are:
+
+@table @asis
+@item @code{mailbox} (type: string)
+The mailbox to monitor.
+
+@item @code{on-new-mail} (type: maybe-string-or-gexp)
+Command to execute when new mail arrives.
+
+@item @code{on-new-mail-post} (type: maybe-string-or-gexp)
+Command to execute after the new-mail command.
+
+@item @code{on-changed-mail} (type: maybe-string-or-gexp)
+Command to execute when mail is changed.
+
+@item @code{on-changed-mail-post} (type: maybe-string-or-gexp)
+Command to execute after the changed-mail command.
+
+@item @code{on-deleted-mail} (type: maybe-string-or-gexp)
+Command to execute when mail is deleted.
+
+@item @code{on-deleted-mail-post} (type: maybe-string-or-gexp)
+Command to execute after the deleted-mail command.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
+
+@c %start of fragment
+
+@deftp {Data Type} goimapnotify-tls-options-configuration
+Available @code{goimapnotify-tls-options-configuration} fields are:
+
+@table @asis
+@item @code{reject-unauthorized?} (default: @code{#f}) (type: boolean)
+Whether to reject unauthorized TLS certificates.
+
+@item @code{starttls?} (default: @code{#f}) (type: boolean)
+Whether to use STARTTLS.
+
+@end table
+
+@end deftp
+
 
 @c %end of fragment
 

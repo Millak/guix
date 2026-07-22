@@ -17,12 +17,14 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu home services mail)
+  #:use-module (guix records)
   #:use-module (guix gexp)
   #:use-module (gnu services)
   #:use-module (gnu services configuration)
   #:use-module (gnu home services)
   #:use-module (gnu home services shepherd)
   #:use-module (gnu packages mail)
+  #:use-module (ice-9 match)
   #:use-module (ice-9 string-fun)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
@@ -47,7 +49,13 @@
             msmtp-configuration-extra-content
             msmtp-account
             msmtp-account-name
-            msmtp-account-configuration))
+            msmtp-account-configuration
+
+            goimapnotify-tls-options-configuration
+            goimapnotify-box-configuration
+            goimapnotify-configuration
+            home-goimapnotify-configuration
+            home-goimapnotify-service-type))
 
 (define (string-or-gexp? obj)
   (or (string? obj)
@@ -228,3 +236,248 @@ format."
                 (description "Configure msmtp, a simple
 @acronym{SMTP, Simple Mail Transfer Protocol} client that can relay email
 to SMTP servers.")))
+
+
+;;; Goimapnotify.
+
+;; Mapping used by 'camelize-field-name' to handle certain symbols specially.
+(define field-name-mapping
+  (make-parameter '()))
+
+(define (camelize-field-name field-name)
+  (let* ((str (symbol->string (or (assq-ref (field-name-mapping) field-name)
+                                  field-name)))
+         (words (string-split (if (string-suffix? "?" str)
+                                  (string-drop-right str 1)
+                                  str)
+                              #\-)))
+    (match words
+      ((head . tail)
+       (string-concatenate (cons* head
+                                  (map string-capitalize tail)))))))
+
+(define (goimapnotify-serialize-field field-name val)
+  (parameterize ((field-name-mapping
+                  '((host-command . hostCmd)
+                    (user-name . username)
+                    (user-name-command . usernameCmd)
+                    (password-command . passwordCmd))))
+    #~(format #f "~a: ~s\n"
+              #$(camelize-field-name field-name)
+              #$val)))
+
+(define (goimapnotify-serialize-boolean field-name val)
+  (goimapnotify-serialize-field field-name (if val ''true ''false)))
+
+(define-configuration goimapnotify-tls-options-configuration
+  (reject-unauthorized?
+   (boolean #f)
+   "Whether to reject unauthorized TLS certificates.")
+
+  (starttls?
+   (boolean #f)
+   "Whether to use STARTTLS.")
+
+  (prefix goimapnotify-))
+
+;; XXX: The 'define-maybe' macros of the MSMTP configuration already define
+;; the maybe types, so we just need to define the extra serializers.
+
+(define (goimapnotify-serialize-string field-name val)
+  (goimapnotify-serialize-field field-name val))
+
+(define (goimapnotify-serialize-maybe-string field-name val)
+  (if (maybe-value-set? val)
+      (goimapnotify-serialize-string field-name val)
+      ""))
+
+(define goimapnotify-serialize-string-or-gexp
+  goimapnotify-serialize-string)
+
+(define (goimapnotify-serialize-maybe-string-or-gexp field-name val)
+  (if (and (maybe-value-set? val)
+           (string-or-gexp? val))
+      (goimapnotify-serialize-string-or-gexp field-name val)
+      ""))
+
+(define-configuration goimapnotify-box-configuration
+  (mailbox
+   string
+   "The mailbox to monitor.")
+
+  (on-new-mail
+   maybe-string-or-gexp
+   "Command to execute when new mail arrives.")
+
+  (on-new-mail-post
+   maybe-string-or-gexp
+   "Command to execute after the new-mail command.")
+
+  (on-changed-mail
+   maybe-string-or-gexp
+   "Command to execute when mail is changed.")
+
+  (on-changed-mail-post
+   maybe-string-or-gexp
+   "Command to execute after the changed-mail command.")
+
+  (on-deleted-mail
+   maybe-string-or-gexp
+   "Command to execute when mail is deleted.")
+
+  (on-deleted-mail-post
+   maybe-string-or-gexp
+   "Command to execute after the deleted-mail command.")
+
+  (prefix goimapnotify-))
+
+(define (goimapnotify-serialize-integer field-name val)
+  (goimapnotify-serialize-field field-name val))
+
+(define (goimapnotify-serialize-maybe-integer field-name val)
+  (if (maybe-value-set? val)
+      (goimapnotify-serialize-integer field-name val)
+      ""))
+
+(define (serialize-goimapnotify-tls-options-configuration field-name val)
+  (serialize-configuration val goimapnotify-tls-options-configuration-fields))
+
+(define-maybe goimapnotify-tls-options-configuration)
+
+(define (list-of-goimapnotify-boxes-configurations? lst)
+  (and (not (null? lst))
+       (every goimapnotify-box-configuration? lst)))
+
+(define (serialize-list-of-goimapnotify-boxes-configurations field-name value)
+  (let ((serializations (cons 'list
+                              (map (cut serialize-configuration <>
+                                        goimapnotify-box-configuration-fields)
+                                   value))))
+    #~(begin
+        (use-modules (ice-9 format) (ice-9 string-fun))
+        (format #f "~a:
+~{  - ~a~%~}"
+                '#$field-name
+                (map (lambda (s)
+                       (string-replace-substring s "\n" "\n    "))
+                     #$serializations)))))
+
+(define-configuration goimapnotify-configuration
+  (host
+   string
+   "The IMAP server hostname.")
+
+  (host-command
+   maybe-string-or-gexp
+   "Command to retrieve the IMAP server hostname.")
+
+  (port
+   (integer 993)
+   "The port that the IMAP server listens on.")
+
+  (tls?
+   (boolean #f)
+   "Enable or disable TLS.")
+
+  (tls-options
+   maybe-goimapnotify-tls-options-configuration
+   "TLS options for the IMAP connection."
+   (serializer serialize-maybe-goimapnotify-tls-options-configuration))
+
+  (idle-logout-timeout
+   maybe-integer
+   "The idle logout timeout in minutes.")
+
+  (user-name
+   maybe-string
+   "The user-name for authentication.")
+
+  (user-name-command
+   maybe-string-or-gexp
+   "Command to retrieve the user-name.")
+
+  (alias
+   maybe-string
+   "An alias for the account.")
+
+  (password
+   maybe-string
+   "The password for authentication.")
+
+  (password-command
+   maybe-string-or-gexp
+   "Command to retrieve the password.")
+
+  (xo-auth2?
+   (boolean #f)
+   "Enable or disable XOAUTH2 authentication.")
+
+  (boxes
+   list-of-goimapnotify-boxes-configurations
+   "The mailboxes to monitor."
+   (serializer serialize-list-of-goimapnotify-boxes-configurations))
+
+  (prefix goimapnotify-))
+
+;; Serialize virtualhosts and components last.
+(define (serialize-goimapnotify-configuration config)
+  (define (boxes? field)
+    (eq? (configuration-field-name field) 'boxes))
+  (let ((rest (filter boxes? goimapnotify-configuration-fields)))
+    #~(string-append #$(serialize-configuration config rest)
+                     #$(serialize-list-of-goimapnotify-boxes-configurations
+                          'boxes
+                          (goimapnotify-configuration-boxes config)))))
+
+(define (list-of-goimapnotify-configurations? lst)
+  (every goimapnotify-configuration? lst))
+
+(define (serialize-list-of-goimapnotify-configurations field-name value)
+  (let ((serializations (cons 'list
+                              (map (cut serialize-configuration <>
+                                        goimapnotify-configuration-fields)
+                                   value))))
+    #~(begin
+        (use-modules (ice-9 format) (ice-9 string-fun))
+        (format #f "~a:
+~{  - ~a~%~}"
+                '#$field-name
+                (map (lambda (s)
+                       (string-replace-substring s "\n" "\n    "))
+                     #$serializations)))))
+
+(define-configuration home-goimapnotify-configuration
+  (goimapnotify
+   (file-like goimapnotify)
+   "The @code{goimapnotify} package to use."
+   empty-serializer)
+  (configurations
+   (list-of-goimapnotify-configurations)
+   "List of @code{goimapnotify-configuration} records which contain
+information about all your accounts configurations."))
+
+(define (home-goimapnotify-shepherd-service config)
+  (let ((log-file #~(string-append %user-log-dir "/goimapnotify.log")))
+    (list
+     (shepherd-service
+       (provision '(goimapnotify))
+       (modules '((shepherd support)))   ;for '%user-log-dir'
+       (documentation "Run a goimapnotify process")
+       (start #~(make-forkexec-constructor
+                 (list
+                  #$(file-append
+                     (home-goimapnotify-configuration-goimapnotify config)
+                     "/bin/goimapnotify")
+                  "-conf" #$(mixed-text-file "goimapnotify.yaml"
+                                             (serialize-configuration config
+                                                                      home-goimapnotify-configuration-fields)))
+                 #:log-file #$log-file))
+       (stop #~(make-kill-destructor))))))
+
+(define home-goimapnotify-service-type
+  (service-type
+    (name 'home-goimapnotify)
+    (extensions
+     (list (service-extension home-shepherd-service-type
+                              home-goimapnotify-shepherd-service)))
+    (description "Configures the @code{goimapnotify} IMAP mailbox notifier.")))
