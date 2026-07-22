@@ -134,6 +134,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages rsync)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages search)
   #:use-module (gnu packages serialization)
@@ -4253,14 +4254,16 @@ inspired by the SCSH regular expression system.")
 (define-public haunt
   (package
     (name "haunt")
-    (version "0.3.0")
+    (version "0.4.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://files.dthompson.us/haunt/haunt-"
-                                  version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.dthompson.us/haunt.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0awrk4a2gfnk660m4kg9cy1w8z7bj454355w7rn0cjp5dg8bxflq"))))
+                "1bfwan60h1xzwbbzcm3lxhlqn5hvkycmpm21myhgq1y68k83n6sm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((ice-9 match) (ice-9 ftw)
@@ -4302,13 +4305,15 @@ inspired by the SCSH regular expression system.")
                                                           "/site-ccache"))
                                          deps)))))))))))))
     (native-inputs
-     (list pkg-config texinfo))
+     (list autoconf automake pkg-config texinfo))
     (inputs
      ;; Depend on the latest Guile to avoid bytecode compatibility issues when
      ;; using modules built against the latest version.
      (list bash-minimal guile-3.0-latest))
     (propagated-inputs
-     (list guile-reader guile-commonmark))
+     (list guile-lib ; for htmlprag
+           guile-reader
+           guile-commonmark))
     (synopsis "Functional static site generator")
     (description "Haunt is a static site generator written in Guile
 Scheme.  Haunt features a functional build system and an extensible
