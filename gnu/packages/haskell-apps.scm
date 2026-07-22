@@ -20,6 +20,7 @@
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
+;;; Copyright © 2026 Konstantin Suntsov <protvin@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -744,7 +745,7 @@ Wayland, and Linux console environments alike.")
 (define-public matterhorn
   (package
     (name "matterhorn")
-    (version "90000.0.0")
+    (version "90000.1.2")
     (source
      (origin
        ;; use git repo instead of hackage URL because the hackage tarball
@@ -755,7 +756,26 @@ Wayland, and Linux console environments alike.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08ng5axranilvfl9j3v0mjgpg76kzacrqj4c8x6pblpc3yxx02i5"))))
+        (base32 "0i3q7896ss4dnmqs83klia4i9psv0w9ahy3k5yrm20m6qwmair5b"))
+       (snippet
+        #~(substitute* "matterhorn.cabal"
+            (("base-compat          >= 0\\.9     && < 0\\.13")
+             "base-compat          >= 0.9     && < 0.15")
+            (("bytestring           >= 0\\.10    && < 0\\.12")
+             "bytestring           >= 0.10    && < 0.13")
+            (("containers           >= 0\\.5\\.7   && < 0\\.7")
+             "containers           >= 0.5.7   && < 0.8")
+            (("crypton-connection   >= 0\\.3\\.1   && < 0\\.4")
+             "crypton-connection   >= 0.3.1   && < 0.5")
+            (("filepath             >= 1\\.4     && < 1\\.5")
+             "filepath             >= 1.4     && < 1.6")
+            (("hashable             >= 1\\.2     && < 1\\.5")
+             "hashable             >= 1.2     && < 1.6")
+            (("tasty                >= 0\\.11    && < 1\\.5")
+             "tasty                >= 0.11    && < 1.6")
+            (("text                 >= 1\\.2\\.5\\.0 && < 2\\.1")
+             "text                 >= 1.2.5.0 && < 2.2")))
+       (modules '((guix build utils)))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "matterhorn")))
     (inputs (list ghc-aeson
@@ -782,6 +802,7 @@ Wayland, and Linux console environments alike.")
                   ghc-split
                   ghc-stm-delay
                   ghc-strict
+                  ghc-tasty
                   ghc-temporary
                   ghc-text-zipper
                   ghc-timezone-olson
