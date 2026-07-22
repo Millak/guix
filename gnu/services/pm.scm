@@ -461,7 +461,21 @@ performance, balance_performance, default, balance_power and power.")
   (cpu-energy-perf-policy-on-bat
    maybe-string
    "Set CPU energy/performance policy when on BAT mode.  Possible values are
-performance, balance_performance, default, balance_power and power."))
+performance, balance_performance, default, balance_power and power.")
+
+  (platform-profile-on-ac
+   maybe-string
+   "Select the platform profile when on AC mode to control system operating
+characteristics around power and performance levels, thermal and fan speed.
+Possible values in order of increasing power saving are: performance,
+balanced and low-power.")
+
+  (platform-profile-on-bat
+   maybe-string
+   "Select the platform profile when on BAT mode to control system operating
+characteristics around power and performance levels, thermal and fan speed.
+Possible values in order of increasing power saving are: performance,
+balanced and low-power."))
 
 
 (define (tlp-shepherd-service config)

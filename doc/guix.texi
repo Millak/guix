@@ -41769,6 +41769,22 @@ default, balance_power and power.
 
 @end deftypevr
 
+@deftypevr {@code{tlp-configuration} parameter} string platform-profile-on-ac
+Select the platform profile when on AC mode to control system operating
+characteristics around power and performance levels, thermal and fan
+speed.  Possible values, in order of increasing power saving, are:
+performance, balanced and low-power.
+
+@end deftypevr
+
+@deftypevr {@code{tlp-configuration} parameter} string platform-profile-on-bat
+Select the platform profile when on BAT mode to control system operating
+characteristics around power and performance levels, thermal and fan
+speed.  Possible values, in order of increasing power saving, are:
+performance, balanced and low-power.
+
+@end deftypevr
+
 @cindex thermald
 @cindex CPU frequency scaling with thermald
 @subsubheading Thermald daemon
