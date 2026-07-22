@@ -1344,7 +1344,7 @@ other API remains the same.")
 (define-public template-glib
   (package
     (name "template-glib")
-    (version "3.38.0")
+    (version "3.40.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1352,13 +1352,14 @@ other API remains the same.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "04mk1h2jzij91z5an08irah76wx6qpggf8n45rzypwnw4g10vl20"))))
+                "1mfgrz01an5jlvrwn49s8dgll6yxz8jchnn5dbv6vk14dhpyqcz5"))))
     (build-system meson-build-system)
-    (inputs (list gettext-minimal glib gobject-introspection))
+    (inputs (list gettext-minimal glib))
     (native-inputs
      (list bison
            flex
-           `(,glib "bin") ;for glib-mkenums
+           `(,glib "bin")               ;for glib-mkenums
+           gobject-introspection        ;for g-ir-scanner
            pkg-config
            vala))
     (home-page "https://gitlab.gnome.org/GNOME/template-glib")
