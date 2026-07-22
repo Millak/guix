@@ -8212,6 +8212,30 @@ ftypes.")
     (home-page "https://dthompson.us/projects/guile-bstructs.html")
     (license license:asl2.0)))
 
+(define-public guile-cdata
+  (package
+    (name "guile-cdata")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mwette/guile-cdata/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13lbgxy7pf9wjgdmi4za69y9xm4qxh5sd52mw788402mcprpdc6v"))))
+    (build-system gnu-build-system)
+    (native-inputs (list guile-3.0))
+    (home-page "https://github.com/mwette/guile-cdata")
+    (synopsis "Procedures for handling C data types in Guile")
+    (description
+     "The cdata package for Guile provides a way to work with data originating
+from C libraries.  It handles base, struct, union, array, pointer, enum
+and function types.  The underlying bits of data are stored in Scheme
+bytevectors.")
+    (license license:lgpl3+)))
+
 (define-public jaro
   (let ((commit "a5744a686e43a148536b04db5be779aabfed1603")
         (revision "0"))
