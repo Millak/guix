@@ -1,0 +1,60 @@
+https://github.com/matterhorn-chat/mattermost-api/pull/65.patch
+
+From 2eb3aba58baeed5208a83deeb885a7ed100562ac Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Geoffrey=20=E2=80=9CFrogeye=E2=80=9D=20Preud=27homme?=
+ <geoffrey@frogeye.fr>
+Date: Sun, 30 Nov 2025 10:02:49 +0100
+Subject: [PATCH] Support crypton-connection >= 0.4.0
+
+crypton-connection added a non-optional argument to TLSSettingSimple in
+0.4.0: https://github.com/kazu-yamamoto/crypton-connection/pull/3 .
+
+This adds this argument, and limit crypton-connection to < 0.5.0 as they
+consider minor versions as breaking.
+---
+ mattermost-api.cabal           | 3 ++-
+ src/Network/Mattermost/Util.hs | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/mattermost-api.cabal b/mattermost-api.cabal
+index 08b6884..028f052 100644
+--- a/mattermost-api.cabal
++++ b/mattermost-api.cabal
+@@ -45,7 +45,7 @@ library
+                      , websockets >= 0.11.0.0
+                      , stm
+                      , aeson >= 2.0.1.0 && < 2.3.0.0
+-                     , crypton-connection
++                     , crypton-connection >= 0.4.0 && < 0.5.0
+                      , memory
+                      , resource-pool >= 0.2.3
+                      -- To prevent broken websockets versions from using
+@@ -69,6 +69,7 @@ library
+                      , template-haskell
+                      , microlens
+                      , microlens-th
++                     , tls
+                      -- Only here to make debugging easier
+                      , pretty-show
+                      , split
+diff --git a/src/Network/Mattermost/Util.hs b/src/Network/Mattermost/Util.hs
+index 0a5b070..aba2f8f 100644
+--- a/src/Network/Mattermost/Util.hs
++++ b/src/Network/Mattermost/Util.hs
+@@ -23,6 +23,7 @@ import           Data.Monoid ((<>))
+ import           Control.Exception ( Exception
+                                    , throwIO )
+ import           Data.Pool (takeResource, putResource, destroyResource)
++import           Network.TLS (defaultSupported)
+ import           Network.Connection ( Connection
+                                     , ConnectionContext
+                                     , ConnectionParams(..)
+@@ -95,7 +96,7 @@ mkConnection ctx host port connTy = do
+             -- The first argument to TLSSettingsSimple is whether to
+             -- /disable/ cert validation. If requireTrustedCert is True,
+             -- we want that argument to be False to force validation.
+-            Just (TLSSettingsSimple (not requireTrustedCert) False False)
++            Just (TLSSettingsSimple (not requireTrustedCert) False False defaultSupported)
+     , connectionUseSocks  = do
+         (ty, cHost, cPort) <- proxy
+         case ty of

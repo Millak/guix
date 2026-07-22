@@ -14,6 +14,7 @@
 ;;; Copyright © 2020 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2022 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2026 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2026 Konstantin Suntsov <protvin@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -845,13 +846,14 @@ Haskell.")
 (define-public ghc-mattermost-api
   (package
     (name "ghc-mattermost-api")
-    (version "90000.0.0")
+    (version "90000.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "mattermost-api" version))
        (sha256
-        (base32 "1ka3r4bnfwlbjnkws8vkg8i9gj8wzsyss137p7hxrx4sr75s6iyv"))))
+        (base32 "0l6nqrn3sdikpi1h2hrx0p7c51qvq89ibqd3z9dzzg1riz4rirfr"))
+       (patches (search-patches "ghc-matterhorn-crypton-connection.patch"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "mattermost-api")))
     (inputs (list ghc-websockets
@@ -869,8 +871,7 @@ Haskell.")
                   ghc-microlens
                   ghc-microlens-th
                   ghc-pretty-show
-                  ghc-split
-                  ghc-connection))
+                  ghc-split))
     (native-inputs (list ghc-tasty ghc-tasty-hunit ghc-hunit))
     (arguments
      (list #:tests? #f)) ;tests require networking and Mattermost Docker image

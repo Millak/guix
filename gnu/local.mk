@@ -1460,6 +1460,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ghc-memory-fix-32bit.patch		\
   %D%/packages/patches/ghc-persistent-fix-32bit.patch		\
   %D%/packages/patches/ghc-openssl-streams-regenerate-test-certificate.patch \
+  %D%/packages/patches/ghc-matterhorn-crypton-connection.patch  \
   %D%/packages/patches/ghostscript-CVE-2023-36664.patch		\
   %D%/packages/patches/ghostscript-CVE-2023-36664-fixup.patch	\
   %D%/packages/patches/ghostscript-leptonica-hurd.patch		\
