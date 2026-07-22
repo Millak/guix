@@ -2574,7 +2574,7 @@ limited size and a few external dependencies.  It is configurable via
 (define-public mangowm
   (package
     (name "mangowm")
-    (version "0.14.0")
+    (version "0.15.6")
     (source
      (origin
        (method git-fetch)
@@ -2583,7 +2583,7 @@ limited size and a few external dependencies.  It is configurable via
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09qnm75yl1j683yfrys37dbzvp7xz3xz4dsrz0yl21h1jm06w3qd"))))
+        (base32 "1az8w6baldnlh6s828yamnrrcj0s7lhs1g69ws8832dwpjdvarhd"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -2602,21 +2602,22 @@ limited size and a few external dependencies.  It is configurable via
                 (("'-DSYSCONFDIR=\\\"@0@\\\"'.format\\('/etc'\\)")
                  "'-DSYSCONFDIR=\"@0@\"'.format(sysconfdir)")))))))
     (native-inputs (list pkg-config wayland-protocols))
-    (inputs (list wayland
-                  libinput
-                  libdrm
-                  libxkbcommon
-                  pixman
-                  libdisplay-info
-                  libliftoff
+    (inputs (list cjson
                   hwdata
-                  seatd
-                  pcre2
+                  libdisplay-info
+                  libdrm
+                  libinput
+                  libliftoff
                   libxcb
-                  xcb-util-wm
-                  wlroots-0.19
-                  cjson
-                  scenefx-0.4))
+                  libxkbcommon
+                  pango
+                  pcre2
+                  pixman
+                  scenefx
+                  seatd
+                  wayland
+                  wlroots-0.20
+                  xcb-util-wm))
     (home-page "https://mangowm.github.io")
     (synopsis "Wayland compositor based on wlroots and scenefx")
     (description
