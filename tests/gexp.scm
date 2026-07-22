@@ -194,6 +194,16 @@
                                  (package-derivation %store coreutils)))
                  (gexp->sexp* exp)))))
 
+(test-assert "one input package, vector"
+  (let ((exp (gexp #((ungexp coreutils)))))
+    (and (gexp? exp)
+         (match (gexp-inputs exp)
+           ((input)
+            (eq? (gexp-input-thing input) coreutils)))
+         (equal? (vector (derivation->output-path
+                          (package-derivation %store coreutils)))
+                 (gexp->sexp* exp)))))
+
 (test-assert "one input origin"
   (let ((exp (gexp (display (ungexp (package-source coreutils))))))
     (and (gexp? exp)

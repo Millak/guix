@@ -1510,6 +1510,8 @@ execution environment."
           ((exp0 . exp)
            (let ((result (loop #'exp0 result)))
              (loop  #'exp result)))
+          (#(exp ...)
+           (loop #'(exp ...) result))
           (_
            result))))
 
@@ -1573,6 +1575,8 @@ execution environment."
         ((exp0 . exp)
          #`(cons #,(substitute-references #'exp0 substs)
                  #,(substitute-references #'exp substs)))
+        (#(exp ...)
+         #`(list->vector #,(substitute-references #'(exp ...) substs)))
         (x #''x)))
 
     (syntax-case s (ungexp output)
