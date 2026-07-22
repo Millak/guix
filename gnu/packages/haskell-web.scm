@@ -886,13 +886,13 @@ API interaction with the Mattermost server.")
 (define-public ghc-mattermost-api-qc
   (package
     (name "ghc-mattermost-api-qc")
-    (version "90000.0.0")
+    (version "90000.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "mattermost-api-qc" version))
        (sha256
-        (base32 "0lrb8l8nbrdp4y2ala8hchr8ikv5hqw710ffiiw1sz6z2dqiqbxm"))))
+        (base32 "0qm462rb9ddpgz5cwrsqpw6sda5g055ivadfdw2yj29i1vqwn8xb"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "mattermost-api-qc")))
     (inputs (list ghc-mattermost-api ghc-quickcheck))
