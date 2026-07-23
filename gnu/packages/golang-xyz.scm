@@ -27,7 +27,7 @@
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
-;;; Copyright © 2021, 2023-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2023-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
@@ -12676,6 +12676,51 @@ pre-determined intervals.  This is a fork from
       "This package is an alternative fork of https://github.com/peterh/liner
 to build @code{delve} - debugger for the Go programming language.")
      (license license:expat))))
+
+(define-public go-github-com-go-enry-go-enry-v2
+  (package
+    (name "go-github-com-go-enry-go-enry-v2")
+    (version "2.9.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-enry/go-enry")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "128fa18gadsy7id7gy506baggjfmk5jx1fmrj8z38d2xsa0238xz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-enry/go-enry/v2"
+      #:test-flags
+      #~(list "-vet=off"
+              ;; Benchmarks and some tests need data from
+              ;; <https://github.com/github-linguist/linguist>.
+              "-skip" (string-join
+                       (list "Test_EnryOnLinguistCorpus"
+                             "Test_EnryTestSuite"
+                             "Test_GeneratorTestSuite")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-benchmarks
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "benchmark_test.go")
+                (delete-file-recursively "benchmarks")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-enry-go-oniguruma
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/go-enry/go-enry")
+    (synopsis "Programming language detector")
+    (description
+     "@command{enry} is a programming language detector and toolbox to ignore
+binary or vendored files.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-go-enry-go-oniguruma
   (package
