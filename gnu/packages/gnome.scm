@@ -5053,8 +5053,7 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
            python-wrapper
            vala
            curl
-           gnutls                       ;for 'certtool'
-           httpd/pinned))
+           gnutls))                     ;for 'certtool'
     (propagated-inputs
      ;; libsoup-3.0.pc refers to all of these (except where otherwise noted)
      (list brotli
