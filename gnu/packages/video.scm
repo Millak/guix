@@ -2054,32 +2054,19 @@ audio/video codec library.")
 (define-public ffmpeg-4
   (package
     (inherit ffmpeg-5)
-    (version "4.4.7")
-    (replacement ffmpeg-4.4.8)
+    (version "4.4.8")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "0ajyaq93785vf9pk8fkzcnwnfki6fw6n2zbkms50l2h5mz8ddrrr"))))
+               "1hrr3iz9nb6xs005amc30hw46ddwzxm2ffxywyp9wg98mv24hf67"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:configure-flags flags ''())
         #~(cons "--enable-avresample"
                 (fold delete #$flags '("--enable-libshaderc"))))))))
-
-(define-public ffmpeg-4.4.8
-  (package
-    (inherit ffmpeg-4)
-    (version "4.4.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://ffmpeg.org/releases/ffmpeg-" version
-                           ".tar.xz"))
-       (sha256
-        (base32 "1hrr3iz9nb6xs005amc30hw46ddwzxm2ffxywyp9wg98mv24hf67"))))))
 
 ;;; Custom ffmpeg package used by Jami, which incorporates custom patches.
 (define-public ffmpeg-jami
