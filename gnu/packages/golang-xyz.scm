@@ -31622,6 +31622,44 @@ like the os package feature you're already familiar with)
     ;; BSD-3-Clause terms.
     (license (list license:expat license:asl2.0 license:bsd-3))))
 
+(define-public go-github-com-wasilibs-go-re2
+  (package
+    (name "go-github-com-wasilibs-go-re2")
+    (version "1.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/wasilibs/go-re2")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q7rjss9i316pqm79294w66qsbqvrq3rb5yfx0xmys8kl5997w4g"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            (delete-file-recursively "build")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/wasilibs/go-re2"))
+    (propagated-inputs
+     (list go-github-com-tetratelabs-wazero
+           go-github-com-wasilibs-wazero-helpers
+           go-golang-org-x-sys))
+    (home-page "https://github.com/wasilibs/go-re2")
+    (synopsis "go-re2")
+    (description
+     "go-re2 is a drop-in replacement for the standard library
+@url{https://pkg.go.dev/regexp, regexp} package which uses the C++
+@url{https://github.com/google/re2, re2} library for improved performance with
+large inputs or complex expressions.  By default, re2 is packaged as a
+@code{WebAssembly} module, then compiled to Go using
+@url{https://github.com/ncruces/wasm2go, wasm2go}.  This means that it is
+compatible with any Go application, regardless of availability of cgo.")
+    (license license:expat)))
+
 (define-public go-github-com-wasilibs-wazero-helpers
   (package
     (name "go-github-com-wasilibs-wazero-helpers")
