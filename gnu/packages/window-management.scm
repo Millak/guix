@@ -3686,6 +3686,39 @@ based on wlroots.  It aims to create a customizable, extendable
 and lightweight environment without sacrificing its appearance.")
     (license license:expat)))
 
+(define-public wcm
+  (package
+    (name "wcm")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/WayfireWM/wcm")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x66w1gzcji3pc0zr0lyark596r7ikshfdkjkx4ccf46pz0mi01v"))))
+    (build-system meson-build-system)
+    (native-inputs (list cmake-minimal
+                         pkg-config))
+    (inputs (list cairo
+                  gtkmm-3
+                  glm
+                  libevdev
+                  libxml2
+                  pango
+                  wayfire
+                  wayland
+                  wf-config
+                  wlroots-0.19))
+    (home-page "https://wayfire.org/")
+    (synopsis "Wayfire Config Manager")
+    (description
+     "@code{wcm} is a Gtk3 application to configure @code{wayfire}.  It writes
+the config file that wayfire reads to update option values.")
+    (license license:expat)))
+
 (define-public wlr-randr
   (package
     (name "wlr-randr")
