@@ -2074,6 +2074,39 @@ that of BeautifulSoup.")
 trees produced by the html package.")
     (license license:bsd-2)))
 
+(define-public go-github-com-andygrunwald-go-gerrit
+  (package
+    (name "go-github-com-andygrunwald-go-gerrit")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/andygrunwald/go-gerrit")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sc79pvbykwdj3g80q1lgf30rjdrj4l44m69n55ak4jw2ry8q99j"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/andygrunwald/go-gerrit"
+      ;; Tests try to access <https://android-review.googlesource.com>.
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "ExampleConfigService_GetVersion"
+                             "ExampleProjectsService_ListProjects"
+                             "ExampleChangesService_QueryChanges")
+                       "|"))))
+    (propagated-inputs
+     (list go-github-com-google-go-querystring))
+    (home-page "https://github.com/andygrunwald/go-gerrit")
+    (synopsis "Go client/library for Gerrit Code Review")
+    (description
+     "Package gerrit provides a client for using the
+@url{https://www.gerritcodereview.com/, Gerrit} API.")
+    (license license:expat)))
+
 (define-public go-github-com-anthropics-anthropic-sdk-go
   (package
     (name "go-github-com-anthropics-anthropic-sdk-go")
