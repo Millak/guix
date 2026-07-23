@@ -31622,6 +31622,46 @@ like the os package feature you're already familiar with)
     ;; BSD-3-Clause terms.
     (license (list license:expat license:asl2.0 license:bsd-3))))
 
+(define-public go-github-com-wasilibs-wazero-helpers
+  (package
+    (name "go-github-com-wasilibs-wazero-helpers")
+    (properties '((commit . "cd30c44769bb5d387ede147f6f80fe1972c0c65e")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20250123031827-cd30c44769bb")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/wasilibs/wazero-helpers")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "108n8pr20m68sf5m8vycjyknsmh5nnf46jdd35adw7bcv019maz5"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            (delete-file-recursively "build")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/wasilibs/wazero-helpers"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-tetratelabs-wazero
+           go-golang-org-x-sys))
+    (home-page "https://github.com/wasilibs/wazero-helpers")
+    (synopsis "Go utilities for wazero")
+    (description
+     "@url{https://wazero.io, wazero} is a @code{WebAssembly} runtime for Go
+programs,providing a powerful base for executing Wasm modules.")
+    (license license:expat)))
+
 (define-public go-github-com-whyrusleeping-base32
   (package
     (name "go-github-com-whyrusleeping-base32")
