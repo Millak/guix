@@ -1992,10 +1992,10 @@ Node @code{nock} library, it has features like:
 @end itemize")
     (license license:expat)))
 
-(define-public go-github-com-hexops-autogold-v2
+(define-public go-github-com-hexops-autogold
   (package
-    (name "go-github-com-hexops-autogold-v2")
-    (version "2.3.0")
+    (name "go-github-com-hexops-autogold")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -2004,11 +2004,11 @@ Node @code{nock} library, it has features like:
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15ih02l1c9z55ixrl39v0g3fv38nwl578bdjnygl14rbh5dqac0y"))))
+        (base32 "0jw94j1h4n836j91r3l0mq4g4jr15sna4qgmkxi6jg7ah2pd4l0r"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/hexops/autogold/v2"))
+      #:import-path "github.com/hexops/autogold"))
     (propagated-inputs
      (list go-github-com-fatih-color
            go-github-com-hexops-gotextdiff
@@ -2020,9 +2020,25 @@ Node @code{nock} library, it has features like:
     (description
      "Package autogold makes @code{go test -update} automatically update Go
 tests (golden files and Go values in e.g. @code{foo_test.go}).")
-    ;; Dual license.
-    (license (list license:asl2.0
-                   license:expat))))
+    (license (list license:asl2.0 license:expat))))
+
+(define-public go-github-com-hexops-autogold-v2
+  (package
+    (inherit go-github-com-hexops-autogold)
+    (name "go-github-com-hexops-autogold-v2")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hexops/autogold")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15ih02l1c9z55ixrl39v0g3fv38nwl578bdjnygl14rbh5dqac0y"))))
+    (arguments
+     (list
+      #:import-path "github.com/hexops/autogold/v2"))))
 
 (define-public go-github-com-hexops-gotextdiff
   (package
