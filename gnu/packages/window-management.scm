@@ -120,6 +120,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages build-tools)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages calendar)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
@@ -3627,6 +3628,63 @@ with Guile Scheme.  It provides an interface for defining status line blocks,
 runs block update commands concurrently, and displays the output of the update
 commands in the status line using swaybar-protocol.")
     (license license:gpl3+)))
+
+(define-public wayfire
+  (package
+    (name "wayfire")
+    (version "0.10.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/WayfireWM/wayfire/")
+              (commit (string-append "v" version))
+              (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "025li38wgnlsgnlnai2287irg6xphn9l76bdjgpjxg7iqngasana"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "subprojects/wf-config")
+            (delete-file-recursively "subprojects/wlroots")))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-shell-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "meson.build"
+                (("/bin/sh")
+                 (search-input-file inputs "bin/sh")))))
+          (add-after 'install 'install-config-file
+            (lambda _
+              (let ((config-dir (string-append #$output "/etc/wayfire"))
+                    (config (string-append #$source "/wayfire.ini")))
+                (install-file config config-dir)))))))
+    (native-inputs (list bash-minimal
+                         cmake-minimal
+                         pkg-config
+                         wayland))
+    (inputs (list cairo
+                  glm
+                  libevdev
+                  libjpeg-turbo
+                  libomp
+                  libpng
+                  libxml2
+                  pango
+                  wf-config
+                  wlroots-0.19
+                  yyjson))
+    (home-page "https://wayfire.org/")
+    (synopsis "Modular and extensible wayland compositor")
+    (description
+     "Wayfire is a 3D Wayland compositor, inspired by Compiz and
+based on wlroots.  It aims to create a customizable, extendable
+and lightweight environment without sacrificing its appearance.")
+    (license license:expat)))
 
 (define-public wlr-randr
   (package
