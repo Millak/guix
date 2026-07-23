@@ -334,19 +334,6 @@
                    (if replacement
                        (string-append "\"" replacement "\"")
                        all))))
-              ;; Make sure Tramp looks for binaries in the right places on
-              ;; remote Guix System machines, where 'getconf PATH' returns
-              ;; something bogus.
-              (substitute* "lisp/net/tramp.el"
-                ;; Patch the line after "(defcustom tramp-remote-path".
-                (("\\(tramp-default-remote-path")
-                 (format
-                  #f "(tramp-default-remote-path ~s ~s ~s ~s ~s ~s ~s "
-                  "/run/privileged/bin"
-                  "~/.guix-profile/bin" "~/.guix-profile/sbin"
-                  "~/.guix-home/bin" "~/.guix-home/sbin"
-                  "/run/current-system/profile/bin"
-                  "/run/current-system/profile/sbin")))
 
               ;; Make sure Man and ffap looks for C header files in the right
               ;; places.
@@ -357,14 +344,38 @@
                         "\"~/.guix-profile/include\""
                         "\"~/.guix-home/include\""
                         "\"/run/current-system/profile/include\"")
-                  " ")))
+                  " ")))))
+          (add-after 'patch-program-file-names 'patch-tramp
+            ;; This phase is duplicated in the emacs-tramp package.  Please
+            ;; ensure they stay in sync
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "lisp/net"
+                ;; All but one "/bin/" directory refer to remote
+                ;; environments, which may not be Guix.  Do not patch them
+                ;; blindly.  However, tramp-encoding-shell has to be patched.
+                (substitute* "tramp.el"
+                  (("\"/bin/sh\"")
+                   (format #f "~s" (search-input-file inputs "bin/sh")))
 
-              ;; match ".gvfs-fuse-daemon-real" and ".gvfsd-fuse-real"
-              ;; respectively when looking for GVFS processes.
-              (substitute* "lisp/net/tramp-gvfs.el"
-                (("\\(tramp-process-running-p \"(.*)\"\\)" all process)
-                 (format #f "(or ~a (tramp-process-running-p ~s))"
-                         all (string-append "." process "-real"))))))
+                  ;; Make sure Tramp looks for binaries in the right places on
+                  ;; remote Guix System machines, where 'getconf PATH' returns
+                  ;; something bogus.
+                  ;; Patch the line after "(defcustom tramp-remote-path".
+                  (("\\(tramp-default-remote-path")
+                   (format
+                    #f "(tramp-default-remote-path ~s ~s ~s ~s ~s ~s ~s "
+                    "/run/privileged/bin"
+                    "~/.guix-profile/bin" "~/.guix-profile/sbin"
+                    "~/.guix-home/bin" "~/.guix-home/sbin"
+                    "/run/current-system/profile/bin"
+                    "/run/current-system/profile/sbin")))
+
+                ;; match ".gvfs-fuse-daemon-real" and ".gvfsd-fuse-real"
+                ;; respectively when looking for GVFS processes.
+                (substitute* "tramp-gvfs.el"
+                  (("\\(tramp-process-running-p \"(.*)\"\\)" all process)
+                   (format #f "(or ~a (tramp-process-running-p ~s))"
+                           all (string-append "." process "-real")))))))
           (add-before 'configure 'fix-/bin/pwd
             (lambda _
               ;; Use `pwd', not `/bin/pwd'.
