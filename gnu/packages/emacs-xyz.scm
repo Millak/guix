@@ -41793,14 +41793,36 @@ well as an option for visually flashing evaluated s-expressions.")
       #:emacs emacs                     ;need D-Bus
       #:phases
       #~(modify-phases %standard-phases
-          ;; All but one "/bin/" directory refer to remote
-          ;; environments, which may not be Guix.  Do not patch them
-          ;; blindly.  However, local encoding shell has to be patched.
+          ;; This phase is duplicated in the emacs-minimal package.  Please
+          ;; ensure they stay in sync
           (replace 'patch-el-files
             (lambda* (#:key inputs #:allow-other-keys)
-              (emacs-substitute-variables "tramp.el"
-                ("tramp-encoding-shell"
-                 (search-input-file inputs "/bin/sh"))))))))
+              ;; All but one "/bin/" directory refer to remote
+              ;; environments, which may not be Guix.  Do not patch them
+              ;; blindly.  However, tramp-encoding-shell has to be patched.
+              (substitute* "tramp.el"
+                (("\"/bin/sh\"")
+                 (format #f "~s" (search-input-file inputs "bin/sh")))
+
+                ;; Make sure Tramp looks for binaries in the right places on
+                ;; remote Guix System machines, where 'getconf PATH' returns
+                ;; something bogus.
+                ;; Patch the line after "(defcustom tramp-remote-path".
+                (("\\(tramp-default-remote-path")
+                 (format
+                  #f "(tramp-default-remote-path ~s ~s ~s ~s ~s ~s ~s "
+                  "/run/privileged/bin"
+                  "~/.guix-profile/bin" "~/.guix-profile/sbin"
+                  "~/.guix-home/bin" "~/.guix-home/sbin"
+                  "/run/current-system/profile/bin"
+                  "/run/current-system/profile/sbin")))
+
+              ;; match ".gvfs-fuse-daemon-real" and ".gvfsd-fuse-real"
+              ;; respectively when looking for GVFS processes.
+              (substitute* "tramp-gvfs.el"
+                (("\\(tramp-process-running-p \"(.*)\"\\)" all process)
+                 (format #f "(or ~a (tramp-process-running-p ~s))"
+                         all (string-append "." process "-real")))))))))
     (home-page "https://savannah.gnu.org/projects/tramp")
     (synopsis "Remote file editing package for Emacs")
     (description
