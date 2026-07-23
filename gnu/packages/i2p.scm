@@ -36,7 +36,7 @@
 (define-public i2pd
   (package
     (name "i2pd")
-    (version "2.60.0")
+    (version "2.61.0")
     (source
      (origin
        (method git-fetch)
@@ -45,7 +45,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hwk8z709bp7lb0jdsk5ky6pr7jxyymxxl38dvbkk0vjdbabfl51"))))
+        (base32 "0hvdx47yf5dn6g54sazwqrrr275fcd76djnv609il68kmrirxw3m"))))
     (build-system cmake-build-system)
     (native-inputs (list check pkg-config))
     (inputs
