@@ -4292,19 +4292,6 @@ new API's in libXft, or the legacy API's in libX11.")
 (define-public libxfont2
   (package
     (inherit libxfont)
-    (version "2.0.7")
-    (replacement libxfont2/fixed)
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://xorg/individual/lib/libXfont2-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "1ywfwpirvi7fmd3my3cb6szzd9c4p7xy7s1kjjv6k1x4xgyq4ywb"))))))
-
-(define-public libxfont2/fixed
-  (package
-    (inherit libxfont2)
     (version "2.0.8")
     (source (origin
               (method url-fetch)
@@ -4313,7 +4300,6 @@ new API's in libXft, or the legacy API's in libX11.")
               (sha256
                (base32
                 "1m94d9z2y5pz0vr4mmvz33p04690dl84pg4hrh8njkis17hw0mpm"))))))
-
 
 (define-public libxi
   (package
