@@ -7,6 +7,7 @@
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson))
 
@@ -241,6 +243,53 @@ std::pair and std::tuple.
 
 @end itemize")
     (license license:asl2.0)))
+
+(define-public verstable
+  (package
+    (name "verstable")
+    (version "2.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/JacksonAllan/Verstable")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0lwh9kh0jl2vxcijd8606h5xvsjxxa051qaqlx82cl36nh0hkkxp"))))
+    (build-system copy-build-system)
+    (arguments
+     (list #:install-plan
+           #~'(("verstable.h" "include/verstable.h"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'install 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke #$(cc-for-target) "tests/unit_tests.c"
+                             "-o" "unit_tests")
+                     (invoke "./unit_tests")
+                     (invoke #$(cxx-for-target) "tests/tests_against_stl.cpp"
+                             "-o" "tests_against_stl")
+                     (invoke "./tests_against_stl")))))))
+    (home-page "https://github.com/JacksonAllan/Verstable")
+    (synopsis "Generic hash table library for C")
+    (description "Verstable is a versatile generic hash table intended to
+bring the speed and memory efficiency of state-of-the-art C++ hash tables such
+as Abseil/Swiss, Boost, and Bytell to C.
+
+Its features include:
+@itemize
+@item Type safety
+@item Customizable hash, comparison, and destructor functions
+@item Single header
+@item C99 compatibility
+@item Generic API in C11 and later
+@item High speed mostly impervious to load factor
+@item Only two bytes of overhead per bucket
+@item Tombstone-free deletion
+@end itemize")
+    (license license:expat)))
 
 (define-public ssdeep
   (package
