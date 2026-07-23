@@ -33437,6 +33437,37 @@ word on a list of words, if none is found, look for a similar word.")
 produces human-readable, logfmt-style output.")
     (license license:bsd-3)))
 
+(define-public go-go-bobheadxi-dev-streamline
+  (package
+    (name "go-go-bobheadxi-dev-streamline")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bobheadxi/streamline")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0plfay1pz4kwsnzw4d51gzp3g0l2si62168cjqq66r7k55yg2ny3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "go.bobheadxi.dev/streamline"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-djherbis-buffer
+           go-github-com-djherbis-nio-v3
+           go-github-com-hexops-autogold-v2
+           go-github-com-itchyny-gojq))
+    (home-page "https://go.bobheadxi.dev/streamline")
+    (synopsis "Transform and handle data, line by line")
+    (description
+     "@code{streamline} offers a variety of primitives to make working with
+data line by line a breeze.")
+    (license license:expat)))
+
 (define-public go-go-bug-st-cleanup
   (package
     (name "go-go-bug-st-cleanup")
