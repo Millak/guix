@@ -28492,6 +28492,48 @@ converting them to the @code{time.Duration} type.")
 implementation.")
     (license license:expat)))
 
+(define-public go-github-com-sourcegraph-log
+  (package
+    (name "go-github-com-sourcegraph-log")
+    (properties '((commit . "b104ff56b29966b5251aa9b76d101f9e159d175c")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260714115934-b104ff56b299")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sourcegraph/log")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m0m1n42c2jbmi0kqyprn28z505z87nqhqc22smn1l8v4agclihq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sourcegraph/log"))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-hexops-autogold-v2
+           go-github-com-stretchr-testify
+           go-go-bobheadxi-dev-streamline))
+    (propagated-inputs
+     (list go-github-com-cockroachdb-errors
+           go-github-com-fatih-color
+           go-github-com-getsentry-sentry-go
+           go-github-com-google-uuid
+           go-go-uber-org-atomic
+           go-go-uber-org-zap))
+    (home-page "https://github.com/sourcegraph/log")
+    (synopsis "Logging for Sourcegraph, with Sentry")
+    (description
+     "Package log provides an @code{OpenTelemetry-compatible} logging library
+for Sourcegraph.  Subpackages are available that provide adapters, testing
+utilities, and additional log sinks.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-spacemonkeygo-monkit-v3
   (package
     (name "go-github-com-spacemonkeygo-monkit-v3")
