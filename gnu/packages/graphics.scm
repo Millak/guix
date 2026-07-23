@@ -4,7 +4,7 @@
 ;;; Copyright © 2016, 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2019, 2023, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2018, 2021, 2023-2025 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2016, 2026 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -2580,11 +2580,30 @@ and engineering community.")
             (replace 'build
               (lambda _
                 ;; Some CPUs may not support these features.
-                (let ((cflags (append '("-DSKCMS_DISABLE_HSW=1"
-                                        "-DSKCMS_DISABLE_SKX=1")
-                                      (if #$(target-mingw?)
-                                          '("-DSKCMS_HAS_MUSTTAIL=0")
-                                          '())))
+                (let ((cflags
+                        (list
+                          #$@(append
+                            '("-DSKCMS_DISABLE_HSW=1"
+                              "-DSKCMS_DISABLE_SKX=1")
+                            (if (target-mingw?)
+                                '("-DSKCMS_HAS_MUSTTAIL=0")
+                                '())
+                            ;; Avoid SIMD instructions where
+                            ;; not available.
+                            ;; Tests compare floating point numbers for
+                            ;; equality; avoid double rounding through
+                            ;; extended precision where needed.
+                            (if (target-x86-32?)
+                                '("-DSKCMS_PORTABLE"
+                                  "-ffloat-store")
+                                '())
+                            ;; Upstream builds with
+                            ;; -ffp-contract=off (see ninja/gcc);
+                            ;; without it the tests fail on architectures
+                            ;; with fused multiply-add such as aarch64.
+                            (if (target-aarch64?)
+                                '("-ffp-contract=off")
+                                '()))))
                       (ldflags '("-lstdc++")))
                   (apply invoke #$(cc-for-target)
                          `("-O2" "-g" "-fPIC" ,@cflags
