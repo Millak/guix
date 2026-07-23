@@ -221,6 +221,7 @@
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages search)
   #:use-module (gnu packages selinux)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages slang)
   #:use-module (gnu packages speech)
   #:use-module (gnu packages spice)
@@ -13728,7 +13729,7 @@ GtkTextView widgets.")
 (define-public gnome-builder
   (package
     (name "gnome-builder")
-    (version "49.1")
+    (version "50.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -13736,7 +13737,7 @@ GtkTextView widgets.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0awaky3bwsn25v1f9z1rcf5mhkkvzfjy9b666889x5cg72c4g7iv"))))
+                "0iigv4zrb2f32snniz7slrv9lv8bkm4ln03xxmpdnjsg7z8lzma6"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -13798,6 +13799,7 @@ GtkTextView widgets.")
            libspelling
            llvm-13
            libostree
+           libyaml
            python
            python-pygobject-3.50
            sysprof
