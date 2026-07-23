@@ -536,6 +536,40 @@ for a lot of cache implementations.")
 audio CAPTCHAs.  This is a fork of @url{https://github.com/dchest/captcha}.")
     (license license:expat)))
 
+(define-public go-code-forgejo-org-xorm-xorm
+  (package
+    (name "go-code-forgejo-org-xorm-xorm")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://code.forgejo.org/xorm/xorm.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pf764g9nczcmwvw1njlskphbjvivs2678pymqz32gayqiw8khdc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "code.forgejo.org/xorm/xorm"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-sql-driver-mysql
+           go-github-com-jackc-pgx-v5
+           go-github-com-lib-pq
+           go-github-com-mattn-go-sqlite3
+           go-github-com-shopspring-decimal
+           go-github-com-syndtr-goleveldb
+           go-xorm-io-builder))
+    (home-page "https://code.forgejo.org/xorm/xorm")
+    (synopsis "Object-relational mapping for Go")
+    (description
+     "Package xorm is a simple and powerful ORM for Go. It's a fork of
+@url{https://gitea.com/xorm/xorm}.")
+    (license license:bsd-3)))
+
 (define-public go-code-rocketnine-space-tslocum-cbind
   (package
     (name "go-code-rocketnine-space-tslocum-cbind")
