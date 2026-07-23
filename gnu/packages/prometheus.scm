@@ -747,6 +747,48 @@ metrics to Prometheus metrics via configured mapping rules.  This package
 provides a Golang module and @code{statsd_exporter} executable command.")
     (license license:asl2.0)))
 
+(define-public go-github-com-sourcegraph-mountinfo
+  (package
+    (name "go-github-com-sourcegraph-mountinfo")
+    (properties '((commit . "e539465d544015a75056b3c77da212861cf7c223")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260429092751-e539465d5440")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sourcegraph/mountinfo")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0izpsrkzxdw3b12wxgdah8c6klbddkryzcawd7fvvdwrcl7bsxjn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sourcegraph/mountinfo"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; findSysfsMountpoint: no sysfs mountpoint found
+                       (list "Test_DeviceName_VirtualFilesystem"
+                             "Test_DeviceName_SmokeTest")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-moby-sys-mountinfo
+           go-github-com-prometheus-client-golang
+           go-github-com-sourcegraph-log
+           go-golang-org-x-sys))
+    (home-page "https://github.com/sourcegraph/mountinfo")
+    (synopsis "Prometheus info metric for advertizing block device names")
+    (description
+     "Package mountinfo provides a Prometheus collector that advertises the
+names of block storage devices backing the requested file paths.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-yeya24-promlinter
   (package
     (name "go-github-com-yeya24-promlinter")
