@@ -126,6 +126,7 @@
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages regex)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages specifications)
   #:use-module (gnu packages xdisorg)
@@ -12675,6 +12676,34 @@ pre-determined intervals.  This is a fork from
       "This package is an alternative fork of https://github.com/peterh/liner
 to build @code{delve} - debugger for the Go programming language.")
      (license license:expat))))
+
+(define-public go-github-com-go-enry-go-oniguruma
+  (package
+    (name "go-github-com-go-enry-go-oniguruma")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-enry/go-oniguruma")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wlgs5qms988f4q1h30c08f3w7jlnz76dlkp2shf02prgv4qv00f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-enry/go-oniguruma"))
+     (propagated-inputs
+      (list oniguruma))
+    (home-page "https://github.com/go-enry/go-oniguruma")
+    (synopsis "Super Fast Regex in Go")
+    (description
+     "This package provides a fork of
+@url{https://github.com/moovweb/rubex/tree/go1, moovweb/rubex} - a simple
+regular expression library (based on @url{https://github.com/kkos/oniguruma,
+oniguruma}) that supports Ruby's regex syntax.")
+    (license license:expat)))
 
 (define-public go-github-com-go-errors-errors
   (package
