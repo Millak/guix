@@ -44,6 +44,19 @@
 (channel-news
  (version 0)
 
+ (entry (commit "d7769178a66b16f6d36aa72f81b2bfff7a254e55")
+        (title
+         (en "Linux-libre 6.19 and 7.0 are no longer supported"))
+        (body
+         (en "The linux-libre 6.19 and 7.0 kernel series are no longer
+supported upstream and will be removed from GNU Guix soon:
+
+https://www.kernel.org/category/releases.html
+
+We may also drop support for 5.10, 5.15, 6.1 and 6.6 earlier than previously
+planned, in order to reduce the number of concurrently supported linux-libre
+kernels and the workload required to maintain them.")))
+
  (entry (commit "72c521fffa3d0ce4c96111628498fd788ea71579")
         (title
          (en "New “Projects” user directory")
