@@ -165,16 +165,16 @@ clients.")
 (define-public xandikos
   (package
     (name "xandikos")
-    (version "0.3.3")
+    (version "0.4.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/jelmer/xandikos")
-             (commit (string-append "v" version))))
+              (url "https://github.com/jelmer/xandikos")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0db02hsdrrxpms9xfy8q5kkgsp5gxrgd15rgdjd5aw7lqpnhhmji"))))
+        (base32 "0hl932havrrw93sz5s8z95ksxaxzwc8gwi506drff05aq1cj9syh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -183,7 +183,9 @@ clients.")
           (add-before 'check 'check-setup
             (lambda _
               (setenv "XANDIKOSPATH" (mkdtemp "/tmp/xandikospath-XXXXXX")))))))
-    (native-inputs (list python-pytest python-setuptools))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-aiohttp
            python-defusedxml
