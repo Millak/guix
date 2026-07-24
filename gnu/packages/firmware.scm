@@ -1840,6 +1840,16 @@ ErgoDox EZ Configurator} page."))
   (package
     (inherit qmk-firmware-ergodox-ez-default)
     (name "qmk-udev-rules")
+    (version "0.22.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/qmk/qmk_firmware")
+                     (commit version)))
+              (file-name (git-file-name "qmk-firmware" version))
+              (sha256
+               (base32
+                "0s1lcnv7cddpn768p7mrc5bkxhx0ba5p77ya007dnkbk36c33d0w"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan '(("./util/udev" "lib/udev/rules.d"
