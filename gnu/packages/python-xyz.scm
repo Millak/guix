@@ -749,6 +749,31 @@ Bash-style brace expansion.  It can generate strings from patterns like
 line drawing algorithm}.")
     (license license:expat)))
 
+(define-public python-catalogus
+  (package
+    (name "python-catalogus")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/breezy-team/catalogus")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l34anf0h4rcsimq78q6y1s2m91605pxwpzfzxr2vh2hl45sy4w5"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (home-page "https://github.com/breezy-team/catalogus")
+    (synopsis "Classes to provide name-to-object registry-like support")
+    (description
+     "This package provides classes to provide name-to-object registry-like
+support.")
+    (license license:gpl2+)))
+
 (define-public python-catppuccin
   (package
     (name "python-catppuccin")
