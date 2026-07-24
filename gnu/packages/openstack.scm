@@ -788,10 +788,13 @@ in transmittable and storable formats, such as JSON and MessagePack.")
     (version "4.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "reno" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://opendev.org/openstack/reno")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0w2kc9znm3ffcfsrwhvqkq6878jk3l9hibs7vv4mw88nppyz34pr"))))
+        (base32 "0h9d049xq4nfw26mry3br1xdcvsw8lyawv1ihmc3jf0p9ns4kvwm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -813,8 +816,7 @@ in transmittable and storable formats, such as JSON and MessagePack.")
            python-stestr
            python-subunit
            python-testscenarios
-           python-testtools
-           python-wheel))
+           python-testtools))
     (propagated-inputs
      (list python-dulwich
            python-pyyaml))
