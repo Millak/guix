@@ -323,6 +323,62 @@ Python 3.3 and later, rather than on Python 2.")
 (define-deprecated-package bazaar
   breezy)
 
+(define-public python-vcsgraph
+  (package
+    (name "python-vcsgraph")
+    (version "0.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/breezy-team/vcsgraph")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15hxlvvz2s21rpgk6nvlhzv9lb8glicjfsgx5vvcaqrh2y0qdr05"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:imported-modules (append %cargo-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:test-flags #~(list "--pyargs" "vcsgraph")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each (lambda (phase)
+                          (format #t "Running cargo phase: ~a~%" phase)
+                          (apply (assoc-ref cargo:%standard-phases phase)
+                                 #:cargo-target #$(cargo-triplet)
+                                 args))
+                        '(prepare-rust-crates
+                          unpack-rust-crates
+                          configure
+                          check-for-pregenerated-files
+                          patch-cargo-checksums))))
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "vcsgraph"))))))
+    (native-inputs
+     (append (list python-pytest
+                   python-setuptools
+                   python-setuptools-rust
+                   rust
+                   (list rust "cargo"))
+             (or (and=> (%current-target-system)
+                        (compose list make-rust-sysroot))
+                 '())))
+    (inputs (cargo-inputs 'python-vcsgraph))
+    (home-page "https://github.com/breezy-team/vcsgraph")
+    (synopsis "Graph algorithms for version control systems")
+    (description
+     "This package provides a Python library providing graph algorithms
+optimized for version control systems.")
+    (license license:gpl2+)))
+
 (define git-cross-configure-flags
   #~(list "ac_cv_fread_reads_directories=yes"
           "ac_cv_snprintf_returns_bogus=no"

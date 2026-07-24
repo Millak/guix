@@ -78028,6 +78028,24 @@ fn main() {
                                          rust-wit-bindgen-rt-0.39.0
                                          rust-zerocopy-0.8.24
                                          rust-zerocopy-derive-0.8.24))
+                     (python-vcsgraph =>
+                                      (list rust-heck-0.5.0
+                                            rust-lazy-static-1.5.0
+                                            rust-libc-0.2.186
+                                            rust-maplit-1.0.2
+                                            rust-once-cell-1.21.4
+                                            rust-portable-atomic-1.13.1
+                                            rust-proc-macro2-1.0.106
+                                            rust-pyo3-0.28.3
+                                            rust-pyo3-build-config-0.28.3
+                                            rust-pyo3-ffi-0.28.3
+                                            rust-pyo3-macros-0.28.3
+                                            rust-pyo3-macros-backend-0.28.3
+                                            rust-quote-1.0.45
+                                            rust-rustc-hash-2.1.2
+                                            rust-syn-2.0.117
+                                            rust-target-lexicon-0.13.5
+                                            rust-unicode-ident-1.0.24))
                      (python-watchfiles =>
                                         (list rust-autocfg-1.3.0
                                          rust-bitflags-1.3.2
