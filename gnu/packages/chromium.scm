@@ -390,7 +390,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "150.0.7871.46")
+(define %chromium-version "150.0.7871.181")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision (string-append "debian/" %ungoogled-revision))
 
@@ -402,7 +402,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "1gzwpzhghnvcgyql86awnp2fd3synj9w3szh3vmqkvkg98ym7rja"))))
+      "0rmc6lhnc0djjvfb7b65i5fmw2wbl729y6p62if8z2rgwyf89yl9"))))
 
 (define %debian-origin
   (origin
@@ -415,7 +415,7 @@
                                 ((_ version) version))))
     (sha256
      (base32
-      "1nrw212mq6mk6imnh9a239x4d6zm772wl1ragamrl69gf5fsiwf9"))))
+      "1jsv9ym20wfkdrj2nz5khmpb83w6b2ib92p7bznf6q4hssysxf5k"))))
 
 (define (origin-file origin file)
   (computed-file
@@ -459,7 +459,6 @@
          "system/openjpeg.patch"
          "trixie/bindgen-boringssl.patch"
          "trixie/cookie-string-view.patch"
-         "trixie/node20-compat.patch"
          "trixie/nodejs-main.patch"
          "trixie/revert-v8-sanitize.patch"
          "upstream/ar-path1.patch"
@@ -614,7 +613,7 @@
                                   %chromium-version "-lite.tar.xz"))
               (sha256
                (base32
-                "1ilq7p7v3qazca7dxy16qnlpqd0fb2nqj47rk2pj1p3xqfklyrg2"))
+                "0v1750cwsynlbrhg08j281y3817195kp7826hwkl2hz3fn79q0s1"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
