@@ -602,9 +602,6 @@
         `(cons "--enable-custom-modes"
                ,flags))))))
 
-(define lld-as-ld-wrapper-21
-  (make-lld-wrapper lld-21 #:lld-as-ld? #t))
-
 (define-public ungoogled-chromium
   (package
     (name "ungoogled-chromium")
@@ -702,7 +699,7 @@
                              "\"")
 
               (string-append "clang_version="
-                             #$(version-major (package-version clang-21)))
+                             #$(version-major (package-version clang)))
 
               (string-append "rust_sysroot_absolute=\""
                              (dirname (dirname (search-input-file %build-inputs
@@ -895,7 +892,7 @@
                         (string-append " -stdlib=libc++"
                                        " -Wl,--stats"))
                 (setenv "CLANG_MVERS" #$(version-major
-                                         (package-version clang-21)))
+                                         (package-version clang)))
                 (setenv "RUSTC_BOOTSTRAP" "1")
 
                 ;; TODO: pre-compile instead. Avoids a race condition.
@@ -1027,13 +1024,13 @@
                    '("24" "48" "64" "128" "256")))))))))
     (native-inputs
      (list bison
-           clang-21
-           clang-runtime-21
-           clang-toolchain-21
+           clang
+           clang-runtime
+           clang-toolchain
            gn
            gperf
-           lld-as-ld-wrapper-21
-           llvm-21
+           lld-as-ld-wrapper
+           llvm
            ninja
            node-lts
            pkg-config
