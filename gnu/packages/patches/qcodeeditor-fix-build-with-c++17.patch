@@ -1,0 +1,27 @@
+This patch is not upstreamed. It followed the suggestion in
+https://github.com/Megaxela/QCodeEditor/pull/50#issuecomment-3188359371.
+
+From 4de40b23ffc1af37c72ac3b3263e1457b9fe1efb Mon Sep 17 00:00:00 2001
+From: Sughosha <sughosha@disroot.org>
+Date: Fri, 24 Jul 2026 11:05:39 +0530
+Subject: [PATCH] Fix build with C++17.
+
+---
+ CMakeLists.txt | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 40d5617..64d35b9 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -92,7 +92,6 @@ target_include_directories(QCodeEditor PUBLIC
+ if(CMAKE_COMPILER_IS_GNUCXX)
+     target_compile_options(QCodeEditor
+ 		PRIVATE
+-		-ansi
+ 		-pedantic
+ 		-Wall
+ 		-Wextra
+-- 
+2.54.0
+

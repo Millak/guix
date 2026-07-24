@@ -5464,11 +5464,12 @@ a binding language:
                  (base32
                   "1bpvfwbgp275w79dzrd7d9k3md1ch7n88rh59mxdfj8s911n42j8"))
                 (patches
-                 (search-patches "qcodeeditor-qt6.patch"))))
+                 (search-patches
+                  "qcodeeditor-qt6.patch"
+                  "qcodeeditor-fix-build-with-c++17.patch"))))
       (build-system qt-build-system)
       (arguments
        (list #:qtbase qtbase
-             #:cmake cmake-3.25
              #:tests? #f ;no tests
              #:configure-flags
              #~(list "-DBUILD_EXAMPLE=ON"
