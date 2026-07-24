@@ -16902,6 +16902,10 @@ fn main() {
   (crate-source "libc" "0.2.186"
                 "0rnyhzjyqq9x56skkllbjzzzwym3r61lq3l4hqj64v71gw0r3av8"))
 
+(define rust-libc-0.2.189
+  (crate-source "libc" "0.2.189"
+                "1whjfs375vlng2q6yrbzs73cvp5lm3w1n2gfqajb2vgf7zg3xbry"))
+
 (define rust-libc-stdhandle-0.1.0
   (crate-source "libc-stdhandle" "0.1.0"
                 "0lbmg42kncl3yjgzx48d2sa3p78w4fmhs9c21dg4r4r8virj9b3d"))
@@ -23057,6 +23061,10 @@ fn main() {
   (crate-source "portable-atomic" "1.13.1"
                 "0j8vlar3n5acyigq8q6f4wjx3k3s5yz0rlpqrv76j73gi5qr8fn3"))
 
+(define rust-portable-atomic-1.14.0
+  (crate-source "portable-atomic" "1.14.0"
+                "1hyfma9n2cs2ibazpfwrbv61zwg7cv86g0pr5yjkg07qgr4xa81x"))
+
 (define rust-portable-atomic-1.6.0
   (crate-source "portable-atomic" "1.6.0"
                 "1h77x9qx7pns0d66vdrmdbmwpi7586h7ysnkdnhrn5mwi2cyyw3i"))
@@ -23376,6 +23384,10 @@ fn main() {
 (define rust-proc-macro2-1.0.106
   (crate-source "proc-macro2" "1.0.106"
                 "0d09nczyaj67x4ihqr5p7gxbkz38gxhk4asc0k8q23g9n85hzl4g"))
+
+(define rust-proc-macro2-1.0.107
+  (crate-source "proc-macro2" "1.0.107"
+                "1nb6ly8kp65f724kj73ippc7lvydss24sm2vagk6qpklpg4pwplq"))
 
 (define rust-proc-macro2-1.0.32
   (crate-source "proc-macro2" "1.0.32"
@@ -24489,6 +24501,10 @@ fn main() {
 (define rust-quote-1.0.46
   (crate-source "quote" "1.0.46"
                 "0s034glrlav8nzqy2yskqzv52ncy82k126sm2jk5j1vs1iylbg6z"))
+
+(define rust-quote-1.0.47
+  (crate-source "quote" "1.0.47"
+                "00ch0yyzvv6s671ik0kcsbw8nigdaj2g3fr61kcahwx48aqlvgqz"))
 
 (define rust-quote-use-0.8.4
   (crate-source "quote-use" "0.8.4"
@@ -43695,21 +43711,21 @@ fn main() {
                              (list rust-aho-corasick-1.1.4
                                    rust-heck-0.5.0
                                    rust-lazy-static-1.5.0
-                                   rust-libc-0.2.186
-                                   rust-memchr-2.8.0
+                                   rust-libc-0.2.189
+                                   rust-memchr-2.8.3
                                    rust-once-cell-1.21.4
-                                   rust-portable-atomic-1.13.1
-                                   rust-proc-macro2-1.0.106
+                                   rust-portable-atomic-1.14.0
+                                   rust-proc-macro2-1.0.107
                                    rust-pyo3-0.28.3
                                    rust-pyo3-build-config-0.28.3
                                    rust-pyo3-ffi-0.28.3
                                    rust-pyo3-macros-0.28.3
                                    rust-pyo3-macros-backend-0.28.3
-                                   rust-quote-1.0.45
-                                   rust-regex-1.12.3
-                                   rust-regex-automata-0.4.14
-                                   rust-regex-syntax-0.8.10
-                                   rust-syn-2.0.117
+                                   rust-quote-1.0.47
+                                   rust-regex-1.13.1
+                                   rust-regex-automata-0.4.16
+                                   rust-regex-syntax-0.8.11
+                                   rust-syn-2.0.119
                                    rust-target-lexicon-0.13.5
                                    rust-unicode-ident-1.0.24))
                      (bzmenu =>

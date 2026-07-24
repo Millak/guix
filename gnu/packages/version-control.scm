@@ -61,7 +61,7 @@
 ;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024, 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
@@ -193,7 +193,7 @@
 (define-public breezy
   (package
     (name "breezy")
-    (version "3.3.21")
+    (version "3.3.22")
     (source
      (origin
        (method git-fetch)
@@ -202,7 +202,7 @@
               (commit (string-append "brz-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "136fnvda27pm3y123x8mg955kxbjhk5qrygf2h0pjjm28la0gijb"))))
+        (base32 "05xrwn8i8djrd2n9bwcas0y3sy51im8klw1w8ykvg3qhcnl4qlcg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -255,6 +255,7 @@
                 (call-with-output-file (string-append man1 "/bzr.1")
                   (lambda (port)
                     (format port ".so man1/brz.1"))))))
+          ;; tests: passed 33237 tests, 4393 tests skipped
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -275,7 +276,11 @@
                         "-x" "breezy.tests.test_plugins.TestPlugins.test_plugin_get_path_pyc_only"
                         "-x" "breezy.tests.test_selftest.TestActuallyStartBzrSubprocess.test_start_and_stop_bzr_subprocess_send_signal"
                         ;; AttributeError: module 'paramiko' has no attribute 'DSSKey'
-                        "-x" "breezy.tests.test_transport.TestSSHConnections.test_bzr_connect_to_bzr_ssh")))))))
+                        "-x" "breezy.tests.test_transport.TestSSHConnections.test_bzr_connect_to_bzr_ssh"
+                        ;; Network access is required
+                        "-x" "breezy.git.tests.test_server.TestPlainFetch.test_fetch_from_native_git"
+                        "-x" "breezy.git.tests.test_server.TestPlainFetch.test_fetch_from_non_git"
+                        "-x" "breezy.git.tests.test_server.TestPlainFetch.test_fetch_nothin")))))))
     (native-inputs
      (append
       (list gettext-minimal
@@ -284,7 +289,6 @@
             python-setuptools-gettext
             python-setuptools-rust
             python-tomli
-            python-wheel
             rust
             `(,rust "cargo")
             ;; tests
@@ -295,19 +299,23 @@
       (or (and=> (%current-target-system)
                  (compose list make-rust-sysroot))
           '())))
-    (inputs (cons* python-configobj
+    (inputs (cons* python-catalogus
+                   python-configobj
                    python-dulwich
                    python-fastbencode
-                   python-fastimport
-                   python-launchpadlib
                    python-merge3
-                   python-paramiko
-                   python-gpg
                    python-patiencediff
-                   python-pygithub
                    python-pyyaml
-                   python-tzlocal
                    python-urllib3
+                   python-vcsgraph
+                   ;; [optional]
+                   python-fastimport
+                   python-gpg
+                   python-launchpadlib
+                   python-paramiko
+                   python-pygithub
+                   python-subunit
+
                    (cargo-inputs 'breezy)))
     (home-page "https://www.breezy-vcs.org/")
     (synopsis "Decentralized revision control system")
