@@ -2960,7 +2960,7 @@ modules for building a Wayland compositor.")
 (define-public wlroots-0.20
   wlroots)
 
-(define-public wlroots-0.19 
+(define-public wlroots-0.19
   (package
     (inherit wlroots)
     (name "wlroots")
