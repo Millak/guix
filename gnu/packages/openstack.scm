@@ -176,20 +176,22 @@ guidelines}.")
 (define-public python-openstackdocstheme
   (package
     (name "python-openstackdocstheme")
-    (version "3.4.1")
+    (version "3.6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "openstackdocstheme" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://opendev.org/openstack/openstackdocstheme")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0f8vk9556cx3h2z2dwqqkylv3rijd1p15qjy4xjv9sxxcfngdx1q"))))
+        (base32 "0q7l374myiymnvlfa54iyj9iaa2pxxpdkqjhkc478n10v5ijbgq6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f)) ; no tests in PyPI archive or git checkout
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (propagated-inputs
      (list python-dulwich
            python-pbr
