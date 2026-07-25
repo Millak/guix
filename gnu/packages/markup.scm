@@ -335,7 +335,7 @@ documents in the ms and man formats, LaTeX, gemini, and terminal output.")
 (define-public discount
   (package
     (name "discount")
-    (version "3.0.1.2")
+    (version "3.0.1.3")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -343,7 +343,7 @@ documents in the ms and man formats, LaTeX, gemini, and terminal output.")
                    "discount/discount-" version ".tar.bz2"))
              (sha256
               (base32
-               "17cdff72kv5m6bkkmk182palxn7vay7vjw01yffdjvds9yihqrzc"))))
+               "03m3xxcjcg0byiblq3jy7is30373zlf36m3rs2whaaa1sbmd9qx4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
