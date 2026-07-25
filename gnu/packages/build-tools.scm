@@ -275,20 +275,20 @@ generate such a compilation database.")
 (define-public bmake
   (package
     (name "bmake")
-    (version "20260619")
+    (version "20260714")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "http://www.crufty.net/ftp/pub/sjg/bmake-" version ".tar.gz"))
        (sha256
-        (base32 "0r01dkaiwqr4rybfk2z167i4cjrmx4vqqa665izkjcl789mbi1d9"))
+        (base32 "0rffkikqssz560xwkmk1lnaxvj4xa9f1rscc180zwvmd4hfph408"))
        (patches (search-patches "bmake-run-check-separately.patch"))))
     (build-system gnu-build-system)
     (inputs
      (list bash-minimal))
     (native-inputs
-     (list bc coreutils))
+     (list bc coreutils-minimal))
     (arguments
      (list
       #:test-target "test"
