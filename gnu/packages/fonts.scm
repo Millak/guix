@@ -986,6 +986,32 @@ The unified Libertinus family consists of:
 expansion of Franklin Gothic, a classic font.  It covers 105 Latin Languages.")
       (license license:silofl1.1))))
 
+(define-public font-playfair
+  (package
+    (name "font-playfair")
+    (version "2.203")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/clauseggers/Playfair")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "11d43mddpv671hd329g95959c9hw9vfc2bhdsrwnxq9djfk5wi89"))))
+    (build-system font-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'delete-spurious-fonts
+                 (lambda _
+                   (for-each delete-file (find-files "." "Nutso2\\.otf")))))))
+    (outputs '("out" "woff"))
+    (home-page "https://forthehearts.net/playfair/")
+    (synopsis "General purpose typeface")
+    (description "Playfair is a three-axes variable font, allowing any
+combination of width, weight and optical size within its design extrema.")
+    (license license:silofl1.1)))
+
 (define-public font-playwrite
   (package
     (name "font-playwrite")
