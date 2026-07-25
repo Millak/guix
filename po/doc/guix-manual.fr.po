@@ -53,8 +53,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-06-21 03:18+0000\n"
-"PO-Revision-Date: 2026-07-04 10:44+0000\n"
+"POT-Creation-Date: 2026-07-11 03:18+0000\n"
+"PO-Revision-Date: 2026-07-17 07:07+0000\n"
 "Last-Translator: roptat <roptat@noreply.codeberg.org>\n"
 "Language-Team: French <https://translate.codeberg.org/projects/guix/documentation-manual/fr/>\n"
 "Language: fr\n"
@@ -327,24 +327,18 @@ msgstr "Comme vous pouvez le voir, il y a un problème de poule et d'œuf : il f
 msgid "The easiest way to set up a development environment for Guix is, of course, by using Guix! The following command starts a new shell where all the dependencies and appropriate environment variables are set up to hack on Guix:"
 msgstr "La manière la plus simple de configurer un environnement de développement pour Guix est, bien sûr, d'utiliser Guix ! La commande suivante démarre un nouveau shell où toutes les dépendances et les variables d'environnements appropriées sont configurés pour travailler sur Guix :"
 
-msgid "guix shell -D guix -CPW\n"
-msgstr "guix shell -D guix -CPW\n"
+msgid "guix shell -D guix --pure\n"
+msgstr "guix shell -D guix --pure\n"
 
 msgid "or even, from within a Git worktree for Guix:"
 msgstr "ou encore, à partir d'une arborescence Git pour Guix :"
 
 msgid ""
 "echo $(pwd) >> ~/.config/guix/shell-authorized-directories\n"
-"guix shell -CPW\n"
+"guix shell --pure\n"
 msgstr ""
 "echo $(pwd) >> ~/.config/guix/shell-authorized-directories\n"
-"guix shell -CPW\n"
-
-msgid "If @option{-C} (short for @option{--container}) is not supported on your system, try @command{--pure} instead of @option{-CPW}.  @xref{Invoking guix shell}, for more information on that command."
-msgstr "Si @option{-C} (abréviation de @option{--container}) n'est pas pris en charge par votre système, essayez @command{--pure} au lieu de @option{-CPW}.  @xref{Invoking guix shell} pour plus d'informations sur cette commande."
-
-msgid "Most of the test suite runs without an internet connection. The @option{-N} (short for @option{--network}) can be added to the @code{guix shell} command to run the tests that require internet access."
-msgstr "La plupart la suite de tests marche sans une connexion internet. L'option @option{-N} (court pour @option{--network}) peut être ajoutée à la commande @code{guix shell} pour inclure les tests qui requièrent une connexion internet."
+"guix shell --pure\n"
 
 msgid "If you are unable to use Guix when building Guix from a checkout, the following are the required packages in addition to those mentioned in the installation instructions (@pxref{Requirements})."
 msgstr "Si vous ne pouvez pas utiliser Guix pour la construction de Guix depuis un extrait, les paquets suivants sont requis en plus de ceux mentionnés dans les instructions d'installation (@pxref{Requirements})."
@@ -370,8 +364,8 @@ msgstr "@url{https://www.gnu.org/software/help2man/, GNU Help2man (facultatif)}.
 msgid "On Guix, other development tools, like @code{strace}, can be included by giving them as extra arguments to @command{guix shell}:"
 msgstr "Avec Guix, vous pouvez ajouter des outils de développement supplémentaires, comme @code{strace}, en les incluant comme des arguments à @command{guix shell} :"
 
-msgid "guix shell -D guix -CPW strace\n"
-msgstr "guix shell -D guix -CPW strace\n"
+msgid "guix shell --pure -D guix strace\n"
+msgstr "guix shell --pure -D guix strace\n"
 
 msgid "From there you can generate the build system infrastructure using Autoconf and Automake:"
 msgstr "Vous pouvez maintenant générer l'infrastructure du système de construction avec Autoconf et Automake :"
@@ -415,8 +409,8 @@ msgstr "./configure\n"
 msgid "Optionally, @code{--localstatedir} and @code{--sysconfdir} can also be provided as arguments.  By default, @code{localstatedir} is @file{/var} (@pxref{The Store}, for information about this) and @code{sysconfdir} is @file{/etc}.  Note that you will probably not run @command{make install} at the end (you don't have to) but it's still important to pass the right @code{localstatedir} and @code{sysconfdir} values, which get recorded in the @code{(guix config)} Guile module."
 msgstr "Si besoin, on peut fournir les arguments @code{--localstatedir} et @code{--sysconfdir}.  Par défaut, @code{localstatedir} corresond à @file{/var} (@pxref{The Store}, pour plus d'informations à ce propos) et @code{sysconfdir} à @file{/etc}. Remarquez que vous n'allez probablement pas lancer @command{make install} à la fin (vous n'avez pas besoin de la faire) mais il est toujours important de passer les bonnes valeurs de @code{localstatedir} et @code{sysconfdir}, qui sont enregistrées dans le module Guile @code{(guix config)}."
 
-msgid "Finally, you can build Guix and, if you feel so inclined, run the tests (@pxref{Running the Test Suite}):"
-msgstr "Enfin, vous pouvez construire Guix et, si vous le souhaitez, lancer les tests (@pxref{Running the Test Suite}) :"
+msgid "Finally, you can build Guix and, if you feel so inclined, run the tests (depending on how you setup your environment, some tests might fail, @pxref{Running the Test Suite}):"
+msgstr "Enfin, vous pouvez construire Guix et, si vous le souhaitez, lancer les tests (en fonction de la configuration de votre environnement, certains tests peuvent échouer, @pxref{Running the Test Suite}) :"
 
 msgid ""
 "make\n"
@@ -424,9 +418,6 @@ msgid ""
 msgstr ""
 "make\n"
 "make check\n"
-
-msgid "If anything fails, take a look at installation instructions (@pxref{Installation}) or send a message to the @email{guix-devel@@gnu.org, mailing list}."
-msgstr "Si quelque chose échoue, jetez un œil aux instructions d'installation (@pxref{Installation}) ou envoyez un message à la liste @email{guix-devel@@gnu.org}."
 
 msgid "From there on, you can authenticate all the commits included in your checkout by running:"
 msgstr "À partir de maintenant, vous pouvez authentifier tous les commits de votre extrait en lançant :"
@@ -493,6 +484,33 @@ msgstr "Après avoir lancé @command{configure} et @code{make} correctement, c'e
 
 msgid "make check\n"
 msgstr "make check\n"
+
+msgid "Some tests might fail or be skipped, depending on your environment.  For example, many tests require Internet access to download test binaries into the temporary store used for testing."
+msgstr "Certains tests peuvent échouer ou être passés, en fonction de votre environnement. Par exemple, plusieurs tests ont besoin d'un accès à Internet pour télécharger des binaires de test dans le dépôt temporaire utilisé pour les tests."
+
+msgid "Assuming you set up your environment with @command{guix shell}, this is what you can expect:"
+msgstr "En supposant que vous avez paramétré votre environnement avec @command{guix shell}, voilà ce à quoi vous pouvez vous attendre :"
+
+msgid "--pure"
+msgstr "--pure"
+
+msgid "all tests should either pass or be skipped.  This will also set up the test store;"
+msgstr "tous les tests devraient soit fonctionner soit être passés. Le dépôt de test sera également configuré ;"
+
+msgid "-CPWN"
+msgstr "-CPWN"
+
+msgid "all tests should either pass or be skipped and this should also set up the test store@footnote{At the time of writing, June 2026, some tests might fail in a @option{-CPWN} shell; those are @url{https://codeberg.org/guix/guix/issues/9381, bugs}.};"
+msgstr "tous les tests devraient soit fonctionner soit être passés et cela devrait également paramétrer le dépôt de test@footnote{Au moment d'écrire ces ligne, en juin 2026, certains tests peuvent échouer dans un shell @option{-CPWN} ; il s'agit de @url{https://codeberg.org/guix/guix/issues/9381, bogues}.} ;"
+
+msgid "-CPW"
+msgstr "-CPW"
+
+msgid "all network tests should automatically be skipped, but tests that require the test store are run, so those will fail unless the test store has been set up during an earlier test run with network access."
+msgstr "tous les tests réseau devraient automatiquement être passés, mais les tests qui nécessitent le dépôt de test sont exécutés, donc ils échoueront à moins d'avoir mis en place le dépôt de test lors d'un précédant jeu de tests avec l'accès au réseau."
+
+msgid "Some tests are skipped for other reasons, for example because they are only applicable for a specific system."
+msgstr "Certains tests sont sautés pour d'autres raisons, par exemple s'ils ne sont applicables que sur un système spécifique."
 
 msgid "Test cases can run in parallel: you can use the @code{-j} option of GNU@tie{}make to speed things up.  The first run may take a few minutes on a recent machine; subsequent runs will be faster because the store that is created for test purposes will already have various things in cache."
 msgstr "Les cas de tests peuvent être lancés en parallèle : vous pouvez utiliser l'option @code{-j} de GNU@tie{}make pour accélérer les choses.  Le premier lancement peut prendre plusieurs minutes sur une machine récente ; les lancements suivants seront plus rapides car le dépôt créé pour les tests aura déjà plusieurs choses en cache."
@@ -10614,9 +10632,6 @@ msgstr "Voilà, vous avez convertit une longue ligne de commande en un manifeste
 msgid "Create an environment containing the packages installed in @var{profile}.  Use @command{guix package} (@pxref{Invoking guix package}) to create and manage profiles."
 msgstr "Crée un environnement contenant les paquets installés dans @var{profile}. Utilisez @command{guix package} (@pxref{Invoking guix package}) pour créer et gérer les profils."
 
-msgid "--pure"
-msgstr "--pure"
-
 msgid "Unset existing environment variables when building the new environment, except those specified with @option{--preserve} (see below).  This has the effect of creating an environment in which search paths only contain package inputs."
 msgstr "Réinitialisation des variables d'environnement existantes lors de la construction du nouvel environnement, sauf celles spécifiées avec l'option @option{--preserve}. (voir ci-dessous).  Cela a pour effet de créer un environnement dans lequel les chemins de recherche ne contiennent que des entrées de paquets."
 
@@ -13326,6 +13341,25 @@ msgstr "(specifications->manifest '(\"git\" \"git:send-email\"))\n"
 msgid "Notice that we do not need to worry about @code{use-modules}, importing the right set of modules, and referring to the right variables.  Instead, we directly refer to packages in the same way as on the command line, which can often be more convenient."
 msgstr "Remarque que nous n'avons pas à nous soucier de @code{use-modules}, d'importer le bon ensemble de modules et de se référer aux bonnes variables. À la place, nous nous référons directement aux paquets de la même manière que sur la ligne de commande, ce qui peut souvent être plus pratique."
 
+msgid "{Procedure} build-system->manifest build-system [system] [#:target]"
+msgstr "{Procédure} build-system->manifest build-system [système] [#:target]"
+
+msgid "Given @var{build-system}, a variable referring to a build system value suitable for the @code{build-system} field in the @code{package} record type, return a manifest providing all the packages required by the build system, for @var{system}, optionally when cross-compiling to @var{target}."
+msgstr "Étant donné un @var{build-system}, une variable qui correspond à une valeur de type système de construction utilisable dans le champ @code{build-system} dans le type d'enregistrement @code{package}, renvoie un manifeste qui fournit tous les paquets requis par le système de construction, pour le @var{système}, en compilant éventuellement de manière croisée pour @var{target}."
+
+msgid "In order to be able to use a build system variable, the corresponding module must be loaded, as in the following example:"
+msgstr "Pour pouvoir utiliser la variable d'un système de construction, vous devez charger le module correspondant, comme dans l'exemple suivant :"
+
+msgid ""
+"(use-modules (guix build-system cmake))\n"
+"\n"
+msgstr ""
+"(use-modules (guix build-system cmake))\n"
+"\n"
+
+msgid "(build-system->manifest cmake-build-system)\n"
+msgstr "(build-system->manifest cmake-build-system)\n"
+
 msgid "build system"
 msgstr "système de construction"
 
@@ -14021,7 +14055,7 @@ msgstr "Lorsque les fichiers JavaScript d'entrée ne sont pas situés dans le r�
 msgid "mix-build-system"
 msgstr "mix-build-system"
 
-msgid "This is a variable exported by @code{guix build-system mix}.  It implements the standard build procedure used by Elixr programs with @url{https://hexdocs.pm/mix/Mix.html,Mix}, which consists of running @command{mix compile}, thereby creating bytecode."
+msgid "This is a variable exported by @code{guix build-system mix}.  It implements the standard build procedure used by Elixir programs with @url{https://hexdocs.pm/mix/Mix.html,Mix}, which consists of running @command{mix compile}, thereby creating bytecode."
 msgstr "Il s'agit d'une variable exportée par @code{guix build-system mix}. Elle implémente la procédure de construction standard utilisée par les programmes Elixir avec @url{https://hexdocs.pm/mix/Mix.html,Mix}, qui consiste à exécuter @command{mix compile} et qui crée du bytecode."
 
 msgid "The API is similar to the @var{gnu-build-system}, with some specifics for Elixir:"
@@ -17532,7 +17566,7 @@ msgid "Use @var{source} as the source of @var{package}, and @var{version} as its
 msgstr "Utilise @var{source} comme la source de @var{paquet}, et @var{version} comme son numéro de version.  @var{source} doit être un nom de fichier ou une URL, comme pour @command{guix download} (@pxref{Invoking guix download})."
 
 msgid "When @var{package} is omitted, it is taken to be the package name specified on the command line that matches the base of @var{source}---e.g., if @var{source} is @code{/src/guile-2.0.10.tar.gz}, the corresponding package is @code{guile}."
-msgstr "Lorsque @var{paquet} est omis, la commande utilisera le nom de paquet spécifié par la base de @var{source} — p.@: ex.@: si @var{source} est @code{/src/guix-2.0.10.tar.gz}, le paquet correspondant est @code{guile}."
+msgstr "Lorsque @var{paquet} est omis, la commande utilisera le nom de paquet spécifié par la base de @var{source} — p.@: ex.@: si @var{source} est @code{/src/guile-2.0.10.tar.gz}, le paquet correspondant est @code{guile}."
 
 msgid "Likewise, when @var{version} is omitted, the version string is inferred from @var{source}; in the previous example, it is @code{2.0.10}."
 msgstr "De même, lorsque @var{version} est omis, la chaîne de version est inférée à partir de @var{source} ; dans l'exemple précédent, il s'agit de @code{2.0.10}."
@@ -25805,14 +25839,14 @@ msgstr "@code{shutdown-command} (par défaut : @code{\"loginctl poweroff\"}) (t
 msgid "Command to run when shutting down the device."
 msgstr "Commande à exécuter pour éteindre électriquement l'appareil."
 
-msgid "@code{gtk-theme} (default: @code{\"Advaita\"}) (type: string)"
-msgstr "@code{gtk-theme} (par défaut : @code{\"Advaita\"}) (type : chaîne)"
+msgid "@code{gtk-theme} (default: @code{\"Adwaita\"}) (type: string)"
+msgstr "@code{gtk-theme} (par défaut : @code{\"Adwaita\"}) (type : chaîne)"
 
 msgid "GTK theme to use."
 msgstr "Le thème GTK à utiliser."
 
-msgid "@code{icon-theme} (default: @code{\"Advaita\"}) (type: string)"
-msgstr "@code{icon-theme} (par défaut : @code{\"Advaita\"}) (type : chaîne)"
+msgid "@code{icon-theme} (default: @code{\"Adwaita\"}) (type: string)"
+msgstr "@code{icon-theme} (par défaut : @code{\"Adwaita\"}) (type : chaîne)"
 
 msgid "Icon theme to use."
 msgstr "Le thème d'icônes à utiliser."
@@ -25850,7 +25884,7 @@ msgstr "Fichier image à utiliser comme fond d'écran. Indiquer @code{#f} affich
 msgid "@code{background-size} (default: @code{\"auto 100%\"}) (type: string)"
 msgstr "@code{background-size} (par défaut : @code{\"auto 100%\"}) (type : chaîne)"
 
-msgid "Size of the background image.  It can be @code{\"auto\"} (for preserving the original size), @code{\"cover\"} (for resizing to fill while allowing to cut or to stretch), @code{\"contain\"} (for resizing to fit assuring the full visibility of the image), or a string of a number suffixed with with @code{px} (to represent in pixels) or @code{%} (to represent in percentage).  It can also be a string of two such values separated by a whitespace, representing width and height respectively."
+msgid "Size of the background image.  It can be @code{\"auto\"} (for preserving the original size), @code{\"cover\"} (for resizing to fill while allowing to cut or to stretch), @code{\"contain\"} (for resizing to fit assuring the full visibility of the image), or a string of a number suffixed with @code{px} (to represent in pixels) or @code{%} (to represent in percentage).  It can also be a string of two such values separated by a whitespace, representing width and height respectively."
 msgstr "Taille de l'image de fond. Elle peut valoir @code{\"auto\"} (pour préserver la taille originale), @code{\"cover\"} (pour redimensionner pour remplir l'écran en permettant de couper ou d'étirer), @code{\"contain\"} (pour redimensionner à la taille de l'écran pour assurer la visibilité complète de l'image), ou une chaîne d'un nombre suivi de @code{px} (pour représenter des pixels) ou @code{%} (pour représenter un pourcentage). Elle peut également être une chaîne de deux valeurs séparées par une espace, représentant la largeur et la hauteur, respectivement."
 
 msgid "@code{extra-style} (type: maybe-alist-of-strings-to-alists-of-strings-to-strings)"
@@ -27078,6 +27112,37 @@ msgstr "C'est la liste des greffons disponibles pour les VPN (réseaux privés v
 msgid "@code{extra-configuration-files} (default: @code{'()})"
 msgstr "@code{extra-configuration-files} (par défaut : @code{'()})"
 
+msgid "A list of two-element lists; the first element of each list is a file name (as a string), and the second is a file-like object.  Used to specify configuration files which will be added to the @file{/etc/NetworkManager/conf.d}.  NetworkManager will read additional configuration from this directory.  For details on configuration file precedence and the configuration file format, see @samp{man 5 NetworkManager.conf}."
+msgstr "Une liste de listes à deux éléments. Le premier élément de chaque liste est un nom de fichier (une chaîne), et le second est un objet simili-fichiers. Elle est utilisée pour spécifier les fichiers de configuration qui seront ajoutés au dossier @file{/etc/NetworkManager/conf.d}. NetworkManager lira sa configuration supplémentaire dans ce dossier. Pour plus de détails sur la précédence des fichiers de configuration et le format des fichiers de configuration, consultez @samp{man 5 NetworkManager.conf}."
+
+msgid "For example, to add two files named @file{001-basic.conf} and @file{002-unmanaged.conf}:"
+msgstr "Par exemple, pour ajouter deux fichiers nommés @file{001-basic.conf} et @file{002-unmanaged.conf} :"
+
+msgid ""
+"(service network-manager-service-type\n"
+"         (network-manager-configuration\n"
+"          (extra-configuration-files\n"
+"           `((\"001-basic.conf\" ,(local-file \"basic.conf\"))\n"
+"             (\"002-unmanaged.conf\" ,(plain-file \"constructed-unmanaged.conf\"\n"
+"                                                \"\\\n"
+"[keyfile]\n"
+"unmanaged-devices=interface-name:wlo1_ap\\n\"))))))\n"
+msgstr ""
+"(service network-manager-service-type\n"
+"         (network-manager-configuration\n"
+"          (extra-configuration-files\n"
+"           `((\"001-basic.conf\" ,(local-file \"basic.conf\"))\n"
+"             (\"002-unmanaged.conf\" ,(plain-file \"constructed-unmanaged.conf\"\n"
+"                                                \"\\\n"
+"[keyfile]\n"
+"unmanaged-devices=interface-name:wlo1_ap\\n\"))))))\n"
+
+msgid "@code{dnsmasq-configuration-files} (default: @code{'()})"
+msgstr "@code{dnsmasq-configuration-files} (par défaut : @code{'()})"
+
+msgid "A list of two-element lists; the first element of each list is a file name (as a string), and the second is a file-like object.  Used to specify configuration files which will be added to the @file{/etc/NetworkManager/dnsmasq.d}.  When using the @code{\"dnsmasq\"} DNS processing mode, NetworkManager will read configuration from this directory when it starts @code{dnsmasq}.  The configuration files specify command line arguments without the leading @code{--}.  See @samp{man 8 dnsmasq} for further details."
+msgstr "Une liste de listes à deux éléments. Le premier élément de chaque liste est un nom de fichiers (une chaîne), et le second un objet simili-fichier. Elle est utilisée pour spécifier des fichiers de configuration supplémentaires qui seront ajoutés au dossier @file{/etc/NetworkManager/dnsmasq.d}. Lorsque vous utilisez le mode de traitement DNS @code{\"dnsmasq\"}, Les fichiers de configuration spécifient les arguments de la ligne de commande sans les @code{--} qui précèdent. Consultez @samp{man 8 dnsmasq} pour plus de détails."
+
 msgid "Connman"
 msgstr "Connman"
 
@@ -27114,6 +27179,9 @@ msgstr "@code{connman} (par défaut : @var{connman})"
 msgid "The connman package to use."
 msgstr "Le paquet connman à utiliser."
 
+msgid "This option can be used to provide a list of symbols naming Shepherd services that this service will depend on, such as @code{'wpa-supplicant} or @code{'iwd} if you require authenticated access for encrypted WiFi or Ethernet networks."
+msgstr "Vous pouvez utiliser cette option pour fournir une liste de symboles nommant des services Shepherd dont ce service dépend, comme @code{'wpa-supplicant} ou @code{'iwd} si vous avez besoin d'un accès authentifié pour des réseaux WiFi ou Ethernet chiffrés."
+
 msgid "@code{disable-vpn?} (default: @code{#f})"
 msgstr "@code{disable-vpn?} (par défaut : @code{#f})"
 
@@ -27123,11 +27191,128 @@ msgstr "Lorsque la valeur est vraie, désactive le greffon vpn de connman."
 msgid "@code{general-configuration} (default: @code{(connman-general-configuration)})"
 msgstr "@code{general-configuration} (par défaut : @code{(connman-general-configuration)})"
 
+msgid "Configuration serialized to @file{main.conf} and passed as @option{--config} to @command{connmand}."
+msgstr "Configuration sérialisée dans @file{main.conf} et passée via @option{--config} à @command{connmand}."
+
 msgid "{Data Type} connman-general-configuration"
 msgstr "{Type de donnée} connman-general-configuration"
 
 msgid "Available @code{connman-general-configuration} fields are:"
 msgstr "Les champs de @code{connman-general-configuration} disponibles sont :"
+
+msgid "@code{input-request-timeout} (type: maybe-number)"
+msgstr "@code{input-request-timeout} (type : peut-être entier)"
+
+msgid "Set input request timeout.  Default is 120 seconds.  The request for inputs like passphrase will timeout after certain amount of time.  Use this setting to increase the value in case of different user interface designs."
+msgstr "Indique le délai d'attente de la demande. La valeur par défaut est de 120 secondes. La demande d'entrée comme une phrase de passe échouera après un certain temps. Utilisez ce paramètre pour augmenter la valeur si vous avez une autre interface."
+
+msgid "@code{browser-launch-timeout} (type: maybe-number)"
+msgstr "@code{browesr-launch-timeout} (type : peut-être-entier)"
+
+msgid "Set browser launch timeout.  Default is 300 seconds.  The request for launching a browser for portal pages will timeout after certain amount of time.  Use this setting to increase the value in case of different user interface designs."
+msgstr "Indique le délai d'attente pour le lancement du navigateur. La valeur par défaut est de 300 secondes. La demande d'exécution du navigateur pour les pages de portail échouera après un certain temps. Utilisez ce paramètre pour augmenter la valeur si vous utilisez une autre interface."
+
+msgid "@code{background-scanning?} (type: maybe-boolean)"
+msgstr "@code{background-scanning?} (type : peut-être booléen)"
+
+msgid "Enable background scanning.  Default is true.  If wifi is disconnected, the background scanning will follow a simple back off mechanism from 3s up to 5 minutes.  Then, it will stay in 5 minutes unless user specifically asks for scanning through a D-Bus call.  If so, the mechanism will start again from 3s.  This feature activates also the background scanning while being connected, which is required for roaming on wifi.  When @code{background-scanning?} is false, ConnMan will not perform any scan regardless of wifi is connected or not, unless it is requested by the user through a D-Bus call."
+msgstr "Active le scan en arrière-plan. La valeur par défaut est vraie. Si le wifi est déconnecté, le scan en arrière-plan suivra un mécanisme d'espacement de 3s à 5 minutes. Ensuite, il restera à 5 minutes à moins que l'utilisateur n'envoie une demande de scan à travers un appel D-Bus. Dans ce cas, le mécanisme recommence à 3s. Cette fonctionnalité active également le scan en arrière-plan lorsque vous êtes déjà connecté, ce qui est requis pour l'itinérance wifi. Lorsque @code{background-scanning?} est faux, ConnMan n'effectuera aucun scan, indépendamment du fait que le wifi soit connecté ou non, à moins que cela ne soit demandé par l'utilisateur à travers un appel D-Bus."
+
+msgid "@code{use-gateways-as-timeservers?} (type: maybe-boolean)"
+msgstr "@code{use-gateways-as-timeservers?} (type : peut-être-booléen)"
+
+msgid "Assume that service gateways also function as timeservers.  Default is false."
+msgstr "Suppose que les passerelles de service fonctionnent également comme des serveurs de temps. La valeur par défaut est fausse."
+
+msgid "@code{fallback-timeservers} (type: maybe-list)"
+msgstr "@code{fallback-timeservers} (type : peut-être liste)"
+
+msgid "List of Fallback timeservers.  These timeservers are used for NTP sync when there are no timeservers set by the user or by the service, and when @code{use-gateways-as-timeservers?} is @code{#f}.  These can contain a mixed combination of fully qualified domain names, IPv4 and IPv6 addresses."
+msgstr "Liste de serveurs de temps de repli. Ces serveurs de temps sont utilisés pour la synchronisation NTP lorsqu'il n'y a pas de serveurs de temps configurés par l'utilisateur ou par le service, puis lorsque @code{use-gateways-as-timeservers?} est @code{#f}. Ils peuvent contenir un mélange de noms de domaine pleinement qualifiés, des adresses IPv4 et IPv6."
+
+msgid "@code{fallback-nameservers} (type: maybe-list)"
+msgstr "@code{fallback-nameservers} (type : peut-être liste)"
+
+msgid "List of fallback nameservers appended to the list of nameservers given by the service.  The nameserver entries must be in numeric format, host names are ignored."
+msgstr "Liste de serveurs de noms de repli ajoutés à la fin de la liste des serveurs de nom fournis par le service. Les entrées de serveurs de noms doivent être au format numérique, les noms d'hôte sont ignorés."
+
+msgid "@code{default-auto-connect-technologies} (type: maybe-list)"
+msgstr "@code{default-auto-connect-technologies} (type : peut-être liste)"
+
+msgid "List of technologies that are marked autoconnectable by default.  The default value for this entry when empty is @code{\"ethernet\"}, @code{\"wifi\"}, @code{\"cellular\"}.  Services that are automatically connected must have been set up and saved to storage beforehand."
+msgstr "Liste de technologies qui sont marquées comme pouvant se connecter par défaut. La valeur par défaut de cette entrée si elle est vide est @code{\"ethernet\"}, @code{\"wifi\"}, @code{\"cellular\"}. Les services qui sont automatiquement connectés doivent avoir été configurés et sauvegardés avant de pouvoir les utiliser."
+
+msgid "@code{default-favourite-technologies} (type: maybe-list)"
+msgstr "@code{default-favourite-technologies} (type : peut-être liste)"
+
+msgid "List of technologies that are marked favorite by default.  The default value for this entry when empty is @code{\"ethernet\"}.  Connects to services from this technology even if not setup and saved to storage."
+msgstr "Liste de technologies marquées comme favorites par défaut. La valeur par défaut de cette entrée si elle est vide est @code{\"ethernet\"}. Se connecte aux services de cette technologie même si elle n'est pas configurée et sauvegardée."
+
+msgid "@code{always-connected-technologies} (type: maybe-list)"
+msgstr "@code{always-connected-technologies} (type : peut-être liste)"
+
+msgid "List of technologies which are always connected regardless of preferred-technologies setting (@code{auto-connect?} @code{#t}).  The default value is empty and this feature is disabled unless explicitly enabled."
+msgstr "Liste de technologies qui sont toujours connectées indépendamment du paramètre de technologies préférées (@code{auto-connect?} @code{#t}). La valeur par défaut est vide et cette fonctionnalité est désactivée à mois d'être activée explicitement."
+
+msgid "@code{preferred-technologies} (type: maybe-list)"
+msgstr "@code{preferred-technologies} (type : peut-être liste)"
+
+msgid "List of preferred technologies from the most preferred one to the least preferred one.  Services of the listed technology type will be tried one by one in the order given, until one of them gets connected or they are all tried.  A service of a preferred technology type in state 'ready' will get the default route when compared to another preferred type further down the list with state 'ready' or with a non-preferred type; a service of a preferred technology type in state 'online' will get the default route when compared to either a non-preferred type or a preferred type further down in the list."
+msgstr "Liste des technologies préférées de la plus préférée à la moins préférée. Les services des types de technologies listées seront essayés un par un dans l'ordre donné, jusqu'à ce que l'une d'entre elles soit connectée ou qu'elles aient toutes été testées. Un service d'un type de technologie préféré dans l'état « prêt » obtiendra la route par défaut par rapport aux autres types préférés dans l'état « prêt » mais plus bas dans la liste ou avec un type non préféré. Un service d'un type de technologie préféré dans l'état « connecté » obtiendra la route par défaut par rapport aux types non préférés ou un type préféré plus bas dans la liste."
+
+msgid "@code{network-interface-blacklist} (type: maybe-list)"
+msgstr "@code{network-interface-blacklist} (type : peut-être liste)"
+
+msgid "List of blacklisted network interfaces.  Found interfaces will be compared to the list and will not be handled by ConnMan, if their first characters match any of the list entries.  Default value is @code{\"vmnet\"}, @code{\"vboxnet\"}, @code{\"virbr\"}, @code{\"ifb\"}."
+msgstr "Liste d'interfaces réseau en liste noire. Les interfaces trouvées seront comparées à la liste et ne seront pas gérées par ConnMan, si leurs premiers caractères correspondent à une entrée de la liste. La valeur par défaut est @code{\"vmnet\"}, @code{\"vboxnet\"}, @code{\"virbr\"}, @code{\"ifb\"}."
+
+msgid "@code{allow-hostname-updates?} (type: maybe-boolean)"
+msgstr "@code{allow-hostname-updates?} (type : peut-être-booléen)"
+
+msgid "Allow ConnMan to change the system hostname.  This can happen for example if we receive DHCP hostname option.  Default value is @code{#t}."
+msgstr "Permet à ConnMan de modifier le nom d'hôte du système. Cela peut arriver par exemple s'il reçoit l'option DHCP « hostname ». La valeur par défaut est @code{#t}."
+
+msgid "@code{allow-domainname-updates?} (type: maybe-boolean)"
+msgstr "@code{allow-domainname-updates?} (type : peut-être-booléen)"
+
+msgid "Allow connman to change the system domainname.  This can happen for example if we receive DHCP domainname option.  Default value is @code{#t}."
+msgstr "Permet à connman de modifier le nom de domaine du système. Cela peut arriver par exemple s'il reçoit l'option DHCP « domainname ». La valeur par défaut est @code{#t}."
+
+msgid "@code{single-connected-technology?} (type: maybe-boolean)"
+msgstr "@code{single-connected-technology?} (type : peut-être-booléen)"
+
+msgid "Keep only a single connected technology at any time.  When a new service is connected by the user or a better one is found according to preferred-technologies, the new service is kept connected and all the other previously connected services are disconnected.  With this setting it does not matter whether the previously connected services are in 'online' or 'ready' states, the newly connected service is the only one that will be kept connected.  A service connected by the user will be used until going out of network coverage.  With this setting enabled applications will notice more network breaks than normal.  Note this options can't be used with VPNs.  Default value is @code{#f}."
+msgstr "Ne garde qu'une seule technologie connectée à la fois. Lorsque vous vous connectez à un nouveau service ou qu'un meilleur service est trouvé d'après vos préférences de technologies, le nouveau service reste connecté et les autres services précédemment connectés sont déconnectés. Avec ce paramètre, le fait que les service précédemment connectés soient dans l'état « en ligne » ou « prêt » n'a aucune importance. Le service nouvellement connecté est le seul à pouvoir rester connecté. Si vous connectez un service, il sera utilisé jusqu'à ne plus être à portée. Lorsque ce paramètre est activé, les applications auront plus de déconnexions réseau qu'à la normale. Remarquez que cette option ne peut pas être utilisée avec des VPN. La valeur par défaut est @code{#f}."
+
+msgid "@code{tethering-technologies} (type: maybe-list)"
+msgstr "@code{tethering-technologies} (type : peut-être liste)"
+
+msgid "List of technologies that are allowed to enable tethering.  The default value is @code{\"wifi\"}, @code{\"bluetooth\"}, @code{\"gadget\"}.  Only those technologies listed here are used for tethering.  If one wants to tether ethernet, then add @code{\"ethernet\"} in the list.  Note that if ethernet tethering is enabled, then a DHCP server is started on all ethernet interfaces.  Tethered ethernet should never be connected to corporate or home network as it will disrupt normal operation of these networks.  Due to this ethernet is not tethered by default.  Do not activate ethernet tethering unless you really know what you are doing."
+msgstr "Liste de technologies qui peuvent activer le partage de connexion. La valeur par défaut est @code{\"wifi\"}, @code{\"bluetooth\"}, @code{\"gadget\"}. Seules les technologies listées ici sont utilisées pour le partage de connexion. Si vous souhaitez partager votre connexion sur ethernet, ajoutez @code{\"ethernet\"} à la liste. Remarquez que si le partage de connexion sur ethernet est activé, alors le serveur DHCP est démarré sur toutes les interfaces ethernet. Le partage sur ethernet ne devrait jamais être connecté à un réseau d'entreprise ou personnel puisqu'il perturbera le fonctionnement normal de ces réseaux. Pour cette raison, le partage n'est pas activé sur ethernet par défaut. N'activez le pas partage sur ethernet, sauf si vous savez vraiment ce que vous faites."
+
+msgid "@code{persistent-tethering-mode?} (type: maybe-boolean)"
+msgstr "@code{persistent-tethering-mode?} (type : peut-être-booléen)"
+
+msgid "Restore earlier tethering status when returning from offline mode, re-enabling a technology, and after restarts and reboots.  Default value is @code{#f}."
+msgstr "Restaure le statut du partage de connexion antérieur en revenant du mode hors-ligne, en réactivant une technologie et après un redémarrage. La valeur par défaut est @code{#f}."
+
+msgid "@code{enable-6to4?} (type: maybe-boolean)"
+msgstr "@code{enable-6to4?} (type : peut-être-booléen)"
+
+msgid "Automatically enable anycast 6to4 if possible.  This is not recommended, as the use of 6to4 will generally lead to a severe degradation of connection quality.  See RFC6343.  Default value is @code{#f} (as recommended by RFC6343 section 4.1)."
+msgstr "Active automatiquement l'anycast en 6to4 si possible. Cela n'est pas recommandé, puisque l'utilisation de 6to4 dégradera généralement sévèrement la qualité de la connexion. Consultez la RFC6343. La valeur par défaut est @code{#f} (comme recommandé par la RFC6343, section 4.1)."
+
+msgid "Set DHCP option 60 (Vendor Class ID) to the given string.  This option can be used by DHCP servers to identify specific clients without having to rely on MAC address ranges, etc."
+msgstr "Paramètre l'option DHCP 60 (Vendor Class ID) à la chaîne donnée. Cette option peut être utilisée par les serveurs DHCP pour identifier des clients spécifiques sans avoir à s'appuyer sur des intervalles d'adresses MAC, etc."
+
+msgid "@code{enable-online-check?} (type: maybe-boolean)"
+msgstr "@code{enable-online-check?} (type : peut-être-booléen)"
+
+msgid "Enable or disable use of HTTP GET as an online status check.  When a service is in a READY state, and is selected as default, ConnMan will issue an HTTP GET request to verify that end-to-end connectivity is successful.  Only then the service will be transitioned to ONLINE state.  If this setting is false, the default service will remain in READY state.  Default value is @code{#t}."
+msgstr "Active ou désactive l'utilisation de HTTP GET comme vérification du statut en ligne. Lorsqu'un service est dans l'état READY, et qu'il est sélectionné par défaut, ConnMan lui enverra une requête HTTP GET pour vérifier la connectivité de bout-en-bout. Ensuite seulement, le service transitera vers l'état en ligne. Si ce paramètre est faux, le service par défaut restera dans l'état prêt."
+
+msgid "@code{online-check-ipv4-url} (type: maybe-string)"
+msgstr "@code{online-check-ipv4-url} (type : peut-être-chaine)"
 
 msgid "WPA Supplicant"
 msgstr "WPA Supplicant"
@@ -29895,14 +30080,8 @@ msgstr "{Type de donnée} sddm-configuration"
 msgid "This data type represents the configuration of the SDDM login manager.  The available fields are:"
 msgstr "Ce type de données représente la configuration du gestionnaire de connexion SDDM.  Les champs disponibles sont :"
 
-msgid "@code{sddm} (default: @code{sddm})"
-msgstr "@code{sddm} (par défaut : @code{sddm})"
-
 msgid "The SDDM package to use."
 msgstr "Le paquet SDDM à utiliser."
-
-msgid "sddm has Qt6 enabled by default. If you want to still use a Qt5 theme, you need to set it to @code{sddm-qt5}."
-msgstr "sddm utilise Qt 6 par défaut. Pour utiliser un thème Qt 5, il faut mettre ce champ à @code{sddm-qt5}."
 
 msgid "@code{display-server} (default: \"x11\")"
 msgstr "@code{display-server} (par défaut : \"x11\")"
@@ -47494,9 +47673,6 @@ msgstr "{Type de donnée} nix-configuration"
 msgid "This data type represents the configuration of the Nix daemon."
 msgstr "Ce type de données représente la configuration du démon Nix."
 
-msgid "@code{nix} (default: @code{nix})"
-msgstr "@code{nix} (par défaut : @code{nix})"
-
 msgid "The Nix package to use."
 msgstr "Le paquet Nix à utiliser."
 
@@ -49683,9 +49859,6 @@ msgstr "Si le @samp{hostfwd} d'exemple ci-dessus ne marche pas chez vous (ex : 
 
 msgid "Using @command{virt-viewer} with Spice"
 msgstr "Utiliser @command{virt-viewer} avec Spice"
-
-msgid "As an alternative to the default @command{qemu} graphical client you can use the @command{remote-viewer} from the @command{virt-viewer} package.  To connect pass the @command{-spice port=5930,disable-ticketing} flag to @command{qemu}.  See previous section for further information on how to do this."
-msgstr "Alternativement au client graphique @command{qemu} par défaut vous pouvez utiliser @command{remote-viewer} du paquet @command{virt-viewer}.  Pour vous connecter, passez le drapeau @command{-spice port=5930,disable-ticketing} à @command{qemu}.  Voir les sections précédentes pour plus d'informations sur comment faire cela."
 
 msgid "Spice also allows you to do some nice stuff like share your clipboard with your VM@.  To enable that you'll also have to pass the following flags to @command{qemu}:"
 msgstr "Spice a aussi de chouettes fonctionnalités comme le partage de votre presse-papier avec la VM@.  Pour activer cela vous devrez aussi passer les drapeaux suivants à @command{qemu} :"

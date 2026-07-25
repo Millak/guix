@@ -9,16 +9,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-07-04 03:18+0000\n"
-"PO-Revision-Date: 2026-05-27 14:28+0000\n"
-"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
+"POT-Creation-Date: 2026-07-12 03:18+0000\n"
+"PO-Revision-Date: 2026-07-17 07:07+0000\n"
+"Last-Translator: Eugene_Cheng <eugene_cheng@noreply.codeberg.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://translate.codeberg.org/projects/guix/documentation-cookbook/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2026.5\n"
+"X-Generator: Weblate 2026.6.1\n"
 
 msgid "@documentencoding UTF-8"
 msgstr ""
@@ -40,6 +40,9 @@ msgstr "Guix 烹饪书: (guix-cookbook.zh_CN)"
 msgid "Tutorials and examples for GNU Guix."
 msgstr "GNU Guix 的教程和示例。"
 
+msgid "Tutorials and examples for GNU Guix"
+msgstr "GNU Guix 的教程和示例"
+
 msgid "The GNU Guix Developers"
 msgstr "GNU Guix 开发者"
 
@@ -50,7 +53,7 @@ msgid "This document presents tutorials and detailed examples for GNU@tie{}Guix,
 msgstr "本文档提供 GNU@tie{}Guix 的教程与详细示例——这是一款专为 GNU 系统编写的功能性包管理工具。关于系统架构、应用程序接口及相关概念的具体说明，敬请查阅 @pxref{Top,,, guix.zh_CN, GNU Guix 参考手册}。"
 
 msgid "This manual is also available in Simplified Chinese (@pxref{Top,,, guix-cookbook.zh_CN, GNU Guix 烹饪书}), French (@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), German (@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}), Korean (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), Spanish (@pxref{Top,,, guix-cookbook.es, Libro de recetas de GNU Guix}), Italian (@pxref{Top,,, guix-cookbook.it, Ricettario di GNU Guix}), Brazilian Portuguese (@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}), Russian (@pxref{Top,,, guix-cookbook.ru, GNU Guix Рецепты}), Slovak (@pxref{Top,,, guix-cookbook.sk, Receptár GNU Guix}), and Swedish (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}).  If you would like to translate this document in your native language, consider joining @uref{https://translate.codeberg.org/projects/guix/documentation-cookbook, Weblate} (@pxref{Translating Guix,,, guix, GNU Guix Reference Manual})."
-msgstr "这个用户手册还提供英语版（@pxref{Top,,, guix-cookbook, GNU Guix Cookbook}）、法语版（@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}）、德语版（@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}）、朝鲜语版 (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북})、西班牙语版（@pxref{Top,,, guix-cookbook.es, Libro de recetas de GNU Guix}）、意大利语版（@pxref{Top,,, guix-cookbook.it, Ricettario di GNU Guix}）、巴西葡萄牙语版（@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}）、俄语版（@pxref{Top,,, guix-cookbook.ru, GNU Guix Рецепты}）、斯洛伐克语版（@pxref{Top,,, guix-cookbook.sk, Receptár GNU Guix}）、瑞典语版（@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}）与泰米尔语版（@pxref{Top,,, guix-cookbook.ta, GNU Guix கையேடு}）。如果你想把它翻译成你的母语，请考虑加入 @uref{https://translate.codeberg.org/projects/guix/documentation-cookbook, Weblate}（@pxref{翻译 Guix,,, guix.zh_CN, GNU Guix参考手册}）。"
+msgstr "这个用户手册还提供英语版（@pxref{Top,,, guix-cookbook, GNU Guix Cookbook}）、法语版（@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}）、德语版（@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}）、朝鲜语版 (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북})、西班牙语版（@pxref{Top,,, guix-cookbook.es, Libro de recetas de GNU Guix}）、意大利语版（@pxref{Top,,, guix-cookbook.it, Ricettario di GNU Guix}）、巴西葡萄牙语版（@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}）、俄语版（@pxref{Top,,, guix-cookbook.ru, GNU Guix Рецепты}）、斯洛伐克语版（@pxref{Top,,, guix-cookbook.sk, Receptár GNU Guix}）、与瑞典语版（@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}）。如果你想把它翻译成你的母语，请考虑加入 @uref{https://translate.codeberg.org/projects/guix/documentation-cookbook, Weblate}（@pxref{翻译 Guix,,, guix.zh_CN, GNU Guix参考手册}）。"
 
 msgid "Scheme tutorials"
 msgstr "Scheme 教程"
@@ -184,14 +187,35 @@ msgstr "本地文件"
 msgid "Channels"
 msgstr "频道"
 
+msgid "Direct checkout hacking"
+msgstr "直接检出开发"
+
+msgid "Recursive importers"
+msgstr "递归导入器"
+
 msgid "Automatic update"
 msgstr "自动更新"
+
+msgid "Inheritance"
+msgstr "继承"
 
 msgid "Packaging Rust Crates"
 msgstr "打包 Rust Crates"
 
 msgid "Common Workflow for Rust Packaging"
 msgstr "Rust 打包的常见工作流程"
+
+msgid "Cargo Workspaces and Development Snapshots"
+msgstr "Cargo 工作区与开发快照"
+
+msgid "Using Rust Libraries in Other Build Systems"
+msgstr "在其他构建系统中使用 Rust 库"
+
+msgid "Common Workflow for Updating Existing Rust Packages"
+msgstr "更新现有 Rust 包的常见工作流程"
+
+msgid "Common Workflow for Resolving Merge Conflicts on Existing Pull Requests"
+msgstr "针对现有拉取请求解决合并冲突的常见工作流"
 
 msgid "Auto-Login to a Specific TTY"
 msgstr "自动登录到指定的 TTY"
@@ -203,16 +227,25 @@ msgid "Customizing the Kernel"
 msgstr "自定义内核"
 
 msgid "Creating and using a custom Linux kernel on Guix System."
-msgstr "在 Guix 系统上创建和使用自定义 Linux 内核。"
+msgstr "在 Guix 系统上创建并使用自定义 Linux 内核。"
 
 msgid "Guix System Image API"
 msgstr "Guix 系统映像 API"
+
+msgid "Customizing images to target specific platforms."
+msgstr "为特定平台定制镜像。"
 
 msgid "Using security keys"
 msgstr "使用安全密钥"
 
 msgid "How to use security keys with Guix System."
 msgstr "如何在 Guix 系统中使用安全密钥。"
+
+msgid "Dynamic DNS mcron job"
+msgstr "动态 DNS mcron 任务"
+
+msgid "Job to update the IP address behind a DuckDNS host name."
+msgstr "更新 DuckDNS 域名 IP 记录的任务。"
 
 msgid "Connecting to Wireguard VPN"
 msgstr "连接 Wireguard VPN"
@@ -226,14 +259,77 @@ msgstr "客制化窗口管理器"
 msgid "Handle customization of a Window manager on Guix System."
 msgstr "在 Guix 系统上对窗口管理器进行客制化。"
 
+msgid "Running Guix on a Linode Server"
+msgstr "在 Linode 服务器上部署 Guix"
+
+msgid "Running Guix on a Linode Server."
+msgstr "在 Linode 服务器上部署 Guix。"
+
+msgid "Running Guix on a Kimsufi Server"
+msgstr "在 Kimsufi 服务器上部署 Guix"
+
+msgid "Running Guix on a Kimsufi Server."
+msgstr "在 kimsufi 服务器上部署 Guix。"
+
+msgid "Setting up a bind mount"
+msgstr "配置绑定挂载"
+
+msgid "Setting up a bind mount in the file-systems definition."
+msgstr "在文件系统声明中配置挂载绑定。"
+
+msgid "Getting substitutes from Tor"
+msgstr "通过 Tor 获取预编译包"
+
+msgid "Configuring Guix daemon to get substitutes through Tor."
+msgstr "配置 Guix 守护进程以通过 Tor 获取预编译包。"
+
+msgid "Setting up NGINX with Lua"
+msgstr "配置 NGINX 以支持 Lua 脚本"
+
+msgid "Configuring NGINX web-server to load Lua modules."
+msgstr "配置 NGINX Web 服务器加载 Lua 模块。"
+
+msgid "Music Server with Bluetooth Audio"
+msgstr "支持蓝牙音频的音乐服务器"
+
+msgid "Headless music player with Bluetooth output."
+msgstr "支持蓝牙输出的无头音乐播放器。"
+
+msgid "StumpWM"
+msgstr "StumpWM"
+
+msgid "Session lock"
+msgstr "会话锁定"
+
 msgid "Xorg"
 msgstr "Xorg"
 
 msgid "Guix Containers"
 msgstr "Guix 容器"
 
+msgid "Perfectly isolated environments"
+msgstr "完全隔离的环境"
+
 msgid "Guix System Containers"
 msgstr "Guix 系统容器"
+
+msgid "A system inside your system"
+msgstr "系统内的系统"
+
+msgid "A Database Container"
+msgstr "数据库容器"
+
+msgid "Container Networking"
+msgstr "容器网络"
+
+msgid "Network bridge for QEMU"
+msgstr "QEMU 网络桥接"
+
+msgid "Routed network for libvirt"
+msgstr "libvirt 路由网络"
+
+msgid "Custom NAT-based network for libvirt"
+msgstr "libvirt 自定义 NAT 网络配置"
 
 msgid "Getting Started"
 msgstr "入门"
@@ -1066,15 +1162,6 @@ msgid "ngx.say(stdout)\n"
 msgstr "ngx.say(stdout)\n"
 
 msgid ""
-"$ bluetoothctl \n"
-"[NEW] Controller 00:11:22:33:95:7F BlueZ 5.40 [default]\n"
-"\n"
-msgstr ""
-"$ bluetoothctl \n"
-"[NEW] Controller 00:11:22:33:95:7F BlueZ 5.40 [default]\n"
-"\n"
-
-msgid ""
 "[bluetooth]# power on\n"
 "[bluetooth]# Changing power on succeeded\n"
 "\n"
@@ -1149,36 +1236,6 @@ msgid ""
 "\n"
 msgstr ""
 "[CHG] Device AA:BB:CC:A4:AA:CD Connected: no\n"
-"\n"
-
-msgid ""
-"[bluetooth]# \n"
-"[bluetooth]# trust AA:BB:CC:A4:AA:CD\n"
-"[bluetooth]# [CHG] Device AA:BB:CC:A4:AA:CD Trusted: yes\n"
-"Changing AA:BB:CC:A4:AA:CD trust succeeded\n"
-"\n"
-msgstr ""
-"[bluetooth]# \n"
-"[bluetooth]# trust AA:BB:CC:A4:AA:CD\n"
-"[bluetooth]# [CHG] Device AA:BB:CC:A4:AA:CD Trusted: yes\n"
-"Changing AA:BB:CC:A4:AA:CD trust succeeded\n"
-"\n"
-
-msgid ""
-"[bluetooth]# \n"
-"[bluetooth]# connect AA:BB:CC:A4:AA:CD\n"
-"Attempting to connect to AA:BB:CC:A4:AA:CD\n"
-"[bluetooth]# [CHG] Device AA:BB:CC:A4:AA:CD RSSI: -63\n"
-"[CHG] Device AA:BB:CC:A4:AA:CD Connected: yes\n"
-"Connection successful\n"
-"\n"
-msgstr ""
-"[bluetooth]# \n"
-"[bluetooth]# connect AA:BB:CC:A4:AA:CD\n"
-"Attempting to connect to AA:BB:CC:A4:AA:CD\n"
-"[bluetooth]# [CHG] Device AA:BB:CC:A4:AA:CD RSSI: -63\n"
-"[CHG] Device AA:BB:CC:A4:AA:CD Connected: yes\n"
-"Connection successful\n"
 "\n"
 
 msgid ""
@@ -1852,6 +1909,9 @@ msgstr ""
 "    eval \"$(guix shell --search-paths --root=\"$gcroot\" --pure \\\n"
 "     --development guix $@{PACKAGES[@@]@} $@{PACKAGES_MAINTENANCE[@@]@} \"$@@\")\"\n"
 "\n"
+
+msgid "Here we assume that the cluster is running a GNU/Linux distro other than Guix System and that we are going to install Guix on top of it."
+msgstr "此处我们假定集群运行的是 非 Guix System 的 GNU/Linux 发行版，我们将在该操作系统之上安装 Guix 。"
 
 msgid ""
 "systemctl daemon-reload\n"

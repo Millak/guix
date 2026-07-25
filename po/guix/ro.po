@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2026-07-04 03:18+0000\n"
-"PO-Revision-Date: 2026-07-03 11:08+0000\n"
+"POT-Creation-Date: 2026-07-15 03:18+0000\n"
+"PO-Revision-Date: 2026-07-17 07:07+0000\n"
 "Last-Translator: Andrei <andrei@noreply.codeberg.org>\n"
 "Language-Team: Romanian <https://translate.codeberg.org/projects/guix/guix/ro/>\n"
 "Language: ro\n"
@@ -383,8 +383,8 @@ msgid "syslog symbol value for 'log-to' is deprecated~%"
 msgstr "utilizarea unei valori simbol syslog pentru 'log-to' este depreciată~%"
 
 #: gnu/services/audio.scm:946
-msgid "Run myMPD, a frontend for MPD. (Music Player Daemon)"
-msgstr "Rulează myMPD, o interfață pentru MPD. (Music Player Daemon)"
+msgid "Run myMPD, a frontend for MPD (Music Player Daemon)."
+msgstr "Rulează myMPD, o interfață pentru MPD (Music Player Daemon)"
 
 #: gnu/services/base.scm:378
 msgid ""
@@ -494,12 +494,12 @@ msgstr ""
 #: gnu/services/base.scm:1815
 #, scheme-format
 msgid "Using file-like value for 'pam-limits-service-type' is deprecated~%"
-msgstr ""
+msgstr "Utilizarea valorilor file-like pentru «pam-limits-service-type» este depreciată~%"
 
 #: gnu/services/base.scm:1824
 #, scheme-format
 msgid "invalid input for 'pam-limits-service-type'~%"
-msgstr ""
+msgstr "intrare invalidă pentru „pam-limits-service-type”~%"
 
 #: gnu/services/base.scm:1835
 msgid ""
@@ -1861,7 +1861,7 @@ msgstr ""
 #: guix/scripts/edit.scm:53 guix/scripts/size.scm:246
 #: guix/scripts/graph.scm:537 guix/scripts/challenge.scm:464
 #: guix/scripts/copy.scm:126 guix/scripts/pack.scm:1689
-#: guix/scripts/weather.scm:384 guix/scripts/describe.scm:97
+#: guix/scripts/weather.scm:385 guix/scripts/describe.scm:97
 #: guix/scripts/processes.scm:301 guix/scripts/deploy.scm:58
 #: guix/scripts/container.scm:35 guix/scripts/container/exec.scm:43
 #: guix/scripts/archive.scm:104 guix/scripts/shell.scm:86
@@ -2130,8 +2130,8 @@ msgstr ""
 #: gnu/installer/newt/partition.scm:56 gnu/installer/newt/partition.scm:92
 #: gnu/installer/newt/partition.scm:145 gnu/installer/newt/partition.scm:162
 #: gnu/installer/newt/partition.scm:659 gnu/installer/newt/partition.scm:682
-#: gnu/installer/newt/partition.scm:728 gnu/installer/newt/partition.scm:790
-#: gnu/installer/newt/partition.scm:801 gnu/installer/newt/services.scm:136
+#: gnu/installer/newt/partition.scm:728 gnu/installer/newt/partition.scm:792
+#: gnu/installer/newt/partition.scm:803 gnu/installer/newt/services.scm:136
 #: gnu/installer/newt/timezone.scm:63 gnu/installer/newt/user.scm:216
 #: gnu/installer/newt/wifi.scm:206
 msgid "Exit"
@@ -2176,6 +2176,18 @@ msgstr ""
 
 #: gnu/installer/newt.scm:141
 msgid "External command error"
+msgstr ""
+
+#: gnu/installer/newt.scm:146
+msgid "Ignore"
+msgstr ""
+
+#: gnu/installer/newt.scm:147 gnu/installer/newt/menu.scm:41
+msgid "Abort"
+msgstr ""
+
+#: gnu/installer/newt.scm:150
+msgid "Report"
 msgstr ""
 
 #: gnu/installer/newt/ethernet.scm:65
@@ -2359,10 +2371,6 @@ msgstr ""
 msgid "Installation menu"
 msgstr ""
 
-#: gnu/installer/newt/menu.scm:41
-msgid "Abort"
-msgstr ""
-
 #: gnu/installer/newt/network.scm:64 gnu/installer/newt/network.scm:79
 #: gnu/installer/newt/network.scm:166
 msgid "Internet access"
@@ -2452,12 +2460,24 @@ msgstr ""
 msgid "Empty input"
 msgstr ""
 
-#: gnu/installer/newt/page.scm:766
+#: gnu/installer/newt/page.scm:766 gnu/installer/newt/page.scm:914
 msgid "Edit"
 msgstr ""
 
 #: gnu/installer/newt/page.scm:826
 msgid "Ok"
+msgstr ""
+
+#: gnu/installer/newt/page.scm:907
+msgid "Please select files you wish to include in the dump."
+msgstr ""
+
+#: gnu/installer/newt/page.scm:935
+msgid "Create"
+msgstr ""
+
+#: gnu/installer/newt/page.scm:940
+msgid "Installer dump"
 msgstr ""
 
 #: gnu/installer/newt/partition.scm:47
@@ -2710,15 +2730,17 @@ msgstr ""
 msgid "Guided - using the entire disk with encryption"
 msgstr ""
 
-#: gnu/installer/newt/partition.scm:782
+#. TRANSLATORS: This is an adjective about manually partitionning
+#. the disk, not a reference to the documentation manual
+#: gnu/installer/newt/partition.scm:784
 msgid "Manual"
 msgstr ""
 
-#: gnu/installer/newt/partition.scm:784
+#: gnu/installer/newt/partition.scm:786
 msgid "Please select a partitioning method."
 msgstr ""
 
-#: gnu/installer/newt/partition.scm:785
+#: gnu/installer/newt/partition.scm:787
 msgid "Partitioning method"
 msgstr ""
 
@@ -3715,7 +3737,7 @@ msgstr ""
 #: guix/scripts/publish.scm:116 guix/scripts/edit.scm:55
 #: guix/scripts/size.scm:248 guix/scripts/graph.scm:539
 #: guix/scripts/challenge.scm:466 guix/scripts/copy.scm:128
-#: guix/scripts/pack.scm:1691 guix/scripts/weather.scm:386
+#: guix/scripts/pack.scm:1691 guix/scripts/weather.scm:387
 #: guix/scripts/describe.scm:99 guix/scripts/processes.scm:303
 #: guix/scripts/deploy.scm:60 guix/scripts/container.scm:37
 #: guix/scripts/container/exec.scm:45 guix/scripts/archive.scm:106
@@ -5471,7 +5493,7 @@ msgstr[2] "  ~h pachete actualizate: ~a~%"
 msgid "channel '~a' is not trusted~%"
 msgstr "canalul „~a” nu este de încredere~%"
 
-#: guix/scripts/pull.scm:802 guix/channels.scm:483
+#: guix/scripts/pull.scm:802 guix/channels.scm:495
 #, scheme-format
 msgid "channel '~a' lacks an introduction and cannot be authenticated~%"
 msgstr "canalul „~a” nu are o introducere și nu poate fi autentificat~%"
@@ -5613,16 +5635,16 @@ msgstr "~a: URI invalid~%"
 msgid "~a: invalid URI~%"
 msgstr "~a: URI invalid~%"
 
-#: guix/scripts/substitute.scm:643
+#: guix/scripts/substitute.scm:676
 msgid "implement the build daemon's substituter protocol"
 msgstr ""
 
-#: guix/scripts/substitute.scm:798
+#: guix/scripts/substitute.scm:831
 #, scheme-format
 msgid "failed to find alternative substitute for '~a'~%"
 msgstr ""
 
-#: guix/scripts/substitute.scm:804
+#: guix/scripts/substitute.scm:837
 #, scheme-format
 msgid "~a: unrecognized options~%"
 msgstr ""
@@ -6239,7 +6261,7 @@ msgstr ""
 msgid "aborting reconfiguration because commit ~a of channel '~a' is not a descendant of ~a"
 msgstr ""
 
-#: guix/scripts/system/reconfigure.scm:384 guix/channels.scm:528
+#: guix/scripts/system/reconfigure.scm:384 guix/channels.scm:540
 msgid ""
 "Use @option{--allow-downgrades} to force\n"
 "this downgrade."
@@ -7258,26 +7280,26 @@ msgstr ""
 msgid "Add @code{bash} or @code{bash-minimal} to your package list."
 msgstr ""
 
-#: guix/scripts/weather.scm:84
+#: guix/scripts/weather.scm:85
 msgid "computing ~h package derivations for ~a...~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:182
+#: guix/scripts/weather.scm:183
 #, scheme-format
 msgid "could not read '~a': ~a~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:184
+#: guix/scripts/weather.scm:185
 #, scheme-format
 msgid "'~a' is unreadable, cannot determine whether substitutes are authorized~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:190
+#: guix/scripts/weather.scm:191
 #, scheme-format
 msgid "substitutes from '~a' are unauthorized~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:195
+#: guix/scripts/weather.scm:196
 #, scheme-format
 msgid ""
 "To authorize all substitutes from @uref{~a} to be\n"
@@ -7298,112 +7320,112 @@ msgstr ""
 
 #. TRANSLATORS: it is quite possible zero store items are
 #. looked for.
-#: guix/scripts/weather.scm:223
+#: guix/scripts/weather.scm:224
 msgid "looking for ~h store items on ~a...~%"
 msgstr "se caută ~h elemente în depozit pe ~a...~%"
 
-#: guix/scripts/weather.scm:266
+#: guix/scripts/weather.scm:267
 msgid "  ~,1f% substitutes available (~h out of ~h)~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:272
+#: guix/scripts/weather.scm:273
 #, scheme-format
 msgid "  unknown substitute sizes~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:275
+#: guix/scripts/weather.scm:276
 msgid "  ~,1h MiB of nars (compressed)~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:276
+#: guix/scripts/weather.scm:277
 msgid "  at least ~,1h MiB of nars (compressed)~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:278
+#: guix/scripts/weather.scm:279
 msgid "  ~,1h MiB on disk (uncompressed)~%"
 msgstr "  ~,1h Mo pe disc (necomprimat)~%"
 
-#: guix/scripts/weather.scm:281
+#: guix/scripts/weather.scm:282
 msgid "  ~,3h seconds per request (~,1h seconds in total)~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:283
+#: guix/scripts/weather.scm:284
 msgid "  ~,1h requests per second~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:289
+#: guix/scripts/weather.scm:290
 #, scheme-format
 msgid "  (continuous integration information unavailable)~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:292
+#: guix/scripts/weather.scm:293
 #, scheme-format
 msgid "  '~a' returned ~a (~s)~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:309
+#: guix/scripts/weather.scm:310
 msgid "  ~,1f% (~h out of ~h) of the missing items are queued~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:315
+#: guix/scripts/weather.scm:316
 msgid "  at least ~h queued builds~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:316
+#: guix/scripts/weather.scm:317
 msgid "  ~h queued builds~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:319
+#: guix/scripts/weather.scm:320
 #, scheme-format
 msgid "      ~a: ~a (~0,1f%)~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:325
+#: guix/scripts/weather.scm:326
 #, scheme-format
 msgid "  build rate: ~1,2f builds per hour~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:329
+#: guix/scripts/weather.scm:330
 #, scheme-format
 msgid "      ~a: ~,2f builds per hour~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:337
+#: guix/scripts/weather.scm:338
 #, scheme-format
 msgid "Substitutes are missing for the following items:~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:352
+#: guix/scripts/weather.scm:353
 msgid "unknown system"
 msgstr ""
 
-#: guix/scripts/weather.scm:367
+#: guix/scripts/weather.scm:368
 msgid ""
 "Usage: guix weather [OPTIONS] [PACKAGES ...]\n"
 "Report the availability of substitutes.\n"
 msgstr ""
 
-#: guix/scripts/weather.scm:369
+#: guix/scripts/weather.scm:370
 msgid ""
 "\n"
 "      --substitute-urls=URLS\n"
 "                         check for available substitutes at URLS"
 msgstr ""
 
-#: guix/scripts/weather.scm:372
+#: guix/scripts/weather.scm:373
 msgid ""
 "\n"
 "  -m, --manifest=MANIFEST\n"
 "                         look up substitutes for packages specified in MANIFEST"
 msgstr ""
 
-#: guix/scripts/weather.scm:375
+#: guix/scripts/weather.scm:376
 msgid ""
 "\n"
 "  -e, --expression=EXPR  look up substitutes for the package EXPR evaluates to"
 msgstr ""
 
-#: guix/scripts/weather.scm:377
+#: guix/scripts/weather.scm:378
 msgid ""
 "\n"
 "  -c, --coverage[=COUNT]\n"
@@ -7411,36 +7433,36 @@ msgid ""
 "                         COUNT dependents"
 msgstr ""
 
-#: guix/scripts/weather.scm:381
+#: guix/scripts/weather.scm:382
 msgid ""
 "\n"
 "      --display-missing  display the list of missing substitutes"
 msgstr ""
 
-#: guix/scripts/weather.scm:407
+#: guix/scripts/weather.scm:408
 #, scheme-format
 msgid "~a: invalid URL~%"
 msgstr ""
 
-#: guix/scripts/weather.scm:541
+#: guix/scripts/weather.scm:542
 #, scheme-format
 msgid "The following ~a package is missing from '~a' for '~a':~%"
 msgid_plural "The following ~a packages are missing from '~a' for '~a':~%"
 msgstr[0] ""
 msgstr[1] ""
 
-#: guix/scripts/weather.scm:547
+#: guix/scripts/weather.scm:548
 #, scheme-format
 msgid "~a package is missing from '~a' for '~a':~%"
 msgid_plural "~a packages are missing from '~a' for '~a', among which:~%"
 msgstr[0] ""
 msgstr[1] ""
 
-#: guix/scripts/weather.scm:593
+#: guix/scripts/weather.scm:594
 msgid "report on the availability of pre-built package binaries"
 msgstr ""
 
-#: guix/scripts/weather.scm:630
+#: guix/scripts/weather.scm:633
 #, scheme-format
 msgid "using default substitute URLs~%"
 msgstr ""
@@ -8749,11 +8771,11 @@ msgstr "se enumeră sub-directoriile Emacs..."
 
 #: guix/status.scm:397
 msgid "generating GdkPixbuf loaders cache..."
-msgstr ""
+msgstr "se generează cache-ul încărcătoarelor GdkPixbuf..."
 
 #: guix/status.scm:399
 msgid "generating GLib schema cache..."
-msgstr ""
+msgstr "se generează cache-ul schemei GLib..."
 
 #: guix/status.scm:401
 msgid "creating GTK+ icon theme cache..."
@@ -8889,12 +8911,12 @@ msgstr ""
 msgid "offloading build of ~a to '~a'"
 msgstr ""
 
-#: guix/http-client.scm:167
+#: guix/http-client.scm:168
 #, scheme-format
 msgid "following redirection to `~a'...~%"
 msgstr ""
 
-#: guix/http-client.scm:188
+#: guix/http-client.scm:189
 #, scheme-format
 msgid "~a: HTTP download failed: ~a (~s)"
 msgstr ""
@@ -8966,31 +8988,36 @@ msgstr ""
 msgid "invalid format of the signature field: ~a~%"
 msgstr ""
 
-#: guix/channels.scm:271
+#: guix/channels.scm:258
+#, scheme-format
+msgid "channel '~a' has neither 'branch' nor 'commit' set"
+msgstr ""
+
+#: guix/channels.scm:282
 msgid "channel dependency has an invalid introduction field"
 msgstr ""
 
-#: guix/channels.scm:314
+#: guix/channels.scm:325
 msgid "unsupported '.guix-channel' version"
 msgstr ""
 
-#: guix/channels.scm:320
+#: guix/channels.scm:331
 msgid "invalid '.guix-channel' file"
 msgstr ""
 
-#: guix/channels.scm:403
+#: guix/channels.scm:415
 msgid "Authenticating channel '~a', commits ~a to ~a (~h new commit)...~%"
 msgid_plural "Authenticating channel '~a', commits ~a to ~a (~h new commits)...~%"
 msgstr[0] "Se autentifică canalul „~a”, commit-urile ~a la ~a (~h commit nou)...~%"
 msgstr[1] "Se autentifică canalul „~a”, commit-urile ~a la ~a (~h commit-uri noi)...~%"
 msgstr[2] "Se autentifică canalul „~a”, commit-urile ~a la ~a (~h de commit-uri noi)...~%"
 
-#: guix/channels.scm:475
+#: guix/channels.scm:487
 #, scheme-format
 msgid "channel '~a' lacks 'introduction' field but '.guix-authorizations' found\n"
 msgstr ""
 
-#: guix/channels.scm:488
+#: guix/channels.scm:500
 msgid ""
 "Add the missing introduction to your\n"
 "channels file to address the issue.  Alternatively, you can pass\n"
@@ -8998,17 +9025,17 @@ msgid ""
 "thus potentially malicious code."
 msgstr ""
 
-#: guix/channels.scm:492
+#: guix/channels.scm:504
 #, scheme-format
 msgid "channel authentication disabled~%"
 msgstr ""
 
-#: guix/channels.scm:517
+#: guix/channels.scm:529
 #, scheme-format
 msgid "aborting update of channel '~a' to commit ~a, which is not a descendant of ~a"
 msgstr ""
 
-#: guix/channels.scm:532
+#: guix/channels.scm:544
 msgid ""
 "This could indicate that the channel has\n"
 "been tampered with and is trying to force a roll-back, preventing you from\n"
@@ -9016,35 +9043,35 @@ msgid ""
 "allow non-forward updates."
 msgstr ""
 
-#: guix/channels.scm:597
+#: guix/channels.scm:609
 #, scheme-format
 msgid "Updating channel '~a' from Git repository at '~a'...~%"
-msgstr "Se actualizează canalul '~a' din depozitul Git de la '~a'...~%"
+msgstr "Se actualizează canalul „~a” din depozitul Git de la „~a”...~%"
 
-#: guix/channels.scm:620
+#: guix/channels.scm:632
 #, scheme-format
 msgid "pulled channel '~a' from a mirror of ~a, which might be stale~%"
 msgstr "canalul «~a» a fost preluat de la o oglindă al lui ~a, care ar putea fi învechită~%"
 
-#: guix/channels.scm:912
+#: guix/channels.scm:924
 msgid "'guix' channel is lacking"
 msgstr ""
 
-#: guix/channels.scm:914
+#: guix/channels.scm:926
 msgid ""
 "Make sure your list of channels\n"
 "contains one channel named @code{guix} providing the core of Guix."
 msgstr ""
 
-#: guix/channels.scm:1233
+#: guix/channels.scm:1245
 msgid "invalid channel news entry"
 msgstr ""
 
-#: guix/channels.scm:1251
+#: guix/channels.scm:1263
 msgid "syntactically invalid channel news file"
 msgstr ""
 
-#: guix/channels.scm:1254
+#: guix/channels.scm:1266
 msgid "invalid channel news file"
 msgstr ""
 
@@ -9053,41 +9080,41 @@ msgstr ""
 msgid "~s: invalid package license~%"
 msgstr ""
 
-#: guix/profiles.scm:545
+#: guix/profiles.scm:551
 #, scheme-format
 msgid "cannot emit manifests formatted as version ~a"
 msgstr ""
 
-#: guix/profiles.scm:613
+#: guix/profiles.scm:619
 #, scheme-format
 msgid "invalid repeated entry in profile: ~s"
 msgstr ""
 
-#: guix/profiles.scm:683
+#: guix/profiles.scm:689
 msgid "unsupported manifest format"
 msgstr ""
 
-#: guix/profiles.scm:2035
+#: guix/profiles.scm:2041
 #, scheme-format
 msgid "package ~a does not support ~a"
 msgstr ""
 
-#: guix/profiles.scm:2420
+#: guix/profiles.scm:2426
 #, scheme-format
 msgid "while creating directory `~a': ~a"
 msgstr "creând dosarul „~a”: ~a"
 
-#: guix/profiles.scm:2425
+#: guix/profiles.scm:2431
 #, scheme-format
 msgid "Please create the @file{~a} directory, with you as the owner."
 msgstr ""
 
-#: guix/profiles.scm:2434
+#: guix/profiles.scm:2440
 #, scheme-format
 msgid "directory `~a' is not owned by you"
 msgstr ""
 
-#: guix/profiles.scm:2438
+#: guix/profiles.scm:2444
 #, scheme-format
 msgid "Please change the owner of @file{~a} to user ~s."
 msgstr ""
@@ -9254,52 +9281,52 @@ msgstr ""
 msgid "'~a' does not name a store item~%"
 msgstr ""
 
-#: guix/substitutes.scm:159
+#: guix/substitutes.scm:183
 #, scheme-format
 msgid "~a: host not found: ~a~%"
 msgstr ""
 
-#: guix/substitutes.scm:165
+#: guix/substitutes.scm:189
 #, scheme-format
 msgid "~a: connection failed: ~a~%"
 msgstr ""
 
-#: guix/substitutes.scm:174
+#: guix/substitutes.scm:198
 #, scheme-format
 msgid "~a: TLS connection failed: in ~a: ~a~%"
 msgstr ""
 
-#: guix/substitutes.scm:301
+#: guix/substitutes.scm:325
 #, scheme-format
 msgid "~s: unsupported server URI scheme~%"
 msgstr ""
 
-#: guix/substitutes.scm:511
+#: guix/substitutes.scm:535
 #, scheme-format
 msgid "while fetching ~a: server is somewhat slow~%"
 msgstr ""
 
-#: guix/substitutes.scm:513
+#: guix/substitutes.scm:537
 #, scheme-format
 msgid "try `--no-substitutes' if the problem persists~%"
 msgstr ""
 
-#: guix/substitutes.scm:541
+#: guix/substitutes.scm:565
 #, scheme-format
 msgid "unsupported substitute URI scheme: ~a~%"
 msgstr ""
 
-#: guix/substitutes.scm:550
+#: guix/substitutes.scm:574
 #, scheme-format
 msgid "download from '~a' failed, trying next URL~%"
 msgstr ""
 
-#: guix/substitutes.scm:556
+#: guix/substitutes.scm:580
 #, scheme-format
 msgid "Downloading ~a...~%"
 msgstr ""
 
-#: guix/substitutes.scm:561
+#: guix/substitutes.scm:585
 #, scheme-format
 msgid "no valid nar URLs for ~a at ~a~%"
 msgstr ""
