@@ -99,6 +99,7 @@
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2026 Nikita Alkhovik <forgoty13@gmail.com>
 ;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
+;;; Copyright © 2026 Konstantin Suntsov <protvin@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -13977,15 +13978,15 @@ play; it will look for them at @file{~/.local/share/vcmi} folder.")
 (define-public apricots
   (package
     (name "apricots")
-    (version "0.2.8")
+    (version "0.2.9")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/moggers87/apricots")
+             (url "https://codeberg.org/moggers87/apricots")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "01mqdybmn5rp8ifx619bx0pki9ryj5cvv2iwpsnn8ngggd6smh9x"))
+        (base32 "1xwdxiq0g2fb8scmcrjv29qnzrc3w3h0mmmhd6hw9wnfa5mv91lw"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -13995,7 +13996,7 @@ play; it will look for them at @file{~/.local/share/vcmi} folder.")
     (native-inputs (list autoconf       ;autom4te used in ./bootstrap
                          automake))     ;aclocal used in ./bootstrap
     (inputs (list alure openal sdl2))
-    (home-page "https://github.com/moggers87/apricots")
+    (home-page "https://codeberg.org/moggers87/apricots")
     (synopsis "Arcade airplane game")
     (description "@code{apricots} is a game where you fly a little plane
 around the screen and shoot things and drop bombs on enemy targets.  It's
