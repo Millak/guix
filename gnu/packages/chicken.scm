@@ -119,6 +119,7 @@ la nguage standard, and includes many enhancements and extensions.")
                       (cp (search-input-file inputs "/bin/cp")))
                   (substitute* "egg-compile.scm"
                     (("/bin/sh") sh)
+                    (("\"cp ") (string-append "\"" cp " "))
                     (("\"cp\"") (string-append "\"" cp "\"")))
                   (substitute* "posixunix.scm"
                     (("/bin/sh") sh))
