@@ -4858,13 +4858,13 @@ the ‘haddock’ package.")
     (name "ghc-hakyll")
     ;; XXX: Stackage LTS version is incompatible with our packaged
     ;; version of optparse-applicative and template-haskell.
-    (version "4.16.7.1")
+    (version "4.17.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "hakyll" version))
        (sha256
-        (base32 "18wg5ay6l3ngsmqq00g6y7djmg4f8285kwdi47g0rg70mq6sn0py"))))
+        (base32 "0gk7ar6iz6wrz9z7zibqjn1y65h9572cmlfhq38n86jsrrff4am0"))))
     (build-system haskell-build-system)
     (arguments
      (list
