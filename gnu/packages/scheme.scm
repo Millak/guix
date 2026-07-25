@@ -31,6 +31,7 @@
 ;;; Copyright © 2024 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2024, 2025 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -571,7 +572,7 @@ mixed.")
 (define-public chibi-scheme
   (package
     (name "chibi-scheme")
-    (version "0.11")
+    (version "0.12")
     (home-page "https://github.com/ashinn/chibi-scheme")
     (source
      (origin
@@ -579,7 +580,7 @@ mixed.")
        (uri (git-reference (url home-page) (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02zq35hdbi03rmmamx6ml4ihsigdl4mmbf6d9ysazv8ciiln5v4b"))))
+        (base32 "0dhz141jjix7lsklaxfd6xv32s5wl5a3g2pha7wh70bayvyzf12d"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
