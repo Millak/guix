@@ -1411,6 +1411,30 @@ diacritics, as well as a stylistic alternate inspired by more geometric
 sans-serif typefaces than its neo-grotesque inspired default character set.")
     (license license:silofl1.1)))
 
+(define-public font-redacted
+  ;; No tagged release, base version from Redacted.glyphs.
+  (let ((commit "c86d607ca8531631aeff4d3aacb44de05a2ed523")
+        (revision "0"))
+   (package
+    (name "font-redacted")
+    (version (git-version "1.2" revision commit))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/christiannaths/Redacted-Font")
+                     (commit commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0rb77isk1bhwf78lc4vf2g084ikg5kb3b412z640q43l4apg53fb"))))
+    (build-system font-build-system)
+    (outputs '("out" "woff"))
+    (home-page "https://github.com/christiannaths/Redacted-Font")
+    (synopsis "Purposefully unreadable font")
+    (description "Redacted is a family of fonts with unreadable glyphs,
+either blocks or squiggles. It best serves to mask blind text such as
+Lorem Ipsum.")
+    (license license:silofl1.1))))
+
 (define-public font-wqy-microhei
   (package
     (name "font-wqy-microhei")
