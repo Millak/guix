@@ -3542,14 +3542,14 @@ support, watch support (like @command{top}) and a tree view.")
 (define-public rust-cbindgen-0.29
   (package
     (name "rust-cbindgen")
-    (version "0.29.2")
+    (version "0.29.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cbindgen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "168pl7jrz6zw7yi4hggqa78fgr8z8g7fyyjhihpw10cf583zvyxy"))))
+        (base32 "085f02ma9cdz0alnl1p6b1x6bmr7i9nnasq2fjk7n5lw9i457jrf"))))
     (build-system cargo-build-system)
     (arguments (list #:install-source? #f))
     (native-inputs (list python-cython))
