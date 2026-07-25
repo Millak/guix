@@ -2135,7 +2135,8 @@ interactive environment for the functional language Haskell.")
                               "/ghc-" version "-src.tar.xz"))
           (sha256
             (base32
-             "1pm84cgr3yg99r3srdjllgz6zig8h7dbwa597srwcnjp0nh41zam"))))
+             "1pm84cgr3yg99r3srdjllgz6zig8h7dbwa597srwcnjp0nh41zam"))
+          (patches (search-patches "ghc-9.10-cabal-support-package-path.patch"))))
       (arguments
         (substitute-keyword-arguments (package-arguments base)
           ((#:phases phases #~%standard-phases)
