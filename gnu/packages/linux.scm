@@ -1907,6 +1907,14 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
     ;; Provide support for ath9k wireless
     ("CONFIG_ATH9K" . m)
     ("CONFIG_ATH9K_HTC" . m)
+    ;; vsockets support
+    ("CONFIG_VSOCKETS" . m)
+    ("CONFIG_VSOCKETS_DIAG" . m)
+    ("CONFIG_VSOCKETS_LOOPBACK" . m)
+    ("CONFIG_VMWARE_VMCI_VSOCKETS" . m)
+    ("CONFIG_VIRTIO_VSOCKETS" . m)
+    ("CONFIG_VIRTIO_VSOCKETS_COMMON" . m)
+    ("CONFIG_HYPERV_VSOCKETS" . m)
     ,@(if (version>=? version "6.18")
           '(("CONFIG_ROCKCHIP_DW_MIPI_DSI2" . #true))
           ;; 6.12 or older gets this instead:
