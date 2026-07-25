@@ -1838,31 +1838,40 @@ ErgoDox EZ Configurator} page."))
 
 (define-public qmk-udev-rules
   (package
-    (inherit qmk-firmware-ergodox-ez-default)
     (name "qmk-udev-rules")
-    (version "0.22.3")
+    (version "0.1.23")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/qmk/qmk_firmware")
-                     (commit version)))
-              (file-name (git-file-name "qmk-firmware" version))
+                     (url "https://github.com/qmk/qmk_udev")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name "qmk-udev" version))
               (sha256
                (base32
-                "0s1lcnv7cddpn768p7mrc5bkxhx0ba5p77ya007dnkbk36c33d0w"))))
-    (build-system copy-build-system)
+                "1jmqzl4a1zzphmpav2m4fgdxq8v229vrgg27ncq5x1hsg279i71f"))))
+    (build-system gnu-build-system)
     (arguments
-     '(#:install-plan '(("./util/udev" "lib/udev/rules.d"
-                         #:include-regexp ("rules$")))))
-    (native-inputs '())
-    (inputs '())
-    (propagated-inputs '())
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-udev-rules
+            (lambda _
+              (substitute* "50-qmk.rules"
+                (("qmk_id")
+                 (string-append #$output "/lib/udev/qmk_id")))))
+          (delete 'configure))))
+    (home-page "https://qmk.fm/")
     (synopsis "Udev rules for QMK Firmware")
     (description
      "This package provides a set of udev rules to specify the proper
 privileges for flashing QMK compatible devices without needing root.  The
 rules require the group @code{plugdev} to be added to each user that needs
-this.")))
+this.")
+    (license license:gpl2+)))
 
 (define-public senoko-chibios
   (package
