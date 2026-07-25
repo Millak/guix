@@ -1305,6 +1305,14 @@ window, graphics, audio and network.")
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (delete 'configure) ; no configure script
+                  (add-before 'build 'fix-undefined-no-return
+                    ;; The function is missing a return statement but
+                    ;; says it'll return bool...
+                    ;; Callees aren't expecting anything!
+                    (lambda _
+                      (substitute* "sdlkit.h"
+                        (("static bool ddkLock")
+                         "static void ddkLock"))))
                   (add-before 'build 'patch-makefile
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let ((out (assoc-ref outputs "out")))
