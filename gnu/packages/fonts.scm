@@ -360,6 +360,26 @@ mediums.")
       (home-page "https://github.com/IBM/plex")
       (license license:silofl1.1))))
 
+(define-public font-indestructible-bodoni
+  (package
+    (name "font-indestructible-bodoni")
+    (version "2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/indestructible-type/Bodoni")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1zsl1cfwv8bg69vv30c40hvikj9nddgqfwbgkz63j2k6dvqqb7nq"))))
+    (build-system font-build-system)
+    (outputs '("out" "woff"))
+    (home-page "http://indestructible-type.github.io/Bodoni.html")
+    (synopsis "Variable Bodoni Font")
+    (description "Bodoni* is a Bodoni-style font with a full range of weights,
+italics, an extended character set, OpenType features, and optical sizes.")
+    (license license:silofl1.1)))
+
 (define-public font-inter
   (package
     (name "font-inter")
