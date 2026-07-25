@@ -2735,20 +2735,36 @@ point to different things after a reload, such as renewed TLS certificates.")
 ;;; Zulip.
 ;;;
 
-(define-record-type* <zulip-irc-bridge-configuration>
-  zulip-irc-bridge-configuration make-zulip-irc-bridge-configuration
-  zulip-irc-bridge-configuration?
-  (irc-mirror  zulip-irc-bridge-mirror
-               (default (file-append python-zulip "/bin/zulip-irc-bridge")))
-  (irc-server  zulip-irc-bridge-server)
-  (channel     zulip-irc-bridge-channel)
-  (nick-prefix zulip-irc-bridge-nick-prefix)
-  (stream      zulip-irc-bridge-stream)
-  (topic       zulip-irc-bridge-topic
-               (default #f))
-  (site        zulip-irc-bridge-site)
-  (user        zulip-irc-bridge-user)
-  (api-key     zulip-irc-bridge-api-key))
+(define-configuration/no-serialization zulip-irc-bridge-configuration
+  (irc-mirror
+   (file-like
+    (file-append python-zulip "/bin/zulip-irc-bridge"))
+   "Path to IRC mirror integration to use for the service.")
+  (irc-server
+   string
+   "The IRC server where the channel to mirror is hosted.")
+  (channel
+    string
+    "The IRC room to mirror.")
+  (nick-prefix
+   string
+   "Bot nickname.")
+  (stream
+   string
+   "The Zulip stream where the mirroring takes place.")
+  (topic
+   maybe-string
+   "The Zulip topic to mirror the IRC room under.  Defaults to IRC if not
+specified.")
+  (site
+   string
+   "The Zulip server that the IRC bridge integration should operate on.")
+  (user
+   string
+   "The Zulip bot email that the IRC integration service should use.")
+  (api-key
+   string
+   "The API key of the Zulip bot that will send the mirrored messages."))
 
 (define %zulip-accounts
   (list (user-group
@@ -2775,7 +2791,7 @@ point to different things after a reload, such as renewed TLS certificates.")
                            (string-append "--site=" site)
                            (string-append "--user=" user)
                            (string-append "--api-key=" api-key)
-                           (if topic
+                           (if (maybe-value-set? topic)
                                (list (string-append "--topic=" topic))
                                '())))
            (log-file "/var/log/zulip-irc-bridge.log"))

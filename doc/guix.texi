@@ -33141,8 +33141,8 @@ strings, see
 @cindex IRC, bridge to Zulip
 @cindex Zulip, bridge to IRC
 @url{https://zulip.com/integrations/irc, Zulip IRC integration} is a
-Zulip extension to bridge @acronym{IRC, Internet Relay Chat} room to a
-stream in the Zulip messaging system.
+Zulip extension to bridge an @acronym{IRC, Internet Relay Chat} room to
+a stream in the Zulip messaging system.
 
 @defvar zulip-irc-bridge-service-type
 This is the service type for the Zulip IRC bridge.  Its value is a
@@ -33172,26 +33172,30 @@ room to a Zulip stream.
 
 @end defvar
 
-@c %end of fragment
+@c %start of fragment
 
 @deftp {Data Type} zulip-irc-bridge-configuration
 Available @code{zulip-irc-bridge-configuration} fields are:
 
 @table @asis
-@item @code{irc-mirror} (default: @code{(file-append python-zulip "/share/zulip/integrations/bridge_with_irc/irc-mirror.py")}) (type: file-like)
-Path to IRC mirror integration to use for the service.
+@item @code{irc-mirror} (type: file-like)
+Path to the IRC mirror integration software to use.
 
 @item @code{irc-server} (type: string)
-The IRC server where to search the room to mirror.
+The IRC server where the channel to mirror is hosted.
 
 @item @code{channel} (type: string)
-The Zulip where to store the topic where IRC will be mirrored.
+The IRC room to mirror.
 
 @item @code{nick-prefix} (type: string)
 Bot nickname.
 
 @item @code{stream} (type: string)
-The Zulip stream/topic where the mirroring takes place.
+The Zulip stream where the mirroring takes place.
+
+@item @code{topic} (type: maybe-string)
+The Zulip topic to mirror the IRC room under.  Defaults to IRC if not
+specified.
 
 @item @code{site} (type: string)
 The Zulip server that the IRC bridge integration should operate on.
@@ -33200,11 +33204,13 @@ The Zulip server that the IRC bridge integration should operate on.
 The Zulip bot email that the IRC integration service should use.
 
 @item @code{api-key} (type: string)
-The API key of the Zulip bot that will send the mirrored messages.
+The API key that the Zulip bot will use for authenticating with the
+Zulip site.
 
 @end table
 
 @end deftp
+
 
 @c %end of fragment
 
