@@ -1007,6 +1007,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/akonadi-not-relocatable.patch		\
   %D%/packages/patches/akonadi-timestamps.patch		\
   %D%/packages/patches/alure-dumb-2.patch			\
+  %D%/packages/patches/alure-cmake-4.patch			\
   %D%/packages/patches/amd-smi-newer-libdrm.patch		\
   %D%/packages/patches/amd-smi-python.patch			\
   %D%/packages/patches/angband-remove-nonfree-tile-options.patch	\

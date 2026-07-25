@@ -65,6 +65,7 @@
 ;;; Copyright © 2026 Daniel Martins <email@danielfm.me>
 ;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2026 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2026 Konstantin Suntsov <protvin@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4564,19 +4565,21 @@ buffers, and audio capture.")
     (name "alure")
     (version "1.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://kcat.tomasu.net/alure-releases/"
-                                  "alure-" version ".tar.bz2"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://repo.or.cz/alure.git")
+                     (commit (string-append "alure-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0w8gsyqki21s1qb2s5ac1kj08i6nc937c0rr08xbw9w9wvd6lpj6"))
-              (patches (search-patches "alure-dumb-2.patch"))))
+                "0b65wxn8p0q6kwl8kgdicp91krsmxdf8qg0jllsbj1ssg1x7vbrs"))
+              (patches
+               (search-patches "alure-dumb-2.patch" "alure-cmake-4.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:cmake cmake-3.25
       #:tests? #f ;no tests
-      #:configure-flags #~(list "-DMODPLUG=ON")))
+      #:configure-flags #~(list "-DMODPLUG=ON" "-DBUILD_STATIC=OFF")))
     (native-inputs (list pkg-config))
     (inputs (list dumb
                   flac
@@ -4585,7 +4588,7 @@ buffers, and audio capture.")
                   libsndfile
                   libvorbis
                   openal))
-    (home-page "https://kcat.tomasu.net/alure.html")
+    (home-page "https://web.archive.org/web/20210306051650/https://kcat.tomasu.net/alure.html")
     (synopsis "OpenAL utility library")
     (description
      "ALURE is a utility library to help manage common tasks with OpenAL applications.
