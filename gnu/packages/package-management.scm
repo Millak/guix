@@ -2390,8 +2390,8 @@ environments.")
                   "153bgcjqw6jp0yl0vj0k67k9c8lw82vac6b0cnacrjrcb24lcpdq")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "a52e17ae733de601ef3d4aa72b88ff7ed02aceb7")
-        (revision "138"))
+  (let ((commit "fcf6555087afd978f9e5448be66e1801af218b64")
+        (revision "139"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -2402,7 +2402,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "164k3ygn69h0z6bbsqpk22psnn2b1lbpidmaixf3kaj6kfjvz7xw"))
+                  "02gnybb1whybxlnr7mpbl2hyvrzb7yx92lp75d46rcwh7kkk6qfn"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -2507,7 +2507,7 @@ environments.")
              guile-gnutls
              guile-fibers
              guile-knots))
-      (home-page "https://git.cbaines.net/guix/build-coordinator/")
+      (home-page "https://codeberg.org/guix/build-coordinator")
       (synopsis "Tool to help build derivations")
       (description
        "The Guix Build Coordinator helps with performing lots of builds across
