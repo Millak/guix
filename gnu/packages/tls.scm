@@ -1144,7 +1144,7 @@ coding footprint.")
   (package
     (inherit mbedtls-lts)
     (name "mbedtls")
-    (version "3.6.6")
+    (version "3.6.7")
     (source
      (origin
        (method url-fetch)
@@ -1153,7 +1153,7 @@ coding footprint.")
                            "/mbedtls-" version ".tar.bz2"))
        (sha256
         (base32
-         "0yh0r9jbnlhwrs8a4zjkrj2gh4d4c14362iwg47q9rfainp5zdlg"))))))
+         "1xhi5lhn78vphv07kvwfyrigfdbbc9vmdwi4mys63xz6q2zbrs57"))))))
 
 ;; The Hiawatha Web server requires some specific features to be enabled.
 (define-public mbedtls-for-hiawatha
