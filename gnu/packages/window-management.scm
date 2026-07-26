@@ -691,7 +691,19 @@ its looks.")
     (arguments
      (list #:configure-flags
            '(list "-Dmans=True")
-           #:tests? #f))                ; no test suite
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'adjust-tests
+                 (lambda _
+                   (for-each delete-file-recursively
+                             (list
+                               ;; grep: Perl matching not supported in a
+                               ;; --disable-perl-regexp build
+                               "testcases/010-cpu-usage"
+                               "testcases/011-cpu-usage"
+                               "testcases/022-cpu-usage-tenth-cpu"
+                               ;; Known to fail in CI.
+                               "testcases/020-percentliteral-volume")))))))
     (inputs
      (list alsa-lib
            libconfuse
