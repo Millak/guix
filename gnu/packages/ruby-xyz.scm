@@ -1211,15 +1211,13 @@ syntax to the minimum while remaining clear.")
     (native-inputs
      (list ruby-asciimath
            ruby-coderay
-           ruby-cucumber
+           ruby-concurrent-ruby
            ruby-erubi
            ruby-haml
            ruby-minitest
            ruby-nokogiri
            ruby-open-uri-cached
            ruby-rouge
-           ruby-rspec-expectations
-           ruby-simplecov
            ruby-slim
            ruby-tilt))
     (synopsis "Converter from AsciiDoc content to other formats")
