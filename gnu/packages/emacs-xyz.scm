@@ -15060,10 +15060,10 @@ cards created in Org mode.")
     (license license:gpl3+)))
 
 (define-public emacs-anki-editor
-  ;; Last release was in 2018.
-  (let ((commit "546774a453ef4617b1bcb0d1626e415c67cc88df")
+  ;; No tags or releases.
+  (let ((commit "4a55c3f937b176d31e36d484c196682cae9f9104")
         (revision "0")
-        (version "0.3.3"))
+        (version "0.3.4"))
     (package
       (name "emacs-anki-editor")
       (version (git-version version revision commit))
@@ -15071,15 +15071,37 @@ cards created in Org mode.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/louietan/anki-editor")
+               (url "https://github.com/anki-editor/anki-editor")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1if610hq5j8rbjh1caw5bwbgnsn231awwxqbpwvrh966kdxzl4qf"))))
+          (base32 "02q4qh3hliah8h4648vbn13mw5xspps54kwp1k9gvxmnmz8ch85f"))))
       (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-dash emacs-request))
-      (home-page "https://github.com/louietan/anki-editor")
+      (arguments
+       (list
+        #:test-command
+        #~(list "emacs" "-Q" "-batch"
+                "-l" "ert"
+                "-l" "anki-editor.el"
+                "-l" "anki-editor-tests.el"
+                "--eval"
+                "(let ((ert-batch-print-level 10)
+                       (ert-batch-print-length 120))
+                   (add-hook 'kill-emacs-hook
+                             #'anki-editor-test-stop-python-server)
+                   (ert-run-tests-batch-and-exit))")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-program-calls
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "anki-editor.el"
+                  (("#'call-process \"curl\"")
+                   (string-append "#'call-process \""
+                                  (search-input-file inputs "/bin/curl") "\""))))))))
+
+      (native-inputs (list python))
+      (inputs (list curl))
+      (home-page "https://github.com/anki-editor/anki-editor")
       (synopsis "Minor mode for making Anki cards with Org mode")
       (description
        "This package is for people who use Anki as a spaced repetition system
