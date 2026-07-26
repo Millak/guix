@@ -2120,7 +2120,7 @@ way, following established lisp conventions.")
 (define-public fennel-ls
   (package
     (name "fennel-ls")
-    (version "0.2.3")
+    (version "0.2.4")
     (source
      (origin
        (method git-fetch)
@@ -2129,7 +2129,7 @@ way, following established lisp conventions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fyyd6yg8xrb572hvk76yi9ga1ysrn6j40phf8ickav3s28i4k85"))))
+        (base32 "1bi7dr0svnfldkl98fs1w5dd2ms1f8km5rg5ch8brl65z4pk12a4"))))
     (build-system gnu-build-system)
     (arguments
      (list
