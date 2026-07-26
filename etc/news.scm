@@ -46,7 +46,8 @@
 
  (entry (commit "0257734a40999bfbbe0daa922e2d0e4928cdd5f0")
         (title
-         (en "RabbitMQ service requires epmd service"))
+         (en "RabbitMQ service requires epmd service")
+         (pt "O serviço RabbitMQ requer o serviço epmd"))
         (body
          (en "RabbitMQ is an Erlang application.  It uses Erlang Port Mapper
 Daemon (epmd).  To prevent RabbitMQ from starting its own epmd instance,
@@ -64,11 +65,33 @@ To use RabbitMQ service, add epmd to the list of services, for example:
 (services
   (service epmd-service-type)
   (service rabbitmq-service-type))
+@end example")
+         (pt "RabbitMQ é uma aplicação Erlang.  Ele usa o @acronym{epmd,
+Erlang Port Mapper Daemon}.  Para impedir o RabbitMQ de iniciar sua própria
+instância do empd, o serviço epmd foi adicionado a fim de habilitar o controle
+e configuration do daemon.
+
+Por padrão, Guix executa o serviço epmd usando interfaces de rede locais.
+Veja os artigos a seguir para a razão-base.
+
+@itemize
+@item @url{https://www.rabbitmq.com/blog/2024/12/18/epmd-public-exposure}
+@item @url{https://erlef.org/blog/eef/epmd-public-exposure}
+@end itemize
+
+Para usar o serviço RabbitMQ, adicione epmd à lista de serviços, como por
+exemplo:
+
+@example
+(services
+  (service epmd-service-type)
+  (service rabbitmq-service-type))
 @end example")))
 
  (entry (commit "d7769178a66b16f6d36aa72f81b2bfff7a254e55")
         (title
-         (en "Linux-libre 6.19 and 7.0 are no longer supported"))
+         (en "Linux-libre 6.19 and 7.0 are no longer supported")
+         (pt "Linux-libre 6.19 e 7.0 não são mais suportados"))
         (body
          (en "The linux-libre 6.19 and 7.0 kernel series are no longer
 supported upstream and will be removed from GNU Guix soon:
@@ -77,13 +100,23 @@ https://www.kernel.org/category/releases.html
 
 We may also drop support for 5.10, 5.15, 6.1 and 6.6 earlier than previously
 planned, in order to reduce the number of concurrently supported linux-libre
-kernels and the workload required to maintain them.")))
+kernels and the workload required to maintain them.")
+         (pt "As séries do kernel linux-libre 6.19 e 7.0 não são mais
+suportadas pelo fornecedor e serão removidas do GNU Guix em breve:
+
+https://www.kernel.org/category/releases.html
+
+Podemos também derrubar o suporte para 5.10, 5.15, 6.1 e 6.6 antes do
+previamente planejado, a fim de reduzir o número de kernels linux-libre
+suportados concorrentemente e a carga de trabalho requerida para
+mantê-los.")))
 
  (entry (commit "72c521fffa3d0ce4c96111628498fd788ea71579")
         (title
          (en "New “Projects” user directory")
          (de "Neues Benutzerverzeichnis „Projekte“")
-         (fr "Nouveau dossier « Projets » pour les utilisateurs"))
+         (fr "Nouveau dossier « Projets » pour les utilisateurs")
+         (pt "Novo diretório de usuário \"Projects\""))
         (body
          (en "With the upgrade of xdg-user-dirs to version 0.20, desktop users
 will now see a new Projects directory in their home.  The name can be changed by
@@ -98,13 +131,18 @@ Feld @code{projects} wurde ergänzt.")
 utilisateurs de bureau ont maintenant un nouveau dossier « Projets » créé par
 défaut dans leur dossier personnel.  Le nom du dossier peut être modifié en
 utilisant le home-xdg-user-directories-service-type; dont la configuration a été
-agrandie.")))
+agrandie.")
+         (pt "Com a atualização de xdg-user-dirs para a versão 0.20, usuários
+de desktop agora verão um novo diretório Projects em seu home.  O nome pode
+ser mudado usando home-xdg-user-directories-service-type --- cuja configuração
+foi expandida.")))
 
  (entry (commit "b6c35016845f04f5e3a2f5eaf2064b9861f8707c")
         (title
          (en "Frei0r plugins have to be installed explicitly")
          (de "Frei0r-Plugins müssen explizit installiert werden")
-         (fr "Les greffons de Frei0r doivent être installés explicitement"))
+         (fr "Les greffons de Frei0r doivent être installés explicitement")
+         (pt "Plugins Frei0r precisam ser instalados explicitamente"))
         (body
          (en "The @code{frei0r-plugins} package has been renamed to
 @code{frei0r} to match the project name. When installing the applications
@@ -126,7 +164,14 @@ pour correspondre au nom du projet. Si vous installez les applications
 frei0r-video-plugins ne sont plus installés automatiquement. Si vous en avez
 besoin, vous pouvez ajouter le paquet @code{frei0r} à votre profil. Cela
 permet aux applications de détecter et d'utiliser les greffons à l'exécution.
-@code{frei0r} contient maintenant les greffons qui dépendent d'OpenCV.")))
+@code{frei0r} contient maintenant les greffons qui dépendent d'OpenCV.")
+         (pt "O pacote @code{frei0r-plugins} foi renomeado para @code{frei0r}
+para casar com o nome do projeto.  Ao instalar as aplicações @code{ffmpeg},
+@code{shotcut}, @code{kdenlive} ou @code{mlt}, os plugins frei0r-video-plugins
+não são mais instalados automaticamente.  Se eles forem requeridos, o pacote
+@code{frei0r} pode ser adicionado ao perfil.  Isto permite às aplicações
+detectar e utilizar os plugins em tempo de execução.  @code{frei0r} agora
+contém plugins dependentes do OpenCV.")))
 
  (entry (commit "7a9d01dce758b0916bf8b0ac8a972f849f4bf31d")
         (title
@@ -165,7 +210,7 @@ padrão inclusos no SDDM display manager são feitos para Qt5,
 padrão.
 
 Se você está usando os temas Qt6, por favor declare a variante Qt6 do SDDM,
-@code{sddm}, em sua @code{sddm-configuration}."))))
+@code{sddm}, em sua @code{sddm-configuration}.")))
 
  (entry (commit "02bea7700255bc16b2ee2212be878cf2c792884e")
         (title
