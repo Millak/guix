@@ -2645,8 +2645,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "a6ec90f53dda1a2382a61a6587d45108ad6e1bbd")
-        (revision "56"))
+  (let ((commit "5737ff6723c847de5f434a2daa5bceb548fd435f")
+        (revision "57"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -2657,7 +2657,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1cksjpx9921dlw87z2gkvanm3c5gpl2c1zvy3wm3rb8xqi51fwcw"))
+                  "1spg23wna8ngi30fl4cbhbx08yqfhhzaxb75kaz1yk0faanpwcdh"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -2751,7 +2751,7 @@ in an isolated environment, in separate namespaces.")
              guile-zstd
              guile-sqlite3
              guile-gnutls))
-      (home-page "https://git.cbaines.net/guix/nar-herder")
+      (home-page "https://codeberg.org/guix/nar-herder")
       (synopsis "Utility for managing and serving nars")
       (description
        "The Nar Herder is a utility for managing a collection of
@@ -2759,10 +2759,7 @@ nars (normalized archives, in the context of Guix) along with the
 corresponding narinfo files which contain some signed metadata.
 
 It can assist in serving a collection of nars, moving them between machines,
-or mirroring an existing collection of nars.
-
-It's currently a working prototype, many designed features aren't implemented,
-and the error handling is very rough.")
+or mirroring an existing collection of nars.")
       (license license:agpl3+))))
 
 (define-public gcab
