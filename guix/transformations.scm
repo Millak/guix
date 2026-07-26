@@ -516,8 +516,8 @@ actual compiler."
                                            version))))))
                      ((string-prefix? "powerpc" psabi)
                       (setenv "GOPPC64" psabi))
-                     ((string-prefix? "x86_64" psabi)
-                      (setenv "GOAMD" (string-take-right psabi 2)))
+                     ((string-prefix? "x86-64" psabi)
+                      (setenv "GOAMD64" (string-take-right psabi 2)))
                      (else #t))
                    '())
                 (apply
