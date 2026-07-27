@@ -27283,6 +27283,33 @@ created by @code{git format-patch}, from @code{magit}, @code{dired} and
 @code{ibuffer} buffers.")
     (license license:gpl3+)))
 
+(define-public emacs-git-bug
+  ;; No public release. Version string taken from source code.
+  (let ((commit "e5ad432e9e0441a1be81bb93ed80ba57a5408023")
+        (revision "1"))
+    (package
+      (name "emacs-git-bug")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/WillForan/emacs-git-bug")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1825h2bgb2yi81calq1v91dv8qchhadyzshphcvrz91pwv8ib28h"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f))                       ; No tests.
+      (home-page "https://github.com/WillForan/emacs-git-bug")
+      (synopsis "Minimal interface to @code{git-bug}")
+      (description
+       "This package provides a @code{completing-read} menu to match existing
+bugs and another menu to act on a bug.")
+      (license license:gpl3+))))
+
 (define-public emacs-git-email
   (package
     (name "emacs-git-email")
