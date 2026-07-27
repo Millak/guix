@@ -42873,51 +42873,55 @@ add popup descriptions to existing keymaps
     (license license:gpl3+)))
 
 (define-public emacs-forgejo
-  (package
-    (name "emacs-forgejo")
-    (version "0.2.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.thanosapollo.org/emacs-forgejo")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1c8s8a0hwb44jddxsrd74bh8rwaz8z5mn9ga8jmwxy7w045xfln1"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list #:lisp-directory "lisp"
-           #:emacs emacs                ;tests requires sqlite
-           #:test-command #~(list "make" "-C" ".." "test")))
-    (propagated-inputs (list emacs-keymap-popup emacs-markdown-mode))
-    (home-page "https://codeberg.org/thanosapollo/emacs-forgejo")
-    (synopsis "Emacs front-end for Forgejo instances")
-    (description "This package provides an Emacs front-end for Forgejo
-instances such as Codeberg or self-hosted servers.  It allows you to browse,
-filter, and manage issues and pull requests from Emacs.  All API responses are
-cached in a local SQLite database for fast offline re-display.  Among the
-other things it can do are:
-@itemize
-@item
-Submit and merge PRs via
-AGit-Flow (https://forgejo.org/docs/latest/user/agit-support/) push options
-@item
-Full code review workflow with threaded comments
-@item
-Watch rules with per-repo filter polling and desktop notifications
-@item
-Label, assignee, and milestone management
-@item
-SQLite cache for instant display and offline usage
-@item
-Multi-host support with per-instance token configuration
-@item
-@code{#} and @code{@@} completion in composition buffers (@code{gfm-mode})
-@item
-Repository settings editor
-@end itemize")
-    (license license:gpl3+)))
+  ;; Project went unmantained with no last tag.
+  (let ((commit "7eb8b9a58efbb28f0f79d5bcce748f9639cb3556")
+        (revision "0"))
+    (package
+      (name "emacs-forgejo")
+      (version (git-version "0.2.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://git.thanosapollo.org/emacs-forgejo")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0fynpq0kshkbk4xfrbk6igwr4j5zrch2gssqxi43q03jr041p071"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:lisp-directory "lisp"
+             #:emacs emacs                ;tests requires sqlite
+             #:test-command #~(list "make" "-C" ".." "test")))
+      (propagated-inputs (list emacs-keymap-popup emacs-markdown-mode))
+      (home-page "https://git.thanosapollo.org/emacs-forgejo")
+      (synopsis "Emacs front-end for Forgejo instances")
+      (description "This package provides an Emacs front-end for Forgejo
+  instances such as Codeberg or self-hosted servers.  It allows you to browse,
+  filter, and manage issues and pull requests from Emacs.  All API responses are
+  cached in a local SQLite database for fast offline re-display.  Among the
+  other things it can do are:
+  @itemize
+  @item
+  Submit and merge PRs via
+  AGit-Flow (https://forgejo.org/docs/latest/user/agit-support/) push options
+  @item
+  Full code review workflow with threaded comments
+  @item
+  Watch rules with per-repo filter polling and desktop notifications
+  @item
+  Label, assignee, and milestone management
+  @item
+  SQLite cache for instant display and offline usage
+  @item
+  Multi-host support with per-instance token configuration
+  @item
+  @code{#} and @code{@@} completion in composition buffers (@code{gfm-mode})
+  @item
+  Repository settings editor
+  @end itemize")
+      (license license:gpl3+))))
 
 (define-public emacs-ebdb-i18n-chn
   (package
