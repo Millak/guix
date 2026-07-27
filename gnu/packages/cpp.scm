@@ -411,6 +411,7 @@ parser, IO and conversion utilities.")
          "-DCPPTRACE_USE_EXTERNAL_ZSTD=ON"
          "-DCPPTRACE_USE_EXTERNAL_LIBDWARF=ON"
          "-DCPPTRACE_FIND_LIBDWARF_WITH_PKGCONFIG=ON"
+         "-DCPPTRACE_UNWIND_WITH_LIBUNWIND=ON"
          "-DBUILD_SHARED_LIBS=ON"
          "-DCPPTRACE_USE_EXTERNAL_GTEST=ON")
       #:phases
@@ -428,7 +429,7 @@ parser, IO and conversion utilities.")
     (native-inputs
      (list googletest pkg-config))
     (inputs
-     (list libdwarf zlib zstd))
+     (list libdwarf libunwind zlib zstd))
     (home-page "https://github.com/jeremy-rifkin/cpptrace")
     (synopsis "Stacktrace library for C++11 and newer")
     (description "@code{cpptrace} is a simple and portable C++ stacktrace
