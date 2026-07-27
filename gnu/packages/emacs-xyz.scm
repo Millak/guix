@@ -46228,15 +46228,16 @@ personal wiki.")
   (package
     (name "emacs-truename-cache")
     (version "0.3.7")
-    (source (origin
-	      (method git-fetch)
-	      (uri (git-reference
-		     (url "https://github.com/meedstrom/truename-cache")
-		     (commit version)))
-	      (file-name (git-file-name name version))
-	      (sha256
-	       (base32
-		"09xjwyy388gc8bg3jvr21jaahfapfrr9jjiclq8qqx93pxz4lvfz"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/meedstrom/truename-cache")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "09xjwyy388gc8bg3jvr21jaahfapfrr9jjiclq8qqx93pxz4lvfz"))))
     (build-system emacs-build-system)
     (arguments
      (list
