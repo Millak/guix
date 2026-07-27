@@ -1222,7 +1222,8 @@ is not available for Guile 2.0.")
              (sha256
               (base32
                "1q0a9y0cc8rld1z7mcj61fkldhd0kn9n4yq25izxslbgg4g5h9j6"))
-             (patches '())))
+             (patches
+              (search-patches "guile-fibers-fix-timer-wheel-remove.patch"))))
     (arguments
      (if (target-aarch64?)
          (list #:phases

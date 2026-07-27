@@ -1571,6 +1571,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/guile-fibers-cross-build-fix.patch 	\
   %D%/packages/patches/guile-fibers-epoll-instance-is-dead.patch \
   %D%/packages/patches/guile-fibers-fd-finalizer-leak.patch	\
+  %D%/packages/patches/guile-fibers-fix-timer-wheel-remove.patch	\
   %D%/packages/patches/guile-fibers-wait-for-io-readiness.patch \
   %D%/packages/patches/guile-fibers-libevent-32-bit.patch	\
   %D%/packages/patches/guile-fibers-libevent-timeout.patch	\

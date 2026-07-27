@@ -1,0 +1,117 @@
+From 68d39f3421ece06bcb5f2dffb309024214b003e3 Mon Sep 17 00:00:00 2001
+From: Christopher Baines <mail@cbaines.net>
+Date: Wed, 20 May 2026 13:04:51 +0200
+Subject: [PATCH] timer-wheel: Join up removal behaviour between advance! and
+ remove!
+
+timer-wheel-advance! can move entries to other wheels, but it can also
+change the next pointer of the previous entry to no longer point at
+the current entry, effectively removing it from the wheel.
+
+With previous behaviour of timer-wheel-remove!, always changing the
+next and previous entries next and previous values to "remove" the
+current entry, and after this setting the next and previous values of
+the current entry to point at the entry itself, this could result in a
+wheel where there was a cycle in the next linked list.
+
+This commit addresses this behaviour by setting the next and previous
+pointers of an entry to #f when it's advanced over and when
+removed. timer-wheel-remove! then can't behave
+incorrectly. timer-wheel-advance! also clears the obj and time fields
+to be consistent with timer-wheel-remove!.
+
+* fibers/timer-wheel.scm (timer-wheel-remove!): Restore behaviour
+checking prev and next.
+(timer-wheel-advance!): Set entry fields to #f when they leave the
+wheel.
+* tests/timer-wheel.scm (test-remove): New procedure.
+
+Fixes: guile/fibers#183
+---
+ fibers/timer-wheel.scm | 29 ++++++++++++++++++-----------
+ tests/timer-wheel.scm  | 22 ++++++++++++++++++++++
+ 2 files changed, 40 insertions(+), 11 deletions(-)
+
+diff --git a/fibers/timer-wheel.scm b/fibers/timer-wheel.scm
+index 9bede30..5ff7446 100644
+--- a/fibers/timer-wheel.scm
++++ b/fibers/timer-wheel.scm
+@@ -154,18 +154,15 @@ from @var{wheel}."
+ 
+   (match entry
+     (($ <timer-entry> prev next)
+-     (set-timer-entry-next! prev next)
+-     (set-timer-entry-prev! entry entry)
+-
+-     (set-timer-entry-prev! next prev)
+-     (set-timer-entry-next! entry entry)
++     (when (and prev next)
++       (set-timer-entry-next! prev next)
++       (set-timer-entry-prev! next prev)
++       (invalidate-next-entry-time! wheel))
+ 
++     (set-timer-entry-prev! entry #f)
++     (set-timer-entry-next! entry #f)
+      (set-timer-entry-obj! entry #f)
+-     (set-timer-entry-time! entry #f)
+-
+-     ;; Removing ENTRY might have change the next entry time for WHEEL.
+-     ;; Thus invalidate it so that it gets recomputed.
+-     (invalidate-next-entry-time! wheel))))
++     (set-timer-entry-time! entry #f))))
+ 
+ (define (timer-wheel-next-entry-time wheel)
+   (define (slot-min-time head)
+@@ -266,7 +263,17 @@ from @var{wheel}."
+              (push-timer-entry! entry new-head)))))
+       (advance-wheel! outer add-to-inner!))
+ 
+-    (advance-wheel! wheel (lambda (entry t obj) (schedule! obj))))
++    (advance-wheel! wheel (lambda (entry t obj)
++                            ;; Entry no longer needed, so clear fields.
++                            (set-timer-entry-obj! entry #f)
++                            (set-timer-entry-time! entry #f)
++                            ;; Clearing the next and prev prevents
++                            ;; timer-wheel-remove! from trying to
++                            ;; remove already removed entries.
++                            (set-timer-entry-next! entry #f)
++                            (set-timer-entry-prev! entry #f)
++
++                            (schedule! obj))))
+ 
+   (match wheel
+     (($ <timer-wheel> time-base shift cur slots outer)
+diff --git a/tests/timer-wheel.scm b/tests/timer-wheel.scm
+index 8fc86d2..0b3ba96 100644
+--- a/tests/timer-wheel.scm
++++ b/tests/timer-wheel.scm
+@@ -71,4 +71,26 @@
+   (timer-wheel-advance! wheel (timer-wheel-next-tick-end wheel) check!)
+   (unless (= count event-count) (error "what4" count event-count)))
+ 
++(define (test-remove)
++  (let* ((wheel (make-timer-wheel))
++         (t0 (timer-wheel-next-tick-start wheel))
++         (a (timer-wheel-add! wheel t0 'a))
++         (b (timer-wheel-add! wheel t0 'b)))
++    (timer-wheel-advance! wheel (timer-wheel-next-tick-end wheel)
++                          (lambda (obj) #t))
++
++    (timer-wheel-remove! wheel b)
++    (timer-wheel-remove! wheel a)
++
++    (sigaction SIGALRM
++      (lambda _
++        (error "timer-wheel-next-entry-time hung")))
++    (alarm 15)
++    ;; slot-min-time will loop forever
++    (timer-wheel-next-entry-time wheel)
++    (alarm 0)))
++
++(display "starting timer-wheel self-test\n")
+ (self-test)
++(display "starting timer-wheel test-remove\n")
++(test-remove)
+-- 
+2.54.0
+
