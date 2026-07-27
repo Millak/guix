@@ -69,7 +69,7 @@ version 3.0.9 or later;
 @item @url{https://codeberg.org/guile-gcrypt/guile-gcrypt, Guile-Gcrypt}, version
 0.1.0 or later;
 @item
-@uref{https://gitlab.com/gnutls/guile/, Guile-GnuTLS} (@pxref{Guile
+@uref{https://codeberg.org/guile-gnutls/guile-gnutls, Guile-GnuTLS} (@pxref{Guile
 Preparations, how to install the GnuTLS bindings for Guile,,
 gnutls-guile, GnuTLS-Guile})@footnote{The Guile bindings to
 @uref{https://gnutls.org/, GnuTLS} were distributed as part of GnuTLS
@@ -82,7 +82,7 @@ version 0.1.0 or later;
 @item @uref{https://codeberg.org/guile-compression/guile-lzlib, Guile-lzlib};
 @item @uref{https://www.nongnu.org/guile-avahi/, Guile-Avahi};
 @item
-@uref{https://gitlab.com/guile-git/guile-git, Guile-Git}, version 0.10.0
+@uref{https://codeberg.org/guile-git/guile-git, Guile-Git}, version 0.10.0
 or later;
 @item @uref{https://git-scm.com, Git} (yes, both!);
 @item @uref{https://github.com/aconchillo/guile-json, Guile-JSON}
