@@ -7094,6 +7094,30 @@ representations.")
 using ALSA, MPD, PulseAudio, or a FIFO buffer as its input.")
     (license license:expat)))
 
+(define-public libcava
+  (package
+    (inherit cava)
+    (name "libcava")
+    (version "0.10.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/LukashonakV/cava")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17p7lxmk3v4x2gagd3skmb43llcqkg3qrb0f7jhjlcm91kbxwxpb"))))
+    (build-system meson-build-system)
+    (arguments (list #:configure-flags #~(list "-Dbuild_target=lib")))
+    (home-page "https://github.com/LukashonakV/cava")
+    (synopsis "Shared CAVA audio-visualization library")
+    (description "Libcava is a soft fork of CAVA that additionally builds and
+installs CAVA as a reusable shared library.  It provides the public headers
+and @code{pkg-config} metadata needed by applications that embed CAVA's
+real-time audio analysis.")
+    (license license:expat)))
+
 (define-public fluid-3
   (let ((commit "871c8ce2002e8b3c198f532fdb4fbcce7914f951"))
     (package
