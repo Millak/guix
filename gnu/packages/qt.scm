@@ -5736,7 +5736,7 @@ color-related widgets.")
                 "0b92b4zi5rqg5acgbb6yan349idvzmc0x8wjwkdwkga2ad38gh4y"))))
     (build-system cmake-build-system)
     (inputs
-     (list clang-toolchain-18
+     (list clang-18
            libxml2
            libxslt
            python-wrapper
@@ -5770,8 +5770,13 @@ color-related widgets.")
                           (find-files ".")))))
           (add-before 'configure 'set-build-env
             (lambda _
-              (let ((llvm #$(this-package-input "clang-toolchain")))
-                (setenv "CLANG_INSTALL_DIR" llvm)))))))
+              (let ((llvm #$(this-package-input "clang")))
+                (setenv "CLANG_INSTALL_DIR" llvm))
+              ;; Use Clang instead of GCC.
+              (setenv "AR" "llvm-ar")
+              (setenv "NM" "llvm-nm")
+              (setenv "CC" "clang")
+              (setenv "CXX" "clang++"))))))
     (home-page "https://wiki.qt.io/Qt_for_Python")
     (synopsis
      "Shiboken generates bindings for C++ libraries using CPython source code")
