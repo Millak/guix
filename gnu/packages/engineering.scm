@@ -3344,7 +3344,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
 (define-public freecad
   (package
     (name "freecad")
-    (version "1.1.1")
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch)
@@ -3354,15 +3354,16 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
              (recursive? #t)))          ;needed for the AddonManager
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05dx7ifx33705mxb0vc82j0mzzkazakgadfgq5bws30qrxp49xgg"))
+        (base32 "1lhi9haf3gf0x8h927krd917v1i76labjkry1hh7xhbxvnnvrzj4"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
-            ;; not required, because 3D mouse support if OFF
+            ;; not required, because 3D mouse support is OFF
             (delete-file-recursively "src/3rdParty/3Dconnexion")
             (delete-file-recursively "src/3rdParty/GSL")           ;; c++-gsl
             (delete-file-recursively "src/3rdParty/OndselSolver")  ;; ondsel-solver
-            (delete-file-recursively "src/3rdParty/OpenGL")))))    ;; glext.h from mesa
+            (delete-file-recursively "src/3rdParty/OpenGL")        ;; glext.h from mesa
+            (delete-file-recursively "src/3rdParty/json")))))      ;; nlohmann-json
     (build-system qt-build-system)
     (arguments
      (list
@@ -3370,16 +3371,23 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
       #:tests? #f  ;; Project has tests, but they are a pain to build
       #:configure-flags
       #~(list
+         "-DBUILD_DRAWING:BOOL=ON"
          "-DBUILD_FLAT_MESH:BOOL=ON"
-         "-DBUILD_ENABLE_CXX_STD:STRING=C++20"  ; FreeCAD 1.1 requires C++20
          "-DENABLE_DEVELOPER_TESTS=OFF"  ;; see the above: #:tests? comment
-         "-DFREECAD_QT_VERSION=6"  ;; Build with Qt6
          "-DFREECAD_USE_EXTERNAL_ONDSELSOLVER=ON"  ;; unbundle ondsel-solver
          ;; Do not try to install modules into system python
          "-DINSTALL_TO_SITEPACKAGES=OFF"
          (string-append "-DCMAKE_INSTALL_LIBDIR=" #$output "/lib"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-json-include
+            (lambda _
+              (substitute* "src/Mod/PartDesign/App/FeatureHole.h"
+                (("\"json_fwd\\.hpp\"")
+                 "<nlohmann/json_fwd.hpp>"))
+              (substitute* "src/Mod/PartDesign/App/FeatureHole.cpp"
+                (("\"json\\.hpp\"")
+                 "<nlohmann/json.hpp>"))))
           (add-before 'configure 'restore-pythonpath
             (lambda _
               (substitute* "src/Main/MainGui.cpp"
@@ -3422,12 +3430,14 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
            libxmu
            lz4
            netcdf
+           nlohmann-json
            ondsel-solver
            opencascade-occt
            openmpi
            proj
            python-gitpython
            python-matplotlib
+           python-networkx ; For the SheetMetal Addon
            python-pivy
            python-ply
            python-pyside-6
@@ -3439,7 +3449,7 @@ dynamics is used by FreeCAD 1.0.0 for its new Assembly workbench.")
            qtwayland
            sqlite
            onetbb                       ;same version as opencascade-occt
-           vtk-9.5
+           vtk
            xerces-c
            yaml-cpp
            zlib))
