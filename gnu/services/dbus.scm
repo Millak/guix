@@ -469,8 +469,8 @@ the capability to suspend the system if the user is logged in locally."
       (extensions
        (list (service-extension
               polkit-service-type rtkit-package)
-	     (service-extension dbus-root-service-type rtkit-package)
-	     (service-extension
+             (service-extension dbus-root-service-type rtkit-package)
+             (service-extension
               account-service-type
               (const (list %rtkit-account)))))
       (default-value (rtkit-configuration))

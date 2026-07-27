@@ -624,7 +624,7 @@ object."
   (ssh-options     autossh-configuration-ssh-options
                    (default '()))
   (auto-start?     autossh-configuration-auto-start?
-		   (default #t))
+                   (default #t))
   (shepherd-provision autossh-configuration-shepherd-provision
                    (default '(autossh))))
 

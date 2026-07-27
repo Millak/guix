@@ -184,11 +184,11 @@
             tor-onion-service-configuration?
             tor-onion-service-configuration-name
             tor-onion-service-configuration-mapping
-	    tor-transport-plugin
-	    tor-transport-plugin?
-	    tor-plugin-role
-	    tor-plugin-protocol
-	    tor-plugin-program
+            tor-transport-plugin
+            tor-transport-plugin?
+            tor-plugin-role
+            tor-plugin-protocol
+            tor-plugin-program
             tor-hidden-service  ; deprecated
             tor-service-type
 
@@ -1098,15 +1098,15 @@ maps ports 22 and 80 of the Onion Service to the local ports 22 and 8080."))
 (define-record-type* <tor-transport-plugin>
   tor-transport-plugin make-tor-transport-plugin
   tor-transport-plugin?
-  (role           tor-plugin-role
-		  (default 'client)
-		  (sanitize (lambda (value)
-			      (if (memq value '(client server))
-				  value
-				  (configuration-field-error #f 'role value)))))
-  (protocol       tor-plugin-protocol
-		  (default "obfs4"))
-  (program        tor-plugin-program))
+  (role tor-plugin-role
+        (default 'client)
+        (sanitize (lambda (value)
+                    (if (memq value '(client server))
+                        value
+                        (configuration-field-error #f 'role value)))))
+  (protocol tor-plugin-protocol
+            (default "obfs4"))
+  (program tor-plugin-program))
 
 (define (tor-configuration->torrc config)
   "Return a 'torrc' file for CONFIG."
@@ -1201,10 +1201,10 @@ HiddenServicePort ~a ~a~%"
                                      (source (file-append nss-certs "/etc/ssl/certs"))
                                      (target "/etc/ssl/certs")))
                              (map (lambda (plugin)
-				    (file-system-mapping
-				     (source (tor-plugin-program plugin))
-				     (target source)))
-				  transport-plugins))
+                                    (file-system-mapping
+                                     (source (tor-plugin-program plugin))
+                                     (target source)))
+                                  transport-plugins))
                  #:namespaces (delq 'net %namespaces))))
     (list (shepherd-service
            (provision '(tor))
@@ -2697,18 +2697,17 @@ local servers publicly accessible on the web, even behind NATs and firewalls."))
       dotted-list?)
     (define (param->camel str)
       (string-concatenate
-       (map
-	string-capitalize
-	(string-split str (cut eqv? <> #\-)))))
+       (map string-capitalize
+            (string-split str (cut eqv? <> #\-)))))
     (cond
      ((key-value? x)
       (let ((k (car x))
-	    (v (cdr x)))
-	(cons
-	 (if (symbol? k)
-	     (param->camel (symbol->string k))
-	     k)
-	 v)))
+            (v (cdr x)))
+        (cons
+         (if (symbol? k)
+             (param->camel (symbol->string k))
+             k)
+         v)))
      ((list? x) (map scm->yggdrasil-json x))
      ((vector? x) (vector-map scm->yggdrasil-json x))
      (else x)))
@@ -2740,11 +2739,9 @@ local servers publicly accessible on the web, even behind NATs and firewalls."))
              (list "-extraconffile" extraconf)
              '()))
        (list "-loglevel"
-             #$(symbol->string
-		(yggdrasil-configuration-log-level config))
+             #$(symbol->string (yggdrasil-configuration-log-level config))
              "-logto"
-             #$(symbol->string
-		(yggdrasil-configuration-log-to config)))))
+             #$(symbol->string (yggdrasil-configuration-log-to config)))))
   (list (shepherd-service
          (documentation "Connect to the Yggdrasil mesh network")
          (provision '(yggdrasil))

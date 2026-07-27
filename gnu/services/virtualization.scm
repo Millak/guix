@@ -625,7 +625,7 @@ performs required management tasks for virtualized guests.")))
 
 (define virtlog-service-type
   (service-type (name 'virtlogd)
-		(extensions
+                (extensions
                  (list
                   (service-extension shepherd-root-service-type
                                      virtlogd-shepherd-service)))

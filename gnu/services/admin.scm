@@ -226,12 +226,11 @@ log-rotation} to list files subject to log rotation.")
                 (with-imported-modules '((guix build utils))
                   #~(begin
                       (use-modules (guix build utils))
-
                       (let* ((now  (car (gettimeofday)))
                              (logs (find-files #$directory
-					       (lambda (file stat)
-					         (> (- now (stat:mtime stat))
-						    #$expiry)))))
+                                               (lambda (file stat)
+                                                 (> (- now (stat:mtime stat))
+                                                    #$expiry)))))
                         (format #t "deleting ~a log files from '~a'...~%"
                                 (length logs) #$directory)
                         (for-each delete-file logs))))))

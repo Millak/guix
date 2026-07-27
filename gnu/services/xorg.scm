@@ -1187,12 +1187,12 @@ argument.")))
   (program-file
    "gdm-wayland-session-wrapper"
    #~((let* ((user (getpw (getuid)))
-	    (name (passwd:name user))
-	    (shell (passwd:shell user))
-	    (args (cdr (command-line))))
+             (name (passwd:name user))
+             (shell (passwd:shell user))
+             (args (cdr (command-line))))
         (if (string=? name "gdm")
-	    (apply execl (cons (car args) args))
-	    (execl shell shell "--login" "-c" (string-join args)))))))
+            (apply execl (cons (car args) args))
+            (execl shell shell "--login" "-c" (string-join args)))))))
 
 (define-record-type* <gdm-configuration>
   gdm-configuration make-gdm-configuration

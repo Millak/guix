@@ -910,7 +910,7 @@ of index files."
                 (number->string server-names-hash-bucket-max-size)
                 ";\n")
                "")
-	   (match extra-content
+           (match extra-content
              ((? list? extra-content)
               (map (lambda (line)
                      `("    " ,line "\n"))
@@ -2829,11 +2829,11 @@ Use absolute path like @code{\"/var/run/miniflux/miniflux.sock\"} for a Unix soc
                       administrator-account-name administrator-account-password)
     (let ((config-file (miniflux-configuration-file config)))
       (list (shepherd-service
-	      (documentation "Run Miniflux server")
-	      (provision '(miniflux))
-	      (requirement '(postgres networking))
-	      (start #~(make-forkexec-constructor
-		        (list #$(least-authority-wrapper
+              (documentation "Run Miniflux server")
+              (provision '(miniflux))
+              (requirement '(postgres networking))
+              (start #~(make-forkexec-constructor
+                        (list #$(least-authority-wrapper
                                  (file-append miniflux "/bin/miniflux")
                                  #:name "miniflux"
                                  #:user user
@@ -2858,11 +2858,11 @@ Use absolute path like @code{\"/var/run/miniflux/miniflux.sock\"} for a Unix soc
                                  (fold delq %namespaces '(net user)))
                               "-config-file"
                               #$config-file)
-		        #:log-file #$log-file))
+                        #:log-file #$log-file))
               (stop #~(make-kill-destructor))
               (actions
-	       (list
-	        (shepherd-configuration-action config-file))))))))
+               (list
+                (shepherd-configuration-action config-file))))))))
 
 (define (miniflux-accounts config)
   (match-record config <miniflux-configuration>
@@ -2901,11 +2901,11 @@ Use absolute path like @code{\"/var/run/miniflux/miniflux.sock\"} for a Unix soc
     (default-value (miniflux-configuration))
     (extensions
      (list (service-extension account-service-type
-			      miniflux-accounts)
-	   (service-extension postgresql-role-service-type
-			      miniflux-postgresql-role)
-	   (service-extension shepherd-root-service-type
-			      miniflux-shepherd-service)
+                              miniflux-accounts)
+           (service-extension postgresql-role-service-type
+                              miniflux-postgresql-role)
+           (service-extension shepherd-root-service-type
+                              miniflux-shepherd-service)
            (service-extension log-rotation-service-type
                               miniflux-log-files)
            (service-extension activation-service-type
