@@ -13575,10 +13575,13 @@ comparing characters, removing cursors, and more.")
     (home-page "https://github.com/protesilaos/substitute")
     (synopsis "Efficiently replace targets in the buffer or context")
     (description
-     "Substitute is a set of commands that perform text replacement (i)
-throughout the buffer, (ii) limited to the current definition (per
-narrow-to-defun), (iii) from point to the end of the buffer, and (iv) from
-point to the beginning of the buffer.
+     "Substitute is a set of commands that perform text replacement
+@itemize
+@item throughout the buffer,
+@item limited to the current definition (per @code{narrow-to-defun}),
+@item from point to the end of the buffer, and
+@item from point to the beginning of the buffer.
+@end itemize
 
 These substitutions are meant to be as quick as possible and, as such, differ
 from the standard @code{query-replace} tool.  The provided commands prompt for
