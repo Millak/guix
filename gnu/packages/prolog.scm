@@ -237,7 +237,7 @@ it.")
 (define-public trealla
   (package
     (name "trealla")
-    (version "3.0.0")
+    (version "3.0.5")
     (source
      (origin
        (method git-fetch)
@@ -246,7 +246,7 @@ it.")
           (url "https://github.com/trealla-prolog/trealla")
           (commit (string-append "v" version))))
        (sha256
-        (base32 "0vqsmnawgl2b902d6ndvbfrh8qbkvjhygxkk0n8vhvcfm78mwda9"))
+        (base32 "0wwhgcx8m6xllpd4a7nc6kavk5xidyx7rsp1zp2c48hsgi853kz9"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
@@ -271,7 +271,7 @@ it.")
           (delete 'configure)
           (add-before 'build 'patch-package-version
             (lambda _
-              (substitute* "Makefile"
+              (substitute* "GNUmakefile"
                 (("\\$\\(shell git describe --abbrev=4 --dirty --always --tags\\)")
                  (string-append "v" #$version)))))
           (add-after 'unpack 'fix-paths
