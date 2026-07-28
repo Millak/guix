@@ -85,6 +85,8 @@
 ;;; Copyright © 2026 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;; Copyright © 2026 Andy Tai <atai@atai.org>
 ;;; Copyright © 2026 marderbot <marderbot@tredecimal.com>
+;;; Copyright © 2026 Ahmad Draidi <a.r.draidi@redscript.org>
+;;; Copyright © 2026 Joan Vilardaga Castro <codeberg-hn80@joanvc.cat>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1241,6 +1243,86 @@ memory, disks, network and processes.")
 memory, disks, network and processes.  It's a Python port and continuation of
 @command{bashtop}.")
     (license license:asl2.0)))
+
+(define nvtop-base
+  (package
+    (name "nvtop")
+    (version "3.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Syllo/nvtop")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b390h0xnjs3kkbbdw789g7pg3zm3xqh90f622mmmkyravskyy63"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:build-type "Release"
+      #:configure-flags #~'("-DBUILD_TESTING=ON"
+                            "-DNVIDIA_SUPPORT=OFF"
+                            "-DAMDGPU_SUPPORT=OFF"
+                            "-DINTEL_SUPPORT=OFF"
+                            "-DMSM_SUPPORT=OFF"
+                            "-DAPPLE_SUPPORT=OFF"
+                            "-DPANFROST_SUPPORT=OFF"
+                            "-DPANTHOR_SUPPORT=OFF"
+                            "-DASCEND_SUPPORT=OFF"
+                            "-DV3D_SUPPORT=OFF"
+                            "-DTPU_SUPPORT=OFF"
+                            "-DROCKCHIP_SUPPORT=OFF"
+                            "-DMETAX_SUPPORT=OFF"
+                            "-DENFLAME_SUPPORT=OFF")))
+    (native-inputs (list googletest pkg-config))
+    (inputs (list ncurses eudev))
+    (home-page "https://github.com/Syllo/nvtop")
+    (synopsis "GPU & Accelerator process monitoring")
+    (description
+     "A (h)top like task monitor for GPUs and
+accelerators.  It can handle multiple GPUs and print information
+about them in a htop-familiar way.")
+    (license license:gpl3+)))
+
+(define-public nvtop-amd
+  (package
+    (inherit nvtop-base)
+    (name "nvtop-amd")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:configure-flags flags)
+        #~(append #$flags
+                  '("-DAMDGPU_SUPPORT=ON")))
+       ((#:phases phases
+         #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'patch-dlopen
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "src/extract_gpuinfo_amdgpu.c"
+                  (("dlopen\\(\"libdrm\\.so")
+                   (string-append "dlopen(\""
+                                  (search-input-file inputs "/lib/libdrm.so")))
+                  (("dlopen\\(\"libdrm_amdgpu\\.so")
+                   (string-append "dlopen(\""
+                                  (search-input-file inputs
+                                                     "/lib/libdrm_amdgpu.so"))))))))))
+    (inputs (modify-inputs (package-inputs nvtop-base)
+              (prepend libdrm)))
+    (synopsis "GPU & Accelerator process monitoring (AMDGPU only)")))
+
+(define-public nvtop-intel
+  (package
+    (inherit nvtop-base)
+    (name "nvtop-intel")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:configure-flags flags)
+        #~(append #$flags
+                  '("-DINTEL_SUPPORT=ON")))))
+    (inputs (modify-inputs (package-inputs nvtop-base)
+              (prepend libdrm)))
+    (synopsis "GPU & Accelerator process monitoring (Intel GPUs only)")))
 
 (define-public pies
   (package
