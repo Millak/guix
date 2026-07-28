@@ -938,7 +938,7 @@ by using a Xapian cache.")
 (define-public meta-package-manager
   (package
     (name "meta-package-manager")
-    (version "7.0.1")
+    (version "7.5.0")
     (source
      (origin
        (method git-fetch)
@@ -947,14 +947,11 @@ by using a Xapian cache.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y56z5970kp540w408y0fzk7g7r27vplqqihdav7gf8mqzfd23sz"))))
+        (base32 "0rx593nv392y3smyrdlv9v9m81nl6n1xdxrlnziwl6zzigqb7dr7"))))
     (build-system pyproject-build-system)
+    ;; Upstream uses uv-build which is not yet available in Guix.
     (arguments
-     (list
-      #:build-backend "setuptools.build_meta"
-      ;; test_cli_sbom.py needs the dropped [sbom] extra (cyclonedx,
-      ;; spdx-tools); skip it.
-      #:test-flags #~(list "--ignore=tests/test_cli_sbom.py")))
+     (list #:build-backend "setuptools.build_meta"))
     ;; python-pyyaml and python-tomlkit: tests/test_docs.py loads
     ;; docs/docs_update.py, which imports them.
     (native-inputs
