@@ -1542,7 +1542,7 @@ or random, matching strings to a given regular expression.")
 (define-public python-extra-platforms
   (package
     (name "python-extra-platforms")
-    (version "13.0.1")
+    (version "13.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1551,17 +1551,15 @@ or random, matching strings to a given regular expression.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mqyz6m1sdy6y7iz9yf63hljpbjvzcw16vda394b0w2pb41s5sv1"))))
+        (base32 "0h9bg8dn5zzcm0nnn5wvnc7yrwlglg5yvbxfzwkg4vm123l72zsa"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:build-backend "setuptools.build_meta"
-      ;; Skip network tests and one that shells out to ``uv``.
-      #:test-flags #~(list "-m" "not network"
-                           "--ignore=tests/test_sphinx_crossrefs.py")))
+      ;; Skip the network tests.
+      #:test-flags #~(list "-m" "not network")))
     (native-inputs
      (list python-pytest
-           python-requests
            python-setuptools))
     (home-page "https://kdeldycke.github.io/extra-platforms/")
     (synopsis "Detection of architectures, platforms, and OS families")
