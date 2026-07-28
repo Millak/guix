@@ -2420,7 +2420,7 @@ This is not a through or through2 stream. It doesn't transform the data, it just
                             (string-append "--outdir=" target-output))
                     (call-with-output-file (string-append target-output
                                                           "/package.json")
-                      (cut format <> "{type: ~s}" type)))))
+                      (cut format <> "{\"type\": ~s}" type)))))
                (list
                 (list "cjs" "commonjs" "commonjs")
                 (list "esm" "esm" "module")))
