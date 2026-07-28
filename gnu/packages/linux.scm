@@ -1539,16 +1539,16 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public reform-debian-packages-for-7.1
   (package
     (name "reform-debian-packages")
-    (version "2023-07-10-641-gdee9f5f") ;from git describe
+    (version "2023-07-10-642-gc2346f8") ;from git describe
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://source.mnt.re/reform/reform-debian-packages.git")
-             (commit "dee9f5fbf90369afda885435847766bebc9fa074")))
+             (commit "c2346f87f0ff70cb7c8024fe7bd36df120d83d36")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02mr0mj8d5swnhqah0m8h6y2v2afrjkgkhnc27wcmqafx0hwvsk8"))))
+        (base32 "145vaqj4lipcdgb2p8chbvaaphdxn7mzb02dac3i2i52jmhl7hyp"))))
     (build-system copy-build-system)
     (arguments
      (list
