@@ -1217,7 +1217,7 @@ if a word is missing or mispelled, the detection will fail.")
 ;; mirror of <https://bin.arnastofnun.is/DMII/LTData/data/mimisbrunnur/>
 ;; distributed udner CC BY-SA 4.0 license.
 (define arnastofnun-dim
-  (let ((version "June2026"))
+  (let ((version "July2026"))
     (origin
       (method git-fetch)
       (uri (git-reference
@@ -1225,7 +1225,7 @@ if a word is missing or mispelled, the detection will fail.")
              (commit version)))
       (file-name (git-file-name "arnastofnun-dim" version))
       (sha256
-       (base32 "07jjgi4ivk98pvapm3xirn5pi714hgvi8rag4r8bb74z2qjfjqrj")))))
+       (base32 "00pmzhzyw43vh44qfdywdhirxgdbc3anayrxykfll0xfrg216rdn")))))
 
 (define-public python-islenska-bootstrap
   (hidden-package
