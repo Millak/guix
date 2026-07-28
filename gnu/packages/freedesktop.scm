@@ -3454,7 +3454,7 @@ interfaces using LXQt's @code{libpcmanfm-qt}:
 (define-public xdg-desktop-portal-wlr
   (package
     (name "xdg-desktop-portal-wlr")
-    (version "0.8.2")
+    (version "0.8.4")
     (source
      (origin
        (method git-fetch)
@@ -3463,7 +3463,7 @@ interfaces using LXQt's @code{libpcmanfm-qt}:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jj0a9s3h3i04qsxkhcpxjzbb17hs9ngdy7wkypja09233zdz10w"))
+        (base32 "1yrzpph8f3nf01kkcl5k1zcl7wcjjyvq5qyqfnyc25bp7n9n1s7h"))
        (patches (search-patches "xdg-desktop-portal-wlr-harcoded-length.patch"))))
     (build-system meson-build-system)
     (arguments
