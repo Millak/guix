@@ -846,7 +846,7 @@ templates language.")
 (define-public python-click-extra
   (package
     (name "python-click-extra")
-    (version "8.1.4")
+    (version "8.8.1")
     (source
      (origin
        (method git-fetch)
@@ -855,29 +855,14 @@ templates language.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mglhfrmwq616irga69vv206bf3d20kp1jm8fvhgcidj53cxygj7"))))
+        (base32 "0i22as7f22qhnp69c7zwdh7k4pzl45ywa0hdj71j0n07lqdmdqc7"))))
     (build-system pyproject-build-system)
     ;; Upstream uses uv-build which is not yet available in Guix.
     (arguments
      (list
       #:build-backend "setuptools.build_meta"
-           #:test-flags
-           ;; Skip the network tests.
-           #~(list "-m" "not network")
-           #:phases
-           ;; The setuptools backend used here (in place of upstream's
-           ;; uv-build) installs only ``*.py``; declare the data files loaded
-           ;; at import time as package data.
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'declare-package-data
-                 (lambda _
-                   (substitute* "pyproject.toml"
-                     (("^\\[build-system\\]")
-                      (string-append
-                       "[tool.setuptools.package-data]\n"
-                       "click_extra = [\"*.toml\", \"py.typed\"]\n"
-                       "\n[build-system]"))))))))
-
+      ;; Skip the network tests.
+      #:test-flags #~(list "-m" "not network")))
     (native-inputs
      ;; Optional libraries imported at module level by the test suite.
      (list python-hjson
