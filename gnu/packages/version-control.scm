@@ -589,18 +589,13 @@ optimized for version control systems.")
                        #~()))))
           (add-after 'install 'install-shell-completion
             (lambda _
-              (let ((bash (string-append #$output "/etc/bash_completion.d"))
-                    (zsh  (string-append #$output "/share/zsh/site-functions")))
+              (let ((bash (string-append #$output "/etc/bash_completion.d")))
                 ;; TODO: Install the tcsh completions in the right place.
-                (for-each mkdir-p (list bash zsh))
+                (for-each mkdir-p (list bash))
                 (copy-file "contrib/completion/git-completion.bash"
                            (string-append bash "/git"))
-                (copy-file "contrib/completion/git-completion.bash"
-                           (string-append zsh "/git-completion.bash"))
                 (copy-file "contrib/completion/git-prompt.sh"
-                           (string-append #$output "/bin/git-prompt"))
-                (copy-file "contrib/completion/git-completion.zsh"
-                           (string-append zsh "/_git")))))
+                           (string-append #$output "/bin/git-prompt")))))
           (add-after 'install 'remove-unusable-perl-commands
             (lambda _
               (let ((bin     (string-append #$output "/bin"))
