@@ -42857,7 +42857,7 @@ add popup descriptions to existing keymaps
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://codeberg.org/thanosapollo/emacs-forgejo")
+                    (url "https://git.thanosapollo.org/emacs-forgejo")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
