@@ -1422,6 +1422,8 @@ and many other) available for GIO applications.")
              ;; few cases where pascal-case gets it wrong.
              (cond ((equal? name "RemoveIpc")
                     "RemoveIPC")
+                   ((equal? name "HibernateOnAcPower")
+                    "HibernateOnACPower")
                    (else
                     name)))
            pascal-case
@@ -1465,7 +1467,7 @@ and many other) available for GIO applications.")
 ;;; sleep.conf.
 (define %elogind-configuration-sleep-fields
   '( suspend-state suspend-mode suspend-estimation-seconds
-     hibernate-mode hibernate-delay-seconds
+     hibernate-mode hibernate-delay-seconds hibernate-on-ac-power
      allow-power-off-interrupts? allow-suspend-interrupts?
      broadcast-power-off-interrupts? broadcast-suspend-interrupts?))
 
@@ -1500,11 +1502,11 @@ the @samp{loginctl(1)} man page for more information."
   suspend action.")
 
   (broadcast-power-off-interrupts?
-   (maybe-boolean #f)
+   (maybe-boolean #t)
    "Whether an interrupt of a power-off action is broadcasted.")
 
   (broadcast-suspend-interrupts?
-   (maybe-boolean #f)
+   (maybe-boolean #t)
    "Whether an interrupt of a suspend action is broadcasted.")
 
   ;; logind.conf options.
@@ -1531,16 +1533,27 @@ the @samp{loginctl(1)} man page for more information."
 
   (handle-power-key
    (maybe-action 'poweroff)
-   "The action done when the power key is pressed.  The compiled default is
-  @code{'poweroff}.")
+   "The action done when the power key is pressed.")
+
+  (handle-power-key-long-press
+   (maybe-action 'ignore)
+   "The action done when the power key is long pressed.")
 
   (handle-suspend-key
    (maybe-action 'suspend)
-   "The action done when the suspend key is pressed.  The ")
+   "The action done when the suspend key is pressed.")
+
+  (handle-suspend-key-long-press
+   (maybe-action 'hibernate)
+   "The action done when the suspend key is long pressed.")
 
   (handle-hibernate-key
    (maybe-action 'hibernate)
    "The action done when the hibernate key is pressed.")
+
+  (handle-hibernate-key-long-press
+   (maybe-action 'ignore)
+   "The action done when the hibernate key is long pressed.")
 
   (handle-lid-switch
    (maybe-action 'suspend)
@@ -1629,6 +1642,14 @@ the user shall be removed when the user fully logs out.")
    (maybe-list-of-hibernation-modes '(platform shutdown))
    "The hibernation mode values to write to @file{/sys/power/disk} by elogind
   when hibernating the system.")
+
+  (hibernate-on-ac-power
+   (maybe-boolean #t)
+   "Whether to allow hibernation when the system has AC power.
+This option is only used if @code{hibernate-delay-seconds} is set.  If this
+option is disabled, the coutdown of @code{hibernate-delay-seconds} starts only
+after AC power is disconnected, keeping the system in the suspend state
+otherwise.")
 
   (hibernate-delay-seconds
    maybe-non-negative-integer

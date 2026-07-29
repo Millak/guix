@@ -27703,10 +27703,10 @@ appropriate error message to stdout.
 Likewise as the @code{allow-power-off-interrupts?} option, but for the
 suspend action.
 
-@item @code{broadcast-power-off-interrupts?} (default: @code{#f}) (type: maybe-boolean)
+@item @code{broadcast-power-off-interrupts?} (default: @code{#t}) (type: maybe-boolean)
 Whether an interrupt of a power-off action is broadcasted.
 
-@item @code{broadcast-suspend-interrupts?} (default: @code{#f}) (type: maybe-boolean)
+@item @code{broadcast-suspend-interrupts?} (default: @code{#t}) (type: maybe-boolean)
 Whether an interrupt of a suspend action is broadcasted.
 
 @item @code{kill-user-processes?} (default: @code{#f}) (type: maybe-boolean)
@@ -27726,14 +27726,22 @@ inhibitor lock of type delay being active before the inhibitor is
 ignored and the operation executes anyway.
 
 @item @code{handle-power-key} (default: @code{poweroff}) (type: maybe-action)
-The action done when the power key is pressed.  The compiled default is
-@code{'poweroff}.
+The action done when the power key is pressed.
+
+@item @code{handle-power-key-long-press} (default: @code{ignore}) (type: maybe-action)
+The action done when the power key is long pressed.
 
 @item @code{handle-suspend-key} (default: @code{suspend}) (type: maybe-action)
-The action done when the suspend key is pressed.  The
+The action done when the suspend key is pressed.
+
+@item @code{handle-suspend-key-long-press} (default: @code{hibernate}) (type: maybe-action)
+The action done when the suspend key is long pressed.
 
 @item @code{handle-hibernate-key} (default: @code{hibernate}) (type: maybe-action)
 The action done when the hibernate key is pressed.
+
+@item @code{handle-hibernate-key-long-press} (default: @code{ignore}) (type: maybe-action)
+The action done when the hibernate key is long pressed.
 
 @item @code{handle-lid-switch} (default: @code{suspend}) (type: maybe-action)
 The action done when the lid is closed.
@@ -27777,7 +27785,7 @@ Set the size limit on the @env{XDG_RUNTIME_DIR} runtime directory for
 each user who logs in.  The size in bytes can be given as an integer and
 paired with symbols: K, M, G, or T.  When paired with @code{'%}, the
 integer represents the limit as a percentage share of the total amount
-of physical @acronym{RAM, read access memory}.
+of physical @acronym{RAM,read access memory}.
 
 @item @code{remove-ipc?} (default: @code{#t}) (type: maybe-boolean)
 Whether @acronym{IPC,inter-process communication} objects belonging to
@@ -27802,6 +27810,13 @@ by elogind when using the @code{'suspend-then-hibernate} action.
 @item @code{hibernate-mode} (default: @code{(platform shutdown)}) (type: maybe-list-of-hibernation-modes)
 The hibernation mode values to write to @file{/sys/power/disk} by
 elogind when hibernating the system.
+
+@item @code{hibernate-on-ac-power} (default: @code{#t}) (type: maybe-boolean)
+Whether to allow hibernation when the system has AC power.  This option
+is only used if @code{hibernate-delay-seconds} is set.  If this option
+is disabled, the coutdown of @code{hibernate-delay-seconds} starts only
+after AC power is disconnected, keeping the system in the suspend state
+otherwise.
 
 @item @code{hibernate-delay-seconds} (type: maybe-non-negative-integer)
 The amount of time the system spends in suspend mode before the system
