@@ -3614,7 +3614,7 @@ commands in the status line using swaybar-protocol.")
 (define-public wayfire
   (package
     (name "wayfire")
-    (version "0.10.1")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
@@ -3624,7 +3624,7 @@ commands in the status line using swaybar-protocol.")
               (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "025li38wgnlsgnlnai2287irg6xphn9l76bdjgpjxg7iqngasana"))
+        (base32 "1gl79nnzj7zac415vkd8549q1332yrmfxkqm77qhvav79a89m88v"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
@@ -3647,6 +3647,7 @@ commands in the status line using swaybar-protocol.")
                 (install-file config config-dir)))))))
     (native-inputs (list bash-minimal
                          cmake-minimal
+                         gettext-minimal
                          pkg-config
                          wayland))
     (inputs (list cairo
@@ -3658,7 +3659,7 @@ commands in the status line using swaybar-protocol.")
                   libxml2
                   pango
                   wf-config
-                  wlroots-0.19
+                  wlroots-0.20
                   yyjson))
     (home-page "https://wayfire.org/")
     (synopsis "Modular and extensible wayland compositor")
