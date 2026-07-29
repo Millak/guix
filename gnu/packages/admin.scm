@@ -4696,7 +4696,7 @@ information tool.")
 (define-public fastfetch-minimal
   (package
     (name "fastfetch-minimal")
-    (version "2.63.1")
+    (version "2.66.0")
     (source
      (origin
        (method git-fetch)
@@ -4705,17 +4705,14 @@ information tool.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13a5maf8jxyga5bga96s40binqp2i54pjlipsnqgfj85q01yzkg9"))
+        (base32 "19a5dmn13pnjygwqhj4frd8q0r9k2yb2j63s331wrhijy4837nxn"))
        (modules '((guix build utils)))
-       (snippet '(begin
-                   (delete-file-recursively "src/3rdparty")
-                   (substitute* "src/modules/logo/logo.c"
-                     (("\"3rdparty/yyjson/yyjson.h\"")
-                      "<yyjson.h>"))))))
+       (snippet #~(delete-file-recursively "src/3rdparty"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags #~(list "-DENABLE_SYSTEM_YYJSON=ON"
+                                "-DENABLE_WCWIDTH=OFF"
                                 "-DBUILD_FLASHFETCH=OFF"
                                 "-DBUILD_TESTS=ON"
                                 "-DINSTALL_LICENSE=OFF")))
