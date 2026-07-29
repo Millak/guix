@@ -3694,7 +3694,7 @@ and lightweight environment without sacrificing its appearance.")
                   wayfire
                   wayland
                   wf-config
-                  wlroots-0.19))
+                  wlroots-0.20))
     (home-page "https://wayfire.org/")
     (synopsis "Wayfire Config Manager")
     (description
