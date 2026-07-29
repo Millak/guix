@@ -804,3 +804,5 @@ login / shutdown / reboot commands, Single (GDM-like) or double (XDM-like)
 input control, Can load predefined user at startup, Configurable welcome /
 shutdown messages, Random theme selection.")
     (license license:gpl2)))
+
+;;; display-managers.scm ends here
