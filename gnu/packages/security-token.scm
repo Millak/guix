@@ -305,7 +305,7 @@ from a client application and provide access to the desired reader.")
 (define-public pcsc-tools
   (package
     (name "pcsc-tools")
-    (version "1.7.4")
+    (version "1.7.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -314,7 +314,7 @@ from a client application and provide access to the desired reader.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1h9npvcibg8rflys9h5ylph3xafizdpx9p4bvl68qfywynrvward"))))
+                "1bps3lg5g14hkfnh6fxkrl5lilss502c7c4x5n9glrgc3k00kaf5"))))
     (build-system gnu-build-system)
     (arguments
      (list
