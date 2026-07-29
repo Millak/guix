@@ -869,15 +869,16 @@ old-fashioned output methods with powerful ascii-art renderer.")
 (define-public celluloid
   (package
     (name "celluloid")
-    (version "0.28")
+    (version "0.30")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/celluloid-player/celluloid"
-                           "/releases/download/v" version
-                           "/celluloid-" version ".tar.xz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/celluloid-player/celluloid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0fjkgq80ryh2rjzjrp968b2jv1vhwd8461jmjqa3v1zzvzqgsdjv"))))
+        (base32 "05g6159kax4nndj4wy4pvrvrfp3mkjq2244xd297qm3mal8xp22h"))))
     (build-system meson-build-system)
     (arguments
      (list
