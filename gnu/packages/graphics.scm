@@ -2094,7 +2094,10 @@ in Julia).")
       #~(list "COMPILED_BY=Guix"
               (string-append "--with-boost-libdir="
                              #$(this-package-input "boost") "/lib")
-              "--disable-optimiz-arch")
+              "--disable-optimiz-arch"
+              ;; Render breaks with -ffast-math optimizations:
+              ;; https://github.com/POV-Ray/povray/issues/482
+              "CXXFLAGS=-fno-finite-math-only")
        #:phases
        '(modify-phases %standard-phases
           (add-after 'unpack 'run-prebuild
