@@ -4523,7 +4523,6 @@ lv2-c++-tools.")
                 (("LoadLib\\(\"libasound\\.so\\.2\"\\)")
                  (string-append "LoadLib(\""
                                 (search-input-file inputs "lib/libasound.so.2")
-                                "/lib/libasound.so.2"
                                 "\")"))))))))
     (inputs (list alsa-lib pulseaudio))
     (synopsis "3D audio API")
