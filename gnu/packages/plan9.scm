@@ -34,6 +34,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages xdisorg)
@@ -298,3 +299,49 @@ programs from their native Plan 9 environment to Unix-like operating
 systems.")
       (license (list license:expat
                      license:zlib))))) ;src/cmd/bzip2
+
+(define-public tlsclient
+  (package
+    (name "tlsclient")
+    (version "1.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.sr.ht/~moody/tlsclient")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "179mdx25zxqbdikigzvna46z8qjbbj2s88adk5mp18h2rip4had0"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output)
+              (string-append "SBIN=" #$output "/sbin"))
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'build 'build-other
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "mount.9ptls" "pam" make-flags)))
+          (replace 'install
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "tlsclient.install"
+                     "mount.9ptls.install" "pam.install"
+                     make-flags))))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list openssl linux-pam))
+    (home-page "https://sr.ht/~moody/tlsclient/")
+    (synopsis "Port of tlsclient(1) of Plan 9 for Unix")
+    (description
+     "@command{tlsclient} establishes a SSL/TLS session with a remote tlssrv(1)
+server redirecting connection to stdin/stdout of a child command.  It's similar
+to @command{openssl s_client}.
+
+This also contains @command{mount.9ptls}, @command{pam_p9.so}.")
+    (license license:expat)))
