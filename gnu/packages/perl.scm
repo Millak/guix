@@ -44,6 +44,7 @@
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;; Copyright © 2026 Robin Templeton <robin@guixotic.coop>
 ;;; Copyright © 2026 jgart <jgart@dismail.de>
+;;; Copyright © 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -15397,15 +15398,16 @@ arduous to type for one-liners.")
 (define-public perl-pcsc
   (package
     (name "perl-pcsc")
-    (version "1.4.14")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://cpan/authors/id/W/WH/WHOM/pcsc-perl-" version
-                    ".tar.bz2"))
-              (sha256
-               (base32
-                "17f6i16jv6ci6459vh6y3sz94vgcvykjjszcl4xsykryakjvf8i7"))))
+    (version "1.4.16")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+          (url "https://github.com/LudovicRousseau/pcsc-perl")
+          (commit version)))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "00l48dczfcgg2f25h26wqlwq5cgn7m6nbj3p5j06ik916p24aakz"))))
     (build-system perl-build-system)
     (arguments
      (list
