@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2026 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
@@ -57,6 +59,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
@@ -69,6 +72,51 @@
   #:use-module (gnu packages xfce)
   #:use-module (gnu packages xorg)
   #:export (customize-lightdm-tiny-greeter))
+
+(define-public emptty
+  (package
+    (name "emptty")
+    (version "0.16.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tvrzna/emptty")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rvqvgkjjxbcskczfmjlmlyn9y3xcrz4g0sg5v76hbqx7ilwc18k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/tvrzna/emptty"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* "src/session_xorg.go"
+                  (("/usr/bin/mcookie")
+                   (search-input-file inputs "bin/mcookie"))
+                  (("/usr/bin/xauth")
+                   (search-input-file inputs "bin/xauth"))
+                  (("/usr/bin/Xorg")
+                   (search-input-file inputs "bin/Xorg")))))))))
+    (native-inputs
+     (list go-github-com-msteinert-pam-v2))
+    (inputs
+     (list libx11
+           linux-pam
+           util-linux
+           xauth
+           xorg-server))
+    (home-page "https://github.com/tvrzna/emptty")
+    (synopsis "@acronym{CLI, command line interface} display manager")
+    (description
+     "This package provides @code{emptty}, a dead simple @acronym{CLI, command
+line interface} Display Manager on the TTY.")
+    (license license:expat)))
 
 (define-public sddm
   (package
