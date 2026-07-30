@@ -47,6 +47,7 @@
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2026 Untrusem <mysticmoksh@riseup.net>
+;;; Copyright © 2026 Edouard Klein <edk@beaver-labs.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1944,6 +1945,58 @@ with lossy compression and typically provides 3x smaller file sizes compared
 to PNG when lossy compression is acceptable for the red/green/blue color
 channels.")
     (license license:bsd-3)))
+
+(define-public wuffs
+  (package
+    (name "wuffs")
+    (version "0.4.0-alpha.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/wuffs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12f5insi6gw9zpzr5k0kf8cdq6a1mcavbfakaafzp70qhhmskfsx"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(;; The .c here is technically a transpiler-generated file, but
+          ;; building it is really cumbersome for little immediate benefit,
+          ;; and would bring in the whole Golang toolchain as a native input.
+          ;; It is commited upstream for the explicit purpose of being used
+          ;; directly. I think it is in the spirit of the project to do so
+          ;; here.
+          ("release/c/wuffs-v0.4.c" "include/")
+          ("release/c/README.md" "share/doc/wuffs/RELEASES.md"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Exercise the packaged release instead of the development
+                ;; snapshot normally used by the test suite.
+                (substitute* "test/c/std/png.c"
+                  (("wuffs-unsupported-snapshot\\.c")
+                   "wuffs-v0.4.c"))
+                (invoke #$(cc-for-target)
+                        "-std=c99"
+                        "-Wall"
+                        "-Werror"
+                        "test/c/std/png.c"
+                        "-o"
+                        "png-test")
+                (invoke "./png-test")))))))
+    (home-page "https://github.com/google/wuffs")
+    (synopsis "Memory-safe file format library")
+    (description
+     "Wuffs is a memory-safe programming language and standard library for
+wrangling untrusted binary data such as images and compressed files.  This
+package provides the upstream-generated, versioned single-file C libraries,
+which can be used as header files or compiled as C or C++ implementations.")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public libmng
   (package
