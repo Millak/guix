@@ -7971,27 +7971,26 @@ from the btrfs-progs package.  It is meant to be used in initrds.")
   (package
     (name "cramfs-tools")
     (home-page "https://github.com/npitre/cramfs-tools")
-    (version "2.1")
+    (version "2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "183rfqqyzx52q0vxicdgf0p984idh3rqkvzfb93gjvyzfhc15c0p"))
+               (base32 "1rx63qx2sdpzrgcmp7cskin670rnlp45jn90wxqgnqxvc5vr9l5k"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                      ; No tests.
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (install-file "mkcramfs" (string-append out "/sbin"))
-               (install-file "cramfsck" (string-append out "/sbin")))
-             #t)))))
+     (list #:tests? #f                      ; No tests.
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (replace 'install
+                 (lambda _
+                   (let ((sbin (string-append #$output "/sbin")))
+                     (install-file "mkcramfs" sbin)
+                     (install-file "cramfsck" sbin)))))))
     (inputs
      (list zlib))
     (synopsis "Tools to manage Cramfs file systems")
