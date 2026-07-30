@@ -16,6 +16,7 @@
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
+;;; Copyright © 2026 Konstantin Suntsov <protvin@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,6 +41,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages dictionaries)
@@ -60,6 +62,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ocr)
+  #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages pkg-config)
@@ -861,17 +864,25 @@ done by Gudrun Putze-Meier.")
 (define-public link-grammar
   (package
     (name "link-grammar")
-    (version "5.7.0")
+    (version "5.13.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://www.abisource.com/downloads/"
-                                  "link-grammar/" version
-                                  "/link-grammar-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/opencog/link-grammar")
+                     (commit (string-append "link-grammar-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ak1v469k56v3511kxxkxvx1nw6zcxcl0f1kcvc82ffacqbr4y96"))))
+                "028szynag4jqj24cw9kadzd4gs9a292aiqfxg37m5g7z95ds9nd1"))))
     (build-system gnu-build-system)
-    (home-page "https://www.abisource.com/projects/link-grammar/")
+    (inputs (list automake
+                  autoconf
+                  autoconf-archive
+                  flex
+                  libtool
+                  pcre2
+                  pkg-config))
+    (home-page "https://opencog.github.io/link-grammar-website/")
     (synopsis "Link grammar parser")
     (description "The Link Grammar Parser is a syntactic parser of English,
 Russian, Arabic and Persian (and other languages as well), based on Link
@@ -880,7 +891,7 @@ system assigns to it a syntactic structure, which consists of a set of
 labelled links connecting pairs of words.  The parser also produces a
 \"constituent\" (HPSG style phrase tree) representation of a sentence (showing
 noun phrases, verb phrases, etc.).")
-    (license license:bsd-3)))
+    (license license:lgpl2.1+)))
 
 (define-public praat
   (package
