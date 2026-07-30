@@ -52,6 +52,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system trivial)
   #:use-module (guix gexp)
   #:use-module (guix deprecation)
   #:use-module (guix download)
@@ -460,6 +461,43 @@ write-only counterpart to Tomli, which is a read-only TOML parser.")
 and functions, detailed info on failing assert statements, modular fixtures,
 and many external plugins.")
     (license license:expat)))
+
+(define-public python-pytest-guix
+  (package
+    (name "python-pytest-guix")
+    (version "0.0.1")
+    (source (local-file (search-auxiliary-file "python/pytest_guix.py")))
+    (build-system trivial-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let* ((python-base #$(this-package-native-input "python"))
+                 (python-site (find-files python-base
+                                          "site-packages$"
+                                          #:directories? #t))
+                 (python-site (string-drop (car python-site)
+                                           (string-length python-base)))
+                 (site (string-append #$output python-site))
+                 (dist (string-append site "/pytest_guix-" #$version
+                                      ".dist.info")))
+            (mkdir-p dist)
+            (copy-file #$source (string-append site "/pytest_guix.py"))
+            (call-with-output-file (string-append dist "/entry_points.txt")
+              (lambda (port)
+                (format port "[pytest11]~%guix=pytest_guix~%")))))))
+    (native-inputs (list (module-ref (resolve-interface '(gnu packages python))
+                                     'python)))
+    (home-page "https://guix.gnu.org/")
+    (synopsis "Ignore selected pytest options")
+    ;; Maybe try to upstream it at some point, it's currently flavored for guix
+    ;; but the idea itself is more general.
+    (description
+     "This package provides the script to cleanly ignore pytest options at the
+build-system level.")
+    (license license:gpl3+)))
 
 (define-public python-pytoml
   (package

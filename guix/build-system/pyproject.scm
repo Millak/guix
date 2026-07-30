@@ -70,40 +70,13 @@ extension, such as '.tar.gz'."
   ;; out setuptools if a different version is required.
   (@* (gnu packages python) python-sans-pip-wrapper))
 
+(define (default-python-pytest-guix)
+  "Return the default python-pytest-guix package, resolved lazily."
+  (@* (gnu packages python-build) python-pytest-guix))
+
 (define (pyproject-guile-json)
   "Return the default guile-json package, resolved lazily."
   (@* (gnu packages guile) guile-json-4))
-
-;; Maybe try to upstream it at some point, it's currently flavored for guix
-;; but the idea itself is more general.
-(define (default-pytest-guix-plugin python)
-  (let* ((effective (version-major+minor (package-version python)))
-         (site (string-append "lib/python" effective "/site-packages/")))
-    (package
-      (name "python-pytest-guix")
-      (version "0.0.1")
-      (source (local-file (search-auxiliary-file "python/pytest_guix.py")))
-      (build-system trivial-build-system)
-      (arguments
-       (list
-        #:modules '((guix build utils))
-        #:builder
-        #~(begin
-            (use-modules (guix build utils))
-            (let* ((site (string-append #$output "/" #$site))
-                   (dist (string-append site "pytest_guix-" #$version
-                                        ".dist.info")))
-              (mkdir-p dist)
-              (copy-file #$source (string-append site "/pytest_guix.py"))
-              (call-with-output-file (string-append dist "/entry_points.txt")
-                (lambda (port)
-                  (format port "[pytest11]~%guix=pytest_guix~%")))))))
-      (home-page "https://guix.gnu.org/")
-      (synopsis "Ignore selected pytest options")
-      (description
-       "This package provides the script to cleanly ignore pytest options at the
-build-system level.")
-      (license license:gpl3+))))
 
 (define %default-pytest-guix-options
   ;; Guile keyword arguments are translated to Python keyword arguments
@@ -150,7 +123,7 @@ build-system level.")
                 #:key source inputs native-inputs outputs system target
                 test-backend
                 (python (default-python))
-                (python-pytest-guix (default-pytest-guix-plugin python))
+                (python-pytest-guix (default-python-pytest-guix))
                 (sanity-check.py (default-sanity-check.py))
                 #:allow-other-keys
                 #:rest arguments)
