@@ -23,6 +23,7 @@
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;; Copyright © 2025 Skylar Hill <stellarskylark@posteo.net>
+;;; Copyright © 2026 Edouard Klein <edk@beaver-labs.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -841,7 +842,7 @@ environment variables of the current shell.")
 (define-public fzy
   (package
     (name "fzy")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method git-fetch)
@@ -851,15 +852,32 @@ environment variables of the current shell.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1gkzdvj73f71388jvym47075l9zw61v6l8wdv2lnc0mns6dxig0k"))))
+         "07r4d8kqdmp5rs0q0kb6yhpvrgmc36717rzzp5363mdnnpr2sq34"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(substitute* "src/match.h"
+            ;; Missing header, needed for size_t
+            (("#include <math.h>")
+             "#include <math.h>\n#include <stddef.h>")))))
     (build-system gnu-build-system)
+    (outputs (list "out" "static"))
     (arguments
      (list #:make-flags
            #~(list (string-append "CC=" #$(cc-for-target))
                    (string-append "PREFIX=" #$output))
            #:phases
            #~(modify-phases %standard-phases
-               (delete 'configure))))
+               (delete 'configure)
+               (add-after 'build 'build-static
+                 (lambda _
+                   (invoke #$(ar-for-target) "rcs"
+                           "libfzy.a" "src/match.o")))
+               (add-after 'install 'install-static
+                 (lambda _
+                   (install-file "libfzy.a"
+                                 (string-append #$output:static "/lib"))
+                   (install-file "src/match.h"
+                                 (string-append #$output:static "/include/fzy")))))))
     (home-page "https://github.com/jhawthorn/fzy")
     (synopsis "Fast fuzzy text selector for the terminal with an advanced
 scoring algorithm")
@@ -869,9 +887,10 @@ to find the result the user intended.  It does this by favouring matches on
 consecutive letters and starts of words.  This allows matching using acronyms
 or different parts of the path.
 
-fzy is designed to be used both as an editor plugin and on the command
-line.  Rather than clearing the screen, fzy displays its interface directly
-below the current cursor position, scrolling the screen if necessary.")
+fzy is designed to be used both as an editor plugin and on the command line.
+Rather than clearing the screen, fzy displays its interface directly below the
+current cursor position, scrolling the screen if necessary.  The @code{static}
+output also provides the fuzzy matching library for C and C++.")
     (license license:expat)))
 
 (define-public hstr
