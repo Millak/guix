@@ -5,6 +5,7 @@
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2020 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2026 Edouard Klein <edk@beaver-labs.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,8 +28,47 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix download)
+  #:use-module (guix git-download)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages ncurses))
+
+(define-public isocline
+  (package
+    (name "isocline")
+    (version "1.0.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/daanx/isocline")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "080ffn40ww4h68l4lwdc1k9lrivi31jdw44kv90ppvbymxfjy4zn"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./test_colors"))))
+          (replace 'install
+            (lambda _
+              (install-file "libisocline.a"
+                            (string-append #$output "/lib"))
+              (install-file "../source/include/isocline.h"
+                            (string-append #$output "/include")))))))
+    (home-page "https://github.com/daanx/isocline")
+    (synopsis "Portable alternative to GNU Readline")
+    (description
+     "Isocline is a small, portable line-editing library that provides
+multiline editing, history, completion, Unicode support, syntax highlighting,
+and other interactive input features.  It has no external dependencies and
+can be used as an alternative to GNU Readline.")
+    (license expat)))
 
 (define-public libedit
   (package
