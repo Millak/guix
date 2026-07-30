@@ -27,6 +27,7 @@
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Aaron Boyd <aaron.boyd.org@gmail.com>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
+;;; Copyright © 2026 Edouard Klein <edk@beaver-labs.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -71,6 +72,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages libedit)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
@@ -334,6 +336,86 @@ language.")
 considered a fork, since changes are regularly synchronized from the upstream
 LuaJIT project.  This package also enables the Lua 5.2 compat mode needed by
 some projects.")))
+
+(define-public luau
+  (package
+    (name "luau")
+    (version "0.724")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/luau-lang/luau")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (patches (search-patches "luau-use-system-isocline.patch"))
+       (sha256
+        (base32 "1r5kw7xk62qwv2gsc3yxc5rngcgc4d824y2h0k0713i34jn9zgnv"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file "extern/doctest.h")
+            (delete-file-recursively "extern/isocline")
+            (substitute* (find-files "tests" "\\.(cpp|h)$")
+              (("#include \"doctest.h\"")
+               "#include <doctest/doctest.h>"))))))
+    (build-system cmake-build-system)
+    (outputs (list "out" "static"))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./Luau.UnitTest")
+                (invoke "./Luau.Conformance")
+                (let ((cli-test (string-append (getcwd) "/Luau.CLI.Test")))
+                  (with-directory-excursion "../source"
+                    (invoke cli-test))))))
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (include (string-append #$output:static "/include"))
+                    (lib (string-append #$output:static "/lib")))
+                (for-each (lambda (program)
+                            (install-file program bin))
+                          '("luau"
+                            "luau-analyze"
+                            "luau-ast"
+                            "luau-bytecode"
+                            "luau-compile"
+                            "luau-reduce"))
+                (for-each (lambda (library)
+                            (install-file library lib))
+                          (find-files "." "^libLuau\\..*\\.a$"))
+                (for-each
+                 (lambda (component)
+                   (copy-recursively
+                    (string-append "../source/" component "/include")
+                    include))
+                 '("Analysis"
+                   "Ast"
+                   "Bytecode"
+                   "CLI"
+                   "CodeGen"
+                   "Common"
+                   "Compiler"
+                   "Config"
+                   "Require"
+                   "VM"))))))))
+    (native-inputs
+     (list doctest))
+    (inputs
+     (list isocline))
+    (home-page "https://luau.org/")
+    (synopsis "Fast, gradually typed embeddable scripting language")
+    (description
+     "Luau is a fast, small, safe, gradually typed embeddable scripting
+language derived from Lua.  It provides a sandboxed interpreter, type checker,
+linter, compiler, bytecode tools, and libraries for embedding the language.
+The @code{static} output contains the component libraries and public headers.")
+    (license license:expat)))
 
 (define (make-lua-rewriter lua-package old-prefix new-prefix)
   "Define a procedure that replaces lua inputs with LUA-PACKAGE.  This only

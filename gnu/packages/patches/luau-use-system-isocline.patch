@@ -1,0 +1,72 @@
+Use the system isocline library instead of the bundled copy.
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d2dade5b..ddd34850 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -39,7 +39,6 @@ if (LUAU_BUILD_SHARED)
+     add_library(Luau.CodeGen SHARED)
+     add_library(Luau.VM SHARED)
+     add_library(Luau.Require SHARED)
+-    add_library(isocline SHARED)
+ else()
+     add_library(Luau.Common STATIC)
+     add_library(Luau.CLI.lib STATIC)
+@@ -51,9 +50,16 @@ else()
+     add_library(Luau.CodeGen STATIC)
+     add_library(Luau.VM STATIC)
+     add_library(Luau.Require STATIC)
+-    add_library(isocline STATIC)
+ endif()
+ 
++find_library(ISOCLINE_LIBRARY isocline REQUIRED)
++find_path(ISOCLINE_INCLUDE_DIR isocline.h REQUIRED)
++add_library(isocline STATIC IMPORTED)
++set_target_properties(isocline PROPERTIES
++  IMPORTED_LOCATION "${ISOCLINE_LIBRARY}"
++  INTERFACE_INCLUDE_DIRECTORIES "${ISOCLINE_INCLUDE_DIR}"
++)
++
+ if(LUAU_BUILD_CLI)
+     add_executable(Luau.Repl.CLI)
+     add_executable(Luau.Analyze.CLI)
+@@ -128,8 +134,6 @@ target_compile_features(Luau.Require PUBLIC cxx_std_17)
+ target_include_directories(Luau.Require PUBLIC Require/include)
+ target_link_libraries(Luau.Require PUBLIC Luau.Config Luau.VM)
+ 
+-target_include_directories(isocline PUBLIC extern/isocline/include)
+-
+ target_include_directories(Luau.VM.Internals INTERFACE VM/src)
+ 
+ set(LUAU_OPTIONS)
+@@ -181,8 +185,6 @@ target_compile_options(Luau.Analysis PRIVATE ${LUAU_OPTIONS})
+ target_compile_options(Luau.CLI.lib PRIVATE ${LUAU_OPTIONS})
+ target_compile_options(Luau.CodeGen PRIVATE ${LUAU_OPTIONS})
+ target_compile_options(Luau.VM PRIVATE ${LUAU_OPTIONS})
+-target_compile_options(isocline PRIVATE ${LUAU_OPTIONS} ${ISOCLINE_OPTIONS})
+-
+ if(LUAU_EXTERN_C)
+     # enable extern "C" for VM (lua.h, lualib.h) and Compiler (luacode.h) to make Luau friendlier to use from non-C++ languages
+     # note that we enable LUA_USE_LONGJMP=1 as well; otherwise functions like luaL_error will throw C++ exceptions, which can't be done from extern "C" functions
+@@ -260,8 +262,6 @@ if(LUAU_BUILD_CLI)
+     target_compile_options(Luau.Compile.CLI PRIVATE ${LUAU_OPTIONS})
+     target_compile_options(Luau.Bytecode.CLI PRIVATE ${LUAU_OPTIONS})
+ 
+-    target_include_directories(Luau.Repl.CLI PRIVATE extern extern/isocline/include)
+-
+     target_link_libraries(Luau.Repl.CLI PRIVATE Luau.Compiler Luau.Config Luau.CodeGen Luau.VM Luau.Require Luau.CLI.lib isocline)
+ 
+     target_link_libraries(Luau.Repl.CLI PRIVATE osthreads)
+diff --git a/Sources.cmake b/Sources.cmake
+index a8ab4557..edb00715 100644
+--- a/Sources.cmake
++++ b/Sources.cmake
+@@ -422,7 +422,7 @@ target_sources(Luau.VM PRIVATE
+     VM/src/lvm.h
+ )
+ 
+-target_sources(isocline PRIVATE
++set(ISOCLINE_BUNDLED_SOURCES
+     extern/isocline/include/isocline.h
+     extern/isocline/src/isocline.c
+ )
