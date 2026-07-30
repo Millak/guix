@@ -227,7 +227,7 @@ a focus on simplicity and productivity.")
 (define-public ruby-3.3
   (package
     (name "ruby")
-    (version "3.3.9")
+    (version "3.3.12")
     (source
      (origin
        (method url-fetch)
@@ -236,7 +236,7 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "1fvng8x44x90pn8nl4sxa5nzb34jwq0is6l5k7066zrg18ca491b"))))
+         "1cs3lzh5yq1f2vj99izjwms8r8d7lc8fbxinaixgz30bk6bk4gl7"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
