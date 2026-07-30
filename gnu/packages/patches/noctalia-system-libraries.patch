@@ -1,0 +1,280 @@
+Use guix-packaged libraries instead of the vendored code.
+
+diff --git a/meson.build b/meson.build
+index 2f1b24102..80422067b 100644
+--- a/meson.build
++++ b/meson.build
+@@ -133,66 +133,16 @@ if not gles2_dep.found()
+ endif
+ 
+ 
+-# ── Vendored: fzy matcher (C fuzzy scoring) ──────────────────────────────────
+-_fzy_lib = static_library('fzy',
+-  'third_party/fzy/src/match.c',
+-  c_args: ['-Wno-pedantic', '-Wno-conversion'],
+-  override_options: ['warning_level=0'],
+-)
+-fzy_dep = declare_dependency(
+-  link_whole: _fzy_lib,
+-  include_directories: include_directories('third_party/fzy/src', is_system: true),
+-)
+-
+-# ── Vendored: Material Color Utilities (Google) ───────────────────────────────
+-# Upstream uses #include "cpp/..." prefixes, so the include root is the
+-# material_color_utilities/ dir itself. Built as a quiet static library.
+-_mcu_sources = files(
+-  'third_party/material_color_utilities/cpp/blend/blend.cc',
+-  'third_party/material_color_utilities/cpp/cam/cam.cc',
+-  'third_party/material_color_utilities/cpp/cam/hct.cc',
+-  'third_party/material_color_utilities/cpp/cam/hct_solver.cc',
+-  'third_party/material_color_utilities/cpp/cam/viewing_conditions.cc',
+-  'third_party/material_color_utilities/cpp/contrast/contrast.cc',
+-  'third_party/material_color_utilities/cpp/dislike/dislike.cc',
+-  'third_party/material_color_utilities/cpp/dynamiccolor/dynamic_color.cc',
+-  'third_party/material_color_utilities/cpp/dynamiccolor/dynamic_scheme.cc',
+-  'third_party/material_color_utilities/cpp/dynamiccolor/material_dynamic_colors.cc',
+-  'third_party/material_color_utilities/cpp/palettes/tones.cc',
+-  'third_party/material_color_utilities/cpp/quantize/celebi.cc',
+-  'third_party/material_color_utilities/cpp/quantize/lab.cc',
+-  'third_party/material_color_utilities/cpp/quantize/wsmeans.cc',
+-  'third_party/material_color_utilities/cpp/quantize/wu.cc',
+-  'third_party/material_color_utilities/cpp/scheme/scheme_content.cc',
+-  'third_party/material_color_utilities/cpp/scheme/scheme_expressive.cc',
+-  'third_party/material_color_utilities/cpp/scheme/scheme_fidelity.cc',
+-  'third_party/material_color_utilities/cpp/scheme/scheme_fruit_salad.cc',
+-  'third_party/material_color_utilities/cpp/scheme/scheme_monochrome.cc',
+-  'third_party/material_color_utilities/cpp/scheme/scheme_neutral.cc',
+-  'third_party/material_color_utilities/cpp/scheme/scheme_rainbow.cc',
+-  'third_party/material_color_utilities/cpp/scheme/scheme_tonal_spot.cc',
+-  'third_party/material_color_utilities/cpp/scheme/scheme_vibrant.cc',
+-  'third_party/material_color_utilities/cpp/score/score.cc',
+-  'third_party/material_color_utilities/cpp/temperature/temperature_cache.cc',
+-  'third_party/material_color_utilities/cpp/utils/utils.cc',
+-)
+-_mcu_lib = static_library('material_color_utilities',
+-  _mcu_sources,
+-  include_directories: include_directories('third_party/material_color_utilities', is_system: true),
+-  cpp_args: ['-Wno-pedantic', '-Wno-conversion', '-Wno-shadow', '-Wno-unused-parameter'],
+-  override_options: ['warning_level=0'],
+-)
+-mcu_dep = declare_dependency(
+-  link_whole: _mcu_lib,
+-  include_directories: include_directories('third_party/material_color_utilities', is_system: true),
+-)
++# ── System: fzy and Material Color Utilities ────────────────────────────────
++fzy_dep = cc.find_library('fzy', required: true)
++mcu_dep = cc.find_library('material-color-utilities', required: true)
+ 
+ # ── System: stb_image_resize2 and stb_image_write (header-only) ─────────────────────────────────
+-if not cc.has_header('stb/stb_image_resize2.h')
+-  error('stb/stb_image_resize2.h not found')
++if not cc.has_header('stb_image_resize2.h')
++  error('stb_image_resize2.h not found')
+ endif
+-if not cc.has_header('stb/stb_image_write.h')
+-  error('stb/stb_image_write.h not found')
++if not cc.has_header('stb_image_write.h')
++  error('stb_image_write.h not found')
+ endif
+ 
+ # ── System: libwebp (WebP decode and thumbnail encode) ───────────────────────
+@@ -205,103 +155,25 @@ libjxl_threads_dep  = dependency('libjxl_threads', required: true)
+ # ── System: libsndfile (sound effect decoding) ───────────────────────────────
+ sndfile_dep = dependency('sndfile', required: true)
+ 
+-# ── Vendored: Luau (Roblox's Lua fork) ────────────────────────────────────────
+-# Built as a quiet static library; only VM + Compiler + Bytecode + Ast + Common are vendored.
+-_luau_sources = files(
+-  'third_party/luau/Common/src/BytecodeWire.cpp',
+-  'third_party/luau/Common/src/StringUtils.cpp',
+-  'third_party/luau/Common/src/TimeTrace.cpp',
+-  'third_party/luau/Ast/src/Allocator.cpp',
+-  'third_party/luau/Ast/src/Ast.cpp',
+-  'third_party/luau/Ast/src/Confusables.cpp',
+-  'third_party/luau/Ast/src/Cst.cpp',
+-  'third_party/luau/Ast/src/Lexer.cpp',
+-  'third_party/luau/Ast/src/Location.cpp',
+-  'third_party/luau/Ast/src/Parser.cpp',
+-  'third_party/luau/Ast/src/PrettyPrinter.cpp',
+-  'third_party/luau/Bytecode/src/BytecodeBuilder.cpp',
+-  'third_party/luau/Bytecode/src/BytecodeGraph.cpp',
+-  'third_party/luau/Compiler/src/BuiltinFolding.cpp',
+-  'third_party/luau/Compiler/src/Builtins.cpp',
+-  'third_party/luau/Compiler/src/Compiler.cpp',
+-  'third_party/luau/Compiler/src/ConstantFolding.cpp',
+-  'third_party/luau/Compiler/src/CostModel.cpp',
+-  'third_party/luau/Compiler/src/lcode.cpp',
+-  'third_party/luau/Compiler/src/TableShape.cpp',
+-  'third_party/luau/Compiler/src/Types.cpp',
+-  'third_party/luau/Compiler/src/ValueTracking.cpp',
+-  'third_party/luau/VM/src/lapi.cpp',
+-  'third_party/luau/VM/src/laux.cpp',
+-  'third_party/luau/VM/src/lbaselib.cpp',
+-  'third_party/luau/VM/src/lbitlib.cpp',
+-  'third_party/luau/VM/src/lbuffer.cpp',
+-  'third_party/luau/VM/src/lbuflib.cpp',
+-  'third_party/luau/VM/src/lbuiltins.cpp',
+-  'third_party/luau/VM/src/lcorolib.cpp',
+-  'third_party/luau/VM/src/ldblib.cpp',
+-  'third_party/luau/VM/src/ldebug.cpp',
+-  'third_party/luau/VM/src/ldo.cpp',
+-  'third_party/luau/VM/src/lfunc.cpp',
+-  'third_party/luau/VM/src/lgc.cpp',
+-  'third_party/luau/VM/src/lgcdebug.cpp',
+-  'third_party/luau/VM/src/linit.cpp',
+-  'third_party/luau/VM/src/lintlib.cpp',
+-  'third_party/luau/VM/src/lclass.cpp',
+-  'third_party/luau/VM/src/lclasslib.cpp',
+-  'third_party/luau/VM/src/lmathlib.cpp',
+-  'third_party/luau/VM/src/lmem.cpp',
+-  'third_party/luau/VM/src/lnumprint.cpp',
+-  'third_party/luau/VM/src/lobject.cpp',
+-  'third_party/luau/VM/src/loslib.cpp',
+-  'third_party/luau/VM/src/lperf.cpp',
+-  'third_party/luau/VM/src/lstate.cpp',
+-  'third_party/luau/VM/src/lstring.cpp',
+-  'third_party/luau/VM/src/lstrlib.cpp',
+-  'third_party/luau/VM/src/ltable.cpp',
+-  'third_party/luau/VM/src/ltablib.cpp',
+-  'third_party/luau/VM/src/ltm.cpp',
+-  'third_party/luau/VM/src/ludata.cpp',
+-  'third_party/luau/VM/src/lutf8lib.cpp',
+-  'third_party/luau/VM/src/lveclib.cpp',
+-  'third_party/luau/VM/src/lvmexecute.cpp',
+-  'third_party/luau/VM/src/lvmload.cpp',
+-  'third_party/luau/VM/src/lvmutils.cpp',
+-)
+-_luau_inc = include_directories(
+-  'third_party/luau/Common/include',
+-  'third_party/luau/Ast/include',
+-  'third_party/luau/Bytecode/include',
+-  'third_party/luau/Compiler/include',
+-  'third_party/luau/VM/include',
+-  'third_party/luau/VM/src',
+-  is_system: true,
+-)
+-_luau_lib = static_library('luau',
+-  _luau_sources,
+-  include_directories: _luau_inc,
+-  cpp_args: ['-w'],
+-  override_options: ['warning_level=0'],
+-)
++# ── System: Luau ─────────────────────────────────────────────────────────────
++luau_compiler_dep = cc.find_library('Luau.Compiler', required: true, static: true)
++luau_ast_dep = cc.find_library('Luau.Ast', required: true, static: true)
++luau_bytecode_dep = cc.find_library('Luau.Bytecode', required: true, static: true)
++luau_vm_dep = cc.find_library('Luau.VM', required: true, static: true)
++luau_common_dep = cc.find_library('Luau.Common', required: true, static: true)
+ luau_dep = declare_dependency(
+-  link_whole: _luau_lib,
+-  include_directories: _luau_inc,
++  dependencies: [
++    luau_compiler_dep,
++    luau_ast_dep,
++    luau_bytecode_dep,
++    luau_vm_dep,
++    luau_common_dep,
++  ],
+ )
+ 
+-# Tests link vendored archives selectively. The application keeps link_whole so
+-# release LTO sees every member, but propagating that policy to every small test
+-# would embed all vendored code in every test executable.
+-_fzy_selective_dep = declare_dependency(
+-  link_with: _fzy_lib,
+-  include_directories: include_directories('third_party/fzy/src', is_system: true),
+-)
+-_mcu_selective_dep = declare_dependency(
+-  link_with: _mcu_lib,
+-  include_directories: include_directories('third_party/material_color_utilities', is_system: true),
+-)
+-_luau_selective_dep = declare_dependency(
+-  link_with: _luau_lib,
+-  include_directories: _luau_inc,
+-)
++_fzy_selective_dep = fzy_dep
++_mcu_selective_dep = mcu_dep
++_luau_selective_dep = luau_dep
+ 
+ # ── Wayland protocol generation ───────────────────────────────────────────────
+ wayland_scanner    = find_program('wayland-scanner')
+@@ -972,7 +844,6 @@ endif
+ # ── Include directories ────────────────────────────────────────────────────────
+ _noctalia_inc = [
+   include_directories('src'),
+-  include_directories('third_party/wuffs', is_system: true),
+   # '.' adds both the source root and the corresponding build-dir root, so
+   # generated protocol headers (written to the build root) are found by #include.
+   include_directories('.'),
+diff --git a/src/capture/screenshot_service.cpp b/src/capture/screenshot_service.cpp
+index f7559bb5f..e446abad9 100644
+--- a/src/capture/screenshot_service.cpp
++++ b/src/capture/screenshot_service.cpp
+@@ -34,7 +34,7 @@
+ #include <filesystem>
+ #include <format>
+ #include <fstream>
+-#include <stb/stb_image_resize2.h>
++#include <stb_image_resize2.h>
+ #include <sys/wait.h>
+ #include <thread>
+ #include <unistd.h>
+diff --git a/src/render/core/image_encoder.cpp b/src/render/core/image_encoder.cpp
+index d7b61ae3d..bdce31aed 100644
+--- a/src/render/core/image_encoder.cpp
++++ b/src/render/core/image_encoder.cpp
+@@ -1,7 +1,7 @@
+ #include "render/core/image_encoder.h"
+ 
+ #define STB_IMAGE_WRITE_IMPLEMENTATION
+-#include "stb/stb_image_write.h"
++#include "stb_image_write.h"
+ 
+ #include <cstring>
+ 
+diff --git a/src/render/core/image_file_loader.cpp b/src/render/core/image_file_loader.cpp
+index d5764ba01..01ef2528c 100644
+--- a/src/render/core/image_file_loader.cpp
++++ b/src/render/core/image_file_loader.cpp
+@@ -10,7 +10,7 @@
+ #include <cstdint>
+ #include <cstring>
+ #include <expected>
+-#include <stb/stb_image_resize2.h>
++#include <stb_image_resize2.h>
+ #include <string_view>
+ #pragma GCC diagnostic push
+ #pragma GCC diagnostic ignored "-Wexpansion-to-defined"
+diff --git a/src/render/core/stb_image_resize_impl.cpp b/src/render/core/stb_image_resize_impl.cpp
+index 20dc1b3ff..2ba1cce54 100644
+--- a/src/render/core/stb_image_resize_impl.cpp
++++ b/src/render/core/stb_image_resize_impl.cpp
+@@ -1,2 +1,2 @@
+ #define STB_IMAGE_RESIZE_IMPLEMENTATION
+-#include <stb/stb_image_resize2.h>
++#include <stb_image_resize2.h>
+diff --git a/src/render/core/thumbnail_service.cpp b/src/render/core/thumbnail_service.cpp
+index 3debb1057..9b9f8bb28 100644
+--- a/src/render/core/thumbnail_service.cpp
++++ b/src/render/core/thumbnail_service.cpp
+@@ -13,7 +13,7 @@
+ #include <filesystem>
+ #include <fstream>
+ #include <optional>
+-#include <stb/stb_image_resize2.h>
++#include <stb_image_resize2.h>
+ #include <sys/eventfd.h>
+ #include <system_error>
+ #include <unistd.h>
+diff --git a/src/util/fuzzy_match.cpp b/src/util/fuzzy_match.cpp
+index 713fee25a..1875b2fc0 100644
+--- a/src/util/fuzzy_match.cpp
++++ b/src/util/fuzzy_match.cpp
+@@ -1,6 +1,6 @@
+ #include "util/fuzzy_match.h"
+ 
+-#include "match.h"
++#include <fzy/match.h>
+ #include "util/string_utils.h"
+ 
+ #include <cmath>

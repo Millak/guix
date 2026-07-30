@@ -95,6 +95,7 @@
 ;;; Copyright © 2026 Alissa Istleyeva <awth13@sdf.org>
 ;;; Copyright © 2026 VnPower <vnpower@loang.net>
 ;;; Copyright © 2026 Yappaholic <sav.boyar@gmail.com>
+;;; Copyright © 2026 Edouard Klein <edk@beaver-labs.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -127,6 +128,8 @@
   #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crypto)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
@@ -142,6 +145,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-vcs)
@@ -150,6 +154,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
+  #:use-module (gnu packages hardware)
   #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-web)
   #:use-module (gnu packages haskell-xyz)
@@ -157,6 +162,7 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages javascript)
   #:use-module (gnu packages jemalloc)
+  #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
@@ -167,9 +173,11 @@
   #:use-module (gnu packages logging)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages monitoring)
   #:use-module (gnu packages mpd)
+  #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages music)
   #:use-module (gnu packages pantheon)
   #:use-module (gnu packages pciutils)
@@ -191,6 +199,7 @@
   #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages shellutils)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages stb)
@@ -201,6 +210,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages wget)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
@@ -1434,6 +1444,208 @@ your own layouts, widgets, and built-in commands.")
 customizing toolbars, notification centers, and other desktop environment
 tools in a live programming environment.")
     (license license:lgpl3)))
+
+(define noctalia-wayland-protocols
+  ;; From upstream's own noctalia.scm
+  ;; Delay to work around circular import problem.
+  (delay
+    (package
+      (inherit wayland-protocols)
+      (name "wayland-protocols")
+      (version "1.48")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url
+                "https://gitlab.freedesktop.org/wayland/wayland-protocols")
+               (commit version)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0zqnn7bwqzifchjhclrrcqnp39cpd3nnf6nbd9bav2hwhcx92mwy")))))))
+
+(define-public noctalia-shell
+  (package
+    (name "noctalia-shell")
+    (version "5.0.0-beta.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/noctalia-dev/noctalia")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "noctalia" version))
+       (sha256
+        (base32 "0biah8xpnxnbv4pwy8yjn44ii789shgr6x7z2gbrz0bfmhgfskiv"))
+       (patches (search-patches
+                 "noctalia-enable-assertions-in-upower-test.patch"
+                 "noctalia-system-libraries.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; All bundled libraries are provided by package inputs.
+            (delete-file-recursively "third_party")
+            ;; These files are under the nonfree Pixabay Content License.  Free
+            ;; replacements are installed from sound-theme-freedesktop below.
+            (for-each delete-file
+                      '("assets/sounds/notification.wav"
+                        "assets/sounds/volume-change.wav"))))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:build-type "release"
+      #:configure-flags
+      #~(list "-Dtests=enabled" "-Dnative_optimizations=false"
+              "-Djemalloc=enabled")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-shell-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((shell (search-input-file inputs "bin/sh")))
+                (substitute* '("src/core/process/process.cpp"
+                               "tests/app_identity_test.cpp"
+                               "tests/process_test.cpp")
+                  (("/bin/sh") shell))
+                (substitute* "assets/dev.noctalia.Noctalia.desktop"
+                  (("Exec=sh ")
+                   (string-append "Exec=" shell " "))))))
+          (add-after 'unpack 'install-free-sounds
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (for-each
+               (lambda (source target)
+                 (invoke "oggdec" "-Q" "-o" target
+                         (search-input-file (or native-inputs inputs) source)))
+               '("share/sounds/freedesktop/stereo/window-attention.oga"
+                 "share/sounds/freedesktop/stereo/audio-volume-change.oga")
+               '("assets/sounds/notification.wav"
+                 "assets/sounds/volume-change.wav"))
+              (substitute* "CREDITS.md"
+                (("^.*Universfield on Pixabay.*$")
+                 (string-append
+                  "- **[Ivica Bukvic on gnome-look]"
+                  "(http://gnome-look.org/content/show.php/"
+                  "%22Borealis%22+sound+theme?content=12584)**"
+                  "— Notification sound effect (CC BY-SA)\n"
+                  "- **[Lucas McCallister (?) SunnySideSound]"
+                  "(https://freesound.org/people/SunnySideSound/sounds/67091/)**"
+                  " — Volume-change sound effect "
+                  "(CC BY-SA)")))))
+          (add-before 'check 'set-test-tmpdir
+            (lambda _
+              ;; Prevent test failure due to too long a socket path
+              (setenv "TMPDIR" "/tmp")))
+          (add-before 'check 'set-test-assets-directory
+            (lambda _
+              (setenv "NOCTALIA_ASSETS_DIR" "../source/assets")))
+          (add-after 'install 'install-documentation
+            (lambda _
+              (let ((documentation (string-append #$output
+                                                  "/share/doc/noctalia")))
+                (install-file "../source/CREDITS.md" documentation)
+                (install-file "../source/LICENSE" documentation))))
+          (add-after 'install-documentation 'install-completions
+            (lambda _
+              (for-each
+               (lambda (shell path)
+                 (let ((completion (string-append #$output "/" path)))
+                   (mkdir-p (dirname completion))
+                   (with-output-to-file completion
+                     (lambda _
+                       (invoke (string-append #$output "/bin/noctalia")
+                               "completions" shell)))))
+               '("bash" "zsh" "fish")
+               '("share/bash-completion/completions/noctalia"
+                 "share/zsh/site-functions/_noctalia"
+                 "share/fish/vendor_completions.d/noctalia.fish"))))
+          (add-after 'install-completions 'wrap-runtime-dependencies
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((runtime-path
+                     (map (lambda (command)
+                            (dirname (search-input-file inputs
+                                      command)))
+                          '("bin/awk"          ;theme hook text processing
+                            "bin/bash"         ;theme hook interpreter
+                            "bin/cat"          ;coreutils for theme hooks
+                            "bin/cmp"          ;avoid rewriting unchanged themes
+                            "bin/dconf"        ;optional GTK theme sync
+                            "bin/ddcutil"      ;external monitor brightness
+                            "bin/fc-list"      ;font picker
+                            "bin/git"          ;plugin Git sources and updates
+                            "bin/grep"         ;theme hook text processing
+                            "bin/pgrep"        ;theme hook process detection
+                            "bin/pkexec"       ;privileged helper actions
+                            "bin/sed"          ;theme hook text processing
+                            "bin/wlr-randr"    ;fallback display power control
+                            "bin/xdg-open")))) ;open links and OAuth pages.
+                (wrap-program (string-append #$output "/bin/noctalia")
+                  `("PATH" ":" prefix
+                    ,runtime-path))))))))
+    (native-inputs
+     (list dbus                          ;run D-Bus integration test
+           pkg-config                    ;locate build dependencies
+           sound-theme-freedesktop       ;free notification sound source
+           vorbis-tools))                ;convert notification sound to WAV
+    (inputs
+     (list
+      bash-minimal                       ;generated wrapper and shell commands
+      cairo                              ;2D and text rendering
+      coreutils-minimal                  ;standard tools for theme hooks
+      curl                               ;HTTP client library
+      dconf                              ;optional GTK theme synchronization
+      ddcutil                            ;optional external monitor brightness
+      diffutils                          ;cmp for theme hooks
+      fontconfig                         ;font discovery and fc-list
+      freetype                           ;font rasterization
+      gawk                               ;awk for theme hooks
+      git-minimal                        ;plugin Git sources and updates
+      glib                               ;GIO and GObject support
+      gmp                                ;arbitrary-precision arithmetic
+      grep                               ;pattern matching for theme hooks
+      harfbuzz                           ;text shaping
+      jemalloc                           ;recommended allocator on glibc
+      libical                            ;iCalendar parsing
+      libjxl                             ;JPEG XL image decoding
+      libqalculate                       ;calculator launcher provider
+      libsndfile                         ;sound effect decoding
+      (librsvg-for-system)               ;SVG image decoding
+      libsecret                          ;Secret Service client
+      libsodium                          ;encrypted state storage
+      libwebp                            ;WebP image decoding
+      libxkbcommon                       ;keyboard handling
+      libxml2                            ;XML parsing
+      linux-pam                          ;lock-screen authentication
+      md4c                               ;notification Markdown parsing
+      mesa                               ;EGL and OpenGL ES rendering
+      mpfr                               ;floating-point arithmetic
+      nlohmann-json                      ;JSON parsing
+      (list fzy "static")                ;fuzzy matcher library
+      (list luau "static")               ;plugin scripting engine
+      material-color-utilities-cpp       ;color utilities
+      wuffs                              ;image decoder
+      pango                              ;text layout
+      pipewire-minimal                   ;PipeWire client library
+      polkit                             ;authorization agent and pkexec
+      procps                             ;pgrep and pkill for theme hooks
+      sdbus-c++                          ;D-Bus client and service support
+      sed                                ;stream editing for theme hooks
+      stb-image-resize2                  ;image resizing headers
+      stb-image-write                    ;image encoding headers
+      tomlplusplus                       ;configuration parsing
+      upower                             ;UPower daemon; enabled separately
+      wayland                            ;Wayland client library and scanner
+      (force noctalia-wayland-protocols) ;Wayland protocol definitions
+      wireplumber-minimal                ;WirePlumber client library
+      wlr-randr                          ;fallback display power control
+      xdg-utils))                        ;Open links and OAuth pages.
+    (home-page "https://github.com/noctalia-dev/noctalia")
+    (synopsis "A sleek, customizable desktop shell crafted for Wayland")
+    (description
+     "Noctalia is a full Wayland desktop shell providing bars, a dock,
+launcher, notifications, a lock screen, wallpaper management, and settings.")
+    (license (list license:expat
+                   license:asl2.0
+                   license:cc-by3.0
+                   license:cc-by-sa3.0))))
 
 (define-public quickswitch-i3
   (let ((commit "6b3e1b59d9d9690b19834eca8280f85962b56ad6")
