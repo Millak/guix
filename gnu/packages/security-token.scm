@@ -453,7 +453,7 @@ make proper use of such drivers.")
 (define-public opensc
   (package
     (name "opensc")
-    (version "0.26.1")
+    (version "0.27.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -461,7 +461,7 @@ make proper use of such drivers.")
                     version "/opensc-" version ".tar.gz"))
               (sha256
                (base32
-                "1jw82r7dahmfzvri16d46wivrz7jx8srybknjh1mfvnq66h92qpi"))))
+                "19zcwpmaxgs5c7q7k6lwh8yqq6lppy0aqyis5hd7lfgkx8illvwp"))))
     (build-system gnu-build-system)
     (arguments
      (list
