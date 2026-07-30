@@ -1,0 +1,84 @@
+Add a build system for the C++ library and fix missing standard library
+includes.  Upstream does not provide a build system for its C++
+implementation.
+
+diff --git a/Makefile b/Makefile
+new file mode 100644
+index 0000000..325bf0b
+--- /dev/null
++++ b/Makefile
+@@ -0,0 +1,23 @@
++CXXFLAGS += -std=c++17 -fPIC
++CPPFLAGS += -I. $(shell pkg-config --cflags absl_flat_hash_map absl_strings gmock_main)
++ABSL_LIBS = $(shell pkg-config --libs absl_flat_hash_map absl_strings)
++TEST_LIBS = $(shell pkg-config --libs gmock_main)
++SOURCES = $(filter-out %_test.cc,$(wildcard cpp/*/*.cc))
++OBJECTS = $(SOURCES:.cc=.o)
++TEST_OBJECTS = $(patsubst %.cc,%.o,$(wildcard cpp/*/*_test.cc))
++LIBRARY = libmaterial-color-utilities.so
++
++all: $(LIBRARY)
++
++$(LIBRARY): $(OBJECTS)
++	$(CXX) -shared $(LDFLAGS) -Wl,-soname,$@ -o $@ $^ $(ABSL_LIBS)
++
++material-color-utilities-tests: $(TEST_OBJECTS) $(LIBRARY)
++	$(CXX) $(LDFLAGS) -o $@ $(TEST_OBJECTS) -L. -lmaterial-color-utilities $(TEST_LIBS)
++
++check: material-color-utilities-tests
++	LD_LIBRARY_PATH=. ./material-color-utilities-tests
++
++install: $(LIBRARY)
++	install -Dm755 $(LIBRARY) $(PREFIX)/lib/$(LIBRARY)
++	find cpp -name '*.h' -exec install -Dm644 {} $(PREFIX)/include/{} \;
+diff --git a/cpp/temperature/temperature_cache.cc b/cpp/temperature/temperature_cache.cc
+index 4fec3a2..8af11e6 100644
+--- a/cpp/temperature/temperature_cache.cc
++++ b/cpp/temperature/temperature_cache.cc
+@@ -17,6 +17,7 @@
+ #include "cpp/temperature/temperature_cache.h"
+ 
+ #include <algorithm>
++#include <cmath>
+ #include <map>
+ #include <vector>
+ 
+@@ -60,7 +61,7 @@ Hct TemperatureCache::GetComplement() {
+     Hct possible_answer = GetHctsByHue().at((int)round(hue));
+     double relative_temp =
+         (GetTempsByHct().at(possible_answer) - coldest_temp) / range;
+-    double error = abs(complement_relative_temp - relative_temp);
++    double error = std::abs(complement_relative_temp - relative_temp);
+     if (error < smallest_error) {
+       smallest_error = error;
+       answer = possible_answer;
+@@ -89,7 +90,7 @@ std::vector<Hct> TemperatureCache::GetAnalogousColors(int count,
+     int hue = SanitizeDegreesInt(start_hue + i);
+     Hct hct = GetHctsByHue().at(hue);
+     double temp = GetRelativeTemperature(hct);
+-    double temp_delta = abs(temp - last_temp);
++    double temp_delta = std::abs(temp - last_temp);
+     last_temp = temp;
+     absolute_total_temp_delta += temp_delta;
+   }
+@@ -102,7 +103,7 @@ std::vector<Hct> TemperatureCache::GetAnalogousColors(int count,
+     int hue = SanitizeDegreesInt(start_hue + hue_addend);
+     Hct hct = GetHctsByHue().at(hue);
+     double temp = GetRelativeTemperature(hct);
+-    double temp_delta = abs(temp - last_temp);
++    double temp_delta = std::abs(temp - last_temp);
+     total_temp_delta += temp_delta;
+ 
+     double desired_total_temp_delta_for_index = (all_colors.size() * temp_step);
+diff --git a/cpp/temperature/temperature_cache.h b/cpp/temperature/temperature_cache.h
+index 17e7c17..492f6e5 100644
+--- a/cpp/temperature/temperature_cache.h
++++ b/cpp/temperature/temperature_cache.h
+@@ -18,6 +18,7 @@
+ #define CPP_TEMPERATURE_TEMPERATURE_CACHE_H_
+ 
+ #include <map>
++#include <optional>
+ #include <vector>
+ 
+ #include "cpp/cam/hct.h"

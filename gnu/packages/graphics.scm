@@ -3676,6 +3676,54 @@ interchange system supporting transcoding to a large number of GPU texture
 formats.")
     (license (list license:asl2.0 license:bsd-3 license:expat))))
 
+(define-public material-color-utilities-cpp
+  (let ((commit "1a34bd2d696a5dd669beca679546ad72209d0937")
+        (revision "0"))
+    (package
+      ;; This repository also contains Dart, Kotlin, Swift, and TypeScript
+      ;; implementations; this package builds only the C++ implementation.
+      (name "material-color-utilities-cpp")
+      ;; Upstream does not version the C++ implementation or tag the
+      ;; repository.
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/material-foundation/material-color-utilities")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (patches
+          (search-patches "material-color-utilities-cpp-build.patch"))
+         (sha256
+          (base32 "0cjlr0s5bh752zajcsf64rd4wn01nzcndfn4yw32z5mlak47b19a"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:make-flags
+        #~(list (string-append "PREFIX=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-after 'unpack 'use-googletest
+              (lambda _
+                (substitute* (find-files "cpp" "_test\\.cc$")
+                  (("\"testing/base/public/gunit.h\"")
+                   "<gtest/gtest.h>")
+                  (("\"testing/base/public/gmock.h\"")
+                   "<gmock/gmock.h>")))))))
+      (native-inputs (list googletest pkg-config))
+      (inputs (list abseil-cpp))
+      (home-page
+       "https://github.com/material-foundation/material-color-utilities")
+      (synopsis "Color algorithms used by Material Design")
+      (description
+       "Material Color Utilities provides color algorithms and utilities for
+creating accessible color schemes from dynamic inputs.  Its C++ library
+supports blending, contrast calculation, HCT colors, tonal palettes,
+quantization, scoring, temperature calculations, and Material color schemes.")
+      (license license:asl2.0))))
+
 (define-public meshoptimizer
   (package
     (name "meshoptimizer")
