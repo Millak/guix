@@ -5,6 +5,7 @@
 ;;; Copyright © 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 dan <i@dan.games>
+;;; Copyright © 2026 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,7 +41,7 @@
   #:use-module (guix build-system ruby)
   #:use-module ((srfi srfi-1) #:select (alist-delete)))
 
-(define %ruby-rails-version "7.2.2.1")
+(define %ruby-rails-version "7.2.3.2")
 
 (define ruby-rails-monorepo
   (origin
@@ -51,7 +52,7 @@
     (file-name (git-file-name "ruby-rails" %ruby-rails-version))
     (sha256
      (base32
-      "09dmxi7f34bwkrizgm8vy1bjmkychmxrxvvw1xz3b3abxxslm05m"))
+      "1fdx0m4zmkiap9aglxk47zplw7ixcp6vf552yjbiiqbss81bl98l"))
     (patches
      (search-patches "ruby-actionpack-remove-browser-tests.patch"))))
 
@@ -61,9 +62,7 @@
     (version %ruby-rails-version)
     (source
      (origin
-       (inherit ruby-rails-monorepo)
-       ;; Remove this patch when upgrading rails to 7.2.3+.
-       (patches (search-patches "ruby-activesupport-fix-deprecation-warning.patch"))))
+       (inherit ruby-rails-monorepo)))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -610,6 +609,11 @@ Ruby.")
                               "controller/live_stream_test.rb"
                               "controller/integration_test.rb"
                               "controller/test_case_test.rb"))
+
+                  ;; This might be resolved by upgrading to version 8.0 or
+                  ;; later (see: https://github.com/rails/rails/issues/55093).
+                  (skip-tests "controller/caching_test.rb"
+                              "test_preserves_order_when_reading_from_cache_plus_rendering")
 
                   ;; The following test failures have been reported upstream
                   ;; (see: https://github.com/rails/rails/issues/47615).
@@ -1191,6 +1195,9 @@ previous options, like Sprockets.")
                   ;; These tests requires the assets which we lack.
                   (delete-file "application/assets_test.rb")
                   (delete-file "railties/generators_test.rb")
+                  ;; This test requires Bundler.
+                  (skip-tests "generators/api_app_generator_test.rb"
+                              "test_app_update_does_not_generate_public_files")
                   (skip-tests "generators/shared_generator_tests.rb"
                               ;; This test checks that bin/rails has /usr/bin/env has a
                               ;; shebang and fails.
@@ -1217,8 +1224,12 @@ contents_when_skip_action_cable_is_given"
                               "test_app_update_preserves_skip_test"
                               "test_application_name_is_detected_if_it_exists_and_app_folder_renamed"
                               "test_template_from_url"
-                              ;; This test requires Bundler.
+                              ;; These tests require Bundler.
                               "test_generation_use_original_bundle_environment"
+                              "test_app_update_does_not_generate_assets_initializer_when_sprockets_and_propshaft_are_not_used"
+                              "test_app_update_does_not_generate_active_storage_contents_when_skip_active_record_is_given"
+                              "test_app_update_does_not_generate_active_storage_contents_when_skip_active_storage_is_given"
+                              "test_app_update_preserves_skip_active_job"
                               ;; This test requires Rubocop.
                               "test_app_update_preserves_skip_rubocop"
                               ;; These tests require assets.
