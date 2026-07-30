@@ -674,14 +674,14 @@ document and bibtex retrieval.")
 (define-public ugrep
   (package
     (name "ugrep")
-    (version "7.8.2")
+    (version "7.8.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/Genivia/ugrep")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "1dipvv74flxvcx3ycnj9ymqhg2q016jj4bzxvdwx639gzhz3k58h"))
+               (base32 "017him0332pj4g46dvysjl3sdhzwyr20lnav56bx13p6p9jhdb1k"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))
               (snippet
