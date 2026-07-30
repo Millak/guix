@@ -175,19 +175,13 @@
              (let ((out (assoc-ref outputs "out")))
                (substitute* "Makefile.rules"
                  (("^AUTOFS_LIB_LINK.*=" match)
-                  (string-append match " -Wl,-rpath=" out "/lib"))))))
-         (add-before 'install 'omit-obsolete-lookup_nis.so-link
-           ;; Building lookup_yp.so depends on $(YPCLNT) but this doesn't,
-           ;; leading to a make error.  Since it's broken, comment it out.
-           (lambda _
-             (substitute* "modules/Makefile"
-               (("ln -fs lookup_yp.so" match)
-                (string-append "# " match))))))))
+                  (string-append match " -Wl,-rpath=" out "/lib")))))))))
     (native-inputs
      (list bison flex pkg-config rpcsvc-proto))
     (inputs
      (list cyrus-sasl
            e2fsprogs ; for e[234]fsck
+           libnsl  ; needed for NIS/YP
            libtirpc
            libxml2 ; needed for LDAP, SASL
            mit-krb5 ; needed for LDAP, SASL
