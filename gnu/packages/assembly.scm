@@ -780,7 +780,7 @@ files.")
 (define-public blinkenlights
   (package
     (name "blinkenlights")
-    (version "1.0.0")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -788,21 +788,33 @@ files.")
                     (commit version)))
               (sha256
                (base32
-                "0dgfqy5z1vbpgbf39f14ngkqmw4gi3hsyihi4sh1qcbp9gnqpg2v"))
+                "0wlp1hqccbh9jl4h0vyv9kqbff4ccls6kgzz62gnsqnfsmz06273"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                           ;Tests require network access
            #:phases
            #~(modify-phases %standard-phases
+              ;; Make build reproducible and -v message somewhat nicer
+              (add-before 'configure 'make-reproducible
+                (lambda _
+                  (substitute* "Makefile"
+                    (("shell LC_ALL=C TZ=UTC date" date)
+                     (string-append date " -d \"@$(SOURCE_DATE_EPOCH)\""))
+                    ;; BLINK_COMMITS and BLINK_GITSHA fall back
+                    ;; to *_UNKNOWN with a compiler warning.
+                    (("^BLINK_COMMITS := .*") "")
+                    (("^BLINK_GITSHA := .*") ""))
+                  (substitute* '("Makefile" "configure")
+                    (("hostname") "echo guix"))))
                ;; Call ./configure without --enable-fast-install argument, which
                ;; causes the script to fail with an "unsupported option" error.
                (replace 'configure
                  (lambda* (#:key inputs outputs #:allow-other-keys)
                    (invoke "./configure"
                            (string-append "CC=" #$(cc-for-target))
-                           (string-append "--prefix="
-                                          (assoc-ref outputs "out"))))))))
+                           (string-append "--prefix=" #$output)))))))
+    (native-inputs (list python-wrapper))
     (home-page "https://justine.lol/blinkenlights/")
     (synopsis "Emulator for x86_64-linux programs with a text user interface")
     (description
