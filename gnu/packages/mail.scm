@@ -1439,8 +1439,10 @@ attachments, create new maildirs, and so on.")
           (add-after 'unpack 'include-defaults
             (lambda _
               (substitute* "pyproject.toml"
-                (("setuptools_scm]")
-                 "setuptools.package-data]\nalot = [\"defaults/*\"]\n"))))
+                (("\\[tool\\.setuptools\\.packages\\.find\\]" after)
+                 (string-append "[tool.setuptools.package-data]\n"
+                                "alot = ['defaults/*']\n\n"
+                                after)))))
           (add-after 'unpack 'fix-share-path
             (lambda _
               (substitute* "alot/settings/manager.py"
