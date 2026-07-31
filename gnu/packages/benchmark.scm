@@ -737,7 +737,7 @@ and options.  With careful benchmarking, different hardware can be compared.")
 (define-public kdiskmark
   (package
     (name "kdiskmark")
-    (version "3.2.0")
+    (version "3.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -746,7 +746,7 @@ and options.  With careful benchmarking, different hardware can be compared.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "161yyy4fcy5bnzhbcd7p90nlcslcsfp7n3m3bz9bygch7bdjw46g"))))
+                "1070vy56xd9fkcyvrs9lm21vhc3ppc337gw4y3xc58c5wdq9xnwc"))))
     (build-system qt-build-system)
     (arguments
      (list
