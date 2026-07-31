@@ -427,7 +427,7 @@ setup against another one.")
 (define-public python-benchexec
   (package
     (name "python-benchexec")
-    (version "3.29")
+    (version "3.35")
     (source
      (origin
        (method git-fetch)
@@ -436,7 +436,7 @@ setup against another one.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vcafk20sg8bwh9qqwf94d6hqk0kq3yhiraknf7jsjisf2mrksjk"))))
+        (base32 "08gsvam6j125mdyhns0d5xwpxa2mf4sqvva73bi16a3a6sj55059"))))
     (build-system pyproject-build-system)
     (arguments
      (list
