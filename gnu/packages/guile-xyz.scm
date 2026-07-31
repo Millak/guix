@@ -7824,20 +7824,16 @@ provides API for reading and writing INI data.")
 (define-public guile-toml
   (package
     (name "guile-toml")
-    (properties '((commit . "ecb24deb407ef76ef7cf7e9f0115060c98366a6b")
-                  (revision . "0")))
-    (version (git-version "0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/hylophile/guile-toml")
-             (commit (assoc-ref properties 'commit))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iqxivxcb0dcjbd5ba3c0g3mj71b32qjxfdmljyv9r297yykfd02"))))
+        (base32 "0nyxj9gz0v5n2whi5wikidz5d5a7hf181vwnlr0v1l67xvxhxv1d"))))
     (build-system guile-build-system)
     (arguments
      (list
@@ -7849,7 +7845,6 @@ provides API for reading and writing INI data.")
                       "test/test-datatypes.scm")
               (delete-file-recursively "test"))))))
     (native-inputs (list guile-3.0))
-    (propagated-inputs (list guile-json-4))
     (home-page "https://github.com/hylophile/guile-toml")
     (synopsis "TOML module for Guile Scheme")
     (description
