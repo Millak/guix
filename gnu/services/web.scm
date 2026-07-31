@@ -145,6 +145,7 @@
             nginx-server-configuration-root
             nginx-server-configuration-locations
             nginx-server-configuration-index
+            nginx-server-configuration-try-files
             nginx-server-configuration-ssl-certificate
             nginx-server-configuration-ssl-certificate-key
             nginx-server-configuration-server-tokens?
