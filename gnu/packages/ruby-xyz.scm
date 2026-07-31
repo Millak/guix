@@ -7561,31 +7561,42 @@ process tree data structure for the current host.")
     (license license:gpl2)))
 
 (define-public ruby-psych
-  (package
-    (name "ruby-psych")
-    (version "5.1.0")
-    (source (origin
-              (method git-fetch)        ;for tests
-              (uri (git-reference
-                    (url "https://github.com/ruby/psych")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0m3668y79jcv2h9p7w74awwdyz13rpfr24w4nzh3iz96kxwssz83"))))
-    (build-system ruby-build-system)
-    (inputs
-     (list libyaml))
-    (native-inputs
-     (list ruby-rake-compiler))
-    (synopsis "Ruby YAML parser and emitter")
-    (description
-     "Psych is a YAML parser and emitter.  Psych leverages libyaml for its
+  (let ((revision "0")
+        ;; For older Ractor workaround.
+        (commit "1a4d383efe0bf12e0e7d67c8ecf61ab39aec526c"))
+    (package
+      (name "ruby-psych")
+      (version (git-version "5.4.0" revision commit))
+      (source (origin
+                (method git-fetch) ;for tests
+                (uri (git-reference
+                       (url "https://github.com/ruby/psych")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0nkpzy9f7r457inc3a4jx961zvjkl6xsw8yfvwzp7901hmpp4wvy"))))
+      (build-system ruby-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'compile
+              (lambda _
+                (invoke "rake" "compile"))))))
+      (inputs
+       (list libyaml))
+      (native-inputs
+       (list ruby-rake-compiler ruby-test-unit-ruby-core))
+      (propagated-inputs (list ruby-date ruby-stringio))
+      (synopsis "Ruby YAML parser and emitter")
+      (description
+       "Psych is a YAML parser and emitter.  Psych leverages libyaml for its
 YAML parsing and emitting capabilities.  In addition to wrapping libyaml,
 Psych also knows how to serialize and de-serialize most Ruby objects to and
 from the YAML format.")
-    (home-page "https://github.com/ruby/psych")
-    (license license:expat)))
+      (home-page "https://github.com/ruby/psych")
+      (license license:expat))))
 
 (define-public ruby-psych-3
   (package
