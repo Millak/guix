@@ -4390,34 +4390,41 @@ for ODBC.")
 (define-public mdbtools
   (package
     (name "mdbtools")
-    (version "0.7.1")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/brianb/mdbtools")
-             (commit version)))
+             (url "https://github.com/mdbtools/mdbtools")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0gwcpp9y09xhs21g7my2fs8ncb8i6ahlyixcx8jd3q97jbzj441l"))))
+        (base32 "1yswq95n2i22dqzi8myz1ppi2207gpxaji2kiplxzisa0s0hasax"))))
     (build-system gnu-build-system)
-    (inputs
-     (list glib))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-unixodbc="
+                             #$(this-package-input "unixodbc")))))
+    (inputs (list glib unixodbc))
     (native-inputs
      (list autoconf
            automake
+           bison
+           flex
+           gettext-minimal
            libtool
            pkg-config
            txt2man
            which))
-    (home-page "https://mdbtools.sourceforge.net/")
+    (home-page "https://github.com/mdbtools/mdbtools")
     (synopsis "Read Microsoft Access databases")
     (description "MDB Tools is a set of tools and applications to read the
 proprietary MDB file format used in Microsoft's Access database package.  This
 includes programs to export schema and data from Microsoft's Access database
-file format to other databases such as MySQL, Oracle, Sybase, PostgreSQL,
-etc., and an SQL engine for performing simple SQL queries.")
+file format to CSV and JSON as well as to other databases such as MySQL,
+Oracle, Sybase, PostgreSQL, etc., and an SQL engine for performing simple SQL
+queries.")
     (license (list license:lgpl2.0
                    license:gpl2+))))
 
