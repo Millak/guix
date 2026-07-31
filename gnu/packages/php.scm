@@ -78,7 +78,8 @@
         (base32 "1wh27552f6vd20f1yy4l0jlvknfq0kn5hapmiq55f05xyj1c7glm"))
        (patches
         (search-patches "php-01-fix-expired-certificate.patch"
-                        "php-02-fix-sni-tests.patch"))
+                        "php-02-fix-sni-tests.patch"
+                        "php-03-fix-ftp-certificate.patch"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "ext"
@@ -407,7 +408,8 @@ systems, web content management systems and web frameworks.")
         (base32 "1xr1w82apzsscrsndnphlgqvbj78g0smrp06pcgg8hlsr3vwcm74"))
        (patches
         (search-patches "php-01-fix-expired-certificate.patch"
-                        "php-02-fix-sni-tests.patch"))
+                        "php-02-fix-sni-tests.patch"
+                        "php-03-fix-ftp-certificate.patch"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "ext"
