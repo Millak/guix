@@ -4412,7 +4412,7 @@ using Net::HTTP, supporting reconnection and retry according to RFC 2616.")
 (define-public ruby-net-imap
   (package
     (name "ruby-net-imap")
-    (version "0.3.4")
+    (version "0.6.6")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -4421,13 +4421,10 @@ using Net::HTTP, supporting reconnection and retry according to RFC 2616.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nx49i1n9q1wpancqaac2srrpb8mb43mc8wryyqyhpgki2grwyxw"))))
+                "052myg3kgr1fjb3zaki8cfn3s55pd5nn5v4jhbvak8kkpc4hf5gy"))))
     (build-system ruby-build-system)
     (arguments
-     ;; The test suite appears to rely on RFCs it tries fetching from the
-     ;; network (see: https://github.com/ruby/net-imap/issues/136).
-     (list #:tests? #f
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
                (add-before 'replace-git-ls-files 'adjust-for-git-ls-files
                  (lambda _
@@ -4435,7 +4432,11 @@ using Net::HTTP, supporting reconnection and retry according to RFC 2616.")
                    ;; the expected pattern.
                    (substitute* "net-imap.gemspec"
                      (("`git ls-files -z 2>/dev/null`")
-                      "`git ls-files -z`")))))))
+                      "`git ls-files -z`"))))
+               (add-before 'check 'disable-simplecov
+                 (lambda _
+                   (setenv "SIMPLECOV_DISABLE" "yes"))))))
+    (native-inputs (list ruby-psych ruby-test-unit-ruby-core))
     (propagated-inputs (list ruby-date ruby-net-protocol))
     (synopsis "Ruby client api for Internet Message Access Protocol")
     (description "@code{Net::IMAP} implements Internet Message Access
