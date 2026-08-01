@@ -1411,6 +1411,10 @@ Specification v2.0 (PEP 249).")
                       ;; These test sometimes fail.
                       "main.log_slow"
                       "main.mysqld--help-aria"
+                      ;; The upstream issue is closed but the issue remains,
+                      ;; as of 10.11.14 (see:
+                      ;; <https://jira.mariadb.org/browse/MDEV-12237>)
+                      "main.analyze_stmt_slow_query_log"
 
                       ;; XXX: This test occasionally fails on i686-linux:
                       ;; <https://jira.mariadb.org/browse/MDEV-24458>
