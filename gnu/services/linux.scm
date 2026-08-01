@@ -179,7 +179,7 @@
   (if (maybe-value-set? value)
    (list value) '()))
 
-(define (btrfs-scrub-serialize-list-of-string field-name value)
+(define (btrfs-scrub-serialize-list-of-strings field-name value)
   (if (maybe-value-set? value)
     value '()))
 
