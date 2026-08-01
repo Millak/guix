@@ -176,6 +176,7 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages polkit)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
@@ -214,6 +215,7 @@
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
+  #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -1347,7 +1349,7 @@ your own layouts, widgets, and built-in commands.")
 (define-public quickshell
   (package
     (name "quickshell")
-    (version "0.2.1")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1356,37 +1358,33 @@ your own layouts, widgets, and built-in commands.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19g978h0rmfy0839wncg97ywfdh7bak047dk33hgwjkm5y1qxvvv"))))
-    (build-system cmake-build-system)
+        (base32 "1rmr5lh2byj1l9lpkf2ypgcbx6wgdyjn5ba9hgpnn9q6khd9akw1"))))
+    (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:tests? #f ; tests are development-only for now
       ;; NOTE: Ninja used because that is what upstream uses and because
       ;; parallel build with Makefile fails.
       #:generator "Ninja"
       #:configure-flags
       #~(list
-         "-DCRASH_REPORTER=OFF" ; Breakpad is not packaged in Guix
          "-DDISTRIBUTOR=\"GNU Guix\""
          "-DDISTRIBUTOR_DEBUGINFO_AVAILABLE=NO"
          ;; Shared object libraries for other Qt/QML tooling to find definitions
          ;; of Quickshell values. Quickshell statically links to its own
          ;; libraries by default.
-         "-DINSTALL_QML_PREFIX=lib/qt6/qml")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'wrap-program
-            (lambda _
-              (wrap-program (string-append #$output "/bin/quickshell")
-                `("QML_IMPORT_PATH" ":" = (,(getenv "QML_IMPORT_PATH")))))))))
+         "-DINSTALL_QML_PREFIX=lib/qt6/qml")))
     (native-inputs
-     (list ninja
-           pkg-config
+     (list pkg-config
            qtshadertools
-           spirv-tools))
+           spirv-tools
+           vulkan-headers))
     (inputs
      (list bash-minimal
            cli11
+           cpptrace
+           glib
            jemalloc
            libdrm
            libxcb
@@ -1394,13 +1392,13 @@ your own layouts, widgets, and built-in commands.")
            linux-pam
            mesa
            pipewire
-           qtbase
+           polkit
            qtdeclarative
+           qtsvg
            qtwayland
            wayland
-           wayland-protocols))
-    (propagated-inputs
-     (list qtsvg))
+           wayland-protocols
+           `(,zstd "lib")))
     (home-page "https://quickshell.outfoxxed.me")
     (synopsis "QtQuick-based desktop shell toolkit")
     (description
