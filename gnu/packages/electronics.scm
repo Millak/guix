@@ -115,6 +115,7 @@
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages java)
   #:use-module (gnu packages libedit)
@@ -2939,6 +2940,7 @@ the timing of a design using standard file formats.")
       #~(list "-DBUILD_GUI=ON"
               (string-append "-DOPENROAD_VERSION=" #$version)
               "-DBUILD_PYTHON=ON"
+              "-DBUILD_MAN=ON"
               "-DUSE_SYSTEM_ABC=OFF"     ;uses a custom fork
               "-DUSE_SYSTEM_OPENSTA=OFF" ;uses a custom fork
               "-DUSE_SYSTEM_BOOST=ON")
@@ -2951,8 +2953,11 @@ the timing of a design using standard file formats.")
      (list bison
            flex
            googletest
+           groff-minimal                ;for nroff
+           pandoc
            pkg-config
-           swig-4.4))
+           swig-4.4
+           util-linux))                 ;for col
     (inputs
      (list abseil-cpp
            boost
