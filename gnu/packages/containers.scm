@@ -1175,6 +1175,186 @@ enforce convention and best practices for metrics collection in Docker
 projects.")
     (license (list license:asl2.0 license:cc-by-sa4.0))))
 
+(define-public go-github-com-moby-buildkit
+  (package
+    (name "go-github-com-moby-buildkit")
+    (version "0.32.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/moby/buildkit")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13kcdgr1ijzs6cpgyzlbvv2cw707x4ypssagk18ah1sxg96fs39b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/buildkit"
+      #:test-subdirs
+      ;; XXX: Try to enable more.
+      #~(list "worker" "control" "session" "version" "executor" "solver/pb"
+              "util/cond" "util/disk" "util/purl" "cache/util" "client/llb"
+              "util/stack" "util/cpuset" "util/system" "worker/base"
+              "executor/oci" "source/local" "sourcepolicy" "util/apicaps"
+              "util/gitutil" "util/sshutil" "util/urlutil" "cmd/buildkitd"
+              "util/progress" "util/resolver" "util/staticfs" "util/throttle"
+              "util/wildcard" "cache/metadata" "solver/errdefs"
+              "util/imageutil" "client/ociindex" "session/content"
+              "solver/testutil" "sourcepolicy/pb" "util/grpcerrors"
+              "util/resolvconf" "frontend/gateway" "session/filesync"
+              "solver/llbsolver" "util/cachedigest" "util/contentutil"
+              "frontend/dockerui" "client/llb/llbtest" "cmd/buildctl/build"
+              "executor/resources" "util/flightcontrol" "client/llb/llbbuild"
+              "cmd/buildctl/common" "exporter/util/epoch"
+              "util/tracing/detect" "api/services/control"
+              "cache/remotecache/v1" "cmd/buildkitd/config"
+              "solver/internal/pipe" "solver/llbsolver/ops"
+              "source/containerblob" "source/util/pathutil"
+              "util/network/netpool" "client/connhelper/ssh"
+              "frontend/attestations" "solver/llbsolver/file"
+              "source/containerimage" "util/gitutil/gitobject"
+              "util/tracing/forwarder" "contrib/cdisetup/nvidia"
+              "frontend/gateway/client" "solver/llbsolver/compat"
+              "solver/llbsolver/mounts" "solver/bboltcachestorage"
+              "solver/llbsolver/history" "util/network/cniprovider"
+              "util/progress/progressui" "client/connhelper/kubepod"
+              "frontend/dockerfile/shell" "session/auth/authprovider"
+              "frontend/attestations/sbom" "frontend/dockerfile/parser"
+              "frontend/gateway/container" "util/network/proxyprovider"
+              "executor/containerdexecutor" "frontend/dockerfile/version"
+              "solver/llbsolver/cdidevices" "solver/llbsolver/provenance"
+              "util/converter/tarconverter" "frontend/dockerfile/dfgitutil"
+              "solver/llbsolver/ops/opsutils" "session/sshforward/sshprovider"
+              "solver/llbsolver/linuxresources"
+              "frontend/dockerfile/instructions"
+              "client/connhelper/dockercontainer"
+              "client/connhelper/podmancontainer"
+              "solver/llbsolver/provenance/types"
+              "client/connhelper/nerdctlcontainer")))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-google-shlex))
+    (propagated-inputs
+     (list go-github-com-agext-levenshtein
+           go-github-com-armon-circbuf
+           go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
+           go-github-com-aws-aws-sdk-go-v2-feature-s3-transfermanager
+           go-github-com-aws-aws-sdk-go-v2-service-s3
+           go-github-com-aws-smithy-go
+           go-github-com-azure-azure-sdk-for-go-sdk-azcore
+           go-github-com-azure-azure-sdk-for-go-sdk-azidentity
+           go-github-com-azure-azure-sdk-for-go-sdk-storage-azblob
+           go-github-com-cespare-xxhash-v2
+           go-github-com-containerd-accelerated-container-image
+           go-github-com-containerd-console
+           go-github-com-containerd-containerd-api
+           go-github-com-containerd-containerd-v2
+           go-github-com-containerd-continuity
+           go-github-com-containerd-errdefs
+           go-github-com-containerd-fuse-overlayfs-snapshotter-v2
+           go-github-com-containerd-go-cni
+           go-github-com-containerd-go-runc
+           go-github-com-containerd-log
+           go-github-com-containerd-nydus-snapshotter
+           go-github-com-containerd-platforms
+           go-github-com-containerd-stargz-snapshotter
+           go-github-com-containerd-stargz-snapshotter-estargz
+           go-github-com-containerd-typeurl-v2
+           go-github-com-containernetworking-plugins
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-distribution-reference
+           go-github-com-docker-cli
+           go-github-com-docker-go-units
+           go-github-com-gofrs-flock
+           go-github-com-gohugoio-hashstructure
+           go-github-com-hashicorp-go-cleanhttp
+           go-github-com-hashicorp-go-immutable-radix-v2
+           go-github-com-hashicorp-golang-lru-v2
+           go-github-com-hiddeco-sshsig
+           go-github-com-in-toto-in-toto-golang
+           go-github-com-klauspost-compress
+           ;; go-github-com-microsoft-go-winio      ;Windows only
+           ;; go-github-com-microsoft-hcsshim       ;Windows only
+           go-github-com-moby-docker-image-spec
+           go-github-com-moby-go-archive
+           go-github-com-moby-locker
+           go-github-com-moby-patternmatcher
+           go-github-com-moby-policy-helpers
+           go-github-com-moby-profiles-seccomp
+           go-github-com-moby-sys-mountinfo
+           go-github-com-moby-sys-reexec
+           go-github-com-moby-sys-signal
+           go-github-com-moby-sys-user
+           go-github-com-moby-sys-userns
+           go-github-com-morikuni-aec
+           go-github-com-opencontainers-go-digest
+           go-github-com-opencontainers-image-spec
+           go-github-com-opencontainers-runtime-spec
+           go-github-com-opencontainers-selinux
+           go-github-com-package-url-packageurl-go
+           go-github-com-pelletier-go-toml-v2
+           go-github-com-pkg-errors
+           go-github-com-pkg-profile
+           go-github-com-planetscale-vtprotobuf
+           go-github-com-pmezard-go-difflib
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-procfs
+           go-github-com-protonmail-go-crypto
+           go-github-com-serialx-hashring
+           go-github-com-sigstore-sigstore-go
+           go-github-com-sirupsen-logrus
+           go-github-com-spdx-tools-golang
+           go-github-com-stretchr-testify
+           go-github-com-tonistiigi-dchapes-mode
+           go-github-com-tonistiigi-fsutil
+           go-github-com-tonistiigi-go-actions-cache
+           go-github-com-tonistiigi-go-archvariant
+           go-github-com-tonistiigi-go-csvvalue
+           go-github-com-tonistiigi-units
+           go-github-com-tonistiigi-vt100
+           go-github-com-urfave-cli-v3
+           go-github-com-vishvananda-netlink
+           go-github-com-vishvananda-netns
+           go-go-etcd-io-bbolt
+           go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-httptrace-otelhttptrace
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-exporters-jaeger
+           go-go-opentelemetry-io-otel-exporters-otlp-otlpmetric-otlpmetricgrpc
+           go-go-opentelemetry-io-otel-exporters-otlp-otlpmetric-otlpmetrichttp
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracehttp
+           go-go-opentelemetry-io-otel-exporters-prometheus
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-go-opentelemetry-io-otel-trace
+           go-go-opentelemetry-io-proto-otlp
+           go-golang-org-x-crypto
+           go-golang-org-x-exp
+           go-golang-org-x-mod
+           go-golang-org-x-net
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-time
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-kernel-org-pub-linux-libs-security-libcap-cap
+           go-tags-cncf-io-container-device-interface))
+    (home-page "https://github.com/moby/buildkit")
+    (synopsis "Concurrent and Dockerfile-agnostic builder toolkit")
+    (description
+     "This package provides a toolkit for converting source code to build
+artifacts in an efficient, expressive and repeatable manner.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-policy-helpers
   (package
     (name "go-github-com-moby-policy-helpers")
