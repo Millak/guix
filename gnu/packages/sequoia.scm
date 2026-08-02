@@ -193,19 +193,15 @@ gpg-agent, openpgp-card and softkeys keystore backends.")
 (define-public sequoia-sqv
   (package
     (name "sequoia-sqv")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "sequoia-sqv" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "0qlfd5z0swpzc3886p4i53zqc1c34mpmk7821qc5rmls0448nfsx"))))
+         (base32 "1j0v6lyjdgky3lv2mbp1w06py10d41v0b9cg99jxv538fhi1zsyl"))))
     (build-system cargo-build-system)
-    (inputs
-     (cons* bzip2 nettle openssl (cargo-inputs 'sequoia-sqv)))
-    (native-inputs
-     (list clang-13 pkg-config))
     (arguments
      `(#:imported-modules ((guix build copy-build-system)
                            ,@%cargo-build-system-modules)
@@ -233,6 +229,10 @@ gpg-agent, openpgp-card and softkeys keystore backends.")
                       ("target/assets/shell-completions/_sqv"
                        "share/zsh/site-functions/"))
                     args))))))
+    (inputs
+     (cons* nettle (cargo-inputs 'sequoia-sqv)))
+    (native-inputs
+     (list clang pkg-config))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Simple OpenPGP signature verification program")
     (description "@code{sqv} verifies detached OpenPGP signatures.  It is a
