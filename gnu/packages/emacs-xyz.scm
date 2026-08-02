@@ -11359,7 +11359,7 @@ formatting, and code folding.")
 (define-public emacs-verilog-ext
   (package
     (name "emacs-verilog-ext")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -11368,7 +11368,7 @@ formatting, and code folding.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hgplmd9zzikp6wklx4y8svzd7n2i0rmfhphpms0f2zl74ana6c6"))))
+        (base32 "08nsjdiwy7znymcmddxd3jmzhmvzjvihcsyrsmggpk1y2m1qlbjf"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -11381,6 +11381,7 @@ formatting, and code folding.")
            emacs-flycheck
            emacs-hydra
            emacs-lsp-mode
+           emacs-rg
            emacs-ripgrep
            emacs-verilog-ts-mode
            emacs-yasnippet))
