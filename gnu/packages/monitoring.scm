@@ -24,6 +24,7 @@
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2025 Christian Birk Sørensen <chrbirks@gmail.com>
+;;; Copyright © 2026 Alex Korzh <alex@korzh.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,11 +57,14 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages freedesktop) ; libatasmart
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gd)
@@ -490,6 +494,59 @@ platforms. Glances uses the PsUtil library to get information from your
 system.  It monitors CPU, load, memory, network bandwidth, disk I/O, disk use,
 and more.")
     (license license:lgpl3+)))
+
+(define-public monit
+  (package
+    (name "monit")
+    (version "6.0.0")
+    (supported-systems
+     (filter (lambda (system)
+               (string-suffix? "-linux" system)) ;because of PAM
+             %supported-systems))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://bitbucket.org/tildeslash/monit.git")
+              (commit (string-append "release-"
+                                     (string-join (string-split version #\.)
+                                                  "-")))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lpai4lf4w6cz3g10ysspmnp7v3f9x8ilfwig4cxdgc514ybd79f"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-ssl-dir="
+                             #$(this-package-input "openssl")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "libmonit/test/CommandTest.c"
+                (("/bin/sh")
+                 (search-input-file inputs "bin/sh"))
+                (("/bin/ls")
+                 (search-input-file inputs "bin/ls")))))
+          (add-before 'bootstrap 'patch-libmonit-bootstrap
+            (lambda _
+              (patch-shebang "libmonit/bootstrap")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; TimeTest assumes local time is one hour ahead of UTC.
+                (setenv "TZ" "CET-1")
+                (with-directory-excursion "libmonit/test"
+                  (invoke "./test.sh"))))))))
+    (native-inputs (list autoconf automake bison flex libtool perl))
+    (inputs (list libxcrypt linux-pam openssl zlib))
+    (home-page "https://mmonit.com/monit/")
+    (synopsis "Proactive monitoring")
+    (description
+     "Monit is a utility for managing and monitoring, processes, programs,
+files, directories and filesystems on a UNIX system.")
+    (license license:agpl3)))
 
 (define-public nagios
   (package
