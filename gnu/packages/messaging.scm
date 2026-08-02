@@ -51,6 +51,7 @@
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2026 Tomás Ortín Fernández (quanrong) <quanrong@mailbox.org>
 ;;; Copyright © 2026 Goran Vukoman <g@odyss3us.net>
+;;; Copyright © 2026 Konstantin Suntsov <protvin@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -823,6 +824,43 @@ access to servers running the Discord protocol.")
 used by Pidgin and Bitlbee, among others, to access
 @uref{https://mattermost.com/, Mattermost} servers.")
       (license license:gpl3+))))
+
+(define-public purple-teams
+  (package
+    (name "purple-teams")
+    (version "2026-09-06")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/EionRobb/purple-teams")
+              (commit (string-append "daily-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pnp72xixfxbca2zgz28zq1f9k6jnflz2sd0abwvp5rivw36p4fg"))
+       (modules '((guix build utils)))
+       (snippet #~(delete-file "libjson-glib-1.0.dll"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))          ;no "configure" script
+      #:make-flags
+      #~(list (string-append "PLUGIN_VERSION=" #$version)
+              (string-append "TEAMS_DEST=" #$output "/lib/purple-2")
+              (string-append "TEAMS_ICONS_DEST="
+                             #$output "/share/pixmaps/pidgin/protocols")
+              (string-append "CC=" #$(cc-for-target)))
+      #:tests? #f))                     ;no tests
+    (inputs (list glib json-glib pidgin))
+    (native-inputs (list pkg-config))
+    (home-page "https://codeberg.org/EionRobb/purple-teams")
+    (synopsis "Purple plug-in to access Teams instant messaging")
+    (description
+     "Purple-Teams is a plug-in for Purple, the instant messaging library used
+by Pidgin and Bitlbee, among others, to access Microsoft Teams.")
+    (license license:gpl3+)))
 
 (define-public hexchat
   (package
