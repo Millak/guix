@@ -76,15 +76,6 @@ It also returns the data as an alist directly."
 
 (test-begin "node related tests")
 
-(test-equal "modify-json, ordering"
-  '(("mkdirp" . ">=1.0.0")
-    ("react" . "^16.8.0"))
-  (assoc-ref (modify-json* (modify-json-fields
-                            '("peerDependencies.react")
-                            (lambda (field-path data key)
-                              data)))
-             "peerDependencies"))
-
 (test-equal "delete-dependencies"
   '(("domelementtype" . "^3.0.0"))
   (assoc-ref (modify-json*

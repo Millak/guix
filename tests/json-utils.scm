@@ -56,7 +56,8 @@ captures the written output as a string."
   "Mock modify-json* with input from the package.json procedure."
   (mock ((guix build utils) with-atomic-file-replacement
          with-atomic-file-replacement/mock)
-    (json-string->scm (apply modify-json all-arguments))))
+        (json-string->scm (apply modify-json all-arguments)
+                          #:ordered #t)))
 
 (test-begin "json-utils")
 
@@ -213,6 +214,15 @@ captures the written output as a string."
   &modify-json-invalid-field-value-error
   ((modify-json-fields '(42) (lambda (field data key) data))
    (fresh-sample-json)))
+
+(test-equal "modify-json, ordering"
+  '(("baz" . "^3.0.0")
+    ("qux" . "^4.0.0"))
+  (assoc-ref (modify-json* (modify-json-fields
+                            '("devDependencies.qux")
+                            (lambda (field-path data key)
+                              data)))   ;no-op
+             "devDependencies"))
 
 ;;;
 ;;; modify-json (deprecated wrapper)
