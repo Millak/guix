@@ -48,7 +48,8 @@
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages))
+  #:use-module (guix packages)
+  #:use-module (guix utils))
 
 (define-public cfunge
   (package
@@ -284,5 +285,36 @@ and input/output intrinsics.  The only supported data type is the integer.
 The language is documented only by the compiler's Perl source code and the
 included samples.")
       (license license:cc-by-sa4.0))))
+
+(define-public unlambda
+  (package
+    (name "unlambda")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.eleves.ens.fr:8080/home/madore/unlambda-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1a8h1i2a3pk66nfsg5jc9r4ylg1q9r81x9zmvj6272wjkaiy1nx9"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("unlambda" "bin/")
+          ("doc/" "share/doc/unlambda/html/")
+          ("README" "share/doc/unlambda/"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'build
+            (lambda _
+              (invoke #$(cc-for-target)
+                      "-g" "-O2"
+                      "-o" "unlambda" "c-refcnt/unlambda.c"))))))
+    (home-page "http://www.madore.org/~david/programs/unlambda/")
+    (synopsis "Interpreter for an obfuscated functional programming language")
+    (description "Unlambda is an obfuscated programming language in which the
+only form of objects manipulated by it are functions.")
+    (license license:gpl2)))
 
 ;;; esolangs.scm ends here
