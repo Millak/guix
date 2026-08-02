@@ -289,7 +289,7 @@ This Guix package is built to use the nettle cryptographic library.")
     (inputs
      (cons* nettle openssl sqlite (cargo-inputs 'sequoia-wot-tools)))
     (native-inputs
-     (list clang-13 gnupg pkg-config))
+     (list clang gnupg pkg-config))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Implementation of OpenPGP's web of trust")
     (description
