@@ -11481,7 +11481,7 @@ and edit VHDL files.")
 (define-public emacs-verilog-ts-mode
   (package
     (name "emacs-verilog-ts-mode")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
@@ -11490,7 +11490,7 @@ and edit VHDL files.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19jzdi4n8qj65wxgfr0simnsy2r90rpac5bgkc5bz7w2vfy7rhk3"))))
+        (base32 "0pybfj9vdvb4nqn77mmy62iw4w5ydipgj1v381yjknfqlxlpkym5"))))
     (build-system emacs-build-system)
     (arguments
      (list
