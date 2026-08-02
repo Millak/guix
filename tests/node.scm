@@ -17,6 +17,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (use-modules (json)
+             (guix build json-utils)
              (guix build node-build-system)
              (guix tests)
              (srfi srfi-64))

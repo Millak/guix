@@ -35,14 +35,12 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
-  #:export (with-atomic-json-file-replacement
+  #:export (with-atomic-json-file-replacement  ;deprecated
+            with-atomic-json-file-replacement*
             modify-json
             modify-json-fields
-            delete-fields
             delete-json-fields
-            replace-fields
             replace-json-fields
-            add-fields
             add-json-fields
 
             &modify-json-invalid-field-value-error
@@ -65,12 +63,10 @@ a value to be written as JSON to the replacement FILE."
 ;; removed in favor of with-atomic-json-file-replacement*'s content eventually.
 ;; On removal, also remove the (guix deprecation) modules and their closures
 ;; from node-build-system imported-modules.
-(define* (with-atomic-json-file-replacement proc
-                                            #:optional (file "package.json"))
+(define-deprecated (with-atomic-json-file-replacement proc
+                     #:optional (file "package.json"))
+  with-atomic-json-file-replacement*
   (with-atomic-json-file-replacement* file proc))
-
-(define-deprecated/public-alias with-atomic-json-file-replacement
-  with-atomic-json-file-replacement*)
 
 ;; This is the function we eventually want to migrate to.
 (define* (modify-json* file #:rest modifications)
@@ -205,8 +201,6 @@ invalid field value provided, expected string or list of strings, got ~s~%")
      (assoc-remove! data key))
    #:strict? strict?))
 
-(define-deprecated/alias delete-fields delete-json-fields)
-
 (define* (replace-json-fields fields #:key (strict? #t) insert?)
   "Provides a lambda to supply to modify-json which replaces the value of the
  supplied field. `fields` is a list of pairs, where the first element is the
@@ -225,13 +219,9 @@ invalid field value provided, expected string or list of strings, got ~s~%")
    #:insert? insert?
    #:strict? strict?))
 
-(define-deprecated/alias replace-fields replace-json-fields)
-
 (define* (add-json-fields fields)
   "Like `replace-json-fields', but can insert new fields as well."
   (replace-json-fields fields #:insert? #t))
-
-(define-deprecated/alias add-fields add-json-fields)
 
 ;;; Local Variables:
 ;;; eval: (put 'with-atomic-json-file-replacement 'scheme-indent-function 1)

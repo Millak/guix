@@ -25,15 +25,8 @@
 
 (define-module (guix build node-build-system)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
-  #:use-module ((guix build json-utils)
-                #:select ((modify-json . modify-json*)
-                          (modify-json-fields . modify-json-fields*)
-                          (delete-json-fields . delete-json-fields*)
-                          (replace-json-fields . replace-json-fields*)
-                          (add-json-fields . add-json-fields*)
-                          (with-atomic-json-file-replacement
-                              . with-atomic-json-file-replacement*)))
   #:use-module (guix deprecation)
+  #:use-module (guix build json-utils)
   #:use-module (guix build utils)
   #:use-module (ice-9 format)
   #:use-module (ice-9 ftw)
@@ -49,16 +42,16 @@
             delete-dev-dependencies
             delete-dev-dependencies/except
             node-build
-            modify-json
+
+            ;; The following are deprecated and have been moved to the (guix
+            ;; build json-utils) module.
+            ;; TODO: Remove after 2027/08.
             delete-fields
             replace-fields
             add-fields)
-  #:re-export ((modify-json-fields* . modify-json-fields)
-               (delete-json-fields* . delete-json-fields)
-               (replace-json-fields* . replace-json-fields)
-               (add-json-fields* . add-json-fields)
-               (with-atomic-json-file-replacement*
-                . with-atomic-json-file-replacement)))
+  ;; Also deprecated.
+  #:re-export (with-atomic-json-file-replacement
+               modify-json))
 
 ;;;
 ;;; Helpers
@@ -74,31 +67,16 @@
   '("devDependencies"
     "peerDependencies"))
 
-(define-deprecated/alias with-atomic-json-file-replacement
-  (@ (guix build json-utils) with-atomic-json-file-replacement))
-
-(define-deprecated/alias modify-json
-  (@ (guix build json-utils) modify-json))
-
 (define-deprecated/alias modify-json-fields
   (@ (guix build json-utils) modify-json-fields))
 
 (define-deprecated/alias delete-fields
   (@ (guix build json-utils) delete-json-fields))
 
-(define-deprecated/alias delete-json-fields
-  (@ (guix build json-utils) delete-json-fields))
-
 (define-deprecated/alias replace-fields
   (@ (guix build json-utils) replace-json-fields))
 
-(define-deprecated/alias replace-json-fields
-  (@ (guix build json-utils) replace-json-fields))
-
 (define-deprecated/alias add-fields
-  (@ (guix build json-utils) add-json-fields))
-
-(define-deprecated/alias add-json-fields
   (@ (guix build json-utils) add-json-fields))
 
 (define* (delete-dependencies dependencies-to-remove
@@ -142,8 +120,8 @@ dependencies."
                               #:dependency-keys %dev-dependency-keys))
 
 (define (delete-dev-dependencies)
-  (delete-json-fields* (list "devDependencies" "peerDependencies")
-                       #:strict? #f))
+  (delete-json-fields (list "devDependencies" "peerDependencies")
+                      #:strict? #f))
 
 ;;;
 ;;; Phases.
@@ -200,7 +178,7 @@ dependencies."
       (assoc-set! pkg-meta key
                   (resolve-dependencies (getter pkg-meta)))))
 
-  (modify-json* "package.json"
+  (modify-json "package.json"
    (resolve "devDependencies"
             (lambda (pkg-meta)
               (or (assoc-ref pkg-meta "devDependencies") '())))
