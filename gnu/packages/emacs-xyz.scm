@@ -19200,7 +19200,7 @@ like @code{org-edit-src-code} but for arbitrary regions.")
 (define-public emacs-projectile
   (package
     (name "emacs-projectile")
-    (version "3.1.0")
+    (version "3.3.0")
     (source
      (origin
        (method git-fetch)
@@ -19210,7 +19210,7 @@ like @code{org-edit-src-code} but for arbitrary regions.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1h6yc6lcs366v1fpkvbnnwpxsx8wcww5ylpnxwmxbp62yk37x13i"))))
+         "1bdpr0aqvlcm6043226y3mknpcj5xih4kknbjk11qn5rx0w5x52r"))))
     (build-system emacs-build-system)
     (arguments
      (list
