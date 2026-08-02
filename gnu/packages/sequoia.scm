@@ -127,14 +127,14 @@ This Guix package is built to use the nettle cryptographic library.")
 (define-public sequoia-sq
   (package
     (name "sequoia-sq")
-    (version "1.3.1")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sequoia-sq" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "01aph6n9lj7qcz1n8gr6q48an4ypn9d6xzxfprwpw80wv9ibc12w"))))
+        (base32 "0s9vr1aszwp1p2c2x7cq06q7niwn0bn9pfawq09jf4p0gph85dlh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:imported-modules ((guix build copy-build-system)
@@ -180,7 +180,7 @@ This Guix package is built to use the nettle cryptographic library.")
     (inputs
      (cons* nettle openssl pcsc-lite sqlite (cargo-inputs 'sequoia-sq)))
     (native-inputs
-     (list capnproto clang-13 pkg-config))
+     (list capnproto clang pkg-config))
     (home-page "https://sequoia-pgp.org/")
     (synopsis "Command-line frontend for Sequoia OpenPGP")
     (description "This package provides the command-line frontend for Sequoia
