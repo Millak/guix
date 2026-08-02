@@ -8029,6 +8029,52 @@ For a YAML parser and emitter using this, check out cl-yaml.")
 (define-public ecl-cl-libyaml
   (sbcl-package->ecl-package sbcl-cl-libyaml))
 
+(define-public sbcl-cl-llog
+  (let ((commit "4910388ad4790e2284db83ac2848662edb96cdfe")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-llog")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/atgreen/cl-llog")
+               (commit commit)))
+         (file-name (git-file-name "cl-llog" version))
+         (sha256
+          (base32 "0i5pjcsvgj8a3ih4yghwx7crwmsfgj6psyp4106c010lls8rm117"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-babel
+             sbcl-bordeaux-threads
+             sbcl-cl-base64
+             sbcl-cl-ppcre
+             sbcl-ironclad))
+      (native-inputs
+       (list sbcl-fiveam))
+      (arguments
+       ;; Build the core logger, the REPL integration and the audit-trail
+       ;; extension; the benchmark system (trivial-benchmark) is omitted.
+       ;; Run only the two systems that carry a real FiveAM suite.
+       '(#:asd-systems '("llog" "llog/repl" "llog/audit")
+         #:asd-test-systems '("llog" "llog/audit")))
+      (home-page "https://github.com/atgreen/cl-llog")
+      (synopsis "Structured logging framework for Common Lisp")
+      (description
+       "LLOG is a structured logging framework for Common Lisp with a sugared
+and a typed API, leveled logging (trace/debug/info/warn/error/fatal/panic),
+multiple encoders (console, JSON, s-expression and pattern) and
+stream/file/async outputs.  Optional subsystems add REPL integration and
+tamper-evident, hash-chained audit trails.")
+      (license license:expat))))
+
+(define-public cl-llog
+  (sbcl-package->cl-source-package sbcl-cl-llog))
+
+(define-public ecl-cl-llog
+  (sbcl-package->ecl-package sbcl-cl-llog))
+
 (define-public sbcl-cl-locale
   (let ((commit "0a36cc0dcf5e0a8c8bf97869cd6199980ca25eec")
         (revision "1"))
