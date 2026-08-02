@@ -6325,3 +6325,53 @@ Revoy and collaborators for use in the comic strip Pepper&Carrot.")
                    license:gpl2+
                    license:asl2.0
                    license:cc-by3.0))))
+
+(define-public font-meslo-lg-nerd
+  (package
+    (name "font-meslo-lg-nerd")
+    (version "3.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/ryanoasis/nerd-fonts/releases/download/"
+            "v" version "/Meslo.tar.xz"))
+       (sha256
+        (base32 "0f9rl0ihjjr7w88zhv5g55ap017f2112kwv00vzwzdggdbckcyd5"))))
+    (build-system font-build-system)
+    (synopsis "Meslo LG font with Nerd-Icons")
+    (description
+     "This package provides the Meslo LG font with the extra
+glyphs from Nerd Fonts.
+
+@itemize
+@item Meslo LG
+@item Meslo LG (Dotted zero)
+@item Meslo LG Mono
+@item Meslo LG Mono (Dotted zero)
+@item Meslo LG Propo
+@item Meslo LG Propo (Dotted zero)
+@end itemize
+
+This package also includes bold, italic, and bold/italic versions of the above fonts.
+
+These fonts include glyphs from multiple icon sets:
+
+@itemize
+@item Powerline with Extra Symbols
+@item Font Awesome and Font Awesome Extension
+@item Material Design Icons
+@item Weather Icons
+@item Devicons
+@item Octicons
+@item Font Logos (formerly Font Linux)
+@item Pomicons
+@item Codeicons
+@end itemize
+
+The monospaced variant ensures all glyphs have uniform width, which is essential
+for terminal emulators that require consisten character spacing.")
+    (home-page
+     "https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/Meslo")
+    (license (list license:expat license:cc-by4.0 license:unlicense
+                   license:asl2.0 license:silofl1.1))))
