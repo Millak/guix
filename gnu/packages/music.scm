@@ -6549,6 +6549,54 @@ as a whole to realisticly reproduce the features and flaws of the real deal.")
     ;; Note that after 1.3.0 the license was changed.
     (license license:gpl3+)))
 
+(define-public fooyin
+  (package
+    (name "fooyin")
+    (version "0.12.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fooyin/fooyin")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cikdp97dq969g63103p30r24apd2fql66imxpapf3c8rv5qy8pc"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DBUILD_TESTING=ON")
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ctest" "-j" (if parallel-tests?
+                                         (number->string (parallel-job-count))
+                                         "1")
+                        "--test-dir" "tests/")))))))
+    (native-inputs (list googletest pkg-config qttools))
+    (inputs (list alsa-lib
+                  ffmpeg
+                  icu4c
+                  kdsingleapplication
+                  pipewire
+                  qcoro-qt6
+                  qtsvg
+                  sdl2
+                  taglib
+                  zlib))
+    (home-page "https://fooyin.org/")
+    (synopsis "Customisable music player")
+    (description "Fooyin is a customisable desktop music player.  It combines
+flexible playback, library management, playlists, and scripting tools in an
+interface that can be rearranged from a blank canvas or adapted from preset
+layouts.  It's built around extensibility and supports plugins for widgets,
+decoders, tag readers, DSPs, and integrations, and includes FooScript for
+advanced display formatting, queries, autoplaylists, and widget behaviour.")
+    (license license:gpl3+)))
+
 (define-public spectacle-analyzer
   (package
     (name "spectacle-analyzer")
