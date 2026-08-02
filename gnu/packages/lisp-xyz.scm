@@ -32605,6 +32605,39 @@ the Common Lisp programming language.")
 (define-public clasp-trivial-garbage
   (sbcl-package->clasp-package sbcl-trivial-garbage))
 
+(define-public sbcl-trivial-glob
+  (let ((commit "0c2675d9452ed164970f2fc4a0e41784ebee819a")
+        (revision "0"))
+    (package
+      (name "sbcl-trivial-glob")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fukamachi/trivial-glob")
+               (commit commit)))
+         (file-name (git-file-name "cl-trivial-glob" version))
+         (sha256
+          (base32 "1z7b35m6mj2dva1lrlp7xa2pg1vvmziza41yp823gvx4y9fr0isy"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-rove))
+      (home-page "https://github.com/fukamachi/trivial-glob")
+      (synopsis "Shell-style glob pattern matching for Common Lisp")
+      (description
+       "This library provides shell-style glob pattern matching and
+filesystem globbing for Common Lisp.  Patterns support @code{*} and
+@code{?} wildcards, @code{**} for recursive directory descent,
+@code{[...]} character classes and @code{@{a,b@}} brace expansion.")
+      (license license:expat))))
+
+(define-public cl-trivial-glob
+  (sbcl-package->cl-source-package sbcl-trivial-glob))
+
+(define-public ecl-trivial-glob
+  (sbcl-package->ecl-package sbcl-trivial-glob))
+
 (define-public sbcl-trivial-gray-streams
   (let ((revision "1")
         (commit "2b3823edbc78a450db4891fd2b566ca0316a7876"))
