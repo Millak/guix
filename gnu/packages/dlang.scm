@@ -314,26 +314,29 @@ bootstrapping more recent compilers written in D.")
        (hidden? . #t)))))
 
 (define-public ldc
-  (package
-    (inherit ldc-bootstrap)
-    (arguments
-     (substitute-keyword-arguments
-       (strip-keyword-arguments '(#:tests?) (package-arguments ldc-bootstrap))
-       ((#:make-flags flags #f)
-        #~(append #$flags
-                  (list ;; Also build the test runner binaries.
-                        "ldc2-unittest" "all-test-runners")))
-       ((#:configure-flags flags #~'())
-        #~(append
-           (fold delete #$flags '("-DD_COMPILER_FLAGS=-fPIC"
-                                  "-DBUILD_SHARED_LIBS=OFF"))
-           '("-DBUILD_SHARED_LIBS=ON")))))
-    (native-inputs
-     (modify-inputs (package-native-inputs ldc-bootstrap)
-       (delete "gdmd")
-       (append ldc-bootstrap)))
-    (properties
-     (alist-delete 'hidden? (package-properties ldc-bootstrap)))))
+  (let ((base ldc-bootstrap))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments
+           (strip-keyword-arguments
+            '(#:tests?)
+            (package-arguments base))
+         ((#:make-flags flags #f)
+          #~(append #$flags
+                    (list ;; Also build the test runner binaries.
+                          "ldc2-unittest" "all-test-runners")))
+         ((#:configure-flags flags #~'())
+          #~(append
+             (fold delete #$flags '("-DD_COMPILER_FLAGS=-fPIC"
+                                    "-DBUILD_SHARED_LIBS=OFF"))
+             '("-DBUILD_SHARED_LIBS=ON")))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (delete "gdmd")
+         (append base)))
+      (properties
+       (alist-delete 'hidden? (package-properties base))))))
 
 
 ;; Reference D compiler
