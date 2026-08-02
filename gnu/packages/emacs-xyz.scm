@@ -2506,13 +2506,13 @@ face properties and allows configuration of faces and colors.")
 (define-public emacs-project
   (package
     (name "emacs-project")
-    (version "0.11.2")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/project-" version ".tar"))
        (sha256
-        (base32 "0gyjdqxsblsmh2higkr2a6vfl051hpqzm0pxrzwsg2766xmldgqk"))))
+        (base32 "0g7in5lzv21j4mrmqp60bl02gwrh2mrs6fw1ysj6pwaqlza9hw4w"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-xref))
     (home-page "https://elpa.gnu.org/packages/project.html")
