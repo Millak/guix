@@ -94,6 +94,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages kubernetes)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages pkg-config)
@@ -610,6 +611,102 @@ attachments, etc.")
     (description
      "This package provides a fuse-overlayfs plugin for rootless containerd on
 old Linux (not needed on modern Linux).")
+    (license license:asl2.0)))
+
+(define-public go-github-com-containerd-nydus-snapshotter
+  (package
+    (name "go-github-com-containerd-nydus-snapshotter")
+    (version "0.15.15")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containerd/nydus-snapshotter")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s0nk808dkk87s6fsj152x3f3pj3a3v31z3xnjkgijffsrvq6584"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/containerd/nydus-snapshotter"
+      ;; XXX: Check the rests.
+      #:test-subdirs
+      #~(list "config" "snapshot" "pkg/cache" "pkg/index" "pkg/store"
+              "pkg/remote" "pkg/stargz" "pkg/system" "pkg/backend"
+              "pkg/manager" "pkg/converter" "internal/flags" "pkg/supervisor"
+              "pkg/metrics/tool" "pkg/utils/parser" "pkg/utils/signals"
+              "pkg/converter/tool" "pkg/daemon/command" "pkg/remote/remotes"
+              "pkg/utils/registry" "cmd/nydus-overlayfs" "config/daemonconfig"
+              "pkg/utils/transport" "pkg/metrics/types/ttl"
+              "pkg/remote/remotes/docker" "pkg/remote/remotes/docker/auth"
+              "pkg/remote/remotes/docker/config")))
+    (native-inputs
+     (list go-github-com-sirupsen-logrus
+           go-github-com-stretchr-testify
+           go-github-com-urfave-cli-v2
+           go-gotest-tools-v3))
+    (propagated-inputs
+     (list go-dario-cat-mergo
+           go-github-com-adalogics-go-fuzz-headers
+           go-github-com-aliyun-aliyun-oss-go-sdk
+           go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
+           go-github-com-aws-aws-sdk-go-v2-feature-s3-transfermanager
+           go-github-com-aws-aws-sdk-go-v2-service-s3
+           go-github-com-containerd-cgroups-v3
+           go-github-com-containerd-containerd-api
+           go-github-com-containerd-containerd-v2
+           go-github-com-containerd-continuity
+           go-github-com-containerd-errdefs
+           go-github-com-containerd-fifo
+           go-github-com-containerd-log
+           go-github-com-containerd-nri
+           go-github-com-containerd-platforms
+           go-github-com-containerd-plugin
+           go-github-com-containerd-stargz-snapshotter
+           go-github-com-containerd-stargz-snapshotter-estargz
+           go-github-com-containers-ocicrypt
+           go-github-com-distribution-reference
+           go-github-com-docker-cli
+           go-github-com-freddierice-go-losetup
+           go-github-com-golang-groupcache
+           go-github-com-google-go-containerregistry
+           go-github-com-gorilla-mux
+           go-github-com-hashicorp-go-retryablehttp
+           go-github-com-karpeleslab-reflink
+           go-github-com-klauspost-compress
+           go-github-com-moby-locker
+           go-github-com-mohae-deepcopy
+           go-github-com-opencontainers-go-digest
+           go-github-com-opencontainers-image-spec
+           go-github-com-opencontainers-runtime-spec
+           go-github-com-pelletier-go-toml
+           go-github-com-pkg-errors
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-rs-xid
+           go-go-etcd-io-bbolt
+           go-go-opentelemetry-io-otel
+           go-golang-org-x-exp
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-google-golang-org-grpc
+           go-gopkg-in-natefinch-lumberjack-v2
+           go-k8s-io-api
+           go-k8s-io-apimachinery
+           go-k8s-io-client-go
+           go-k8s-io-cri-api
+           go-k8s-io-kubelet
+           go-k8s-io-utils
+           go-sigs-k8s-io-yaml))
+    (home-page "https://github.com/containerd/nydus-snapshotter")
+    (synopsis "Nydus snapshotter plugin for Containerd")
+    (description
+     "This package provides a Containerd snapshotter with data deduplication
+and lazy loading in P2P fashion.")
     (license license:asl2.0)))
 
 (define-public go-github-com-containerd-stargz-snapshotter
