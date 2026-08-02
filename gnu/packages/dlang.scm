@@ -103,188 +103,192 @@
       #:make-flags #~(list "all")       ; used as build targets
       #:tests? #f                       ; skip in the bootstrap
       #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-compiler-rt-library-discovery
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((clang-runtime (assoc-ref inputs "clang-runtime"))
-                    (system #$(or (%current-target-system)
-                                  (%current-system))))
-                (define (gnu-triplet->clang-arch system)
-                  (let ((system-prefix
-                         (car (string-tokenize
-                               system (char-set-complement (char-set #\-))))))
-                    (cond
-                     ((equal? system-prefix "i686") "i386")
-                     (#t system-prefix))))
-                ;; Coax LLVM into agreeing with Clang about system target
-                ;; naming.
-                (substitute* "driver/linker-gcc.cpp"
-                  (("triple.getArchName\\(\\)")
-                   (format #f "~s" (gnu-triplet->clang-arch system))))
-                ;; Augment the configuration of the ldc2 binaries so they can
-                ;; find the compiler-rt libraries they need to be linked with
-                ;; for the tests.
-                (substitute* (find-files "." "^ldc2.*\\.conf\\.in$")
-                  ((".*LIB_SUFFIX.*" all)
-                   (string-append all
-                                  "        \"" clang-runtime
-                                  "/lib/linux\",\n"))))))
-          (add-after 'unpack 'patch-paths-in-phobos
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "runtime/phobos/std/process.d"
-                (("/bin/sh") (which "sh"))
-                (("echo") (which "echo")))))
-          (add-after 'unpack 'patch-paths-in-tests
-            (lambda _
-              (substitute* "runtime/druntime/test/profile/Makefile"
-                (("/bin/bash") (which "bash")))
-              (substitute* "tests/driver/cli_CC_envvar.d"
-                (("cc") (which "clang")))
-              (substitute* "tests/linking/linker_switches.d"
-                (("echo") (which "echo")))
-              (substitute* "tests/dmd/dshell/test6952.d"
-                (("/usr/bin/env bash")
-                 (which "bash")))))
-          (add-after 'unpack 'disable-problematic-tests
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; Disable unittests in the following files.
-              (substitute* '("runtime/phobos/std/net/curl.d"
-                             "runtime/phobos/std/datetime/systime.d"
-                             "runtime/phobos/std/datetime/timezone.d")
-                (("version(unittest)") "version(skipunittest)")
-                ((" unittest") " version(skipunittest) unittest"))
-              ;; The following tests plugins we don't have.
-              (delete-file "tests/plugins/addFuncEntryCall/testPlugin.d")
-              (delete-file "tests/plugins/addFuncEntryCall/testPluginLegacy.d")
-              ;; This unit test requires networking, fails with
-              ;; "core.exception.RangeError@std/socket.d(778): Range
-              ;; violation".
-              (substitute* "runtime/phobos/std/socket.d"
-                (("assert\\(ih.addrList\\[0\\] == 0x7F_00_00_01\\);.*")
-                 ""))
+      (let* ((target-file
+              (lambda (pkg path)
+                (file-append (this-package-input pkg) path)))
+             (target-bin-sh (target-file "bash-minimal" "/bin/sh")))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-compiler-rt-library-discovery
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((clang-runtime (assoc-ref inputs "clang-runtime"))
+                      (system #$(or (%current-target-system)
+                                    (%current-system))))
+                  (define (gnu-triplet->clang-arch system)
+                    (let ((system-prefix
+                           (car (string-tokenize
+                                 system (char-set-complement (char-set #\-))))))
+                      (cond
+                       ((equal? system-prefix "i686") "i386")
+                       (#t system-prefix))))
+                  ;; Coax LLVM into agreeing with Clang about system target
+                  ;; naming.
+                  (substitute* "driver/linker-gcc.cpp"
+                    (("triple.getArchName\\(\\)")
+                     (format #f "~s" (gnu-triplet->clang-arch system))))
+                  ;; Augment the configuration of the ldc2 binaries so they can
+                  ;; find the compiler-rt libraries they need to be linked with
+                  ;; for the tests.
+                  (substitute* (find-files "." "^ldc2.*\\.conf\\.in$")
+                    ((".*LIB_SUFFIX.*" all)
+                     (string-append all
+                                    "        \"" clang-runtime
+                                    "/lib/linux\",\n"))))))
+            (add-after 'unpack 'patch-paths-in-phobos
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "runtime/phobos/std/process.d"
+                  (("/bin/sh") #$target-bin-sh)
+                  (("echo") (which "echo")))))
+            (add-after 'unpack 'patch-paths-in-tests
+              (lambda _
+                (substitute* "runtime/druntime/test/profile/Makefile"
+                  (("/bin/bash") #$target-bin-sh))
+                (substitute* "tests/driver/cli_CC_envvar.d"
+                  (("cc") #$target-bin-sh))
+                (substitute* "tests/linking/linker_switches.d"
+                  (("echo") (which "echo")))
+                (substitute* "tests/dmd/dshell/test6952.d"
+                  (("/usr/bin/env bash") #$target-bin-sh))))
+            (add-after 'unpack 'disable-problematic-tests
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Disable unittests in the following files.
+                (substitute* '("runtime/phobos/std/net/curl.d"
+                               "runtime/phobos/std/datetime/systime.d"
+                               "runtime/phobos/std/datetime/timezone.d")
+                  (("version(unittest)") "version(skipunittest)")
+                  ((" unittest") " version(skipunittest) unittest"))
+                ;; The following tests plugins we don't have.
+                (delete-file "tests/plugins/addFuncEntryCall/testPlugin.d")
+                (delete-file "tests/plugins/addFuncEntryCall/testPluginLegacy.d")
+                ;; This unit test requires networking, fails with
+                ;; "core.exception.RangeError@std/socket.d(778): Range
+                ;; violation".
+                (substitute* "runtime/phobos/std/socket.d"
+                  (("assert\\(ih.addrList\\[0\\] == 0x7F_00_00_01\\);.*")
+                   ""))
 
-              ;; These tests fail on riscv64-linux.
-              (substitute* "runtime/phobos/std/math/operations.d"
-                (("static assert\\(getNaNPayload\\(a\\)" all )
-                 (string-append "// " all)))
-              (substitute* "runtime/phobos/std/math/traits.d"
-                (("static assert\\(signbit\\(-.*\\.nan" all)
-                 (string-append "// " all)))
+                ;; These tests fail on riscv64-linux.
+                (substitute* "runtime/phobos/std/math/operations.d"
+                  (("static assert\\(getNaNPayload\\(a\\)" all )
+                   (string-append "// " all)))
+                (substitute* "runtime/phobos/std/math/traits.d"
+                  (("static assert\\(signbit\\(-.*\\.nan" all)
+                   (string-append "// " all)))
 
-              ;; The GDB tests suite fails; there are a few bug reports about
-              ;; it upstream.
-              (for-each delete-file (find-files "tests" "gdb.*\\.(c|d|sh)$"))
-              (delete-file "tests/dmd/runnable/b18504.d")
-              (substitute* "runtime/druntime/test/exceptions/Makefile"
-                ((".*TESTS\\+=rt_trap_exceptions_drt_gdb.*")
-                 ""))
-              ;; Unsupported with glibc-2.35.
-              (delete-file "tests/dmd/compilable/stdcheaders.c")
-              (delete-file "tests/dmd/compilable/test23958.c")
-              (delete-file "tests/dmd/runnable/test23889.c")
-              (delete-file "tests/dmd/runnable/test23402.d")
-              (delete-file "tests/dmd/runnable/helloc.c")
-              ;; Only works in 2024 and without SOURCE_DATE_EPOCH
-              (delete-file "tests/dmd/compilable/ddocYear.d")
-              ;; Drop gdb_dflags from the test suite.
-              (substitute* "tests/dmd/CMakeLists.txt"
-                (("\\$\\{gdb_dflags\\}") ""))
-              ;; The following tests fail on some systems, not all of
-              ;; which are tested upstream.
-              (with-directory-excursion "tests"
-                (cond
-                 (#$(or (target-x86-32?)
-                        (target-arm32?))
-                  (for-each delete-file
-                            '("PGO/profile_rt_calls.d"
-                              "codegen/mangling.d"
-                              "instrument/xray_check_pipeline.d"
-                              "instrument/xray_link.d"
-                              "instrument/xray_simple_execution.d"
-                              "sanitizers/msan_noerror.d"
-                              "sanitizers/msan_uninitialized.d"
-                              "dmd/runnable_cxx/cppa.d")))
-                 (#$(target-riscv64?)
-                  (for-each delete-file
-                            '("codegen/simd_alignment.d"
-                              "dmd/runnable/argufilem.d"
-                              "dmd/compilable/test23705.d"
-                              "dmd/fail_compilation/diag7420.d")))
-                 (#t '())))))
-          ;; The tests require to be built with Clang; build everything
-          ;; with it, for simplicity.
-          (add-before 'configure 'set-cc-and-cxx-to-use-clang
-            (lambda _
-              (setenv "CC" (which "clang"))
-              (setenv "CXX" (which "clang++"))))
-          (replace 'check
-            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
-              (when tests?
-                (let ((job-count (number->string
-                                  (or (and parallel-tests?
-                                           (parallel-job-count))
-                                      1))))
-                  ;; The test targets are tested separately to provide
-                  ;; finer-grained diagnostics (see:
-                  ;; https://raw.githubusercontent.com/ldc-developers/
-                  ;; ldc/master/.azure-pipelines/3-posix-test.yml)
-                  (display "running the ldc2 unit tests...\n")
-                  (invoke "ctest" "--output-on-failure" "-j" job-count
-                          "-R" "ldc2-unittest")
-                  (display "running the lit test suite...\n")
-                  (invoke "ctest" "--output-on-failure" "-j" job-count
-                          "-R" "lit-tests")
-                  (display "running the dmd test suite...\n")
-                  ;; This test has a race condition so run it with 1 core.
-                  (invoke "ctest" "--output-on-failure" "-j" "1"
-                          "-R" "dmd-testsuite")
-                  (display "running the defaultlib unit tests and druntime \
+                ;; The GDB tests suite fails; there are a few bug reports about
+                ;; it upstream.
+                (for-each delete-file (find-files "tests" "gdb.*\\.(c|d|sh)$"))
+                (delete-file "tests/dmd/runnable/b18504.d")
+                (substitute* "runtime/druntime/test/exceptions/Makefile"
+                  ((".*TESTS\\+=rt_trap_exceptions_drt_gdb.*")
+                   ""))
+                ;; Unsupported with glibc-2.35.
+                (delete-file "tests/dmd/compilable/stdcheaders.c")
+                (delete-file "tests/dmd/compilable/test23958.c")
+                (delete-file "tests/dmd/runnable/test23889.c")
+                (delete-file "tests/dmd/runnable/test23402.d")
+                (delete-file "tests/dmd/runnable/helloc.c")
+                ;; Only works in 2024 and without SOURCE_DATE_EPOCH
+                (delete-file "tests/dmd/compilable/ddocYear.d")
+                ;; Drop gdb_dflags from the test suite.
+                (substitute* "tests/dmd/CMakeLists.txt"
+                  (("\\$\\{gdb_dflags\\}") ""))
+                ;; The following tests fail on some systems, not all of
+                ;; which are tested upstream.
+                (with-directory-excursion "tests"
+                  (cond
+                   (#$(or (target-x86-32?)
+                          (target-arm32?))
+                    (for-each delete-file
+                              '("PGO/profile_rt_calls.d"
+                                "codegen/mangling.d"
+                                "instrument/xray_check_pipeline.d"
+                                "instrument/xray_link.d"
+                                "instrument/xray_simple_execution.d"
+                                "sanitizers/msan_noerror.d"
+                                "sanitizers/msan_uninitialized.d"
+                                "dmd/runnable_cxx/cppa.d")))
+                   (#$(target-riscv64?)
+                    (for-each delete-file
+                              '("codegen/simd_alignment.d"
+                                "dmd/runnable/argufilem.d"
+                                "dmd/compilable/test23705.d"
+                                "dmd/fail_compilation/diag7420.d")))
+                   (#t '())))))
+            ;; The tests require to be built with Clang; build everything
+            ;; with it, for simplicity.
+            (add-before 'configure 'set-cc-and-cxx-to-use-clang
+              (lambda _
+                (setenv "CC" (which "clang"))
+                (setenv "CXX" (which "clang++"))))
+            (replace 'check
+              (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+                (when tests?
+                  (let ((job-count (number->string
+                                    (or (and parallel-tests?
+                                             (parallel-job-count))
+                                        1))))
+                    ;; The test targets are tested separately to provide
+                    ;; finer-grained diagnostics (see:
+                    ;; https://raw.githubusercontent.com/ldc-developers/
+                    ;; ldc/master/.azure-pipelines/3-posix-test.yml)
+                    (display "running the ldc2 unit tests...\n")
+                    (invoke "ctest" "--output-on-failure" "-j" job-count
+                            "-R" "ldc2-unittest")
+                    (display "running the lit test suite...\n")
+                    (invoke "ctest" "--output-on-failure" "-j" job-count
+                            "-R" "lit-tests")
+                    (display "running the dmd test suite...\n")
+                    ;; This test has a race condition so run it with 1 core.
+                    (invoke "ctest" "--output-on-failure" "-j" "1"
+                            "-R" "dmd-testsuite")
+                    (display "running the defaultlib unit tests and druntime \
 integration tests...\n")
-                  (invoke
-                   "ctest" "--output-on-failure" "-j" job-count "-E"
-                   (string-append
-                    "dmd-testsuite|lit-tests|ldc2-unittest"
-                    #$@(cond
-                        ((target-aarch64?)
-                         #~("|std.internal.math.gammafunction-shared"
-                            "|std.math.exponential-shared"
-                            "|std.internal.math.gammafunction-debug-shared"
-                            "|druntime-test-exceptions-debug"))
-                        ((target-riscv64?)
-                         #~("|std.internal.math.errorfunction-shared"
-                            "|std.internal.math.gammafunction-shared"
-                            "|std.math.exponential-shared"
-                            "|std.math.trigonometry-shared"
-                            "|std.mathspecial-shared"
-                            "|std.socket-shared"
-                            "|std.internal.math.errorfunction-debug-shared"
-                            "|std.internal.math.gammafunction-debug-shared"
-                            "|std.math.operations-debug-shared"
-                            "|std.math.exponential-debug-shared"
-                            "|std.math.traits-debug-shared"
-                            "|std.mathspecial-debug-shared"
-                            "|std.math.trigonometry-debug-shared"
-                            "|std.socket-debug-shared"
-                            ;; These four hang forever
-                            "|core.thread.fiber-shared"
-                            "|core.thread.osthread-shared"
-                            "|core.thread.fiber-debug-shared"
-                            "|core.thread.osthread-debug-shared"))
-                        (#t #~()))))))))
-          (replace 'build
-            ;; Building with Make would result in "make: *** [Makefile:166:
-            ;; all] Error 2".
-            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
-              (let ((job-count (number->string (or (and parallel-build?
-                                                        (parallel-job-count))
-                                                   1))))
-                (apply invoke "cmake" "--build" "." "-j" job-count
-                       "--target" make-flags))))
-          (replace 'install
-            (lambda _
-              (invoke "cmake" "--install" "."))))))
+                    (invoke
+                     "ctest" "--output-on-failure" "-j" job-count "-E"
+                     (string-append
+                      "dmd-testsuite|lit-tests|ldc2-unittest"
+                      #$@(cond
+                          ((target-aarch64?)
+                           #~("|std.internal.math.gammafunction-shared"
+                              "|std.math.exponential-shared"
+                              "|std.internal.math.gammafunction-debug-shared"
+                              "|druntime-test-exceptions-debug"))
+                          ((target-riscv64?)
+                           #~("|std.internal.math.errorfunction-shared"
+                              "|std.internal.math.gammafunction-shared"
+                              "|std.math.exponential-shared"
+                              "|std.math.trigonometry-shared"
+                              "|std.mathspecial-shared"
+                              "|std.socket-shared"
+                              "|std.internal.math.errorfunction-debug-shared"
+                              "|std.internal.math.gammafunction-debug-shared"
+                              "|std.math.operations-debug-shared"
+                              "|std.math.exponential-debug-shared"
+                              "|std.math.traits-debug-shared"
+                              "|std.mathspecial-debug-shared"
+                              "|std.math.trigonometry-debug-shared"
+                              "|std.socket-debug-shared"
+                              ;; These four hang forever
+                              "|core.thread.fiber-shared"
+                              "|core.thread.osthread-shared"
+                              "|core.thread.fiber-debug-shared"
+                              "|core.thread.osthread-debug-shared"))
+                          (#t #~()))))))))
+            (replace 'build
+              ;; Building with Make would result in "make: *** [Makefile:166:
+              ;; all] Error 2".
+              (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+                (let ((job-count (number->string (or (and parallel-build?
+                                                          (parallel-job-count))
+                                                     1))))
+                  (apply invoke "cmake" "--build" "." "-j" job-count
+                         "--target" make-flags))))
+            (replace 'install
+              (lambda _
+                (invoke "cmake" "--install" ".")))))))
     (inputs
-     (list zlib))
+     (list bash-minimal
+           zlib))
     (native-inputs
      (list (make-lld-wrapper lld-17 #:lld-as-ld? #t)
            clang-17                     ; propagates llvm and clang-runtime
