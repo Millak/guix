@@ -921,7 +921,7 @@ configuration changes, e.g. after splitting or deleting a window.")
 (define-public emacs-ben
   (package
     (name "emacs-ben")
-    (version "0.12.13")
+    (version "0.12.14")
     (source
      (origin
        (method git-fetch)
@@ -930,7 +930,7 @@ configuration changes, e.g. after splitting or deleting a window.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rzs21l032awcpyq7alh2xy7ibkzqlhmph9jx8rbs6ml8wzyc0l6"))))
+        (base32 "17pcdzdlsah3103y2q3hikv28hcvb0jny5zg5lv364dx1ilva8bq"))))
     (build-system emacs-build-system)
     (arguments
      (list
