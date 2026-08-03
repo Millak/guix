@@ -1932,7 +1932,15 @@ with JavaScript and C++.")))
                     ;; This test fails starting with 6.6.3 (see:
                     ;; https://bugreports.qt.io/browse/QTBUG-123748), for
                     ;; unknown reasons.
-                    "tst_qquickiconimage") "|")
+                    "tst_qquickiconimage"
+
+                    ;; These tests are slow (> 2 minutes) skip them (see:
+                    ;; <https://qt-project.atlassian.net/browse/QTBUG-148724>).
+                    "tst_qquickpopup"
+                    "tst_qquickmenu"
+                    "tst_qquickdrawer"
+                    "tst_fluentwinui3")
+                   "|")
                   ")")))))
           (add-after 'install 'delete-installed-tests
             (lambda _
