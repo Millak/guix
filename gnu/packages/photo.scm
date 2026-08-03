@@ -348,7 +348,7 @@ phones and memory cards and generate meaningful file and folder names.")
 (define-public libcamera-minimal
   (package
     (name "libcamera-minimal")
-    (version "0.6.0")
+    (version "0.7.2")
     (source
      (origin
        (method git-fetch)
@@ -360,7 +360,7 @@ phones and memory cards and generate meaningful file and folder names.")
                  "libcamera-ipa_manager-disable-signature-verification.patch"))
        (file-name (git-file-name "libcamera" version))
        (sha256
-        (base32 "0g6rphsa1hi9y22l2vw5cj75bf57clq3cggviwd1bnjhpp61nryc"))))
+        (base32 "0s8ipm306p9lxk6pws8x44jih4g48yxilvr5z2ka5n337mwn84dy"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
