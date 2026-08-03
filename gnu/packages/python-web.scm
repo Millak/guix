@@ -14426,7 +14426,7 @@ pattern.")
 (define-public python-fastapi-pagination-minimal
   (package
     (name "python-fastapi-pagination-minimal")
-    (version "0.15.6")
+    (version "0.15.15")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -14435,7 +14435,7 @@ pattern.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ndazaqi1na0lj6fi42d7mi9lmpxdak0wq0pd97fb3b23ml8rlg6"))))
+                "0jfmk5m2yrki9rw9izci2fxamam45mk36gl77rwbd5hnngkqbahv"))))
     (build-system pyproject-build-system)
     ;; We run the tests in python-fastapi-pagination only.
     (arguments (list #:tests? #false))
