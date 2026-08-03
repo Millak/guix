@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2026 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -159,6 +160,31 @@ captures the written output as a string."
                                       #:strict? #f)
                  (fresh-sample-json))))
     (equal? (assoc-ref result "name") "my-package")))
+
+;;;
+;;; add-json-fields
+;;;
+(test-equal "add-json-fields"
+  #("test")
+  (assoc-ref (modify-json*
+                 (add-json-fields '(("exclude" . #("test")))))
+             "exclude"))
+
+(test-equal "add-json-fields, recursive"
+  "^25.9.2"
+  (assoc-ref (assoc-ref (modify-json*
+                            (add-json-fields '(("devDependencies2.@types/node"
+                                                . "^25.9.2"))))
+                        "devDependencies2")
+             "@types/node"))
+
+(test-equal "add-json-fields, recursive, partially preexisting"
+  "^9.9.9"
+  (assoc-ref (assoc-ref (modify-json*
+                            (add-json-fields '(("devDependencies.@types/dummy"
+                                                . "^9.9.9"))))
+                        "devDependencies")
+             "@types/dummy"))
 
 ;;;
 ;;; modify-json-fields
