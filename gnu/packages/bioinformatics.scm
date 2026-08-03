@@ -19815,21 +19815,16 @@ altering the counts or PCA space.")
 (define-public python-drep
   (package
     (name "python-drep")
-    ;; PyPI has no tests, Git does not tag the latest version.
-    (properties '((commit . "7b4b8fbf9dfdfef61caf949f1aa1d4fc3be61d5a")
-                  (revision . "0")))
-    (version (git-version "3.6.2"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "3.7.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/MrOlm/drep")
-              (commit (assoc-ref properties 'commit))))
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rys4r9mmknzayvqcsdpgqi9sigl1x0a1nh0x8h2sjz13qqmklly"))))
+        (base32 "01dnh8rdhz6pzppqjify2v5a10gq5pcbcli5x16a0yi09bnm7nk1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
