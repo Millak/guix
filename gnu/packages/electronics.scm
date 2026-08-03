@@ -3825,7 +3825,10 @@ form of AXI, AXI lite, and AXI stream modules.")
                               #$(version-major+minor (package-version python))
                               "/site-packages/edalize/templates")))))))
     (native-inputs
-     (list python-pytest python-setuptools python-setuptools-scm))
+     (list python-pyparsing
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
      (list python-importlib-metadata python-jinja2 python-pandas))
     (home-page "https://github.com/olofk/edalize/")
