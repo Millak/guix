@@ -10607,7 +10607,6 @@ playing media, scanning, and much more.")
    (name "gnome-meta-core-utilities")
    (propagated-inputs
      (list baobab
-           cheese
            decibels
            epiphany
            file-roller
@@ -10632,6 +10631,7 @@ playing media, scanning, and much more.")
            papers
            simple-scan
            showtime
+           snapshot
            xdg-desktop-portal-gnome
            yelp))))
 
