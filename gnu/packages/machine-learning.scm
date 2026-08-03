@@ -3020,7 +3020,6 @@ standard feature selection algorithms.")
   (package
     (name "python-cleanlab")
     (version "2.9.0")
-    ;; The version on pypi does not come with tests.
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3051,7 +3050,13 @@ standard feature selection algorithms.")
               ;; AssertionError: assert 'Annotators [1] did not label any
               ;; examples.' in 'labels_multiannotator cannot have columns with
               ;; all NaN, each annotator must annotator at least one example.
-              "--deselect=tests/test_multiannotator.py::test_label_quality_scores_multiannotator")
+              "--deselect=tests/test_multiannotator.py::test_label_quality_scores_multiannotator"
+              ;; These tests were not updated to the last numpy update.
+              ;; Try enabling them on the next update.
+              (string-append "--deselect=tests/test_object_detection.py::"
+                             "test_return_issues_ranked_by_scores")
+              (string-append "--deselect=tests/test_object_detection.py::"
+                             "test_bad_input_find_label_issues_internal"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-datasets
