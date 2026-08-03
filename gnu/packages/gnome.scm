@@ -10822,6 +10822,7 @@ playing media, scanning, and much more.")
            decibels
            epiphany
            file-roller
+           foundry
            gnome-calculator
            gnome-calendar
            gnome-characters
