@@ -1876,10 +1876,13 @@ with JavaScript and C++.")))
                   "("
                   (string-join
                    (list
-                    ;; The 'tst_qmltyperegistrar' tests may fail
+                    ;; The 'tst_qmltyperegistrar' test may fail
                     ;; non-deterministically (see:
                     ;; https://bugreports.qt.io/browse/QTBUG-123634).
                     "tst_qmltyperegistrar"
+                    ;; The 'tst_qqmlqt' test may fail non-deterministically
+                    ;; (see: <https://qt-project.atlassian.net/browse/QTBUG-148723>).
+                    "tst_qqmlqt"
                     ;; This test is marked as flaky upstream (see:
                     ;; https://bugreports.qt.io/browse/QTBUG-101488).
                     "tst_qquickfiledialogimpl"
