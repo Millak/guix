@@ -4220,50 +4220,6 @@ and custom quantization matrices.")
 from sites like Twitch.tv and pipes them into a video player of choice.")
     (license license:bsd-2)))
 
-;; XXX: This package has not been updated in 6 years, is related to an web
-;; application and is not tested, it's most likely not working, but I haven't
-;; tested it.  Consider removal.
-(define-public twitchy
-  (let ((commit "9beb36d80b16662414129693e74fa3a2fd97554e")) ; 3.4 has no tag
-    (package
-      (name "twitchy")
-      (version (git-version "3.4" "1" commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/BasioMeusPuga/twitchy")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0di03h1j9ipp2bbnxxlxz07v87icyg2hmnsr4s7184z5ql8kpzr7"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:tests? #f                     ; No tests.
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'patch-paths
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* "twitchy/twitchy_play.py"
-                  (("\"streamlink ")
-                   (format #f "\"~a "
-                           (search-input-file inputs "/bin/streamlink"))))))
-            (add-before 'sanity-check 'check-setup
-              (lambda _
-                (setenv "HOME" (getcwd)))) ;Needs to write to ‘$HOME’.
-            (add-after 'install 'install-rofi-plugin
-              (lambda _
-                (install-file "plugins/rofi-twitchy"
-                              (string-append #$output "/bin")))))))
-      (native-inputs (list python-setuptools))
-      (inputs (list python-requests streamlink))
-      (home-page "https://github.com/BasioMeusPuga/twitchy")
-      (synopsis "Command-line interface for Twitch.tv")
-      (description
-       "This package provides a command-line interface for Twitch.tv")
-      (license license:gpl3+))))
-
 (define-public mlt
   (package
     (name "mlt")

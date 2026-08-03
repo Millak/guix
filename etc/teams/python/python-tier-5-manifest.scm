@@ -56,7 +56,6 @@
        "python-transient"
        "qmpbackup"
        "python-pynvim"
-       "twitchy"
        "qtfaststart"
        "openshot"
        "ytcc"
