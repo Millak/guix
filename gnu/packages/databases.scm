@@ -1708,23 +1708,9 @@ pictures, sounds, or video.")
   (package
     (inherit postgresql-15)
     (name "postgresql")
-    (version "14.20")
-    (replacement postgresql-14.23)
-    (source (origin
-              (inherit (package-source postgresql-15))
-              (uri (string-append "https://ftp.postgresql.org/pub/source/v"
-                                  version "/postgresql-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0sv45dsmyplfys6dfdjdwmrczl46s82x35xdh311nxj02q7z29vm"))))))
-
-(define-public postgresql-14.23
-  (package
-    (inherit postgresql-14)
-    (name "postgresql")
     (version "14.23")
     (source (origin
-              (inherit (package-source postgresql-14))
+              (inherit (package-source postgresql-15))
               (uri (string-append "https://ftp.postgresql.org/pub/source/v"
                                   version "/postgresql-" version ".tar.bz2"))
               (sha256
