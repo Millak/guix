@@ -1572,7 +1572,8 @@ totally avoiding a sort or shuffle operation.  @code{flox} can use either
     (native-inputs
      (list python-hatchling
            python-hatch-vcs
-           python-pytest))
+           python-pytest
+           python-sympy))
     (propagated-inputs
      (list python-interface-meta
            python-narwhals
