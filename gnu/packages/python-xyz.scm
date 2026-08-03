@@ -17748,13 +17748,16 @@ files.")
 (define-public python-flake8-pyi
   (package
     (name "python-flake8-pyi")
-    (version "24.9.0")
+    (version "26.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "flake8_pyi" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ambv/flake8-pyi")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1n8cqbqq9cfyn952kwqqs4s7lcyycgr829ymxnplg0cm49877yv4"))))
+        (base32 "006shfi8a99ysfac5s7fizx8f5w9hz3pl551kp9q1883rh1rfd5m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -17766,14 +17769,15 @@ files.")
               (substitute* "pyproject.toml"
                 (("-nauto") "")))))))
     (native-inputs
-     (list python-hatchling
+     (list python-hatch-vcs
+           python-hatchling
            python-pytest))
     (propagated-inputs
      (list python-attrs
            python-flake8
            python-pyflakes))
     (home-page "https://github.com/ambv/flake8-pyi")
-    (synopsis "Flake8 plugin that provides specializations for type hinting stub files")
+    (synopsis "Flake8 plugin for type hinting stub files")
     (description
      "This package contains a plugin that provides specializations for type
 hinting stub files, especially interesting for linting typeshed.  It adds the
