@@ -1876,54 +1876,6 @@ modes were all designed for making reliable, confirmed QSOs under extreme
 weak-signal conditions.")
     (license license:gpl3)))
 
-(define-public jtdx
-  (package
-    (name "jtdx")
-    (version "2.2.158")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/jtdx-project/jtdx")
-             (commit "158")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1lw9q7ggh2jlasipl3v5pkbabysjr6baw15lnmg664ah3fwdrvnx"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (append (list asciidoc gfortran pkg-config qttools-5)
-             (if (supported-package? ruby-asciidoctor/minimal)
-                 (list ruby-asciidoctor/minimal)
-                 '())))
-    (inputs
-     (list
-      boost
-      fftw
-      fftwf
-      jtdx-hamlib
-      libusb
-      qtbase-5
-      qtwebsockets-5
-      qtmultimedia-5
-      qtserialport-5
-      qtwayland-5))
-    (arguments
-     `(,@(if (this-package-native-input "ruby-asciidoctor")
-             '()
-             `(#:configure-flags '("-DWSJT_GENERATE_DOCS=OFF")))
-       #:tests? #f)) ; No test suite
-    (synopsis "Weak-signal ham radio communication program, forked from WSJTX")
-    (description
-     "JTDX means \"JT,T10 and FT8 and FT4 modes for DXing\", it is being
-developed with main focus on the sensitivity and decoding efficiency, both, in
-overcrowded and half empty HF band conditions.
-
-It is modified WSJT-X software forked from WSJT-X r6462.  JTDX supports JT9,
-JT65, T10, FT8 and FT4 © digital modes for HF amateur radio communication,
-focused on DXing and being shaped by community of DXers.JTDX")
-    (home-page "https://www.jtdx.tech/en/")
-    (license license:gpl3)))
-
 (define-public js8call
   (package
     (name "js8call")
