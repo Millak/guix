@@ -186,6 +186,15 @@ captures the written output as a string."
                         "devDependencies")
              "@types/dummy"))
 
+(test-error "add-json-fields, preexisting field"
+  &modify-json-preexisting-key-error
+  (modify-json* (add-json-fields '(("name" . "duplicate")))))
+
+(test-error "add-json-fields, preexisting multi-level field"
+  &modify-json-preexisting-key-error
+  (modify-json* (add-json-fields '(("devDependencies.qux"
+                                    . "^9.0.0")))))
+
 ;;;
 ;;; modify-json-fields
 ;;;

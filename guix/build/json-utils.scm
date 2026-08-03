@@ -4,6 +4,7 @@
 ;;; Copyright © 2021, 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2024 Daniel Khodabakhsh <d.khodabakhsh@gmail.com>
 ;;; Copyright © 2026 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,7 +45,13 @@
             add-json-fields
 
             &modify-json-invalid-field-value-error
-            &modify-json-missing-key-error))
+            modify-json-invalid-field-value-error?
+
+            &modify-json-missing-key-error
+            modify-json-missing-key-error?
+
+            &modify-json-preexisting-key-error
+            modify-json-preexisting-key-error?))
 
 ;;;
 ;;; JSON modification procedures
@@ -123,6 +130,11 @@ as '(#:foo 1 #:bar 2)."
   (key modify-json-missing-key-error-key)
   (data modify-json-missing-key-error-data))
 
+(define-condition-type &modify-json-preexisting-key-error &modify-json-error
+  modify-json-preexisting-key-error?
+  (key modify-json-preexisting-key-error-key)
+  (data modify-json-preexisting-key-error-data))
+
 (define* (modify-json-fields fields field-modifier
                              #:key
                              (field-path-mapper identity)
@@ -143,8 +155,10 @@ argument without changing it is a no-op.
 
 FIELD-PATH-MAPPER is a procedure which instructs where the field-path is
 located within the field structure.  INSERT? allows the creation of the field
-and any missing intermediate fields, while STRICT? causes an error to be
-thrown if the exact field-path is not found in the data."
+and any missing intermediate fields.  STRICT? raises a
+@code{&modify-json-missing-key-error} condition if the exact field-path is not
+found in the data, or a @code{&modify-json-preexisting-key-error} when the key
+already exists when inserting."
   (lambda (package)
     (fold
      (lambda (field package)
@@ -165,24 +179,34 @@ invalid field value provided, expected string or list of strings, got ~s~%")
                     (field-path field-path))
            (let* ((key (car field-path))
                   (field-missing? (not (assoc key data)))
+                  (field-leaf? (= 1 (length field-path)))
                   (data (if (and field-missing? insert?)
                             (acons key '() data)
                             data)))
-             (if (and field-missing? (not insert?))
-                 (if strict?
+             (when strict?
+               (if insert?
+                   (when (and field-leaf? (not field-missing?))
+                     (raise (make-compound-condition
+                             (condition (&modify-json-preexisting-key-error
+                                         (key key)
+                                         (data data)))
+                             (formatted-message
+                              (G_ "key ~s already exists in data: ~y~%")
+                              key data))))
+                   (when field-missing?
                      (raise (make-compound-condition
                              (condition (&modify-json-missing-key-error
                                          (key key)
                                          (data data)))
                              (formatted-message
                               (G_ "key ~s was not found in data: ~y~%")
-                              key data)))
-                     data)
-                 (if (= (length field-path) 1)
-                     (field-modifier field data key)
-                     (assoc-set! data key
-                                 (loop (assoc-ref data key)
-                                       (cdr field-path)))))))))
+                              key data))))))
+
+             (if field-leaf?
+                 (field-modifier field data key)
+                 (assoc-set! data key
+                             (loop (assoc-ref data key)
+                                   (cdr field-path))))))))
      package
      fields)))
 
