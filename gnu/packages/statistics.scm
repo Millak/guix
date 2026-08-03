@@ -1399,20 +1399,25 @@ Meier, Nelson Aalen and regression.")
 (define-public python-mapie
   (package
     (name "python-mapie")
-    (version "1.3.0")
+    (version "1.4.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "mapie" version))
               (sha256
                (base32
-                "1qh7a4cm67jq7ip7j8225w44x9vv2yqgakwnnj7bhjkvcvfn1iwl"))))
+                "1p62rm70v81rywscqzpkm17x9r9r88gcskv54r5g6fhvm6k4l5rx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags #~(list "--pyargs" "mapie")))
-    (native-inputs (list python-pandas python-pytest python-setuptools
-                         python-wheel))
-    (propagated-inputs (list python-numpy python-scikit-learn))
+    (native-inputs
+     (list python-pandas
+           python-pypa-build
+           python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs (list python-numpy python-scikit-learn python-scipy))
     (home-page "https://github.com/scikit-learn-contrib/MAPIE")
     (synopsis "Module for estimating prediction intervals")
     (description "MAPIE allows you to easily estimate prediction intervals
