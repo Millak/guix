@@ -745,7 +745,7 @@ engine.")
 (define-public python-onnx-ir
   (package
     (name "python-onnx-ir")
-    (version "0.1.15")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -754,7 +754,7 @@ engine.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dlml3ajv217n3rjx19wqjvh8mxsg9yvkqcxb4rv7qgv7mzr51zk"))))
+        (base32 "145frvf8cpyvvwc5dz8z6y9g55qdqv1q2bcrvhmx96rv4433rnmx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
