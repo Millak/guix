@@ -12116,7 +12116,7 @@ meson.project_source_root() / 'Cargo.toml',"))
                               '())))
     (inputs (cons* bash-minimal
                    glib
-                   glycin-loaders
+                   libglycin
                    gst-plugins-bad
                    gst-plugins-good
                    `(,gst-plugins-rs "video")
