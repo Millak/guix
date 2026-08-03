@@ -1654,46 +1654,6 @@ command line arguments or via environment variables.
     (license (list license:expat       ;; main license
                    license:asl2.0))))  ;; internal/pidfile
 
-(define-public qjson
-  (package
-    (name "qjson")
-    (version "0.9.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/flavio/qjson")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1f4wnxzx0qdmxzc7hqk28m0sva7z9p9xmxm6aifvjlp0ha6pmfxs"))))
-    (build-system cmake-build-system)
-    (arguments
-     ;; The tests require a running X server.
-     `(#:configure-flags '("-DQJSON_BUILD_TESTS=ON"
-                           "-DCMAKE_CXX_FLAGS=-std=gnu++11 -fPIC")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-broken-test
-           (lambda _
-             ;; FIXME: One test fails.  See
-             ;; https://github.com/flavio/qjson/issues/105
-             (substitute* "tests/scanner/testscanner.cpp"
-               (("QTest::newRow\\(\"too large exponential\"\\)" line)
-                (string-append "//" line)))
-             #t))
-         (add-before 'check 'render-offscreen
-           (lambda _ (setenv "QT_QPA_PLATFORM" "offscreen") #t)))))
-    (inputs
-     (list qtbase-5))
-    (home-page "https://qjson.sourceforge.net")
-    (synopsis "Library that maps JSON data to QVariant objects")
-    (description "QJson is a Qt-based library that maps JSON data to
-@code{QVariant} objects.  JSON arrays will be mapped to @code{QVariantList}
-instances, while JSON's objects will be mapped to @code{QVariantMap}.")
-    ;; Only version 2.1 of the license
-    (license license:lgpl2.1)))
-
 (define-public qoauth
   (package
     (name "qoauth")
