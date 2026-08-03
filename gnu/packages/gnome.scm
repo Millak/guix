@@ -10530,7 +10530,7 @@ associations for GNOME.")
 (define-public libgovirt
   (package
     (name "libgovirt")
-    (version "0.3.9")
+    (version "0.3.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -10538,7 +10538,7 @@ associations for GNOME.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0z118di7cg654f5zb8xn5w60ghgqngsc1p7izr1pw01dkxbw6bxi"))))
+                "0zmg33rm8mrza3ghj48as68s36yyi6v55hd91rka3f0w16siy708"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t
