@@ -1,0 +1,91 @@
+Adopting changes (rejected elm.cabal reapplied) from:
+https://sources.debian.org/data/main/e/elm-compiler/0.19.1-5/debian/patches/0002-bump-ansi-wl-pprint-dependency-fix-build.patch
+
+From: Hilko Bengen <bengen@debian.org>
+Date: Thu, 28 Nov 2024 01:24:16 +0000
+Subject: bump ansi-wl-pprint dependency, fix build
+
+ANSI support is still missing; until that is fixed, elm reactor won't
+output colored error messages.
+---
+ compiler/src/Reporting/Doc.hs | 21 +++++++++++++--------
+ elm.cabal                     |  4 +++-
+ 2 files changed, 16 insertions(+), 9 deletions(-)
+
+diff --git a/compiler/src/Reporting/Doc.hs b/compiler/src/Reporting/Doc.hs
+index 26c1551..99d1f49 100644
+--- a/compiler/src/Reporting/Doc.hs
++++ b/compiler/src/Reporting/Doc.hs
+@@ -48,10 +48,12 @@ import Prelude hiding (cycle)
+ import qualified Data.List as List
+ import Data.Monoid ((<>))
+ import qualified Data.Name as Name
++import qualified Data.Text as Text
+ import qualified System.Console.ANSI.Types as Ansi
+ import qualified System.Info as Info
+ import System.IO (Handle)
+ import qualified Text.PrettyPrint.ANSI.Leijen as P
++import qualified Prettyprinter as PP
+ 
+ import qualified Data.Index as Index
+ import qualified Elm.Package as Pkg
+@@ -309,26 +311,29 @@ data Color
+ toJsonHelp :: Style -> [String] -> P.SimpleDoc -> [E.Value]
+ toJsonHelp style revChunks simpleDoc =
+   case simpleDoc of
+-    P.SFail ->
++    PP.SFail ->
+       error $
+         "according to the main implementation, @SFail@ can not\
+         \ appear uncaught in a rendered @SimpleDoc@"
+ 
+-    P.SEmpty ->
++    PP.SEmpty ->
+       [ encodeChunks style revChunks ]
+ 
+-    P.SChar char rest ->
++    PP.SChar char rest ->
+       toJsonHelp style ([char] : revChunks) rest
+ 
+-    P.SText _ string rest ->
+-      toJsonHelp style (string : revChunks) rest
++    PP.SText _ text rest ->
++      toJsonHelp style (Text.unpack text : revChunks) rest
+ 
+-    P.SLine indent rest ->
++    PP.SLine indent rest ->
+       toJsonHelp style (replicate indent ' ' : "\n" : revChunks) rest
+ 
+-    P.SSGR sgrs rest ->
+-      encodeChunks style revChunks : toJsonHelp (sgrToStyle sgrs style) [] rest
++    -- FIXME need to figure out how to add ANSI SGR handling here
++    PP.SAnnPop rest ->
++      toJsonHelp style revChunks rest
+ 
++    PP.SAnnPush _ann rest ->
++      toJsonHelp style revChunks rest
+ 
+ sgrToStyle :: [Ansi.SGR] -> Style -> Style
+ sgrToStyle sgrs style@(Style bold underline color) =
+diff --git a/elm.cabal b/elm.cabal
+index 144fada..de91020 100644
+--- a/elm.cabal
++++ b/elm.cabal
+@@ -204,7 +204,8 @@
+ 
+     Build-depends:
+         ansi-terminal >= 0.8 && < 0.9,
+-        ansi-wl-pprint >= 0.6.8 && < 0.7,
++        ansi-wl-pprint >= 1,
++        prettyprinter,
+         base >=4.11 && <5,
+         binary >= 0.8 && < 0.9,
+         bytestring >= 0.9 && < 0.11,
+@@ -231,6 +232,7 @@
+         snap-core,
+         snap-server,
+         template-haskell,
++        text,
+         time >= 1.9.1,
+         unordered-containers,
+         utf8-string,

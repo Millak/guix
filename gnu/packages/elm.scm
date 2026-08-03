@@ -2,6 +2,7 @@
 ;;; Copyright © 2019 Robert Vollmert <rob@vllmrt.net>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2026 Konstantin Suntsov <protvin@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,9 +56,10 @@
        (sha256
         (base32 "1rdg3xp3js9xadclk3cdypkscm5wahgsfmm4ldcw3xswzhw6ri8w"))
        (patches
-        (search-patches "elm-reactor-static-files.patch"
+        (search-patches "elm-bump-ansi-wl-pprint-dependency-fix-build.patch"
+                        "elm-ghc9.2.patch"
                         "elm-offline-package-registry.patch"
-                        "elm-ghc9.2.patch"))))
+                        "elm-reactor-static-files.patch"))))
     (build-system haskell-build-system)
     (arguments
      (list
