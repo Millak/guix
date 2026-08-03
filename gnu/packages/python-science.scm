@@ -2407,13 +2407,16 @@ support for DICOM.")
 (define-public python-numba-stats
   (package
     (name "python-numba-stats")
-    (version "1.11.0")
+    (version "1.12.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "numba_stats" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scikit-hep/numba-stats")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1m5gwrc3liqydpix5ckyc7s5ysvgvinbznnkcvk2xjz13lwfy2s8"))))
+        (base32 "0fv3bdpsnjirhd8wqvivfsbym6l3br6p26nr104q07144xahyxw4"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
