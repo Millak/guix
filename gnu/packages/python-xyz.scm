@@ -7737,8 +7737,10 @@ particular date or index, if possible.")
       #:test-backend #~'custom
       #:test-flags                      ; Taken from tox.ini.
       #~(list "pifpaf" "-e" "python" "run" "etcd" "--cluster" "--" "pytest")))
-    (propagated-inputs (list python-grpcio python-protobuf python-tenacity))
-    (native-inputs (list python-mock python-pifpaf python-pytest python-setuptools))
+    (propagated-inputs
+     (list python-grpcio python-protobuf python-six python-tenacity))
+    (native-inputs
+     (list python-mock python-pifpaf python-pytest python-setuptools))
     (home-page "https://github.com/kragniz/python-etcd3")
     (synopsis "Python client for the etcd3 API")
     (description
