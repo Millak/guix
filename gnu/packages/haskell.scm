@@ -27,7 +27,6 @@
 ;;; Copyright © 2024 Gábor Stefanik <netrolller.3d@gmail.com>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Yarl Baudig <yarl-baudig@mailoo.org>
-;;; Copyright © 2026 Thiago Negri <evohunz@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2128,7 +2127,7 @@ interactive environment for the functional language Haskell.")
     (package
       (inherit base)
       (name "ghc")
-      (version "9.10.3")
+      (version "9.10.2")
       (source
         (origin
           (method url-fetch)
@@ -2136,15 +2135,11 @@ interactive environment for the functional language Haskell.")
                               "/ghc-" version "-src.tar.xz"))
           (sha256
             (base32
-             "16n5xdw5h98rj61ij51syhfc40bw1mwnm7ccpqd78yqbkr5qcrnj"))))
+             "1pm84cgr3yg99r3srdjllgz6zig8h7dbwa597srwcnjp0nh41zam"))))
       (arguments
         (substitute-keyword-arguments (package-arguments base)
           ((#:phases phases #~%standard-phases)
            #~(modify-phases #$phases
-               (add-after 'unpack-testsuite 'fix-paths
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* "testsuite/tests/ghc-api/settings-escape/T25204.hs"
-                     (("/bin/sh") (search-input-file inputs "/bin/sh")))))
                (replace 'check
                  (lambda* (#:key (tests? #t) (parallel-tests? #f) (make-flags '())
                            #:allow-other-keys)
@@ -2181,7 +2176,7 @@ interactive environment for the functional language Haskell.")
                     version "/ghc-" version "-testsuite.tar.xz"))
              (sha256
               (base32
-               "101zzxidvv1rsgj0cxykjqg8w0c23g8gad8yrkqgjxkfwnxlzflv"))
+               "143ifc4g3jc6s9hcry5qha913rzwg4hpsvk6pqvxk5r0qigfxjwx"))
              (patches (search-patches "ghc-testsuite-recomp015-execstack.patch"))))
          (replace "hadrian-bootstrap-sources.tar.gz"
            (origin
