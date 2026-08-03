@@ -284,11 +284,15 @@ a server that supports the SSH-2 protocol.")
                #~()))
      #:phases
      #~(modify-phases %standard-phases
-         (add-after 'configure 'set-store-location
+         (add-after 'configure 'trust-store-location
            (lambda _
              (substitute* "misc.c"
                (("@STORE_DIRECTORY@")
-                (string-append "\"" (%store-directory) "/\"")))))
+                (string-append "\"" (%store-directory) "/\"")))
+             (substitute* "ssh-agent.c"
+               (("DEFAULT_ALLOWED_PROVIDERS \"")
+                (string-append "DEFAULT_ALLOWED_PROVIDERS "
+                               "\"" (%store-directory) "/**/lib*/*,")))))
          (add-before 'check 'patch-tests
            (lambda _
              (substitute* "regress/test-exec.sh"
