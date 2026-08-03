@@ -3492,19 +3492,21 @@ three prime UTR.")
 (define-public python-pegasusio
   (package
     (name "python-pegasusio")
-    (version "0.9.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pegasusio" version))
-              (sha256
-               (base32
-                "1vxi6z7jlznp7sgzlbjsl1dzf1h7ypinllnls0lb2773a8vavg5x"))))
+    (version "0.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lilab-bcb/pegasusio")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1v0zcpk13ckw2ab3i3cgqjz66syirx3yplwwv024mpcwzahv826r"))))
     (build-system pyproject-build-system)
     ;; There are no tests.
     (arguments (list #:tests? #false))
     (propagated-inputs
-     (list python-anndata
-           python-cython
+     (list python-cython
            python-docopt
            python-h5py
            python-loompy
@@ -3515,8 +3517,7 @@ three prime UTR.")
            python-scipy
            python-setuptools
            python-zarr))
-    (native-inputs (list python-cython python-setuptools python-setuptools-scm
-                         python-wheel))
+    (native-inputs (list python-cython python-setuptools python-setuptools-scm))
     (home-page "https://github.com/lilab-bcb/pegasusio")
     (synopsis "Read or write single-cell genomics data")
     (description
