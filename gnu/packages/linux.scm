@@ -34,7 +34,7 @@
 ;;; Copyright © 2018 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2019 mikadoZero <mikadozero@yandex.com>
-;;; Copyright © 2019-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019 Stefan Stefanović <stefanx2ovic@gmail.com>
 ;;; Copyright © 2019-2022 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2019 Kei Kebreau <kkebreau@posteo.net>
@@ -145,6 +145,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages groff)
@@ -5874,7 +5875,7 @@ from the module-init-tools project.")
 (define-public earlyoom
   (package
     (name "earlyoom")
-    (version "1.7")
+    (version "1.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5883,13 +5884,20 @@ from the module-init-tools project.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xqrs6wz59ks76hdgfd4vaj010kbvllilgam2xxyn0g56kai71zi"))))
+                "107d2vgdlkqm8ggacxn1biamganvqz29nhi0zbn7yhmfmzvs1mbq"))))
     (build-system gnu-build-system)
     (arguments
      (list
+      #:imported-modules %go-build-system-modules
+      #:modules '((guix build gnu-build-system)
+                  ((guix build go-build-system) #:prefix go:)
+                  (guix build union)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'configure)            ; no configure script
+          (delete 'configure)           ; no configure script
+          (add-before 'build 'setup-go-environment
+            (assoc-ref go:%standard-phases 'setup-go-environment))
           (add-before 'check 'set-go-HOME
             (lambda _
               (setenv "HOME" (getcwd))))
@@ -5904,7 +5912,8 @@ from the module-init-tools project.")
               (string-append "VERSION=v" #$version)
               (string-append "PREFIX=" #$output)
               (string-append "SYSCONFDIR=" #$output "/etc")
-              "GO111MODULE=off")
+              ;; Do not try installing systemd files to /etc/systemd.
+              "SYSTEMDUNITDIR=/tmp/dummy")
       #:test-target "test"))
     (native-inputs
      (append
@@ -5915,7 +5924,8 @@ from the module-init-tools project.")
       (list
        ;; For the test suite.
        cppcheck
-       go)))
+       go
+       go-github-com-c9s-goprocinfo)))
     (home-page "https://github.com/rfjakob/earlyoom")
     (synopsis "Simple out of memory (OOM) daemon for the Linux kernel")
     (description "Early OOM is a minimalist out of memory (OOM) daemon that
