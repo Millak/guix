@@ -2986,7 +2986,6 @@ cp -r /tmp/locale/*/en_US.*")))
            gsettings-desktop-schemas
            gdk-pixbuf
            libcap
-           libostree
            libsoup-minimal-2
            libxml2
            p11-kit
@@ -3000,13 +2999,14 @@ cp -r /tmp/locale/*/en_US.*")))
                              gsettings-desktop-schemas
                              ;; Required for flatpak-validate-icon SVG validation.
                              (librsvg-for-system)
-                             ;; The following are listed in Requires.private of
-                             ;; `flatpak.pc'.
+                             ;; The following are listed in Requires or
+                             ;; Requires.private of `flatpak.pc'.
                              curl
                              dconf
                              gpgme
                              json-glib
                              libarchive
+                             libostree
                              libseccomp
                              libxau))
     (native-search-paths
