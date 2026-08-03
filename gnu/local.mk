@@ -1533,7 +1533,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/gnulib-bootstrap.patch			\
   %D%/packages/patches/gnumach-version.patch			\
   %D%/packages/patches/gnupg-default-pinentry.patch		\
-  %D%/packages/patches/gnupg-1-build-with-gcc10.patch		\
   %D%/packages/patches/gobject-introspection-absolute-shlib-path.patch \
   %D%/packages/patches/gobject-introspection-cc.patch		\
   %D%/packages/patches/gobject-introspection-girepository.patch	\

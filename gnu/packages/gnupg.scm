@@ -435,28 +435,6 @@ components), libgpg-error (centralized GnuPG error values), and
 libskba (working with X.509 certificates and CMS data).")
     (license license:gpl3+)))
 
-(define-public gnupg-1
-  (package (inherit gnupg)
-    (version "1.4.23")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnupg/gnupg/gnupg-" version
-                                  ".tar.bz2"))
-              (sha256
-               (base32
-                "1fkq4sqldvf6a25mm2qz95swv1qjg464736091w51djiwqbjyin9"))
-              (patches (search-patches "gnupg-1-build-with-gcc10.patch"))))
-    (native-inputs '())
-    (inputs
-     (list zlib bzip2 curl readline libgpg-error))
-    (arguments
-     (list #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'patch-check-sh
-             (lambda _
-               (substitute* "checks/Makefile.in"
-                 (("/bin/sh") (which "sh"))))))))))
-
 (define-public gpgme-2
   (package
     (name "gpgme")
