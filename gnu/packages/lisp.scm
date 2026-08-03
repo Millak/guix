@@ -1789,6 +1789,11 @@ the HTML documentation of TXR.")
                    (substitute* (list "tests/017/realpath.tl"
                                       "tests/017/realpath.expected")
                      (("/usr/bin") "/"))))
+               (add-after 'unpack 'fix-doc-build
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("pdfroff -ww -man --no-toc")
+                      "groff -Tpdf -ww -man"))))
                (replace 'configure
                  ;; ./configure is a hand-written script that can't handle
                  ;; standard autotools arguments like CONFIG_SHELL.
