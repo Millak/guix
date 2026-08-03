@@ -1452,42 +1452,6 @@ more.")
     (home-page "https://www.gnu.org/software/moe/moe.html")
     (license license:gpl2+)))
 
-(define-public mogan
-  (package
-    (inherit texmacs)
-    (name "mogan")
-    (version "1.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/XmacsLabs/mogan")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "04wz6xmimjv2l6baxgzm8vyq5grg102m3l4wq8i6bglv529yp4ff"))
-       (patches
-        (search-patches "texmacs-wayland-hidpi.patch"))))
-    (build-system qt-build-system)
-    (inputs
-     (modify-inputs inputs
-       ;; Replaced by S7 scheme
-       ;; TODO: Maybe unbundle S7
-       (delete "guile")
-       (prepend curl)))
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:phases orig)
-        #~(modify-phases #$orig
-            (delete 'fix-icon-directory)
-            ;; The non-deterministic compression issue is solved in Mogan.
-            (delete 'gzip-flags)))))
-    (home-page "https://github.com/XmacsLabs/mogan")
-    (synopsis "Scientific structural text editor")
-    (description
-     "Mogan is a scientific structural text editor, a fork of GNU TeXmacs.")
-    (license license:gpl3+)))
-
 (define-public tecoc
   ;; No tagged releases; this is the master tip.
   (let ((commit "b4a96395a18c7e64ccaef0e25fdde3b7ef33ac4b")
