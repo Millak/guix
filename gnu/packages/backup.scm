@@ -231,40 +231,6 @@ can even repair them.")
     (home-page "https://github.com/Parchive/par2cmdline")
     (license license:gpl3+)))
 
-(define-public hdup
-  (package
-    (name "hdup")
-    (version "2.0.14")
-    (source
-     (origin
-      (method url-fetch)
-      (uri "https://fossies.org/linux/privat/old/hdup-2.0.14.tar.bz2")
-      (sha256
-       (base32
-        "02bnczg01cyhajmm4rhbnc0ja0dd9ikv9fwv28asxh1rlx9yr0b7"))))
-    (build-system gnu-build-system)
-    (native-inputs (list pkg-config))
-    (inputs
-     (list glib
-           tar
-           lzop
-           mcrypt
-           openssh
-           gnupg-1))
-    (arguments
-     `(#:configure-flags
-       `(,(string-append "--sbindir=" (assoc-ref %outputs "out") "/bin"))
-       #:tests? #f))
-    (home-page (string-append "http://web.archive.org/web/20150925223424/"
-                              "http://archive.miek.nl/projects/hdup/index.html"))
-    (synopsis "Simple incremental backup tool")
-    (description
-     "Hdup2 is a backup utility, its aim is to make backup really simple.  The
-backup scheduling is done by means of a cron job.  It supports an
-include/exclude mechanism, remote backups, encrypted backups and split
-backups (called chunks) to allow easy burning to CD/DVD.")
-    (license license:gpl2)))
-
 (define-public libarchive
   (package
     (name "libarchive")
