@@ -1,0 +1,79 @@
+From cebc07fed0707457487656836e627a154416d252 Mon Sep 17 00:00:00 2001
+From: Palash Lalwani <palashlalwani.r@gmail.com>
+Date: Wed, 22 Jul 2026 21:24:52 +0530
+Subject: [PATCH] fix: don't pass grouping columns to
+ groupby().parallel_apply() on pandas >= 3.0
+
+Since pandas 3.0, DataFrameGroupBy.apply operates on _obj_with_exclusions, so the
+grouping columns are no longer passed to the applied function. Iterating a
+DataFrameGroupBy still yields them, which is how pandarallel builds its chunks, so
+parallel_apply kept passing them.
+
+This produced a silent divergence rather than an error: user functions that iterate
+columns or aggregate across the frame got different results from parallel_apply than
+from apply.
+
+Restrict each group to the columns apply would have used, gated on the pandas version
+so behaviour on pandas < 3.0 is unchanged.
+
+The groupby test fixture read df.b, but the test also covers groupby(["a", "b"]) where
+b is now a grouping column, making the reference apply() call raise on pandas 3.0.
+Switched the fixture to column c, which is never a grouping column in these tests.
+---
+ pandarallel/data_types/dataframe_groupby.py | 18 +++++++++++++++++-
+ tests/test_pandarallel.py                   |  8 ++++++--
+ 2 files changed, 23 insertions(+), 3 deletions(-)
+
+diff --git a/pandarallel/data_types/dataframe_groupby.py b/pandarallel/data_types/dataframe_groupby.py
+index f2dbb91..9b448d7 100644
+--- a/pandarallel/data_types/dataframe_groupby.py
++++ b/pandarallel/data_types/dataframe_groupby.py
+@@ -17,8 +17,24 @@ def get_chunks(
+             chunks = chunk(dataframe_groupby.ngroups, nb_workers)
+             iterator = iter(dataframe_groupby)
+ 
++            # Since pandas 3.0, `DataFrameGroupBy.apply` operates on
++            # `_obj_with_exclusions`, i.e. the grouping columns are no longer passed to
++            # the applied function. Iterating a `DataFrameGroupBy` still yields them
++            # though, so restrict each group to the columns `apply` would have used.
++            # On pandas < 3.0 the grouping columns are still passed, so keep them.
++            columns = (
++                dataframe_groupby._obj_with_exclusions.columns
++                if get_pandas_version() >= (3, 0)
++                else None
++            )
++
+             for chunk_ in chunks:
+-                yield [next(iterator) for _ in range(chunk_.stop - chunk_.start)]
++                groups = [next(iterator) for _ in range(chunk_.stop - chunk_.start)]
++
++                if columns is not None:
++                    groups = [(key, df[columns]) for key, df in groups]
++
++                yield groups
+ 
+         @staticmethod
+         def work(
+diff --git a/tests/test_pandarallel.py b/tests/test_pandarallel.py
+index 0f91c32..2f43458 100644
+--- a/tests/test_pandarallel.py
++++ b/tests/test_pandarallel.py
+@@ -93,12 +93,16 @@ def func(x):
+ 
+ @pytest.fixture()
+ def func_dataframe_groupby_apply():
++    # Uses column `c`, which is never a grouping column in the tests below. Since pandas
++    # 3.0 the grouping columns are not passed to the applied function, so a function
++    # reading `df.b` would fail on the `groupby(["a", "b"])` case before `parallel_apply`
++    # is even reached.
+     def func(df):
+         dum = 0
+-        for item in df.b:
++        for item in df.c:
+             dum += math.log10(math.sqrt(math.exp(item**2)))
+ 
+-        return dum / len(df.b)
++        return dum / len(df.c)
+ 
+     return func
+ 

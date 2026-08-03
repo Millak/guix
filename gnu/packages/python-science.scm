@@ -4649,7 +4649,10 @@ convention of suggesting best recommended practices for using
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r2wlxlwp4wia0vm15k4cp421mwa20k4k5g2ml01inprj8bl1p0p"))))
+        (base32 "0r2wlxlwp4wia0vm15k4cp421mwa20k4k5g2ml01inprj8bl1p0p"))
+       (patches
+        (search-patches "python-pandarallel-fix-df-applymap.patch"
+                        "python-pandarallel-fix-parallel_apply.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list

@@ -2300,6 +2300,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-mslice-matplotlib-3.6-compatibility.patch	\
   %D%/packages/patches/python-packaging-test-arch.patch		\
   %D%/packages/patches/python-pandas-2-no-pytz_datetime.patch		\
+  %D%/packages/patches/python-pandarallel-fix-df-applymap.patch		\
+  %D%/packages/patches/python-pandarallel-fix-parallel_apply.patch		\
   %D%/packages/patches/python-property-cached-asyncio-3_11.patch	\
   %D%/packages/patches/python-pyan3-fix-absolute-path-bug.patch \
   %D%/packages/patches/python-pyan3-fix-positional-arguments.patch \
