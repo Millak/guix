@@ -352,14 +352,13 @@ waveform until they line up with the proper sounds.")
                (base32
                 "1g56f1ng6v0z9f7hj9hl358p189j1my092472pravpn9z9669gvp"))))
     (build-system gnu-build-system)
+    (native-inputs (list qttools))
     (inputs
      (list bash-minimal
-           qtbase-5
-           qtxmlpatterns-5
-           qtmultimedia-5
-           qtsvg-5
-           qtwayland-5
-           qttools
+           qtbase
+           qtmultimedia
+           qtsvg
+           qtwayland
            ;; Necessary for audio import
            gstreamer
            gst-plugins-base
@@ -376,9 +375,12 @@ waveform until they line up with the proper sounds.")
               (copy-file #$(file-append catch2-2 "/include/catch2/catch.hpp")
                          "tests/src/catch.hpp")))
           (replace 'configure
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out")))
-                (invoke "qmake" (string-append "PREFIX=" out)))))
+            (lambda _
+              (invoke "qmake"
+                      (string-append "PREFIX=" #$output)
+                      (string-append
+                        "QT_TOOL.lrelease.binary="
+                        (search-input-file %build-inputs "/bin/lrelease")))))
           (add-after 'install 'wrap-executable
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let ((out (assoc-ref outputs "out"))
