@@ -3764,14 +3764,21 @@ growing set of geoscientific methods.")
 (define-public qgis
   (package
     (name "qgis")
-    (version "3.44.11")
+    ;; 3.44 is the LTR series,
+    ;; see https://www.qgis.org/resources/roadmap/
+    (version "3.44.13")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://qgis.org/downloads/qgis-"
-                           version ".tar.bz2"))
-       (sha256
-        (base32 "1i3j5xmlhnlxqs66lf4psfc0b23r7hyw14qw9jdv27p9rq9wwvpa"))))
+      (method git-fetch)
+      (uri
+       (git-reference
+        (url "https://github.com/qgis/QGIS")
+        (commit (string-append
+                  "final-"
+                  (string-replace-substring version "." "_")))))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "1biqs2cn0gdhnb7d7iz0jz9gw7zgy4i2gf663h6gn6rz2d2j8b3m"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3826,6 +3833,7 @@ growing set of geoscientific methods.")
                                "test_core_authconfig"
                                "test_core_authmanager"
                                "test_core_compositionconverter"
+                               "test_core_elevationmap"
                                "test_core_expression"
                                "test_core_gdalprovider"
                                "test_core_gdalutils"
@@ -4013,7 +4021,7 @@ SET\\(PYQT5_SIP_DIR \"\\$\\{Python_SITEARCH\\}/PyQt5/bindings\"\\)")
            netcdf
            pdal
            postgresql
-           proj-9.3
+           proj
            protobuf
            python
            python-chardet
@@ -4025,12 +4033,11 @@ SET\\(PYQT5_SIP_DIR \"\\$\\{Python_SITEARCH\\}/PyQt5/bindings\"\\)")
            python-owslib
            python-psycopg2
            python-pygments
-           python-pyqt+qscintilla-with-python-sip-6.8
+           python-pyqt+qscintilla
            python-pytz
            python-pyyaml
            python-requests
-           python-sip-6.8
-           python-six
+           python-sip
            python-urllib3
            qca
            qscintilla-qt5
