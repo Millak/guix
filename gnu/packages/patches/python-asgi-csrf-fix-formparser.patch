@@ -1,0 +1,43 @@
+From afd7f482281364a950f220c3d8b44c523fde455d Mon Sep 17 00:00:00 2001
+From: Emmanuel Arias <eamanu@yaerobi.com>
+Date: Wed, 3 Jun 2026 09:22:02 -0300
+Subject: [PATCH] Fix FormParser call
+
+Replace FileClass arg with an method callback, matching the new
+FormParser API.
+
+Closes: #38
+---
+ asgi_csrf.py | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
+
+diff --git a/asgi_csrf.py b/asgi_csrf.py
+index f744ad9..e89225c 100644
+--- a/asgi_csrf.py
++++ b/asgi_csrf.py
+@@ -271,12 +271,8 @@ def on_field(field):
+             csrftoken = field.value.decode("utf-8")
+             raise TokenFound(csrftoken)
+ 
+-    class ErrorOnWrite:
+-        def __init__(self, file_name, field_name, config):
+-            pass
+-
+-        def write(self, data):
+-            raise FileBeforeToken
++    def on_file(file):
++        raise FileBeforeToken()
+ 
+     body = b""
+     more_body = True
+@@ -291,9 +287,8 @@ async def replay_receive():
+     form_parser = FormParser(
+         "multipart/form-data",
+         on_field,
+-        lambda: None,
++        on_file,
+         boundary=boundary,
+-        FileClass=ErrorOnWrite,
+     )
+     try:
+         while more_body:
