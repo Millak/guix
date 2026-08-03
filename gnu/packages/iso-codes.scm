@@ -109,21 +109,20 @@ information.")
 (define-public python-country-converter
   (package
     (name "python-country-converter")
-    (version "1.2")
+    (version "1.3.2")
     (source
      (origin
-       (method git-fetch) ;no test data in PyPI archive
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/IndEcol/country_converter")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i1nlbahfwgx1f5q4ib32539xmc694834s0flzp0wlki0hwzd4rd"))))
+        (base32 "0hmz6ihh0lr8a98fvacc1xpg1zgwx7y02sbn0xi2sh5lg6qrqyap"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-pandas))
     (home-page "https://github.com/IndEcol/country_converter")
