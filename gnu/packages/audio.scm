@@ -418,7 +418,7 @@ displays a histogram of the roundtrip time jitter.")
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags (if (target-x86-32?)
-                                 #~(list "-Dc_args=-DPFFFT_SIMD_DISABLE")
+                                 #~(list "-Dinline-sse=false")
                                  #~'())))
     (native-inputs (list pkg-config))
     (inputs (list abseil-cpp))
