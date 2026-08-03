@@ -231,6 +231,7 @@
   #:use-module (gnu packages telephony)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages text-editors)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
@@ -717,6 +718,56 @@ of known objects without needing a central registrar.")
      (list
       license:lgpl3+
       license:gpl3+))))
+
+(define-public foundry
+  (package
+    (name "foundry")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.gnome.org/GNOME/foundry")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17f7r6x396g0s5d2w0f2mz5xxmmvjzh8v8w9ivarmgf5xrr3vb1f"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-HOME
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           pkg-config))
+    (inputs
+     (list cmark
+           editorconfig-core-c
+           flatpak
+           glib
+           gom
+           gtksourceview
+           json-glib
+           libdex
+           libgit2
+           libpeas-2
+           libspelling
+           libyaml
+           sysprof
+           template-glib
+           vte
+           webkitgtk))
+    (home-page "https://gitlab.gnome.org/GNOME/foundry")
+    (synopsis "Platform for developer tools in GNOME")
+    (description
+     "This tool aims to extract much of what makes GNOME Builder
+an IDE into a library and companion command-line tool.  It features support
+for language servers, build systems, container systems, and more.")
+    (license license:lgpl2.1+)))
 
 (define-public zeitgeist
   (package
