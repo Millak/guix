@@ -236,6 +236,9 @@ driver.")
     (arguments
      (list
       #:install-source? #f
+      ;; Tests are racy (see
+      ;; <https://github.com/ReFirmLabs/binwalk/issues/963>).
+      #:parallel-tests? #f
       ;; These tests fail on the v3.1.0 release.
       ;; They will be most likely fixed on the next release, where the
       ;; test files are included in the source itself.
