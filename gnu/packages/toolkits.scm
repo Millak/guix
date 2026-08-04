@@ -167,6 +167,21 @@ standard operating system features.")
                (base32
                 "1ji0fw0xb01c60hqzmvqi0ca5cnbm94x4v371f3w03q7zl6a8jvn"))))))
 
+(define-public imgui-for-mangohud
+  (package
+    (inherit imgui-1.91)
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:make-flags flags ''())
+        ;; Remove "-DImDrawIdx=unsigned int" and "-DIMGUI_ENABLE_FREETYPE"
+        ;; from make-flags as this breaks MangoHud, the only user of this
+        ;; version.
+        #~(filter (negate (lambda (x) (string-prefix? "-D" x)))
+                  #$flags))))
+    (inputs
+     (modify-inputs inputs
+       (delete "freetype")))))
+
 (define-public motif
   ;; This commit is from February 2023 and v2.3.8 from 2017.
   (let ((commit "0f556b0873c72ba1152a12fd54c3198ee039e413")

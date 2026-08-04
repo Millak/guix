@@ -1537,7 +1537,7 @@ distills complex, animated scenes into a set of baked geometric results.")
      (list dbus
            glslang
            hwdata
-           imgui-1.91
+           imgui-for-mangohud
            implot
            libx11
            libxkbcommon
