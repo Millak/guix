@@ -114,7 +114,7 @@ To prevent the deleted dependencies from being reintroduced, use this function
 only after the 'patch-dependencies' phase."
   (let ((predicate (lambda (dependency)
                      (member (car dependency) dependencies-to-remove)))
-        (dependency? (cut member <> %dependency-keys)))
+        (dependency? (cut member <> dependency-keys)))
     (lambda (pkg-meta)
       (map (match-lambda
              (((? dependency? key) . dependencies)
@@ -122,7 +122,8 @@ only after the 'patch-dependencies' phase."
                       (partition ((if negate? negate identity)
                                   predicate)
                                  dependencies)))
-                (format #t "deleting ~s dependencies: ~y~%" key removed)
+                (unless (null? removed)
+                  (format #t "deleting ~s dependencies: ~y~%" key removed))
                 (cons key kept)))
              (otherwise otherwise))
            pkg-meta))))

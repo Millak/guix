@@ -77,23 +77,46 @@ It also returns the data as an alist directly."
 (test-begin "node related tests")
 
 (test-equal "delete-dependencies"
-  '(("domelementtype" . "^3.0.0"))
-  (assoc-ref (modify-json*
-              (delete-dependencies '("boolbase")))
-             "dependencies"))
+  (list '(("domelementtype" . "^3.0.0"))
+        ;; Ensure development dependencies are unaffected.
+        '(("typescript-eslint" . "^8.61.0") ;devDependencies
+          ("typescript" . "^5.9.3")
+          ("typedoc" . "^0.28.19")
+          ("htmlparser2" . "^10.1.0")
+          ("eslint" . "^10.4.1")
+          ("@types/node" . "^25.9.2"))
+        '(("mkdirp" . ">=1.0.0")        ;peerDependencies
+          ("react" . "^16.8.0")))
+  (let ((result (modify-json* (delete-dependencies
+                               '("boolbase")))))
+    (list (assoc-ref result "dependencies")
+          (assoc-ref result "devDependencies")
+          (assoc-ref result "peerDependencies"))))
 
 (test-equal "delete-dependencies/except"
-  '(("boolbase" . ">=2.0.0"))
-  (assoc-ref (modify-json*
-              (delete-dependencies/except '("boolbase")))
-             "dependencies"))
+  (list '(("boolbase" . ">=2.0.0"))     ;in 'dependencies'
+        ;; Ensure development dependencies are not affected (as boolbase is
+        ;; not in their set).
+        '()                             ;devDependencies
+        '())                            ;peerDependencies
+  (let ((result (modify-json* (delete-dependencies/except
+                               '("boolbase")))))
+    (list (assoc-ref result "dependencies")
+          (assoc-ref result "devDependencies")
+          (assoc-ref result "peerDependencies"))))
 
 (test-equal "delete-dev-dependencies/except"
-  '(("typescript" . "^5.9.3")
-    ("@types/node" . "^25.9.2"))
-  (assoc-ref (modify-json*
-              (delete-dev-dependencies/except
-               '("typescript" "@types/node")))
-             "devDependencies"))
+  (list '(("typescript" . "^5.9.3")     ;devDependencies
+          ("@types/node" . "^25.9.2"))
+        '(("react" . "^16.8.0"))        ;peerDependencies
+        ;; Ensure normal dependencies are unaffected.
+        '(("domelementtype" . "^3.0.0")
+          ("boolbase" . ">=2.0.0")))
+  (let ((result (modify-json* (delete-dev-dependencies/except
+                               '("typescript" "@types/node" ;devDependencies
+                                 "react"))))) ;peerDependencies
+    (list (assoc-ref result "devDependencies")
+          (assoc-ref result "peerDependencies")
+          (assoc-ref result "dependencies"))))
 
 (test-end)
