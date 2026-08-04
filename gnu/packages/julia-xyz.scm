@@ -3092,46 +3092,6 @@ implementing both a client and a server.")
 conditional ifelse.  It is similar to @code{Core.ifelse} but it is extendable.")
     (license license:expat)))
 
-(define-public julia-imageaxes
-  (package
-    (name "julia-imageaxes")
-    (version "0.6.10")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/JuliaImages/ImageAxes.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "15f3y46vcr88fplr7rlibrm3k852p8rzwid5dgmbhc03a8xqd50s"))))
-    (build-system julia-build-system)
-    (arguments
-     (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'adjust-tests
-             (lambda _
-               (substitute* "test/runtests.jl"
-                 ;; Skip the constantly failing grayscale test.
-                 (("@test summary") "@test_broken summary")))))))
-    (propagated-inputs
-     (list julia-axisarrays
-           julia-imagebase
-           julia-imagecore
-           julia-reexport
-           julia-simpletraits))
-    (native-inputs
-     (list julia-aqua
-           julia-documenter
-           julia-unitful))
-    (home-page "https://github.com/JuliaImages/ImageAxes.jl")
-    (synopsis "Julia package for giving \"meaning\" to the axes of an image")
-    (description "This small package supports the representation of images as
-@code{AxisArrays} to endow the axes with \"meaning,\" and makes programming with
-such arrays easy via traits.")
-    (license license:expat)))
-
 (define-public julia-imagebase
   (package
     (name "julia-imagebase")
