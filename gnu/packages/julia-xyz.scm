@@ -4799,58 +4799,6 @@ machine learning, such as softmax, sigmoid, convolutions and pooling.  It
 doesn't provide any other \"high-level\" functionality like layers or AD.")
     (license license:expat)))
 
-(define-public julia-optim
-  (package
-    (name "julia-optim")
-    (version "1.7.4")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/JuliaNLSolvers/Optim.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0pdwa2xm08c3g979qgsmcr343j4kkh4l6x5rdj1blhqh5gw8172b"))))
-    (build-system julia-build-system)
-    (arguments
-     (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'adjust-tests
-             (lambda _
-               (substitute* "test/runtests.jl"
-                 ;; Distributions.jl isn't packaged yet.
-                 ((".*newton_trust_region.*") ""))
-               (substitute*
-                 "test/multivariate/solvers/constrained/ipnewton/constraints.jl"
-                 ;; TODO: Figure out why this test fails.
-                 (("@test Optim\\.converged") "@test_skip Optim.converged")
-                 (("@test Optim\\.minimum") "@test_skip Optim.minimum")))))))
-    (propagated-inputs
-     (list julia-compat
-           julia-fillarrays
-           julia-forwarddiff
-           julia-linesearches
-           julia-nanmath
-           julia-nlsolversbase
-           julia-parameters
-           julia-positivefactorizations
-           julia-statsbase))
-    (native-inputs
-     (list julia-linesearches
-           julia-measurements
-           julia-nlsolversbase
-           julia-optimtestproblems
-           julia-positivefactorizations
-           julia-recursivearraytools
-           julia-stablerngs))
-    (home-page "https://github.com/JuliaNLSolvers/Optim.jl")
-    (synopsis "Optimization functions for Julia")
-    (description "@code{Optim.jl} is a package for univariate and multivariate
-optimization of functions.")
-    (license license:expat)))
-
 (define-public julia-optimisers
   (package
     (name "julia-optimisers")
