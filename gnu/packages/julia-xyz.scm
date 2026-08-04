@@ -2194,29 +2194,6 @@ combinations of dual numbers with predefined Julia numeric types.")
 with data retrieved from @acronym{IERS, International Earth Rotation Service}.")
     (license license:expat)))
 
-(define-public julia-ellipsisnotation
-  (package
-    (name "julia-ellipsisnotation")
-    (version "1.6.0")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/ChrisRackauckas/EllipsisNotation.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0l4fc180chhxlq9d67122c0lgq2hfsxsmcgml2bfl2rnh13gya2b"))))
-    (build-system julia-build-system)
-    (propagated-inputs
-     (list julia-arrayinterface))
-    (home-page "https://github.com/ChrisRackauckas/EllipsisNotation.jl")
-    (synopsis "Ellipsis notation implementation")
-    (description "This implements the notation @code{..} for indexing arrays.
-It's similar to the Python @code{...} in that it means \"all of the columns
-before (or after)\".")
-    (license license:expat)))
-
 (define-public julia-erfa
   (package
     (name "julia-erfa")
