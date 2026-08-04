@@ -4824,7 +4824,7 @@ production-critical data pipelines or reproducible research settings.  With
 (define-public python-pyjanitor
   (package
     (name "python-pyjanitor")
-    (version "0.32.5")
+    (version "0.32.23")
     (source
      (origin
        (method git-fetch)
@@ -4833,7 +4833,7 @@ production-critical data pipelines or reproducible research settings.  With
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "058w2mq42v55xkqv3cvxry53sj2qh1v64ad4gc5qb8a3is453a07"))))
+        (base32 "1mvgabsn5jl2aidh2mcqdmh60p2g514nb5sxwskhz1q57pk4m0w9"))))
     (build-system pyproject-build-system)
     ;; Pyjanitor has an extensive test suite. For quick debugging, the tests
     ;; marked turtle can be skipped using "-m" "not turtle".
@@ -4853,6 +4853,8 @@ production-critical data pipelines or reproducible research settings.  With
               "--ignore=tests/polars/"
               ;; PySpark has not been packaged yet.
               "--ignore=tests/spark/"
+              ;; Flaky test (fails for performance reasons)
+              "--deselect=tests/math/test_ecdf.py::test_ecdf_string"
               ;; Tries to connect to the internet.
               "-k" (string-append "not test_is_connected"
                                   ;; Test files are not included.
@@ -4871,7 +4873,8 @@ production-critical data pipelines or reproducible research settings.  With
               ;; Some tests are skipped if the JANITOR_CI_MACHINE
               ;; variable is not set.
               (setenv "JANITOR_CI_MACHINE" "1"))))))
-    (propagated-inputs (list python-multipledispatch
+    (propagated-inputs (list python-janitor-rs
+                             python-multipledispatch
                              python-natsort
                              python-pandas-flavor
                              python-scipy
