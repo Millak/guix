@@ -5454,42 +5454,6 @@ plot types.  @code{RecipePipeline.jl} contains the machinery to translate these
 recipes to full specifications for a plot.")
     (license license:expat)))
 
-(define-public julia-recursivearraytools
-  (package
-    (name "julia-recursivearraytools")
-    (version "2.16.1")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/SciML/RecursiveArrayTools.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0vx8ndxrii53na7jsc2lki47wfpi77rn3y2r6xhiysx1qwr14msf"))))
-    (build-system julia-build-system)
-    (arguments
-     (list #:tests? #f))    ; Cycle with OrdinaryDiffEq.jl.
-    (propagated-inputs
-     (list julia-arrayinterface
-           julia-chainrulescore
-           julia-docstringextensions
-           julia-recipesbase
-           julia-requires
-           julia-staticarrays
-           julia-zygoterules))
-    ;(native-inputs
-    ; `(("julia-forwarddiff" ,julia-forwarddiff)
-    ;   ("julia-nlsolve" ,julia-nlsolve)
-    ;   ("julia-ordinarydiffeq" ,julia-ordinarydiffeq)
-    ;   ("julia-structarrays" ,julia-structarrays)
-    ;   ("julia-zygote" ,julia-zygote)))
-    (home-page "https://github.com/SciML/RecursiveArrayTools.jl")
-    (synopsis "Tools for handling objects like arrays of arrays and deeper nestings")
-    (description "@code{RecursiveArrayTools.jl} is a set of tools for dealing with
-recursive arrays like arrays of arrays.")
-    (license license:expat)))
-
 (define-public julia-reexport
   (package
     (name "julia-reexport")
