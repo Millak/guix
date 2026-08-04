@@ -611,52 +611,6 @@ These are useful for going to the next or previous mask size or for
 calculating corresponding shifts.")
     (license license:expat)))
 
-(define-public julia-blockarrays
-  (package
-    (name "julia-blockarrays")
-    (version "0.16.23")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/JuliaArrays/BlockArrays.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "14gby25ixbp9ha0y2aj4gnjkzha4c7v4y3sicicgbkysnq921qd0"))))
-    (build-system julia-build-system)
-    (arguments
-     (list
-      #:phases
-      (if (target-32bit?)
-          #~(modify-phases %standard-phases
-              (add-after 'unpack 'fix-tests-int32-i686
-                (lambda _
-                  (substitute* "test/test_blockarrays.jl"
-                    (("Int64") "Int32")))))
-          #~%standard-phases)))
-    (propagated-inputs
-     (list julia-arraylayouts
-           julia-fillarrays))
-    (native-inputs
-     (list julia-aqua
-           julia-offsetarrays
-           julia-staticarrays))
-    (home-page "https://github.com/JuliaArrays/BlockArrays.jl")
-    (synopsis "BlockArrays for Julia")
-    (description "A block array is a partition of an array into blocks or
-subarrays.  This package has two purposes.  Firstly, it defines an interface for
-an @code{AbstractBlockArray} block arrays that can be shared among types
-representing different types of block arrays.  The advantage to this is that it
-provides a consistent API for block arrays.
-Secondly, it also implements two different type of block arrays that follow the
-@code{AbstractBlockArray} interface.  The type @code{BlockArray} stores each
-block contiguously while the type @code{PseudoBlockArray} stores the full matrix
-contiguously.  This means that @code{BlockArray} supports fast non copying
-extraction and insertion of blocks while @code{PseudoBlockArray} supports fast
-access to the full matrix to use in in for example a linear solver.")
-    (license license:expat)))
-
 (define-public julia-bson
   (package
     (name "julia-bson")
