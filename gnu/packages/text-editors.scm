@@ -911,7 +911,7 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
 (define-public mg
   (package
     (name "mg")
-    (version "20260227")
+    (version "20260719")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -920,7 +920,7 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l4ngmarslrdrd8p2yz4lj868xgd8rhjga6490p3jimkxfwn1asx"))
+                "0r2fgc1izh9ymz38lrp9pj3w8m06lw0lnxh7pmp43mvaxnl8qz38"))
               (modules '((guix build utils)))
               (snippet '(begin
                           (substitute* "GNUmakefile"
