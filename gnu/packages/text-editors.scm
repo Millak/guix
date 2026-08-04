@@ -1477,6 +1477,7 @@ more.")
      (substitute-keyword-arguments arguments
        ((#:phases orig)
         #~(modify-phases #$orig
+            (delete 'fix-icon-directory)
             ;; The non-deterministic compression issue is solved in Mogan.
             (delete 'gzip-flags)))))
     (home-page "https://github.com/XmacsLabs/mogan")
