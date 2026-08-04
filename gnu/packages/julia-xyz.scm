@@ -3970,39 +3970,6 @@ explicitly (in the sense of allocating storage for M).  The name of the package
 comes from the fact that @code{M == map(f, A)}.")
     (license license:expat)))
 
-(define-public julia-matrixfactorizations
-  (package
-    (name "julia-matrixfactorizations")
-    (version "0.9.3")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/JuliaMatrices/MatrixFactorizations.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0sqmig01irmvh617h2rsw44hl39qwv2913nlqjsdz9si5vli2hsl"))))
-    (build-system julia-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'link-depot 'skip-failing-test
-            (lambda _
-              (substitute* "test/test_ul.jl"
-                ;; Don't warn on the REPL test.
-                (("test String") "test_nowarn String")))))))
-    (propagated-inputs
-     (list julia-arraylayouts))
-    (home-page "https://github.com/JuliaMatrices/MatrixFactorizations.jl")
-    (synopsis "Julia package to contain non-standard matrix factorizations")
-    (description "A Julia package to contain non-standard matrix factorizations.
-At the moment it implements the QL, RQ, and UL factorizations, a combined
-Cholesky factorization with inverse, and polar decompositions.  In the future it
-may include other factorizations such as the LQ factorization.")
-    (license license:expat)))
-
 (define-public julia-mbedtls
   (package
     (name "julia-mbedtls")
