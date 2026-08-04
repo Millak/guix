@@ -2536,7 +2536,7 @@ the command line.")
 (define-public python-prawcore
   (package
     (name "python-prawcore")
-    (version "2.4.0")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -2545,25 +2545,22 @@ the command line.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y7gh7kk002b2h1ppkr1llb2gjfnby28zvx11j4ji0wm3r3rjh5l"))))
+        (base32 "1kqqv1n9bibxfgagbyd8vl0yzrd4lr58xl59swz5v70w0kfap5fm"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; XXX: These tests fail with an incomplete request response.
-     (list #:test-flags
-           #~'("-k" #$(string-append
-                       "not test_revoke__access_token_with_refresh_set"
-                       " and not test_revoke__access_token_without_refresh_set"
-                       " and not test_revoke__refresh_token_with_access_set"
-                       " and not test_refresh__with_scopes"
-                       " and not test_request__patch"))))
+     (list
+      ;; This test fails with a str rather than a bytes-like object.
+      #:test-flags #~(list "-k" "not test_request__service_unavailable")))
     (native-inputs
-     (list python-betamax
+     (list nss-certs-for-test
+           python-betamax
            python-betamax-matchers
            python-betamax-serializers
-           python-flit-core
+           python-hatchling
            python-mock
            python-pytest
-           python-testfixtures))
+           python-testfixtures
+           python-vcrpy))
     (propagated-inputs
      (list python-requests))
     (synopsis "Core component of PRAW")
