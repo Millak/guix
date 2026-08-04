@@ -4771,6 +4771,56 @@ production-critical data pipelines or reproducible research settings.  With
 @end itemize")
     (license license:expat)))
 
+(define-public python-janitor-rs
+  (package
+    (name "python-janitor-rs")
+    (version "0.6.1")
+    (source
+     (origin
+       ;; The upstream git source has no tags.
+       (method url-fetch)
+       (uri (pypi-uri "janitor_rs" version))
+       (sha256
+        (base32 "0xicxplz8vngbj4s6c7d08gpivns5bda85020yf1wjs8788g9m2l"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; No tests.
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:vendor-dir ".cargo/vendor"
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums)))))))
+    (native-inputs (append
+                    (list maturin
+                          rust
+                          `(,rust "cargo"))
+                    (or (and=> (%current-target-system)
+                               (compose list make-rust-sysroot))
+                        '())))
+    (inputs (cargo-inputs 'janitor-rs))
+    (home-page "https://github.com/pyjanitor-devs/janitor-rs")
+    (synopsis "Rust library for faster pyjanitor")
+    (description
+     "This package provides a Rust library to improve the performance of
+@code{python-pyjanitor}.")
+    (license license:expat)))
+
 (define-public python-pyjanitor
   (package
     (name "python-pyjanitor")

@@ -4059,6 +4059,10 @@ fn main() {
   (crate-source "cc" "1.2.50"
                 "0g1q2k30bwnym5hlhk2y3k08hhrklgn68gr61b63f73s49ixal4z"))
 
+(define rust-cc-1.2.51
+  (crate-source "cc" "1.2.51"
+                "00zj303al745qymzfx3qp4wnj5s5wncaadc8c64hbagi9zzyl2ks"))
+
 (define rust-cc-1.2.54
   (crate-source "cc" "1.2.54"
                 "10q5q3kzcqg9s1zrgpk9sn1a98xjnz177ixkkkx9qbfnpwdwhm33"))
@@ -9489,6 +9493,10 @@ fn main() {
 (define rust-find-msvc-tools-0.1.5
   (crate-source "find-msvc-tools" "0.1.5"
                 "0i1ql02y37bc7xywkqz10kx002vpz864vc4qq88h1jam190pcc1s"))
+
+(define rust-find-msvc-tools-0.1.6
+  (crate-source "find-msvc-tools" "0.1.6"
+                "1zwdxinsg7i0agvapxa5cj7k09vygzjy8nkxc4qpa2z6hhxbnp34"))
 
 (define rust-find-msvc-tools-0.1.8
   (crate-source "find-msvc-tools" "0.1.8"
@@ -19849,6 +19857,10 @@ fn main() {
   (crate-source "ndarray" "0.16.1"
                 "0ha8sg5ad501pgkxw0wczh8myc2ma3gyxgcny4mq8rckrqnxfbl8"))
 
+(define rust-ndarray-0.17.1
+  (crate-source "ndarray" "0.17.1"
+                "1aahbaq8w0v8maqmgs2dld7piy4cj7649l5alffhrwgnx0jr2z0c"))
+
 (define rust-ndarray-0.17.2
   (crate-source "ndarray" "0.17.2"
                 "0bbmybr5x36yln5y09s6ijndlca59fr3p0khj1p4lsvs9a0q002j"))
@@ -30207,6 +30219,10 @@ fn main() {
 (define rust-syn-2.0.108
   (crate-source "syn" "2.0.108"
                 "05z908svb0yw5wzrlv27l2i8j1d8l16hd5r8bjh809146myr2n6s"))
+
+(define rust-syn-2.0.109
+  (crate-source "syn" "2.0.109"
+                "0bqfzs5qa1xwkyfdcz63k9x6d2m6mj0vxp23jnm5i0p82ghcf5rg"))
 
 (define rust-syn-2.0.110
   (crate-source "syn" "2.0.110"
@@ -61742,6 +61758,41 @@ fn main() {
                                    rust-zvariant-5.10.0
                                    rust-zvariant-derive-5.10.0
                                    rust-zvariant-utils-3.3.0))
+                     (janitor-rs =>
+                                 (list rust-autocfg-1.5.0
+                                       rust-cc-1.2.51
+                                       rust-either-1.15.0
+                                       rust-find-msvc-tools-0.1.6
+                                       rust-heck-0.5.0
+                                       rust-indoc-2.0.7
+                                       rust-itertools-0.14.0
+                                       rust-libc-0.2.177
+                                       rust-matrixmultiply-0.3.10
+                                       rust-memoffset-0.9.1
+                                       rust-ndarray-0.17.1
+                                       rust-num-complex-0.4.6
+                                       rust-num-integer-0.1.46
+                                       rust-num-traits-0.2.19
+                                       rust-numpy-0.27.1
+                                       rust-once-cell-1.21.3
+                                       rust-portable-atomic-1.11.1
+                                       rust-portable-atomic-util-0.2.4
+                                       rust-proc-macro2-1.0.103
+                                       rust-pyo3-0.27.2
+                                       rust-pyo3-build-config-0.27.2
+                                       rust-pyo3-ffi-0.27.2
+                                       rust-pyo3-macros-0.27.2
+                                       rust-pyo3-macros-backend-0.27.2
+                                       rust-python3-dll-a-0.2.14
+                                       rust-quote-1.0.42
+                                       rust-rawpointer-0.2.1
+                                       rust-rustc-hash-2.1.1
+                                       rust-rustversion-1.0.22
+                                       rust-shlex-1.3.0
+                                       rust-syn-2.0.109
+                                       rust-target-lexicon-0.13.3
+                                       rust-unicode-ident-1.0.22
+                                       rust-unindent-0.2.4))
                      (jellyfish =>
                                 (list rust-ahash-0.8.12
                                       rust-autocfg-1.5.0
