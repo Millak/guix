@@ -4081,47 +4081,6 @@ fixes.  The Julia IDE effort is pointed to extension for VSCode.")
 equations in string literals in the Julia language.")
     (license license:expat)))
 
-(define-public julia-lazyarrays
-  (package
-    (name "julia-lazyarrays")
-    (version "0.22.16")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/JuliaArrays/LazyArrays.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "127yld4f26lchw5jwp30g2jkjbm7narfsxwcbggy7dfp43s531c5"))))
-    (build-system julia-build-system)
-    (arguments
-     (list
-      #:phases
-      (if (target-32bit?)
-          #~(modify-phases %standard-phases
-              (add-after 'unpack 'fix-tests-int32-i686
-                (lambda _
-                  (substitute* "test/multests.jl"
-                    (("Int64") "Int32")))))
-          #~%standard-phases)))
-    (propagated-inputs
-     (list julia-aqua
-           julia-arraylayouts
-           julia-fillarrays
-           julia-macrotools
-           julia-matrixfactorizations
-           julia-staticarrays))
-    (native-inputs
-     (list julia-aqua
-           julia-tracker))
-    (home-page "https://github.com/JuliaArrays/LazyArrays.jl")
-    (synopsis "Lazy arrays and linear algebra")
-    (description "This package supports lazy analogues of array operations like
-@code{vcat}, @code{hcat}, and multiplication.  This helps with the
-implementation of matrix-free methods for iterative solvers.")
-    (license license:expat)))
-
 (define-public julia-leapseconds
   (package
     (name "julia-leapseconds")
