@@ -25202,8 +25202,8 @@ console.")
 (define-public python-rst2ansi
   (package
     (name "python-rst2ansi")
-    (properties '((commit . "c6f390b45be689a5760060c990e3fe10f502e671")
-                  (revision . "0")))
+    (properties '((commit . "3728e16f8b8b1dc338e5df90ba2c4a93ee054b3f")
+                  (revision . "1")))
     (version (git-version "0.1.5"
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
@@ -25215,7 +25215,7 @@ console.")
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vsn1jjhm1hx0q5i954lyhny2yvn619am1di03aypfl0wm1mh7qd"))))
+        (base32 "0q8afblqhkrnzxla81ialifcwkh9ga5xzxzi0lhg2gjwhbynbfsp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
