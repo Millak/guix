@@ -4088,18 +4088,34 @@ and custom quantization matrices.")
 (define-public streamlink
   (package
     (name "streamlink")
-    (version "7.6.0")
+    (version "8.5.0")
     (source
       (origin
-        (method url-fetch)
-        (uri (pypi-uri "streamlink" version))
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/streamlink/streamlink")
+              (commit version)))
+        (file-name (git-file-name name version))
         (sha256
-         (base32
-          "0rljq1zqa1z9jpn9n5gn90drl59pw8y56fsn3z35bavxmczrbpx1"))))
+         (base32 "08b81189fabzycxwlyk4md0kq6sxfsw04pc267psz8nhkz7na3nk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "-k" "not test_no_cache")))
+      #:test-flags #~(list "-k" "not test_no_cache")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-version
+            (lambda _
+              ;; versioningit needs git tags; set version via environment
+              ;; variable and create _version.py directly.
+              (substitute* "pyproject.toml"
+                (("\"version\",") "")
+                (("requires-python = ")
+                 (string-append "version = \"" #$version "\"\n"
+                                "requires-python = ")))
+              (call-with-output-file "src/streamlink/_version.py"
+                (lambda (port)
+                  (format port "__version__ = \"~a\"~%" #$version))))))))
     (native-inputs
      (list python-freezegun
            python-pytest
