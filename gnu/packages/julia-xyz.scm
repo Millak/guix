@@ -3108,39 +3108,6 @@ decompression of the Deflate algorithm and the Zlib and Gzip wrapper formats, as
 specified in RFC 1950, RFC 1951, and RFC 1952.")
     (license license:expat)))
 
-(define-public julia-infinity
-  (package
-    (name "julia-infinity")
-    (version "0.2.4")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/cjdoris/Infinity.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "1941lwvrdjnrynigzixxin3chpg1ba6xplvcwc89x0f6z658hwmm"))))
-    (build-system julia-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'link-depot 'remove-timezones.jl
-            (lambda _
-              (substitute* "test/runtests.jl"
-                (("using TimeZones.*") "")
-                ((".*infextendedtime.*") "")))))))
-    (propagated-inputs
-     (list julia-requires))
-    (native-inputs
-     (list julia-compat))
-    (home-page "https://docs.juliahub.com/Infinity/")
-    (synopsis "Representation of infinity in Julia")
-    (description "This package provides representations for infinity and
-negative infinity in Julia.")
-    (license license:expat)))
-
 (define-public julia-inifile
   (package
     (name "julia-inifile")
