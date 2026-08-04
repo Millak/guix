@@ -11020,7 +11020,10 @@ Plus all the standard features of requests:
                 (("--doctest-module")
                  "--doctest-modules")))))))
     (propagated-inputs
-     (list python-certauth python-gevent python-websocket-client))
+     (list python-certauth
+           python-gevent
+           python-six
+           python-websocket-client))
     (native-inputs
      (list python-mock python-waitress python-setuptools))
     (home-page "https://github.com/webrecorder/wsgiprox")
