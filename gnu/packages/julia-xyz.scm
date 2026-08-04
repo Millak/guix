@@ -416,37 +416,6 @@ typically apply along the columns of a matrix, you can instead pick an arbitrary
 axis (dimension).")
     (license license:expat)))
 
-(define-public julia-axisarrays
-  (package
-    (name "julia-axisarrays")
-    (version "0.4.6")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/JuliaArrays/AxisArrays.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "1bsd6y866ldfb4072hfm8fvc2k0vy72z2blcwfy2mpj8dlyskx3n"))))
-    (build-system julia-build-system)
-    (propagated-inputs
-     (list julia-rangearrays
-           julia-intervalsets
-           julia-itertools))
-    (native-inputs
-     (list julia-offsetarrays
-           julia-unitful))
-    (home-page "http://juliaarrays.github.io/AxisArrays.jl/latest/")
-    (synopsis "Arrays where each dimension can have a named axis with values")
-    (description "This package for the Julia language provides an array type
-(the AxisArray) that knows about its dimension names and axis values.  This
-allows for indexing by name without incurring any runtime overhead.  This
-permits one to implement algorithms that are oblivious to the storage order of
-the underlying arrays.  AxisArrays can also be indexed by the values along their
-axes, allowing column names or interval selections.")
-    (license license:expat)))
-
 (define-public julia-bandedmatrices
   (package
     (name "julia-bandedmatrices")
