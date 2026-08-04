@@ -11891,77 +11891,6 @@ automatically and it can stream songs from online music services and charts.")
 photo-booth-like software, such as Cheese.")
     (license license:gpl2+)))
 
-(define-public cheese
-  (let ((commit "c059d4f1cdfa209ac98d9df82adcc2ade9001c24")
-        (revision "1"))
-    (package
-      (name "cheese")
-      (version (git-version "44.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://gitlab.gnome.org/GNOME/cheese.git")
-                       (commit commit)))
-                (sha256
-                 (base32
-                  "1zi9p7xxbkz7pjb2mbdk95sawyigb1hwgs3yms2drchk5vznnxav"))))
-      (arguments
-       (list #:glib-or-gtk? #t
-             #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'skip-gtk-update-icon-cache
-                   (lambda _
-                     ;; Don't create 'icon-theme.cache'.
-                     (substitute* "meson.build"
-                       (("gtk_update_icon_cache: true")
-                        "gtk_update_icon_cache: false"))))
-                 (add-after 'install 'wrap-cheese
-                   (lambda* (#:key inputs outputs #:allow-other-keys)
-                     (wrap-program (search-input-file outputs "bin/cheese")
-                       `("GST_PLUGIN_SYSTEM_PATH" prefix
-                         (,(getenv "GST_PLUGIN_SYSTEM_PATH")))
-                       `("GST_PRESET_PATH" prefix
-                         (,(dirname (search-input-file inputs
-                                                       "share/gstreamer-1.0\
-/presets/GstVP8Enc.prs"))))))))))
-      (build-system meson-build-system)
-      (native-inputs
-       (list docbook-xml-4.3
-             docbook-xsl
-             gettext-minimal
-             `(,glib "bin")
-             gobject-introspection
-             gtk-doc/stable
-             itstool
-             libxml2
-             libxslt
-             pkg-config
-             vala))
-      (propagated-inputs
-       (list clutter
-             clutter-gst
-             clutter-gtk
-             gdk-pixbuf
-             glib
-             gnome-video-effects
-             gstreamer
-             libcanberra))
-      (inputs
-       (list bash-minimal
-             gnome-desktop
-             gst-plugins-bad
-             gst-plugins-base
-             gst-plugins-good
-             gtk+
-             libx11
-             libxtst))
-      (home-page "https://wiki.gnome.org/Apps/Cheese")
-      (synopsis "Webcam photo booth software for GNOME")
-      (description
-       "Cheese uses your webcam to take photos and videos.  Cheese can also
-apply fancy special effects and lets you share the fun with others.")
-      (license license:gpl2+))))
-
 (define-public snapshot
   (package
     (name "snapshot")
@@ -12045,6 +11974,10 @@ meson.project_source_root() / 'Cargo.toml',"))
     (description
      "Take pictures and videos on your computer, tablet, or phone.")
     (license license:gpl3+)))
+
+;;; TODO: Delete when 2027/03 comes.
+(define-deprecated-package cheese
+  snapshot)
 
 (define-deprecated/public-alias secrets
   (@ (gnu packages gnome-circle) secrets))
