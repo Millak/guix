@@ -4086,50 +4086,6 @@ for the development of more sophisticated graph implementations under the
 AbstractGraph type.")
     (license license:bsd-2)))
 
-(define-public julia-linesearches
-  (package
-    (name "julia-linesearches")
-    (version "7.1.1")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/JuliaNLSolvers/LineSearches.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "1qc4la07w6s1xhcyd0hvbnpr31zc1a2ssgyybc8biv5m00g0dnr0"))))
-    (build-system julia-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'link-depot 'skip-optim-tests
-            (lambda _
-              (substitute* "test/examples.jl"
-                ;; Prevent a cycle with Optim.jl.
-                (("^    SKIPFILE.*") "")
-                (("^    #SKIPFILE") "    SKIPFILE"))))
-          (add-after 'link-depot 'skip-doublefloats-tests
-            (lambda _
-              (substitute* "test/runtests.jl"
-                (("using DoubleFloats.*") "")
-                ((".*arbitrary_precision\\.jl.*") "")))))))
-    (propagated-inputs
-     (list julia-nlsolversbase
-           julia-nanmath
-           julia-parameters))
-    (native-inputs
-     ;; DoubleFloats.jl transitively depends on TimeZones.jl, which is currently
-     ;; unpackageable due to its oversized Artifacts.toml.
-     (list ;julia-doublefloats
-           julia-optimtestproblems))
-    (home-page "https://github.com/JuliaNLSolvers/LineSearches.jl")
-    (synopsis "Line search methods for optimization and root-finding")
-    (description "This package provides an interface to line search algorithms
-implemented in Julia.")
-    (license license:expat)))
-
 (define-public julia-logexpfunctions
   (package
     (name "julia-logexpfunctions")
