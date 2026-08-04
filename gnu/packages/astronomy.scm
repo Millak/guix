@@ -3421,6 +3421,23 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
        (sha256
         (base32 "1nji4flblxsq9mgiahx3r3wyfkdr5nir2iqab76r98hzp7ak3jj5"))
        (modules '((guix build utils)))
+       (patches
+        ;; Do not download updated iers data on the fly.  Refresh the
+        ;; python-astropy-iers-data package instead.
+        ;; That is, the python-astropy-iers-data package contains tables with
+        ;; an expiration date, for example with leap second information.
+        ;; The astropy.time package will try to download updated data
+        ;; once the current date is within 5 months of the expiration date.
+        ;; For reproducibility reasons it is more idiomatic to disable the
+        ;; downloading and instead regularly update python-astropy-iers-data.
+        ;; In particular some tests python-astropy and some dependent packages
+        ;; will fail 5 months 'into the future' because they will trigger this
+        ;; downloading of data.  This patch ensures that these packages can
+        ;; still be build with guix time-machine.
+        ;; E.g., this command, using a commit before this patch, will fail:
+        ;; guix time-machine --commit=86813d5779253bb50002d79ab791eeda5a8b4729
+        ;;   -- build python-astropy
+        (search-patches "python-astropy-dont-download-iers-data.patch"))
        (snippet
         '(begin
            ;; Remove Python bundles.

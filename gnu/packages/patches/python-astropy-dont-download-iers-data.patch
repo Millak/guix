@@ -1,0 +1,27 @@
+commit e1e8631583ae26b1ac521afcf9b4f1fd640427fe
+Author: Hugo Buddelmeijer <hugo@buddelmeijer.nl>
+Date:   Tue Aug 4 09:33:22 2026 +0200
+
+    Set iers auto_download default to False.
+
+diff --git a/astropy/utils/iers/iers.py b/astropy/utils/iers/iers.py
+index 0541831366..acaf36826b 100644
+--- a/astropy/utils/iers/iers.py
++++ b/astropy/utils/iers/iers.py
+@@ -166,13 +166,14 @@ class Conf(_config.ConfigNamespace):
+     """
+ 
+     auto_download = _config.ConfigItem(
+-        True,
++        False,
+         "Enable auto-downloading of the latest IERS-A data.  If set to False "
+         "then the bundled IERS-A file will be used by default (even if a "
+         "newer version of the IERS-A file was previously downloaded and cached). "
+         "This parameter also controls whether internet resources will be "
+         "queried to update the leap second table if the installed version is "
+-        "out of date. Default is True.",
++        "out of date. Default is False in Guix for reproducibility.  Refresh"
++        "the python-astropy-iers-data package instead.",
+     )
+     auto_max_age = _config.ConfigItem(
+         30.0,
