@@ -206,43 +206,6 @@ separate repository @code{Arpack.jl}.
 @end itemize")
     (license license:expat)))
 
-(define-public julia-arraylayouts
-  (package
-    (name "julia-arraylayouts")
-    (version "0.8.18")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/JuliaMatrices/ArrayLayouts.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "11h0w1bqw2md5gh4dfmm1aazifcs2ydrc47hqzvav1xrx25b57z5"))))
-    (build-system julia-build-system)
-    (arguments
-     (if (not (target-x86-64?))
-         ;; This test is only broken when using openblas, not openblas-ilp64.
-         (list
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'adjust-tests
-                 (lambda _
-                   (substitute* "test/test_layoutarray.jl"
-                     (("test all\\(B") "test_broken all(B"))))))
-         '()))
-    (propagated-inputs
-     (list julia-fillarrays))
-    (native-inputs
-     (list julia-stablerngs))
-    (home-page "https://github.com/JuliaMatrices/ArrayLayouts.jl")
-    (synopsis "Array layouts and general fast linear algebra")
-    (description "This package implements a trait-based framework for describing
-array layouts such as column major, row major, etc. that can be dispatched to
-appropriate BLAS or optimised Julia linear algebra routines.  This supports a
-much wider class of matrix types than Julia's in-built @code{StridedArray}.")
-    (license license:expat)))
-
 (define-public julia-astroangles
   (package
     (name "julia-astroangles")
