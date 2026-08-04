@@ -3248,49 +3248,6 @@ imported changes a how a single @code{Colorant} and whole @code{Colorant} arrays
 be downscaled to fit into the size of your active terminal session.")
     (license license:expat)))
 
-(define-public julia-imagemetadata
-  (package
-    (name "julia-imagemetadata")
-    (version "0.9.8")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/JuliaImages/ImageMetadata.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0rdzvya5szlkg5ds3fw7lpk47hn16655i6265czwf8fxs3hb1gvf"))))
-    (build-system julia-build-system)
-    (arguments
-     (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'adjust-tests
-             (lambda _
-               (substitute* "test/operations.jl"
-                 ;; Skip the constantly failing greyscale test.
-                 (("\\@testset \\\"operations.*" all)
-                  (string-append all " return\n"))))))))
-    (propagated-inputs
-     (list julia-axisarrays
-           julia-imageaxes
-           julia-imagebase
-           julia-imagecore))
-    (native-inputs
-     (list julia-indirectarrays
-           julia-offsetarrays
-           julia-simpletraits
-           julia-unitful))
-    (home-page "https://github.com/JuliaImages/ImageMetadata.jl")
-    (synopsis "Julia package for images having metadata")
-    (description "@code{ImageMetadata} is a simple package providing utilities
-for working with images that have metadata attached.  For example, you might
-want to associate an image with the date on which the picture was taken, or an
-MRI scan with patient data, or an astronomical image with sky coordinates and
-information about the detector used to acquire the image.")
-    (license license:expat)))
-
 (define-public julia-imageshow
   (package
     (name "julia-imageshow")
