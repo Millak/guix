@@ -10735,7 +10735,7 @@ decorator for retrying on exceptions.")
 (define-public python-restructuredtext-lint
   (package
     (name "python-restructuredtext-lint")
-    (version "1.4.0")
+    (version "2.0.2")
     (source
      (origin
        (method git-fetch)
@@ -10744,7 +10744,7 @@ decorator for retrying on exceptions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19ncbmnq2rnkqxhc9wf0q9whji34iyfv1pz6z61vnv4qhhdrn33v"))))
+        (base32 "1q86a1qd9xwyl5h76b4yk2hpbnbyq6llla7rmnnp9ifrgax6vx6j"))))
     (build-system pyproject-build-system)
     (arguments (list #:test-backend #~'unittest))
     (propagated-inputs (list python-docutils))
