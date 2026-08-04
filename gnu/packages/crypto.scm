@@ -1212,7 +1212,7 @@ trivial to build for local use.  Portability is emphasized over performance.")
 (define-public libsecp256k1
   (package
     (name "libsecp256k1")
-    (version "0.7.1")
+    (version "0.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1221,7 +1221,7 @@ trivial to build for local use.  Portability is emphasized over performance.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10cvh8jks3rjg6p7y0vm1v4kw9y7vljbfijj0zxwkxzysxx60w0f"))))
+                "0n3sflwzrb0yjf4fsip4qm3yq5pg2qj88hakam7vd98r1fqk13zg"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
