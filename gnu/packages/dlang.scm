@@ -456,9 +456,9 @@ integration tests...\n")
                 ;; tries to debug 64bit executable
                 ;; not in executable format: file format not recognized
                 #$@(if (target-32bit?)
-                       '((delete-file
-                          "dmd/compiler/test/runnable/gdb_slice_debuginfo_64.d"))
-                       '())
+                       #~(delete-file
+                          "dmd/compiler/test/runnable/gdb_slice_debuginfo_64.d")
+                       #~())
 
                 ;; Locations in stack traces are broken for some reason,
                 ;; causing these tests to fail.
@@ -577,7 +577,7 @@ compiler for the D programming language.")
        ((#:make-flags flags ''())
         #~(fold delete #$flags '("HOST_DMD=gdmd"
                                  "SHARED=0")))
-       ((#:phases phases '%standard-phases)
+       ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-after 'install 'rewrite-references-to-bootstrap
               ;; D compilers can keep references to the include files used to
