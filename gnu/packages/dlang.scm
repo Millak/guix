@@ -68,6 +68,10 @@
 
 (define-public ldc-bootstrap
   (package
+    ;; This package is purposefully named just "ldc" and not "ldc-bootstrap",
+    ;; as the final ldc package rewrites references from this one to itself,
+    ;; and their names must have the same length to avoid corrupting the
+    ;; binary.
     (name "ldc")
     (version "1.42.0")
     (source (origin
@@ -439,7 +443,24 @@ This compiler is based on the DMD frontend version 2.112.1.")
                                     "-DBUILD_SHARED_LIBS=OFF"))
              '("-DBUILD_SHARED_LIBS=ON")))
          ((#:build-type _ ''())
-          "RelWithDebInfo")))
+          "RelWithDebInfo")
+         ((#:phases phases #~%standard-phases)
+          #~(modify-phases #$phases
+              (add-after 'create-lib-output 'rewrite-references-to-bootstrap
+                ;; D compilers can keep references to the include files used to
+                ;; build a binary in exception messages. For ldc, rewrite the
+                ;; references to ldc-bootstrap to itself, to reduce its closure
+                ;; size.
+                (lambda* (#:key outputs #:allow-other-keys)
+                  (let* ((in-ldc-bootstrap #$(this-package-native-input "ldc"))
+                         (out (assoc-ref outputs "out"))
+                         (out/bin (string-append out "/bin")))
+                    ;; XXX: Use sed, as replace-store-references wouldn't
+                    ;; replace the references, while substitute* throws an
+                    ;; error.
+                    (apply invoke "sed" "-i"
+                           (format #f "s,~a,~a,g" in-ldc-bootstrap out)
+                           (find-files out/bin)))))))))
       (native-inputs
        (modify-inputs (package-native-inputs base)
          (delete "gdmd")
