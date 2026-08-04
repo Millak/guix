@@ -206,51 +206,6 @@ separate repository @code{Arpack.jl}.
 @end itemize")
     (license license:expat)))
 
-(define-public julia-arrayinterface
-  (package
-    (name "julia-arrayinterface")
-    (version "5.0.8")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/JuliaArrays/ArrayInterface.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0b0h4ihc8sykd96rn16vpk5kfk0p1si5iim61cixk9x12ma8ia3h"))))
-    (build-system julia-build-system)
-    (arguments
-     ;; XXXX: Unexpected failures for i686, e.g.,
-     ;; Expression: @inferred(ArrayInterface.size(Rnr)) === (StaticInt(4),)
-     ;; Evaluated: (static(2),) === (static(4),)
-     ;; Disable as stopgap.
-     (list #:tests? (not (or (%current-target-system)
-                             (target-x86-32?)))))
-    (propagated-inputs
-     (list julia-compat
-           julia-ifelse
-           julia-requires
-           julia-static-0.6))
-    (native-inputs
-     (list julia-aqua
-           julia-bandedmatrices
-           julia-blockbandedmatrices
-           julia-ifelse
-           julia-offsetarrays
-           julia-static-0.6
-           julia-staticarrays))
-    (home-page "https://github.com/JuliaArrays/ArrayInterface.jl")
-    (synopsis "Base array interface primitives")
-    (description "The purpose of this library is to solidify extensions to the
-current @code{AbstractArray} interface, which are put to use in package
-ecosystems like @code{DifferentialEquations.jl}.  Since these libraries are
-live, this package will serve as a staging ground for ideas before they are
-merged into Base Julia.  For this reason, no functionality is exported so that
-if such functions are added and exported in a future Base Julia, there will be
-no issues with the upgrade.")
-    (license license:expat)))
-
 (define-public julia-arraylayouts
   (package
     (name "julia-arraylayouts")
