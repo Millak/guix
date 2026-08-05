@@ -23693,9 +23693,6 @@ This is based on Frank Terbeck's @code{gnus-article-treat-patch.el} but has
 been adapted to also work with mu4e.")
       (license license:gpl3+))))
 
-(define-deprecated-package emacs-mu4e-patch
-  emacs-message-view-patch)
-
 (define-public emacs-pretty-mode
   (package
     (name "emacs-pretty-mode")
