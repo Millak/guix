@@ -1840,7 +1840,7 @@ endif()
            simdjson
            `(,zstd "lib")))
     (propagated-inputs
-     (list fmt-11
+     (list fmt-12
            libexpected
            nlohmann-json
            reproc
