@@ -12809,9 +12809,6 @@ versions of Adwaita, Adwaita-dark and HighContrast themes.  It also provides
 index files needed for Adwaita to be used outside of GNOME.")
     (license license:lgpl2.1+)))
 
-(define-deprecated-package gnome-themes-standard
-  gnome-themes-extra)
-
 (define-public gnote
   (package
     (name "gnote")
