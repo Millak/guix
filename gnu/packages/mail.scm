@@ -1820,9 +1820,6 @@ features.  This is a fork derived from getmail 5.14, aimed at Python 3
 compatibility.")
     (license license:gpl2+)))           ;see docs/COPYING
 
-(define-deprecated-package getmail
-  getmail6)
-
 (define-public libetpan
   (package
     (name "libetpan")
