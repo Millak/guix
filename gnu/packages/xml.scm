@@ -295,9 +295,6 @@ project (but it is usable outside of the Gnome platform).")
         ((#:configure-flags flags #~'())
          #~(cons "--with-zlib" #$flags)))))))
 
-(define-deprecated-package python-libxml2
-  libxml2)
-
 (define-public libxlsxwriter
   (package
     (name "libxlsxwriter")
@@ -364,7 +361,7 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
                      (("exslt plugins fuzz")
                       "exslt plugins"))
                    ;; Also disable Python tests since they require
-                   ;; python-libxml2 which would introduce a
+                   ;; libxml2 which would introduce a
                    ;; circular dependency.
                    (substitute* "python/Makefile"
                      (("cd tests && \\$\\(MAKE\\) tests")
