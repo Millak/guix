@@ -29,9 +29,6 @@
   #:use-module (guix packages)
   #:use-module (gnu packages luanti))
 
-(define-deprecated-package minetest-basic-materials
-  luanti-basic-materials)
-
 (define-deprecated-package minetest-coloredwood
   luanti-coloredwood)
 
