@@ -54938,11 +54938,6 @@ algorithms; density clustering, hierarchical clustering, k-means, and the
 discovery of differentially expressed genes and markers.")
     (license license:gpl3)))
 
-;; Seurat5 is only available via the seurat5 branch.  It will replace r-seurat
-;; eventually once it has been released to CRAN.
-(define-deprecated-package r-seurat5
-  r-seurat)
-
 (define-public r-seuratdisk
   (let ((commit "877d4e18ab38c686f5db54f8cd290274ccdbe295")
         (revision "1"))
