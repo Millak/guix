@@ -291,16 +291,30 @@ key, and private key are written to a new directory.")
 (define-public onionshare-cli
   (package
     (name "onionshare-cli")
-    (version "2.6.3")
+    (version "2.6.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/onionshare/onionshare")
-             (commit (string-append "v" version))))
+              (url "https://github.com/onionshare/onionshare")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16yr25llnbgl2iwk458ca0rhrxsmpfx72q4gdg4a52i6g546p3hd"))))
+        (base32 "1pb4glbz8kz30kv36pm3m4qiyansvavjzm8jv66h7xrn8l2i61a4"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (for-each delete-file-recursively
+                      (list "docs"
+                            "flatpak"
+                            "snap"
+                            "security"
+                            "desktop/screenshots"))
+            (for-each delete-file
+                      (append
+                       (find-files "." "poetry\\.lock")
+                       (find-files "desktop/scripts" ".*macos.*")
+                       (list "desktop/scripts/build-windows.py")))))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-cython
@@ -318,6 +332,7 @@ key, and private key are written to a new directory.")
            python-gevent
            python-gevent-websocket
            python-packaging
+           python-pkgconfig
            python-psutil
            python-pynacl
            python-pysocks
@@ -340,14 +355,28 @@ key, and private key are written to a new directory.")
               ;; Poetry way too strict requirements.
               (substitute* (list "cli/pyproject.toml"
                                  "desktop/pyproject.toml")
-                (("2.3.2") "^3.0.0")     ; flask = "2.3.2"
-                (("5.3.4") "5.6.1")      ; flask-socketio = "5.3.4"
-                (("23.9.1") "24.11.1")   ; gevent = "^23.9.1"
-                (("PySide6 = .*") "")    ; XXX: it's not found in sanity check
-                (("7.4.2") "8.0.0")      ; qrcode = "^7.4.2"
-                (("1.8.1") "^1.8.1")     ; stem = "1.8.1"
-                (("3.0.6") "^3.0.6")     ; werkzeug = "3.0.6"
-                (("wheel =.*") ""))))    ; wheel = "^0.41.2"
+                (("^wheel = .*")
+                 "\n")
+                (("^pynacl = .*")
+                 (format #f "pynacl = \"^~a\"~%"
+                         #$(package-version
+                            (this-package-input "python-pynacl"))))
+                (("^stem = .*")
+                 (format #f "stem = \"^~a\"~%"
+                         #$(package-version
+                            (this-package-input "python-stem"))))
+                (("^qrcode = .*")
+                 (format #f "qrcode = \"^~a\"~%"
+                         #$(package-version
+                            (this-package-input "python-qrcode"))))
+                (("^gevent = .*")
+                 (format #f "gevent = \"^~a\"~%"
+                         #$(package-version
+                            (this-package-input "python-gevent"))))
+                (("^cffi = .*")
+                 (format #f "cffi = \"^~a\"~%"
+                         #$(package-version
+                            (this-package-input "python-cffi")))))))
           (add-after 'unpack 'bake-tor
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* (list "cli/onionshare_cli/common.py"
@@ -371,6 +400,7 @@ host websites, and chat with friends using the Tor network.
 This package contains @code{onionshare-cli}, a command-line interface to
 OnionShare.")
     ;; Bundled, minified jquery and socket.io are expat licensed.
+    ;; TODO Unbundle them.
     (license (list license:gpl3+ license:expat))))
 
 (define-public onionshare
