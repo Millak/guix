@@ -457,9 +457,6 @@ millions of nodes (as long as they can fit in memory).  The core function is
 algorithm for a number of different methods.")
     (license license:gpl3+)))
 
-(define-deprecated-package python-vtraag-louvain
-  python-louvain-igraph)
-
 (define-public python-pygsp
   (package
     (name "python-pygsp")
