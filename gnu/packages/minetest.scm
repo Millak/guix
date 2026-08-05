@@ -29,9 +29,6 @@
   #:use-module (guix packages)
   #:use-module (gnu packages luanti))
 
-(define-deprecated-package minetest-moreores
-  luanti-moreores)
-
 (define-deprecated-package minetest-sound-api-core
   luanti-sound-api-core)
 
