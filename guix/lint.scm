@@ -660,7 +660,7 @@ of a package, and INPUT-NAMES, a list of package specifications such as
   ;; an input at all.
   (let ((input-names (append
                       '("python-pip"
-                        "python-pre-commit"
+                        "pre-commit"
                         "tzdata"
                         "nss-certs"
                         "glibc-locales")
