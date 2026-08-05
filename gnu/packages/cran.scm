@@ -39987,7 +39987,7 @@ information about geometries.")
            geos
            openssl
            pcre2
-           proj-9.3
+           proj
            sqlite
            zlib))
     (propagated-inputs
