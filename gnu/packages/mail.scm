@@ -665,9 +665,6 @@ compatible with the configuration of
 Python}.")
     (license license:gpl3+)))
 
-(define-deprecated-package go-gitlab.com-shackra-goimapnotify
-  goimapnotify)
-
 (define-public guile2.2-mailutils
   (package
     (inherit mailutils)
