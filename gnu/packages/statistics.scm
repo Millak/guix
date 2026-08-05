@@ -1357,13 +1357,13 @@ new data from those PDFs.")
 (define-public python-lifelines
   (package
     (name "python-lifelines")
-    (version "0.30.0")
+    (version "0.30.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "lifelines" version))
        (sha256
-        (base32 "065yajlfydi7x7b1sjxp9h3rqgwrd3w9ivxiyph7y5nbbwkzdxpp"))))
+        (base32 "0zwbd5nai17r575chlnpay51byd0c33kk3wln9xhqa54mpnf1ldc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1386,7 +1386,7 @@ new data from those PDFs.")
            python-formulaic
            python-matplotlib
            python-numpy
-           python-pandas
+           python-pandas-2
            python-scipy))
     (home-page "https://github.com/CamDavidsonPilon/lifelines")
     (synopsis
