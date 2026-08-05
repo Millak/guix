@@ -29,9 +29,6 @@
   #:use-module (guix packages)
   #:use-module (gnu packages luanti))
 
-(define-deprecated-package minetest-basic-trains
-  luanti-basic-trains)
-
 (define-deprecated-package minetest-oneblock
   luanti-oneblock)
 
