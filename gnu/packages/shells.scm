@@ -1046,10 +1046,6 @@ JavaScript users who avoid shell.")
 ;; This is renamed to maintain naming consistency with the Project Guidelines.
 (define-deprecated-package oils oils-for-unix)
 
-;; Since release 0.16.0 the former Oil project has been renamed to Oils:
-;; <https://www.oilshell.org/blog/2023/03/rename.html>.
-(define-deprecated-package oil oils-for-unix)
-
 (define-public gash
   (package
     (name "gash")
