@@ -40912,8 +40912,6 @@ all of your projects, then override or add variables on a per-project basis.")
 user interfaces for various built-in modes.")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-casual-info
-  emacs-casual)
 (define-deprecated-package emacs-casual-lib
   emacs-casual)
 (define-deprecated-package emacs-casual-avy
