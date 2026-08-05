@@ -40470,9 +40470,6 @@ support JSX syntax.")
 expanding regions of text without modifying the actual contents.")
       (license license:expat))))
 
-(define-deprecated-package emacs-origami-el
-  emacs-origami)
-
 (define-public emacs-origami-ts
   (package
     (name "emacs-origami-ts")
