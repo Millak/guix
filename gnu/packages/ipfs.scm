@@ -2494,9 +2494,6 @@ interface as simple as the HTTP web, but with permanence built in.  You can
 also mount the world at @code{/ipfs}.")
     (license license:expat)))
 
-(define-deprecated-package go-ipfs
-  kubo)
-
 (define-public spritely-libp2p-daemon
   (let ((version "0.1")
         (commit "f10d8c4bad2a50d6e481c0b57231741d079ffedb")
