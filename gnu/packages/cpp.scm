@@ -1586,9 +1586,6 @@ data transfer object.")
 intuitive syntax and trivial integration.")
     (license license:expat)))
 
-(define-deprecated-package json-modern-cxx
-  nlohmann-json)
-
 (define-public nlohmann-json-no-char8-t
   (package
     ;; XXX: Version 3.12.0 does not work without char8_t support.
