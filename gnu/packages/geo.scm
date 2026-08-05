@@ -1808,7 +1808,7 @@ vector data.")
            openjpeg
            pcre2
            postgresql ; libpq
-           proj-9.3
+           proj
            qhull
            shapelib
            sqlite
