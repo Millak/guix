@@ -17032,6 +17032,20 @@ falling into the Python interpreter.")
        (sha256
         (base32 "0bgqxmqq8d3il0gnbvlb5sik50f6z8myx7p652lpv4llj9hrl2w8"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pandas-3
+            (lambda _
+              ;; Pandas 3.0 removed the implicit engine fallback that used
+              ;; to switch to the Python engine whenever sep=None was
+              ;; passed without an explicit 'engine', which get_delim()
+              ;; relied on for delimiter auto-detection
+              ;; Try removing the phase on the next update.
+              (substitute* "qnorm/util.py"
+                (("table, sep=None, iterator=True")
+                 "table, sep=None, engine=\"python\", iterator=True")))))))
     (propagated-inputs
      (list python-numba python-numpy python-pandas
            ;; XXX: pandas optional dependencies.
