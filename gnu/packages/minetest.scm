@@ -29,9 +29,6 @@
   #:use-module (guix packages)
   #:use-module (gnu packages luanti))
 
-(define-deprecated-package minetest-homedecor-modpack
-  luanti-homedecor-modpack)
-
 (define-deprecated-package minetest-mesecons
   luanti-mesecons)
 
