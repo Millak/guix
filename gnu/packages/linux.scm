@@ -2813,9 +2813,6 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-pocket-reform.dtb")))))))))))
                       `(("CONFIG_OVERLAY_FS" . m))
                       (default-extra-linux-options linux-libre-version))))
 
-(define-deprecated-package linux-libre-with-bpf
-  linux-libre)
-
 
 ;;;
 ;;; Linux kernel modules.
