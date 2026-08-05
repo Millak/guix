@@ -1292,9 +1292,6 @@ workspaces.
 @end itemize")
     (license license:gpl3+)))
 
-(define-deprecated-package python-ueberzug
-  ueberzug)
-
 (define-public ueberzugpp
   (package
     (name "ueberzugpp")
