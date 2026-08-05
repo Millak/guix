@@ -15560,9 +15560,6 @@ It is built on top of the custom theme support in Emacs 24 or later.")
 variants.")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-moe-theme-el
-  emacs-moe-theme)
-
 (define-public emacs-color-theme-sanityinc-tomorrow
   (package
     (name "emacs-color-theme-sanityinc-tomorrow")
