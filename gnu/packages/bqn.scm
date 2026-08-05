@@ -105,9 +105,8 @@ the same author.")
 
 (define bqn-sources
   ;; Aside from dbqn above, the main bqn repository is used by other
-  ;; implementations as a "known good" set of sources. CBQN uses dbqn to
-  ;; generate an intermediate bytecode for its own compilation.
-    (let ((commit "5880fa153bb3e3172afc59a711af7e471aeedcd3"))
+  ;; implementations as a "known good" set of sources.
+    (let ((commit "3d8f6876d9fb2a055e164137ab058ba70bffda1c"))
       (origin
         (method git-fetch)
         (uri (git-reference
@@ -115,9 +114,9 @@ the same author.")
               (commit commit)))
         (file-name (git-file-name "bqn-sources" commit))
         (sha256
-         (base32 "1cap927i0s8ly4mckppw33ahlc5xnp3l2shk1m79wndf362x3r7c")))))
+         (base32 "1znxdn6k7xq85z1hz63syx540lwl6ak6zjikwdss01wbya5vwvp3")))))
 
-(define %cbqn-version "0.9.0")
+(define %cbqn-version "0.12.0")
 
 (define cbqn-sources
   (let ((version %cbqn-version))
@@ -128,9 +127,9 @@ the same author.")
             (commit (string-append "v" version))))
       (file-name (git-file-name "cbqn" version))
       (sha256
-       (base32 "0433hp9lgv6w6mhdz0k1kx2rmxia76yy9i0z7ps4qdk7snf2yr2q")))))
+       (base32 "1rgvmdzmdvnf1ivf0x7hxdahr7dcf1vf01n6iphfks8336xal2s1")))))
 
-(define %replxx-commit "13f7b60f4f79c2f14f352a76d94860bad0fc7ce9")
+(define %replxx-commit "5e3bd870699007b9536d29f60e3a2b0a68ce0a7a")
 
 (define replxx-sources
   (let ((commit %replxx-commit))
@@ -142,9 +141,9 @@ the same author.")
          (commit commit)))
       (file-name (git-file-name "replxx" commit))
       (sha256
-       (base32 "0440xjvdkrbpxqjrd6nsrnaxki0mgyinsb0b1dcshjj3h3jr1yy4")))))
+       (base32 "0va3in0aswmvs49plkw5rlnd898j4lvw3y5mjl76s4xqj9vpalq7")))))
 
-(define %singeli-commit "53f42ce4331176d281fa577408ec5a652bdd9127")
+(define %singeli-commit "5187ed3aa22a2257b63c04a5498ec756fa6263cb")
 
 (define singeli-sources
   (let ((commit %singeli-commit))
@@ -156,7 +155,14 @@ the same author.")
          (commit commit)))
       (file-name (git-file-name "singeli" commit))
       (sha256
-       (base32 "1dzg4gk74lhy6pwvxzhk4zj1qinc83l7i6x6zpvdajdlz5vqvc1m")))))
+       (base32 "1qal8yvcm346sg4bwnc4bmx4v1fsh0x1mdm1jrqvc4gidwlrgl7f")))))
+
+(define (cbqn-make-flags . goals)
+  #~(list (string-append "CC=" #$(cc-for-target))
+          (string-append "version=" #$%cbqn-version)
+          "nogit=1"
+          (string-append "j=" (number->string (parallel-job-count)))
+          #$@goals))
 
 (define cbqn-bootstrap
   (package
@@ -168,13 +174,7 @@ the same author.")
      (list
       #:tests? #f ;skipping tests for bootstrap
       ;; `make for-bootstrap' implicitly disables REPLXX and Singeli.
-      #:make-flags
-      #~(list (string-append "CC=" #$(cc-for-target))
-              ;; Without specifying a version, the Makefile tries to
-              ;; use the current commit hash.
-              (string-append "version=" #$version)
-              "nogit=1"
-              "for-bootstrap")
+      #:make-flags (cbqn-make-flags "for-bootstrap")
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
@@ -186,12 +186,12 @@ the same author.")
               (install-file "bqn"
                             (string-append #$output "/bin")))))))
     (inputs (list libffi))
+    (home-page "https://mlochbaum.github.io/BQN/")
     (synopsis "BQN implementation in C")
     (description
      "This package provides the reference implementation of
 @uref{https://mlochbaum.github.io/BQN/, BQN}, a programming language inspired
 by APL.")
-    (home-page "https://mlochbaum.github.io/BQN/")
     ;; Upstream explains licensing situation
     (license (list license:asl2.0       ;src/utils/ryu*
                    license:boost1.0
@@ -243,62 +243,83 @@ by APL.")
     (name "cbqn")
     (outputs '("out" "lib"))
     (source
-     (cbqn-combined-source name %cbqn-version
+     (cbqn-combined-source name
+                           %cbqn-version
                            #:cbqn-sources cbqn-sources
                            #:replxx-sources replxx-sources
                            #:singeli-sources singeli-sources))
     (arguments
-     (substitute-keyword-arguments
-         (strip-keyword-arguments (list #:tests?)
-                                  (package-arguments cbqn-bootstrap))
-       ((#:make-flags flags #~(list))
-        #~(cons* "shared-o3" "o3" "for-build" #$flags))
-       ((#:phases phases #~%standard-phases)
-        #~(modify-phases #$phases
-            ;; Build bytecode using bootstrap CBQN
-            (add-before 'build 'generate-bytecode
-              (lambda* (#:key inputs #:allow-other-keys)
-                (let* ((self-hosted-source (dirname (search-input-file
-                                                     inputs
-                                                     "bqn.bqn"))))
-                  (mkdir-p "build/bytecodeLocal/gen")
-                  (invoke "bqn" "build/bootstrap.bqn" self-hosted-source))))
-            (replace 'check
-              (lambda* (#:key inputs tests? #:allow-other-keys)
-                (when tests?
-                  (system (string-append "./BQN -M 1000 \""
-                                         #+bqn-sources "/test/this.bqn\""))
-                  (map (lambda (x)
-                         (system (string-append "./BQN ./test/" x ".bqn")))
-                       '("cmp"
-                         "equal"
-                         "copy"
-                         "bitcpy"
-                         "bit"
-                         "mut"
-                         "hash"
-                         "squeezeValid"
-                         "squeezeExact"
-                         "various"
-                         "random"
-                         "joinReuse"))
-                  (system "make -C test/ffi"))))
-            (replace 'install
-              (lambda* (#:key outputs #:allow-other-keys)
-                (let* ((bin (string-append (assoc-ref outputs "out") "/bin"))
-                       (lib (string-append (assoc-ref outputs "lib") "/lib"))
-                       (include (string-append (assoc-ref outputs "lib")
-                                               "/include")))
-                  (mkdir-p bin)
-                  (rename-file "BQN" "bqn")
-                  (install-file "bqn" bin)
-                  (install-file "libcbqn.so" lib)
-                  (install-file "include/bqnffi.h" include))))))))
+     (list
+      ;; The CBQN makefile dispatches to build/src/build.bqn, which
+      ;; parallelizes internally via `j='.
+      #:parallel-build? #f
+      #:make-flags (cbqn-make-flags "for-build" "shared-o3" "o3")
+      #:modules '((guix build utils)
+                  (guix build gnu-build-system)
+                  ((ice-9 regex)
+                   #:select (match:substring))
+                  ((srfi srfi-1)
+                   #:select (any)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          ;; Build bytecode using bootstrap CBQN
+          (add-before 'build 'generate-bytecode
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((self-hosted-source (dirname (search-input-file inputs
+                                                   "bqn.bqn"))))
+                (mkdir-p "build/bytecodeLocal/gen")
+                (invoke "bqn" "build/bootstrap.bqn" self-hosted-source))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The reference test suite of the BQN language.
+                (invoke "./BQN" "-M" "1000"
+                        (string-append #+bqn-sources "/test/this.bqn"))
+                ;; Run tests applicable to release builds.  Exclude tests
+                ;; requiring “-DTEST_UTILS” (disabled for release builds),
+                ;; usz32 (nonstandard 32-bit integer array length), and tests
+                ;; for unsupported platforms and build configurations.
+                (let* ((excluded-files '("test/cases/fuzz/bitarr-fill.bqn"
+                                         "test/cases/fuzz/bitcpy.bqn"
+                                         "test/cases/proper-fills.bqn"
+                                         "test/cases/usz32.bqn"))
+                       (excluded-directories '("test/cases/build-specific/"
+                                               "test/cases/unnecessary/"
+                                               "test/cases/windows/"))
+                       (test-pred
+                        (lambda (file _)
+                          (and (string-suffix? ".bqn" file)
+                               (not (member file excluded-files))
+                               (not (any (lambda (directory)
+                                           (string-prefix? directory file))
+                                         excluded-directories)))))
+                       (test-regexp (make-regexp "^test/cases/(.*)\\.bqn$")))
+                  (apply invoke "./BQN" "test/run.bqn" "bin=./BQN"
+                         (map
+                          (lambda (file)
+                            ;; Remove the directory and extension for the CLI.
+                            (match:substring (regexp-exec test-regexp file)
+                                             1))
+                          (find-files "test/cases" test-pred))))
+                (invoke "make" "-C" "test/ffi" "test"
+                        (string-append "CC="
+                                       #$(cc-for-target))))))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((bin (string-append (assoc-ref outputs "out") "/bin"))
+                     (lib (string-append (assoc-ref outputs "lib") "/lib"))
+                     (include (string-append (assoc-ref outputs "lib")
+                                             "/include")))
+                (rename-file "BQN" "bqn")
+                (install-file "bqn" bin)
+                (install-file "libcbqn.so" lib)
+                (install-file "include/bqnffi.h" include)))))))
     (native-inputs (list cbqn-bootstrap libffi))
     (inputs (modify-inputs inputs
               (prepend bqn-sources)))
     (license (append (package-license cbqn-bootstrap)
-                     (list license:isc   ;Singeli module
+                     (list license:isc ;Singeli module
                            license:bsd-3 ;REPLXX module
                            license:unicode)))
     (properties `((tunable? . #t)))))
