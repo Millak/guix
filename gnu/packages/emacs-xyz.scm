@@ -31213,9 +31213,6 @@ mode.")
 for operating over the contents of Emacs buffers.")
       (license license:gpl3+))))
 
-(define-deprecated-package emacs-m-buffer-el
-  emacs-m-buffer)
-
 (define-public emacs-let-alist
   (package
     (name "emacs-let-alist")
