@@ -2593,6 +2593,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/ungoogled-chromium-custom-compiler.patch 	\
   %D%/packages/patches/ungoogled-chromium-empty-parsed-rustc-args.patch	\
   %D%/packages/patches/ungoogled-chromium-extension-search-path.patch	\
+  %D%/packages/patches/ungoogled-chromium-golang.patch		\
+  %D%/packages/patches/ungoogled-chromium-histograms.patch	\
   %D%/packages/patches/ungoogled-chromium-increase-fortify-level.patch	\
   %D%/packages/patches/ungoogled-chromium-override-libdrm-assertion.patch	\
   %D%/packages/patches/ungoogled-chromium-RUNPATH.patch		\

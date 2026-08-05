@@ -45,6 +45,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
@@ -182,10 +183,25 @@
     "third_party/fast_float" ;ASL2.0, Boost1.0, Expat
     "third_party/fdlibm" ;non-copyleft
     "third_party/federated_compute/chromium/fcp/confidentialcompute" ;ASL2.0
+    "third_party/federated_compute/chromium/fcp/protos" ;ASL2.0
+    ;no explicit license; trivial
+    "third_party/federated_compute/chromium/fcp/protos/confidentialcompute"
+    "third_party/federated_compute/chromium/fcp/secagg" ;ASL2.0
+    "third_party/federated_compute/chromium/fcp/client" ;ASL2.0
     "third_party/federated_compute/src/fcp/base" ;ASL2.0
     "third_party/federated_compute/src/fcp/confidentialcompute" ;ASL2.0
+    "third_party/federated_compute/src/fcp/client" ;ASL2.0
+    "third_party/federated_compute/src/fcp/protos" ;ASL2.0
     "third_party/federated_compute/src/fcp/protos/confidentialcompute" ;ASL2.0
     "third_party/federated_compute/src/fcp/protos/federatedcompute" ;ASL2.0
+    "third_party/federated_compute/src/fcp/secagg" ;ASL2.0
+    "third_party/federated_compute/third_party/googleapis/src/google/rpc" ;ASL2.0
+    ;ASL2.0
+    "third_party/federated_compute/third_party/googleapis/src/google/longrunning"
+    "third_party/federated_compute/third_party/googleapis/src/google/type" ;ASL2.0
+    "third_party/federated_compute/third_party/protodatastore-cpp" ;ASL2.0
+    ;ASL2.0
+    "third_party/federated_compute/third_party/tensorflow-federated/src/tensorflow_federated"
     "third_party/ffmpeg" ; LGPL2.1+, GPL2.0+, Expat and BSD
     "third_party/fft2d" ;non-copyleft
     "third_party/flatbuffers" ;ASL2.0
@@ -390,7 +406,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "150.0.7871.181")
+(define %chromium-version "151.0.7922.71")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision (string-append "debian/" %ungoogled-revision))
 
@@ -402,7 +418,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "0rmc6lhnc0djjvfb7b65i5fmw2wbl729y6p62if8z2rgwyf89yl9"))))
+      "1bzh8gjlccl6b4m2sb44h5hk5bg1bcaifb9mx36kxjgqjq7amm5v"))))
 
 (define %debian-origin
   (origin
@@ -415,7 +431,7 @@
                                 ((_ version) version))))
     (sha256
      (base32
-      "1jsv9ym20wfkdrj2nz5khmpb83w6b2ib92p7bznf6q4hssysxf5k"))))
+      "1dfhkwvdih7gjzbfj146rdn6m7v3fdx7b4ay6yhg53zb5nhxw2j3"))))
 
 (define (origin-file origin file)
   (computed-file
@@ -449,6 +465,7 @@
          "llvm-19/0011-revert-v8-libm.patch"
          "llvm-19/clang19.patch"
          "llvm-19/clone-traits.patch"
+         "llvm-19/constexpr.patch"
          "llvm-19/i18n-builder-enum.patch"
          "llvm-19/const-profile.patch"
          "llvm-19/iota.patch"
@@ -460,10 +477,7 @@
          "trixie/bindgen-boringssl.patch"
          "trixie/cookie-string-view.patch"
          "trixie/nodejs-main.patch"
-         "trixie/revert-v8-sanitize.patch"
-         "upstream/ar-path1.patch"
-         "upstream/ar-path2.patch"
-         "upstream/sysroot.patch")))
+         "trixie/revert-v8-sanitize.patch")))
 
 (define %guix-patches
   (map (lambda (patch)
@@ -474,6 +488,8 @@
          "ungoogled-chromium-custom-compiler.patch"
          "ungoogled-chromium-empty-parsed-rustc-args.patch"
          "ungoogled-chromium-extension-search-path.patch"
+         "ungoogled-chromium-golang.patch"
+         "ungoogled-chromium-histograms.patch"
          "ungoogled-chromium-increase-fortify-level.patch"
          "ungoogled-chromium-override-libdrm-assertion.patch"
          "ungoogled-chromium-RUNPATH.patch"
@@ -613,7 +629,7 @@
                                   %chromium-version "-lite.tar.xz"))
               (sha256
                (base32
-                "0v1750cwsynlbrhg08j281y3817195kp7826hwkl2hz3fn79q0s1"))
+                "0xzwns9gqlag48qib40d4m4hzsy0bqppgissb340iwwn91l76lqq"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -897,6 +913,11 @@
                 ;; TODO: pre-compile instead. Avoids a race condition.
                 (setenv "PYTHONDONTWRITEBYTECODE" "1")
 
+                ;; Go compiler creates a build cache directory at home.
+                (setenv "HOME" "/tmp")
+                ;; Avoid checking for go modules online.
+                (setenv "GOPROXY" "off")
+
                 ;; XXX: How portable is this.
                 (mkdir-p "third_party/node/linux/node-linux-x64")
                 (symlink (dirname node)
@@ -978,7 +999,8 @@
                   (("@@PACKAGE") "chromium")
                   (("/usr/bin/@@usr_bin_symlink_name") exe)
                   (("@@uri_scheme") "x-scheme-handler/chromium;")
-                  (("@@extra_desktop_entries") ""))
+                  (("@@extra_desktop_entries") "")
+                  (("@@startup_wm_class") "Chromium-browser"))
 
                 (mkdir-p man)
                 (copy-file "chrome/app/resources/manpage.1.in"
@@ -1028,6 +1050,7 @@
            clang-toolchain
            gn
            gperf
+           go
            lld-as-ld-wrapper
            llvm
            ninja
