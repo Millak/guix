@@ -5676,21 +5676,4 @@ configure input, and customize Wayfire plugins.")
 compositors to render surfaces with eye-candy effects.")
     (license license:expat)))
 
-(define-public scenefx-0.4
-  (package
-    (inherit scenefx)
-    (name "scenefx")
-    (version "0.4.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/wlrfx/scenefx")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "10f4rygnb8qrlcxw6f3gpl4xa20wrykx63cvn8wih74smdr48gjw"))))
-    (inputs (modify-inputs (package-inputs scenefx)
-              (replace "wlroots" wlroots-0.19)))))
-
 ;;; window-management.scm ends here
