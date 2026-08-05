@@ -29,9 +29,6 @@
   #:use-module (guix packages)
   #:use-module (gnu packages luanti))
 
-(define-deprecated-package minetest-pipeworks
-  luanti-pipeworks)
-
 (define-deprecated-package minetest-technic
   luanti-technic)
 
