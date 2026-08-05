@@ -7504,9 +7504,6 @@ Users in group @code{wheel} can skip password authentication.")
     (home-page "https://github.com/AlynxZhou/showmethekey")
     (license license:asl2.0)))
 
-(define-deprecated-package show-me-the-key
-  showmethekey)
-
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
