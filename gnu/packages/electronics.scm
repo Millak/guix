@@ -253,8 +253,8 @@ are also taken from the original.")
       (license license:gpl3+))))
 
 (define-public abc
-  (let ((commit "bcfdf592289a408cd67ec19260f8a60a37b085b6")
-        (revision "1")
+  (let ((commit "8e224cd794a10e578d6dc3ee76e504c5c3edbdbe")
+        (revision "2")
         (version "1.01"))     ;see ABC_VERSION in src/base/main/mainInt.h
     (package
       (name "abc")
@@ -273,7 +273,7 @@ are also taken from the original.")
                        (for-each delete-file-recursively '("x64" "x86")))))
                 (sha256
                  (base32
-                  "1vc312104w8l4fwd39g4fx8zcpia66ijddyai75r8fy77sj2aq5p"))
+                  "09rp8b1wm629a32xd2apx6x29nb1bryd56vjhzdk67bnzlgzp1kc"))
                 (patches
                  (search-patches "abc-tests.patch"))))
       (build-system cmake-build-system)
