@@ -10233,9 +10233,6 @@ If you are using Guix shell with @file{manifest.scm}, the
       (description "This package lets you switch Ruby versions using chruby.")
       (license license:gpl3+))))
 
-(define-deprecated-package emacs-chruby-el
-  emacs-chruby)
-
 ;; Package has no release.  Version is extracted from "Version:" keyword in
 ;; main file.
 (define-public emacs-zeno-theme
