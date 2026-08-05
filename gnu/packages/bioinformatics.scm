@@ -18162,9 +18162,6 @@ report will provide an intuitive visual overview about the development of
 variant abundance over time and location.")
     (license license:gpl3+)))
 
-(define-deprecated-package pigx-sars-cov2-ww
-  pigx-sars-cov-2)
-
 (define-public pigx
   (package
     (name "pigx")
