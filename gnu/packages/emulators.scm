@@ -2284,9 +2284,6 @@ metadata about each known libretro core.  The snapshot is taken from the
 @url{https://github.com/libretro/libretro-super, libretro-super} repository.")
     (license license:expat)))
 
-(define-deprecated-package retroarch-core-info
-  libretro-core-info)
-
 (define-public libretro-database
   (package
     (name "libretro-database")
