@@ -39811,9 +39811,6 @@ buffers.")
 JavaScript.")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-js2-refactor-el
-  emacs-js2-refactor)
-
 (define-public emacs-jsdoc
   (package
     (name "emacs-jsdoc")
