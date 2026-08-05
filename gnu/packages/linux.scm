@@ -12656,9 +12656,6 @@ suggestions from various sources, including:
 This tool supports checking Kconfig options and kernel cmdline parameters.")
     (license license:gpl3)))
 
-(define-deprecated-package kconfig-hardened-check
-  kernel-hardening-checker)
-
 (define-public firejail
   (package
     (name "firejail")
