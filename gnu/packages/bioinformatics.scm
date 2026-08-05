@@ -6080,9 +6080,6 @@ subgroups.")
     (description "muon is a multimodal omics Python framework.")
     (license license:bsd-3)))
 
-(define-deprecated-package python-pyega3
-  python-ega-download-client)
-
 (define-public python-pysam
   (package
     (name "python-pysam")
