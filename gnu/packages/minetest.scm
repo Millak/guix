@@ -29,9 +29,6 @@
   #:use-module (guix packages)
   #:use-module (gnu packages luanti))
 
-(define-deprecated-package minetest-throwing-arrows
-  luanti-throwing-arrows)
-
 (define-deprecated-package minetest-worldedit
   luanti-worldedit)
 
