@@ -977,15 +977,4 @@ source files.")
 
 (define-public node node-lts)
 
-(define-public libnode
-  (package/inherit node-lts
-    (name "libnode")
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:configure-flags flags ''())
-        `(cons* "--shared" "--without-npm" ,flags))
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (delete 'fix-node-gyp-reference)
-           (delete 'patch-nested-shebangs)
-           (delete 'ignore-number-of-hardlinks)))))))
+(define-deprecated-package libnode node-lts)
