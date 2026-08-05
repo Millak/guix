@@ -9592,7 +9592,7 @@ similar rank-based tests for equal probability distributions due to Neuhauser
          "0ax9j6f314rjn3pzdlcvw6vfdqw5aqclid66129gvjxmxq84p5vj"))))
     (properties
      `((upstream-name . "V8")
-       (updater-extra-inputs . ("libnode"))))
+       (updater-extra-inputs . ("node"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
@@ -9602,17 +9602,14 @@ similar rank-based tests for equal probability distributions due to Neuhauser
              (substitute* "configure"
                (("^PKG_LIBS=.*")
                 (string-append "PKG_LIBS="
-                               (assoc-ref inputs "libnode")
-                               "/lib/libnode.so.137\n")))
-             (setenv "INCLUDE_DIR"
-                     (string-append
-                      (assoc-ref inputs "libnode")
-                      "/include/node"))
-             (setenv "LIB_DIR"
-                     (string-append
-                      (assoc-ref inputs "libnode") "/lib")))))))
+                               (search-input-file inputs "/lib/libnode.so.137")
+                               "\n"))
+               (("^PKG_CFLAGS=.*")
+                (string-append "PKG_CFLAGS=-I"
+                               (search-input-directory inputs "/include/node")
+                               "\n"))))))))
     (inputs
-     (list libnode zlib))
+     (list node-lts zlib))
     (propagated-inputs
      (list r-curl r-jsonlite r-rcpp))
     (native-inputs
