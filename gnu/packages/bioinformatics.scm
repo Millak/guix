@@ -6948,13 +6948,25 @@ and record oriented data modeling and the Semantic Web.")
 (define-public python-scikit-bio
   (package
     (name "python-scikit-bio")
-    (version "0.7.1.post1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "scikit_bio" version))
-              (sha256
-               (base32
-                "15czagyilqxj68ivqi9slnz2brs0nn4a18swx8vjhj8inwc29nfb"))))
+    (version "0.7.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/scikit-bio/scikit-bio")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bg50d57jnzbkixcc3c23wrm8mf1za2nf0i3dy4n5zzizsk6vjpd"))
+       (patches
+        (list
+         (origin
+           (method url-fetch)
+           (uri
+            (string-append "https://github.com/scikit-bio/scikit-bio/commit/"
+                           "6d8d7d15af5485f5ad555d31db99808468f72831.patch"))
+           (sha256
+            (base32 "1l28ckz7n4gyrsg5ls2xf1qd19cv03jf7bjrn3y9y6jjn71by45w")))))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6968,8 +6980,14 @@ and record oriented data modeling and the Semantic Web.")
               (delete-file-recursively "skbio"))))))
     (native-inputs
      (list python-cython
+           python-dateutil
+           python-matplotlib
+           python-numpy
+           python-patsy
            python-pytest
-           python-setuptools))
+           python-responses
+           python-setuptools
+           python-statsmodels))
     (propagated-inputs
      (list python-array-api-compat
            python-biom-format
@@ -6982,7 +7000,7 @@ and record oriented data modeling and the Semantic Web.")
            python-requests
            python-scipy
            python-statsmodels))
-    (home-page "https://scikit-bio.org")
+    (home-page "https://scikit.bio")
     (synopsis "Data structures, algorithms and educational resources for bioinformatics")
     (description
      "This package provides data structures, algorithms and educational
