@@ -7882,10 +7882,6 @@ documents and fragments.  It's built on top of Nokogiri and libxml2.")
      "Crass is a pure Ruby CSS parser based on the CSS Syntax Level 3 spec.")
     (license license:expat)))
 
-;;; The ruby-nokogumbo package has been absorbed into ruby-nokogiri.
-(define-deprecated-package ruby-nokogumbo
-  ruby-nokogiri)
-
 (define-public ruby-samovar
   (package
     (name "ruby-samovar")
