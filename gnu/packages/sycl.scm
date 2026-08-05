@@ -92,6 +92,3 @@ includes use cases where a single binary needs to be able to target all
 supported hardware, or utilize hardware from different vendors
 simultaneously.")
     (license license:bsd-2)))
-
-(define-deprecated-package opensycl
-  adaptivecpp)
