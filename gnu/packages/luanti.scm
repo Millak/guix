@@ -221,10 +221,6 @@ new features.")
       (home-page "https://www.luanti.org/")
       (license license:lgpl2.1+))))
 
-;; This package is deprecated. "Minetest Game" is no longer the official game.
-(define-deprecated-package minetest-data
-  minetest-game)
-
 (define-public luanti-halon
   ;; There is no tag for this fork; find the base luanti used for the
   ;; base-version, and otherwise use the latest commit.
