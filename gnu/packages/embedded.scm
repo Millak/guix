@@ -119,8 +119,7 @@
             make-propeller-gcc
             make-propeller-gcc-4
             make-propeller-gcc-6
-            make-propeller-toolchain
-            make-propeller-development-suite))
+            make-propeller-toolchain))
 
 ;;; Commentary:
 ;;;
@@ -1380,29 +1379,6 @@ micro-controller.  Spinsim supports execution from cog memory and hub
 execution, but it does not support multi-tasking.  It supports about
 two-thirds of the opcodes in the P2 instruction set.")
       (license license:expat))))
-
-(define make-propeller-development-suite
-  (mlambda ()
-    (let ((propeller-gcc (make-propeller-gcc)))
-      (package
-        (name "propeller-development-suite")
-        (version (package-version propeller-gcc))
-        (source #f)
-        (build-system trivial-build-system)
-        (arguments '(#:builder (begin (mkdir %output) #t)))
-        (propagated-inputs
-         `(("toolchain" ,(make-propeller-toolchain))
-           ("openspin" ,openspin)
-           ("propeller-load" ,propeller-load)
-           ("spin2cpp" ,spin2cpp)
-           ("spinsim" ,spinsim)))
-        (synopsis "Complete development suite for Propeller micro-controllers")
-        (description "This meta-package provides a complete environment for the
-development with Parallax Propeller micro-controllers.  It includes the GCC
-toolchain, the loader, the Openspin compiler, the Spin2cpp tool, and the Spin
-simulator.")
-        (home-page (package-home-page propeller-gcc))
-        (license (package-license propeller-gcc))))))
 
 (define-public imx-usb-loader
   ;; There are no proper releases.
