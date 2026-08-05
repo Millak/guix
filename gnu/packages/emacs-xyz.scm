@@ -39668,9 +39668,6 @@ subsequent committal of a chain of @code{undo} commands as a single edit in
 the @code{undo} history.")
       (license license:gpl3+))))
 
-(define-deprecated-package emacs-undo-propose-el
-  emacs-undo-propose)
-
 (define-public emacs-elisp-docstring-mode
   (let ((commit "f512e509dd690f65133e55563ebbfd2dede5034f")
         (version "0.0.1")
