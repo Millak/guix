@@ -40283,9 +40283,6 @@ screensaver activation in EXWM.")
     (description "This package provides a GUI for defining and monitoring services.")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-prodigy-el
-  emacs-prodigy)
-
 (define-public emacs-web-server
   (package
     (name "emacs-web-server")
