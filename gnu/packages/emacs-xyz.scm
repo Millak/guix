@@ -18712,9 +18712,6 @@ unique file names you need this package here.")
 individual file buffers.")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-undohist-el
-  emacs-undohist)
-
 (define-public emacs-eprime
   (let ((commit "17a481af26496be91c07139a9bfc05cfe722506f"))
     (package
