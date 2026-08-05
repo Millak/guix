@@ -3635,7 +3635,8 @@ directly uses the type system, rather than out-of-band exceptions.")
                          ghc-quickcheck))
     (arguments
      `(#:cabal-revision ("1"
-                         "1xfigma6ha5rhll6cg05iz6lzh88w3pgniarib7fzvi6rxyg3a17")))
+                         "1xfigma6ha5rhll6cg05iz6lzh88w3pgniarib7fzvi6rxyg3a17")
+       #:tests? #f)) ; tests require a running postgresql server
     (home-page "https://github.com/bitemyapp/esqueleto")
     (synopsis "Type-safe embedded domain specific language for SQL queries")
     (description
