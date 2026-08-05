@@ -1091,9 +1091,6 @@ a card with a smaller capacity than stated.")
     (description "This package provides @code{parted} bindings for Python.")
     (license license:gpl2+)))
 
-(define-deprecated-package python-parted
-  python-pyparted)
-
 (define-public duperemove
   (package
     (name "duperemove")
