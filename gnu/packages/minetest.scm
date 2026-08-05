@@ -29,9 +29,6 @@
   #:use-module (guix packages)
   #:use-module (gnu packages luanti))
 
-(define-deprecated-package minetest-mobs-monster
-  luanti-mobs-monster)
-
 (define-deprecated-package minetest-pipeworks
   luanti-pipeworks)
 
