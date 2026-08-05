@@ -17650,7 +17650,7 @@ such as ala'.")
     (properties '((upstream-name . "hspec-hedgehog")))
     (inputs (list ghc-quickcheck ghc-hedgehog ghc-hspec ghc-hspec-core
                   ghc-splitmix))
-    (native-inputs (list ghc-hunit))
+    (native-inputs (list ghc-hunit hspec-discover))
     (home-page "https://github.com/hspec/hspec-hedgehog#readme")
     (synopsis "Integrate Hedgehog and Hspec")
     (description "An integration library for hspec and hedgehog.")
