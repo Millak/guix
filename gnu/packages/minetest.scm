@@ -29,9 +29,6 @@
   #:use-module (guix packages)
   #:use-module (gnu packages luanti))
 
-(define-deprecated-package minetest-unified-inventory
-  luanti-unified-inventory)
-
 (define-deprecated-package minetest-advtrains
   luanti-advtrains)
 
