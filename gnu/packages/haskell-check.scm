@@ -956,10 +956,6 @@ configuration.  This library provides the common bits for writing custom
 @file{Setup.hs} files.")
     (license license:bsd-3)))
 
-;; Deprecated. Don’t use.
-(define-deprecated-package ghc-cabal-doctest
-  cabal-doctest)
-
 (define-public ghc-testing-type-modifiers
   (package
     (name "ghc-testing-type-modifiers")
