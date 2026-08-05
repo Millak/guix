@@ -2720,9 +2720,6 @@ directions.")
     (description (package-description esbuild))
     (license (package-license esbuild))))
 
-(define-deprecated-package esbuild-node
-  node-esbuild)
-
 (define-public wwwoffle
   (package
     (name "wwwoffle")
