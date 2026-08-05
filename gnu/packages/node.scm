@@ -51,6 +51,7 @@
   #:use-module (guix build-system node)
   #:use-module (guix derivations)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
@@ -717,14 +718,14 @@ source files.")
 (define-public node-lts
   (package
     (inherit node-bootstrap)
-    (version "24.18.0")
+    (version "24.19.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nodejs.org/dist/v" version
                                   "/node-v" version ".tar.gz"))
               (sha256
                (base32
-                "1dvy8y51qad7gx5fhlzbfrmav5c9rlasckgxd7n3k1qxnikq0d68"))
+                "00avy95j70wyipck4km57n6wl8sn3rg3nnz0zd26is560s02bzhn"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -924,7 +925,21 @@ source files.")
                     (wrap-program (string-append out spec)
                       `("npm_package_config_node_gyp_nodedir" = (,out))))
                   '("/bin/npm"
-                    "/bin/npx")))))))))
+                    "/bin/npx")))))
+           (add-after 'patch-nested-shebangs 'do-not-capture-python
+             (lambda* (#:key outputs #:allow-other-keys)
+               ;; patch-shebangs embeds the Python store path into node-gyp's
+               ;; Python scripts, pulling Python into node's closure.  Revert
+               ;; to /usr/bin/env python3 so downstream gyp builds supply
+               ;; their own Python.
+               (let ((node-gyp (string-append (assoc-ref outputs "out")
+                                              "/lib/node_modules/npm"
+                                              "/node_modules/node-gyp")))
+                 (for-each
+                  (lambda (f)
+                    (substitute* f
+                      (("^#!.*/bin/python3") "#!/usr/bin/env python3")))
+                  (find-files node-gyp "\\.py$")))))))))
     (native-inputs
      (list ;; Runtime dependencies for binaries used as a bootstrap.
       c-ares-for-node-lts
@@ -940,8 +955,7 @@ source files.")
       pkg-config
       procps
       python
-      util-linux
-      gcc-14))
+      util-linux))
     (inputs
      (list bash-minimal
            coreutils
@@ -955,7 +969,7 @@ source files.")
            `(,nghttp2-for-node-lts "lib")
            openssl
            zlib
-           `(,zstd-1.5.7 "lib")))
+           `(,zstd "lib")))
     (supported-systems
      (cons "riscv64-linux" (package-supported-systems node-bootstrap)))
     (properties (alist-delete 'hidden? (package-properties node-bootstrap)))))
