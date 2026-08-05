@@ -48853,9 +48853,6 @@ on the chosen style."))))
 hacker.")
       (license license:expat))))
 
-(define-deprecated-package emacs-straight-el
-  emacs-straight)
-
 (define-public emacs-osm
   (package
     (name "emacs-osm")
