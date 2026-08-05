@@ -75,6 +75,7 @@
 ;;; Copyright © 2026 Joan Vilardaga Castro <codeberg-hn80@joanvc.cat>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
+;;; Copyright © 2026 willow xyz <willow@phantoma.online>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2174,6 +2175,28 @@ languages and Mathematics, all compatible in style to CM fonts.  In addition
 to the Regular weight of Computer Modern, it provides a Book weight for
 heavier printing.")
     (license license:gfl1.0)))
+
+(define-public font-new-heterodox-mono
+  (package
+    (name "font-new-heterodox-mono")
+    (version "0.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hckiang/font-new-heterodox-mono")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17bz0fdcfq0k3aahq6b79szihz2d5c55lqggpx9wkp17sd5azr76"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/hckiang/font-new-heterodox-mono")
+    (synopsis "Didone-style monospace typeface")
+    (description
+     "New Heterodox Mono is a Didone-esque monospaced typeface based on Alexey
+Kryukov's Old Standard TT.  It features a non-standard stylized serif design
+not normally found in mainstream programming fonts.")
+    (license license:silofl1.1)))
 
 (define-public font-amiri
   (package
