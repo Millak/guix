@@ -1192,7 +1192,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/cvc5-symfpu-1.2.0.patch			\
   %D%/packages/patches/cvs-CVE-2017-12836.patch		\
   %D%/packages/patches/cyrus-sasl-fix-time-h.patch              \
-  %D%/packages/patches/d-feet-drop-unused-meson-argument.patch	\
   %D%/packages/patches/daemontools-gcc14.patch                  \
   %D%/packages/patches/dante-non-darwin.patch			\
   %D%/packages/patches/date-ignore-zonenow.patch	\
