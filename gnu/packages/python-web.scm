@@ -2571,7 +2571,7 @@ the command line.")
 (define-public python-praw
   (package
     (name "python-praw")
-    (version "7.8.1")
+    (version "8.0.2")
     (source
      (origin
        (method git-fetch)
@@ -2580,7 +2580,7 @@ the command line.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05qq43l4334cq8r8k731qnb45nq12vvfdxwbr6q84a1hafp7n4cg"))))
+        (base32 "15kwvkc6ag83p3mrfnq6ffyvbw4d3njx0dl0vv00y7724b2rpqxw"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
@@ -2589,12 +2589,17 @@ the command line.")
                    "--ignore=tests/unit/test_config.py"
                    "--ignore=tests/integration/test_reddit.py")))
     (native-inputs
-     (list python-betamax
+     (list nss-certs-for-test
+           python-betamax
            python-betamax-matchers
-           python-flit-core
-           python-pytest))
+           python-hatchling
+           python-pytest
+           python-vcrpy))
     (propagated-inputs
-     (list python-prawcore python-update-checker python-websocket-client))
+     (list python-defusedxml
+           python-prawcore
+           python-update-checker
+           python-websocket-client))
     (synopsis "Python Reddit API Wrapper")
     (description "PRAW is a Python package that allows for simple access to
 Reddit’s API.  It aims to be easy to use and internally follows all of Reddit’s
