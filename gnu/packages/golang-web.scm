@@ -25043,7 +25043,7 @@ the code or routes.")
            go-golang-org-x-sync
            go-gopkg-in-yaml-v3
            go-maunium-net-go-mauflag
-           ;; XXX: The final application needs a "libolm" package.
+           ;; XXX: The final application needs an "olm" package.
            olm))
     (home-page "https://maunium.net/go/mautrix")
     (synopsis "Golang Matrix framework")

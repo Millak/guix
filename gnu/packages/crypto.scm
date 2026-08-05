@@ -1450,9 +1450,6 @@ API.")
     (home-page "https://gitlab.matrix.org/matrix-org/olm/")
     (license license:asl2.0)))
 
-(define-deprecated-package libolm
-  olm)
-
 ;; TODO: This is the only Python package here, consider to build from source
 ;; directly without inheritance and move to python-crypto module.
 (define-public python-olm
