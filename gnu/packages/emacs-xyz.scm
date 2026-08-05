@@ -35904,9 +35904,6 @@ In addition to its predecessor, it offers the following features:
 combinations to perform Cargo tasks within Rust projects.")
       (license license:gpl3+))))
 
-(define-deprecated-package emacs-cargo-el
-  emacs-cargo)
-
 (define-public emacs-ztree
   ;; Upstream provides no tag, but the commit below matches latest release.
   (let ((commit "c9ad9136d52ca5a81475693864e255d29448f43f"))
