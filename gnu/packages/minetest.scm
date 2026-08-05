@@ -29,9 +29,6 @@
   #:use-module (guix packages)
   #:use-module (gnu packages luanti))
 
-(define-deprecated-package minetest-coloredwood
-  luanti-coloredwood)
-
 (define-deprecated-package minetest-ethereal
   luanti-ethereal)
 
