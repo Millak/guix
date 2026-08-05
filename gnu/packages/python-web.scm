@@ -11750,9 +11750,6 @@ decorators and tools to describe your API and expose its documentation properly 
 Swagger.")
     (license license:bsd-3)))
 
-(define-deprecated-package python-flask-restplus
-  python-flask-restx)
-
 (define-public python-flask-socketio
   (package
     (name "python-flask-socketio")
