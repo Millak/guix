@@ -126,14 +126,14 @@
   ;; tar xf /gnu/store/...-firefox-123.4.source.tar.xz --wildcards -O \
   ;;     firefox-*/browser/locales/l10n-changesets.json \
   ;;     | grep revision | sort | uniq
-  (let ((commit "235fd5b0427bec104e6af4055756b286554fce17"))
+  (let ((commit "6795ea14a5bd5ed79a930e6759823c7236476ae4"))
    (origin
       (method git-fetch)
       (uri (git-reference
             (url "https://github.com/mozilla-l10n/firefox-l10n.git")
             (commit commit)))
       (file-name (git-file-name "firefox-l10n" commit))
-      (sha256 (base32 "003l3jzsf2ysj5vwsjcx91csrj2626j61s0zga3ffkm0v5w72xra")))))
+      (sha256 (base32 "1d47zfrw2gf23c9pa5rzbi5nx9jap2g0icm8dqsar6jb9y7svinc")))))
 
 (define* (make-librewolf-source #:key version firefox-hash librewolf-hash l10n)
   (let* ((ff-src (firefox-source-origin
@@ -183,8 +183,8 @@
                ;; Patch Makefile to use the upstream source instead of
                ;; downloading.
                (substitute* '("Makefile")
-                 (("^ff_source_tarball:=.*")
-                  (string-append "ff_source_tarball:=" #+ff-src)))
+                 (("^(ff_source_tarball *:= *).*" _ var)
+                  (string-append var #+ff-src)))
 
                ;; Neuter GPG signing of the tarball.
                (substitute* '("Makefile")
@@ -245,17 +245,17 @@
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
 ;; or: (format-time-string "%Y%m%d%H%M%S")
-(define %librewolf-build-id "20260722130327")
+(define %librewolf-build-id "20260804215502")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "153.0-3")
+    (version "153.0.3-1")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "08jmllczhrjg00gchji1k2y177c4a1cfp6jm3v9r5in4r1s0yldw"
-      #:librewolf-hash "021620653fj7p8dpd3wj65msc6d8frpdx97db2qjvbcwx0hbw5li"
+      #:firefox-hash "09dwrhl6whin17fmyr1ynzak80q4qr37pxj285rqhl41idj6h527"
+      #:librewolf-hash "111pfyyn3ldv7jyid34lsmh8g8alk2vf8zj8bga23v9z5i4h8grl"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
