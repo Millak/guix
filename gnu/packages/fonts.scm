@@ -3869,9 +3869,6 @@ characters mostly intact.")
   constraint of usability at small point sizes.")
     (license (list license:silofl1.1))))
 
-(define-deprecated-package font-iosevka-comfy
-  font-aporetic)
-
 (define-public font-junicode
   (package
     (name "font-junicode")
