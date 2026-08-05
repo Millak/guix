@@ -191,9 +191,6 @@ tunneling, and so on.")
               (patches (search-patches "curl-use-ssl-cert-env.patch"
                                        "curl-fix-wakeup-consumption.patch"))))))
 
-(define-deprecated-package gnurl
-  curl)
-
 (define-public curl-ssh
   (package/inherit curl
     (arguments
