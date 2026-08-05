@@ -328,9 +328,6 @@ and protocols.  One of the key differences with Bazaar is that Breezy runs on
 Python 3.3 and later, rather than on Python 2.")
     (license license:gpl2+)))
 
-(define-deprecated-package bazaar
-  breezy)
-
 (define-public python-vcsgraph
   (package
     (name "python-vcsgraph")
