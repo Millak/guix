@@ -1525,9 +1525,6 @@ metadata.  It also knows about symlinks, extended attributes, and Git.
 This package is the community maintained fork of @code{exa}.")
     (license license:eupl1.2)))
 
-(define-deprecated-package exa
-  eza)
-
 (define-public fclones
   (package
     (name "fclones")
