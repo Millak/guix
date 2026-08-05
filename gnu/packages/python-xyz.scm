@@ -15274,8 +15274,16 @@ memoizing PEG/Packrat parser in Python.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "199f86hz3g4p237ma4j27rzwmska3bxzsbgq20i4l4pczf9v7ax0"))))
+        (base32 "199f86hz3g4p237ma4j27rzwmska3bxzsbgq20i4l4pczf9v7ax0"))
+       (patches
+        (list
+         (origin
+           (method url-fetch)
+           (uri
+            (string-append "https://github.com/bdcht/grandalf/commit/"
+                           "e61df12f00124b615a220cfcd58dd6f89d226264.patch"))
+           (sha256
+            (base32 "1p0315flsg4frpadcnn7fh41y5k3cdz4h722v6ri88a3s6hcpd36")))))))
     (build-system pyproject-build-system)
     (arguments
      (list
