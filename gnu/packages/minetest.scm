@@ -29,9 +29,6 @@
   #:use-module (guix packages)
   #:use-module (gnu packages luanti))
 
-(define-deprecated-package minetest-worldedit
-  luanti-worldedit)
-
 (define-deprecated-package minetest-unifieddyes
   luanti-unifieddyes)
 
