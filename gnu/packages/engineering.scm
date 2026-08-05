@@ -5347,8 +5347,7 @@ more.")
            python-pyopenssl
            python-pytz
            python-sortedcontainers
-           python-typing-extensions
-           python-wait-for2))   ;for Python version < 3.12
+           python-typing-extensions))
     (home-page "https://freeopcua.github.io/")
     (synopsis "OPC UA / IEC 62541 client and server library")
     (description "This package provides an OPC UA / IEC 62541 client and
