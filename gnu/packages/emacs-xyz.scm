@@ -39957,9 +39957,6 @@ done using Helm, Ido or Ivy.")
 Lisp functions that call themselves in tail position.")
       (license license:gpl3+))))
 
-(define-deprecated-package emacs-tco-el
-  emacs-tco)
-
 (define-public emacs-equake
   ;; Upstream provides no tagged releases, but the commit below matches an
   ;; exact release.
