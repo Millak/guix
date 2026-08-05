@@ -47360,9 +47360,6 @@ supports Japanese and has the following features:
 @end itemize\n")
     (license license:gpl2+)))
 
-(define-deprecated-package emacs-spamfilter-el
-  emacs-spamfilter)
-
 (define-public emacs-promise
   ;; XXX: Last stable release fails to build with "(wrong-number-of-arguments
   ;; (3 . 4) 2)" error.
