@@ -40912,9 +40912,6 @@ all of your projects, then override or add variables on a per-project basis.")
 user interfaces for various built-in modes.")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-casual-avy
-  emacs-casual)
-
 (define-public emacs-calibre
   (package
     (name "emacs-calibre")
