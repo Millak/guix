@@ -3162,7 +3162,7 @@ narrow the items to those matching the tokens in the input.")
   (package
     (inherit sway)
     (name "swayfx")
-    (version "0.5.3")
+    (version "0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3171,7 +3171,7 @@ narrow the items to those matching the tokens in the input.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1d4srsp1c4dfq7qqcccbqw0jwn9ghzqhkvgr1msgs7r1jkk4v4sd"))))
+                "0hvb32wa6zwfpj09swfavzb0m6pp80jcf71ydp4xyrl40b16mxfa"))))
     (build-system meson-build-system)
     (inputs (list basu
                   cairo
@@ -3182,10 +3182,10 @@ narrow the items to those matching the tokens in the input.")
                   libxkbcommon
                   pango
                   pcre2
-                  scenefx-0.4
+                  scenefx
                   swaybg
                   wayland
-                  wlroots-0.19))
+                  wlroots-0.20))
     (home-page "https://github.com/WillPower3309/swayfx")
     (synopsis "Sway Fork with extra options and effects")
     (description
