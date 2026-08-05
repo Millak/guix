@@ -671,9 +671,6 @@ the following features:
     (arguments (package-arguments qbittorrent-no-x))
     (inputs (package-inputs qbittorrent-no-x))))
 
-(define-deprecated-package qbittorrent-enhanced-nox
-  qbittorrent-enhanced-no-x)
-
 (define-public deluge
   (package
     (name "deluge")
