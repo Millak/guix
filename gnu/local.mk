@@ -491,7 +491,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/medical.scm			\
   %D%/packages/mes.scm				\
   %D%/packages/messaging.scm			\
-  %D%/packages/minetest.scm			\
   %D%/packages/mingw.scm			\
   %D%/packages/mold.scm				\
   %D%/packages/motti.scm			\
