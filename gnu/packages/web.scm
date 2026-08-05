@@ -1981,9 +1981,6 @@ C.")
 (SAX-style) JSON parser and validating generator written in ANSI C.")
     (license license:isc)))
 
-(define-deprecated-package libyajl
-  yajl)
-
 (define-public libwebsockets
   (package
     (name "libwebsockets")
