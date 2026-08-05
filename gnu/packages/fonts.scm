@@ -4681,10 +4681,6 @@ text environments.")
 and legible typeface suitable for web pages and applications.")
     (license license:silofl1.1)))
 
-;; https://github.com/rastikerdar/vazirmatn/blob/master/CHANGELOG.md#3200
-(define-deprecated-package font-vazir
-  font-vazirmatn)
-
 (define-public font-victor-mono
   (package
    (name "font-victor-mono")
