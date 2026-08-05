@@ -175,10 +175,6 @@ the browser.  The @command{elm} exectable includes commands for developers
 such as @command{elm make} and @command{elm repl}.")
     (license license:bsd-3)))
 
-;; The 'elm' package used to be called 'elm-compiler'.
-(define-deprecated-package elm-compiler
-  elm)
-
 (define-public elm-core
   (package
     (name "elm-core")
