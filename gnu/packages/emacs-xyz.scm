@@ -7253,9 +7253,6 @@ Language}, an XML-based, open format to describe the formatting of
 bibliographic references.")
       (license license:gpl3+))))
 
-(define-deprecated-package emacs-citeproc-el
-  emacs-citeproc)
-
 (define-public emacs-corfu
   (package
     (name "emacs-corfu")
