@@ -4997,10 +4997,6 @@ when applied to an OBS source.  It's often used with the Advanced Mask plugin
 to place drop shadows on sources, such as a webcam.")
     (license license:gpl2)))
 
-;; Functionality was merged into OBS.
-(define-deprecated-package obs-websocket
-  obs)
-
 (define-public obs-wlrobs
   (package
     (name "obs-wlrobs")
