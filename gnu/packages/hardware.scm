@@ -311,10 +311,6 @@ TLS encryption is enabled by default.  It supports Wayland clipboard
 sharing.")
       (license license:gpl2))))
 
-;; Added on 2025-09-24.
-(define-deprecated-package barrier
-  deskflow)
-
 (define-public hd-idle
   (package
     (name "hd-idle")
