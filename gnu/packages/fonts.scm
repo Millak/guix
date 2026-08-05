@@ -2912,10 +2912,6 @@ designed to work well in user interface environments.")
 well in user interface (UI) environments.")
     (license license:silofl1.1)))
 
-;; https://github.com/adobe-fonts/source-sans/issues/192
-(define-deprecated-package font-adobe-source-sans-pro
-  font-adobe-source-sans)
-
 (define-public font-adobe-source-serif
   (package
     (name "font-adobe-source-serif")
