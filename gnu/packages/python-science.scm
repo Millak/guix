@@ -3230,6 +3230,16 @@ automated with the minimum of fuss and the least effort.")
         (base32 "0v7l6qbxgclz644fq1vmakfasxcdhg1g019b5w47hlxqw8fx0ipl"))))
     (build-system pyproject-build-system)
     ;; tests: 190 passed, 1 xfailed, 28 warnings
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Remove this phase on the next update, it is already in master.
+          (add-before 'build 'fix-for-pandas-3
+            (lambda _
+              (substitute* "src/SALib/analyze/sobol.py"
+                (("np\\.array\\(\\[0\\.0\\]\\)")
+                 "np.float64(0.0)")))))))
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
