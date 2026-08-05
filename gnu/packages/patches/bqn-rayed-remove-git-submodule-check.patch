@@ -1,0 +1,17 @@
+diff --git a/rayed.bqn b/rayed.bqn
+index ad40586..2f32b51 100644
+--- a/rayed.bqn
++++ b/rayed.bqn
+@@ -42,12 +42,6 @@ VErr←"Bad CBQN version, missing •foreign. Working version as of writing is 0
+ !∘VErr⍟¬ ⊑⟨"foreign"⟩∊•listsys
+ foreign ← ⟨⟩ •BQN "•foreign"
+ 
+-{!"git-submodules "∾(•Repr𝕩)∾" not found.
+-Use the following command to install the neccessary git submodules:
+-
+-  git submodule update --init --recursive
+-"}⍟(0≠≠){¬•file.Exists"imports"•file.At𝕩}¨⊸/ "bqn-libs"‿"BQN386"‿"BQNoise"‿"raylib-bqn"
+-
+ # -------
+ # internal functions
+ NeedsWindow ← {window.isOpen?𝕩;!"Expected window to be open"}
