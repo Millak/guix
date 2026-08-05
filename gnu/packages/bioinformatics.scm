@@ -5676,51 +5676,6 @@ gapped, local, and paired-end alignment modes.")
     (supported-systems '("x86_64-linux"))
     (license license:gpl3+)))
 
-(define-public bowtie1
-  (package
-    (name "bowtie1")
-    (version "1.3.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/bowtie-bio/bowtie/"
-                                  version "/bowtie-" version "-src.zip"))
-              (sha256
-               (base32
-                "0q87nhgj9wrnbazcpvqp4594hmyh1isi3s9b2wlghvl4afm1fdg2"))
-              (modules '((guix build utils)))
-              (snippet
-               '(substitute* "Makefile"
-                  ;; replace BUILD_HOST and BUILD_TIME for deterministic build
-                  (("-DBUILD_HOST=.*") "-DBUILD_HOST=\"\\\"guix\\\"\"")
-                  (("-DBUILD_TIME=.*") "-DBUILD_TIME=\"\\\"0\\\"\"")))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f                      ; Tests need various perl modules
-       #:test-target "simple-test"
-       #:make-flags
-       ,#~(append #$(if (not (target-x86?))
-                        #~'("POPCNT_CAPABILITY=0")
-                        #~'())
-                  (list (string-append "CC=" #$(cc-for-target))
-                        (string-append "CXX=" #$(cxx-for-target))
-                        "all"
-                        (string-append "prefix=" #$output)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
-    (inputs
-     (list python-wrapper tbb zlib))
-    (supported-systems %64bit-supported-systems)
-    (home-page "https://bowtie-bio.sourceforge.net/index.shtml")
-    (synopsis "Fast aligner for short nucleotide sequence reads")
-    (description
-     "Bowtie is a fast, memory-efficient short read aligner.  It aligns short
-DNA sequences (reads) to the human genome at a rate of over 25 million 35-bp
-reads per hour.  Bowtie indexes the genome with a Burrows-Wheeler index to
-keep its memory footprint small: typically about 2.2 GB for the human
-genome (2.9 GB for paired-end).")
-    (license license:artistic2.0)))
-
 (define-public bwa
   (package
     (name "bwa")
