@@ -5289,9 +5289,6 @@ and users are in full control of their data and workflow.")
      (substitute-keyword-arguments arguments
        ((#:features _) '(list "wlroots"))))))
 
-(define-deprecated-package xremap-sway
-  xremap-wlroots)
-
 (define-public xremap-x11
   (package
     (inherit rust-xremap)
