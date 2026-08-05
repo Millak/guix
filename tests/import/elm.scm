@@ -99,7 +99,7 @@
     (test-not-inferred "elm")
     (test-not-inferred "guile")
     (test-not-inferred "gcc-toolchain")
-    (test-not-inferred "font-adobe-source-sans-pro")))
+    (test-not-inferred "font-adobe-source-sans")))
 
 (define test-package-registry-json
   ;; we intentionally list versions in different orders here

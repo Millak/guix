@@ -97497,7 +97497,7 @@ notation.")
                                      "fonts/map/dvips/sourcesanspro/"
                                      "fonts/opentype/adobe/sourcesanspro/"
                                      ;; ^ It would be tempting to use our
-                                     ;; font-adobe-source-sans-pro for these, but the version in
+                                     ;; font-adobe-source-sans for these, but the version in
                                      ;; texlive could differ from our version: probably the
                                      ;; difference would be small, but debugging would not be
                                      ;; fun.  If the files are really identical, Guix will
