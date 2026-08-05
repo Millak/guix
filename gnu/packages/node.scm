@@ -770,6 +770,7 @@ source files.")
            "--shared-ngtcp2"
            "--shared-nghttp3"
            "--shared-zstd"
+           "--shared"
            ;;Needed for correct snapshot checksums
            "--v8-enable-snapshot-compression"))
        ((#:phases phases)
