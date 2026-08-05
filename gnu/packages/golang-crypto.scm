@@ -4547,9 +4547,6 @@ Go.")
                     "\nThis package provides a command line interface (CLI)
 tools."))))
 
-(define-deprecated-package age-keygen
-  age)
-
 (define-public go-ejson
   (package/inherit go-github-com-shopify-ejson
     (name "go-ejson")
