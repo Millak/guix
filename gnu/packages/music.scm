@@ -4410,12 +4410,6 @@ https://bandcamp.com/}.  It's also capable of getting song lyrics and album art
 using the beets FetchArt plugin.")
     (license license:gpl2)))
 
-;;; XXX: The original project is abandoned for 4y, see
-;;; <https://github.com/unrblt/beets-bandcamp/issues/15>, this package may be
-;;; sourced from maintained fork <https://github.com/snejus/beetcamp>.
-(define-deprecated-package beets-bandcamp
-  beets-beetcamp)
-
 (define-public milkytracker
   (package
     (name "milkytracker")
