@@ -4232,7 +4232,7 @@ progresses the level, or you may regenerate tiles as the world changes.")
 (define-public raylib
   (package
     (name "raylib")
-    (version "5.5")
+    (version "6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4242,7 +4242,7 @@ progresses the level, or you may regenerate tiles as the world changes.")
               ;; TODO: Unbundle src/external
               (sha256
                (base32
-                "1dhy9ghbwvz0s434j03rfa2l6wxcfj028vlkk1xbf5q97vin5pr7"))))
+                "1scwmldxk5bvr4k99vi5cy4kjm77x5603pc9qxi2mv8w6c6qrvpk"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f  ;no test
