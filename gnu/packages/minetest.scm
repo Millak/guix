@@ -29,9 +29,6 @@
   #:use-module (guix packages)
   #:use-module (gnu packages luanti))
 
-(define-deprecated-package minetest
-  luanti)
-
 (define-deprecated-package minetest-server
   luanti-server)
 
