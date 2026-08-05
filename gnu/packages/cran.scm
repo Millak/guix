@@ -54852,10 +54852,6 @@ access methods and R-native hooks to ensure the Seurat object is familiar to
 other R users.")
     (license license:gpl3)))
 
-;; This is for r-seurat5
-(define-deprecated-package r-seurat5object
-  r-seuratobject)
-
 (define-public r-seurat
   (package
     (name "r-seurat")
