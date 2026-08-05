@@ -1350,11 +1350,6 @@ The Waf Book and in the API docs
 @end itemize")
     (license license:bsd-3)))
 
-;; waf is the final program no need to prefix it with "python-", the same way
-;; as meson or ninja which are written in Python as well.
-(define-deprecated-package python-waf
-  waf)
-
 (define-public haredo
   (package
     (name "haredo")
