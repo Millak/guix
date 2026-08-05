@@ -4,12 +4,11 @@ must be called when no other threads exist).
 
 This fixes network functionality in rust:cargo, and probably removes the need
 for other future workarounds.
-===================================================================
-Index: curl-8.19.0/lib/easy.c
-===================================================================
---- curl-8.19.0.orig/lib/easy.c
-+++ curl-8.19.0/lib/easy.c
-@@ -117,6 +117,9 @@ curl_calloc_callback Curl_ccalloc = (cur
+diff --git a/lib/easy.c b/lib/easy.c
+index d60bdae..d25d670 100644
+--- a/lib/easy.c
++++ b/lib/easy.c
+@@ -117,6 +117,9 @@ curl_calloc_callback Curl_ccalloc = (curl_calloc_callback)calloc;
  static char *leakpointer;
  #endif
  
@@ -19,7 +18,7 @@ Index: curl-8.19.0/lib/easy.c
  /**
   * curl_global_init() globally initializes curl given a bitwise set of the
   * different features of what to initialize.
-@@ -140,6 +143,9 @@ static CURLcode global_init(long flags,
+@@ -140,6 +143,9 @@ static CURLcode global_init(long flags, bool memoryfuncs)
      goto fail;
    }
  
@@ -39,12 +38,12 @@ Index: curl-8.19.0/lib/easy.c
  #ifdef _WIN32
    Curl_win32_cleanup(easy_init_flags);
  #endif
-Index: curl-8.19.0/lib/vtls/vtls.c
-===================================================================
---- curl-8.19.0.orig/lib/vtls/vtls.c
-+++ curl-8.19.0/lib/vtls/vtls.c
-@@ -294,10 +294,8 @@ static void free_primary_ssl_config(stru
- CURLcode Curl_ssl_easy_config_complete(struct Curl_easy *data)
+diff --git a/lib/vtls/vtls_config.c b/lib/vtls/vtls_config.c
+index 4a9b696..3e780f3 100644
+--- a/lib/vtls/vtls_config.c
++++ b/lib/vtls/vtls_config.c
+@@ -257,10 +257,8 @@ CURLcode Curl_ssl_easy_config_complete(struct Curl_easy *data,
+                                        struct Curl_peer *origin)
  {
    struct ssl_config_data *sslc = &data->set.ssl;
 -#if defined(CURL_CA_PATH) || defined(CURL_CA_BUNDLE)
@@ -52,9 +51,9 @@ Index: curl-8.19.0/lib/vtls/vtls.c
    CURLcode result;
 -#endif
  
-   if(Curl_ssl_backend() != CURLSSLBACKEND_SCHANNEL) {
- #if defined(USE_APPLE_SECTRUST) || defined(CURL_CA_NATIVE)
-@@ -318,6 +316,21 @@ CURLcode Curl_ssl_easy_config_complete(s
+   ssl_easy_config_compl_options(origin, data->state.initial_origin, sslc);
+ 
+@@ -283,6 +281,21 @@ CURLcode Curl_ssl_easy_config_complete(struct Curl_easy *data,
          return result;
      }
  #endif

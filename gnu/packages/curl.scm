@@ -69,14 +69,14 @@
 (define-public curl
   (package
     (name "curl")
-    (version "8.20.0")
+    (version "8.21.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://curl.se/download/curl-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "15mqw8y9vdxlz9cpr2z7q9r6552wgs7q7vr2k7lfl35s930jvzk3"))
+                "1rkjzj3sr4zvvwx41aqjwlfmdbh8dij4b1sh4k33vs5c1sknc6xa"))
               (patches (search-patches "curl-use-ssl-cert-env.patch"))))
     (outputs '("out"
                "doc"))                  ;1.2 MiB of man3 pages
