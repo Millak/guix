@@ -1319,9 +1319,6 @@ playing videos from YouTube.  It parses the YouTube website directly and relies
 on the Invidious instances only as a fallback method.")
     (license license:artistic2.0)))
 
-(define-deprecated-package straw-viewer
-  pipe-viewer)
-
 (define-public x265
   (package
     (name "x265")
