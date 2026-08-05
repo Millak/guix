@@ -1275,9 +1275,6 @@ can read the same mailbox from multiple computers.  It supports IMAP as REMOTE
 repository and Maildir/IMAP as LOCAL repository.")
     (license license:gpl2+)))
 
-(define-deprecated-package offlineimap
-  offlineimap3)
-
 (define-public emacs-mew
   (package
     (name "emacs-mew")
