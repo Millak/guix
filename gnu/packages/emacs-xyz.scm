@@ -4255,9 +4255,6 @@ of tasks, including version control, task management, and regex-based
 replacement.")
       (license license:gpl3+))))
 
-(define-deprecated-package emacs-unpackaged-el
-  emacs-unpackaged)
-
 (define-public emacs-haskell-mode
   (let ((commit "e9c356739310332afe59b10ffa2e6c3e76f124e3")
         (revision "0"))
