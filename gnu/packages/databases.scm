@@ -2271,9 +2271,6 @@ supports editing, navigation, and querying of recutils database files
 including field and record folding.")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-recutils
-  emacs-rec-mode)
-
 (define-public rocksdb
   (package
     (name "rocksdb")
