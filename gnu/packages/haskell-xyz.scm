@@ -16011,6 +16011,7 @@ server and to receive the results of these queries.")
         (base32 "1774fh28jls2r692164ln66ipa6gl3sqj8pb04nf3sl1m498qjd7"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "persistent-postgresql")))
+    (arguments (list #:tests? #f)) ; tests require a running postgresql server
     (inputs (list ghc-aeson
                   ghc-attoparsec
                   ghc-blaze-builder
