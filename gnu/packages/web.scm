@@ -7602,9 +7602,6 @@ developers can integrate into their applications to make use of the
 functions of Tidy.")
     (license license:bsd-3)))
 
-(define-deprecated-package tidy
-  tidy-html)
-
 (define-public hiawatha
   (package
     (name "hiawatha")
