@@ -873,9 +873,6 @@ is part of the GNOME accessibility project.")
     (properties (alist-delete 'hidden?
                               (package-properties at-spi2-core)))))
 
-(define-deprecated-package atk
-  at-spi2-core)
-
 (define-public gtk+-2
   (package
     (name "gtk+")
