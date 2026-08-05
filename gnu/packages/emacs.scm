@@ -751,8 +751,6 @@ editor (with wide ints)" )
 
 (define-public emacs-next (emacs->emacs-next emacs))
 (define-public emacs-next-pgtk (emacs->emacs-next emacs-pgtk))
-(define-deprecated-package emacs-next-tree-sitter
-  emacs-next)
 
 (define-public guile-emacs
   (let ((upstream-version "31.0.50")
