@@ -4810,10 +4810,6 @@ It allows writing tests, checking results and automated testing in Ruby.")
     (home-page "https://test-unit.github.io/")
     (license (list license:psfl license:ruby))))
 
-;; XXX: Deprecated on <2026-04-03>.
-(define-deprecated/public-alias ruby-test-unit/minimal
-  ruby-test-unit)
-
 (define-public ruby-test-unit-ruby-core
   (package
     (name "ruby-test-unit-ruby-core")
