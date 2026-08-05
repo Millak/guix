@@ -2271,9 +2271,6 @@ extremely large and complex data collections.")
 Interface to wrap the HDF5 library, which is implemented in C.")
     (license (package-license hdf5))))
 
-(define-deprecated-package hdf-java
-  hdf5-java)
-
 (define-public hdf5-parallel-openmpi
   (package/inherit hdf5
     (name "hdf5-parallel-openmpi")
