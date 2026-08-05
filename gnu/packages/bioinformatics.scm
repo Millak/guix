@@ -2828,10 +2828,6 @@ parsing of Variant Call Format (VCF) files.")
 biological activities from omics data within a unified framework.")
     (license license:bsd-3)))
 
-;; See: <https://github.com/scverse/decoupler/blob/main/CHANGELOG.md#200>
-(define-deprecated-package python-decoupler-py
-  python-decoupler)
-
 (define-public python-demuxem
   (package
     (name "python-demuxem")
