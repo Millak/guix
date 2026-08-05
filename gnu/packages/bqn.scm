@@ -25,6 +25,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -323,3 +324,43 @@ by APL.")
                            license:bsd-3 ;REPLXX module
                            license:unicode)))
     (properties `((tunable? . #t)))))
+
+(define-public bqn-libs
+  (let ((commit "32f07809431af37e60ca1b6faeb9315b871f4a5d")
+        (revision "1"))
+    (package
+      (name "bqn-libs")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mlochbaum/bqn-libs")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0a6r3hqbqp8pccjsw3ck7pv1f0akcpb8iag727j1lr0vpvd1i5qh"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "bqn" "test/main.bqn")))))
+        #:install-plan
+        #~'(("." "share/bqn-libs/"
+             #:include-regexp ("\\.bqn$"))
+            ("README.md" "share/doc/bqn-libs/")
+            ("LICENSE" "share/licenses/bqn-libs/"))))
+      (native-inputs (list cbqn))
+      (home-page "https://github.com/mlochbaum/bqn-libs")
+      (synopsis "Informal collection of BQN utilities")
+      (description
+       "This package provides an informal collection of BQN utility scripts,
+covering string handling, JSON, CSV and XML parsing, hash maps, prime
+sieves, matrix and polynomial operations, arbitrary-precision arithmetic,
+and date and time handling.  Upstream considers these scripts experimental
+and subject to change.")
+      (license license:bsd-0))))
