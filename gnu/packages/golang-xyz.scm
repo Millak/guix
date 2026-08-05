@@ -13076,9 +13076,6 @@ while callers can implement logging with whatever backend is appropriate.")
 standard log package.")
     (license license:asl2.0)))
 
-(define-deprecated-package go-github-com-go-md2man
-  go-github-com-cpuguy83-go-md2man-v2)
-
 (define-public go-github-com-go-logr-zapr
   (package
     (name "go-github-com-go-logr-zapr")
