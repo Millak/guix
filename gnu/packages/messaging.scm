@@ -1377,9 +1377,6 @@ and OpenPGP) and available in 29 languages.")
     (home-page "https://gajim.org/")
     (license license:gpl3)))
 
-(define-deprecated-package gajim-omemo
-  gajim)
-
 (define-public gajim-openpgp
   (package
     (name "gajim-openpgp")
