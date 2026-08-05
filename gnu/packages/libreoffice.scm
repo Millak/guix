@@ -149,71 +149,6 @@ Plain Text, Gnumeric XML, Generic XML.  It also includes low-level parsers for
 CSV, CSS and XML.")
     (license license:mpl2.0)))
 
-;; TODO: Unoconv is deprecated in favor of github.com/unoconv/unoserver
-(define-public unoconv
-  (package
-    (name "unoconv")
-    (version "0.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "unoconv" version))
-       (sha256
-        (base32 "0cb0bvyxib3xrj0jdgizhp6p057lr8kqnd3n921rin37ivcvz3ih"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'stop-hash-sniffing
-            ;; Fixes <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=39647#11>.
-            ;; Submitted upsteam: <https://github.com/unoconv/unoconv/pull/531>.
-            (lambda _
-              (substitute* "unoconv"
-                (("sys.argv\\[0\\]\\.split\\('2'\\)")
-                 "os.path.basename(sys.argv[0]).split('2')"))))
-          (add-after 'unpack 'patch-find_offices
-            ;; find_offices is a convoluted cross-platform treasure hunt.
-            ;; Keep things simple and return the correct paths immediately.
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let* ((libreoffice (assoc-ref inputs "libreoffice")))
-                (substitute* "unoconv"
-                  (("def find_offices\\(\\):" match)
-                   (string-append
-                    match "\n"
-                    "    return [Office("
-                    "'" libreoffice "/lib/libreoffice', "
-                    "'" libreoffice "/lib/libreoffice/program', "
-                    "'" libreoffice "/lib/libreoffice/program', "
-                    "'" libreoffice "/lib/libreoffice/program/pyuno.so', "
-                    "'" libreoffice "/bin/soffice', "
-                    "sys.executable, "
-                    "None)]\n"))))))
-          (replace 'check
-            (lambda* (#:key inputs tests? test-flags #:allow-other-keys)
-              (setenv "HOME" (getcwd))
-              (let ((python (search-input-file inputs "bin/python")))
-                (when tests?
-                  (with-directory-excursion "tests"
-                    (invoke "make" "all"
-                            (string-append "python=" python))))))))))
-    (native-inputs (list gnu-make python-setuptools))
-    (inputs (list libreoffice))
-    (home-page "http://dag.wiee.rs/home-made/unoconv/")
-    (synopsis "Convert between any document format supported by LibreOffice")
-    (description
-     "Unoconv is a command-line utility to convert documents from any format
-that LibreOffice can import, to any format it can export.  It can be used for
-batch processing and can apply custom style templates and filters.
-
-Unoconv converts between over a hundred formats, including Open Document
-Format (@file{.odt}, @file{.ods}, @file{.odp})), Portable Document Format
-(@file{.pdf}), HTML and XHTML, RTF, DocBook (@file{.xml}), @file{.doc} and
-@file{.docx}), @file{.xls} and @file{.xlsx}).
-
-All required fonts must be installed on the converting system.")
-    (license license:gpl2)))
-
 (define-public libeot
   (package
     (name "libeot")
@@ -1273,3 +1208,7 @@ Format (@file{.odt}, @file{.ods}, @file{.odp})), Portable Document Format
 
 All required fonts must be installed on the converting system.")
     (license license:expat)))
+
+;; Deprecated on <2026-09-22>
+(define-deprecated-package unoconv
+  unoserver)
