@@ -32528,9 +32528,6 @@ Magit.")
 @end itemize\n")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-lice-el
-  emacs-lice)
-
 (define-public emacs-academic-phrases
   (let ((commit "0823ed8c24b26c32f909b896a469833ec4d7b656"))
     (package
