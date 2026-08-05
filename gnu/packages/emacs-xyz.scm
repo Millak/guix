@@ -48650,9 +48650,6 @@ with the ed editor.")
 audio volume via amixer.")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-alsamixer-el
-  emacs-alsamixer)
-
 (define-public emacs-fennel-mode
   (package
     (name "emacs-fennel-mode")
