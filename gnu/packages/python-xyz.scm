@@ -11608,9 +11608,6 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
 errors when data is invalid.")
     (license license:expat)))
 
-;; It may be removed after 2026-01-05.
-(define-deprecated/public-alias python-pydantic-2 python-pydantic)
-
 (define-public python-pydantic-core
   (package
     (name "python-pydantic-core")
