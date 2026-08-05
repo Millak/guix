@@ -12446,9 +12446,6 @@ across many levels and collect all the coaches to win.")
     ;; license.  Desktop file is licensed under CC0 terms.
     (license (list license:gpl2 license:gpl3 license:cc0))))
 
-(define-deprecated-package ri-li
-  li-ri)
-
 (define-public freeorion
   (package
     (name "freeorion")
