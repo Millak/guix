@@ -1241,3 +1241,35 @@ Math for editing mathematics.")
      '((release-monitoring-url
         . "https://www.libreoffice.org/download/download-libreoffice/")))
     (license license:mpl2.0)))
+
+(define-public unoserver
+  (package
+    (name "unoserver")
+    (version "3.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/unoconv/unoserver")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s0gc82r5js7bb2m1ki9vg13acqjzhd0ifn3pmxk0lkblxz12vmw"))))
+    (build-system pyproject-build-system)
+    (inputs (list libreoffice))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/unoconv/unoserver")
+    (synopsis "Server for file conversions with Libre Office")
+    (description
+     "This package provides a server for file conversions with Libre
+Office. It can convert documents from any format that LibreOffice can import,
+to any format it can export.  It can be used for batch processing and can
+apply custom style templates and filters.
+
+Unoserver converts between over a hundred formats, including Open Document
+Format (@file{.odt}, @file{.ods}, @file{.odp})), Portable Document Format
+(@file{.pdf}), HTML and XHTML, RTF, DocBook (@file{.xml}), @file{.doc} and
+@file{.docx}), @file{.xls} and @file{.xlsx}).
+
+All required fonts must be installed on the converting system.")
+    (license license:expat)))
