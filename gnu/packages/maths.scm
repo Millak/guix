@@ -7685,9 +7685,9 @@ revised simplex and the branch-and-bound methods.")
      (list boost
            hdf5
            kokkos
+           onetbb
            suitesparse                  ; For UMFPACK.
-           sundials
-           tbb))
+           sundials))
     (arguments
      (list #:build-type "DebugRelease"  ; Only Debug, Release or DebugRelease.
            ;; The tests take too long and must be explicitly enabled with
