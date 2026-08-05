@@ -2542,9 +2542,6 @@ Automation}, portable and vendor neutral FPGA place and route tool.")
     (synopsis
      (string-append (package-synopsis nextpnr) " Cli only version."))))
 
-(define-deprecated-package nextpnr-ice40
-  nextpnr)
-
 (define-public ngspice
   ;; The ngspice executables (see libngpsice above.)
   (package
