@@ -3312,9 +3312,6 @@ wayland compositors, allowing you to play videos as your wallpaper using mpv.")
 to download videos from Austria's national television broadcaster.")
     (license license:bsd-3)))
 
-(define-deprecated-package orf-dl
-  orfondl)
-
 (define-public yle-dl
   (package
     (name "yle-dl")
