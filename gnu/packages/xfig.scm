@@ -94,9 +94,6 @@ variety of environments.")
      (license:non-copyleft "file://Makefile.am"
                            "See <https://spdx.org/licenses/Xfig.html>."))))
 
-(define-deprecated-package transfig
-  fig2dev)
-
 (define-public xfig
   (package
     (name "xfig")
