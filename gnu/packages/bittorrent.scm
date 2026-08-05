@@ -636,9 +636,6 @@ features.")
        (modify-inputs inputs
          (delete "qtsvg"))))))
 
-(define-deprecated-package qbittorrent-nox
-  qbittorrent-no-x)
-
 (define-public qbittorrent-enhanced
   (package
     (inherit qbittorrent)
