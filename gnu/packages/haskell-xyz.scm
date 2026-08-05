@@ -5504,6 +5504,7 @@ representations of current time.")
                   ghc-unordered-containers
                   ghc-vector
                   ghc-yaml))
+    (native-inputs (list hspec-discover))
     (home-page "https://github.com/sol/hpack#readme")
     (synopsis "Tools for an alternative Haskell package format")
     (description
