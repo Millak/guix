@@ -24750,9 +24750,6 @@ DefaultEncrypt, please refer to the home page or read the comments in the
 source file, @file{jl-encrypt.el}.")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-default-encrypt
-  emacs-defaultencrypt)
-
 (define-public emacs-deflate
   (package
     (name "emacs-deflate")
