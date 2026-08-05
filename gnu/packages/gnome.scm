@@ -7560,9 +7560,6 @@ programs via D-Bus.  It also ships a library for integration into development
 environments.")
     (license license:gpl2+)))
 
-(define-deprecated-package d-feet
-  d-spy)
-
 (define-public yelp-xsl
   (package
     (name "yelp-xsl")
