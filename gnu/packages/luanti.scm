@@ -556,9 +556,6 @@ Minecraft, pushing beyond.")
     (home-page "https://content.luanti.org/packages/Wuzzy/mineclone2/")
     (license license:gpl3+)))
 
-(define-deprecated-package luanti-mineclone
-  luanti-voxelibre)
-
 (define-public luanti-mobs
   (package
     (name "luanti-mobs")
