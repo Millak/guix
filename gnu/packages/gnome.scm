@@ -2894,9 +2894,6 @@ GNOME and KDE desktops to the icon names proposed in the specification.")
     (description "Icons for the GNOME desktop.")
     (license license:lgpl3))) ; or Creative Commons BY-SA 3.0
 
-(define-deprecated-package gnome-icon-theme
-  adwaita-icon-theme)
-
 (define-public tango-icon-theme
   (package
     (name "tango-icon-theme")
