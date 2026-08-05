@@ -108,6 +108,7 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages oneapi)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
@@ -126,7 +127,6 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages suckless)
   #:use-module (gnu packages stb)
-  #:use-module (gnu packages tbb)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages upnp)
@@ -1334,6 +1334,7 @@ workspaces.
            libxcb
            matio
            nlohmann-json
+           onetbb
            opencv
            openexr
            openssl
@@ -1342,7 +1343,6 @@ workspaces.
            poppler
            range-v3
            spdlog
-           tbb
            vips
            wayland
            wayland-protocols
