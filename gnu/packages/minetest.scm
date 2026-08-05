@@ -29,8 +29,5 @@
   #:use-module (guix packages)
   #:use-module (gnu packages luanti))
 
-(define-deprecated-package minetest-oneblock
-  luanti-oneblock)
-
 (define-deprecated-package minetest-wielded-light
   luanti-wielded-light)
