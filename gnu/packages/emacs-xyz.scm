@@ -41264,9 +41264,6 @@ needing to write the result into the buffer.")
 well as an option for visually flashing evaluated s-expressions.")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-eval-sexp-fu-el
-  emacs-eval-sexp-fu)
-
 (define-public emacs-counsel-tramp
   (package
     (name "emacs-counsel-tramp")
