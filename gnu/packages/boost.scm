@@ -316,9 +316,6 @@ across a broad spectrum of applications.")
                      ;; Not cross-compiling.
                      #~())))))))
 
-(define-deprecated-package boost-with-python3
-  boost)
-
 (define-public boost-static
   (package
     (inherit boost)
