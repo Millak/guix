@@ -10795,9 +10795,6 @@ datasets. It relies on integrative non-negative matrix factorization to
 identify shared and dataset-specific factors.")
     (license license:gpl3)))
 
-(define-deprecated-package r-liger
-  r-rliger)
-
 (define-public r-rnbeads
   (package
     (name "r-rnbeads")
