@@ -1112,9 +1112,6 @@ WSGI and the node exporter textfile collector.")
 written in Go with pluggable metric collectors.")
     (license license:asl2.0)))
 
-(define-deprecated-package go-github-com-prometheus-node-exporter
-  prometheus-node-exporter)
-
 (define-public prometheus-postfix-exporter
   (package
     (name "prometheus-postfix-exporter")
