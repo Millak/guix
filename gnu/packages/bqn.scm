@@ -94,13 +94,13 @@
                               (string-append #$output "/bin"))))))))
     (native-inputs (list `(,icedtea-8 "jdk") zip))
     (inputs (list bash-minimal icedtea-8))
+    (home-page "https://github.com/dzaima/BQN")
     (synopsis "BQN implementation based on dzaima/APL")
     (description
      "dbqn is a Java implementation of the
 @uref{https://mlochbaum.github.io/BQN/, BQN programming language} that does
 not need to be bootstrapped, based on an earlier Java implementation of APL by
 the same author.")
-    (home-page "https://github.com/dzaima/BQN")
     (license license:expat)))
 
 (define bqn-sources
