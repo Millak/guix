@@ -29,9 +29,6 @@
   #:use-module (guix packages)
   #:use-module (gnu packages luanti))
 
-(define-deprecated-package minetest-mineclone
-  luanti-voxelibre)
-
 (define-deprecated-package minetest-mobs
   luanti-mobs)
 
