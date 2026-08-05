@@ -32449,9 +32449,6 @@ repository, @code{magit-org-todos} will create a section in your Magit status
 buffer with each of your todos.")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-magit-org-todos-el
-  emacs-magit-org-todos)
-
 (define-public emacs-vcsh
   (package
     (name "emacs-vcsh")
