@@ -457,7 +457,7 @@ many popular formats.")
            libpng
            libtiff
            openmpi
-           proj-9.3
+           proj
            python
            ;("pugixml" ,pugixml)
            sqlite
