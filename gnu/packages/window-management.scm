@@ -839,9 +839,6 @@ many programming languages.")
        (release-monitoring-url . "https://i3wm.org/downloads")))
     (license license:bsd-3)))
 
-(define-deprecated-package i3-gaps
-  i3-wm)
-
 (define-public i3ipc-glib
   (package
     (name "i3ipc-glib")
