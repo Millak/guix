@@ -2935,10 +2935,6 @@ well in user interface (UI) environments.")
 family.")
     (license license:silofl1.1)))
 
-;; https://github.com/adobe-fonts/source-serif/issues/77
-(define-deprecated-package font-adobe-source-serif-pro
-  font-adobe-source-serif)
-
 (define-public font-medieval-sharp
   ;; No releases, use newest commit.
   (let ((commit "ee7510b6b13854fd340e7d2e44c218780f672cd1")
