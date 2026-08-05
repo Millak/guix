@@ -30,9 +30,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
-  #:use-module (gnu packages python)
-  #:use-module (gnu packages python-build)
-  #:use-module (gnu packages swig))
+  #:use-module (gnu packages oneapi))
 
 (define-public tbb
   (package
@@ -90,45 +88,8 @@ tedious threading implementation work.  It provides parallel loop constructs,
 asynchronous tasks, synchronization primitives, atomic operations, and more.")
     (license asl2.0)))
 
-(define-public python-tbb
-  (package
-    (inherit tbb)
-    (name "python-tbb")
-    (arguments
-     (list
-      #:configure-flags
-      #~(list "-DTBB_STRICT=OFF"
-              "-DTBB4PY_BUILD=ON")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-python-install-directory
-            (lambda _
-              (substitute* "python/CMakeLists.txt"
-                (("\\$\\{PYTHON_BUILD_WORK_DIR\\}/build")
-                 #$output)
-                (("install --prefix.*-f" m)
-                 (string-append m " --root=/")))
-              (substitute* "python/setup.py"
-                (("extra_link_args=tbb_flag,")
-                 (string-append "extra_link_args=['-Wl,-rpath="
-                                #$(this-package-input "tbb") "/lib"
-                                "', '-Wl,-rpath=" #$output "/lib'] + tbb_flag,")))))
-          (replace 'build
-            (lambda _
-              (setenv "PYTHONHASHSEED" "0")
-              (setenv "PYTHONDONTWRITEBYTECODE" "1")
-              (invoke "make" "python_build")))
-          ;; The 'build phase already installs the modules
-          (replace 'install
-            (lambda _
-              (with-directory-excursion "python/rml"
-                (invoke "make" "install"))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "ctest" "-R" "python_test" "--output-on-failure")))))))
-    (inputs (list python tbb))
-    (native-inputs (list swig-4.0 python-setuptools))))
+;; Deprecated on 2026-08-05.
+(define-deprecated-package python-tbb python-onetbb)
 
 (define-public tbb-2020
   (package
