@@ -41582,9 +41582,6 @@ functions (e.g. @code{webfeeder-title-function}).")
 end of a line and increment or decrement it.")
       (license license:gpl3+))))
 
-(define-deprecated-package emacs-janpath-evil-numbers
-  emacs-evil-numbers)
-
 (define-public emacs-rotate-text
   (package
     (name "emacs-rotate-text")
