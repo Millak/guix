@@ -3137,9 +3137,6 @@ implementation of an MQTT version client class.")
 It's a spin-off of the Psi XMPP client.")
     (license license:gpl2+)))
 
-(define-deprecated-package psi
-  psi-plus)
-
 (define-public twtxt
   (package
     (name "twtxt")
