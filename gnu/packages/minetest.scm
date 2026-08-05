@@ -29,9 +29,6 @@
   #:use-module (guix packages)
   #:use-module (gnu packages luanti))
 
-(define-deprecated-package minetest-mobs
-  luanti-mobs)
-
 (define-deprecated-package minetest-mobs-animal
   luanti-mobs-animal)
 
