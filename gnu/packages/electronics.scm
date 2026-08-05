@@ -2283,7 +2283,7 @@ versus schematic} tests and can assist with automatic routing.")
 (define-public mcy
   (package
     (name "mcy")
-    (version "0.67")
+    (version "0.68")
     (source
      (origin
        (method git-fetch)
@@ -2292,7 +2292,7 @@ versus schematic} tests and can assist with automatic routing.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09mivc15ypdxk66w4cx478snfq0ln8fscy50vr9yv2fm6fb4hlb7"))))
+        (base32 "1di2a4hryiwcy4v644lc36yx7wd3ybd6ws0vhardcbxagcc0ahp7"))))
     (build-system qt-build-system)
     (arguments
      (list
