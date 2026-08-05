@@ -28747,9 +28747,6 @@ buffer, and, by virtue of this extension, do so using the Emacs formatting
 rules for that language.")
     (license license:bsd-2)))
 
-(define-deprecated-package emacs-scratch-el
-  emacs-scratch)
-
 (define-public emacs-kv
   (package
     (name "emacs-kv")
