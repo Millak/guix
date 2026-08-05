@@ -672,9 +672,6 @@ accurately in real time at any rate desired.")
 @end itemize")
       (license license:gpl2+))))
 
-(define-deprecated-package celestia-gtk
-  celestia)
-
 (define-public cext
   (package
     (name "cext")
