@@ -8329,13 +8329,16 @@ presume or force a developer to use a particular tool or library.")
 (define-public python-flask-compress
   (package
     (name "python-flask-compress")
-    (version "1.18")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "flask_compress" version))
-              (sha256
-               (base32
-                "0fj1r0ixsjls7z3a2zzamxppjz4qcf8q4jcmn74gsk9kisyy3fpx"))))
+    (version "1.24")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/colour-science/flask-compress")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mid5c34r75vax1r7l2l5sjjhs6bl8rbsdmhc7kz39snq6xw3cr5"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-flask-caching
@@ -8343,9 +8346,9 @@ presume or force a developer to use a particular tool or library.")
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
-     (list python-brotli
-           python-flask
-           python-pyzstd))
+     (list python-backports-zstd
+           python-brotli
+           python-flask))
     (home-page "https://github.com/colour-science/flask-compress")
     (synopsis "Compress responses in a Flask app")
     (description
