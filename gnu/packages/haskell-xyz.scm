@@ -8210,7 +8210,7 @@ traditionally so named type-wrapper for attaching typeclass instances.")
         (base32 "069fg8jcxqq2z9iikynd8vi3jxm2b5y3qywdh4bdviyzab3zy1as"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "OpenGL")))
-    (inputs (list ghc-objectname ghc-statevar ghc-openglraw ghc-gluraw))
+    (inputs (list ghc-objectname ghc-statevar ghc-openglraw ghc-gluraw glu))
     (arguments
      `(#:cabal-revision ("4"
                          "121998ckmpama7cfl63m5nvin46cqzip3ypzmy7v4y96ks6s1n5w")))
