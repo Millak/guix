@@ -407,6 +407,3 @@ Python code natively, including C extensions.")
     (inputs
      (modify-inputs inputs
        (append xz)))))
-
-(define-deprecated-package pypy3
-  pypy)
