@@ -88,6 +88,3 @@ ncurses installed.")
     (inputs (list ncurses `(,zstd "lib")))
     (native-inputs (list pkg-config))
     (properties `((tunable? . #t)))))
-
-(define-deprecated-package ncdu-2
-  ncdu)
