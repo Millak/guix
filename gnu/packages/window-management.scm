@@ -2241,9 +2241,6 @@ Keybinder works with GTK-based applications using the X Window System.")
     (home-page "https://github.com/kupferlauncher/keybinder")
     (license license:x11)))
 
-(define-deprecated-package keybinder-3.0
-  keybinder)
-
 (define-public sandbar
   (package
     (name "sandbar")
