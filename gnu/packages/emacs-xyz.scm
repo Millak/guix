@@ -38205,9 +38205,6 @@ It provides integration with multiple built-in modes, as well as providing an
 interface to attach and interact with the processes.")
     (license license:gpl3+)))
 
-(define-deprecated-package emacs-dtache
-  emacs-detached)
-
 (define-public emacs-dtrt-indent
   (package
     (name "emacs-dtrt-indent")
