@@ -70,7 +70,6 @@
   (package
     (name "curl")
     (version "8.20.0")
-    (replacement curl/fixed)
     (source (origin
               (method url-fetch)
               (uri (string-append "https://curl.se/download/curl-"
@@ -181,16 +180,6 @@ tunneling, and so on.")
     (home-page "https://curl.se/")
     (license (license:non-copyleft "file://COPYING"
                                    "See COPYING in the distribution."))))
-
-(define curl/fixed
-  (package
-    (inherit curl)
-    (name "curl")
-    (version "8.20.0")
-    (source (origin
-              (inherit (package-source curl))
-              (patches (search-patches "curl-use-ssl-cert-env.patch"
-                                       "curl-fix-wakeup-consumption.patch"))))))
 
 (define-public curl-ssh
   (package/inherit curl
