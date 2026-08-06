@@ -107,6 +107,41 @@
 ;;; Libraries:
 ;;;
 
+(define-public go-0xacab-org-leap-geoip-service
+  (package
+    (name "go-0xacab-org-leap-geoip-service")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://0xacab.org/leap/geoip-service.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hsliznb7x61x7nx0k90jk0qqcbjqx7mbglf56xg793v9xlbiisj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "0xacab.org/leap/geoip-service"
+      #:embed-files #~(list "geoinfo.mmdb")))
+    (native-inputs
+     (list go-github-com-spf13-pflag
+           go-github-com-spf13-viper
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-labstack-echo-v4
+           go-github-com-ooni-probe-engine
+           go-golang-org-x-time))
+    (home-page "https://0xacab.org/leap/geoip-service")
+    (synopsis "IP geolocation lookups for Go")
+    (description
+     "This package provides a lightweight service for IP geolocation lookups
+that provides ASN (Autonomous System Number), country code, and network
+information.")
+    (license license:gpl3+)))
+
 (define-public go-0xacab-org-leap-lb
   (package
     (name "go-0xacab-org-leap-lb")
