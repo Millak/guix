@@ -15608,28 +15608,29 @@ using high-throughput sc-RNAseq data.")
                   "1wmka4ickrsfvkhc1mrrkxqy65g6wylsv0scmjq7m8l8qnllxbak"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f                    ; there is no test target
-         #:parallel-build? #f           ; not supported
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (add-after 'unpack 'prepare-build-tools
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "Makefile"
-                 (("\\$\\(shell which ldmd2\\)") (which "ldmd2")))
-               (setenv "CC" "gcc")
-               (setenv "D_LD" (which "ld.gold"))))
-           (add-after 'unpack 'unbundle-prerequisites
-             (lambda _
-               (substitute* "Makefile"
-                 (("= lz4/lib/liblz4.a") "= -L-llz4")
-                 (("ldc_version_info lz4-static") "ldc_version_info"))))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-                 (mkdir-p bin)
-                 (copy-file (string-append "bin/sambamba-" ,base-version)
-                            (string-append bin "/sambamba"))))))))
+       (list
+        #:tests? #f                     ; there is no test target
+        #:parallel-build? #f            ; not supported
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-after 'unpack 'prepare-build-tools
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "Makefile"
+                  (("\\$\\(shell which ldmd2\\)") (which "ldmd2")))
+                (setenv "CC" "gcc")
+                (setenv "D_LD" (which "ld.gold"))))
+            (add-after 'unpack 'unbundle-prerequisites
+              (lambda _
+                (substitute* "Makefile"
+                  (("= lz4/lib/liblz4.a") "= -L-llz4")
+                  (("ldc_version_info lz4-static") "ldc_version_info"))))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
+                  (mkdir-p bin)
+                  (copy-file (string-append "bin/sambamba-" #$base-version)
+                             (string-append bin "/sambamba"))))))))
       (inputs
        (list ldc lz4 zlib))
       (native-inputs
