@@ -1469,45 +1469,32 @@ cardinality matching from a bipartite graph.")
 (define-public python-paramz
   (package
     (name "python-paramz")
-    (version "0.9.6")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/sods/paramz")
-             (commit (string-append "v" version))))
+              (url "https://github.com/sods/paramz")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ywc2jzj40m6wmq227j3snxvp4434s0m1xk1abg6v6mr87pv2sa9"))))
+        (base32 "0h7m7fzb88cx4f8qq2p34z3jv3f48b46pc11is6592zlmrdp67lf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 114 passed, 4 skipped, 14 warnings
       #:test-flags
-      #~(list "-k"
-              ;; Two tests fail with error: TypeError: arrays to stack must be
-              ;; passed as a "sequence" type such as list or tuple.
-              (string-append "not test_raveled_index"
-                             " and not test_regular_expression_misc")
-              "paramz/tests/array_core_tests.py"
-              "paramz/tests/cacher_tests.py"
-              "paramz/tests/examples_tests.py"
-              "paramz/tests/index_operations_tests.py"
-              "paramz/tests/init_tests.py"
-              "paramz/tests/lists_and_dicts_tests.py"
-              "paramz/tests/model_tests.py"
-              "paramz/tests/observable_tests.py"
-              "paramz/tests/parameterized_tests.py"
-              "paramz/tests/pickle_tests.py"
-              "paramz/tests/verbose_optimize_tests.py")))
+      ;; Compute instance test which times out.
+      #~(list (string-append "--deselect=paramz/tests/model_tests.py"
+                             "::TestModel::test_optimize_restarts_parallel"))))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-decorator
-           python-numpy-1
+           python-numpy
            python-scipy
-           python-six))
+           python-six))  ;hard dependency
     (home-page "https://github.com/sods/paramz")
     (synopsis "The Parameterization Framework")
     (description
