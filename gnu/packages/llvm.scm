@@ -2046,7 +2046,7 @@ generator targetting AMD hardware.")
 (define-public python-llvmlite
   (package
     (name "python-llvmlite")
-    (version "0.47.0")
+    (version "0.48.0")
     (source
      (origin
        ;; XXX: Switching to git require versioneer from python-xyz.
@@ -2054,7 +2054,7 @@ generator targetting AMD hardware.")
        (uri (pypi-uri "llvmlite" version))
        (sha256
         (base32
-         "1k1wqdq9as876whzkf7hvy7lyi3yhl74nk8qj98fjx7cd3liq0v2"))))
+         "1lpdjbg9ip8d9kv5cgcakyzkf58vxvj930a6s5h7qg4gxzwijfsl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2084,7 +2084,7 @@ generator targetting AMD hardware.")
      (list cmake-minimal
            python-setuptools))
     (inputs
-     (list llvm-20))
+     (list llvm))
     (home-page "https://llvmlite.pydata.org")
     (synopsis "Wrapper around basic LLVM functionality")
     (description
