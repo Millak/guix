@@ -1618,7 +1618,7 @@ Cython for speed.")
 (define-public python-pot
   (package
     (name "python-pot")
-    (version "0.9.6.post1")
+    (version "0.9.7.post1")
     (source
      (origin
        (method git-fetch)
@@ -1627,13 +1627,26 @@ Cython for speed.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i4nv72hw5ad63w4wghwfzxp1rvh2qs4agxjk72d10xgg8lizgkm"))))
+        (base32 "1pcsvxsmilz3xwa8lm5cgllbjjrx9q92nxm2vmb8jlwhh56wan0g"))))
     (build-system pyproject-build-system)
     ;; tests: 1885 passed, 60 skipped, 6 xfailed, 9288 warnings
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-system-eigen
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "setup.py"
+                (("os\\.path\\.join\\(ROOT, \"deps/eigen\"\\)")
+                 (format #f "~s"
+                         (search-input-directory inputs
+                                                 "include/eigen3")))))))))
     (native-inputs
      (list python-cython
            python-pytest
            python-setuptools))
+    (inputs
+     (list eigen))
     (propagated-inputs
      (list python-numpy
            python-scipy
