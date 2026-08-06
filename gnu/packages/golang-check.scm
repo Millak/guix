@@ -652,6 +652,34 @@ time functions.")
 strings which may be used in mock tests.")
     (license license:unlicense)))
 
+(define-public go-github-com-crossdock-crossdock-go
+  (package
+    (name "go-github-com-crossdock-crossdock-go")
+    (version "0.0.0-20160816171116-049aabb0122b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/crossdock/crossdock-go")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kcz657q697dv5gw249j3v0d1n1c9kbkmc1aqylj9dg69z5850f2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/crossdock/crossdock-go"))
+    (propagated-inputs
+     (list go-github-com-davecgh-go-spew
+           go-github-com-pmezard-go-difflib
+           go-golang-org-x-net))
+    (home-page "https://github.com/crossdock/crossdock-go")
+    (synopsis "Go client for Crossdock")
+    (description
+     "Package crossdock implements the machinery for writing behaviors in a
+way similar to unit tests.")
+    (license license:expat)))
+
 (define-public go-github-com-daixiang0-gci
   (package
     (name "go-github-com-daixiang0-gci")
