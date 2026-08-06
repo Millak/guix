@@ -3389,13 +3389,13 @@ networks.")
 (define-public python-safety-schemas
   (package
     (name "python-safety-schemas")
-    (version "0.0.14")
+    (version "0.0.19")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "safety_schemas" version))
        (sha256
-        (base32 "0smgszbd3nb7jh61cgpycqhcvfwwdyaai5amw8mmf6g9b5x3z5a9"))))
+        (base32 "13dany62q262l08441aps815nz42k9mcd3lgjs5z592j91nz10a7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
