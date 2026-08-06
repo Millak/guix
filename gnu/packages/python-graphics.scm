@@ -13,6 +13,7 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Sisiutl <sisiutl@egregore.fun>
+;;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastor-perez@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -66,6 +67,7 @@
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
 ;;; Commentary:
@@ -603,6 +605,40 @@ and windows.
 @item Type hints everywhere making code completion and linting a breeze.
 @end itemize")
     (license license:expat)))
+
+(define-public python-picosvg
+  (package
+    (name "python-picosvg")
+    (version "0.23.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googlefonts/picosvg")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0glc6d9d81jnwqnizhdifvhhxhk5ly7qbss1alsyqxh3h64hs9g0"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools python-setuptools-scm))
+    (propagated-inputs
+     (list python-absl-py python-lxml python-skia-pathops))
+    (home-page "https://github.com/googlefonts/picosvg")
+    (synopsis "Tool to simplify SVGs")
+    (description
+     "@code{picosvg} converts an input SVG into a @code{pico} SVG.
+
+A @code{pico} SVG has the following characteristics:
+@itemize
+@item Exactly 1 <defs> element, first child of root
+@item Only gradients defined under <defs>
+@item After the initial <defs>, only <g> and <path> <g> is eliminated when
+possible, but may be retained for opacity
+@item Only absolute coordinates
+@item Only commands that specify full coordinates, no shorthand (H, S, etc)
+@end itemize")
+    (license license:asl2.0)))
 
 (define-public python-pivy
   (package
