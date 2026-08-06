@@ -15672,6 +15672,40 @@ github.com/ooni/probe-cli.")
 https://openfga.dev/api} definition.")
     (license license:asl2.0)))
 
+(define-public go-github-com-opentracing-contrib-go-grpc
+  (package
+    (name "go-github-com-opentracing-contrib-go-grpc")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/opentracing-contrib/go-grpc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1igrpi9yyjpzqyzyvgc6kl5l043x1hmkki26bnny30cmxahmjnrv"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            (delete-file-recursively "test")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/opentracing-contrib/go-grpc"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-opentracing-opentracing-go
+           go-google-golang-org-grpc))
+    (home-page "https://github.com/opentracing-contrib/go-grpc")
+    (synopsis "OpenTracing support for gRPC in Go")
+    (description
+     "Package otgrpc provides @code{OpenTracing} support for any @code{gRPC}
+client or server.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-opentracing-contrib-go-stdlib
   (package
     (name "go-github-com-opentracing-contrib-go-stdlib")
