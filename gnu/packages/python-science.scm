@@ -5638,7 +5638,7 @@ objects.")
 (define-public python-pytensor
   (package
     (name "python-pytensor")
-    (version "2.36.3")
+    (version "3.2.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5647,7 +5647,7 @@ objects.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0m9nmwnn0ixrk9ml0yc6qjdcw0vmw7swfcw8vahyfmp70pirhimn"))))
+                "0wqklzah9rysxnmf34zrj4njc1k79r9n9kbi1cnm6qj2dds6bm3d"))))
     (build-system pyproject-build-system)
     (arguments
      (list
