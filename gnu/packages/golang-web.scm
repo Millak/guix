@@ -51,6 +51,7 @@
 ;;; Copyright © 2026 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2026 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2026 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2026 Konstantin Suntsov <protvin@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25743,7 +25744,7 @@ that can use multiple signing keys
       #:install-source? #f
       #:unpack-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"
       #:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird/cmd/lyrebird"))
-    (propagated-inputs
+    (native-inputs
      (list go-filippo-io-edwards25519
            go-github-com-dchest-siphash
            go-github-com-refraction-networking-utls
