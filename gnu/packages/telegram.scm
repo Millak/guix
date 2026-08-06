@@ -477,6 +477,18 @@ and not propagated to upstream.")
     (base32
      "19rzksbcbimrnkq78yxwdgd6v25hv2vakn5g82qq9vlgb7ppaan4"))))
 
+(define toomanycooks-for-telegram-desktop
+  (origin
+   (method git-fetch)
+   (uri (git-reference
+         (url "https://github.com/tzcnt/TooManyCooks.git")
+         (commit "8e2c40f925c0903302d13418f07ea147c9b12e8e")))
+   (file-name
+    (git-file-name "toomanycooks-for-telegram-desktop" %telegram-version))
+   (sha256
+    (base32
+     "1rl3zk7jpfcab4i25fibsfmxxic1p495lja0r2jpa7jccagzffba"))))
+
 (define-public tdlib
   (let ((commit "a9966eb3704a3351568c28013fed67d797c17828"))
     (package
