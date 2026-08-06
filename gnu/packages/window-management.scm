@@ -3777,7 +3777,7 @@ compository, supporting the following features:
                     `("GUIX_GDK_PIXBUF_MODULE_FILES" ":" suffix
                       (,(getenv "GUIX_GDK_PIXBUF_MODULE_FILES")))))))))
     (inputs (list date
-                  fmt-12
+                  fmt
                   gtk-layer-shell
                   gtkmm-3
                   jsoncpp

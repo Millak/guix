@@ -1322,7 +1322,7 @@ workspaces.
            cli11
            expat
            fftw
-           fmt-12
+           fmt
            imagemagick
            imath
            lcms

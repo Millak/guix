@@ -278,7 +278,7 @@ makes a few sacrifices to acquire fast full and incremental build times.")
                         (invoke "ctest")))))))
     (inputs
      `(("c-ares" ,c-ares)
-       ("fmt" ,fmt-12)
+       ("fmt" ,fmt)
        ("grpc" ,grpc)
        ("nlohmann-json" ,nlohmann-json)
        ("protobuf" ,protobuf)

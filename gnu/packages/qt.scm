@@ -443,7 +443,7 @@ window managers, that don't provide Qt integration by themselves.")
                                           "-DKDDockWidgets_QT6=ON"
                                           "-DKDDockWidgets_TESTS=ON")))
     (inputs
-     (list fmt-12
+     (list fmt
            nlohmann-json
            qtbase
            qtdeclarative

@@ -296,7 +296,7 @@ output in multiple windows in a terminal.")
                                    ")\n"))))))))
     (native-inputs (list catch2))
     (inputs (list googlebenchmark))
-    (propagated-inputs (list fmt-12))
+    (propagated-inputs (list fmt))
     (home-page "https://github.com/gabime/spdlog")
     (synopsis "Fast C++ logging library")
     (description "Spdlog is a very fast header-only/compiled C++ logging
