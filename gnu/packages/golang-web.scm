@@ -20804,6 +20804,40 @@ sockets.")
 TCP/UDP and IPv4/IPv6 support.")
     (license license:expat)))
 
+(define-public go-github-com-uber-jaeger-lib
+  (package
+    (name "go-github-com-uber-jaeger-lib")
+    (version "2.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jaegertracing/jaeger-lib")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15871xzc7qs00yy5bv1gzdv4xlfws68bhb70m4k5p5n41060ppj0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Project is deprecated, use it as a source only to build
+      ;; go-github-com-sourcegraph-zoekt.
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/uber/jaeger-lib"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-hdrhistogram-hdrhistogram-go))
+    (home-page "https://github.com/jaegertracing/jaeger-lib")
+    (synopsis "Collection of libraries used by Jaeger")
+    (description
+     "This package provides a collection of shared infrastructure libraries
+used by different components of @url{https://github.com/jaegertracing/jaeger,
+Jaeger} backend and @url{https://github.com/uber/jaeger-client-go,
+jaeger-client-go}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-ucarion-urlpath
   (package
     (name "go-github-com-ucarion-urlpath")
