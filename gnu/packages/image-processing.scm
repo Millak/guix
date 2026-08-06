@@ -974,17 +974,18 @@ including 2D color images.")
     (arguments
      (substitute-keyword-arguments arguments
        ((#:configure-flags _)
-        #~(list "-DGMIC_QT_HOST=none"
+        #~(list "-DBUILD_WITH_QT6=ON"
+                "-DGMIC_QT_HOST=none"
                 "-DENABLE_DYNAMIC_LINKING=ON"))
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'qt-chdir
               (lambda _ (chdir "gmic-qt")))))))
     (native-inputs
-     (list pkg-config qttools-5))
+     (list pkg-config qttools))
     (inputs
      (modify-inputs inputs
-       (prepend gmic qtbase-5)))
+       (prepend gmic qtbase)))
     (synopsis "Qt frontend for the G'MIC image processing framework")
     (license license:gpl3+)))
 
@@ -999,7 +1000,8 @@ including 2D color images.")
     (arguments
      (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
-        #~(list "-DGMIC_QT_HOST=gimp3"
+        #~(list "-DBUILD_WITH_QT6=ON"
+                "-DGMIC_QT_HOST=gimp3"
                 "-DENABLE_DYNAMIC_LINKING=ON"))))
     (synopsis "GIMP plugin for the G'MIC image processing framework")))
 
