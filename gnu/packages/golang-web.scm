@@ -20804,6 +20804,41 @@ sockets.")
 TCP/UDP and IPv4/IPv6 support.")
     (license license:expat)))
 
+(define-public go-github-com-uber-jaeger-client-go
+  (package
+    (name "go-github-com-uber-jaeger-client-go")
+    (version "2.30.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jaegertracing/jaeger-client-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nm4mi23bvk84418gkpl2wmijij4bnb082f5zv4ivrvcrp9lhkx3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/uber/jaeger-client-go"))
+    (native-inputs
+     (list go-github-com-crossdock-crossdock-go
+           go-github-com-golang-mock
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-opentracing-opentracing-go
+           go-github-com-pkg-errors
+           go-github-com-prometheus-client-golang
+           go-github-com-uber-jaeger-lib
+           go-go-uber-org-atomic
+           go-go-uber-org-zap))
+    (home-page "https://github.com/jaegertracing/jaeger-lib")
+    (synopsis "Jaeger Bindings for Go OpenTracing API")
+    (description
+     "Package jaeger implements an @url{http://opentracing.io, OpenTracing}
+Tracer.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-uber-jaeger-lib
   (package
     (name "go-github-com-uber-jaeger-lib")
