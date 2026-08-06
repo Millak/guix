@@ -1231,7 +1231,7 @@ algorithms for evaluating Bayesian evidence.")
 (define-public python-pymc
   (package
     (name "python-pymc")
-    (version "5.27.0")
+    (version "6.2.0")
     (source
      (origin
        (method git-fetch)
@@ -1240,7 +1240,7 @@ algorithms for evaluating Bayesian evidence.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n2qj13qpd58qg8s5gx2qxiiy7hjpk6k8z0a4ysr3jc66d12s092"))))
+        (base32 "0p1cfwgs43xib1mmpnvdpmypgmp0nyxvjf13kvj3bcdiwwiivl7w"))))
     (build-system pyproject-build-system)
     ;; Tests are too computationally intensive
     (arguments '(#:tests? #f))
