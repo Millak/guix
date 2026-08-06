@@ -3166,8 +3166,8 @@ main intended application of Autograd is gradient-based optimization.")
 
 (define-public python-torchdiffeq
   ;; There are neither releases nor tags.
-  (let ((commit "a88aac53cae738addee44251288ce5be9a018af3")
-        (revision "0"))
+  (let ((commit "657943acefa826ef04c025ebeb1ff5e9d60dc268")
+        (revision "1"))
     (package
       (name "python-torchdiffeq")
       (version (git-version "0.2.5" revision commit))
@@ -3179,12 +3179,16 @@ main intended application of Autograd is gradient-based optimization.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0c2zqbdxqvd5abfpk0im6rcy1ij39xvrmixc6l9znb6bhcxk2jra"))))
+          (base32 "15ccm7m0k3jjvx0sxz4s453pb0sxlbg5569dqlvj6ql74jl356x0"))))
       (build-system pyproject-build-system)
       (arguments
        (list
         #:test-flags
-        '(list "-k" "not test_seminorm" "tests/run_all.py")))
+        #~(list
+           ;; This starts failing with scipy@1.17, it looks like a regression
+           ;; in the fortran to C rewrite of LSODA.
+           "-k" "not test_min_max_step"
+           "tests/run_all.py")))
       (propagated-inputs (list python-numpy python-scipy python-pytorch))
       (native-inputs (list python-pytest python-setuptools))
       (home-page "https://github.com/rtqichen/torchdiffeq")
