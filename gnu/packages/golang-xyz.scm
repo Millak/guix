@@ -14479,6 +14479,37 @@ to the peer after the TLS handshake is complete.")
 using shell-style rules for quoting and commenting.")
     (license license:asl2.0)))
 
+(define-public go-github-com-google-slothfs
+  (package
+    (name "go-github-com-google-slothfs")
+    (version "0.0.0-20190717100203-59c1163fd173")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/slothfs")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04c67j0278cnk8ml7fwjbxml153nw5hcprcdgfks0zjxiwpzsrza"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/google/slothfs"))
+    (propagated-inputs
+     (list go-github-com-fsnotify-fsnotify
+           go-github-com-hanwen-go-fuse
+           go-golang-org-x-net
+           go-golang-org-x-time))
+    (home-page "https://github.com/google/slothfs")
+    (synopsis "Read-only FUSE filesystem")
+    (description
+     "@code{SlothFS} is a FUSE filesystem that provides light-weight, lazily
+downloaded, read-only checkouts of manifest-based Git projects.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-google-subcommands
   (package
     (name "go-github-com-google-subcommands")
