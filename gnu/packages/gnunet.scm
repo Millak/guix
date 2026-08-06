@@ -88,14 +88,14 @@
 (define-public libextractor
   (package
     (name "libextractor")
-    (version "1.14")
+    (version "1.19")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/libextractor/libextractor-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1026dg626b0vy55rz3wv9rpmvqsqahbpphsdqqr4mz6a7x1mafhs"))))
+                "0017xx1czl626fq326xikkp16x322vid95096vlqmj11vg5k6nrd"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "static"))               ; 420 KiB .a files
