@@ -464,6 +464,19 @@ and not propagated to upstream.")
    (sha256
     (base32
      "1apy9i76rgs0bmgdlpjszv0fpqhlap2s12m68wvnsv8j3fsqc90y"))))
+
+(define microtex-for-telegram-desktop
+  (origin
+   (method git-fetch)
+   (uri (git-reference
+         (url "https://github.com/desktop-app/MicroTeX.git")
+         (commit "cb5e9e1ec8f744ec2ad26f35e8f789a0ba25effd")))
+   (file-name
+    (git-file-name "microtex-for-telegram-desktop" %telegram-version))
+   (sha256
+    (base32
+     "19rzksbcbimrnkq78yxwdgd6v25hv2vakn5g82qq9vlgb7ppaan4"))))
+
 (define-public tdlib
   (let ((commit "a9966eb3704a3351568c28013fed67d797c17828"))
     (package
