@@ -15462,6 +15462,40 @@ does not necessarily conform to a fixed structure.")
 (define-deprecated-package go-github-com-olivere-elastic
   go-github-com-olivere-elastic-v7)
 
+(define-public go-github-com-ooni-oohttp
+  (package
+    (name "go-github-com-ooni-oohttp")
+    (version "0.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ooni/oohttp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a3xv9yanvxh421qs4lxqk4w2l1yga7rjgdzv5y66m2nmglj85q5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ooni/oohttp"
+      #:test-flags #~(list "-vet=off")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example")))))))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/ooni/oohttp")
+    (synopsis "Modified fork of Go stdlib's @code{net/http}")
+    (description
+     "Package http is a fork of stdlib's @code{net/http} that provides HTTP
+client and server implementations that are compatible with alternative TLS
+libraries such as github.com/refraction-networking/utls.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-openfga-go-sdk
   (package
     (name "go-github-com-openfga-go-sdk")
