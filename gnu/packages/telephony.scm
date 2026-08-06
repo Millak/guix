@@ -366,13 +366,13 @@ GNU ccRTP stack and serves as library for other RTP stacks
 (define-public osip
   (package
    (name "osip")
-   (version "5.3.1")
+   (version "5.3.2")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/osip/libosip2-" version ".tar.gz"))
             (sha256
              (base32
-              "0yfwd8g2nxf3i9d8gqh6a16ma350dlhih4awbb0nl9h82s2gx0py"))))
+              "001vkps1bqiv74mqihxb4b6jbbz11626xjmaqdi6p4s0ampny60n"))))
    (build-system gnu-build-system)
 
    (synopsis "Library implementing SIP (RFC-3261)")
