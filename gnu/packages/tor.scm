@@ -341,14 +341,13 @@ key, and private key are written to a new directory.")
               (substitute* (list "cli/pyproject.toml"
                                  "desktop/pyproject.toml")
                 (("2.3.2") "^3.0.0")     ; flask = "2.3.2"
-                (("5.3.4") "5.5.1")      ; flask-socketio = "5.3.4"
+                (("5.3.4") "5.6.1")      ; flask-socketio = "5.3.4"
                 (("23.9.1") "24.11.1")   ; gevent = "^23.9.1"
                 (("PySide6 = .*") "")    ; XXX: it's not found in sanity check
                 (("7.4.2") "8.0.0")      ; qrcode = "^7.4.2"
-                (("70.0.0") "67.6.1")    ; setuptools = ">=70.0.0"
                 (("1.8.1") "^1.8.1")     ; stem = "1.8.1"
                 (("3.0.6") "^3.0.6")     ; werkzeug = "3.0.6"
-                ((".*0.41.2.*") ""))))   ; wheel = "^0.41.2"
+                (("wheel =.*") ""))))    ; wheel = "^0.41.2"
           (add-after 'unpack 'bake-tor
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* (list "cli/onionshare_cli/common.py"
