@@ -233,6 +233,18 @@
      (base32
       "18vfjwv5h0j8a7lw1qcrsl16kbnnfjhgb7ay6ibi433kbddbdw5l"))))
 
+(define lib-translate-for-telegram-desktop
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/desktop-app/lib_translate")
+          (commit "09c10726220e6862ca91d39b5dec5119aa0177bc")))
+    (file-name
+     (git-file-name "lib-translate-for-telegram-desktop" %telegram-version))
+    (sha256
+     (base32
+      "05z9bz2gcc952afr19q9z00hnrdx1j3ww7bddazpb2f4b86xi5yc"))))
+
 (define lib-ui-for-telegram-desktop
   (origin
     (method git-fetch)
