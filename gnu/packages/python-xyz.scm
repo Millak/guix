@@ -38720,7 +38720,7 @@ You can set the following @code{tcolor} arguments:
 (define-public python-telethon
   (package
     (name "python-telethon")
-    (version "1.42.0")
+    (version "1.44.0")
     (source
      (origin
        (method git-fetch)
@@ -38729,10 +38729,23 @@ You can set the following @code{tcolor} arguments:
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16xp5cwfv1ly25zcnnn0jgrmzpsl3yqzf92dfbnpyiy64j8wkh9l"))))
+        (base32 "1y1bzna7gqs6ck4jmh2spm7s8frw0qs6p52v9ar6qbbk1h7yacip"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'generate-tl-code
+            (lambda _
+              ;; The custom hatchling build hook (hatch_build.py) generates
+              ;; telethon/tl/{types,functions}.py only inside hatchling's
+              ;; isolated build directory, but deletes them again.
+              ;; Regenerate the same code here too for tests; see
+              ;; readthedocs/developing/project-structure.rst.
+              (invoke "python3" "setup.py" "gen"))))))
     (native-inputs
-     (list python-pytest
+     (list python-hatchling
+           python-pytest
            python-pytest-asyncio
            python-pytest-trio
            python-setuptools))
