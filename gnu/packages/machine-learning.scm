@@ -3184,6 +3184,29 @@ advantages:
 ")
     (license license:expat)))
 
+(define-public python-lightgbm
+  (package/inherit lightgbm
+    (name "python-lightgbm")
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Enable when lightgbm is updated.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "python-package"))))))
+    (native-inputs
+     (list cmake-minimal
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy
+           python-scikit-learn))
+    (synopsis "LightGBM Python Package")))
+
 (define-public vowpal-wabbit
   ;; Language bindings not included.
   (package
