@@ -6847,10 +6847,11 @@ guix shell --pure --preserve=^SLURM -E OMP_NUM_THREADS=16 openmpi @dots{} \
   -- mpirun @dots{}
 @end example
 
-This example runs @command{mpirun} in a context where the only environment
-variables defined are @env{PATH}, environment variables whose name starts
-with @samp{SLURM}, variable @env{TERM} set to @samp{no=color}, as well as
-the usual ``precious'' variables (@env{HOME}, @env{USER}, etc.).
+This example runs @command{mpirun} in a context where the only
+environment variables defined are @env{PATH}, environment variables
+whose name starts with @samp{SLURM}, variable @env{OMP_NUM_THREADS} set
+to @samp{16}, as well as the usual ``precious'' variables (@env{HOME},
+@env{USER}, etc.).
 
 @item --search-paths
 Display the environment variable definitions that make up the
