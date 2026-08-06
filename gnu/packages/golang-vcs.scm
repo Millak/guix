@@ -29,6 +29,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages code)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
@@ -673,6 +674,44 @@ Actions} locally.")
      "Package @code{actionlint} is the implementation of actionlint linter.
 It's a static checker for GitHub Actions workflow files.")
     (license license:expat)))
+
+(define-public go-github-com-sourcegraph-go-ctags
+  (package
+    (name "go-github-com-sourcegraph-go-ctags")
+    (properties '((commit . "5ec1554485f9b47aeebf34a6856e8ab4ea1c831b")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260626114452-5ec1554485f9")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sourcegraph/go-ctags")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xd6xd24i98kgzngj2wlk6c7p96i1ij3ynrndc2k0n837a4kgrvb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sourcegraph/go-ctags"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CTAGS_COMMAND"
+                      (search-input-file inputs "bin/ctags")))))))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-hexops-autogold
+           universal-ctags))
+    (home-page "https://github.com/sourcegraph/go-ctags")
+    (synopsis "Go wrapper for universal-ctags")
+    (description
+     "This package provides a Go wrapper for @code{universal-ctags}.")
+    (license license:asl2.0)))
 
 (define-public go-gitlab-com-digitalxero-go-conventional-commit
   (package
