@@ -740,59 +740,44 @@ classification.")
 (define-public python-gpy
   (package
     (name "python-gpy")
-    (version "1.13.2")
+    (version "1.14.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "GPy" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/SheffieldML/GPy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "083rl8nr4nmmr1pzn0g8gsc4wi9dnhj3jjhkwsssadm5vns5d0m3"))))
+        (base32 "16n03rljpqrhlfapcs7nqca1yrw69484fjp84skg5628jp3fwxfr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 254 passed, 15 skipped, 1142679 warnings
-      #:test-flags
-      ;; TODO: Review tests.
-      #~(list
-         ;; Failed: 'yield' keyword is allowed in fixtures, but not in tests
-         ;; (test_scale2_models)
-         "--ignore=GPy/testing/test_likelihood.py"
-         ;; Failed: 'yield' keyword is allowed in fixtures, but not in
-         ;; tests (test_figure)
-         "--ignore=GPy/testing/test_plotting.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'compatibility
             (lambda _
               ;; This file uses Python 2 statements
-              (delete-file "GPy/testing/mpi_test__.py")
-              (substitute* "setup.py"
-                (("scipy>=1.3.0,<=1.12.0")
-                 "scipy>=1.3.0"))
-              ;; Use numpy.exp because scipy.ext no longer exists
-              (substitute* "GPy/kern/src/sde_standard_periodic.py"
-                (("sp\\.exp") "np.exp"))
-              (substitute* "GPy/kern/src/sde_stationary.py"
-                (("sp\\.poly1d") "np.poly1d")
-                (("sp\\.roots") "np.roots")))))))
+              (delete-file "GPy/testing/mpi_test__.py"))))))
     (native-inputs
      (list python-cython
-           python-matplotlib
            python-pods
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
-     (list python-numpy-1
+     (list python-numpy
            python-paramz
            python-scipy
-           python-six))
+           python-six    ;hard dependency
+           ;; [optional]
+           python-matplotlib
+           python-plotly))
     (home-page "https://sheffieldml.github.io/GPy/")
     (synopsis "The Gaussian Process Toolbox")
     (description
-     "@command{GPy} is a Gaussian Process (GP) framework written in
-Python, from the Sheffield machine learning group.  GPy implements a range of
-machine learning algorithms based on GPs.")
+     "@command{GPy} is a Gaussian Process (GP) framework written in Python,
+from the Sheffield machine learning group.  GPy implements a range of machine
+learning algorithms based on GPs.")
     (license license:bsd-3)))
 
 (define-public python-libsvm
