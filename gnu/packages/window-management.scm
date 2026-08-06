@@ -77,7 +77,7 @@
 ;;; Copyright © 2024 dan <i@dan.games>
 ;;; Copyright © 2024 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2024-2026 Ashish SHUKLA <ashish.is@lostca.se>
-;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
+;;; Copyright © 2024-2026 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
@@ -999,6 +999,36 @@ i3status.")
      "LavaLauncher is a simple launcher panel that displays a dynamically
 sized bar with user-defined buttons activating shell commands.  Features
 include multiple bars and touch screen compatibility.")
+    (license license:gpl3+)))
+
+(define-public lambdock
+  (package
+    (name "lambdock")
+    (version "0.5.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/jjba23/lambdock")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06c096d8gzpqmbd7d43r0n9j4bjz2d7p9zwqzc3gx16l5l7s6f1d"))))
+    (build-system meson-build-system)
+    (native-inputs (list (list glib "bin")
+                         pkg-config))
+    (inputs (list gtk
+                  gtk4-layer-shell
+                  guile-3.0
+                  wlr-protocols))
+    (home-page "https://codeberg.org/jjba23/lambdock")
+    (synopsis "Wayland desktop dock customizable with GNU Guile Scheme")
+    (description
+     "Lambdock is a Wayland-native desktop dock built with GTK4 and
+@code{gtk4-layer-shell}.  It features dynamic window tracking using the Wayland
+foreign toplevel management protocol, customizable CSS theming, fluid slide-out
+auto-hiding, multi-monitor placement, and an embedded GNU Guile Scheme engine
+for live configuration, extensibility, and REPL interaction.")
     (license license:gpl3+)))
 
 (define-public obconf
