@@ -87442,6 +87442,70 @@ fn main() {
                                       rust-winnow-0.7.14
                                       rust-wrapcenum-derive-0.4.1
                                       rust-yansi-1.0.1))
+                     (resvg =>
+                            (list rust-adler2-2.0.1
+                                  rust-arrayref-0.3.9
+                                  rust-arrayvec-0.7.8
+                                  rust-autocfg-1.5.1
+                                  rust-base64-0.22.1
+                                  rust-bitflags-2.13.1
+                                  rust-bytemuck-1.25.2
+                                  rust-byteorder-lite-0.1.0
+                                  rust-cfg-if-1.0.4
+                                  rust-color-quant-1.1.0
+                                  rust-core-maths-0.1.1
+                                  rust-crc32fast-1.5.0
+                                  rust-data-url-0.3.2
+                                  rust-euclid-0.22.14
+                                  rust-fdeflate-0.3.7
+                                  rust-flate2-1.1.9
+                                  rust-float-cmp-0.9.0
+                                  rust-fontconfig-parser-0.5.8
+                                  rust-fontdb-0.23.0
+                                  rust-gif-0.14.2
+                                  rust-image-webp-0.2.4
+                                  rust-imagesize-0.14.0
+                                  rust-kurbo-0.13.1
+                                  rust-libc-0.2.189
+                                  rust-libm-0.2.16
+                                  rust-log-0.4.33
+                                  rust-memchr-2.8.3
+                                  rust-memmap2-0.9.11
+                                  rust-miniz-oxide-0.8.9
+                                  rust-num-traits-0.2.19
+                                  rust-once-cell-1.21.4
+                                  rust-pico-args-0.5.0
+                                  rust-png-0.18.1
+                                  rust-polycool-0.4.0
+                                  rust-quick-error-2.0.1
+                                  rust-rgb-0.8.53
+                                  rust-roxmltree-0.20.0
+                                  rust-roxmltree-0.21.1
+                                  rust-rustybuzz-0.20.1
+                                  rust-simd-adler32-0.3.10
+                                  rust-simplecss-0.2.2
+                                  rust-siphasher-1.0.3
+                                  rust-slotmap-1.1.1
+                                  rust-smallvec-1.15.2
+                                  rust-strict-num-0.1.1
+                                  rust-svgtypes-0.16.1
+                                  rust-tiny-skia-0.12.0
+                                  rust-tiny-skia-path-0.12.0
+                                  rust-tinyvec-1.12.0
+                                  rust-tinyvec-macros-0.1.1
+                                  rust-ttf-parser-0.25.1
+                                  rust-unicode-bidi-0.3.18
+                                  rust-unicode-bidi-mirroring-0.4.0
+                                  rust-unicode-ccc-0.4.0
+                                  rust-unicode-properties-0.1.4
+                                  rust-unicode-script-0.5.8
+                                  rust-unicode-vo-0.1.0
+                                  rust-usvg-0.47.0
+                                  rust-version-check-0.9.5
+                                  rust-weezl-0.1.12
+                                  rust-xmlwriter-0.1.0
+                                  rust-zune-core-0.5.1
+                                  rust-zune-jpeg-0.5.15))
                      (rheo =>
                            (list rust-abnf-0.13.0
                                  rust-abnf-core-0.5.0

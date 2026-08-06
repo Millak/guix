@@ -47,6 +47,7 @@
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2026 Rodion Goritskov <rodion@goritskov.com>
+;;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastor-perez@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -145,6 +146,7 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xdisorg)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -2595,6 +2597,25 @@ and engineering community.")
 
 (define-deprecated coin3D-4 coin3d)
 (export coin3D-4)
+
+(define-public resvg
+  (package
+    (name "resvg")
+    (version "0.47.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "resvg" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10cfzm1ldb2vmwcrsdfjdzmb7f4814xh7j746dpsjsi1danq7qcv"))))
+    (build-system cargo-build-system)
+    (inputs (cargo-inputs 'resvg))
+    (home-page "https://github.com/linebender/resvg")
+    (synopsis "SVG rendering library")
+    (description "@code{resvg} is a fast, small and portable library with the
+goal to support the whole SVG specification.")
+    (license (list license:asl2.0 license:expat))))
 
 (define-public skcms
   ;; No tags are available.
