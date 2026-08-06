@@ -15523,6 +15523,82 @@ libraries such as github.com/refraction-networking/utls.")
 DB files retrieved from CURL.")
     (license license:bsd-3)))
 
+(define-public go-github-com-ooni-probe-engine
+  (package
+    (name "go-github-com-ooni-probe-engine")
+    (version "0.29.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ooni/probe-engine")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hx9j38a60m4b5mvaakdd1z9bv8bfjlbvkpl3dxi15gyisnyxz8p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/ooni/probe-engine"
+      #:test-subdirs
+      ;; XXX: Remove when all inputs are packaged.
+      #~(list "pkg/urlx" "pkg/flagx" "pkg/idnax" "pkg/randx" "pkg/humanize"
+              "pkg/optional" "pkg/platform" "pkg/runtimex" "pkg/scrubber"
+              "pkg/strcasex" "pkg/stuninput" "pkg/memoryless"
+              "pkg/legacy/assetsdir" "pkg/legacy/multierror"
+              "pkg/legacy/kvstore2dir" "pkg/legacy/legacymodel"
+              "pkg/shellx/shellxtesting" "pkg/cmd/gardener/internal/sync"
+              "pkg/cmd/gardener/internal/dnsfix"
+              "pkg/cmd/gardener/internal/testlists"
+              "pkg/experiment/webconnectivity/internal")))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-google-shlex
+           go-github-com-pborman-getopt-v2
+           go-github-com-spf13-cobra))
+    (propagated-inputs
+     (list go-filippo-io-age
+           go-github-com-psiphon-labs-psiphon-tunnel-core
+           go-github-com-apex-log
+           go-github-com-armon-go-socks5
+           go-github-com-cloudflare-circl
+           go-github-com-cretz-bine
+           go-github-com-dop251-goja
+           go-github-com-dop251-goja-nodejs
+           go-github-com-google-gopacket
+           go-github-com-google-uuid
+           go-github-com-gorilla-websocket
+           go-github-com-hexops-gotextdiff
+           go-github-com-miekg-dns
+           go-github-com-montanaflynn-stats
+           go-github-com-ooni-oohttp
+           go-github-com-ooni-probe-assets
+           go-github-com-pion-stun
+           go-github-com-pkg-errors
+           go-github-com-quic-go-quic-go-0.52
+           go-github-com-rogpeppe-go-internal
+           go-github-com-schollz-progressbar-v3
+           go-gitlab-com-yawning-obfs4-git
+           go-gitlab-com-yawning-utls-git
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sys
+
+           ;; TODO: Complete packaging.
+           ;; go-github-com-ooni-netem
+           ;; go-github-com-ooni-oocrypto
+           ;; go-github-com-rubenv-sql-migrate
+           #;go-github-com-upper-db-v4))
+    (home-page "https://ooni.org/")
+    (synopsis "OONI Probe Engine")
+    (description
+     "This package provides a semi-automatically exported from
+github.com/ooni/probe-cli.")
+    (license license:gpl3)))
+
 (define-public go-github-com-openfga-go-sdk
   (package
     (name "go-github-com-openfga-go-sdk")
