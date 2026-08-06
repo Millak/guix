@@ -3491,7 +3491,7 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
            ;; wcsset() at line 2895 of file wcs.c.
            wcslib-8.6))
     (propagated-inputs
-     (list python-astropy-iers-data
+     (list python-astropy-iers-data-primary
            python-configobj      ;to replace custom module
            python-numpy
            python-packaging
@@ -3583,29 +3583,31 @@ astronomy and astrophysics.")
     (description "This package provides HEALPix to the Astropy project.")
     (license license:bsd-3)))
 
-(define-public python-astropy-iers-data
-  (package
-    (name "python-astropy-iers-data")
-    (version "0.2026.7.6.1.1.20")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/astropy/astropy-iers-data")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0apwrw8r5bvhmih11ffa8ja6adi66fvjfi9k0w8ilhv2f88b970g"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ; no tests
-    (native-inputs
-     (list python-hatch-vcs
-           python-hatchling))
-    (home-page "https://docs.astropy.org/en/latest/utils/iers.html")
-    (synopsis "IERS Earth Rotation and Leap Second tables for Astropy core")
-    (description
-     "The @code{iers} package provides access to the tables provided by the
+(define-public python-astropy-iers-data-primary
+  ;; XXX: See: <https://codeberg.org/guix/guix/pulls/10344>.
+  (hidden-package
+   (package
+     (name "python-astropy-iers-data-primary")
+     (version "0.2026.7.6.1.1.20")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/astropy/astropy-iers-data")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0apwrw8r5bvhmih11ffa8ja6adi66fvjfi9k0w8ilhv2f88b970g"))))
+     (build-system pyproject-build-system)
+     (arguments
+      (list #:tests? #f)) ; no tests
+     (native-inputs
+      (list python-hatch-vcs
+            python-hatchling))
+     (home-page "https://docs.astropy.org/en/latest/utils/iers.html")
+     (synopsis "IERS Earth Rotation and Leap Second tables for Astropy core")
+     (description
+      "The @code{iers} package provides access to the tables provided by the
 @acronym{International Earth Rotation and Reference Systems, IERS} service, in
 particular the
 @url{https://www.iers.org/IERS/EN/DataProducts/EarthOrientationData/eop.html,
@@ -3615,14 +3617,15 @@ motion values for given times.  The UT1-UTC values are used in
 Dates (astropy.time)} to provide UT1 values, and the polar motions are used in
 @code{astropy.coordinates} to determine Earth orientation for
 celestial-to-terrestrial coordinate transformations.")
-    (license license:bsd-3)))
+     (license license:bsd-3))))
 
-(define-public python-astropy-iers-data-next
+(define-public python-astropy-iers-data
   ;; astropy-iers-data is updated quite often, refresh the main package with
   ;; Astropy or during planed refresh cycle. The latest version is safe to be
-  ;; installed to user's profile.
+  ;; installed to user's profile, and it should come togather with
+  ;; python-astropy.
   (package
-    (inherit python-astropy-iers-data)
+    (inherit python-astropy-iers-data-primary)
     (name "python-astropy-iers-data")
     (version "0.2026.7.13.0.54.2")
     (source
@@ -3633,7 +3636,13 @@ celestial-to-terrestrial coordinate transformations.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sz8378hlh9222k9gsc10ry3651phqxl353k176pd67iq5348bnb"))))))
+        (base32 "1sz8378hlh9222k9gsc10ry3651phqxl353k176pd67iq5348bnb"))))
+    (properties
+     (alist-delete 'hidden?
+                   (package-properties python-astropy-iers-data-primary)))))
+
+;; XXX: Deprecated on <2026-08-06>.
+(define-public python-astropy-iers-data-next python-astropy-iers-data)
 
 ;; A bare minimal package, mainly to use in tests and reduce closure
 ;; size. Tests are left out in the main package to slim down native-inputs.
