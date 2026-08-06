@@ -63,6 +63,36 @@
 ;; Compilers and tooling for the D programming language.
 ;; Note: The GNU D compiler is defined in (gnu packages gcc) instead.
 
+;; Removes references to druntime and standard library source paths that may be
+;; printed in backtraces.
+(define-public (remove-d-include-references-phase compiler)
+  #~(lambda* (#:key outputs #:allow-other-keys)
+      (for-each
+       (lambda (file)
+         ;; Set the last character of the hash to *.
+         (let* ((compiler #$compiler)
+                (char-offset (+ (string-length (%store-directory))
+                                (string-length "/")
+                                %store-hash-string-length
+                                -1))
+                (patched (string-append
+                          (string-take compiler char-offset)
+                          "*"
+                          (string-drop compiler (+ char-offset 1))))
+                (sources-regex (string-append
+                                "[[:alnum:]/_.\\-]*"
+                                "/include/"
+                                "[[:alnum:]/_.\\-]*"
+                                "\\.d"))
+                (command (list "sed" "-i"
+                               (format #f "s,~a\\(~a\\),~a\\1,g"
+                                       compiler sources-regex patched)
+                               file)))
+           ;; XXX: Use sed, as substitute* fails on binary files.
+           (apply invoke command)))
+       (apply append (map find-files
+                          (map cdr outputs))))))
+
 
 ;; LLVM-based D compiler
 
@@ -826,7 +856,10 @@ compiler for the D programming language.")
                             (find-files "." "\\.1$")))
                 (install-file "scripts/bash-completion/dub.bash" bash-comp)
                 (install-file "scripts/fish-completion/dub.fish" fish-comp)
-                (install-file "scripts/zsh-completion/_dub" zsh-comp)))))))
+                (install-file "scripts/zsh-completion/_dub" zsh-comp))))
+          (add-after 'install 'remove-d-include-references
+            #$(remove-d-include-references-phase
+               (this-package-native-input "ldc"))))))
     (inputs
      (list curl))
     (native-inputs
