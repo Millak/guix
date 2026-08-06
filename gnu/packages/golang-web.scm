@@ -15496,6 +15496,33 @@ client and server implementations that are compatible with alternative TLS
 libraries such as github.com/refraction-networking/utls.")
     (license license:bsd-3)))
 
+(define-public go-github-com-ooni-probe-assets
+  (package
+    (name "go-github-com-ooni-probe-assets")
+    (version "0.31.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ooni/probe-assets")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l4np2vxncksamf619qh1kvw0j96widmlzp1wag6q4fikm1bzb78"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/ooni/probe-assets"))
+    (propagated-inputs
+     (list go-github-com-oschwald-maxminddb-golang))
+    (home-page "https://ooni.org/")
+    (synopsis "Assets used by OONI Probe")
+    (description
+     "This package provides generic OONI assets.  It includes @code{MaxMind}
+DB files retrieved from CURL.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-openfga-go-sdk
   (package
     (name "go-github-com-openfga-go-sdk")
