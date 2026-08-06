@@ -2473,9 +2473,25 @@ The supported distributions are:
      (list
       ;; tests: 613 passed, 1543 skipped, 1 xfailed, 1 warning
       #:test-flags
-      #~(list "--benchmark-disable"
-              "--benchmark-skip"
-              "--durations=10")))
+      #~(cons* "--benchmark-disable"
+               "--benchmark-skip"
+               "--durations=10"
+               ;; pandas 3.0 raises instead of returning NaN for idxmax/idxmin on
+               ;; all-NA groups; breaks these tests' pandas comparison, not numbagg
+               ;; itself: https://github.com/numbagg/numbagg/issues/725
+               (map
+                (lambda (test)
+                  (string-append "--deselect=numbagg/test/test_grouped.py::test_"
+                                 test))
+                (list "group_pandas_comparison[float64-group_nanargmax-<lambda>-nanargmax]"
+                      "group_pandas_comparison[float64-group_nanargmin-<lambda>-nanargmin]"
+                      "all_nan_for_label[group_nanargmax-<lambda>-nanargmax]"
+                      "all_nan_for_label[group_nanargmin-<lambda>-nanargmin]"
+                      "single_nan_for_label[group_nanargmax-<lambda>-nanargmax]"
+                      "single_nan_for_label[group_nanargmin-<lambda>-nanargmin]"
+                      "all_values_are_nan[group_nanargmax-<lambda>-nanargmax]"
+                      "all_values_are_nan[group_nanargmin-<lambda>-nanargmin]"
+                      "groupby_empty_numeric_operations[group_nanargmin-<lambda>-nan]")))))
     (native-inputs
      (list python-bottleneck
            python-pandas-minimal        ;to slim down closure size
