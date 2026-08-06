@@ -3248,63 +3248,43 @@ interactive learning.")
     (license license:bsd-3)))
 
 (define-public python-hyperopt
-  ;; XXX: No releases since 2021, see:
-  ;; <https://github.com/hyperopt/hyperopt/issues/943>.
   (package
     (name "python-hyperopt")
-    (version "0.2.7")
+    (version "0.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "hyperopt" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hyperopt/hyperopt")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0jd1ghmm423kbhjvd6pxq92y5vkz25390687fcnd7fshh3jrmy0v"))))
+        (base32 "09qy7v01dy2kk9wpd50ras5m9qzysg6h23lm3yl5ylr8hk7hi8wj"))))
     (build-system pyproject-build-system)
-    ;; tests: 219 passed, 2 skipped, 7 deselected, 35331 warnings
     (arguments
      (list
+      ;; tests: 225 passed, 2 skipped, 1 deselected, 2 warnings
       #:test-flags
       #~(list "-m" "not slow"
               "--ignore=hyperopt/tests/integration/"
-              #$@(map (lambda (test) (string-append "--deselect="
-                                                    "hyperopt/tests/unit/"
-                                                    test))
-                      ;; ImportError: You must install lightgbm and sklearn in
-                      ;; order to use the ATPE algorithm. Please run `pip
-                      ;; install lightgbm scikit-learn` and try again. These
-                      ;; are not built in dependencies of hyperopt.
-                      (list "test_tpe.py::TestSuggestAtpe::test_branin"
-                            "test_tpe.py::TestSuggestAtpe::test_distractor"
-                            "test_tpe.py::TestSuggestAtpe::test_q1lognormal"
-                            "test_tpe.py::TestSuggestAtpe::test_quadratic1"
-                            "test_tpe.py::TestSuggestAtpe::test_twoarms"
-                            "test_atpe_basic.py::test_run_basic_search"
-                            ;; TypeError: unsupported operand type(s) for -:
-                            ;; 'method' and 'int'
-                            "test_rdists.py::TestLogUniform::test_distribution_rvs")))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-tests
-            (lambda _
-              (substitute* "hyperopt/tests/test_base.py"
-                (("assertEquals")
-                 "assertEqual")))))))
+              ;; XXX: Segfaulted test.
+              (string-append "--deselect=hyperopt/tests/unit/"
+                             "test_atpe_basic.py::test_run_basic_search"))))
     (native-inputs
-     (list python-pymongo
-           python-pynose        ;fails more without extra test runner
+     (list python-hatchling
+           python-hatch-vcs
            python-pytest))
     (propagated-inputs
      (list python-cloudpickle
-           python-future
-           python-py4j
            python-networkx
-           python-numpy-1
+           python-numpy
            python-scipy
-           python-setuptools ; For pkg_resources.
-           python-six
            python-tqdm
            ;; [optional]
-           ;; python-lightgbm
+           python-lightgbm
+           python-py4j
+           python-pymongo
+           ;; python-pyspark      ;not packaged yet in Guix
            python-scikit-learn))
     (home-page "https://hyperopt.github.io/hyperopt/")
     (synopsis "Library for hyperparameter optimization")
