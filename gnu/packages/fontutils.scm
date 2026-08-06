@@ -26,6 +26,7 @@
 ;;; Copyright © 2024 Sou Bunnbu (宋文武) <iyzsong@gmail.com>
 ;;; Copyright © 2025, 2026 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Alexey Abramov <levenson@mmer.org>
+;;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,8 +75,10 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-graphics)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages toolkits)
   #:use-module (gnu packages unicode)
@@ -2050,6 +2053,99 @@ UFO3 as described by the UFO font format.")
     (properties
      (alist-delete 'hidden?
                    (package-properties python-fontparts-bootstrap)))))
+
+(define-public nanoemoji
+  (package
+    (name "nanoemoji")
+    (version "0.16.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googlefonts/nanoemoji")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1hc8rhw4c4277qij4633c6zzhr11jfj2hz0snhh2swbq2684ir7w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              ;; These are Python packages which only provide bundled CLI
+              ;; wheels upstream. Guix provides the executables.
+              (substitute* "setup.py"
+                (("\"pngquant-cli>=2.17.0.post5\",")
+                 "")
+                (("\"resvg-cli>=0.22.0.post3\",")
+                 ""))))
+          (add-after 'unpack 'add-package-data
+            (lambda _
+              (substitute* "setup.py"
+                (("package_data=\\{\"picosvg\": \\[\"py\\.typed\"\\]\\},")
+                 (string-append "package_data={"
+                                "\"nanoemoji\": [\"data/*.toml\"],"
+                                "\"picosvg\": [\"py.typed\"]},")))))
+          (add-after 'create-entrypoints 'wrap-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each
+               (lambda (program)
+                 (wrap-program program
+                   (list "PATH" ":" 'prefix
+                         (map (lambda (bin)
+                                (dirname
+                                 (search-input-file
+                                  inputs
+                                  (string-append "bin/" bin))))
+                              '("ninja" "picosvg" "pngquant" "resvg")))))
+               (list
+                (string-append #$output "/bin/nanoemoji")
+                (string-append #$output "/bin/maximum_color")))))
+          ;; The tests insists in setting up the environment in a way that is
+          ;; not compatible with Guix's Python search paths. This lets Guix
+          ;; handle the environment.
+          (add-after 'unpack 'adjust-tests-environment
+            (lambda _
+              (substitute* "tests/test_helper.py"
+                (("return subprocess.run\\(cmd, check=True, env=env\\)")
+                 "return subprocess.run(cmd, check=True)"))
+              (setenv "PYTHONPATH" (string-append (getcwd) "/tests")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (inputs
+     (list bash-minimal
+           pngquant
+           python-absl-py
+           python-fonttools
+           python-lxml
+           python-ninja
+           python-picosvg
+           python-pillow
+           python-regex
+           python-toml
+           python-tomlkit
+           python-ufo2ft
+           python-ufolib2
+           resvg
+           zopfli))
+    (home-page "https://github.com/googlefonts/nanoemoji")
+    (synopsis "Tool to build color fonts")
+    (description
+     "Nanoemoji is a tool for building color fonts.  It provides support for
+the following color formats:
+@itemize
+@item COLRv0
+@item COLRv1
+@item SVG
+@item SBIX
+@item CBDT
+@end itemize")
+    (license license:asl2.0)))
 
 (define-public nototools
   (package
