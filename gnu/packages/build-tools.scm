@@ -31,6 +31,7 @@
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2026 Yan Abu Arab <yanabuarab@gmail.com>
 ;;; Copyright © 2026 Dariqq <dariqq@posteo.net>
+;;; Copyright © 2026 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1716,6 +1717,69 @@ builds as fast as possible.")
 (define-public ninja
   (package/inherit ninja/pinned
     (properties (alist-delete 'hidden? (package-properties ninja/pinned)))))
+
+(define-public python-ninja
+  (package
+    (name "python-ninja")
+    (version "1.13.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/scikit-build/ninja-python-distributions")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qwqvg3nnwigfg4rcl79s52wz11g6s031bfz1kz5snnzibg5gixs"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; This is a stub package, the tests are for exercising 'ninja'.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-packaged-ninja
+            (lambda _
+              ;; Generate stub project specification.  This avoids building
+              ;; the bundled 'ninja' and instead uses the 'ninja' packaged in
+              ;; Guix.
+              (call-with-output-file "pyproject.toml"
+                (lambda (port)
+                  (format port
+                          "[build-system]
+requires = ['flit_core']
+build-backend = 'flit_core.buildapi'
+
+[project]
+name = 'ninja'
+version = ~s
+description = 'Ninja is a small build system with a focus on speed'
+
+[project.scripts]
+ninja = 'ninja:ninja'
+" #$version)))
+              (substitute* "src/ninja/__init__.py"
+                ;; Adjust the Python module version to match the package
+                ;; version.
+                (("from ._version import version as __version__")
+                 (format #f "__version__ = ~s"
+                         #$version))
+                ;; Hard code path to 'ninja' binary.
+                (("BIN_DIR = _get_ninja_dir\\(\\)")
+                 (format #f "BIN_DIR = ~s"
+                         #$(file-append (this-package-input "ninja") "/bin"))))
+              ;; Take 'ninja_syntax.py' from 'ninja' package sources.
+              (copy-file #$(file-append (package-source (this-package-input
+                                                         "ninja"))
+                                        "/misc/ninja_syntax.py")
+                         "src/ninja/ninja_syntax.py"))))))
+    (native-inputs (list python-flit-core))
+    (inputs (list ninja))
+    (home-page "https://github.com/scikit-build/ninja-python-distributions")
+    (synopsis "Python bindings for Ninja")
+    (description "This package provides a Python wheels for
+@uref{https://ninja-build.org, ninja}.")
+    (license license:asl2.0)))
 
 (define-public samurai
   (package
