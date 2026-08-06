@@ -5033,7 +5033,17 @@ Python module with the same interface, but (hopefully) faster.")
         #~(list "--pyargs" "pyts"
                 ;; Most likely a flaky test.
                 "--deselect=preprocessing/transformer.py::\
-pyts.preprocessing.transformer.QuantileTransformer")))
+pyts.preprocessing.transformer.QuantileTransformer")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; See https://github.com/johannfaouzi/pyts/issues/168
+            (add-after 'unpack 'fix-scikit-learn-compat
+              (lambda _
+                (substitute* (list "pyts/metrics/dtw.py"
+                                   "pyts/preprocessing/imputer.py"
+                                   "pyts/preprocessing/transformer.py")
+                  (("force_all_finite=")
+                   "ensure_all_finite=")))))))
       (propagated-inputs
        (list python-joblib
              python-numba
