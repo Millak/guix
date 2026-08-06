@@ -453,6 +453,17 @@ and not propagated to upstream.")
     (base32
      "0fg4x4ikj7f3706bmfvkwq4smxc98qr3cgpm25w48n4ys6wfgadg"))))
 
+(define cmark-gfm-for-telegram-desktop
+  (origin
+   (method git-fetch)
+   (uri (git-reference
+         (url "https://github.com/github/cmark-gfm.git")
+         (commit "587a12bb54d95ac37241377e6ddc93ea0e45439b")))
+   (file-name
+    (git-file-name "cmark-gfm-for-telegram-desktop" %telegram-version))
+   (sha256
+    (base32
+     "1apy9i76rgs0bmgdlpjszv0fpqhlap2s12m68wvnsv8j3fsqc90y"))))
 (define-public tdlib
   (let ((commit "a9966eb3704a3351568c28013fed67d797c17828"))
     (package
