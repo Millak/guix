@@ -944,41 +944,42 @@ from lines)
                 "0vc5ssb3ar02mg2pngmdi1xg4qjaya8332a9mk0sv97x6b4ddy3g"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:make-flags
-       `("DC=ldc2"
-         ,(string-append "prefix=" (assoc-ref %outputs "out"))
-         ,(string-append "libdir=" (assoc-ref %outputs "out") "/lib")
-         "pkgconfigdir=lib/pkgconfig")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             (for-each
-              (lambda (file)
-                (substitute* file (("debug\\(1\\)") "debug")))
-              '("demos/gstreamer/mediaplayer/gst_mediaplayer.d"
-                "demos/gstreamer/mediaplayer/gst_mediaplayer.d"
-                "demos/gtkD/TestWindow/TestImage.d"
-                "demos/gtkD/TestWindow/TestStock.d"
-                "demos/gtkD/TestWindow/TestText.d"
-                "demos/gtkD/TestWindow/TestThemes.d"
-                "demos/gtkD/TestWindow/TestScales.d"
-                "demos/gtkD/TestWindow/TestIdle.d"))))
-         (delete 'configure)
-         (add-before 'build 'patch-makefile
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "GNUmakefile"
-               ;; We do the tests ourselves.
-               (("default-goal: libs test") "default-goal: libs")
-               (("all: libs shared-libs test") "all: libs shared-libs")
-               ;; Work around upstream bug.
-               (("\\$\\(prefix\\)\\/\\$\\(libdir\\)") "$(libdir)"))))
-         (add-before 'check 'pre-check
-           (lambda _
-             (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             (setenv "CC" ,(cc-for-target)))))))
+     (list
+      #:test-target "test"
+      #:make-flags
+      #~(list "DC=ldc2"
+              (string-append "prefix=" (assoc-ref %outputs "out"))
+              (string-append "libdir=" (assoc-ref %outputs "out") "/lib")
+              "pkgconfigdir=lib/pkgconfig")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (for-each
+               (lambda (file)
+                 (substitute* file (("debug\\(1\\)") "debug")))
+               '("demos/gstreamer/mediaplayer/gst_mediaplayer.d"
+                 "demos/gstreamer/mediaplayer/gst_mediaplayer.d"
+                 "demos/gtkD/TestWindow/TestImage.d"
+                 "demos/gtkD/TestWindow/TestStock.d"
+                 "demos/gtkD/TestWindow/TestText.d"
+                 "demos/gtkD/TestWindow/TestThemes.d"
+                 "demos/gtkD/TestWindow/TestScales.d"
+                 "demos/gtkD/TestWindow/TestIdle.d"))))
+          (delete 'configure)
+          (add-before 'build 'patch-makefile
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "GNUmakefile"
+                ;; We do the tests ourselves.
+                (("default-goal: libs test") "default-goal: libs")
+                (("all: libs shared-libs test") "all: libs shared-libs")
+                ;; Work around upstream bug.
+                (("\\$\\(prefix\\)\\/\\$\\(libdir\\)") "$(libdir)"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1")
+              (setenv "CC" #$(cc-for-target)))))))
     (native-inputs
      (list unzip
            ldc
