@@ -42,6 +42,7 @@
   #:use-module (guix i18n)
   #:use-module (guix diagnostics)
 
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (rnrs enums)
@@ -235,6 +236,12 @@ pre-populated content.")
    (string "$HOME/Videos")
    "Default directory for videos."))
 
+(define (home-xdg-user-directories-environment-variables-service config)
+  (map (lambda (field)
+         (cons (format #f "XDG_~:@(~a~)_DIR" (configuration-field-name field))
+               ((configuration-field-getter field) config)))
+       home-xdg-user-directories-configuration-fields))
+
 (define (home-xdg-user-directories-files-service config)
   `(("user-dirs.conf"
      ,(mixed-text-file
@@ -264,6 +271,9 @@ pre-populated content.")
   (service-type (name 'home-xdg-user-directories)
                 (extensions
                  (list (service-extension
+                        home-environment-variables-service-type
+                        home-xdg-user-directories-environment-variables-service)
+                       (service-extension
                         home-xdg-configuration-files-service-type
                         home-xdg-user-directories-files-service)
                        (service-extension
