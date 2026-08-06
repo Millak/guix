@@ -21885,13 +21885,7 @@ Go.")
   (package
     (name
      "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-snowflake-v2")
-    ;; XXX: For compatibility with github.com/pion/transport/v4, switch back
-    ;; to tag when released.
-    (properties '((commit . "18dacf41dca88974be1d568d0bfd75b3f805f13b")
-                  (revision . "0")))
-    (version (git-version "2.11.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "2.14.1")
     (source
      (origin
        (method git-fetch)
@@ -21899,10 +21893,10 @@ Go.")
               (url (string-append
                     "https://gitlab.torproject.org/tpo/anti-censorship"
                     "/pluggable-transports/snowflake"))
-              (commit (assoc-ref properties 'commit))))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xvzvd4ddmvhbscqkc1jsvky2hlvxb8vckcwlng145l7dnq1wl57"))
+        (base32 "0r83j8bqa28rf7vvxd95kqmmbypn0ay6966g8fw7d6wpzy87bx9j"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -21916,11 +21910,7 @@ Go.")
       ;; client and proxy.
       #:skip-build? #t
       #:import-path
-      "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/v2"
-      #:test-flags
-      #~(list "-vet=off"    ;Go@1.24 forces vet, but tests are not ready yet
-              ;; panic: empty transcript [recovered]
-              "-skip" "TestQueuePacketConnWriteToKCP")))
+      "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/v2"))
     (native-inputs
      (list go-github-com-smartystreets-goconvey
            go-github-com-stretchr-testify))
