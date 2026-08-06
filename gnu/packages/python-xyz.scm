@@ -32098,44 +32098,44 @@ facility for filtering those results.")
 (define-public python-safety
   (package
     (name "python-safety")
-    (version "3.6.2")
+    (version "3.8.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "safety" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pyupio/safety")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1gijl0ip1fm1z91p05iqcngcpad3nnvpha0l5iykhbmdlkcqq51f"))))
+        (base32 "00i0jgv89kwbp130ykrfp2754k06agqs9sflsjpafcrf3jx7r9n4"))
+       (patches
+        (list
+         (origin
+           (method url-fetch)
+           (uri (string-append
+                 "https://github.com/pyupio/safety/commit/"
+                 "145a3956007a01e57a8e05d111633c2309ad3374.patch"))
+           (sha256
+            (base32
+             "00bsqhbvvpiycdz01vvxkp02i10rn3h5xaffib20h8yxnvx2xjbj")))))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      #~(list "-k" (string-join
-                    ;; test_announcements fails with AssertionError.
-                    (list "not test_announcements_if_is_not_tty"
-                          ;; Tests below need a network connection.
-                          "test_check_live"
-                          "test_check_live_cached"
-                          "test_get_packages_licenses_without_api_key"
-                          ;; AttributeError: 'PackageInstalledPayload' object
-                          ;; has no attribute 'tool_path'
-                          "test_emit_diff_operations_with_multiple_operations"
-                          "test_emit_diff_operations_with_empty_locations"
-                          "test_emit_diff_operations_with_different_tools"
-                          "test_emit_diff_operations_creates_correct_payload_structure")
-                    " and not "))
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'disable-telemetry
-                     (lambda _
-                       (substitute* (find-files "." "\\.py$")
-                         (("telemetry: bool = True")
-                          "telemetry: bool = False")
-                         (("telemetry=True")
-                          "telemetry=False"))))
-                   (add-before 'check 'set-home ; some tests run mkdir
-                     (lambda _
-                       (setenv "HOME" "/tmp"))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-telemetry
+            (lambda _
+              (substitute* (find-files "." "\\.py$")
+                (("telemetry: bool = True")
+                 "telemetry: bool = False")
+                (("telemetry=True")
+                 "telemetry=False"))))
+          (add-before 'check 'set-home ; some tests run mkdir
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs (list nss-certs-for-test python-hatchling python-pytest))
     (propagated-inputs (list python-authlib
+                             python-certifi
                              python-click
                              python-dparse
                              python-filelock
@@ -32144,15 +32144,16 @@ facility for filtering those results.")
                              python-marshmallow
                              python-nltk
                              python-packaging
-                             python-psutil
                              python-pydantic
-                             python-requests
-                             python-ruamel.yaml
                              python-safety-schemas
                              python-tenacity
                              python-tomli
                              python-tomlkit
-                             python-typer
+                             python-truststore
+                             ;; XXX: python-safety subclasses click.Context
+                             ;; in a way that assumes Typer still delegates
+                             ;; to the standalone python-click package.
+                             python-typer-without-click
                              python-typing-extensions))
     (home-page "https://github.com/pyupio/safety")
     (synopsis "Check installed dependencies for known vulnerabilities")
