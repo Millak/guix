@@ -591,7 +591,7 @@ different data arrays similar to those available in the numdiff software.")
 (define-public opencv
   (package
     (name "opencv")
-    (version "4.13.0")
+    (version "4.14.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -612,7 +612,7 @@ different data arrays similar to those available in the numdiff software.")
                      "zlib-ng")))
               (sha256
                (base32
-                "15w4fqjqv5k1yw70jbjsnlgiky39mqpy05rvmm2fbyjrif4kbgkl"))))
+                "0f3arwiwcdr8xwiph5h1g4lwrw9x64sppwxy4k2pkj3cfl6dnw07"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -803,7 +803,7 @@ different data arrays similar to those available in the numdiff software.")
            (file-name (git-file-name "opencv_extra" version))
            (sha256
             (base32
-             "0jbph7zg4cczpnly9n2xarwk2l1gxlv3644avjny4rkr32kcggdg"))))
+             "04h48bzw8vl3pfw9sd9ap8aafhamgyvx6gmn6d7ik5zblq81msbw"))))
        ("opencv-contrib"
         ,(origin
            (method git-fetch)
@@ -812,7 +812,7 @@ different data arrays similar to those available in the numdiff software.")
            (file-name (git-file-name "opencv_contrib" version))
            (sha256
             (base32
-             "121qkc7g9kwgkv094khxdqqm5bf7ykqplmaadgszcsgxa6ml517i"))))))
+             "1xixy1plh21smbaslgrd0hzjjpf2qbpxdfsyykasnwr9fab3362w"))))))
     (inputs
      (list dlpack
            eigen
