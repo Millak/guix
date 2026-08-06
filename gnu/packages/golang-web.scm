@@ -416,19 +416,6 @@ devices.")
             ;; source only to build for Restic update.
             ;;
             ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - cloud.google.com/go/auth
-            ;; - cloud.google.com/go/auth/oauth2adapt
-            ;; - cloud.google.com/go/compute/metadata
-            ;; - cloud.google.com/go/iam
-            ;; - cloud.google.com/go/kms
-            ;; - cloud.google.com/go/logging
-            ;; - cloud.google.com/go/longrunning
-            ;; - cloud.google.com/go/monitoring
-            ;; - cloud.google.com/go/security
-            ;; - cloud.google.com/go/spanner
-            ;; - cloud.google.com/go/storage
-            ;; - cloud.google.com/go/trace
             (for-each delete-file-recursively
                       (list "auth"
                             "compute/metadata"
@@ -437,6 +424,7 @@ devices.")
                             "logging"
                             "longrunning"
                             "monitoring"
+                            "profiler"
                             "security"
                             "spanner"
                             "storage"
@@ -883,6 +871,61 @@ its service definition.")
     (synopsis "Cloud Monitoring API")
     (description
      "This package provides a Go Client Library for Cloud Monitoring API.")
+    (license license:asl2.0)))
+
+(define-public go-cloud-google-com-go-profiler
+  (package
+    (name "go-cloud-google-com-go-profiler")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/google-cloud-go")
+              (commit (go-version->git-ref version #:subdir "profiler"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pn77lf1d22sqpkia9zccdhdihlqc48lls6y9npc2wrp4lman2kv"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "profiler")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "cloud.google.com/go/profiler"
+      #:unpack-path "cloud.google.com/go"))
+    (native-inputs
+     (list go-github-com-golang-mock))
+    (propagated-inputs
+     (list go-cloud-google-com-go
+           go-cloud-google-com-go-compute-metadata
+           go-cloud-google-com-go-storage
+           go-github-com-google-pprof
+           go-github-com-googleapis-gax-go-v2
+           go-golang-org-x-oauth2
+           go-google-golang-org-api
+           go-google-golang-org-genproto
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+
+           ;; XXX: These packages have to be bootstrapped to break cycle with
+           ;; go-google-golang-org-grpc.
+           go-github-com-envoyproxy-go-control-plane
+           go-github-com-envoyproxy-go-control-plane-envoy))
+    (home-page "https://cloud.google.com/go")
+    (synopsis "Go Agent for Cloud Profiler")
+    (description
+     "Package profiler is a client for the Cloud Profiler service.")
     (license license:asl2.0)))
 
 (define-public go-cloud-google-com-go-security
