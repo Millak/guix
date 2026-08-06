@@ -91,7 +91,7 @@
   #:use-module (guix build-system qt)
   #:use-module (guix utils))
 
-(define %telegram-version "6.3.6")
+(define %telegram-version "6.9.3")
 
 (define libyuv-for-telegram-desktop
   (let ((commit "04821d1e7d60845525e8db55c7bcd41ef5be9406")
@@ -113,7 +113,7 @@
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/desktop-app/cmake_helpers.git")
-          (commit "d927f5b7e6469ecf2200db39111c5a77592eecd6")))
+          (commit "268e9a0330d65ea53c2cfd6aafe9b94f70793cbf")))
     (file-name
      (git-file-name "cmake-helpers-for-telegram-desktop" %telegram-version))
     (patches
@@ -121,55 +121,55 @@
      (search-patches "telegram-desktop-unbundle-cppgir.patch"))
     (sha256
      (base32
-      "11zxlvg6p1irb5hwsawnxd9kx5jz3dsdnb1c8abh30spyprli79g"))))
+      "1da57fbv1lvll6c4hxh1w07bq0vm3p4sm5fzl1rm7lcraqvxmhj0"))))
 
 (define codegen-for-telegram-desktop
   (origin
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/desktop-app/codegen.git")
-          (commit "b7517766603d28138d1c8b2743febe754f6f6986")))
+          (commit "63ec3de7273566aee8c8b11a40c91f3880c217a7")))
     (file-name
      (git-file-name "codegen-for-telegram-desktop" %telegram-version))
     (sha256
      (base32
-      "0hlvbz7rpmiprdjlzwc46wkg6kaj5q2dgmqjila6py5p5yy76srn"))))
+      "0iaa83kxh8hc2np3bd7sp9i3v5ssffxprfwgjmwa7wk24c6b06mw"))))
 
 (define lib-base-for-telegram-desktop
   (origin
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/desktop-app/lib_base.git")
-          (commit "b842e6719abf6fc03f8dc4e550351467a51b75e3")))
+          (commit "4ad72ddc4bee752b996e66170c562a43c546b014")))
     (file-name
      (git-file-name "lib-base-for-telegram-desktop" %telegram-version))
     (sha256
      (base32
-      "10v9mskq60r71dwg2x8sqyv401is15jzj501zbs4x7ybjn1lcmf2"))))
+      "1q220rks87lvpqjsb3vxabgkxir54n473myvif6aj1k8dwa637sr"))))
 
 (define lib-crl-for-telegram-desktop
   (origin
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/desktop-app/lib_crl.git")
-          (commit "c1d6b0273653095b10b4d0f4f7c30b614b690fd5")))
+          (commit "5b34c118543c6d4c0a1d7fdc7133f9d26fd529e2")))
     (file-name
      (git-file-name "lib-crl-for-telegram-desktop" %telegram-version))
     (sha256
      (base32
-      "1sxn3qccsfbx1289z0fdrb4cggs16a8r75ic6wi81c6lnkrdi3wl"))))
+      "1ahmnkgxhr4s0gqd9h6m63nw2d4cya7109wm40nm35jd8v8nnfqz"))))
 
 (define lib-lottie-for-telegram-desktop
   (origin
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/desktop-app/lib_lottie.git")
-          (commit "4fc3ac0ea52f271cc9b108481f83d56fd76ab0ed")))
+          (commit "49d67cf66d3573cd71a3228af47a4ac59b64fc90")))
     (file-name
      (git-file-name "lib-lottie-for-telegram-desktop" %telegram-version))
     (sha256
      (base32
-      "0q8k2i00kg1l4ivaarhyfaf1jpjv71pynjrg3cmgwama7g0n7zj4"))))
+      "1b7f9pf745s1c2s5rlvb600ndmmyarzfnrzs23arz99ywid64b7d"))))
 
 (define lib-qr-for-telegram-desktop
   (origin
@@ -188,24 +188,24 @@
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/desktop-app/lib_rpl.git")
-          (commit "f4eb411668573d32fc430e27260728be0376ea6c")))
+          (commit "c57cccffb01d85570decd7fccb88419c9a682e63")))
     (file-name
      (git-file-name "lib-rpl-for-telegram-desktop" %telegram-version))
     (sha256
      (base32
-      "1njhm42b5w6f7hkf5aiczli5jir5s2lkbyhn4lv3y2jd13frfvaw"))))
+      "0s9sza56fsrcd366ii6isc3w27ii2n9k48drn2q4vrq4jy1hy9ln"))))
 
 (define lib-spellcheck-for-telegram-desktop
   (origin
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/desktop-app/lib_spellcheck.git")
-          (commit "62c586bbbf7f8a6ba87b00f7eb73d41dcf7b12c5")))
+          (commit "0ebd04ece297494394be409e73ce276b24565175")))
     (file-name
      (git-file-name "lib-spellcheck-for-telegram-desktop" %telegram-version))
     (sha256
      (base32
-      "138arl1b33kgrhidg857bbdnx3q9cmf2d96r3npfpvnlcs30s7lv"))))
+      "16aj9hgg6r840alcy4plx71wcradpd2xh1y5jn5aj692al1q1vzc"))))
 
 (define lib-storage-for-telegram-desktop
   (origin
@@ -224,14 +224,14 @@
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/desktop-app/lib_tl.git")
-          (commit "783052514ea6bd9ed0b7ddb4e5adb8c0077e5b9a")))
+          (commit "665160f91565bab00ecab65df3a17438e91e44ec")))
     (file-name
      (git-file-name "lib-tl-for-telegram-desktop" %telegram-version))
     (patches
      (search-patches "lib-tl-for-telegram-memcpy.patch"))
     (sha256
      (base32
-      "18vfjwv5h0j8a7lw1qcrsl16kbnnfjhgb7ay6ibi433kbddbdw5l"))))
+      "07dgy93vx0b5q7a879fs30farvdibyllj5hygpzqnqij5hbsc7dn"))))
 
 (define lib-translate-for-telegram-desktop
   (origin
@@ -250,48 +250,48 @@
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/desktop-app/lib_ui.git")
-          (commit "258a928d83c9b69ee2e5ab65a2e1aa4f384d7a46")))
+          (commit "742640cb626f05350d6dd73b043bbf470daff5ec")))
     (file-name
      (git-file-name "lib-ui-for-telegram-desktop" %telegram-version))
     (sha256
      (base32
-      "1m1bljv77cghfazvclnbf14cy9vsjz40v2kmrimz3mkaxaqmnmpr"))))
+      "1vi7fkjbil13mnbqfsschqiynfca7vl7whil258abpvm5bnb23px"))))
 
 (define lib-webrtc-for-telegram-desktop
   (origin
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/desktop-app/lib_webrtc.git")
-          (commit "792c7a5b4846c489753deb5b87f67b3d11b399cf")))
+          (commit "52636e86eaa493de670daf71959d000b281bd153")))
     (file-name
      (git-file-name "lib-webrtc-for-telegram-desktop" %telegram-version))
     (sha256
      (base32
-      "140jkpgnld5byjypld439qs9nblh31p147a7rm86r1cmhm5zhljv"))))
+      "1y50q6b33r506qn4pw0sn6cmxhwjcxdb79qrw7laz45l1iw1zhm0"))))
 
 (define lib-webview-for-telegram-desktop
   (origin
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/desktop-app/lib_webview.git")
-          (commit "c998e31342f0a9c1dc2192dee35df7f9dff4bed4")))
+          (commit "b1011367be1c6effe15e0cd3ed53b5ffc33e84c3")))
     (file-name
      (git-file-name "lib-webview-for-telegram-desktop" %telegram-version))
     (sha256
      (base32
-      "0nag7bsv9z41wjdpsd4zir32akb64ixfxln0j4351wmz3d7y17ix"))))
+      "027wsjd5vnlvbhl9ja2vg5jbzhvc0b631j8280iclf63xss1hiv0"))))
 
 (define tgcalls-for-telegram-desktop
   (origin
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/TelegramMessenger/tgcalls.git")
-          (commit "24876ebca7da10f92dc972225734337f9e793054")))
+          (commit "616810f1539e3f5ee917fff42557c5eeb8b4be40")))
     (file-name
      (git-file-name "tgcalls-for-telegram-desktop" %telegram-version))
     (sha256
      (base32
-      "1v33nsggz8fk3bnky9di5ggi8jc96y8yfrxf3pjvw239qfi3m9lz"))))
+      "0cn5v1b3m4zfvkym0ai5rfw9j9v2k0an0bg7dif8qf6ckvi8vns9"))))
 
 (define-public webrtc-for-telegram-desktop
   (let ((commit "5c5c71258777d0196dbb3a09cc37d2f56ead28ab")
@@ -553,7 +553,7 @@ support for high performance Telegram Bot creation.")
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "06jxr0cj7lg12jm545gilq4qwzb87s2p4cp8lqn2b91cpsbf3dfx"))
+        (base32 "1hypd3faz6lii8ba7ysg7a2hq77xb7mvwk89wg17z8a6jn1764q2"))
        (patches
         (search-patches
          ;; Make it compatible with GCC 11.
@@ -621,12 +621,16 @@ support for high performance Telegram Bot creation.")
                       ("Telegram/lib_spellcheck" #$lib-spellcheck-for-telegram-desktop)
                       ("Telegram/lib_storage" #$lib-storage-for-telegram-desktop)
                       ("Telegram/lib_tl" #$lib-tl-for-telegram-desktop)
+                      ("Telegram/lib_translate" #$lib-translate-for-telegram-desktop)
                       ("Telegram/lib_ui" #$lib-ui-for-telegram-desktop)
                       ("Telegram/lib_webrtc" #$lib-webrtc-for-telegram-desktop)
                       ("Telegram/lib_webview" #$lib-webview-for-telegram-desktop)
                       ("Telegram/ThirdParty/cld3" #$cld3-for-telegram-desktop)
+                      ("Telegram/ThirdParty/cmark-gfm" #$cmark-gfm-for-telegram-desktop)
                       ("Telegram/ThirdParty/libprisma" #$libprisma-for-telegram-desktop)
-                      ("Telegram/ThirdParty/tgcalls" #$tgcalls-for-telegram-desktop)))))
+                      ("Telegram/ThirdParty/MicroTeX" #$microtex-for-telegram-desktop)
+                      ("Telegram/ThirdParty/tgcalls" #$tgcalls-for-telegram-desktop)
+                      ("Telegram/ThirdParty/TooManyCooks" #$toomanycooks-for-telegram-desktop)))))
                (add-after 'unpack-additional-sources 'patch-gir-ignore-paths
                  (lambda _
                    (substitute* "cmake/external/glib/generate_cppgir.cmake"
@@ -656,9 +660,10 @@ support for high performance Telegram Bot creation.")
            `(,gtk+ "bin")
            pkg-config
            python-wrapper
+           qtshadertools
            xdg-desktop-portal))
     (inputs
-     (list abseil-cpp-cxxstd17
+     (list abseil-cpp-20250127
            alsa-lib
            boost
            c++-gsl
@@ -675,7 +680,6 @@ support for high performance Telegram Bot creation.")
            kcoreaddons
            kimageformats
            libavif
-           libdispatch
            libexpected
            libjpeg-turbo
            libjxl
