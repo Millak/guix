@@ -40185,6 +40185,43 @@ Python versions that don't natively support them.")
 3.6+ type hints.")
     (license license:expat)))
 
+;; Starting from 0.26.0, Typer vendors its own fork of Click (typer._click) and no longer
+;; recognises subclasses of the real click.Context as the injected CLI
+;; context, breaking some packages at import time.  Keep until all dependents migrated.
+(define-public python-typer-without-click
+  (hidden-package
+   (package
+     (inherit python-typer)
+     (version "0.25.1")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/fastapi/typer")
+               (commit version)))
+        (file-name (git-file-name "python-typer" version))
+        (sha256
+         (base32 "0z6k7qpd49wqvxl3q5jwq2kl0y3w8dxwxmp42qbkbvwixfqxg2qw"))))
+     (propagated-inputs
+      (list python-click
+            python-typing-extensions
+            python-annotated-doc
+            python-rich
+            python-shellingham))
+     (arguments
+      (substitute-keyword-arguments arguments
+        ((#:test-flags flags #~'())
+         ;; Ignore tests that fail due to Click error-message wording.
+         ;; These happen because Click version is more recent than expected.
+         #~(cons*
+            (string-append "--deselect=tests/test_suggest_commands.py"
+                           "::test_typo_suggestion_disabled")
+            (string-append "--ignore=tests/test_tutorial/test_commands/"
+                           "test_callback/test_tutorial001.py")
+            (string-append "--ignore-glob=tests/test_tutorial/"
+                           "test_parameter_types/test_bool/test_tutorial0*.py")
+            #$flags)))))))
+
 (define-public python-types-aiofiles
   (package
     (name "python-types-aiofiles")
