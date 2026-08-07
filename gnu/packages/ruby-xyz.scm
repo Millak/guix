@@ -12186,12 +12186,6 @@ patterns.")
     (home-page "https://github.com/ruby-concurrency/concurrent-ruby")
     (license license:expat)))
 
-;;; The 'gem' is called 'concurrent-ruby'; reversing its name was confusing
-;;; and failed to be picked by the gem importer (which led to this newer
-;;; package).
-(define-deprecated-package ruby-concurrent
-  ruby-concurrent-ruby)
-
 (define-public ruby-concurrent-ruby-ext
   (package
     (inherit ruby-concurrent-ruby)
