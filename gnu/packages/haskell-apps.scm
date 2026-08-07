@@ -588,7 +588,8 @@ unwanted suggestions, and to add your own custom suggestions.")
        (method url-fetch)
        (uri (hackage-uri "hoogle" version))
        (sha256
-        (base32 "08z32d87vqzhapb2vw21h25jb2g74csxlpvd8f54xl91k3ijs3wx"))))
+        (base32 "08z32d87vqzhapb2vw21h25jb2g74csxlpvd8f54xl91k3ijs3wx"))
+       (patches (search-patches "hoogle-crypton-connection-0.4.X.patch"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "hoogle")))
     (inputs (list ghc-quickcheck
@@ -599,6 +600,7 @@ unwanted suggestions, and to add your own custom suggestions.")
                   ghc-conduit
                   ghc-conduit-extra
                   ghc-crypton-connection
+                  ghc-data-default-class
                   ghc-extra
                   ghc-foundation
                   ghc-old-locale
