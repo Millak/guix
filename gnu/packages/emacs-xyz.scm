@@ -48539,11 +48539,12 @@ buffer.")
     (license license:gpl3+)))
 
 (define-public emacs-setup
-  ;; No tagged releases; this commit reflects the version bump on the source
-  (let ((commit "5a69dab9bb79d8bebaaa9bc14795cbaafd1c2423"))
+  ;; No public release. Version string taken from source code.
+  (let ((commit "de9b86c6f29cf9888e911924ffc4ce47312320c3")
+        (revision "1"))
     (package
       (name "emacs-setup")
-      (version "1.5.0")
+      (version (git-version "1.5.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -48553,7 +48554,7 @@ buffer.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1pa5k36pkgvp8als0ngxgy17x0gja9j26qydw3wwawkslssl5kbx"))))
+           "15gz5fq79c87f0ylxi4myc63mk4x1pnsn4x1jdiy1mszn6q8mdwl"))))
       (build-system emacs-build-system)
       (arguments
        (list
