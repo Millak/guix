@@ -372,7 +372,10 @@ See also: megacmd, the official tool set by MEGA.")
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "./onedrive" "--version")))))))
+               (invoke "./onedrive" "--version"))))
+         (add-after 'install 'remove-d-include-references
+           #$(remove-d-include-references-phase
+              (this-package-input "ldc"))))))
     (native-inputs
      (list pkg-config))
     (inputs
