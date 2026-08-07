@@ -629,6 +629,7 @@ static void performOp(bool trusted, unsigned int clientVersion,
                 string name = readString(from);
                 string value = readString(from);
                 if (name == "build-timeout" || name == "build-max-silent-time"
+                    || name == "build-max-log-size"
                     || name == "build-max-jobs" || name == "build-cores"
                     || name == "build-repeat"
                     || name == "multiplexed-build-output")
