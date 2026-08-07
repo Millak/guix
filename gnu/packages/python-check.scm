@@ -1036,26 +1036,27 @@ tools with great error reporting.")
 (define-public python-doc8
   (package
     (name "python-doc8")
-    (version "1.1.2")
+    (version "2.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "doc8" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/PyCQA/doc8")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "162b6lff5pcd4sp6sfm5fds8kllnx7ipzbyvi3irgk718h0z698j"))))
+        (base32 "1vwk28lflh1p4fwz8yczsnndmmyvfpbn6jq5lxmwrcch73is5h09"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-docutils
+     (list python-docutils-0.19
            python-pygments
            python-restructuredtext-lint
-           python-stevedore
-           python-tomli))
-    (home-page "https://launchpad.net/doc8")
+           python-stevedore))
+    (home-page "https://github.com/PyCQA/doc8")
     (synopsis "Style checker for Sphinx (or other) RST documentation")
     (description
      "Doc8 is an opinionated style checker for reStructured Text and plain
