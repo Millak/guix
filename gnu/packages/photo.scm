@@ -61,6 +61,7 @@
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages file)
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages geo)
@@ -835,7 +836,7 @@ photographic equipment.")
 (define-public darktable
   (package
     (name "darktable")
-    (version "5.4.1")
+    (version "5.6.0")
     (source
      (origin
        (method url-fetch)
@@ -843,7 +844,7 @@ photographic equipment.")
              "https://github.com/darktable-org/darktable/releases/"
              "download/release-" version "/darktable-" version ".tar.xz"))
        (sha256
-        (base32 "1r25z2aw3sw31hk0fhvfjlzggnvf0w6lbj1imhpwva1qlf47rp5g"))))
+        (base32 "1r06w1ghdhhlc6yv815511p8hfpphr3lai49wymzr2mg8ww6sz8m"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -921,6 +922,7 @@ photographic equipment.")
            openjpeg                  ;optional, for JPEG2000 export
            osm-gps-map               ;optional, for geotagging view
            portmidi                  ;optional, for hardware MIDI input devices
+           potrace
            pugixml
            python-jsonschema
            sdl2
