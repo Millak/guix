@@ -11190,7 +11190,7 @@ infrastructure required by Selenium.")
           (add-after 'chdir 'relax-requirements
             (lambda _
               (substitute* "pyproject.toml"
-                (("\"(typing_extensions|trio)~=.*\"," _ target)
+                (("\"(typing_extensions|trio|urllib3.*)~=.*\"," _ target)
                  (format #f "~s," target))))))))
     (propagated-inputs (list python-certifi
                              python-trio
