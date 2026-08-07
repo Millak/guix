@@ -1464,7 +1464,10 @@ while also supporting native scrolling and @command{tmux} control mode
             (lambda _
               (substitute* "meson_post_install.py"
                 (("gtk-update-icon-cache") (which "true"))
-                (("update-desktop-database") (which "true"))))))))
+                (("update-desktop-database") (which "true")))))
+          (add-after 'install 'remove-d-include-references
+            #$(remove-d-include-references-phase
+               (this-package-native-input "ldc"))))))
     (inputs (list dbus
                   dconf
                   gettext-minimal
