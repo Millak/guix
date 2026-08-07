@@ -1036,7 +1036,10 @@ from lines)
             (lambda _
               (system "Xvfb :1 &")
               (setenv "DISPLAY" ":1")
-              (setenv "CC" #$(cc-for-target)))))))
+              (setenv "CC" #$(cc-for-target))))
+          (add-after 'install 'remove-d-include-references
+            #$(remove-d-include-references-phase
+               (this-package-native-input "ldc"))))))
     (native-inputs
      (list unzip
            ldc
