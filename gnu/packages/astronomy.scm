@@ -7268,7 +7268,7 @@ files.")
      (list python-astropy
            python-matplotlib
            python-numpy
-           python-pandas
+           python-pandas-2
            python-requests
            python-scipy
            ;; [optional]
