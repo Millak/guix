@@ -15282,11 +15282,13 @@ email.")
     (license license:gpl3+)))
 
 (define-public emacs-org-msg
-  ;; No git tags.  The commit below corresponds to the release of version 4.0.
-  (let ((commit "60e22e446325a9b3387396459d98be7c1c52579d"))
+  ;; Version 4.0 released 2022, no longer works with current emacs/mu4e.
+  ;; Update to latest commit as of 2026-08-07.
+  (let ((commit "7b45df759340f3e388e84f497052b7cf3a41698c")
+        (revision "1"))
     (package
       (name "emacs-org-msg")
-      (version "4.0")
+      (version (git-version "4.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -15295,8 +15297,13 @@ email.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "077g7gvn1k6i2x4m2kd3dkrznc89f5a5pd916wsmpy703pv0aca5"))))
+          (base32 "1h44pc7l4racn3rhc705rslwsnk7hmkad3508qdd2raadpj452ja"))))
       (build-system emacs-build-system)
+      (arguments (list #:test-command
+                       #~(list "emacs" "-Q" "--batch"
+                               "-l" "org-msg.el"
+                               "-l" "org-msg-test.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
       (propagated-inputs
        (list emacs-htmlize))
       (home-page "https://github.com/jeremy-compostella/org-msg")
