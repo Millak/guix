@@ -14,7 +14,7 @@
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021, 2023-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2026 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>

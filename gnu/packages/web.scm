@@ -58,7 +58,7 @@
 ;;; Copyright © 2022 cage <cage-dev@twistfold.it>
 ;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022, 2026 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
@@ -9988,6 +9988,128 @@ reports the total number of hits recorded, bytes transferred, response time,
 concurrency, and return status.")
     ;; GPLv3+ with OpenSSL linking exception.
     (license license:gpl3+)))
+
+(define-public hurl
+  (package
+    (name "hurl")
+    (version "8.0.1")
+    (source
+     (origin
+       ;; The crates.io tarball does not include the hurlfmt crate.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Orange-OpenSource/hurl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wsw9khfznc638qzp8zx2zwgnrg5d160ky5gnslwm9frz3p5hp0d"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-install-paths ''("packages/hurl" "packages/hurlfmt")
+      #:cargo-test-flags
+      '(list
+        ;; Excluding doctests since rust-1.93 does not support them.
+        "--lib" "--bins" "--tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-rust-version
+            (lambda _
+              ;; Upstream requires the latest stable Rust.
+              (substitute* '("packages/hurl/Cargo.toml"
+                             "packages/hurlfmt/Cargo.toml")
+                (("rust-version = \"1.95.0\"")
+                 "rust-version = \"1.93.0\""))))
+          (add-before 'check 'start-test-server
+            (lambda _
+              ;; The integration tests expect a Flask test server
+              ;; listening on port 8000.
+              (with-directory-excursion "integration/hurl"
+                (mkdir-p "build")
+                (spawn "python3"
+                       '("python3" "server.py"
+                         "--host" "127.0.0.1" "--port" "8000")))
+              ;; Wait for the server to come up.
+              (let loop ((attempts 30))
+                (unless (false-if-exception
+                         (let ((s (socket PF_INET SOCK_STREAM 0)))
+                           (connect s AF_INET
+                                    (inet-pton AF_INET "127.0.0.1") 8000)
+                           (close-port s)))
+                  (when (zero? attempts)
+                    (error "test server did not start"))
+                  (sleep 1)
+                  (loop (1- attempts))))))
+          (add-before 'install 'generate-man-pages
+            (lambda _
+              ;; Build the man pages from their Markdown sources.
+              (for-each (lambda (name)
+                          (with-output-to-file (string-append
+                                                "docs/manual/" name ".1")
+                            (lambda ()
+                              (invoke "python3" "bin/docs/build_man.py"
+                                      (string-append
+                                       "docs/manual/" name ".md")))))
+                        '("hurl" "hurlfmt"))))
+          (add-before 'install 'generate-completions
+            (lambda _
+              ;; Generate the shell completions from the option spec
+              ;; files, using upstream's script.  This runs only the
+              ;; completion part of generate_all.py, since the other
+              ;; parts rewrite the source tree.
+              (setenv "PYTHONPATH" "bin/spec/options")
+              (invoke "python3" "-c"
+                      "import generate_all as g
+for name in ('hurl', 'hurlfmt'):
+    g.generate_completion_files(name, g.get_option_files('docs/spec/options/' + name))")))
+          (add-after 'install 'install-man-pages
+            (lambda _
+              (let ((man1 (string-append #$output "/share/man/man1")))
+                (for-each (lambda (page)
+                            (install-file page man1))
+                          '("docs/manual/hurl.1" "docs/manual/hurlfmt.1")))))
+          (add-after 'install 'install-completions
+            (lambda _
+              (let ((bash (string-append #$output
+                                         "/share/bash-completion/completions"))
+                    (fish (string-append #$output
+                                         "/share/fish/vendor_completions.d"))
+                    (zsh (string-append #$output "/share/zsh/site-functions")))
+                (for-each (lambda (name)
+                            ;; Bash completion files must be named after
+                            ;; the command, without the .bash extension.
+                            (mkdir-p bash)
+                            (copy-file (string-append "completions/"
+                                                      name ".bash")
+                                       (string-append bash "/" name))
+                            (install-file (string-append "completions/"
+                                                         name ".fish")
+                                          fish)
+                            (install-file (string-append "completions/_"
+                                                         name)
+                                          zsh))
+                          '("hurl" "hurlfmt"))))))))
+    (native-inputs
+     (list clang
+           pkg-config
+           python
+           python-flask
+           python-waitress))
+    (inputs
+     (cons* curl
+            libxml2
+            openssl
+            zlib
+            (cargo-inputs 'hurl)))
+    (home-page "https://hurl.dev")
+    (synopsis "Run and test HTTP requests")
+    (description
+     "Hurl is a command line tool that runs HTTP requests defined in a plain
+text format.  It can chain requests, capture values and evaluate queries on
+headers and body response.  This package also provides @command{hurlfmt},
+a formatter and linter for Hurl files.")
+    (license license:asl2.0)))
 
 (define-public gmnisrv
   (package
