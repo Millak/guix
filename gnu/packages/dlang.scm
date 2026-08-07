@@ -1074,7 +1074,10 @@ from lines)
                    (replace 'install
                      (lambda _
                        (install-file "libd_demangle.so"
-                                     (string-append #$output "/lib")))))))
+                                     (string-append #$output "/lib"))))
+                   (add-after 'install 'remove-d-include-references
+                     #$(remove-d-include-references-phase
+                        (this-package-native-input "dmd"))))))
     (native-inputs (list dmd))
     (home-page "https://github.com/lievenhey/d_demangler")
     (synopsis "D symbol demangling library")
