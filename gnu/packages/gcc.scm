@@ -1090,14 +1090,14 @@ It also includes runtime support libraries for these languages.")
 (define-public gcc-16
   (package
     (inherit gcc-15)
-    (version "16.1.0")
+    (version "16.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gcc/gcc-"
                                   version "/gcc-" version ".tar.xz"))
               (sha256
                (base32
-                "0y8ga5md6wdi0nzbfaizklfx6kcbfjyml6nnn3rsz5rk9kcv9vsh"))
+                "0gjw120wr4l1gvn2gz4x0x2w1zbzyc00da8sfdq34wvzb4lqwwz6"))
               (patches (search-patches "gcc-12-strmov-store-file-names.patch"
                                        "gcc-5.0-libvtv-runpath.patch"))
               (modules '((guix build utils)))
