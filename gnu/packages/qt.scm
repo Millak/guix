@@ -5832,6 +5832,13 @@ Version: ~a~%"  name #$version)))))
     (arguments
      (list
       #:tests? #f
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '((guix build cmake-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils)
+                  (ice-9 match)
+                  (srfi srfi-1))
       #:configure-flags
       #~(list "-DBUILD_TESTS=FALSE"
               (string-append "-DPYTHON_EXECUTABLE="
@@ -5840,30 +5847,37 @@ Version: ~a~%"  name #$version)))))
       #~(modify-phases %standard-phases
           (add-after 'unpack 'go-to-source-dir
             (lambda _ (chdir "sources/pyside6")))
+          ;; .dist-info in site-packages is necessary for sanity-check.
+          (add-after 'install 'install-distinfo
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-directory-excursion (py:site-packages inputs outputs)
+                (let ((dir (string-append "PySide6-" #$version ".dist-info")))
+                  (mkdir-p dir)
+                  (call-with-output-file (string-append dir "/METADATA")
+                    (lambda (port)
+                      (format port "\
+Metadata-Version: 1.1
+Name: PySide6
+Version: ~a
+Requires-Dist: shiboken6==~a~%" #$version #$version)))))))
           (add-after 'go-to-source-dir 'set-rpath
             (lambda _
               (substitute* "CMakeLists.txt"
                 (("CMAKE_INSTALL_RPATH")
                  (string-append "CMAKE_INSTALL_RPATH " #$output "/lib")))))
           (add-after 'go-to-source-dir 'fix-qt-module-detection
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "cmake/PySideHelpers.cmake"
                 (("\\(\"\\$\\{found_basepath\\}\" GREATER \"0\"\\)")
                  "true"))
-              (let ((dirs (map (lambda (path)
-                                 (string-append path "/include/qt6"))
-                               (list
-                                #$@(map (lambda (name)
-                                          (this-package-input name))
-                                        '("qtdeclarative"
-                                          "qtmultimedia"
-                                          "qtnetworkauth"
-                                          "qtpositioning"
-                                          "qtsvg"
-                                          "qttools"
-                                          "qtwebchannel"
-                                          "qtwebengine"
-                                          "qtwebsockets"))))))
+              (define (search-input-directories dir)
+                (filter-map
+                 (match-lambda
+                   ((name . directory)
+                    (and (directory-exists? directory)
+                         (string-append directory "/" dir))))
+                 inputs))
+              (let ((dirs (search-input-directories "include/qt6")))
                 (substitute* "cmake/Macros/PySideModules.cmake"
                   (("set\\(shiboken_include_dir_list " all)
                    (string-append all (string-join dirs ";") " ")))
