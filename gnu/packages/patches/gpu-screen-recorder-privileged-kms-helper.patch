@@ -1,0 +1,24 @@
+Look for the capability-bearing gsr-kms-server installed by Guix System before
+using the unprivileged copy next to gpu-screen-recorder.
+
+When the privileged helper is absent, retain the existing lookup and pkexec
+fallback.
+
+diff --git a/kms/client/kms_client.c b/kms/client/kms_client.c
+--- a/kms/client/kms_client.c
++++ b/kms/client/kms_client.c
+@@ -255,6 +255,14 @@ int gsr_kms_client_init(gsr_kms_client *self, const char *card_path) {
+         return -1;
+     }
+ 
++#ifdef __linux__
++    const char *privileged_server_filepath = "/run/privileged/bin/gsr-kms-server";
++    if(access(privileged_server_filepath, X_OK) == 0) {
++        snprintf(server_filepath, sizeof(server_filepath), "%s",
++            privileged_server_filepath);
++    }
++#endif
++
+     if(access(server_filepath, F_OK) != 0) {
+         fprintf(stderr, "gsr info: gsr_kms_client_init: gsr-kms-server is not installed in the same directory as gpu-screen-recorder (%s not found), looking for gsr-kms-server in PATH instead\n", server_filepath);
+         if(!find_program_in_path("gsr-kms-server", server_filepath, sizeof(server_filepath)) || access(server_filepath, F_OK) != 0) {

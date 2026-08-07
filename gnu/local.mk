@@ -1550,6 +1550,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gpaste-fix-paths.patch			\
   %D%/packages/patches/gpm-glibc-2.26.patch			\
   %D%/packages/patches/gpodder-disable-updater.patch		\
+  %D%/packages/patches/gpu-screen-recorder-privileged-kms-helper.patch \
   %D%/packages/patches/grantlee-fix-i586-precision.patch	\
   %D%/packages/patches/grantlee-register-metaenumvariable.patch	\
   %D%/packages/patches/graphite2-non-linux.patch		\

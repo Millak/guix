@@ -2561,6 +2561,79 @@ combination of audio, video, subtitles, metadata, scalable graphics, encrypted
 media, 2D/3D graphics and ECMAScript.")
       (license license:lgpl2.1+))))
 
+(define-public gpu-screen-recorder
+  (package
+    (name "gpu-screen-recorder")
+    (version "5.15.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://repo.dec05eba.com/gpu-screen-recorder")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1kiqvbs9fbgm5gxlxfybnyfmd0chgi7gzm6wr1cpafnvg1x203dm"))
+       (patches
+        (search-patches
+         "gpu-screen-recorder-privileged-kms-helper.patch"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-Dsystemd=false"
+              "-Dcapabilities=false"
+              "-Dnvidia_suspend_fix=false")
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-runtime-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("src/egl.c"
+                             "src/codec_query/vulkan.c"
+                             "src/capture/v4l2.c"
+                             "src/image_writer.c")
+                (("dlopen\\(\"([^\"]*)\"," match library)
+                 (format #f "dlopen(~s,"
+                         (search-input-file
+                          inputs (string-append "lib/" library)))))
+
+              (substitute* "kms/client/kms_client.c"
+                (("const char \\*args\\[\\] = \\{ \"pkexec\",")
+                 (format #f "const char *args[] = { ~s,"
+                         (search-input-file inputs "bin/pkexec")))))))))
+    (native-inputs
+     (list pkg-config
+           wayland))
+    (inputs
+     (list dbus
+           ffmpeg
+           libcap
+           libdrm
+           libglvnd
+           libjpeg-turbo
+           libva
+           libx11
+           libxcomposite
+           libxdamage
+           libxfixes
+           libxrandr
+           pipewire
+           polkit
+           pulseaudio
+           vulkan-headers
+           vulkan-loader
+           wayland))
+    (home-page "https://git.dec05eba.com/gpu-screen-recorder/about")
+    (synopsis "GPU-accelerated screen recorder")
+    (description
+     "GPU Screen Recorder records monitors, windows, regions, and applications
+using hardware-accelerated video encoding.  It supports X11 and Wayland,
+desktop-portal capture, application audio capture, screenshots, streaming, and
+replay buffering.")
+    (license license:gpl3)))
+
 (define-public vlc
   (package
     (name "vlc")
