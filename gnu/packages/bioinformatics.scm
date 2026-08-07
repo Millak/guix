@@ -6042,54 +6042,65 @@ subgroups.")
 (define-public python-muon
   (package
     (name "python-muon")
-    (version "0.1.7")
+    ;; 0.1.7 (2024-10-30); the latest changes provide compatibility with NumPy
+    ;; 2 and Pandas 3.
+    (properties '((commit . "05d3bf11f55ccc656e2f10a1466e185b0302aa52")
+                  (revision . "0")))
+    (version (git-version "0.1.7"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/scverse/muon")
-             (commit (string-append "v" version))))
+              (url "https://github.com/scverse/muon")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0lahc3r0sqqkifibjm090dpkwila3jfh967hldw2nm8wgj81ak82"))))
+        (base32 "14hhz3150m0vg4iwr73b0cxkw45jmn3z94wxs75q64dj5f62ghpw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 32 passed, 4 deselected, 333 warnings
       #:test-flags
-      '(list "-k" (string-join
-                   ;; Even providing a random seed, scipy.sparse.rand produces
-                   ;; inconsistent results across scipy versions.
-                   (list"not test_tfidf"
-                        ;; Tests fails with error: FileNotFoundError: [Errno
-                        ;; 2] No such file or directory.
-                        "test_filter_obs_with_obsm_obsp"
-                        "test_filter_var_with_varm_varp")
-                   " and not "))
+      #~(list
+         ;; Failed: assert -1.6939765212353823 == -1.719391 ± 1.7e-06
+         "--deselect=tests/test_muon_tools.py::TestMOFA2D::test_multi_group"
+         ;; Network access is required.
+         (string-append "--deselect=tests/test_muon_preproc.py"
+                        "::TestInPlaceFiltering"
+                        "::test_filter_obs_with_obsm_obsp")
+         (string-append "--deselect=tests/test_muon_preproc.py"
+                        "::TestInPlaceFiltering"
+                        "::test_filter_var_with_varm_varp"))
       #:phases
-      '(modify-phases %standard-phases
-         ;; Numba needs a writable dir to cache functions.
-         (add-before 'build 'set-numba-cache-dir
-           (lambda _
-             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
-    (propagated-inputs (list python-anndata
-                             python-h5py
-                             python-matplotlib
-                             python-mofapy2
-                             python-mudata
-                             python-numba
-                             python-numpy-1
-                             python-pandas
-                             python-protobuf
-                             python-pybedtools
-                             python-pysam
-                             python-scanpy
-                             python-scikit-learn
-                             python-seaborn
-                             python-tqdm
-                             python-umap-learn))
-    (native-inputs (list python-flit-core
-                         python-pytest))
+      #~(modify-phases %standard-phases
+          ;; Numba needs a writable dir to cache functions.
+          (add-before 'build 'set-numba-cache-dir
+            (lambda _
+              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-flit-core
+           python-pytest))
+    (propagated-inputs
+     (list python-anndata
+           python-h5py
+           python-matplotlib
+           python-mudata
+           python-numba
+           python-numpy
+           python-pandas
+           python-protobuf
+           python-scanpy
+           python-scikit-learn
+           python-seaborn
+           python-tqdm
+           python-umap-learn
+           ;; [optional]
+           python-mofapy2
+           python-pybedtools
+           python-pysam))
     (home-page "https://github.com/scverse/muon")
     (synopsis "Multimodal omics analysis framework")
     (description "muon is a multimodal omics Python framework.")
