@@ -83,6 +83,7 @@
   #:use-module (gnu packages enlightenment)
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages rust-apps)
+  #:use-module (gnu packages video)
   #:use-module (guix deprecation)
   #:use-module (guix i18n)
   #:use-module (guix records)
@@ -137,6 +138,10 @@
             kanata-configuration?
             kanata-configuration-kanata
             kanata-configuration-keymaps
+
+            gpu-screen-recorder-configuration
+            gpu-screen-recorder-configuration?
+            gpu-screen-recorder-service-type
 
             geoclue-application
             geoclue-configuration
@@ -1194,6 +1199,45 @@ device specification documentation}."))
     (description
      "Run the @command{kanata} daemon, which allows customizing and extending
 the functionalities of different keyboards.")))
+
+
+;;;
+;;; GPU Screen Recorder.
+;;;
+
+(define-record-type* <gpu-screen-recorder-configuration>
+  gpu-screen-recorder-configuration
+  make-gpu-screen-recorder-configuration
+  gpu-screen-recorder-configuration?
+  (package
+    gpu-screen-recorder-configuration-package
+    (default gpu-screen-recorder)))
+
+(define (gpu-screen-recorder-privileged-programs config)
+  (list
+   (privileged-program
+     (program
+      (file-append
+       (gpu-screen-recorder-configuration-package config)
+       "/bin/gsr-kms-server"))
+     (capabilities "cap_sys_admin=ep"))))
+
+(define gpu-screen-recorder-service-type
+  (service-type
+    (name 'gpu-screen-recorder)
+    (extensions
+     (list
+      (service-extension
+       profile-service-type
+       (compose list gpu-screen-recorder-configuration-package))
+      (service-extension
+       privileged-program-service-type
+       gpu-screen-recorder-privileged-programs)))
+    (default-value (gpu-screen-recorder-configuration))
+    (description
+     "Install GPU Screen Recorder and grant its @command{gsr-kms-server}
+helper the @code{CAP_SYS_ADMIN} capability required for direct KMS
+capture.")))
 
 
 ;;;

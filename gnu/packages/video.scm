@@ -2631,7 +2631,9 @@ media, 2D/3D graphics and ECMAScript.")
      "GPU Screen Recorder records monitors, windows, regions, and applications
 using hardware-accelerated video encoding.  It supports X11 and Wayland,
 desktop-portal capture, application audio capture, screenshots, streaming, and
-replay buffering.")
+replay buffering.  On Guix System, @code{gpu-screen-recorder-service-type} can
+be used to grant the KMS helper the capability required for direct monitor
+capture.")
     (license license:gpl3)))
 
 (define-public vlc
