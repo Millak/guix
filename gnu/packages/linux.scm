@@ -3996,7 +3996,7 @@ Linux-based operating system.")
 (define-public alsa-utils
   (package
     (name "alsa-utils")
-    (version "1.2.11")
+    (version "1.2.16")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4004,7 +4004,7 @@ Linux-based operating system.")
                     name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "19r8qi6b7sd2p1mhxfqrp18wrgjw5s6rp5ygimb1w59zi0xcmils"))))
+                "0b13yb7jirxwkfvynq1vd5slpv0wa9bk2fcf31g1v6klx3arj8q9"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -4021,8 +4021,7 @@ Linux-based operating system.")
                 (("\\$\\(MKDIR_P\\) .*ASOUND_STATE_DIR.*")
                  "true\n")))))))
     (native-inputs
-     (list docbook-xml-4.2 docbook-xsl xmlto
-           gettext-minimal))
+     (list docbook-xml-4.2 docbook-xsl gettext-minimal pkg-config xmlto))
     (inputs
      (list libsamplerate ncurses alsa-lib))
     (home-page "http://www.alsa-project.org/")
