@@ -3942,7 +3942,7 @@ topology configuration files that can be used for specific audio hardware.")
 (define-public alsa-lib
   (package
     (name "alsa-lib")
-    (version "1.2.16")
+    (version "1.2.16.1")
     (source
      (origin
        (method git-fetch)
@@ -3951,7 +3951,7 @@ topology configuration files that can be used for specific audio hardware.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0khz38l87zm81q7dllv8gr4j9bj9c1jj69vnw03i3xvichjhwwxn"))))
+        (base32 "06r315gq2ps11w72bh3hpljpqjwx2avba3lxccmqpwl9njfcvfmc"))))
     (build-system gnu-build-system)
     (arguments
      (list
