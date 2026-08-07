@@ -953,7 +953,10 @@ needed.")
                                     pkgs))))
                   (install-sub-packages sub-packages-out out-bin)
                   (install-sub-packages sub-packages-internal internal-bin)
-                  (copy-recursively "man" out-man))))))))
+                  (copy-recursively "man" out-man))))
+            (add-after 'install 'remove-d-include-references
+              #$(remove-d-include-references-phase
+                 (this-package-native-input "ldc")))))))
     (native-inputs
      (list ldc
            dub))
