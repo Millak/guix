@@ -3344,13 +3344,13 @@ provides the following commands:
 (define-public ansible
   (package
     (name "ansible")
-    (version "14.0.0")
+    (version "14.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ansible" version))
        (sha256
-        (base32 "10y0dy3xg33v2l4lfl3whyqldkf74q4jv88jj8697ghygd3vkk83"))))
+        (base32 "098hji4slkli5hj015p7xwbbxycrmlxvc317fl0npli7j0wii3qw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
