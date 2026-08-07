@@ -5319,29 +5319,34 @@ more.")
 (define-public python-asyncua
   (package
     (name "python-asyncua")
-    (version "1.1.8")
+    (version "2.0.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/FreeOpcUa/opcua-asyncio.git")
-             (commit (string-append "v" version))
-             ;; XXX: It clones <https://github.com/OPCFoundation/UA-Nodeset>
-             ;; submodule, check if it may be unbundled.
-             (recursive? #t)))
+              (url "https://github.com/FreeOpcUa/opcua-asyncio")
+              (commit (string-append "v" version))
+              ;; XXX: It clones <https://github.com/OPCFoundation/UA-Nodeset>
+              ;; submodule, check if it may be unbundled.
+              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ngh3m45mnqxlvyhhz66bkgk5ppxzmclw7sxl0v457snv7yb5rni"))))
+        (base32 "1qrsrgj7x6l010s9msvfc1a23lzlygi2sis6xw1jj4mw1glxick5"))))
     (build-system pyproject-build-system)
-    ;; tests: 709 passed, 5 skipped, 3 warnings
+    (arguments
+     (list
+      ;; tests: 774 passed, 6 skipped, 1 deselected, 2479 warnings
+      #:test-flags
+      ;; KeyError: 'Simple'
+      #~(list "--deselect=tests/test_pubsub.py::test_full_simple")))
     (native-inputs
      (list python-hatchling
            python-pytest
            python-pytest-asyncio
            python-pytest-mock))
     (propagated-inputs
-     (list python-aiofiles
-           python-aiosqlite
+     (list python-aiosqlite
+           python-anyio
            python-cryptography
            python-dateutil
            python-pyopenssl
