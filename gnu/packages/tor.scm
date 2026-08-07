@@ -411,6 +411,13 @@ OnionShare.")
      (substitute-keyword-arguments arguments
        ((#:phases phases)
         #~(modify-phases #$phases
+            (add-after 'relax-requirements 'relax-more-requirements
+              (lambda _
+                (substitute* "desktop/pyproject.toml"
+                  (("^PySide6 = .*")
+                   (format #f "PySide6 = \"^~a\"~%"
+                           #$(package-version
+                              (this-package-input "python-pyside-6")))))))
             (add-after 'unpack 'absolutize
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "desktop/onionshare/tab/mode/history.py"
