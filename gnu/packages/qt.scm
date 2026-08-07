@@ -5746,6 +5746,11 @@ color-related widgets.")
      (list
       #:tests? #f
       ;; FIXME: Building tests fails
+      #:imported-modules (append %cmake-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '((guix build cmake-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
       #:configure-flags #~(list
                            ;; The RUNPATH of shibokenmodule contains the entry
                            ;; in build directory instead of install directory.
@@ -5757,17 +5762,29 @@ color-related widgets.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-shiboken-dir-only
             (lambda _ (chdir "sources/shiboken6")))
-          (add-before 'configure 'make-files-writable-and-update-timestamps
+          ;; .dist-info in site-packages is necessary for sanity-check.
+          (add-after 'install 'install-distinfo
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-directory-excursion (py:site-packages inputs outputs)
+                (for-each
+                 (lambda (name)
+                   (let ((dir (string-append name "-" #$version ".dist-info")))
+                     (mkdir-p dir)
+                     (call-with-output-file (string-append dir "/METADATA")
+                       (lambda (port)
+                         (format port "\
+Metadata-Version: 1.1
+Name: ~a
+Version: ~a~%"  name #$version)))))
+                 (list "shiboken6" "shiboken6_generator")))))
+          ;; The build scripts need to modify some files in
+          ;; the read-only source directory.
+          (add-before 'configure 'make-files-writable
             (lambda _
-              ;; The build scripts need to modify some files in
-              ;; the read-only source directory, and also attempts
-              ;; to create Zip files which fails because the Zip
-              ;; format does not support timestamps before 1980.
-              (let ((circa-1980 (* 10 366 24 60 60)))
-                (for-each (lambda (file)
-                            (make-file-writable file)
-                            (utime file circa-1980 circa-1980))
-                          (find-files ".")))))
+              (for-each make-file-writable (find-files "."))))
+          ;; the Zip format does not support timestamps before 1980.
+          (add-after 'make-files-writable 'ensure-no-mtimes-pre-1980
+            (assoc-ref py:%standard-phases 'ensure-no-mtimes-pre-1980))
           (add-before 'configure 'set-build-env
             (lambda _
               (let ((llvm #$(this-package-input "clang")))
