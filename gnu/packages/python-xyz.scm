@@ -759,6 +759,32 @@ Bash-style brace expansion.  It can generate strings from patterns like
 line drawing algorithm}.")
     (license license:expat)))
 
+(define-public python-cachey
+  (package
+    (name "python-cachey")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dask/cachey/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12rkn4cvdwlpjhlmyxi1glvn1nzlx147xs96h9k6pbgbwyxaci75"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-heapdict))
+    (home-page "https://github.com/dask/cachey/")
+    (synopsis "Caching based on computation time and storage space")
+    (description
+     "This package provides a Python module for caching mindful of
+computation/storage costs.")
+    (license license:bsd-3)))
+
 (define-public python-catalogus
   (package
     (name "python-catalogus")
