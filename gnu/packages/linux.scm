@@ -3892,7 +3892,7 @@ intercept and print the system calls executed by the program.")
 (define-public alsa-ucm-conf
   (package
     (name "alsa-ucm-conf")
-    (version "1.2.15.3")
+    (version "1.2.16.1")
     (source
      (origin
        (method git-fetch)
@@ -3901,7 +3901,7 @@ intercept and print the system calls executed by the program.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mlvzvz7npdvprlq1ff9pg3awsdvv3czv7wchfm96jflhks3pnsm"))))
+        (base32 "1dgr8dlxzm4cx4sbp6mbb9ihharyym1qmb8zy9zq171h33k4061w"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
