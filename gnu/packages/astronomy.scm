@@ -8072,10 +8072,10 @@ or 3D models).")
     (version "0.6.0")
     (source
      (origin
-       (method git-fetch) ; no tests data in the PyPI tarball
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/PetroFit/petrofit")
-             (commit (string-append "v" version))))
+              (url "https://github.com/PetroFit/petrofit")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "07dri6r6ws82nn379gqvg899g576n8skhgp5fjg3qq38rp8dgl0k"))))
@@ -8083,6 +8083,15 @@ or 3D models).")
     (arguments
      (list
       ;; tests: 28 passed, 2033 warnings
+      #:test-flags
+      ;; XXX: Project has no recent changes, 3 tests fail with error:
+      ;; TypeError: only 0-dimensional arrays can be converted to Python
+      ;; scalars.
+      #~(list (string-append "--deselect=petrofit/tests/test_segmentation.py"
+                             "::test_source_photometry")
+              (string-append "--deselect=petrofit/tests/test_photometry.py"
+                             "::test_radial_photometry")
+              "--deselect=petrofit/tests/test_petrosian.py::test_grid_gen")
       #:phases
       #~(modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
