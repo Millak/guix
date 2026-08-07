@@ -731,6 +731,7 @@ definitions."
                             max-build-jobs
                             timeout
                             max-silent-time
+                            max-log-size
                             (offload? #t)
                             (use-build-hook? *unspecified*) ;deprecated
                             (build-verbosity 0)
@@ -801,6 +802,10 @@ definitions."
                  ,@(if max-silent-time
                        `(("build-max-silent-time"
                           . ,(number->string max-silent-time)))
+                       '())
+                 ,@(if max-log-size
+                       `(("build-max-log-size"
+                          . ,(number->string max-log-size)))
                        '())
                  ,@(if max-build-jobs
                        `(("build-max-jobs"
