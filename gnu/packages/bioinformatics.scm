@@ -15630,7 +15630,10 @@ using high-throughput sc-RNAseq data.")
                 (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
                   (mkdir-p bin)
                   (copy-file (string-append "bin/sambamba-" #$base-version)
-                             (string-append bin "/sambamba"))))))))
+                             (string-append bin "/sambamba")))))
+            (add-after 'install 'remove-d-include-references
+              #$(remove-d-include-references-phase
+                 (this-package-input "ldc"))))))
       (inputs
        (list ldc lz4 zlib))
       (native-inputs
