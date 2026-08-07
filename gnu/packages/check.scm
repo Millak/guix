@@ -3364,7 +3364,7 @@ with a focus on working with embedded toolchains.")
 (define-public libfaketime
   (package
     (name "libfaketime")
-    (version "0.9.10")
+    (version "0.9.12")
     (home-page "https://github.com/wolfcw/libfaketime")
     (source (origin
               (method git-fetch)
@@ -3373,7 +3373,7 @@ with a focus on working with embedded toolchains.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "112l7x2gv4f47hpffpb8djfwvgrs8w5h9s266h1fshi1c916x10d"))
+                "0xm7hnhlj0xqag8sxnlmmfqgrxxg5i510yhlpl1n5s2wp9ppvphx"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -3386,14 +3386,6 @@ with a focus on working with embedded toolchains.")
               (substitute* "src/faketime.c"
                 (("\"date\"")
                  (format #f "~s" (search-input-file inputs "bin/date"))))))
-
-          #$@(if (target-32bit?)
-                 #~((add-after 'unpack 'apply-32bit-patch
-                      (lambda _
-                        (let ((patch #$(local-file
-                                  (search-patch "libfaketime-32bit.patch"))))
-                          (invoke "patch" "--force" "-p1" "-i" patch)))))
-                 #~())
 
           (replace 'configure
             (lambda* (#:key outputs #:allow-other-keys)
