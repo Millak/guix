@@ -3240,13 +3240,13 @@ specified directories.")
 (define-public ansible-core
   (package
     (name "ansible-core")
-    (version "2.21.0")
+    (version "2.21.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ansible_core" version))
        (sha256
-        (base32 "0m7lhxdahzm5bkx5hiiia4ykzj55m1s9mhyff9r1r7w4s7id1k18"))))
+        (base32 "0w6wv6k39d5xn60l5m4cbzwwgpsyz8mg2ab0y5dgn6ys5rk9w4y6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3300,7 +3300,6 @@ specified directories.")
            python-mock
            python-pycryptodome
            python-pytest
-           python-pytest-forked
            python-pytest-mock
            python-pytest-xdist
            python-pytz
