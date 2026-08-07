@@ -32,7 +32,7 @@
           (package/inherit guix
             ;; Replace with non-minimal Graphviz for PDF support.
             (native-inputs (modify-inputs (package-native-inputs guix)
-                             (replace "graphviz"
+                             (replace "graphviz-minimal"
                                (specification->package "graphviz")))))))
 
        ;; For convenience.  You can have it used in a containerized
