@@ -27,6 +27,7 @@
   #:use-module (guix records)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages hardware)
   #:use-module (gnu packages linux)
   #:use-module (gnu services)
   #:use-module (gnu services base)
@@ -44,7 +45,13 @@
             thermald-service-type
 
             powertop-configuration
-            powertop-service-type))
+            powertop-service-type
+
+            hd-idle-disk
+            hd-idle-disk?
+            hd-idle-configuration
+            hd-idle-configuration?
+            hd-idle-service-type))
 
 ;;;
 ;;; power-profiles-daemon
@@ -579,3 +586,137 @@ prevent overheating.")))
    (default-value (powertop-configuration))
    (description "Tune power-related kernel parameters to reduce energy
  consumption.")))
+
+
+
+;;;
+;;; hd-idle
+;;;
+;;; Spins down hard disks that have been idle for a while.
+
+(define (hd-idle-command-type? val)
+  (memq val '(scsi ata)))
+(define-maybe/no-serialization hd-idle-command-type)
+
+(define (hd-idle-power-condition? val)
+  (and (exact-integer? val) (<= 0 val 15)))
+(define-maybe/no-serialization hd-idle-power-condition)
+
+(define (hd-idle-symlink-policy? val)
+  (and (exact-integer? val) (<= 0 val 1)))
+
+(define-configuration/no-serialization hd-idle-disk
+  (name
+   string
+   "The device to configure, either a name under @file{/dev} such as
+@code{\"sda\"}, or an absolute file name such as
+@code{\"/dev/disk/by-uuid/1234-5678\"}.")
+
+  (idle-time
+   maybe-non-negative-integer
+   "Number of seconds this disk must be idle before it is spun down.")
+
+  (command-type
+   maybe-hd-idle-command-type
+   "The command used to spin this disk down, either @code{'scsi} or
+@code{'ata}.")
+
+  (power-condition
+   maybe-hd-idle-power-condition
+   "The power condition to use for this disk."))
+
+(define list-of-hd-idle-disks?
+  (list-of hd-idle-disk?))
+
+(define-configuration/no-serialization hd-idle-configuration
+  (idle-time
+   (non-negative-integer 600)
+   "Number of seconds a disk must be idle before it is spun down.  A value
+of @code{0} disables spinning down.")
+
+  (command-type
+   (hd-idle-command-type 'scsi)
+   "The command used to spin disks down, either @code{'scsi} or @code{'ata}.")
+
+  (power-condition
+   (hd-idle-power-condition 0)
+   "The power condition passed to the @acronym{SCSI, Small Computer System
+Interface} @code{START STOP UNIT} command, an integer between @code{0} and
+@code{15}.  It is ignored when @code{command-type} is @code{'ata}.")
+
+  (symlink-policy
+   (hd-idle-symlink-policy 0)
+   "How to resolve disk names that are symbolic links.  @code{0} resolves
+them once at startup, whereas with @code{1} symlinks are also resolved on
+runtime until success.")
+
+  (log-file
+   maybe-string
+   "A file name to which hd-idle logs disk spin-up and spin-down events, for
+instance @code{\"/var/log/hd-idle.log\"}.")
+
+  (ignore-spin-down-detection?
+   (boolean #f)
+   "Whether to skip detection of disks that were spun down by some other
+means.")
+
+  (debug?
+   (boolean #f)
+   "Whether to log the disk statistics that hd-idle reads on each poll.")
+
+  (disks
+   (list-of-hd-idle-disks '())
+   "A list of @code{hd-idle-disk} records describing per-disk overrides.
+Disks that are not listed here are still managed, using the values above.")
+
+  (hd-idle
+   (file-like hd-idle)
+   "The hd-idle package to use."))
+
+(define (hd-idle-disk-arguments disk)
+  (match-record disk <hd-idle-disk>
+                (name idle-time command-type power-condition)
+    `("-a" ,name
+      ,@(if (maybe-value-set? idle-time)
+            (list "-i" (number->string idle-time))
+            '())
+      ,@(if (maybe-value-set? command-type)
+            (list "-c" (symbol->string command-type))
+            '())
+      ,@(if (maybe-value-set? power-condition)
+            (list "-p" (number->string power-condition))
+            '()))))
+
+(define (hd-idle-arguments config)
+  (match-record config <hd-idle-configuration>
+                (idle-time command-type power-condition symlink-policy
+                 log-file ignore-spin-down-detection? debug? disks)
+    `("-i" ,(number->string idle-time)
+      "-c" ,(symbol->string command-type)
+      "-p" ,(number->string power-condition)
+      "-s" ,(number->string symlink-policy)
+      ,@(if (maybe-value-set? log-file) (list "-l" log-file) '())
+      ,@(if ignore-spin-down-detection? '("-I") '())
+      ,@(if debug? '("-d") '())
+      ,@(append-map hd-idle-disk-arguments disks))))
+
+(define (hd-idle-shepherd-service config)
+  (list
+   (shepherd-service
+    (provision '(hd-idle))
+    (requirement '(user-processes udev))
+    (documentation "Spin down idle hard disks.")
+    (start #~(make-forkexec-constructor
+              (list #$(file-append (hd-idle-configuration-hd-idle config)
+                                   "/bin/hd-idle")
+                    #$@(hd-idle-arguments config))))
+    (stop #~(make-kill-destructor)))))
+
+(define hd-idle-service-type
+  (service-type
+   (name 'hd-idle)
+   (extensions (list (service-extension shepherd-root-service-type
+                                        hd-idle-shepherd-service)))
+   (default-value (hd-idle-configuration))
+   (description "Run @command{hd-idle}, which spins down hard disks that have
+not been accessed for a configurable period of time.")))

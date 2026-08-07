@@ -41289,6 +41289,101 @@ packages linux)} module
 @end table
 @end deftp
 
+@cindex hd-idle
+@cindex spinning down hard disks
+@subsubheading hd-idle
+
+The @code{(gnu services pm)} module also provides a service definition
+for @uref{https://github.com/adelolmo/hd-idle, hd-idle}, a daemon that
+spins down hard disks after a period of inactivity.  It is primarily
+useful for external @acronym{USB, Universal Serial Bus} disks, which
+usually do not support setting an idle timer with @command{hdparm}.
+
+@defvar hd-idle-service-type
+The service type for hd-idle.  Its value is an
+@code{hd-idle-configuration} record, as in this example, which spins
+down all disks after ten minutes of inactivity, except for
+@file{/dev/sda}, which is spun down after two minutes:
+
+@lisp
+(service hd-idle-service-type
+         (hd-idle-configuration
+          (idle-time 600)
+          (disks (list (hd-idle-disk
+                        (name "sda")
+                        (idle-time 120))))))
+@end lisp
+@end defvar
+
+@deftp {Data Type} hd-idle-configuration
+Data type representing the configuration of @code{hd-idle-service-type}.
+
+@table @asis
+@item @code{idle-time} (default: @code{600})
+Number of seconds a disk must be idle before it is spun down.  A value
+of @code{0} disables spinning down.
+
+To have hd-idle only work with the explicitly configured disks, set this
+to @code{0}.
+
+@item @code{command-type} (default: @code{'scsi})
+The command used to spin disks down, either @code{'scsi} or @code{'ata}.
+
+@item @code{power-condition} (default: @code{0})
+The power condition passed to the @acronym{SCSI, Small Computer System
+Interface} @code{START STOP UNIT} command, an integer between @code{0}
+and @code{15}.  It is ignored when @code{command-type} is @code{'ata}.
+
+@item @code{symlink-policy} (default: @code{0})
+How to resolve disk names that are symbolic links.  @code{0} resolves
+them once at startup, whereas with @code{1} symlinks are also resolved
+on runtime until success.
+
+@item @code{log-file} (default: unset)
+A file name to which hd-idle logs disk spin-up and spin-down events, for
+instance @code{"/var/log/hd-idle.log"}.  When left unset, no log file is
+written.
+
+@item @code{ignore-spin-down-detection?} (default: @code{#f})
+Whether to skip detection of disks that were spun down by some other
+means.
+
+@item @code{debug?} (default: @code{#f})
+Whether to log the disk statistics that hd-idle reads on each poll.
+
+@item @code{disks} (default: @code{'()})
+A list of @code{hd-idle-disk} records (see below) describing per-disk
+overrides.  Disks that are not listed here are still managed, using the
+values above.
+
+@item @code{hd-idle} (default: @code{hd-idle})
+The hd-idle package to use.
+@end table
+@end deftp
+
+@deftp {Data Type} hd-idle-disk
+Data type overriding the configuration above for a single disk.  Fields
+left unset default to the corresponding top-level
+@code{hd-idle-configuration} value.
+
+@table @asis
+@item @code{name}
+The device to configure, either a name under @file{/dev} such as
+@code{"sda"}, or an absolute file name such as
+@code{"/dev/disk/by-uuid/1234-5678"}.
+
+@item @code{idle-time} (default: unset)
+Number of seconds this disk must be idle before it is spun down.
+
+@item @code{command-type} (default: unset)
+The command used to spin this disk down, either @code{'scsi} or
+@code{'ata}.
+
+@item @code{power-condition} (default: unset)
+The power condition to use for this disk.
+@end table
+@end deftp
+
 The @code{(gnu services power)} module provides a service definition for
 @uref{http://www.apcupsd.org/, apcupsd}, a utility to interact with
 @acronym{APC, APC by Schneider Electric or formerly American Power
