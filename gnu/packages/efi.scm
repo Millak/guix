@@ -68,6 +68,20 @@ using the GNU toolchain.")
     ;; Distribution is allowed only when accepting all those licenses.
     (license (list license:bsd-2 license:bsd-3 license:bsd-4 license:expat))))
 
+(define-public gnu-efi-3
+  (package/inherit gnu-efi
+    (name (package-name gnu-efi))
+    (version "3.0.19")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ncroxon/gnu-efi")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05jip30fcc49hfzjp1q63i73l8xkrskbdz1gjswdk6ypaa18mn66"))))))
+
 (define-public efi-analyzer
   ;; No public releases; this is the master tip since 2026-01-28.
   (let ((commit "8b6527eec8fa6d66d5208983cf6a906aad464c6d")
