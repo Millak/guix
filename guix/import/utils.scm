@@ -785,14 +785,23 @@ separated by PRED."
 (define* (find-version versions #:optional version partial?)
   "Find VERSION amongst VERSIONS.  When VERSION is not provided, return the
 latest version.  When PARTIAL? is #t, VERSION is treated as a version prefix;
-e.g. finding version \"0.1\" may return \"0.1.8\" if it is the newest \"0.1\"
-prefixed version found in VERSIONS.  Return #f when VERSION could not be
-found."
+e.g. finding version \"0.1\" may return \"0.1.8\", if it is the newest \"0.1\"
+prefixed version found in VERSIONS.  In PARTIAL? mode, if the VERSION string
+provided is longer than the longest version in VERSIONS, then it is truncated
+to that length.  Return #f when VERSION could not be found."
   (let ((versions (sort versions version>?)))
     (cond
+     ((null? versions)
+      #f)
      ((and version partial?)            ;partial version
-      (find (cut version-prefix? version <>) versions))
-     ((and version (not partial?))      ;exact version
+      (let* ((max-version-length (apply max (map string-length versions)))
+             (version-length (string-length version))
+             (version (if (> version-length max-version-length)
+                          (string-drop-right version (- version-length
+                                                        max-version-length))
+                          version)))
+        (find (cut version-prefix? version <>) versions)))
+     (version                           ;exact version
       (find (cut string=? version <>) versions))
      ((not (null? versions))            ;latest version
       (first versions))

@@ -281,6 +281,31 @@ Differences are hard to spot, e.g. in CLOS vs. GOOPS."))
   (map spdx-string->license
        '("GPL-3.0-oR-LaTeR" "AGPL-3.0" "GPL-2.0+")))
 
+
+;;;
+;;; find-version.
+;;;
+
+(test-equal "find-version, empty versions list"
+  #f
+  (find-version '()))
+
+(test-equal "find-version, latest"
+  "6.11.1"
+  (find-version '("6.9" "6.8" "6.5" "6.11.1" "6.10.3")))
+
+(test-equal "find-version, partial, exact"
+  "6.10.3"
+  (find-version '("6.9" "6.8" "6.5" "6.11.1" "6.10.3") "6.10.3" #t))
+
+(test-equal "find-version, partial, under-specified"
+  "6.10.3"
+  (find-version '("6.9" "6.8" "6.5" "6.11.1" "6.10.3") "6.10" #t))
+
+(test-equal "find-version, partial, over-specified"
+  "6.10"
+  (find-version '("6.9" "6.8" "6.5" "6.11" "6.10") "6.10.3" #t))
+
 ;;;
 ;;; default-git-error
 ;;;
