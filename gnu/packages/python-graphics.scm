@@ -79,17 +79,20 @@
 (define-public python-asyncgui
   (package
     (name "python-asyncgui")
-    (version "0.8.0")
+    (version "0.11.1")
     (source
      (origin
-       (method git-fetch)               ; no tests in PyPI release
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/asyncgui/asyncgui")
-             (commit version)))
+              (url "https://github.com/asyncgui/asyncgui")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b074msb580wify2wag3swm3s21x23kckxpw974y6dibsmrfr5n3"))))
+        (base32 "0fcd4gshygwcfpmxb3sas9awp15rv3m3m1gcxdbf2vrbdchdqhgf"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:build-backend "poetry.core.masonry.api"))
     (native-inputs
      (list python-poetry-core
            python-pytest))
