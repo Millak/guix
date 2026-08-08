@@ -4266,7 +4266,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
 (define-public opendht
     (package
       (name "opendht")
-      (version "3.7.0rc8")             ;jami depends on this RC
+      (version "4.3.1")             ;jami depends on this RC
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -4275,7 +4275,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0ysfwrqjh6mpy6zycmd3ljsd63ap8i4psgnr25vp0xqbjrfz6rf6"))))
+                  "1cg5l3ikl44di0vvzfj5vkccxs4m6nvzh75pdxghc1jlna8rgarf"))))
       (outputs '("out" "python" "tools" "debug"))
       (build-system meson-build-system)
       (arguments
@@ -4303,7 +4303,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                 ;; At least the 'test_send_json' has been seen to fail
                 ;; non-deterministically, but it seems hard to reproducible that
                 ;; failure.
-                (substitute* "tests/httptester.cpp"
+                (substitute* "tests/test_http.cpp"
                   (("std::chrono::seconds\\(10)")
                    "std::chrono::seconds(30)"))))
             (add-after 'install 'move-tools
