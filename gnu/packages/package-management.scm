@@ -1995,12 +1995,12 @@ foundation for the Mamba package manager.")
     (native-inputs
      (append
       (list capnproto-clang
-            clang-22
+            clang
             cmake-minimal
             coreutils-minimal ;For tests.
             jq
-            lld-22
-            llvm-22
+            lld
+            llvm
             pkg-config
             rust
             `(,rust "cargo")
