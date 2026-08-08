@@ -3044,7 +3044,6 @@ server driver works.")
     (inputs
      (list libx11
            libxext
-           llvm-13
            mesa ; for xatracker
            xorg-server))
     (native-inputs
