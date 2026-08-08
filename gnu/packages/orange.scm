@@ -210,13 +210,13 @@ GUI based workflow.  It is primarily used in the Orange framework.")
            python-louvain
            python-matplotlib
            python-networkx
-           python-numpy
+           python-numpy-1
            python-openpyxl
            python-opentsne
            python-orange-canvas-core
            python-orange-widget-base
            python-packaging
-           python-pandas
+           python-pandas-2
            python-pygments
            python-pyqt-6
            python-pyqtgraph
