@@ -3049,97 +3049,70 @@ servers supporting the protocol.")
 (define-public python-liana-py
   (package
     (name "python-liana-py")
-    (version "1.6.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/saezlab/liana-py")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0cd4gdb55xhn3brqd69zbj1ddz1kipj4hihzzri9nmv8flffw96d"))))
+    (version "1.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/saezlab/liana-py")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ff6y0lkmh4arlrir2c6957dlj6sa1aixwx36322gh827bbjl80i"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 75 passed, 24 deselected, 577 warnings
+      ;; tests: 165 passed, 11 deselected, 714 warnings
       #:test-flags
-      '(list "-k"
-             ;; These tests require internet access.
-             (string-append "not test_generate_lr_resource"
-                            " and not test_get_hcop"
-                            " and not test_get_metalinks"
-                            " and not test_get_metalinks_values"
-                            " and not test_describe_metalinks"
-                            " and not test_generate_nondefault_lr_resource"
-                            " and not test_translate_resource"
-                            ;; Minor accuracy difference
-                            " and not test_bivar_morans_perms"
-                            ;; Items are not equal:
-                            ;; ACTUAL: np.float64(1802.3329624189018)
-                            ;; DESIRED: 1802.332962418902
-                            " and not test_mdata_transformations"
-                            " and not test_get_spatial_connectivities"
-                            ;; XXX "local_scores" array has wrong type.
-                            ;; See https://github.com/saezlab/liana-py/issues/147
-                            " and not test_morans_analytical"
-                            " and not test_cosine_permutation"
-                            " and not test_jaccard_pval_none_cats"
-                            " and not test_large_adata"
-                            ;; XXX ligand column differs: the left column
-                            ;; contains duplicates.
-                            " and not test_liana_pipe_not_defaults"
-                            " and not test_liana_pipe_defaults"
-                            ;; XXX unclear failure: 'coo_matrix' object is not
-                            ;; subscriptable
-                            " and not test_bivar_product"
-                            ;; XXX unclear failure: large difference in data
-                            ;; frames.
-                            " and not test_aggregate_res"
-                            ;; XXX: ValueError: Only CSR and CSC matrices are
-                            ;; supported.
-                            " and not test_bivar_nondefault"
-                            " and not test_masked_spearman"
-                            " and not test_vectorized_spearman"
-                            " and not test_basic_interpolation"
-                            " and not test_different_methods"
-                            " and not test_fill_value"
-                            " and not test_use_raw_layer_parameters")
-             ;; These need the optional squidpy, which we don't have yet.
-             "--ignore=tests/test_misty.py"
-             ;; These need the optional corneto.
-             "--ignore=tests/test_causalnet.py"
-             ;; Needs internet access.
-             "--ignore=tests/test_orthology.py")
+      ;; Network access is required for these tests.
+      #~(list "--deselect=tests/test_generate_lr.py::test_generate_lr_resource"
+              (string-append "--deselect=tests/test_generate_lr.py"
+                             "::test_generate_nondefault_lr_resource")
+              "--deselect=tests/test_metalinksdb.py::test_get_metalinks"
+              "--deselect=tests/test_metalinksdb.py::test_get_metalinks_values"
+              "--deselect=tests/test_metalinksdb.py::test_describe_metalinks"
+              "--deselect=tests/test_orthology.py::test_translate_resource"
+              "--deselect=tests/test_orthology.py::test_get_hcop"
+              ;; Tests depending on python-corneto.
+              "--deselect=tests/test_causalnet.py::test_build_prior_network"
+              "--deselect=tests/test_causalnet.py::test_caulsalnet"
+              "--deselect=tests/test_causalnet.py::test_causalnet_noweights"
+              ;; A task has failed to un-serialize.
+              "--deselect=tests/test_sc_methods.py::test_geometric_mean")
       #:phases
-      '(modify-phases %standard-phases
-         ;; Numba needs a writable directory to cache functions.
-         (add-before 'build 'set-numba-cache-dir
-           (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
-    (propagated-inputs (list python-anndata
-                             python-cell2cell
-                             python-decoupler
-                             python-hypothesis
-                             python-ipykernel
-                             python-ipython
-                             python-mudata
-                             python-nbconvert
-                             python-nbsphinx
-                             python-numpy
-                             python-omnipath
-                             python-pandas
-                             python-plotnine
-                             python-pypandoc
-                             python-scipy
-                             python-requests
-                             python-scanpy
-                             python-statsmodels
-                             python-tqdm
-                             tzdata))
+      #~(modify-phases %standard-phases
+          ;; Numba needs a writable directory to cache functions.
+          (add-before 'build 'set-numba-cache-dir
+            (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (native-inputs
      (list python-hatchling
            python-numpydoc
            python-pytest))
+    (propagated-inputs
+     (list python-anndata
+           python-mudata
+           python-scanpy
+           python-numba
+           python-tqdm
+           python-docrep
+           python-plotnine
+           python-session-info2
+           ;; See: <https://github.com/saezlab/liana-py/issues/244>.
+           python-pandas-2
+           ;; [optional]
+           python-cell2cell
+           ;; python-corneto     ;not packaged yet in Guix
+           ;; python-cvxpy-base  ;not packaged yet in Guix
+           python-decoupler
+           python-gseapy
+           python-kneed
+           python-mofapy2
+           python-mofax
+           python-muon
+           python-omnipath
+           ;; python-pydeseq2    ;not packaged yet in Guix
+           ;; python-pyscipopt   ;not packaged yet in Guix
+           python-requests))
     (home-page "https://github.com/saezlab/liana-py")
     (synopsis "LIANA is a ligand-receptor analysis framework")
     (description "This is a Ligand-Receptor inference framework.  The
