@@ -29,6 +29,11 @@
   #:use-module (gnu system shadow)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages dns)
+  #:autoload   (guix least-authority)
+                 (least-authority-wrapper
+                  %default-preserved-environment-variables)
+  #:autoload   (gnu system file-systems) (file-system-mapping)
+  #:autoload   (gnu build linux-container) (%namespaces)
   #:use-module (guix deprecation)
   #:use-module (guix packages)
   #:use-module (guix records)
@@ -102,7 +107,11 @@
             unbound-zone
             unbound-zone?
             unbound-remote
-            unbound-remote?))
+            unbound-remote?
+
+            ddclient-service-type
+            ddclient-configuration
+            ddclient-configuration?))
 
 ;;;
 ;;; Knot DNS.
@@ -1201,3 +1210,124 @@ log."))
                                            unbound-shepherd-service)))
                 (compose concatenate)
                 (default-value (unbound-configuration))))
+
+
+;;;
+;;; ddclient.
+;;;
+
+(define (string-or-file-like? value)
+  (or (string? value) (file-like? value)))
+
+(define-configuration/no-serialization ddclient-configuration
+  (package
+   (file-like ddclient)
+   "The ddclient package to use.")
+  (config-file
+   (string-or-file-like "/etc/ddclient/ddclient.conf")
+   "Configuration file for @command{ddclient}.  Must be readable by the
+@code{ddclient} user.")
+  (interval
+   (integer 300)
+   "Number of seconds to wait between two update checks.")
+  (cache-file
+   (string "/var/cache/ddclient/ddclient.cache")
+   "File where @command{ddclient} records the addresses it last sent.  Its
+parent directory is created at activation time.")
+  (extra-options
+   (list-of-strings '())
+   "Extra command-line options passed to @command{ddclient}."))
+
+(define (ddclient-shepherd-service config)
+  (match-record config <ddclient-configuration>
+                (package config-file interval cache-file extra-options)
+    (list
+     (shepherd-service
+      (provision '(ddclient))
+      (documentation "Update dynamic DNS entries.")
+      (requirement '(user-processes networking))
+      (start (let ((ddclient*
+                    (least-authority-wrapper
+                     (file-append package "/bin/ddclient")
+                     #:name "ddclient"
+                     #:user "ddclient"
+                     #:group "ddclient"
+                     #:mappings (list
+                                 (file-system-mapping
+                                   (source (dirname cache-file))
+                                   (target source)
+                                   (writable? #t))
+                                 ;; Map the certificate bundle rather than the
+                                 ;; whole of /etc/ssl/certs: the latter is a
+                                 ;; directory of symbolic links to store items
+                                 ;; that are not mounted in the container,
+                                 ;; whereas bind-mounting the bundle resolves
+                                 ;; the symbolic link on the host side.
+                                 (file-system-mapping
+                                   (source "/etc/ssl/certs/ca-certificates.crt")
+                                   (target source))
+                                 (file-system-mapping
+                                   (source config-file)
+                                   (target config-file)))
+                     ;; 'ddclient' accesses files owned by the "ddclient" user
+                     ;; so it needs to change UIDs, which in turn requires
+                     ;; running in the global user namespace.
+                     #:namespaces (fold delq %namespaces '(net user))
+                     #:preserved-environment-variables
+                     (cons* "SSL_CERT_DIR"
+                            "SSL_CERT_FILE"
+                            %default-preserved-environment-variables))))
+               #~(make-forkexec-constructor
+                  (list #$ddclient*
+                        "--foreground"
+                        #$(string-append "--daemon=" (number->string interval))
+                        "--file" #$config-file
+                        "--cache" #$cache-file
+                        #$@extra-options)
+                  #:log-file "/var/log/ddclient.log"
+                  ;; ddclient talks to its provider by running 'curl', which
+                  ;; needs to be told where X.509 certificates live.
+                  #:environment-variables
+                  (list "SSL_CERT_DIR=/etc/ssl/certs"
+                        "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt"))))
+      (stop #~(make-kill-destructor))
+      (respawn? #t)))))
+
+(define ddclient-activation
+  (match-record-lambda <ddclient-configuration>
+      (cache-file)
+    (with-imported-modules (source-module-closure '((gnu build activation)))
+      #~(begin
+          (use-modules (gnu build activation))
+          (mkdir-p/perms #$(dirname cache-file)
+                         (getpwnam "ddclient")
+                         #o700)))))
+
+(define %ddclient-accounts
+  (list (user-group (name "ddclient") (system? #t))
+        (user-account
+         (name "ddclient")
+         (group "ddclient")
+         (system? #t)
+         (comment "ddclient daemon user")
+         (home-directory "/var/empty")
+         (shell (file-append shadow "/sbin/nologin")))))
+
+(define ddclient-profile-service
+  (compose list ddclient-configuration-package))
+
+(define ddclient-service-type
+  (service-type (name 'ddclient)
+                (extensions
+                 (list (service-extension shepherd-root-service-type
+                                          ddclient-shepherd-service)
+                       (service-extension activation-service-type
+                                          ddclient-activation)
+                       (service-extension profile-service-type
+                                          ddclient-profile-service)
+                       (service-extension account-service-type
+                                          (const %ddclient-accounts))))
+                (default-value (ddclient-configuration))
+                (description
+                 "Run @command{ddclient}, a client that keeps the entries of a
+dynamic @acronym{DNS, Domain Name System} account up to date.")))
