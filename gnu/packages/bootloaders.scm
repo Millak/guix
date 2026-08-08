@@ -2206,7 +2206,7 @@ the features of iPXE without the hassle of reflashing.")
     (native-inputs
      (list binutils))
     (inputs
-     (list gnu-efi))
+     (list gnu-efi-3))
     (arguments
      (list #:tests? #f ; no tests
            #:make-flags
