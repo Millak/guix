@@ -2539,7 +2539,7 @@ processes, in parallel, in the console, with an interactive TUI.")
 (define-public python-nrepl
   (package
     (name "python-nrepl")
-    (version "0.3.1")
+    (version "0.3.4")
     (source
      (origin
        (method git-fetch)
@@ -2548,7 +2548,7 @@ processes, in parallel, in the console, with an interactive TUI.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ns8c5d29vi11qma1nnazsja5nibknp97ig0lg45wfpjbb5ngl2b"))))
+        (base32 "12fi4ilkslh9rg5dilqknrr6sm2rhs2v91xhyfi432f0dp5920lp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
