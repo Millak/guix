@@ -1512,47 +1512,81 @@ conditional posterior @code{P(y|x,D,M)} in the @code{(x,y)} plane.")
 (define-public python-flox
   (package
     (name "python-flox")
-    (version "0.11.2")
+    ;; 0.11.2 (2026-02-26); the latest changes provide tests fixtures.
+    (properties '((commit . "d2857f323a3f5b7c737b34e8cfc09492cc9ef2bf")
+                  (revision . "0")))
+    (version (git-version "0.11.2"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/xarray-contrib/flox")
-             (commit (string-append "v" version))))
+              (url "https://github.com/xarray-contrib/flox")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jy1kxk9r0az39zmbmf6md55c35ldkk9q6pcfg8jb4chwi4i34iw"))))
+        (base32 "1m0svx2pdrfc8zps1kkzg12i9ncpz1mah9k8q467p6jjl8a5y7yc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 10998 passed, 8264 skipped, 156 xfailed, 3 xpassed, 1376
+      ;; warnings
       #:test-flags
-      #~(list "--ignore" "tests/test_asv.py" ; ignore benchmark test
-              ;; FIXME: Check why test_cohorts failed.
-              "--ignore" "tests/test_cohorts.py")))
-    (propagated-inputs (list python-numpy
-                             python-numpy-groupies
-                             python-packaging
-                             python-pandas
-                             python-scipy
-                             python-toolz))
-    (native-inputs (list ;; python-cubed ; TODO: package this
-                         python-dask
-                         python-netcdf4
-                         python-numbagg
-                         python-pytest
-                         python-pytest-snapshot
-                         python-pytest-xdist
-                         python-setuptools
-                         python-setuptools-scm
-                         python-sparse
-                         python-xarray))
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; These are benchmark tests.
+              "--ignore" "tests/test_asv.py"
+              ;; Failed with DeadlineExceeded exeption.
+              "--deselect=tests/test_properties.py::test_first_last"
+              #$@(map (lambda (test)
+                        (string-append "--deselect=tests/test_cohorts.py"
+                                       test))
+                      ;; Failed to compare snapshoted arrays.
+                      (list "::test_snapshot_cohorts[ERA5DayOfYear]"
+                            "::test_snapshot_cohorts[ERA5Google]"
+                            "::test_snapshot_cohorts[ERA5MonthHour]"
+                            "::test_snapshot_cohorts[ERA5MonthHourRechunked]"
+                            "::test_snapshot_cohorts[OISST]"
+                            "::test_snapshot_cohorts[PerfectBlockwiseResampling]"
+                            "::test_snapshot_cohorts[PerfectMonthly]"
+                            "::test_snapshot_cohorts[RandomBigArray]"
+                            "::test_snapshot_cohorts[SingleChunk]"
+                            "::test_snapshot_cohorts[NWMMidwest]")))))
+    (native-inputs
+     (list python-netcdf4
+           python-pytest
+           python-pytest-snapshot
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-numpy
+           python-numpy-groupies
+           python-packaging
+           python-pandas
+           python-scipy
+           python-toolz
+           ;; [optional]
+           ;; python-asv     ;not packaged yet in Guix
+           python-cachey
+           python-cftime
+           ;; python-cubed   ;not packaged yet in Guix
+           python-dask
+           python-lxml
+           python-matplotlib
+           python-numba
+           python-numbagg
+           python-sparse
+           python-xarray
+           python-zarr))
     (home-page "https://github.com/xarray-contrib/flox")
     (synopsis "GroupBy operations for @code{dask.array}")
-    (description "@code{flox} mainly provides strategies for fast GroupBy
-reductions with @code{dask.array}.  It uses the MapReduce paradigm (or a
-\"tree reduction\") to run the GroupBy operation in a parallel-native way
-totally avoiding a sort or shuffle operation.  @code{flox} can use either
-@code{dask} or @code{cubed} as its backend.")
+    (description
+     "@code{flox} mainly provides strategies for fast GroupBy reductions with
+@code{dask.array}.  It uses the MapReduce paradigm (or a \"tree reduction\")
+to run the GroupBy operation in a parallel-native way totally avoiding a sort
+or shuffle operation.  @code{flox} can use either @code{dask} or @code{cubed}
+as its backend.")
     (license license:asl2.0)))
 
 (define-public python-formulaic
