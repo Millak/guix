@@ -651,15 +651,18 @@ rewritten to something like
              ;; More involved HTML crawl case to get the latest version or a
              ;; partial to-version.
              (let* ((pattern (if major-minor
-                                 (format #f "(~a|~a)" version major-minor)
-                                 (format #f "(~a)" version)))
+                                 (format #f "(~a|~a)"
+                                         (regexp-quote version)
+                                         (regexp-quote major-minor))
+                                 (format #f "(~a)" (regexp-quote version))))
                     (m (string-match pattern s)))
                (if m
                    ;; Crawl parent and rewrite current component.
                    (let* ((parent-url (string-join (reverse parents) "/"))
                           (links (url->links parent-url))
                           ;; The pattern matching the version.
-                          (pattern (string-append "^" (match:prefix m)
+                          (pattern (string-append "^" (regexp-quote
+                                                       (match:prefix m))
                                                   "(" %version-rx ")"
                                                   (match:suffix m) "$"))
                           (candidates (filter-map
