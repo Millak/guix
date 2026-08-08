@@ -1453,55 +1453,50 @@ during conversion.")
 (define-public python-osmnx
   (package
     (name "python-osmnx")
-    (version "1.9.3")
+    (version "2.1.1")
     (source
      (origin
-       ;; Fetch from github as the pypi package is missing the tests dir.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/gboeing/osmnx")
-             (commit (string-append "v" version))))
+              (url "https://github.com/gboeing/osmnx")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yi9al6rrc584y24vigi7w52dq9k2l2zgblrj5ajwgk8079k8zsf"))))
+        (base32 "1wv8qarfrqzvqmrpcxqihpz5b4r7mnpxyyla66543xfizn2iazix"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags '(list "-k"
-                          (string-append
-                           ;; The following tests require network access.
-                           "not test_stats"
-                           " and not test_geocoder"
-                           " and not test_osm_xml"
-                           " and not test_elevation"
-                           " and not test_routing"
-                           " and not test_plots"
-                           " and not test_find_nearest"
-                           " and not test_api_endpoints"
-                           " and not test_graph_save_load"
-                           " and not test_graph_from_functions"
-                           " and not test_features"))))
-    (propagated-inputs (list python-folium
-                             python-geopandas
-                             python-matplotlib
-                             python-networkx
-                             python-numpy
-                             python-pandas
-                             python-requests
-                             python-shapely))
-    (native-inputs (list python-hatchling python-pytest python-setuptools python-wheel))
+      #:build-backend "hatchling.build"
+      #:tests? #f))   ;nearly all tests need network access
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-geopandas
+           python-networkx
+           python-numpy
+           python-pandas
+           python-requests
+           python-shapely
+           ;; [optional]
+           python-matplotlib
+           python-rasterio
+           ;; python-rio-vrt     ;not packaged yet in Guix
+           python-scikit-learn
+           python-scipy))
     (home-page "https://github.com/gboeing/osmnx")
     (synopsis
      "Retrieve, model, analyze, and visualize OpenStreetMap street networks")
     (description
-     "OSMnx is a Python library that lets you download geospatial data
-from OpenStreetMap and model, project, visualize, and analyze real-world
-street networks and any other geospatial geometries.  You can download
-and model walkable, drivable, or bikeable urban networks with a single
-line of Python code then easily analyze and visualize them.  You can
-just as easily download and work with other infrastructure types,
-amenities/points of interest, building footprints, elevation data,
-street bearings/orientations, and speed/travel time.")
+     "OSMnx is a Python library that lets you download geospatial data from
+OpenStreetMap and model, project, visualize, and analyze real-world street
+networks and any other geospatial geometries.  You can download and model
+walkable, drivable, or bikeable urban networks with a single line of Python
+code then easily analyze and visualize them.  You can just as easily download
+and work with other infrastructure types, amenities/points of interest,
+building footprints, elevation data, street bearings/orientations, and
+speed/travel time.")
     (license license:expat)))
 
 (define-public python-owslib
