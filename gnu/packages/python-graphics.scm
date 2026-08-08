@@ -106,31 +106,27 @@ requiring an event loop, useful for creative responsive GUIs.")
 (define-public python-asynckivy
   (package
     (name "python-asynckivy")
-    (version "0.8.1")
+    (version "0.11.0")
     (source
      (origin
-       (method git-fetch)               ; no tests in PyPI release
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/asyncgui/asynckivy")
-             (commit version)))
+              (url "https://github.com/asyncgui/asynckivy")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gjddv6d7bbjymvly2x5zaay1gyihls1c4bh7y1ppbvz15152lkj"))))
+        (base32 "0jxij58ax5lpnhhmhvvbf3sa1mdrbpq6kxab9r25lzgsbqjxj62z"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-home
-            (lambda _
-              ;; 'kivy/__init__.py' wants to create $HOME/.kivy.
-              (setenv "HOME" "/tmp"))))))
+      #:build-backend "poetry.core.masonry.api"
+      ;; XXX: Tests need some setup: AttributeError: 'NoneType' object has no
+      ;; attribute 'create_window'.
+      #:tests? #f))
     (native-inputs
-     (list python-poetry-core
-           python-pytest))
+     (list python-poetry-core))
     (propagated-inputs
-     (list python-kivy
-           python-asyncgui))
+     (list python-asyncgui))
     (home-page "https://github.com/asyncgui/asynckivy")
     (synopsis "Async library for Kivy")
     (description
