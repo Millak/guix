@@ -11373,7 +11373,7 @@ the Wolfram language.")
              (setenv "MATHICS_CHARACTER_ENCODING" "ASCII"))))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools python-wheel))
-    (inputs (list llvm-13))
+    (inputs (list llvm))
     (propagated-inputs (list python-mpmath
                              python-pint
                              python-palettable
