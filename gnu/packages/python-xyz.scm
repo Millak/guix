@@ -13688,18 +13688,17 @@ plots with a minimalistic style.")
     (version "0.9.3")
     (source
      (origin
-       (method git-fetch)   ;for tests
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/nschloe/cplot")
-             (commit (string-append "v" version))))
+              (url "https://github.com/nschloe/cplot")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0zk7hpq358sbympmkms7w2wjs7nw8mdfvkvdasblg2nhqayv42qz"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-matplotlib
            python-matplotx
