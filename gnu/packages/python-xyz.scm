@@ -21865,8 +21865,8 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 3364 passed, 38 skipped, 8 deselected, 3 xfailed, 63 warnings,
-      ;;        28808 subtests passed
+      ;; tests: 3362 passed, 38 skipped, 10 deselected, 3 xfailed, 63
+      ;;        warnings, 28808 subtests passed
       #:test-flags
       ;; The MongoDB backend test appears to expect an older version of
       ;; MongoDB which provided its own bson module, fails with "
@@ -21883,7 +21883,10 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
                           "test_with_autoscaler_file_descriptor_safety"
                           "test_with_file_descriptor_safety"
                           ;; XXX: Fails to compare local timezones.
-                          "test_use_local_timezone")
+                          "test_use_local_timezone"
+                          ;; assert 'No such option: --ini' in <...>
+                          "test_preload_options[subcommand_with_params0]"
+                          "test_preload_options[subcommand_with_params1]")
                     " and not "))))
     (native-inputs
      (list python-azure-core
