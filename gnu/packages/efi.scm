@@ -43,24 +43,28 @@
     (version "3.0.18")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/gnu-efi/"
-                           "gnu-efi-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ncroxon/gnu-efi")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0p1z87vkrlzgrn6bvw19hmyksiz586v6f4jkzgp7wm36xsb2q8bz"))))
+        (base32 "0qk1d071789bw0jh7c1gcxgbmcmyp5i52m7q5514an5j30hd8dar"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; none exist
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
-    (synopsis "EFI toolchain")
-    (description "This package provides an @acronym{EFI, Extensible Firmware
-Interface} toolchain for building programs that can run in the
-environment presented by Intel's EFI.")
-    (home-page "https://directory.fsf.org/wiki/GNU_EFI")
+     (list
+      #:tests? #f                       ;no tests
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (home-page "https://github.com/ncroxon/gnu-efi")
+    (synopsis "EFI build environment with GNU toolchain")
+    (description
+     "This package provides a development environment for building programs
+targeting the @acronym{UEFI, Unified Extensible Firmware Interface}
+using the GNU toolchain.")
     ;; Distribution is allowed only when accepting all those licenses.
     (license (list license:bsd-2 license:bsd-3 license:bsd-4 license:expat))))
 
