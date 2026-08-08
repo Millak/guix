@@ -427,7 +427,7 @@ systems intended primarily for local access.")
 (define-public qutebrowser
   (package
     (name "qutebrowser")
-    (version "3.6.3")
+    (version "3.7.0")
     (source
      (origin
        (method git-fetch)
@@ -436,7 +436,7 @@ systems intended primarily for local access.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19in8g80hhxr1mhi3gfscm3w6zvgfliws87zcxpzqm056bj9fanr"))))
+        (base32 "1mg4nghf9zw6z1qrw7c6zpbcdzsqr5al5s2svms0wa4dp45rzp69"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-setuptools
