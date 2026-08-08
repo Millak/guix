@@ -4213,7 +4213,7 @@ communication over HTTP.")
 (define-public restinio
   (package
     (name "restinio")
-    (version "0.7.7")
+    (version "0.7.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4222,7 +4222,7 @@ communication over HTTP.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nzkh9kxk6mz570w4pygmfnyila5mkxcgzifi73wshd4yp7q3f3d"))))
+                "1c3c1nrzxprpdd14a5pxsi7294gmz21m3yip3knczfxzv16iz2v6"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4242,7 +4242,7 @@ communication over HTTP.")
             (lambda _
               (chdir "dev"))))))
     (native-inputs
-     (list catch2-3.5
+     (list catch2
            json-dto))
     (inputs
      (list openssl
