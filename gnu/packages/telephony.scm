@@ -872,14 +872,14 @@ Initiation Protocol (SIP) and a multimedia framework.")
     (license license:gpl2+)))
 
 (define-public pjproject-jami
-  (let ((commit "59d9e1355686cf4f3f3d81d45560058354f42802")
+  (let ((commit "3a92a7ee340dbc1f4730fcaf32acac9a54cacf1b")
         (revision "0"))
     (package
       (inherit pjproject)
       (name "pjproject-jami")
       ;; The version is taken from
-      ;; <https://raw.githubusercontent.com/savoirfairelinux/pjproject/master/version.mak>.
-      (version (git-version "2.13.1" revision commit))
+      ;; <https://github.com/savoirfairelinux/pjproject/blob/sfl-2.15/version.mak>.
+      (version (git-version "2.15.1" revision commit))
       (source (origin
                 (inherit (package-source pjproject))
                 ;; The Jami development team regularly issues patches to
@@ -894,7 +894,7 @@ Initiation Protocol (SIP) and a multimedia framework.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1n5k1pk8v2rbq8gnhnpck6m9ljyl9ynr5bbyy2k1ln1nmdjn909n"))))
+                  "1ps4cqrlwbd5ia0bj123sgrchadikrh8r5i6az0ybb4hkyavbrcn"))))
       (arguments
        (substitute-keyword-arguments arguments
          ((#:configure-flags _ ''())
