@@ -266,8 +266,8 @@ many far from the implicit surface.")
   (package
     (name "python-kivy")
     ;; 2.3.1 (2024-12-26), to suport Python 3.12+ and Cython 3+.
-    (properties '((commit . "c38d019ed96a7f50db628975fbe944ea8b3cf66d")
-                  (revision . "0")))
+    (properties '((commit . "92d2cc2f56453c55ae7913e1a64809df6cc61ae5")
+                  (revision . "1")))
     (version (git-version "2.3.1"
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
@@ -279,7 +279,7 @@ many far from the implicit surface.")
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f415556ykydqxxjnnc496j81xd2bvkwk5d5m8wlmfad0wkn3nrb"))))
+        (base32 "19fk1l061kjmnhm2yl4vym323s53x1p4jfb1armfd4ly5h0ik0m0"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f              ; Tests require many optional packages
