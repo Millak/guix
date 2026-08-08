@@ -570,7 +570,6 @@ assorted menu related utility programs.")
            mate-panel
            pango
            polkit ; either polkit or setuid
-           python-2
            upower
            wireless-tools))
     (propagated-inputs
