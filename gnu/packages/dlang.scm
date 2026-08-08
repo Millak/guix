@@ -716,8 +716,10 @@ This compiler is based on the DMD frontend version 2.112.1.")
      (list curl                         ; std.net.curl
            bash-minimal))               ; std.process
     (native-inputs
-     (list gdmd which
-           gdb/pinned tzdata-for-tests  ; for tests
+     (list gdmd
+           which
+           gdb/pinned                   ; for tests
+           tzdata-for-tests             ; for tests
            (origin
              (method git-fetch)
              (uri (git-reference
