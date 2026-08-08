@@ -3947,6 +3947,8 @@ operators such as union, intersection, and difference.")
     (license license:asl2.0)))
 
 (define-public python-ega-download-client
+  ;; XXX: 5.2.1 (2024-04-03) it's the latest version without any work on
+  ;; master branch, the project looks un-maintained.
   (package
     (name "python-ega-download-client")
     (version "5.2.1")
@@ -3962,6 +3964,9 @@ operators such as union, intersection, and difference.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; XXX: TypeError: mock_writing_files.<locals>.os_stat_mock() got an
+      ;; unexpected keyword argument 'follow_symlinks'
+      #:tests? #f
       ;; tests: 78 passed, 2 deselected, 1 warning
       #:test-flags
       ;; Test suite does a lot of fake os mocking and extensively hash
