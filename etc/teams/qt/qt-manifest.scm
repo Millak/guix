@@ -16,8 +16,6 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(load "common.scm")
-
 ;;; Commentary:
 ;;;
 ;;; This manifest can be used to update the latest Qt packages collection, via
@@ -25,6 +23,11 @@
 ;;;
 ;;; ./pre-inst-env guix refresh -u -m etc/teams/qt/qt-manifest.scm
 ;;;
+;;; To update to a specific version, you can use the above with, for example,
+;;; '--target-version=6.11.1'.
+
 ;;; Code:
+
+(load "common.scm")
 
 (qt-packages-manifest #:major-version "5" #:negate-version-test? #t)
