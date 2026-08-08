@@ -83,7 +83,7 @@ IPv4 and IPv6.  ONC RPC is notably used by the network file system (NFS).")
     (license bsd-3)))
 
 ;; XXX: Deprecated on 2026-05-26.
-(define-deprecated-package libtirpc/hurd libtirpc)
+(define-deprecated-package libtirpc/hurd "libtirpc-hurd" libtirpc)
 
 (define-public rpcbind
   (package
