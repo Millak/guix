@@ -31870,42 +31870,33 @@ positioning, and keyboard input.")
 (define-public python-readme-renderer
   (package
     (name "python-readme-renderer")
-    (properties '((commit . "e603eb17fcabd6bd20706d278fc24a7e9a663190")
-                  (revision . "0")))
-    (version (git-version "44.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "45.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/pypa/readme_renderer")
-              (commit (assoc-ref properties 'commit))))
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15w3lzgg8gcq22saqy2cpnv3hvkrixhyn57fcg1p1bm2njh1hr61"))))
+        (base32 "15ald40v4vv7sb2as8z7jggcwdy0nbx5m0icqv4ii9wriqrzf7kx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 99 passed, 2 skipped, 1 deselected, 1 warning
       #:test-flags
-      '(list "-k"
-        (string-append
-         ;; These tests fail due to slight differences in the generated
-         ;; vs expected HTML, e.g. because of difference in whitespace or
-         ;; line breaks. (See also
-         ;; https://github.com/pypa/readme_renderer/issues/234).
-         "not test_md_fixtures[test_CommonMark_008.md]"
-         " and not test_rst_fixtures[test_rst_008.rst]"
-         " and not GFM"))))
+      ;; Assertion error in one test.
+      #~(list (string-append "--deselect=tests/test_markdown.py"
+                             "::test_md_fixtures[test_GFM_headings.md]"))))
     (propagated-inputs
-     (list python-cmarkgfm
-           python-docutils
+     (list python-docutils
            python-nh3
-           python-pygments))
+           python-pygments
+           ;; [optional]
+           python-comrak))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/pypa/readme_renderer")
     (synopsis "Render README files in Warehouse")
     (description
