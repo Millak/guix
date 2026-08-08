@@ -1269,6 +1269,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-helpful-fix-signature.patch	\
   %D%/packages/patches/emacs-helpful-fix-tests.patch	\
   %D%/packages/patches/emacs-highlight-stages-add-gexp.patch	\
+  %D%/packages/patches/emacs-ivy-avoid-nil-predicate.patch      \
   %D%/packages/patches/emacs-json-reformat-fix-tests.patch	\
   %D%/packages/patches/emacs-kv-fix-tests.patch	\
   %D%/packages/patches/emacs-lispy-revert-js.patch   \
@@ -1702,9 +1703,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/irrlicht-link-against-needed-libs.patch	\
   %D%/packages/patches/isl-0.11.1-aarch64-support.patch		\
   %D%/packages/patches/ispell-for-linphone-cmake.patch		\
-  %D%/packages/patches/jami-avutil-link.patch   		\
-  %D%/packages/patches/emacs-ivy-avoid-nil-predicate.patch      \
-  %D%/packages/patches/jami-libjami-cmake.patch			\
+  %D%/packages/patches/jami-link-to-libavutil.patch             \
+  %D%/packages/patches/jami-qml-fix.patch                       \
   %D%/packages/patches/jamvm-1.5.1-aarch64-support.patch	\
   %D%/packages/patches/jamvm-1.5.1-armv7-support.patch	\
   %D%/packages/patches/jamvm-2.0.0-aarch64-support.patch	\
@@ -1750,6 +1750,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libgeotiff-fix-tests-on-i386.patch	\
   %D%/packages/patches/libguestfs-syms.patch            	\
   %D%/packages/patches/libinfinity-renew-test-certificate.patch \
+  %D%/packages/patches/libjami-networkservice-header.patch      \
   %D%/packages/patches/libmaus2-fix-gcc-13-require-include-cstdint.patch	\
   %D%/packages/patches/libpatch-respect-ldflags.patch		\
   %D%/packages/patches/libportal-qt-6.9.patch                   \

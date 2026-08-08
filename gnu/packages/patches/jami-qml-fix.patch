@@ -1,0 +1,15 @@
+Upstream-status: <https://git.jami.net/savoirfairelinux/jami-client-qt/-/work_items/2433>
+
+diff --git a/src/app/mainview/components/AccountComboBox.qml b/src/app/mainview/components/AccountComboBox.qml
+index 4f862f60..55a50902 100644
+--- a/src/app/mainview/components/AccountComboBox.qml
++++ b/src/app/mainview/components/AccountComboBox.qml
+@@ -98,7 +98,7 @@ Item {
+                     filters: ValueFilter {
+                         roleName: "ID"
+                         value: LRCInstance.currentAccountId
+-                        invert: true
++                        inverted: true
+                     }
+                 }
+ 

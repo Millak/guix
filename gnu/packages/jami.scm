@@ -81,8 +81,8 @@
 ;;; When updating Jami, make sure that the patches used for ffmpeg-jami are up
 ;;; to date with those listed in
 ;;; <https://git.jami.net/savoirfairelinux/jami-daemon/-/blob/master/contrib/src/ffmpeg/rules.mak>.
-(define %jami-nightly-version "20260220.0")
-(define %jami-daemon-commit "67a68a69f958ca72142ed3cc20b3181ae32f3661")
+(define %jami-nightly-version "20260811.0")
+(define %jami-daemon-commit "c87ccc39b1469a6b766401407746d447cb5d6ee9")
 
 (define-public libjami
   (package
@@ -96,7 +96,8 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hjx9vzskjkg8aa6699l28wpx1f69agynfyr56xsb2d8nyifs5ds"))))
+                "13p70w80g7xd1v26h0x3bz3bkcbn6xmpsi1ycgcpm4dr8khp53ms"))
+              (patches (search-patches "libjami-networkservice-header.patch"))))
     ;; Reduce the output by about 2 MiB by splitting the seldom used 'jamid'
     ;; daemon binary to the "bin" output.
     (outputs '("out" "bin" "debug"))
@@ -222,10 +223,9 @@ QSortFilterProxyModel conveniently exposed for QML.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0g6hdh9kdnvfika2x4ymcmm00i13ml2rp91flzawqhlb3nm6jdy6"))
-              (patches (search-patches
-                        "jami-libjami-cmake.patch"
-                        "jami-avutil-link.patch"))))
+                "0zq0x8vcl85rqpgyhanvc9x85kn2dcrzjmznsf0vyfjq6ycpgqn5"))
+              (patches (search-patches "jami-link-to-libavutil.patch"
+                                       "jami-qml-fix.patch"))))
     (build-system qt-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -269,6 +269,9 @@ QSortFilterProxyModel conveniently exposed for QML.")
                                       "1"))))
 
                   (display "Running unit tests...\n")
+                  ;; Skip the name server related tests, since they fail in
+                  ;; the Guix build environment, which lacks name resolution.
+                  (setenv "GTEST_FILTER" "-ApiServerFixture.Nameserver*")
                   (apply invoke "ctest" "-R" "Unit_Tests" ctest-args)
 
                   ;; The QML test suite is currently disabled as it segfaults
