@@ -8139,9 +8139,10 @@ visualization on the WashU Epigenome Browser.")
      (list python-lxml
            python-numpy
            python-pyqt
-           python-scipy))
+           python-scipy
+           python-six))
     (native-inputs
-     (list python-pytest python-setuptools python-wheel))
+     (list python-pytest python-setuptools))
     (home-page "http://etetoolkit.org")
     (synopsis "Python environment for phylogenetic tree exploration")
     (description
