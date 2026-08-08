@@ -65,7 +65,7 @@
 (define-public plover
   (package
     (name "plover")
-    (version "5.3.0")
+    (version "5.4.0")
     (source
      (origin
        (method git-fetch)
@@ -74,7 +74,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dx5afcfqskwzkf6zfpii704f2b21z6al3d0g2h4xwza82cmknnl"))))
+        (base32 "0k7a7q6nq218kya7rx5i6cdry6v9aibz3yxfmavyg1vayp62x8d9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -152,7 +152,8 @@
            xhost))
     (propagated-inputs
      (list python-appdirs
-           python-dbus-1.2
+           python-comrak
+           python-dbus
            python-evdev
            python-hidapi
            python-packaging
