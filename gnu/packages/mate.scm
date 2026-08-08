@@ -522,8 +522,7 @@ MATE desktop environment.")
     (native-inputs
      (list pkg-config intltool gobject-introspection))
     (inputs
-     `(("glib" ,glib)
-       ("python" ,python-2)))
+     (list glib))
     (home-page "https://mate-desktop.org/")
     (synopsis "Freedesktop menu specification implementation for MATE")
     (description
