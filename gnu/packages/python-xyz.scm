@@ -13664,15 +13664,17 @@ three-way Venn diagrams in @code{matplotlib}.")
     (native-inputs
      (list python-imageio
            python-meshzoo
-           python-networkx
-           python-pypng
            python-pytest
            python-scipy-minimal
            python-setuptools
            python-scikit-fem))
     (propagated-inputs
      (list python-matplotlib
-           python-numpy))
+           python-numpy
+           ;; [optional]
+           python-networkx
+           python-pypng
+           python-scipy))
     (home-page "https://github.com/nschloe/matplotx")
     (synopsis "Minimal matplotlib styles")
     (description
