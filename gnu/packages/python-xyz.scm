@@ -929,6 +929,55 @@ serves as a drop-in replacement adding features for user-friendly command-line
 interfaces.")
     (license license:gpl2+)))
 
+(define-public python-comrak
+  (package
+    (name "python-comrak")
+    (version "0.0.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "comrak" version))
+       (sha256
+        (base32 "1nzr1d957vac16kvy4si3hykx5cbcm73vpy94nm74rf66hgpx8m3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:imported-modules (append %cargo-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each (lambda (phase)
+                          (format #t "Running cargo phase: ~a~%" phase)
+                          (apply (assoc-ref cargo:%standard-phases phase)
+                                 #:cargo-target #$(cargo-triplet)
+                                 args))
+                        '(prepare-rust-crates
+                          unpack-rust-crates
+                          configure
+                          check-for-pregenerated-files
+                          patch-cargo-checksums)))))))
+    (native-inputs
+     (append
+      (list maturin
+            python-pytest
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (inputs (cargo-inputs 'python-comrak))
+    (home-page "https://github.com/lmmx/comrak")
+    (synopsis "Python bindings for the Comrak Rust library")
+    (description
+     "This package provides Python bindings for the Comrak Rust library, a
+fast @code{CommonMark/GFM} parser.")
+    (license license:expat)))
+
 (define-public python-conda-content-trust
   (package
     (name "python-conda-content-trust")

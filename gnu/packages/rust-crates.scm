@@ -5533,6 +5533,10 @@ fn main() {
   (crate-source "comrak" "0.52.0"
                 "1hllxznr3qml847cn4a7msay1wpraxwvcr6npwpxb71ajdav5h5a"))
 
+(define rust-comrak-0.54.0
+  (crate-source "comrak" "0.54.0"
+                "0rpl2qb4vrnsry3c5kkjkqbhzcw3xikrwipz93c9wralhm010n8d"))
+
 (define rust-concat-string-1.0.1
   (crate-source "concat-string" "1.0.1"
                 "02c6hfxsvs1ff2j58f3qzr526w1yg8d2nf6yyjv81ixgbz5vwfbl"))
@@ -8527,6 +8531,10 @@ fn main() {
 (define rust-emojis-0.6.4
   (crate-source "emojis" "0.6.4"
                 "1x02bixi1f8kjk8g5qsrwpwznpya65yh5gy8p8wja7qq3zgz3qcr"))
+
+(define rust-emojis-0.8.2
+  (crate-source "emojis" "0.8.2"
+                "1i1b79kivvgqnva306wqbnpcw8hl9lmikwcg7lbzb3dmn185sk8a"))
 
 (define rust-ena-0.14.3
   (crate-source "ena" "0.14.3"
@@ -23305,6 +23313,10 @@ fn main() {
   (crate-source "port_check" "0.3.0"
                 "1rwqz9j19ipykadsjj807j6aa8rnv2qin0017jzc2klqs3f4j9sc"))
 
+(define rust-portable-atomic-1.10.0
+  (crate-source "portable-atomic" "1.10.0"
+                "1rjfim62djiakf5rcq3r526hac0d1dd9hwa1jmiin7q7ad2c4398"))
+
 (define rust-portable-atomic-1.11.0
   (crate-source "portable-atomic" "1.11.0"
                 "0glb2wngflvfmg789qbf6dbnwcf6ai212fs7n0lf1c66rd49n3im"))
@@ -23680,6 +23692,10 @@ fn main() {
 (define rust-proc-macro2-1.0.89
   (crate-source "proc-macro2" "1.0.89"
                 "0vlq56v41dsj69pnk7lil7fxvbfid50jnzdn3xnr31g05mkb0fgi"))
+
+(define rust-proc-macro2-1.0.93
+  (crate-source "proc-macro2" "1.0.93"
+                "169dw9wch753if1mgyi2nfl1il77gslvh6y2q46qplprwml6m530"))
 
 (define rust-proc-macro2-1.0.94
   (crate-source "proc-macro2" "1.0.94"
@@ -24270,6 +24286,10 @@ fn main() {
                 "04hwqcrfx9w3f67pnhjcg28y0iq1srpwv0drgwbd23mmlcw8xzci"
                 #:snippet '(delete-file-recursively "branding")))
 
+(define rust-pyo3-0.29.0
+  (crate-source "pyo3" "0.29.0"
+                "0707cvmc6h6hbhsj8wr8d5gl5nqy5jb8fxd4l0kgqjqxn984c9yd"))
+
 (define rust-pyo3-async-runtimes-0.24.0
   (crate-source "pyo3-async-runtimes" "0.24.0"
                 "1gzq3mdd679mpy0jmzx3clxpd68cbzbdm041sd81zm7r8bf862yx"))
@@ -24334,6 +24354,10 @@ fn main() {
   (crate-source "pyo3-build-config" "0.28.3"
                 "07k16mnxn220x4aw0axzcss4mn4gckhknf7qlyyck67bzpfyfs73"))
 
+(define rust-pyo3-build-config-0.29.0
+  (crate-source "pyo3-build-config" "0.29.0"
+                "0y4h23a97v60ajicbcam98axbb9pjb8ql12w54pk84yhy39agqn5"))
+
 (define rust-pyo3-ffi-0.18.3
   (crate-source "pyo3-ffi" "0.18.3"
                 "0p7n9zs9ifrzcnna0lwyhwscyhw45q4x288x5bm1c6c26x9pqkgx"))
@@ -24389,6 +24413,10 @@ fn main() {
 (define rust-pyo3-ffi-0.28.3
   (crate-source "pyo3-ffi" "0.28.3"
                 "07k5bxh8h2ax3v6gmb43x09wsgm003lar7pnyz57q7qbz05f2abz"))
+
+(define rust-pyo3-ffi-0.29.0
+  (crate-source "pyo3-ffi" "0.29.0"
+                "0nw40nfdlnz66vd1fjh5hmvmzsi9rzwyypgads38vg0vv9kw91fa"))
 
 (define rust-pyo3-introspection-0.28.3
   (crate-source "pyo3-introspection" "0.28.3"
@@ -24454,6 +24482,10 @@ fn main() {
   (crate-source "pyo3-macros" "0.28.3"
                 "04wqy9knmxkf2m12dfwbj4817p959chxhzgwsabmki27zw754vnz"))
 
+(define rust-pyo3-macros-0.29.0
+  (crate-source "pyo3-macros" "0.29.0"
+                "0w8pj0nk3ay40j9imz80h4c3lydx71x362fxjhqslp86zmi3gics"))
+
 (define rust-pyo3-macros-backend-0.18.3
   (crate-source "pyo3-macros-backend" "0.18.3"
                 "062rxf7cj1dn82yiaws3dmxw5qq9ssccq92jgdc210y4lh4gznlp"))
@@ -24509,6 +24541,10 @@ fn main() {
 (define rust-pyo3-macros-backend-0.28.3
   (crate-source "pyo3-macros-backend" "0.28.3"
                 "1jrsh65i0vwinp5k6blbvypv8idgg0h853rkqa0qywrmv0cc5kf4"))
+
+(define rust-pyo3-macros-backend-0.29.0
+  (crate-source "pyo3-macros-backend" "0.29.0"
+                "0qmkacg1d4i23nvmdficacr7f59mm3y9rwsvvir32y4rfdas38sc"))
 
 (define rust-pyproject-toml-0.13.6
   (crate-source "pyproject-toml" "0.13.6"
@@ -24737,6 +24773,10 @@ fn main() {
 (define rust-quote-1.0.37
   (crate-source "quote" "1.0.37"
                 "1brklraw2g34bxy9y4q1nbrccn7bv36ylihv12c9vlcii55x7fdm"))
+
+(define rust-quote-1.0.38
+  (crate-source "quote" "1.0.38"
+                "1k0s75w61k6ch0rs263r4j69b7vj1wadqgb9dia4ylc9mymcqk8f"))
 
 (define rust-quote-1.0.40
   (crate-source "quote" "1.0.40"
@@ -27846,6 +27886,10 @@ fn main() {
   (crate-source "serde" "1.0.216"
                 "13ikqs0cvd220530x4rj1m9ab5wcflrwkw7cpvl9fnlkdq0q35qb"))
 
+(define rust-serde-1.0.217
+  (crate-source "serde" "1.0.217"
+                "0w2ck1p1ajmrv1cf51qf7igjn2nc51r0izzc00fzmmhkvxjl5z02"))
+
 (define rust-serde-1.0.219
   (crate-source "serde" "1.0.219"
                 "1dl6nyxnsi82a197sd752128a4avm6mxnscywas1jq30srp2q3jz"))
@@ -27939,6 +27983,10 @@ fn main() {
 (define rust-serde-derive-1.0.216
   (crate-source "serde_derive" "1.0.216"
                 "0pm5bm4354n40ir12bbs829arlqwjrw0wmzd4xk5r1kkpzdmky26"))
+
+(define rust-serde-derive-1.0.217
+  (crate-source "serde_derive" "1.0.217"
+                "180r3rj5gi5s1m23q66cr5wlfgc5jrs6n1mdmql2njnhk37zg6ss"))
 
 (define rust-serde-derive-1.0.219
   (crate-source "serde_derive" "1.0.219"
@@ -30276,6 +30324,10 @@ fn main() {
   (crate-source "syn" "2.0.87"
                 "0bd3mfcswvn4jkrp7ich5kk58kmpph8412yxd36nsfnh8vilrai5"))
 
+(define rust-syn-2.0.98
+  (crate-source "syn" "2.0.98"
+                "1cfk0qqbl4fbr3dz61nw21d5amvl4rym6nxwnfsw43mf90d7y51n"))
+
 (define rust-syn-3.0.3
   (crate-source "syn" "3.0.3"
                 "18srnql3cd39j9q6hf1az02p67rlr1rf6njx9zx4vxj9i3jvmsak"))
@@ -31316,6 +31368,10 @@ fn main() {
 (define rust-tinyvec-1.8.0
   (crate-source "tinyvec" "1.8.0"
                 "0f5rf6a2wzyv6w4jmfga9iw7rp9fp5gf4d604xgjsf3d9wgqhpj4"))
+
+(define rust-tinyvec-1.8.1
+  (crate-source "tinyvec" "1.8.1"
+                "1s41rv7n39sjsxz3kd3d4adw45ndkxz1d18rfbz2wd7s9n8bhb82"))
 
 (define rust-tinyvec-1.9.0
   (crate-source "tinyvec" "1.9.0"
@@ -33476,6 +33532,10 @@ fn main() {
   (crate-source "unicode-ident" "1.0.13"
                 "1zm1xylzsdfvm2a5ib9li3g5pp7qnkv4amhspydvgbmd9k6mc6z9"
                 #:snippet '(delete-file-recursively "tests")))
+
+(define rust-unicode-ident-1.0.16
+  (crate-source "unicode-ident" "1.0.16"
+                "0d2hji0i16naw43l02dplrz8fbv625n7475s463iqw4by1hd2452"))
 
 (define rust-unicode-ident-1.0.18
   (crate-source "unicode-ident" "1.0.18"
@@ -76595,6 +76655,41 @@ fn main() {
                                                  rust-zerovec-0.11.6
                                                  rust-zerovec-derive-0.11.3
                                                  rust-zmij-1.0.21))
+                     (python-comrak =>
+                                    (list rust-caseless-0.2.2
+                                          rust-comrak-0.54.0
+                                          rust-emojis-0.8.2
+                                          rust-entities-1.0.1
+                                          rust-fastrand-2.4.1
+                                          rust-finl-unicode-1.4.0
+                                          rust-heck-0.5.0
+                                          rust-jetscii-0.5.3
+                                          rust-libc-0.2.169
+                                          rust-once-cell-1.21.3
+                                          rust-phf-0.13.1
+                                          rust-phf-codegen-0.13.1
+                                          rust-phf-generator-0.13.1
+                                          rust-phf-shared-0.13.1
+                                          rust-portable-atomic-1.10.0
+                                          rust-proc-macro2-1.0.93
+                                          rust-pyo3-0.29.0
+                                          rust-pyo3-build-config-0.29.0
+                                          rust-pyo3-ffi-0.29.0
+                                          rust-pyo3-macros-0.29.0
+                                          rust-pyo3-macros-backend-0.29.0
+                                          rust-quote-1.0.38
+                                          rust-rustc-hash-2.1.3
+                                          rust-serde-1.0.217
+                                          rust-serde-derive-1.0.217
+                                          rust-siphasher-1.0.1
+                                          rust-smallvec-1.15.2
+                                          rust-syn-2.0.98
+                                          rust-target-lexicon-0.13.5
+                                          rust-tinyvec-1.8.1
+                                          rust-tinyvec-macros-0.1.1
+                                          rust-typed-arena-2.0.2
+                                          rust-unicode-ident-1.0.16
+                                          rust-unicode-normalization-0.1.24))
                      (python-cramjam =>
                                      (list rust-adler2-2.0.1
                                       rust-alloc-no-stdlib-2.0.4
