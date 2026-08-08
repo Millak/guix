@@ -623,7 +623,8 @@ This compiler is based on the DMD frontend version 2.112.1.")
                 ;; not in executable format: file format not recognized
                 #$@(if (target-32bit?)
                        #~(delete-file
-                          "dmd/compiler/test/runnable/gdb_slice_debuginfo_64.d")
+                          (string-append "dmd/compiler/test/runnable"
+                                         "/gdb_slice_debuginfo_64.d"))
                        #~())
 
                 ;; Locations in stack traces are broken for some reason,
@@ -677,6 +678,8 @@ This compiler is based on the DMD frontend version 2.112.1.")
                        (out-bin (string-append out "/bin"))
                        (out-etc (string-append out "/etc"))
                        (out-include (string-append out "/include/d/dmd"))
+                       (out-include-etc (string-append out-include "/etc"))
+                       (out-include-std (string-append out-include "/std"))
                        (out-lib (string-append out "/lib"))
                        (lib-lib (string-append lib "/lib"))
                        (out-man (string-append out "/share/man")))
@@ -693,8 +696,8 @@ This compiler is based on the DMD frontend version 2.112.1.")
                       (install-file "libphobos2.a" out-lib)
                       (for-each (cut install-file <> lib-lib)
                                 (find-files "." "^libphobos2\\.so[.0-9]*$")))
-                    (copy-recursively "etc" (string-append out-include "/etc"))
-                    (copy-recursively "std" (string-append out-include "/std")))
+                    (copy-recursively "etc" out-include-etc)
+                    (copy-recursively "std" out-include-std))
                   (mkdir-p out-etc)
                   (with-output-to-file (string-append out-etc "/dmd.conf")
                     (lambda _
