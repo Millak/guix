@@ -684,9 +684,9 @@ RPC system.  Think JSON, except binary.  Or think Protocol Buffers, except faste
                  #$flags))))
     (native-inputs
      (modify-inputs native-inputs
-       (prepend clang-22
-                lld-22
-                llvm-22)))))
+       (prepend clang
+                lld
+                llvm)))))
 
 (define-public python-msgspec
   (package
