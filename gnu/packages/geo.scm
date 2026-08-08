@@ -1316,7 +1316,7 @@ readily with other Python GIS packages such as pyproj, Rtree, and Shapely.")
 (define-public python-geopandas
   (package
     (name "python-geopandas")
-    (version "1.1.3")
+    (version "1.1.4")
     (source
       (origin
         (method git-fetch)
@@ -1325,7 +1325,8 @@ readily with other Python GIS packages such as pyproj, Rtree, and Shapely.")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1p584nc6h2bnr8nmfffc4dl447i2zkh6wmvalcmbm8v04slriqci"))))
+         (base32 "14lbxcmn4zr9vxbg5vlhfr2ng9ybz8fb3xl9dpgj3fkq80m18agb"))
+       (snippet #~(delete-file "versioneer.py"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1354,6 +1355,7 @@ readily with other Python GIS packages such as pyproj, Rtree, and Shapely.")
       (list python-pytest
             python-pytest-xdist
             python-setuptools
+            python-versioneer
             tzdata-for-tests))
     (home-page "https://geopandas.org")
     (synopsis "Geographic pandas extensions")
