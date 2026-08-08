@@ -40,7 +40,7 @@
 (define-public gnu-efi
   (package
     (name "gnu-efi")
-    (version "3.0.18")
+    (version "4.0.4")
     (source
      (origin
        (method git-fetch)
@@ -49,7 +49,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qk1d071789bw0jh7c1gcxgbmcmyp5i52m7q5514an5j30hd8dar"))))
+        (base32 "02hhl7xqiiicp0pra99vb0w3hqnyf9fxpzd5nsx1d9v1bk6dsjbp"))))
     (build-system gnu-build-system)
     (arguments
      (list
