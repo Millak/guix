@@ -4211,8 +4211,9 @@ scientific applications modeled by partial differential equations.")
                 hypre-openmpi
                 metis
                 mumps-openmpi
-                scalapack
+                openmpi
                 pt-scotch32
+                scalapack
                 `(,pt-scotch32 "metis"))))
     (arguments
      (substitute-keyword-arguments arguments
