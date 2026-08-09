@@ -2448,34 +2448,21 @@ compositor libraries.")))
 (define-public qtwayland
   (package
     (name "qtwayland")
-    (version "6.9.2")
+    (version "6.11.2")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
        (sha256
-        (base32 "10bpxwpam56gvymz9vjxkppbqsj1369ddzl3k4pz2s2maq39imya"))))
+        (base32 "1pzr4a11dmlbpzfgcm7z95cvnm2r5pq71pg80vsi0aik75g63dwf"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'update-wayland.xml
-                 ;; Upstream commit: c2f61bc47baacf2e6a44c6c3c4e4cbf0abfa4095
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (copy-file (search-input-file
-                               inputs "/share/wayland/wayland.xml")
-                              "src/3rdparty/protocol/wayland/wayland.xml")))
                (add-after 'unpack 'disable-failing-tests
                  (lambda _
-                   ;; FIXME: tst_seatv4::animatedCursor() fails here.
-                   ;; See also: <https://bugreports.qt.io/browse/QTBUG-78317>
-                   (substitute* "tests/auto/client/seatv4/tst_seatv4.cpp"
-                     (((string-append
-                        "QVERIFY\\(!cursorSurface\\(\\)->"
-                        "m_waitingFrameCallbacks\\.empty\\(\\)\\);")) "")
-                     (("QTRY_COMPARE\\(bufferSpy\\.size\\(\\), 1\\);") ""))
-                   ;; known failing with wayland-1.23.0, so skip this.
+                   ;; Known failing with wayland-1.23.0, so skip this.
                    ;; See also: <https://bugreports.qt.io/browse/QTBUG-126379>
                    (substitute* "tests/auto/client/CMakeLists.txt"
                      (("add_subdirectory\\(scaling\\)") ""))))
