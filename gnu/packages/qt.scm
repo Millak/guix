@@ -5674,10 +5674,10 @@ color-related widgets.")
      (modify-inputs inputs
        (replace "qtbase" qtbase-5)))))
 
-(define-public python-shiboken-6
+(define-public python-shiboken-generator
   (package
-    (name "python-shiboken-6")
-    (version "6.9.2")
+    (name "python-shiboken-generator")
+    (version "6.11.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://qt/QtForPython/pyside6/PySide6-"
@@ -5685,19 +5685,11 @@ color-related widgets.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0b92b4zi5rqg5acgbb6yan349idvzmc0x8wjwkdwkga2ad38gh4y"))))
+                "1y7xgbyny1xvvwz7pw36jfhwfmpi457c3jr5jx9dvgnimbxpx96b"))))
     (build-system cmake-build-system)
-    (inputs
-     (list clang-18
-           libxml2
-           libxslt
-           python-wrapper
-           qtbase))
-    (properties `((upstream-name . "pyside-setup")))
+    (inputs (list clang python qtbase))
     (arguments
      (list
-      #:tests? #f
-      ;; FIXME: Building tests fails
       #:imported-modules (append %cmake-build-system-modules
                                  %pyproject-build-system-modules)
       #:modules '((guix build cmake-build-system)
@@ -5708,27 +5700,24 @@ color-related widgets.")
                            ;; in build directory instead of install directory.
                            "-DCMAKE_SKIP_RPATH=TRUE"
                            (string-append "-DCMAKE_MODULE_LINKER_FLAGS=-Wl,-rpath="
-                                          #$output "/lib")
-                           "-DBUILD_TESTS=off")
+                                          #$output "/lib"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-shiboken-dir-only
-            (lambda _ (chdir "sources/shiboken6")))
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "sources/shiboken6_generator")))
           ;; .dist-info in site-packages is necessary for sanity-check.
           (add-after 'install 'install-distinfo
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (with-directory-excursion (py:site-packages inputs outputs)
-                (for-each
-                 (lambda (name)
-                   (let ((dir (string-append name "-" #$version ".dist-info")))
-                     (mkdir-p dir)
-                     (call-with-output-file (string-append dir "/METADATA")
-                       (lambda (port)
-                         (format port "\
+                (let* ((name "shiboken6_generator")
+                       (dir (string-append name "-" #$version ".dist-info")))
+                  (mkdir-p dir)
+                  (call-with-output-file (string-append dir "/METADATA")
+                    (lambda (port)
+                      (format port "\
 Metadata-Version: 1.1
 Name: ~a
-Version: ~a~%"  name #$version)))))
-                 (list "shiboken6" "shiboken6_generator")))))
+Version: ~a~%"  name #$version)))))))
           ;; The build scripts need to modify some files in
           ;; the read-only source directory.
           (add-before 'configure 'make-files-writable
@@ -5747,23 +5736,57 @@ Version: ~a~%"  name #$version)))))
               (setenv "CC" "clang")
               (setenv "CXX" "clang++"))))))
     (home-page "https://wiki.qt.io/Qt_for_Python")
-    (synopsis
-     "Shiboken generates bindings for C++ libraries using CPython source code")
-    (description
-     "Shiboken generates bindings for C++ libraries using CPython source code")
-    (license
-     (list
-      ;; The main code is GPL3 or LGPL3.
-      ;; Examples are BSD-3.
-      license:gpl3
-      license:lgpl3
-      license:bsd-3))))
+    (synopsis "Generator for Python bindings for C++ libraries")
+    (description "This package provides a generator for producing Python
+bindings for C++ libraries.")
+    (license (package-license qtbase))))
+
+(define-public python-shiboken
+  (package
+    (inherit python-shiboken-generator)
+    (version "6.11.2")
+    (name "python-shiboken")
+    (inputs
+     (list clang
+           libxml2
+           libxslt
+           python
+           qtbase))
+    (propagated-inputs (list python-shiboken-generator))
+    (properties '((upstream-name . "pyside-setup")))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #f)
+        #f)                             ;FIXME
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'chdir
+              (lambda _ (chdir "sources/shiboken6")))
+            (replace 'install-distinfo
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (with-directory-excursion (py:site-packages inputs outputs)
+                  (let* ((name "shiboken6")
+                         (dir (string-append name "-" #$version ".dist-info")))
+                    (mkdir-p dir)
+                    (call-with-output-file (string-append dir "/METADATA")
+                      (lambda (port)
+                        (format port "\
+Metadata-Version: 1.1
+Name: ~a
+Version: ~a~%"  name #$version)))))))))))
+    (synopsis "Generator for the pyside Qt bindings in Python")
+    (description "Shiboken generates bindings for C++ libraries using CPython
+source code.")))
+
+;;; TODO: Remove when May 2027 comes.
+(define-deprecated-package python-shiboken-6
+  python-shiboken)
 
 (define-public python-pyside-6
   (package
     (name "python-pyside-6")
-    (version (package-version python-shiboken-6))
-    (source (package-source python-shiboken-6))
+    (version (package-version python-shiboken))
+    (source (package-source python-shiboken))
     (build-system cmake-build-system)
     ;; TODO: Add more Qt components if available.
     (inputs
@@ -5778,7 +5801,7 @@ Version: ~a~%"  name #$version)))))
            qtwebengine
            qtwebsockets))
     (propagated-inputs
-     (list python-shiboken-6))
+     (list python-shiboken))
     (native-inputs
      (list python-wrapper))
     (arguments

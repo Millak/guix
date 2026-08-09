@@ -459,7 +459,7 @@ OnionShare.")
                 python-gnupg
                 python-pyside-6
                 python-qrcode
-                python-shiboken-6
+                python-shiboken
                 xdg-utils)))
     (description "OnionShare lets you securely and anonymously share files,
 host websites, and chat with friends using the Tor network.")))
