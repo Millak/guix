@@ -32,6 +32,7 @@
   #:use-module (gnu services admin)
   #:use-module (gnu system shadow)
   #:use-module (gnu packages admin)
+  #:use-module ((gnu packages audio) #:select (snapcast))
   #:use-module (gnu packages mpd)
   #:use-module (guix records)
   #:use-module (ice-9 format)
@@ -123,7 +124,44 @@
             mympd-ip-acl
             mympd-ip-acl?
             mympd-ip-acl-allow
-            mympd-ip-acl-deny))
+            mympd-ip-acl-deny
+
+            snapserver-stream
+            snapserver-stream?
+            snapserver-stream-name
+            snapserver-stream-type
+            snapserver-stream-location
+            snapserver-stream-codec
+            snapserver-stream-sampleformat
+            snapserver-stream-chunk-ms
+            snapserver-stream-parameters
+
+            snapserver-configuration
+            snapserver-configuration?
+            snapserver-configuration-package
+            snapserver-configuration-user
+            snapserver-configuration-group
+            snapserver-configuration-shepherd-requirement
+            snapserver-configuration-log-file
+            snapserver-configuration-log-filter
+            snapserver-configuration-data-directory
+            snapserver-configuration-mdns?
+            snapserver-configuration-http?
+            snapserver-configuration-http-port
+            snapserver-configuration-http-bind-address
+            snapserver-configuration-doc-root
+            snapserver-configuration-tcp-control?
+            snapserver-configuration-tcp-control-port
+            snapserver-configuration-tcp-streaming?
+            snapserver-configuration-tcp-streaming-port
+            snapserver-configuration-streams
+            snapserver-configuration-codec
+            snapserver-configuration-sampleformat
+            snapserver-configuration-buffer-ms
+            snapserver-configuration-chunk-ms
+            snapserver-configuration-send-to-muted?
+            snapserver-configuration-extra-content
+            snapserver-service-type))
 
 ;;; Commentary:
 ;;;
@@ -945,3 +983,324 @@ prompting a pin from the user.")
                               mympd-serialize-configuration)))
    (description "Run myMPD, a frontend for MPD (Music Player Daemon).")
    (default-value (mympd-configuration))))
+
+
+;;;
+;;; Snapcast
+;;;
+
+(define %snapserver-user
+  (user-account
+   (name "snapserver")
+   (group %lazy-group)
+   (system? #t)
+   (comment "Snapcast server user")
+   (home-directory "/var/lib/snapserver")
+   (shell (file-append shadow "/sbin/nologin"))))
+
+(define %snapserver-group
+  (user-group
+   (name "snapserver")
+   (system? #t)))
+
+(define (snapserver-stream-type? value)
+  (memq value '(pipe file process librespot airplay tcp alsa meta)))
+
+(define-maybe/no-serialization file-like)
+
+(define-configuration/no-serialization snapserver-stream
+  (name
+   (string "default")
+   "Name of the stream, as shown by Snapcast clients.")
+
+  (type
+   (snapserver-stream-type 'pipe)
+   "Type of the stream source: one of @code{pipe}, @code{file},
+@code{process}, @code{librespot}, @code{airplay}, @code{tcp}, @code{alsa} or
+@code{meta}.")
+
+  (location
+   (string "/run/snapserver/snapfifo")
+   "Location of the stream source: a file name for @code{pipe}, @code{file}
+and @code{process} streams, a host name for @code{tcp} streams, a device name
+for @code{alsa} streams, and a slash-separated list of stream names for
+@code{meta} streams.")
+
+  (codec
+   maybe-string
+   "Codec to use for this stream, overriding the @code{codec} field of
+@code{snapserver-configuration}.")
+
+  (sampleformat
+   maybe-string
+   "Sample format of this stream, given as
+@code{@var{rate}:@var{bits}:@var{channels}}, overriding the
+@code{sampleformat} field of @code{snapserver-configuration}.")
+
+  (chunk-ms
+   maybe-integer
+   "Duration, in milliseconds, of the audio chunks read from this source,
+overriding the @code{chunk-ms} field of @code{snapserver-configuration}.")
+
+  (parameters
+   (alist '())
+   "Additional source parameters, given as an association list, for example
+@code{'((\"controlscript\" . \"meta_mpd.py\"))}."))
+
+(define (snapserver-stream->uri stream)
+  (match-record stream <snapserver-stream>
+                (name type location codec sampleformat chunk-ms parameters)
+    (let ((query `(("name" . ,name)
+                   ,@(if (maybe-value-set? codec)
+                         `(("codec" . ,codec))
+                         '())
+                   ,@(if (maybe-value-set? sampleformat)
+                         `(("sampleformat" . ,sampleformat))
+                         '())
+                   ,@(if (maybe-value-set? chunk-ms)
+                         `(("chunk_ms" . ,chunk-ms))
+                         '())
+                   ,@parameters)))
+      (simple-format #f "~A://~A?~A" type location
+                     (string-join
+                      (map (match-lambda
+                             ((key . value)
+                              (simple-format #f "~A=~A" key value)))
+                           query)
+                      "&")))))
+
+(define list-of-snapserver-stream?
+  (list-of snapserver-stream?))
+
+(define-configuration/no-serialization snapserver-configuration
+  (package
+    (file-like snapcast)
+    "The Snapcast package to use.")
+
+  (user
+   (user-account %snapserver-user)
+   "Owner of the @command{snapserver} process.")
+
+  (group
+   (user-group %snapserver-group)
+   "Owner group of the @command{snapserver} process.")
+
+  (shepherd-requirement
+   (list-of-symbols '())
+   "This is a list of symbols naming Shepherd services that this service
+will depend on.")
+
+  (log-file
+   (string "/var/log/snapserver.log")
+   "File where @command{snapserver} writes its log.")
+
+  (log-filter
+   (string "*:info")
+   "Log filter, given as @code{@var{tag}:@var{level}} pairs separated by
+commas, where @var{tag} is @code{*} or a log tag and @var{level} is one of
+@code{trace}, @code{debug}, @code{info}, @code{notice}, @code{warning},
+@code{error} or @code{fatal}.")
+
+  (data-directory
+   (string "/var/lib/snapserver")
+   "Directory where @command{snapserver} stores persistent data, such as
+client settings.")
+
+  (mdns?
+   (boolean #t)
+   "Whether to publish the Snapcast services over mDNS.  This requires
+@code{avahi-service-type} (@pxref{Networking Services}).")
+
+  (http?
+   (boolean #t)
+   "Whether to enable the HTTP JSON-RPC interface, which also serves the
+Snapweb web interface.")
+
+  (http-port
+   (integer 1780)
+   "Port the HTTP server listens on.")
+
+  (http-bind-address
+   (string "::")
+   "Address the HTTP server listens on.")
+
+  (doc-root
+   maybe-file-like
+   "Directory served by the HTTP server.  It defaults to the Snapweb web
+interface bundled with the @code{package} field.")
+
+  (tcp-control?
+   (boolean #t)
+   "Whether to enable the TCP JSON-RPC control interface.")
+
+  (tcp-control-port
+   (integer 1705)
+   "Port the TCP control interface listens on.")
+
+  (tcp-streaming?
+   (boolean #t)
+   "Whether to enable TCP streaming, which is what Snapcast clients connect
+to.")
+
+  (tcp-streaming-port
+   (integer 1704)
+   "Port the TCP streaming interface listens on.")
+
+  (streams
+   (list-of-snapserver-stream (list (snapserver-stream)))
+   "List of @code{snapserver-stream} records describing the audio sources
+@command{snapserver} reads from.")
+
+  (codec
+   (string "flac")
+   "Default codec used to send audio to clients, given as
+@code{@var{codec}[:@var{options}]} where @var{codec} is one of @code{flac},
+@code{ogg}, @code{opus} or @code{pcm}.")
+
+  (sampleformat
+   (string "48000:16:2")
+   "Default sample format of the streams, given as
+@code{@var{rate}:@var{bits}:@var{channels}}.")
+
+  (buffer-ms
+   (integer 1000)
+   "End-to-end latency, in milliseconds.")
+
+  (chunk-ms
+   (integer 20)
+   "Default duration, in milliseconds, of the audio chunks read from the
+sources.")
+
+  (send-to-muted?
+   (boolean #f)
+   "Whether to send audio to muted clients.")
+
+  (extra-content
+   maybe-string
+   "Content appended verbatim to @file{snapserver.conf}, for options that are
+not covered by the fields above, such as the @code{[ssl]} and
+@code{[authorization]} sections."))
+
+(define (snapserver-config-file config)
+  (define (boolean->string value)
+    (if value "1" "0"))
+
+  (match-record config <snapserver-configuration>
+    (package log-filter data-directory mdns?
+             http? http-port http-bind-address doc-root
+             tcp-control? tcp-control-port tcp-streaming? tcp-streaming-port
+             streams codec sampleformat buffer-ms chunk-ms send-to-muted?
+             extra-content)
+    (apply mixed-text-file "snapserver.conf"
+           `("[server]\n"
+             "datadir = " ,data-directory "\n"
+             "mdns_enabled = " ,(boolean->string mdns?) "\n"
+
+             "\n[http]\n"
+             "enabled = " ,(boolean->string http?) "\n"
+             "port = " ,(number->string http-port) "\n"
+             "bind_to_address = " ,http-bind-address "\n"
+             "doc_root = " ,(if (maybe-value-set? doc-root)
+                                doc-root
+                                (file-append package
+                                             "/share/snapserver/snapweb"))
+             "\n"
+
+             "\n[tcp-control]\n"
+             "enabled = " ,(boolean->string tcp-control?) "\n"
+             "port = " ,(number->string tcp-control-port) "\n"
+
+             "\n[tcp-streaming]\n"
+             "enabled = " ,(boolean->string tcp-streaming?) "\n"
+             "port = " ,(number->string tcp-streaming-port) "\n"
+
+             "\n[stream]\n"
+             ;; The upstream defaults for these two point into /usr/share.
+             "plugin_dir = " ,(file-append package
+                                           "/share/snapserver/plug-ins") "\n"
+             "sandbox_dir = " ,(file-append package
+                                            "/share/snapserver/sandbox") "\n"
+             ,@(map (lambda (stream)
+                      (string-append "source = "
+                                     (snapserver-stream->uri stream) "\n"))
+                    streams)
+             "codec = " ,codec "\n"
+             "sampleformat = " ,sampleformat "\n"
+             "buffer = " ,(number->string buffer-ms) "\n"
+             "chunk_ms = " ,(number->string chunk-ms) "\n"
+             "send_to_muted = " ,(boolean->string send-to-muted?) "\n"
+
+             "\n[logging]\n"
+             ;; Log to standard error, which the Shepherd redirects to the
+             ;; 'log-file' of the service.
+             "sink = stderr\n"
+             "filter = " ,log-filter "\n"
+             ,@(if (maybe-value-set? extra-content)
+                   `("\n" ,extra-content "\n")
+                   '())))))
+
+(define (snapserver-shepherd-service config)
+  (match-record config <snapserver-configuration>
+    (package user group shepherd-requirement log-file data-directory
+             mdns? streams)
+    (let ((config-file (snapserver-config-file config))
+          (username (user-account-name user))
+          (groupname (user-group-name group))
+          ;; 'snapserver' creates the named pipes of its 'pipe' sources, but
+          ;; not the directories holding them.
+          (directories
+           (delete-duplicates
+            (cons* data-directory (dirname log-file)
+                   (filter-map (lambda (stream)
+                                 (and (eq? 'pipe
+                                           (snapserver-stream-type
+                                            stream))
+                                      (dirname
+                                       (snapserver-stream-location
+                                        stream))))
+                               streams)))))
+      (shepherd-service
+       (documentation "Run the Snapcast server.")
+       (requirement `(user-processes loopback
+                                     ,@(if mdns? '(avahi-daemon) '())
+                                     ,@shepherd-requirement))
+       (provision '(snapserver))
+       (start
+        (with-imported-modules (source-module-closure
+                                '((gnu build activation)))
+          #~(begin
+              (use-modules (gnu build activation))
+
+              (let ((user (getpw #$username)))
+                (for-each (lambda (directory)
+                            (unless (file-exists? directory)
+                              (mkdir-p/perms directory user #o755)))
+                          '#$directories))
+
+              (make-forkexec-constructor
+               (list #$(file-append package "/bin/snapserver")
+                     "--config" #$config-file)
+               #:user #$username
+               #:group #$groupname
+               #:log-file #$log-file))))
+       (stop #~(make-kill-destructor))
+       (actions (list (shepherd-configuration-action config-file)))))))
+
+(define (snapserver-accounts config)
+  (match-record config <snapserver-configuration> (user group)
+    (list (if (eq? (user-account-group user) %lazy-group)
+              (set-user-group user group)
+              user)
+          group)))
+
+(define snapserver-service-type
+  (service-type
+   (name 'snapserver)
+   (extensions
+    (list (service-extension shepherd-root-service-type
+                             (compose list snapserver-shepherd-service))
+          (service-extension account-service-type
+                             snapserver-accounts)))
+   (description "Run the Snapcast server, @command{snapserver}, which streams
+audio to Snapcast clients.")
+   (default-value (snapserver-configuration))))

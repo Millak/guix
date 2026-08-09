@@ -456,7 +456,7 @@ Services
 * Samba Services::              Samba services.
 * Continuous Integration::      Cuirass and Laminar services.
 * Power Management Services::   Extending battery life, etc.
-* Audio Services::              The MPD.
+* Audio Services::              The MPD and Snapcast.
 * Virtualization Services::     Virtualization services.
 * Version Control Services::    Software version control servers.
 * Game Services::               Game servers.
@@ -20622,7 +20622,7 @@ declaration.
 * Samba Services::              Samba services.
 * Continuous Integration::      Cuirass and Laminar services.
 * Power Management Services::   Extending battery life, etc.
-* Audio Services::              The MPD.
+* Audio Services::              The MPD and Snapcast.
 * Virtualization Services::     Virtualization services.
 * Version Control Services::    Software version control servers.
 * Game Services::               Game servers.
@@ -41763,8 +41763,9 @@ The handler for the battattach event.
 @node Audio Services
 @subsection Audio Services
 
-The @code{(gnu services audio)} module provides a service to start MPD
-(the Music Player Daemon).
+The @code{(gnu services audio)} module provides services to start MPD
+(the Music Player Daemon) and Snapcast, a multi-room audio streaming
+system.
 
 @cindex mpd
 @subsubheading Music Player Daemon
@@ -42162,6 +42163,171 @@ Allowed IP addresses.
 
 @item @code{deny} (default: @code{'()}) (type: list-of-strings)
 Disallowed IP addresses.
+
+@end table
+@end deftp
+@c %end of fragment
+
+@subsubheading Snapcast
+
+@cindex Snapcast
+@cindex multi-room audio
+
+@uref{https://github.com/badaix/snapcast, Snapcast} is a multi-room
+audio streaming system: @command{snapserver} receives audio from one or
+more sources and streams it to @command{snapclient} instances, which
+play it back in sync.
+
+The following example runs @command{snapserver} with a single named pipe
+as its audio source, in addition to the default HTTP interface on port
+1780 and the client-facing streaming interface on port 1704.
+
+@lisp
+(service snapserver-service-type
+         (snapserver-configuration
+          (streams (list (snapserver-stream
+                          (name "mpd")
+                          (location "/run/snapserver/mpd"))))))
+@end lisp
+
+@command{snapserver} creates the named pipes of its @code{pipe} sources
+when it starts, as the @samp{snapserver} user; make sure the program
+feeding such a pipe---the @code{fifo} output of MPD, for instance---is
+allowed to write to it.
+
+@defvar snapserver-service-type
+The service type for @command{snapserver}.
+@end defvar
+
+@c %start of fragment
+@deftp {Data Type} snapserver-configuration
+Available @code{snapserver-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{snapcast}) (type: file-like)
+The Snapcast package to use.
+
+@item @code{user} (default: @code{%snapserver-user}) (type: user-account)
+Owner of the @command{snapserver} process.
+
+@item @code{group} (default: @code{%snapserver-group}) (type: user-group)
+Owner group of the @command{snapserver} process.
+
+@item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbols)
+This is a list of symbols naming Shepherd services that this service
+will depend on.
+
+@item @code{log-file} (default: @code{"/var/log/snapserver.log"}) (type: string)
+File where @command{snapserver} writes its log.
+
+@item @code{log-filter} (default: @code{"*:info"}) (type: string)
+Log filter, given as @code{@var{tag}:@var{level}} pairs separated by
+commas, where @var{tag} is @code{*} or a log tag and @var{level} is one
+of @code{trace}, @code{debug}, @code{info}, @code{notice},
+@code{warning}, @code{error} or @code{fatal}.
+
+@item @code{data-directory} (default: @code{"/var/lib/snapserver"}) (type: string)
+Directory where @command{snapserver} stores persistent data, such as
+client settings.
+
+@item @code{mdns?} (default: @code{#t}) (type: boolean)
+Whether to publish the Snapcast services over mDNS.  This requires
+@code{avahi-service-type} (@pxref{Networking Services}).
+
+@item @code{http?} (default: @code{#t}) (type: boolean)
+Whether to enable the HTTP JSON-RPC interface, which also serves the
+Snapweb web interface.
+
+@item @code{http-port} (default: @code{1780}) (type: integer)
+Port the HTTP server listens on.
+
+@item @code{http-bind-address} (default: @code{"::"}) (type: string)
+Address the HTTP server listens on.
+
+@item @code{doc-root} (type: maybe-file-like)
+Directory served by the HTTP server.  It defaults to the Snapweb web
+interface bundled with the @code{package} field.
+
+@item @code{tcp-control?} (default: @code{#t}) (type: boolean)
+Whether to enable the TCP JSON-RPC control interface.
+
+@item @code{tcp-control-port} (default: @code{1705}) (type: integer)
+Port the TCP control interface listens on.
+
+@item @code{tcp-streaming?} (default: @code{#t}) (type: boolean)
+Whether to enable TCP streaming, which is what Snapcast clients connect
+to.
+
+@item @code{tcp-streaming-port} (default: @code{1704}) (type: integer)
+Port the TCP streaming interface listens on.
+
+@item @code{streams} (type: list-of-snapserver-stream)
+List of @code{snapserver-stream} records describing the audio sources
+@command{snapserver} reads from.
+
+@item @code{codec} (default: @code{"flac"}) (type: string)
+Default codec used to send audio to clients, given as
+@code{@var{codec}[:@var{options}]} where @var{codec} is one of
+@code{flac}, @code{ogg}, @code{opus} or @code{pcm}.
+
+@item @code{sampleformat} (default: @code{"48000:16:2"}) (type: string)
+Default sample format of the streams, given as
+@code{@var{rate}:@var{bits}:@var{channels}}.
+
+@item @code{buffer-ms} (default: @code{1000}) (type: integer)
+End-to-end latency, in milliseconds.
+
+@item @code{chunk-ms} (default: @code{20}) (type: integer)
+Default duration, in milliseconds, of the audio chunks read from the
+sources.
+
+@item @code{send-to-muted?} (default: @code{#f}) (type: boolean)
+Whether to send audio to muted clients.
+
+@item @code{extra-content} (type: maybe-string)
+Content appended verbatim to @file{snapserver.conf}, for options that
+are not covered by the fields above, such as the @code{[ssl]} and
+@code{[authorization]} sections.
+
+@end table
+@end deftp
+@c %end of fragment
+
+@c %start of fragment
+@deftp {Data Type} snapserver-stream
+Available @code{snapserver-stream} fields are:
+
+@table @asis
+@item @code{name} (default: @code{"default"}) (type: string)
+Name of the stream, as shown by Snapcast clients.
+
+@item @code{type} (default: @code{pipe}) (type: snapserver-stream-type)
+Type of the stream source: one of @code{pipe}, @code{file},
+@code{process}, @code{librespot}, @code{airplay}, @code{tcp},
+@code{alsa} or @code{meta}.
+
+@item @code{location} (default: @code{"/run/snapserver/snapfifo"}) (type: string)
+Location of the stream source: a file name for @code{pipe}, @code{file}
+and @code{process} streams, a host name for @code{tcp} streams, a device
+name for @code{alsa} streams, and a slash-separated list of stream names
+for @code{meta} streams.
+
+@item @code{codec} (type: maybe-string)
+Codec to use for this stream, overriding the @code{codec} field of
+@code{snapserver-configuration}.
+
+@item @code{sampleformat} (type: maybe-string)
+Sample format of this stream, given as
+@code{@var{rate}:@var{bits}:@var{channels}}, overriding the
+@code{sampleformat} field of @code{snapserver-configuration}.
+
+@item @code{chunk-ms} (type: maybe-integer)
+Duration, in milliseconds, of the audio chunks read from this source,
+overriding the @code{chunk-ms} field of @code{snapserver-configuration}.
+
+@item @code{parameters} (default: @code{'()}) (type: alist)
+Additional source parameters, given as an association list, for example
+@code{'(("controlscript" . "meta_mpd.py"))}.
 
 @end table
 @end deftp
