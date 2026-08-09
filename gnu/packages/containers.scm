@@ -20,6 +20,7 @@
 ;;; Copyright © 2024-2026 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2025, 2026 Foster Hangdaan <foster@hangdaan.email>
 ;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2026 Konstantin Suntsov <protvin@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1647,7 +1648,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
 (define-public podman
   (package
     (name "podman")
-    (version "6.0.1")
+    (version "6.0.2")
     (outputs '("out" "docker"))
     (properties
      `((output-synopsis "docker" "docker alias for podman")))
@@ -1658,7 +1659,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
              (url "https://github.com/podman-container-tools/podman")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1jkvaxx5857djqvfc1vd5pdw84xg7ch3fpzb0ia1l1hcwa132jhi"))
+        (base32 "0didfzk85zs7jmih6p7ak9xrdlvxm817zsgrc7wr2amq9aiifmc4"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
