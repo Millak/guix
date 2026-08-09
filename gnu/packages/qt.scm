@@ -3859,318 +3859,319 @@ and binaries removed, and adds modular support for using system libraries.")
 (define-public qtwebengine
   (package
     (name "qtwebengine")
-    (version "6.9.3")
+    (version "6.11.2")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
        (sha256
         (base32
-         "0rl9v936sq6spvb3sfkpmc51wwmljrn4ssy3ii0pdn0xsl8kn2ym"))
+         "0qy1lyykwwkp288v0y5kqnd1pmz8frzicpgfcldkv4zz02mc20b1"))
        (modules '((ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-1)
                   (srfi srfi-26)
                   (guix build utils)))
-       ;; This is only needed until 6.10, where it arrived upstream.
-       ;; https://codereview.qt-project.org/c/qt/qtwebengine/+/675112
-       (patches (search-patches "qtwebengine-revert-egl.patch"))
        (snippet
         #~(begin
             ;; Note: Anything under a 'third_party/' directory that needs to
             ;; be preserved must be explicitly added below, otherwise it gets
             ;; removed by the 'remove-third-party-files' code snippet included
             ;; below.  It is useful to refer to the list used by
-            ;; ungoogled-chromium when upgrading, but not all of the items
-            ;; present in it will need to be reported here, as Qt already
-            ;; removes components its build doesn't use.
+            ;; ungoogled-chromium (%preserved-third-party-files) when
+            ;; upgrading, but not all of the items present in it will need to
+            ;; be reported here, as Qt already removes components its build
+            ;; doesn't use.
+            ;;
+            ;; Note2: Every file name below are relative to the base
+            ;; src/3rdparty/chromium/ directory.
             (let ((preserved-third-party-files
-                  '("base/third_party/double_conversion"
-                    "base/third_party/cityhash"
-                    "base/third_party/cityhash_v103"
-                    "base/third_party/icu"
-                    "base/third_party/nspr"
-                    "base/third_party/superfasthash"
-                    "base/third_party/symbolize"
-                    "base/third_party/xdg_user_dirs"
-                    "net/third_party/mozilla_security_manager"
-                    "net/third_party/nss"
-                    "net/third_party/quiche"
-                    "net/third_party/uri_template"
-                    "third_party/abseil-cpp"
-                    "third_party/angle"
-                    "third_party/angle/src/common/third_party/xxhash"
-                    "third_party/angle/src/third_party/libXNVCtrl" ;Expat
-                    "third_party/angle/src/third_party/volk"
-                    "third_party/angle/src/third_party/ceval"
-                    "third_party/axe-core"
-                    "third_party/blink"
-                    "third_party/bidimapper"
-                    "third_party/boringssl"
-                    "third_party/boringssl/src/third_party/fiat"
-                    "third_party/breakpad"
-                    "third_party/brotli"
-                    "third_party/catapult"
-                    "third_party/catapult/common/py_vulcanize/third_party/rcssmin"
-                    "third_party/catapult/common/py_vulcanize/third_party/rjsmin"
-                    "third_party/catapult/third_party/polymer"
-                    "third_party/catapult/tracing/third_party/d3/d3.min.js"
-                    "third_party/catapult/tracing/third_party/gl-matrix/dist/gl-matrix-min.js"
-                    "third_party/catapult/tracing/third_party/jpeg-js/jpeg-js-decoder.js"
-                    "third_party/catapult/tracing/third_party/jszip/jszip.min.js"
-                    "third_party/catapult/tracing/third_party/mannwhitneyu/mannwhitneyu.js"
-                    "third_party/catapult/tracing/third_party/oboe/dist"
-                    "third_party/catapult/tracing/third_party/pako/pako.min.js"
-                    "third_party/ced"
-                    "third_party/cld_3"
-                    "third_party/closure_compiler"
-                    "third_party/cpuinfo" ;BSD-2
-                    "third_party/crabbyavif" ;ASL2.0
-                    "third_party/crashpad"
-                    "third_party/crashpad/crashpad/third_party/lss"
-                    "third_party/crashpad/crashpad/third_party/zlib"
-                    "third_party/crc32c"
-                    "third_party/d3"
-                    "third_party/dav1d"
-                    "third_party/dawn"
-                    "third_party/dawn/third_party/gn/webgpu-cts"
-                    "third_party/dawn/third_party/khronos"
-                    "third_party/devtools-frontend"
-                    "third_party/devtools-frontend/src/front_end/third_party/i18n"
-                    "third_party/devtools-frontend/src/front_end/third_party/\
+                   '("base/third_party/double_conversion"
+                     "base/third_party/cityhash"
+                     "base/third_party/cityhash_v103"
+                     "base/third_party/icu"
+                     "base/third_party/nspr"
+                     "base/third_party/superfasthash"
+                     "base/third_party/symbolize"
+                     "base/third_party/xdg_user_dirs"
+                     "net/third_party/mozilla_security_manager"
+                     "net/third_party/nss"
+                     "net/third_party/quiche"
+                     "net/third_party/uri_template"
+                     "third_party/abseil-cpp"
+                     "third_party/angle"
+                     "third_party/angle/src/common/third_party/xxhash"
+                     "third_party/angle/src/third_party/libXNVCtrl" ;Expat
+                     "third_party/angle/src/third_party/volk"
+                     "third_party/angle/src/third_party/ceval"
+                     "third_party/axe-core"
+                     "third_party/blink"
+                     "third_party/bidimapper"
+                     "third_party/boringssl"
+                     "third_party/boringssl/src/third_party/fiat"
+                     "third_party/breakpad"
+                     "third_party/brotli"
+                     "third_party/catapult"
+                     "third_party/catapult/common/py_vulcanize/third_party/rcssmin"
+                     "third_party/catapult/common/py_vulcanize/third_party/rjsmin"
+                     "third_party/catapult/third_party/polymer"
+                     "third_party/catapult/tracing/third_party/d3/d3.min.js"
+                     "third_party/catapult/tracing/third_party/gl-matrix/dist/gl-matrix-min.js"
+                     "third_party/catapult/tracing/third_party/jpeg-js/jpeg-js-decoder.js"
+                     "third_party/catapult/tracing/third_party/jszip/jszip.min.js"
+                     "third_party/catapult/tracing/third_party/mannwhitneyu/mannwhitneyu.js"
+                     "third_party/catapult/tracing/third_party/oboe/dist"
+                     "third_party/catapult/tracing/third_party/pako/pako.min.js"
+                     "third_party/ced"
+                     "third_party/cld_3"
+                     "third_party/closure_compiler"
+                     "third_party/cpuinfo"    ;BSD-2
+                     "third_party/crabbyavif" ;ASL2.0
+                     "third_party/crashpad"
+                     "third_party/crashpad/crashpad/third_party/lss"
+                     "third_party/crashpad/crashpad/third_party/zlib"
+                     "third_party/crc32c"
+                     "third_party/d3"
+                     "third_party/dav1d"
+                     "third_party/dawn"
+                     "third_party/dawn/third_party/gn/webgpu-cts"
+                     "third_party/dawn/third_party/khronos"
+                     "third_party/devtools-frontend"
+                     "third_party/devtools-frontend/src/front_end/third_party/acorn" ;Expat
+                     "third_party/devtools-frontend/src/front_end/third_party/\
 additional_readme_paths.json"
-                    "third_party/devtools-frontend/src/front_end/third_party/axe-core"
-                    "third_party/devtools-frontend/src/front_end/third_party/chromium"
-                    "third_party/devtools-frontend/src/front_end/third_party/codemirror"
-                    "third_party/devtools-frontend/src/front_end/third_party/codemirror.next"
-                    "third_party/devtools-frontend/src/front_end/third_party/csp_evaluator"
-                    "third_party/devtools-frontend/src/front_end/third_party/diff"
-                    "third_party/devtools-frontend/src/front_end/third_party/intl-messageformat"
-                    "third_party/devtools-frontend/src/front_end/third_party/lighthouse"
-                    "third_party/devtools-frontend/src/front_end/third_party/lit"
-                    "third_party/devtools-frontend/src/front_end/third_party/acorn"
-                    "third_party/devtools-frontend/src/front_end/third_party/marked"
-                    "third_party/devtools-frontend/src/front_end/third_party/puppeteer"
-                    "third_party/devtools-frontend/src/front_end/third_party/\
-puppeteer/package/lib/esm/third_party/mitt"
-                    "third_party/devtools-frontend/src/front_end/third_party/\
+                     "third_party/devtools-frontend/src/front_end/third_party/axe-core"
+                     "third_party/devtools-frontend/src/front_end/third_party/chromium"
+                     "third_party/devtools-frontend/src/front_end/third_party/codemirror"
+                     "third_party/devtools-frontend/src/front_end/third_party/codemirror.next"
+                     "third_party/devtools-frontend/src/front_end/third_party/csp_evaluator"
+                     "third_party/devtools-frontend/src/front_end/third_party/diff"
+                     "third_party/devtools-frontend/src/front_end/third_party/i18n" ;ASL2.0
+                     "third_party/devtools-frontend/src/front_end/third_party/intl-messageformat"
+                     "third_party/devtools-frontend/src/front_end/third_party/json5" ;Expat
+                     "third_party/devtools-frontend/src/front_end/third_party/legacy-javascript" ;ASL-2.0
+                     "third_party/devtools-frontend/src/front_end/third_party/lighthouse"
+                     "third_party/devtools-frontend/src/front_end/third_party/lit"
+                     "third_party/devtools-frontend/src/front_end/third_party/marked"
+                     "third_party/devtools-frontend/src/front_end/third_party/\
+puppeteer"                              ;ASL2.0
+                     "third_party/devtools-frontend/src/front_end/third_party/\
+puppeteer/package/lib/esm/third_party/mitt" ;Expat
+                     "third_party/devtools-frontend/src/front_end/third_party/\
 puppeteer/package/lib/esm/third_party/parsel-js" ;Expat
-                    "third_party/devtools-frontend/src/front_end/third_party/\
-puppeteer/package/lib/esm/third_party/rxjs"
-                    "third_party/devtools-frontend/src/front_end/third_party/\
-vscode.web-custom-data"
-                    "third_party/devtools-frontend/src/front_end/third_party/puppeteer-replay"
-                    "third_party/devtools-frontend/src/third_party/pyjson5"
-                    "third_party/devtools-frontend/src/front_end/third_party/\
+                     "third_party/devtools-frontend/src/front_end/third_party/\
+puppeteer/package/lib/esm/third_party/rxjs" ;ASL2.0
+                     "third_party/devtools-frontend/src/front_end/third_party/\
+puppeteer-replay"                       ;ASL2.0
+                     "third_party/devtools-frontend/src/third_party/pyjson5" ;ASL2.0
+
+                     "third_party/devtools-frontend/src/front_end/third_party/\
+source-map-scopes-codec"                ;BSD-3
+                     "third_party/devtools-frontend/src/front_end/third_party/\
 third-party-web"                        ;Expat
-                    "third_party/devtools-frontend/src/front_end/third_party/wasmparser"
-                    "third_party/devtools-frontend/src/front_end/third_party/\
+                     "third_party/devtools-frontend/src/front_end/third_party/\
+vscode.web-custom-data"                 ;Expat
+                     "third_party/devtools-frontend/src/front_end/third_party/\
+wasmparser"                             ;ASL2.0
+                     "third_party/devtools-frontend/src/front_end/third_party/\
 web-vitals"                             ;ASL2.0
-                    "third_party/devtools-frontend/src/scripts/build/typescript"
-                    "third_party/devtools-frontend/src/third_party/i18n"
-                    "third_party/distributed_point_functions"
-                    "third_party/dom_distiller_js"
-                    "third_party/emoji-segmenter"
-                    "third_party/fast_float" ;Expat (or ASL2.0 or Boost)
-                    "third_party/fdlibm"
-                    "third_party/ffmpeg/libavcodec/avcodec.h"
-                    "third_party/ffmpeg/libavcodec/packet.h"
-                    "third_party/ffmpeg/libavformat/avformat.h"
-                    "third_party/ffmpeg/libavformat/avio.h"
-                    "third_party/ffmpeg/libavutil/avutil.h"
-                    "third_party/ffmpeg/libavutil/imgutils.h"
-                    "third_party/ffmpeg/libavutil/log.h"
-                    "third_party/ffmpeg/libavutil/mathematics.h"
-                    "third_party/ffmpeg/libavutil/opt.h"
-                    "third_party/fft2d"
-                    "third_party/flatbuffers"
-                    "third_party/fp16"  ;Expat
-                    "third_party/freetype"
-                    "third_party/gemmlowp" ;ASL2.0
-                    "third_party/google_input_tools" ;ASL2.0
-                    "third_party/googletest"
-                    "third_party/harfbuzz-ng"
-                    "third_party/highway"
-                    "third_party/hunspell"
-                    "third_party/iccjpeg"
-                    "third_party/icu" ;TODO: make pdfium use system version
-                    "third_party/inspector_protocol"
-                    "third_party/ipcz" ;BSD-3
-                    "third_party/jinja2"
-                    "third_party/jsoncpp"
-                    "third_party/jstemplate"
-                    "third_party/khronos"
-                    "third_party/leveldatabase"
-                    "third_party/libaddressinput"
-                    "third_party/libaom"
-                    "third_party/libaom/source/libaom/third_party/fastfeat"
-                    "third_party/libaom/source/libaom/third_party/SVT-AV1" ;BSD-3
-                    "third_party/libaom/source/libaom/third_party/vector"
-                    "third_party/libaom/source/libaom/third_party/x86inc"
-                    "third_party/libavif"
-                    "third_party/libavifinfo"
-                    "third_party/libevent"
-                    "third_party/libgav1"
-                    "third_party/libjingle_xmpp"
-                    "third_party/libjpeg_turbo"
-                    "third_party/libpng" ;TODO: make pdfium use system version
-                    "third_party/libsecret" ;LGPL2.1+
-                    "third_party/libsrtp"
-                    "third_party/libsync"
-                    "third_party/liburlpattern"
-                    "third_party/libva_protected_content" ;Expat
-                    "third_party/libvpx"
-                    "third_party/libvpx/source/libvpx/third_party/x86inc" ;Expat
-                    "third_party/libwebm"
-                    "third_party/libwebp"
-                    "third_party/libx11"
-                    "third_party/libxcb-keysyms"
-                    "third_party/libxml"
-                    "third_party/libyuv"
-                    "third_party/libzip" ;BSD-3
-                    "third_party/lit"
-                    "third_party/lottie"
-                    "third_party/lss"
-                    "third_party/mako"
-                    "third_party/markupsafe"
-                    "third_party/material_color_utilities" ;ASL2.0
-                    "third_party/mesa_headers"
-                    "third_party/metrics_proto"
-                    "third_party/minigbm" ;BSD-3
-                    "third_party/modp_b64"
-                    "third_party/nasm"
-                    "third_party/nearby" ;ASL2.0
-                    "third_party/node"
-                    "third_party/omnibox_proto" ;BSD-3
-                    "third_party/one_euro_filter"
-                    "third_party/openscreen" ;BSD-3
-                    "third_party/openscreen/src/third_party/tinycbor" ;Expat
-                    "third_party/openh264"
-                    "third_party/opus/src/include/opus.h"
-                    "third_party/opus/src/include/opus_custom.h"
-                    "third_party/opus/src/include/opus_defines.h"
-                    "third_party/opus/src/include/opus_multistream.h"
-                    "third_party/opus/src/include/opus_types.h"
-                    "third_party/ots"
-                    "third_party/flac"
-                    "third_party/pdfium"
-                    "third_party/pdfium/third_party/agg23"
-                    "third_party/pdfium/third_party/bigint"
-                    "third_party/pdfium/third_party/freetype"
-                    "third_party/pdfium/third_party/lcms"
-                    "third_party/pdfium/third_party/libopenjpeg"
-                    "third_party/pdfium/third_party/libtiff"
-                    "third_party/pdfium/third_party/freetype/include/pstables.h" ;FreeType
-                    "third_party/perfetto"
-                    "third_party/perfetto/protos/third_party/chromium"
-                    "third_party/perfetto/protos/third_party/simpleperf" ;ASL2.0
-                    "third_party/pffft"
-                    "third_party/ply"
-                    "third_party/polymer"
-                    "third_party/private_membership" ;ASL2.0
-                    "third_party/private-join-and-compute" ;ASL2.0
-                    "third_party/protobuf"
-                    "third_party/protobuf-javascript" ;BSD-3
-                    "third_party/pthreadpool" ;BSD-2
-                    "third_party/pyjson5"
-                    "third_party/qcms" ;Expat
-                    "third_party/rapidhash/rapidhash.h" ;BSD-2
-                    "third_party/re2"
-                    "third_party/rnnoise"
-                    "third_party/ruy" ;ASL2.0
-                    "third_party/selenium-atoms"
-                    "third_party/s2cellid" ;ASL2.0
-                    "third_party/securemessage" ;ASL2.0
-                    "third_party/shell-encryption" ;ASL2.0
-                    "third_party/skia"
-                    "third_party/skia/include/third_party/vulkan"
-                    "third_party/skia/modules/skcms"
-                    "third_party/skia/third_party/vulkanmemoryallocator"
-                    "third_party/smhasher"
-                    "third_party/snappy"
-                    "third_party/speech-dispatcher"
-                    "third_party/sqlite"
-                    "third_party/swiftshader" ;ASL2.0
-                    "third_party/swiftshader/third_party/llvm-10.0" ;ASL2.0, with LLVM exception
-                    "third_party/swiftshader/third_party/marl" ;ASL2.0
-                    "third_party/swiftshader/third_party/SPIRV-Headers" ;X11-style
-                    "third_party/swiftshader/third_party/SPIRV-Tools" ;ASL2.0
-                    "third_party/tensorflow-text" ;ASL2.0
-                    "third_party/tflite" ;ASL2.0
-                    "third_party/tflite_support" ;ASL2.0
-                    "third_party/ukey2" ;ASL2.0
-                    "third_party/usb_ids"
-                    "third_party/utf" ;Expat
-                    "third_party/glslang"
-                    "third_party/spirv-headers"
-                    "third_party/spirv-tools"
-                    "third_party/vulkan-headers"
-                    "third_party/vulkan-loader"
-                    "third_party/vulkan-tools"
-                    "third_party/vulkan-validation-layers"
-                    "third_party/vulkan_memory_allocator"
-                    "third_party/webgpu-cts"
-                    "third_party/webrtc"
-                    "third_party/webrtc/common_audio/third_party/ooura"
-                    "third_party/webrtc/common_audio/third_party/spl_sqrt_floor"
-                    "third_party/webrtc/modules/third_party/fft"
-                    "third_party/webrtc/modules/third_party/g711"
-                    "third_party/webrtc/modules/third_party/g722"
-                    "third_party/webrtc/rtc_base/third_party/base64"
-                    "third_party/webrtc/rtc_base/third_party/sigslot"
-                    "third_party/webrtc_overrides"
-                    "third_party/widevine/cdm/widevine_cdm_common.h"
-                    "third_party/widevine/cdm/widevine_cdm_version.h"
-                    "third_party/woff2"
-                    "third_party/wuffs"
-                    "third_party/x11proto"
-                    "third_party/xnnpack" ;BSD-3
-                    "third_party/zstd"
-                    "third_party/zlib" ;TODO: make pdfium use system version
-                    "third_party/zxcvbn-cpp" ;Expat
-                    "url/third_party/mozilla"
-                    "v8/src/third_party/siphash"
-                    "v8/src/third_party/utf8-decoder"
-                    "v8/src/third_party/valgrind"
-                    "v8/third_party/inspector_protocol"
-                    "v8/third_party/glibc/src/sysdeps/ieee754/dbl-64"
-                    "v8/third_party/v8/builtins"
-                    "v8/third_party/v8/codegen/fp16-inl.h"))) ;Expat
+                     "third_party/devtools-frontend/src/scripts/build/typescript"
+                     "third_party/devtools-frontend/src/third_party/i18n"
+                     "third_party/dom_distiller_js"
+                     "third_party/dragonbox" ;ASL2.0, Boost1.0
+                     "third_party/emoji-segmenter"
+                     "third_party/fast_float" ;Expat (or ASL2.0 or Boost)
+                     "third_party/fdlibm"
+                     "third_party/ffmpeg/libavcodec/avcodec.h"
+                     "third_party/ffmpeg/libavcodec/packet.h"
+                     "third_party/ffmpeg/libavformat/avformat.h"
+                     "third_party/ffmpeg/libavformat/avio.h"
+                     "third_party/ffmpeg/libavutil/avutil.h"
+                     "third_party/ffmpeg/libavutil/imgutils.h"
+                     "third_party/ffmpeg/libavutil/log.h"
+                     "third_party/ffmpeg/libavutil/mathematics.h"
+                     "third_party/ffmpeg/libavutil/opt.h"
+                     "third_party/fft2d"
+                     "third_party/flatbuffers"
+                     "third_party/fp16" ;Expat
+                     "third_party/freetype"
+                     "third_party/gemmlowp"           ;ASL2.0
+                     "third_party/google_input_tools" ;ASL2.0
+                     "third_party/googletest"
+                     "third_party/harfbuzz-ng"
+                     "third_party/highway"
+                     "third_party/hunspell"
+                     "third_party/icu"  ;TODO: make pdfium use system version
+                     "third_party/inspector_protocol"
+                     "third_party/ipcz" ;BSD-3
+                     "third_party/jinja2"
+                     "third_party/jsoncpp"
+                     "third_party/khronos"
+                     "third_party/leveldatabase"
+                     "third_party/libaddressinput"
+                     "third_party/libaom"
+                     "third_party/libaom/source/libaom/third_party/fastfeat"
+                     "third_party/libaom/source/libaom/third_party/SVT-AV1" ;BSD-3
+                     "third_party/libaom/source/libaom/third_party/vector"
+                     "third_party/libaom/source/libaom/third_party/x86inc"
+                     "third_party/libavif"
+                     "third_party/libgav1"
+                     "third_party/libjingle_xmpp"
+                     "third_party/libjpeg_turbo"
+                     "third_party/libpng" ;TODO: make pdfium use system version
+                     "third_party/libsecret" ;LGPL2.1+
+                     "third_party/libsrtp"
+                     "third_party/libsync"
+                     "third_party/liburlpattern"
+                     "third_party/libva_protected_content" ;Expat
+                     "third_party/libvpx"
+                     "third_party/libvpx/source/libvpx/third_party/x86inc" ;Expat
+                     "third_party/libwebm"
+                     "third_party/libwebp"
+                     "third_party/libx11"
+                     "third_party/libxcb-keysyms"
+                     "third_party/libxml"
+                     "third_party/libyuv"   ;BSD-3
+                     "third_party/libzip"   ;BSD-3
+                     "third_party/lit"      ;BSD-3
+                     "third_party/lottie"   ;Expat
+                     "third_party/lss"      ;BSD-3
+                     "third_party/lzma_sdk" ;public domain
+                     "third_party/mako"
+                     "third_party/markupsafe"
+                     "third_party/material_color_utilities" ;ASL2.0
+                     "third_party/metrics_proto"
+                     "third_party/minigbm" ;BSD-3
+                     "third_party/modp_b64"
+                     "third_party/nasm"
+                     "third_party/nearby" ;ASL2.0
+                     "third_party/node"
+                     "third_party/omnibox_proto" ;BSD-3
+                     "third_party/one_euro_filter"
+                     "third_party/openscreen"                          ;BSD-3
+                     "third_party/openscreen/src/third_party/tinycbor" ;Expat
+                     ;; TODO: Report to chromium that using openh264 from
+                     ;; system still requires bundled sources.
+                     "third_party/openh264"
+                     "third_party/opus/src/include/opus.h"
+                     "third_party/opus/src/include/opus_custom.h"
+                     "third_party/opus/src/include/opus_defines.h"
+                     "third_party/opus/src/include/opus_multistream.h"
+                     "third_party/opus/src/include/opus_types.h"
+                     "third_party/ots"
+                     "third_party/flac"
+                     "third_party/pdfium"
+                     "third_party/pdfium/third_party/agg23"
+                     "third_party/pdfium/third_party/bigint"
+                     "third_party/pdfium/third_party/freetype"
+                     "third_party/pdfium/third_party/lcms" ;Expat
+                     "third_party/pdfium/third_party/libopenjpeg" ;BSD-2
+                     "third_party/pdfium/third_party/libtiff"
+                     "third_party/pdfium/third_party/freetype/include/pstables.h" ;FreeType
+                     "third_party/perfetto"
+                     "third_party/perfetto/protos/third_party/chromium"
+                     "third_party/perfetto/protos/third_party/simpleperf" ;ASL2.0
+                     "third_party/pffft"
+                     "third_party/ply"
+                     "third_party/polymer"
+                     "third_party/private_membership"       ;ASL2.0
+                     "third_party/private-join-and-compute" ;ASL2.0
+                     "third_party/protobuf"
+                     "third_party/protobuf/third_party/utf8_range" ;Expat
+                     "third_party/protobuf-javascript"             ;BSD-3
+                     "third_party/pthreadpool"                     ;BSD-2
+                     "third_party/puffin" ;Non-copyleft
+                     "third_party/pyjson5"
+                     "third_party/rapidhash/rapidhash.h" ;BSD-2
+                     "third_party/re2"
+                     "third_party/rnnoise"
+                     "third_party/s2cellid"            ;ASL2.0
+                     "third_party/search_engines_data" ;BSD-3
+                     "third_party/securemessage"       ;ASL2.0
+                     "third_party/selenium-atoms"
+                     "third_party/shell-encryption" ;ASL2.0
+                     "third_party/simdutf"          ;Non-copyleft
+                     "third_party/skia"
+                     "third_party/skia/include/third_party/vulkan"
+                     "third_party/skia/modules/skcms"
+                     "third_party/skia/third_party/vulkanmemoryallocator"
+                     "third_party/smhasher"
+                     "third_party/snappy"
+                     "third_party/speech-dispatcher"
+                     "third_party/sqlite"
+                     "third_party/swiftshader"                       ;ASL2.0
+                     "third_party/swiftshader/third_party/llvm-10.0" ;ASL2.0, with LLVM exception
+                     "third_party/swiftshader/third_party/marl"      ;ASL2.0
+                     "third_party/swiftshader/third_party/SPIRV-Headers" ;X11-style
+                     "third_party/swiftshader/third_party/SPIRV-Tools" ;ASL2.0
+                     "third_party/tensorflow-text"                     ;ASL2.0
+                     "third_party/tflite"                              ;ASL2.0
+                     "third_party/tflite_support"                      ;ASL2.0
+                     "third_party/ukey2"                               ;ASL2.0
+                     "third_party/usb_ids"
+                     "third_party/utf"  ;Expat
+                     "third_party/glslang"
+                     "third_party/spirv-headers"
+                     "third_party/spirv-tools"
+                     "third_party/vulkan-headers"
+                     "third_party/vulkan-loader"
+                     "third_party/vulkan-tools"
+                     "third_party/vulkan-validation-layers"
+                     "third_party/vulkan_memory_allocator"
+                     "third_party/webgpu-cts"
+                     "third_party/webrtc"
+                     "third_party/webrtc/common_audio/third_party/ooura"
+                     "third_party/webrtc/common_audio/third_party/spl_sqrt_floor"
+                     "third_party/webrtc/modules/third_party/fft"
+                     "third_party/webrtc/modules/third_party/g711"
+                     "third_party/webrtc/modules/third_party/g722"
+                     "third_party/webrtc/rtc_base/third_party/sigslot"
+                     "third_party/webrtc_overrides"
+                     "third_party/widevine/cdm/widevine_cdm_common.h"
+                     "third_party/woff2"
+                     "third_party/wuffs"
+                     "third_party/x11proto"
+                     "third_party/xnnpack" ;BSD-3
+                     "third_party/zlib" ;TODO: make pdfium use system version
+                     "third_party/zstd"
+                     "third_party/zxcvbn-cpp" ;Expat
+                     "url/third_party/mozilla"
+                     "v8/third_party/inspector_protocol"
+                     "v8/third_party/glibc/src/sysdeps/ieee754/dbl-64"
+                     "v8/third_party/inspector_protocol" ;BSD-3
+                     "v8/third_party/rapidhash-v8"       ;BSD-2
+                     "v8/third_party/siphash"      ;CC0 1.0
+                     "v8/third_party/utf8-decoder" ;Non-copyleft
+                     "v8/third_party/valgrind"     ;BSD
+                     "v8/third_party/v8/builtins"  ;PSFL2.0
+                     "v8/third_party/v8/codegen"))) ;Expat
+              (with-directory-excursion "src/3rdparty"
+                (with-directory-excursion "chromium"
+                  ;; Delete bundled software and binaries that were not
+                  ;; explicitly preserved above.
+                  #$remove-third-party-files
 
-             (with-directory-excursion "src/3rdparty"
-               (with-directory-excursion "chromium"
-                 ;; Delete bundled software and binaries that were not
-                 ;; explicitly preserved above.
-                 #$remove-third-party-files
-
-                 ;; Use relative header locations instead of hard coded ones.
-                 (substitute* '("v8/BUILD.gn"
-                                "v8/src/codegen/ia32/cpu-ia32.cc"
-                                "v8/src/codegen/x64/cpu-x64.cc")
-                   ((".*\"src/third_party/valgrind/valgrind.h\",.*")
-                    "")
-                   (("#include \"src/third_party/valgrind/valgrind.h\"")
-                    ""))
-                 (substitute* "third_party/breakpad/breakpad/src/common/\
+                  ;; Use relative header locations instead of hard coded ones.
+                  (substitute* "third_party/breakpad/breakpad/src/common/\
 linux/libcurl_wrapper.h"
-                   (("third_party/curl") "curl"))
-                 (substitute*
-                     '("components/viz/common/gpu/vulkan_context_provider.h"
-                       "gpu/config/gpu_util.cc")
-                   (("third_party/vulkan/include/")
-                    ""))
+                    (("third_party/curl") "curl"))
+                  (substitute*
+                      '("components/viz/common/gpu/vulkan_context_provider.h"
+                        "gpu/config/gpu_util.cc")
+                    (("third_party/vulkan/include/")
+                     ""))
 
-                 ;; Replace Google Analytics bundle with an empty file and
-                 ;; hope no one notices.
-                 (mkdir-p "third_party/analytics")
-                 (call-with-output-file
-                     "third_party/analytics/google-analytics-bundle.js"
-                   (lambda (port)
-                     (const #t)))))
+                  ;; Replace Google Analytics bundle with an empty file and
+                  ;; hope no one notices.
+                  (mkdir-p "third_party/analytics")
+                  (call-with-output-file
+                      "third_party/analytics/google-analytics-bundle.js"
+                    (lambda (port)
+                      (const #t)))))
               (substitute* "src/core/CMakeLists.txt"
                 (("enable_widevine=true")
                  (string-join
-                  '(;; Do not enable support for loading the Widevine DRM
+                  '( ;; Do not enable support for loading the Widevine DRM
                     ;; plugin.
                     "enable_widevine=false"
                     ;; Link pulseaudio directly instead of using dlopen.
@@ -4209,25 +4210,41 @@ linux/libcurl_wrapper.h"
               "-DQT_FEATURE_webengine_system_alsa=ON"
               "-DQT_FEATURE_webengine_system_ffmpeg=ON"
               "-DQT_FEATURE_webengine_system_freetype=ON"
+              "-DQT_FEATURE_webengine_system_gbm=ON"
               "-DQT_FEATURE_webengine_system_harfbuzz=ON"
               "-DQT_FEATURE_webengine_system_icu=ON"
               "-DQT_FEATURE_webengine_system_lcms2=ON"
               "-DQT_FEATURE_webengine_system_libevent=ON"
               "-DQT_FEATURE_webengine_system_libjpeg=ON"
+              "-DQT_FEATURE_webengine_system_libopenjpeg2=ON"
               "-DQT_FEATURE_webengine_system_libpci=ON"
               "-DQT_FEATURE_webengine_system_libpng=ON"
               "-DQT_FEATURE_webengine_system_libtiff=ON"
+              ;; TODO: Report bug to chromium: build relies on internal
+              ;; headers of libvpx.
+              "-DQT_FEATURE_webengine_system_libvpx=OFF"
               "-DQT_FEATURE_webengine_system_libwebp=ON"
               "-DQT_FEATURE_webengine_system_libxml=ON"
+              "-DQT_FEATURE_webengine_system_libudev=ON"
               "-DQT_FEATURE_webengine_system_minizip=ON"
+              "-DQT_FEATURE_webengine_system_openh264=ON"
               "-DQT_FEATURE_webengine_system_opus=ON"
               "-DQT_FEATURE_webengine_system_pulseaudio=ON"
               "-DQT_FEATURE_webengine_system_re2=ON"
               "-DQT_FEATURE_webengine_system_zlib=ON"
               "-DQT_FEATURE_webengine_system_glib=ON"
-              "-DQT_FEATURE_webengine_system_snappy=ON")
+              "-DQT_FEATURE_webengine_system_snappy=ON"
+              "-DQT_FEATURE_webengine_webrtc_system_openh264=ON")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-system-libdrm
+            (lambda _
+              (substitute* "src/3rdparty/chromium/build/config/linux/\
+libdrm/BUILD.gn"
+                (("if \\(use_system_libdrm)")
+                 "if (true)")
+                ((".*assert.*libdrm is not supported in linux.*")
+                 ""))))
           (add-after 'unpack 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Qtwebengine is not installed into the same prefix as qtbase.
@@ -4285,10 +4302,10 @@ linux/libcurl_wrapper.h"
                (string-append #$output "/tests")))))))
     (native-inputs
      (list bison
-           clang-20
+           clang
            flex
            gperf
-           lld-as-ld-wrapper-18
+           lld-as-ld-wrapper
            ninja
            node-lts
            perl
@@ -4312,11 +4329,11 @@ linux/libcurl_wrapper.h"
            jsoncpp
            lcms
            libcap
+           libdrm
            libevent
            libgcrypt
            libjpeg-turbo
            libva
-           libvpx
            libwebp
            libx11
            libxcb
@@ -4337,6 +4354,7 @@ linux/libcurl_wrapper.h"
            minizip
            nss
            openh264
+           openjpeg
            opus
            pciutils
            protobuf
