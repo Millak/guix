@@ -3163,13 +3163,13 @@ graphs by selecting one of the charts themes.")
 (define-public qtcharts
   (package
     (name "qtcharts")
-    (version "6.9.2")
+    (version "6.11.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0jzzlh0jq5fidgs9r4aqpilyj0nan30r1d0pigp1hgz7cigz20cz"))))
+                "0agvnva90diqvllfvrd1smicar6nlv5pjqvwjfg509fih4xyasah"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3207,13 +3207,13 @@ graphs by selecting one of the charts themes.")
 (define-public qtgraphs
   (package
     (name "qtgraphs")
-    (version "6.9.2")
+    (version "6.11.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0wsa4iar52dhiilyl053j7lmsw3xdn47b0pjrylb5a0ij1izp057"))))
+                "08cbzc0146j4d18dlqsw0qbilhcwk1hi9h8n84adsigs9a2hj8cz"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
