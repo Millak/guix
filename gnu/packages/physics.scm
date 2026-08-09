@@ -1034,23 +1034,42 @@ conventions.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pace-neutrons/Euphonic.git")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pace-neutrons/Euphonic")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1w6rks3ipbv2dxw9kvypj2s185ysc4c3hlc6ym6x4wvr97gkx0id"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1117 passed, 6 skipped, 563 warnings
       #:test-flags
-      #~(list
-         "-k"
-         (string-append
-          ;; All these tests expect warnings that are not emitted.
-          "not test_calculate_dos_map and "
-          "not test_get_dispersion and not "
-          "test_calculate_sqw_map_with_0_inv_cm_bin_doesnt_emit_runtime_warn "
-          "and not test_get_qpt_labels "))
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; Failed: DID NOT WARN. No warnings of type (<class
+              ;; 'UserWarning'>,) were emitted. Emitted warnings: [].
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests_and_analysis/"
+                                                    "test/euphonic_test/"
+                                                    test))
+                      (list
+                       (string-append "test_qpoint_frequencies.py"
+                                      "::TestQpointFrequenciesCalculateDosMap"
+                                      "::test_calculate_dos_map")
+                       (string-append "test_qpoint_frequencies.py"
+                                      "::TestQpointFrequenciesGetDispersion"
+                                      "::test_get_dispersion")
+                       (string-append "test_structure_factor.py"
+                                      "::TestStructureFactorCalculateSqwMap"
+                                      "::test_calculate_sqw_map_with_0_"
+                                      "inv_cm_bin_doesnt_emit_runtime_warn")
+                       (string-append "test_util.py::TestGetQptLabels"
+                                      "::test_get_qpt_labels")))
+              ;; XXX: <...>/h5py/defs.cpython-312-x86_64-linux-gnu.so:
+              ;; undefined symbol: H5Pset_dxpl_mpio
+              (string-append "--deselect=tests_and_analysis/test/"
+                             "script_tests/test_dispersion.py"
+                             "::TestRegression"
+                             "::test_dispersion_plot_data_from_phonopy"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'fix-numpy-include
@@ -1065,22 +1084,28 @@ conventions.")
             (lambda _
               (delete-file-recursively "euphonic"))))))
     (propagated-inputs
-     (list python-brille ; optional
-           python-h5py ; optional, for phonopy-reader
-           python-matplotlib ; optional
-           python-pyyaml ; optional, for phonopy-reader
-           python-numpy
-           python-scipy
+     (list python-numpy
+           python-packaging
            python-pint
+           python-scipy
            python-seekpath
            python-spglib
            python-threadpoolctl
-           python-toolz))
+           python-toolz
+           python-typing-extensions
+           ;; [optional]
+           python-brille
+           python-h5py
+           python-matplotlib
+           python-pyyaml))
     (native-inputs
-     ;; Note: build-backend is mesonpy.
-     (list ninja python-meson python-numpy python-packaging python-pytest
-           python-pytest-lazy-fixtures python-pytest-mock
-           pkg-config))
+     (list ninja
+           pkg-config
+           python-meson
+           python-pytest
+           python-pytest-xdist
+           python-pytest-lazy-fixtures
+           python-pytest-mock))
     (home-page "https://github.com/pace-neutrons/Euphonic")
     (synopsis "Phonon calculations for inelastic neutron scattering")
     (description
