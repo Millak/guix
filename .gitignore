@@ -69,7 +69,6 @@
 /doc/version.texi
 /doc/version-*.texi
 /etc/apparmor.d/tunables/guix
-/etc/committer.scm
 /etc/gnu-store.mount
 /etc/guix-daemon.cil
 /etc/guix-daemon.conf

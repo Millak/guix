@@ -1,5 +1,6 @@
-#!@GUILE@ \
---no-auto-compile -s
+#!/bin/sh
+# -*- mode: scheme; -*-
+exec guix repl -- "$0" "$@"
 !#
 
 ;;; GNU Guix --- Functional package management for GNU
