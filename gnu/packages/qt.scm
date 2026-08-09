@@ -4649,14 +4649,14 @@ contain over 620 classes.")
 (define-public python-pyqt-6
   (package
     (inherit python-pyqt)
-    (version "6.9.1")
+    (version "6.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyqt6" version))
        (file-name (string-append "pyqt6-" version ".tar.gz"))
        (sha256
-        (base32 "19n3q6b8mbzswrkq5rqmkh1kx0br1xd1z6m024hiq3xl7zh2nr2h"))))
+        (base32 "12c8f5vcqvl2smgyzv0rm79an9bagd76pvawif8y2vcpd6m61pa5"))))
     (inputs ;Qt5 dependencies only in python-pyqt:
             ;; (qt)connectivity, location, sensors, serialport, x11extras, xmlpatterns.
             (list python-wrapper
