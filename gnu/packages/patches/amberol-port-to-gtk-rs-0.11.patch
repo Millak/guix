@@ -1,0 +1,82 @@
+Upstream-status: https://gitlab.gnome.org/World/amberol/-/commit/09edf9ec49d80e53aff5df871b6818061d844dfe
+From 09edf9ec49d80e53aff5df871b6818061d844dfe Mon Sep 17 00:00:00 2001
+From: Matthias Geiger <werdahias@debian.org>
+Date: Tue, 26 May 2026 22:12:21 +0200
+Subject: [PATCH] chore: port to gtk-rs 0.11
+
+Signed-off-by: Matthias Geiger <werdahias@debian.org>
+---
+ Cargo.toml         |   18 +-
+ src/application.rs |    4 +-
+ 3 files changed, 524 insertions(+), 757 deletions(-)
+
+diff --git a/Cargo.toml b/Cargo.toml
+index f33f9c8..b2781c2 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -9,16 +9,16 @@ edition = "2018"
+ 
+ [dependencies]
+ color-thief = "0.2.1"
+-gdk-pixbuf = { version = "0.21", features = ["v2_42"] }
++gdk-pixbuf = { version = "0.22", features = ["v2_42"] }
+ gettext-rs = { version = "0.7", features = ["gettext-system"] }
+-gtk = { version = "0.10", package = "gtk4", features = ["v4_16"] }
++gtk = { version = "0.11", package = "gtk4", features = ["v4_16"] }
+ itertools = "0.14"
+-lofty = "0.23.3"
++lofty = "0.24"
+ log = "0.4"
+ mpris-server = "0.8"
+ once_cell = "1.10"
+ pretty_env_logger = "0.5"
+-rand = { version = "0.9", features = ["thread_rng"]}
++rand = { version = "0.10", features = ["thread_rng"]}
+ regex = "1.3.4"
+ serde_json = "1.0"
+ sha2 = "0.10.2"
+@@ -27,21 +27,21 @@ async-channel = "2.2.0"
+ futures = "0.3"
+ 
+ [target.'cfg(any(target_os = "linux", target_os = "freebsd"))'.dependencies]
+-ashpd = {version = "0.12", default-features = false, features = ["gtk4", "async-std"]}
++ashpd = {version = "0.13", default-features = false, features = ["gtk4", "background", "async-io"]}
+ 
+ [dependencies.adw]
+ package = "libadwaita"
+-version = "0.8"
++version = "0.9"
+ features = ["v1_5"]
+ 
+ [dependencies.gst]
+ package = "gstreamer"
+-version = "0.24"
++version = "0.25"
+ 
+ [dependencies.gst-audio]
+ package = "gstreamer-audio"
+-version = "0.24"
++version = "0.25"
+ 
+ [dependencies.gst-play]
+ package = "gstreamer-play"
+-version = "0.24"
++version = "0.25"
+diff --git a/src/application.rs b/src/application.rs
+index dda0928..5520696 100644
+--- a/src/application.rs
++++ b/src/application.rs
+@@ -255,7 +255,9 @@ impl Application {
+                 "Amberol needs to run in the background to play music",
+             ));
+ 
+-            match request.send().await.and_then(|r| r.response()) {
++            match request.send().await.and_then(
++                |r: ashpd::desktop::Request<ashpd::desktop::background::Background>| r.response(),
++            ) {
+                 Ok(response) => {
+                     debug!("Background request successful: {:?}", response);
+                     self.imp().background_hold.replace(Some(self.hold()));
+-- 
+GitLab
+

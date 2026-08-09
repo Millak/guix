@@ -155,7 +155,7 @@ It uses pandoc as back-end for parsing Markdown.")
 (define-public amberol
   (package
     (name "amberol")
-    (version "2025.1")
+    (version "2026.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -164,7 +164,9 @@ It uses pandoc as back-end for parsing Markdown.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ymzpf9lkhibaaah059a0pncy23kk9xiq1w37clqc5hhwzpqwpmw"))))
+                "14isynfil7d5111vmxfwinlap1gfj9qr1xb2big4ds50d9yn32bp"))
+              (patches
+               (search-patches "amberol-port-to-gtk-rs-0.11.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -208,6 +210,7 @@ It uses pandoc as back-end for parsing Markdown.")
                   (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
     (native-inputs
      (cons* bash-minimal
+            blueprint-compiler
             gettext-minimal
             `(,glib "bin")
             pkg-config
