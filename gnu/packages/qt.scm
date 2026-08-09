@@ -5976,13 +5976,13 @@ the application state.")
 (define-public qthttpserver
   (package
     (name "qthttpserver")
-    (version "6.9.2")
+    (version "6.11.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "06a0f7j1b309xffw3rwydz8lpzxnf5jg67savswskzbd3lfzlhqk"))))
+                "13mxwy5h41c96ykdkxlxcdf2pqv2gswyvyzxrzsj13x55cxpdxgh"))))
     (build-system cmake-build-system)
     (inputs (list qtbase))
     (propagated-inputs (list qtwebsockets)) ;dependency of cmake module
