@@ -333,57 +333,6 @@ executables.  Bigloo enables full connections between Scheme and C programs
 and between Scheme and Java programs.")
       (license license:gpl2+))))
 
-(define-public hop
-  (package
-    (name "hop")
-    (version "3.2.0-pre1")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append "ftp://ftp-sop.inria.fr/indes/fp/Hop/hop-"
-                                 version ".tar.gz"))
-             (sha256
-              (base32
-               "0jf418d0s9imv98s6qrpjxr1mdaxr37knh5qyfl5y4a9cc41mlg5"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:test-target "test"
-       #:make-flags '("BIGLOO=bigloo")
-       #:parallel-build? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* '("tools/Makefile"
-                              "test/hopjs/TEST.in")
-                 (("/bin/rm") (which "rm")))
-               (invoke "./configure"
-                       (string-append "--prefix=" out)
-                       "--hostcc=gcc"
-                       (string-append "--blflags="
-                                      ;; user flags completely override useful
-                                      ;; default flags, so repeat them here.
-                                      "-copt \\$(CPICFLAGS) "
-                                      "-L \\$(BUILDLIBDIR) "
-                                      "-ldopt -Wl,-rpath," out "/lib"))))))))
-    (inputs (list avahi
-                  bigloo
-                  libgc
-                  libunistring
-                  libuv
-                  pcre
-                  sqlite
-                  which))
-    (home-page "http://hop.inria.fr/")
-    (synopsis "Multi-tier programming language for the Web 2.0")
-    (description
-     "HOP is a multi-tier programming language for the Web 2.0 and the
-so-called diffuse Web.  It is designed for programming interactive web
-applications in many fields such as multimedia (web galleries, music players,
-...), ubiquitous and house automation (SmartPhones, personal appliance),
-mashups, office (web agendas, mail clients, ...), etc.")
-    (license license:gpl2+)))
-
 (define-public scheme48
   (package
     (name "scheme48")
