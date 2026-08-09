@@ -6392,7 +6392,7 @@ including @i{fix-its} for automatic refactoring.")
 (define-public qt-creator
   (package
     (name "qt-creator")
-    (version "18.0.2")
+    (version "20.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -6416,7 +6416,7 @@ including @i{fix-its} for automatic refactoring.")
                               (const #t)))))
               (sha256
                (base32
-                "13v9ysaaiyccz6anjva7mlifgls013c3s0n5gm443w6v4ssrjdz7"))))
+                "1icvxwg0xgkq9k2nlg8s6x0cw5a9lin9bp19gbnpfmsb3gy5qamm"))))
     (outputs '("out" "debug"))
     (build-system qt-build-system)
     (arguments
@@ -6472,8 +6472,24 @@ including @i{fix-its} for automatic refactoring.")
                                               "lib/libd_demangle.so")))))))
           (add-after 'unpack 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* '("src/libs/utils/commandline.cpp"
-                             "src/libs/utils/deviceshell.cpp")
+              (substitute*
+                  '("src/libs/utils/commandline.cpp"
+                    "src/libs/utils/terminalhooks.cpp"
+                    "src/plugins/terminal/terminalpane.cpp"
+                    "src/plugins/remotelinux/tarpackagedeploystep.cpp"
+                    "src/plugins/remotelinux/publickeydeploymentdialog.cpp"
+                    "src/plugins/remotelinux/linuxdevicetester.cpp"
+                    "src/plugins/remotelinux/linuxdevice.cpp"
+                    "src/plugins/remotelinux/customcommanddeploystep.cpp"
+                    "src/plugins/qtsupport/qtsupportplugin.cpp"
+                    "src/plugins/qnx/qnxdevicetester.cpp"
+                    "src/plugins/projectexplorer/devicesupport/idevice.cpp"
+                    "src/plugins/docker/dockerdebuggertest.cpp"
+                    "src/plugins/axivion/singlefileanalysis.cpp"
+                    "src/plugins/axivion/pluginarserver.cpp"
+                    "src/plugins/axivion/localbuild.cpp"
+                    "src/shared/qbs/src/lib/corelib/api/runenvironment.cpp"
+                    "src/shared/proparser/qmakebuiltins.cpp")
                 (("/bin/sh")
                  (search-input-file inputs "bin/sh")))
               (substitute* "src/libs/utils/qtcprocess.cpp"
@@ -6533,7 +6549,7 @@ including @i{fix-its} for automatic refactoring.")
      (append
       (list bash-minimal
             coreutils-minimal
-            clang-20
+            clang
             clazy
             d-demangler
             elfutils
@@ -6542,7 +6558,7 @@ including @i{fix-its} for automatic refactoring.")
             libarchive
             libsecret
             libxkbcommon
-            llvm-20
+            llvm
             perf
             qt5compat
             qtcharts
