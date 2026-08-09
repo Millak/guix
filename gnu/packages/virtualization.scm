@@ -838,14 +838,14 @@ firmware blobs.  You can
 (define-public ganeti
   (package
     (name "ganeti")
-    (version "3.1.0")
+    (version "3.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/ganeti/ganeti")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "19pqlxcdhqr4nfd94x4grmdppna52wvhkjspry972w0w6glnyf6l"))
+               (base32 "1l3a3rw7bd7545irz1n0w3bj3djkrl7x90aw6hg39d3mhwpg9vhc"))
               (file-name (git-file-name name version))
               (patches (search-patches "ganeti-shepherd-support.patch"
                                        "ganeti-shepherd-master-failover.patch"
@@ -1045,6 +1045,13 @@ firmware blobs.  You can
                 (string-append "  @unittest.skipIf(True, "
                                "\"testPidFile fails in the build container\")\n"
                                all)))
+
+              (substitute* "test/py/legacy/ganeti.hooks_unittest.py"
+                ;; Similarly, hooks are run with RunParts(..., reset_env=True)
+                ;; which makes this tests unable to resolve "sh".
+                (("    \"\"\"Test environment execution\"\"\"" all)
+                 (string-append all "\n    raise unittest.SkipTest"
+                                "(\"cannot reset env in the build container\")")))
 
               ;; XXX: Why are these links not added automatically.
               (with-directory-excursion "test/hs"
