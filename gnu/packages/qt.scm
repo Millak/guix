@@ -3261,13 +3261,13 @@ graphs by selecting one of the charts themes.")
 (define-public qtnetworkauth
   (package
     (name "qtnetworkauth")
-    (version "6.9.2")
+    (version "6.11.1")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "114c65gyg56v70byyl3if1q7mzhp5kkv1g8sp4y9zaxqirbdjr91"))))
+                "0gan2qjv97d1387jqaiis2gigm6lz5jbk1k10x13w0yc5kr5n7cz"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DQT_BUILD_TESTS=ON")
@@ -3287,13 +3287,13 @@ implementation of OAuth and OAuth2 authenticathon methods for Qt.")
 (define-public qtremoteobjects
   (package
     (name "qtremoteobjects")
-    (version "6.9.2")
+    (version "6.11.2")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "09lby6dqc2sfig1krcszg6fkypgxlz2r7hgjjfi95g7g9gqlwqnz"))))
+                "1zbwg7pzswibjjx2vgcl3r4v47xhdwk0c9bik8bv3hlyg60rc32y"))))
     (build-system cmake-build-system)
     (arguments
      (list
