@@ -5817,29 +5817,14 @@ algorithm implementations.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'enter-source-directory
             (lambda _ (chdir "python")))
-          (add-after 'enter-source-directory 'set-version
-            (lambda _
-              ;; XXX: This python-setuptools-scm option is available in v8+:
-              ;; TypeError: Configuration.__init__() got an unexpected
-              ;; keyword argument 'version_file'
-              (substitute* "pyproject.toml"
-                (("version_file = .*") ""))
-
-              ;; Version file generation ad-hoc, remove when a newer version
-              ;; of python-setuptools-scm is packed.
-              (with-output-to-file "pyarrow/_generated_version.py"
-                (let* ((version #$(package-version this-package) )
-                       (version-tuple (string-join (string-split version #\.) ", ")))
-                  (lambda ()
-                    (format #t
-                            "__version__ = version = '~a'
-__version_tuple__ = version_tuple = (~a)~%" version version-tuple))))))
           (add-before 'install 'set-pyarrow-build-options
             (lambda _
               (setenv "PYARROW_BUNDLE_ARROW_CPP_HEADERS" "0")
               (setenv "PYARROW_CMAKE_OPTIONS"
                       (string-append "-DCMAKE_INSTALL_RPATH=" #$output))
               (setenv "PYARROW_PARALLEL"
+                      ;; XXX: It's a build host specific option and needs to
+                      ;; be tunable.
                       (number->string (parallel-job-count)))
               (setenv "PYARROW_WITH_DATASET" "1")
               (setenv "PYARROW_WITH_HDFS" "1")
@@ -5850,14 +5835,11 @@ __version_tuple__ = version_tuple = (~a)~%" version version-tuple))))))
            (list apache-arrow "include")
            apache-orc
            python-numpy
-           python-pandas
-           python-six))
+           python-pandas))
     (native-inputs
-     (list cmake ;needs 3.25
-           pkg-config
+     (list pkg-config
            python-cython
            python-pytest
-           python-pytest-runner
            python-scikit-build-core
            python-setuptools-scm
            python-setuptools))
