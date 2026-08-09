@@ -6285,15 +6285,6 @@ comparing, and writing Semantic Versions.  It also includes ranges in
 the style of the Node Package Manager (NPM).")
     (license license:gpl3+)))
 
-(define-public guile2.2-semver
-  (package
-    (inherit guile-semver)
-    (name "guile2.2-semver")
-    (native-inputs
-     (list guile-2.2 pkg-config))
-    (inputs
-     (list guile-2.2))))
-
 (define-public guile-hashing
   (package
     (name "guile-hashing")
