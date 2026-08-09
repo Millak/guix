@@ -7204,16 +7204,16 @@ library supports sample rates up to 96 kHz and up to eight channels (7.1
 (define-public fdkaac
   (package
     (name "fdkaac")
-    (version "1.0.6")
+    (version "1.0.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/nu774/fdkaac.git")
+                     (url "https://github.com/nu774/fdkaac")
                      (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16af0l46qdr907dxkk3yjy02znxj72zb72n30vzykqzd9ri5wmcx"))))
+                "1ym5134nqpa468in7g3df5bjh2wrai8fnp2ab36cxz92in4j6j14"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config))
