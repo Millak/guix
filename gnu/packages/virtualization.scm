@@ -1158,6 +1158,7 @@ firmware blobs.  You can
            ghc-network
            ghc-old-time
            ghc-parallel
+           ghc-psqueue
            ghc-regex-pcre
            ghc-random
            ghc-transformers-base
