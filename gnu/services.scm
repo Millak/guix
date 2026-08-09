@@ -730,7 +730,12 @@ ACTIVATION-SCRIPT-TYPE."
                       ;; Make sure the user accounting database exists.  If it
                       ;; does not exist, 'setutxent' does not create it and
                       ;; thus there is no accounting at all.
-                      (close-port (open-file "/var/run/utmpx" "a0"))
+                      ;; On GNU/Hurd use utmp instead of utmpx
+                      (if  (and (string-suffix? "-gnu" %host-type)
+                                (not (string-contains %host-type "linux")))
+                           (close-port (open-file "/var/run/utmp" "a0"))
+                           (close-port (open-file "/var/run/utmpx" "a0")))
+
 
                       ;; Same for 'wtmp', which is populated by mingetty et
                       ;; al.
