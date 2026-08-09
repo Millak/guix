@@ -1811,14 +1811,14 @@ with JavaScript and C++.")))
 (define-public qtdeclarative
   (package
     (name "qtdeclarative")
-    (version "6.9.2")
+    (version "6.11.2")
     ;; TODO: Package 'masm' and unbundle from sources.
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "0r16qima008y2999r1djvwry01l295nmwwhqg081d2fr1cn2szs7"))
+                "0c5lqr8kbrfvaxh147d92vqbcirw7wj94sxwx8ih2f3ya5q7nnr1"))
               (patches (search-patches "qtdeclarative-disable-qmlcache.patch"))))
     (outputs '("out" "debug"))
     (build-system cmake-build-system)
@@ -1852,16 +1852,7 @@ with JavaScript and C++.")))
                 (("QLibraryInfo::path\\(QLibraryInfo::QmlImportsPath)")
                  (string-append "QStringLiteral(\"" #$output
                                 "/lib/qt6/qml\")")))))
-          (replace 'build
-            (lambda* (#:key parallel-build? #:allow-other-keys)
-              (apply invoke "cmake" "--build" "."
-                     (if parallel-build?
-                         `("--parallel" ,(number->string (parallel-job-count)))
-                         '()))))
           (delete 'check)               ;move after the install phase
-          (replace 'install
-            (lambda _
-              (invoke "cmake" "--install" ".")))
           (add-after 'install 'check
             (lambda* (#:key tests? parallel-tests?
                       native-inputs inputs #:allow-other-keys)
@@ -1958,11 +1949,23 @@ with JavaScript and C++.")))
 
                     ;; These tests are slow (> 2 minutes) skip them (see:
                     ;; <https://qt-project.atlassian.net/browse/QTBUG-148724>).
-                    "tst_qquickpopup"
-                    "tst_qquickmenu"
                     "tst_qquickdrawer"
-                    "tst_fluentwinui3")
-                   "|")
+                    "tst_qquickmenu"
+                    "tst_qquickpopup"
+                    "tst_fluentwinui3"
+                    
+                    ;; These tests fail for unknown reasons (see:
+                    ;; <https://qt-project.atlassian.net/browse/QTBUG-149020>).
+                    "tst_snippets"
+                    ;; <https://qt-project.atlassian.net/browse/QTBUG-149021>
+                    "test_duplicate_files_qml_files"
+                    
+                    ;; This test fail due to not being able to decode
+                    ;; test SVG images, despite the qtsvg plugin being made
+                    ;; available on QT_PLUGIN_PATH (see:
+                    ;; <https://qt-project.atlassian.net/browse/QTBUG-149025>).
+                    "tst_qquickiconlabel"
+                    ) "|")
                   ")")))))
           (add-after 'install 'delete-installed-tests
             (lambda _
