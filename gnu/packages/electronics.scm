@@ -2780,7 +2780,7 @@ chip database for NG-Ultra architecture from NanoXplore.")
 (define-public prjpeppercorn
   (package
     (name "prjpeppercorn")
-    (version "1.12")
+    (version "1.13")
     (source
      (origin
        (method git-fetch)
@@ -2789,7 +2789,7 @@ chip database for NG-Ultra architecture from NanoXplore.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15qv7a0lpl671jlpafs9is0x0vms6i7jbkhp4l723lnr9kafqgm7"))))
+        (base32 "1igdljp70492qm9d0nldd7nrxawf7g7i73wiyx44flcmapz1np5y"))))
     (outputs (list "out"
                    "db"))               ;FPGA database files
     (build-system cmake-build-system)
