@@ -1918,39 +1918,6 @@ XML output")
 decorators from external files.")
     (license license:expat)))
 
-(define-public python-pytest-runner
-  (package
-    (name "python-pytest-runner")
-    (version "6.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-runner" version))
-       (sha256
-        (base32
-         "16zly218ij0n6fxzqsasia3vh9xkzl9w0cs9pwvqy057hnap7m3h"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; FIXME: The test suite requires 'python-pytest-virtualenv',
-      ;; but that introduces a circular dependency.
-      #:tests? #f))
-    (native-inputs
-     (list python-pytest
-           python-pytest-checkdocs
-           python-pytest-enabler
-           ;; python-pytest-virtualenv
-           python-setuptools
-           python-setuptools-scm
-           python-types-setuptools
-           python-wheel))
-    (home-page "https://github.com/pytest-dev/pytest-runner")
-    (synopsis "Invoke py.test as a distutils command")
-    (description
-     "This package provides a @command{pytest-runner} command that
-@file{setup.py} files can use to run tests.")
-    (license license:expat)))
-
 (define-public python-pytest-lazy-fixtures
   (package
     (name "python-pytest-lazy-fixtures")
