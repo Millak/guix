@@ -1881,28 +1881,6 @@ with the Prometheus time series service.  Counter, gauge and histogram metric
 types are supported.")
     (license license:gpl3+))))
 
-(define-public guile2.2-pfds
-  (package
-    (inherit guile-pfds)
-    (name "guile2.2-pfds")
-    (native-inputs (list guile-2.2))
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (delete 'work-around-guile-bug)
-           (add-after 'move-files-around 'sls->scm
-             (lambda _
-               ;; In Guile <= 2.2.4, there's no way to tell 'guild
-               ;; compile' to accept the ".sls" extension.  So...
-               (for-each (lambda (file)
-                           (rename-file file
-                                        (string-append
-                                         (string-drop-right file 4)
-                                         ".scm")))
-                         (find-files "." "\\.sls$"))
-               #t))))))))
-
 (define-public guile-aa-tree
   (package
     (name "guile-aa-tree")
