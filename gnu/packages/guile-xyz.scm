@@ -4420,15 +4420,6 @@ interface for reading articles in any format.")
     (home-page "https://dthompson.us/projects/haunt.html")
     (license license:gpl3+)))
 
-(define-public guile2.2-haunt
-  (package
-    (inherit haunt)
-    (name "guile2.2-haunt")
-    (inputs (list guile-2.2))
-    (propagated-inputs
-     `(("guile-reader" ,guile2.2-reader)
-       ("guile-commonmark" ,guile2.2-commonmark)))))
-
 (define-public guile-redis
   (package
     (name "guile-redis")
