@@ -4429,12 +4429,6 @@ interface for reading articles in any format.")
      `(("guile-reader" ,guile2.2-reader)
        ("guile-commonmark" ,guile2.2-commonmark)))))
 
-(define-public guile2.0-haunt
-  (package
-    (inherit haunt)
-    (name "guile2.0-haunt")
-    (inputs (list guile-2.0))))
-
 (define-public guile-redis
   (package
     (name "guile-redis")
