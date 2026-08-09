@@ -875,13 +875,13 @@ developers using C++ or QML, a CSS & JavaScript like language.")
   (package
     (inherit qtbase-5)
     (name "qtbase")
-    (version "6.9.2")
+    (version "6.11.2")
     (source (origin
               (inherit (package-source qtbase-5))
               (uri (qt-url name version))
               (sha256
                (base32
-                "0h149x8l2ywfr5m034n20z6cjxnldary39x0vv22jhg0ryg9rgj4"))
+                "08ng4gns21a3za3qszzw3yp3a2pxipma1zrl870xi97mrbn00bjv"))
               (modules '((guix build utils)))
               (snippet
                ;; corelib uses bundled harfbuzz, md4, md5, sha3
@@ -937,16 +937,6 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                  "-DBUILD_WITH_PCH=OFF")))
        ((#:phases phases)
         #~(modify-phases #$phases
-            (replace 'build
-              (lambda* (#:key parallel-build? #:allow-other-keys)
-                (apply invoke "cmake" "--build" "."
-                       (if parallel-build?
-                           `("--parallel" ,(number->string
-                                            (parallel-job-count)))
-                           '()))))
-            (replace 'install
-              (lambda _
-                (invoke "cmake" "--install" ".")))
             (add-after 'unpack 'honor-CMAKE_PREFIX_PATH
               (lambda _
                 ;; The configuration files for other Qt packages are searched
@@ -977,10 +967,24 @@ endif()\n" below)))))
             ;; Some tests fail to build on i686-linux
             #$@(if (target-x86-32?)
                    #~((add-after 'unpack 'skip-some-tests
-                        ;; This might be a FLOAT16 problem.
                         (lambda _
                           (substitute* "tests/auto/corelib/global/CMakeLists.txt"
-                            ((".*qcomparehelpers.*") "")))))
+                            ;; This might be a FLOAT16 problem.
+                            ((".*qcomparehelpers.*") ""))
+                          (substitute* "tests/auto/gui/painting/CMakeLists.txt"
+                            ;; Float precision issue?
+                            ;; tst_QPainterPath::intersectionEquality errors
+                            ;; with 'i1 == i2 || i1.toReversed() == i2'.
+                            ((".*add_subdirectory\\(qpainterpath)") "")))))
+                   #~())
+            #$@(if (target-32bit?)
+                   #~((add-after 'unpack 'skip-32bit-problematic-tests
+                        (lambda _
+                          (substitute*
+                              "tests/auto/corelib/itemmodels/CMakeLists.txt"
+                            ;; Avoid error: "virtual memory exhausted: Cannot
+                            ;; allocate memory"
+                            ((".*add_subdirectory\\(qrangemodel).*") "")))))
                    #~())
             (add-after 'patch-paths 'patch-more-paths
               (lambda* (#:key inputs #:allow-other-keys)
@@ -1041,6 +1045,9 @@ tst_qt_cmake_create.cpp"
                   (setenv "CMAKE_PREFIX_PATH"
                           (string-append #$output
                                          ":" (getenv "CMAKE_PREFIX_PATH")))
+                  ;; To avoid the error 'Failed to open
+                  ;; "/var/lib/dbus/machine-id": No such file or directory'.
+                  (setenv "DBUS_FATAL_WARNINGS" "0")
                   (setenv "QMAKEPATH" (string-append #$output "/lib/qt6"))
                   ;; It is necessary to augment LIBRARY_PATH with that of the
                   ;; freshly installed qtbase because of the
@@ -1057,6 +1064,7 @@ tst_qt_cmake_create.cpp"
                   ;; /tree/src/testlib/qtestblacklist.cpp).
                   (setenv "QTEST_ENVIRONMENT" "linux ci 32bit")
                   (setenv "HOME" "/tmp") ;some tests require a writable HOME
+                  (setenv "XDG_RUNTIME_DIR" (getcwd)) ;for test_wl_reconnect
 
                   ;; Note: the search path specified for TZDIR is only
                   ;; effective for users of the package, not while it's being
@@ -1081,28 +1089,22 @@ tst_qt_cmake_create.cpp"
                      (append
                       (list
                        ;; The 'tst_qdialogbuttonbox' may fail non-deterministically
-                       ;; (see: https://bugreports.qt.io/browse/QTBUG-123939).
+                       ;; (see: <https://bugreports.qt.io/browse/QTBUG-123939>).
                        "tst_qdialogbuttonbox"
 
                        ;; This test may fail non-deterministically (timeout)
                        ;; after running for more than 300s (see:
-                       ;; https://bugreports.qt.io/browse/QTBUG-135603).
+                       ;; <https://bugreports.qt.io/browse/QTBUG-135603>).
                        "tst_qguitimer"
-
-                       ;; TODO: Enable this when update qtbase.
-                       ;; tst_QDate::startOfDay_endOfDay fails for BajaMexico
-                       ;; due to IANA timezone update (see:
-                       ;; https://bugreports.qt.io/browse/QTQAINFRA-6757).
-                       "tst_qdate"
 
                        ;; The 'test_standalone_test' fails with a
                        ;; "get_property could not find TARGET Qt6::Core" error
-                       ;; (see: https://bugreports.qt.io/browse/QTBUG-123940).
+                       ;; (see: <https://bugreports.qt.io/browse/QTBUG-123940>).
                        "test_standalone_test"
 
                        ;; The 'test_collecting_plugins' fails with a "Unknown
                        ;; platform linux-g++" error (see:
-                       ;; https://bugreports.qt.io/browse/QTBUG-123941).
+                       ;; <https://bugreports.qt.io/browse/QTBUG-123941>).
                        "test_collecting_plugins"
 
                        ;; The 'tst_selftests' fails with the following error:
@@ -1116,7 +1118,7 @@ tst_qt_cmake_create.cpp"
                        ;; If this causes problems, reconfigure your locale. See the locale(1) manual
                        ;; for more information.
 
-                       ;; See https://bugreports.qt.io/browse/QTBUG-113371
+                       ;; See <https://bugreports.qt.io/browse/QTBUG-113371>
                        ;; Adding glibc-utf8-locales to native-inpus is no help.
                        "tst_selftests"
 
@@ -1141,7 +1143,7 @@ tst_qt_cmake_create.cpp"
 
                        ;; The qgraphicsview and qopenglwidget tests fail with a
                        ;; segfault for unknown reasons (see:
-                       ;; https://bugreports.qt.io/browse/QTBUG-116018).
+                       ;; <https://bugreports.qt.io/browse/QTBUG-116018>).
                        "tst_qgraphicsview"
                        "tst_qopenglwidget"
 
@@ -1178,7 +1180,7 @@ tst_qt_cmake_create.cpp"
                        ;; Qt6MockPlugins1".
                        "test_import_plugins"
                        ;; The tst_QObjectRace::destroyRace is flaky (see:
-                       ;; https://bugreports.qt.io/browse/QTBUG-103489).
+                       ;; <https://bugreports.qt.io/browse/QTBUG-103489>).
                        "tst_qobjectrace"
                        ;; The 'tst_QSettings::fromFile' assumes the data
                        ;; location to be relative to the root directory and
@@ -1226,39 +1228,59 @@ tst_qt_cmake_create.cpp"
 
                        ;; This test may fail non-deterministically as reported
                        ;; in Guix bug#73233 and upstream at
-                       ;; https://bugreports.qt.io/browse/QTBUG-119321.
+                       ;; <https://bugreports.qt.io/browse/QTBUG-119321>.
                        "tst_qsharedmemory"
 
                        ;; One of the finicky tests, see
-                       ;; https://codeberg.org/guix/guix/issues/7545
+                       ;; <https://codeberg.org/guix/guix/issues/7545>
                        "tst_qlatin1stringmatcher"
 
                        ;; This test fails deterministically on a non-privileged
                        ;; daemon.
-                       "tst_qstandardpaths")
+                       "tst_qstandardpaths"
+
+                       ;; This test fails for unknown reasons (see:
+                       ;; <https://qt-project.atlassian.net/browse/QTBUG-145566>).
+                       "tst_seatv4"
+
+                       ;; This test fails non-deterministically
+                       ;; (see: <https://qt-project.atlassian.net/browse/QTBUG-150786>).
+                       "tst_wayland_cursor"
+
+                       ;; A few spdx23 tests fail, apparently because it
+                       ;; requires Python dependencies (spdx-tools,
+                       ;; cyclonedx-python-lib and tomli) to generate a
+                       ;; spdx3.json file (see:
+                       ;; <https://qt-project.atlassian.net/browse/QTBUG-149016>).
+                       ;; TODO: package spdx-tools and cyclonedx-python-lib
+                       "RunCMake.Sbom"
+
+                       ;; Several 'plugin_class_name' tests fail for unknown
+                       ;; reasons, and only in the guix-daemon container.
+                       "test_plugin_class_name")
                       #$@(cond
                            ((target-ppc64le?)
                              #~((list
                                  ;; The 'tst_QPainter::fpe_radialGradients'
                                  ;; test fails with a 'Floating point
                                  ;; exception' error on powerpc64le (see:
-                                 ;; https://bugreports.qt.io/browse/QTBUG-117113).
+                                 ;; <https://bugreports.qt.io/browse/QTBUG-117113>).
                                  "tst_qpainter"
 
                                  ;; The 'startStopStartStopBuffers' test fails
                                  ;; on the powerpc64le architecture (see:
-                                 ;; https://bugreports.qt.io/browse/QTBUG-80953).
+                                 ;; <https://bugreports.qt.io/browse/QTBUG-80953>).
                                  "tst_qprocess"
 
                                  ;; The 'tst_QSqlThread::readWriteThreading'
                                  ;; test may fail with an sqlite related error,
                                  ;; "'Unable to fetch row' || 'database is
                                  ;; locked'" (see:
-                                 ;; https://bugreports.qt.io/browse/QTBUG-117114).
+                                 ;; <https://bugreports.qt.io/browse/QTBUG-117114>).
                                  "tst_qsqlthread"
 
                                  ;; The 'tst_qxmlstream' can time out (see:
-                                 ;; https://bugreports.qt.io/projects/QTBUG/issues/QTBUG-123778).
+                                 ;; <https://bugreports.qt.io/projects/QTBUG/issues/QTBUG-123778>).
                                  "tst_qxmlstream")))
                            ((target-x86-32?)
                              #~((list
