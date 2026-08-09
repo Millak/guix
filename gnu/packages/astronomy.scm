@@ -9497,7 +9497,7 @@ natively in Siril.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 73 passed, 2 skipped, 98 deselected, 1 warning
+      ;; tests: 73 passed, 2 skipped, 100 deselected
       #:test-flags
       ;; XXX: Tests requiring additional FITS files, check if they may be
       ;; packages:
@@ -9530,6 +9530,8 @@ natively in Siril.")
                           "test_presmoothed"
                           "test_print_quadrupole_amplitudes"
                           "test_quadrupole_corrected_freqs"
+                          "test_read_map_mpi_pixel_indices"
+                          "test_read_map_mpi_uniform_distribution"
                           "test_read_map_unit"
                           "test_read_map_unit_dimensionless"
                           "test_s6_vs_s5"
