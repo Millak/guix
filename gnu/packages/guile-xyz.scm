@@ -4534,12 +4534,6 @@ is no support for parsing block and inline level HTML.")
     (name "guile2.2-commonmark")
     (inputs (list guile-2.2))))
 
-(define-public guile2.0-commonmark
-  (package
-    (inherit guile-commonmark)
-    (name "guile2.0-commonmark")
-    (inputs (list guile-2.0))))
-
 (define-public guile-sundown
   (package
     (name "guile-sundown")
