@@ -14,7 +14,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2021, 2022, 2026 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
@@ -184,6 +184,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system haskell)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system ruby)
@@ -854,8 +855,10 @@ firmware blobs.  You can
     (build-system gnu-build-system)
     (arguments
      (list
-      #:imported-modules %pyproject-build-system-modules
+      #:imported-modules `(,@%pyproject-build-system-modules
+                           ,@%haskell-build-system-modules)
       #:modules `(,@%default-gnu-modules
+                  ((guix build haskell-build-system) #:prefix haskell:)
                   ((guix build pyproject-build-system) #:select (site-packages))
                   (srfi srfi-1)
                   (srfi srfi-26)
@@ -951,6 +954,35 @@ firmware blobs.  You can
                (("\\$SPHINX --version 2>&1")
                 "$SPHINX --version 2>&1 \
 | sed 's/.sphinx-build-real/sphinx-build/g'"))))
+         ;; The build system invokes Cabal and GHC, which do not work with
+         ;; GHC_PACKAGE_PATH: <https://github.com/haskell/cabal/issues/3728>.
+         ;; Tweak the build system to do roughly what haskell-build-system does.
+         (add-before 'configure 'configure-haskell
+           (lambda* (#:key system inputs outputs #:allow-other-keys)
+             ((assoc-ref haskell:%standard-phases 'setup-compiler)
+              #:system system
+              ;; The phase expects the GHC input to be named "haskell".
+              ;; TODO(haskell-team): Both this and the next phase can be
+              ;; removed when #10184 is merged.
+              #:inputs `(("haskell" . ,(assoc-ref inputs "ghc")) ,@inputs)
+              #:outputs outputs)))
+         (add-after 'configure 'do-not-use-GHC_PACKAGE_PATH
+           (lambda _
+             ;; The temporary package database populated by the
+             ;; 'configure-haskell' phase above.
+             (let ((package-db (string-append (or (getenv "TMP") "/tmp")
+                                              "/package.conf.d")))
+               (unsetenv "GHC_PACKAGE_PATH")
+               (substitute* "Makefile"
+                 ;; Patch Cabal and GHC invocations to include -package-db.
+                 (("^CABAL_SETUP = runhaskell")
+                  (string-append "CABAL_SETUP = runhaskell -package-db="
+                                 package-db))
+                 (("\\$\\(CABAL_SETUP\\) configure")
+                  (string-append "$(CABAL_SETUP) configure --package-db="
+                                 package-db))
+                 (("\\$\\(GHC\\)")
+                  (string-append "$(GHC) -package-db=" package-db))))))
           (add-after 'configure 'make-ghc-use-shared-libraries
             (lambda _
               (substitute* "Makefile"
@@ -970,6 +1002,15 @@ firmware blobs.  You can
               ;; Disable tests that can not run.  Do it early to prevent
               ;; touching the Makefile later and triggering a needless rebuild.
               (substitute* "Makefile"
+                ;; These tests expect the presence of a 'root' user (via
+                ;; ganeti/runtime.py), which fails in the build environment.
+                (("test/py/legacy/ganeti\\.asyncnotifier_unittest\\.py") "")
+                (("test/py/legacy/ganeti\\.backend_unittest\\.py") "")
+                (("test/py/legacy/ganeti\\.backend_unittest-runasroot\\.py") "")
+                (("test/py/legacy/ganeti\\.daemon_unittest\\.py") "")
+                (("test/py/legacy/ganeti\\.hypervisor\\.hv_kvm_unittest\\.py") "")
+                (("test/py/legacy/ganeti\\.tools\\.ensure_dirs_unittest\\.py") "")
+                (("test/py/legacy/ganeti\\.utils\\.io_unittest-runasroot\\.py") "")
                 ;; Disable the bash_completion test, as it requires the full
                 ;; bash instead of bash-minimal.
                 (("test/py/legacy/bash_completion\\.bash")
@@ -1073,8 +1114,6 @@ firmware blobs.  You can
      (list ghc
            cabal-install
            m4
-           ;; These inputs are necessary to bootstrap the package, because we
-           ;; have patched the build system.
            autoconf
            automake
 
@@ -1090,7 +1129,7 @@ firmware blobs.  You can
            ghc-test-framework
            ghc-test-framework-hunit
            ghc-test-framework-quickcheck2
-           python-mock
+           python-pytest
            python-pyyaml
            openssh
            procps
