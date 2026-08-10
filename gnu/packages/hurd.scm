@@ -416,31 +416,6 @@ Hurd-minimal package which are needed for both glibc and GCC.")
              (substitute* "Makefile"
                (("libbpf ")
                 "libbpf libmachdevdde libddekit "))))
-         (add-after 'unpack 'find-tirpc
-           (lambda* (#:key inputs #:allow-other-keys)
-             (for-each (lambda (var)
-                         (setenv var
-                                 (string-append
-                                  (search-input-directory inputs
-                                                          "include/tirpc")
-                                  ":" (or (getenv var) ""))))
-                       '("CROSS_C_INCLUDE_PATH" "C_INCLUDE_PATH"
-                         "CROSS_CPATH" "CPATH"))
-             #t))
-         (add-after 'unpack 'fix-rpc-headers
-           (lambda _
-             (substitute* "nfs/mount.c"
-               (("#undef (TRUE|FALSE)") "")
-               (("#include <rpc/pmap_prot.h>" m)
-                (string-append  "#include <rpc/xdr.h>\n" m)))
-             (substitute* '("nfsd/cache.c")
-               (("#undef (TRUE|FALSE)") ""))
-             (substitute* '("nfsd/loop.c"
-                            "nfsd/main.c"
-                            "nfsd/ops.c")
-               (("#include <rpc/pmap_prot.h>" m)
-                (string-append "#include <rpc/types.h>\n#include <rpc/xdr.h>\n" m)))
-             #t))
          (add-before 'build 'pre-build
            (lambda _
              ;; Don't change the ownership of any file at this time.
@@ -701,12 +676,7 @@ exec ${system}/rc \"$@\"
                 "--enable-static-progs=ext2fs,iso9660fs,rumpdisk,pci-arbiter,acpi"
                 "--disable-ncursesw"
                 "--without-libbz2"
-                "--without-libz"
-                ;; This is needed to pass the configure check for
-                ;; clnt_create
-                "ac_func_search_save_LIBS=-ltirpc"
-                "ac_cv_search_clnt_create=false"
-                "CFLAGS=-fcommon")))
+                "--without-libz")))
     (build-system gnu-build-system)
     (inputs
      `(("libacpica" ,libacpica)                  ;for hurd/acpi.static
