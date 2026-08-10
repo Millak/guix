@@ -206,7 +206,7 @@ which are themselves described in 'ddl.dic'.")
 (define-public cytnx
   (package
     (name "cytnx")
-    (version "1.0.1")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
@@ -215,7 +215,7 @@ which are themselves described in 'ddl.dic'.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ml6a4f8zj36zlx0dry4mv5q2y130fv2qk579rqrnf42m8ndfack"))))
+        (base32 "1vhlnq5kq4nj8prkrkb7x5xsz1dllpjf1v0lxr682ppisx4isk1j"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -224,11 +224,19 @@ which are themselves described in 'ddl.dic'.")
               "-DBUILD_PYTHON=ON")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'cmake-modules-dir
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("(set\\(_morse_modules_dir \")\\$.*modules\"\\)" all first)
+                 (string-append first
+                                (search-input-directory
+                                 inputs
+                                 "share/morse-cmake/modules") "\")")))))
           ;; TODO: Enable Python tests.
           (add-after 'install 'install-python-module
             (lambda _
               (let* ((py-version #$(version-major+minor
-                                   (package-version python)))
+                                    (package-version python)))
                      (src (string-append #$output "/cytnx"))
                      (dst (string-append #$output "/lib/python" py-version
                                          "/site-packages/cytnx")))
@@ -236,9 +244,11 @@ which are themselves described in 'ddl.dic'.")
                 (delete-file-recursively src)))))))
     (native-inputs
      (list googletest
+           morse-cmake
            pybind11))
     (inputs
-     (list boost
+     (list arpack-ng
+           boost
            openblas
            python
            libomp-13))
