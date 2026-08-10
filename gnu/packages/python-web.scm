@@ -9239,29 +9239,27 @@ this it tries to be opinion-free and very extendable.")
 (define-public python-engineio
   (package
     (name "python-engineio")
-    (version "4.12.2")
+    (version "4.13.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python_engineio" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/miguelgrinberg/python-engineio/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1ynyf3n29biwkm6nwzzwzhr4m19lsir1x5azxq2nl7xyw7zi5rz7"))))
+        (base32 "1ndp68cqssjpvln958v236rg5jgpzy57vs3z45sz7xfscmbi893r"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k"
-              "not test_static_file_routing and not test_static_files")))
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
            python-setuptools
            python-tornado))
     (propagated-inputs
-     (list python-aiohttp
+     (list python-simple-websocket
+           ;; [optional]
+           python-aiohttp
            python-requests
-           python-simple-websocket
            python-websocket-client))
     (home-page "https://github.com/miguelgrinberg/python-engineio/")
     (synopsis "Engine.IO server")
