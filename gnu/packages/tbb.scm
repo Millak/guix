@@ -29,8 +29,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
-  #:use-module (gnu packages)
-  #:use-module (gnu packages oneapi))
+  #:use-module (gnu packages))
 
 (define-public tbb
   (package
@@ -87,9 +86,6 @@ performance.  It uses common C++ templates and coding style to eliminate
 tedious threading implementation work.  It provides parallel loop constructs,
 asynchronous tasks, synchronization primitives, atomic operations, and more.")
     (license asl2.0)))
-
-;; Deprecated on 2026-08-05.
-(define-deprecated-package python-tbb python-onetbb)
 
 (define-public tbb-2020
   (package
