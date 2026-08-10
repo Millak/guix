@@ -129,10 +129,11 @@ Shepherd (PID 1) by unloading obsolete services and loading new services."
   (define vm (virtual-machine os))
 
   (define dummy-service
-    ;; Shepherd service that does nothing, for the sole purpose of ensuring
+    ;; Shepherd service for the purpose of capturing the value of
+    ;; 'default-environment-variables' at the time it was loaded and ensuring
     ;; that it is properly installed and started by the script.
     (shepherd-service (provision '(dummy))
-                      (start #~(const #t))
+                      (start #~(const (default-environment-variables)))
                       (stop #~(const #t))
                       (respawn? #f)))
 
@@ -165,6 +166,14 @@ Shepherd (PID 1) by unloading obsolete services and loading new services."
             (test-assert "script started new service"
               (and (not (memq 'dummy services-prior))
                    (memq 'dummy (running-services marionette))))
+
+            (test-equal "script set default environment"
+              '("PATH=/run/current-system/profile/bin")
+              (marionette-eval
+               '(begin
+                  (use-modules (gnu services herd))
+                  (wait-for-service 'dummy))
+               marionette))
 
             (test-assert "script successfully evaluated"
               (marionette-eval

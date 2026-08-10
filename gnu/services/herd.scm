@@ -295,10 +295,16 @@ service is transient."
 (define (load-services files)
   "Load and register the services from FILES, where FILES contain code that
 returns a shepherd <service> object."
-  (eval-there `(register-services
-                (list ,@(map (lambda (file)
-                               `(primitive-load ,file))
-                             files)))))
+  (eval-there `(begin
+                 ;; This must be kept in sync with the variables set in the
+                 ;; 'shepherd-configuration-file' procedure in the module
+                 ;; '(gnu services shepherd)'.
+                 (default-environment-variables
+                   (list "PATH=/run/current-system/profile/bin"))
+                 (register-services
+                  (list ,@(map (lambda (file)
+                                 `(primitive-load ,file))
+                               files))))))
 
 (define* (start-service name #:optional (arguments '()))
   (invoke-action name 'start arguments
