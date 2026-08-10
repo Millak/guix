@@ -21033,6 +21033,17 @@ is a string. This service is included in @code{operating-system} by
 default (@pxref{operating-system-essential-services,@code{essential-services}}).
 @end defvar
 
+@defvar domain-name-service-type
+Type of the service that sets the system @acronym{NIS,
+Network Information Service} domain name, whose value
+is a string.
+
+Note that this is not related to the more popular @acronym{DNS,
+Domain Name System} domain name, use @code{host-name-service-type} for that,
+@pxref{Host Identification,,, libc, The GNU C Library Reference Manual}
+for more information.
+@end defvar
+
 @defvar console-font-service-type
 Install the given fonts on the specified ttys (fonts are per
 virtual console on the kernel Linux).  The value of this service is a list of
