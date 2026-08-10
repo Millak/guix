@@ -946,6 +946,36 @@ not test_advert_path_preserves_embedded_zero_bytes")))
      "Python library for interacting with MeshCore companion radio nodes.")
     (license license:expat)))
 
+(define-public meshcore-cli
+  (package
+    (name "meshcore-cli")
+    (version "1.6.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/meshcore-dev/meshcore-cli")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ix2jsnx92sirshc9sb6jwicraw6p8686xq46cbzc8hv4j83nsv2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; No tests
+    (inputs
+     (list python-bleak
+           python-prompt-toolkit
+           python-meshcore
+           python-requests))
+    (native-inputs (list python-hatchling))
+    (home-page "https://meshcore.io/")
+    (synopsis "Command line interface to MeshCore node")
+    (description
+     "This package provides @code{meshcore-cli}, a tool that connects to
+your companion radio node (meshcore client) over BLE, TCP or Serial and lets
+you interact with it from a terminal using a command line interface.")
+    (license license:expat)))
+
 (define-public qspectrumanalyzer
   (package
     (name "qspectrumanalyzer")
