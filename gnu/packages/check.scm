@@ -3637,7 +3637,7 @@ directories and files.")
 (define-public guile-proba
   (package
     (name "guile-proba")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method git-fetch)
@@ -3646,9 +3646,12 @@ directories and files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17ab304ylylm9z980ij5lv188inx6331r1mn1s7qrlxly9fzx888"))))
+        (base32 "0ksq93z3bncqjrngvqkh74vvfqcb7q2z68rhi43287yqayglvlry"))))
     (build-system guile-build-system)
-    (inputs (list bash-minimal guile-3.0))
+    ;; Guile 3.0.11 or later is required, because the new SRFI 64
+    ;; implementation is needed to run Guile Probá's own test suite (but not
+    ;; to run third party projects' suites).
+    (inputs (list bash-minimal guile-3.0.11))
     (native-inputs (list texinfo))
     (propagated-inputs (list guile-config guile-lib))
     (arguments
@@ -3656,13 +3659,12 @@ directories and files.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'set-paths 'add-output-to-guile-load-paths
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (guile-version (target-guile-effective-version))
-                     (scm-path (string-append out
+            (lambda _
+              (let* ((guile-version (target-guile-effective-version))
+                     (scm-path (string-append #$output
                                               "/share/guile/site/"
                                               guile-version))
-                     (go-path (string-append out
+                     (go-path (string-append #$output
                                              "/lib/guile/"
                                              guile-version
                                              "/site-ccache")))
@@ -3675,33 +3677,31 @@ directories and files.")
                          (getenv "GUILE_LOAD_COMPILED_PATH"))))))
           (add-after 'build 'build-manual
             (lambda _
-              (invoke "makeinfo" "manual/main.texi")))
+              (invoke "makeinfo" "doc/manual/main.texi")))
           (add-after 'build 'check
             (lambda _
-              (invoke "guile" "proba.scm" "run" "tests")))
+              (invoke "guile" "scripts/proba.scm" "run" "tests/unit")))
           (add-after 'check 'install-wrapped-script
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (bin-dir (string-append out "/bin"))
+            (lambda _
+              (let* ((bin-dir (string-append #$output "/bin"))
                      (script (string-append bin-dir "/proba")))
                 (mkdir-p bin-dir)
-                (copy-file "proba.scm" script)
+                (copy-file "scripts/proba.scm" script)
                 (chmod script #o555)
                 (wrap-program script
                   `("GUILE_LOAD_PATH" prefix (,(getenv "GUILE_LOAD_PATH")))
                   `("GUILE_LOAD_COMPILED_PATH" prefix
                     (,(getenv "GUILE_LOAD_COMPILED_PATH")))))))
           (add-after 'build-manual 'install-manual
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (info-dir (string-append out "/share/info")))
+            (lambda _
+              (let ((info-dir (string-append #$output "/share/info")))
                 (mkdir-p info-dir)
                 (install-file "guile-proba" info-dir)))))
       #:scheme-file-regexp
       #~(begin
           (use-modules (ice-9 regex))
           (lambda (file stat) (string-match "/proba/.*\\.scm$" file)))))
-    (home-page "https://luis-felipe.gitlab.io/guile-proba/")
+    (home-page "https://guile-proba.griz.in")
     (synopsis "Testing tools for GNU Guile projects with SRFI 64 test suites")
     (description
      "This software is a set of testing tools for GNU Guile projects
