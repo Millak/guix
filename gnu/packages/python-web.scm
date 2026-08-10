@@ -4152,21 +4152,7 @@ other HTTP libraries.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      #~(map
-         (lambda (test)
-           (string-append "--deselect=cherrypy/test/" test))
-         (list
-          ;; Requires bumping python-flaky.
-          "test_bus.py::test_wait_publishes_periodically"
-          "test_bus.py::test_block"
-          "test_bus.py::test_start_with_callback"
-          "test_refleaks.py::ReferenceTests::test_threadlocal_garbage"
-          "test_session.py::SessionTest::test_0_Session"
-          "test_session.py::SessionTest::test_2_File_Concurrency"
-          ;; assert b'RamSession' == b'FileSession' or FileNotFoundError
-          "test_session.py::SessionTest::test_3_Redirect"
-          "test_session.py::SessionTest::test_4_File_deletion"))
+      ;; tests: 288 passed, 9 skipped, 1 xfailed, 2 xpassed, 15 warnings
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-pytest-config
@@ -4187,16 +4173,12 @@ other HTTP libraries.")
            python-filelock
            python-jaraco-collections
            python-more-itertools
-           python-portend
-           python-zc-lockfile))
+           python-portend))
     (native-inputs
-     (list python-flaky
-           python-objgraph
-           python-path
+     (list python-path
            python-pytest
-           python-pytest-forked
            python-pytest-services
-           python-pytest-sugar
+           python-requests
            python-requests-toolbelt
            python-setuptools
            python-setuptools-scm))
