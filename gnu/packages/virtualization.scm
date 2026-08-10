@@ -1125,7 +1125,7 @@ firmware blobs.  You can
            automake
 
            ;; For the documentation.
-           python-docutils-0.19
+           python-docutils
            python-sphinx
            pandoc
            graphviz
