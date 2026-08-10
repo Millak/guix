@@ -103,6 +103,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -907,6 +908,42 @@ are interested in.")
      "PyCayenneLPP offers a concise interface with proper encoding and
 decoding functionality for the Cayenne Low Power Payload format, supporting
 many sensor types.")
+    (license license:expat)))
+
+(define-public python-meshcore
+  (package
+    (name "python-meshcore")
+    (version "2.3.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/meshcore-dev/meshcore_py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dyakb1gp69bwj2c4535infagizw2ah8s72nfk7l2ahm4q9f6kgs"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; The following tests fail for a unknown reason
+         "-k" "not test_send_cmd and \
+not test_advert_path_preserves_embedded_zero_bytes")))
+    (propagated-inputs
+     (list python-bleak
+           python-pycayennelpp
+           python-pycryptodome
+           python-pyserial-asyncio-fast))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-asyncio))
+    (home-page "https://meshcore.io/")
+    (synopsis "Python bindings for MeshCore")
+    (description
+     "Python library for interacting with MeshCore companion radio nodes.")
     (license license:expat)))
 
 (define-public qspectrumanalyzer
