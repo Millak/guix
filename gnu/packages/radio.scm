@@ -21,6 +21,7 @@
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
+;;; Copyright © 2026 Mattia Bunel <mattia.bunel@ehess.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -882,6 +883,31 @@ interface or the Android applications.  Events are delivered using a
 publish-subscribe model, and you can subscribe to only the message types you
 are interested in.")
     (license license:gpl3))) ;XXX: both python API and protobufs
+
+(define-public python-pycayennelpp
+  (package
+    (name "python-pycayennelpp")
+    (version "2.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/smlng/pycayennelpp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bsi8m8jnj1r7zf3rpfrvr2xsfrg4qksgqjg5qj8i14bxsy33p8p"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/smlng/pycayennelpp")
+    (synopsis "CayenneLPP decoder and encoder")
+    (description
+     "PyCayenneLPP offers a concise interface with proper encoding and
+decoding functionality for the Cayenne Low Power Payload format, supporting
+many sensor types.")
+    (license license:expat)))
 
 (define-public qspectrumanalyzer
   (package
