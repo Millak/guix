@@ -861,7 +861,7 @@ neutron and muon data analysis.")
 (define-public python-qutip
   (package
     (name "python-qutip")
-    (version "5.3.0")
+    (version "5.3.1")
     (source
      (origin
        (method git-fetch)
@@ -870,7 +870,7 @@ neutron and muon data analysis.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bka535j8py3r3izrcnkj2ivbv48692by1wqfa30zycmfg5kfdj6"))))
+        (base32 "0srlw6f8bg6ynps8r827y75drygbx489lcj3ay8y2yim09w0is1i"))))
     (build-system pyproject-build-system)
     (arguments
      (list
