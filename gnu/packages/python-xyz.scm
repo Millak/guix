@@ -20480,22 +20480,28 @@ of how the configuration was created.")
 (define-public python-configargparse
   (package
     (name "python-configargparse")
-    (version "1.7")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "ConfigArgParse" version))
-              (sha256
-               (base32
-                "1l866g1dcf2ljf8fl7ggpxk1rggry0lya4d5b264gradi1qp81p7"))))
+    (version "1.7.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bw2/ConfigArgParse")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04d54knfjgxci3far2cp72xr8bjabq0xcawc0ks2nk7mfl1p05v5"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-pyyaml))
     (native-inputs
-     (list python-mock python-pytest python-setuptools python-wheel))
-    (synopsis "Replacement for argparse")
-    (description "A drop-in replacement for argparse that allows options to also
-be set via config files and/or environment variables.")
+     (list python-mock
+           python-pytest
+           python-pyyaml
+           python-setuptools
+           python-setuptools-scm))
     (home-page "https://github.com/bw2/ConfigArgParse")
+    (synopsis "Replacement for argparse")
+    (description
+     "This package provides a drop-in replacement for argparse that allows
+options to also be set via config files and/or environment variables.")
     (license license:expat)))
 
 (define-public python-connection-pool
