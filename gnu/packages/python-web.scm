@@ -12525,29 +12525,40 @@ fast.  It allows the usage of the @code{async/await} syntax added in Python
 (define-public python-socketio
   (package
     (name "python-socketio")
-    (version "5.12.1")
+    (version "5.16.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python_socketio" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/miguelgrinberg/python-socketio/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "175sd3fdld3s477i6b3v49yhf1alsbm1vaxzq44nqrqb8wgzz682"))))
+        (base32 "0695mq1nijlljkmpgn3nk6gfv34rzpgxrdsld1l1vix6gxyxna0y"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags
-           '(list "--timeout=60"
-                  ;; These tests freeze.
-                  "--ignore-glob=tests/async/*")))
-    (propagated-inputs
-     (list python-bidict python-engineio python-msgpack))
+     (list
+      ;; tests: 642 passed, 5 warnings
+      #:test-flags
+      ;; Tests freeze.
+      #~(list "--ignore=tests/async/test_admin.py"
+              "--ignore=tests/common/test_admin.py")))
     (native-inputs
-     (list python-pytest
+     (list python-msgpack
+           python-pytest
            python-pytest-asyncio
            python-pytest-timeout
+           python-redis
            python-setuptools
            python-uvicorn
-           python-wheel))
+           python-valkey))
+    (propagated-inputs
+     (list python-bidict
+           python-engineio
+           ;; [optional]
+           python-aiohttp
+           python-requests
+           python-websocket-client))
     (home-page "https://github.com/miguelgrinberg/python-socketio/")
     (synopsis "Python Socket.IO server")
     (description
