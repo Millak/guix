@@ -245,7 +245,10 @@
             utmpx-address
             login-type
             utmpx-entries
-            (read-utmpx-from-port . read-utmpx)))
+            (read-utmpx-from-port . read-utmpx)
+
+            getdomainname
+            setdomainname))
 
 
 ;;;
@@ -2712,5 +2715,36 @@ entry."
      eof)
     ((? bytevector? bv)
      (read-utmpx bv))))
+
+
+;;;
+;;; domainname
+;;;
+
+(define getdomainname
+  (let* ((proc (syscall->procedure int "getdomainname" (list '* size_t))))
+    (lambda ()
+      "Return the current NIS domain name."
+      ;; NIS_MAXNAMELEN is 1024, YPMAXDOMAIN 256, the limit on linux is 64
+      (let* ((name (make-bytevector (1+ 1024)))
+             (name-ptr (bytevector->pointer name)))
+        (let-values (((ret err) (proc name-ptr
+                                      (bytevector-length name))))
+          (if (zero? ret)
+              (pointer->string/utf-8 name-ptr -1)
+              (throw 'system-error "getdomainname" "~A"
+                     (list (strerror err))
+                     (list err))))))))
+
+(define setdomainname
+  (let* ((proc (syscall->procedure int "setdomainname" (list '* size_t))))
+    (lambda (name)
+      "Set the current NIS domain name."
+      (let-values (((ret err) (proc (string->pointer/utf-8 name)
+                                    (string-utf8-length name))))
+        (unless (zero? ret)
+          (throw 'system-error "setdomainname" "~A"
+                 (list (strerror err))
+                 (list err)))))))
 
 ;;; syscalls.scm ends here

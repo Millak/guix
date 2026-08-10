@@ -739,6 +739,17 @@
       (member (system-error-errno args)
               (list EPERM ENOSYS)))))
 
+(test-skip (if (zero? (getuid)) 1 0))
+(test-equal "setdomainname, EPERM"
+  EPERM
+  (catch 'system-error
+    (lambda ()
+      (setdomainname "example"))
+    (compose system-error-errno list)))
+
+(test-assert "getdomainname"
+  (getdomainname))
+
 (test-end)
 
 (false-if-exception (delete-file temp-file))
