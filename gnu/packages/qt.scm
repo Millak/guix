@@ -4490,7 +4490,7 @@ Python.")
 (define-public python-sip
   (package
     (name "python-sip")
-    (version "6.12.0")
+    (version "6.16.0")
     (source
      (origin
        (method url-fetch)
@@ -4500,7 +4500,7 @@ Python.")
                                  "/sip-" version ".tar.gz")))
        (sha256
         (base32
-         "1il938crjap0f05773mk70fjp91b1fbn76hi64r4j5akz2afsg08"))
+         "1zjggr5mrisfx9g7rsb22dw1yzs6r4q1g96bl8iaz8s74g8bkp12"))
        (modules '((guix build utils)))
        (snippet
         ;; Relax setuptools dependency
@@ -4511,7 +4511,7 @@ Python.")
     (arguments
      (list #:tests? #f))        ; No test system found.
     (native-inputs
-     (list python-setuptools python-setuptools-scm python-wheel))
+     (list python-setuptools python-setuptools-scm))
     (propagated-inputs
      (list python-packaging python-setuptools python-tomli))
     (home-page "https://www.riverbankcomputing.com/software/sip/intro")
