@@ -3683,7 +3683,7 @@ a number of clients.")
 (define-public whatscli
   (package
     (name "whatscli")
-    (version "1.1.5")
+    (version "1.1.6")
     (source
      (origin
        (method git-fetch)
@@ -3692,7 +3692,7 @@ a number of clients.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wdg2b7nh6c2xp4zi05v62irh4k39p2c15axz01iha2hmrfvb1yg"))))
+        (base32 "1vhmz4adyl921mk18hrzva7w9azfh0502lkn9n9s9vwd33b3nail"))))
     (build-system go-build-system)
     (arguments
      (list
