@@ -187,6 +187,7 @@
 ;;; Copyright © 2026 Kevin Deldycke <kevin@deldycke.com>
 ;;; Copyright © 2026 Ryan Desfosses <rdesfo@sdf.org>
 ;;; Copyright © 2026 nick <nicholascaitong@gmail.com>
+;;; Copyright © 2026 Mattia Bunel <mattia.bunel@ehess.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3290,6 +3291,39 @@ http://pydispatcher.sourceforge.net/ with PyPy support.")
      "This package provides a pure-python port of
 @url{https://github.com/jchelly/read_eagle, J. Helly's read_eagle}.")
     (license license:gpl3)))
+
+(define-public python-pyserial-asyncio-fast
+  (package
+    (name "python-pyserial-asyncio-fast")
+    (version "0.16")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url
+              "https://github.com/home-assistant-libs/pyserial-asyncio-fast")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1chnqa895rhnl0ygbspp5xmxw60vsvyybk2z93pvxjsm4m574hkc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend
+      #~'unittest))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-pyserial))
+    (home-page "https://github.com/home-assistant-libs/pyserial-asyncio-fast")
+    (synopsis "Fast asyncio extension package for pyserial")
+    (description
+     "Async I/O extension package for the Python Serial Port Extension.
+This version implements eager writes like cpython asyncio selector_events does.
+This can significantly reduce overhead since the asyncio writer is no longer
+added and removed frequently.
+
+This package is a fork of unmaintained package @code{pyserial-asyncio}
+@url{https://github.com/pyserial/pyserial-asyncio}.")
+    (license license:bsd-3)))
 
 (define-public python-pyte
   (package
