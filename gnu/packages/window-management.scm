@@ -3558,7 +3558,7 @@ core/thread.")
 (define-public gubar
   (package
     (name "gubar")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -3568,7 +3568,7 @@ core/thread.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1fdg9dvfyhmqsivgj262jczijfcpk8hqwbcs5q5nrxbw59a9wl96"))))
+         "12mpsflnv51v3pzfflmmmkh8wsad8bnqdrqq8zh23vhnncd2f7qa"))))
     (build-system gnu-build-system)
     (arguments
      (list
