@@ -4101,6 +4101,12 @@ other HTTP libraries.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 150 passed, 3 xfailed, 7 warnings
+      #:test-flags
+      ;; To prevent dependency on python-pypytools which depends on python-py
+      ;; both marked as deprecated by maintainers, see:
+      ;; <https://codeberg.org/guix/guix/issues/7475>.
+      #~(list "--ignore=cheroot/test/test_server.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-pytest-config
@@ -4110,12 +4116,10 @@ other HTTP libraries.")
     (native-inputs
      (list python-portend
            python-pyopenssl
-           python-pypytools
            python-pytest
            python-pytest-mock
            python-requests
            python-requests-toolbelt
-           python-requests-unixsocket2
            python-setuptools
            python-setuptools-scm
            python-trustme))
