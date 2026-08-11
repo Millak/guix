@@ -1105,7 +1105,7 @@ for \"genetic modifications\" as described by e.g.
 (define-public ginga
   (package
     (name "ginga")
-    (version "7.0.0")
+    (version "7.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1114,18 +1114,20 @@ for \"genetic modifications\" as described by e.g.
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jpp6vnbs8xby9hrz3k07rpgj1g29m2fsmi100371m8fvmnv4d7c"))))
+        (base32 "1q4qdc4s2p9i6lzyvxcr3bfyclxsr0xg7dkmnz4ilgy561zxy87w"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 256 passed, 13 skipped
       #:phases
       #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.cfg"
+               ;; All tests passed with older Pillow, remove when it's
+               ;; updated.
+               (("pillow>=12.3.0") "pillow"))))
           (add-before 'sanity-check 'set-home
             (lambda _
-              ;; Relax matplotlib warning: ... because the default path
-              ;; (/homeless-shelter/.config/matplotlib) is not a writable
-              ;; directory ...
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-attrs
