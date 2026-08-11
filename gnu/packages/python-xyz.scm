@@ -6892,9 +6892,10 @@ of the netcdf4 package before.")
     (license license:expat)))
 
 (define-public python-netcdf4
+  ;; TODO: Move to (gnu packages python-science).
   (package
     (name "python-netcdf4")
-    (version "1.7.2")
+    (version "1.7.4")
     (source
      (origin
        (method git-fetch)
@@ -6903,22 +6904,16 @@ of the netcdf4 package before.")
               (commit (string-append "v" version "rel"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bq0dkgq795z00j5z4xi1dqqw0chaj5j80hg5nci1piyr2ic41v9"))))
+        (base32 "0lmapnqc4rivv0nggm8865xpni1gbcg6dc7khf5r0p16jk8gv41c"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: Ran 113 tests; skipped=7
+      ;; tests: Ran 115 tests
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-configure-flags
             (lambda _
-              (setenv "CFLAGS" (string-join
-                                (list "-g -O2"
-                                      "-Wno-error=incompatible-pointer-types"
-                                      "-Wno-error=implicit-function-declaration"
-                                      "-Wno-error=int-conversion")
-                                " "))
-              (setenv "HDF5_DIR" #$(this-package-input "hdf5"))
+              (setenv "HDF5_DIR" #$(this-package-input "hdf5-parallel-openmpi"))
               (setenv "JPEG_DIR" #$(this-package-input "libjpeg-turbo"))
               (setenv "NETCDF4_DIR" #$(this-package-input "netcdf"))
               (setenv "USE_NCCONFIG" "0")))
@@ -6937,12 +6932,16 @@ of the netcdf4 package before.")
            python-setuptools-scm
            python-typing-extensions))
     (inputs
-     (list netcdf
-           hdf5
+     ;; After python-h5py was built with MPI support it can't be used together
+     ;; with hdf5 and netcdf built without MPI support tests and load may
+     ;; brake when python-netcdf4 and python-h5py are used together.
+     (list netcdf-parallel-openmpi
+           hdf5-parallel-openmpi
            zlib))
     (propagated-inputs
      (list python-certifi
            python-cftime
+           python-mpi4py
            python-numpy))
     (home-page "https://github.com/Unidata/netcdf4-python")
     (synopsis "Python/numpy interface to the netCDF library")
