@@ -1665,7 +1665,7 @@ determines the frequencies, decay constants, amplitudes, and phases of those sin
 (define-public guile-libctl
   (package
     (name "guile-libctl")
-    (version "4.6.0")
+    (version "4.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1674,7 +1674,7 @@ determines the frequencies, decay constants, amplitudes, and phases of those sin
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lsch1qc5w9yyprrvawfwbnz7na4qah0p752kxxv144xp8yq98x7"))))
+                "1h0kg8cx4x7gjzg0wzk5qd90f5mxwyihlh9q1j2mznj7b0ag77yr"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
