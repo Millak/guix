@@ -1726,7 +1726,7 @@ Django projects, which allows association of a number of tags with any
 (define-public python-django-rest-framework
   (package
     (name "python-django-rest-framework")
-    (version "3.16.1")
+    (version "3.18.0")
     (source
      (origin
        (method git-fetch)
@@ -1736,7 +1736,7 @@ Django projects, which allows association of a number of tags with any
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "01i2p1mh48bkxhggvfh6j11rh9zrgw4w6fr78msgrdw6bdjf4fwj"))))
+         "0l4p9hjvyn4yiakzgh4pv24vf9j9786p48xl195jcp33fq4ldsmr"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:phases
@@ -1747,7 +1747,8 @@ Django projects, which allows association of a number of tags with any
                  (invoke "python" "runtests.py")
                  (format #t "test suite not run~%")))))))
     (native-inputs
-     (list python-pytest
+     (list python-dj-database-url
+           python-pytest
            python-pytest-django
            python-setuptools
            python-wheel
