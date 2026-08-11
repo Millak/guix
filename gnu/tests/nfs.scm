@@ -138,7 +138,7 @@
   (system-test
    (name "nfs")
    (description "Test some things related to NFS.")
-   (value (run-nfs-test name "/var/run/rpcbind.sock"))))
+   (value (run-nfs-test name "/run/rpcbind.sock"))))
 
 
 (define %nfs-os
