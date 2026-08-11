@@ -975,46 +975,6 @@ lets developers use the functionality of Proj in their own software.")
                    ;; src/geodesic.*, src/tests/geodtest.cpp
                    license:x11))))
 
-(define-public proj-9.3
-  (package
-    (inherit proj)
-    (version "9.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://download.osgeo.org/proj/proj-"
-                           version ".tar.gz"))
-       (sha256
-        (base32
-         "1g0hkpiablvhsmw0kn5frwgdir3q7avc45p6lc1zhhhzkv5ikydh"))))
-    (arguments
-     (if (target-32bit?)
-         (list
-          #:phases
-          '(modify-phases %standard-phases
-             (add-after 'unpack 'patch-tests
-               (lambda _
-                 ;; These regression tests fail due to accuracy problems.
-                 (substitute* "test/unit/test_factory.cpp"
-                   (("^TEST\\(factory, AuthorityFactory_createUnitOfMeasure_linear_us_survey_foot\\) \\{" m)
-                    (string-append m "\nGTEST_SKIP();\n")))
-                 (substitute* "test/unit/test_grids.cpp"
-                   (("^TEST_F\\(GridTest, VerticalShiftGridSet_gtx\\) \\{" m)
-                    (string-append m "\nGTEST_SKIP();\n")))
-                 (substitute* "test/unit/test_defmodel.cpp"
-                   (("^TEST\\(defmodel, evaluator_horizontal_unit_metre\\) \\{" m)
-                    (string-append m "\nGTEST_SKIP();\n")))
-                 ;; These regression tests fail due to accuracy problems.
-                 (substitute* "test/CMakeLists.txt"
-                   (("proj_add_gie_test\\(\"4D-API-cs2cs-style\".+") "")
-                   (("proj_add_gie_test\\(\"Builtins\".+") "")
-                   (("proj_add_gie_test\\(\"peirce_q\".+") "")
-                   (("proj_add_gie_test\\(\"adams_ws2\".+") ""))
-                 (substitute* "test/cli/CMakeLists.txt"
-                   (("proj_add_test_script_sh\\(\"testvarious\" CS2CS_BIN\\)") ""))))))
-         '()))))
-
-
 (define-public python-obspy
   (package
     (name "python-obspy")
