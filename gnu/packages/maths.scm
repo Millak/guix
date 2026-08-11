@@ -2351,6 +2351,13 @@ installing this filter, you can read and write HDF5 files with
 Blosc-compressed datasets.")
     (license license:expat)))
 
+(define-public hdf5-blosc-parallel-openmpi
+  (package/inherit hdf5-blosc
+    (name "hdf5-blosc-parallel-openmpi")
+    (inputs
+     (list c-blosc hdf5-parallel-openmpi))
+    (synopsis "HDF5-Blosc with parallel IO support")))
+
 (define-public highfive
   (package
     (name "highfive")
