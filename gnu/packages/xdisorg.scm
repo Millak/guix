@@ -2141,13 +2141,17 @@ demos.  It also acts as a nice screen locker.")
                (base32
                 "02sqa5fki82xhrx5m02pw95ych0pq3664f3c0jckm0jw0s0kdkz8"))))
     (build-system gnu-build-system)
-    (arguments `(#:make-flags `("bindir=/bin"
-                                "man1dir=/share/man/man1"
-                                ,(string-append "DESTDIR=" (assoc-ref %outputs "out"))
-                                ,,(string-append "CC=" (cc-for-target)))
-                 #:phases (modify-phases %standard-phases
-                            (delete 'configure)
-                            (delete 'check))))
+    (arguments
+     (list
+      #:make-flags
+      #~(list "bindir=/bin"
+              "man1dir=/share/man/man1"
+              (string-append "DESTDIR=" #$output)
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'check))))
     (native-inputs
      (list pkg-config))
     (inputs
