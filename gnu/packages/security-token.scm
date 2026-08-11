@@ -1032,6 +1032,54 @@ implementing a Relying Party.")
     ;; files for internal use, so they are not really a bundled dependency.
     (license (list license:bsd-2 license:asl2.0))))
 
+(define-public python-pskc
+  (package
+    (name "python-pskc")
+    (version "1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/arthurdejong/python-pskc")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yqyz4ay7dl850ckddpqs1vlxh6yxa8yvf5kkz0amqa08b8546jq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Tests depending on optional python-signxm which is not packaged yet.
+      #~(list (string-append "--deselect=tests/"
+                             "test_draft_ietf_keyprov_pskc_02.doctest"
+                             "::test_draft_ietf_keyprov_pskc_02.doctest")
+              (string-append "--deselect=tests/test_draft_keyprov.doctest"
+                             "::test_draft_keyprov.doctest")
+              "--deselect=tests/test_feitian.doctest::test_feitian.doctest"
+              "--deselect=tests/test_misc.doctest::test_misc.doctest"
+              "--deselect=tests/test_rfc6030.doctest::test_rfc6030.doctest"
+              "--deselect=tests/test_signature.doctest::test_signature.doctest"
+              "--deselect=tests/test_yubico.doctest::test_yubico.doctest")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-cryptography
+           python-dateutil
+           ;; [optional]
+           python-defusedxml
+           python-lxml
+           #;python-signxml))  ;not packaged yet in Guix
+    (home-page "https://arthurdejong.org/python-pskc/")
+    (synopsis "Python module for handling PSKC files")
+    (description
+     "This package provides a Python module to handle Portable Symmetric Key
+Container (PSKC) files as defined in @url{https://tools.ietf.org/html/rfc6030,
+RFC 6030}.  PSKC files are used to transport and provision symmetric keys and
+key meta data (seed files) to different types of crypto modules, commonly
+one-time password systems or other authentication devices.")
+    (license license:lgpl2.1+)))
+
 (define-public python-yubikey-manager
   (package
     (name "python-yubikey-manager")
