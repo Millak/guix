@@ -566,53 +566,6 @@ with the benchmarking host.")
                      ) " and "))
       #:phases
       #~(modify-phases %standard-phases
-          ;; The build system attempts to detect the version by spawning git.
-          (add-after 'unpack 'pretend-version
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("^dynamic = \\[\"version\"\\].*$")
-                 (format #f "version = ~s~%" #$version))
-                (("^source = \"vcs\".*$")
-                 "source = \"static\"\n"))))
-          (add-after 'unpack 'fix-version
-            (lambda _
-              (let ((tuple (list
-                            #$@(match (string-split (version-major+minor+point version) #\.)
-                                 ((ma mi po) (list ma mi po))))))
-                (with-output-to-file "locust/_version.py"
-                  (lambda _
-                    (display (string-append "\
-VERSION_TUPLE = object
-TYPE_CHECKING = False
-if TYPE_CHECKING:
-    from typing import Tuple, Union
-
-    VERSION_TUPLE = Tuple[Union[int, str], ...]
-else:
-    VERSION_TUPLE = object
-
-version: str
-__version__: str
-__version_tuple__: VERSION_TUPLE
-version_tuple: VERSION_TUPLE
-
-
-__version__ = \"" #$version "\"
-version = __version__
-__version_tuple__ = (" (car tuple) ", " (cadr tuple) ", " (caddr tuple) ")
-version_tuple = __version_tuple__
-
-")))))
-              (substitute* "pyproject.toml"
-                (("\"setuptools>=.*\",")
-                 (string-append "\"setuptools>="
-                                #$(package-version
-                                   (this-package-input "python-setuptools"))
-                                "\","))
-                (("^version =.*")
-                 (string-append "version = \"" #$version "\"\n"))
-                (("enable = true")
-                 "enable = false"))))
           (add-before 'check 'increase-resource-limits
             (lambda _
               ;; XXX: Copied from ungoogled-chromium.
