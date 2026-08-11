@@ -1418,7 +1418,12 @@ river flooding.")
               "--deselect=tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh2]"
               "--deselect=tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh3]"
               "--deselect=tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh4]"
-              "--deselect=tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh5]")))
+              "--deselect=tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh5]"
+              ;; XXX: <...>/h5py/defs.cpython-312-x86_64-linux-gnu.so:
+              ;; undefined symbol: H5Pset_dxpl_mpio
+              "--deselect=tests/test_xdmf.py"
+              "--deselect=tests/test_hmf.py"
+              "--deselect=tests/test_cgns.py::test[mesh0]")))
     (inputs (list python-h5py python-netcdf4))
     (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-numpy python-rich))
