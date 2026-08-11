@@ -510,40 +510,6 @@ and every application benefits from this.")
 @acronym{GPGME, GnuPG Made Easy} library.")
     (license license:lgpl2.1+)))
 
-(define-public qgpgme-qt5
-  (package
-    (name "qgpgme-qt5")
-    (version "2.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://gnupg/qgpgme/qgpgme-" version ".tar.xz"))
-       (sha256
-        (base32 "1bb198dk49bd7yx4cf4w07acjhllilx1nczdna7139ncflj5nr0m"))))
-    (build-system qt-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'check-setup
-            (lambda _
-              (setenv "HOME" (getcwd))
-              (invoke "gpg-agent" "--daemon"))))))
-    (propagated-inputs
-     (list gpgme-2        ;for FindGpgme.cmake and QGpgmeQt6Config.cmake
-           gpgmepp        ;for QGpgmeQt6Config.cmake
-           libgpg-error)) ;for FindLibGpgError.cmake and QGpgmeQt6Config.cmake
-    (native-inputs
-     (list gnupg        ;for tests
-           pkg-config))
-    (home-page "https://gnupg.org/software/gpgme/index.html")
-    (synopsis "Qt API bindings for gpgme")
-    (description "QGpgme provides a very high level Qt API around GpgMEpp.
-
-QGpgME was originally developed as part of libkleo and incorporated into
-gpgpme starting with version 1.7.")
-    (license license:gpl2+)))
-
 (define-public qgpgme
   (package
     (name "qgpgme")
@@ -576,6 +542,20 @@ gpgpme starting with version 1.7.")
     (synopsis "Qt API bindings for gpgme")
     (description "QGpgme provides a very high level Qt API around GpgMEpp.")
     (license license:gpl2+)))
+
+(define-public qgpgme-qt5
+  (package
+    (inherit qgpgme)
+    (name "qgpgme-qt5")
+    (arguments
+     (list
+      #:configure-flags #~(list "-DBUILD_WITH_QT6=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'check-setup
+            (lambda _
+              (setenv "HOME" (getcwd))
+              (invoke "gpg-agent" "--daemon"))))))))
 
 (define-public guile-gcrypt
   (package
