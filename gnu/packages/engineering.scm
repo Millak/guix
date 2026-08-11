@@ -1409,7 +1409,7 @@ WiFi signal strength maps.  It visualizes them using a Voronoi diagram.")
 (define-public volk
   (package
     (name "volk")
-    (version "3.0.0")
+    (version "3.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1419,7 +1419,7 @@ WiFi signal strength maps.  It visualizes them using a Voronoi diagram.")
              (recursive? #t)))          ; for cpu_features git submodule
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a59lnjh6hx2bmyn04f8r0ymwss1ss1iih2jwrl9jblkxsw0i3lh"))))
+        (base32 "1b6q7z971myih3q88lv01iwmwsjln7wibav365j7phnclr9hg41i"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -1458,6 +1458,7 @@ WiFi signal strength maps.  It visualizes them using a Voronoi diagram.")
     (inputs
      (list bash-minimal                 ;for wrap-program
            boost
+           fmt
            python-wrapper
            python-mako))
     (home-page "https://www.libvolk.org/")
