@@ -2048,40 +2048,6 @@ code to a remote location, executes there, and then syncs the result back.")
 timeout has been exceeded.")
     (license license:expat)))
 
-(define-public python-pytest-forked
-  (package
-    (name "python-pytest-forked")
-    (version "1.6.0")
-    (source
-     (origin
-       (method git-fetch)               ;for tests
-       (uri (git-reference
-             (url "https://github.com/pytest-dev/pytest-forked")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1y93q914gwf0nshql1qix6sj826q163b04vw17zmwhsnbv00c2d3"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; See <https://github.com/pytest-dev/pytest-forked/issues/88>.
-     (list #:tests? #f))
-    (native-inputs
-     ;; XXX: The bootstrap variant of Pytest is used to ensure the
-     ;; 'hypothesis' plugin is not in the environment (due to
-     ;; <http://issues.guix.gnu.org/25235>), which would cause the test suite
-     ;; to fail (see: https://github.com/pytest-dev/pytest-forked/issues/54).
-     (list python-pytest-bootstrap python-setuptools
-           python-setuptools-scm python-wheel))
-    (propagated-inputs (list python-py))
-    (home-page "https://github.com/pytest-dev/pytest-forked")
-    (synopsis "Pytest plugin to run tests in isolated forked subprocesses")
-    (description "This package provides a Pytest plugin which enables running
-each test in a subprocess and will report if a test crashed the process.  It
-can be useful to isolate tests against undesirable global environment
-side-effects (such as setting environment variables).")
-    (license license:expat)))
-
 (define-public python-scripttest
   (package
     (name "python-scripttest")
