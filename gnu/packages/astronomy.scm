@@ -38,6 +38,7 @@
 (define-module (gnu packages astronomy)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system ant)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -121,6 +122,8 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-apps)      ;XXX: maturin
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages specifications)
   #:use-module (gnu packages sphinx)
@@ -7781,6 +7784,66 @@ on:
 @item effect of gaussian beam convolution
 @end itemize")
     (license license:bsd-2)))
+
+(define-public python-mocpy
+  (package
+    (name "python-mocpy")
+    (version "0.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mocpy" version))
+       (sha256
+        (base32 "0xzl25widay8zzylnwawdjp5csmcb2rch7qmr8sidygf52g534x5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:imported-modules (append %cargo-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      ;; ;; TODO: Package tests deps.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each (lambda (phase)
+                          (format #t "Running cargo phase: ~a~%" phase)
+                          (apply (assoc-ref cargo:%standard-phases phase)
+                                 #:cargo-target #$(cargo-triplet)
+                                 args))
+                        '(prepare-rust-crates
+                          unpack-rust-crates
+                          configure
+                          check-for-pregenerated-files
+                          patch-cargo-checksums))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (delete-file-recursively "python/mocpy"))))))
+    (native-inputs
+     (list maturin
+           rust
+           (list rust "cargo")))
+    (inputs (cargo-inputs 'python-mocpy))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           ;; [optional]
+           python-requests
+           python-regions
+           python-matplotlib
+           ;; python-cdshealpix  ;not packaged yet in Guix
+           python-networkx))
+    (home-page "https://cds-astro.github.io/mocpy/")
+    (synopsis "Multi-Order Coverage maps")
+    (description
+     "MOCPy is a Python library allowing easy creation and manipulation of
+MOCs (Multi-Order Coverage maps).  MOC is an IVOA standard enabling
+description of arbitrary sky, time, (or frequency) coverages.")
+    (license license:bsd-3)))
 
 (define-public python-mpl-animators
   (package
