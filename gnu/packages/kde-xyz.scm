@@ -466,6 +466,44 @@ for KDE Plasma.")
 for KDE Plasma panels.")
     (license (list license:lgpl2.1+ license:gpl2+))))
 
+(define-public plasma-applet-plasmusic-toolbar
+  (package
+    (name "plasma-applet-plasmusic-toolbar")
+    (version "4.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+          (url "https://github.com/ccatterina/plasmusic-toolbar")
+          (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16c4dr48a5nhqwfx4bimlyx37wbacwqvz84k2l3lw55cklmj7gxd"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("src" "/share/plasma/plasmoids/plasmusic-toolbar/"
+           #:include-regexp ("/contents/" "metadata\\.json")))))
+    (propagated-inputs
+     (list kcmutils
+           kcoreaddons
+           kiconthemes
+           kirigami
+           ksvg
+           libplasma
+           plasma-workspace
+           qtbase
+           qtdeclarative
+           qt5compat))
+    (home-page "https://store.kde.org/p/2128143")
+    (synopsis "Music toolbar widget for KDE Plasma")
+    (description
+     "Plasmusic Toolbar is a KDE Plasma widget that displays the currently
+playing track and provides playback controls.")
+    (license license:gpl3)))
+
 (define-public plasma-applet-window-buttons
   (package
     (name "plasma-applet-window-buttons")
