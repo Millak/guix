@@ -34939,28 +34939,11 @@ decimal arithmetic.")
     (license license:expat)))
 
 (define-public go-gopkg-in-ini-v1
-  (package
+  (package/inherit go-github-com-go-ini-ini
     (name "go-gopkg-in-ini-v1")
-    (version "1.67.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/go-ini/ini")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1vpzkjmrwp7bqqsijp61293kk2vn6lcck56j8m5y6ks6cf21lpap"))))
-    (build-system go-build-system)
     (arguments
      (list
-      #:import-path "gopkg.in/ini.v1"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (home-page "https://gopkg.in/ini.v1")
-    (synopsis "Go library for ini files")
-    (description "Go library for ini files")
-    (license license:asl2.0)))
+      #:import-path "gopkg.in/ini.v1"))))
 
 (define-public go-gopkg-in-mgo-v2
   ;; XXX: Upstream note - UNMAINTAINED
