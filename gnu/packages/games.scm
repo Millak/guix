@@ -4909,7 +4909,7 @@ match, cannon keep, and grave-itation pit.")
 (define-public maelstrom
   (package
     (name "maelstrom")
-    (version "4.0.1")
+    (version "4.0.2")
     (source
      (origin
        (method git-fetch)
@@ -4917,42 +4917,44 @@ match, cannon keep, and grave-itation pit.")
               (url "https://github.com/libsdl-org/Maelstrom")
               (commit (string-append "release-" version))))
        (sha256
-        (base32 "140qr4hlg63kjy3ns5d2qix0xpaq72z5yisjnmslrkxrq42ch2fk"))
+        (base32 "0a3kpsd3582j0gwdwspfd27in24asjhj48i26im6d9hg1j3n4iww"))
        (file-name (git-file-name name version))
        (snippet
         #~(begin
             (use-modules (guix build utils))
             (substitute* '("game/mods.cpp" "utils/files.c")
-              (("\"[^\"]*/physfssdl3.h\"") "\"physfssdl3.h\""))
+              (("#include.*(physfssdl3.h)\"" all first)
+               (string-append "#include <" first ">")))
+            (substitute* "game/replay.cpp"
+              (("#include \"\\.\\./(miniz/miniz\\.h)\"" all first)
+               (string-append "#include <" first ">")))
             (substitute* "CMakeLists.txt"
-              (("set\\(original_BUILD_SHARED_LIBS.*\n") "")
-              (("set\\(BUILD_SHARED_LIBS OFF\\)\n") "")
-              (("add_subdirectory\\(external/SDL_net.*")
-               (string-append "find_package(SDL3_net REQUIRED)\n"
-                              "include(CheckCSourceCompiles)\n"
-                              "include(CMakeDependentOption)\n"))
-              (((string-append "set\\(BUILD_SHARED_LIBS \"\\$\\{"
-                               "original_BUILD_SHARED_LIBS\\}\"\\)\n")) "")
-              (("add_subdirectory\\(macres\\)\n") "")
-              (("miniz/miniz\\.c\n") "")
-              (("find_package\\(SDL3_net (REQUIRED)\\)\n" all first)
-               (string-append all "pkg_check_modules(MINIZ " first
-                              " IMPORTED_TARGET miniz)\n"))
-              (("(target_link_libraries\\(Maelstrom PRIVATE )SDLmac\\)" all first)
-               (string-append all "\n" first "PkgConfig::MINIZ)")))
+              (("external/physfs/extras/physfssdl3\\.c" all)
+               (string-append "# " all))
+              (("miniz/miniz\\.c" all)
+               (string-append "# " all))
+              (("(pkg_check_modules\\()PhysFS.*physfs\\)\n" all first)
+               (string-append all
+                              first "MINIZ IMPORTED_TARGET miniz)\n"
+                              first "PHYSFSSDL3 IMPORTED_TARGET physfs-sdl3)\n"))
+              (("(target_link_libraries\\(Maelstrom PRIVATE )PkgConfig::PhysFS\\)\n" all first)
+               (string-append all
+                              first "PkgConfig::MINIZ)\n"
+                              first "PkgConfig::PHYSFSSDL3)\n")))
             (for-each delete-file-recursively
                       (list "macres"
                             "miniz"
-                            "Xcode"))))
-       (patches (search-patches "maelstrom-use-system-physfs.patch"))))
+                            "Xcode"))))))
     (build-system cmake-build-system)
     (arguments
      (list
+      #:tests? #f                       ;no tests
       #:configure-flags
       #~(list "-DSTEAM=OFF"
               "-DUSE_VENDORED_SDL=OFF"
-              "-DSTANDALONE_INSTALL=OFF")
-      #:tests? #f)) ;no testes
+              "-DUSE_VENDORED_PHYSFS=OFF"
+              "-DUSE_VENDORED_SDL_NET=OFF"
+              "-DSTANDALONE_INSTALL=OFF")))
     (native-inputs (list pkg-config))
     (inputs (list miniz physfs physfs-sdl3 sdl3 sdl3-net))
     (home-page "https://github.com/libsdl-org/Maelstrom")
