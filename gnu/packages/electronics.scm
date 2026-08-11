@@ -2391,7 +2391,7 @@ layout of a circuit corresponds to the desired netlists.")
 (define-public nextpnr
   (package
     (name "nextpnr")
-    (version "0.11")
+    (version "0.11.1")
     (source
      (origin
        (method git-fetch)
@@ -2425,7 +2425,7 @@ layout of a circuit corresponds to the desired netlists.")
                             "imgui"
                             "qtimgui")))
        (sha256
-        (base32 "1cw4ch2wjzgwraq6s714mfbhrl70f7akpzbbxgj9rw4f28r7lsmw"))))
+        (base32 "1mb2dywv4gd52vzmml7rlyqdv4psw0l0gfy0mgwsknxblps3aha1"))))
     (outputs '("out" "bba"))
     (build-system qt-build-system)
     (arguments
