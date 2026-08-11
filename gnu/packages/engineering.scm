@@ -3525,7 +3525,7 @@ interpolation toolkit.")
 (define-public python-motulator
   (package
     (name "python-motulator")
-    (version "0.6.2")
+    (version "0.7.5")
     (source
      (origin
        (method git-fetch)
@@ -3534,7 +3534,7 @@ interpolation toolkit.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1di2r1i19jl751v0hj426zkwk48w5yf8zpw2bl6qzk0vq4z2vpbw"))))
+        (base32 "1zwhypvnhy3jhkiflsd51yq9vfkyrqn66a3xkrkir21xfk0igpr7"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ; there are no tests
