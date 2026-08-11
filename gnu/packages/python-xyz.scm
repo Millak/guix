@@ -9144,33 +9144,6 @@ port forwards using @acronym{UPnP, Universal Plug and Play}.")
     (home-page "http://miniupnp.free.fr")
     (license license:bsd-3)))
 
-;; NOTE: As taken from upstram: "this library is in maintenance mode and
-;; should not be used in new code."
-(define-public python-py
-  (package
-    (name "python-py")
-    (version "1.11.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "py" version))
-       (sha256
-        (base32
-         "06c7m7sfcn7587xd4s2bng8m6q1gsfd3j93afhplfjq74r0mrisi"))))
-    (build-system pyproject-build-system)
-    (arguments
-     '(#:tests? #f)) ;cycle with python-pytest
-    (native-inputs
-     (list python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (home-page "https://github.com/pytest-dev/py")
-    (synopsis "Python library for parsing, I/O, introspection, and logging")
-    (description
-     "Py is a Python library for file name parsing, .ini file parsing, I/O,
-code introspection, and logging.")
-    (license license:expat)))
-
 (define-public python-pyrsistent
   (package
     (name "python-pyrsistent")
