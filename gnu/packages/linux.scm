@@ -1540,16 +1540,16 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public reform-debian-packages-for-7.1
   (package
     (name "reform-debian-packages")
-    (version "2023-07-10-642-gc2346f8") ;from git describe
+    (version "2023-07-10-688-gc3e9ed6") ;from git describe
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://source.mnt.re/reform/reform-debian-packages.git")
-             (commit "c2346f87f0ff70cb7c8024fe7bd36df120d83d36")))
+             (commit "c3e9ed6f2dc3b18221dcbfe251d5724f6be83d09")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "145vaqj4lipcdgb2p8chbvaaphdxn7mzb02dac3i2i52jmhl7hyp"))))
+        (base32 "138a9jz882mia71gvvhhhhza1kb9vwp1xrmh6r9aj16qqfbzhspj"))))
     (build-system copy-build-system)
     (arguments
      (list
@@ -1787,8 +1787,8 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
     ("CONFIG_IMX2_WDT" . #true)
     ("CONFIG_DRM_SAMSUNG_DSIM" . #true)
     ("CONFIG_PHY_FSL_SAMSUNG_HDMI_PHY" . #true)
-    ("CONFIG_DRM" . #true)
-    ("CONFIG_DRM_PANEL_MNT_POCKET_REFORM" . #true)
+    ("CONFIG_DRM" . m)
+    ("CONFIG_DRM_PANEL_MNT_POCKET_REFORM" . m)
     ("CONFIG_IMX8M_BLK_CTRL" . #true)
     ("CONFIG_IMX_GPCV2_PM_DOMAINS" . #true)
     ("CONFIG_DRM_DISPLAY_CONNECTOR" . #true)
@@ -1938,7 +1938,8 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
             ("CONFIG_INTERCONNECT_QCOM_SM8750" . #true)
             ("CONFIG_PINCTRL_SM8750" . #true)
             ("CONFIG_SM_TCSRCC_8750" . #true)
-            ("CONFIG_REGULATOR_QCOM_REFGEN" . m))
+            ("CONFIG_REGULATOR_QCOM_REFGEN" . m)
+            ("CONFIG_MNTRE_SC" . m))
           '())))
 
 (define-public linux-libre-arm64-mnt-reform-7.1
@@ -1980,7 +1981,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                              "imx8mp-mnt-pocket-reform/mmc-sdio/0002-During-the-card-init-the-host-side-sometimes-may-nee.patch"
                              "imx8mp-mnt-pocket-reform/mmc-sdio/0003-USDHC-IP-has-one-limitation-the-tuning-circuit-can-t.patch"
                              "imx8mp-mnt-pocket-reform/pocket-panel/0001-v5-add-multi-display-panel-driver.patch"
-                             "imx8mp-mnt-pocket-reform/pocket-panel/0002-pocket-panel-fix-sleep-add-orientation.patch"
                              "imx8mp-mnt-reform2/0001-sn65dsi86-use-hs-clock-of-samsung-dsim-host-directly.patch"
                              "imx8mp-mnt-reform2/0002-lcdif-dont-exceed-desired-pixel-clock.patch"
                              "imx8mq-mnt-reform2/0001-imx8mq-mnt-reform2.dts-multiple-fixes-for-display-wi.patch"
@@ -2016,6 +2016,9 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                              "qcom-mnt-reform2/4002-qcom-pci-get-ltssm.patch"
                              "qcom-mnt-reform2/4003-qcom-pci-power-down-phy-via-parf.patch"
                              "qcom-mnt-reform2/4004-qcom-pci-add-d3cold.patch"
+                             "qcom-mnt-reform2/5000-tlv320aic31xx-mclk-fallback.patch"
+                             "qcom-mnt-reform2/5010-asoc_qcom_qdsp6_q6prm_add_the_missing_mclk_clock_ids.patch"
+                             "qcom-mnt-reform2/5011-sc8280xp-add-support-for-I2S-clocks.patch"
                              "rk3588-mnt-reform2/0024-math.h-add-DIV_ROUND_UP_NO_OVERFLOW.patch"
                              "rk3588-mnt-reform2/0025-clk-divider-Fix-divisor-masking-on-64-bit-platforms.patch"
                              "rk3588-mnt-reform2/0026-clk-composite-replace-open-coded-abs_diff.patch"
@@ -2043,7 +2046,9 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                              "rk3588-mnt-reform2/2001-drm-bridge-dw-hdmi-qp-Return-0-in-audio-prepare-when.patch"
                              "rk3588-mnt-reform2/2003-drm-bridge-synopsys-Do-not-warn-about-audio-params-c.patch"
                              "rk3588-mnt-reform2/5200-drm-rockchip-Set-dma-mask-to-64-bit.patch"
-                             "rk3588-mnt-reform2/6000-loosen-mnt-reform2-edp-panel-timing.patch"))))
+                             "rk3588-mnt-reform2/6000-loosen-mnt-reform2-edp-panel-timing.patch"
+                             "rk3588-mnt-reform2/7000-mnt-analogix-dp-changes-for-usb-c-alt-mode.patch"
+                             "sc/1000-mnt-sc-driver.patch"))))
               (add-after 'apply-reform-patches 'copy-reform-dts-files
                 (lambda* (#:key inputs #:allow-other-keys)
                   (for-each (lambda (dts)
