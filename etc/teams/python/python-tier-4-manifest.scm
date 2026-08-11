@@ -1120,7 +1120,6 @@
        "trytond-stock-supply-day"
        "trytond-account-cash-rounding"
        "trytond-product-kit"
-       "offlate"
        "meson-python"
        "python-woob"
        "python-transient"

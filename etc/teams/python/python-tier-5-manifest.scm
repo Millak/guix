@@ -594,7 +594,6 @@
        "python-pyls-spyder"
        "python-rustworkx"
        "python-ilinkedlist"
-       "offlate"
        "python-click-option-group"
        "python-universal-pathlib"
        "python-schematics"
