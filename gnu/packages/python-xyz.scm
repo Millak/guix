@@ -38515,22 +38515,16 @@ as possible in order to be comprehensible and easily extensible.")
 (define-public python-tables
   (package
     (name "python-tables")
-    ;; XXX: Compatibility fix for numexpr 2.13.0, see:
-    ;; <https://github.com/PyTables/PyTables/pull/1256>.
-    (properties '((commit . "aad9079c80ce3ae7f385d00af760d171dcc10535")
-                  (revision . "0")))
-    (version (git-version "3.10.2"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "3.11.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/PyTables/PyTables")
-             (commit (assoc-ref properties 'commit))))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gnqj1gj6dnr167pacmynvghw8bwwll6nlz843rm95r07zi6blrm"))
+        (base32 "03ifagvxzvgfdpjw508l1lq1j3ki9nbhxkls4zf1bchfdprv89fv"))
        (snippet '(begin
                    (use-modules (guix build utils))
                    (delete-file-recursively "hdf5-blosc")
@@ -38538,6 +38532,13 @@ as possible in order to be comprehensible and easily extensible.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; Performing only a light (yet comprehensive) subset of the test suite.
+      ;; If you want a more complete test, try passing the --heavy flag to
+      ;; this script (or set the 'heavy' parameter in case you are using
+      ;; tables.test() call).  The whole suite will take more than 4 hours to
+      ;; complete on a relatively modern CPU and around 512 MB of main memory.
+      #~(list "--pyargs" "tables.tests.test_all")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-tuning
@@ -38548,39 +38549,27 @@ as possible in order to be comprehensible and easily extensible.")
           (add-after 'unpack 'fix-reference-to-blosc2
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "tables/__init__.py"
-                (("( +)os.path.join\\(current_dir, blosc2_lib_hardcoded\\),"
-                  m indent)
-                 (string-append indent
-                                "\""
-                                (search-input-file inputs "/lib/libblosc2.so")
-                                "\",\n" m)))))
+                (("\"\",") ;default
+                 (string-append "'"
+                                (dirname
+                                 (search-input-file inputs "/lib/libblosc2.so"))
+                                "',\n")))))
           (add-before 'build 'pre-build
             (lambda _
               (substitute* "setup.py"
                 (("hdf5-blosc/src")
                  (format #f "~a/src"
-                         #$(package-source (this-package-input "hdf5-blosc")))))
+                         #$(package-source
+                            (this-package-input "hdf5-blosc-parallel-openmpi")))))
               (invoke "make" "distclean")       ;Regenerate C code with Cython
               (setenv "BLOSC2_DIR" #$(this-package-input "cblosc2"))
               (setenv "BLOSC_DIR" #$(this-package-input "c-blosc"))
               (setenv "BZIP2_DIR" #$(this-package-input "bzip2"))
-              (setenv "HDF5_DIR" #$(this-package-input "hdf5"))
+              (setenv "HDF5_DIR" #$(this-package-input "hdf5-parallel-openmpi"))
               (setenv "LZO_DIR" #$(this-package-input "lzo"))))
           (add-before 'check 'pre-check
             (lambda _
-              (setenv "HOME" "/tmp")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion "/tmp"
-                  ;; Performing only a light (yet comprehensive) subset of the
-                  ;; test suite.  If you want a more complete test, try
-                  ;; passing the --heavy flag to this script (or set the
-                  ;; 'heavy' parameter in case you are using tables.test()
-                  ;; call).  The whole suite will take more than 4 hours to
-                  ;; complete on a relatively modern CPU and around 512 MB of
-                  ;; main memory.
-                  (invoke "python" "-m" "tables.tests.test_all"))))))))
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list pkg-config
            python-cython
@@ -38591,8 +38580,8 @@ as possible in order to be comprehensible and easily extensible.")
      (list bzip2
            c-blosc
            c-blosc2
-           hdf5
-           hdf5-blosc
+           hdf5-parallel-openmpi
+           hdf5-blosc-parallel-openmpi
            lzo))
     (propagated-inputs
      (list python-blosc2
