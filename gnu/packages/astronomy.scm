@@ -1756,16 +1756,16 @@ Astrometry and Astrodynamics library.")
 (define-public libpasastro
   (package
     (name "libpasastro")
-    (version "1.4.3")
+    (version "1.4.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pchev/libpasastro")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pchev/libpasastro")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16d0kc22a1cn9kl8s0mxnaw0ax6qjq3rwhfifgpf1a3f9qp17115"))))
+        (base32 "0y8naadlcd0ybh0qnfpdz4rqfb5sml7x8hx4isk4r7d84iy4cl61"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1799,7 +1799,8 @@ standard astronomy libraries:
 
 @itemize
 @item @code{libpasgetdss.so}: Interface with GetDSS to work with DSS images.
-@item @code{libpasplan404.so}: Interface with Plan404 to compute planets position.
+@item @code{libpasplan404.so}: Interface with Plan404 to compute planets
+position.
 @item @code{libpaswcs.so}: Interface with libwcs to work with FITS WCS.
 @item @code{libpasspice.so}: To work with NAIF/SPICE kernel.
 @end itemize")
