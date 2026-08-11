@@ -5109,29 +5109,42 @@ parsing and frequency finding.")
 (define-public redumper
   (package
     (name "redumper")
-    (version "561")
+    (version "744")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/superg/redumper")
-                    (commit (string-append "build_" version))))
+                    (commit (string-append "b" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r0wfi0fn3rq7s28p89rkgpgf567akd8z25l8r9sj7p4p3xp9m91"))))
+                "11sr4mwr4xgziwljjqppcplr2hv0jkm712rwhhjk46rgnxz7ah01"))))
     (build-system cmake-build-system)
     (arguments
      (list
+      #:tests? #f
       #:build-type "Release"
       ;; The build system uses CMake modules features that are only available
       ;; when using Ninja.
       #:configure-flags #~(list "-GNinja"
                                 "-DREDUMPER_CLANG_USE_LIBCPP=ON"
-                                (string-append "-DREDUMPER_VERSION_BUILD="
+                                "-DREDUMPER_LINKER_FLAGS="
+                                (string-append "-DREDUMPER_VERSION_BUILD=b"
                                                #$version)
                                 "-DCMAKE_BUILD_TYPE=Release")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-tests
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("enable_testing\\(\\)")
+                 "# enable_testing()")
+                (("add_subdirectory\\(\"tests\"\\)")
+                 "# add_subdirectory(\"tests\")")
+                (("get_property\\(_tidy_gtest_targets\\s+DIRECTORY tests/gtest\\s+PROPERTY BUILDSYSTEM_TARGETS\\)")
+                 "set(_tidy_gtest_targets)")
+                (("list\\(APPEND _tidy_deps \\$\\{_tidy_root_targets\\} \\$\\{_tidy_gtest_targets\\}\\)")
+                 "list(APPEND _tidy_deps ${_tidy_root_targets})"))))
           (add-after 'unpack 'patch-build-system
             (lambda _
               ;; The CMAKE_SYSTEM_VERSION is undefined when cross-compiling.
