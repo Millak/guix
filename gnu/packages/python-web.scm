@@ -880,30 +880,36 @@ server process.")
 (define-public python-devpi-server
   (package
     (name "python-devpi-server")
-    (version "6.17.0")
+    (version "6.20.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "devpi_server" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/devpi/devpi")
+              (commit (string-append "server-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "13lybrw8j6zjxwvx6sk7bw6854hd2m18s1xcvl0q100j4n06p6ml"))))
+        (base32 "11q1bnd8rl55gcv99xkmg10i8z9l91kvmgrvcz1803mwkcs0isp8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      ;; These all fail with: "module 'py' has no attribute 'io'"
-      #~(list "--ignore=test_devpi_server/test_importexport.py"
-              "--ignore=test_devpi_server/test_main.py"
-              "--ignore=test_devpi_server/test_genconfig.py")
+      ;; tests: 1134 passed, 53 skipped, 29 warnings
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "server")))
+          (add-after 'chdir 'relax-requirements
             (lambda _
               (substitute* "pyproject.toml"
                 ;; It straggles to check argon2 in passlib on any versions
                 ;; starting from 6.14.0: UnknownExtra("passlib 1.7.4 has no
                 ;; such extra feature 'argon2'",).
-                (("passlib\\[argon2\\]") "passlib")))))))
+                (("passlib\\[argon2\\]") "passlib")
+                (("\"py>=1.4.23\",") ""))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (propagated-inputs (list python-argon2-cffi
                              python-attrs
                              python-defusedxml
@@ -911,18 +917,18 @@ server process.")
                              python-httpx
                              python-itsdangerous
                              python-lazy
-                             python-legacy-cgi
                              python-passlib
                              python-platformdirs
                              python-pluggy
-                             python-py
                              python-pyramid
                              python-repoze-lru
+                             python-requests
                              python-ruamel.yaml-0.16 ;FIXME: rename
                              python-strictyaml
                              python-waitress))
     (native-inputs
-     (list python-execnet
+     (list nss-certs-for-test
+           python-execnet
            python-pytest
            python-pytest-asyncio
            python-pytest-timeout
