@@ -3255,6 +3255,29 @@ edit distance algorithm for Python in Cython for high performance.")
      "@code{python-qrcodegen} is a QR code generator library in Python.")
     (license license:expat)))
 
+(define-public python-rectpack
+  (package
+    (name "python-rectpack")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/secnot/rectpack/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y6nzpqny2knlq5g53wdnrznv10xv21rbzmlbq5xgf92gi7i6kci"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/secnot/rectpack/")
+    (synopsis "2D Rectangle packing Python library")
+    (description "Rectpack is a collection of heuristic algorithms for solving
+the 2D knapsack or bin packing problem, consisting on packing a set of
+rectangles into the smallest number of bins.")
+    (license license:asl2.0)))
+
 (define-public python-represent
   (package
     (name "python-represent")
