@@ -9,6 +9,8 @@
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2025 John Kehayias <john@guixotic.coop>
+;;; Copyright © 2026 Konstantin Suntsov <protvin@disroot.org>
+;;; Copyright © 2026 Rodion Goritskov <rodion@goritskov.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -68,7 +70,7 @@
   (hidden-package
    (package
      (name "inkscape")
-     (version "1.3.2")
+     (version "1.4.4")
      (source
       (origin
         (method url-fetch)
@@ -76,10 +78,12 @@
                             "resources/file/"
                             "inkscape-" version ".tar.xz"))
         (sha256
-         (base32 "0sq81smxwypgnp7r3wgza8w25dsz9qa8ga79sc85xzj3qi6q9lfv"))
+         (base32 "0vl5p2rxki7lcgf7k8x6p6m0lw30n1g6cv7ibhd8g2z0l59mgkmv"))
         (modules '((guix build utils)
                    (ice-9 format)))
-        (patches (search-patches "inkscape-libxml2.patch"))
+        (patches (search-patches "inkscape-poppler-26-1.patch"
+                                 "inkscape-poppler-26-2.patch"
+                                 "inkscape-poppler-26-3.patch"))
         (snippet
          '(begin
             (let-syntax
@@ -215,6 +219,14 @@ endif()~%~%"
                         (substitute* "testfiles/src/visual-bounds-test.cpp"
                           (("%lu") "%u")))))
                   '())
+           (add-after 'unpack 'disable-svg-parser-test
+             (lambda _
+               ;; Fail because without gtksourceview in deps
+               ;; SvgPathParser::prettify_svgd is not available
+               ;; for tests
+               (substitute* "testfiles/CMakeLists.txt"
+                 (("    svg-path-parser-test")
+                  "    #svg-path-parser-test"))))
            (add-after 'unpack 'set-home
              ;; Mute Inkscape warnings during tests.
              (lambda _
@@ -342,23 +354,10 @@ as the native format.")
 
 ;;; The Inkscape release year used in the about dialog.  Please keep it sync
 ;;; when updating the package!
-(define %inkscape-release-year 2025)
+(define %inkscape-release-year 2026)
 (define-public inkscape
   (package
     (inherit inkscape/pinned)
-    (name "inkscape")
-    (version "1.4.3")
-    (source
-     (origin
-       (inherit (package-source inkscape/pinned))
-       (method url-fetch)
-       (uri (string-append "https://media.inkscape.org/dl/"
-                           "resources/file/"
-                           "inkscape-" version ".tar.xz"))
-       (patches '())
-       (sha256
-        (base32 "1lfi1rqr32kwjdkka4sbsxmkyyw3k1qgxk0gzyhwbdkhnlyjqfp8"))))
-    (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments inkscape/pinned)
        ((#:modules modules)
@@ -388,6 +387,8 @@ as the native format.")
                          (substitute* "testfiles/CMakeLists.txt"
                            (("    geom-pathstroke-test") "")))))
                    '())
+            ;; We now have gtksourceview in deps, so test should pass
+            (delete 'disable-svg-parser-test)
             (replace 'wrap-program
               ;; Ensure Python is available at runtime.
               (lambda _
@@ -401,6 +402,7 @@ as the native format.")
     (inputs (modify-inputs (package-inputs inkscape/pinned)
               (replace "lib2geom" lib2geom)
               (append imagemagick       ;for libMagickCore and libMagickWand
+                      gtksourceview-4
                       python-tinycss2)))
     (native-inputs
      (modify-inputs (package-native-inputs inkscape/pinned)

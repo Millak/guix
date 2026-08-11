@@ -1679,7 +1679,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/inetutils-drop-test.patch                \
   %D%/packages/patches/inferno-fix-crash.patch		\
   %D%/packages/patches/iniparser-remove-fetchcontent-usage.patch		\
-  %D%/packages/patches/inkscape-libxml2.patch		\
+  %D%/packages/patches/inkscape-poppler-26-1.patch		\
+  %D%/packages/patches/inkscape-poppler-26-2.patch		\
+  %D%/packages/patches/inkscape-poppler-26-3.patch		\
   %D%/packages/patches/instead-use-games-path.patch		\
   %D%/packages/patches/intltool-perl-compatibility.patch	\
   %D%/packages/patches/insight-toolkit-fix-build.patch			\
