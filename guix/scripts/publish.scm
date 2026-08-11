@@ -265,6 +265,9 @@ usage."
 (define %public-key
   (make-parameter #f))
 
+(define %public-key-file-in-use
+  (make-parameter %public-key-file))
+
 (define %nix-cache-info
   `(("StoreDir" . ,%store-directory)
     ("WantMassQuery" . 0)
@@ -793,7 +796,7 @@ to compress or decompress the log file; just return it as-is."
 
 (define (render-signing-key)
   "Render signing key."
-  (let ((file %public-key-file))
+  (let ((file (%public-key-file-in-use)))
     (values `((content-type . (text/plain (charset . "UTF-8")))
               (x-raw-file . ,file))
             file)))
@@ -1309,6 +1312,8 @@ because service is listening to localhost~%")))
 
       (parameterize ((%public-key public-key)
                      (%private-key private-key)
+                     (%public-key-file-in-use
+                      (assoc-ref opts 'public-key-file))
                      (cache-bypass-threshold
                       (or (assoc-ref opts 'cache-bypass-threshold)
                           (cache-bypass-threshold))))
