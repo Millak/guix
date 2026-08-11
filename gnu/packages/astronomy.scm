@@ -3161,7 +3161,7 @@ simulated Astronomical data in Python.")
 (define-public python-astromartini
   (package
     (name "python-astromartini")
-    (version "2.1.18")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
@@ -3170,14 +3170,14 @@ simulated Astronomical data in Python.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dqwy6wmdwv5garr30jiimi6fdgzsx3havndjmpvg520ld6l3skv"))))
+        (base32 "0d3dqvfplhk9jbsczw3871qzds28hfld37a9nhpa8wcibwz41c0d"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; Tests are not thread save, see
       ;; <https://github.com/kyleaoman/martini/issues/98>.
       ;;
-      ;; tests: 2758 passed, 12 skipped, 4 xfailed
+      ;; tests: 2786 passed, 6 skipped, 4 xfailed
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -3196,16 +3196,17 @@ simulated Astronomical data in Python.")
            python-tqdm
            ;; [optional]
            python-eaglesqltools
+           ;; python-g3read                         ;not packaged yet in Guix
            python-gizmo-analysis
            python-h5py
            python-halo-analysis
            python-hdecompose
+           python-matplotlib
+           python-numba
            python-pyread-eagle
            python-requests
            python-swiftgalaxy
-           python-swiftsimio
-           python-utilities-awetzel
-           python-velociraptor))
+           python-utilities-awetzel))
     (home-page "https://github.com/kyleaoman/martini")
     (synopsis "Synthetic datacube creation from simulations")
     (description
