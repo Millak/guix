@@ -607,6 +607,39 @@ or package manifest (Cargo.toml file).")
 Cmake files.  It supports syntax highlighting, indenting and refilling of
 comments.")))
 
+(define-public morse-cmake
+  (package
+    (name "morse-cmake")
+    ;; Project does not tag any releases, using latest commit.
+    (properties '((commit . "3f74c7935db26c118bae695a16b02fa83f1aeac0")
+                  (revision . "0")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.inria.fr/solverstack/morse_cmake")
+                     (commit (assoc-ref properties 'commit))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0pw56am3mz65bi700bk5bl4s1i5d5761gnhjmvh7xmdyxpi0qrj1"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("modules" "share/morse-cmake/modules")
+          ("CONTRIBUTING.md" "share/morse-cmake/")
+          ("LICENCE.txt" "share/morse-cmake/")
+          ("README.md" "share/morse-cmake/"))))
+    (home-page "https://gitlab.inria.fr/solverstack/morse_cmake")
+    (synopsis "Collection of CMake modules that can be shared among projects")
+    (description
+     "This project provides a collection of CMake modules that can be shared
+among projects using CMake as build system.  For now it is mainly constituted of
+@code{Find} modules that help detecting installed libraries on the system.")
+    (license license:cecill-c)))
+
 (define-public qmsetup
   (package
     (name "qmsetup")
