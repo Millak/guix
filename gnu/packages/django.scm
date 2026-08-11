@@ -801,7 +801,7 @@ them do this.")
 (define-public python-django-allauth
   (package
     (name "python-django-allauth")
-    (version "65.18.0")
+    (version "65.19.0")
     (source
      (origin
        (method git-fetch)
@@ -810,11 +810,11 @@ them do this.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "171z6v1nd7v0y0ar87ixibci9zpx0blmrfqbnvp29p2x57dkhi9r"))))
+        (base32 "1zfjw9sbngfm99bxydw5n6mw8cgkix40svi8nbik4mzydk91wzhv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2050 passed, 17 warnings, 6 subtests passed
+      ;; tests: 2150 passed, 264 warnings, 6 subtests passed
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'include-package-data
