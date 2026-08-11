@@ -41,6 +41,7 @@
 ;;; Copyright © 2025 Thomas Guillermo Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2026 Thiago Negri <evohunz@gmail.com>
+;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -346,6 +347,45 @@ formal verification.")
     (description "ABC is a program for sequential logic synthesis and
 formal verification.  This is the Yosyshq fork of ABC.")
     (license (license:non-copyleft "file:///copyright.txt"))))
+
+(define-public adms
+  (package
+    (name "adms")
+    (version "2.3.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/Qucs/ADMS")
+                     (commit (string-append "release-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0i37c9k6q1iglmzp9736rrgsnx7sw8xn3djqbbjw29zsyl3pf62c"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-shebang
+                 (lambda _
+                   (substitute* "bootstrap.sh"
+                     (("# !/bin/sh")
+                      (string-append "#!" (which "sh")))))))))
+    (native-inputs
+     (list autoconf
+           automake
+           bison
+           flex
+           libtool
+           perl
+           perl-xml-libxml))
+    (home-page "https://github.com/Qucs/ADMS")
+    (synopsis "Automatic device model synthesizer")
+    (description
+     "ADMS is a code generator that converts electrical compact device models
+specified in high-level description language into ready-to-compile C code for
+the API of spice simulators.  Based on transformations specified in XML
+language, ADMS transforms Verilog-AMS code into other target languages.")
+    (license license:gpl3)))
 
 (define-public apycula
   (package

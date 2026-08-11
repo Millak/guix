@@ -21,7 +21,7 @@
 ;;; Copyright © 2020, 2021, 2025 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021, 2022, 2023, 2024, 2025 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2020, 2021, 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
+;;; Copyright © 2021, 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
 ;;; Copyright © 2021, 2022, 2026 Guillaume Le Vaillant <glv@posteo.net>
@@ -85,6 +85,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -1781,44 +1782,9 @@ arbitrary wavevectors, using fully-vectorial and three-dimensional methods.")
 developed at MIT to model electromagnetic systems.")
     (license license:gpl2+)))
 
-(define-public adms
-  (package
-    (name "adms")
-    (version "2.3.7")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Qucs/ADMS")
-                    (commit (string-append "release-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0i37c9k6q1iglmzp9736rrgsnx7sw8xn3djqbbjw29zsyl3pf62c"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-shebang
-                 (lambda _
-                   (substitute* "bootstrap.sh"
-                     (("# !/bin/sh")
-                      (string-append "#!" (which "sh")))))))))
-    (native-inputs
-     (list autoconf
-           automake
-           bison
-           flex
-           libtool
-           perl
-           perl-xml-libxml))
-    (home-page "https://github.com/Qucs/ADMS")
-    (synopsis "Automatic device model synthesizer")
-    (description
-     "ADMS is a code generator that converts electrical compact device models
-specified in high-level description language into ready-to-compile C code for
-the API of spice simulators.  Based on transformations specified in XML
-language, ADMS transforms Verilog-AMS code into other target languages.")
-    (license license:gpl3)))
+;; XXX: Deprecated on <2026-08-10>.
+(define-deprecated/public-alias adms
+  (@ (gnu packages electronics) adms))
 
 (define-public arduino-cli
   (package
