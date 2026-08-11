@@ -1083,21 +1083,23 @@ one-time password systems or other authentication devices.")
 (define-public python-yubikey-manager
   (package
     (name "python-yubikey-manager")
-    (version "5.8.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://developers.yubico.com/yubikey-manager/Releases"
-                    "/yubikey_manager-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0q45ff0lajszgwcnqxysf5vnwjssllnlxrsfr5ingm7xw5jxmw1s"))))
+    (version "5.9.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Yubico/yubikey-manager")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b7xiwb3h3rg59939qkb8iafhqppp5c1p83hwqf8bp8hg66jqy7n"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-click
            python-cryptography
            python-fido2
            python-keyring
+           python-pskc
            python-pyopenssl
            python-pyscard
            python-pyusb))
