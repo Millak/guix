@@ -1350,7 +1350,7 @@ of xmpppy.")
            network-manager
            python-cryptography
            python-css-parser
-           python-dbus-1.2
+           python-dbus
            python-emoji
            python-gssapi
            python-httpx
