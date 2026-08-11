@@ -1906,7 +1906,7 @@ template tag.")
 (define-public python-django-dbbackup
   (package
     (name "python-django-dbbackup")
-    (version "5.1.2")
+    (version "5.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1915,7 +1915,7 @@ template tag.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iapp6kln4sc459w97x2hzdz471d4c2ikqwq556c6bqafdgh8brn"))))
+        (base32 "1g21sxc3inb5q3ficc7gjhixm6yz4ylahm8m29895bhwhfcmj85x"))))
     (build-system pyproject-build-system)
     (arguments
      (list
