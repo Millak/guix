@@ -1535,16 +1535,16 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
 (define-public indi
   (package
     (name "indi")
-    (version "2.2.3.1")
+    (version "2.2.4.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/indilib/indi")
-             (commit (string-append "v" version))))
+              (url "https://github.com/indilib/indi")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "027znsgk21qj6cgsbhgjyd86g7pz795kicaw4y90npq5wvp9la2r"))))
+        (base32 "0w3izplv2790zj9494sfbgmiw5qmkl1lrcggblilf7zb87qqx10c"))))
     (build-system cmake-build-system)
     (arguments
      (list
