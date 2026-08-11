@@ -6368,19 +6368,65 @@ authentication on behalf of its clients.")
 (define-public clazy
   (package
     (name "clazy")
-    (version "1.12")
+    (version "1.17.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/KDE/clazy")
-                    (commit (string-append "v" version))))
+                     (url "https://github.com/KDE/clazy")
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1y0g1j9ib1b0likjizw70hibky20gxxirqls6hf4crc214279v0m"))))
+                "18lmmkzzaqv4fkiakkmqiac3ssqgis2v37vcpq0415ihlp3xwfhs"))))
     (build-system cmake-build-system)
-    (native-inputs (list python))
-    (inputs (list clang-13 llvm-13))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'set-CI_JOB_NAME_SLUG
+                 (lambda _
+                   ;; The tests can use both Qt 5 or 6; this selects Qt 6.
+                   (setenv "CI_JOB_NAME_SLUG" "qt6")))
+               (add-after 'unpack 'patch-build-system
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "cmake/FindLLVM.cmake"
+                     ;; The build system assumes Clang lives under
+                     ;; the LLVM prefix.
+                     (("\\$\\{LLVM_BIN_DIR}/clang")
+                      (search-input-file inputs "bin/clang"))
+                     (("\\$\\{LLVM_BIN_DIR}/clang-tidy")
+                      (search-input-file inputs "bin/clang-tidy")))
+                   (substitute* "ClazyTestPrefix.cmake"
+                     (("/usr/bin/env")
+                      (which "env")))))
+               (add-after 'unpack 'disable-problematic-tests
+                 (lambda _
+                   (substitute* "ClazyTests.generated.cmake"
+                     ;; This test expects a monolithic Qt.
+                     ((".*no-module-include.*") "")
+                     ;; This one requires QtStateMachine.
+                     ((".*old-style-connect.*") ""))))
+               (add-after 'unpack 'register-qtdeclarative-include
+                 ;; The qtinstallation.py script also assumes a monolithic Qt,
+                 ;; causing the needed qtdeclarative includes to not be found
+                 ;; in tests.
+                 (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                   (substitute* "tests/testutils/qtinstallation.py"
+                     (("        additional_args = \"\"" anchor)
+                      (format #f "\
+        qt_modules_includes.append('-isystem ~a')\n~a"
+                              (dirname (search-input-directory
+                                        (or native-inputs inputs)
+                                        "include/qt6/QtQml"))
+                              anchor)))))
+               (delete 'check)          ;moved after install
+               (add-after 'install 'check
+                 (assoc-ref %standard-phases 'check))
+               (add-before 'check 'augment-PATH
+                 (lambda _
+                   (setenv "PATH" (string-append #$output "/bin:"
+                                                 (getenv "PATH"))))))))
+    (native-inputs (list python qtbase qtdeclarative))
+    (inputs (list clang llvm))
     (home-page "https://github.com/KDE/clazy/")
     (synopsis "Qt-oriented static code analyzer")
     (description "clazy is a compiler plugin which allows @command{clang} to
