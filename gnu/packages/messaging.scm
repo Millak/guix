@@ -1007,7 +1007,7 @@ authentication.")
            pango
            perl
            python-wrapper
-           python-dbus-1.2
+           python-dbus
            silc-toolkit
            sqlite
            startup-notification
