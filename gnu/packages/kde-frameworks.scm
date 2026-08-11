@@ -1757,6 +1757,8 @@ kwidgetsaddons-kcolumnresizertest)")))))))))
             (lambda* (#:key tests? #:allow-other-keys)
               ;; The test suite requires a running window anager
               (when tests?
+                ;; For the missing /etc/machine-id.
+                (setenv "DBUS_FATAL_WARNINGS" "0")
                 (setenv "XDG_RUNTIME_DIR" (getcwd))
                 (system "Xvfb :1 -ac -screen 0 640x480x24 &")
                 (setenv "DISPLAY" ":1")
