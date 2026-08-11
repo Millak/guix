@@ -1603,7 +1603,7 @@ desktop environment.")
 (define-public icewm
   (package
     (name "icewm")
-    (version "4.0.0")
+    (version "4.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1612,7 +1612,7 @@ desktop environment.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bgc132i8s4w1n33nz92n3xa3kik350sfy4n747k223pjbqddsg3"))))
+                "0day490rhxy718dzlvz0mwdbakc9rhxgrnpbyxdw6bd6jkdzi124"))))
     (build-system cmake-build-system)
     (native-inputs (list pkg-config gettext-minimal ruby-asciidoctor ))
     (inputs (list alsa-lib
