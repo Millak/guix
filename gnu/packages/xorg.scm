@@ -5870,7 +5870,7 @@ basic eye-candy effects.")
            lz4
            gtk+
            python-pycairo
-           python-pygobject-3.50
+           python-pygobject
            xauth
            xorg-server
            xf86-video-dummy
@@ -5886,7 +5886,7 @@ basic eye-candy effects.")
            python-pyopengl              ; Drawing acceleration.
            python-pyopengl-accelerate   ; Same.
            python-paramiko              ; Tunneling over SSH.
-           python-dbus-1.2              ; For desktop notifications.
+           python-dbus                  ; For desktop notifications.
            dbus                         ; For dbus-launch command.
            python-lz4                   ; Faster compression than zlib.
            python-netifaces
