@@ -332,12 +332,12 @@ Version: ~a
      (list catch2
            cmake-minimal
            highfive
-           pybind11-2
+           pybind11
            python-wrapper
            python-setuptools
            python-setuptools-scm))
     (inputs
-     (list hdf5))
+     (list hdf5-parallel-openmpi))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/brille/brille")
