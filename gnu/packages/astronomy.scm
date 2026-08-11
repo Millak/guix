@@ -3756,10 +3756,9 @@ and @code{astropy.coordinates.SkyCoord}.
       ;; Tests are not thread save, see:
       ;; <https://github.com/astropy/astroquery/issues/2968>.
       ;;
-      ;; tests: 1823 passed, 21 skipped, 2047 deselected, 2 xfailed
+      ;; tests: 1833 passed, 11 skipped, 2047 deselected, 2 xfailed
       #:test-flags
       #~(list "--pyargs" "astroquery"
-              "-m" "not remote_data"
               "-k" (string-join
                     ;; E fixture 'tmp_cwd' not found
                     (list "not test_download_cache"
@@ -3793,7 +3792,7 @@ and @code{astropy.coordinates.SkyCoord}.
            ;; [optional]
            python-astropy-healpix
            python-boto3
-           ;; python-mocpy      ;not packaged yet in Guix
+           python-mocpy
            python-regions))
     (home-page "https://astroquery.readthedocs.io/en/latest/index.html")
     (synopsis "Access online astronomical data resources")
