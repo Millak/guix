@@ -12547,6 +12547,44 @@ PYSYNPHOT, utilizing Astropy and covering the non-instrument specific portions
 of the old packages.")
     (license license:bsd-3)))
 
+(define-public python-tables-io
+  (package
+    (name "python-tables-io")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LSSTDESC/tables_io")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yi20hjxmh1vgi8l74pinqvw9fmn2qz6sfkf0khrg3sillwbpa9q"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-mpi4py
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-click
+           python-deprecated
+           python-h5py
+           python-numpy
+           python-pandas
+           python-tables
+           ;; [optional]
+           python-astropy
+           python-pyarrow))
+    (home-page "https://github.com/LSSTDESC/tables_io")
+    (synopsis "Input/output and conversion functions for tabular data")
+    (description
+     "@code{tables_io} provides an interface for a variety of non-ASCII file
+formats that are commonly used within the @url{https://lsstdesc.org/, LSST
+DESC collaboration}.  It allows users to read in data from multiple types of
+files through one convenient interface.")
+    (license license:expat)))
+
 (define-public python-tweakwcs
   (package
     (name "python-tweakwcs")
