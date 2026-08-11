@@ -253,7 +253,7 @@ to share commonly used Xfce widgets among the Xfce applications.")
              bash-minimal
              gobject-introspection
              gtk+
-             python-dbus-1.2
+             python-dbus
              python-pexpect
              python-pycairo
              python-pygobject
