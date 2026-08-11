@@ -1063,13 +1063,7 @@ conventions.")
                                       "::test_calculate_sqw_map_with_0_"
                                       "inv_cm_bin_doesnt_emit_runtime_warn")
                        (string-append "test_util.py::TestGetQptLabels"
-                                      "::test_get_qpt_labels")))
-              ;; XXX: <...>/h5py/defs.cpython-312-x86_64-linux-gnu.so:
-              ;; undefined symbol: H5Pset_dxpl_mpio
-              (string-append "--deselect=tests_and_analysis/test/"
-                             "script_tests/test_dispersion.py"
-                             "::TestRegression"
-                             "::test_dispersion_plot_data_from_phonopy"))
+                                      "::test_get_qpt_labels"))))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'fix-numpy-include
