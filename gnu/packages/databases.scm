@@ -5911,7 +5911,7 @@ and @code{intake-parquet}.  It supports the following compression algorithms:
 (define-public python-crate
   (package
     (name "python-crate")
-    (version "2.0.0")
+    (version "2.2.1")
     (source
      (origin
        (method git-fetch)
@@ -5920,22 +5920,48 @@ and @code{intake-parquet}.  It supports the following compression algorithms:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kk84wf7awgspdijycvhkbqvm5llp3wmwxa9n4w3qda861xn6krb"))))
+        (base32 "05yiigpd8kfrms4d369gmp3xiv16l4ajr664rhv0fzc7yy6qv7i7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 107 passed, 8 deselected
       #:test-flags
-      #~(list "--ignore=tests/testing/test_layer.py" ; Requires crate binary.
-              "--ignore=tests/client/test_http.py"))) ; XXX: fails collection.
+      #~(list "--deselect=tests/test_docs.py::test_docs"
+              #$@(map (lambda (test) (string-append "--deselect=tests/"
+                                                    "testing/test_layer.py"
+                                                    "::LayerTest"
+                                                    test))
+                      (list "::test_additional_settings"
+                            "::test_basic"
+                            "::test_cluster"
+                            "::test_default_settings"
+                            "::test_dynamic_http_port"
+                            "::test_environment_variables"
+                            "::test_verbosity")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            ;; versioningit needs git tags; patch pyproject.toml to use static
+            ;; version and create _version.py directly.
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("source = \"versioningit\"")
+                 "
+path = \"src/crate/_version.py\"")
+                ((", \"versioningit\"")
+                 ""))
+              (call-with-output-file "src/crate/_version.py"
+                (lambda (port)
+                  (format port "__version__ = \"~a\"~%" #$version))))))))
     (native-inputs
-     (list python-orjson
+     (list python-hatchling
            python-pytest
            python-pytz
-           python-setuptools
-           python-sqlalchemy
-           python-verlib2
            tzdata-for-tests))
-    (propagated-inputs (list python-urllib3))
+    (propagated-inputs
+     (list python-orjson
+           python-urllib3
+           python-verlib2))
     (home-page "https://github.com/crate/crate-python")
     (synopsis "CrateDB Python client")
     (description
