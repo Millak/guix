@@ -126,6 +126,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages statistics)
+  #:use-module (gnu packages swig)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
@@ -8854,6 +8855,54 @@ Level Data Reduction Library (HDRL) using pybind11.  It allows for using the
 ESO High Level Data Reduction Library in Python scripts, or directly in an
 interactive Python session, and thus allows for using HDRL algorithms in
 recipes implemented in Python as part of an instrument pipeline package.")
+    (license license:gpl3+)))
+
+(define-public python-pyindi-client
+  (package
+    (name "python-pyindi-client")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyindi_client" version))
+       (sha256
+        (base32 "06jpgxxnh4c2s1jnqlpbxrjsqsaknqpxiq7c1cwalxr1qpf4w8ig"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-include-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (list "setup.py" "setup.cfg")
+                (("/usr/include/libindi")
+                 (search-input-directory inputs "include/libindi")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (system (string-append "indiserver"
+                                     " indi_simulator_ccd"
+                                     " indi_simulator_focus"
+                                     " indi_simulator_gps"
+                                     " indi_simulator_guide"
+                                     " indi_simulator_wheel"
+                                     " indi_simulator_telescope &")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           swig))
+    (inputs
+     (list cfitsio
+           indi
+           libnova))
+    (propagated-inputs
+     (list python-bottle
+           python-dbus
+           python-requests))
+    (home-page "https://github.com/indilib/pyindi-client")
+    (synopsis "Third party Python API for INDI client")
+    (description
+     "This package provides an INDI Client Python API, auto-generated from the
+official C++ API using SWIG.")
     (license license:gpl3+)))
 
 (define-public python-pyirf
