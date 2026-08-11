@@ -33168,6 +33168,8 @@ implementations.")
     (license license:expat)))
 
 (define-public python-retry
+  ;; XXX: The project is abandoned upstream for 11y, remove when python-locust
+  ;; drops it or we can find a way to avoid it.
   (package
     (name "python-retry")
     (version "0.9.2")
@@ -33181,8 +33183,17 @@ implementations.")
        (sha256
         (base32 "1a35ihsn082626592bkjc41fywylzp603j0cxpkbm2f7l1k332xv"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "requirements.txt"
+                (("py>=1.4.26,<2.0.0")
+                 "")))))))
     (native-inputs (list python-pbr python-pytest))
-    (propagated-inputs (list python-decorator python-py))
+    (propagated-inputs (list python-decorator))
     (home-page "https://github.com/invl/retry")
     (synopsis "Retry decorator")
     (description
