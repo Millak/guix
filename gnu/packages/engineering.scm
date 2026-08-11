@@ -3220,6 +3220,7 @@ models in the STL and OFF file formats.")
                                   (string-prefix? "-DOPENSCAD_COMMIT=" flag)))
                             #$flags)
                     (list "-DENABLE_LIBFIVE=ON" "-DUSE_BUILTIN_LIBFIVE=OFF"
+                          "-DUSE_QT6=ON"
                           (string-append "-DOPENSCAD_VERSION="
                                          #$version)
                           (string-append "-DPYTHON_VERSION="
