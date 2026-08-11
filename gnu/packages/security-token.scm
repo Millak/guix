@@ -1120,16 +1120,19 @@ an unprivileged user.")
     (license license:bsd-2)))
 
 (define-public yubikey-manager-qt
+  ;; XXX: EOF since <2025-02-20>, see: guix/guix#8013.
   (package
     (name "yubikey-manager-qt")
-    (version "1.2.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://developers.yubico.com/" name
-                                  "/Releases/" name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1qjp9p7i6957lf6ycwwz0178nmjgdyydb2f235bkin0pfm3rxcp9"))))
+    (version "1.2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Yubico/yubikey-manager-qt")
+              (commit (string-append "yubikey-manager-qt-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dqd7xpby6m1s1c8qmr7s7x2yr7f5phjhn2xda1kycw8x3izn2vz"))))
     (build-system qt-build-system)
     (arguments
      (list
