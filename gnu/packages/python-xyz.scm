@@ -39836,21 +39836,6 @@ without using the configuration machinery.")
 several utilities, as well as an API for building localization tools.")
     (license license:gpl2+)))
 
-;; XXX: See: <https://codeberg.org/guix/guix/pulls/3780#issuecomment-7957715>
-(define-public python-translate-toolkit-for-offlate
-  (hidden-package
-   (package
-     (inherit python-translate-toolkit)
-     (version "3.6.2")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "translate-toolkit" version ".tar.gz"))
-        (sha256
-         (base32 "0m4cpsp7x7h5m5agg4ybscf7y86wla46q2lvxpi2myplb6qlgcli"))))
-     (arguments
-      (list #:tests? #f)))))
-
 (define-public python-translitcodec
   (package
     (name "python-translitcodec")
