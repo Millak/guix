@@ -15958,45 +15958,6 @@ Python.")
 sophisticated version manipulation.")
     (license license:expat)))
 
-(define-public python-pypytools
-  (package
-    (name "python-pypytools")
-    (version "0.6.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/antocuni/pypytools/")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1nmq4gsw3hcayj2d96n8n166h0wnmp7n28fqswcn562hx57mlh05"))
-       (patches (search-patches "python-pypytools-python-3-fixes.patch"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; These tests are using deprecated py.code module.
-      #:test-flags
-      #~(list
-         "--deselect=pypytools/testing/test_codegen.py::test_def__default_args"
-         "--deselect=pypytools/testing/test_codegen.py::test_def_"
-         "--deselect=pypytools/testing/test_codegen.py::test_compile"
-         "--ignore=pypytools/testing/test_unroll.py"
-         ;; clone_func returns an object of the wrong type.
-         "--deselect=pypytools/testing/test_util.py::test_clonefunc")))
-    (native-inputs
-     (list python-freezegun
-           python-numpy
-           python-pytest
-           python-setuptools))
-    (propagated-inputs (list python-py))
-    (home-page "https://github.com/antocuni/pypytools/")
-    (synopsis "Tools to use PyPy-specific features, with CPython fallbacks")
-    (description
-     "This package provides a collection of useful tools to use PyPy-specific
-features, with CPython fallbacks.")
-    (license license:x11)))
-
 (define-public python-simplegeneric
   (package
     (name "python-simplegeneric")
