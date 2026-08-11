@@ -3582,7 +3582,7 @@ astronomy and astrophysics.")
 (define-public python-astropy-healpix
   (package
     (name "python-astropy-healpix")
-    (version "1.1.3")
+    (version "2.0.1")
     (source
      (origin
        (method git-fetch)
@@ -3591,11 +3591,10 @@ astronomy and astrophysics.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lj91mwxpxhl4i564i13hkx28yvzfvkq8fy9vh866v28j9z52c83"))))
+        (base32 "1qjjy21bypld50xvvhx1ms5kxssqp3j52wb4l8n3cj5shpzfp203"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 81 passed, 1 skipped
       #:test-flags
       #~(list "--pyargs" "astropy_healpix")
       #:phases
