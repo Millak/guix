@@ -1717,6 +1717,11 @@ dist_patch_DATA =						\
   %D%/packages/patches/libcamera-ipa_manager-disable-signature-verification.patch	\
   %D%/packages/patches/libconfuse-CVE-2022-40320.patch		\
   %D%/packages/patches/libcss-check-format.patch		\
+  %D%/packages/patches/libde265-CVE-2023-49465.patch		\
+  %D%/packages/patches/libde265-CVE-2023-49467.patch		\
+  %D%/packages/patches/libde265-CVE-2023-49468.patch		\
+  %D%/packages/patches/libde265-CVE-2026-33164-CVE-2026-33165.patch	\
+  %D%/packages/patches/libde265-CVE-2026-49295.patch		\
   %D%/packages/patches/libeb-gcc-14.patch			\
   %D%/packages/patches/libftdi-fix-paths-when-FTDIPP-set.patch	\
   %D%/packages/patches/libgeotiff-fix-tests-with-proj-9.1.1.patch	\

@@ -720,6 +720,7 @@ and mmsh protocols.")
   (package
     (name "libde265")
     (version "1.0.14")
+    (replacement libde265/fixed)
     (source
      (origin
        (method git-fetch)
@@ -751,6 +752,18 @@ other software.")
       license:expat
       ;; Library.
       license:lgpl3+))))
+
+(define libde265/fixed
+  (package
+    (inherit libde265)
+    (source
+     (origin
+       (inherit (package-source libde265))
+       (patches (search-patches "libde265-CVE-2023-49465.patch"
+                                "libde265-CVE-2023-49467.patch"
+                                "libde265-CVE-2023-49468.patch"
+                                "libde265-CVE-2026-33164-CVE-2026-33165.patch"
+                                "libde265-CVE-2026-49295.patch"))))))
 
 (define-public tslib
   (package
