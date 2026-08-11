@@ -1422,39 +1422,38 @@ WiFi signal strength maps.  It visualizes them using a Voronoi diagram.")
         (base32 "1b6q7z971myih3q88lv01iwmwsjln7wibav365j7phnclr9hg41i"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-check-lgpl-test
-           ;; Disable the failing check-lgpl test that is supposed to be run
-           ;; only by upstream developers to check the authors and licenses
-           ;; of contributions in the git history.
-           (lambda _
-             (substitute* "scripts/licensing/count_contrib.sh"
-               (("#!/bin/bash" all)
-                (string-append all "\nexit 0")))))
-         (add-after 'install 'remove-static-libraries
-           ;; Remove libcpu_features.a (and any others that might appear).
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (lib (string-append out "/lib")))
-               (for-each delete-file (find-files lib "\\.a$"
-                                                 #:fail-on-error? #t)))))
-         (add-after 'install 'wrap-pythonpath
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (python (assoc-ref inputs "python"))
-                    (file (string-append out "/bin/volk_modtool"))
-                    (path (string-append
-                           out
-                           "/lib/python"
-                           ,(version-major+minor
-                             (package-version python))
-                           "/site-packages:"
-                           (getenv "GUIX_PYTHONPATH"))))
-               (wrap-program file
-                 `("GUIX_PYTHONPATH" ":" prefix (,path))
-                 `("PATH" ":" prefix
-                   (,(string-append python "/bin:"))))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-check-lgpl-test
+            ;; Disable the failing check-lgpl test that is supposed to be run
+            ;; only by upstream developers to check the authors and licenses
+            ;; of contributions in the git history.
+            (lambda _
+              (substitute* "scripts/licensing/count_contrib.sh"
+                (("#!/bin/bash" all)
+                 (string-append all "\nexit 0")))))
+          (add-after 'install 'remove-static-libraries
+            ;; Remove libcpu_features.a (and any others that might appear).
+            (lambda _
+              (for-each delete-file
+                        (find-files (string-append #$output "/lib")
+                                    "\\.a$"
+                                    #:fail-on-error? #t))))
+          (add-after 'install 'wrap-pythonpath
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((python (assoc-ref inputs "python"))
+                     (file (string-append #$output "/bin/volk_modtool"))
+                     (path (string-append
+                            #$output
+                            "/lib/python"
+                            #$(version-major+minor (package-version python))
+                            "/site-packages:"
+                            (getenv "GUIX_PYTHONPATH"))))
+                (wrap-program file
+                  `("GUIX_PYTHONPATH" ":" prefix (,path))
+                  `("PATH" ":" prefix
+                    (,(string-append python "/bin:"))))))))))
     (inputs
      (list bash-minimal                 ;for wrap-program
            boost
