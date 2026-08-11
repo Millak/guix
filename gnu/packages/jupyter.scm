@@ -1156,8 +1156,8 @@ MCP} server for @code{jupyter}, bridging LLMs and Jupyter Notebooks.")
 
 (define-public python-jupyter-mimetypes
   ;; No tags upstream for recent versions.
-  (let ((commit "53d886c2e585cf0695cd39bae364168a10684bcf")
-        (revision "0"))
+  (let ((commit "463143eb4e4a988dffdefb0363e3cfaeee3a96ec")
+        (revision "1"))
     (package
       (name "python-jupyter-mimetypes")
       (version (git-version "0.2.0" revision commit))
@@ -1169,7 +1169,7 @@ MCP} server for @code{jupyter}, bridging LLMs and Jupyter Notebooks.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "07sf1i7h1j3lnsmci8knrhypiyv8b1hr9mr1vjf8499nlr788cyn"))))
+          (base32 "0nv96ldgsc1fpp6mkkc58rpnfhxj79brr04a2rggcyidx4ghyiba"))))
       (build-system pyproject-build-system)
       (arguments
        (list
@@ -1183,9 +1183,9 @@ MCP} server for @code{jupyter}, bridging LLMs and Jupyter Notebooks.")
              python-typing-extensions))
       (native-inputs
        (list python-hatchling
-             python-ipython
+             python-ipython-minimal
              python-numpy
-             python-pandas
+             python-pandas-2
              python-pyarrow
              python-pytest
              python-pytest-timeout
