@@ -1091,6 +1091,33 @@ compatible with C++11, but will use newer language features if they are
 available.")
       (license license:boost1.0))))
 
+(define-public splice
+  (package
+    (name "splice")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FloofyPlasma/splice")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11g3g8zjq612lfxnk8yfyv5rm7s7cvhrjq5prqyix1lsdrfkq5r8"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DSPLICE_BUILD_TESTS=ON")))
+    (native-inputs (list catch2 gcc-16))
+    (home-page "https://github.com/FloofyPlasma/splice")
+    (synopsis "Header-only C++26 reflection-based hook and mixin library")
+    (description
+     "Splice is a header-only C++26 hook and mixin library powered by static
+reflection.  Splice lets you register before, after, and return hooks on
+annotated class methods at runtime, with zero overhead for unannotated code.")
+    (license license:expat)))
+
 (define-public google-highway
   (package
     (name "google-highway")
