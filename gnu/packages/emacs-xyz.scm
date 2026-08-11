@@ -3286,8 +3286,8 @@ code files.")
 
 (define-public emacs-mcp
   ;; No releases available.
-  (let ((commit "4708c5849ce4ddb632016eca662a7405bfa642d4")
-        (revision "0"))
+  (let ((commit "2d172809cbdb2a40d86b28ad73bd65547cefe0e1")
+        (revision "1"))
     (package
       (name "emacs-mcp")
       (version (git-version "0.1.0" revision commit))
@@ -3300,7 +3300,7 @@ code files.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "11x3jscm4iggyy926aidiv95lrbcncngbvivsybvzjvbhdxhb65h"))))
+           "03zvdvjh724kpb2p7j208fm0z73g21vij0jms8azdxbazyw6yj77"))))
       (build-system emacs-build-system)
       (arguments (list #:tests? #f))    ;no tests
       (inputs (list emacs-jsonrpc))
