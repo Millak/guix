@@ -8058,13 +8058,13 @@ supports url redirection and retries, and also gzip and deflate decoding.")
 (define-public python-awscrt
   (package
     (name "python-awscrt")
-    (version "0.26.1")
+    (version "0.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "awscrt" version))
        (sha256
-        (base32 "0plkc0i0gc6z8fqnyy8kbg43sv3jnv8shcavcz0wb134riykmmm8"))))
+        (base32 "0jh6niq9kgv0canm11ad8zibywwirdfxg4bqyd8jhaiv3x39h8dd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -8074,21 +8074,41 @@ supports url redirection and retries, and also gzip and deflate decoding.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-broken-tests
             (lambda _
-              ;; Disable broken tests.  These tests fail because the
-              ;; certificate bundle at the default location does not exist.
+              ;; Disable broken tests. These tests fail because they depend on
+              ;; specific DNS configuration and/or AWS credentials, which isn't
+              ;; available in this context.
               (substitute* "test/test_auth.py"
                 (("def test_default_provider")
                  "def _test_default_provider"))
+              (substitute* "test/test_aiohttp_client.py"
+                (("def test_h2_remote_end_stream_ordering")
+                 "def _test_h2_remote_end_stream_ordering")
+                (("def test_cross_thread_http2_client")
+                 "def _test_cross_thread_http2_client")
+                (("def test_h2_client")
+                 "def _test_h2_client")
+                (("def test_h2_manual_write_exception")
+                 "def _test_h2_manual_write_exception"))
               (substitute* "test/test_http_client.py"
                 (("def test_h2_client")
-                 "def _test_h2_client"))
+                 "def _test_h2_client")
+                (("def test_h2_remote_end_stream_ordering")
+                 "def _test_h2_remote_end_stream_ordering")
+                (("def test_h2_manual_write_exception")
+                 "def _test_h2_manual_write_exception"))
               (substitute* "test/test_s3.py"
                 (("def test_sanity")
                  "def _test_sanity")
                 (("def test_sanity_secure")
                  "def _test_sanity_secure")
                 (("def test_wait_shutdown")
-                 "def _test_wait_shutdown"))))
+                 "def _test_wait_shutdown"))
+              (substitute* "test/test_io.py"
+                ;; This test seems specifically broken. It waits for a shutdown event
+                ;; from a group of singletons that will never occur because several of
+                ;; the singleton references are held beyond the lifetime of this test.
+                (("def test_shutdown_complete_singleton")
+                 "def _test_shutdown_complete_singleton"))))
           (add-after 'unpack 'override-cert-bundle-location
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((bundle (search-input-file inputs
@@ -8099,7 +8119,13 @@ supports url redirection and retries, and also gzip and deflate decoding.")
                    (string-append m "\n"
                                   indent "import os\n"
                                   indent "\
-opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if os.getenv('SSL_CERT_FILE') else None\n")))
+opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if os.getenv('SSL_CERT_FILE') else None\n"))
+                  (("^( +)self\\.no_certificate_revocation = False" all indent)
+                   (string-append all "\n"
+                                  indent "import os as _os\n"
+                                  indent "_ca_file = _os.environ.get('SSL_CERT_FILE')\n"
+                                  indent "if _ca_file:\n"
+                                  indent "    self.override_default_trust_store(_read_binary_file(_ca_file))\n")))
                 (substitute* "test/appexit_http.py"
                   (("( +)tls_ctx_opt = awscrt.io.TlsContextOptions.*" m indent)
                    (string-append m indent
@@ -8118,7 +8144,8 @@ opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if 
                          nss-certs-for-test
                          python-boto3
                          python-setuptools
-                         python-websockets))
+                         python-websockets
+                         python-h2))
     (home-page "https://github.com/awslabs/aws-crt-python")
     (synopsis "Common runtime for AWS Python projects")
     (description
