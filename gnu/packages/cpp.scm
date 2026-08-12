@@ -1865,7 +1865,7 @@ tools (containers, algorithms) used by other QuantStack packages.")
     (inputs
      (list rapidjson))
     (native-inputs
-     (list clang-13 llvm-13))
+     (list clang-21 llvm-21))
     (home-page "https://github.com/MaskRay/ccls")
     (synopsis "C/C++/Objective-C language server")
     (description
