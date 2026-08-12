@@ -296,7 +296,6 @@
   #:use-module (gnu packages regex)
   #:use-module (gnu packages rpc)
   #:use-module (gnu packages rust)
-  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages scanner)
   #:use-module (gnu packages search)
   #:use-module (gnu packages serialization)

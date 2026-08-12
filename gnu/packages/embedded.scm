@@ -54,6 +54,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
@@ -79,7 +80,6 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rust)
-  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
@@ -1409,7 +1409,7 @@ hardware.  The utility support USB and UART as serial link.")
            python-pyyaml))
     (native-inputs
      (append
-      (list maturin ;TODO: Move to build-tools module someday
+      (list maturin
             python-wrapper
             python-jinja2
             python-pytest

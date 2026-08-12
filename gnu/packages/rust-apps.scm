@@ -2540,109 +2540,8 @@ on the terminal in a visually appealing way.")
 specified image or color, easing the process of theme creation.")
     (license license:gpl2)))
 
-(define-public maturin
-  (package
-    (name "maturin")
-    (version "1.11.5")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "maturin" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1w36bxbxn455bh5ymv1i2crqkvpkzjni06b25gj7bb14sq4h7s10"))
-              (patches (search-patches "maturin-no-cross-compile.patch"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list
-      #:modules '((guix build cargo-build-system)
-                  ((guix build pyproject-build-system) #:prefix py:)
-                  (guix build utils))
-      #:imported-modules `((guix build cargo-build-system)
-                           (guix build cargo-utils)
-                           ,@%pyproject-build-system-modules)
-      #:install-source? #f
-      #:cargo-test-flags
-      ''("--"
-         ;; A sample pyproject.toml is not provided by the package for the
-         ;; tests to run.
-         "--skip=build_options::tests::test_find_bridge_bin"
-         "--skip=build_options::tests::test_find_bridge_cffi"
-         "--skip=build_options::tests::test_find_bridge_pyo3"
-         "--skip=build_options::tests::test_find_bridge_pyo3_abi3"
-         "--skip=build_options::tests::test_find_bridge_pyo3_feature"
-         "--skip=metadata::tests::test_implicit_readme"
-         "--skip=metadata::tests::test_merge_metadata_from_pyproject_dynamic_license_test"
-         "--skip=metadata::tests::test_merge_metadata_from_pyproject_toml"
-         "--skip=metadata::tests::test_merge_metadata_from_pyproject_toml_with_customized_python_source_dir"
-         "--skip=metadata::tests::test_pep639"
-         "--skip=module_writer::mock_writer::metadata_hello_world_pep639"
-         "--skip=pyproject_toml::tests::test_warn_missing_maturin_version")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'build 'build-python-module
-            (lambda _
-              ;; Match the features from the cargo-build-system and Cargo.toml.
-              (setenv "MATURIN_SETUP_ARGS" "--features=default")
-              ((assoc-ref py:%standard-phases 'build))))
-
-          ;; We can't use the pyproject install phase because maturin is a
-          ;; binary, not a python script.
-          (add-after 'install 'install-python-module
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let ((wheel (car (find-files "dist" "\\.whl$")))
-                    (site-dir (py:site-packages inputs outputs))
-                    (pyversion
-                     (string-append "python"
-                                    (py:python-version
-                                     (assoc-ref inputs "python-wrapper")))))
-                (invoke "python" "-m" "zipfile" "-e" wheel site-dir)
-                (mkdir-p (string-append #$output "/bin"))
-                (for-each delete-file
-                          (find-files (string-append #$output "/lib/" pyversion)
-                                      "^maturin$")))))
-          (add-after 'install 'install-completions
-            (lambda _
-              (let ((share (string-append #$output "/share"))
-                    (maturin (string-append #$output "/bin/maturin")))
-                ;; TODO? fig, powershell
-                (mkdir-p (string-append #$output "/etc/bash_completion.d"))
-                (with-output-to-file
-                    (string-append #$output "/etc/bash_completion.d/maturin")
-                  (lambda _ (invoke maturin "completions" "bash")))
-                (mkdir-p (string-append share "/fish/vendor_completions.d"))
-                (with-output-to-file
-                    (string-append share "/fish/vendor_completions.d/maturin.fish")
-                  (lambda _ (invoke maturin "completions" "fish")))
-                (mkdir-p (string-append share "/zsh/site-functions"))
-                (with-output-to-file
-                    (string-append share "/zsh/site-functions/_maturin")
-                  (lambda _ (invoke maturin "completions" "zsh")))
-                (mkdir-p (string-append share "/elvish/lib"))
-                (with-output-to-file
-                    (string-append share "/elvish/lib/maturin")
-                  (lambda _ (invoke maturin "completions" "elvish")))
-                (mkdir-p (string-append share "/nushell/vendor/autoload"))
-                (with-output-to-file
-                    (string-append share "/nushell/vendor/autoload/maturin")
-                  (lambda _ (invoke maturin "completions" "nushell")))))))))
-    (propagated-inputs
-     (list python-tomli))
-    (inputs (append
-             (list (list zstd "lib")
-                   bzip2)
-             (cargo-inputs 'maturin)))
-    (native-inputs
-     (list pkg-config
-           python-wheel
-           python-wrapper
-           python-setuptools-rust))
-    (home-page "https://github.com/pyo3/maturin")
-    (synopsis "Build and publish crates and python packages")
-    (description
-     "Build and publish crates with @code{pyo3}, @code{rust-cpython} and
-@code{cffi} bindings as well as rust binaries as python packages.")
-    (license (list license:expat license:asl2.0))))
+;; Deprecated on <2026-08-12>.
+(define-deprecated/public-alias maturin (@ (gnu packages build-tools) maturin))
 
 (define-public mdopen
   (package
@@ -4201,7 +4100,8 @@ older terminal emulators.")
        (sha256
         (base32 "035x0dbbyi3nnyc2ajawdjq9j6slpsq2k2hmyf3p77n9qn3p2c62"))))
     (build-system cargo-build-system)
-    (native-inputs (list maturin python-wrapper))
+    (native-inputs (list (@ (gnu packages build-tools) maturin)
+                         python-wrapper))
     (inputs (cargo-inputs 'vtracer))
     (arguments
      (list
@@ -4740,6 +4640,7 @@ Full featured offline client with caching support.")
     (license (list license:expat license:asl2.0))))
 
 (define-public uv
+  ;; TODO: Move to (gnu packages package-management).
   (package
     (name "uv")
     (version "0.10.12")
@@ -4850,7 +4751,8 @@ Full featured offline client with caching support.")
                     ,(string-append #$output "/share/nushell/vendor/autoload"))))))))))
     (native-inputs
      (append
-      (list maturin pkg-config rust `(,rust "cargo"))
+      (list (@ (gnu packages build-tools) maturin)
+            pkg-config rust `(,rust "cargo"))
       (if (%current-target-system)
           (list this-package
                 (make-rust-sysroot (%current-target-system)))

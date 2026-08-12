@@ -57,7 +57,6 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust)
-  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages sphinx))
 
 (define-public python-backports-zstd
