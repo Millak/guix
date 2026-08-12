@@ -131,7 +131,7 @@ USER."
   (bootloader
    (name 'dummy-bootloader)
    (package dummy-package)
-   (configuration-file "/dev/null")
+   (configuration-file "/var/lib/wsl-bootloader.cfg")
    (configuration-file-generator
     (lambda (. _rest)
       (plain-file "dummy-bootloader" "")))
