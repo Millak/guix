@@ -187,6 +187,7 @@ hardware.")
     ;; Many inputs need to be propagated for the sake of pkg-config.
     (propagated-inputs
      (list alsa-lib
+           libdecor
            libxcursor                   ;enables X11 cursor support
            libxi
            libxkbcommon
