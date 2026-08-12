@@ -153,7 +153,7 @@ hardware.")
   (package
     (inherit sdl2)
     (name "sdl3")
-    (version "3.4.4")
+    (version "3.4.14")
     (source
      (origin
        (method url-fetch)
@@ -162,7 +162,7 @@ hardware.")
                            version "/SDL3-" version ".tar.gz"))
        (sha256
         (base32
-         "0r1q1frjs0am93aspgha4k15rvmmiwsp5kn2pw5i9fw9daz2swgf"))))
+         "1srs2nrfyicwpgkm0w92qmnbnzli5zkx9zrdnd182w9p60msmm1h"))))
     (build-system cmake-build-system)
     (arguments
      (list
