@@ -276,7 +276,7 @@ getTimeZoneTransition/transitions-close-together.js")))))
                                        (number->string (parallel-job-count)))))))))))
     (native-inputs
      (list autoconf
-           llvm-13                      ;for llvm-objdump
+           llvm                      ;for llvm-objdump
            m4
            perl
            pkg-config
