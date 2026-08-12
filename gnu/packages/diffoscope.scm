@@ -79,7 +79,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "325")
+    (version "327")
     (source
      (origin
        (method git-fetch)
@@ -88,21 +88,12 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ynafvig5j8agl4jvzpfymv1wc61vhlr5sh59hv322fkk8jk600j"))))
+        (base32 "1sqp4vrlb3v5r9h8xn3mgz62gi637fldjd868c3dm2crr6xdi7hq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'add-mono-for-pedump
-            ;; Fixed upstream:
-            ;; https://salsa.debian.org/reproducible-builds/diffoscope/-/commit/b79afa9e56110010f9bf6f7578b379e71400ebc3
-            ;; remove this phase when updating to
-            ;; diffoscope 326
-            (lambda _
-              (substitute* "diffoscope/external_tools.py"
-                ((".debian.: .mono")
-                 "\"guix\": \"mono\", \"debian\": \"mono,"))))
           ;; These tests are broken because our `file` package has a
           ;; bug in berkeley-db and wasm file type detection.
           (add-after 'unpack 'remove-broken-file-type-detection-test
@@ -227,7 +218,7 @@
             imagemagick
             libarchive
             libcaca
-            llvm-13
+            llvm
             lz4
             lzip
             ocaml
