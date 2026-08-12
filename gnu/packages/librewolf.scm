@@ -107,7 +107,7 @@
   (origin
     (method git-fetch)
     (uri (git-reference
-          (url "https://codeberg.org/librewolf/source.git")
+          (url "https://librewolf.dev/librewolf/source.git")
           (commit version)
           (recursive? #t)))
     (file-name (git-file-name "librewolf-source" version))
@@ -126,14 +126,14 @@
   ;; tar xf /gnu/store/...-firefox-123.4.source.tar.xz --wildcards -O \
   ;;     firefox-*/browser/locales/l10n-changesets.json \
   ;;     | grep revision | sort | uniq
-  (let ((commit "6795ea14a5bd5ed79a930e6759823c7236476ae4"))
+  (let ((commit "41ce89dc71671df0ebd8c286b3a5c96998b51c27"))
    (origin
       (method git-fetch)
       (uri (git-reference
             (url "https://github.com/mozilla-l10n/firefox-l10n.git")
             (commit commit)))
       (file-name (git-file-name "firefox-l10n" commit))
-      (sha256 (base32 "1d47zfrw2gf23c9pa5rzbi5nx9jap2g0icm8dqsar6jb9y7svinc")))))
+      (sha256 (base32 "1k0rh2xll1ny7n4b3xd5q97i7fjx6qp89d06pbbv01dc9ldszj1c")))))
 
 (define* (make-librewolf-source #:key version firefox-hash librewolf-hash l10n)
   (let* ((ff-src (firefox-source-origin
@@ -228,7 +228,7 @@
     (origin
       (method git-fetch)
       (uri (git-reference
-             (url "https://codeberg.org/librewolf/bsys6.git")
+             (url "https://librewolf.dev/librewolf/bsys6.git")
              (commit commit)))
       (file-name (git-file-name "librewolf-bsys6" commit))
       (sha256 (base32 "15a2j1r5xrxvb9vr55138canwaj44nswzsfjsvsjspwnirgrn91z")))))
@@ -245,17 +245,17 @@
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
 ;; or: (format-time-string "%Y%m%d%H%M%S")
-(define %librewolf-build-id "20260804215502")
+(define %librewolf-build-id "20260812151727")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "153.0.3-1")
+    (version "153.0.4-1")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "09dwrhl6whin17fmyr1ynzak80q4qr37pxj285rqhl41idj6h527"
-      #:librewolf-hash "111pfyyn3ldv7jyid34lsmh8g8alk2vf8zj8bga23v9z5i4h8grl"
+      #:firefox-hash "0j4a0ak5658n6iwgx4jc0agqlf1dc403p6qkrw23pfv69j987app"
+      #:librewolf-hash "04f5yn0fsc0fbp907vfy6s8mkszdi4xnssn7xdxz7xrb9fmbdbjr"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
