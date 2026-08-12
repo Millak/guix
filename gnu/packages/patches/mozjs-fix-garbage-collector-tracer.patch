@@ -1,0 +1,26 @@
+From bf1994b05baea60f84309475cd544fe89acf82f2 Mon Sep 17 00:00:00 2001
+From: Itms <itms@wildfiregames.com>
+Date: Sat, 9 Aug 2025 15:32:20 +0000
+Subject: [PATCH] Bug 1982134 - Choose specific callback in
+ removeBlackRootsTracer. r=sfink
+
+This fixes a regression introduced in the refactoring at Bug 1846835 / D185307
+
+Differential Revision: https://phabricator.services.mozilla.com/D260541
+---
+ js/src/gc/GC.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/js/src/gc/GC.cpp b/js/src/gc/GC.cpp
+index 79894459df7d9..5e04b1cdf1a00 100644
+--- a/js/src/gc/GC.cpp
++++ b/js/src/gc/GC.cpp
+@@ -1633,7 +1633,7 @@ bool GCRuntime::addBlackRootsTracer(JSTraceDataOp traceOp, void* data) {
+ 
+ void GCRuntime::removeBlackRootsTracer(JSTraceDataOp traceOp, void* data) {
+   // Can be called from finalizers
+-  MOZ_ALWAYS_TRUE(EraseCallback(blackRootTracers.ref(), traceOp));
++  MOZ_ALWAYS_TRUE(EraseCallback(blackRootTracers.ref(), traceOp, data));
+ }
+ 
+ void GCRuntime::setGrayRootsTracer(JSGrayRootsTracer traceOp, void* data) {

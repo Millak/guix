@@ -1960,6 +1960,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/miopen-zstd.patch			\
   %D%/packages/patches/mit-krb5-hurd.patch			\
   %D%/packages/patches/mitm-cache-head-requests.patch   	\
+  %D%/packages/patches/mozjs-fix-garbage-collector-tracer.patch \
   %D%/packages/patches/mpc123-initialize-ao.patch		\
   %D%/packages/patches/mpg321-CVE-2019-14247.patch		\
   %D%/packages/patches/mpg321-gcc-10.patch			\

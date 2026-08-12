@@ -307,7 +307,13 @@ in C/C++.")
                                   version "esr.source.tar.xz"))
               (sha256
                (base32
-                "1a3h7p7126pxzpidb1lqckvhfh1had805mai4l96mnc878phbx61"))))
+                "1a3h7p7126pxzpidb1lqckvhfh1had805mai4l96mnc878phbx61"))
+              ;; 0ad requires this version of mozjs, which surfaces a bug
+              ;; related to improper garbage collection.
+              ;; See https://gitea.wildfiregames.com/0ad/0ad/issues/8757,
+              ;; https://codeberg.org/guix/guix/issues/10467.
+              (patches
+               (search-patches "mozjs-fix-garbage-collector-tracer.patch"))))
     (arguments
      (substitute-keyword-arguments arguments
        ((#:configure-flags flags)
