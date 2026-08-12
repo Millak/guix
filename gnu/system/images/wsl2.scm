@@ -134,7 +134,9 @@ USER."
    (configuration-file "/var/lib/wsl-bootloader.cfg")
    (configuration-file-generator
     (lambda (. _rest)
-      (plain-file "dummy-bootloader" "")))
+      (computed-file "dummy-bootloader"
+                     #~(call-with-output-file #$output
+                         (lambda (port) (display "" port))))))
    (installer #~(const #t))))
 
 (define dummy-kernel dummy-package)
