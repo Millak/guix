@@ -1342,7 +1342,7 @@ runner.  It is quite unopinionated with most of its features being optional.")
                                       (string-append (assoc-ref outputs "out")
                                                      "/lib/klee")))))))
       ;; ncurses is only needed for the `make menuconfig` interface.
-      (native-inputs (list clang-13 llvm-13 python ncurses))
+      (native-inputs (list clang-16 llvm-16 python ncurses))
       (synopsis "Variant of uClibc tailored to symbolic execution")
       (description
        "Modified version of uClibc for symbolic execution of
