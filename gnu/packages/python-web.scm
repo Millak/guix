@@ -8223,7 +8223,7 @@ Services (AWS) API.")
     (name "awscli")
     ;; Upstream practices a very rapid (1h-1d) release cycles try to select
     ;; any fresh one compatible with current state of dependencies in Guix.
-    (version "2.28.0")
+    (version "2.36.20")
     (source
      (origin
        (method git-fetch)
@@ -8233,7 +8233,7 @@ Services (AWS) API.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1a1jzvdm434x46yh7ir11lw0nzc64ns4qvxhp5wfra3rh5ykf36j"))))
+         "1hv2zs5pm86b5bd66j2kfb9r8gz13cqnf8x5hmfv0ddszf9vnfgp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -8286,7 +8286,8 @@ Services (AWS) API.")
            python-prompt-toolkit
            python-ruamel.yaml
            python-ruamel.yaml.clib
-           python-urllib3))
+           python-urllib3
+           python-wcwidth))
     (native-inputs
      (list python-flit-core
            python-pytest
