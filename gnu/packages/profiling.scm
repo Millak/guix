@@ -4,7 +4,7 @@
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2025 Luca Cirrottola <luca.cirro@gmail.com>
-;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025, 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright @ 2026 Johannes Elsing <Johannes.Elsing@gmx.de>
 ;;;
@@ -160,7 +160,7 @@ performance measurement opportunities across the hardware and software stack.")
 (define-public ittapi
   (package
     (name "ittapi")
-    (version "3.26.5")
+    (version "3.28.2")
     (source
      (origin
        (method git-fetch)
@@ -170,7 +170,7 @@ performance measurement opportunities across the hardware and software stack.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "15g3cjyl29y7ryqgbdbf5zr31kzqvshwlknpp5yl1khbqdb3jz54"))))
+         "089q50ma8g3qxyxv37w3g8yxlpxah94lv06bi4r0l4p5v6w8a365"))))
     (build-system cmake-build-system)
     (arguments
      (list
