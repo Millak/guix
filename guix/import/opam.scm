@@ -383,7 +383,8 @@ file names.  Return a 'package' sexp or #f on failure."
               (license ,(match (metadata-ref opam-content "license")
                           ((('string-pat strs) ...)
                            `(list ,@(map spdx-string->license strs)))
-                          ((? string? str) (spdx-string->license str)))))
+                          ((? string? str) (spdx-string->license str))
+                          (_ 'unknown-license!))))
            (filter
              (lambda (name)
                (not (member name '("dune" "jbuilder"))))
