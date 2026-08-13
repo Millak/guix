@@ -49,7 +49,7 @@
 (define-public go-chroma
   (package
     (name "go-chroma")
-    (version "2.24.1")
+    (version "2.27.0")
     (source
      (origin
        (method git-fetch)
@@ -58,7 +58,7 @@
               (commit (string-append "v" version ))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kww0yhwqzzgl8n3alislf0136rk7kh507bbvr32a30wmk5dzi81"))))
+        (base32 "18p9inwlwkbsgi9frqhxhqqwdymnwm02iqpjdgk7dg8sa0ab92w8"))))
     (build-system go-build-system)
     (arguments
      (list
