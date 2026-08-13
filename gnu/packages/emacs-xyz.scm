@@ -28041,6 +28041,29 @@ auth-source.  This integration requires some preliminary work on the users’
 part, which includes creating tokens.")
     (license license:asl2.0)))
 
+(define-public emacs-auth-source-xoauth2-plugin
+  (package
+    (name "emacs-auth-source-xoauth2-plugin")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://elpa.gnu.org/packages/auth-source-xoauth2-plugin-"
+             version ".tar"))
+       (sha256
+        (base32 "038wikkg4lmgjjnwkliwwx8iif55vlc6720qz55lkr7pkrzp5vas"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f)) ;no tests
+    (propagated-inputs (list emacs-oauth2))
+    (home-page "https://gitlab.com/manphiz/auth-source-xoauth2-plugin")
+    (synopsis "Authentication source plugin for xoauth2")
+    (description
+     "This Emacs package provides a global minor mode for enabling support
+for the OAuth 2.0 Authorization Protocol Extensions (xoauth2)
+authentication with auth-source.")
+    (license license:gpl3+)))
+
 (define-public emacs-circe
   (package
     (name "emacs-circe")
