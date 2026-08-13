@@ -8937,23 +8937,23 @@ with the mouse isn’t always trivial.")
 (define-public chroma
   (package
     (name "chroma")
-    (version "1.20")
+    (version "1.21")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://level7.org.uk/chroma/download/chroma-"
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "02hn448ckfxbx2fqr9wgf66rwl0vr4gl87yvsr5fc99zz9zw2f5v"))))
+                "0gb9v518rhqzpfzcvr5gklgldvlzhq0yrhwyas9qln35mkhxdx5x"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests included
     (inputs
-     `(("sdl-union" ,(sdl-union (list sdl sdl-image sdl-mixer sdl-ttf)))
-       ("freetype" ,freetype)
-       ("ncurses" ,ncurses)
-       ("fontconfig" ,fontconfig)
-       ("libxft" ,libxft)))
+     (list (sdl-union (list sdl sdl-image sdl-mixer sdl-ttf))
+           freetype
+           ncurses
+           fontconfig
+           libxft))
     (native-inputs
      (list pkg-config))
     (home-page "http://level7.org.uk/chroma/")
