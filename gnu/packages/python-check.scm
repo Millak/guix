@@ -4334,6 +4334,30 @@ parallel and on multiple machines.")
 py.test testing framework.")
     (license license:expat)))
 
+(define-public python-pytest-skip-slow
+  (package
+    (name "python-pytest-skip-slow")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/okken/pytest-skip-slow")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c1m75z9plzhn13hys8cl23x7jp0rxghrk5mjw8x78zw6c93abp9"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flit-core
+           python-pytest-bootstrap))
+    (home-page "https://github.com/okken/pytest-skip-slow")
+    (synopsis "Pytest plugin to skip @code{@@pytest.mark.slow} tests")
+    (description
+     "This package provides a Pytest plugin to skip @code{@@pytest.mark.slow}
+tests by default.")
+    (license license:expat)))
+
 (define-public python-pytest-snapshot
   (package
     (name "python-pytest-snapshot")
