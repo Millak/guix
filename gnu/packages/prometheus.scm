@@ -193,7 +193,7 @@ registry.")
 (define-public go-github-com-prometheus-alertmanager
   (package
     (name "go-github-com-prometheus-alertmanager")
-    (version "0.28.1")
+    (version "0.31.1")          ;XXX: newer versions depend on buf
     (source
      (origin
        (method git-fetch)
@@ -202,70 +202,79 @@ registry.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zar5l92a0f3ghm7ndijadzjm6va1qpnxksrah7pxza95pnx0wfq"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; TODO: UI is shipped with JS/TS, CSS, and font libraries
-            ;; required to build CLI <cmd/alertmanager>:
-            ;; - ui/app/lib/bootstrap-4.0.0-alpha.6-dist/css
-            ;; - ui/app/lib/elm-datepicker/css
-            ;; - ui/app/lib/font-awesome-4.7.0
-            ;; - ui/react-app
-            (delete-file-recursively "ui")))))
+        (base32 "0r791bcj8sbxfjwiwwxik27q57lb19018p1zlbaczg3ljrp3chqy"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "github.com/prometheus/alertmanager"
+      #:unpack-path "github.com/prometheus/alertmanager"
       #:embed-files #~(list ".*\\.css" ".*\\.html" ".*\\.json")
-      ;; XXX: Enable all when UI is packaged.
-      #:test-subdirs #~(list "api/v2"
-                             "cli/config"
-                             "dispatch"
-                             "featurecontrol"
-                             "inhibit"
-                             "matcher/compliance"
-                             "matcher/parse"
-                             "nflog"
-                             "nflog/nflogpb"
-                             "notify"
-                             "notify/discord"
-                             "notify/email"
-                             "notify/msteams"
-                             "notify/msteamsv2"
-                             "notify/opsgenie"
-                             "notify/pagerduty"
-                             "notify/pushover"
-                             "notify/rocketchat"
-                             "notify/slack"
-                             "notify/sns"
-                             "notify/telegram"
-                             "notify/victorops"
-                             "notify/webex"
-                             "notify/webhook"
-                             "notify/wechat"
-                             "pkg/labels"
-                             "provider/mem"
-                             "store"
-                             "template"
-                             "timeinterval"
-                             "types")
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Tests expecting alertmanager binary.
+                       (list "TestAddAlerts"
+                             "TestAddSilence"
+                             "TestAddUTF8Alerts"
+                             "TestAddUTF8Silences"
+                             "TestAlertGetReturnsCurrentAlertStatus"
+                             "TestAlwaysInhibiting"
+                             "TestBatching"
+                             "TestCannotAddUTF8AlertsInClassicMode"
+                             "TestCannotAddUTF8SilencesInClassicMode"
+                             "TestClusterDeduplication"
+                             "TestClusterVSInstance"
+                             "TestColdStart"
+                             "TestEmailRejected"
+                             "TestEmptyInhibitionRule"
+                             "TestFilterAlertRequest"
+                             "TestFinalAdvertiseAddr"
+                             "TestInhibiting"
+                             "TestInstallingNewTracerProvider"
+                             "TestMergeAlerts"
+                             "TestMergeAlertsWithEndsAt"
+                             "TestReinstallingTracerProvider"
+                             "TestReinstallingTracerProviderWithTLS"
+                             "TestReload"
+                             "TestRepeat"
+                             "TestResolved"
+                             "TestResolvedFilter"
+                             "TestRetry"
+                             "TestSendAlertsToUTF8Route"
+                             "TestSilenceDelete"
+                             "TestSilencing"
+                             "TestTracerProviderShutdown"
+                             "TestUninstallingTracerProvider"
+                             "TestWebWithPrefix"
+                             "TestWebhookTimeout")
+                       "|"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-broken-tests
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                ;; panic: unable to access amtool binary: error accessing
+                ;; amtool command, try 'make build' to generate the file. stat
+                ;; ../../../amtool: no such file or directory
+                (delete-file "test/cli/acceptance/cli_test.go"))))
           (add-after 'unpack 'remove-examples
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (with-directory-excursion (string-append "src/" import-path)
+            (lambda* (#:key tests? unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
                 (delete-file-recursively "examples")))))))
     (native-inputs
      (list go-github-com-emersion-go-smtp
            go-github-com-kylelemons-godebug
-           go-github-com-stretchr-testify
-           go-go-uber-org-atomic))
+           go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-alecthomas-kingpin-v2
+     (list go-github-com-kimmachinegun-automemlimit
+           go-github-com-alecthomas-kingpin-v2
            go-github-com-alecthomas-units
-           go-github-com-aws-aws-sdk-go
+           go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
+           go-github-com-aws-aws-sdk-go-v2-service-sns
+           go-github-com-aws-aws-sdk-go-v2-service-sts
+           go-github-com-aws-smithy-go
            go-github-com-cenkalti-backoff-v4
            go-github-com-cespare-xxhash-v2
            go-github-com-coder-quartz
@@ -277,31 +286,37 @@ registry.")
            go-github-com-go-openapi-strfmt
            go-github-com-go-openapi-swag
            go-github-com-go-openapi-validate
-           go-github-com-gofrs-uuid
            go-github-com-gogo-protobuf
+           go-github-com-google-uuid
            go-github-com-hashicorp-go-sockaddr
            go-github-com-hashicorp-golang-lru-v2
            go-github-com-hashicorp-memberlist
            go-github-com-jessevdk-go-flags
-           go-github-com-kimmachinegun-automemlimit
            go-github-com-matttproud-golang-protobuf-extensions
            go-github-com-oklog-run
-           go-github-com-oklog-ulid
+           go-github-com-oklog-ulid-v2
            go-github-com-prometheus-client-golang
            go-github-com-prometheus-common
-           go-github-com-prometheus-common-assets
            go-github-com-prometheus-exporter-toolkit
            go-github-com-prometheus-sigv4
            go-github-com-rs-cors
            go-github-com-shurcool-httpfs
            go-github-com-shurcool-vfsgen
-           ;; go-github-com-trivago-tgo
            go-github-com-xlab-treeprint
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-httptrace-otelhttptrace
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracehttp
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-trace
            go-go-uber-org-automaxprocs
            go-golang-org-x-mod
            go-golang-org-x-net
            go-golang-org-x-text
            go-golang-org-x-tools
+           go-google-golang-org-grpc
            go-gopkg-in-telebot-v3
            go-gopkg-in-yaml-v2))
     (home-page "https://github.com/prometheus/alertmanager")
