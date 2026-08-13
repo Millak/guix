@@ -940,7 +940,7 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
     (license license:asl2.0)))
 
 (define-public llama-cpp
-  (let ((tag "9912"))                  ;sync with ggml and python-gguf
+  (let ((tag "10318"))                 ;sync with ggml and python-gguf
     (package
       (name "llama-cpp")
       (version (string-append "0.0.0-" tag))
@@ -951,8 +951,10 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                (url "https://github.com/ggml-org/llama.cpp")
                (commit (string-append "b" tag))))
          (file-name (git-file-name name tag))
+         (patches
+          (search-patches "llama-cpp-disable-tests.patch"))
          (sha256
-          (base32 "05z59i5461k3xxn8b7jkq5vl31ncx3b4v8xskk35b8djdvrxziyd"))))
+          (base32 "1qpb1hl0mqzcanr844qcbkg9ffmgwckq9q9w51k9xp1qgdpp1r3a"))))
       (build-system cmake-build-system)
       (arguments
        (list
@@ -985,7 +987,6 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                    "")
                   (("set_tests_properties\\(test-save-load-state.*")
                    "")
-
                   (("llama_build_and_test\\(test-thread-safety.cpp.*")
                    "")
                   (("set_tests_properties\\(test-thread-safety.*")
@@ -995,20 +996,9 @@ NumPy @code{dtype} extensions used in machine learning libraries, including:
                    "")
                   (("set_tests_properties\\(test-state-restore-fragmented.*")
                    "")
-                  (("llama_build_and_test\\(test-llama-archs.cpp.*")
-                   "")
-                  (("set_tests_properties\\(test-download-model.*")
-                   (string-append "set_tests_properties(test-download-model "
-                                  " PROPERTIES DISABLED TRUE)"))
                   ;; error while handling argument "-m": expected value for
                   ;; argument
                   (("llama_build_and_test\\(test-arg-parser.cpp.*")
-                   "")
-                  (((string-append "llama_build_and_test\\"
-                                   "(test-recurrent-state-rollback.cpp.*"))
-                   "")
-                  (((string-append "set_tests_properties\\"
-                                   "(test-recurrent-state-rollback.*"))
                    ""))
                 ;; test-eval-callback downloads ML model from network, cannot
                 ;; run in Guix build environment

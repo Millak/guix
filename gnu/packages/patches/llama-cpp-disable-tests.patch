@@ -1,0 +1,57 @@
+From c6de074e5f6bfdd8c6533edab701b8a87fb0e08a Mon Sep 17 00:00:00 2001
+Message-ID: <c6de074e5f6bfdd8c6533edab701b8a87fb0e08a.1786611352.git.csantosb@inventati.org>
+From: Cayetano Santos <csantosb@inventati.org>
+Date: Thu, 13 Aug 2026 10:32:43 +0200
+Subject: [PATCH] 20318
+
+---
+ tests/CMakeLists.txt | 26 --------------------------
+ 1 file changed, 26 deletions(-)
+
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+index 419e1eba4..ab1ea6e8e 100644
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -199,24 +199,6 @@ if (NOT WIN32 OR NOT BUILD_SHARED_LIBS)
+     set(MODEL_DIR "${CMAKE_CURRENT_BINARY_DIR}/test-models/")
+     file(MAKE_DIRECTORY "${MODEL_DIR}")
+ 
+-    llama_test(
+-        test-llama-archs
+-        NAME test-generate-models
+-        LABEL main
+-        ARGS -o "${MODEL_DIR}"
+-    )
+-    set_tests_properties(test-generate-models PROPERTIES
+-        FIXTURES_SETUP generate-models
+-    )
+-
+-    llama_test(
+-        test-recurrent-state-rollback
+-        LABEL main
+-        ARGS -m "${MODEL_DIR}/qwen35-dense.gguf"
+-    )
+-    set_tests_properties(test-recurrent-state-rollback PROPERTIES
+-        FIXTURES_REQUIRED generate-models
+-    )
+ endif()
+ 
+ llama_build_and_test(test-chat-peg-parser.cpp peg-parser/simple-tokenize.cpp)
+@@ -246,14 +228,6 @@ else()
+ endif()
+ set(MODEL_DEST "${CMAKE_BINARY_DIR}/${MODEL_NAME}")
+ 
+-add_test(NAME test-download-model COMMAND ${CMAKE_COMMAND}
+-    -DDEST=${MODEL_DEST}
+-    -DNAME=${MODEL_NAME}
+-    -DHASH=${MODEL_HASH}
+-    -P ${CMAKE_SOURCE_DIR}/cmake/download-models.cmake
+-)
+-set_tests_properties(test-download-model PROPERTIES FIXTURES_SETUP test-download-model)
+-
+ llama_build_and_test(test-thread-safety.cpp ARGS -m "${MODEL_DEST}" -ngl 99 -p "The meaning of life is" -n 128 -c 256 -ub 32 -np 4 -t 2)
+ set_tests_properties(test-thread-safety PROPERTIES FIXTURES_REQUIRED test-download-model)
+ 
+-- 
+2.54.0
+

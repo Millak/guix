@@ -1710,6 +1710,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/jsonnet-include-cstdint-for-gcc-13-builds.patch	\
   %D%/packages/patches/julia-SOURCE_DATE_EPOCH-mtime.patch	\
   %D%/packages/patches/julia-Use-MPFR-4.2.patch	                \
+  %D%/packages/patches/llama-cpp-disable-tests.patch		\
   %D%/packages/patches/libcall-ui-make-it-installable.patch	\
   %D%/packages/patches/libcamera-ipa_manager-disable-signature-verification.patch	\
   %D%/packages/patches/libconfuse-CVE-2022-40320.patch		\
