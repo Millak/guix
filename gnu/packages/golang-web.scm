@@ -22946,6 +22946,68 @@ Container Service, ECS} instances.")
 @url{/google.golang.org/grpc,google.golang.org/grpc}.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-contrib-instrumentation-net-http-httptrace-otelhttptrace
+  (package
+    (name
+     "go-go-opentelemetry-io-contrib-instrumentation-net-http-httptrace-otelhttptrace")
+    (version "0.62.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-telemetry/opentelemetry-go-contrib")
+              (commit (go-version->git-ref version
+                                           #:subdir
+                                           (string-append "instrumentation/"
+                                                          "net/http/httptrace/"
+                                                          "otelhttptrace")))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06h5rvvji92dj25vb37s9vmvp5fignbp7zbigbdhbql16gfhp225"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "instrumentation/net/http/httptrace"
+                            "otelhttptrace")
+            (delete-all-but "instrumentation/net/http" "httptrace")
+            (delete-all-but "." "instrumentation")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path
+      "go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace"
+      #:unpack-path "go.opentelemetry.io/contrib"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example")))))))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-go-opentelemetry-io-otel-trace))
+    (home-page "https://go.opentelemetry.io/contrib")
+    (synopsis "OTLP instrumentation library for @code{net/http/httptrace}")
+    (description
+     "Package otelhttptrace provides instrumentation for the
+@code{/net/http/httptrace} package.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
   (package
     (name "go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp")
