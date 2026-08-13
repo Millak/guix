@@ -4487,7 +4487,7 @@ executable.")
 (define-public vhdl-ls
   (package
     (name "vhdl-ls")
-    (version "0.87.0")
+    (version "0.88.0")
     (source
      (origin
        (method git-fetch)
@@ -4496,7 +4496,7 @@ executable.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "189ya2kxhykfx39yibp5cvdv8jk9whj81b9v6k0n6ihg9a4l21xm"))))
+        (base32 "164fkz3854n0nxn1qrjdkdfg4c3sx07277p0mn2cq4cp07fyvc3r"))))
     (build-system cargo-build-system)
     (arguments
      (list
