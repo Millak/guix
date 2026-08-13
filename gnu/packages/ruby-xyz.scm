@@ -16653,6 +16653,28 @@ instructions to unicode.  If you are in a hurry, it also allows for easy
 export/conversion to formats such as YAML, JSON, CSL, and XML (BibTeXML).")
     (license license:gpl3+)))
 
+(define-public ruby-bigdecimal
+  (package
+    (name "ruby-bigdecimal")
+    (version "4.1.2")
+    (source
+     (origin
+       (method git-fetch) ;for tests
+       (uri (git-reference
+             (url "https://github.com/ruby/bigdecimal")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dw7c9pjqxb9p5r2y79f1r5w5i1y96r5f0ppd6p39ghg5476dx43"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-rake-compiler ruby-test-unit-ruby-core))
+    (synopsis "Arbitrary precision decimal floating point number for Ruby")
+    (description
+     "This Ruby library provides a class for arbitrary precision decimal
+floating point numbers.")
+    (home-page "https://github.com/ruby/bigdecimal")
+    (license (list license:ruby license:bsd-2))))
+
 (define-public ruby-unicode-scripts
   (package
     (name "ruby-unicode-scripts")
