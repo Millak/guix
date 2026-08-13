@@ -5908,13 +5908,13 @@ you to merge elements inside a hash together recursively.")
 (define-public ruby-delayed-job
   (package
     (name "ruby-delayed-job")
-    (version "4.1.11")
+    (version "4.2.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "delayed_job" version))
               (sha256
                (base32
-                "0s2xg72ljg4cwmr05zi67vcyz8zib46gvvf7rmrdhsyq387m2qcq"))))
+                "1vqkfxflcxa7zyj8m3dlgqxc2f5xvrw22k482y1kk14hpdl1zp2i"))))
     (build-system ruby-build-system)
     (arguments
      (list #:phases
