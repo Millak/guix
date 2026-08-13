@@ -338,7 +338,7 @@ editor.")
 (define-public gore
   (package
     (name "gore")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -347,12 +347,13 @@ editor.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x67npdwmrpa11xg93756bfbc2mxrbf04pk8dk4i8hx67wr95z0h"))))
+        (base32 "131hppvmqhz0mvnpf8fdwr7mi7sa73skdfcgaw8rl5m13nfqb7yh"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/x-motemen/gore"
       #:install-source? #f
+      #:import-path "github.com/x-motemen/gore/cmd/gore"
+      #:unpack-path "github.com/x-motemen/gore"
       #:test-flags
       ;; Gore is configured for building modules with Go module
       ;; support, which fails in the build environment for the tests
@@ -364,8 +365,11 @@ editor.")
                              "TestAction_Doc"
                              "TestAction_Help"
                              "TestAction_Import"
+                             "TestAction_ImportAlias"
+                             "TestAction_Print"
                              "TestAction_Quit"
                              "TestAction_Type"
+                             "TestAction_Verbose"
                              "TestSessionEval_AutoImport"
                              "TestSessionEval_CompileError"
                              "TestSessionEval_Const"
@@ -396,17 +400,14 @@ editor.")
               (with-directory-excursion "src/github.com/x-motemen/gore"
                 (substitute* "gopls.go"
                   (("\"gopls\"")
-                   (format #f "~s" (search-input-file inputs "bin/gopls")))))))
-          (replace 'install
-            (lambda _
-              (with-directory-excursion "src/github.com/x-motemen/gore"
-                (invoke "make" "install")))))))
+                   (format #f "~s" (search-input-file inputs "bin/gopls"))))))))))
     (native-inputs
      (list go-github-com-motemen-go-quickfix
            go-github-com-peterh-liner
            go-github-com-stretchr-testify
            go-go-lsp-dev-jsonrpc2
            go-go-lsp-dev-protocol
+           go-go-lsp-dev-uri
            go-golang-org-x-text
            go-golang-org-x-tools))
     (inputs
