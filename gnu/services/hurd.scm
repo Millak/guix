@@ -22,12 +22,16 @@
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system)
+  #:use-module (gnu system shadow)
   #:use-module (guix gexp)
   #:use-module (guix records)
   #:export (hurd-console-configuration
             hurd-console-service-type
             hurd-getty-configuration
-            hurd-getty-service-type))
+            hurd-getty-service-type
+
+            hurd-login-configuration
+            hurd-login-service-type))
 
 ;;; Commentary:
 ;;;
@@ -114,5 +118,37 @@
                                         hurd-getty-shepherd-service)))
    (description
     "Provide console login using the Hurd @command{getty} program.")))
+
+;;;
+;;; Hurd login service
+;;;
+
+(define-record-type* <hurd-login-configuration>
+  hurd-login-configuration make-hurd-login-configuration
+  hurd-login-configuration?
+  (hurd hurd-login-configuration-hurd   ;file-like
+        (default hurd)))
+
+(define (hurd-login-accounts config)
+  (let ((hurd (hurd-login-configuration-hurd config)))
+    (list (user-group
+           (name "login")
+           (system? #t))
+          (user-account
+           (name "login")
+           (group "login")
+           (system? #t)
+           (comment "login user")
+           (home-directory "/etc/login")
+           (shell (file-append hurd "/bin/loginpr"))))))
+
+(define hurd-login-service-type
+  (service-type
+   (name 'login)
+   (extensions (list (service-extension account-service-type
+                                        hurd-login-accounts)))
+   (description
+    "Provide the login user for use by the Hurd @command{login} command.")
+   (default-value (hurd-login-configuration))))
 
 ;;; hurd.scm ends here
