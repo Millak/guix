@@ -14567,6 +14567,35 @@ communication between a hypervisor and its virtual machines.")
 operations on Linux using nl80211.")
     (license license:expat)))
 
+(define-public go-github-com-meilisearch-meilisearch-go
+  (package
+    (name "go-github-com-meilisearch-meilisearch-go")
+    (version "0.36.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/meilisearch/meilisearch-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m2akgsx8y3fmxzw54hfyns85ikb1805d724alz95wsjd7hxr0sa"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/meilisearch/meilisearch-go"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-andybalholm-brotli
+           go-github-com-golang-jwt-jwt-v5))
+    (home-page "https://github.com/meilisearch/meilisearch-go")
+    (synopsis "Golang wrapper for the Meilisearch API")
+    (description
+     "Package meilisearch is the official Meilisearch SDK for the Go
+programming language.")
+    (license license:expat)))
+
 (define-public go-github-com-mholt-acmez-v2
   (package
     (name "go-github-com-mholt-acmez-v2")
