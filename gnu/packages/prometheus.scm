@@ -839,6 +839,21 @@ promlint.")
 ;;; Executables:
 ;;;
 
+(define-public prometheus-alertmanager
+  (package/inherit go-github-com-prometheus-alertmanager
+    (name "prometheus-alertmanager")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _)
+        "github.com/prometheus/alertmanager/cmd/alertmanager")
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (package-propagated-inputs go-github-com-prometheus-alertmanager))
+    (propagated-inputs '())
+    (inputs '())))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above in alphabetic order.
