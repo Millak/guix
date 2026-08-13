@@ -7577,18 +7577,20 @@ from the YAML format.")
                (base32
                 "11f7bxbhaj5697izap7hfbiln6lfk5cks78a498mkyhs2ylhl0fc"))))
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-deprecated-syntax
-            (lambda _
-              (substitute* "test/psych/test_yaml.rb"
-                (("Regexp\\.new\\('',0,'n'\\)")
-                 "Regexp.new('',Regexp::NOENCODING)"))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "bundle" "exec" "rake" "default")))))))))
+     (substitute-keyword-arguments arguments
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'fix-deprecated-syntax
+              (lambda _
+                (substitute* "test/psych/test_yaml.rb"
+                  (("Regexp\\.new\\('',0,'n'\\)")
+                   "Regexp.new('',Regexp::NOENCODING)"))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "rake" "test"))))))))
+    (native-inputs (modify-inputs native-inputs
+                     (append ruby-bigdecimal)))))
 
 (define-public ruby-utils
   (package
