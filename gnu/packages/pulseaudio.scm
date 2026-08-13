@@ -427,30 +427,31 @@ volume levels of the sinks (get, set, decrease, increase, toggle mute, etc).")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/christophgysin/pasystray")
-             (commit version)))
+              (url "https://github.com/christophgysin/pasystray")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1zf79pfmm7wa1l9yyab2g6lf0j81v1mrp406262rd21g4prx1921"))
        (patches (search-patches "pasystray-check-x11.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'bootstrap 'remove-bootstrap.sh
-           (lambda _
-             ;; Interferes with the bootstrap phase.
-             (delete-file "bootstrap.sh")
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'bootstrap 'remove-bootstrap.sh
+            (lambda _
+              ;; Interferes with the bootstrap phase.
+              (delete-file "bootstrap.sh"))))))
     (native-inputs
      (list autoconf automake pkg-config))
     (inputs
      (list avahi gtk+ libnotify libx11 pulseaudio libappindicator))
     (home-page "https://github.com/christophgysin/pasystray")
     (synopsis "PulseAudio controller for the system tray")
-    (description "@command{pasystray} enables control of various
-PulseAudio server settings from the X11 system tray.  See the project
-README.md for a detailed list of features.")
+    (description
+     "@command{pasystray} enables control of various PulseAudio server
+settings from the X11 system tray.  See the project README.md for a detailed
+list of features.")
     (license l:lgpl2.1+)))
 
 (define-public paprefs
