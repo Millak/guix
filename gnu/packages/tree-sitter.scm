@@ -1733,8 +1733,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-scheme
   (tree-sitter-grammar
    "scheme" "Scheme (R5RS, R6RS, R7RS)"
-   "12p8g2mnd73lanibk16llhbx7xarlcl2ihngcibhpa4bzppcbb8l"
-   "0.23.0-1"
+   "108ln1j2fcsrphy6jp9bq3qravp42w4hqb4cvpzx6a3dslkpv116"
+   "0.24.7-1"
    #:repository-url "https://github.com/6cdh/tree-sitter-scheme"))
 
 (define-public tree-sitter-scss
