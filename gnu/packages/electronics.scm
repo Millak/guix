@@ -1730,7 +1730,7 @@ an embedded event driven algorithm.")
 (define-public librelane
   (package
     (name "librelane")
-    (version "3.0.7")
+    (version "3.0.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1739,7 +1739,7 @@ an embedded event driven algorithm.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "047r1xav2qj1kjm604cac2x0n1z5s7bj6zq5b59jj9bzx5n9sicb"))))
+                "06l4bcc44ijvgr73awj1szdv4ymj7l8a7qaihikp43pcwrr9pspl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1748,8 +1748,7 @@ an embedded event driven algorithm.")
           (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "pyproject.toml"
-                (("click>=8,<8.3") "click>=8")
-                (("rich>=12,<15") "rich"))))
+                (("click>=8,<8.3") "click>=8"))))
           (add-after 'compress-documentation 'wrap-program
             (lambda _
               (wrap-program (string-append #$output "/bin/librelane")
@@ -1761,7 +1760,7 @@ an embedded event driven algorithm.")
                    ,(string-append
                      #$(this-package-input "netgen") "/bin")
                    ,(string-append
-                     #$(this-package-input "openroad-cli") "/bin")
+                     #$(this-package-input "openroad") "/bin")
                    ,(string-append
                      #$(this-package-input "python") "/bin")
                    ,(string-append
@@ -1780,7 +1779,7 @@ an embedded event driven algorithm.")
      (list ciel
            magic
            netgen
-           openroad-cli
+           openroad
            python
            python-click
            python-cloup
