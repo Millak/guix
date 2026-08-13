@@ -7382,7 +7382,7 @@ Brian 2 simulator.")
 (define-public mnn
   (package
     (name "mnn")
-    (version "3.5.0")
+    (version "3.6.1")
     (source
      (origin
        (method git-fetch)
@@ -7405,7 +7405,7 @@ Brian 2 simulator.")
                           "rapidjson")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jllq0zik55kznnks0kjqkilk362msgbz65qc3az5hvcrz34m8j7"))))
+        (base32 "0ap90xnlzsqlw7ai9vq91w0abvbqy8kfs58sakcngszq13s1cbq2"))))
     (build-system cmake-build-system)
     (native-inputs (list googletest pkg-config python-minimal-wrapper))
     (inputs (list ;; flatbuffers               ;requires 1.10.2
