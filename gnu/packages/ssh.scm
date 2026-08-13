@@ -324,7 +324,7 @@ a server that supports the SSH-2 protocol.")
            zlib
            xauth                        ; for 'ssh -X' and 'ssh -Y'
            (if (target-hurd?)
-               '()
+               (list libxcrypt)
                (list linux-pam
                      libfido2))))       ; fails to build on GNU/Hurd
    (synopsis "Client and server for the secure shell (ssh) protocol")
