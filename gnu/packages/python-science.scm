@@ -3245,7 +3245,7 @@ of Pandas
     (name "python-pandas-stubs")
     ;; The versioning follows that of Pandas and uses the date of the
     ;; python-pandas-stubs release.
-    (version "2.3.3.251219")
+    (version "3.0.3.260530")
     (source
      (origin
        (method git-fetch)
@@ -3254,13 +3254,29 @@ of Pandas
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xh753wv5dbc59qp7fas323181mlblvhqmd9a4g7zzhaa2mxmzqs"))))
+        (base32 "0r79bbblf2rkbw2min9x231c0h74rmir0aay0wv52v6d4vig7xdw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1619 passed, 12 skipped, 7 deselected
+      ;; tests: 3184 passed, 6 skipped, 21 deselected
       #:test-flags
       #~(list
+         ;; Expected type '<class 'numpy.[...]'>' but got '<class '[...]'>'
+         "--deselect=tests/frame/test_frame.py::test_types_median"
+         "--deselect=tests/frame/test_frame.py::test_types_min"
+         "--deselect=tests/frame/test_frame.py::test_types_max"
+         "--deselect=tests/frame/test_indexing.py::test_getset_untyped"
+         "--deselect=tests/series/test_agg.py::test_agg_any_float"
+         "--deselect=tests/series/test_agg.py::test_agg_int"
+         "--deselect=tests/series/test_agg.py::test_agg_float"
+         "--deselect=tests/series/test_agg.py::test_agg_complex"
+         "--deselect=tests/series/test_series.py::test_types_min"
+         "--deselect=tests/series/test_series.py::test_types_max"
+         "--deselect=tests/series/test_series.py::test_types_var"
+         "--deselect=tests/series/test_series.py::test_types_agg"
+         "--deselect=tests/series/test_series.py::test_types_aggregate"
+         ;; ModuleNotFoundError: No module named 'pyiceberg'
+         "--deselect=tests/test_io.py::test_iceberg"
          ;; ImportError: Missing optional dependency 'python-calamine'.
          "--deselect=tests/test_io.py::test_read_excel"
          "--deselect=tests/test_io.py::test_excel_reader")))
@@ -3281,8 +3297,10 @@ of Pandas
            python-pyarrow
            python-pyreadstat
            python-pytest
+           python-pytz
            python-scipy
            python-sqlalchemy-2
+           python-tables
            python-tabulate
            python-typing-extensions
            python-xarray
@@ -3293,6 +3311,7 @@ of Pandas
            ;; python-calamine
            ;; python-poethepoet
            ;; python-pyarrow-stubs
+           ;; python-pyiceberg
            ;; python-pyrefly
            ;; python-python-calamine
            ;; python-pyxlsb
