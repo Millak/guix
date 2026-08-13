@@ -5850,21 +5850,16 @@ Actions for the Lightning suite of libraries.")
 (define-public python-captum
   (package
     (name "python-captum")
-    ;; The latest commit provides compatability with NumPy 2.
-    (properties '((commit . "4fade3af8dc398c1f96b193c969565aad23aedf5")
-                  (revision . "0")))
-    (version (git-version "0.8.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "0.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/pytorch/captum")
-                    (commit (assoc-ref properties 'commit))))
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v1di9kk2xinwwcll5q514fn9r6ivj3zzgg6l5h7dwlsn2vymsnd"))))
+                "05pav69b4spx8zphsmixfc2haq36i6w47nmmslab1k7ls1hbzk50"))))
     (build-system pyproject-build-system)
     (arguments
      (list
