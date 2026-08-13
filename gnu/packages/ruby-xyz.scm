@@ -4748,7 +4748,7 @@ temporary files and directories during tests.")
 (define-public ruby-test-unit
   (package
     (name "ruby-test-unit")
-    (version "3.6.0")
+    (version "3.7.8")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -4757,7 +4757,7 @@ temporary files and directories during tests.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0w1m432q3y5v9lkak8yyxadak3z17bsp6afni97i4zjdgfz7niz2"))))
+                "0a5p6l8y6gbrsm4wfjnl6h3a944n8w875znf6n3k37d997fllxia"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -4767,7 +4767,7 @@ temporary files and directories during tests.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (invoke "ruby" "test/run-test.rb")))))))
+                (invoke "ruby" "test/run.rb")))))))
     (propagated-inputs
      (list ruby-power-assert))
     (synopsis "Unit testing framework for Ruby")
