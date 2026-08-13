@@ -232,7 +232,7 @@ Daemon and possibly more in the future.")
       #~(modify-phases %standard-phases
           #$@(cond
               ((system-hurd?)
-               #~((add-before 'config 'setenv
+               #~((add-before 'configure 'setenv
                     (lambda _ (setenv "GCRYPT_NO_BENCHMARKS" "t")))))
               (else #~())))))
     (outputs '("out" "debug"))
