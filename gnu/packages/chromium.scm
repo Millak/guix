@@ -36,6 +36,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages fontutils)
@@ -128,7 +129,6 @@
     "third_party/crashpad" ;ASL2.0
     "third_party/crashpad/crashpad/third_party/lss" ;ASL2.0
     "third_party/crashpad/crashpad/third_party/zlib" ;Zlib
-    "third_party/crc32c" ;BSD-3
     "third_party/cros_system_api" ;BSD-3
     "third_party/dawn" ;ASL2.0
     ;; TODO: can likely be unbundled when Vulkan is updated.
@@ -569,7 +569,7 @@
                   ;; "absl_strings" "absl_synchronization" "absl_time"
                   ;; "absl_types" "absl_utility"
                   "brotli"
-                  ;; "crc32c"
+                  "crc32c"
                   "dav1d"
                   ;; "double-conversion"
                   ;; "ffmpeg"
@@ -1070,6 +1070,7 @@
            at-spi2-core
            bash-minimal
            brotli
+           crc32c
            cups
            curl
            dav1d
