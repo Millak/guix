@@ -602,21 +602,20 @@ writing and reading these tests.")
 (define-public go-github-com-coder-quartz
   (package
     (name "go-github-com-coder-quartz")
-    (version "0.2.1")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/coder/quartz")
-             (commit (string-append "v" version))))
+              (url "https://github.com/coder/quartz")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c2ki5w75a3nkhnzpld65bm9swfhp0ra16jccwdcplqgmil77nc1"))))
+        (base32 "0k9l146rcz1bjg3jrbz8hy1xjrns8gl4diqzd2nsha1d56yysz6g"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/coder/quartz"
-      #:test-flags #~(list "-vet=off")))
+      #:import-path "github.com/coder/quartz"))
     (home-page "https://github.com/coder/quartz")
     (synopsis "Golang time testing library for writing deterministic unit tests")
     (description
