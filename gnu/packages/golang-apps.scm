@@ -226,41 +226,51 @@ behavior can be altered by providing an alternative @code{$GOROOT} with the
 (define-public gomacro
   (package
     (name "gomacro")
-    (version "0.0.0-20251011163654-53dd3d49f67b")
+    (properties '((commit . "cf0d4bf32da393dbda97e3572f216731013ffa55")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260802094757-cf0d4bf32da3")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/cosmos72/gomacro")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/cosmos72/gomacro")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sr7ybqbynihq9h4pknywg2na15j4l9x11jfrd45dw52rqp2mlnw"))))
+        (base32 "1gn8r8jfmkrm67wzmd3v1iw5ng904ha549df43yv98dd5a3sfk23"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:install-source? #f
       #:import-path "github.com/cosmos72/gomacro"
-      ;; There are some unexplained test failures (see:
-      ;; https://github.com/cosmos72/gomacro/issues/164), and even after
-      ;; disabling the problematic tests, the test suite exits uncleanly with
-      ;; an exit status of 1.
-      #:tests? #f
       #:test-flags
-      #~(list "-skip" (string-join '("TestFiles/slow.input"
+      ;; When -vet=on: conversion from int64 to string yields a string of one
+      ;; rune, not a string of digits.
+      #~(list "-vet=off"
+              ;; There are some unexplained test failures (see:
+              ;; https://github.com/cosmos72/gomacro/issues/164), and even
+              ;; after disabling the problematic tests, the test suite exits
+              ;; uncleanly with an exit status of 1.
+              "-skip" (string-join '("TestFiles/slow.input"
                                      "TestFromReflect6")
                                    "|"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'delete-problematic-tests
             (lambda _
-              ;; Some test module(s) under go/types fail to build.
+              ;; Some test module(s) under go/types fail to build with error:
+              ;; c.Type undefined (type Converter has no field or method
+              ;; Type).
               (for-each delete-file
                         (find-files "src/github.com/cosmos72/gomacro/go/types"
                                     "_test\\.go(\\.off)?$")))))))
     (native-inputs
-     (list go-golang-org-x-tools
+     (list go-github-com-mattn-go-runewidth
            go-github-com-peterh-liner
-           go-github-com-mattn-go-runewidth))
+           go-golang-org-x-tools))
     (home-page "https://github.com/cosmos72/gomacro")
     (synopsis
      "Interactive Go interpreter and debugger with generics and macros")
