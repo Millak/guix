@@ -4972,7 +4972,7 @@ to check for the presence of header files, constants, and so on.")
 (define-public ruby-msgpack
   (package
     (name "ruby-msgpack")
-    (version "1.7.5")
+    (version "1.8.4")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -4981,7 +4981,7 @@ to check for the presence of header files, constants, and so on.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0d759pjgxgrxw18kmk81yv9brc141b4d8gszlp4vdnpvwvb96nln"))))
+                "1cbv9xkfgsvzygmhfihfbb939wgvzkqdl7vsb6y1alhqwbk6n4jq"))))
     (build-system ruby-build-system)
     (arguments (list #:test-target "spec"))
     (native-inputs
