@@ -14583,6 +14583,8 @@ operations on Linux using nl80211.")
     (build-system go-build-system)
     (arguments
      (list
+      ;; XXX: Tests expecting ruining Meilisearch instance.
+      #:tests? #f
       #:import-path "github.com/meilisearch/meilisearch-go"))
     (native-inputs
      (list go-github-com-stretchr-testify))
