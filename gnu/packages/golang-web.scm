@@ -2734,6 +2734,7 @@ functions.")
                             "service/iam"
                             "service/kms"
                             "service/s3"
+                            "service/sns"
                             "service/sqs"
                             "service/ssm"
                             "service/sso"
@@ -3195,6 +3196,49 @@ Amazon Simple Storage Service.")
     (description
      "Package secretsmanager provides the API client, operations, and
 parameter types for AWS Secrets Manager.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-aws-aws-sdk-go-v2-service-sns
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-service-sns")
+    (version "1.39.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/aws-sdk-go-v2")
+             (commit (go-version->git-ref version #:subdir "service/sns"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04cv6g96hhmjl6snql6a909grq4yxyjk95a3dzk6mpihvg79q47p"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "service" "sns")
+            (delete-all-but "." "service")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/service/sns"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-internal-configsources
+           go-github-com-aws-aws-sdk-go-v2-internal-endpoints-v2
+           go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS Golang SDK for Simple Notification Service")
+    (description
+     "Package sns provides the API client, operations, and parameter types for
+Amazon Simple Notification Service. ")
     (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-service-sqs
