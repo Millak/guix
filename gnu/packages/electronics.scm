@@ -1756,6 +1756,8 @@ an embedded event driven algorithm.")
                   (,(string-append
                      #$(this-package-input "ciel") "/bin")
                    ,(string-append
+                     #$(this-package-input "klayout") "/bin")
+                   ,(string-append
                      #$(this-package-input "magic") "/bin")
                    ,(string-append
                      #$(this-package-input "netgen") "/bin")
@@ -1777,6 +1779,7 @@ an embedded event driven algorithm.")
            python-setuptools))
     (inputs
      (list ciel
+           klayout
            magic
            netgen
            openroad
