@@ -6223,8 +6223,8 @@ executed against the input JSON or newline-delimited JSON (NDJSON).")
     (license license:expat)))
 
 (define-public pup
-  (let ((revision "1")
-        (commit "681d7bb639334bf485476f5872c5bdab10931f9a"))
+  (let ((revision "2")
+        (commit "5a57cf111366c7c08999a34b2afd7ba36d58a96d"))
     (package
       (name "pup")
       (version (git-version "0.4.0" revision commit))
@@ -6232,14 +6232,21 @@ executed against the input JSON or newline-delimited JSON (NDJSON).")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/ericchiang/pup")
-               (commit commit)))
+                (url "https://github.com/ericchiang/pup")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1hx1k0qlc1bq6gg5d4yprn4d7kvqzagg6mi5mvb39zdq6c4y17vr"))))
+          (base32 "18595sr6lh49w7ncvhp39p1ybvxfvdyx6655wr5vvfyv2ggn1rrd"))))
       (build-system go-build-system)
       (arguments
-       `(#:import-path "github.com/ericchiang/pup"))
+       (list
+        #:install-source? #f
+        #:import-path "github.com/ericchiang/pup"))
+      (native-inputs
+       (list go-github-com-fatih-color
+             go-github-com-mattn-go-colorable
+             go-golang-org-x-net
+             go-golang-org-x-text))
       (home-page "https://github.com/ericchiang/pup")
       (synopsis "Parse HTML at the command line")
       (description
