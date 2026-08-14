@@ -16132,6 +16132,89 @@ used to read GeoLite2 and GeoIP2 databases, @code{geoip2} provides a
 higher-level API for doing so.")
     (license license:isc)))
 
+(define-public go-github-com-oschwald-maxminddb-golang-v2
+  (package
+    (inherit go-github-com-oschwald-maxminddb-golang)
+    (name "go-github-com-oschwald-maxminddb-golang-v2")
+    (version "2.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/oschwald/maxminddb-golang")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05cfdil456f53gsa4jpb53639pv2rqixcz15qbfjkz59x2f7pksq"))))
+    (arguments
+     (list
+      #:import-path "github.com/oschwald/maxminddb-golang/v2"
+      #:test-flags
+      ;; XXX: Tests depend on upackaged https://github.com/maxmind/MaxMind-DB
+      ;; used as test-data git submodule.
+      #~(list "-skip" (string-join
+                       (list "TestBadDataFixtures"
+                             "TestBrokenDoubleDatabase"
+                             "TestComplexStructWithNestingAndPointer"
+                             "TestCustomUnmarshaler"
+                             "TestDecodePath"
+                             "TestDecoder"
+                             "TestDecodingToInterface"
+                             "TestDecodingToNonPointer"
+                             "TestDecodingUint16IntoInt"
+                             "TestDisableStringCache"
+                             "TestEmbeddedStructAsInterface"
+                             "TestFallbackToReflection"
+                             "TestGenerateGoldenIsDeterministicAndCompiles"
+                             "TestGenerateTracksImportsAndPackageNameCollisions"
+                             "TestGenerateUsesNestedCursorUnmarshalers"
+                             "TestGeneratedImportAliasesCannotBeShadowed"
+                             "TestGeoIPNetworksWithin"
+                             "TestInvalidNodeCountDatabase"
+                             "TestIpv6inIpv4"
+                             "TestLookupIPv4OnlyDB"
+                             "TestLookupIPv4VsIPv6Mixed"
+                             "TestLookupNetwork"
+                             "TestLookupRejectsDataPointersOutsideDataSection"
+                             "TestLookupRejectsInvalidAddress"
+                             "TestMetadataBuildTime"
+                             "TestMetadataPointer"
+                             "TestNestedMapDecode"
+                             "TestNestedOffsetDecode"
+                             "TestNetworks"
+                             "TestNetworksWithInvalidSearchTree"
+                             "TestNetworksWithin"
+                             "TestNetworksWithinInvalidPrefix"
+                             "TestNonEmptyNilInterface"
+                             "TestPointers"
+                             "TestPointersInDecoder"
+                             "TestReader"
+                             "TestReaderBytes"
+                             "TestReaderLeaks"
+                             "TestRegenerationDropsInvalidAliasReceivers"
+                             "TestRegenerationDropsInvalidDefinedReceivers"
+                             "TestResultDecodeAfterReaderClose"
+                             "TestSetIPv4StartKnownValues"
+                             "TestSkipEmptyValues"
+                             "TestSkipEmptyValuesWithNetworksWithin"
+                             "TestSkipEmptyValuesWithOtherOptions"
+                             "TestStructInterface"
+                             "TestUsingClosedDatabase"
+                             "TestValueTypeInterface"
+                             "TestVerifyOnBrokenDatabases"
+                             "TestVerifyOnGoodDatabases")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "example_test.go")
+                (delete-file "example_uint_test.go")))))))
+    (propagated-inputs
+     (list go-golang-org-x-sys
+           go-golang-org-x-tools))))
+
 (define-public go-github-com-osrg-gobgp-v3
   (package
     (name "go-github-com-osrg-gobgp-v3")
