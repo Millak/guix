@@ -16087,6 +16087,29 @@ Go.  @url{https://zipkin.io/, Zipkin} is a distributed tracing system.")
 databases in Go.")
     (license license:isc)))
 
+(define-public go-github-com-oschwald-geoip2-golang-v2
+  (package
+    (inherit go-github-com-oschwald-geoip2-golang)
+    (name "go-github-com-oschwald-geoip2-golang-v2")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/oschwald/geoip2-golang")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xpvrbs9fbfj7yi9jh4vrsk47r9kgic6vim4yvlf11lrhq6qkgr7"))))
+    (arguments
+     (list
+      #:tests? #f
+      #:import-path "github.com/oschwald/geoip2-golang/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-oschwald-maxminddb-golang-v2))))
+
 (define-public go-github-com-oschwald-maxminddb-golang
   (package
     (name "go-github-com-oschwald-maxminddb-golang")
