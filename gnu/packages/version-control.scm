@@ -1534,7 +1534,7 @@ write native speed custom Git applications in any language with bindings.")
 (define-public libgit2-1.8
   (package
     (inherit libgit2-1.9)
-    (version "1.8.5")
+    (version "1.8.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1543,7 +1543,7 @@ write native speed custom Git applications in any language with bindings.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "1x0l3dbl7y2jgw8h6wk56f8czkddjwh128jdf2y5a14rrf4icpdd"))
+                "1lhvrfms0p4n817c2lc9cqpgx1v82szr1p6v60jp4rpm6gfrpg6d"))
               (patches
                (search-patches "libgit2-uninitialized-proxy-settings.patch"))
               (modules '((guix build utils)))
@@ -1553,7 +1553,7 @@ write native speed custom Git applications in any language with bindings.")
                             '("deps/chromium-zlib"
                               "deps/llhttp"
                               "deps/ntlmclient"
-                              "deps/pcre"
+                              "deps/pcre2"
                               "deps/winhttp"
                               "deps/zlib"))))))
     (inputs
