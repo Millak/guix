@@ -1563,115 +1563,119 @@ AMDGPU code objects.")
     (license license:ncsa)))
 
 (define-public rocm-hipcc
-  (package
-    (name "rocm-hipcc")
-    (version (package-version llvm-rocm))
-    (source (package-source llvm-rocm))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ; Not sure how to run them.
-      #:build-type "Release"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir
-            (lambda _
-              (chdir "amd/hipcc")))
-          (add-after 'chdir 'patch-paths
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* (find-files "src" "\\.h$")
-                (("roccmPath \\+ \"/bin/rocm_agent_enumerator\"")
-                 (format #f "~s" (search-input-file
-                                  inputs
-                                  "/bin/rocm_agent_enumerator"))))
-              (substitute* "src/hipBin_amd.h"
-                (("which hipconfig")
-                 (string-append (search-input-file inputs "/bin/which")
-                                " hipconfig"))
-                ;; Ensure the construction of the `HSA_PATH' from the
-                ;; environment.
-                (("constructHipPath\\(\\);\n" all)
-                 (string-append all "  constructHsaPath();\n")))))
-          ;; This version file very important, as it is parsed under
-          ;; $#{llvm-rocm}/clang/lib/Driver/ToolChains/AMDGPU.cpp and its
-          ;; contents decides on some includes for hipcc.
-          (add-after 'install 'info-version
-            (lambda _
-              (let ((hip-version-dir (string-append #$output "/share/hip")))
-                (mkdir hip-version-dir)
-                (with-directory-excursion hip-version-dir
-                  (with-output-to-file "version"
-                    (lambda _
-                      (apply format #t
-                             "HIP_VERSION_MAJOR=~a~%~
+  ;; Hiding because users are not meant to use 'rocm-hipcc' directly, they
+  ;; should use 'rocm-toolchain' as that package provides all the necessary
+  ;; scafolding to use the 'hipcc' compiler.
+  (hidden-package
+   (package
+     (name "rocm-hipcc")
+     (version (package-version llvm-rocm))
+     (source (package-source llvm-rocm))
+     (build-system cmake-build-system)
+     (arguments
+      (list
+       #:tests? #f                       ; Not sure how to run them.
+       #:build-type "Release"
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'chdir
+             (lambda _
+               (chdir "amd/hipcc")))
+           (add-after 'chdir 'patch-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* (find-files "src" "\\.h$")
+                 (("roccmPath \\+ \"/bin/rocm_agent_enumerator\"")
+                  (format #f "~s" (search-input-file
+                                   inputs
+                                   "/bin/rocm_agent_enumerator"))))
+               (substitute* "src/hipBin_amd.h"
+                 (("which hipconfig")
+                  (string-append (search-input-file inputs "/bin/which")
+                                 " hipconfig"))
+                 ;; Ensure the construction of the `HSA_PATH' from the
+                 ;; environment.
+                 (("constructHipPath\\(\\);\n" all)
+                  (string-append all "  constructHsaPath();\n")))))
+           ;; This version file very important, as it is parsed under
+           ;; $#{llvm-rocm}/clang/lib/Driver/ToolChains/AMDGPU.cpp and its
+           ;; contents decides on some includes for hipcc.
+           (add-after 'install 'info-version
+             (lambda _
+               (let ((hip-version-dir (string-append #$output "/share/hip")))
+                 (mkdir hip-version-dir)
+                 (with-directory-excursion hip-version-dir
+                   (with-output-to-file "version"
+                     (lambda _
+                       (apply format #t
+                              "HIP_VERSION_MAJOR=~a~%~
                               HIP_VERSION_MINOR=~a~%~
                               HIP_VERSION_PATCH=~a~%~
                               HIP_VERSION_GITHASH=0~%"
-                             (string-split
-                              #$(version-major+minor+point version) #\.))))))))
-          (add-after 'install 'wrap-programs
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let ((output-bindir (string-append (assoc-ref outputs "out") "/bin")))
-                (for-each
-                 (lambda (file)
-                   (wrap-program (string-append output-bindir "/" file)
-                     ;; The following definitions and their meaning can be
-                     ;; found in hibBin_base.h.  We've defined neither
-                     ;; HIP_RUNTIME nor HIP_ROCCLR_HOME.
+                              (string-split
+                               #$(version-major+minor+point version) #\.))))))))
+           (add-after 'install 'wrap-programs
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let ((output-bindir (string-append (assoc-ref outputs "out") "/bin")))
+                 (for-each
+                  (lambda (file)
+                    (wrap-program (string-append output-bindir "/" file)
+                      ;; The following definitions and their meaning can be
+                      ;; found in hibBin_base.h.  We've defined neither
+                      ;; HIP_RUNTIME nor HIP_ROCCLR_HOME.
 
-                     ;; HIP_ROCCLR_HOME unfortunately cannot be set here
-                     ;; (circular dependency problem) -- it should be set to
-                     ;; #$rocm-hip-runtime.
+                      ;; HIP_ROCCLR_HOME unfortunately cannot be set here
+                      ;; (circular dependency problem) -- it should be set to
+                      ;; #$rocm-hip-runtime.
 
-                     ;;(list "HIP_ROCCLR_HOME" '= (list #$rocm-hip-runtime))
+                      ;;(list "HIP_ROCCLR_HOME" '= (list #$rocm-hip-runtime))
 
-                     ;; HACK: allow other packages (eg: `rocm-hip-runtime' or
-                     ;; `rocm-toolchain') to wrap this program with its own
-                     ;; paths.
-                     (list "HIP_PATH" '= (list (string-append "${HIP_PATH:-" #$output "}")))
-                     ;; XXX: `hipconfig' searches for `llc' which is provided
-                     ;; by `llvm-rocm', we cannot wrap that here since it
-                     ;; searches it from the `HIP_CLANG_PATH'.  At this level
-                     ;; we don't have the complete `rocm-toolchain' which will
-                     ;; have the union of `llvm-rocm' and `clang-rocm', the
-                     ;; contents of both derivation outputs are expected to
-                     ;; live under `HIP_CLANG_PATH'.
-                     (list "HIP_CLANG_PATH"
-                           '=
-                           (list
-                            (string-append "${HIP_CLANG_PATH:-"
-                                           #$(file-append (this-package-input "clang-rocm")
-                                                          "/bin")
-                                           "}")))
-                     (list "DEVICE_LIB_PATH"
-                           '=
-                           (list
-                            (string-append "${DEVICE_LIB_PATH:-"
-                                           #$(file-append (this-package-input "rocm-device-libs")
-                                                          "/amdgcn/bitcode")
-                                           "}")))
+                      ;; HACK: allow other packages (eg: `rocm-hip-runtime' or
+                      ;; `rocm-toolchain') to wrap this program with its own
+                      ;; paths.
+                      (list "HIP_PATH" '= (list (string-append "${HIP_PATH:-" #$output "}")))
+                      ;; XXX: `hipconfig' searches for `llc' which is provided
+                      ;; by `llvm-rocm', we cannot wrap that here since it
+                      ;; searches it from the `HIP_CLANG_PATH'.  At this level
+                      ;; we don't have the complete `rocm-toolchain' which will
+                      ;; have the union of `llvm-rocm' and `clang-rocm', the
+                      ;; contents of both derivation outputs are expected to
+                      ;; live under `HIP_CLANG_PATH'.
+                      (list "HIP_CLANG_PATH"
+                            '=
+                            (list
+                             (string-append "${HIP_CLANG_PATH:-"
+                                            #$(file-append (this-package-input "clang-rocm")
+                                                           "/bin")
+                                            "}")))
+                      (list "DEVICE_LIB_PATH"
+                            '=
+                            (list
+                             (string-append "${DEVICE_LIB_PATH:-"
+                                            #$(file-append (this-package-input "rocm-device-libs")
+                                                           "/amdgcn/bitcode")
+                                            "}")))
 
-                     ;; This is done in order to please check_config, which
-                     ;; checks that HSA_PATH is in LD_LIBRARY_PATH
-                     (list "LD_LIBRARY_PATH"
-                           'suffix
-                           (list #$(this-package-input "rocr-runtime")))
-                     ;; checks hipconfig is in PATH
-                     (list "PATH" 'suffix (list output-bindir))))
-                 '( "hipcc" "hipconfig" ))))))))
-    (inputs (list clang-rocm
-                  rocm-device-libs
-                  rocr-runtime
-                  rocminfo
-                  perl
-                  bash-minimal
-                  which))
-    (home-page "https://github.com/ROCm/llvm-project/")
-    (synopsis "ROCm HIP compiler driver (@command{hipcc})")
-    (description "The HIP compiler driver (@command{hipcc}) is a compiler utility that will
+                      ;; This is done in order to please check_config, which
+                      ;; checks that HSA_PATH is in LD_LIBRARY_PATH
+                      (list "LD_LIBRARY_PATH"
+                            'suffix
+                            (list #$(this-package-input "rocr-runtime")))
+                      ;; checks hipconfig is in PATH
+                      (list "PATH" 'suffix (list output-bindir))))
+                  '( "hipcc" "hipconfig" ))))))))
+     (inputs (list clang-rocm
+                   rocm-device-libs
+                   rocr-runtime
+                   rocminfo
+                   perl
+                   bash-minimal
+                   which))
+     (home-page "https://github.com/ROCm/llvm-project/")
+     (synopsis "ROCm HIP compiler driver (@command{hipcc})")
+     (description "The HIP compiler driver (@command{hipcc}) is a compiler utility that will
 call @command{clang} and pass the appropriate include and library options for
 the target compiler and HIP infrastructure.")
-    (license license:expat)))
+     (license license:expat))))
 
 
 
