@@ -1421,6 +1421,7 @@ other git-like projects such as @code{libgit2}.")
   (package
     (name "libgit2")
     (version "1.9.4")
+    (replacement libgit2-1.9.7)
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1485,6 +1486,27 @@ provided as a re-entrant linkable library with a solid API, allowing you to
 write native speed custom Git applications in any language with bindings.")
     ;; GPLv2 with linking exception
     (license license:gpl2)))
+
+(define-public libgit2-1.9.7
+  (package
+    (inherit libgit2-1.9)
+    (name "libgit2")
+    (version "1.9.7")
+    (source
+     (origin
+       (inherit (package-source libgit2-1.9))
+       (uri (git-reference
+             (url "https://github.com/libgit2/libgit2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "libgit2" version))
+       (sha256 (base32 "0jhm723bc9v18yanlqvmwn9kpmnvbcavnlhd4jcw0n082d7jl54h"))
+       (snippet #~(for-each delete-file-recursively
+                    '("deps/chromium-zlib"
+                      "deps/llhttp"
+                      "deps/ntlmclient"
+                      "deps/pcre2"
+                      "deps/winhttp"
+                      "deps/zlib")))))))
 
 (define-public libgit2-1.9/pinned
   ;; This is a pinned version used as a dependency for 'rust-cargo-c'.
