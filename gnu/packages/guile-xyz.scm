@@ -4252,6 +4252,75 @@ inspired by the SCSH regular expression system.")
     (name "guile2.2-irregex")
     (native-inputs (list guile-2.2))))
 
+(define-public kaagum
+  (package
+    (name "kaagum")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.systemreboot.net/kaagum")
+             (commit (string-append "v" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f9k1jvpda9mzm74c612cxpj5h2bm5284s2qid4p2mrg7ffvs34k"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "prefix=" #$output)
+                   (string-append "CERTIFICATES_DIRECTORY="
+                                  #$(this-package-native-input "nss-certs")
+                                  "/etc/ssl/certs"))
+           #:modules `(((guix build guile-build-system)
+                        #:select (target-guile-effective-version))
+                       ,@%default-gnu-imported-modules)
+           #:phases
+           (with-imported-modules `((guix build guile-build-system)
+                                    ,@%default-gnu-imported-modules)
+             #~(modify-phases %standard-phases
+                 (replace 'patch-source-shebangs
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "bin/kaagum"
+                       (("^exec guile")
+                        (string-append "exec "
+                                       (search-input-file inputs "/bin/guile"))))))
+                 (delete 'configure)
+                 (add-after 'install 'wrap
+                   (lambda* (#:key inputs outputs #:allow-other-keys)
+                     (let ((out (assoc-ref outputs "out"))
+                           (effective-version (target-guile-effective-version)))
+                       (wrap-program (string-append out "/bin/kaagum")
+                         `("GUILE_LOAD_PATH" prefix
+                           (,(string-append out "/share/guile/site/" effective-version)
+                            ,(getenv "GUILE_LOAD_PATH")))
+                         `("GUILE_LOAD_COMPILED_PATH" prefix
+                           (,(string-append out "/lib/guile/"
+                                            effective-version "/site-ccache")
+                            ,(getenv "GUILE_LOAD_COMPILED_PATH")))))))))))
+    (inputs
+     (list bash-minimal guile-next guile-json-4 guile-lens guix))
+    (native-inputs
+     (list guile-run64 nss-certs))
+    (home-page "https://klaus.systemreboot.net/kaagum/")
+    (synopsis "Tiny, security-focused AI agent in Guile")
+    (description
+     "Kaagum is a tiny, security-focused AI agent written in Guile with
+minimal dependencies.  Kaagum works with any LLM that provides an
+OpenAI-compatible API.
+
+Kaagum runs tool calls securely using containers and capability-based
+access.  Tool calls have limited or no access to the filesystem and to
+the network.  Capabilities allow network access to be controlled with
+fine granularity.  Containers are implemented using Guix's container
+API.
+
+Kaagum offers no user interface on its own.  Instead, it speaks
+the @acronym{ACP, Agent Client Protocol} and allows you to use any
+compatible user interface of your choice.")
+    (license license:gpl3+)))
+
 (define-public haunt
   (package
     (name "haunt")
