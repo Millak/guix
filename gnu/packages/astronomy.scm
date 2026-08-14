@@ -4008,16 +4008,16 @@ Origins Spectrograph}.")
 (define-public python-camb
   (package
     (name "python-camb")
-    (version "1.6.6")
+    (version "2.0.0")
     (source
      (origin
-       (method git-fetch)       ;XXX: PyPI archive bundles forutils.
+       (method git-fetch)
        (uri (git-reference
               (url "https://github.com/cmbant/CAMB")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gdfglvs3v8l7wpy90h45hzi87azjwd91nh6620siyg8bisb7sal"))))
+        (base32 "1drjaijsz4nr3g6pl2pi7236wyzl6bv63wxg7jq0knrza0104d37"))))
     (build-system pyproject-build-system)
     (arguments
      (list
