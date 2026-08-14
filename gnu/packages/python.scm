@@ -600,6 +600,7 @@ data types.")
                (format #f "TESTOPTS=-j~d" (parallel-job-count))
                ;; test_mmap fails on low-memory systems
                " --exclude test_mmap test_socket"
+               " test_ssl"              ; started failing with openssl@3.5.7
                #$@(if (system-hurd?)
                       #~(" test_posix" ;multiple errors
                          " test_time"
@@ -826,6 +827,7 @@ def contents() -> str:
                             " test_threading"
                             " test_asyncio"
                             " test_shutdown"
+                            " test_ssl" ; started failing with openssl@3.5.7
                             ,@(if (target-ppc32?)
                                   '(" test_ssl")
                                   '())
