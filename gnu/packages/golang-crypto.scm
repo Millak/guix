@@ -590,7 +590,7 @@ needing to use secp256k1 elliptic curve cryptography.")
 (define-public go-github-com-bwesterb-go-ristretto
   (package
     (name "go-github-com-bwesterb-go-ristretto")
-    (version "1.2.3")
+    (version "1.2.4")
     (source
      (origin
        (method git-fetch)
@@ -599,7 +599,7 @@ needing to use secp256k1 elliptic curve cryptography.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h508v790wk6g8jq0gh18296xl87vmgc4fhwnac7mk6i5g3mz6v4"))))
+        (base32 "0833dv1aa62qc8z28hag49j2cxhcyzd4ajgirigybcygxrb9jryy"))))
     (build-system go-build-system)
     (arguments
      (list
