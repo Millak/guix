@@ -3158,7 +3158,7 @@ from R7RS, which allows most R7RS code to run on R6RS implementations.")
 (define-public asdf-vm
   (package
     (name "asdf-vm")
-    (version "0.19.0")
+    (version "0.20.0")
     (source
      (origin
        (method git-fetch)
@@ -3167,7 +3167,7 @@ from R7RS, which allows most R7RS code to run on R6RS implementations.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h8rrn5q13wriynh2visxkral2svd8vfflk6s8hyc20ss2pwshar"))))
+        (base32 "0xkrsrdijxxi79m0kimm38lhjybyzn6ng3jdgvra21jm4wk4gbda"))))
     (build-system go-build-system)
     (arguments
      (list
