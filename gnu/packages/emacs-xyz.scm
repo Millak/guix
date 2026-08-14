@@ -10328,6 +10328,40 @@ for the Zig programming language in Emacs.")
      "Emacs packages for working with Zettelkasten-style linked notes.")
     (license license:gpl3+)))
 
+(define-public emacs-clatter
+  (package
+    (name "emacs-clatter")
+    (version "0.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/parenworks/clatter.el")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hg94289icjjz5h3alzxsn2jhpdavgs41ghydr5khq5nlrd3xbl5"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command #~(list "make" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-curl
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("clatter-url-preview.el" "clatter-image.el")
+                (("\"curl")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/curl"))))))
+          (add-before 'check 'fix-home-directory
+            (lambda _ (setenv "HOME" "/tmp"))))))
+    (inputs (list curl))
+    (home-page "https://github.com/parenworks/clatter.el")
+    (synopsis "IRCv3-compliant IRC client")
+    (description
+     "Clatter is a dedicated, IRCv3-compliant IRC client for Emacs.")
+    (license license:expat)))
+
 (define-public emacs-erc
   (package
     (name "emacs-erc")
