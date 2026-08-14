@@ -30674,6 +30674,30 @@ Citar and Denote")
 Denote packages to enable create managing bibliographic notes and citations.")
     (license license:gpl3+)))
 
+(define-public emacs-citar-vulpea
+  (let ((commit "450e94c8e5db74dca8081cdf0ec2caf9ed3ec36b")
+        (revision "0"))
+    (package
+      (name "emacs-citar-vulpea")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/fabcontigiani/citar-vulpea")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0dscbwr66sjlcxk9wjjyqkyzc8s2mz02np6jzn2g6yqi93bbb0v7"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-citar emacs-vulpea))
+      (home-page "https://github.com/fabcontigiani/citar-vulpea")
+      (synopsis "Create and retrieve bibliography notes with Citar and Vulpea")
+      (description
+       "@code{citar-vulpea} is a minor-mode integrating the Emacs Citar and
+Vulpea packages to manage bibliographic notes and citations.")
+      (license license:gpl3+))))
+
 (define-public emacs-helm-bibtex
   (let ((commit "6064e8625b2958f34d6d40312903a85c173b5261")
         (revision "2"))
