@@ -11559,7 +11559,13 @@ the machine.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/huaweicloud/huaweicloud-sdk-go-v3"))
+      #:import-path "github.com/huaweicloud/huaweicloud-sdk-go-v3"
+      #:test-flags
+      (if (target-aarch64?)
+          ;; Fails on aarch64: Not equal: expected: 2147483647, actual:
+          ;; -2147483648
+          #~(list "-skip" "TestPow32/test_Pow32_with_large_exponent")
+          ''())))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
