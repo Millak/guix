@@ -2873,7 +2873,7 @@ and should be used with caution, especially on untested models.")
 (define-public corefreq
   (package
     (name "corefreq")
-    (version "2.1.0")
+    (version "2.1.2")
     (source
      (origin
        (method git-fetch)
@@ -2882,7 +2882,7 @@ and should be used with caution, especially on untested models.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "054rnrwvkbfmy2maxjk928fh1p346313ixhkbjwcq7qjz3idjixl"))))
+        (base32 "0kkb82205g4vkh5rh1bd3w97b83miqvb3xf557sf7pp1gz9i0acw"))))
     ;; The upstream Makefile is now such a proprietary mess that standard builds
     ;; as performed by our linux-module-build-system are more or less impossible
     ;; without heavy patching.  However, we still keep it as the main build
