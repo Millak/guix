@@ -19952,7 +19952,7 @@ space to be used to resume from hibernation on boot (@i{via} a kernel
 argument).  When using a swap file, its offset in the device holding it
 also needs to be given to the kernel; that value has to be updated if
 the file is initialized again as swap---e.g., because its size was
-changed.
+changed.  @xref{Initial RAM Disk} for details about the kernel arguments.
 
 Note that swap space is not zeroed on shutdown, so sensitive data (such
 as passwords) may linger on it if it was paged out.  As such, you should
@@ -49971,6 +49971,16 @@ or @code{preen} to repair problems considered safe to repair automatically.
 
 @code{preen} is the default if this option is not present or if @var{level}
 is not one of the above.
+
+@item resume=@var{swap}
+If the system was put into hibernation, attempt to resume it from @var{swap}
+(@pxref{Swap Space}).  The value @var{swap} can be a device name like
+@code{/dev/sda3}, a partition label or a partition UUID.
+
+@item resume_offset=@var{offset}
+Instead of resuming directly from the device specified with @code{resume},
+resume from an offset equal to @var{offset}.  This is needed when using a swap
+file instead of a swap partition.
 
 @item gnu.system=@var{system}
 Have @file{/run/booted-system} and @file{/run/current-system} point to
