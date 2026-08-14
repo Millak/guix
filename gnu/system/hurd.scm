@@ -86,7 +86,8 @@
                          `(("/bin/sh" ,(file-append bash "/bin/sh"))
                            ("/usr/bin/env" ,(file-append coreutils
                                                          "/bin/env"))))
-                (service shepherd-system-log-service-type))
+                (service shepherd-system-log-service-type)
+                (service hurd-login-service-type))
           (map (lambda (n)
                  (service hurd-getty-service-type
                           (hurd-getty-configuration
