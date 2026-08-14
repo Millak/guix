@@ -5386,7 +5386,7 @@ features:
 (define-public hydroxide
   (package
     (name "hydroxide")
-    (version "0.2.31")
+    (version "0.2.32")
     (source
      (origin
        (method git-fetch)
@@ -5395,7 +5395,7 @@ features:
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04hfz41dzkd4pamm097h3sv4qvj0r1k4dkw5p38lb41yxfvv4rzp"))))
+        (base32 "1dqswnnhgz37fgnrzzgqw7vnjnx3f7yj7fbkapvy5ry3sj88ki6x"))))
     (build-system go-build-system)
     (arguments
      (list
