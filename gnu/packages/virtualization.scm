@@ -609,6 +609,7 @@ exec smbd $@")))
             ncurses
             openbios-qemu-ppc
             opensbi-qemu
+            pipewire                    ;Pipewire support, -audiodev pipewire
             pixman
             pulseaudio
             sdl2
@@ -746,6 +747,7 @@ server and embedded PowerPC, and S390 guests.")
                       "usbredir"
                       "libdrm"
                       "libepoxy"
+                      "pipewire"
                       "pulseaudio"
                       "vde2"
                       "libcacard")))))
