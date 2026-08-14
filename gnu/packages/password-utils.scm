@@ -665,7 +665,7 @@ applications, there is xclip integration." )
 (define-public sops
   (package
     (name "sops")
-    (version "3.12.2")
+    (version "3.13.3")
     (source
      (origin
        (method git-fetch)
@@ -674,7 +674,7 @@ applications, there is xclip integration." )
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01w67iv0v9hnxgaklixk871dwnhyhllm3zz36iiwqsd19d5rllfm"))))
+        (base32 "08cfc9mcy6rmj025qzq4fg71bvibrcskyj00rnmcla89199f3d2c"))))
     (build-system go-build-system)
     (arguments
      (list #:install-source? #f
@@ -716,6 +716,7 @@ applications, there is xclip integration." )
            go-github-com-envoyproxy-go-control-plane
            go-github-com-fatih-color
            go-github-com-getsops-gopgagent
+           go-github-com-go-viper-mapstructure-v2
            go-github-com-google-go-cmp
            go-github-com-google-shlex
            go-github-com-goware-prefixer
@@ -725,6 +726,7 @@ applications, there is xclip integration." )
            go-github-com-lib-pq
            go-github-com-mitchellh-go-homedir
            go-github-com-mitchellh-go-wordwrap
+           ;; go-github-com-ory-dockertest-v3     ;for integration tests
            go-github-com-pkg-errors
            go-github-com-protonmail-go-crypto
            go-github-com-sirupsen-logrus
