@@ -10554,31 +10554,34 @@ provided by a TLS reverse proxy (e.g. tlstunnel, hitch or stunnel).")
       (properties '((lint-hidden-cve . ("CVE-2019-15520")))))))
 
 (define-public go-webring
-  (let ((commit "6786a27b0c57df75323217453369c83a4d9f4dea")
-        (revision "0"))
-    (package
-      (name "go-webring")
-      (version (git-version "20220426" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.sr.ht/~amolith/go-webring")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1xra0mapdmda8n0z6zsgcqppdzvxc47p0fahsdyig5qmpk89ar8l"))))
-      (build-system go-build-system)
-      (arguments
-       (list #:import-path "git.sr.ht/~amolith/go-webring"
-             #:install-source? #f))
-      (inputs (list go-github-com-spf13-pflag))
-      (home-page "https://git.sr.ht/~amolith/go-webring")
-      (synopsis "Simple webring implementation")
-      (description
-"@code{go--webring} provides a simple webring implementation as used by
+  (package
+    (name "go-webring")
+    (properties '((commit . "2a370aeeb9a0c434268371a7af688fac96887e95")
+                  (revision . "1")
+                  (go-pseudo-version . "0.0.0-20251130195908-2a370aeeb9a0")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~amolith/go-webring")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "199jg1fv5ki4ssc08ndsa5irdf703kizfnvsf2q5isapna5kvgx3"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "git.sr.ht/~amolith/go-webring"
+           #:install-source? #f))
+    (native-inputs (list go-github-com-spf13-pflag))
+    (home-page "https://git.sr.ht/~amolith/go-webring")
+    (synopsis "Simple webring implementation")
+    (description
+     "@code{go--webring} provides a simple webring implementation as used by
 the Fediring.")
-      (license (list license:cc0 license:bsd-2)))))
+    (license (list license:cc0 license:bsd-2))))
 
 (define-public awslogs
   (package
