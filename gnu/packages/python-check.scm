@@ -5280,7 +5280,7 @@ when writing automated tests in Python.")
   ;; only.
   (package
     (name "python-tox")
-    (version "4.27.0")
+    (version "4.37.0")
     (source
      (origin
        (method git-fetch)
@@ -5289,51 +5289,46 @@ when writing automated tests in Python.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z8bc37sbzzrssw426v5xr94ywk5l3i6dy4hfppv6y9mihmr8yk7"))))
+        (base32 "0n26qyw7blqkgj6l6kgi2k36wrfpnzz0wr5hq32186fq53xqisin"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1867 passed, 11 skipped, 2 warnings
+      ;; tests: 7173 passed
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
+      #~(list "-m" "not integration and not slow"
+              "--numprocesses" (number->string (parallel-job-count))
+              "--timeout=10"
               #$@(map (lambda (ls) (string-append "--deselect=tests/"
                                                   (string-join ls "")))
-                      '(("plugin/test_plugin.py"
-                         "::test_plugin_hooks_and_order")
-                        ("session/cmd/test_devenv.py"
-                         "::test_devenv_fail_multiple_target")
-                        ("session/cmd/test_parallel.py"
+                      ;; Test hangs.
+                      '(("session/cmd/test_parallel.py"
                          "::test_keyboard_interrupt")
-                        ("session/cmd/test_sequential.py"
-                         "::test_skip_pkg_install")
-                        ("session/cmd/test_show_config.py"
-                         "::test_show_config_cli_flag")
-                        ("session/cmd/test_show_config.py"
-                         "::test_show_config_pkg_env_once")
-                        ("session/cmd/test_show_config.py"
-                         "::test_show_config_pkg_env_skip")
-                        ("session/cmd/test_show_config.py"
-                         "::test_show_config_py_ver_impl_constants")
+                        ;; Expecting tox in the PATH.
                         ("test_call_modes.py"
                          "::test_call_as_exe")
-                        ("tox_env/python/test_python_api.py"
-                         "::test_python_disable_hash_seed")
+                        ;; Assertion failed.
                         ("tox_env/python/test_python_api.py"
                          "::test_python_generate_hash_seed")
-                        ("tox_env/python/test_python_api.py"
-                         "::test_python_hash_seed_from_env_and_disable")
-                        ("tox_env/python/test_python_api.py"
-                         "::test_python_hash_seed_from_env_and_override")
-                        ("tox_env/python/test_python_api.py"
-                         "::test_python_keep_hash_seed")
-                        ("tox_env/python/test_python_api.py"
-                         "::test_python_set_hash_seed")
+                        ;; Tests try to install packages with PIP.
                         ("tox_env/python/virtual_env/package/"
                          "test_package_cmd_builder.py"
                          "::test_build_wheel_external")
                         ("tox_env/python/virtual_env/package/"
                          "test_package_cmd_builder.py"
-                         "::test_run_installpkg_targz"))))))
+                         "::test_run_installpkg_targz"))))
+
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("cachetools>=7.0.1") "cachetools")
+                (("filelock>=3.24") "filelock")
+                (("platformdirs>=4.9.1") "platformdirs")
+                (("virtualenv>=20.36.1") "virtualenv"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-cachetools
            python-chardet
@@ -5343,7 +5338,9 @@ when writing automated tests in Python.")
            python-platformdirs
            python-pluggy
            python-pyproject-api
-           python-virtualenv))
+           python-virtualenv
+           ;; [optional]
+           python-argcomplete))
     (native-inputs
      (list python-devpi-process
            python-docutils
@@ -5354,6 +5351,7 @@ when writing automated tests in Python.")
            python-pytest
            python-pytest-mock
            python-pytest-xdist
+           python-pytest-timeout
            python-re-assert
            python-time-machine))
     (home-page "https://tox.readthedocs.io")
