@@ -30,12 +30,14 @@
 (specifications->manifest
  (list "conda"
        "hatch"
-       "python-pycodestyle"
        "poetry"
        "python-black"
        "python-flake8"
        "python-flit"
        "python-pep440"
+       "python-pycodestyle"
        "python-pylint"
+       "python-nox"
+       "python-tox"
        "ruff"
        "uv"))
