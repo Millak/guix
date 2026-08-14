@@ -894,12 +894,17 @@ templates language.")
        (sha256
         (base32 "0i22as7f22qhnp69c7zwdh7k4pzl45ywa0hdj71j0n07lqdmdqc7"))))
     (build-system pyproject-build-system)
-    ;; Upstream uses uv-build which is not yet available in Guix.
     (arguments
      (list
+      ;; Upstream uses uv-build which is not yet available in Guix.
       #:build-backend "setuptools.build_meta"
+      ;; tets: 3659 passed, 509 skipped, 4 deselected, 4 xfailed, 1267 warnings
+      #:test-flags
       ;; Skip the network tests.
-      #:test-flags #~(list "-m" "not network")))
+      #~(list "-m" "not network"
+              ;; Prevent adding python-sphinx into scope.
+              (string-append "--deselect=tests/test_blocks.py"
+                             "::test_blocks_reexported_from_sphinx_package"))))
     (native-inputs
      ;; Optional libraries imported at module level by the test suite.
      (list python-hjson
