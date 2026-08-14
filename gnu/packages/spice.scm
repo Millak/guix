@@ -50,7 +50,9 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages virtualization)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
@@ -101,8 +103,14 @@ different (virtual) machine than the one to which the USB device is attached.")
                (base32
                 "0cw3a0xkmlkc5a0yydbcyvr1hhxm0x6msn8d4pf1q4ck4q97ff3q"))))
     (build-system meson-build-system)
-    (inputs (list libepoxy mesa))
-    (native-inputs (list pkg-config python))
+    (arguments
+     (list #:configure-flags
+           #~'("-Dvenus=true"
+               "-Dvideo=true"
+               "-Ddrm-renderers=amdgpu-experimental,msm")))
+    (inputs (list libepoxy mesa libdrm))
+    (propagated-inputs (list libva vulkan-loader))
+    (native-inputs (list pkg-config python vulkan-headers))
     (synopsis "Virtual 3D GPU library")
     (description "A virtual 3D GPU library that enables a virtualized operating
 system to use the host GPU to accelerate 3D rendering.")
