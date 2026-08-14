@@ -47,6 +47,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
@@ -709,13 +710,15 @@ from an audio CD.")
   (package
     (name "abcde")
     (version "2.9.3")
-    (home-page "https://abcde.einval.com/")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append home-page "/download/abcde-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.einval.com/git/abcde.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "091ip2iwb6b67bhjsj05l0sxyq2whqjycbzqpkfbpm4dlyxx0v04"))))
+        (base32 "020g4klaam6nkw1cxbhv0hn95n1pgvszgr124phl1d4v99gwh6ci"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -738,12 +741,16 @@ from an audio CD.")
                (cut wrap-program <>
                     `("PATH" ":" prefix
                       ,(map (compose dirname (cut search-input-file inputs <>))
-                            (list "/bin/wget"
+                            (list "/bin/cd-discid"
+                                  "/bin/cdparanoia"
+                                  "/bin/cut"
                                   "/bin/flac"
-                                  "/bin/which"
+                                  "/bin/hostname"
                                   "/bin/ogginfo"
-                                  "/bin/cd-discid"
-                                  "/bin/cdparanoia")))
+                                  "/bin/uname"
+                                  "/bin/wget"
+                                  "/bin/which"
+                                  "/bin/whoami")))
                     `("PERL5LIB" ":" prefix
                       (,(getenv "PERL5LIB"))))
                (find-files (string-append #$output "/bin"))))))))
@@ -753,6 +760,7 @@ from an audio CD.")
                   which
                   cdparanoia
                   cd-discid
+                  inetutils
                   vorbis-tools
                   flac
                   perl-musicbrainz-discid
@@ -761,6 +769,7 @@ from an audio CD.")
                   ;; A couple of Python and Perl scripts are included.
                   python
                   perl))
+    (home-page "https://abcde.einval.com/")
     (synopsis "Command-line audio CD ripper")
     (description
      "abcde is a front-end command-line utility (actually, a shell script)
