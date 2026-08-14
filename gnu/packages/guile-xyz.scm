@@ -45,7 +45,7 @@
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022, 2025-2026 Evgeny Pisemsky <mail@pisemsky.site>
-;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022, 2026 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2024 Ilya Chernyshov <ichernyshovvv@gmail.com>
 ;;; Copyright © 2024 Artyom Bologov <mail@aartaka.me>
@@ -4319,6 +4319,34 @@ API.
 Kaagum offers no user interface on its own.  Instead, it speaks
 the @acronym{ACP, Agent Client Protocol} and allows you to use any
 compatible user interface of your choice.")
+    (license license:gpl3+)))
+
+(define-public emacs-agent-shell-kaagum
+  (package
+    (name "emacs-agent-shell-kaagum")
+    (version "0.1.0")
+    (source (package-source kaagum))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'enter-elisp-dir
+                 (lambda _
+                   (chdir "emacs")))
+               (add-after 'enter-elisp-dir 'configure
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (emacs-substitute-variables "agent-shell-kaagum.el"
+                     ("agent-shell-kaagum-command"
+                      (search-input-file inputs "bin/kaagum"))))))))
+    (inputs
+     (list kaagum))
+    (propagated-inputs
+     (list emacs-agent-shell))
+    (home-page (package-home-page kaagum))
+    (synopsis "Agent-shell integration for the kaagum AI agent")
+    (description "This package provides agent-shell integration for the kaagum
+AI agent.")
     (license license:gpl3+)))
 
 (define-public haunt
