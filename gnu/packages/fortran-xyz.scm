@@ -25,6 +25,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages fortran-check)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages libffi)
@@ -122,22 +123,16 @@ correction with both a Fortran and a C interface.")
 (define-public fortran-forutils
   (package
     (name "fortran-forutils")
-    ;; XXX: 1.0 tag was placed in 2019, and since that time tagging was
-    ;; abandoned, use the latest commit from master's HEAD.
-    (properties '((commit . "841f06d5356877e90437f94b2d976dd98f7f923c")
-                  (revision . "0")))
-    (version (git-version "1.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
+    (version "1.1.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/cmbant/forutils")
-              (commit (assoc-ref properties 'commit))))
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y69y9dpd7by8jqrxhdg6xycxs1m38d4cw19v2jmsd4470syf79g"))))
+        (base32 "1aq944s7ssapjqnn04lws72xb582zm581ab2fk105w99fzzjj52l"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -160,7 +155,7 @@ correction with both a Fortran and a C interface.")
               (install-file "Release/libforutils.a"
                             (string-append #$output "/lib")))))))
     (native-inputs
-     (list gfortran))
+     (list gfortran which))
     (home-page "https://github.com/cmbant/forutils")
     (synopsis "Fortran 2008 utility functions and reusable classes")
     (description
