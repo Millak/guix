@@ -4486,16 +4486,22 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
 (define-public python-cobaya
   (package
     (name "python-cobaya")
-    (version "3.6.2")
+    ;; 3.6.2 (2026-03-27); to support changes in pythoncamb. see:
+    ;; <https://github.com/CobayaSampler/cobaya/pull/495>.
+    (properties '((commit . "b76b6fed2a6c8c5594c6f92d5058bef10079746a")
+                  (revision . "0")))
+    (version (git-version "3.6.2"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/CobayaSampler/cobaya")
-              (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06g6yz3r1xfmxi4rnxc6549i4lby7h9h8f17id8m1k2px1hyh628"))))
+        (base32 "1ni2a7nr0vy49j2d5lh5zyv5bdpy735axxvh8b16r6wnhjv728pm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4515,7 +4521,6 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
               (setenv "COBAYA_PACKAGES_PATH" "/tmp"))))))
     (native-inputs
      (list python-camb
-           ;; python-classy
            python-flaky
            python-pytest
            python-pytest-xdist
@@ -4533,7 +4538,12 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
            python-requests
            python-scipy
            python-tqdm
-           python-typing-extensions))
+           python-typing-extensions
+           ;; [optional]
+           python-matplotlib
+           python-mpi4py
+           python-numba
+           python-pyside-6))
     (home-page "https://github.com/CobayaSampler/cobaya")
     (synopsis "Code for Bayesian analysis in Cosmology")
     (description
