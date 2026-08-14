@@ -209,19 +209,21 @@ maintainability.")
 (define-public python-adjusttext
   (package
     (name "python-adjusttext")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "adjusttext" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Phlya/adjustText")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "18dw5kqxan4m8kvw3w1lm0p69gj95i7rcgmcfs485x1s8pa5rdsa"))))
+        (base32 "1cw9cfvrwimf1b3mvbdb8snj8shy1rzdpmb9d1j8vjwaj5ip4d9k"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #false)) ;there are none
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (propagated-inputs
      (list python-matplotlib
            python-numpy
