@@ -10149,21 +10149,29 @@ a formatter and linter for Hurl files.")
 (define-public kineto
   (package
     (name "kineto")
-    (version "0.0.0-20211105093215-857f8c97ebc5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.sr.ht/~sircmpwn/kineto")
-                    (commit (go-version->git-ref version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1r17c904i76yy5ilvhjczmhnq5g7r4nkjwmsjcfxcqzly0ia7m2k"))))
+    (properties '((commit . "edd4fe31f16f9eb9565d2b6a329738ceedea8de9")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20250122093821-1f4e0667bc21")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~sircmpwn/kineto")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dldfz5irdhaza6dj2bdv99c8bwprl34n9rvlyvvvd8mpvsl6459"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "git.sr.ht/~sircmpwn/kineto/"))
-    (propagated-inputs
-     (list go-git-sr-ht-sircmpwn-getopt go-git-sr-ht-adnano-go-gemini))
+     (list
+      #:install-source? #f
+      #:import-path "git.sr.ht/~sircmpwn/kineto/"))
+    (native-inputs
+     (list go-git-sr-ht-sircmpwn-getopt
+           go-git-sr-ht-adnano-go-gemini))
     (home-page "https://git.sr.ht/~sircmpwn/kineto/")
     (synopsis "HTTP proxy for Gemini")
     (description
