@@ -86,6 +86,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages rust-apps)  ;for uv
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages time)
   #:use-module (gnu packages version-control)
@@ -2039,7 +2040,7 @@ also ensuring that the notebooks are running without errors.")
 (define-public python-nox
   (package
     (name "python-nox")
-    (version "2025.11.12")
+    (version "2026.08.10")
     (source
      (origin
        (method git-fetch)
@@ -2048,23 +2049,36 @@ also ensuring that the notebooks are running without errors.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19cpsdi158ngn5jskfk50zbjn745nhlijx1w73rcmmqph0rl518r"))))
+        (base32 "1cwpdrk3j1iikzbrzzaxb3gz4x87c74cwfjjh0rgxv67p2s0xxml"))))
     (build-system pyproject-build-system)
-    ;; tests: 631 passed, 40 skipped
     (arguments
      (list
+      ;; tests: 890 passed, 45 skipped, 11 deselected, 1 xpassed
       #:test-flags
-      #~(list "-k"
-              (string-join
-               ;; XXX: Tests fails to find uv.
-               (list "not test_download_python_always_preexisting_interpreter[uv]"
-                     "test_download_python_auto_missing_interpreter[uv]"
-                     "test_download_python_failed_install[always-uv]"
-                     "test_download_python_failed_install[auto-uv]"
-                     "test_noxfile_script_mode"
-                     "test_noxfile_script_mode_exec"
-                     "test_noxfile_script_mode_url_req")
-               " and not "))))
+      #~(append
+         ;; Network access is required.
+         (map (lambda (test)
+                (string-append "--deselect=tests/test_main.py" test))
+              (list "::test_noxfile_script_mode"
+                    "::test_noxfile_script_mode_exec"
+                    "::test_noxfile_script_mode_url_req"))
+         ;; Tests try to download particular Python versions.
+         (map (lambda (test)
+               (string-append "--deselect=tests/test_virtualenv.py" test))
+             (list (string-append "::test_create_reuse_environment_"
+                                  "with_broken_interpreter_symlink[uv]")
+                   "::test_create_reuse_uv_environment"
+                   "::test_stale_environment[uv-virtualenv-False]"
+                   "::test_uv_creation"
+                   "::test_uv_install[3.11-True]"
+                   "::test_uv_install[cpython3.9-True]"
+                   "::test_uv_install[pypy3.8-True]"
+                   "::test_uv_install[python3.12-True]")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-hatchling
            python-pytest))
@@ -2073,8 +2087,16 @@ also ensuring that the notebooks are running without errors.")
            python-attrs
            python-colorlog
            python-dependency-groups
+           python-discovery
            python-humanize
-           python-virtualenv))
+           python-packaging
+           python-platformdirs
+           python-virtualenv
+           ;; [optional]
+           python-jinja2
+           python-pbs-installer
+           python-tox
+           uv))
     (home-page "https://nox.thea.codes/")
     (synopsis "Flexible test automation")
     (description
