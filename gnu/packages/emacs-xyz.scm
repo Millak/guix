@@ -16179,6 +16179,31 @@ include switching to or killing the buffer.  For package names the actions
 include installing, removing or visiting the homepage.")
     (license license:gpl3+)))
 
+(define-public emacs-embark-vulpea
+  (let ((commit "e2271a6dde6254efab091fa5761d857f3a38cd82")
+        (revision "0"))
+    (package
+      (name "emacs-embark-vulpea")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/fabcontigiani/embark-vulpea")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0yqr3ca7x14r8na3xww2bjad46vkrma5p16grvi1hcz2dsf4y3si"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-embark emacs-vulpea))
+      (home-page "https://github.com/fabcontigiani/embark-vulpea")
+      (synopsis "Emacs Embark integration for Vulpea notes")
+      (description
+       "@code{embark-vulpea} is a minor-mode integrating the Embark actions
+and Vulpea packages.  It features contextual actions and an export buffer for
+@code{vulpea-note} completion candidates.")
+      (license license:gpl3+))))
+
 (define-public emacs-prescient
   (package
     (name "emacs-prescient")
