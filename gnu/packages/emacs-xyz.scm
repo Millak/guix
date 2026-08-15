@@ -49497,6 +49497,61 @@ SQLite database for efficient querying and organization.  Key features:
 See @url{https://github.com/d12frosted/vulpea} for documentation.")
     (license license:gpl3+)))
 
+(define-public emacs-vulpea-para
+  (package
+    (name "emacs-vulpea-para")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/d12frosted/vulpea-para")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07x4xbp99jj7wpdl9w8mq2xrkrqf5kw70vdzpwi9r82smfi1d7yk"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:emacs emacs-no-x   ; for sqlite support.
+      ;; Taken from Makefile, add --disable-dependencies.
+      #:test-command
+      #~(list "eldev" "--disable-dependencies" "-C"
+              "--unstable" "-p" "-dtT" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; XXX: Eldev should be ignoring this, but for some
+              ;; reason it doesn't.
+              (substitute* "Eldev"
+                (("\\(eldev-use-local-dependency \"\\.\\./vulpea\"\\)")
+                 "t"))
+              (setenv "EMACSLOADPATH"
+                      (string-append
+                       (getcwd) "/test:"
+                       (getenv "EMACSLOADPATH")))
+              (setenv "HOME" (dirname (getcwd))))))))
+    (propagated-inputs (list emacs-emacsql emacs-vulpea))
+    (native-inputs (list emacs-eldev))
+    (home-page "https://github.com/d12frosted/vulpea-para")
+    (synopsis "The PARA method on top of @code{emacs-vulpea}")
+    (description
+     "This package brings the @acronym{PARA, {Projects, Areas, Resources,
+Archives}} method to an Org-mode note collection, on top of
+@code{emacs-vulpea}.  Instead of filing notes into folders, a tag is applied
+to the note.  Reclassifying is done by flipping tags, among those:
+@itemize
+@item Areas are the pillars: one note per ongoing responsibility (the blog,
+finances, a garden), tagged @code{:area:}.
+@item Projects are headings with a finish line, tagged @code{:project:},
+living inside the area they belong to.
+@item Resources are your reference notes; most of your notes are these.
+@item Archives are anything that has gone quiet, moved aside but still
+searchable.
+@end itemize\n")
+    (license license:gpl3+)))
+
 (define-public emacs-vulpea-ui
   (package
     (name "emacs-vulpea-ui")
