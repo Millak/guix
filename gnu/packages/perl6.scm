@@ -2,6 +2,7 @@
 ;;; Copyright © 2019, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2026 Tomás Ortín Fernández (quanrong) <quanrong@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,14 +38,14 @@
 (define-public moarvm
   (package
     (name "moarvm")
-    (version "2022.04")
+    (version "2026.07")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://moarvm.org/releases/MoarVM-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0128fxqaz7cwjf6amaz2cgd7xl52zvi5fr7bwnj229snll5za1mf"))
+        (base32 "0gv1dqxn90m95j1bjwr5rx5ki68spcf0dp4rny39dzxhks5c11as"))
        (modules '((guix build utils)))
        (snippet
         '(begin
