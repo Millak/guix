@@ -4395,18 +4395,19 @@ representing, creating, and extracting information from HTML syntax trees.")
 (define-public perl-html-parser
   (package
     (name "perl-html-parser")
-    (version "3.72")
+    (version "3.85")
     (source (origin
              (method url-fetch)
              (uri (string-append
-                   "mirror://cpan/authors/id/G/GA/GAAS/HTML-Parser-"
+                   "mirror://cpan/authors/id/O/OA/OALDERS/HTML-Parser-"
                    version ".tar.gz"))
              (sha256
               (base32
-               "12v05ywlnsi9lc17z32k9jxx3sj1viy7y1wpl7n4az76v7hwfa7c"))))
+               "0w8cisygx7mg8sdyara47rl5y1l075n29gjpmpq1q907prmblhpx"))))
     (build-system perl-build-system)
-    (inputs
-     (list perl-html-tagset perl-http-message))
+    (propagated-inputs (list perl-html-tagset
+                             perl-http-message ;for HTTP::Headers
+                             perl-uri))
     (license license:perl-license)
     (synopsis "Perl HTML parser class")
     (description
