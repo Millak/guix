@@ -50,6 +50,7 @@
 ;;; Copyright © 2026 orahcio <orahcio@gmail.com>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2026 Tomás Ortín Fernández (quanrong) <quanrong@mailbox.org>
+;;; Copyright © 2026 Goran Vukoman <g@odyss3us.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -435,7 +436,7 @@ TCP sessions from existing clients.")
 (define-public poezio
   (package
     (name "poezio")
-    (version "0.14")
+    (version "0.18")
     (source
      (origin
        (method git-fetch)
@@ -444,29 +445,30 @@ TCP sessions from existing clients.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15vlmymqlcf94h1g6dvgzjvj15c47dqsm78qs40wl2dlwspvqkxj"))))
+        (base32 "0v1nqhy77qwd8gxsfxbyjkk3zi80357v30f4nxz2kwcanlkb20gx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f ;tests fails without the OTR plugin
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
+            ;; The C extension build looks for 'cc', which does not exist
+            ;; in the build environment.
             (lambda _
               (substitute* "setup.py"
                 (("'CC', 'cc'")
                  "'CC', 'gcc'")))))))
     (native-inputs
-     (list pkg-config python-setuptools python-sphinx))
+     (list pkg-config python-pytest python-setuptools python-sphinx))
     (inputs
-     (list python-mpd2
-           python-pyasn1
-           python-pyasn1-modules
+     (list python                      ;for the C extension headers
+           python-aiohttp
+           python-pillow
            python-pygments
            python-pyinotify
            python-qrcode
-           python-slixmpp
-           python-typing-extensions))
+           python-setuptools
+           python-slixmpp))
     (synopsis "Console Jabber/XMPP Client")
     (description "Poezio is a free console XMPP client (the protocol on which
 the Jabber IM network is built).
