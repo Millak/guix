@@ -180,7 +180,6 @@
             python-pytest
             python-chardet
             python-defusedxml
-            python-h5py
             python-pypdf
             python-progressbar33
 
@@ -195,6 +194,13 @@
             dtc
             e2fsprogs
             ffmpeg)
+
+      (match (%current-system)
+        ;; python-h5py not currently available on other architectures
+        ;; https://codeberg.org/guix/guix/issues/10518
+        ((or "x86_64-linux")
+         (list python-h5py))
+        (_ '()))
 
       (match (%current-system)
         ;; fpc is only available on x86 currently.
