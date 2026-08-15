@@ -6813,29 +6813,6 @@ is based on the Hierarchical Equal Area isoLatitude Pixelization (HEALPix)
 scheme and builds with the HEALPix C++ library.")
     (license license:gpl2+)))
 
-(define-public python-healpy-1.18
-  (package
-    (inherit python-healpy-1.19)
-    (version "1.18.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "healpy" version))
-       (sha256
-        (base32 "1v7bsxz05k36cw596yyaahcx6h8blhy1qlzpwcjj5cvg4vrynnff"))))
-    (arguments
-     (list
-      ;; tests: 181 passed, 4 deselected, 7 warnings
-      #:test-flags
-      #~(list "--pyargs" "healpy"
-              "-k" (string-join
-                    ;; Tests requiring network access.
-                    (list "not test_astropy_download_file"
-                          "test_pixelweights_local_datapath"
-                          "test_rotate_map_polarization_alms")
-                    " and not ")
-              "test")))))
-
 ;; Not all of the dependents released updates supporting v1.19.
 (define-public python-healpy python-healpy-1.19)
 
