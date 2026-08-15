@@ -4321,7 +4321,7 @@ be used for realtime video capture via Linux-specific APIs.")
 (define-public obs
   (package
     (name "obs")
-    (version "32.0.4")
+    (version "32.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/obsproject/obs-studio/releases/download/"
@@ -4329,7 +4329,7 @@ be used for realtime video capture via Linux-specific APIs.")
                                   "/OBS-Studio-" version "-Sources.tar.gz"))
               (sha256
                (base32
-                "1a5vpm0ah0a6gq6wrwid4gd89zi52pg24r4sqqagxyq58fi2xrnr"))
+                "1d76d1fxqh3sw7rwwq4r1qp2cfcwcxi6ymvb0yrxsx9yn1kgp0gc"))
               (patches
                (search-patches "obs-modules-location.patch"))))
     (build-system cmake-build-system)
