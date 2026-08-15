@@ -55,6 +55,7 @@
 ;;; Copyright © 2026 Daniel Littlewood <dan@danielittlewood.xyz>
 ;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2026 Emmanouil Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2635,7 +2636,7 @@ Google's C++ code base.")
 (define-public miniaudio
   (package
     (name "miniaudio")
-    (version "0.11.22")
+    (version "0.11.25")
     (source
      (origin
        (method git-fetch)
@@ -2644,7 +2645,8 @@ Google's C++ code base.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pjaiq71x24n9983vkhjxrsbraa24053h727db22b1rb2xyfrzm3"))))
+        (base32 "0v5pk1kfs7gyfsh4n7ypamyd26vckkyx0dm6dm7q6y7fkzlzhkfs"))
+       (patches (search-patches "miniaudio-CVE-2026-32837.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2690,6 +2692,7 @@ Google's C++ code base.")
     (description
      "Miniaudio is an audio playback and capture library for C and C++.  It is
 made up of a single source file and has no external dependencies.")
+    (properties '((lint-hidden-cve "CVE-2026-32837")))
     (license license:expat)))
 
 ;; Deprecated on 2026-07-08.

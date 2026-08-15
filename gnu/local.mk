@@ -1953,6 +1953,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/mia-vtk9.patch				\
   %D%/packages/patches/mia-vtk92.patch				\
   %D%/packages/patches/mia-vtk-version.patch			\
+  %D%/packages/patches/miniaudio-CVE-2026-32837.patch		\
   %D%/packages/patches/minisat-friend-declaration.patch		\
   %D%/packages/patches/minisat-install.patch			\
   %D%/packages/patches/miniz-for-pytorch.patch			\
