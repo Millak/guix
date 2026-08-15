@@ -787,31 +787,29 @@ some confidence that they have a working distribution META description file.")
     (license license:artistic2.0)))
 
 (define-public perl6-test-mock
-  (let ((commit "1130427f4d9f3866fa39e113251bb142d7fa5cc8")
-        (revision "0"))
-    (package
-      (name "perl6-test-mock")
-      (version (git-version "1.5" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/jnthn/test-mock")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "03qq6z9ilw0ak3dx9i24ygr4c21wf4xvli8px02hmshpkhavclj5"))))
-      (build-system rakudo-build-system)
-      (propagated-inputs
-       (list perl6-oo-monitors))
-      (home-page "https://github.com/jnthn/test-mock")
-      (synopsis "Module for simply generating and checking mock objects")
-      (description "@code{Test::Mock} is a module that works alongside the
+  (package
+    (name "perl6-test-mock")
+    (version "1.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/raku-community-modules/Test-Mock")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w23pnahagj6gls0227zhwq5mgbha4y5pdi5kimfq67fd613zj43"))))
+    (build-system rakudo-build-system)
+    (propagated-inputs
+     (list perl6-oo-monitors))
+    (home-page "https://github.com/raku-community-modules/Test-Mock")
+    (synopsis "Module for simply generating and checking mock objects")
+    (description "@code{Test::Mock} is a module that works alongside the
 standard Test module to help you write tests when you want to verify what
 methods are called on an object, while still having calls to undefined methods
 die.  You get started just as normal with the test file, but also add a
 @code{use} statement for @code{Test::Mock}.")
-      (license license:artistic2.0))))
+    (license license:artistic2.0)))
 
 (define-public perl6-uri
   ;; The commit where 0.3.5 was “tagged”.
