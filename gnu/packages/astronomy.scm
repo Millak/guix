@@ -5620,16 +5620,16 @@ dust exitinction laws found in the literature.")
 (define-public python-fiasco
   (package
     (name "python-fiasco")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/wtbarnes/fiasco")
-             (commit (string-append "v" version))))
+              (url "https://github.com/wtbarnes/fiasco")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m9whz5l2wqbip8f29n2ssl06a10aszc87lf6482l7rnq87v1x6s"))))
+        (base32 "1drlfyppdvjkinic4gky4vgzmr2zva3xyl9xk2fzplx9pz97lgfv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
