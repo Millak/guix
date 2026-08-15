@@ -13002,6 +13002,68 @@ for optimal @code{matching} of weighted N-dimensional image intensity data
 using (multivariate) polynomials.")
     (license license:bsd-3)))
 
+(define-public python-xrtpy
+  (package
+    (name "python-xrtpy")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/HinodeXRT/xrtpy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mqqp4jnypnjiblcf658i27j38wdf6cqmggpsnnhpr07brngy40c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 818 passed, 2 skipped, 995 deselected
+      #:test-flags
+      ;; Remote data is required to run these tests.
+      #~(list "-k" (string-join
+                    (list "not test_EffectiveArea_contamination_on_CCD"
+                          "test_EffectiveArea_contamination_on_filter1"
+                          "test_EffectiveArea_contamination_on_filter2"
+                          "test_EffectiveArea_filter_name"
+                          "test_astropy_time_input"
+                          "test_binning_case"
+                          "test_ccd_contam_data_loads"
+                          "test_deconvolve"
+                          "test_effective_area_compare_idl"
+                          "test_lightleak"
+                          "test_response_length_matches_filters"
+                          "test_responses_for_different_abundance_models"
+                          "test_responses_for_different_dates"
+                          "test_shape_and_units_consistency"
+                          "test_standard_case"
+                          "test_temperature_response")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-scikit-image
+           python-scipy
+           python-sunpy))
+    (home-page "https://xrtpy.readthedocs.io/en/latest/")
+    (synopsis "X-Ray Telescope data analyzing Python library")
+    (description
+     "XRTpy is a Python package being developed for the analysis of
+observations made by the @url{https://xrt.cfa.harvard.edu/, X-Ray
+Telescope} (XRT) on the Hinode spacecraft.")
+    (license license:bsd-2)))
+
 (define-public python-yt
   (package
     (name "python-yt")
