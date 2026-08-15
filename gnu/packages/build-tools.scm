@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 宋文武 <iyzsong@envs.net>
-;;; Copyright © 2016, 2018, 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018, 2020, 2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Corentin Bocquillon <corentin@nybble.fr>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -62,6 +62,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
+  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages logging)
@@ -82,6 +83,7 @@
   #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages rpc)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tcl)
@@ -1668,3 +1670,128 @@ replacement, use the @code{samu-as-ninja-wrapper} package.")
     (description "This package provides the @command{ninja} command,
 implemented as a symbolic link to the @command{samu} command of @code{samurai}
 package.")))
+
+(define-public uv
+  (package
+    (name "uv")
+    (version "0.10.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astral-sh/uv")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04jk8d6wzxclx16mdg56afy2nqfv06j5kbxdch6977226gw80i0p"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (for-each delete-file
+                      (cons "test/packages/fake-uv/scripts/uv.exe"
+                            (find-files "crates/uv-trampoline-builder/trampolines"
+                                        "\\.exe$")))
+            ;; Our version of maturin doesn't parse this correctly
+            (substitute* "pyproject.toml"
+              (("license-files.*") ""))))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:imported-modules
+      (append %cargo-build-system-modules
+              %pyproject-build-system-modules)
+      #:modules
+      '((srfi srfi-26)
+        (ice-9 match)
+        ((guix build cargo-build-system) #:prefix cargo:)
+        (guix build pyproject-build-system)
+        (guix build utils))
+      #:tests? #f  ; Tests require multiple python versions and network access.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        args))
+               '(prepare-rust-crates
+                 unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
+          (add-before 'build 'override-jemalloc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((jemalloc (assoc-ref inputs "jemalloc")))
+                ;; This flag is needed when not using the bundled jemalloc.
+                ;; https://github.com/tikv/jemallocator/issues/19
+                (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
+                (setenv "JEMALLOC_OVERRIDE"
+                        (string-append jemalloc "/lib/libjemalloc.so")))))
+          (replace 'install
+            ;; We can't use the pyproject install phase because uv is a
+            ;; binary, not a python script.
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out"))
+                    (wheel (car (find-files "dist" "\\.whl$")))
+                    (site-dir (site-packages inputs outputs))
+                    (pyversion
+                     (string-append "python"
+                                    (python-version
+                                     (assoc-ref inputs "python")))))
+                (invoke "python" "-m" "zipfile" "-e" wheel site-dir)
+                (mkdir-p (string-append out "/bin"))
+                (for-each delete-file
+                          (find-files (string-append out "/lib/" pyversion)
+                                      "^uvx?$"))
+                (for-each (cut install-file <> (string-append out "/bin"))
+                          (find-files "target" "^uvx?$")))))
+          (replace 'check
+            (lambda args
+              (setenv "HOME" (getcwd))
+              ;; NOTE: ‘#:tests?’ is honored here.
+              (apply (assoc-ref cargo:%standard-phases 'check) args)))
+          (add-after 'install 'install-extras
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (let ((uv (if #$(%current-target-system)
+                            (search-input-file native-inputs "/bin/uv")
+                            (string-append #$output "/bin/uv")))
+                    (uvx (if #$(%current-target-system)
+                             (search-input-file native-inputs "/bin/uvx")
+                             (string-append #$output "/bin/uvx"))))
+                (for-each
+                 (match-lambda
+                   ((shell uv-name uvx-name completions-dir)
+                    (mkdir-p completions-dir)
+                    (with-output-to-file (in-vicinity completions-dir uv-name)
+                      (lambda _
+                        (invoke uv "generate-shell-completion" shell)))
+                    (with-output-to-file (in-vicinity completions-dir uvx-name)
+                      (lambda _
+                        (invoke uvx "--generate-shell-completion" shell)))))
+                 `(("bash" "uv" "uvx"
+                    ,(string-append #$output "/share/bash-completion/completions"))
+                   ("zsh" "_uv" "_uvx"
+                    ,(string-append #$output "/share/zsh/site-functions"))
+                   ("fish" "uv.fish" "uvx.fish"
+                    ,(string-append #$output "/share/fish/vendor_completions.d"))
+                   ("elvish" "uv" "uvx"
+                    ,(string-append #$output "/share/elvish/lib"))
+                   ("nushell" "uv" "uvx"
+                    ,(string-append #$output "/share/nushell/vendor/autoload"))))))))))
+    (native-inputs
+     (append
+      (list maturin pkg-config rust `(,rust "cargo"))
+      (if (%current-target-system)
+          (list this-package
+                (make-rust-sysroot (%current-target-system)))
+          '())))
+    (inputs (cons* jemalloc xz `(,zstd "lib") (cargo-inputs 'uv)))
+    (home-page "https://docs.astral.sh/uv/")
+    (synopsis "Python package and project manager written in Rust")
+    (description
+     "@command{uv} is a high-performance Python package and project manager
+written in Rust, known for its execution speed and compatibility with existing
+tools.")
+    (license (list license:asl2.0 license:expat)))) ;dual-licensed

@@ -132,7 +132,6 @@
   #:use-module (gnu packages rust)
   #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages ruby-xyz)
-  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages rust-crates)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
@@ -1342,7 +1341,7 @@ the @code{(bffe)} module as the entry point.")
            python-tomlkit
            python-userpath
            python-virtualenv
-           uv))  ;XXX: Move uv to this module.
+           uv))
     (home-page "https://hatch.pypa.io/latest/")
     (synopsis "Python project management")
     (description "Hatch is a modern, extensible Python project manager.
