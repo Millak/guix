@@ -12747,6 +12747,71 @@ package.")
     (license (list license:lgpl3+
                    license:gpl3+))))
 
+(define-public python-synthesizar
+  (package
+    (name "python-synthesizar")
+    ;; Not released yet, recommended installation method via git clone.
+    (properties '((commit . "77aab1767e25bc10a200e1b26270da1de20922c2")
+                  (revision . "0")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/wtbarnes/synthesizAR")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yakp5bpjws0x9y35wv16q378bgz02jmsk9vrzwqw2003r4vnw1n"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'sanity-check)
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-pytest
+           python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-asdf
+           python-matplotlib
+           python-ndcube
+           python-scipy
+           python-sunpy
+           python-xarray
+           python-zarr
+           ;; [optional]
+           python-aiapy
+           python-dask
+           python-distributed
+           python-ebtelplusplus
+           python-fiasco
+           python-plasmapy
+           python-pydrad
+           python-sunkit-image
+           python-xrtpy))
+    (home-page "https://synthesizar.readthedocs.io/en/latest/")
+    (synopsis "Optically-thin emission forward modeling")
+    (description
+     "synthesizAR is a Python package for building synthetic solar/stellar
+active regions comprised of coronal loops.  The package allows one to build up
+a forward-modeled observation of an active region, starting with an observed
+magnetogram and ending with an synthetic observational data product.
+
+synthesizAR is designed to be modular and extensible.  Extensions for new
+hydrodynamic codes, emission models, or instruments can be easily dropped in.
+The goal of synthesizAR is to provide an easy-to-use and efficient pipeline
+for forward-modeling hydrodynamic results from end to end.")
+    (license license:bsd-3)))
+
 (define-public python-synphot
   (package
     (name "python-synphot")
