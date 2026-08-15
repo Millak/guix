@@ -4280,8 +4280,8 @@ from various forks of Gens, and improved platform portability.")
 (define-public bsnes
   ;; Use a snapshot of the latest master branch, as it includes unreleased
   ;; build fixes.
-  (let ((commit "ddc3dc2d472aa0bb93ae0663b774734dfd94ab4b")
-        (revision "0"))
+  (let ((commit "7d5aa1e656b9171524d01b1b22917197d8121cb4")
+        (revision "1"))
     (package
       (name "bsnes")
       (version (git-version "115" revision commit))
@@ -4293,17 +4293,19 @@ from various forks of Gens, and improved platform portability.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "03slkk1117vv5p2zhvmyb4l18gb0j9nq2szsravl94zb3v6lbfl0"))))
+          (base32 "0621zcbiq9pljijqp3cfm40dfryp5mcpxxrgbcn5yiyyy4k9g4k3"))))
       (build-system gnu-build-system)
       (arguments
        (list
-        #:make-flags #~(list "-C" "bsnes"
-                             ;; Remove march=native
-                             "local=false"
-                             (string-append "prefix=" #$output))
-        #:tests? #f                       ;No tests.
-        #:phases #~(modify-phases %standard-phases
-                     (delete 'configure))))
+        #:tests? #f             ; No tests.
+        #:make-flags
+        #~(list "-C" "bsnes"
+                ;; Remove march=native
+                "local=false"
+                (string-append "prefix=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure))))
       (native-inputs (list pkg-config))
       (inputs
        (list alsa-lib
