@@ -5996,7 +5996,7 @@ full support for Astropy’s Quantity framework for variables with units.")
 (define-public python-galsim
   (package
     (name "python-galsim")
-    (version "2.8.4")
+    (version "2.8.5")
     (source
      (origin
        (method git-fetch)
@@ -6005,11 +6005,11 @@ full support for Astropy’s Quantity framework for variables with units.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h6sx95vgn5f3mmrpxj3nyvhn8lbxyaahbrvxnkilhagj1f9bbra"))))
+        (base32 "0g21lnhjmqyszxk0lka9m99gd0ipsddx6fzv13ylda2iahi3dz4s"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 234 passed
+      ;; tests: 234 passed, 7 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               "--ignore=devel/"
