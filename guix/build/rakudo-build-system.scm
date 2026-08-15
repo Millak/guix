@@ -57,7 +57,7 @@
             (mkdir-p perl6)
             (invoke zef "install" "--verbose" "."
                     ;; Don't install any of the following:
-                    "--/depends" "--/build-depends" "--/test-depends"
+                    "--/depends" "--/build-depends" "--/test-depends" "--/test"
                     (string-append "--install-to=" perl6))
             (delete-file (string-append perl6 "/repo.lock")))
           #t)
