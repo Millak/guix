@@ -107,12 +107,13 @@ with native libraries.
     (license license:artistic2.0)))
 
 (define-public nqp-configure
-  (let ((commit "9b98931e0bfb8c4aac61590edf5074e63aa8ea4b"))
+  (let ((commit "566ca585735e9dc5abe0f0cf40e1f9912b69c693"))
     (package
       (name "nqp-configure")
-      ;; NQP and Rakudo use the same version of nqp-configure.
-      ;; We may as well set nqp-configure's version to the same as theirs.
-      (version "2022.04")
+      ;; NQP and Rakudo pin different commits of nqp-configure.  This is
+      ;; Rakudo's, which is newer and contains NQP's.  The version matches
+      ;; the NQP and Rakudo releases it is built with.
+      (version "2026.07")
       (source
        (origin
          (method git-fetch)
@@ -121,7 +122,7 @@ with native libraries.
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1vc1q11kjb964jal9dhgf5vwp371a3rfw7gj987n33kzli7a10n0"))))
+          (base32 "1i6n6xsw4kdr5rbmi5gn5x6c9665yd7d8x9cqpz870db4dd0bcfa"))))
       (build-system perl-build-system)
       (arguments
        '(#:phases
