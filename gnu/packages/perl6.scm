@@ -487,7 +487,7 @@ of the same class using @code{JSON::Unmarshal}.")
 (define-public perl6-json-name
   (package
     (name "perl6-json-name")
-    (version "0.0.6")
+    (version "0.0.7")
     (source
      (origin
        (method git-fetch)
@@ -496,9 +496,8 @@ of the same class using @code{JSON::Unmarshal}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fbwp3av4kh7zlbrmgbka4x6s3d6fsw2qxafi9hyq0y896wsaf94"))))
+        (base32 "1n11ny26afvjwq0dnp12nqizsk9chrigcy8w26163i5kq3zcqsrv"))))
     (build-system rakudo-build-system)
-    (arguments '(#:with-zef? #f))
     (propagated-inputs
      (list perl6-json-optin))
     (home-page "https://github.com/jonathanstowe/JSON-Name")
