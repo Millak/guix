@@ -8814,6 +8814,61 @@ results of the astronomical library functions.  Only the bare minimum of IDL
 built-in functions are implemented to support this.")
     (license license:bsd-3)))
 
+(define-public python-pydrad
+  (package
+    (name "python-pydrad")
+    ;; Not released yet, recommended installation method via git clone.
+    (properties '((commit . "bf0d711206f877961e6c8a6f07ac99caafe7e863")
+                  (revision . "0")))
+    (version (git-version "0.1.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rice-solar-physics/pydrad")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0djc74c66rrh6364gqr7rkprwnyrriyf6z07hzd3qq7d4ywlin61"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f          ;tests require network access
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-manifest.in
+            ;; See: <https://codeberg.org/guix/guix/issues/4393>.
+            (lambda* (#:key name source inputs #:allow-other-keys)
+              (let ((port (open-file "MANIFEST.in" "w")))
+                (for-each
+                 (lambda (file)
+                   (display "include " port)
+                   (display file port)
+                   (display "\n" port))
+                 (find-files "."))
+                (close port)))))))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-asdf-astropy
+           python-astropy
+           python-gitpython
+           python-h5py
+           python-jinja2
+           python-matplotlib
+           python-plasmapy
+           python-scipy))
+    (home-page "https://pydrad.readthedocs.io/")
+    (synopsis "Python tools for setting up HYDRAD runs and parsing output")
+    (description
+     "This package provides some Python tools to configure and parse output
+from the HYDrodynamics and RADiation (HYDRAD) code for field-aligned coronal
+loop physics.")
+    (license license:expat)))
+
 (define-public python-pyerfa
   (package
     (name "python-pyerfa")
