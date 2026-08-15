@@ -5593,20 +5593,17 @@ Euclid Consortium should be used.")
 (define-public python-extinction
   (package
     (name "python-extinction")
-    (version "0.4.8")
+    (version "0.4.9")
     (source
      (origin
-       (method git-fetch) ; No tests in PyPI
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/sncosmo/extinction")
-             (commit (string-append "v" version))))
+              (url "https://github.com/sncosmo/extinction")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dcb4c1rjv0msb3kagpgrj2xlb5spv8j76giy14vxkvz33lm4pz7"))))
+        (base32 "19cq9dfmiwm77c928104jrzynga7h1y6x62z495d2qf0qji6v2d6"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "test.py")))
     (native-inputs
      (list python-cython
            python-pytest
@@ -5616,8 +5613,8 @@ Euclid Consortium should be used.")
     (home-page "https://github.com/sncosmo/extinction")
     (synopsis "Fast interstellar dust extinction laws")
     (description
-     "This package provides a cython-optimized implementation of empirical dust
-exitinction laws found in the literature.")
+     "This package provides a cython-optimized implementation of empirical
+dust exitinction laws found in the literature.")
     (license license:expat)))
 
 (define-public python-fiasco
