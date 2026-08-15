@@ -49453,7 +49453,7 @@ reconciliation and layouts, rendered using native Emacs widgets.")
 (define-public emacs-vulpea
   (package
     (name "emacs-vulpea")
-    (version "2.5.0")
+    (version "2.7.0")
     (source
      (origin
        (method git-fetch)
@@ -49462,7 +49462,7 @@ reconciliation and layouts, rendered using native Emacs widgets.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hnlff6g1sw130s4v6hhgsdkmnb7b0pw98g1kj717a91h3hpd91m"))))
+        (base32 "07zlmz12vpl2srqqwylb3dpq26lx4c3r9rkc2h5w9vzjk4i2f0xk"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -49477,9 +49477,10 @@ reconciliation and layouts, rendered using native Emacs widgets.")
               (setenv "EMACSLOADPATH"
                       (string-append
                        (getcwd) "/test:"
-                       (getenv "EMACSLOADPATH"))))))))
+                       (getenv "EMACSLOADPATH")))
+              (setenv "HOME" (dirname (getcwd))))))))
     (propagated-inputs (list emacs-emacsql emacs-s emacs-dash))
-    (native-inputs (list emacs-buttercup emacs-eldev))
+    (native-inputs (list emacs-buttercup emacs-eldev ripgrep))
     (home-page "https://github.com/d12frosted/vulpea")
     (synopsis "Note management library for Org mode")
     (description
