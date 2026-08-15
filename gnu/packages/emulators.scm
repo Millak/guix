@@ -4328,30 +4328,31 @@ performance, features, and ease of use.")
 (define-public bsnes-hd
   ;; Use a git snapshot of the master branch, which includes unreleased build
   ;; fixes.
-  (let ((commit "0bb7b8645e22ea2476cabd58f32e987b14686601")
-        (revision "0"))
+  (let ((commit "fc26b25ea236f0f877f0265d2a2c37dfd93dfde9")
+        (revision "1"))
     (package
       (inherit bsnes)
       (name "bsnes-hd")
       ;; As of 10.6, there only ever was beta releases -- treat these as the
       ;; stable releases for now.
       (version (git-version "10.6" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/DerKoun/bsnes-hd")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0z9wqmx351f9160jsmprznqw5sx5lslyisbr41b9igzsr5j94db3"))))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/DerKoun/bsnes-hd")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0cszcyjycb8pyxnld4sk21j3f8rd802zp00n8b3xj674g8vvqa86"))))
       (build-system gnu-build-system)
-      (arguments (substitute-keyword-arguments arguments
-                   ((#:make-flags flags ''())
-                    ;; This is needed because the modified bsnes code that
-                    ;; bsnes-hd uses is based on an older copy that still
-                    ;; defaults to gtk2.
-                    #~(cons "hiro=gtk3" #$flags))))
+      (arguments
+       (substitute-keyword-arguments arguments
+         ((#:make-flags flags ''())
+          ;; This is needed because the modified bsnes code that
+          ;; bsnes-hd uses is based on an older copy that still
+          ;; defaults to gtk2.
+          #~(cons "hiro=gtk3" #$flags))))
       (home-page "https://github.com/DerKoun/bsnes-hd/")
       (synopsis "Fork of bsnes with added HD video features")
       (description "bsnes-hd (called ``HD Mode 7 mod, for bsnes'' in early
