@@ -147,7 +147,7 @@
 (define-public ares
   (package
     (name "ares")
-    (version "147")
+    (version "148")
     (source
      (origin
        (method git-fetch)
@@ -156,7 +156,7 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b4xixngp8md2ishf3cyfwpzjcsvjb5zp678can5dcmv9z1dlsis"))
+        (base32 "12v5rfrjgs972bmijdbncdpnh0h9b0f10gjl1hmnl7jblps1vh33"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete non-free blobs: Supersoft Diagnostics II.
@@ -191,12 +191,12 @@
            sdl3
            vulkan-loader
            zlib))
+    (home-page "https://ares-emu.net/")
     (synopsis "Multi-system accuracy-focused emulator")
     (description
-     "@command{ares} is a multi-system emulator that began development
-on 2004-10-14.  It is a descendant of higan and bsnes, and focuses on accuracy
-and preservation.
-Here are some supported systems:
+     "@command{ares} is a multi-system emulator that began development on
+2004-10-14.  It is a descendant of higan and bsnes, and focuses on accuracy
+and preservation.  Here are some supported systems:
 @itemize
 @item Arcade
 @item Atari 2600
@@ -232,7 +232,6 @@ Here are some supported systems:
 @item Sony Playstation
 @end itemize
 ")
-    (home-page "https://ares-emu.net/")
     (license license:isc)))
 
 ;; This repository ships several binaries used only for testing purpose.  The
