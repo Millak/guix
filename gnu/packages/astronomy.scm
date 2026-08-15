@@ -5397,7 +5397,7 @@ implemented using the astropy.modeling framework.")
 (define-public python-edps
   (package
     (name "python-edps")
-    (version "1.8.0")
+    (version "1.8.1")
     (source
      (origin
        (method url-fetch)
@@ -5405,14 +5405,13 @@ implemented using the astropy.modeling framework.")
              "https://ftp.eso.org/pub/dfs/pipelines/libraries/edps/edps-"
              version ".tar.gz"))
        (sha256
-        (base32 "0xhz9x3c86wx3088jm1c6w0dzvyqadv43zpkxggrfmkd3wf9nmqb"))))
+        (base32 "1fz7mr1kwb7jzid3l414z6qpcsfv205qxckjfgcqqxk08jawgnkz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f)) ;no tests in tarball
     (native-inputs
-     (list python-pytest
-           python-setuptools))
+     (list python-setuptools))
     (propagated-inputs
      (list python-astropy
            python-fastapi
