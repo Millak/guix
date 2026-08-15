@@ -28,6 +28,7 @@
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2025 Kjartan Oli Agustsson <kjartanoli@outlook.com>
 ;;; Copyright © 2025 mstenek <mstenek@disroot.org>
+;;; Copyright © 2026 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,6 +71,8 @@
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages digest)
+  #:use-module (gnu packages docbook)
+  #:use-module (gnu packages file-systems)
   #:use-module (gnu packages ftp)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -893,6 +896,70 @@ file systems with unattended creation and expiration.  A dirvish backup vault
 is like a time machine for your data.")
     (license (license:fsf-free "file://COPYING"
                                "Open Software License 2.0"))))
+
+(define-public partclone
+  (package
+    (name "partclone")
+    (version "0.3.48")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/Thomas-Tsai/partclone")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "03qq00wxhygbv873p8hkypfdmv680c3nsip0hdjagzms5g7j7chy"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "--enable-btrfs"
+                                "--enable-exfat"
+                                "--enable-extfs"
+                                "--enable-f2fs"
+                                "--enable-fat"
+                                "--enable-fuse"
+                                "--enable-hfsp"
+                                "--enable-minix"
+                                "--enable-nilfs2"
+                                "--enable-ntfs"
+                                "--enable-xfs")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'local-man-stylesheet
+            (lambda _
+              (substitute* "docs/Makefile.am"
+                (("MAN_STYLESHEET=.*")
+                 (string-append "MAN_STYLESHEET="
+                                #$(this-package-native-input "docbook-xsl")
+                                "/xml/xsl/docbook-xsl-"
+                                #$(package-version
+                                   (this-package-native-input "docbook-xsl"))
+                                "/manpages/docbook.xsl"))))))))
+    (native-inputs (list autoconf
+                         automake
+                         docbook-xsl
+                         gettext-minimal
+                         libtool
+                         libxslt
+                         nilfs-utils
+                         pkg-config))
+    (inputs (list e2fsprogs ; ext2/3/4 support
+                  fuse ; fuse support
+                  liburcu ; xfs support
+                  nilfs-utils ; nilfs support
+                  ntfs-3g ; ntfs support
+                  openssl
+                  `(,util-linux "lib")
+                  xxhash
+                  zlib
+                  `(,zstd "lib")))
+    (home-page "https://partclone.org/")
+    (synopsis "Utilities to save and restore used blocks on a partition")
+    (description "Partclone provides utilities to save and restore used blocks
+on a partition and is designed for higher compatibility of the file system by
+using existing libraries.")
+    (license license:gpl2+)))
 
 (define-public restic
   (package
