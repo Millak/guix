@@ -514,7 +514,7 @@ It will of course also be needed in classes that are going to use
 (define-public perl6-json-optin
   (package
     (name "perl6-json-optin")
-    (version "0.0.1")
+    (version "0.0.2")
     (source
      (origin
        (method git-fetch)
@@ -523,7 +523,7 @@ It will of course also be needed in classes that are going to use
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0iz1wd3rfcb3kdc8cylwfxr8p02bpivk7kcf3dmm2l4mmdhyk7np"))))
+        (base32 "18373pcjkxqmbi9033jnaap48xs8w83lbx8fg6minzyd0q7pnjrw"))))
     (build-system rakudo-build-system)
     (arguments '(#:with-zef? #f))
     (home-page "https://github.com/jonathanstowe/JSON-OptIn")
