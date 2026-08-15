@@ -164,14 +164,14 @@ t/30-if-macro.t\n")))))
 (define-public nqp
   (package
     (name "nqp")
-    (version "2022.04")
+    (version "2026.07")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://github.com/Raku/nqp/releases/download/"
-                           version "/nqp-" version ".tar.gz"))
+       (uri (string-append "https://rakudo.org/dl/nqp/nqp-"
+                           version ".tar.gz"))
        (sha256
-        (base32 "1777shxr8qw6m2492ckb0r301qdx5gls6kphz554dh6k4n74avam"))
+        (base32 "1k1asa509mln9finqnwbqj9k6qnr23nxy80r1mgxawvq92812dzi"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "3rdparty"))))
@@ -179,12 +179,7 @@ t/30-if-macro.t\n")))))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'remove-calls-to-git
-           (lambda _
-             (invoke "perl" "-ni" "-e"
-                     "print if not /^BEGIN {/ .. /^}/"
-                     "Configure.pl")))
-         (add-after 'remove-calls-to-git 'fix-paths
+         (add-after 'unpack 'fix-paths
            (lambda _
              (substitute* "tools/build/gen-version.pl"
                (("catfile\\(\\$libdir, 'MAST', \\$_\\)")
