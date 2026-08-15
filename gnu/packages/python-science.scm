@@ -62,6 +62,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
@@ -83,6 +84,7 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
+  #:use-module (gnu packages javascript)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages machine-learning)
@@ -7200,6 +7202,158 @@ are source structure, project manager, interactive help, workspace...")
      "Snakemake aims to reduce the complexity of creating workflows by
 providing a clean and modern domain specific specification language (DSL) in
 Python style, together with a fast and comfortable execution environment.")
+    (license license:expat)))
+
+(define-public spyder
+  (package
+    (name "spyder")
+    (version "6.1.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/spyder-ide/spyder")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Delete bundles and use our own packages.
+            (delete-file-recursively "spyder/plugins/help/utils/js/mathjax")
+            (delete-file-recursively "external-deps")))
+       (sha256
+        (base32 "1bzr9n3x29xvhq3cqdpclnvqawqrpxnj49zbb344f7i3lx261k7j"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; The 'plugins' tests takes a long time to run and contains timeouts
+      ;; and segfaults along the way.  Many more files and individual tests
+      ;; would have to be skipped to test that directory.  Run only the base
+      ;; tests then.
+      #~(list
+         "--ignore" "spyder/plugins"
+         "-k" (string-append
+               "not "
+               (string-join
+                (list
+                 "flaky"
+                 "test_file_gid"
+                 "test_get_user_environment_variables"
+                 "test_is_module_installed_with_custom_interpreter"
+                 "test_get_installed_apps_and_icons"
+                 "test_environ"
+                 "test_debug_selection"
+                 "test_store_user_credentials"
+                 "test_profiler"
+                 "test_secure_options"
+                 ;; Test below could be reintroduced once bcrypt is updated
+                 "test_dependencies_for_spyder_setup_install_requires_in_sync"
+                 "test_plot_from_collectioneditor")
+                " and not ")))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: Update python-bcrypt on python-team to pass this check.
+          (add-after 'unpack 'relax-bcrypt
+            (lambda _
+              (setenv "SPYDER_QT_BINDING" "pyqt6")
+              (substitute* "setup.py"
+                (("bcrypt>=4.3.0") "bcrypt"))))
+          (add-after 'install 'install-mathjax
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (symlink (string-append #$(this-package-input "js-mathjax")
+                                      "/share/javascript/mathjax")
+                       (string-append (site-packages inputs outputs)
+                                      "/spyder/plugins/help/utils/js/mathjax"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp") ; tests need a writable home
+              (setenv "QT_QPA_PLATFORM" "offscreen")))
+          (add-after 'wrap 'wrap-executable
+            (lambda _
+              (wrap-program (string-append #$output "/bin/spyder")
+                `("QT_PLUGIN_PATH" prefix
+                  ,(list (string-append
+                          (string-join
+                           (list #$(this-package-input "qtbase")
+                                 #$(this-package-input "qtsvg")
+                                 #$(this-package-input "qtwayland"))
+                           "/lib/qt6/plugins:")
+                          "/lib/qt6/plugins")))))))))
+    (propagated-inputs (list python-aiohttp
+                             python-asyncssh
+                             python-atomicwrites
+                             python-bcrypt
+                             python-chardet
+                             python-cloudpickle
+                             python-cookiecutter
+                             python-diff-match-patch
+                             python-intervaltree
+                             python-ipython
+                             python-ipython-pygments-lexers
+                             python-jedi
+                             python-jellyfish
+                             python-jsonschema
+                             python-keyring
+                             python-markdown-it-py
+                             python-nbconvert
+                             python-numpydoc
+                             python-packaging
+                             python-parso
+                             python-pexpect
+                             python-pickleshare
+                             python-psutil
+                             python-pygithub
+                             python-pygments
+                             python-pylint
+                             python-pylint-venv
+                             python-pyls-spyder
+                             python-pyqt-6
+                             python-pyqtwebengine-6
+                             python-lsp-black
+                             python-lsp-ruff
+                             python-lsp-server
+                             python-pyuca
+                             python-pyzmq
+                             python-qdarkstyle
+                             python-qstylizer
+                             python-qtawesome
+                             python-qtconsole
+                             python-qtpy
+                             python-rtree
+                             python-sphinx
+                             python-spyder-kernels
+                             python-superqt
+                             python-textdistance
+                             python-three-merge
+                             python-watchdog
+                             python-yarl))
+    (inputs (list bash-minimal js-mathjax qtbase qtsvg qtwayland))
+    (native-inputs (list git-minimal/pinned
+                         python-cython
+                         python-flaky
+                         python-matplotlib
+                         python-packaging
+                         python-pandas
+                         python-pillow
+                         python-pytest
+                         python-pytest-mock
+                         python-pytest-order
+                         python-pytest-qt
+                         python-pytest-timeout
+                         python-pyyaml
+                         python-scipy
+                         python-setuptools
+                         python-sympy))
+    (home-page "https://www.spyder-ide.org/")
+    (synopsis "Scientific Python Development Environment")
+    (description
+     "Spyder is a scientific environment written in Python, for Python, and
+designed by and for scientists, engineers and data analysts.  It offers a
+combination of the advanced editing, analysis, debugging, and profiling
+functionality of a comprehensive development tool with the data exploration,
+interactive execution, deep inspection, and visualization capabilities of a
+scientific package.")
     (license license:expat)))
 
 ;;;
