@@ -6769,7 +6769,7 @@ Implementations of @url{https://iopscience.iop.org/article/10.1086/505417,
 Blitz & Rosolowsky (2006) and Rahmati et al (2013)}.")
     (license license:gpl3)))
 
-(define-public python-healpy-1.19
+(define-public python-healpy
   (package
     (name "python-healpy")
     (version "1.19.0")
@@ -6813,8 +6813,8 @@ is based on the Hierarchical Equal Area isoLatitude Pixelization (HEALPix)
 scheme and builds with the HEALPix C++ library.")
     (license license:gpl2+)))
 
-;; Not all of the dependents released updates supporting v1.19.
-(define-public python-healpy python-healpy-1.19)
+;; Deprecated on <2026-0815>.
+(define-public python-healpy-1.19 python-healpy)
 
 (define-public python-hierarc
   (package
