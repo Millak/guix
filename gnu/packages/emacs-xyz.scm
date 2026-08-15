@@ -49281,6 +49281,30 @@ provides an emacs interface to perform recoll queries, and display its
 results, via @code{emacs-consult}.")
     (license license:gpl3+)))
 
+(define-public emacs-consult-vulpea
+  (let ((commit "3effef56dedf3df80667eec4c319f3fc55f5b5db")
+        (revision "0"))
+    (package
+      (name "emacs-consult-vulpea")
+      (version (git-version "0.2.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/fabcontigiani/consult-vulpea")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ysg5nzavsldvhzmmzr3gnc5n1z437bv72rgng49xicykbxnzx8n"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-consult emacs-vulpea))
+      (home-page "https://github.com/fabcontigiani/consult-vulpea")
+      (synopsis "Emacs Consult interface to Vulpea")
+      (description
+       "@code{consult-vulpea} is a minor-mode integrating the Emacs Consult and
+Vulpea packages.  It features live previews and consult-powered search commands.")
+      (license license:gpl3+))))
+
 (define-public emacs-context-transient
   (package
     (name "emacs-context-transient")
