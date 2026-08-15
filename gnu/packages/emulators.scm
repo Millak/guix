@@ -984,12 +984,12 @@ and a game metadata scraper.")
       (license license:expat))))
 
 (define-public higan
-  ;; There are no recent releases; use the latest commit of the master branch.
-  (let ((commit "ad0e11e7b73053eb1bcd5bdeabbe2de92c356286")
+  ;; No public releases since 2020-07-04.
+  (let ((commit "8f4df010715298455b92cfc0821ea833770a8b5a")
         (revision "0"))
     (package
       (name "higan")
-      (version (git-version "110" revision commit))
+      (version (git-version "115" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -998,23 +998,8 @@ and a game metadata scraper.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1dlx5vqxv8mr8faw0wggsd10bk51p258l56yixjarv0dyhv6nkbq"))))
+          (base32 "1nvpf83sq5ya7047ibg8hx6dv6g2gq4hmzpp75xx9wm3wixib0xi"))))
       (build-system gnu-build-system)
-      (native-inputs
-       (list pkg-config))
-      (inputs
-       (list alsa-lib
-             bash-minimal                 ; for wrap-program
-             ao
-             eudev
-             gtk+
-             gtksourceview-3
-             libxrandr
-             libxv
-             mesa
-             openal
-             pulseaudio
-             sdl2))
       (arguments
        (list
         #:tests? #f                       ;no test suite
@@ -1040,6 +1025,21 @@ and a game metadata scraper.")
               (lambda _
                 (wrap-program (string-append #$output "/bin/higan")
                   `("PATH" prefix (,(string-append #$output "/bin")))))))))
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (list alsa-lib
+             bash-minimal                 ; for wrap-program
+             ao
+             eudev
+             gtk+
+             gtksourceview-3
+             libxrandr
+             libxv
+             mesa
+             openal
+             pulseaudio
+             sdl2))
       (home-page "https://github.com/higan-emu/higan/")
       (synopsis "Multi-system emulator")
       (description
