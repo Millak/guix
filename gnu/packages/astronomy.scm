@@ -5394,6 +5394,47 @@ implemented using the astropy.modeling framework.")
 @url{https://arxiv.org/abs/1510.01320, EAGLE public database}.")
     (license license:gpl3)))
 
+(define-public python-ebtelplusplus
+  (package
+    (name "python-ebtelplusplus")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rice-solar-physics/ebtelplusplus")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qj7rd1xa1q2z1m68ss47w289bjlc3pm68p7g16pr5xnj0w3g5l7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "--pyargs" "ebtelplusplus")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'remove-local-source
+                 (lambda _
+                   (delete-file-recursively "ebtelplusplus"))))))
+    (native-inputs
+     (list boost
+           python-hissw
+           python-pytest
+           python-pytest-astropy
+           python-scikit-build-core
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy))
+    (home-page "https://github.com/rice-solar-physics/ebtelplusplus")
+    (synopsis "Zero-dimensional hydrodynamics of coronal loops")
+    (description
+     "ebtelplusplus is an implementation of the enthalpy-based thermal
+evolution of loops (EBTEL) model for doing efficient hydrodynamics of
+dynamically-heated solar coronal loops.  ebtelplusplus decouples the electron
+and ion energy equations such that the two populations can evolve separately.
+This implementation also includes effects to due to cross-sectional area
+expansion.")
+    (license license:gpl3+)))
+
 (define-public python-edps
   (package
     (name "python-edps")
