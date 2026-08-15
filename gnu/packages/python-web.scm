@@ -89,6 +89,7 @@
 ;;; Copyright © 2025 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;; Copyright © 2026 mst <mstenek@disroot.org>
+;;; Copyright © 2026 Goran Vukoman <g@odyss3us.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4753,7 +4754,7 @@ Python HTTP implementation.")
 (define-public python-slixmpp
   (package
     (name "python-slixmpp")
-    (version "1.8.6") ; XXX: The latest version which does not require Rust
+    (version "1.17.0")
     (source
      (origin
        (method git-fetch)
@@ -4762,26 +4763,33 @@ Python HTTP implementation.")
              (commit (string-append "slix-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gpy6arwyk4lsx1hbcwbllxs6qbwn58adkp1rm1cfvfrjdv5kxx7"))))
+        (base32 "0ml590qs3siajz00f40pdxcz27d41i25ld30819qrf0n9ilqlc6n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; Use the upstream runner: it collects only tests/, skips itests/
+      ;; which need a live XMPP server, and additionally runs the doctests.
+      #:test-backend #~'custom
+      #:test-flags #~'("run_tests.py")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-setup.py
+          (add-after 'unpack 'disable-rust-extension
+            ;; Upstream marks the Rust JID implementation as optional; skip
+            ;; it and use the pure Python one in slixmpp/jid.py to avoid
+            ;; pulling in the Cargo dependency tree.
             (lambda _
-              (substitute* "setup.py"
-                (("'CC', 'cc'")
-                 "'CC', 'gcc'")))))))
+              (substitute* "pyproject.toml"
+                (("\"setuptools-rust\", ") "")
+                (("\\[\\[tool\\.setuptools-rust\\.ext-modules\\]\\]")
+                 "[tool.slixmpp-rust-disabled]"))))
+          (add-before 'build 'set-version
+            ;; setuptools-scm cannot determine the version without .git.
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
-     (list gnupg
-           pkg-config
-           python-cython
+     (list gnupg        ; 'gnupg' is required by the XEP-0027 tests.
            python-setuptools
-           python-wheel))
-    (inputs
-     (list libidn
-           python)) ; We are building a Python extension.
+           python-setuptools-scm))
     (propagated-inputs
      (list python-aiodns
            python-aiohttp
@@ -4790,10 +4798,10 @@ Python HTTP implementation.")
            python-emoji
            python-pyasn1
            python-pyasn1-modules))
-    (home-page "https://lab.louiz.org/poezio/slixmpp")
+    (home-page "https://codeberg.org/poezio/slixmpp")
     (synopsis "XMPP library without threads")
     (description
-     "Slixmpp is a XMPP library for Python 3.7+.  It is a fork of SleekXMPP.
+     "Slixmpp is a XMPP library for Python 3.11+.  It is a fork of SleekXMPP.
 Its goal is to only rewrite the core of the library (the low level socket
 handling, the timers, the events dispatching) in order to remove all
 threads.")
