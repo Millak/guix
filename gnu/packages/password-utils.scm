@@ -140,6 +140,7 @@
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages window-management)
@@ -779,7 +780,7 @@ convert SSH @code{ed25519} keys to @code{age} keys.")
 (define-public vaultwarden
   (package
     (name "vaultwarden")
-    (version "1.36.0")
+    (version "1.37.1")
     (source
      (origin
        (method git-fetch)
@@ -788,11 +789,12 @@ convert SSH @code{ed25519} keys to @code{age} keys.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lipk99gqfivg95yqg80b8q0a220vwn9nmq0f4syawxnhvn9zkcd"))))
+        (base32 "0dx2077wfd672vi9d4pjk73gf5aaf42jyq5kxb9q4xs8x585sbs1"))))
     (build-system cargo-build-system)
     (arguments
      (list
       #:install-source? #f
+      #:rust rust-1.95
       #:features '(list "sqlite_system" "s3" "postgresql")
       ;; The build.rs script mandates the activation of a DB backend.
       #:cargo-test-flags
