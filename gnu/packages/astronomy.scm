@@ -4451,6 +4451,34 @@ data in the CHIANTI database.")
            python-setuptools))
     (synopsis "Python bindings for CIANNA")))
 
+(define-public python-clipy-like
+  (package
+    (name "python-clipy-like")
+    (version "0.15")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/benabed/clipy")
+             (commit (string-append "clipy_" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "0dg4l6ala51ip8ijhlpgli4giw6f1vg3dc4gxpq7pa719zwgfd9m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))  ;no tests
+    (native-inputs
+     (list python-flit-core))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy))
+    (home-page "https://github.com/benabed/clipy")
+    (synopsis "Pure Python CLIK implementation with JAX support")
+    (description
+     "@code{clipy} is a pure python implementation of most of
+@url{https://github.com/benabed/clik, CLIK} with JAX support (see here for the
+list of currently supported likelihoods).")
+    (license license:expat)))
+
 (define-public python-cmyt
   (package
     (name "python-cmyt")
