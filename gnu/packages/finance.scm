@@ -2449,7 +2449,7 @@ providing common functions for the technical analysis of financial market data."
 (define-public ta-lib
   (package
     (name "ta-lib")
-    (version "0.6.4")
+    (version "0.7.1")
     (source
      (origin
        (method git-fetch)
@@ -2458,7 +2458,7 @@ providing common functions for the technical analysis of financial market data."
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "012sp7s1fxp6lnh3am0r6r46ya9jwnarkvlvq21w2nndqd4n4d39"))))
+        (base32 "0h7s9m1njb9w9qpyvddab7nimsa9wkg1g5y518jzwxfnwiibjrxn"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ; no tests
