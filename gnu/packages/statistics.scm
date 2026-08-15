@@ -1269,18 +1269,23 @@ inference (VI) algorithms.")
 (define-public python-patsy
   (package
     (name "python-patsy")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "patsy" version))
-              (sha256
-               (base32
-                "1i60b6s8zj0w2ks63ip4mr8z14p6pixp76rm9q2qr0gc3qwsk1p7"))))
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pydata/patsy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18h908vqyvgk5pqyp6azjg3f58vwhkyxv88349qq0xfi1nn89rxa"))))
     (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-numpy python-scipy))
+     (list python-numpy))
     (native-inputs
-     (list python-pytest python-setuptools python-wheel))
+     (list python-pytest
+           python-scipy-minimal
+           python-setuptools))
     (home-page "https://github.com/pydata/patsy")
     (synopsis "Describe statistical models and build design matrices")
     (description
