@@ -762,14 +762,14 @@ backups on untrusted computers.")
 (define-public wimlib
   (package
     (name "wimlib")
-    (version "1.14.1")
+    (version "1.14.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://wimlib.net/downloads/"
                                   "wimlib-" version ".tar.gz"))
               (sha256
                (base32
-                "0hkgcf3v3hmwck02s0623brdx1ijvk1la0h5mgly1whnaqviajj9"))))
+                "1551c6jyw6glbfvrg0bknlvn4css6df0drpq2n7j54avplx1l8l4"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
