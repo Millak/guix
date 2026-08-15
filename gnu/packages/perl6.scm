@@ -224,14 +224,14 @@ regular expression engine for the virtual machine.")
 (define-public rakudo
   (package
     (name "rakudo")
-    (version "2022.04")
+    (version "2026.07")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://github.com/rakudo/rakudo/releases/download/"
-                           version "/rakudo-" version ".tar.gz"))
+       (uri (string-append "https://rakudo.org/dl/rakudo/rakudo-"
+                           version ".tar.gz"))
        (sha256
-        (base32 "0x0w5b8g5kna1mlvsli9dqmnwvqalrar3cgpixmyiyvyjb6ah4vy"))
+        (base32 "0ix727svgp9nl0s7c4vpqynkqz3d1ih9rjzhsmxbxi1dk5rf80kx"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "3rdparty"))))
@@ -239,11 +239,7 @@ regular expression engine for the virtual machine.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'remove-calls-to-git
-           (lambda _
-             (invoke "perl" "-ni" "-e" "print if not /^BEGIN {/ .. /^}/"
-                     "Configure.pl")))
-         (add-after 'remove-calls-to-git 'fix-paths
+         (add-after 'unpack 'fix-paths
            (lambda _
              (substitute* "tools/templates/Makefile-common-macros.in"
                (("NQP_CONFIG_DIR = .*")
@@ -252,21 +248,9 @@ regular expression engine for the virtual machine.")
                                "/lib/perl5/site_perl/"
                                ,(package-version perl)
                                "\n")))))
-         ;; These tests pass when run manually.
-         (add-after 'fix-paths 'disable-failing-tests
-           (lambda _
-             (substitute* "t/02-rakudo/repl.t"
-               (("^plan 47;\n") "plan 46;\n"))
-             (invoke "perl" "-ni" "-e"
-                     "printf if not /^    \\(temp %\\*ENV\\)/ .. /^    }/"
-                     "t/02-rakudo/repl.t")
-             (substitute* "t/09-moar/01-profilers.t"
-               (("^plan 12;\n") "plan 10;\n")
-               (("^ok \\$htmlpath\\.IO\\.f, .*") "")
-               (("^ok \\(try \\$htmlpath\\.IO\\.s .*") ""))))
          (add-after 'patch-source-shebangs 'patch-more-shebangs
            (lambda _
-             (substitute* '("src/core.c/Proc.pm6"
+             (substitute* '("src/core.c/Proc.rakumod"
                             "t/spec/S29-os/system.t"
                             "tools/build/create-js-runner.pl"
                             "tools/build/create-jvm-runner.pl")
@@ -279,6 +263,21 @@ regular expression engine for the virtual machine.")
                        "--backend=moar"
                        "--with-nqp" (string-append nqp "/bin/nqp")
                        "--prefix" out))))
+         ;; Tests that load modules need a writable home for the
+         ;; precompilation cache.
+         (add-before 'check 'set-home
+           (lambda _
+             (setenv "HOME" (getcwd))))
+         ;; Rakudo looks for the profiler template under its own prefix,
+         ;; but nqp installs it under nqp's.  Without it, "--profile"
+         ;; falls back to SQL output.
+         (add-before 'check 'install-profiler-template
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (install-file (string-append (assoc-ref inputs "nqp")
+                                          "/share/nqp/lib/profiler"
+                                          "/template.html")
+                           (string-append (assoc-ref outputs "out")
+                                          "/share/nqp/lib/profiler"))))
          ;; This is the recommended tool for distro maintainers to install Raku
          ;; modules systemwide.  See: https://github.com/ugexe/zef/issues/117
          (add-after 'install 'install-dist-tool
@@ -296,7 +295,7 @@ regular expression engine for the virtual machine.")
     (home-page "https://rakudo.org/")
     (native-search-paths
      (list (search-path-specification
-            (variable "PERL6LIB")
+            (variable "RAKULIB")
             (separator ",")
             (files '("share/perl6/lib"
                      "share/perl6/site/lib"
@@ -734,6 +733,8 @@ with optional labels, or xy plots).")
        (modify-phases %standard-phases
          (replace 'check
            (lambda _
+             ;; Rakudo needs a writable home for the precompilation cache.
+             (setenv "HOME" (getcwd))
              (apply invoke "raku" "-MTAP" "-Ilib" (find-files "t" "\\.t$")))))))
     (home-page "https://github.com/Raku/tap-harness6")
     (synopsis "TAP harness for Raku")

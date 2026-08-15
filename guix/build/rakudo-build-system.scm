@@ -37,6 +37,8 @@
   (if (and tests? (assoc-ref inputs "perl6-tap-harness"))
   ;(if (and tests? with-prove6?)
       (let ((test-files (find-files "t/" "\\.(rakutest|t|t6)$")))
+        ;; Rakudo needs a writable home for the precompilation cache.
+        (setenv "HOME" (getcwd))
         (invoke "raku" "-MTAP" "-e"
                 (string-append
                  "my @tests = <" (string-join test-files " ") ">; "
@@ -120,12 +122,12 @@
   (define (sh) (force %sh))
 
   (let* ((out  (assoc-ref outputs "out"))
-         (var `("PERL6LIB" "," prefix
+         (var `("RAKULIB" "," prefix
                 ,(cons (string-append out "/share/perl6/lib,"
                                       out "/share/perl6/site/lib,"
                                       out "/share/perl6/vendor/lib")
                        (search-path-as-string->list
-                        (or (getenv "PERL6LIB") "") #\,)))))
+                        (or (getenv "RAKULIB") "") #\,)))))
     (for-each (lambda (dir)
                 (let ((files (list-of-files dir)))
                   (for-each (cut wrap-program <> #:sh (sh) var)
