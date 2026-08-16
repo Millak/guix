@@ -165,11 +165,10 @@ library} for vector math.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/aclements/go-moremath"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; No Go files in project root.
-          (delete 'build))))
+      #:skip-build? #t
+      #:test-flags
+      #~(list #$@(if (target-arm?) '("-skip" "TestMeanCI") '()))
+      #:import-path "github.com/aclements/go-moremath"))
     (propagated-inputs
      (list go-gonum-org-v1-gonum))
     (home-page "https://github.com/aclements/go-moremath")
