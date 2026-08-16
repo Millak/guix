@@ -47,6 +47,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages assembly)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -95,6 +96,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
@@ -1220,14 +1222,15 @@ a complete panorama and stitch any series of overlapping pictures.")
 (define-public rawtherapee
   (package
     (name "rawtherapee")
-    (version "5.12")
+    (version "5.13")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://rawtherapee.com/shared/source/"
+              (uri (string-append "https://github.com/RawTherapee/RawTherapee/"
+                                  "releases/download/" version "/"
                                   "rawtherapee-" version ".tar.xz"))
               (sha256
                (base32
-                "0mrd12crab5fy3ngngc24crcx55akbjmyrv5qidjhjnn6w2w39nr"))))
+                "1gvp7vkhwwcl65fpj2fjn70yjndc3k912jx92562gq8p315zzg93"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1247,12 +1250,15 @@ a complete panorama and stitch any series of overlapping pictures.")
               "-DCMAKE_C_FLAGS=-O3 -fPIC"
               "-DCACHE_NAME_SUFFIX=\"\""
               "-DWITH_JXL=ON"
-              "-DWITH_SYSTEM_LIBRAW=ON")))
+              "-DWITH_SIMDE=ON"
+              "-DWITH_SYSTEM_LIBRAW=ON"
+              "-DWITH_SYSTEM_FMT=ON")))
     (native-inputs
      (list pkg-config))
     (inputs
      (list expat
            exiv2
+           fmt
            fftwf
            glib
            glibmm
@@ -1269,6 +1275,7 @@ a complete panorama and stitch any series of overlapping pictures.")
            libraw
            libsigc++
            libtiff
+           simde
            zlib))
     (home-page "https://rawtherapee.com")
     (synopsis "Raw image developing and processing")
