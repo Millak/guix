@@ -703,7 +703,42 @@ on-line reference manual.")
 (define-public cfitsio
   (package
     (name "cfitsio")
-    (version "4.6.4")
+    (version "4.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              ;; FTP: https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/
+              (url "https://github.com/HEASARC/cfitsio")
+              (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a7fgsvyv3zgi5ni1c3brxrq7ivq63881hdxp8c1pyhzqsa74klk"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--enable-reentrant"
+              (string-append "--with-bzip2=" #$(this-package-input "bzip2")))))
+    (native-inputs (list gfortran))
+    (inputs (list bzip2 curl zlib))
+    (home-page "https://heasarc.gsfc.nasa.gov/fitsio/fitsio.html")
+    (synopsis "Library for reading and writing FITS files")
+    (description
+     "CFITSIO provides simple high-level routines for reading and writing
+@acronym{Flexible Image Transport System,FITS} files that insulate the
+programmer from the internal complexities of the FITS format.  CFITSIO also
+provides many advanced features for manipulating and filtering the information
+in FITS files.")
+    (license (license:non-copyleft "file://License.txt"
+                                   "See License.txt in the distribution."))))
+
+;;; The version is required for gnuastro.  It fails on check phase with a
+;;; newer version.
+(define-public cfitsio-4.4
+  (package
+    (inherit cfitsio)
+    (version "4.4.1")
     (source
      (origin
        (method url-fetch)
@@ -711,8 +746,7 @@ on-line reference manual.")
              "https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/"
              "cfitsio-" version ".tar.gz"))
        (sha256
-        (base32 "0m9w33w27wc452737x42gmbdwlzhhyq5x9irdylhx0n9j5xn6yr2"))))
-    (build-system gnu-build-system)
+        (base32 "098x1l8ijwsjp2ivp3v7pamrmpgwj5xmgb4yppm9w3w044zxr8b6"))))
     (arguments
      (list
       #:configure-flags
@@ -732,37 +766,7 @@ on-line reference manual.")
                 (invoke "make" "testprog")
                 (with-output-to-file "testprog.lis" (lambda _(invoke "./testprog")))
                 (invoke "diff" "-r" "testprog.lis" "testprog.out")
-                (invoke "cmp" "-l" "testprog.fit" "testprog.std")))))))
-    (native-inputs (list gfortran))
-    (inputs (list bzip2 curl zlib))
-    (home-page "https://heasarc.gsfc.nasa.gov/fitsio/fitsio.html")
-    (synopsis "Library for reading and writing FITS files")
-    (description
-     "CFITSIO provides simple high-level routines for reading and writing
-@acronym{Flexible Image Transport System,FITS} files that insulate the
-programmer from the internal complexities of the FITS format.  CFITSIO also
-provides many advanced features for manipulating and filtering the information
-in FITS files.")
-    (properties
-     '((release-monitoring-url .
-        "https://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html")))
-    (license (license:non-copyleft "file://License.txt"
-                                   "See License.txt in the distribution."))))
-
-;;; The version is required for gnuastro.  It fails on check phase with a
-;;; newer version.
-(define-public cfitsio-4.4
-  (package
-    (inherit cfitsio)
-    (version "4.4.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/"
-             "cfitsio-" version ".tar.gz"))
-       (sha256
-        (base32 "098x1l8ijwsjp2ivp3v7pamrmpgwj5xmgb4yppm9w3w044zxr8b6"))))))
+                (invoke "cmp" "-l" "testprog.fit" "testprog.std")))))))))
 
 (define-public cianna
   (package
