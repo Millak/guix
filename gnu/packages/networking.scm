@@ -5156,7 +5156,7 @@ daemon.")
 (define-public nebula
   (package
     (name "nebula")
-    (version "1.10.3")
+    (version "1.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5165,7 +5165,7 @@ daemon.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0y0c9l6dzhdrhfzss1hv2sm18y2qzgmkcyiw9s3rav3ij1kcspxh"))
+                "0awrzm0rf9sqc2m3wvvgdmczairlc31nq5pnx53ff4179fyqi3bg"))
               ;; Remove windows-related binary blobs and files
               (snippet
                #~(begin
@@ -5191,6 +5191,7 @@ daemon.")
                (list "nebula"
                      "nebula-service"
                      "nebula-cert")))))))
+    (native-inputs (list go-github-com-stretchr-testify))
     (inputs
      (list go-dario-cat-mergo
            go-filippo-io-bigmod
@@ -5210,7 +5211,6 @@ daemon.")
            go-github-com-sirupsen-logrus
            go-github-com-skip2-go-qrcode
            go-github-com-stefanberger-go-pkcs11uri
-           go-github-com-stretchr-testify
            go-github-com-vishvananda-netlink
            go-go-yaml-in-yaml-v3
            go-golang-org-x-crypto
