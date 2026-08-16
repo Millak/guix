@@ -3311,6 +3311,38 @@ communication to @acronym{Model Context Protocol, MCP} servers, with Support
 for filesystem and generic servers.")
       (license license:gpl3+))))
 
+(define-public emacs-mcp-server-lib
+  (package
+    (name "emacs-mcp-server-lib")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/laurynas-biveinis/mcp-server-lib.el")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c8wk2mhyn10ri4qjk3zy1811k7pzg3i3mm9lzn00v6wdccrm59a"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:include #~(list "^[^/]*.el$" "^emacs-mcp-stdio.sh$")
+      #:exclude #~(list "^.dir-locals.el$" "^[^/]*-test.el$")
+      #:test-command #~(list "emacs" "-Q" "-batch"
+                             "-l" "mcp-server-lib-test.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
+    (home-page "https://github.com/laurynas-biveinis/mcp-server-lib.el")
+    (synopsis "Model Context Protocol server library")
+    (description
+     "This library enables Emacs packages to expose their
+functionality to AI applications via the @acronym{MCP, Model Context
+Protocol}.  The library handles JSON-RPC 2.0 communication, manages
+tool and resource registration, and provides error handling suitable
+for LLM interactions.  See https://modelcontextprotocol.io/ for the
+protocol specification.")
+    (license license:gpl3+)))
+
 (define-public emacs-mct
   (package
     (name "emacs-mct")
