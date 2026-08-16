@@ -12455,22 +12455,32 @@ functionality needed for solar data analysis.")
 (define-public python-sunpy-soar
   (package
     (name "python-sunpy-soar")
-    (version "1.12.0")
+    ;; 1.12.0 (2025-12-10); to support SunPy 8+.
+    (properties '((commit . "324f4513b15b6770e4d8806fc87b99714c391c87")
+                  (revision . "0")))
+    (version (git-version "1.12.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sunpy_soar" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sunpy/sunpy-soar")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0ma4j8wy3hbshzafq1xvfifvinx9ahr4r6gvzyqahf2wp5y9rr8l"))))
+        (base32 "1x07anqpnkw165f6vxphyfi08jdykwplr9153pf2xg4r29q1slkc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 10 passed, 1 skipped, 21 deselected, 1 xfailed
+      ;; tests: 57 passed, 26 deselected, 1 xfailed, 63 warnings
       #:test-flags
       ;; Disable tests requiring network access to download test data from
       ;; <http://soar.esac.esa.int> and <http://docs.virtualsolar.org>.
       #~(list "-k" (string-join
-                    (list "not test_distance_out_of_bounds_warning"
+                    (list "not test_can_handle_with_distance_and_time"
+                          "test_can_handle_with_distance_no_time"
+                          "test_distance_out_of_bounds_warning"
                           "test_distance_search_insitu"
                           "test_distance_search_remote_sensing"
                           "test_distance_time_search"
@@ -12491,7 +12501,11 @@ functionality needed for solar data analysis.")
                           "test_wavelength_single"
                           "test_when_soar_provider_passed"
                           "test_when_wrong_provider_passed")
-                    " and not "))
+                    " and not ")
+                ;; Skipping registering the sunpy_soar client in favour of the
+                ;; client included in sunpy >= 8.0. Uninstall or do not import
+                ;; the sunpy_soar package to remove this warning.
+              "-W" "ignore::sunpy.util.exceptions.SunpyUserWarning")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-home-env
