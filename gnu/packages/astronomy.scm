@@ -12329,7 +12329,7 @@ SunPy.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "7.1.2")
+    (version "8.0.0")
     (source
      (origin
        (method git-fetch)
@@ -12338,11 +12338,11 @@ SunPy.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v6h67j0p9ppxlv47l5mlbvw8acmdbxryjhw90bqhajchayvgami"))))
+        (base32 "0q5a57lz63l96lw0j069qjhvw90dgvmc8d7pmvsk54ici6y0a7am"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2674 passed, 14 skipped, 3 xfailed, 2722 warnings
+      ;; tests: 2969 passed, 15 skipped, 3 xfailed, 3017 warnings
       #:test-flags
       #~(list "-m" "not remote_data"
               "--pyargs" "sunpy"
@@ -12365,9 +12365,6 @@ SunPy.")
                  (find-files "sunpy"))
                 (close port))))
           (add-before 'build 'set-HOME
-            ;; It requires during sanity check as well to prevent error like:
-            ;; PermissionError: [Errno 13] Permission denied:
-            ;; '/homeless-shelter'
             (lambda _
               (setenv "HOME" "/tmp")))
           (add-before 'check 'remove-local-source
@@ -12383,7 +12380,9 @@ SunPy.")
            python-pytest-astropy
            python-pytest-mock
            python-pytest-mpl
+           python-pytest-run-parallel
            python-pytest-xdist
+           python-responses
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
