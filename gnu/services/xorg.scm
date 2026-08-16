@@ -1316,7 +1316,8 @@ argument.")))
    (unix-pam-service "gdm-password"
                      #:login-uid? #t
                      #:allow-empty-passwords?
-                     (gdm-configuration-allow-empty-passwords? config))))
+                     (gdm-configuration-allow-empty-passwords? config))
+   (unix-pam-service "gdm-fingerprint")))
 
 (define (gdm-shepherd-service config)
   (define config-file

@@ -44,12 +44,30 @@
             nslcd-configuration?
             nslcd-service-type))
 
-(define-configuration fprintd-configuration
+(define-maybe/no-serialization list-of-strings)
+
+(define-configuration/no-serialization fprintd-configuration
   (fprintd      (file-like fprintd)
-                "The fprintd package"))
+                "The fprintd package")
+  (pam-services (maybe-list-of-strings '())
+                "List of PAM service names (e.g. \"gdm-fingerprint\", \"sudo\")
+into which fingerprint authentication should be inserted."))
 
 (define (fprintd-dbus-service config)
   (list (fprintd-configuration-fprintd config)))
+
+(define (fprintd-pam-service config)
+  (list (pam-extension
+          (transformer
+           (lambda (service)
+             (if (member (pam-service-name service) (fprintd-configuration-pam-services config))
+              (pam-service
+                (inherit service)
+                (auth (cons (pam-entry
+                              (control "sufficient")
+                              (module (file-append fprintd "/lib/security/pam_fprintd.so")))
+                            (pam-service-auth service))))
+              service))))))
 
 (define fprintd-service-type
   (service-type (name 'fprintd)
@@ -57,7 +75,9 @@
                  (list (service-extension dbus-root-service-type
                                           fprintd-dbus-service)
                        (service-extension polkit-service-type
-                                          fprintd-dbus-service)))
+                                          fprintd-dbus-service)
+                       (service-extension pam-root-service-type
+                                          fprintd-pam-service)))
                 (default-value (fprintd-configuration))
                 (description
                  "Run fprintd, a fingerprint management daemon.")))

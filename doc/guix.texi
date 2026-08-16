@@ -48080,9 +48080,25 @@ The service type for @command{fprintd}, which provides the fingerprint
 reading capability.
 
 @lisp
-(service fprintd-service-type)
+(service fprintd-service-type
+  (fprintd-configuration
+    (pam-services '("gdm-fingerprint" "sudo"))))
 @end lisp
 @end defvar
+
+@deftp {Data Type} fprintd-configuration
+The data type representing the configuration of @command{fprintd}
+
+@table @asis
+@item @code{pam-services}
+List of PAM service names (e.g. @code{"gdm-fingerprint"}) into which
+fingerprint authentication should be inserted.  Use
+@code{"gdm-fingerprint"} to enable fingerprint login with GNOME, or
+@code{"sudo"} to enable fingerprint authentication for @code{sudo} on
+the terminal.
+
+@end table
+@end deftp
 
 @cindex sysctl
 @subsubheading System Control Service
