@@ -2964,7 +2964,7 @@ the bandwidth, loss, and other parameters.")
 (define-public nethogs
   (package
     (name "nethogs")
-    (version "0.8.8")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -2973,7 +2973,7 @@ the bandwidth, loss, and other parameters.")
              (commit (string-append "v" version))))
        (hash
         (content-hash
-         (base32 "0iaiv1hqahbxyjqqcjvsn8yhvjxdmxjnhqqgijc1a841ck44q9gv")
+         (base32 "02w726f413fsa375b5l2i46r7j7n74imnvbdha3ycz3wh85fqdm2")
          sha256))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
