@@ -5176,23 +5176,11 @@ daemon.")
     (arguments
      (list
       #:install-source? #f
-      #:import-path "github.com/slackhq/nebula"
+      #:import-path "github.com/slackhq/nebula/..."
+      #:unpack-path "github.com/slackhq/nebula"
       #:build-flags
-      #~(list (format #f "-ldflags=-X main.Build=~a" #$version))
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'build
-            (lambda* (#:key import-path #:allow-other-keys #:rest arguments)
-              (for-each
-               (lambda (cmd)
-                 (apply (assoc-ref %standard-phases 'build)
-                        `(,@arguments #:import-path
-                          ,(string-append import-path "/cmd/" cmd))))
-               (list "nebula"
-                     "nebula-service"
-                     "nebula-cert")))))))
-    (native-inputs (list go-github-com-stretchr-testify))
-    (inputs
+      #~(list (format #f "-ldflags=-X main.Build=~a" #$version))))
+    (native-inputs
      (list go-dario-cat-mergo
            go-filippo-io-bigmod
            go-github-com-anmitsu-go-shlex
@@ -5211,6 +5199,7 @@ daemon.")
            go-github-com-sirupsen-logrus
            go-github-com-skip2-go-qrcode
            go-github-com-stefanberger-go-pkcs11uri
+           go-github-com-stretchr-testify
            go-github-com-vishvananda-netlink
            go-go-yaml-in-yaml-v3
            go-golang-org-x-crypto
