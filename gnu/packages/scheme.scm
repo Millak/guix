@@ -1256,6 +1256,9 @@ a Common Lisp environment.")
                                      "./src/tutorial/proxy/build.ss"
                                      "./src/tutorial/ensemble/build.ss"
                                      "./src/tutorial/lang/build.ss")))))
+                   (add-before 'build 'set-shell
+                     (lambda _
+                       (setenv "SHELL" "/bin/sh")))
                    (replace 'build
                      (lambda _
                        (setenv "HOME"
