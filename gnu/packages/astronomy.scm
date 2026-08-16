@@ -7007,7 +7007,7 @@ observationally-derived galaxy merger catalogs.")
 (define-public python-irispy-lmsal
   (package
     (name "python-irispy-lmsal")
-    (version "0.7.0")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
@@ -7016,19 +7016,18 @@ observationally-derived galaxy merger catalogs.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pdb54izn4xxngprgmd01dcc9kb2b1a7mn4zv7n25f9nkhxk5qq7"))))
+        (base32 "02n1mh5hz815hn2d6891h8i8vlnc7fq1g5jc790pm8sf4209xrz0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 172 passed, 1 skipped, 9 deselected
+      ;; tests: 223 passed, 1 skipped, 13 deselected
+      #:test-flags
+      ;; Skip one test reqruiting optional python-rsliding.
+      #~(list (string-append "--deselect=irispy/utils/tests/"
+                             "test_cosmic_rays.py"
+                             "::test_remove_cosmic_rays_rsliding"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; Remove when python-team is merged.
-                (("scipy>=1.17.0") "scipy>=1.16.3")
-                (("pandas>=3.0.0") "pandas>=2.3.3"))))
           (add-before 'sanity-check 'set-home
             (lambda _
               (setenv "HOME" "/tmp"))))))
