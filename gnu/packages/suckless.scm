@@ -394,7 +394,7 @@ input stdin as a menubar for Wayland and @code{wlroots}.")
 (define-public slock
   (package
     (name "slock")
-    (version "1.6")
+    (version "1.7")
     (source
      (origin
        (method git-fetch)
@@ -404,7 +404,7 @@ input stdin as a menubar for Wayland and @code{wlroots}.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0pzsk13g6irfs7cgsg4h4vv2529nsyrpn04aq5fpvswxh48cp30h"))))
+         "0y52kmdayypqpx69ns9lyjgmjr553xs36qa32vnp2lq873j3knfy"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                      ; no tests
