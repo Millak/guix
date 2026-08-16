@@ -6772,13 +6772,15 @@ Blitz & Rosolowsky (2006) and Rahmati et al (2013)}.")
 (define-public python-healpy
   (package
     (name "python-healpy")
-    (version "1.19.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
+       ;; TODO: PyPI bundles CFITSIO and HEALPix sources, and it's not picking
+       ;; up the ones from Guix, build from Git and unbundle them.
        (uri (pypi-uri "healpy" version))
        (sha256
-        (base32 "1i8f2d0zjaf35z8mn24lv9zs0wcjrfij6d7wfxnd68ssi35kks18"))))
+        (base32 "1v82c615vc943661jldylbw99hfdm6gzdzcv1qlwfdg239ay3c03"))))
     (build-system pyproject-build-system)
     (arguments
      (list
