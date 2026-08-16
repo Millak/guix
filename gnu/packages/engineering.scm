@@ -2254,7 +2254,7 @@ it suitable for security research and analysis.")
 (define-public r2ghidra
   (package
     (name "r2ghidra")
-    (version "6.1.8")
+    (version "6.2.0")
     (source
      (origin
        (method git-fetch)
@@ -2263,7 +2263,7 @@ it suitable for security research and analysis.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1liva8jdr1jddd9rxlqwnjf8a01xyzr4lsm2w1v6wq0ln22si63z"))
+        (base32 "090alws82nx48r1gj003d865g87x7nc8cp0famqmpfy51ajcj8gs"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete bundled libs and remove their references.
@@ -2271,8 +2271,10 @@ it suitable for security research and analysis.")
                  (substitute* "ghidra/deps.mk"
                    (("ZLIB_LDFLAGS=.*") "")
                    (("ZLIB_CFLAGS=.*") ""))
+                 ;; Don't try to make the directory we snipped.
                  (substitute* "src/Makefile"
-                   (("(all:) subprojects-zlib" _ f) f))))))
+                   (("(all:) subprojects-zlib" _ f) f)
+                   (("\\| \\.\\./subprojects/zlib/libz\\.a") ""))))))
     (build-system gnu-build-system)
     (arguments
      (list
