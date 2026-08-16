@@ -5479,7 +5479,7 @@ and IP address registration information in JSON format over HTTP.")
 (define-public wireproxy
   (package
     (name "wireproxy")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch)
@@ -5488,7 +5488,7 @@ and IP address registration information in JSON format over HTTP.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nzs3xzvq3rhqg808qgazymmwdx9p3nw669wl3r5xclhvibbyla7"))))
+        (base32 "0gpxvziz3n79lfakgdjpq3a75wiaa8rry0zq5q9wyqfc88328z2f"))))
     (build-system go-build-system)
     (arguments
      (list
