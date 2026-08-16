@@ -264,6 +264,9 @@
                (("ffi-binding \"libssl3\"")
                 (string-append
                  "ffi-binding \"" (assoc-ref inputs "nss") "/lib/nss/libssl3.so\"")))))
+         (add-before 'build 'set-shell
+           (lambda _
+             (setenv "SHELL" "/bin/sh")))
          (add-before 'install 'substitute-root-dir
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out  (assoc-ref outputs "out")))
