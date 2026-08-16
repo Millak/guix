@@ -6161,7 +6161,7 @@ be blown away by a SQL-DB or an external database server.")
 (define-public sdb
   (package
     (name "sdb")
-    (version "2.4.6")
+    (version "2.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6170,7 +6170,7 @@ be blown away by a SQL-DB or an external database server.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bpisx6h37kgkq4q2immv1ym9zmb0fndk5pi4k0hbqlbkc5qffz4"))))
+                "1fci72hcm2a0k9rnsfkcr2qsfprzxfycghpr4i3wargj781lc9jd"))))
     (build-system meson-build-system)
     (arguments
      (list
