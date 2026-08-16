@@ -376,7 +376,7 @@ algorithms AES or Twofish.")
 (define-public keepass
   (package
     (name "keepass")
-    (version "2.61")
+    (version "2.61.1")
     (source
      (origin
        (method url-fetch)
@@ -384,7 +384,7 @@ algorithms AES or Twofish.")
         (string-append "mirror://sourceforge/keepass/KeePass%202.x/" version
                        "/KeePass-" version "-Source.zip"))
        (sha256
-        (base32 "1dj45lhy2l22xdf7q031clf894xfigaxcqg5bw3747y59lcz0x51"))))
+        (base32 "0fn1c7kyb3rvdcf1nby311xc1fnyfvlbllcy8rw1crknf3ndj6vi"))))
     (build-system gnu-build-system)
     (arguments
      (list
