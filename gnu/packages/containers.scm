@@ -975,7 +975,7 @@ as created by Podman, CRI-O and containerd.")))
 (define-public crun
   (package
     (name "crun")
-    (version "1.28")
+    (version "1.29.1")
     (source
      (origin
        (method git-fetch)
@@ -985,7 +985,7 @@ as created by Podman, CRI-O and containerd.")))
               (recursive? #t)))
        (sha256
         (base32
-         "0dcs1bq6wa4pammwglynck553pwx3lsf2jzyn1a0cdr6yb8qf87p"))
+         "02dlw47mydpwridbaqgdwm0l6wl54qngqbg9526ib6hcj347mj96"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
