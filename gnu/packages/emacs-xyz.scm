@@ -4608,7 +4608,7 @@ on the Flexoki colour scheme by Steph Ango.")
 (define-public emacs-flycheck
   (package
     (name "emacs-flycheck")
-    (version "36.0")
+    (version "39.0")
     (source
      (origin
        (method git-fetch)
@@ -4616,24 +4616,17 @@ on the Flexoki colour scheme by Steph Ango.")
               (url "https://github.com/flycheck/flycheck/")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "0gndi96ijxqj6k9qy5d4l0cwqh0ky7w1p27z90ipkn05xz4j3zp5"))
+        (base32 "1pbcasbrnms7n9079w58qwakd623vfgnrcg86xzavm0siz3cm2vz"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (native-inputs
      (list emacs-buttercup emacs-shut-up python-minimal-wrapper))
     (arguments
      (list
-      #:test-command #~(list "buttercup" "-L" "." "-L" "test/specs"
-                             "test/specs")
+      #:test-command
+      #~(list "buttercup" "-L" "." "-L" "test" "-L" "test/specs" "test/specs")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-version-constant
-            (lambda _
-              (substitute* "flycheck.el"
-                (("\\(defconst flycheck-version \"[^\"]*\"")
-                 (string-append
-                  "(defconst flycheck-version \""
-                  #$version "\"")))))
           (add-after 'unpack 'remove-unsuitable-tests
             (lambda _
               ;; Requires network access.
