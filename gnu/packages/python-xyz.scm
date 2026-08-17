@@ -38861,21 +38861,20 @@ well as an event scheduler.")
 (define-public python-tenacity
   (package
     (name "python-tenacity")
-    (version "9.0.0")
+    (version "9.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tenacity" version))
        (sha256
-        (base32 "0fyp421r038naskvyhj90hkq0az96477njad4rhs6annjz53fzw0"))))
+        (base32 "0fprkhbrh26zm9jxpwmcz5vpr989hd4kpcqs110x0arz4r61vcxd"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
            python-setuptools
            python-setuptools-scm
            python-tornado
-           python-typeguard
-           python-wheel))
+           python-typeguard))
     (home-page "https://github.com/jd/tenacity")
     (synopsis "Retrying library for python")
     (description
