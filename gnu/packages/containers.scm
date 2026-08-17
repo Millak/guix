@@ -1262,8 +1262,6 @@ contents, and discovering ways to shrink the size of Docker/OCI image.")
     (native-inputs (list guile-3.0))
     ;; Avoid setting propagated so that we use the user’s profile.
     (inputs (list guix guile-dotenv guile-yamlpp))
-    (native-search-paths
-     (list $GUIX_EXTENSIONS_PATH))
     (synopsis "Guix' docker compose compatibility layer")
     (description "A toolkit to run, read and write docker-compose.yml files with
 Guix machinery.")

@@ -330,6 +330,10 @@ case $XCURSOR_PATH in
   *$GUIX_PROFILE/share/icons*) ;;
   *) export XCURSOR_PATH=$GUIX_PROFILE/share/icons:$XCURSOR_PATH ;;
 esac
+case $GUIX_EXTENSIONS_PATH in
+  *$GUIX_PROFILE/share/guix/extensions*) ;;
+  *) export GUIX_EXTENSIONS_PATH=$GUIX_PROFILE/share/guix/extensions:$GUIX_EXTENSIONS_PATH ;;
+esac
 
 # Keep the shell environment clean.
 unset GUIX_PROFILE PROFILE_FILE

@@ -131,9 +131,6 @@
 
 (define $GUIX_EXTENSIONS_PATH
   ;; 'GUIX_EXTENSIONS_PATH' is used by Guix to locate extension commands.
-  ;; Unlike 'PATH', it is attached to a package, Guix; however, it is
-  ;; convenient to define it by default because the 'guix' package is not
-  ;; supposed to be installed in a profile.
   (search-path-specification
    (variable "GUIX_EXTENSIONS_PATH")
    (files '("share/guix/extensions"))))

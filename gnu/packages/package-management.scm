@@ -861,7 +861,6 @@ high-performance computing} clusters.")
            guile-readline
            guile-sqlite3
            guix))
-    (native-search-paths (list $GUIX_EXTENSIONS_PATH))
     (home-page "https://toys.whereis.social/")
     (synopsis "Search engine for Guix channels")
     (description "Toys is a search engine for collecting and displaying Guix
@@ -924,10 +923,6 @@ interface for interacting with the application.")
     (native-inputs (list guile-3.0
                          guile-xapian
                          guix))
-    ;; This is very important since we want the extension to be available
-    ;; without having to add a vanilla guix to the current profile.
-    (native-search-paths
-     (list $GUIX_EXTENSIONS_PATH))
     (home-page "https://codeberg.org/Baleine/guix-xsearch")
     (synopsis "Extension for Guix to provide faster search using Xapian")
     (description
