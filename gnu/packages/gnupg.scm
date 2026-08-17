@@ -238,8 +238,7 @@ Daemon and possibly more in the future.")
     (outputs '("out" "debug"))
     (propagated-inputs (list libgpg-error))
     (native-inputs
-     ;; Needed here for the 'gpg-error' program.
-     (list autoconf automake libgpg-error))
+     (list autoconf automake))
     (home-page "https://gnupg.org/software/libgcrypt")
     (synopsis "Cryptographic function library")
     (description
