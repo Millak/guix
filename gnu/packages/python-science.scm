@@ -6103,6 +6103,20 @@ implementing snakemake's software-deployment interface.")
 using environment modules.")
     (license license:expat)))
 
+(define-public python-snakemake-software-deployment-plugin-envmodules-bootstrap
+  (package/inherit python-snakemake-software-deployment-plugin-envmodules
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments python-snakemake-software-deployment-plugin-envmodules)
+       ((#:tests? tests #t) #f)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (delete 'sanity-check)))))
+    (propagated-inputs
+     (modify-inputs
+         (package-propagated-inputs python-snakemake-software-deployment-plugin-envmodules)
+       (delete "python-snakemake-interface-software-deployment-plugins")))))
+
 (define-public python-sparse
   (package
     (name "python-sparse")
