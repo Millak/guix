@@ -1962,8 +1962,8 @@ maintenance releases.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z5rpi0n2vwhkh3c4d0dxwp38fl18br58jpy7kzh97gzg3gpk5dl"))))
-    (inputs (list bash-minimal coreutils-minimal eudev sed))
+        (base32 "1mdi4pm44pha47ivfn2gsf9w9rdpyw4q19x4myvkbifjg6lf7r4i"))))
+    (inputs (list bash-minimal coreutils-minimal eudev openresolv sed))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1989,13 +1989,18 @@ maintenance releases.")
               (setenv "HOST_SH" (which "sh"))))
           (add-after 'install 'wrap-hooks
             (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let* ((sed (search-input-file inputs "/bin/sed"))
-                     (rm (search-input-file inputs "/bin/rm")))
+              ;; It's important that the 'resolvconf' binary used be that of
+              ;; openresolv, which is the one responsible for maintaining
+              ;; /etc/resolv.conf in Guix.
+              (let* ((resolvconf (search-input-file inputs "sbin/resolvconf"))
+                     (rm (search-input-file inputs "bin/rm"))
+                     (sed (search-input-file inputs "bin/sed")))
                 (wrap-program (string-append
                                #$output "/libexec/dhcpcd-run-hooks")
-                  `("PATH" ":" suffix
-                    (,(dirname sed)
-                     ,(dirname rm))))))))))
+                  (list "PATH" 'suffix
+                        (list (dirname resolvconf)
+                              (dirname rm)
+                              (dirname sed))))))))))
     (home-page "https://roy.marples.name/projects/dhcpcd")
     (synopsis "Feature-rich DHCP and DHCPv6 client")
     (description
