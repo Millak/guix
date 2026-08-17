@@ -31,6 +31,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system pyproject)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
@@ -124,16 +125,15 @@ Refresh}in-DRAM mitigations effectively and as such can trigger bit flips.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:build-backend "poetry.core.masonry.api" ;XXX: python-uv-build is required
       ;; NOTE: Test steps are sourced from GitHub Actions attached to the
       ;; project. This is a minimal test suite, more precise tests require
       ;; setting up local service with Bats (Bash Automated Testing System)
       ;; <https://bats-core.readthedocs.io/en/stable/>. bs
       #:test-flags #~(list "tests/pytest")))
     (native-inputs
-     (list python-poetry-core
-           python-pytest
-           python-pytest-asyncio))
+     (list python-pytest
+           python-pytest-asyncio
+           python-uv-build))
     (inputs
      (list python-aiosqlite
            python-argcomplete
