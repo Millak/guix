@@ -15352,6 +15352,25 @@ various Ruby objects.")
     (home-page "https://github.com/ymendel/truthy")
     (license license:expat)))
 
+(define-public ruby-tsort
+  (package
+    (name "ruby-tsort")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "tsort" version))
+       (sha256
+        (base32 "17q8h020dw73wjmql50lqw5ddsngg67jfw8ncjv476l5ys9sfl4n"))))
+    (build-system ruby-build-system)
+    (synopsis "Topological sorting library for Ruby")
+    (description
+     "This RubyGem implements topological sorting using Tarjan's algorithm
+for strongly connected components.  It is designed to be able to be
+used with any object which can be interpreted as a directed graph.")
+    (home-page "https://github.com/ruby/tsort")
+    (license (list license:ruby license:bsd-2))))
+
 (define-public ruby-skinny
   (package
     (name "ruby-skinny")
