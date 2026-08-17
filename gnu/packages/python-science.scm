@@ -5839,28 +5839,24 @@ its executor plugins.")
 (define-public python-snakemake-interface-report-plugins
   (package
     (name "python-snakemake-interface-report-plugins")
-    (version "1.1.0")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url (string-append "https://github.com/snakemake/"
-                                 "snakemake-interface-report-plugins"))
-             (commit (string-append "v" version))))
+              (url (string-append "https://github.com/snakemake/"
+                                  "snakemake-interface-report-plugins"))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i6z9vk6nv2m3jsym0glrb7h9isdlfza2yq14vbqcslybdi9ykfa"))))
+        (base32 "0i16ia88ym2y9092c9z1jxgmfmnfdha69hbm56ncnxdmsfch9s6y"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f ;circular dependency on snakemake
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python3" "tests/tests.py")))))))
-    (propagated-inputs (list python-snakemake-interface-common python-pytest))
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests/tests.py")))
+    (propagated-inputs (list python-snakemake-interface-common))
     (native-inputs (list python-poetry-core))
     (home-page (string-append "https://github.com/snakemake/"
                               "python-snakemake-interface-report-plugins"))
