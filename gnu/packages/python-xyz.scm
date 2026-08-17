@@ -36600,14 +36600,12 @@ Currently, Linux is the only platform supported by this library.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:build-backend "poetry.core.masonry.api"  ;requires uv_build
-      ;; Integration tests require unpackaged dependencies.
       #:test-flags #~(list "--ignore=tests/integration")))
     (native-inputs
      (list python-coverage       ;hard dependency
-           python-poetry-core
            python-pytest
-           python-pytest-asyncio))
+           python-pytest-asyncio
+           python-uv-build))
     (propagated-inputs
      (list python-dbus-fast))
     (home-page "https://github.com/hbldh/bleak")
