@@ -74,6 +74,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages digest)
+  #:use-module (gnu packages docker)
   #:use-module (gnu packages duckdb)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages gcc)
@@ -6038,6 +6039,37 @@ Snakemake and its storage plugins.")
     (description "This package provides a logging plugin for Snakemake
 that utilizes @code{python-rich} for enhanced terminal styling and
 progress bars.")
+    (license license:expat)))
+
+(define-public python-snakemake-software-deployment-plugin-container
+  (package
+    (name "python-snakemake-software-deployment-plugin-container")
+    (version "0.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url (string-append "https://github.com/snakemake/"
+                                  "snakemake-software-deployment-plugin-container"))
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0izkmnr89cfd085z99bp4yf57djppb462n6k04fhi2k5mk93mzlm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Tests require network access.
+      #:tests? #f))
+    (propagated-inputs
+     (list python-snakemake-interface-common
+           python-snakemake-interface-software-deployment-plugins
+           python-udocker))
+    (native-inputs (list python-hatchling python-pytest))
+    (home-page (string-append "https://github.com/snakemake/"
+                              "snakemake-software-deployment-plugin-container"))
+    (synopsis "Run Snakemake within a rootless container")
+    (description "This package provides a generic container plugin
+implementing snakemake's software-deployment interface.")
     (license license:expat)))
 
 (define-public python-sparse
