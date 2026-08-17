@@ -6117,6 +6117,39 @@ using environment modules.")
          (package-propagated-inputs python-snakemake-software-deployment-plugin-envmodules)
        (delete "python-snakemake-interface-software-deployment-plugins")))))
 
+(define-public python-snakemake-storage-plugin-http
+  (package
+    (name "python-snakemake-storage-plugin-http")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url (string-append "https://github.com/snakemake/"
+                                  "snakemake-storage-plugin-http"))
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mlc1nkz9l06ahz6s90lxrxvw5gz7krgyd7acyd51srv6lx0ipk9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests/tests.py")))
+    (propagated-inputs
+     (list python-requests
+           python-requests-oauthlib
+           python-snakemake-interface-common
+           python-snakemake-interface-storage-plugins))
+    (native-inputs (list python-poetry-core snakemake))
+    (home-page (string-append "https://github.com/snakemake/"
+                              "snakemake-storage-plugin-http"))
+    (synopsis "Download input files from HTTP(s) in Snakemake")
+    (description
+     "This package provides a storage plugin for downloading input
+files from HTTP(s) in Snakemake.")
+    (license license:expat)))
+
 (define-public python-sparse
   (package
     (name "python-sparse")
