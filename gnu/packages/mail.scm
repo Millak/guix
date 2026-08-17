@@ -2077,7 +2077,7 @@ delivery.")
 (define-public exim
   (package
     (name "exim")
-    (version "4.98.2")
+    (version "4.100.1")
     (source
      (origin
        (method url-fetch)
@@ -2091,7 +2091,7 @@ delivery.")
                     (string-append "https://ftp.exim.org/pub/exim/exim4/old/"
                                    file-name))))
        (sha256
-        (base32 "1bnw8874jkb9yfvda9gg5z5g8qp66sm6308l3l5wrdhxgjkfif48"))))
+        (base32 "03gsg6m9wqwi1wcy7rx3g7w4lj96byy9vlf9cini6nsafbv43yz9"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
@@ -2134,7 +2134,7 @@ delivery.")
                        (("# (AUTH_TLS=yes)" all line) line))
                      ;; This file has hard-coded relative file names for tools
                      ;; despite the zcat configuration above.
-                     (substitute* "src/exigrep.src"
+                     (substitute* "src/utils/exigrep.src"
                        (("'(bzcat|xzcat|zcat|lzma)'" _ command)
                         (format #f "'~a'"
                                 (search-input-file
@@ -2142,6 +2142,7 @@ delivery.")
                (add-before 'build 'fix-sh-file-names
                  (lambda _
                    (substitute* (list "scripts/lookups-Makefile"
+                                      "scripts/drivers-Makefile"
                                       "scripts/reversion")
                      (("SHELL=/bin/sh") "SHELL=sh"))
                    (substitute* "scripts/Configure-config.h"
@@ -2186,6 +2187,7 @@ delivery.")
            libxt
            perl
            perl-file-fcntllock
+           texinfo
            xz))
     (home-page "https://www.exim.org/")
     (synopsis
