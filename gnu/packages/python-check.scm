@@ -799,7 +799,6 @@ counterexamples for you.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:build-backend "setuptools.build_meta"  ;requires uv_build
       #:phases
       #~(modify-phases %standard-phases
           ;; Project's repository contains go, java, javascript, perl, python
@@ -813,7 +812,7 @@ counterexamples for you.")
               (substitute* "pyproject.toml"
                 (("^license = .*") "")))))))
     (native-inputs
-     (list python-pytest python-pyyaml python-setuptools))
+     (list python-pytest python-pyyaml python-uv-build))
     (home-page "https://github.com/cucumber/cucumber-expressions")
     (synopsis "A simpler alternative to Regular Expressions")
     (description
