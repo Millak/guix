@@ -4900,7 +4900,13 @@ inputs and applications using PipeWire.")
       #:configure-flags
       #~(list (string-append "-DLIBOBS_INCLUDE_DIR="
                              #$(this-package-input "obs") "/lib")
-              "-DBUILD_OUT_OF_TREE=On" "-Wno-dev")))
+              "-DBUILD_OUT_OF_TREE=On" "-Wno-dev")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'remove-Werror
+                     (lambda _
+                       ;; XXX: The build system overrides to CFLAGS...
+                       (substitute* "cmake/ObsPluginHelpers.cmake"
+                         (("\\s+-Werror\\s+") "")))))))
     (inputs (list obs qtbase-5 simde))
     (home-page "https://github.com/exeldro/obs-shaderfilter")
     (synopsis "OBS filter for applying an arbitrary shader to a source")
