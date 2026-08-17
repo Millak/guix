@@ -8946,23 +8946,26 @@ manipulating HTS data.")
                 "1lmya1fdjy03mz6zmdmd86j9v9vfhqb3952mqq075navx1i6g4bc"))))
     (build-system ant-build-system)
     (arguments
-     `(#:tests? #f                      ; test require Scala
-       #:jdk ,icedtea-8
-       #:jar-name "htsjdk.jar"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-useless-build.xml
-           (lambda _ (delete-file "build.xml") #t))
-         ;; The tests require the scalatest package.
-         (add-after 'unpack 'remove-tests
-           (lambda _ (delete-file-recursively "src/test") #t)))))
+     (list
+      #:tests? #f ; test require Scala
+      #:jdk icedtea-8
+      #:jar-name "htsjdk.jar"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-useless-build.xml
+            (lambda _
+              (delete-file "build.xml")))
+          ;; The tests require the scalatest package.
+          (add-after 'unpack 'remove-tests
+            (lambda _
+              (delete-file-recursively "src/test"))))))
     (inputs
-     `(("java-ngs" ,java-ngs)
-       ("java-snappy-1" ,java-snappy-1)
-       ("java-commons-compress" ,java-commons-compress)
-       ("java-commons-logging-minimal" ,java-commons-logging-minimal)
-       ("java-commons-jexl-2" ,java-commons-jexl-2)
-       ("java-xz" ,java-xz)))
+     (list java-commons-compress
+           java-commons-jexl-2
+           java-commons-logging-minimal
+           java-ngs
+           java-snappy-1
+           java-xz))
     (native-inputs
      (list java-junit))
     (home-page "https://samtools.github.io/htsjdk/")
