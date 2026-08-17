@@ -4792,22 +4792,25 @@ Looking Glass.")
     (version "3.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/exeldro/obs-move-transition/releases/download/"
-             version "/move-transition-" version "-source.tar.xz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/exeldro/obs-move-transition")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "19p074vynv3a7zp97gck9chglryp15vybcs31an6bz8900bcz0qp"))))
+        (base32
+         "0zzabr2ajwcnqz81nd70fcfmmkn3by4qdpy399pvgibvjm212d08"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:modules '((guix build cmake-build-system)
                   (guix build utils))
-      #:tests? #f ;no tests
+      #:tests? #f                       ;no tests
       #:configure-flags
       #~(list (string-append "-DLIBOBS_INCLUDE_DIR="
                              #$(this-package-input "obs") "/lib")
-              "-DBUILD_OUT_OF_TREE=On" ;build outside of OBS source tree
+              "-DBUILD_OUT_OF_TREE=On"  ;build outside of OBS source tree
+              "-DCMAKE_COMPILE_WARNING_AS_ERROR=OFF"
               "-Wno-dev")))
     (inputs (list obs qtbase simde))
     (home-page "https://github.com/exeldro/obs-move-transition")
