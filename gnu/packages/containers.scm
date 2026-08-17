@@ -1377,7 +1377,7 @@ containers or various tools.")
 (define-public skopeo
   (package
     (name "skopeo")
-    (version "1.23.0")
+    (version "1.24.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1386,7 +1386,7 @@ containers or various tools.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l83k5gj5dx26wx200y61xcxxhxccwdqnj2r7xfs0h8fh56pmfvj"))))
+                "05a2xp3ss59nld8i4zf85rqrqlsid1ipj5484vp23a5sdiybl0j4"))))
     (build-system gnu-build-system)
     (native-inputs
      (list go
