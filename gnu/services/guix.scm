@@ -517,6 +517,8 @@
               `(;; XDG_CACHE_HOME is used by Guix when caching narinfo files
                 "XDG_CACHE_HOME=/var/cache/guix-build-coordinator-agent"
                 "LC_ALL=en_US.utf8")
+              ;; Run from the log directory so core dumps can be written
+              #:directory "/var/log/guix-build-coordinator"
               #:log-file "/var/log/guix-build-coordinator/agent.log"))))
       (stop #~(make-kill-destructor))
       (modules
