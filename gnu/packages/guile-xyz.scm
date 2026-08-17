@@ -1851,26 +1851,26 @@ works with Guile 1.4.x to 2.0.x.")
     (license license:gpl3+)))
 
 (define-public guile-prometheus
-  (let ((commit "49be2bc1ae7ff53b35aeefc0dd60ffa8768b5184")
-        (revision "8"))
+  (let ((commit "15383082cf3d9c8ee993a876c6f8070c16db880d")
+        (revision "9"))
     (package
     (name "guile-prometheus")
     (version (git-version "0" revision commit))
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://git.cbaines.net/git/guile/prometheus")
+                    (url "https://forge.cbaines.net/cbaines/guile-prometheus.git")
                     (commit commit)))
               (sha256
                (base32
-                "0jlz3568gmbzhfpypx09k6awlzg330zm4fplnqsl6za8flhwbjp3"))
+                "02c8k97igpgm0s0rx5v5w6yzkcmmprj3myppg9ywmy6vn9n5a823"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config autoconf automake guile-3.0))
     (inputs
      (list guile-3.0))
-    (home-page "https://git.cbaines.net/guile/prometheus")
+    (home-page "https://forge.cbaines.net/cbaines/guile-prometheus")
     (synopsis "Prometheus client library for Guile")
     (description
      "This Guile library provides instrumentation code intended to be used
