@@ -5899,29 +5899,27 @@ between Snakemake and its report plugins.")
 (define-public python-snakemake-interface-software-deployment-plugins
   (package
     (name "python-snakemake-interface-software-deployment-plugins")
-    (version "0.6.1")
+    (version "0.18.6")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url (string-append "https://github.com/snakemake/"
-                   "snakemake-interface-software-deployment-plugins"))
-             (commit (string-append "v" version))))
+              (url (string-append "https://github.com/snakemake/"
+                                  "snakemake-interface-software-deployment-plugins"))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b4kkznfyfck9f92pkimhyl13ljisfn67rsilm1a5inq2ywpmxba"))))
+        (base32 "10dv8317ryxa05bdfyy6hqlwjxl0crnhfy66zvsl662zvzcb2hm6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python3" "tests/tests.py")))))))
+      #:test-flags #~(list "--ignore=tests/test_py37.py")))
     (propagated-inputs (list python-argparse-dataclass
                              python-snakemake-interface-common))
-    (native-inputs (list python-poetry-core))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-snakemake-software-deployment-plugin-envmodules-bootstrap))
     (home-page (string-append "https://github.com/snakemake/"
                 "snakemake-interface-software-deployment-plugins"))
     (synopsis "Interface for Snakemake software deployment plugins")
