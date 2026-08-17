@@ -836,7 +836,6 @@ intuitive syntax.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:build-backend "setuptools.build_meta"  ;requires uv_build
       #:phases
       #~(modify-phases %standard-phases
           ;; Project's repository contains go, java, javascript, perl, python
@@ -849,8 +848,7 @@ intuitive syntax.")
            python-pytest
            python-pytest-metadata
            python-pyyaml
-           python-setuptools
-           python-setuptools-scm))
+           python-uv-build))
     (home-page "https://github.com/cucumber/tag-expressions")
     (synopsis "Tag-expression parser for cucumber/behave")
     (description
