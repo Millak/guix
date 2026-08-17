@@ -212,6 +212,23 @@ constructs, asynchronous tasks, synchronization primitives, atomic operations,
 and more.")
     (license license:asl2.0)))
 
+(define-public onetbb-2022
+  (package
+    (inherit onetbb)
+    (name "onetbb")
+    (version "2022.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/uxlfoundation/oneTBB/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ibwr5cw0zw5dfcdhavr5zbmwqqf7vnsai0gh4mqw475l7lcb08w"))
+       (patches (search-patches "onetbb-other-arches.patch"))))))
+
 (define-public python-onetbb
   (package
     (inherit onetbb)
