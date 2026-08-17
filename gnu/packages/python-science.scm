@@ -5896,6 +5896,38 @@ its logger plugins.")
 between Snakemake and its report plugins.")
     (license license:expat)))
 
+(define-public python-snakemake-interface-scheduler-plugins
+  (package
+    (name "python-snakemake-interface-scheduler-plugins")
+    (version "2.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url (string-append "https://github.com/snakemake/"
+                                  "snakemake-interface-scheduler-plugins"))
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bz33dl90cblzs9gki8kmklv9zkdh22883455541y5b5k70hr306"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests collect but snakemake.scheduler is missing.
+      #:tests? #f
+      #:test-flags #~(list "tests/tests.py")))
+    (propagated-inputs (list python-snakemake-interface-common))
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (home-page (string-append "https://github.com/snakemake/"
+                              "python-snakemake-interface-scheduler-plugins"))
+    (synopsis "Interface for Snakemake scheduler plugins")
+    (description
+     "This package provides a stable interface for interactions between Snakemake and
+its scheduler plugins.")
+    (license license:expat)))
+
 (define-public python-snakemake-interface-software-deployment-plugins
   (package
     (name "python-snakemake-interface-software-deployment-plugins")
