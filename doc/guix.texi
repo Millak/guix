@@ -10184,6 +10184,7 @@ because CHICKEN doesn't embed absolute references in compiled eggs.
 Test dependencies should go to @code{native-inputs}, as usual.
 @end defvar
 
+@anchor{copy-build-system}
 @defvar copy-build-system
 This variable is exported by @code{(guix build-system copy)}.  It
 supports builds of simple packages that don't require much compiling,
@@ -11275,18 +11276,39 @@ dependencies.
 
 @end defvar
 
-Lastly, for packages that do not need anything as sophisticated, a
-``trivial'' build system is provided.  It is trivial in the sense that
-it provides basically no support: it does not pull any implicit inputs,
-and does not have a notion of build phases.
-
 @defvar trivial-build-system
 This variable is exported by @code{(guix build-system trivial)}.
 
-This build system requires a @code{#:builder} argument.  This argument
-must be a Scheme expression that builds the package output(s)---as
-with @code{build-expression->derivation} (@pxref{Derivations,
-@code{build-expression->derivation}}).
+This build system requires a @code{#:builder} argument; it is
+``trivial'' in the sense that it does nothing but what @code{#:builder}
+specifies, and in particular it lacks the notion of build phases
+commonly found in other build systems and provides zero implicit inputs.
+The @code{#:builder} argument must be a gexp that builds the package
+output(s) (@pxref{G-Expressions}).
+
+The example below produces an empty package:
+
+@lisp
+(package
+  (name "empty")
+  (version "0")
+  (source #f)      ;no source
+  (build-system trivial-build-system)
+  (arguments
+    ;; Create the output directory and nothing more.
+    (list #:builder #~(mkdir #$output)))
+  ;; @dots{}
+  (license #f))
+@end lisp
+
+@cindex meta-package, with @code{trivial-build-system}
+This build system is useful to create @dfn{meta-packages} as empty
+packages that propagate a number of packages---thus installing one such
+meta-package in a profile also installs all these other packages.
+
+@xref{copy-build-system, @code{copy-build-system}}, for a slightly more
+elaborate build system that makes it easy to copy files from package
+source to package output.
 @end defvar
 
 @defvar channel-build-system
