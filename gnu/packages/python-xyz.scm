@@ -22032,14 +22032,13 @@ PySide, PySide2.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:build-backend "poetry.core.masonry.api" ;XXX: python-uv-build is required
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-qpa
             (lambda _
               (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (native-inputs
-     (list python-poetry-core python-pytest))
+     (list python-pytest python-uv-build))
     (propagated-inputs
      (list python-pyqt-6))
     (home-page "https://github.com/CabbageDevelopment/qasync")
