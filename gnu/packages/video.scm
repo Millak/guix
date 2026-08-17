@@ -2425,7 +2425,6 @@ videoformats depend on the configuration flags of ffmpeg.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:build-backend "setuptools.build_meta" ; recent versions use uv-build
       #:phases #~(modify-phases %standard-phases
                    (add-after 'wrap 'wrap-program
                      ;; Wrap ffmpeg on the executable.
@@ -2439,7 +2438,7 @@ videoformats depend on the configuration flags of ffmpeg.")
     (native-inputs (list procps ; for 'pgrep'
                          python-pytest
                          python-pytest-asyncio
-                         python-setuptools))
+                         python-uv-build))
     (propagated-inputs (list python-tqdm))
     (home-page "https://github.com/slhck/ffmpeg-progress-yield")
     (synopsis "Run an ffmpeg command with progress")
