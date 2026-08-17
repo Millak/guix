@@ -17,6 +17,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu services kerberos)
+  #:use-module (gnu packages admin)
   #:use-module (gnu services)
   #:use-module (gnu services configuration)
   #:use-module (gnu system pam)
