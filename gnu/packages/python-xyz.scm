@@ -31201,17 +31201,14 @@ Foundation maintained libraries.")
        (sha256
         (base32 "09kgl9kw96f1pyszqnm7slq1lw5nh4c8f59p6brz0ap2ydcfxykg"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:build-backend "setuptools.build_meta"))  ;requires uv_build
     (native-inputs
      (list python-hatchling
            python-pyaml
            python-pytest
-           python-setuptools
            python-toml
            python-types-pyyaml
-           python-types-toml))
+           python-types-toml
+           python-uv-build))
     (propagated-inputs (list python-pyyaml))
     (home-page "https://github.com/eyeseast/python-frontmatter")
     (synopsis "Parse and manage posts with YAML (or other) frontmatter")
