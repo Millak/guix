@@ -7800,6 +7800,34 @@ on legibility and maintainability of tests.  Veritas shuffles tests and
 runs them concurrently by default to ensure robust testing practices.")
     (license license:lgpl3+)))
 
+;; XXX: No releases yet, the package is under development.
+(define-public guile-forgejo
+  (let ((commit "06070b501cc4f08148318d5299e21c2e9e27bcf7")
+        (revision "0"))
+    (package
+      (name "guile-forgejo")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/guile-forgejo/guile-forgejo")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "131z0qhhcjb8l1rp45wdpw6i9my8zm8lpj4grfd3shx6gi5hw8fk"))))
+      (build-system guile-build-system)
+      (inputs (list guile-3.0))
+      (propagated-inputs (list guile-gcrypt guile-json-4))
+      (home-page "https://codeberg.org/guile-forgejo/guile-forgejo")
+      (synopsis "Talk to Forgejo instances from Guile")
+      (description
+       "Guile-Forgejo provides an interface to the
+@uref{https://codeberg.org/api/swagger, Forgejo HTTP interface} so you can
+talk to Forgejo instances such as @uref{https://codeberg.org, Codeberg} from
+the comfort of Scheme.")
+      (license license:gpl3+))))
+
 (define-public guile-fslib
   (package
     (name "guile-fslib")
