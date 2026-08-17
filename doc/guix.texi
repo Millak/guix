@@ -384,6 +384,7 @@ Utilities
 * Invoking guix container::     Process isolation.
 * Invoking guix weather::       Assessing substitute availability.
 * Invoking guix processes::     Listing client processes.
+* Extending Guix::              Adding commands.
 
 Invoking @command{guix build}
 
@@ -13966,6 +13967,7 @@ the Scheme programming interface of Guix in a convenient way.
 * Invoking guix container::     Process isolation.
 * Invoking guix weather::       Assessing substitute availability.
 * Invoking guix processes::     Listing client processes.
+* Extending Guix::              Adding commands.
 @end menu
 
 @node Invoking guix build
@@ -18240,6 +18242,29 @@ Session_PID: 4278
 @end example
 @end table
 @end table
+
+@node Extending Guix
+@section Extending Guix
+
+@cindex extensions, of Guix
+@vindex GUIX_EXTENSIONS_PATH
+
+@xref{Utilities}, for examples of commands that come with Guix.
+
+One can introduce new Guix commands through the
+@var{GUIX_EXTENSIONS_PATH} variable.  Guix will search that path for
+Guile modules which expose symbols defined through
+@code{define-command}.
+
+Additionally, the command lookup machinery will search for extensions
+provided by channels which contain a @file{guix/extensions}
+subdirectory.
+
+We encourage you to contribute your extensions to the
+@uref{https://codeberg.org/guix-extensions, Guix Extensions}
+organization.  The organization aims to gather community developed Guix
+extensions that are not ready to be merged into Guix proper or are too
+niche to be part of Guix.
 
 @node Foreign Architectures
 @chapter Foreign Architectures
