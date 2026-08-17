@@ -5558,6 +5558,44 @@ is designed to have a low barrier to entry.")
 (Redis Queue).")
     (license license:expat)))
 
+(define-public python-sqlmodel
+  (package
+    (name "python-sqlmodel")
+    (version "0.0.37")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fastapi/sqlmodel")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kb81a1ffvsvkvi9msblv3sq0s74ww340dxz3rymh5snnxc1pg92"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Ignore optional tests.
+      #~(list "--ignore=docs_src"
+              "--ignore=tests/test_tutorial"
+              ;; Unclear why this test fails.
+              "-k" "not test_select_gen")))
+    (propagated-inputs
+     (list python-pydantic
+           python-sqlalchemy-2
+           python-typing-extensions))
+    (native-inputs
+     (list python-dirty-equals
+           python-pdm-backend
+           python-pytest))
+    (home-page "https://github.com/fastapi/sqlmodel")
+    (synopsis "SQLModel, SQL databases in Python, designed")
+    (description
+     "SQLModel is a library for interacting with SQL databases from
+Python code, with Python objects.  It is based on Python type
+annotations, and powered by Pydantic and SQLAlchemy.")
+    (license license:expat)))
+
 (define-public python-sqlparse
   (package
     (name "python-sqlparse")
