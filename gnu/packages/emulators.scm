@@ -433,40 +433,41 @@ console.")
 
 (define-public melonds
   (package
-   (name "melonds")
-   (version "1.0")
-   (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                  (url "https://github.com/melonDS-emu/melonDS")
-                  (commit version)))
-            (file-name (git-file-name name version))
-            (sha256
-             (base32
-              "0qrpqgiw678kcdvjl6hm9wi223m6igngppkvws3q86lmkwrhg039"))))
-   (build-system qt-build-system)
-   (arguments
-    (list #:qtbase qtbase
-          #:tests? #f)) ; no test suite
-   (native-inputs
-    (list extra-cmake-modules
-          pkg-config))
-   (inputs
-    (list enet
-          libarchive
-          sdl2
-          wayland
-          qtbase
-          qtmultimedia
-          qtsvg
-          qtwayland
-          (list zstd "lib")))
-   (home-page "https://melonds.kuribo64.net")
-   (synopsis "Nintendo DS emulator")
-   (description
-    "melonDS is an emulator for the Nintendo DS handheld gaming console.
+    (name "melonds")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/melonDS-emu/melonDS")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qrpqgiw678kcdvjl6hm9wi223m6igngppkvws3q86lmkwrhg039"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:qtbase qtbase))
+    (native-inputs
+     (list extra-cmake-modules
+           pkg-config))
+    (inputs
+     (list enet
+           libarchive
+           qtbase
+           qtmultimedia
+           qtsvg
+           qtwayland
+           sdl2
+           wayland
+           (list zstd "lib")))
+    (home-page "https://melonds.kuribo64.net")
+    (synopsis "Nintendo DS emulator")
+    (description
+     "melonDS is an emulator for the Nintendo DS handheld gaming console.
 It aims to support Nintendo DSi and 3DS as well.")
-   (license license:gpl3+)))
+    (license license:gpl3+)))
 
 (define dolphin-rcheevos-submodule
   (origin
