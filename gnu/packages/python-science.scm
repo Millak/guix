@@ -5810,29 +5810,23 @@ for Snakemake and its plugins.")
 (define-public python-snakemake-interface-executor-plugins
   (package
     (name "python-snakemake-interface-executor-plugins")
-    (version "9.3.3")
+    (version "9.4.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url (string-append "https://github.com/snakemake/"
-                                 "snakemake-interface-executor-plugins"))
-             (commit (string-append "v" version))))
+              (url (string-append "https://github.com/snakemake/"
+                                  "snakemake-interface-executor-plugins"))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kjjcgkk1rbavb687x5ayw35ayhsnhpg9262k317x911wqpsj2fm"))))
+        (base32 "1qz4cl5wyinhk191ivkxn0ghjjdicyvg6wq97b1bgn01qqfdvxkq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python3" "tests/tests.py")))))))
-    (propagated-inputs (list python-argparse-dataclass
-                             python-snakemake-interface-common
-                             python-throttler))
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests/tests.py")))
+    (propagated-inputs (list python-snakemake-interface-common))
     (native-inputs (list python-poetry-core python-pytest))
     (home-page (string-append "https://github.com/snakemake/"
                               "python-snakemake-interface-executor-plugins"))
