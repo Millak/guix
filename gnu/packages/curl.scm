@@ -182,7 +182,7 @@ tunneling, and so on.")
     (license (license:non-copyleft "file://COPYING"
                                    "See COPYING in the distribution."))))
 
-(define-public curl/fixed
+(define curl/fixed
   (package
     (inherit curl)
     (name "curl")
