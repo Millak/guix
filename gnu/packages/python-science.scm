@@ -5774,26 +5774,33 @@ SLURM jobs (meant for internal use by python-snakemake-executor-plugin-slurm).")
 (define-public python-snakemake-interface-common
   (package
     (name "python-snakemake-interface-common")
-    (version "1.17.4")
+    ;; This commit fixes a python-packaging sanity-check failure.
+    (properties '((commit . "d585b5c0c7c0ec0df60a1a26d5d413f3ee88e63f")
+                  (revision . "0")))
+    (version (git-version "1.23.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/snakemake/snakemake-interface-common")
-             (commit (string-append "v" version))))
+              (url "https://github.com/snakemake/snakemake-interface-common")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19fyqs048zdvrmq5sdayzch850kwsyv2x6xn57cjjzcm4zpjrh9w"))))
+        (base32 "1zxks3jjwc5addx5wxgfb5zn2y2jzxz53n739b9w8qba3nwnzyj2"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "python3" "tests/tests.py")))))))
-    (native-inputs (list python-poetry-core python-pytest))
-    (propagated-inputs (list python-argparse-dataclass python-configargparse))
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests/tests.py")))
+    (propagated-inputs
+     (list python-argparse-dataclass
+           python-configargparse
+           python-packaging))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/snakemake/snakemake-interface-common")
     (synopsis "Common functions and classes for Snakemake and its plugins")
     (description "This package provides common functions and classes
