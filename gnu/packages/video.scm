@@ -4980,19 +4980,25 @@ scenes, sources and filters.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/exeldro/obs-source-record")
-             (commit version)))
+              (url "https://github.com/exeldro/obs-source-record")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1z762w7didd4m1n2b6wb26jywv1hipxw8z8wnnsq45zlv5kwnlws"))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:tests? #f ;no tests
+      #:tests? #f                       ;no tests
       #:configure-flags
       #~(list (string-append "-DLIBOBS_INCLUDE_DIR="
                              #$(this-package-input "obs") "/lib")
-              "-DBUILD_OUT_OF_TREE=On" "-Wno-dev")))
+              "-DBUILD_OUT_OF_TREE=On" "-Wno-dev")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'remove-Werror
+                     (lambda _
+                       ;; XXX: The build system overrides to CFLAGS...
+                       (substitute* "cmake/ObsPluginHelpers.cmake"
+                         (("\\s+-Werror\\s+") "")))))))
     (inputs (list obs simde))
     (home-page "https://github.com/exeldro/obs-source-record")
     (synopsis "OBS plugin for recording sources via a filter")
