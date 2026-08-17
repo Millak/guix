@@ -98,6 +98,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages check)
@@ -978,11 +979,8 @@ auto-completion and syntax highlighting.")
        (sha256
         (base32 "075fnrrwzn9xc2clkcsyfycjc870khcwnpdg4g726qwl44pfzy2a"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:build-backend "poetry.core.masonry.api")) ;XXX: python-uv-build is required
     (propagated-inputs (list python-anyio python-typing-extensions))
-    (native-inputs (list python-poetry-core python-pytest))
+    (native-inputs (list python-pytest python-uv-build))
     (home-page "https://github.com/davidbrochart/sqlite-anyio")
     (synopsis "Asynchronous client for SQLite using AnyIO")
     (description "This package provides an asynchronous client for SQLite
