@@ -2867,6 +2867,26 @@ device.  It is the software analogue of a MIDI synthesizer.  FluidSynth can
 also play midifiles using a Soundfont.")
     (license license:lgpl2.1+)))
 
+(define-public faac
+  (package
+    (name "faac")
+    (version "2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/knik0/faac")
+              (commit (string-append "faac-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rz7dqa4fhip1x5b43s1imn5zvirm4dphi191zg6b54dyqs0vpzs"))))
+    (build-system meson-build-system)
+    (home-page "https://github.com/knik0/faac")
+    (synopsis "Freeware Advanced Audio Codec")
+    (description
+     "FAAC is a dependency-free @acronym{AAC, Advanced Audio Coding} encoder.")
+    (license license:lgpl2.1+)))
+
 (define-public faad2
   (package
     (name "faad2")
