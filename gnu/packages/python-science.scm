@@ -6004,6 +6004,42 @@ its software deployment plugins.")
 Snakemake and its storage plugins.")
     (license license:expat)))
 
+(define-public python-snakemake-logger-plugin-rich
+  (package
+    (name "python-snakemake-logger-plugin-rich")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cademirch/snakemake-logger-plugin-rich")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07r2gqhxqs5ijqh4yjrdcwj60aqr66iglm6jvdwkgr9x0dmg7j4h"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: --logger argument is not recognized.
+      #:tests? #f))
+    (propagated-inputs
+     (list python-pydantic
+           python-rich
+           python-snakemake-interface-executor-plugins
+           (package/inherit python-snakemake-interface-logger-plugins
+             (name "python-snakemake-interface-logger-plugins-bootstrap")
+             (arguments (list #:tests? #f))
+             (native-inputs (list python-hatchling)))))
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (home-page "https://github.com/cademirch/snakemake-logger-plugin-rich")
+    (synopsis "Log plugin for snakemake using Rich")
+    (description "This package provides a logging plugin for Snakemake
+that utilizes @code{python-rich} for enhanced terminal styling and
+progress bars.")
+    (license license:expat)))
+
 (define-public python-sparse
   (package
     (name "python-sparse")
