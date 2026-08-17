@@ -110,6 +110,7 @@
 
 (define-public go-1.4
   (package
+    (properties '((hidden? . #t)))      ;for bootstrap only
     (name "go")
     ;; The C-language bootstrap of Go:
     ;; https://golang.org/doc/install/source#go14
@@ -521,7 +522,8 @@ in the style of communicating sequential processes (@dfn{CSP}).")
     (supported-systems (fold delete %supported-systems
                              (list "powerpc-linux" "i586-gnu" "x86_64-gnu")))
     (properties
-     `((compiler-cpu-architectures
+     `((hidden? . #t)                         ;for bootstrap only
+       (compiler-cpu-architectures
          ("armhf" ,@%go-1.17-arm-micro-architectures)
          ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures))))
     (license license:bsd-3)))
@@ -651,7 +653,8 @@ in the style of communicating sequential processes (@dfn{CSP}).")
          (alist-replace "go" (list go-1.17) (package-native-inputs go-1.17))
          (alist-delete "gold" (package-native-inputs go-1.17))))
     (properties
-     `((compiler-cpu-architectures
+     `((hidden? . #t)                         ;for bootstrap only
+       (compiler-cpu-architectures
          ("armhf" ,@%go-1.17-arm-micro-architectures)
          ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures)
          ("x86_64" ,@%go-1.18-x86_64-micro-architectures))))))
@@ -895,7 +898,8 @@ in the style of communicating sequential processes (@dfn{CSP}).")
      ;; Go 1.24 and later requires Go 1.22+ as the bootstrap toolchain.
      (alist-replace "go" (list go-1.22) (package-native-inputs go-1.22)))
     (properties
-     `((compiler-cpu-architectures
+     `((hidden? . #t)                         ;for bootstrap only
+       (compiler-cpu-architectures
          ("aarch64" ,@%go-1.23-arm64-micro-architectures)
          ("armhf" ,@%go-1.17-arm-micro-architectures)
          ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures)
@@ -951,7 +955,9 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                           ;; Shaky <2025-10-01> https://github.com/golang/go/issues/75720
                           (("TestExecPtrace\\(.*" all)
                            (string-append all "\n        t.Skip(\"golang.org/issue/75720\")\n"))))))
-                   '())))))))
+                   '())))))
+      (properties
+       (alist-delete 'hidden? (package-properties go-1.24)))))
 
 (define-public go-1.26
   (package
@@ -988,7 +994,9 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                    (string-append all "\n        t.Skip(\"golang.org/issue/73977\")\n")))))))))
     (native-inputs
      ;; Go 1.26 and later requires Go 1.24.6+ as the bootstrap toolchain.
-     (alist-replace "go" (list go-1.24) (package-native-inputs go-1.25)))))
+     (alist-replace "go" (list go-1.24) (package-native-inputs go-1.25)))
+    (properties
+     (alist-delete 'hidden? (package-properties go-1.24)))))
 
 (define-public go-1.27
   (package
