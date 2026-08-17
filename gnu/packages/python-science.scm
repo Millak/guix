@@ -5963,17 +5963,17 @@ its software deployment plugins.")
 (define-public python-snakemake-interface-storage-plugins
   (package
     (name "python-snakemake-interface-storage-plugins")
-    (version "3.6.0")
+    (version "4.4.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url (string-append "https://github.com/snakemake/"
-                                 "snakemake-interface-storage-plugins"))
-             (commit (string-append "v" version))))
+              (url (string-append "https://github.com/snakemake/"
+                                  "snakemake-interface-storage-plugins"))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dh52nkvq9zhh28xmbbq74kzhzagcy48d3vgb39bd3ckjz8libgy"))))
+        (base32 "0nv6zldqspjvy27g94rz4cpnk34jrh6gyfb2zkqk7y1mflk8i95n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5989,8 +5989,12 @@ its software deployment plugins.")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "python3" "tests/tests.py")))))))
-    (propagated-inputs (list python-reretry python-snakemake-interface-common
-                             python-throttler python-wrapt))
+    (propagated-inputs
+     (list python-humanfriendly
+           python-snakemake-interface-common
+           python-tenacity
+           python-throttler
+           python-wrapt))
     (native-inputs (list python-poetry-core python-pytest))
     (home-page (string-append "https://github.com/snakemake/"
                               "snakemake-interface-storage-plugins"))
