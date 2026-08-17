@@ -434,7 +434,7 @@ console.")
 (define-public melonds
   (package
     (name "melonds")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method git-fetch)
@@ -443,7 +443,7 @@ console.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qrpqgiw678kcdvjl6hm9wi223m6igngppkvws3q86lmkwrhg039"))))
+        (base32 "0dnqdicxvc247n8xnni6w6cdx6zvjfl7m6pd1shxr2jkvrmr6ja0"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -454,8 +454,8 @@ console.")
            pkg-config))
     (inputs
      (list enet
+           faad2
            libarchive
-           qtbase
            qtmultimedia
            qtsvg
            qtwayland
