@@ -10370,6 +10370,41 @@ the Valve SteamWorks API.")
 (define-public ecl-cl-steamworks
   (sbcl-package->ecl-package sbcl-cl-steamworks))
 
+(define-public sbcl-cl-stencl
+  (let ((commit "432cfdcd34d47eac5d0fbc93b876abafaa1f8659")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-stencl")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/dlowe/stencl")
+               (commit commit)))
+         (file-name (git-file-name "cl-stencl" version))
+         (sha256
+          (base32 "0b7ki5vrxw68g7vypvy86gs12smpwydcjwvwcyhvk1qwhaxhv6gf"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:asd-systems ''("stencl")))
+      (native-inputs (list sbcl-stefil))
+      (synopsis "Lightweight templating library")
+      (description
+       "A simple templating library loosely based on BRL (the Beautiful Report
+Language).  It leverages the power of the lisp reader to create a dynamic
+templating system that is easy to understand and powerful enough for most
+applications.")
+      (home-page "https://codeberg.org/dlowe/stencl")
+      (license (license:non-copyleft "file://COPYING")))))
+
+(define-public cl-stencl
+  (sbcl-package->cl-source-package sbcl-cl-stencl))
+
+(define-public ecl-cl-stencl
+  (sbcl-package->ecl-package sbcl-cl-stencl))
+
 (define-public sbcl-cl-store
   (let ((commit "c787337a16ea8cf8a06227f35933a4ec774746b3")
         (revision "1"))
