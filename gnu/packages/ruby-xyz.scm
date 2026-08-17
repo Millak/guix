@@ -71,6 +71,7 @@
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages compiler-tools)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
@@ -3723,6 +3724,70 @@ Cryptography (NaCl) library, also known as libsodium.  This provides a
 high-level toolkit for building cryptographic systems and protocols.")
     (home-page "https://github.com/RubyCrypto/rbnacl")
     (license license:expat)))
+
+(define-public ruby-rbs
+  (package
+    (name "ruby-rbs")
+    (version "4.1.3")
+    (source
+     (origin
+       (method git-fetch) ;for tests and templates
+       (uri (git-reference
+             (url "https://github.com/ruby/rbs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06v0yxbqiib9fwii6j5qyzyfpyla1rm6vrh1mn33fyx91b84zrpk"))
+       (modules '((guix build utils)
+                  (ice-9 regex)))
+       (snippet
+        '(begin
+           ;; These are generated files or unrunnable tests.
+           (for-each delete-file
+                     (cons* "src/lexer.c"
+                            ;; RDoc requires RBS as a runtime library.
+                            "test/rbs/annotate/rdoc_annotator_test.rb"
+                            "test/rbs/annotate/rdoc_source_test.rb"
+                            ;; These requires network connections.
+                            "test/rbs/cli_test.rb"
+                            "test/rbs/collection/config_test.rb"
+                            "test/rbs/collection/installer_test.rb"
+                            "test/rbs/collection/sources/git_test.rb"
+                            "test/rbs/environment_loader_test.rb"
+                            "test/rbs/test/runtime_test_test.rb"
+                            (map (lambda (file)
+                                   (let ((matched (string-match
+                                                   "templates/(.+)\\.erb" file)))
+                                     (match:substring matched 1)))
+                                 (find-files "templates" "\\.erb"))))
+           ;; Remove unnecessary usages of LLVM tools.
+           (substitute* "Rakefile"
+             (("sh \"clang-format .* src/lexer.c\"")
+              "")
+             (("Rake::Task\\[\"format:c\"\\]\\.invoke")
+              "")
+             (("compile_task\\.prerequisites\\.unshift\\(:setup_extconf_compile_commands_json\\)")
+              ""))))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'compile
+            (lambda _
+              (invoke "rake" "lexer" "templates")
+              (invoke "rake" "compile")))
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs (list ruby-rake-compiler re2c ruby-json-schema ruby-rspec))
+    (propagated-inputs (list ruby-logger ruby-prism ruby-tsort))
+    (synopsis "Type signatures for Ruby")
+    (description
+     "RBS is the language for type signatures for Ruby and standard library
+definitions.")
+    (home-page "https://github.com/ruby/rbs")
+    (license (list license:ruby license:bsd-2))))
 
 (define-public ruby-rbtree
   (package
