@@ -2582,6 +2582,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/torbrowser-use-system-wide-dir.patch     \
   %D%/packages/patches/torbrowsers-add-store-to-rdd-allowlist.patch     \
   %D%/packages/patches/transcode-ffmpeg.patch	\
+  %D%/packages/patches/trurl-fix-tests-for-newer-libcurl.patch \
+  %D%/packages/patches/trurl-mark-additional-tests-case-sensitive.patch \
   %D%/packages/patches/trytond-add-guix_trytond_path.patch	\
   %D%/packages/patches/ttf2eot-cstddef.patch			\
   %D%/packages/patches/tuir-python-3.12-support.patch	\
