@@ -2462,7 +2462,6 @@ It is usually a complement to @code{ffmpeg-normalize}.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:build-backend "setuptools.build_meta" ; recent versions use uv-build
       #:test-flags
       #~(list
          ;; These tests rely on a remote API.
@@ -2487,7 +2486,7 @@ It is usually a complement to @code{ffmpeg-normalize}.")
                   `("FFMPEG_PATH" = (,ffm)))))))))
     (native-inputs (list git-minimal/pinned ; for replaygain tests
                          python-pytest
-                         python-setuptools))
+                         python-uv-build))
     (inputs (list bash-minimal ffmpeg))
     (propagated-inputs (list ffmpeg-progress-yield
                              python-colorlog
