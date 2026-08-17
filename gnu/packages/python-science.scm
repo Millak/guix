@@ -6072,6 +6072,37 @@ progress bars.")
 implementing snakemake's software-deployment interface.")
     (license license:expat)))
 
+(define-public python-snakemake-software-deployment-plugin-envmodules
+  (package
+    (name "python-snakemake-software-deployment-plugin-envmodules")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url (string-append "https://github.com/snakemake/"
+                                  "snakemake-software-deployment-plugin-envmodules"))
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1764502r8vqg3k61wjc81rfi5v89rxj0njhpcfynxxx82rnda0vv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests/test_plugin.py")))
+    (propagated-inputs
+     (list python-snakemake-interface-common
+           python-snakemake-interface-software-deployment-plugins))
+    (native-inputs (list python-hatchling python-pytest))
+    (home-page (string-append "https://github.com/snakemake/"
+                              "snakemake-software-deployment-plugin-envmodules"))
+    (synopsis "Environment modules plugin for Snakemake")
+    (description
+     "This package provides a software deployment plugin for Snakemake
+using environment modules.")
+    (license license:expat)))
+
 (define-public python-sparse
   (package
     (name "python-sparse")
