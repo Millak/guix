@@ -30,6 +30,7 @@
 
 (define-module (gnu packages books)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system asdf)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system emacs)
@@ -57,6 +58,7 @@
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages lisp-xyz)
   #:use-module (gnu packages music)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -115,6 +117,148 @@ prefaces by both authors written for the occasion.  It is a rare kind of
 biography, where the reader has the benefit of both the biographer's original
 words and the subject's response.")
     (license license:fdl1.3+)))
+
+(define-public book-metaspec
+  ;; No release tag
+  (let ((commit "108544f2e5f483571522f9aa52e6097f47d0c0f1")
+        (revision "0"))
+    (package
+      (name "book-metaspec")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/dlowe/metaspectre")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "131445qrxwfn7057p9jjg2lnpwyfj0n49cbcfws6jsd2lhv9fvbg"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:tests? #f ;no tests
+        ;; Docs are named metaspec, system name is metaspectre
+        #:asd-systems ''("metaspectre")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; metaspectre has internal version & origin variables that are
+            ;; overridden by a config file in the source root.  The variables
+            ;; as specified as a plist and show up in the rendered docs.
+            (add-after 'unpack 'set-version
+              (lambda _
+                (with-output-to-file "config.lisp-expr"
+                  (lambda _
+                    (format #t "~s"
+                            '(:version #$version
+                              ;; URL of origin repository
+                              :origin "https://codeberg.org/dlowe/metaspectre"
+                              ;; Enforce reproducibility
+                              :built "1970-01-01T00:00:00Z"))))))
+            (add-after 'set-version 'fix-render-times
+              (lambda _
+                ;; Ensure that HTML rendering of SDOC uses epoch. There is no
+                ;; control of this via the config.lisp-expr plist.
+                (substitute* "src/render.lisp"
+                  (("\\(\\*render-built\\*\\s+(\\(?[a-zA-Z0-9\\-]+\\)?)\\)")
+                   "(*render-built* \"1970-01-01T00:00:00Z\")"))
+                ;; parser.lisp attempts to output UTC current time (during
+                ;; build) despite the :built entry in the config.lisp-expr
+                ;; plist.
+                (substitute* "src/parser.lisp"
+                  ((":built \\(iso8601-utc\\)")
+                   ":built \"1970-01-01T00:00:00Z\""))))
+            ;; metaspectre is a "non-standard" ASDF system.  The system is
+            ;; essentially a library of functions.  You manually drive the
+            ;; conversion of the ANSI spec to sdoc and render the sdoc.
+            (add-after 'build 'convert-to-sdoc
+              (lambda _
+                (lisp-eval-program
+                 `((require :asdf)
+                   (asdf:initialize-source-registry
+                    ;; We tell asdf that the system root is the unpacked source
+                    ;; tree.  metaspectre builds everything relative to the
+                    ;; system directory, into an out/ directory.
+                    (list :source-registry
+                          (list :tree (uiop:ensure-pathname ,(getcwd)
+                                                            :truenamize t
+                                                            :ensure-directory t))
+                          :inherit-configuration))
+                   (require :metaspectre)
+                   ;; The metaspectre functions are not exported/made public
+                   ;; from their packages.  They are intended to be run by you
+                   ;; entering those packages from the REPL.
+                   (metaspectre::convert-whole-spec)))))
+            (add-after 'convert-to-sdoc 'render-html
+              (lambda _
+                (lisp-eval-program
+                 `((require :asdf)
+                   (asdf:initialize-source-registry
+                    (list
+                     :source-registry
+                     (list :tree (uiop:ensure-pathname ,(getcwd)
+                                                       :truenamize t
+                                                       :ensure-directory t))
+                     :inherit-configuration))
+                   (require :metaspectre)
+                   (metaspectre::render-whole-spec)))))
+            ;; XXX: render-texinfo only depends on convert-to-sdoc phase.
+            ;; However, we need to impose an ordering so that the install phase
+            ;; has all the files it expects to install.
+            (add-after 'render-html 'render-texinfo
+              (lambda _
+                (lisp-eval-program
+                 `((require :asdf)
+                   (asdf:initialize-source-registry
+                    (list
+                     :source-registry
+                     (list :tree (uiop:ensure-pathname ,(getcwd)
+                                                       :truenamize t
+                                                       :ensure-directory t))
+                     :inherit-configuration))
+                   (require :metaspectre)
+                   (metaspectre/texinfo::render-whole-spec)))
+                (with-directory-excursion "out/texi"
+                  (invoke "makeinfo" "--no-split" "metaspec.texi"))))
+            ;; XXX: Like the render-texinfo phase, we have imposed an ordering
+            ;; on the install phase.  It must happen after ALL rendering, but
+            ;; our imposed SDOC->HTML->Texinfo ordering means install must come
+            ;; after Texinfo generation.
+            (add-after 'render-texinfo 'install
+              (lambda* (#:key name outputs #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (html (string-append out "/share/doc/" name))
+                       (info (string-append out "/share/info")))
+                  ;; NOTE: Copying from unpacked out/ directory that metaspectre
+                  ;; creates.
+                  (copy-recursively "out/html" html)
+                  (install-file "out/texi/metaspec.info" info))))
+            ;; The metaspectre package/system is only intended for building the
+            ;; metaspec documentation.  It should never really be consumed by
+            ;; anything downstream.  So we remove all of the files that various
+            ;; phases in asdf-build-system/sbcl produce/install.
+            (add-after 'cleanup 'remove-sbcl-files
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((out (assoc-ref outputs "out")))
+                  (with-directory-excursion out
+                    (delete-file-recursively "etc")
+                    (delete-file-recursively "lib")
+                    (delete-file-recursively "share/common-lisp"))))))))
+      (native-inputs (list cl-alexandria cl-ppcre cl-stencl texinfo))
+      (home-page "https://metaspec.dev/")
+      (synopsis "Produce ANSI Common Lisp standard")
+      (description
+       "A parsed and rendered version of the draft ANSI standard for Common Lisp
+(dpANS3).  Produces an HTML rendering with search features, an Info manual, and
+an Emacs package.  The default HTML rendering is similar to the Common Lisp
+Hyperspec.")
+      (license (list
+                ;; metaspec itself
+                license:expat
+                ;; Potential outputs
+                license:cc0
+                ;; ANSI draft text
+                license:public-domain)))))
 
 (define-public book-sicp
   (let ((commit "bda03f79d6e2e8899ac2b5ca6a3732210e290a79")
