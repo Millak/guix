@@ -5836,6 +5836,37 @@ for Snakemake and its plugins.")
 its executor plugins.")
     (license license:expat)))
 
+(define-public python-snakemake-interface-logger-plugins
+  (package
+    (name "python-snakemake-interface-logger-plugins")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url (string-append "https://github.com/snakemake/"
+                                  "snakemake-interface-logger-plugins"))
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "138z6i810v374h27gj9jxg5jwdz6ccyirgv2f2l313j1iivj7wfa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "tests/tests.py")))
+    (propagated-inputs (list python-snakemake-interface-common))
+    (native-inputs
+     (list python-hatchling
+           python-snakemake-logger-plugin-rich
+           python-pytest))
+    (home-page (string-append "https://github.com/snakemake/"
+                              "python-snakemake-interface-logger-plugins"))
+    (synopsis "Interface for Snakemake logger plugins")
+    (description
+     "This package provides a stable interface for interactions between Snakemake and
+its logger plugins.")
+    (license license:expat)))
+
 (define-public python-snakemake-interface-report-plugins
   (package
     (name "python-snakemake-interface-report-plugins")
