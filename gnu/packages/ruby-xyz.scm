@@ -13300,7 +13300,11 @@ technique.")
 (define-public ruby-rdoc
   (package
     (name "ruby-rdoc")
-    (version "6.7.0")
+    (version "8.0.0")
+    ;; The source contains some generated files via racc and kpeg.
+    ;; However the generated result is not deterministic [1] with
+    ;; multiple runs.
+    ;; [1] https://github.com/ruby/rdoc/blob/v8.0.0/Rakefile#L91-L93
     (source
      (origin
        (method git-fetch)
@@ -13310,23 +13314,18 @@ technique.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0dy997zi7k17c2yjlq1y7zl9yaiym1f4jgfh84qqzhwl1qm6v41j"))))
+         "1ga4d34allpqglal403x897pxq0a713v4f6w0ln43x8xv362mapf"))))
     (build-system ruby-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'generate
-           ;; 'gem build' doesn't honor Rakefile dependencies (see:
-           ;; https://github.com/ruby/rdoc/issues/432#issuecomment-650808977).
-           (lambda _
-             (invoke "rake" "generate"))))))
-    (native-inputs (list bundler ruby-kpeg ruby-racc ruby-rubocop
-                         ruby-test-unit-ruby-core))
+    ;; Document generation in the install phase causes errors since it
+    ;; conflicts with the Ruby's builtin version of RDoc.
+    (arguments (list #:gem-flags #~(list "--no-document")))
+    (native-inputs (list ruby-test-unit-ruby-core))
+    (propagated-inputs (list ruby-erb ruby-tsort ruby-prism ruby-rbs))
     (home-page "https://ruby.github.io/rdoc/")
     (synopsis "HTML and command-line documentation utility")
     (description "RDoc produces HTML and command-line documentation for Ruby
-projects.  RDoc includes the +rdoc+ and +ri+ tools for generating and displaying
-documentation from the command-line.")
+projects.  RDoc includes the @samp{rdoc} and @samp{ri} tools for
+generating and displaying documentation from the command-line.")
     (license license:gpl2+)))
 
 (define-public ruby-sass-listen
