@@ -3756,10 +3756,7 @@ module.  SipHash-1-3 and SipHash-2-4 variants are currently implemented.")
        (sha256
         (base32 "06p776nf2v5r9643i6f7hv8z984bjiz0k6z9whzla6b2y637mk93"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; XXX: We don't have python-uv-build yet.
-     (list #:build-backend "setuptools.build_meta"))
-    (native-inputs (list python-pytest python-setuptools))
+    (native-inputs (list python-pytest python-uv-build))
     (home-page "https://github.com/pythonanywhere/snakesay")
     (synopsis "Like @command{cowsay} but with Python flavor")
     (description
