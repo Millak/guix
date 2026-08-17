@@ -1348,6 +1348,13 @@ libfakechroot.so and related ld.so machinery as a fallback."
                              (elf-loader-compile-flags program)))
               (delete-file "run.c")))
 
+          (define (executable? file)
+            ;; Return #t if FILE is a regular file and is executable.
+            (let ((s (stat file #f)))
+              (and s
+                   (eq? 'regular (stat:type s))
+                   (not (zero? (logand (stat:mode s) #o100))))))
+
           (setvbuf (current-output-port) 'line)
 
           ;; Link the top-level files of PACKAGE so that search paths are
@@ -1360,7 +1367,7 @@ libfakechroot.so and related ld.so machinery as a fallback."
                     (scandir input))
 
           (receive (executables others)
-              (partition executable-file?
+              (partition executable?
 			 ;; Note: Trailing slash in case these are symlinks.
                          (append (find-files (string-append input "/bin/"))
                                  (find-files (string-append input "/sbin/"))
