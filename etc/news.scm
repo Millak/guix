@@ -44,6 +44,53 @@
 (channel-news
  (version 0)
 
+ (entry (commit "e27f3d9d92115a1805b306f7555acfac36be660a")
+        (title
+         (en "GNOME 49 is now available")
+         (fr "GNOME 49 maintenant disponible")
+         (pt "GNOME 49 já está disponível")
+         (de "GNOME 49 jetzt verfügbar"))
+        (body
+         (en "The GNOME desktop was updated to version 49, this includes updates
+to most apps, bug fixes and a new shepherd-based session manager.  See
+@url{https://release.gnome.org/49/, GNOME 49 release notes} for the upstream
+changes.
+
+The gnome-session in GNOME 49 has acquired a dependency on systemd.  It has been
+replaced with @url{https://gitlab.gnome.org/noe/gnome-session-shepherd,
+gnome-session-shepherd}, a new session manager based on the GNU Shepherd.  It is
+responsible for starting GDM and your GNOME session, as well as your XDG
+Autostart desktop files.  After updgrading your system, you can interact with it
+via the “gherd” command.
+
+The updates includes non backwards-compatible changes that may break
+applications (Keyring, Tracker) when rolling back to GNOME 48.  Consider backing
+up the .local directories of your users before switching system generations.
+
+If you encounter any bugs, feel free to report them directly on the Guix bug
+tracker on Codeberg.")
+         (de "Die GNOME-Desktopumgebung wurde auf Version 49 aktualisiert.
+Dabei wurden die meisten Anwendungen aktualisiert, Fehler behoben und eine neue
+Shepherd-basierte Sitzungsverwaltung eingeführt.  Siehe
+@url{https://release.gnome.org/49/, GNOME 49 release notes} für die Liste der
+Änderungen.
+
+gnome-session in GNOME 49 hängt mittlerweile von systemd ab.  Es wurde ersetzt
+durch @url{https://gitlab.gnome.org/noe/gnome-session-shepherd,
+gnome-session-shepherd}, einer durch GNU Shepherd vermittelten
+Sitzungsverwaltung.  Mit ihr wird GDM sowie Ihre GNOME-Sitzung und Ihre per XDG
+Autostart vorgesehenen .desktop-Dateien gestartet. Nachdem Sie Ihr System
+aktualisiert haben, bedienen Sie sie mit dem Befehl „gherd“.
+
+Beim Aktualisieren kommt es zu nicht abwärtskompatiblen Änderungen, die beim
+Zurücksetzen auf GNOME 48 zu Fehlern in Anwendungen führen können
+(Schlüsselbund, Tracker).  Eventuell möchten Sie eine Sicherheitskopie des
+.local-Verzeichnisses Ihrer Benutzerkonten anlegen, bevor Sie die
+Systemgeneration wechseln.
+
+Wenn Sie auf Fehler stoßen, melden Sie diese gerne direkt auf Guix’
+Fehlerdatenbank auf Codeberg.")))
+
  (entry (commit "125078e80dd211af79ae3b1a0a09e2a1a8396f0a")
         (title
          (en "Linux-libre 5.10, 5.15, 6.19 and 7.0 removed"))
