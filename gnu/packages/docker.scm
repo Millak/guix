@@ -418,6 +418,30 @@ store API.  It allows programmers to interact with a Docker registry using
 Python without keeping their credentials in a Docker configuration file.")
     (license license:asl2.0)))
 
+(define-public python-udocker
+  (package
+    (name "python-udocker")
+    (version "1.3.17")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/indigo-dc/udocker")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nbsj3kwlnkr12ykl1xd0r2hykikhrs0z9wgfb26y2nxpf85z3rz"))))
+    (build-system pyproject-build-system)
+    ;; Daemon chroot inconsistencies.
+    (arguments (list #:test-flags #~(list "-k" "not test_05__get_volume_bindings")))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/indigo-dc/udocker")
+    (synopsis "Execute simple docker containers without root privileges")
+    (description
+     "This package provides a basic user tool to execute simple docker containers in
+batch or interactive systems without root privileges.")
+    (license license:asl2.0)))
+
 (define-public containerd
   (package
     (name "containerd")
