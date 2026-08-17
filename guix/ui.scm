@@ -2447,26 +2447,17 @@ found."
 
   (define module
     ;; Check if there is a matching extension.
-    (match (search-path (extension-directories)
-                        (format #f "~a.scm" command))
-      (#f
-       (catch 'misc-error
-         (lambda ()
-           (resolve-interface `(guix scripts ,command)))
-         (lambda _
-           (let ((hint (command-hint command (commands))))
-             (format (current-error-port)
-                     (G_ "guix: ~a: command not found~%") command)
-             (when hint
-               (display-hint (G_ "Did you mean @code{~a}?") hint))
-             (show-guix-usage)))))
-      (file
-       (load file)
-       (let ((maybe-extension-path
-              (format #f "/guix/extensions/~a.scm" command)))
-         (if (string-suffix? maybe-extension-path file)
-             (resolve-interface `(guix extensions ,command))
-             (resolve-interface `(guix scripts ,command)))))))
+    (catch 'misc-error
+      (lambda ()
+        (or (false-if-exception (resolve-interface `(guix scripts ,command)))
+            (resolve-interface `(guix extensions ,command))))
+      (lambda _
+        (let ((hint (command-hint command (commands))))
+          (format (current-error-port)
+                  (G_ "guix: ~a: command not found~%") command)
+          (when hint
+            (display-hint (G_ "Did you mean @code{~a}?") hint))
+          (show-guix-usage)))))
 
   (let ((command-main (module-ref module
                                   (symbol-append 'guix- command))))
@@ -2489,6 +2480,9 @@ and signal handling have already been set up."
   ;; The default %LOAD-EXTENSIONS includes the empty string, which doubles the
   ;; number of 'stat' calls per entry in %LOAD-PATH.  Shamelessly remove it.
   (set! %load-extensions '(".scm"))
+
+  ;; Extensions take precedence over core commands.
+  (set! %load-path (append (extension-directories) %load-path))
 
   ;; Disable canonicalization so we don't don't stat unreasonably.
   (with-fluids ((%file-port-name-canonicalization #f))
