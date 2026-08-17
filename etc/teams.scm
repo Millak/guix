@@ -1445,11 +1445,6 @@ the \"texlive\" importer."
                        "gabber")
   audio community documentation electronics embedded)
 
-(define-member (person "Ekaitz Zarraga"
-                       "ekaitz@elenq.tech"
-                       "ekaitz-zarraga")
-  bootstrap zig electronics)
-
 (define-member (person "Divya Ranjan Pattanaik"
                        "divya@subvertising.org"
                        "divyaranjan")
