@@ -200,7 +200,7 @@ standard library headers.")
              (substitute* "cmake/DyninstPlatform.cmake"
                (("\"i386\"") "\"i686\"")))))))
     (propagated-inputs
-     (list elfutils libiberty boost onetbb))
+     (list elfutils libiberty boost onetbb-2022))
 
     ;; Supported systems according to 'cmake/DyninstPlatform.cmake'.
     (supported-systems '("x86_64-linux" "i686-linux"
