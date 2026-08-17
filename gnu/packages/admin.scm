@@ -1953,13 +1953,13 @@ maintenance releases.")
 (define-public dhcpcd
   (package
     (name "dhcpcd")
-    (version "10.3.2")
+    (version "10.5.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/NetworkConfiguration/dhcpcd")
-             (commit (string-append "v" version))))
+              (url "https://github.com/NetworkConfiguration/dhcpcd")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1z5rpi0n2vwhkh3c4d0dxwp38fl18br58jpy7kzh97gzg3gpk5dl"))))
