@@ -244,7 +244,7 @@ simple and consistent.")
 (define-public papirus-icon-theme
   (package
     (name "papirus-icon-theme")
-    (version "20250501")
+    (version "20260801")
     (source
      (origin
        (method git-fetch)
@@ -252,7 +252,7 @@ simple and consistent.")
              (url "https://github.com/PapirusDevelopmentTeam/papirus-icon-theme")
              (commit version)))
        (sha256
-        (base32 "1k1fjvj01iy6yjkx8r65h6ycvhliv8x85zsysnd3x3m9h173kvxs"))
+        (base32 "1dlmy5zycmls91gdl0bf22qi783h68zch8ashjmjs88z69is3k6f"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
