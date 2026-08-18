@@ -8,6 +8,7 @@
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2024-2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
+;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2714,6 +2715,65 @@ particular cross-platform spellings of the PATH environment variable key.")
  the file system, minimizing filesystem and path string munging operations to\
  the greatest degree possible..")
     (home-page (git-reference-url (origin-uri source)))
+    (license license:expat)))
+
+(define-public node-preact
+  (package
+    (name "node-preact")
+    (version "10.27.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/preactjs/preact")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d5glww3v25yc606aqsjgicwa9mav9fnjii8684ax1bsxy2gfgd2"))))
+    (build-system node-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:modules '((guix build node-build-system)
+                  (ice-9 match)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-dependencies 'delete-dependencies
+            (lambda _
+              (modify-json
+               (delete-fields '(("scripts" "prepare")
+                                ("scripts" "build")
+                                ("scripts" "postbuild")
+                                ("devDependencies"))
+                              #:strict? #f))))
+          (replace 'build
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let ((esbuild (search-input-file inputs "/bin/esbuild")))
+                (for-each
+                 (match-lambda
+                   ((entry outfile format)
+                    (invoke esbuild entry
+                            (string-append "--outfile=" outfile)
+                            (string-append "--format=" format)
+                            "--bundle" "--platform=browser")))
+                 '(("src/index.js" "dist/preact.js" "cjs")
+                   ("src/index.js" "dist/preact.mjs" "esm")
+                   ("src/index.js" "dist/preact.module.js" "esm")
+                   ("src/index.js" "dist/preact.umd.js" "iife")
+                   ("src/cjs.js" "dist/preact.min.js" "iife")
+                   ("hooks/src/index.js" "hooks/dist/hooks.js" "cjs")
+                   ("hooks/src/index.js" "hooks/dist/hooks.mjs" "esm")
+                   ("hooks/src/index.js" "hooks/dist/hooks.module.js" "esm")
+                   ("hooks/src/index.js" "hooks/dist/hooks.umd.js" "iife")))))))))
+    (native-inputs
+     (list esbuild))
+    (home-page "https://preactjs.com")
+    (synopsis "Fast 3kb React-compatible virtual DOM library")
+    (description
+     "Preact is a fast 3kB alternative to React with the same modern API.  It
+provides the thinnest possible virtual DOM abstraction on top of the DOM,
+along with the @code{preact/hooks} addon for stateful function components.")
     (license license:expat)))
 
 (define-public node-pbf
