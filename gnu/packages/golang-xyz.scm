@@ -20348,6 +20348,39 @@ length-delimited slices.  It's helpful for building wire protocols.")
 features for padding and filtering escape sequences.")
     (license license:bsd-3)))
 
+(define-public go-github-com-litao91-goldmark-mathjax
+  (package
+    (name "go-github-com-litao91-goldmark-mathjax")
+    (version "0.0.0-20210217064022-a43cf739a50f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/litao91/goldmark-mathjax")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k2436r6pa58rnxxd1dhzfcfl7n8q4cqnjr22bvmwchzf7ixrrpn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/litao91/goldmark-mathjax"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-yuin-goldmark))
+    (home-page "https://github.com/litao91/goldmark-mathjax")
+    (synopsis "Mathjax extension for goldmark")
+    (description
+     "goldmark-mathjax is an extension for the
+@url{http://github.com/yuin/goldmark, goldmark} that adds both block math and
+inline math support.
+
+It translate inline math equation quoted by @code{$} and display math block
+quoted by @code{$$} into MathJax compatible format. hyphen @code{_} won't
+break LaTeX render within a math element any more.")
+    (license license:expat)))
+
 (define-public go-github-com-lithammer-dedent
   (package
     (name "go-github-com-lithammer-dedent")
