@@ -9303,6 +9303,8 @@ user provided data sets.")
     (license license:bsd-3)))
 
 (define-public python-pysatmadrigal
+  ;; XXX: Project is unmaintained and potentially not compatible with NumPy 2
+  ;; and Pandas 3.
   (package
     (name "python-pysatmadrigal")
     (version "0.2.0")
@@ -9318,9 +9320,12 @@ user provided data sets.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 126 passed, 271 skipped, 59 deselected, 1304 warnings
       #:test-flags
-      ;; ValueError: unable to open url http://cedar.openmadrigal.org
-      #~(list "-k" "not test_download and not test_remote_file_list")
+      #~(list "--ignore=pysatMadrigal/tests/test_methods_general.py"
+              "--ignore=pysatMadrigal/tests/test_methods_dmsp.py"
+              ;; ValueError: unable to open url http://cedar.openmadrigal.org
+              "-k" "not test_download and not test_remote_file_list")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'sanity-check 'set-HOME
@@ -9333,7 +9338,6 @@ user provided data sets.")
                       "import pysat; pysat.params['data_dirs'] = 'pysatData'"))))))
     (native-inputs
      (list python-pytest
-           python-pytest-cov    ;remove after pyton-team is merged
            python-setuptools))
     (propagated-inputs
      (list python-h5py
