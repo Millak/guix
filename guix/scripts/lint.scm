@@ -37,6 +37,8 @@
   #:use-module (guix store)
   #:use-module (guix scripts)
   #:use-module (guix scripts build)
+  #:autoload (guix scripts refresh) (packages-from-manifest)
+  #:use-module (guix scripts refresh)
   #:use-module (gnu packages)
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
@@ -137,6 +139,9 @@ run the checkers on all packages.\n"))
   -e, --expression=EXPR  consider the package EXPR evaluates to"))
 
   (display (G_ "
+  -m, --manifest=FILE    build the packages that the manifest given in FILE
+                         evaluates to"))
+  (display (G_ "
   -L, --load-path=DIR    prepend DIR to the package module search path"))
   (newline)
   (display (G_ "
@@ -198,6 +203,9 @@ run the checkers on all packages.\n"))
         (option '(#\e "expression") #t #f
                 (lambda (opt name arg result)
                   (alist-cons 'expression arg result)))
+        (option '(#\m "manifest") #t #f
+                (lambda (opt name arg result)
+                  (alist-cons 'manifest arg result)))
 
         (option '(#\V "version") #f #f
                 (lambda args
@@ -219,16 +227,18 @@ run the checkers on all packages.\n"))
 
   (let* ((opts (parse-options))
          (whole-file? (assoc-ref opts 'whole-file?))
-         (args (filter-map (if whole-file?
+         (args (append-map (if whole-file?
                                (match-lambda
-                                 (('argument . file) file)
-                                 (_ #f))
+                                 (('argument . file) (list file))
+                                 (_ '()))
                                (match-lambda
                                  (('argument . spec)
-                                  (specification->package spec))
+                                  (list (specification->package spec)))
                                  (('expression . exp)
-                                  (read/eval-package-expression exp))
-                                 (_ #f)))
+                                  (list (read/eval-package-expression exp)))
+                                 (('manifest . man)
+                                  (packages-from-manifest man))
+                                 (_ '())))
                            (reverse opts)))
          (no-checkers (or (assoc-ref opts 'exclude) '()))
          (the-checkers (filter (lambda (checker)

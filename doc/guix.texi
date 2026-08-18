@@ -16927,6 +16927,12 @@ guix lint @var{options} @var{package}@dots{}
 @end example
 
 If no package is given on the command line, then all packages are checked.
+To check packages in a particular manifest, use:
+
+@example
+guix lint @var{options} --manifest=@var{file} @dots{}
+@end example
+
 To check packages in particular source files, the syntax is:
 
 @example
@@ -16960,6 +16966,10 @@ This is useful to unambiguously designate packages, as in this example:
 @example
 guix lint -c archival -e '(@@ (gnu packages guile) guile-3.0)'
 @end example
+
+@item --manifest=@var{file}
+@itemx -m @var{file}
+Run checkers on packages in manifest @var{file} (@pxref{Writing Manifests}).
 
 @item --no-network
 @itemx -n

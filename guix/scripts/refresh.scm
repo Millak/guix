@@ -52,7 +52,8 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-37)
   #:use-module (srfi srfi-71)
-  #:export (guix-refresh))
+  #:export (guix-refresh
+            packages-from-manifest))
 
 
 ;;;

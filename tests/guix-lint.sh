@@ -52,6 +52,10 @@ cat > "$module_dir/foo.scm"<<EOF
     (name "bar")))
 EOF
 
+cat > "${module_dir}/foomanifest.scm"<<EOF
+(specifications->manifest '("dummy"))
+EOF
+
 GUIX_PACKAGE_PATH="$module_dir"
 export GUIX_PACKAGE_PATH
 
@@ -64,8 +68,8 @@ grep_warning ()
 # Issues with the dummy package:
 # 1) the synopsis starts with the package name;
 # 2) the synopsis starts with a lower-case letter;
-# 3) the description has a single space following the end-of-sentence period;
-# 4) the alphabetically lesser bar package succeeds it.
+# 3) the description has a single space following the end-of-sentence period;
+# 4) the alphabetically lesser bar package succeeds it.
 
 out=`guix lint -c synopsis,description dummy 2>&1`
 test `grep_warning "$out"` -eq 3
@@ -77,6 +81,10 @@ out=`guix lint -c description dummy 2>&1`
 test `grep_warning "$out"` -eq 1
 
 out=`guix lint -c description,synopsis dummy 2>&1`
+test `grep_warning "$out"` -eq 3
+
+# Test specifying a manifest.
+out=`guix lint -c synopsis,description -m ${module_dir}/foomanifest.scm 2>&1`
 test `grep_warning "$out"` -eq 3
 
 working_dir="$(pwd)"
