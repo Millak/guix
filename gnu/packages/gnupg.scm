@@ -364,32 +364,30 @@ compatible to GNU Pth.")
     (arguments
      (list
       #:configure-flags
-      ;; Always use quasiquote on the next core-updates cycle.
-      #~(#$(if (%current-target-system)
-               #~quasiquote
-               #~quote)
-         (#$@(if (%current-target-system)
-                 #~(,(string-append
-                      "--with-libgpg-error-prefix="
-                      #$(this-package-input "libgpg-error"))
-                    ,(string-append
-                      "--with-libgcrypt-prefix="
-                      #$(this-package-input "libgcrypt"))
-                    ,(string-append
-                      "--with-libassuan-prefix="
-                      #$(this-package-input "libassuan"))
-                    ,(string-append
-                      "--with-ksba-prefix="
-                      #$(this-package-input "libksba"))
-                    ,(string-append
-                      "--with-npth-prefix="
-                      #$(this-package-input "npth")))
-                 #~())
-          ;; Otherwise, the test suite looks for the `gpg`
-          ;; executable in its installation directory in
-          ;; /gnu/store before it has been installed.
-          "--enable-gnupg-builddir-envvar"
-          "--enable-all-tests"))
+      #~(list
+           ;; Otherwise, the test suite looks for the `gpg`
+           ;; executable in its installation directory in
+           ;; /gnu/store before it has been installed.
+           "--enable-gnupg-builddir-envvar"
+           "--enable-all-tests"
+           #$@(if (%current-target-system)
+                  (list
+                    #~(string-append
+                        "--with-libgpg-error-prefix="
+                        #$(this-package-input "libgpg-error"))
+                    #~(string-append
+                        "--with-libgcrypt-prefix="
+                        #$(this-package-input "libgcrypt"))
+                    #~(string-append
+                        "--with-libassuan-prefix="
+                        #$(this-package-input "libassuan"))
+                    #~(string-append
+                        "--with-ksba-prefix="
+                        #$(this-package-input "libksba"))
+                    #~(string-append
+                        "--with-npth-prefix="
+                        #$(this-package-input "npth")))
+                  '()))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'patch-paths
