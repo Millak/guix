@@ -3170,6 +3170,28 @@ data (INSERT, UPDATE, DELETE).")
 temporary directory, and destroys it when the perl script exits.")
     (license license:artistic2.0)))
 
+(define-public pg-prove
+  (package
+    (name "pg-prove")
+    (version "3.37")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/D/DW/DWHEELER/TAP-Parser-SourceHandler-pgTAP-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0zarga5pvl6wdc3jv3brvzfgids4zzsdddgp65qnh7ia8j0qb4kf"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (home-page "https://pgtap.org/pg_prove.html")
+    (synopsis "Run and harness pgTAP tests")
+    (description
+     "@command{pg_prove} is a command-line application to run one or more
+pgTAP tests in a PostgreSQL database.  The output of the tests is harvested
+and processed by TAP::Harness in order to summarize the results of the test.")
+    (license license:perl-license)))
+
 (define-public unixodbc
   (package
    (name "unixodbc")
