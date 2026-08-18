@@ -11834,6 +11834,34 @@ variables.")
 Alphanum Algorithm} developed by Dave Koelle in Go.")
     (license license:bsd-3)))
 
+(define-public go-github-com-fahedouch-go-logrotate
+  (package
+    (name "go-github-com-fahedouch-go-logrotate")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fahedouch/go-logrotate")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kdyvrynkcbqrwilz5qhf57170f81d0sfypgqwg8k1la81dinw5z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/fahedouch/go-logrotate"))
+    (propagated-inputs
+     (list go-github-com-burntsushi-toml
+           go-github-com-djherbis-times
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/fahedouch/go-logrotate")
+    (synopsis "Logrotate in Go")
+    (description
+     "go-logrotate is a Go package for writing logs to rolling files, it is
+based on @url{https://github.com/natefinch/lumberjack,lumberjack}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-fatih-camelcase
   (package
     (name "go-github-com-fatih-camelcase")
