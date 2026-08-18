@@ -46,6 +46,7 @@
 ;;; Copyright © 2026 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
+;;; Copyright © 2026 Rodion Goritskov <rodion@goritskov.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1299,16 +1300,16 @@ exception-handling library.")
 (define-public lib2geom/pinned
   (package
     (name "lib2geom")
-    (version "1.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://gitlab.com/inkscape/lib2geom")
-                    (commit version)))
-              (file-name (git-file-name "lib2geom" version))
-              (sha256
-               (base32
-                "1ypcn0yxk9ny7qg8s8h3px2wpimhfgkwk7x1548ky12iqmdjjmcn"))))
+    (version "1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/inkscape/lib2geom")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gfgzwm5s50caj5s6l7irgmlifpmypd0fnm6ckzli1fdziwjgdwi"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1359,7 +1360,9 @@ exception-handling library.")
                #~((add-after 'unpack 'fix-aarch64-faulty-test
                     (lambda _
                       (substitute* "tests/CMakeLists.txt"
-                        (("elliptical-arc-test") ""))))))
+                        (("elliptical-arc-test") ""))
+                      (substitute* "tests/CMakeLists.txt"
+                        (("polynomial-test") ""))))))
               (else
                #~())))))
     (native-inputs (list python-wrapper googletest pkg-config))
@@ -1380,31 +1383,6 @@ basic geometries.")
 (define-public lib2geom
   (package
     (inherit lib2geom/pinned)
-    (name "lib2geom")
-    (version "1.4")
-    (source
-     (origin
-       (inherit (package-source lib2geom/pinned))
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://gitlab.com/inkscape/lib2geom")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0gfgzwm5s50caj5s6l7irgmlifpmypd0fnm6ckzli1fdziwjgdwi"))))
-    (arguments
-     ;; https://gitlab.com/inkscape/lib2geom/-/work_items/82
-     (if (or (target-aarch64?)
-             (target-riscv64?)
-             (target-ppc64le?))
-         (substitute-keyword-arguments arguments
-           ((#:phases phases #~%standard-phases)
-            #~(modify-phases #$phases
-                (add-after 'unpack 'disable-polynomial-test
-                  (lambda _
-                    (substitute* "tests/CMakeLists.txt"
-                      (("polynomial-test") "")))))))
-         arguments))
     (properties '((hidden? . #f)))))
 
 (define-public pstoedit
