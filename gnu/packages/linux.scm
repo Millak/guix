@@ -170,7 +170,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
-  #:use-module (gnu packages networking)
+  #:use-module ((gnu packages networking) #:hide (libcamera-minimal))
   #:use-module (gnu packages nss)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages oneapi)
