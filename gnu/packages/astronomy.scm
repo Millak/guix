@@ -7754,13 +7754,13 @@ will depend on your needs.")
 (define-public python-madrigalweb
   (package
     (name "python-madrigalweb")
-    (version "3.3.7")
+    (version "3.3.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "madrigalweb" version))
        (sha256
-        (base32 "0p55igi0xrckjbihcbjn14033hzliq6qjmacrxigrvjw3m016b75"))))
+        (base32 "0pcvm82d1bw93kzr9rl2mkk8mgcmdyb8a21yvjjq0jcis0hwdd9y"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))    ;network access is required
@@ -7769,9 +7769,8 @@ will depend on your needs.")
     (home-page "https://cedar.openmadrigal.org")
     (synopsis "Python Madrigal Remote API")
     (description
-     "@code{madrigalWeb} is a pure python module to access data from any
-@url{https://cedar.openmadrigal.org/, Madrigal}
-database.
+     "@code{madrigalWeb} is a pure Python module to access data from any
+@url{https://cedar.openmadrigal.org/, Madrigal} database.
 
 Madrigal is an upper atmospheric science database used by groups throughout
 the world.  Madrigal is a robust, World Wide Web based system capable of
