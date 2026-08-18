@@ -3309,6 +3309,10 @@ Numpy arrays for convenience.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("pyvcd>=0.2.2,<0.5")"pyvcd>=0.2.2,<=0.5"))))
           (add-before 'build 'set-version
             (lambda _
               (setenv "PDM_BUILD_SCM_VERSION" #$version))))))
