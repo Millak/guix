@@ -2074,6 +2074,21 @@ an SMTP server (for example at a free mail provider) which takes care of further
 delivery.")
     (license license:gpl3+)))
 
+(define (exim-uri file-name)
+  (list (string-append "https://ftp.exim.org/pub/exim/exim4/"
+                       file-name)
+        ;; After a new non-fix release, the old one is moved here.
+        (string-append "https://ftp.exim.org/pub/exim/exim4/old/"
+                       file-name)))
+
+(define (exim-info-src version)
+  (origin
+    (method url-fetch)
+    (uri (exim-uri (string-append "exim-texinfo-" version ".tar.gz")))
+    (sha256
+     (base32
+      "0ygv640k06f3sjnhrml9n53jzn312rfd3abpf6mq7bzlsayapbwj"))))
+
 (define-public exim
   (package
     (name "exim")
@@ -2081,15 +2096,7 @@ delivery.")
     (source
      (origin
        (method url-fetch)
-       (uri (let ((file-name (string-append "exim-" version ".tar.xz")))
-              (list (string-append "https://ftp.exim.org/pub/exim/exim4/"
-                                   file-name)
-                    ;; ‘Fix’ releases (exim-x.y.z.f) are kept separately.
-                    (string-append "https://ftp.exim.org/pub/exim/exim4/fixes/"
-                                   file-name)
-                    ;; After a new non-fix release, the old one is moved here.
-                    (string-append "https://ftp.exim.org/pub/exim/exim4/old/"
-                                   file-name))))
+       (uri (exim-uri (string-append "exim-" version ".tar.xz")))
        (sha256
         (base32 "03gsg6m9wqwi1wcy7rx3g7w4lj96byy9vlf9cini6nsafbv43yz9"))))
     (build-system gnu-build-system)
@@ -2111,6 +2118,8 @@ delivery.")
                         (string-append var out "/bin\n"))
                        (("(CONFIGURE_FILE=).*" all var)
                         (string-append var out "/etc/exim.conf\n"))
+                       (("# (INFO_DIRECTORY=).*" all var)
+                        (string-append var out "/share/info/"))
                        (("(EXIM_USER=).*" all var)
                         (string-append var "nobody\n"))
                        (("(FIXED_NEVER_USERS=).*" all var)
@@ -2161,14 +2170,26 @@ delivery.")
                    ;; builds.  Make it a ‘constant number’ instead.
                    (substitute* "src/version.c"
                      (("#include \"cnumber.h\"") "1"))))
-               (add-after 'build 'install-docs
+               ;; Exim texinfo files are provided seperately.
+               (add-before 'configure 'install-info-source
                  (lambda* (#:key outputs #:allow-other-keys)
-                   ;; Compiling spec.info requires us to build from git
-                   ;; instead of the exim tarball.  Add spec.txt instead.
-                   (install-file "doc/spec.txt"
-                                 (string-append (assoc-ref outputs "out")
-                                                "/share/doc/"
-                                                #$name "-" #$version)))))
+                   (system* "tar"
+                            "xzf"
+                            #$(exim-info-src version)
+                            "-C" "doc"
+                            "--strip-components=2")))
+               ;; Exim currently generates info files with incorrect directory
+               ;; links.  Patch those.
+               (add-after 'install 'patch-info
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (substitute* (string-append (assoc-ref outputs "out")
+                                               "/share/info/exim_filter.info")
+                     (("exim_filtering")
+                      "exim_filter.info"))
+                   (substitute* (string-append (assoc-ref outputs "out")
+                                               "/share/info/exim.info")
+                     (("the_exim_mta")
+                      "exim.info")))))
            #:make-flags
            #~(list (string-append "CC=" #$(cc-for-target))
                    "INSTALL_ARG=-no_chown")
