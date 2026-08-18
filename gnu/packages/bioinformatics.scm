@@ -8220,47 +8220,6 @@ ChIP-Seq, and analysis of metagenomic data.")
     (properties `((lint-hidden-cpe-vendors . ("openjsf" "qs_project"))))
     (license license:artistic2.0)))
 
-(define-public express-beta-diversity
-  (package
-   (name "express-beta-diversity")
-   (version "1.0.8")
-   (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/dparks1134/ExpressBetaDiversity")
-                   (commit (string-append "v" version))))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "0s0yzg5c21349rh7x4w9266jsvnp7j1hp9cf8sk32hz8nvrj745x"))))
-   (build-system gnu-build-system)
-   (arguments
-    (list
-     #:phases
-     #~(modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'enter-source
-           (lambda _
-             (chdir "source")))
-         (replace 'check
-           (lambda _
-             (invoke "../bin/ExpressBetaDiversity" "-u")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append #$output "/bin")))
-               (install-file "../scripts/convertToEBD.py" bin)
-               (install-file "../bin/ExpressBetaDiversity" bin)))))))
-   (inputs
-    (list python-2))
-   (home-page "https://github.com/dparks1134/ExpressBetaDiversity")
-   (synopsis "Taxon- and phylogenetic-based beta diversity measures")
-   (description
-    "Express Beta Diversity (EBD) calculates ecological beta diversity
-(dissimilarity) measures between biological communities.  EBD implements a
-variety of diversity measures including those that make use of phylogenetic
-similarity of community members.")
-   (license license:gpl3+)))
-
 (define-public fasttree
   (package
    (name "fasttree")
