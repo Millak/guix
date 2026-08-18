@@ -1744,7 +1744,7 @@ of a Unix terminal to HTML code.")
 (define-public vale
   (package
     (name "vale")
-    (version "3.15.1")
+    (version "3.15.2")
     (source
      (origin
        (method git-fetch)
@@ -1752,14 +1752,14 @@ of a Unix terminal to HTML code.")
               (url "https://github.com/errata-ai/vale")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "1mb7737b19v4j07jnwy0cgicwaq5wwq27am5hw7wnf2qbc8g57ff"))
+        (base32 "0b8kfi50xq3m3j9274b8ar2054i30gjcgjzrbmfmc6vmqzzqjwri"))
        (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments
      (list
       #:install-source? #f
       #:embed-files #~(list ".*\\.gob")
-      #:import-path "github.com/errata-ai/vale/cmd/vale"
+      #:import-path "github.com/errata-ai/vale/..."
       #:unpack-path "github.com/errata-ai/vale"
       ;; Disable tests requiring network access: Get
       ;; "https://raw.githubusercontent.com/errata-ai/styles/master/library.json":
@@ -1771,8 +1771,6 @@ of a Unix terminal to HTML code.")
                              "TestNoPkgFound"
                              "TestSymlinkFixture")
                        "|"))
-      #:test-subdirs
-      #~(list "../../...") ; test whole library, starting from import-path
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -1791,6 +1789,7 @@ of a Unix terminal to HTML code.")
            go-github-com-gobwas-glob
            go-github-com-jdkato-go-tree-sitter-julia
            go-github-com-jdkato-twine
+           go-github-com-litao91-goldmark-mathjax
            go-github-com-mitchellh-mapstructure
            go-github-com-niklasfasching-go-org
            go-github-com-olekukonko-tablewriter
