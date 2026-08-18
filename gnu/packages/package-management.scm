@@ -1209,6 +1209,34 @@ interface for interacting with the application.")
 by using a Xapian cache.")
     (license (list license:gpl3+ license:cc0))))
 
+(define-public guix-extension-collection
+  (package
+    (name "guix-extension-collection")
+    (version (package-version guix))
+    (source
+     #f)
+    (build-system trivial-build-system)
+    (arguments
+     (list
+      #:builder
+      #~(mkdir #$output)))
+    (propagated-inputs (list guix-compose
+                             guix-diff-channels
+                             guix-explorer
+                             guix-list
+                             guix-modules
+                             guix-package-version-history
+                             guix-pin
+                             guix-removal-reporter
+                             guix-xsearch
+                             toys))
+    (home-page "https://codeberg.org/guix-extensions")
+    (synopsis "Collection of extensions for Guix")
+    (description
+     "This meta-package bundles community-provided packages that extend Guix
+with new @command{guix} commands you may find useful.")
+    (license license:gpl3+)))
+
 (define-public meta-package-manager
   (package
     (name "meta-package-manager")
