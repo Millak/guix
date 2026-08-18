@@ -2893,18 +2893,23 @@ also play midifiles using a Soundfont.")
     (version "2.8.8")
     (source
      (origin
-       (method url-fetch)
-       (uri
-        (string-append "mirror://sourceforge/faac/faad2-src/faad2-"
-                       (version-major+minor version) ".0/"
-                       "faad2-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/FreewareAdvancedAudio/faad2")
+              (commit (string-replace-substring version "." "_"))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0va284hndhn0ynm4lyn219qw4y8wa4agfkqgwlaji7bqp6nkyp4q"))))
+        (base32 "0pkg480r26vaxl3ksdsd2rhg5hpcpf4hc4x2ri6djffbysfppfw7"))))
     (build-system gnu-build-system)
-    (home-page "https://www.audiocoding.com/faad2.html")
+    (native-inputs
+     (list autoconf
+           automake
+           libtool))
+    (home-page "https://freewareadvancedaudio.github.io/docs/faad")
     (synopsis "MPEG-4 and MPEG-2 AAC decoder")
     (description
-     "FAAD2 is an MPEG-4 and MPEG-2 AAC decoder supporting LC, Main, LTP, SBR, -PS, and DAB+.")
+     "FAAD2 is an MPEG-4 and MPEG-2 AAC decoder
+supporting LC, Main, LTP, SBR, -PS, and DAB+.")
     (license license:gpl2+)))
 
 (define-public faust
