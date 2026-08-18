@@ -335,10 +335,7 @@ compatible to GNU Pth.")
 (define-public gnupg
   (package
     (name "gnupg")
-    ;; Note: Odd minor versions are usually for development purposes.  See
-    ;; <https://gnupg.org/download/index.html> for how to pick the right
-    ;; version.
-    (version "2.5.20")
+    (version "2.5.21")
     (source (origin
               ;; Use tarballs instead of git, see the discussion at
               ;; https://codeberg.org/guix/guix/issues/10622 .
@@ -348,7 +345,7 @@ compatible to GNU Pth.")
               (patches (search-patches "gnupg-default-pinentry.patch"))
               (sha256
                (base32
-                "1ipzi64i748hjmjvv2a5dh9i9hjldlsnrgls6yd42263k5p2cqb4"))))
+                "0lhknfbnbhn2mfz9b5c19n8m2116my06hz7s569nm9j6ma62rbz3"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
