@@ -3838,7 +3838,7 @@ standard.")
 (define-public python-pyvcd
   (package
     (name "python-pyvcd")
-    (version "0.4.1")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -3847,8 +3847,11 @@ standard.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a1fsgxmpy6gbrs7lp3a56b7d4g6srlp42y5azb1ywjx3w8fiwc6"))))
+        (base32 "0c0i3dvbza481ykp8vvghb1yl23rab9250z0n7b3zf897125chsi"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:build-backend "setuptools.build_meta"))  ;requires uv_build
     (native-inputs
      (list python-pytest python-setuptools python-setuptools-scm))
     (home-page "http://pyvcd.readthedocs.io/")
