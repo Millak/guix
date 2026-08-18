@@ -5820,7 +5820,7 @@ ECMA-48} specs.")
                                            #:subdir "cellbuf"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hx2dcxr40vs73xmhx0yhhafhjhns064zl9i5wskdyp47nl3z81w"))
+        (base32 "1chs5v99pqyh6sdvibyj57rl5ib316s8c4q6yb2hwrcmgddrv7sa"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-26)))
