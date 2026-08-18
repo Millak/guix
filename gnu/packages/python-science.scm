@@ -5858,7 +5858,7 @@ its executor plugins.")
     (propagated-inputs (list python-snakemake-interface-common))
     (native-inputs
      (list python-hatchling
-           python-snakemake-logger-plugin-rich
+           python-snakemake-logger-plugin-rich-bootstrap
            python-pytest))
     (home-page (string-append "https://github.com/snakemake/"
                               "python-snakemake-interface-logger-plugins"))
@@ -5867,6 +5867,12 @@ its executor plugins.")
      "This package provides a stable interface for interactions between Snakemake and
 its logger plugins.")
     (license license:expat)))
+
+(define-public python-snakemake-interface-logger-plugins-bootstrap
+  (package/inherit python-snakemake-interface-logger-plugins
+    (name "python-snakemake-interface-logger-plugins-bootstrap")
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-hatchling))))
 
 (define-public python-snakemake-interface-report-plugins
   (package
@@ -6027,19 +6033,23 @@ Snakemake and its storage plugins.")
      (list python-pydantic
            python-rich
            python-snakemake-interface-executor-plugins
-           (package/inherit python-snakemake-interface-logger-plugins
-             (name "python-snakemake-interface-logger-plugins-bootstrap")
-             (arguments (list #:tests? #f))
-             (native-inputs (list python-hatchling)))))
+           python-snakemake-interface-logger-plugins))
     (native-inputs
-     (list python-hatchling
-           python-pytest))
+     (list python-hatchling))
     (home-page "https://github.com/cademirch/snakemake-logger-plugin-rich")
     (synopsis "Log plugin for snakemake using Rich")
     (description "This package provides a logging plugin for Snakemake
 that utilizes @code{python-rich} for enhanced terminal styling and
 progress bars.")
     (license license:expat)))
+
+(define-public python-snakemake-logger-plugin-rich-bootstrap
+  (package/inherit python-snakemake-logger-plugin-rich
+    (name "python-snakemake-logger-plugin-rich-bootstrap")
+    (propagated-inputs
+     (modify-inputs propagated-inputs
+       (replace "python-snakemake-interface-logger-plugins"
+         python-snakemake-interface-logger-plugins-bootstrap)))))
 
 (define-public python-snakemake-software-deployment-plugin-container
   (package
