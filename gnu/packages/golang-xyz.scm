@@ -24057,6 +24057,33 @@ cooperating processes or serializing multiple invocations of the same
 process.")
     (license license:expat)))
 
+(define-public go-github-com-nikandfor-spintax
+  (package
+    (name "go-github-com-nikandfor-spintax")
+    (version "0.0.0-20181023094358-fc346b245bb3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nikandfor/spintax")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sgabgg9g33h7ywanqr2c1d3r7gal8k11x4ysk0v46xpm19p7c2x"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/nikandfor/spintax"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/nikandfor/spintax")
+    (synopsis "Spintax is a text generation library for Go")
+    (description
+     "Spintax is an text generator from Spintax template.  Spintax is an
+template with alternative parts that can be evaluated into one of many
+texts. Depth is not limited")
+    (license license:expat)))
+
 (define-public go-github-com-niklasfasching-go-org
   (package
     (name "go-github-com-niklasfasching-go-org")
