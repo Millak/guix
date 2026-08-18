@@ -6588,6 +6588,37 @@ constraint for “string-like” data, and a utf8 package that works with both
 strings and byte slices without conversions.")
     (license license:expat)))
 
+(define-public go-github-com-clipperhouse-uax29-v2
+  (package
+    (name "go-github-com-clipperhouse-uax29-v2")
+    (version "2.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/clipperhouse/uax29")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p18s46jd4ryqp036cyv4j6ys67706kihw0fj5ym98xf1m2mdsgg"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; Submodules with their own go.mod files and packaged separately:
+            (delete-file-recursively "graphemes/comparative")
+            (delete-file-recursively "internal/gen")
+            (delete-file-recursively "words/comparative")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/clipperhouse/uax29/v2"))
+    (home-page "https://github.com/clipperhouse/uax29")
+    (synopsis "Tokenizer based on Unicode text segmentation for Go")
+    (description
+     "Package uax29 provides Unicode text segmentation (UAX #29) for words,
+sentences and graphemes.")
+    (license license:expat)))
+
 (define-public go-github-com-cloudwego-iasm
   (package
     (name "go-github-com-cloudwego-iasm")
