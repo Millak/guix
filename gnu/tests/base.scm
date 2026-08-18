@@ -54,6 +54,9 @@
   #:use-module (ice-9 match)
   #:export (run-basic-test
             %test-basic-os
+            %test-linux-libre-6.12
+            %test-linux-libre-6.6
+            %test-linux-libre-6.1
             %test-linux-libre-5.15
             %test-linux-libre-5.10
             %test-halt
