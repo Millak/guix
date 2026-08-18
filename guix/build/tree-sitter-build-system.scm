@@ -49,7 +49,7 @@
   "Rewrite dependencies in 'package.json'.  We remove all runtime dependencies
 and replace development dependencies with tree-sitter grammar node modules."
 
-  (with-atomic-json-file-replacement "package.json"
+  (with-atomic-json-file-replacement* "package.json"
    (lambda (pkg-meta-alist)
      (map (match-lambda
             (("dependencies" dependencies ...)
