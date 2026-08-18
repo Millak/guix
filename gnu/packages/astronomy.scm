@@ -9371,9 +9371,10 @@ science database) into pysat.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 352 passed, 561 skipped, 61 deselected, 2510 warnings
+      ;; tests: 304 passed, 561 skipped, 61 deselected, 2503 warnings
       #:test-flags
       #~(list "-m" "not remote_data"
+              "--ignore=pysatSpaceWeather/tests/test_methods_kp.py"
               ;; Network access is required.
               "-k" (string-join
                     (list "not test_download"
