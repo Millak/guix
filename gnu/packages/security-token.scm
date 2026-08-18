@@ -979,7 +979,7 @@ your existing infrastructure.")
 (define-public python-fido2
   (package
     (name "python-fido2")
-    (version "2.2.0")
+    (version "2.2.1")
     (source
      (origin
        (method git-fetch)
@@ -988,7 +988,7 @@ your existing infrastructure.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qwppz8m1lj93p1arrh1ldsai3svnmw038rkl7wzq0fcy5g84k3q"))
+        (base32 "0q9cs8gd0f663l5wxii1494ab1sh3cj1fq5ckbhpshwzr0w5lck2"))
        (snippet
         ;; Remove bundled dependency.
         '(delete-file "fido2/public_suffix_list.dat"))))
