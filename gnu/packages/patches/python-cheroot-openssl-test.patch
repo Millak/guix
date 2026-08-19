@@ -1,0 +1,131 @@
+From 2a8fc126f6f7557b229eb5e74e691e8e319f27bb Mon Sep 17 00:00:00 2001
+From: julianz- <6255571+julianz-@users.noreply.github.com>
+Date: Sat, 20 Jun 2026 19:14:18 -0700
+Subject: [PATCH 1/2] Fix test_https_over_http_error on Windows with OpenSSL
+ 3.1+
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+On Windows, the TCP reset (RST) takes a different code path than Linux,
+causing OpenSSL 3.1+ to report 'wrong version number' rather than
+'record layer failure'. Accept either string when IS_ABOVE_OPENSSL31
+is True — the same pattern used in CPython's own test_ssl.py.
+---
+ cheroot/test/test_ssl.py                   | 32 ++++++++++++++++------
+ docs/changelog-fragments.d/828.contrib.rst |  3 ++
+ 2 files changed, 26 insertions(+), 9 deletions(-)
+ create mode 100644 docs/changelog-fragments.d/828.contrib.rst
+
+diff --git a/cheroot/test/test_ssl.py b/cheroot/test/test_ssl.py
+index 1859e6bc28..0a04d2bed6 100644
+--- a/cheroot/test/test_ssl.py
++++ b/cheroot/test/test_ssl.py
+@@ -527,7 +527,9 @@ def test_tls_client_auth(  # noqa: C901, WPS213  # FIXME
+                 "'Remote end closed connection without response'))",
+             )
+ 
+-        assert any(e in err_text for e in expected_substrings)
++        assert any(e in err_text for e in expected_substrings), (
++            f'Unexpected error text: {err_text!r}'
++        )
+ 
+ 
+ @pytest.mark.parametrize(  # noqa: C901  # FIXME
+@@ -697,14 +699,26 @@ def test_https_over_http_error(http_server, ip_addr):
+         http.client.HTTPSConnection(
+             f'{interface}:{port}',
+         ).request('GET', '/')
+-    expected_substring = (
+-        'record layer failure'
+-        if IS_ABOVE_OPENSSL31
+-        else 'wrong version number'
+-        if IS_ABOVE_OPENSSL10
+-        else 'unknown protocol'
+-    )
+-    assert expected_substring in ssl_err.value.args[-1]
++    underlying_error_string = str(ssl_err.value)
++    if IS_ABOVE_OPENSSL31 and IS_WINDOWS:
++        # On Windows, the TCP reset (RST) is surfaced before OpenSSL processes
++        # the server's response, yielding 'wrong version number' rather than
++        # the usual 'record layer failure'. See CPython's own test_ssl.py:
++        # https://github.com/python/cpython/blob/\
++        # 1b9fe5c7226eccc8b269a7443148033080399f43\
++        # /Lib/test/test_ssl.py#L5705
++        assert 'wrong version number' in underlying_error_string
++    elif IS_ABOVE_OPENSSL31:
++        # Newer Python returns 'record layer failure'; Python 3.8 on macOS
++        # returns 'wrong version number' despite OpenSSL >= 3.1.
++        assert (
++            'record layer failure' in underlying_error_string
++            or 'wrong version number' in underlying_error_string
++        )
++    elif IS_ABOVE_OPENSSL10:
++        assert 'wrong version number' in underlying_error_string
++    else:  # pragma: no cover
++        assert 'unknown protocol' in underlying_error_string
+ 
+ 
+ def test_http_over_https_no_data(mocker):
+diff --git a/docs/changelog-fragments.d/828.contrib.rst b/docs/changelog-fragments.d/828.contrib.rst
+new file mode 100644
+index 0000000000..831d85ab91
+--- /dev/null
++++ b/docs/changelog-fragments.d/828.contrib.rst
+@@ -0,0 +1,3 @@
++Fixed ``test_https_over_http_error`` failing on Windows with OpenSSL 3.1+,
++where the SSL error message is ``wrong version number`` rather than
++``record layer failure`` -- by :user:`julianz-`.
+
+From 5bc6aef96dd4def3f20b688798a81e39a3d63574 Mon Sep 17 00:00:00 2001
+From: julianz- <6255571+julianz-@users.noreply.github.com>
+Date: Sun, 12 Jul 2026 18:26:22 -0700
+Subject: [PATCH 2/2] Simplify test_https_over_http_error assertions and error
+ handling
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Remove redundant custom assertion message — pytest already shows the
+relevant values on failure. Merge the Windows-specific OpenSSL 3.1
+branch into the general case since both accept the same error strings.
+---
+ cheroot/test/test_ssl.py | 18 ++++--------------
+ 1 file changed, 4 insertions(+), 14 deletions(-)
+
+diff --git a/cheroot/test/test_ssl.py b/cheroot/test/test_ssl.py
+index 0a04d2bed6..6df3696c74 100644
+--- a/cheroot/test/test_ssl.py
++++ b/cheroot/test/test_ssl.py
+@@ -527,9 +527,7 @@ def test_tls_client_auth(  # noqa: C901, WPS213  # FIXME
+                 "'Remote end closed connection without response'))",
+             )
+ 
+-        assert any(e in err_text for e in expected_substrings), (
+-            f'Unexpected error text: {err_text!r}'
+-        )
++        assert any(e in err_text for e in expected_substrings)
+ 
+ 
+ @pytest.mark.parametrize(  # noqa: C901  # FIXME
+@@ -700,17 +698,9 @@ def test_https_over_http_error(http_server, ip_addr):
+             f'{interface}:{port}',
+         ).request('GET', '/')
+     underlying_error_string = str(ssl_err.value)
+-    if IS_ABOVE_OPENSSL31 and IS_WINDOWS:
+-        # On Windows, the TCP reset (RST) is surfaced before OpenSSL processes
+-        # the server's response, yielding 'wrong version number' rather than
+-        # the usual 'record layer failure'. See CPython's own test_ssl.py:
+-        # https://github.com/python/cpython/blob/\
+-        # 1b9fe5c7226eccc8b269a7443148033080399f43\
+-        # /Lib/test/test_ssl.py#L5705
+-        assert 'wrong version number' in underlying_error_string
+-    elif IS_ABOVE_OPENSSL31:
+-        # Newer Python returns 'record layer failure'; Python 3.8 on macOS
+-        # returns 'wrong version number' despite OpenSSL >= 3.1.
++    if IS_ABOVE_OPENSSL31:
++        # 'record layer failure' is typical, but Windows and macOS/Python 3.8
++        # yield 'wrong version number' instead.
+         assert (
+             'record layer failure' in underlying_error_string
+             or 'wrong version number' in underlying_error_string

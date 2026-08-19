@@ -4164,7 +4164,9 @@ other HTTP libraries.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02rhci01m5fcn8mqpvq3c35rs4n28gxlfvfw2if2f85rgwrji8y8"))))
+        (base32 "02rhci01m5fcn8mqpvq3c35rs4n28gxlfvfw2if2f85rgwrji8y8"))
+       ;; TODO: Remove this patch on next release.
+       (patches (search-patches "python-cheroot-openssl-test.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
