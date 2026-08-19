@@ -24020,15 +24020,16 @@ been adapted to also work with mu4e.")
   (package
     (name "emacs-tempel")
     (version "1.14")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/minad/tempel")
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1vy53i1rpzhx644qhwm2vbb3z4z00wrc2127zfd3i08h8dlck3r0"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/minad/tempel")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1vy53i1rpzhx644qhwm2vbb3z4z00wrc2127zfd3i08h8dlck3r0"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -24038,8 +24039,7 @@ been adapted to also work with mu4e.")
           (add-after 'unpack 'makeinfo
             (lambda _ (emacs-makeinfo))))))
     (native-inputs (list texinfo))
-    (propagated-inputs
-     (list emacs-compat))
+    (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/minad/tempel")
     (synopsis "Simple templates for Emacs")
     (description
