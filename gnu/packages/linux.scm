@@ -674,21 +674,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.262")
-(define-public linux-libre-5.10-gnu-revision "gnu1")
-(define deblob-scripts-5.10
-  (linux-libre-deblob-scripts
-   linux-libre-5.10-version
-   linux-libre-5.10-gnu-revision
-   (base32 "1wn9k4lbxcc9rzl1rqidlnb472wyayillrh57gyxnghi7j9ghqna")
-   (base32 "1hgza8fsps7bkjf4i0f2xgvrh1r183z3i6lxrr2nr8qbi5d13qs7")))
-(define-public linux-libre-5.10-pristine-source
-  (let ((version linux-libre-5.10-version)
-        (hash (base32 "10xlfmblynqcba5ab4h75p7pzqcbm34cbhrx19pkircpkf5dmrzs")))
-   (make-linux-libre-source version
-                            (%upstream-linux-source version hash)
-                            deblob-scripts-5.10)))
-
 (define %boot-logo-patch
   ;; Linux-Libre boot logo featuring Freedo and a gnu.
   (origin
@@ -767,11 +752,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 
 (define-public linux-libre-5.15-source
   (source-with-patches linux-libre-5.15-pristine-source
-                       (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
-
-(define-public linux-libre-5.10-source
-  (source-with-patches linux-libre-5.10-pristine-source
                        (list %boot-logo-patch
                              %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
@@ -903,11 +883,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (make-linux-libre-headers* linux-libre-5.15-version
                              linux-libre-5.15-gnu-revision
                              linux-libre-5.15-source))
-
-(define-public linux-libre-headers-5.10
-  (make-linux-libre-headers* linux-libre-5.10-version
-                             linux-libre-5.10-gnu-revision
-                             linux-libre-5.10-source))
 
 ;; The following package is used in the early bootstrap, and thus must be kept
 ;; stable and with minimal build requirements.
@@ -1344,14 +1319,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-5.10
-  (make-linux-libre* linux-libre-5.10-version
-                     linux-libre-5.10-gnu-revision
-                     linux-libre-5.10-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux"
-                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
-                     #:configuration-file kernel-config))
-
 ;; Linux-Libre-LTS points to the *newest* released long-term support version of
 ;; Linux-Libre.
 ;; Reference: <https://www.kernel.org/category/releases.html>
@@ -1398,17 +1365,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                       `(;; needed to fix the RTC on rockchip platforms
                         ("CONFIG_RTC_DRV_RK808" . #t))
                       (default-extra-linux-options linux-libre-version))))
-
-(define-public linux-libre-arm-generic-5.10
-  (make-linux-libre* linux-libre-5.10-version
-                     linux-libre-5.10-gnu-revision
-                     linux-libre-5.10-source
-                     '("armhf-linux")
-                     #:defconfig "multi_v7_defconfig"
-                     #:extra-version "arm-generic"
-                     #:extra-options
-                     (append
-                      (default-extra-linux-options linux-libre-5.10-version))))
 
 (define-public linux-libre-arm-omap2plus
   (make-linux-libre* linux-libre-version
@@ -1472,18 +1428,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                          (append
                           arm64-generic-extra-modules
                           (default-extra-linux-options linux-libre-lts-version)))))
-
-(define-public linux-libre-arm64-generic-5.10
-  (make-linux-libre* linux-libre-5.10-version
-                     linux-libre-5.10-gnu-revision
-                     linux-libre-5.10-source
-                     '("aarch64-linux")
-                     #:defconfig "defconfig"
-                     #:extra-version "arm64-generic"
-                     #:extra-options
-                     (append
-                      arm64-generic-extra-modules
-                      (default-extra-linux-options linux-libre-5.10-version))))
 
 (define-public linux-libre-arm64-honeycomb
   ;; Kernel for use on the HoneyComb LX2 boards:
