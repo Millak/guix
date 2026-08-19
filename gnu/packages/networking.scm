@@ -481,8 +481,6 @@ Raspberry Pi ISP (PiSP), consisting of the Frontend and Backend hardware
 components.")
     (license license:bsd-2)))
 
-;;; Remove the `#:hide (libcamera-minimal)` from linux.scm when
-;;; removing this deprecation alias.
 (define-deprecated/public-alias libcamera-minimal (@ (gnu packages photo)
                                                      libcamera-minimal))
 
