@@ -5573,7 +5573,7 @@ Mainland China.")
 (define-public font-chiron-sung-hk
   (package
     (name "font-chiron-sung-hk")
-    (version "1.022")
+    (version "1.024")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5582,7 +5582,7 @@ Mainland China.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bndyr8bi9ngrba3c3n9k9k26s0irk62jhly7fj6g62k87b82z75"))))
+                "0rkngdrmfj62fxnk0ck7sji7y7m6ckgd2l6qn9zhfnn53r8dz4yw"))))
     (build-system font-build-system)
     (arguments
      (list #:phases
