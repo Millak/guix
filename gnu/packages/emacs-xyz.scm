@@ -118,7 +118,7 @@
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022, 2024, 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
-;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
+;;; Copyright © 2022, 2026 Joeke de Graaf <joeke@posteo.net>
 ;;; Copyright © 2023, 2025 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2023, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
@@ -27301,6 +27301,31 @@ a streaming and non-streaming way.")
 a parser, and an event source implementation for the @acronym{SSE, Server Sent
 Event} protocol.")
     (license license:gpl3+)))
+
+(define-public emacs-plz-see
+  ;; upstream does not have tags or releases
+  (let ((commit "c55e6aa2971caad582df1d449e0f57604250cae1"))
+    (package
+     (name "emacs-plz-see")
+     (version "0.1")
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/astoff/plz-see.el")
+             (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wwqr9n7d273y2iq86n6grrzn1xq2ddh6v8sk9yjqs5k7hnsa37z"))))
+     (build-system emacs-build-system)
+     (arguments (list #:tests? #f)) ; no tests
+     (propagated-inputs (list emacs-plz))
+     (home-page "https://github.com/astoff/plz-see.el")
+     (synopsis "Interactive HTTP client")
+     (description
+      "This package provides an interactive HTTP client for Emacs based
+on the @code{plz} library.")
+     (license license:gpl3+))))
 
 (define-public emacs-ement
   (package
