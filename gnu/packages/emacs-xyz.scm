@@ -43933,6 +43933,29 @@ The contents and aspect is controlled by the @code{minibuffer-line-format}
 variable and the @code{minibuffer-line} face.")
     (license license:gpl3+)))
 
+(define-public emacs-minimal-dashboard
+  (package
+    (name "emacs-minimal-dashboard")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dheerajshenoy/minimal-dashboard.el")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gjrb8hmf44vhf0dssm7pwkz4mx2w7hkxk7540xd6qiwx7xnl6gz"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f))                ; No tests.
+    (home-page "https://github.com/dheerajshenoy/minimal-dashboard.el")
+    (synopsis "Minimal dashboard plugin for Emacs")
+    (description
+     "This package provides a very minimal dashboard plugin for Emacs that
+displays a centered image and message when Emacs starts.")
+    (license license:gpl3+)))
+
 (define-public emacs-minimap
   (package
     (name "emacs-minimap")
