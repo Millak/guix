@@ -2835,6 +2835,35 @@ configuration files, such as @file{.gitattributes}, @file{.gitignore}, and
 
 (define-deprecated/public-alias git-modes emacs-git-modes)
 
+(define-public emacs-welcome-dashboard
+  ;; No public release. Version string taken from source code.
+  (let ((commit "591ba64cad383f6d9613922f034921b5e0f1a950")
+        (revision "0"))
+    (package
+      (name "emacs-welcome-dashboard")
+      (version (git-version "0.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/konrad1977/welcome-dashboard")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "042pavfyjjmw3vcq8npll3r8iiy6x14zmgviw4421z0dcj3yp1sw"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:tests? #f))              ; No tests.
+      (propagated-inputs
+       (list emacs-all-the-icons
+             emacs-async
+             emacs-nerd-icons))
+      (home-page "https://github.com/konrad1977/welcome-dashboard")
+      (synopsis "Simple welcome dashboard")
+      (description
+       "This package provides an alternative dashboard for Emacs.")
+      (license license:gpl3+))))
+
 (define-public emacs-with-editor
   (package
     (name "emacs-with-editor")
