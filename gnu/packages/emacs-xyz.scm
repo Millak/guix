@@ -24048,29 +24048,33 @@ the Emacs Tempo library.  You may also write your templates in Lisp.")
     (license license:gpl3+)))
 
 (define-public emacs-tempel-collection
-  (let ((commit "b2fd7929bd767db9d31b2782168f91dcdc75af5b")
-        (revision "2"))
+  ;; No public release. Version string taken from source code.
+  (let ((commit "4ea6f92ecb69dc38c666bfa6c4a253ff94699c80")
+        (revision "3"))
     (package
       (name "emacs-tempel-collection")
       (version (git-version "0.2" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/Crandel/tempel-collection")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0m52k8fx88ry9ay6xs5xaq6j56rx2lykb1jgxmia26xyf4h5ykd9"))))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Crandel/tempel-collection")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1gvw02sfnvsfi32fqw13hxb9kwkpag195kils9rlxyq3r23pp07c"))))
       (build-system emacs-build-system)
       (arguments
        (list
-        #:include #~(cons "^templates\\/" %default-include)))
+        #:tests? #f                     ; No tests.
+        #:include
+        #~(cons "^templates\\/" %default-include)))
       (propagated-inputs (list emacs-tempel))
       (home-page "https://github.com/Crandel/tempel-collection")
-      (synopsis "Collection of TempEl templates")
+      (synopsis "Collection of Tempel templates")
       (description "This package provides a collection of templates for
-the Emacs TempEl package.")
+the Emacs Tempel package.")
       (license license:gpl3+))))
 
 (define-public emacs-aas
