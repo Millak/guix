@@ -68,18 +68,16 @@
 (define-public php-8.5
   (package
     (name "php")
-    (version "8.5.5")
+    (version "8.5.9")
     (home-page "https://www.php.net/")
     (source
      (origin
        (method url-fetch)
        (uri (string-append home-page "distributions/" "php-" version ".tar.xz"))
        (sha256
-        (base32 "1wh27552f6vd20f1yy4l0jlvknfq0kn5hapmiq55f05xyj1c7glm"))
+        (base32 "1x08nwwwqr73488n4vqgmv9abxnnhki3bnrcb4fspl5w4mgqbdqd"))
        (patches
-        (search-patches "php-01-fix-expired-certificate.patch"
-                        "php-02-fix-sni-tests.patch"
-                        "php-03-fix-ftp-certificate.patch"))
+        (search-patches "php-03-fix-ftp-certificate.patch"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "ext"
