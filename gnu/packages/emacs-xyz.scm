@@ -843,6 +843,32 @@ to HTML.  This HTML version is then displayed using the Emacs simple HTML
 renderer, @code{shr}.")
     (license license:gpl3+)))
 
+(define-public emacs-purr
+  ;; No public release. Version string taken from source code.
+  (let ((commit "61ca21fa58e1491f9c05daf21b5a0dbd1f70f1c0")
+        (revision "0"))
+    (package
+      (name "emacs-purr")
+      (version (git-version "0.5.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://git.sr.ht/~zelda/purr.el")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1l9s6rh0bva3l73zwzk72n9cw7g9yx6p9zysvnvvm9v93ryrisgp"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:tests? #f))              ; No tests.
+      (home-page "https://git.sr.ht/~zelda/purr.el")
+      (synopsis "Project overview dashboard for Emacs")
+      (description
+       "This package provides a project overview dashboard for Emacs, tracking
+Git projects in background.")
+      (license license:gpl3+))))
+
 (define-public emacs-sops
   (package
     (name "emacs-sops")
