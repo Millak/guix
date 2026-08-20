@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2026 Adrian Bradd <adrian.bradd@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,7 +36,7 @@
 (define-public libfreenect
   (package
     (name "libfreenect")
-    (version "0.6.4")
+    (version "0.7.5")
     (source
      (origin
        (method git-fetch)
@@ -44,7 +45,7 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fi950hbkgxrkd4xl7k9q3na8d19xj96awp1qygprb4l8gfdmlqv"))))
+        (base32 "0a4rgrqsl3jwdrpri3li2lrkag5s1zd40w9jxl59nhz5d8ald4iy"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -68,7 +69,7 @@
     (description
      "libfreenect is a userspace driver for the Microsoft Kinect.
 It supports: RGB and Depth Images, Motors, Accelerometer, LED and Audio.")
-    (home-page "https://openkinect.org/")
+    (home-page "https://github.com/OpenKinect/libfreenect")
     (license license:gpl2+)))
 
 ;; Library are already compiled in libfreenect, avoid build it again.
