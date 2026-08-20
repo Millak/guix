@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2026 orahcio <orahcio@gmail.com>
+;;; Copyright © 2026 moksh <mysticmoksh@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -377,6 +378,31 @@ additional error is returned in the Go binding.")
      "This package provides Go library to easily convert @code{.jpg} and
 @code{.png} to @code{.icns}, or to convert from any @code{image.Image} to
 @code{.icns}.")
+    (license license:expat)))
+
+(define-public go-github-com-joshdk-quantize
+  (package
+    (name "go-github-com-joshdk-quantize")
+    (version "0.0.0-20171110221748-65999d3a4c76")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/joshdk/quantize")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bddsdflmxdprmpsmvfznal9z41kafs32i3mlf3crbl7i4wja3as"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/joshdk/quantize"))
+    (home-page "https://github.com/joshdk/quantize")
+    (synopsis "Color palette quantization library")
+    (description
+     "This package provides a color palette quantization library using
+@url{https://modern-colorthief.readthedocs.io/en/stable/mmcq.html, MMCQ}
+algorithm.")
     (license license:expat)))
 
 (define-public go-github-com-makeworld-the-better-one-dither-v2
