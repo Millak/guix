@@ -40452,6 +40452,10 @@ address instead.
 @item @code{systems} (default: @code{(list (%current-system))})
 Only request builds for the given @var{systems}.
 
+@item @code{minimum-disk-space} (default: @code{5})
+Minimum disk space (in GiB) that must be available in the store and in
+@file{/tmp} before starting a build.
+
 @item @code{log-file} (default: @code{"/var/log/cuirass-remote-worker.log"})
 Location of the log file.
 

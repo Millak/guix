@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
-;;; Copyright © 2016-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
@@ -432,6 +432,8 @@
                     (default #f))
   (systems          cuirass-remote-worker-systems ;list
                     (default (list (%current-system))))
+  (minimum-disk-space cuirass-remote-worker-minimum-disk-space
+                      (default 5))
   (log-file         cuirass-remote-worker-log-file ;string
                     (default "/var/log/cuirass-remote-worker.log"))
   (publish-port     cuirass-remote-worker-configuration-publish-port ;int
@@ -461,6 +463,7 @@
 CONFIG."
   (match-record config <cuirass-remote-worker-configuration>
     (cuirass workers server systems log-file publish-port
+             minimum-disk-space
              substitute-urls public-key private-key)
     (list (shepherd-service
            (documentation "Run Cuirass remote build worker.")
@@ -472,6 +475,8 @@ CONFIG."
                            "--user=cuirass-worker" ;drop privileges early on
                            (string-append "--workers="
                                           #$(number->string workers))
+                           (string-append "--minimum-disk-space="
+                                          #$(number->string minimum-disk-space))
                            #$@(if server
                                   (list (string-append "--server=" server))
                                   '())
