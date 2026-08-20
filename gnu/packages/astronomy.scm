@@ -3004,7 +3004,7 @@ a path (for moving targets) and combining cutouts
 (define-public python-astrodata
   (package
     (name "python-astrodata")
-    (version "2.10.2")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
@@ -3013,11 +3013,11 @@ a path (for moving targets) and combining cutouts
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "141qymnirjlrbjzl26wx2dvrr0glva8q74cwxi575a29aa0byrhv"))))
+        (base32 "0bcs283v8fgz4a175pdgiiin8sx4vcbviarsqzwzzhamsha6azwh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 984 passed, 7 skipped, 59 deselected
+      ;; tests: 985 passed, 6 skipped, 61 deselected
       #:test-flags
       ;; Tests depend on unpackaged DRAGON's module "gemini_instruments".
       #~(list "--ignore=tests/integration/"
@@ -3078,6 +3078,7 @@ a path (for moving targets) and combining cutouts
                             "test_ADCompare_wcs"
                             "test_ad_compare"
                             "test_download_file_path_subpath"
+                            "test_download_from_archive"
                             "test_download_from_archive_None_sub_path"
                             "test_download_memory_leaks"
                             "test_warning_if_no_cache_path"))
@@ -3089,24 +3090,11 @@ a path (for moving targets) and combining cutouts
                             "test_loglinear_axis"
                             "test_reading_and_writing_sliced_image"
                             "test_remove_unused_world_axis"))
-              ;;  gwcs.wcs._exception.GwcsFrameExistsError: Frame in_frame is
-              ;;  already in the pipeline.
-               "--deselect=tests/unit/test_nddata.py::test_wcs_slicing"
-              ;; assert 1 == 0
-              "-k" (string-append "not test_script_executes[script0-]"
-                                  " and not test_script_executes[script1-]"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            ;; See: <https://github.com/GeminiDRSoftware/astrodata/issues/96>.
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("astropy =.*") "astropy = '^7.0.0'\n")
-                (("asdf =.*") "asdf = '^5.0.0'\n")
-                (("numpy =.*") "numpy = '^2.3.0'\n")
-                (("gwcs =.*") "gwcs = '^1.0.0'\n")))))))
+              "-k" "not test_script_executes[script0-]")))
     (native-inputs
-     (list python-poetry-core
+     (list python-docutils
+           python-poetry-core
+           python-poetry-dynamic-versioning
            python-objgraph
            python-pytest
            python-pytest-doctestplus
