@@ -9799,58 +9799,61 @@ optimized algorithms and implementation.")
 (define-public aiger
   (package
     (name "aiger")
-    (version "1.9.9")
+    (version "1.9.20")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "https://fmv.jku.at/aiger/aiger-"
-                                 version ".tar.gz"))
-             (sha256
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/arminbiere/aiger")
+                     (commit (string-append "rel-" version))))
+              (file-name (git-file-name name version))
+              (sha256
                (base32
-                "1ish0dw0nf9gyghxsdhpy1jjiy5wp54c993swp85xp7m6vdx6l0y"))))
+                "1bjm3362l6qskmfi0gyz2h30cr157xkv8yjivmm9iwl37chk22c2"))))
     (outputs (list "out" "static"))
     (build-system gnu-build-system)
     (arguments
-     (list #:tests? #f                  ; no check target
-           #:make-flags
-           #~(list (string-append "CFLAGS=-g -O2"
-                                  " -Wno-error=implicit-function-declaration"))
+     (list #:make-flags #~(list (string-append "CFLAGS=-g -O2"))
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-source
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* "aiger.c"
-                     (("\"(gzip|gunzip)" all cmd)
+                     (("\"(gzip|xz)" all cmd)
                       (string-append
                        "\""
                        (search-input-file inputs (string-append "bin/" cmd)))))))
                (add-after 'unpack 'patch-build-files
-                 (lambda* (#:key outputs #:allow-other-keys)
+                 (lambda _
                    (substitute* "makefile.in"
                      (("test -d .*") "true")
-                     (("/usr/local") (assoc-ref outputs "out")))))
+                     (("/usr/local") #$output))))
                (replace 'configure
                  (lambda* (#:key configure-flags #:allow-other-keys)
                    (apply invoke "./configure.sh" configure-flags)))
                (add-after 'install 'install-static
-                 (lambda* (#:key outputs #:allow-other-keys)
+                 (lambda _
                    (apply invoke #$(ar-for-target) "rcs" "libaiger.a"
                           (find-files "." "\\.o$"))
-                   (let* ((static (assoc-ref outputs "static"))
-                          (lib (string-append static "/lib"))
-                          (incl (string-append static "/include/aiger")))
+                   (let* ((lib (string-append #$output:static "/lib"))
+                          (incl (string-append #$output:static "/include/aiger")))
                      (mkdir-p lib)
                      (mkdir-p incl)
                      (install-file "libaiger.a" lib)
                      (for-each (lambda (f) (install-file f incl))
-                               (find-files "." "\\.h$"))))))))
-    (inputs (list gzip))
+                               (find-files "." "\\.h$")))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "CC" #$(cc-for-target))
+                     (invoke "make" "-f" "test.mk")))))))
+    (inputs (list gzip xz))
     (home-page "https://fmv.jku.at/aiger")
     (synopsis "Utilities for And-Inverter Graphs")
     (description "AIGER is a format, library and set of utilities for
 @acronym{AIG, And-Inverter Graphs}s.  The focus is on conversion utilities and a
 generic reader and writer API.")
     (license (list license:expat
-                   license:bsd-3))))    ; blif2aig
+                   license:bsd-3))))    ; bliftoaig
 
 (define-public cudd
   (package
