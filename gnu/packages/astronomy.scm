@@ -9704,7 +9704,7 @@ natively in Siril.")
 (define-public python-pysm3
   (package
     (name "python-pysm3")
-    (version "3.4.5")
+    (version "3.4.6")
     (source
      (origin
        (method git-fetch)
@@ -9713,11 +9713,11 @@ natively in Siril.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sq2ndg9f9zpm79fnspvph2w5zi2ssz75wzm1aqriyn7gcl7k9rg"))))
+        (base32 "120fyg7zs2jn260q5mzr0jkjiv7vbb9mq79lwhrjarwij3l23fa8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 73 passed, 2 skipped, 100 deselected
+      ;; tests: 75 passed, 2 skipped, 100 deselected
       #:test-flags
       ;; XXX: Tests requiring additional FITS files, check if they may be
       ;; packages:
