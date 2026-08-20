@@ -46,6 +46,7 @@
 ;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2026 Untrusem <mysticmoksh@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -88,6 +89,9 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-graphics)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -128,6 +132,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
@@ -181,6 +186,59 @@
      "Converseen is an image batch conversion tool.  You can resize and
 convert images in more than 100 different formats.")
     (license license:gpl3+)))
+
+(define-public didder
+  (package
+    (name "didder")
+    ;; There have been feature addition like color quantization but no
+    ;; releases with the feature.
+    ;; See: <https://github.com/makew0rld/didder/issues/31>.
+    (properties '((commit . "408a18aef878b456fe5cdbec406070fd5bd5c2d2")
+                  (revision . "0")))
+    (version (git-version "1.3.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/makew0rld/didder")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12vpxzn8p6ay5zqm9g83v0mf4i5nmm1xp13bhygs2yr24pbkkr24"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:build-flags
+      #~(list (string-append "-ldflags="
+                             "-X main.builtBy=Guix"
+                             " -X main.version=" #$version
+                             " -X main.commit=" #$version))
+      #:import-path "github.com/makeworld-the-better-one/didder"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-man-page
+            (lambda* (#:key import-path #:allow-other-keys)
+              (let ((man1 (string-append #$output "/share/man/man1/"))
+                    (page (format #f "src/~a/didder.1" import-path)))
+                (install-file page man1)))))))
+    (native-inputs
+     (list go-github-com-disintegration-imaging
+           go-github-com-joshdk-quantize
+           go-github-com-makeworld-the-better-one-dither-v2
+           go-github-com-urfave-cli-v2
+           go-golang-org-x-image))
+    (home-page "https://github.com/makew0rld/didder")
+    (synopsis "Image Dithering Utility")
+    (description
+     "Didder is a command-line image dithering tool.  It can also be used
+for pipeline scripting.  It is backed by
+@url{https://github.com/makeworld-the-better-one/dither, dithering library}.
+It provides various dithering algorithms and you can provide your own by
+specifying a matrix in json format")
+    (license license:gpl3)))
 
 (define-public gradia
   (package

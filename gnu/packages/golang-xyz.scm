@@ -82,6 +82,7 @@
 ;;; Copyright © 2026 Luca Kredel <luca.kredel@web.de>
 ;;; Copyright © 2026 Orahcio Felício de Sousa <orahcio@gmail.com>
 ;;; Copyright © 2026 Ryan Prior <rprior@protonmail.com>
+;;; Copyright © 2026 Untrusem <mysticmoksh@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
