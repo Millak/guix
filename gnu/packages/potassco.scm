@@ -834,7 +834,7 @@ certain.")
 (define-public python-clingexplaid
   (package
     (name "python-clingexplaid")
-    (version "1.3.3")
+    (version "1.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -842,7 +842,7 @@ certain.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1cjk825kh7yav036i2wf3ymj2j5z22vafdgjzg1m4sx3s55y68la"))))
+               (base32 "0awdphcmjls3n6srh2sj83g54gyqbf8fwc496giq7n3kjah70iwj"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags #~(list "-k" "not test_main")
