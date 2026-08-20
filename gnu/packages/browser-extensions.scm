@@ -144,8 +144,8 @@ supported content to the Kodi media center.")
   ;; Arbitrary commit of branch master,
   ;; Update when updating uBlockOrigin.
   (let* ((name "ublock-main-assets")
-         (commit "72270d7b13b6fe98af8a320bc5a9d0def23faa6d")
-         (revision "8")
+         (commit "ac40303915d4ae1d00566791fce5a0539709e7fa")
+         (revision "9")
          (version (git-version "0" revision commit)))
     (origin
       (method git-fetch)
@@ -154,14 +154,14 @@ supported content to the Kodi media center.")
             (commit commit)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "1a0cs0dnbpacxfa2yq7wbk9njnas19abllbzpygnn6aq5w8irh43")))))
+       (base32 "08w3zdr0hb3pzrabl7h66m04zwkcxi3fl0mbmknfn2z88q57r7pf")))))
 
 (define ublock-prod-assets
   ;; Arbitrary commit of branch gh-pages,
   ;; Update when updating uBlockOrigin.
   (let* ((name "ublock-prod-assets")
-         (commit "6042b39f966878ad24de6421308955bb296c0aab")
-         (revision "8")
+         (commit "78b3d703570aa07705fe66c3d4e094e17b507b36")
+         (revision "9")
          (version (git-version "0" revision commit)))
     (origin
       (method git-fetch)
@@ -170,12 +170,12 @@ supported content to the Kodi media center.")
             (commit commit)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "0xwz5qah6akk2g1jikfxkg3qz0zvld3277ysj3yrddsgh8rvd9m9")))))
+       (base32 "1wx0fg48c27f1czs3g24z36pvmji64652ygsisgfqy7k8pn9v2vq")))))
 
 (define ublock-origin
   (package
     (name "ublock-origin")
-    (version "1.72.0")
+    (version "1.73.0")
     (home-page "https://github.com/gorhill/uBlock")
     (source (origin
               (method git-fetch)
@@ -185,7 +185,7 @@ supported content to the Kodi media center.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pcinpl2dmamvnsng4pr5fpnih23a14k6pgrhhs29896kgwzgclm"))))
+                "1lgakv5p6frica3d4mc88vzp99jlfjrnbm6warjcc24xkdvlk4ng"))))
     (build-system gnu-build-system)
     (outputs '("xpi" "firefox" "chromium"))
     (properties '((addon-id . "uBlock0@raymondhill.net")))
