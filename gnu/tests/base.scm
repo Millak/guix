@@ -54,6 +54,7 @@
   #:use-module (ice-9 match)
   #:export (run-basic-test
             %test-basic-os
+            %test-linux-libre-6.18
             %test-linux-libre-6.12
             %test-linux-libre-6.6
             %test-linux-libre-6.1
@@ -664,6 +665,9 @@ test \"$BASHRC_D_OK\" = yes"))
   (test-basic-os))
 
 ;; Ensure the LTS kernels are up to snuff, too.
+(define %test-linux-libre-6.18
+  (test-basic-os linux-libre-6.18))
+
 (define %test-linux-libre-6.12
   (test-basic-os linux-libre-6.12))
 
