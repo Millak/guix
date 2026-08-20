@@ -350,17 +350,19 @@ compatible to GNU Pth.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list gnutls
-           libassuan
-           libgcrypt
-           libgpg-error
-           libksba
-           npth
-           openldap
-           pcsc-lite
-           readline
-           sqlite
-           zlib))
+     (append (if (target-hurd?)
+                 '()
+                 (list pcsc-lite))
+             (list gnutls
+                   libassuan
+                   libgcrypt
+                   libgpg-error
+                   libksba
+                   npth
+                   openldap
+                   readline
+                   sqlite
+                   zlib)))
     (arguments
      (list
       #:configure-flags
@@ -392,11 +394,13 @@ compatible to GNU Pth.")
       #~(modify-phases %standard-phases
           (add-before 'configure 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
-              (let ((libpcsclite.so (search-input-file inputs
-                                                       "lib/libpcsclite.so")))
-                (substitute* "scd/scdaemon.c"
-                  (("libpcsclite\\.so")
-                   libpcsclite.so)))))
+              (let ((libpcsclite.so (false-if-exception
+                                     (search-input-file inputs
+                                                        "lib/libpcsclite.so"))))
+                (when libpcsclite.so
+                  (substitute* "scd/scdaemon.c"
+                    (("libpcsclite\\.so")
+                     libpcsclite.so))))))
           (add-after 'build 'patch-scheme-tests
             (lambda _
               (substitute* (find-files "tests" ".\\.scm$")
