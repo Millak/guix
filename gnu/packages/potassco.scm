@@ -724,7 +724,7 @@ logic programs based on clingo.")
 (define-public python-clingraph
   (package
     (name "python-clingraph")
-    (version "1.1.2")
+    (version "1.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -733,7 +733,7 @@ logic programs based on clingo.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16q54rkwr84byzy27795rl9z08kcyxsg7lfk017yr8p5axh9a9rr"))))
+                "0zc7v5lzdrfp54j42rcc9znmw3nblq8mj6cg094bycnygrqqsdip"))))
     (build-system pyproject-build-system)
     (inputs (list dot2tex graphviz))
     (propagated-inputs (list python-clingo
