@@ -8297,33 +8297,36 @@ astronomical sources.")
 (define-public python-pint-pulsar
   (package
     (name "python-pint-pulsar")
-    (version "1.1.5")
+    (version "1.1.6")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/nanograv/PINT")
-             (commit version)))
+              (url "https://github.com/nanograv/PINT")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ypwhh0s821q21j4n5iv4102pxmhq68a28z610z88c99cdbrh90v"))))
+        (base32 "16lmibf2sim9qcqq908x88jsfjq2vm47j119css863b9nx8xsxas"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 778 passed, 17 skipped, 10 deselected, 11 xfailed, 1 xpassed,
-      ;;        722 warnings
+      ;; tests: 790 passed, 17 skipped, 13 deselected, 11 xfailed, 1 xpassed,
+      ;;        710 warnings
       #:test-flags
       #~(list "-k" (string-join
                     ;; Tests failing with assertion on not correct precision
                     ;; or missing data files.
-                    (list "not test_astropy_observatory"
-                          "test_copy_wideband_fitter_object"
-                          "test_IERS_B_builtin_agree_with_IERS_Auto_dX"
+                    (list "not test_IERS_B_builtin_agree_with_IERS_Auto_dX"
                           "test_astropy_observatory"
-                          "test_time_construction_jds_exact[tdb]"
-                          "test_copy_toa_object"
+                          "test_astropy_observatory"
+                          "test_copy_fitter_object"
                           "test_copy_residuals"
-                          "test_copy_fitter_object")
+                          "test_copy_toa_object"
+                          "test_copy_wideband_fitter_object"
+                          "test_ssb_cache_adjust"
+                          "test_ssb_cache_clkcorr"
+                          "test_ssb_cache_merge"
+                          "test_time_construction_jds_exact[tdb]")
                     " and not ")
               ;; XXX: The most of the tests require additional data, select
               ;; files where they may run without it and check how to enable
