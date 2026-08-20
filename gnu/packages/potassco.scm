@@ -809,7 +809,7 @@ which allows user interfaces to be specified entirely as a logic program.")
 (define-public python-clintest
   (package
     (name "python-clintest")
-    (version "0.4.0")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -818,7 +818,7 @@ which allows user interfaces to be specified entirely as a logic program.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lnyajr4y4s7lmr8dyv3gcy0hnl2w4215ma0pljkfg50gljbi62h"))))
+                "1g23j4nbhpf5lnbjz4i34ihhzb76b4a2jiwdzapxyvnv4h4krafa"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-clingo))
     (native-inputs (list python-pytest python-setuptools python-wheel))
