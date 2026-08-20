@@ -379,6 +379,41 @@ additional error is returned in the Go binding.")
 @code{.icns}.")
     (license license:expat)))
 
+(define-public go-github-com-makeworld-the-better-one-dither-v2
+  (package
+    (name "go-github-com-makeworld-the-better-one-dither-v2")
+    (version "2.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/makew0rld/dither")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y1q1lnzsyfzksiwyc2xjbmaj9r3rmfqhgq681rz33inyssvn0nf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/makeworld-the-better-one/dither/v2"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/examples")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/makew0rld/dither")
+    (synopsis "Dithering library for Go")
+    (description
+     "Dither is a library for dithering images in Go.  It has many dithering
+algorithms built-in, and allows you to specify your own.  Correctness is a top
+priority, as well as performance.  It is designed to work well on its own, but
+also implements interfaces from the standard library, so that it can be
+integrated easily in a wide variety of situtations.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-sergeymakinen-go-bmp
   (package
     (name "go-github-com-sergeymakinen-go-bmp")
