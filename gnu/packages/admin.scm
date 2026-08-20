@@ -746,7 +746,7 @@ manager.")
            guile-config
            guile-fibers-1.3
            guile-netlink
-           guile-3.0
+           (lookup-package-input guix "guile")
            guix
            shepherd-1.0))
     (home-page "https://github.com/BIMSBbioinfo/swineherd")
