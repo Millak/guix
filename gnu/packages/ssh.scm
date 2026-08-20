@@ -803,16 +803,17 @@ shell services and remote host selection.")
 (define-public python-asyncssh
   (package
     (name "python-asyncssh")
-    (version "2.22.0")
+    (version "2.23.1")  ;XXX: higher version needs cryptography >= 48.0.1
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asyncssh" version))
        (sha256
-        (base32 "0dxmirf6my22gh096dqs81dgzr9788wdsi18wr07pyg43fq75kn3"))))
+        (base32 "0kzlldy1rbdj3z288s2mxd5svd7j9aifdh6ih1flngkg4303pp6r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1700 passed, 34 skipped, 1 deselected, 4184 subtests passed
       #:test-flags
       #~(list "-k" (string-join
                     (list
@@ -841,16 +842,18 @@ shell services and remote host selection.")
      (list netcat
            openssh
            openssl
-           python-aiofiles
-           python-fido2
            python-pytest
            python-setuptools))
     (propagated-inputs
      (list python-cryptography
-           python-pyopenssl
-           python-gssapi
+           python-typing-extensions
+           ;; [optional]
            python-bcrypt
-           python-typing-extensions))
+           python-fido2
+           python-ifaddr
+           python-gssapi
+           ;; python-pkcs11       ;not packaged yet in Guix
+           python-pyopenssl))
     (home-page "https://asyncssh.readthedocs.io/")
     (synopsis "Asynchronous SSHv2 client and server library for Python")
     (description
