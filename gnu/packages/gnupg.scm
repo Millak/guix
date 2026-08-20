@@ -348,7 +348,8 @@ compatible to GNU Pth.")
                 "0lhknfbnbhn2mfz9b5c19n8m2116my06hz7s569nm9j6ma62rbz3"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config))
+     (list libgpg-error ; for yat2m
+           pkg-config))
     (inputs
      (append (if (target-hurd?)
                  '()
@@ -377,6 +378,10 @@ compatible to GNU Pth.")
                     #~(string-append
                         "--with-libgpg-error-prefix="
                         #$(this-package-input "libgpg-error"))
+                    #~(string-append
+                        "ac_cv_path_GPGRT_CONFIG="
+                        #$(this-package-input "libgpg-error")
+                        "/bin/gpgrt-config")
                     #~(string-append
                         "--with-libgcrypt-prefix="
                         #$(this-package-input "libgcrypt"))
