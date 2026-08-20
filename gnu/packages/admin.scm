@@ -3136,7 +3136,7 @@ track changes in important system configuration files.")
 (define-public libcap-ng
   (package
     (name "libcap-ng")
-    (version "0.9.3")
+    (version "0.9.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3145,20 +3145,13 @@ track changes in important system configuration files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13iy7dddcslpmmdhybgvfcgznsvpaa4r3fp9ldlpkq592lw8yyva"))))
+                "1wvl84nhbh94dvz04xi2zkhh9s812m2b0i5yp26lk5jjh4z5p18x"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:configure-flags
       #~(list "--disable-static"
-              "--without-python")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-configure-ac
-            (lambda _
-              (substitute* "configure.ac"
-                (("linux/sock_diag.h" all)
-                 (string-append all " \\"))))))))
+              "--without-python")))
     (inputs
      (list libbpf))
     (native-inputs
