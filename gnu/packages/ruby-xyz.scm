@@ -5854,29 +5854,21 @@ number, support for interrupted tests, better backtraces, and more.")
 (define-public ruby-mocha
   (package
     (name "ruby-mocha")
-    (version "2.1.0")
+    (version "3.1.0")
     (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "mocha" version))
+              (method git-fetch) ;for tests
+              (uri (git-reference
+                    (url "https://github.com/freerange/mocha")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0lsll8iba8612dypk718l9kx73m9syiscb2rhciljys1krc5g1zr"))))
+                "0qk47g498l6i2mdbkxvn4d82r8ka6l2v0ln4yj7r8dc9bgh1pjj1"))))
     (build-system ruby-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'remove-rubocop-dependency
-            (lambda _
-              ;; Disable dependency on Rubocop, which is just a linter,
-              ;; and would introduce a circular dependency.
-              (substitute* "Gemfile"
-                ((".*rubocop.*") "")))))))
     (propagated-inputs
      (list ruby-ruby2-keywords))
     (native-inputs
-     (list ruby-psych-3
-           ruby-introspection))
+     (list ruby-introspection))
     (synopsis "Mocking and stubbing library for Ruby")
     (description
      "Mocha is a mocking and stubbing library with JMock/SchMock syntax, which
