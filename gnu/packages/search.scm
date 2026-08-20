@@ -70,6 +70,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages regex)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages time)
@@ -415,27 +416,30 @@ Search Engine.  It is written in C and based on GTK3.")
 (define-public recoll
   (package
     (name "recoll")
-    (version "1.43.2")
+    (version "1.44.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.recoll.org/recoll-" version ".tar.gz"))
        (sha256
-        (base32 "0c9p4vphysf7mfn7c6260a1fdlra0pp037s3i9f4p3m6gf9dgc0m"))))
+        (base32 "0zhjpqlv18ahh7lfv464rr274h2czyvfl19kbswsd8vf7bpzaxqg"))))
+    (outputs (list "out" "python"))
     (build-system meson-build-system)
     (arguments
      (list
       #:imported-modules
       `((guix build gremlin)
-        ,@%meson-build-system-modules)
+        ,@%meson-build-system-modules
+        ,@%pyproject-build-system-modules)
       #:modules
       '((guix build meson-build-system)
+        ((guix build pyproject-build-system) #:prefix py:)
         (guix build utils)
         (guix build gremlin)
         (ice-9 match))
       #:configure-flags
       #~(list "-Dwebkit=false"
-              "-Dpython-module=false"
+              "-Dpython-module=true"
               "-Dsystemd=false"
               "-Dinotify=false"
               "-Drecollq=true")
@@ -480,11 +484,21 @@ Search Engine.  It is written in C and based on GTK3.")
                    ("rclscribus"    . ("grep" "gawk" "sed"))))
                 (wrap-program (string-append target "rclimg")
                   `("PERL5LIB" ":" prefix
-                    (,(getenv "PERL5LIB"))))))))))
+                    (,(getenv "PERL5LIB")))))))
+          (add-after 'install 'relocate-python
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (define (py:site output)
+                (py:site-packages inputs `(("out" . ,output))))
+              (let ((origin (py:site #$output))
+                    (destination (py:site #$output:python)))
+                (mkdir-p destination)
+                (copy-recursively origin destination)
+                (delete-file-recursively (dirname origin))))))))
     (inputs
      (list aspell
            chmlib
            inotify-tools
+           jsoncpp
            libxslt
            libxml2
            python
@@ -504,7 +518,7 @@ Search Engine.  It is written in C and based on GTK3.")
            sed
            tar))
     (native-inputs
-     (list patchelf pkg-config qttools-5))
+     (list patchelf pkg-config python qttools-5))
     (home-page "https://www.recoll.org")
     (synopsis "Find documents based on their contents or file names")
     (description "Recoll finds documents based on their contents as well as
