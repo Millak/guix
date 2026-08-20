@@ -484,10 +484,6 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/6.1-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.1-i686.conf	\
   gnu/packages/aux-files/linux-libre/6.1-x86_64.conf	\
-  gnu/packages/aux-files/linux-libre/5.15-arm.conf	\
-  gnu/packages/aux-files/linux-libre/5.15-arm64.conf	\
-  gnu/packages/aux-files/linux-libre/5.15-i686.conf	\
-  gnu/packages/aux-files/linux-libre/5.15-x86_64.conf	\
   gnu/packages/aux-files/ovmf/51-edk2-ovmf-2m-raw-x64-nosb.json	\
   gnu/packages/aux-files/pack-audit.c			\
   gnu/packages/aux-files/python/pytest_guix.py		\

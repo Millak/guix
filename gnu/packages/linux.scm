@@ -1311,14 +1311,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-5.15
-  (make-linux-libre* linux-libre-5.15-version
-                     linux-libre-5.15-gnu-revision
-                     linux-libre-5.15-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux"
-                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
-                     #:configuration-file kernel-config))
-
 ;; Linux-Libre-LTS points to the *newest* released long-term support version of
 ;; Linux-Libre.
 ;; Reference: <https://www.kernel.org/category/releases.html>
