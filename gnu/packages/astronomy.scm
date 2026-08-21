@@ -10404,7 +10404,7 @@ Coronagraph technology demonstration (Coronagraph).")
 (define-public python-romancal
   (package
     (name "python-romancal")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -10413,11 +10413,11 @@ Coronagraph technology demonstration (Coronagraph).")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wb6dqk5pj8z1ayankvd0imgm5shkpfa4xycj70yry78dj83rw4a"))))
+        (base32 "0dn8knpfsdbqlswyb5636wzziwrqak6ib1nkws96q27n5lak7z9n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 459 passed, 331 skipped, 18 deselected, 9 warnings
+      ;; tests: 441 passed, 313 skipped, 18 deselected, 2 xpassed, 11 warnings
       #:test-flags
       #~(list "--color=no"
               ;; Tests requiring calibration data.
@@ -10454,7 +10454,13 @@ Coronagraph technology demonstration (Coronagraph).")
                           "test_wfi18_transient_too_few_resultants"
                           "test_wfi18_transient_fit_failure"
                           "test_wfi18_transient_save_results")
-                    " and not "))))
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("romanisim>=0.14,<0.15") "romanisim")))))))
     (native-inputs
      (list nss-certs-for-test
            python-ci-watson
@@ -10467,7 +10473,7 @@ Coronagraph technology demonstration (Coronagraph).")
     (propagated-inputs
      (list python-asdf
            python-asdf-astropy
-           python-astropy-7
+           python-astropy
            python-crds
            python-drizzle
            python-gwcs
