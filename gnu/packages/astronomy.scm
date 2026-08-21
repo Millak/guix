@@ -11561,7 +11561,7 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.19.1")
+    (version "1.20.0")
     (source
      (origin
        (method git-fetch)
@@ -11570,7 +11570,7 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cvlzb3j1k997z7cihjpx1pqgsi5l6qgb3glg9aqgmfmjmk7d0l5"))))
+        (base32 "1dwja6a48a26bj13xhh8yhbd0100xw1al4lzksds52lp2xzh0rzv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
