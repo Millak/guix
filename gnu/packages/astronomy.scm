@@ -5026,7 +5026,7 @@ Observatory}.")
 (define-public python-ctaplot
   (package
     (name "python-ctaplot")
-    (version "0.6.5")
+    (version "0.6.6")
     (source
      (origin
        (method git-fetch)
@@ -5035,17 +5035,8 @@ Observatory}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dpcrc0svj0a498fsgw2jayj522h816bzzck41l7qfbrh23gmyv4"))))
+        (base32 "1qvi6vz3gc8gy3h7kqnmkab0sgin94hz92gb0syp7nr1likdcd6b"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              ;; See: <https://github.com/cta-observatory/ctaplot/pull/213>.
-              (substitute* "setup.py"
-                ((".*ipympl.*") "")))))))
     (native-inputs
      (list python-pytest
            python-setuptools))
