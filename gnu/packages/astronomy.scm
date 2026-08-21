@@ -11696,7 +11696,7 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
 (define-public python-stpipe
   (package
     (name "python-stpipe")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -11705,7 +11705,7 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pcdhh3w7qz6zj8w9wx23xkmrb99lnx2lg74i0h7cpc8l4gdf461"))
+        (base32 "019nk4kqwk3346mhagfcnlcrlplly4km1hhvjwzqm59whgq42h3b"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -11729,7 +11729,7 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
                                        test))
                       ;; FileNotFoundError: Unable to fetch schema from
                       ;; non-file URL:
-                      ;; http://stsci.edu/schemas/stpipe/step_config-1.0.0
+                      ;; http://stsci.edu/schemas/stpipe/step_config-1.1.0
                       (list "test_build_config_pipe_config_file"
                             "test_build_config_pipe_kwarg"
                             "test_build_config_step_config_file"
