@@ -13797,7 +13797,7 @@ interactively in the plotting window.")
 (define-public spot-nik
   (package
     (name "spot-nik")
-    (version "1.2.0")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -13806,7 +13806,7 @@ interactively in the plotting window.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kp6pa1i5m2fhl975ixbxv93lff4wvhjm1x751s3ly9cw4i58yhh"))))
+        (base32 "0nmq4ngidfy4a1dmc996dd0zdpk2ljsll4bws61r571rq1r876kk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -13814,9 +13814,7 @@ interactively in the plotting window.")
       ;; <https://ssd.jpl.nasa.gov/ftp/eph/planets/bsp/de421.bsp>.
       #:tests? #f))
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm))
+     (list python-setuptools-scm))
     (inputs
      (list python-astropy
            python-astroquery
