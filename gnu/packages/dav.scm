@@ -4,7 +4,7 @@
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2022, 2024 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2022, 2024, 2026 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;; Copyright © 2026 Ricardo Wurmus <rekado@elephly.net>
@@ -133,7 +133,7 @@ CardDAV server with a local folder or file.")
 (define-public radicale
   (package
     (name "radicale")
-    (version "3.3.2")
+    (version "3.7.8")
     (source
      (origin
        (method git-fetch)
@@ -142,17 +142,17 @@ CardDAV server with a local folder or file.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0walj1b7jrcc85maav04ciiipcqsl0mwbq3icksql26vr4i3y19z"))))
+        (base32 "0k0qssq74md7lc48jwk4hff1gpbmw369flzidziph3gmf3cl40y8"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
            python-setuptools
-           python-waitress
-           python-wheel))
+           python-waitress))
     (propagated-inputs
      (list python-defusedxml
-           python-passlib
+           python-libpass
            python-pika
+           python-requests
            python-vobject))
     (synopsis "Basic CalDAV and CardDAV server")
     (description "Radicale is a CalDAV and CardDAV server for UNIX-like
