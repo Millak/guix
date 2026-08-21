@@ -3436,6 +3436,33 @@ import them in their actual tests to use them.")
 requests to be replied to with user provided responses.")
     (license license:expat)))
 
+(define-public python-pytest-httpx2
+  (package
+    (name "python-pytest-httpx2")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/angryfoxx/httpx2-pytest")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d7hvixh2dq3pzs24bh2wk94wgf02r9nk9dnhrbps6gq0w94vxy2"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-asyncio
+           python-pytest-bootstrap
+           python-setuptools))
+    (propagated-inputs
+     (list python-httpx2))
+    (home-page "https://github.com/angryfoxx/httpx2-pytest")
+    (synopsis "Pytest plugin for mocking out httpx2 using respx")
+    (description
+     "This package provides a Pytest plugin for mocking out HTTPX2 using
+respx.")
+    (license license:expat)))
+
 (define-public python-pytest-instafail
   (package
     (name "python-pytest-instafail")
