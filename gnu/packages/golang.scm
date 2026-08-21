@@ -1175,8 +1175,8 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 (define-public go-1.27
   (package
     (inherit go-1.26)
-    (name "go-next")
-    (version "1.27rc3")
+    (name "go")
+    (version "1.27.0")
     (source
      (origin
        (method git-fetch)
@@ -1185,8 +1185,11 @@ in the style of communicating sequential processes (@dfn{CSP}).")
               (commit (string-append "go" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vhvsh61r6fablamy5gs2by7n2w55bds7bdygnz1z6s26rcj6r0g"))))))
+        (base32 "0mkcpsyydcrx8rwym53fv05a4m4ddnxbw5vh8vb3xmcya3g9qqar"))))))
 
+;; This is a placeholder for the next RC version when it's tagged.
+(define-public go-next
+  (deprecated-package "go-next" go-1.27))
 ;;
 ;; Default Golang version used in guix/build-system/go.scm to build packages.
 ;;
