@@ -5541,8 +5541,8 @@ tools for astronomers.")
   (package
     (name "python-euclidlike")
     ;; No PyPI release or Git version tags, use the latest commit.
-    (properties '((commit . "55d47fb67aba7c149a6099d89dd7ee0b00305341")
-                  (revision . "0")))
+    (properties '((commit . "48cc8b3727d72aa77eb30a42972d21a3b8ca6385")
+                  (revision . "1")))
     (version (git-version "0.9.0"
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
@@ -5554,7 +5554,7 @@ tools for astronomers.")
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cyzwbiiwmwj6qy4xpsszzqp97azjwjvqxlnwpadshnqbbq4skcb"))))
+        (base32 "1zy3sqkbm2iny3a7ila3cdr12p6msc1khbhq103gh03wpkxwi022"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
