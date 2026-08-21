@@ -2759,6 +2759,42 @@ such as:
 @end itemize")
     (license license:expat)))
 
+(define-public opencircuitx
+  (package
+    (name "opencircuitx")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openlab-x/OpenCircuitX")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1h6pgdaa2h056knm9ff1ydvr6lxgjmjp198mi2nzp0rlzvvmkhdv"))
+       (file-name (git-file-name name version))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils)
+                         (ice-9 ftw)
+                         (srfi srfi-26))
+            (for-each (cut delete-file-recursively <>)
+                      (list "installer" "screenshots"))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ;no tests
+    (native-inputs (list pkg-config))
+    (inputs (list curl wxwidgets))
+    (home-page "https://github.com/openlab-x/OpenCircuitX")
+    (synopsis "IDE for FPGA development")
+    (description
+     "OpenCircuitX is a @acronym{EDA, Electronic Design Automation} platform
+for @acronym{HDL, Hardware Description Languages} used to design digital
+logic.  It unifies an IDE HDL editor, a visual circuit canvas, an RTL
+schematic viewer, a waveform viewer, and a full FPGA toolchain in one
+window, for hardware engineers, students, and FPGA hobbyists alike.")
+    (license license:expat)))
+
 (define-public pcb-rnd
   (package
     (name "pcb-rnd")
