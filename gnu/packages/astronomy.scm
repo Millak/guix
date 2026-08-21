@@ -10225,7 +10225,7 @@ solar physics.")
 (define-public python-regularizepsf
   (package
     (name "python-regularizepsf")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
@@ -10234,7 +10234,7 @@ solar physics.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "185v4300301ahn5nsqd13mamph9w3gw58qbhn4vm5hn0r2azl1y7"))))
+        (base32 "05gq4yjcl48jbv22xdhq0fr7yr7884zpkqmbbnd4lzb2dkkbkv7f"))))
     (build-system pyproject-build-system)
     (arguments
      (list
