@@ -13059,7 +13059,7 @@ includes tools to help create both publication-ready and quick figures.")
 (define-public python-virgodc
   (package
     (name "python-virgodc")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method git-fetch)
@@ -13068,27 +13068,10 @@ includes tools to help create both publication-ready and quick figures.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fzdhdh01gkv57qlkiqh6wrg9brq4340m4n8bxvk8k7igx22hzk4"))))
+        (base32 "1axhiiafvbld4k6pgid22drhhpxfpjyy0abcczmcggv5m5ghxqc2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      #~(list #$@(map (lambda (test) (string-append "--deselect=virgo/mpi/"
-                                                    "test_parallel_hdf5.py::"
-                                                    test))
-                      ;; ValueError: h5py was built without MPI support, can't
-                      ;; use mpio driver
-                      ;; See: <https://codeberg.org/guix/guix/issues/7638>.
-                      (list "test_collective_read_1d"
-                            "test_collective_read_2d"
-                            "test_collective_read_empty"
-                            "test_collective_read_small_chunks_1d"
-                            "test_collective_read_small_chunks_2d"
-                            "test_collective_write_1d"
-                            "test_collective_write_2d"
-                            "test_collective_write_empty"
-                            "test_collective_write_small_chunks_1d"
-                            "test_collective_write_small_chunks_2d")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir-python
@@ -13096,7 +13079,8 @@ includes tools to help create both publication-ready and quick figures.")
               (chdir "python"))))))
     (native-inputs
      (list python-pytest
-           python-setuptools))
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
      (list python-h5py
            python-mpi4py
