@@ -79,7 +79,7 @@
 (define-public hwloc
   (package
     (name "hwloc")
-    (version "2.13.0")
+    (version "2.14.0")
     (source
      (origin
        (method git-fetch)
@@ -88,9 +88,7 @@
               (commit (string-append "hwloc-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1l9skkcizlv0qvw2lzmysndbm528xvszhiqq3569da157qpa5xav"))
-       ;; XXX: Remove after updating package from 2.13.0.
-       (patches (search-patches "hwloc-add-with-opencl.patch"))))
+        (base32 "09j3d997qqpmwp10l1p4d34iq5s2hwxzbsmzdgnw2lcy8av7rf4m"))))
     (build-system gnu-build-system)
     (outputs '("out"           ;'lstopo' & co., depends on Cairo, libx11, etc.
                "lib"           ;small closure
