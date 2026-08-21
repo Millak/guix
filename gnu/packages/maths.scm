@@ -11564,7 +11564,7 @@ expression parsing and evaluation.")
 (define-public highs
   (package
     (name "highs")
-    (version "1.14.0")
+    (version "1.15.1")
     (source
      (origin
        (method git-fetch)
@@ -11573,7 +11573,7 @@ expression parsing and evaluation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16y664rzvxd8785195k0srz0842zvl0zdkf6qi103p503pj81afh"))))
+        (base32 "11hh958jvfqrc7rm3xcwx2p71i49cb4cyafajlmkr8xzyb00y851"))))
     (build-system cmake-build-system)
     (home-page "https://highs.dev")
     (synopsis "High performance software for linear optimization")
