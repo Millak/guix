@@ -3685,7 +3685,7 @@ celestial-to-terrestrial coordinate transformations.")
            python-setuptools-scm
            specification-astropy-data))
     (propagated-inputs
-     (list python-astropy-iers-data
+     (list python-astropy-iers-data-primary
            python-configobj      ;to replace custom module
            python-numpy
            python-packaging
