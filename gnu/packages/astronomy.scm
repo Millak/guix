@@ -11194,34 +11194,35 @@ builds on the capabilities of NumPy and MatPlotLib packages.")
 (define-public python-spacetrack
   (package
     (name "python-spacetrack")
-    (version "1.4.0")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "spacetrack" version))
        (sha256
-        (base32 "0x2c8gag0h8435a5xzqfpm7sw98s908r40y4xjh9c16yvv1m8jzy"))))
+        (base32 "005jmv1gqg17n7a5yq8xijkx68sfa99n2496jjcprpjln58sppz7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 75 passed, 1 deselected, 19 warnings
+      ;; tests: 78 passed, 1 deselected, 2 warnings
       #:test-flags
       #~(list "--asyncio-mode=auto"
-              ;; One test fails with assertion not equal.
+              ;; Test tries accessing
+              ;; <https://www.space-track.org/basicspacedata/modeldef/class/gp>.
               "--deselect=tests/test_aio.py::test_modeldef_not_used_trio")))
     (native-inputs
      (list nss-certs-for-test
+           python-hatchling
            python-pytest
-           python-pytest-asyncio
-           python-respx
-           python-setuptools))
+           python-pytest-httpx2
+           python-pytest-asyncio))
     (propagated-inputs
-     (list python-filelock-next
-           python-httpx
+     (list python-filelock
+           python-dateutil
+           python-httpx2
            python-logbook
            python-outcome
            python-platformdirs
-           python-dateutil
            python-represent
            python-rush
            python-sniffio))
