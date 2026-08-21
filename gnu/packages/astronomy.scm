@@ -12712,8 +12712,8 @@ in @code{SWIFT} snapshots to enable efficient reading of sub-regions.")
     (name "python-swiftsimsoap")
     ;; There is not correct version tag or PyPI release, use the latest commit
     ;; from master HEAD.
-    (properties '((commit . "9ff3902ccb7fed00819c1e5bb4d95123f6e42208")
-                  (revision . "2")))
+    (properties '((commit . "15e5299ae48cf095c35653f3f450e71b22328089")
+                  (revision . "3")))
     (version (git-version "1.0.0"
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
@@ -12725,19 +12725,14 @@ in @code{SWIFT} snapshots to enable efficient reading of sub-regions.")
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kxsz1qm4gq18yzmqlm1bfmf6ry4br2b4cwvanib4pjx7wxa26b9"))))
+        (base32 "1lnhv5zl7xa8irbkf6q4491lq0h5rfrrlr2fgyxskr5z0ns91x76"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       ;; Tests need wget, potentially to download remove data.
       #~(list "--ignore=tests/test_read_vr.py"
-              "--ignore=tests/test_subhalo_rank.py"
-              ;; KeyError: 'BirthHaloCatalogueIndex'
-              (string-append "--deselect=tests/test_aperture_properties.py"
-                             "::test_aperture_properties")
-              (string-append "--deselect=tests/test_subhalo_properties.py"
-                             "::test_subhalo_properties"))))
+              "--ignore=tests/test_subhalo_rank.py")))
     (native-inputs
      (list python-pytest
            python-setuptools))
