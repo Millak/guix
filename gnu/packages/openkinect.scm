@@ -123,7 +123,7 @@ library")))
     (inherit libfreenect)
     (name "python-libfreenect")
     (native-inputs
-     (list python-cython-0 python-setuptools))
+     (list python-cython python-setuptools))
     (inputs
      (list libfreenect))
     (propagated-inputs
