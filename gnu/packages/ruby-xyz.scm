@@ -11212,30 +11212,18 @@ authentication in Ruby web applications.")
          "1z9154lvzrnnfjbjkmirh4n811nygp6pm2fa6ikr7y1ysa4zv3cz"))))
     (build-system ruby-build-system)
     (arguments
-     '(#:test-target "spec"
-       #:phases
+     '(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'remove-unnecessary-dependencies
-           (lambda _
-             (substitute* "Gemfile"
-               ;; All of these gems relate to development, and are unnecessary
-               ;; when running the tests
-               (("gem 'guard-bundler'") "")
-               (("gem 'guard'") "")
-               (("gem 'guard-rspec'") "")
-               (("gem 'rb-fsevent'") "")
-               (("gem 'pry'") "")
-               (("gem 'growl'") ""))))
-         ;; The test suite doesn't work with rspec@2, and this is incompatible
-         ;; with the current version of Rake, so invoke Rspec directly
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "bundle" "exec" "rspec")))))))
+               (substitute* "spec/spec_helper.rb"
+                 (("Bundler.setup .*") "\n"))
+               (invoke "rspec")))))))
     (propagated-inputs
-     (list ruby-warden))
+     (list ruby-warden ruby-base64))
     (native-inputs
-     (list bundler ruby-rspec-2 ruby-rack-test))
+     (list ruby-rspec-2 ruby-rack-test))
     (synopsis "OAuth 2.0 strategies for Warden")
     (description
      "This library extends Warden to support OAuth 2.0 authorized API
