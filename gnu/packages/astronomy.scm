@@ -10499,17 +10499,20 @@ observations from the Nancy Grace Roman Space Telescope.")
 (define-public python-romanisim
   (package
     (name "python-romanisim")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "romanisim" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacetelescope/romanisim")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "13ffgfid1ii4w5aqxw44qx0nxds35889wwjmjwm9hqyr46a2r5a0"))))
+        (base32 "16zksyi0qgybx1v7fxa175f7k1xqwsqsdshi7izl9mh0gjqhgpfv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 112 passed, 2 skipped, 8 deselected, 3 warnings
+      ;; tests: 113 passed, 2 skipped, 8 deselected, 4 warnings
       #:test-flags
       #~(list "--pyargs" "romanisim"
               ;; TODO: python-stpsf needs to be packaged with test data:
@@ -10533,6 +10536,17 @@ observations from the Nancy Grace Roman Space Telescope.")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-manifest.in
+            ;; See: <https://codeberg.org/guix/guix/issues/4393>.
+            (lambda* (#:key name source inputs #:allow-other-keys)
+              (let ((port (open-file "MANIFEST.in" "w")))
+                (for-each
+                 (lambda (file)
+                   (display "include " port)
+                   (display file port)
+                   (display "\n" port))
+                 (find-files "."))
+                (close port))))
           (add-before 'check 'pre-check
             (lambda _
               (setenv "HOME" "/tmp"))))))
@@ -10556,7 +10570,8 @@ observations from the Nancy Grace Roman Space Telescope.")
            python-gwcs
            python-numpy
            python-photutils
-           python-roman-datamodels))
+           python-roman-datamodels
+           python-roman-technical-information))
     (home-page "https://github.com/spacetelescope/romanisim")
     (synopsis "Nancy Grace Roman Space Telescope WFI Simulator")
     (description
