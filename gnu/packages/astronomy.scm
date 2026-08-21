@@ -13326,7 +13326,7 @@ analysis.  This package contains functionality for:
 (define-public python-zodipy
   (package
     (name "python-zodipy")
-    (version "1.1.1")
+    (version "1.1.5")
     (source
      (origin
        (method git-fetch)
@@ -13337,7 +13337,7 @@ analysis.  This package contains functionality for:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n51bism8irj2afj4xjyx438ylcc8f1dw2x0jy8xg90x7wdh30cm"))))
+        (base32 "13l1bhzvgzcbj8wsx4m87v2ys32x23rkm66y1fh6z08h72w3zrqq"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-poetry-core
