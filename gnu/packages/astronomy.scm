@@ -10376,6 +10376,31 @@ for Roman since FITS format data files will not be used by the Roman calibration
 pipelines.")
     (license license:bsd-3)))
 
+(define-public python-roman-technical-information
+  (package
+    (name "python-roman-technical-information")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "roman_technical_information" version))
+       (sha256
+        (base32 "1zlddw389zw9198yvymir1yf9prlk77minb5y8fcgmjkflz5vvj9"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;no tests
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-astropy
+           python-pyyaml))
+    (home-page "https://github.com/RomanSpaceTelescope/roman-technical-information")
+    (synopsis "Roman Space Telescope technical information")
+    (description
+     "This package provides technical information related to the Nancy Grace
+Roman Space Telescope (Roman), its Wide Field Instrument (WFI), and its
+Coronagraph technology demonstration (Coronagraph).")
+    (license license:cc0)))
+
 (define-public python-romancal
   (package
     (name "python-romancal")
