@@ -35,6 +35,7 @@
 ;;; Copyright © 2025 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2025 Adrien 'neox' Bourmault <neox@gnu.org>
 ;;; Copyright © 2026 Tomás Ortín Fernández (quanrong) <quanrong@mailbox.org>
+;;; Copyright © 2026 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1113,7 +1114,7 @@ PyCryptodome variants, the other being python-pycryptodomex.")
     (arguments
      (list #:tests? #f))        ;no tests
     (native-inputs
-     (list python-setuptools)) 
+     (list python-setuptools))
     (home-page "https://www.pycryptodome.org")
     (synopsis "Test vectors for PyCryptodome")
     (description
@@ -1341,6 +1342,43 @@ functions exposed by @code{NaCl} library via @code{libsodium}.  It has
 been constructed to maintain extensive documentation on how to use
 @code{NaCl} as well as being completely portable.")
     (license license:asl2.0)))
+
+(define-public python-libpass
+  (package
+    (name "python-libpass")
+    (version "1.9.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/notypecheck/passlib")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jsxjn2ix4lzgdm3f9zpi97zj2il77h3jljnwd507pw4j4g3sckz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 1966 passed, 1605 skipped, 2 deselected
+      #:test-flags
+      #~(map (lambda (testname)
+               (string-append "--deselect=tests/test_totp.py::" testname))
+             (list "AppWalletTest::test_decrypt_key_needs_recrypt"
+                   "AppWalletTest::test_encrypt_cost_timing"))))
+    (native-inputs
+     (list python-bcrypt
+           python-hatchling
+           python-pytest))
+    (home-page "https://github.com/notypecheck/passlib")
+    (synopsis "Comprehensive password hashing framework")
+    (description
+     "Libpass a password hashing library for Python 3, which provides
+cross-platform implementations of over 30 password hashing algorithms, as well
+as a framework for managing existing password hashes.  It's designed to be
+useful for a wide range of tasks, from verifying a hash found in /etc/shadow,
+to providing full-strength password hashing for multi-user application.
+Libpass is a fork of passlib.")
+    (license license:bsd-3)))
 
 (define-public python-pyotp
   (package
