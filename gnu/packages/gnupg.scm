@@ -160,7 +160,6 @@
                         (("(^| )main *\\(.*" all)
                          (string-append all "{\n  exit (77);//")))))))
               (else #~())))))
-    (native-inputs (list gettext-minimal))
     (home-page "https://gnupg.org/software/libgpg-error")
     (synopsis "Library of error values for GnuPG components")
     (description
