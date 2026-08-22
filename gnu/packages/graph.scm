@@ -341,6 +341,39 @@ represented by horizontal lines, and edges are represented by vertical
 lines.")
       (license license:expat))))
 
+(define-public python-ece608-toposort
+  ;; No releases.
+  (let ((commit "c6c0187327de27139f58e944d488e025d901792c")
+        (revision "0"))
+    (package
+      (name "python-ece608-toposort")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/suntosh/ece608-toposort")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1fs8mip83p7724yjnzrhxa4x3zyhx7x44jfyfy8vf3kp6nnrjg24"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-hatchling python-pytest))
+      (home-page "https://github.com/taynaud/python-louvain")
+      (synopsis "Topological sorting of directed graphs")
+      (description
+       "This package provides a Python implementation of topological ordering
+of directed graphs by two independent routes - Kahn's algorithm and DFS
+reverse postorder - with cycle detection that tells you which nodes cycle, not
+merely that one exists.
+
+No runtime dependencies.  The graph container is part of the package, in about
+170 lines.  That is a deliberate choice for a teaching implementation: the
+point is to show the algorithms, and a dependency on @code{networkx} would
+mean the interesting parts live in someone else's repository.")
+    (license license:expat))))
+
 (define-public python-louvain
   ;; The latest release doesn't build with Python@3.12.
   (let ((commit "def91793772c3e77ab4167d175903a5365c24b4b")
