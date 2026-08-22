@@ -508,16 +508,19 @@ POP3/POP3-S as well as CalDAV and CardDAV.")
            perl                         ;for 'gylwrap'
            texinfo))
     (inputs
-     (list gdbm
-           gnutls
-           gsasl
-           guile-3.0
-           libltdl
-           libunistring                 ;required for SEARCH CHARSET
-           libxcrypt
-           linux-pam
-           ncurses
-           readline))
+     (append
+      (if (target-hurd?)
+          '()
+          (list linux-pam))
+      (list gdbm
+            gnutls
+            gsasl
+            guile-3.0
+            libltdl
+            libunistring                ;required for SEARCH CHARSET
+            libxcrypt
+            ncurses
+            readline)))
     (home-page "https://mailutils.org")
     (synopsis "Utilities and library for reading and serving mail")
     (description
