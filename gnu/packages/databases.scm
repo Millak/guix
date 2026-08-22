@@ -1250,6 +1250,18 @@ Language.")
               ;; Our protobuf is too old for the mysqlx dev API, so use the
               ;; classic one without the C modules.
               (chdir "mysql-connector-python")))
+          (add-before 'check 'regenerate-certificate
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-directory-excursion "tests/data/ssl"
+                (substitute* "./generate.sh"
+                  (("which openssl")
+                   (search-input-file inputs "bin/openssl"))
+                  (("\\$OPENSSL")
+                   (search-input-file inputs "bin/openssl")))
+                ;; Use `make-file-executable' from guix/guix!7224 after
+                ;; core-packages-team is merged.
+                (chmod "./generate.sh" #o555)
+                (invoke "./generate.sh"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -1259,7 +1271,8 @@ Language.")
                 (mkdir-p "/tmp/datadir")
                 (invoke "python3" "unittests.py"
                         "--verbosity=3"
-                        (string-append "--with-mysql=" #$(this-package-input "mysql"))
+                        (string-append "--with-mysql="
+                                       #$(this-package-input "mysql"))
                         "--keep"
                         "--mysql-topdir=/tmp/datadir"
                         "--unix-socket=/tmp/datadir")))))))
