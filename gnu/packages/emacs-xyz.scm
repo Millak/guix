@@ -48888,7 +48888,7 @@ and source blocks.")
 (define-public emacs-org-modern-indent
   (package
     (name "emacs-org-modern-indent")
-    (version "0.5.1")
+    (version "0.5.3")
     (source
      (origin
        (method git-fetch)
@@ -48898,7 +48898,7 @@ and source blocks.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "09bg1shw06ddlxq678abr9q6g9wfc6b483xi0iwldxk4qbgzgpdj"))))
+         "0d6na7vc7ngcllnhp753piw2djrq3v3r1wcnhrg2134yka9xh35x"))))
     (build-system emacs-build-system)
     (arguments
      (list #:tests? #false))            ;no tests
