@@ -582,7 +582,7 @@ desktops.")
 (define-public qbittorrent
   (package
     (name "qbittorrent")
-    (version "5.1.4")
+    (version "5.2.3")
     (source
      (origin
        (method git-fetch)
@@ -591,18 +591,20 @@ desktops.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zja55b97cnij3vffmfa5p65dasybbm1gd3xjspw5yyypy5cl5zm"))))
+        (base32 "01hid15dzbw3gcha7n0sj1rc8l1pviycdjmqnplfk8yml6l2g9ib"))))
     (build-system qt-build-system)
     (arguments
-     (list #:qtbase qtbase
-           #:configure-flags #~(list "-DTESTING=ON")
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:rest args)
-                   ;; Fix for "enable_testing" not in the top-level directory.
-                   (with-directory-excursion "test"
-                     (apply (assoc-ref %standard-phases 'check) args)))))))
+     (list
+      #:qtbase qtbase
+      #:configure-flags
+      #~(list "-DTESTING=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:rest args)
+              ;; Fix for "enable_testing" not in the top-level directory.
+              (with-directory-excursion "test"
+                (apply (assoc-ref %standard-phases 'check) args)))))))
     (native-inputs
      (list qttools))
     (inputs
