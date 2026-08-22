@@ -37,7 +37,7 @@
 (define-public python-core-sr-ht
   (package
     (name "python-core-sr-ht")
-    (version "0.83.3")
+    (version "0.84.7")
     (source
      (origin
        (method git-fetch)
@@ -47,11 +47,11 @@
              (recursive? #true)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07a136icvapj4xp700mi24ibz9cmd21paikrv4c605f7z3vycciq"))))
+        (base32 "1pqin2javjzk1bi7058bl1fvkq90lb41g2378fcxfjm2r8fxgdzd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #false))                   ;there are none
+      #:tests? #f))                   ;there are none
     (propagated-inputs
      (list python-alembic
            python-beautifulsoup4
@@ -62,6 +62,7 @@
            python-humanize
            python-markdown
            python-mistletoe
+           python-nh3
            python-prometheus-client
            python-psycopg2
            python-pygments
