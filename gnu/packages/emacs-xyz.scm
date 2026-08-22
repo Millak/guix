@@ -1068,7 +1068,7 @@ input via a small child-frame spawned at the position of the cursor.")
 (define-public emacs-geiser
   (package
     (name "emacs-geiser")
-    (version "0.33.1")
+    (version "0.33.2")
     (source
      (origin
        (method git-fetch)
@@ -1077,7 +1077,7 @@ input via a small child-frame spawned at the position of the cursor.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gyr7fky3jppk3vy44mq3lfwz0n7r0k6cxim7bdfp9qy8jqw1pr8"))))
+        (base32 "1zr83vljvz37h64dp1r4mr7zcw7jqsl44mm3imcjyi08la37ch40"))))
     (build-system emacs-build-system)
     (arguments
      (list
