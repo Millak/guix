@@ -109,6 +109,32 @@
      "This repository contains the code for the sr.ht @acronym{CI, continuous
 integration} build service.")
     (license license:agpl3)))
+
+(define-public python-hub-sr-ht
+  (package
+    (name "python-hub-sr-ht")
+    (version "0.32.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~sircmpwn/hub.sr.ht")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wpd0bl9jc0p9cdggrpznx7axsx0rmirdl3k13s010x9zmdqff8z"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))                   ;there are none
+    (propagated-inputs
+     (list python-core-sr-ht))
+    (native-inputs
+     (list python-setuptools python-setuptools-scm))
+    (home-page "https://git.sr.ht/~sircmpwn/hub.sr.ht")
+    (synopsis "Code for the sr.ht project hub")
+    (description
+     "This repository contains the code for the sr.ht project hub.")
+    (license license:agpl3)))
 (define-public python-scm-sr-ht
   (package
     (name "python-scm-sr-ht")
