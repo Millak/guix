@@ -135,6 +135,33 @@ integration} build service.")
     (description
      "This repository contains the code for the sr.ht project hub.")
     (license license:agpl3)))
+
+(define-public python-lists-sr-ht
+  (package
+    (name "python-lists-sr-ht")
+    (version "0.71.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~sircmpwn/lists.sr.ht")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c0hvf2gl05yjf5zaj74b5y8n3y7km6zgffzh7r6y8vjnwhmw995"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))                   ;there are none
+    (propagated-inputs
+     (list python-core-sr-ht python-pygit2))
+    (native-inputs
+     (list python-setuptools python-setuptools-scm))
+    (home-page "https://git.sr.ht/~sircmpwn/lists.sr.ht")
+    (synopsis "Code for the sr.ht mailing list service")
+    (description
+     "This repository contains the code for the sr.ht mailing list service.")
+    (license license:agpl3)))
+
 (define-public python-scm-sr-ht
   (package
     (name "python-scm-sr-ht")
