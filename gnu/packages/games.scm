@@ -5932,7 +5932,7 @@ falling, themeable graphics and sounds, and replays.")
     (name "wesnoth")
     ;; Even-numbered minor versions indicate stable versions:
     ;; https://wiki.wesnoth.org/ReleasingWesnoth#Version_numbering
-    (version "1.18.7")
+    (version "1.18.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5941,7 +5941,7 @@ falling, themeable graphics and sounds, and replays.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hdrp4xm9d8kj8id2g5q0wwdwykx4a0f1cs8a7fghmv0czryfv7f"))))
+                "12bpfg476ncpiak0b195qicnzz2dpcd5s0fgmm8rgfq05x1cfgkm"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;no test target
