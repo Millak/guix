@@ -534,7 +534,7 @@ client's @file{~/.minetest/minetest.conf} configuration file."))))
 (define-public luanti-voxelibre
   (package
     (name "luanti-voxelibre")
-    (version "0.90.1")
+    (version "0.92.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -543,7 +543,7 @@ client's @file{~/.minetest/minetest.conf} configuration file."))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ml5z6hfd62kcwimz8sfgvy4f4izhfigmkcb56xcn66kv6b9k91a"))))
+                "0hn9hxbn029zxn66mqjih708064rd4cgbwrfx243nh78snzfhvl8"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
