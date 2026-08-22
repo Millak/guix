@@ -92,7 +92,7 @@
   (UNDERLINE    "4")
   (UNDERSCORE   "4")
   (BLINK        "5")
-  (REVERSE      "6")
+  (REVERSE      "7")
   (CONCEALED    "8")
   (BLACK       "30")
   (RED         "31")
