@@ -1416,6 +1416,55 @@ signatures include trusted comments in addition to untrusted comments.
 Trusted comments are signed, thus verified, before being displayed.")
     (license license:isc)))
 
+(define-public monocypher
+  (package
+    (name "monocypher")
+    (version "4.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/LoupVaillant/Monocypher")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08wk5l2r5k7akxx2s525f72pwqkv0pcf69dd60zwyggylz34lw65"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'check 'build-tests
+            (lambda* (#:key tests? make-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "tests/gen"
+                  (apply invoke "make" make-flags)))))
+          (add-after 'install 'delete-static-archive
+            ;; Don't want, but Makefile can't be told to only build shared.
+            (lambda _
+              (delete-file (in-vicinity #$output "lib/libmonocypher.a")))))))
+    (native-inputs
+     (list libsodium                    ;tests only
+           mandoc
+           pkg-config
+           python-cryptography          ;python is test only
+           python-minimal))
+    (home-page "https://monocypher.org/")
+    (synopsis "Easy to use crypto library")
+    (description "Monocypher is an easy to use, easy to deploy, auditable crypto
+library for C.  Features include:
+@itemize
+@item Authenticated encryption with XChaCha20 and Poly1305 (RFC 8439)
+@item Hashing and key derivation with BLAKE2b (and SHA-512)
+@item Password Hashing with Argon2
+@item Public Key Cryptography with X25519 key exchanges
+@item Public Key Signatures with EdDSA and Ed25519
+@end itemize")
+    (license (list license:bsd-2 license:cc0)))) ;dual licensed
+
 (define-public olm
   (package
     (name "olm")
