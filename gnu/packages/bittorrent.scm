@@ -529,8 +529,9 @@ and will take advantage of multiple processor cores where possible.")
 (define-public libtorrent-rasterbar
   (package
     (name "libtorrent-rasterbar")
-    (version "2.0.13")
+    (version "2.1.2")
     (source
+     ;; TODO: use git-fetch and deal with recursive git modules.
      (origin
        (method url-fetch)
        (uri
@@ -538,25 +539,33 @@ and will take advantage of multiple processor cores where possible.")
                        "releases/download/v" version "/"
                        "libtorrent-rasterbar-" version ".tar.gz"))
        (sha256
-        (base32 "1gxinc6bw2nkkx2y4xkn4cyrs1h8m5irzbqgvqh293ii0rfbfb49"))))
+        (base32 "1g2d6g8bwb5jsminpj0pnb6yjk4i3wzpvb3cxr4rw6ypkinm8qik"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags
       #~(list "-Dpython-bindings=ON"
-              "-Dbuild_tests=ON")
-      ;; Tests do not reliably work when executed in parallel.
+              "-Dbuild_tests=ON"
+              ;; INFO: webtorrent support significantly widens the attack
+              ;; surface of libtorrent.  Let's disable it.
+              ;; See: <https://github.com/arvidn/libtorrent/discussions/8570>
+              "-Dwebtorrent=OFF")
+      ;; Tests are flaky when executed in parallel.
       #:parallel-tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
             (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
               (let* ((disabled-tests
-                      '(;; Requires a non-localhost IPv4 interface.
-                        "test_upnp"))
-                     (exclude-regex (string-append "^("
-                                                   (string-join disabled-tests "|")
-                                                   ")$"))
+                      ;; INFO: These tests require network.
+                      (list "test_rtc"
+                            "test_tracker"
+                            "test_upnp"
+                            "test_webtorrent_transfer"))
+                     (exclude-regex
+                      (string-append "^("
+                                     (string-join disabled-tests "|")
+                                     ")$"))
                      (jobs (if parallel-tests?
                                (number->string (parallel-job-count))
                                "1")))
