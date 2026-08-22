@@ -1333,8 +1333,9 @@ it emulates a variety of hardware and peripherals.")
     (license (list license:gpl3+ license:mpl2.0))))
 
 (define-public spike
-  (let ((commit "591cff16109ced6a21bb2a612a3853b4e9cbd86d")
-        (revision "0"))
+  ;; Last 1.1.0 tag in 2021.
+  (let ((commit "262df8bfac33b0419688429dd066487744db5c79")
+        (revision "1"))
     (package
       (name "spike")
       (version (git-version "1.1.0" revision commit))
@@ -1346,7 +1347,7 @@ it emulates a variety of hardware and peripherals.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "07lhf524y0kkrap5lvfqddrq6hhc0g2ypfcq341w2nrjw95izasc"))))
+          (base32 "1dyvkidksp0mj6vp8bn1gyzdcpay4m8x653axaivk38q4jyz2qkh"))))
       (build-system gnu-build-system)
       (arguments
        (list
