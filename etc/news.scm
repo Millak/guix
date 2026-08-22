@@ -44,6 +44,15 @@
 (channel-news
  (version 0)
 
+ (entry (commit "125078e80dd211af79ae3b1a0a09e2a1a8396f0a")
+        (title
+         (en "Linux-libre 5.10, 5.15, 6.19 and 7.0 removed"))
+        (body
+         (en "The linux-libre 5.10, 5.15, 6.19 and 7.0 kernel series were
+removed from Guix. Consider updating to one of the newer kernel series, such
+as the current default 7.1 or longterm support release 6.18, or the latest
+7.2.")))
+
  (entry (commit "0257734a40999bfbbe0daa922e2d0e4928cdd5f0")
         (title
          (en "RabbitMQ service requires epmd service")
