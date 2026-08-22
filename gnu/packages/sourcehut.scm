@@ -79,6 +79,36 @@
      "This package contains code shared among all sr.ht projects.")
     (license license:bsd-3)))
 
+(define-public python-builds-sr-ht
+  (package
+    (name "python-builds-sr-ht")
+    (version "0.105.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~sircmpwn/builds.sr.ht")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vgg5j5sms9czpdjaw1rs70rbqngx4090csx43nf53i5w4akr4j6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))                   ;there are none
+    (propagated-inputs
+     (list python-bleach
+           python-core-sr-ht
+           python-markdown
+           python-pyyaml
+           python-redis))
+    (native-inputs
+     (list python-setuptools python-setuptools-scm))
+    (home-page "https://git.sr.ht/~sircmpwn/builds.sr.ht")
+    (synopsis "Sourcehut's build service")
+    (description
+     "This repository contains the code for the sr.ht @acronym{CI, continuous
+integration} build service.")
+    (license license:agpl3)))
 (define-public python-scm-sr-ht
   (package
     (name "python-scm-sr-ht")
