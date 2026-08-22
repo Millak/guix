@@ -24589,33 +24589,57 @@ vectors.")
            r-xfun
            ;; Not all these packages are strictly needed by tinytex, but they
            ;; are needed by r-biocstyle.  It is easier to just provide them
-           ;; here.
-           (texlive-local-tree
-            (list texlive-bera
-                  texlive-caption
-                  texlive-changepage
-                  texlive-enumitem
-                  texlive-footmisc
-                  texlive-framed
-                  texlive-helvetic
-                  texlive-latex-uni8
-                  texlive-luatex85
-                  texlive-marginfix
-                  texlive-mathtools
-                  texlive-metapost
-                  texlive-nowidow
-                  texlive-parnotes
-                  texlive-parskip
-                  texlive-pdfcrop
-                  texlive-placeins
-                  texlive-preprint
-                  texlive-scheme-small
-                  texlive-soul
-                  texlive-standalone
-                  texlive-titlesec
-                  texlive-titling
-                  texlive-xstring))))
-    (native-inputs (list r-testit))
+           ;; here
+           texlive-bera
+           texlive-caption
+           texlive-changepage
+           texlive-enumitem
+           texlive-footmisc
+           texlive-framed
+           texlive-helvetic
+           texlive-latex-uni8
+           texlive-luatex85
+           texlive-marginfix
+           texlive-mathtools
+           texlive-metapost
+           texlive-nowidow
+           texlive-parnotes
+           texlive-parskip
+           texlive-pdfcrop
+           texlive-placeins
+           texlive-preprint
+           texlive-scheme-small
+           texlive-soul
+           texlive-standalone
+           texlive-titlesec
+           texlive-titling
+           texlive-xstring))
+    (native-inputs (list r-testit
+                         (texlive-local-tree
+                          (list texlive-bera
+                                texlive-caption
+                                texlive-changepage
+                                texlive-enumitem
+                                texlive-footmisc
+                                texlive-framed
+                                texlive-helvetic
+                                texlive-latex-uni8
+                                texlive-luatex85
+                                texlive-marginfix
+                                texlive-mathtools
+                                texlive-metapost
+                                texlive-nowidow
+                                texlive-parnotes
+                                texlive-parskip
+                                texlive-pdfcrop
+                                texlive-placeins
+                                texlive-preprint
+                                texlive-scheme-small
+                                texlive-soul
+                                texlive-standalone
+                                texlive-titlesec
+                                texlive-titling
+                                texlive-xstring))))
     (home-page "https://github.com/yihui/tinytex")
     (synopsis "Helper functions for TeX Live and compiling LaTeX documents")
     (description
