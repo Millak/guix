@@ -4184,8 +4184,8 @@ and simulation Makefiles.")
   ;; XXX: The latest version tag (0.9.2) was placed in 2019, there are latest
   ;; changes supporting Python 3.11 on master branch, see
   ;; <https://github.com/m-labs/migen/issues/259>.
-  (let ((commit "6e3a9e150fb006dabc4b55043d3af18dbfecd7e8")
-        (revision "1"))
+  (let ((commit "3dcfedd0b9e533e073228bb3eb0f973d22074919")
+        (revision "2"))
     (package
       (name "python-migen")
       (version (git-version "0.9.2" revision commit))
@@ -4194,11 +4194,11 @@ and simulation Makefiles.")
          ;; Tests fail in the PyPI tarball due to missing files.
          (method git-fetch)
          (uri (git-reference
-                (url "https://github.com/m-labs/migen")
+                (url "https://git.m-labs.hk/M-Labs/migen")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1hibhjnj5b3ka5y4nnqx9zp5w730gfqfa3r5injpa14i4cz6bj1n"))))
+          (base32 "1nygx1p468109b2rmfsfqaqqgbgzn9r5d78fnb304fj96brx4b0x"))))
       (build-system pyproject-build-system)
       (native-inputs
        (list python-pytest
