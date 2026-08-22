@@ -2441,6 +2441,7 @@ system administrator.")
                    "--with-rundir=/var/run/sudo" ; must be cleaned up at boot time
                    "--with-vardir=/var/db/sudo"
                    "--with-iologdir=/var/log/sudo-io"
+                   "--with-sendmail=/run/privileged/bin/sendmail"
 
                    ;; 'visudo.c' expects _PATH_MV to be defined, but glibc doesn't
                    ;; provide it.
