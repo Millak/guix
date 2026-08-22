@@ -107,3 +107,29 @@
      "This package provides shared support code for sr.ht source control
 services.")
     (license license:agpl3)))
+
+(define-public python-todo-sr-ht
+  (package
+    (name "python-todo-sr-ht")
+    (version "0.85.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~sircmpwn/todo.sr.ht")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q3ls24njl0gh21ni08m0g0j9cv0l0clab9dip7dkmg3vczyn70c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #false))                   ;there are none
+    (propagated-inputs
+     (list python-core-sr-ht))
+    (native-inputs
+     (list python-setuptools python-setuptools-scm))
+    (home-page "https://git.sr.ht/~sircmpwn/todo.sr.ht")
+    (synopsis "Code for the sr.ht ticket tracking service")
+    (description
+     "This repository contains the code for the sr.ht ticket tracking service.")
+    (license license:agpl3)))
