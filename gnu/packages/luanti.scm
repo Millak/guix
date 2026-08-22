@@ -194,8 +194,8 @@ Luanti games with multiplayer support.  This package provides
 @command{luantiserver} to run a Luanti server.")))
 
 (define-public minetest-game
-  (let ((commit "052ccb09280a1fa52022c7e120437b1e6dc82771")
-        (revision "2"))
+  (let ((commit "c42e4d0c0ff9d27ff7b9b308c3cfc14098dd3a0f")
+        (revision "3"))
     (package
       (name "luanti-minetest-game")
       (version (git-version "0.0.0" revision commit))
@@ -207,7 +207,7 @@ Luanti games with multiplayer support.  This package provides
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "072rlljd9srkxj1chdpz4sxw6nzc8nlhm8328npgwf0i9hwqmr8c"))))
+          (base32 "1qakqf2wsdvzgjb311cj51m0drkn1qki7qzpajk2kh7y1d6xx6bk"))))
       (build-system copy-build-system)
       (arguments
        (list
