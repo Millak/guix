@@ -4249,7 +4249,7 @@ a C library, so they can easily be integrated into other programs.")
 (define-public taisei
   (package
     (name "taisei")
-    (version "1.4.4")
+    (version "1.4.5")
     (source
      (origin
        (method url-fetch)
@@ -4257,7 +4257,7 @@ a C library, so they can easily be integrated into other programs.")
                            "taisei/releases/download/v" version
                            "/taisei-" version ".tar.xz"))
        (sha256
-        (base32 "13b2ha8nsdzbydirvc7hw1q46jzhn6cx9b9spgk777swjlgx2vph"))))
+        (base32 "17b8cbjryjvid8ckmfn5gy99l8qpqz00llmmp35n5vcb4lapm2rc"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -4267,19 +4267,20 @@ a C library, so they can easily be integrated into other programs.")
                                 "-Dshader_transpiler=enabled")))
     (native-inputs
      (list cmake-minimal
+           gettext-minimal
            pkg-config
            python
+           python-backports-zstd
            python-docutils
-           python-pygments
-           python-zstandard))
+           python-pygments))
     (inputs
      (list cglm
            freetype
            glslang
            libdecor                     ; XXX: for sdl3
            libpng
+           libunibreak
            libwebp
-           libzip
            mesa
            openssl
            opusfile
