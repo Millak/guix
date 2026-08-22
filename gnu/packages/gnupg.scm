@@ -174,16 +174,13 @@ Daemon and possibly more in the future.")
   (package
     (name "libgcrypt")
     (version "1.12.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/gpg/libgcrypt")
-              (commit (string-append "libgcrypt-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1mrh5dwzvw63pdl2jvahgd5vacrk684qjzlhimm58gj68shndssh"))))
+    (source (origin
+             (method url-fetch)
+             (uri (string-append "mirror://gnupg/libgcrypt/libgcrypt-"
+                                 version ".tar.bz2"))
+             (sha256
+              (base32
+               "0pmxp91sirqmsiy7asnjbz5ksglzbqhh11baz4v086i2j8j3rqvw"))))
     (build-system gnu-build-system)
     (arguments
      ;; The '--with-gpg-error-prefix' argument is needed because otherwise
@@ -192,7 +189,6 @@ Daemon and possibly more in the future.")
      (list
       #:configure-flags
       #~(append
-         (list "--enable-maintainer-mode")  ;see README.GIT
          (let ((gpgrt-config (search-input-file #$(if (%current-target-system)
                                                       #~%build-target-inputs
                                                       #~%build-inputs)
@@ -205,10 +201,6 @@ Daemon and possibly more in the future.")
                  ;; not respected.  See <https://dev.gnupg.org/T5365>.
                  ;; TODO: transition to pkg-config instead of these scripts.
                  (string-append "ac_cv_path_GPGRT_CONFIG=" gpgrt-config)))
-
-         ;; TODO: There is a dependency cycle with fig2dev; remove when
-         ;; fixed.
-         (list "--disable-doc")
          #$@(if (%current-target-system)
                 ;; When cross-compiling, _gcry_mpih_lshift etc are
                 ;; undefined.
@@ -223,8 +215,6 @@ Daemon and possibly more in the future.")
               (else #~())))))
     (outputs '("out" "debug"))
     (propagated-inputs (list libgpg-error))
-    (native-inputs
-     (list autoconf automake))
     (home-page "https://gnupg.org/software/libgcrypt")
     (synopsis "Cryptographic function library")
     (description
