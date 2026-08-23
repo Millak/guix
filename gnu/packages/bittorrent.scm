@@ -737,7 +737,7 @@ the following features:
     (build-system pyproject-build-system)
     (inputs (list bash-minimal
                   gtk+
-                  libtorrent-rasterbar
+                  libtorrent-rasterbar-2.0
                   nss-certs
                   python-pycairo
                   python-chardet
