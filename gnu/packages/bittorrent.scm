@@ -588,6 +588,46 @@ focusing on efficiency and scalability.  It runs on embedded devices as well as
 desktops.")
     (license license:bsd-2)))
 
+(define-public libtorrent-rasterbar-2.0
+  (package/inherit libtorrent-rasterbar
+    (name "libtorrent-rasterbar")
+    (version "2.0.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://github.com/arvidn/libtorrent/"
+                       "releases/download/v" version "/"
+                       "libtorrent-rasterbar-" version ".tar.gz"))
+       (sha256
+        (base32 "00mv4ygv41b71w804m9vfgyx70xgb8mw6r0if94fmdr3k097jbjy"))))
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:configure-flags flags)
+        #~(list "-Dpython-bindings=ON"
+                "-Dbuild_tests=ON"))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+                (let* ((disabled-tests
+                        (list
+                         ;; INFO: This test requires non-localhost IPv4
+                         ;; interface.
+                         "test_upnp"))
+                       (exclude-regex
+                        (string-append "^("
+                                       (string-join disabled-tests "|")
+                                       ")$"))
+                       (jobs (if parallel-tests?
+                                 (number->string (parallel-job-count))
+                                 "1")))
+                  (when tests?
+                    (invoke "ctest"
+                            "-E" exclude-regex
+                            "-j" jobs
+                            "--output-on-failure")))))))))))
+
 (define-public qbittorrent
   (package
     (name "qbittorrent")
