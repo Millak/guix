@@ -1545,11 +1545,6 @@ the \"texlive\" importer."
                        "monego")
   python science)
 
-(define-member (person "Nicolas Graves"
-                       "ngraves@ngraves.fr"
-                       "nicolas-graves")
-  core javascript python ruby)
-
 (define-member (person "Yelninei"
                        "yelninei@tutamail.com"
                        "Yelninei")
