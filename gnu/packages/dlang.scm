@@ -622,9 +622,9 @@ This compiler is based on the DMD frontend version 2.112.1.")
                 ;; tries to debug 64bit executable
                 ;; not in executable format: file format not recognized
                 #$@(if (target-32bit?)
-                       #~(delete-file
-                          (string-append "dmd/compiler/test/runnable"
-                                         "/gdb_slice_debuginfo_64.d"))
+                       #~((delete-file
+                            (string-append "dmd/compiler/test/runnable"
+                                           "/gdb_slice_debuginfo_64.d")))
                        #~())
 
                 ;; Locations in stack traces are broken for some reason,
