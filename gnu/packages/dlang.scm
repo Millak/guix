@@ -297,11 +297,16 @@
                   #$@(if (or (target-x86-32?)
                              (target-arm32?))
                          #~("tests/codegen/mangling.d"
+                            "tests/debuginfo/print_gdb.d"
                             "tests/dmd/runnable_cxx/cppa.d"
+                            "tests/dmd/runnable/gdb_slice_debuginfo_64.d"
                             "tests/instrument/xray_check_pipeline.d"
                             "tests/instrument/xray_link.d"
                             "tests/instrument/xray_simple_execution.d"
                             "tests/PGO/profile_rt_calls.d"
+                            "tests/sanitizers/fuzz_basic.d"
+                            "tests/sanitizers/fuzz_mixin.d"
+                            "tests/sanitizers/link_fuzzer.d"
                             "tests/sanitizers/msan_noerror.d"
                             "tests/sanitizers/msan_uninitialized.d")
                          #~())
