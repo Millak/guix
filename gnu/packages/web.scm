@@ -7956,6 +7956,37 @@ snippets on @url{https://commandlinefu.com}.")
       (home-page "https://github.com/taviso/nntpit")
       (license license:expat))))
 
+(define-public rdrview
+  (package
+    (name "rdrview")
+    (version "0.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/eafer/rdrview")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "115qc7qpq899jzkna28brjni0m2a50g1li52kg9pqykgsp15f6z4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;they seem to require user input.
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (inputs (list curl libseccomp libxml2))
+    (home-page "https://github.com/eafer/rdrview")
+    (synopsis "Firefox reader view as a command line tool")
+    (description
+     "@code{rdrview} is command line tool to extract the main content from a
+webpage, as done by the reader view feature of most modern browsers.")
+    (license license:apsl2)))
+
 (define-public rss-bridge
   (package
     (name "rss-bridge")
