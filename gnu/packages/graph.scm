@@ -360,7 +360,7 @@ lines.")
       (build-system pyproject-build-system)
       (native-inputs
        (list python-hatchling python-pytest))
-      (home-page "https://github.com/taynaud/python-louvain")
+      (home-page "https://github.com/suntosh/ece608-toposort")
       (synopsis "Topological sorting of directed graphs")
       (description
        "This package provides a Python implementation of topological ordering
