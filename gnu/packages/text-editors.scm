@@ -977,6 +977,8 @@ OpenBSD team.")
                #~(list "ac_cv_func_strcasecmp=yes"
                        "gl_cv_func_strcasecmp_works=yes"))
          '()))
+    (native-inputs
+     (list pkg-config))
     (inputs
      (list gettext-minimal ncurses))
     (home-page "https://www.nano-editor.org/")
