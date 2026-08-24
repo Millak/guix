@@ -46,6 +46,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages game-development)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
@@ -800,7 +801,8 @@ line utility to manage image metadata.")
            libxxf86vm
            mesa
            openal
-           pulseaudio))
+           pulseaudio
+           python-pygobject))
     (home-page "https://github.com/pyglet/pyglet")
     (synopsis "Windowing and multimedia library")
     (description
