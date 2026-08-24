@@ -28,7 +28,7 @@
 ;;; Copyright © 2022 Stephen Paul Weber <singpolyma@singpolyma.net>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Tom Fitzhenry <tom@tom-fitzhenry.me.uk>
-;;; Copyright © 2023, 2025 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023, 2025, 2026 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
@@ -352,29 +352,26 @@ messages.")
 (define-public ruby-cucumber-messages
   (package
     (name "ruby-cucumber-messages")
-    (version "21.0.1")
+    (version "32.3.1")
     (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "cucumber-messages" version))
+              (method git-fetch) ;for tests
+              (uri (git-reference
+                    (url "https://github.com/cucumber/messages")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0482a63y7my0arn2bv208g401dq8525f0gwhnwaa11mhv6ph0q5i"))))
+                "0s30w4fyqx0mc4qksk78z54myc2iv6qk05kmshqmcfzqy1rg5a5f"))))
     (build-system ruby-build-system)
     (arguments
-     (list #:phases
+     (list #:test-target "spec"
+           #:phases
            #~(modify-phases %standard-phases
-               ;; The test suite requires the gem to be installed, so move it
-               ;; after the install phase.
-               (delete 'check)
-               (add-after 'install 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (setenv "GEM_PATH" (string-append
-                                       (getenv "GEM_PATH") ":"
-                                       #$output "/lib/ruby/vendor_ruby"))
-                   (when tests?
-                     (invoke "rspec")))))))
+               (add-after 'unpack 'chdir
+                 (lambda _
+                   (chdir "ruby"))))))
     (native-inputs
-     (list ruby-cucumber-compatibility-kit-bootstrap ruby-rspec))
+     (list ruby-rspec))
     (home-page "https://github.com/cucumber/messages/")
     (synopsis "Cucumber Messages for Ruby (Protocol Buffers)")
     (description "Cucumber Messages for Ruby is a library which allows
