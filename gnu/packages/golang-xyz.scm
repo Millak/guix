@@ -9909,7 +9909,7 @@ on throughput and hit ratio performance.")
   (package
     (inherit go-github-com-dgraph-io-ristretto)
     (name "go-github-com-dgraph-io-ristretto-v2")
-    (version "2.1.0")
+    (version "2.3.0")
     (source
      (origin
        (method git-fetch)
@@ -9918,7 +9918,7 @@ on throughput and hit ratio performance.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q65y9psk8vnrsjlmaqhc8l3fwpsh23wrr4cjz8jfnph45hhh4jk"))))
+        (base32 "0ls82bn1vh8mzmlik4vy6pivhx2s7vcknjgvf6rgd74q6p2vfsf1"))))
     (arguments
      (substitute-keyword-arguments
          (package-arguments go-github-com-dgraph-io-ristretto)
