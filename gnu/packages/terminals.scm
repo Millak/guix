@@ -1410,6 +1410,7 @@ layout, working directories and programs to run on startup.
 arbitrary programs of your choice.  This is useful for browsing the history
 comfortably in a pager or editor.
 @end itemize")
+    (properties '((cpe-vendor . "kovidgoyal"))) ;to distinguish from 9bis
     (license license:gpl3+)))
 
 (define-public eternalterminal
