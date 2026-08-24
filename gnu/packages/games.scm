@@ -72,7 +72,7 @@
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;; Copyright © 2022, 2023, 2025 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
-;;; Copyright © 2022-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Hendursaga <hendursaga@aol.com>
 ;;; Copyright © 2022 Parnikkapore <poomklao@yahoo.com>
 ;;; Copyright © 2022 Cairn <cairn@pm.me>
@@ -3896,7 +3896,7 @@ saved automatically, and you can select between currently in progress games.")
 (define-public trigger-rally
   (package
     (name "trigger-rally")
-    (version "0.6.6.1")
+    (version "0.6.7")
     (source
      (origin
        (method url-fetch)
@@ -3905,68 +3905,45 @@ saved automatically, and you can select between currently in progress games.")
                            "trigger-rally-" version ".tar.gz"))
        (sha256
         (base32
-         "016bc2hczqscfmngacim870hjcsmwl8r3aq8x03vpf22s49nw23z"))))
+         "1ryzddf5k0jzv8xhmikajql2qc3gvha7by43r4l7yag17kx921k4"))))
     (build-system gnu-build-system)
     (inputs
-     `(("freealut" ,freealut)
-       ("glew" ,glew)
-       ("glu" ,glu)
-       ("mesa" ,mesa)
-       ("openal" ,openal)
-       ("physfs" ,physfs)
-       ("sdl" ,(sdl-union (list sdl2 sdl2-image)))
-       ("tinyxml2" ,tinyxml2)))
+     (list freealut
+           glew
+           glu
+           mesa
+           openal
+           physfs
+           (sdl-union (list sdl2 sdl2-image))
+           tinyxml2))
     (arguments
-     `(#:make-flags (list (string-append "prefix=" %output)
-                          "bindir=$(prefix)/bin"
-                          "datadir=$(datarootdir)"
-                          "OPTIMS=-Ofast")
-       #:tests? #f                      ; No tests present
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'cd-src
-           (lambda _ (chdir "src")))
-         (add-before 'build 'remove-timestamps
-           (lambda _
-             (substitute* (list "Trigger/menu.cpp"
-                                "PEngine/app.cpp")
-               ((".*__DATE__.*") ""))))
-         (add-before 'build 'make-verbose
-           (lambda _
-             (substitute* "GNUmakefile"
-               (("@\\$\\(CXX\\)") "$(CXX)"))))
-         (add-after 'build 'set-data-path
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "../bin/trigger-rally.config.defs"
-                 (("<data path=\"C:[^\"]*\"")
-                  (string-append "<data path=\"" out "/share/trigger-rally\""))))))
-         (add-after 'install 'create-desktop-entry
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (apps (string-append out "/share/applications")))
-               (mkdir-p apps)
-               (with-output-to-file
-                   (string-append apps "/trigger-rally.desktop")
-                 (lambda ()
-                   (format #t           ; Borrowed from Debian package
-                           "[Desktop Entry]~@
-                            Name=Trigger Rally~@
-                            Icon=trigger-rally~@
-                            Comment=3D rally racing car game~@
-                            Comment[de]=3D Rally-Autorennen~@
-                            Comment[fr_FR]=un jeu de rally en 3D~@
-                            Comment[ro_RO]=Un joc în 3D cu curse de raliu~@
-                            Exec=~a/bin/trigger-rally~@
-                            Terminal=false~@
-                            StartupNotify=false~@
-                            Type=Application~@
-                            TryExec=~:*~a/bin/trigger-rally~@
-                            Categories=Game;ArcadeGame;~@
-                            Keywords=racing;tracks;~@
-                            Keywords[de]=Rennstrecke;~%"
-                           out)))))))))
+     (list
+      #:make-flags #~(list (string-append "prefix=" #$output)
+                           "bindir=$(prefix)/bin"
+                           "datadir=$(datarootdir)"
+                           "LOC_APPDATAFILE=$(datarootdir)/metainfo"
+                           "LOC_DESKTOPFILE=$(datarootdir)/applications"
+                           "OPTIMS=-Ofast")
+      #:tests? #f                       ; No tests present
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'cd-src
+            (lambda _ (chdir "src")))
+          (add-before 'build 'remove-timestamps
+            (lambda _
+              (substitute* (list "Trigger/menu.cpp"
+                                 "PEngine/app.cpp")
+                ((".*__DATE__.*") ""))))
+          (add-before 'build 'make-verbose
+            (lambda _
+              (substitute* "GNUmakefile"
+                (("@\\$\\(CXX\\)") "$(CXX)"))))
+          (add-after 'build 'set-data-path
+            (lambda _
+              (substitute* "../bin/trigger-rally.config.defs"
+                (("<data path=\"C:[^\"]*\"")
+                 (string-append "<data path=\"" #$output "/share/trigger-rally\""))))))))
     (home-page "https://trigger-rally.sourceforge.net")
     (synopsis "Fast-paced single-player racing game")
     (description "Trigger-rally is a 3D rally simulation with great physics
@@ -3977,7 +3954,7 @@ through the maps in often tight time limits and can further improve by beating
 the recorded high scores.  All attached single races must be finished in time
 in order to win an event, unlocking additional events and cars.  Most maps are
 equipped with spoken co-driver notes and co-driver icons.")
-    (license (list license:cc0               ;textures and audio in data.zip
+    (license (list license:cc0          ;textures and audio in data.zip
                    license:gpl2+))))
 
 (define-public xshogi
