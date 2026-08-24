@@ -10137,19 +10137,20 @@ just built can be used within the resulting image.  @code{build-program}
 requires a list of Common Lisp expressions to be passed as the
 @code{#:entry-program} argument.
 
-By default, all the @file{.asd} files present in the sources are read to
-find system definitions.  The @code{#:asd-files} parameter can be used
-to specify the list of @file{.asd} files to read.  Furthermore, if the
-package defines a system for its tests in a separate file, it will be
-loaded before the tests are run if it is specified by the
-@code{#:test-asd-file} parameter.  If it is not set, the files
-@code{<system>-tests.asd}, @code{<system>-test.asd}, @code{tests.asd},
-and @code{test.asd} will be tried if they exist.
-
-If for some reason the package must be named in a different way than the
-naming conventions suggest, or if several systems must be compiled, the
+ASDF discovers the systems available for building by scanning all
+@file{.asd} files present in the package's source.  The systems that
+will actually be built by Guix are specified by the parameter
+@code{#:asd-systems}.  Its default value contains a single system whose
+name is derived from the package name with the implementation prefix
+removed, e.g. @code{cl-stencl} for the package @code{sbcl-cl-stencl}.
+If the Guix package must be named in a different way than the naming
+conventions suggest, or if several systems must be compiled, the
 @code{#:asd-systems} parameter can be used to specify the list of system
 names.
+
+The parameter @code{#:asd-test-systems} lists the systems for which
+tests will be run.  Its default value is the value of
+@code{#:asd-systems}.
 
 @end defvar
 
