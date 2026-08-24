@@ -382,7 +382,7 @@ Cucumber.")
 (define-public ruby-cucumber-tag-expressions
   (package
     (name "ruby-cucumber-tag-expressions")
-    (version "5.0.1")
+    (version "8.1.0")
     (source
      (origin
        (method git-fetch)
@@ -392,7 +392,7 @@ Cucumber.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1ziq30szn8m5y29hsdpx4dn1a8sy29h01nvcldm8nr1mx4b7dj1w"))))
+         "10pky4gfplhnfimi480jbmdv11b6y6kvh472hj7f0naydgbwcq5x"))))
     (build-system ruby-build-system)
     (arguments
      (list #:test-target "spec"
