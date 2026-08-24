@@ -282,7 +282,7 @@ using the Git pkt-line format used in various Git operations.")
 (define-public go-github-com-go-git-go-git-v5
   (package
     (name "go-github-com-go-git-go-git-v5")
-    (version "5.13.1")
+    (version "5.16.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -291,7 +291,7 @@ using the Git pkt-line format used in various Git operations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mgzwwmq1awai9n8vkjp8xpq26hvivl53g57f1k2cgg6bkj13r2a"))))
+                "1vfg2wy9b29llkjw6h2yjvj8jw6wgf3wbxkplsxm8bcjfin5prvn"))))
     (build-system go-build-system)
     (arguments
      (list
