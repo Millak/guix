@@ -6848,7 +6848,7 @@ then be analyzed or manipulated more easily than the underlying AST layer.")
 (define-public ruby-parallel-tests
   (package
     (name "ruby-parallel-tests")
-    (version "4.9.0")
+    (version "5.7.0")
     (home-page "https://github.com/grosser/parallel_tests")
     (source (origin
               (method git-fetch)
@@ -6858,7 +6858,7 @@ then be analyzed or manipulated more easily than the underlying AST layer.")
               (file-name (string-append name version))
               (sha256
                (base32
-                "0ljb17i1bvlr0y1avwishcrg60h48bj6iwgkp8yrck08wcs7b338"))))
+                "005vj7j4wz2i15c43aqcxvqchrpa412d4h9mfp6nia0dgd3iwgjy"))))
     (build-system ruby-build-system)
     (arguments
      '(#:test-target "spec"             ;avoid rubocop dependency
@@ -6893,7 +6893,9 @@ then be analyzed or manipulated more easily than the underlying AST layer.")
                       ;; This test fails, probably because of the newer
                       ;; Cucumber version used here.
                       (delete-file "spec/parallel_tests/cucumber/\
-failure_logger_spec.rb")                      ))
+failure_logger_spec.rb")
+                      ;; This uses Bundler extensively.
+                      (delete-file "spec/integration_spec.rb")))
                   (add-before 'check 'set-HOME
                     (lambda _
                       ;; Some tests check the output of Bundler, and fail when
