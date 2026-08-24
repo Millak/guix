@@ -370,6 +370,32 @@ units can be created by multiplying by const values and variables can be
 converted by casting.")
     (license license:asl2.0)))
 
+(define-public go-github-com-hablullah-go-hijri
+  (package
+    (name "go-github-com-hablullah-go-hijri")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hablullah/go-hijri")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v76y09146khhyds2cjnp8alxjbr77fr14xlhsqbn6cjv6lc57rz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hablullah/go-hijri"))
+    (propagated-inputs
+     (list go-github-com-hablullah-go-juliandays))
+    (home-page "https://github.com/hablullah/go-hijri")
+    (synopsis "Convert between Hijri and Gregorian dates")
+    (description
+     "This Go package converts dates between the Hijri and Gregorian calendar
+systems.")
+    (license license:expat)))
+
 (define-public go-github-com-hablullah-go-juliandays
   (package
     (name "go-github-com-hablullah-go-juliandays")
