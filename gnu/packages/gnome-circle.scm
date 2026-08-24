@@ -675,7 +675,8 @@ Aegis (encrypted / plain-text), andOTP, Google Authenticator
     (inputs
      (list glib
            gtk
-           libadwaita))
+           libadwaita
+           librsvg))
     (synopsis "Mahjongg tile-matching game")
     (description "GNOME Mahjongg is a game based on the classic Chinese
 tile-matching game Mahjongg.  It features multiple board layouts, tile themes,
