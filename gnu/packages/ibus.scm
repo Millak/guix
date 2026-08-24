@@ -952,16 +952,24 @@ traditional Chinese output.")
 (define-public libhangul
   (package
     (name "libhangul")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://kldp.net/hangul/release/"
-                           "3442-libhangul-" version ".tar.gz"))
+       (uri (string-append "https://github.com/libhangul/libhangul/releases/"
+                           "download/libhangul-" version
+                           "/libhangul-" version ".tar.gz"))
        (sha256
-        (base32
-         "0ni9b0v70wkm0116na7ghv03pgxsfpfszhgyj3hld3bxamfal1ar"))))
+        (base32 "082i79asdrzl7049v0yv6q86jy4c0rhif734nnis4h28ryhfc17a"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf-2.71
+           automake
+           gettext-minimal
+           libtool
+           pkg-config))
+    (inputs
+     (list (@ (gnu packages xml) expat)))
     (home-page "https://github.com/libhangul/libhangul")
     (synopsis "Library to support hangul input method logic")
     (description
