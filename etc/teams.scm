@@ -909,7 +909,8 @@ and the maven-build-system."
                       "gnu/packages/linux.scm"
                       "gnu/tests/linux-modules.scm"
                       "guix/build/linux-module-build-system.scm"
-                      "guix/build-system/linux-module.scm")))
+                      "guix/build-system/linux-module.scm"
+                      "etc/manifests/kernels.scm")))
 
 (define-team lisp
   (team 'lisp
