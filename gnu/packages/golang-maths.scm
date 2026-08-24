@@ -445,6 +445,31 @@ representing graphs and performing various operations on them, making it ideal
 for both educational purposes and practical applications.")
     (license license:asl2.0)))
 
+(define-public go-github-com-jalaali-go-jalaali
+  (package
+    (name "go-github-com-jalaali-go-jalaali")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jalaali/go-jalaali")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zdwcp2avnp5609rc33hbg8npqf49p9ygjk51kfmh0mlichdld1b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jalaali/go-jalaali"
+      #:skip-build? #t))
+    (home-page "https://github.com/jalaali/go-jalaali")
+    (synopsis "Convert between Jalaali and Gregorian dates")
+    (description
+     "This Go package converts dates between the Jalaali (Persian) and
+Gregorian calendar systems.")
+    (license license:expat)))
+
 (define-public go-github-com-johncgriffin-overflow
   (package
     (name "go-github-com-johncgriffin-overflow")
