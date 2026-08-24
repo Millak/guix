@@ -3827,6 +3827,33 @@ to support the streaming mode required by Go's standard Hash interface.")
 of @code{golang.org/x/crypto} maintained by Tailscale.")
     (license license:bsd-3)))
 
+(define-public go-github-com-templexxx-xhex
+  (package
+    (name "go-github-com-templexxx-xhex")
+    (version "0.0.0-20200614015412-aed53437177b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/templexxx/xhex")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "144x7c51cw2ybjf0ksxs1kigdxjb2f6ggwyn5nj2y3wi61slz9wp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/templexxx/xhex"))
+    (propagated-inputs
+     (list go-github-com-templexxx-cpu))
+    (home-page "https://github.com/templexxx/xhex")
+    (synopsis "Fast hexadecimal encoding and decoding for Go")
+    (description
+     "This package implements high-performance hexadecimal encoding and
+decoding.  On AVX2-capable x86_64 CPUs, xhex enables SIMD acceleration at
+runtime.")
+    (license license:expat)))
+
 (define-public go-github-com-tink-crypto-tink-go-v2
   (package
     (name "go-github-com-tink-crypto-tink-go-v2")
