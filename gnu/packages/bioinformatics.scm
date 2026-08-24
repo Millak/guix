@@ -14715,6 +14715,16 @@ high-throughput DNA sequencing run within a few minutes.")
          (base32
           "1glw5pn9s8z13spxk6yyfqaz80n9lga67f33w35nkpq9dwi2vg6g"))))
     (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'delete-failing-tests
+            (lambda _
+              ;; This feature compares inspected strings, which can
+              ;; easily cause differences across different Ruby
+              ;; versions.
+              (delete-file "features/vcf_header.feature"))))))
     (native-inputs
      (list ruby-cucumber))
     (synopsis "Smart VCF parser DSL")
