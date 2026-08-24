@@ -21931,7 +21931,7 @@ locale reading differently across Unix and Windows systems.")
 (define-public go-github-com-mattn-go-runewidth
   (package
     (name "go-github-com-mattn-go-runewidth")
-    (version "0.0.16")
+    (version "0.0.19")
     (source
      (origin
        (method git-fetch)
@@ -21940,13 +21940,13 @@ locale reading differently across Unix and Windows systems.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d7wbfz1kd3m0a4sx0ijrnbn4kw3bhn6myvnk76s19h8zjvafbrl"))))
+        (base32 "0w9hjbim23dwzf6lgmmgss0ikdjrxx4pd27p8ds8spv1k4mdp68s"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/mattn/go-runewidth"))
     (propagated-inputs
-     (list go-github-com-rivo-uniseg))
+     (list go-github-com-clipperhouse-uax29-v2))
     (home-page "https://github.com/mattn/go-runewidth")
     (synopsis "Rune width implementation for Go")
     (description
