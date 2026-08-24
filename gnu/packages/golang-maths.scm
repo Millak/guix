@@ -370,6 +370,29 @@ units can be created by multiplying by const values and variables can be
 converted by casting.")
     (license license:asl2.0)))
 
+(define-public go-github-com-hablullah-go-juliandays
+  (package
+    (name "go-github-com-hablullah-go-juliandays")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hablullah/go-juliandays")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k54a3sa2mipja4290grc7ngkh3g5p8jcqimzmk8wkn8qy8bvzv6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hablullah/go-juliandays"))
+    (home-page "https://github.com/hablullah/go-juliandays")
+    (synopsis "Convert between dates and Julian day numbers")
+    (description
+     "This Go package converts between dates and Julian day numbers.")
+    (license license:expat)))
+
 (define-public go-github-com-hmdsefi-gograph
   (package
     (name "go-github-com-hmdsefi-gograph")
