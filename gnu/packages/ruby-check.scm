@@ -292,7 +292,7 @@ Expressions are extensible with parameter types.")
 (define-public ruby-cucumber-gherkin
   (package
     (name "ruby-cucumber-gherkin")
-    (version "26.1.0")
+    (version "39.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -301,7 +301,7 @@ Expressions are extensible with parameter types.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rsannfcg5rqh5a3d3paw10kf6mmqjrgbq3k235px4swbyqysmgn"))))
+                "1jjzavsp30p4iisy7j57x51pi1h4lm271ckhx0h7x2h9pin8fyil"))))
     (build-system ruby-build-system)
     (arguments (list #:test-target "spec"
                      #:phases #~(modify-phases %standard-phases
