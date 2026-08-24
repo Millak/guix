@@ -5100,24 +5100,6 @@ tools, simulators, linters, code editors, and refactoring tools.")
     (home-page "https://sv-lang.com/")
     (license license:expat)))
 
-(define sv-lang-for-yosys-slang
-  (let ((commit "f04e81565793c768b747a8fd058f3e7aeceee1b5") ;sync with yosys-slang
-        (revision "0"))
-    (package
-      (inherit sv-lang)
-      (name "sv-lang")
-      (version (git-version "10.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/MikePopoloski/slang")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "135ghdw7wm9544mpnq91vsjag2r1sk81shd3r1cw513jsjhjvim4")))))))
-
 (define-public systemc
   (package
     (name "systemc")
