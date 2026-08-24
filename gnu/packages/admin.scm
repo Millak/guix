@@ -1963,7 +1963,6 @@ maintenance releases.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1mdi4pm44pha47ivfn2gsf9w9rdpyw4q19x4myvkbifjg6lf7r4i"))))
-    (inputs (list bash-minimal coreutils-minimal eudev openresolv sed))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2001,6 +2000,7 @@ maintenance releases.")
                         (list (dirname resolvconf)
                               (dirname rm)
                               (dirname sed))))))))))
+    (inputs (list bash-minimal coreutils-minimal eudev openresolv sed))
     (home-page "https://roy.marples.name/projects/dhcpcd")
     (synopsis "Feature-rich DHCP and DHCPv6 client")
     (description
