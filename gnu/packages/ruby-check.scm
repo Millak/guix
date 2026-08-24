@@ -818,20 +818,26 @@ for Minitest.  This gem provides:
 (define-public ruby-multi-test
   (package
     (name "ruby-multi-test")
-    (version "0.1.2")
+    (version "1.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (rubygems-uri "multi_test" version))
+       (method git-fetch) ;for tests
+       (uri (git-reference
+             (url "https://github.com/cucumber/multi_test")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1sx356q81plr67hg16jfwz9hcqvnk03bd9n75pmdw8pfxjfy1yxd"))))
+         "1y5vi5s8q3bzq0n04gq68fpaig38r65mfaq1fzcxi1h3prglz1xa"))))
     (build-system ruby-build-system)
     (arguments
-     '(;; Tests require different sets of specific gem versions to be available,
-       ;; and there is no gemfile that specifies the newest versions of
-       ;; dependencies to be tested.
-       #:tests? #f))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./test-gemfile" "test/gemfiles/plain-ruby")))))))
     (synopsis
      "Interface to testing libraries loaded into a running Ruby process")
     (description
