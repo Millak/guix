@@ -944,6 +944,7 @@ needed.")
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
                   (invoke "./dtools_rdmd" "rdmd_test.d" "dtools_rdmd"
+                          "-m" #$(if (target-64bit?) "64" "32")
                           "--rdmd-default-compiler" "ldmd2"))))
             (replace 'install
               (lambda* (#:key outputs #:allow-other-keys)
