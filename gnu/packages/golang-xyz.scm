@@ -17187,7 +17187,7 @@ processor.")
 (define-public go-github-com-itchyny-timefmt-go
   (package
     (name "go-github-com-itchyny-timefmt-go")
-    (version "0.1.6")
+    (version "0.1.8")
     (source
      (origin
        (method git-fetch)
@@ -17196,7 +17196,7 @@ processor.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ldagirn1wh3klkk1rr96d5b5jbn24aib14x3j73x47cjfqi92wf"))))
+        (base32 "10crf9vhh5kkwh0bfz37wh0iwxzrv78j79hz0d8fv3lnr4k7n7pa"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/itchyny/timefmt-go"))
