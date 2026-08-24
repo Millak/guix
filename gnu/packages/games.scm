@@ -899,7 +899,7 @@ attacks you can use on opponents.")
 (define-public vdrift-data
   ;; There are no tags or releases for the vdrift data; use the latest SVN
   ;; revision available.
-  (let ((commit 1463)
+  (let ((commit 1464)
         (revision "0"))
     ;; The package is hidden as the game data is *required* by the install
     ;; target of vdrift itself, and there is no need for users to manually
@@ -919,7 +919,7 @@ attacks you can use on opponents.")
                  (file-name (string-append name "-" version "-checkout"))
                  (sha256
                   (base32
-                   "1zx08q4v3s4l5r0wxphd323h0rqp9pjb7kr08s3gb2qr85lw587h"))))
+                   "0q0raw7xjnf710xxls6cjqqvkn754bbndqjs9dzkpr40s8zrgnvf"))))
        (build-system copy-build-system)
        (arguments (list #:install-plan #~'(("." "share/games/vdrift/data"))))
        (home-page "https://vdrift.net/")
@@ -931,8 +931,8 @@ game.")
 (define-public vdrift
   ;; The latest release is from 2014, and lacks build system and other
   ;; unreleased improvements; use the latest commit.
-  (let ((commit "120ae28d2a1b43a8589c5ce3c5e02d813890d090")
-        (revision "0"))
+  (let ((commit "f835edaef1abe586b8d5bebeaa8c41f85e6dbea4")
+        (revision "1"))
     (package
       (name "vdrift")
       (version (git-version "2014-10-20" revision commit))
@@ -944,7 +944,7 @@ game.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "13id01rr6rjhmrh34p8n0ka3yfwzp62j6p8z6rc5aagnr5mn1qn0"))))
+                  "19kqnncv5c7ssbjcplmfn2rq0mabi2idyv2wmx05pqg09y571cv1"))))
       (build-system scons-build-system)
       (arguments
        (list
@@ -965,7 +965,7 @@ game.")
                                   "data")
                 (for-each make-file-writable (find-files "data/locale")))))))
       (native-inputs (list gettext-minimal pkg-config vdrift-data))
-      (inputs (list bullet curl libvorbis mesa sdl2 zlib))
+      (inputs (list bullet curl libvorbis mesa sdl3 zlib))
       (home-page "https://vdrift.net/")
       (synopsis "Racing simulator")
       (description "VDrift aims to provide an accurate driving physics
