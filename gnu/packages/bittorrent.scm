@@ -658,7 +658,7 @@ desktops.")
      (list qttools))
     (inputs
      (list boost
-           libtorrent-rasterbar
+           libtorrent-rasterbar-2.0
            openssl
            python-wrapper
            qtsvg
