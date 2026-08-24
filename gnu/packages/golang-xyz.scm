@@ -17156,7 +17156,7 @@ https://github.com/jessevdk/go-flags.")
 (define-public go-github-com-itchyny-gojq
   (package
     (name "go-github-com-itchyny-gojq")
-    (version "0.12.18")
+    (version "0.12.19")
     (source
      (origin
        (method git-fetch)
@@ -17165,7 +17165,7 @@ https://github.com/jessevdk/go-flags.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10grskimdq887rsips3hpkvz39m9j1k6g3n5k05wws14dwsb52pn"))))
+        (base32 "13n8mi471nxm489d73587qvpbpdyjwzijy23d7q01kwaf8s821ks"))))
     (build-system go-build-system)
     (arguments
      (list
