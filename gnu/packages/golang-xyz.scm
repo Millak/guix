@@ -18876,6 +18876,31 @@ don't quit before their goroutines do.")
        "This package is a simple exponential backoff counter in Go.")
       (license license:expat))))
 
+(define-public go-github-com-jrick-logrotate
+  (package
+    (name "go-github-com-jrick-logrotate")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jrick/logrotate")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0srl6figwjqpi3nbp7br8sxpmvh4v8lzbny1b4lar4ny0156p5nl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jrick/logrotate"))
+    (home-page "https://github.com/jrick/logrotate")
+    (synopsis "Log rotation command and library for Go")
+    (description
+     "This package provides a library for writing rotating log files and a
+command that writes and rotates logs read from standard input.  It's an
+alternaive fork of @url{https://github.com/moshee/logrotate}.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-jtolds-tracetagger-v2
   (package
     (name "go-github-com-jtolds-tracetagger-v2")
