@@ -465,6 +465,30 @@ Please note the Guix package currently disables several default features,
 including the daemon, PTY proxy, and Atuin AI.")
     (license (list license:expat license:mpl2.0))))
 
+(define-public bacon
+  (package
+    (name "bacon")
+    (version "3.25.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bacon" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1w6wsmvmflb82xfxgga4is1rr96gqknbv02590qvjg2ddkak1hxi"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f))
+    (inputs (cargo-inputs 'bacon))
+    (home-page "https://github.com/Canop/bacon")
+    (synopsis "Background code checker")
+    (description "@command{bacon} is a background code checker.  It lets
+registered commands, like @code{cargo test} or @code{cargo clippy}, to run each
+time files on your project change.  Originally meant to support only tools
+used for Rust development it also supports tools from other languages, like
+@command{go} and @command{cpp}.")
+    (license license:agpl3)))
+
 (define-public bat
   (package
     (name "bat")
