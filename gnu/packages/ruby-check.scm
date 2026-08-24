@@ -326,26 +326,18 @@ It is intended be used by all Cucumber implementations to parse
 (define-public ruby-cucumber-html-formatter
   (package
     (name "ruby-cucumber-html-formatter")
-    (version "20.2.1")
+    (version "23.1.0")
+    ;; TODO: Building from the repository; this requires Node.js
+    ;; dependencies to compile SCSS and TypeScript assets.
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "cucumber-html-formatter" version))
        (sha256
         (base32
-         "0c7r9mfmph4c6yzc7y3dkr92rhwvpyksr0mdhpqp67xmmr8z1br4"))))
+         "1pwcvpfawpkdqw9fgdvk8i8n2k6glmmbdbh4jr5kjxn8jakv92bp"))))
     (build-system ruby-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-after 'extract-gemspec 'relax-requirements
-                          (lambda _
-                            (substitute* ".gemspec"
-                              (("~> 18.0") "~> 21.0")))) ;cucumber-messages
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "rspec")))))))
-    (native-inputs (list ruby-cucumber-compatibility-kit ruby-rspec))
+    (arguments (list #:tests? #f)) ;no tests in the gem archive
     (propagated-inputs (list ruby-cucumber-messages))
     (synopsis "HTML formatter for Cucumber")
     (description "Cucumber HTML Formatter produces a HTML report for Cucumber
