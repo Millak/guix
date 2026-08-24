@@ -22,13 +22,14 @@
 
 (use-modules (guix packages)
              (guix profiles)
-             (gnu packages))
+             (gnu packages)
+             (ice-9 regex))
 
 (manifest
   (map package->manifest-entry
        (fold-packages
          (lambda (package lst)
-           (if (string-prefix? "linux-libre"
+           (if (string-match "^linux-(libre|debian)(|-headers|-documentation)$"
                                (package-name package))
              (cons package lst)
              lst))
