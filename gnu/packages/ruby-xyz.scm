@@ -239,24 +239,33 @@ scripts from simple YAML configuration.")
 (define-public ruby-erb
   (package
     (name "ruby-erb")
-    (version "6.0.1")
+    (version "6.0.7")
     (source
      (origin
-       (method url-fetch)
-       (uri (rubygems-uri "erb" version))
+       (method git-fetch) ;for tests
+       (uri (git-reference
+             (url "https://github.com/ruby/erb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1rcpq49pyaiclpjp3c3qjl25r95hqvin2q2dczaynaj7qncxvv18"))))
+        (base32 "0di25f0nsl99isnc1lr9r954sjs2c64cf31idzyfi9wr2s3gs6qw"))))
     (build-system ruby-build-system)
     (arguments
      (list
-       ;; no tests
-       #:tests? #f))
-    (native-inputs (list ruby-rspec))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'omit-failing-tests
+            (lambda _
+              ;; TODO: Remove when newer Ractor is used by default.
+              (substitute* "test/erb/test_erb.rb"
+                (("def test_.*ractor.*" def)
+                 (string-append def "; omit \"incompatible Ractor usage\"\n"))))))))
+    (native-inputs (list ruby-rake-compiler ruby-test-unit-ruby-core))
     (synopsis "Easy to use but powerful templating system")
     (description "ERB is an easy to use, but also very powerful, template
 processor.")
     (home-page "https://github.com/ruby/erb")
-    (license (list license:bsd-2))))
+    (license (list license:ruby license:bsd-2))))
 
 (define-public ruby-filewatcher
   (package
