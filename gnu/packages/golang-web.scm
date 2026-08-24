@@ -10950,7 +10950,7 @@ middleware for Go web applications and services.")
 (define-public go-github-com-gorilla-css
   (package
     (name "go-github-com-gorilla-css")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -10959,7 +10959,7 @@ middleware for Go web applications and services.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "116fhy3n7bsq3psyn4pa0i4x9zy916kh1zxslmbbp0p9l4i7ysrj"))))
+        (base32 "1h6byz5x5xa4mpm52x6f6nm8v62a1wk4z44ls9cxmn2qm4g0v778"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/gorilla/css/scanner"
