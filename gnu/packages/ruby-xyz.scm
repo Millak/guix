@@ -10171,7 +10171,7 @@ during shutdown.")
 (define-public ruby-aruba
   (package
     (name "ruby-aruba")
-    (version "2.3.3")
+    (version "2.4.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10180,7 +10180,7 @@ during shutdown.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fg8mddfbcyv6w27bbjcxz1hsjyhk1yw9si7366mghhl1fk2c7dr"))))
+                "08f1a5am9g03ar80q72qljnb466561hwh0dwqsiqls96d9acxz1a"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -10196,6 +10196,11 @@ during shutdown.")
               (substitute* "spec/aruba/api/commands_spec.rb"
                 (("/bin/bash")
                  (which "bash")))))
+          (add-after 'extract-gemspec 'relax-constraints
+            (lambda _
+              (substitute* "aruba.gemspec"
+                (("(spec\\.add_dependency 'irb').*" _ dep)
+                 (string-append dep "\n")))))
           (add-before 'check 'relax-requirements
             ;; Many development requirements are not actually needed.
             (lambda _
@@ -10205,8 +10210,12 @@ during shutdown.")
                 ((".*kramdown.*") "")
                 ((".*rubocop.*") ""))
               (substitute* "Rakefile"
+                (("Bundler\\.setup") "")
                 ((".*require.*rubocop/rake_task.*") "")
-                ((".*RuboCop::RakeTask.new.*") ""))))
+                ((".*RuboCop::RakeTask.new.*") ""))
+              (substitute* "spec/spec_helper.rb"
+                (("require 'simplecov'") "")
+                (("SimpleCov.*") ""))))
           ;; The tests rely on the Gem being installed, so move the check
           ;; phase after the install phase.
           (delete 'check)
@@ -10222,13 +10231,11 @@ during shutdown.")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list ruby-rake-manifest
-           ruby-rspec
-           ruby-simplecov))
+           ruby-rspec))
     (propagated-inputs
-     (list bundler
-           ruby-childprocess
-           ruby-contracts
+     (list ruby-contracts
            ruby-cucumber
+           ruby-irb
            ruby-rspec-expectations
            ruby-thor))
     (synopsis "Test command-line applications with Cucumber, RSpec or Minitest")
