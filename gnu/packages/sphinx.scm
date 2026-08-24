@@ -807,17 +807,35 @@ Blog, News or Announcements section to a Sphinx website.")
 (define-public python-sphinx-inline-tabs
   (package
     (name "python-sphinx-inline-tabs")
-    (version "2023.4.21")
+    ;; Tests of latest release are not compatible with Sphinx 9.
+    (properties '((commit . "cd6ba391a3e9a0f0917c483c0a9aa27f3655adc7")
+                  (revision . "0")))
+    (version (git-version "2025.12.21.14"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sphinx_inline_tabs" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pradyunsg/sphinx-inline-tabs")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1g5yhdk208i8maippnbnijd1knpai809wl3cbwzqy59cc0zz3wjx"))))
+        (base32 "0ckp5hsxy1fdf5scrkc4fbymqh5awbcpq0y8acv2pnyrb4ga3hdx"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f)) ; no tests in the release, only in the main branch
-    (native-inputs (list python-flit-core
+     (list
+      #:test-flags
+      #~(list
+         ;; All xml related tests fail with this difference:
+         ;; -        <container classes="tab-content" is_div="True">
+         ;; +        <container classes="tab-content" is_div="1">
+         "-k not basic-xml and not multiple-xml")))
+    (native-inputs (list python-beautifulsoup4
+                         python-flit-core
+                         python-myst-parser
+                         python-pytest
+                         python-pytest-regressions
                          python-sphinx))
     (home-page "https://github.com/pradyunsg/sphinx-inline-tabs")
     (synopsis "Add inline tabbed content to your Sphinx documentation")
