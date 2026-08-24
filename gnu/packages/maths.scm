@@ -219,7 +219,7 @@
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
-  #:use-module (srfi srfi-1)
+  #:use-module ((srfi srfi-1) #:hide (zip))
   #:use-module (srfi srfi-26))
 
 (define-public aris
@@ -3607,7 +3607,7 @@ can solve two kinds of problems:
 (define-public octave-cli
   (package
     (name "octave-cli")
-    (version "11.1.0")
+    (version "11.3.0")
     (source
      (origin
        (method url-fetch)
@@ -3615,7 +3615,7 @@ can solve two kinds of problems:
                            version ".tar.xz"))
        (sha256
         (base32
-         "0snbwck636nj76rx3ahcki36msxn2j87gphixlmqm7l0q472sglb"))))
+         "1q8jbrpvydqgp5bvy491nmiv6zm12mjzxd7wybsd3ridkcag701b"))))
     (build-system gnu-build-system)
     (inputs
      (list alsa-lib
@@ -3645,6 +3645,7 @@ can solve two kinds of problems:
            pcre
            portaudio
            qhull
+           rapidjson
            readline
            suitesparse
            zlib))
@@ -3662,7 +3663,8 @@ can solve two kinds of problems:
            less
            ghostscript
            gnuplot
-           texinfo))
+           texinfo
+           zip))
     ;; Octave code uses this variable to detect directories holding multiple CA
     ;; certificates to verify peers with.  This is required for the networking
     ;; functions that require encryption to work properly.
@@ -3683,6 +3685,9 @@ can solve two kinds of problems:
               "--enable-link-all-dependencies")
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" (getenv "TMPDIR"))))
           (add-after 'configure 'configure-makeinfo
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "libinterp/corefcn/help.h"
