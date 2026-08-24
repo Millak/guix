@@ -157,7 +157,7 @@ implementation from lzokay project} (MIT licensed).  It includes a
 (define-public go-github-com-andybalholm-brotli
   (package
     (name "go-github-com-andybalholm-brotli")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
@@ -166,7 +166,7 @@ implementation from lzokay project} (MIT licensed).  It includes a
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zdvcwfzxnkljyh4p7izy0bfxrwidwwmp1p5h1fydyrgbs4xacly"))))
+        (base32 "011yj5pqcy97614njzgcn8apxbk14m57h534jkvgr0mmna57wawh"))))
     (build-system go-build-system)
     (arguments
      (list
