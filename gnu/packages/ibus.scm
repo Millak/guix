@@ -540,6 +540,19 @@ other Japanese input methods.")
     (home-page "https://github.com/ueno/ibus-skk")
     (license gpl2+)))
 
+;; librime-lua is licensed under bsd-3 and is used as a plugin to be built
+;; together with librime.
+(define librime-lua
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/hchunhui/librime-lua")
+          (commit "ec52e48ea18f11af37717a01c337f853215cf70b")))
+    (file-name (git-file-name "librime-lua" "1.17.0"))
+    (sha256
+     (base32
+      "1z7knc45s8gr52w3xc6p6qacg2hbh8w9ycjqcrfnzdx519har6la"))))
+
 (define-public librime
   (package
     (name "librime")
