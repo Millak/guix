@@ -103,19 +103,16 @@
 (define-public nimf
   (package
     (name "nimf")
-    (version "1.2")
+    (version "1.4.19")
     (source
      (origin
        (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/hamonikr/nimf.git")
-         (commit
-          (string-append "nimf-" version))))
-       (file-name
-        (git-file-name name version))
+       (uri (git-reference
+             (url "https://github.com/hamonikr/nimf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "01qi7flmaqrn2fk03sa42r0caks9d8lsv88s0bgxahhxwk1x76gc"))))
+        (base32 "0p88y1v4wngy9bn5xikcrljjd2wg7s73fg9gw839n3q8061qamk0"))))
     (build-system glib-or-gtk-build-system)
     (outputs '("out" "gtk" "qt" "doc"))
     (arguments
@@ -130,37 +127,31 @@
       #~(list "--with-im-config-data"
               "--with-imsettings-data"
               (string-append "--with-html-dir=" #$output:doc
-                             "/share/gtk-doc/html"))
+                             "/share/gtk-doc/html")
+              (string-append "GTK_QUERY_IMMODULES3="
+                             (search-input-file
+                              %build-inputs "/bin/gtk-query-immodules-3.0"))
+              (string-append "GTK_QUERY_IMMODULES2="
+                             (search-input-file
+                              %build-inputs "/bin/gtk-query-immodules-2.0"))
+              (string-append "GTK_UPDATE_ICON_CACHE="
+                             (search-input-file
+                              %build-inputs "/bin/gtk-update-icon-cache")))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-qt4
-            (lambda _
-              (substitute* '("configure.ac" "modules/clients/Makefile.am")
-                (("\\[QtGui\\]")
-                 "[Qt5Gui]")
-                ((" qt4")
-                 ""))))
-          (add-after 'disable-qt4 'patch-flags
-            (lambda _
-              (substitute* "configure.ac"
-                (("-Werror")
-                 "-Wno-error"))))
-          (add-after 'patch-flags 'patch-paths
+          (add-after 'unpack 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "configure.ac"
                 (("/usr/share/anthy/anthy.dic")
                  (search-input-file inputs "/share/anthy/anthy.dic")))
               (substitute* "configure.ac"
-                ;; Do not provide the PATH argument to AC_PATH_PROG; so that
-                ;; the needed binaries are looked from PATH (the default
-                ;; behavior).
-                (("\\[/usr/bin:\\$GTK3_LIBDIR/libgtk-3-0]")
-                 "")
-                (("\\[/usr/bin:\\$GTK2_LIBDIR/libgtk2.0-0]")
-                 "")
-                (("\\[/usr/bin:\\$GTK3_LIBDIR/libgtk-3-0:\
-\\$GTK2_LIBDIR/libgtk2.0-0]")
-                 ""))
+                (("ayatana-appindicator3-0.1")
+                 "appindicator3-0.1")
+                (("-Werror")
+                 "-Wno-error"))
+              (substitute* "modules/services/indicator/nimf-indicator.c"
+                (("libayatana-appindicator/app-indicator.h")
+                 "libappindicator/app-indicator.h"))
               (substitute* "modules/clients/gtk/Makefile.am"
                 (("\\$\\(GTK3_LIBDIR\\)")
                  (string-append #$output:gtk "/lib"))
