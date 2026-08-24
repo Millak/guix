@@ -24033,7 +24033,7 @@ documents in Golang.")
 (define-public go-github-com-muesli-termenv
   (package
     (name "go-github-com-muesli-termenv")
-    (version "0.15.2")
+    (version "0.16.0")
     (source
      (origin
        (method git-fetch)
@@ -24042,7 +24042,7 @@ documents in Golang.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19yhli6k79aqpra4djp0cl4q76mqxbc1f7in20y0dzhnjb7yz42p"))))
+        (base32 "1a480qidxxf590na6jlrg9lswdl6sbzi0i4j4bpkn3x89gmkvzah"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -24057,7 +24057,7 @@ documents in Golang.")
      (list go-github-com-aymanbagabas-go-osc52-v2
            go-github-com-lucasb-eyer-go-colorful
            go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-runewidth
+           go-github-com-rivo-uniseg
            go-golang-org-x-sys))
     (home-page "https://github.com/muesli/termenv/")
     (synopsis "Advanced styling options on the terminal")
