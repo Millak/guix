@@ -1,34 +1,20 @@
-From 439266671bbd790b3cb339c157c87db382e85c96 Mon Sep 17 00:00:00 2001
-From: Brice Waegeneire <brice@waegenei.re>
-Date: Sat, 9 May 2020 15:52:06 +0200
-Subject: [PATCH] Add RESTARTCMD for Guix System.
-
----
-
-openresolv need to know how to restart the nscd service, this patch teach it
-to do it on Guix System by using shepherd.
-
- resolvconf.in | 7 +++++++
- 1 file changed, 7 insertions(+)
+Upstream-status: <https://github.com/NetworkConfiguration/openresolv/pull/51>
 
 diff --git a/resolvconf.in b/resolvconf.in
-index aa77ffe..921882e 100644
+index 2f55a9d..c020413 100644
 --- a/resolvconf.in
 +++ b/resolvconf.in
-@@ -375,6 +375,13 @@ detect_init()
+@@ -475,6 +475,13 @@ detect_init()
  			fi'
  	elif [ -d /etc/dinit.d ] && command -v dinitctl >/dev/null 2>&1; then
  		RESTARTCMD='dinitctl --quiet restart --ignore-unstarted $1'
-+	elif [ -e /gnu/store ] && [ -e /run/current-system/profile ]; then
++	elif [ -x /run/current-system/profile/bin/herd ] >/dev/null 2>&1; then
 +		# Guix System
 +		RESTARTCMD='
-+			if /run/current-system/profile/bin/herd status $1 2>&1
++			if /run/current-system/profile/bin/herd eval root "(unless (lookup-running '\''$1) (error))" >/dev/null 2>&1
 +			then
 +				/run/current-system/profile/bin/herd restart $1
 +			fi'
  	else
  		for x in /etc/init.d/rc.d /etc/rc.d /etc/init.d; do
  			[ -d $x ] || continue
--- 
-2.41.0
-
