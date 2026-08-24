@@ -904,7 +904,7 @@ Method Engine.")
 (define-public ibus-rime
   (package
     (name "ibus-rime")
-    (version "1.5.0")
+    (version "1.6.1")
     (source
      (origin
        (method git-fetch)
@@ -913,7 +913,7 @@ Method Engine.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vl3m6ydf7mvmalpdqqmrnnmqdi6l8yyac3bv19pp8a5q3qhkwlg"))))
+        (base32 "0wvb9606q0hmqdsdnzvqah43f496wfyh23bzxbndi74sr55rngic"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -937,8 +937,8 @@ Method Engine.")
            librime
            rime-data))
     (native-inputs
-     `(("cmake" ,cmake-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list cmake-minimal
+           pkg-config))
     (home-page "https://rime.im/")
     (synopsis "Rime Input Method Engine for IBus")
     (description "@dfn{ibus-rime} provides the Rime input method engine for
