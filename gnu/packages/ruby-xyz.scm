@@ -10271,18 +10271,24 @@ language.")
 (define-public ruby-sys-uname
   (package
   (name "ruby-sys-uname")
-  (version "1.2.1")
+  (version "1.5.1")
   (source
     (origin
       (method url-fetch)
       (uri (rubygems-uri "sys-uname" version))
       (sha256
         (base32
-          "00p3wwvkdbg6pl38bchaagncv3i4fq4y0ks470imwykjanpy2ic0"))))
+          "0yvd71lzd2k46940k9l3l3yyjyxc4j1w6nmyrcjkqfdhj5j7wkbq"))))
   (build-system ruby-build-system)
   (arguments
-   `(#:test-target "spec"))
-  (propagated-inputs (list ruby-ffi))
+   (list #:test-target "spec"
+         #:phases #~(modify-phases %standard-phases
+                      (add-before 'check 'remove-rubocop
+                        (lambda _
+                          (substitute* "Rakefile"
+                            (("require 'rubocop/rake_task'") "")
+                            (("RuboCop::RakeTask\\.new") "")))))))
+  (propagated-inputs (list ruby-ffi ruby-memoist3))
   (native-inputs (list ruby-rspec))
   (synopsis "Ruby interface for gathering system information")
   (description "The sys-uname library provides an interface for gathering
