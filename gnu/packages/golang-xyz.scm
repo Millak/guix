@@ -28209,6 +28209,35 @@ synchronizing plain text:
      "Go-Daemon is a library for writing system daemons in Go.")
     (license license:expat)))
 
+(define-public go-github-com-sgtdi-fswatcher
+  (package
+    (name "go-github-com-sgtdi-fswatcher")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sgtdi/fswatcher")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "134swn5x2g0dn8nn48f66r49h5mxfl8yrwrlmkargl25mi7yw383"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sgtdi/fswatcher"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/sgtdi/fswatcher")
+    (synopsis "File watcher for Go with built-in debouncing and filtering")
+    (description
+     "FSWatcher is a robust and concurrent file system watcher for Go.  It
+provides a simple and powerful API to monitor directories for file system
+changes, designed for high-performance applications and development tools.")
+    (license license:expat)))
+
 (define-public go-github-com-shamaton-msgpack-v3
   (package
     (name "go-github-com-shamaton-msgpack-v3")
