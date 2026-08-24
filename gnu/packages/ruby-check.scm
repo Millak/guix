@@ -190,15 +190,24 @@ CI environment from environment variables.")
 (define-public ruby-cucumber-compatibility-kit
   (package
     (name "ruby-cucumber-compatibility-kit")
-    (version "11.2.0")
+    (version "30.0.0")
     (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "cucumber-compatibility-kit" version))
+              (method git-fetch) ;for tests
+              (uri (git-reference
+                    (url "https://github.com/cucumber/compatibility-kit")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "17c8zx0yn68rcpfbw4nb1gzvh9fzpwsi1y0qivb99ahdlgzcdp8q"))))
+                "0ihd3yhqpfpf4l629q2lkjnsm7wf296d3m6lhjwf3nfz3k221nlv"))))
     (build-system ruby-build-system)
     (arguments (list #:phases #~(modify-phases %standard-phases
+                                  (add-after 'unpack 'chdir
+                                    (lambda _
+                                      (chdir "ruby")))
+                                  (add-before 'check 'copy-features
+                                    (lambda _
+                                      (invoke "cp" "-r" "../devkit/samples/." "features")))
                                   (replace 'check
                                     (lambda* (#:key tests? #:allow-other-keys)
                                       (when tests?
