@@ -69,6 +69,7 @@
   #:use-module (gnu packages language)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages logging)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -556,7 +557,7 @@ other Japanese input methods.")
 (define-public librime
   (package
     (name "librime")
-    (version "1.10.0")
+    (version "1.17.0")
     (source
      (origin
        (method git-fetch)
@@ -566,13 +567,21 @@ other Japanese input methods.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0p4ybmn2syhf30vwzrd6ms77xadhl2lh7d2apq2m1yzmy42mdydm"))))
+         "1hqrsjmir0932rzv752ii4wdf6inh8jjhcrs35aw1yxqjl1qn68y"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'install-plugins
+            (lambda _
+              (copy-recursively #$librime-lua "plugins/lua"))))))
     (inputs
      (list boost
            capnproto
-           glog
+           glog-next
            leveldb
+           luajit
            marisa
            opencc
            yaml-cpp))
