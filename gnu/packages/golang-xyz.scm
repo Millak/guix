@@ -3734,6 +3734,31 @@ approximate quantiles over an unbounded data stream within low memory and CPU
 bounds.")
     (license license:expat)))
 
+(define-public go-github-com-bep-debounce
+  (package
+    (name "go-github-com-bep-debounce")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bep/debounce")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i8r381j92b49l7vywcmi4s5hvp9hzj0dmz5n722gln1ifkwx8gf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bep/debounce"
+      #:skip-build? #t))
+    (home-page "https://github.com/bep/debounce")
+    (synopsis "Debounce function calls in Go")
+    (description
+     "This package delays a function call until a quiet period has elapsed,
+coalescing repeated calls into one.")
+    (license license:expat)))
+
 (define-public go-github-com-bgentry-speakeasy
   (package
     (name "go-github-com-bgentry-speakeasy")
