@@ -1226,7 +1226,7 @@ terminal with other users over the Internet.  tmate is a fork of tmux.")
 (define-public kitty
   (package
     (name "kitty")
-    (version "0.46.2")
+    (version "0.48.2")
     (source
      (origin
        (method git-fetch)
@@ -1235,10 +1235,12 @@ terminal with other users over the Internet.  tmate is a fork of tmux.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yh8b3bjbgghfb6166zr3dvsi3jb4c9dc1dk7kxah89pp11c3s67"))
+        (base32 "05861h7xyksphsbnkff8jphpk7xrjpsmcqxhklzwd6yckcz1bn58"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
+            ;; Fails to read /etc/machine-id in the build container.
+            (delete-file "tools/utils/machine_id/api_test.go")
             (substitute* "docs/conf.py"
               (("(from kitty.constants import str_version)" imp)
                (string-append "sys.path.append(\"..\")\n" imp)))
@@ -1297,10 +1299,11 @@ terminal with other users over the Internet.  tmate is a fork of tmux.")
                   (setenv "TMPDIR" (string-append (getcwd) "/test-tmp"))
                   (mkdir-p (getenv "TMPDIR"))
                   ;; Remove tests requiring display server and dbus access
+                  ;; or otherwise fail due to build container restrictions.
                   (for-each (lambda (f)
                               (let ((path (string-append "kitty_tests/" f ".py")))
                                 (when (file-exists? path) (delete-file path))))
-                            '("check_build" "glfw" "graphics" "multicell"
+                            '("check_build" "child" "glfw" "multicell"
                               "tui" "shell_integration" "ssh" "options"
                               "atexit" "shm" "file_transmission" "completion"))
                   (invoke "python3" "test.py")))))
@@ -1325,7 +1328,7 @@ terminal with other users over the Internet.  tmate is a fork of tmux.")
                                (string-append terminfo "/share/terminfo"))
                   (copy-recursively "shell-integration" shell-int))))))))
     (native-inputs
-     (list bash
+     (list bash-minimal
            dbus
            fish
            font-nerd-symbols
@@ -1333,20 +1336,20 @@ terminal with other users over the Internet.  tmate is a fork of tmux.")
            go-github-com-altree-bigfloat
            go-github-com-bmatcuk-doublestar-v4
            go-github-com-dlclark-regexp2
+           ;; go-github-com-ebitengine-purego ;only for Darwin
+           go-github-com-emmansun-base64
            go-github-com-google-go-cmp
            go-github-com-google-uuid
            go-github-com-hako-durafmt
            go-github-com-klauspost-compress
            go-github-com-kovidgoyal-dbus
-           go-github-com-kovidgoyal-exiffix
            go-github-com-kovidgoyal-go-parallel
            go-github-com-kovidgoyal-go-shm
            go-github-com-kovidgoyal-imaging
            go-github-com-nwaples-rardecode-v2
-           go-github-com-rwcarlsen-goexif
-           go-github-com-seancfoley-bintree
            go-github-com-seancfoley-ipaddress-go
            go-github-com-shirou-gopsutil-v4
+           go-github-com-sgtdi-fswatcher
            go-github-com-ulikunitz-xz
            go-github-com-zeebo-xxh3
            go-golang-org-x-exp
