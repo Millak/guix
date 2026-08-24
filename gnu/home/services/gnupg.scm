@@ -128,7 +128,11 @@ entry will be expired even if it has been accessed recently.")
                   #~(lambda args
                       ((make-systemd-constructor
                         (list #$(file-append gnupg "/bin/gpg-agent")
-                              "--supervised" "--enable-ssh-support")
+                              ;; As of gnupg@2.5.20, the '--supervised` flag
+                              ;; for socket activation is deprecated, hence
+                              ;; '--deprecated-supervised'.
+                              "--deprecated-supervised"
+                              "--enable-ssh-support")
                         (list #$(endpoint "ssh" "S.gpg-agent.ssh")
                               #$(endpoint "browser" "S.gpg-agent.browser")
                               #$(endpoint "extra" "S.gpg-agent.extra")
