@@ -31023,7 +31023,7 @@ iteration, and parsing JSON lines.")
 (define-public go-github-com-tidwall-match
   (package
     (name "go-github-com-tidwall-match")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -31032,7 +31032,7 @@ iteration, and parsing JSON lines.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n25md63xr5m66r6zc77n6fgcpv2ljrlk92ivp9hvp8xya22as9k"))))
+        (base32 "0wmm9pdyv05g8zm9nnw8cy0k6rsvh5fp5rqp7c282d568i9i6v1v"))))
     (build-system go-build-system)
     (arguments
      (list
