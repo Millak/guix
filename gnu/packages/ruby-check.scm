@@ -222,7 +222,7 @@ Cucumber implementation's support for the Cucumber Messages protocol.")
 (define-public ruby-cucumber-core
   (package
     (name "ruby-cucumber-core")
-    (version "11.1.0")
+    (version "16.2.0")
     (source
      (origin
        (method git-fetch)
@@ -232,21 +232,18 @@ Cucumber implementation's support for the Cucumber Messages protocol.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0lf2inlam0951djc2qz81x0nkffmw2dpj44iadw1fw31m7r8wqvh"))))
+         "1z1ynba8kbq721mpmnh4fnsmir9kv2sikr9c78rh5nw4i4d5riab"))))
     (build-system ruby-build-system)
     (arguments (list #:test-target "spec"
                      #:phases
                      #~(modify-phases %standard-phases
-                         (add-after 'extract-gemspec 'relax-version-requirements
+                         (add-before 'check 'remove-rubocop
                            (lambda _
-                             (substitute* "cucumber-core.gemspec"
-                               (("'cucumber-tag-expressions',.*")
-                                "'cucumber-tag-expressions', '>=4.1.0'\n")))))))
+                             (substitute* "Rakefile"
+                               (("require 'rubocop/rake_task'") "")
+                               (("RuboCop::RakeTask.new") "")))))))
     (native-inputs
-     (list ruby-rspec
-           ruby-rubocop/minimal
-           ruby-simplecov
-           ruby-unindent))
+     (list ruby-rspec))
     (propagated-inputs
      (list ruby-cucumber-gherkin
            ruby-cucumber-messages
