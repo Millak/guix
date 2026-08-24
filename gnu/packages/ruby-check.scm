@@ -269,7 +269,7 @@ and trust on your team.")
 (define-public ruby-cucumber-expressions
   (package
     (name "ruby-cucumber-expressions")
-    (version "16.1.2")
+    (version "19.0.1")
     (source
      (origin
        (method git-fetch)
@@ -279,7 +279,7 @@ and trust on your team.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1dhq88k9x2x8svam5bc7rrcd166fqymda8wxryqkbkffhnzla0id"))))
+         "05vmz62kajr0nsggnfbw6xjicn3pg00a67wnm1kxlpfsq81hi2s6"))))
     (build-system ruby-build-system)
     (arguments
      (list #:test-target "spec"
