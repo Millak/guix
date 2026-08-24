@@ -62,6 +62,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages speech)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages version-control)
@@ -290,7 +291,7 @@ software, with support for multiple texts and languages.")
 (define-public xiphos
   (package
     (name "xiphos")
-    (version "4.3.2")
+    (version "4.4.0")
     (source
      (origin
        (method git-fetch)
@@ -298,8 +299,7 @@ software, with support for multiple texts and languages.")
              (url "https://github.com/crosswire/xiphos")
              (commit version)))
        (sha256
-        (base32 "15p8ahbcd8vjm1ch0wahjfj20agd06va8rvgw1awnyzkcw2xsf8x"))
-       (patches (search-patches "xiphos-glib.patch"))
+        (base32 "1xcbf5w09hiz50a981dsmnlyg0ag15w1isazcmqk3zd7hjay3ikj"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs (list appstream
@@ -320,7 +320,7 @@ software, with support for multiple texts and languages.")
                          webkitgtk-for-gtk3
                          yelp-tools
                          zip))
-    (inputs (list dbus dbus-glib libxml2 python python-lxml))
+    (inputs (list dbus dbus-glib libxml2 python python-lxml speech-dispatcher))
     (arguments
      (list
       #:tests? #f)) ;No tests
