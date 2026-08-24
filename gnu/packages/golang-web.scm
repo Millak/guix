@@ -7885,6 +7885,36 @@ building with WebAssembly.")
      "Package router is a trie based high performance HTTP request router.")
     (license license:bsd-3)))
 
+(define-public go-github-com-fasthttp-websocket
+  (package
+    (name "go-github-com-fasthttp-websocket")
+    (version "1.5.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fasthttp/websocket")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04xjsp0ypg9dfalwzk75dwj66ij59rky9gj4k47fwbwgvh5pys5c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/fasthttp/websocket"
+      #:skip-build? #t))
+    (propagated-inputs
+     (list go-github-com-klauspost-compress
+           go-github-com-savsgio-gotils
+           go-github-com-valyala-fasthttp
+           go-golang-org-x-net))
+    (home-page "https://github.com/fasthttp/websocket")
+    (synopsis "WebSocket implementation for fasthttp")
+    (description
+     "Package websocket implements the @code{WebSocket} protocol defined in
+@url{https://rfc-editor.org/rfc/rfc6455.html, RFC 6455} for fasthttp.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-felixge-httpsnoop
   (package
     (name "go-github-com-felixge-httpsnoop")
