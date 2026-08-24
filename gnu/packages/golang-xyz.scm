@@ -21828,7 +21828,7 @@ functions.")
 (define-public go-github-com-mattn-go-colorable
   (package
     (name "go-github-com-mattn-go-colorable")
-    (version "0.1.13")
+    (version "0.1.14")
     (source
      (origin
        (method git-fetch)
@@ -21837,7 +21837,7 @@ functions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05hl2ddp67p5kj3ix4zzqqjh4fan4ban3vgw8f98simwigs3q41j"))))
+        (base32 "0wr5aw9bw6dz7l7asdhhvfxlzlp26ndv47lmlf809bwsbplqyzap"))))
     (build-system go-build-system)
     (arguments
      (list
