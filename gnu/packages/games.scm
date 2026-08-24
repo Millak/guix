@@ -9604,7 +9604,7 @@ abilities and powers.")
 (define-public torcs
   (package
     (name "torcs")
-    (version "1.3.8")
+    (version "1.3.9")
     (source
      (origin
        (method url-fetch)
@@ -9612,10 +9612,10 @@ abilities and powers.")
                            "/all-in-one/" version "/"
                            name "-" version ".tar.bz2"))
        ;; Source archive is in fact in gzip format, rename it.
-       (file-name (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.bz2"))
        (sha256
         (base32
-         "1bx7i67b01yfy9lyak4x4xrdb3zb0mr8kwx6h8cl2dpv8lspg5jb"))
+         "0k6d0dm7qnpqlgl6yjk42fk5n045in1xf08v8mkm8achsa39xipr"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (ice-9 regex)
@@ -9667,7 +9667,6 @@ abilities and powers.")
                      (for-each (cut install-file <> man6)
                                (find-files "doc/man" "\\.6$"))
                      (install-file "doc/userman/how_to_drive.html" docdir)
-                     (install-file "doc/faq/faq.html" docdir)
                      (copy-recursively "doc/userman/images"
                                        (string-append docdir "/images")))))
                (add-after 'install 'install-freedesktop-entry
@@ -9685,6 +9684,7 @@ abilities and powers.")
                  ;; rejecting this build output".
                  (lambda _
                    (chmod #$output #o755))))))
+    (native-inputs (list bzip2))
     (inputs
      (list bash-minimal
            freealut
