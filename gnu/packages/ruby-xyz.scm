@@ -10252,6 +10252,22 @@ language.")
     (home-page "https://github.com/cucumber/aruba")
     (license license:expat)))
 
+(define-public ruby-memoist3
+  (package
+    (name "ruby-memoist3")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "memoist3" version))
+       (sha256
+        (base32 "0vyma0mpjibqigzl6j9lij7zh3kvqlyi88qc0mia6l7i5i044vk8"))))
+    (build-system ruby-build-system)
+    (synopsis "Method calling memoization library for Ruby")
+    (description "Memoist is a memoization Ruby library for repeated method callings.")
+    (home-page "https://github.com/honzasterba/memoist")
+    (license license:expat)))
+
 (define-public ruby-sys-uname
   (package
   (name "ruby-sys-uname")
