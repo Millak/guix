@@ -2022,14 +2022,14 @@ addons which can add many functionalities to the base client.")
 (define-public msmtp
   (package
     (name "msmtp")
-    (version "1.8.26")
+    (version "1.8.34")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://marlam.de/msmtp/releases"
                            "/msmtp-" version ".tar.xz"))
        (sha256
-        (base32 "1n363w94s2jjkijnqg5mb4m7wk0dy20s9bk0gqk8kwff8j1liz3c"))))
+        (base32 "1b9yhy4giiypqshkgkv385xg58s6p2ykyfq109wfx8c0b8mgxs44"))))
     (build-system gnu-build-system)
     (inputs
      (list libsecret gnutls zlib gsasl))
@@ -2059,7 +2059,11 @@ addons which can add many functionalities to the base client.")
                  (install-file (string-append msmtpqueue "/msmtp-listqueue.sh") bin)
                  (install-file (string-append msmtpqueue "/msmtp-runqueue.sh") bin)
                  (install-file (string-append msmtpq "/README.msmtpq") doc)
-                 (install-file "scripts/vim/msmtp.vim" vimfiles)))))))
+                 (install-file "scripts/vim/syntax/msmtp.vim" vimfiles))))
+           (add-before 'check 'fix-header-test
+             (lambda _
+               (substitute* "tests/test-header-handling.sh"
+                 (("LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8") "")))))))
     (properties
      '((release-monitoring-url . "https://marlam.de/msmtp/download/")))
     (synopsis
