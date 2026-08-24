@@ -15403,7 +15403,7 @@ RFC 8737} (tls-alpn-01 challenge), @url{https://tools.ietf.org/html/rfc8823, RFC
 (define-public go-github-com-microcosm-cc-bluemonday
   (package
     (name "go-github-com-microcosm-cc-bluemonday")
-    (version "1.0.3")
+    (version "1.0.27")
     (source
      (origin
        (method git-fetch)
@@ -15412,7 +15412,7 @@ RFC 8737} (tls-alpn-01 challenge), @url{https://tools.ietf.org/html/rfc8823, RFC
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "071ph097c1iwbcc33x6kblj9rxb1r4mp3qfkrj4qw5mg7qcqxydk"))))
+        (base32 "0jzh55x7zff2i3j28mk1gr5xsmyvfb3dkkdy10vhygabs5mv550i"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/microcosm-cc/bluemonday"))
