@@ -8017,7 +8017,7 @@ such as gzip tarballs.")
 (define-public gnome-session-shepherd
   (package
     (name "gnome-session-shepherd")
-    (version "0.9")
+    (version "1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8026,7 +8026,7 @@ such as gzip tarballs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1plib5klffnz93scgqwr3f10cpxvdxnfi8m3bbfqwmmxf1gc2bqq"))))
+                "09kl7plq6qvy4pgr20sn670vk9abg3cmhvfbv4rbnibwkpsjasv7"))))
     (build-system meson-build-system)
     (arguments
      (list
