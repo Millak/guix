@@ -374,7 +374,7 @@ an almost zero-configuration persistence layer for applications.")
 (define-public ruby-rspec-rails
   (package
     (name "ruby-rspec-rails")
-    (version "7.0.2")
+    (version "7.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -382,7 +382,7 @@ an almost zero-configuration persistence layer for applications.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1ixm9h2sdd8varnkyxccxhp9dyr8fxk6q5ibrkrk2c83v2xa7bjc"))))
+               (base32 "05irf7nc5zfm0bb6cfz4y6hkxqband8dkf8djjaryifkv7fp3w1k"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -401,6 +401,8 @@ an almost zero-configuration persistence layer for applications.")
                 ((".*redcarpet.*") "")
                 ((".*relish.*") "")
                 ((".*rubocop.*") ""))
+              (substitute* "Rakefile"
+                (("Bundler\\.setup") ""))
               (substitute* "Gemfile-rspec-dependencies"
                 ((", :git => \"https://github.com/rspec.*")
                  "\n"))
@@ -426,10 +428,18 @@ an almost zero-configuration persistence layer for applications.")
             (lambda _
               ;; Requires chrome or firefox.
               (delete-file "spec/rspec/rails/example/system_example_group_spec.rb")
-              (substitute* "spec/rspec/rails_spec.rb"
-                (("`git ls-files -z`")
-                 "`find . -type f -not -regex '.*\\.gem$' -print0 | \
-sort -z | cut -zc3-`")))))))
+              ;; Requires Bundler.
+              (delete-file "spec/sanity_check_spec.rb")
+              ;; It just checks a Git output.
+              (delete-file "spec/rspec/rails_spec.rb")))
+          (add-before 'check 'set-GEM_PATH
+            (lambda _
+              (setenv "GEM_PATH" (string-append
+                                  (getenv "GEM_PATH") ":"
+                                  #$output "/lib/ruby/vendor_ruby"))))
+          (delete 'check)               ;moved after install phase
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check)))))
     (native-inputs
      (list ruby-ammeter-bootstrap
            ruby-aruba
