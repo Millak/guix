@@ -3518,7 +3518,24 @@ compository, supporting the following features:
         (base32 "1ify8zywlq6zrmbzp293q72pnzy3czkvrb4zia2xnsvsmy04mmp3"))))
     (build-system meson-build-system)
     (arguments
-     (list #:configure-flags #~(list "--wrap-mode=nodownload")))
+     (list #:configure-flags #~(list "--wrap-mode=nodownload")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'sterilize-wrapper
+                 (lambda _
+                   (let ((matched? #f))
+                     (substitute* "src/main.cpp"
+                      (("int main\\([^)]*\\) \\{" all)
+                       (set! matched? #t)
+                       (string-append all
+                                      "\n(void) Gdk::Pixbuf::get_formats(); unsetenv(\"GUIX_GDK_PIXBUF_MODULE_FILES\");\n")))
+                     (unless matched?
+                       (error "substitute* failed: target string was not found!")))))
+               (add-after 'install 'wrap-program
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/waybar")
+                    `("GUIX_GDK_PIXBUF_MODULE_FILES" ":" suffix
+                      (,(getenv "GUIX_GDK_PIXBUF_MODULE_FILES")))))))))
     (inputs (list date
                   fmt-12
                   gtk-layer-shell
