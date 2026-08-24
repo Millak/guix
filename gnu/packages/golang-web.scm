@@ -14559,7 +14559,7 @@ requests.")
 (define-public go-github-com-mailru-easyjson
   (package
     (name "go-github-com-mailru-easyjson")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -14568,7 +14568,7 @@ requests.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00if9lpfy7bz853snqp7zgg76pn4mgpkk42h0riahcwk5v19jrcv"))))
+        (base32 "053nsr9q363l4f2ql54a6m8hx4zvglvad76paas8qx78wsyrzav8"))))
     (build-system go-build-system)
     (arguments
      (list
