@@ -167,13 +167,13 @@ supported: XML Markup and XML Events.")
 (define-public ruby-cucumber-ci-environment
   (package
     (name "ruby-cucumber-ci-environment")
-    (version "9.1.0")
+    (version "11.0.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "cucumber-ci-environment" version))
               (sha256
                (base32
-                "1nmn2hfrjlbazgcryr3hwvsa5v4csfbjqxb4q7wbjhaxl9xxn0k7"))))
+                "1qnif57qqcvaz361jkbg43pnzn80jac0ys7gklymn08b3ng9mxqd"))))
     (build-system ruby-build-system)
     (arguments (list #:phases #~(modify-phases %standard-phases
                                   (replace 'check
