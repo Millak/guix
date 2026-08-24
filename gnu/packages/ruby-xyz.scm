@@ -10300,7 +10300,7 @@ such as the OS name, OS version, system name, etc.")
 (define-public ruby-cucumber
   (package
     (name "ruby-cucumber")
-    (version "8.0.0")
+    (version "11.1.1")
     (source
      (origin
        (method git-fetch)
@@ -10310,7 +10310,7 @@ such as the OS name, OS version, system name, etc.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1dz880fdz6rfbh1nwwcq21v65byik46jnf9gppnrqf3p5k61i55r"))))
+         "0n0fan1nvsd29l2rif66mr03ych97gyjw94xvj9xg3jfis8px4sk"))))
     (build-system ruby-build-system)
     (arguments
      (list #:test-target "spec"
@@ -10324,35 +10324,24 @@ such as the OS name, OS version, system name, etc.")
                       "")
                      (("RuboCop::RakeTask.new")
                       ""))))
-               (add-after 'extract-gemspec 'strip-version-requirements
-                 (lambda _
-                   (delete-file "Gemfile") ;do not use Bundler
-                   (substitute* "cucumber.gemspec"
-                     ;; The dependency specifications are often trailing
-                     ;; behind and appear stricter than necessary, since the
-                     ;; test suite passes with the newer component versions.
-                     (("(.*add_.*dependency '[_A-Za-z0-9-]+')(.*)"
-                       _ stripped rest)
-                      (string-append stripped "   # " rest "\n")))))
                (add-before 'check 'set-home
                  (lambda _
                    (setenv "HOME" (getcwd)))))))
     (propagated-inputs
-     (list ruby-builder
+     (list ruby-base64
+           ruby-builder
            ruby-cucumber-ci-environment
            ruby-cucumber-core
-           ruby-cucumber-gherkin
+           ruby-cucumber-expressions
            ruby-cucumber-html-formatter
-           ruby-cucumber-messages
-           ruby-cucumber-wire
            ruby-diff-lcs
-           ruby-mime-types
+           ruby-logger
+           ruby-mini-mime
            ruby-multi-test
            ruby-sys-uname))
     (native-inputs
      (list ruby-cucumber-compatibility-kit
            ruby-nokogiri
-           ruby-pry
            ruby-webrick
            ruby-rspec))
     (synopsis "Describe automated tests in plain language")
