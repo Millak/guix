@@ -195,20 +195,19 @@ migration.")
 (define-public ruby-sass-rails
   (package
     (name "ruby-sass-rails")
-    (version "5.0.7")
+    (version "6.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "sass-rails" version))
        (sha256
         (base32
-         "1wa63sbsimrsf7nfm8h0m1wbsllkfxvd7naph5d1j6pbc555ma7s"))))
+         "1lqhb0fgmls9l9jhgz42ri25w13q5pmsiiwzjbarz4n7l6749dp0"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; No included tests
     (propagated-inputs
-     (list ruby-railties ruby-sass ruby-sprockets ruby-sprockets-rails
-           ruby-tilt))
+     (list ruby-sassc-rails))
     (synopsis "Sass adapter for the Rails asset pipeline")
     (description
      "This library integrates the SASS stylesheet language into Ruby on
