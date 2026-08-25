@@ -1390,33 +1390,30 @@ depend on language-specific pre- or post-processing.")
 (define-public stable-diffusion-cpp
   (package
     (name "stable-diffusion-cpp")
-    (version "608-38b14ad")
+    (version "827-97d2990")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/leejet/stable-diffusion.cpp")
               (commit (string-append "master-" version))
-              ;; for libwebm 1.0.0, libwepb 1.6.0
+              ;; For libwebm 1.0.0, libwepb 1.6.0, and custom fork of ggml.
               (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yirchx3xsipdc6ncfjlckcra6zv06ilzlcrc8mcap2a2gvwbkzr"))))
+        (base32 "1p9b8jvqsxd0dn8ccn0zhxs9nwqx3l20qbp9ybg2dirpja4i0xfm"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:tests? #f                       ;no tests
       ;; see docs/build.md
       #:configure-flags
-      #~(list "-DSD_BUILD_SHARED_LIBS=ON"
-              "-DSD_USE_SYSTEM_GGML=ON")
+      #~(list "-DSD_BUILD_SHARED_LIBS=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'set-CXXFLAGS
             (lambda _
               (setenv "CXXFLAGS" "-DGGML_MAX_NAME=128"))))))
-    (inputs
-     (list ggml-for-stable-diffusion))
     (properties '((tunable? . #true))) ;use AVX512, FMA, etc. when available
     (home-page "https://github.com/leejet/stable-diffusion.cpp")
     (synopsis "Diffusion model inference in pure C/C++")
