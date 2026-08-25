@@ -93,6 +93,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages physics)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
@@ -6260,6 +6261,44 @@ library.")
      "This package provides a Python package for calculating
 tissue-specificity metrics for gene expression.")
     (license license:gpl3+)))
+
+(define-public python-typedunits
+  (package
+    (name "python-typedunits")
+    (version "0.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/quantumlib/TypedUnits")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ir7xciv4inlsc6wvafwlbb4ij8i1a8pn76q7p1rgckh63vws03l"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-requirements
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "requirements.txt"
+                (("^cython.*\n") "")))))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-attrs
+           python-numpy
+           python-protobuf-6
+           python-pyparsing))
+    (home-page "https://github.com/quantumlib/TypedUnits")
+    (synopsis "Fast units and dimensions library")
+    (description
+     "This package provides a fast units and dimensions library with support
+for static dimensionality checking and protobuffer serialization.")
+    (license license:asl2.0)))
 
 (define-public python-uhi
   (package
