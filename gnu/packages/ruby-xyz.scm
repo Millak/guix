@@ -14518,7 +14518,7 @@ to load dynamic content on storefronts.")
               (sha256
                (base32
                 "0cr321nd0zkbxirgdfmz37xx7j26zfnicjh585fi20vx60frry83"))))
-    (arguments (list #:tests? #f))))    ;avoid required an older ruby-liquid-c
+    (arguments (list #:tests? #f))))
 
 ;;; This variant is purposefully incomplete, lacking ruby-liquid so that it
 ;;; can be used for ruby-liquid's test suite.
