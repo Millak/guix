@@ -3714,14 +3714,6 @@ script files.")
         `((guix build qt-utils) ,@imported-modules))
        ((#:phases phases)
         #~(modify-phases #$phases
-            (add-before 'configure 'patch-qscintilla-library-name
-              (lambda* (#:key inputs #:allow-other-keys)
-                ;; The QScintilla library that the Octave configure script
-                ;; tries to link with should be named libqscintilla-qt5.so,
-                ;; but the QScintilla input provides the shared library
-                ;; as libqscintilla2_qt5.so.
-                (substitute* "configure"
-                  (("qscintilla2-qt5") "qscintilla2_qt5"))))
             (add-after 'install 'wrap-qt
               (lambda* (#:key inputs #:allow-other-keys)
                 (for-each (lambda (path)
@@ -3732,11 +3724,12 @@ script files.")
                             (find-files "libexec" "^octave-gui$")))))))))
     (native-inputs
      (modify-inputs native-inputs
-       (prepend qttools-5                                   ;for lrelease
+       (prepend qttools-5                                 ;for qthelpgenerator
+                qttools                                     ;for lrelease
                 (texlive-local-tree (list texlive-epsf))))) ;for texi2dvi
     (inputs
      (modify-inputs inputs
-       (prepend qscintilla-qt5 qtbase-5 qtwayland-5)))
+       (prepend qscintilla-qt6 qtbase qtwayland qt5compat)))
     (synopsis "High-level language for numerical computation (with GUI)")))
 
 (define-public opencascade-occt
