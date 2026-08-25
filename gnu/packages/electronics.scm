@@ -390,7 +390,7 @@ language, ADMS transforms Verilog-AMS code into other target languages.")
 (define-public apycula
   (package
     (name "apycula")
-    (version "0.32")
+    (version "0.33")
     ;; The pypi tar.gz file includes the necessary .pickle files, not available
     ;; in the home-page repository.
     (source
@@ -398,7 +398,7 @@ language, ADMS transforms Verilog-AMS code into other target languages.")
        (method url-fetch)
        (uri (pypi-uri "apycula" version))
        (sha256
-        (base32 "0zz6mz1s7razbqsysaji7qwfsjj19av4mg7zclxaigz4hmq9ar0d"))))
+        (base32 "05kf11g0g1q8hzlpf82dls0r66swhcsbvwa00h06a7rcpxd6ydcy"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f ;requires Gowin EDA tools
@@ -411,7 +411,6 @@ language, ADMS transforms Verilog-AMS code into other target languages.")
                      ((".*fastcrc.*") ""))))))) ;TODO: Package python-fastcrc
     (propagated-inputs
      (list python-cattrs
-           python-crcmod
            python-numpy
            python-msgpack
            python-msgspec))
