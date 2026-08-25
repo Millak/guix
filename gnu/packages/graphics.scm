@@ -45,6 +45,7 @@
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2026 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2270,6 +2271,40 @@ understanding different BRDFs (and other component functions).")
 It supports sub-pixel resolutions and anti-aliasing.  It is also a library for
 rendering @acronym{SVG, Scalable Vector Graphics}.")
     (license license:gpl2+)))
+
+(define-public blend2d
+  (let ((commit "6dbc2cefbc996379e07104e34519a440b49b15d7")
+        (revision "0"))
+    (package
+      (name "blend2d")
+      ;; blend2d/core/api.h defines BL_VERSION.
+      (version (git-version "0.21.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/blend2d/blend2d")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1mavcz5lqngwy0gm1iijd79h9q6siy2cn5k71n2v1432fi8si6fv"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:configure-flags
+             #~'("-DBLEND2D_TEST=ON"
+                 "-DBLEND2D_EXTERNAL_ASMJIT=ON")))
+      (inputs (list asmjit))
+      (home-page "https://blend2d.com")
+      (synopsis "2D vector graphics engine")
+      (description
+       "Blend2D is a high performance 2D vector graphics engine,
+which utilizes a built-in JIT compiler to generate optimized pipelines
+at runtime that take the advantage of host CPU features and is capable
+of using multiple threads.  Blend2D can render rectangles, simple shapes,
+geometries composed of lines and Bézier curves, and text.  The 2D pipeline
+supports pixel composition, opacity control, and styles such as solid colors,
+gradients, and images.")
+      (license license:zlib))))
 
 (define-public facedetect
   (let ((commit "5f9b9121001bce20f7d87537ff506fcc90df48ca")
