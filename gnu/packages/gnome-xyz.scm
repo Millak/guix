@@ -1765,39 +1765,42 @@ themes:
       (license license:gpl3+))))
 
 (define-public numix-gtk-theme
-  (package
-    (name "numix-gtk-theme")
-    (version "2.6.7")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/numixproject/numix-gtk-theme")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "12mw0kr0kkvg395qlbsvkvaqccr90cmxw5rrsl236zh43kj8grb7"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:make-flags
-       (list (string-append "INSTALL_DIR="
-                            (assoc-ref %outputs "out")
-                            "/share/themes/Numix"))
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure script
-    (native-inputs
-     (list `(,glib "bin")               ; for glib-compile-schemas
-           gnome-shell
-           gtk+
-           libxml2
-           ruby-sass))
-    (synopsis "Flat theme with light and dark elements")
-    (description "Numix is a modern flat theme with a combination of light and
+  (let ((revision "0")
+        ;; Includes a fix to use sassc instead of deprecated ruby-sass.
+        (commit "ad4b345cb19edba96bec72d6dc97ed1b568755a8"))
+    (package
+      (name "numix-gtk-theme")
+      (version (git-version "2.6.7" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/numixproject/numix-gtk-theme")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "02ls7v2bdra7p0vcl6aw93symgb15g7wkamxm2rsdbw65v2gk9gc"))))
+      (build-system gnu-build-system)
+      (arguments
+       '(#:make-flags
+         (list (string-append "INSTALL_DIR="
+                              (assoc-ref %outputs "out")
+                              "/share/themes/Numix"))
+         #:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure))))         ; no configure script
+      (native-inputs
+       (list `(,glib "bin")               ; for glib-compile-schemas
+             gnome-shell
+             gtk+
+             libxml2
+             sassc))
+      (synopsis "Flat theme with light and dark elements")
+      (description "Numix is a modern flat theme with a combination of light and
 dark elements.  It supports GNOME, Unity, Xfce, and Openbox.")
-    (home-page "https://numixproject.github.io")
-    (license license:gpl3+)))
+      (home-page "https://numixproject.github.io")
+      (license license:gpl3+))))
 
 (define-public orchis-theme
   (package
