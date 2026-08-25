@@ -323,6 +323,40 @@ sources.")
 continuous HTML section numbering.")
     (license license:expat)))
 
+(define-public python-sphinx-plantuml
+  (let ((commit "69033c29c5baa6571039c368a73fa2629f08dfa5")
+        (revision "0"))
+    (package
+      (name "python-sphinx-plantuml")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/zqmillet/sphinx-plantuml")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0aj62x3jkjx1bb05zbddgk8cbi7gvimvr5bcsm7jmr2rhryarawy"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no substantial test suite
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'relax-requirements
+              (lambda _
+                (substitute* "sphinxcontrib/requirements.txt"
+                  (("==") ">=")))))))
+      (propagated-inputs (list python-docutils python-sphinx))
+      (native-inputs (list python-setuptools))
+      (home-page "https://github.com/zqmillet/sphinx-plantuml")
+      (synopsis "Sphinx extension to render plantuml in Sphinx documents")
+      (description "This package provides an extension for Sphinx to render
+plantuml in Sphinx documents.")
+      (license license:expat))))
+
 (define-public python-sphinx-tags
   (package
     (name "python-sphinx-tags")
