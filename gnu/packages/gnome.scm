@@ -9807,8 +9807,7 @@ properties, screen resolution, and other GNOME parameters.")
      (let ((disallowed-references
             (list (gexp-input (this-package-native-input "glib") "bin")
                   (this-package-native-input "libxslt")
-                  meson
-                  (this-package-native-input "ruby-sass"))))
+                  meson)))
        (list
         #:glib-or-gtk? #t
         #:disallowed-references disallowed-references
@@ -9973,7 +9972,6 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            python-dbus
            python-dbusmock
            python-docutils
-           ruby-sass
            sassc
            umockdev))
     (inputs
