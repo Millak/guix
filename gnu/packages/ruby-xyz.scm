@@ -14415,6 +14415,46 @@ external applications from within Ruby programs.")
     (home-page "https://github.com/copiousfreetime/launchy")
     (license license:isc)))
 
+(define-public ruby-strscan
+  (package
+    (name "ruby-strscan")
+    (version "3.1.8")
+    (source
+     (origin
+       (method git-fetch) ;for tests
+       (uri (git-reference
+             (url "https://github.com/ruby/strscan")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xnxa8s619jrg2l2sc4f3b3vwg3659hqpmnzhl0mg0v2wmny8vwr"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-bundler-setup
+            (lambda _
+              (substitute* "Rakefile"
+                (("-rbundler/setup")
+                 ""))))
+          (add-before 'check 'set-gem-path
+            (lambda _
+              (setenv "GEM_PATH"
+                      (string-append (getenv "GEM_PATH") ":"
+                                     #$output "/lib/ruby/vendor_ruby"))))
+          (delete 'check)
+          (add-after 'install 'check
+            (assoc-ref %standard-phases
+                       'check)))))
+    (native-inputs (list ruby-rake-compiler ruby-test-unit
+                         ruby-test-unit-ruby-core))
+    (synopsis "Lexical scanning operations for Ruby")
+    (description
+     "This package provides lexical scanning operations on a String in Ruby.")
+    (home-page "https://github.com/ruby/strscan")
+    (license (list license:ruby license:bsd-2))))
+
 (define-public ruby-liquid
   (package
     (name "ruby-liquid")
