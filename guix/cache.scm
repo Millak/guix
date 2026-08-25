@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2017, 2020-2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2017, 2020-2021, 2023-2024, 2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -107,20 +107,23 @@ CLEANUP-PERIOD denotes the minimum time between two cache cleanups."
             0)
         +inf.0))
 
-  (when (obsolete? last-expiry-date now cleanup-period)
-    (remove-expired-cache-entries (cache-entries cache)
-                                  #:now now
-                                  #:entry-expiration entry-expiration
-                                  #:delete-entry delete-entry)
-    (catch 'system-error
-      (lambda ()
-        (seek expiry-port 0 SEEK_SET)
-        (truncate-file expiry-port 0)
-        (write (time-second now) expiry-port)
-        (unlock-file expiry-port))
-      (lambda args
-        ;; ENOENT means CACHE does not exist.
-        (unless (= ENOENT (system-error-errno args))
-          (apply throw args))))))
+  (if (obsolete? last-expiry-date now cleanup-period)
+      (begin
+        (remove-expired-cache-entries (cache-entries cache)
+                                      #:now now
+                                      #:entry-expiration entry-expiration
+                                      #:delete-entry delete-entry)
+        (catch #t
+          (lambda ()
+            (seek expiry-port 0 SEEK_SET)
+            (truncate-file expiry-port 0)
+            (write (time-second now) expiry-port)
+            ;; Note: 'unlock-file' closes EXPIRY-PORT.
+            (unlock-file expiry-port))
+          (lambda (key . args)
+            (close-port expiry-port)
+            (apply throw key args))))
+      (when expiry-port
+        (close-port expiry-port))))
 
 ;;; cache.scm ends here
