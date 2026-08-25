@@ -100720,7 +100720,7 @@ presentation theme Warsaw.")
     (license license:lppl)))
 
 (define-public texlive-beamerthemecelestia
-  (let ((revision 79712))               ;release 1.2.5
+  (let ((revision 80070))               ;release 1.2.6
     (package
       (name "texlive-beamerthemecelestia")
       (version (string-append "2026.1-" (number->string revision)))
@@ -100734,7 +100734,7 @@ presentation theme Warsaw.")
                                  "tex/latex/beamerthemecelestia/"))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "180ja8w4i0zs8w4df9lnvgrbmhl83hb29xh5dazrmrz6v6x2z8k5"))))
+          (base32 "18rbbbv3nyi0spwj3n38gkrpvmjmwchfaa9pcimdpq0xr286n92d"))))
       (outputs '("out" "doc"))
       (build-system texlive-build-system)
       (home-page "https://ctan.org/pkg/beamerthemecelestia")
