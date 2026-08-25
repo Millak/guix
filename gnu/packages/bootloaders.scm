@@ -17,7 +17,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
-;;; Copyright © 2022, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022-2024, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2023-2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
@@ -929,10 +929,19 @@ library for reading and manipulating the Linux Kernel Device Tree binary format.
 using the json-schema vocabulary.")
     (license license:bsd-2)))
 
+;;; Note: this package is not intended to be (and does not) build; it is a
+;;; template used by target-specific u-boot packages that make use of
+;;; `make-u-boot-package' and friends.
+;;;
+;;; To update:
+;;;   ./pre-inst-env guix refresh -u '(@@ (gnu packages bootloaders u-boot))'
+;;;
+;;; To build most u-boot packages:
+;;;   ./pre-inst-env guix search '^u-boot-' | recsel -Pname | xargs ./pre-inst-env guix build
 (define u-boot
   (package
     (name "u-boot")
-    (version "2026.01")
+    (version "2026.07")
     (source
      (origin
        (method git-fetch)
@@ -941,7 +950,7 @@ using the json-schema vocabulary.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ics2b560gjqh7f1b194axy5rdplrgxhpifay61zpa6p5gl4fxsz"))
+        (base32 "1y7syd9j6mp6pn16n3d9wzrh4aksip4r0rnkzkdqy3hpz29apsj7"))
        (patches (search-patches "u-boot-allow-disabling-openssl.patch"))
        (snippet
         ;; Remove non-free binary licenses, blobs and microcode.
@@ -1004,6 +1013,7 @@ also initializes the boards (RAM etc).")
     (native-inputs
      (modify-inputs native-inputs
        (append fontconfig
+               python-six
                python-sphinx
                python-sphinx-prompt
                ; python-sphinx-rtd-theme ; optional
@@ -1156,13 +1166,6 @@ CONFIG_TOOLS_KWBIMAGE=n")
           (add-after 'unpack 'chdir
             (lambda _
               (chdir "tools/u_boot_pylib")))
-          (add-after 'chdir 'list-package
-            (lambda _
-              (let ((port (open-file "pyproject.toml" "a")))
-                (display "[tool.setuptools.packages.find]\n" port)
-                (display "where = [\"..\"]\n" port)
-                (display "include = [\"u_boot_pylib*\"]" port)
-                (close-port port))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -1563,10 +1566,12 @@ Documentation} for more information (for example by running @samp{info
          (append opensbi-generic))))))
 
 (define-public u-boot-starfive-visionfive2
-  (let ((base (make-u-boot-package "starfive_visionfive2" "riscv64-linux-gnu"
-                                   ;; Allow kernel-arguments pass more content.
-                                   ;; If out of range, boot will fail.
-                                   #:configs '("CONFIG_SYS_CBSIZE=1024"))))
+  (let ((base (make-u-boot-package
+               "starfive_visionfive2" "riscv64-linux-gnu"
+               ;; Allow kernel-arguments pass more content.
+               ;; If out of range, boot will fail.
+               #:configs '("CONFIG_SYS_CBSIZE=1024"
+                           "CONFIG_WGET_HTTPS")))) ;avoid openssl
     (package
       (inherit base)
       (arguments
@@ -1682,6 +1687,7 @@ grub-efi-netboot-removable-bootloader.")
 
 (define-public u-boot-rpi-arm64
   (make-u-boot-package "rpi_arm64" "aarch64-linux-gnu"
+                       #:configs '("CONFIG_WGET_HTTPS") ;requires openssl
                        #:append-description %u-boot-rpi-description-64-bit))
 
 (define-public u-boot-rpi-2-efi
@@ -1705,7 +1711,8 @@ grub-efi-netboot-removable-bootloader.")
 (define-public u-boot-rpi-arm64-efi
   (make-u-boot-package "rpi_arm64" "aarch64-linux-gnu"
                        #:name-suffix "-efi"
-                       #:configs %u-boot-rpi-efi-configs
+                       #:configs (cons "CONFIG_WGET_HTTPS" ;requires openssl
+                                       %u-boot-rpi-efi-configs)
                        #:append-description (string-append
                                              %u-boot-rpi-efi-description "  "
                                              %u-boot-rpi-description-64-bit)))
