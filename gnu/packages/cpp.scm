@@ -2500,11 +2500,15 @@ point and then, after each tween step, plugging back the result.")
                (search-patches "abseil-cpp-20220623.1-no-kepsilon-i686.patch"))))
     (build-system cmake-build-system)
     (arguments
-      (list
-        #:configure-flags
+     (list
+       #:configure-flags
+       (if (%current-target-system)
+          #~'("-DBUILD_SHARED_LIBS=ON")
           ;; The following convoluted expression has been crafted to avoid
           ;; changing the derivation when removing inheritance from
           ;; abseil-cpp-20200923.3.
+          ;; TODO: Simplify and try to remove CMAKE_EXE_LINKER_FLAGS for
+          ;; next world-rebuild.
           #~(cons*
               "-DABSL_BUILD_TESTING=ON"
               (delete
@@ -2518,22 +2522,23 @@ point and then, after each tween step, plugging back the result.")
                        ;; ld: /gnu/store/...-googletest-1.10.0/lib/libgmock.so:
                        ;;   error adding symbols: DSO missing from command line
                        ;; collect2: error: ld returned 1 exit status
-                       "-DCMAKE_EXE_LINKER_FLAGS=-lgtest -lpthread -lgmock")))
-        #:phases
-        #~(modify-phases %standard-phases
+                       "-DCMAKE_EXE_LINKER_FLAGS=-lgtest -lpthread -lgmock"))))
+       #:phases
+       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-max
             (lambda _
               (substitute* "absl/debugging/failure_signal_handler.cc"
                 (("std::max\\(SIGSTKSZ, 65536\\)")
                  "std::max<size_t>(SIGSTKSZ, 65536)"))))
-          (add-before 'configure 'remove-gtest-check
-            ;; The CMakeLists fails to find our googletest for some reason, but
-            ;; it works nonetheless.
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                (("check_target\\(gtest\\)") "")
-                (("check_target\\(gtest_main\\)") "")
-                (("check_target\\(gmock\\)") "")))))))
+          ;; TODO: Remove phase unconditionally for next world-rebuild.
+          #$@(if (%current-target-system)
+                 #~()
+                 #~((add-before 'configure 'remove-gtest-check
+                      (lambda _
+                        (substitute* "CMakeLists.txt"
+                          (("check_target\\(gtest\\)") "")
+                          (("check_target\\(gtest_main\\)") "")
+                          (("check_target\\(gmock\\)") "")))))))))
     (native-inputs
      (list googletest-1.12))
     (home-page "https://abseil.io")
