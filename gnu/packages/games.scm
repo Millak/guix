@@ -6557,7 +6557,7 @@ that follows two aliens who come to Earth in search of a stolen artifact.")
 (define-public openrct2
   (package
     (name "openrct2")
-    (version "0.5.0")
+    (version "0.5.4")
     (source
      (origin
        (method git-fetch)
@@ -6566,7 +6566,7 @@ that follows two aliens who come to Earth in search of a stolen artifact.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pxlk3a8akl0ghcbqqq5xw8chmxss7kwbvi52ixfqri68n46srxh"))
+        (base32 "1b26sgxyanc0s5y4rpzrmf228ns7ww0kzwzl2nj8fp1wyjnf8crp"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
