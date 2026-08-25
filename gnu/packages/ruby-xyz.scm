@@ -14458,7 +14458,7 @@ external applications from within Ruby programs.")
 (define-public ruby-liquid
   (package
     (name "ruby-liquid")
-    (version "5.4.0")
+    (version "5.13.0")
     (source (origin
               (method git-fetch)        ;for tests
               (uri (git-reference
@@ -14467,7 +14467,7 @@ external applications from within Ruby programs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qdnvd1f9zs6wyilcgxyh93wis7ikbpimjxfpbkpk2ngr1m2c8la"))))
+                "0i46vn4n6nhx4gbwx8c9nflg5k0nr8pbgifgpry3kbkrqsmkimib"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -14485,8 +14485,15 @@ external applications from within Ruby programs.")
             (lambda _
               ;; The following test fails with 'Unknown tag' errors (see:
               ;; https://github.com/Shopify/liquid/issues/1699).
-              (delete-file "test/integration/tags/inline_comment_test.rb"))))))
-    (native-inputs (list ruby-liquid-c-bootstrap ruby-rspec ruby-stackprof))
+              (delete-file "test/integration/tags/inline_comment_test.rb")))
+          (add-before 'check 'remove-cache-tests
+            (lambda _
+              (substitute* "test/integration/expression_test.rb"
+                (("require 'lru_redux'") "")
+                (("test_expression_cache_with_lru_redux" name)
+                 (string-append name "; skip 'requires lru_redux gem';"))))))))
+    (native-inputs (list ruby-rspec ruby-stackprof))
+    (propagated-inputs (list ruby-strscan ruby-bigdecimal))
     (home-page "https://shopify.github.io/liquid/")
     (synopsis "Template language")
     (description "Liquid is a template language written in Ruby.  It is used
