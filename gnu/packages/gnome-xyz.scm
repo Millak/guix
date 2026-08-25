@@ -1654,7 +1654,6 @@ like GNOME, Unity, Budgie, Pantheon, XFCE, Mate, etc.")
            `(,glib "bin") ; for "glib-compile-resources"
            (librsvg-for-system)
            pkg-config
-           ruby-sass
            sassc))
     (home-page "https://shimmerproject.org/")
     (synopsis "Grey GTK+ theme based on Bluebird")
