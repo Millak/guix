@@ -136,18 +136,6 @@
      "grep-tests--rgrep-abbreviate-properties-windows-nt-dos-semantics"
      "grep-tests--rgrep-abbreviate-properties-windows-nt-sh-semantics"
      "info-xref-test-makeinfo"
-     "tramp-test48-remote-load-path")))
-
-(define %emacs-next-selector
-  (emacs-ert-selector
-   '("benchmark-tests"
-     "esh-util-test/path/get-remote"
-     "esh-var-test/path-var/preserve-across-hosts"
-     "grep-tests--rgrep-abbreviate-properties-darwin"
-     "grep-tests--rgrep-abbreviate-properties-gnu-linux"
-     "grep-tests--rgrep-abbreviate-properties-windows-nt-dos-semantics"
-     "grep-tests--rgrep-abbreviate-properties-windows-nt-sh-semantics"
-     "info-xref-test-makeinfo"
      "tramp-test50-remote-load-path"
 
      ;; These two tests look for header files.  We patch them to check
@@ -205,10 +193,12 @@
      "package-vc-tests-upgrade-after-require/test-package-three"
      "package-vc-tests-upgrade-after-require/test-package-two")))
 
+(define %emacs-next-selector %emacs-selector)
+
 (define-public emacs-minimal
   (package
     (name "emacs-minimal")
-    (version "30.2")
+    (version "31.1")
     ;; Note: When using (replacement …), ensure that comp-native-version-dir
     ;; stays the same across grafts.
     ;; Run `make check-system TESTS=emacs-native-comp' to ensure that grafts
@@ -219,13 +209,12 @@
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1nggbgnns7lvxn68gzlcsgwh3bigvrbn45kh6dqia9yxlqc6zwxk"))
+                "11j59ybvzbkxfsm9zmhj6ixxls2424rhcw5znlr1kj40jl6pk98x"))
               (patches (search-patches "emacs-disable-jit-compilation.patch"
                                        "emacs-fix-scheme-indent-function.patch"
                                        "emacs-native-comp-driver-options.patch"
                                        "emacs-native-comp-fix-filenames.patch"
-                                       "emacs-native-comp-pin-packages.patch"
-                                       "emacs-zoom-image-test-fix.patch"))
+                                       "emacs-native-comp-pin-packages.patch"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "lisp"
@@ -244,7 +233,7 @@
       #:configure-flags #~(list "--with-gnutls=no" "--disable-build-details")
       #:make-flags
       #~(list (string-append "SELECTOR=" #$%emacs-selector)
-              (let ((release-date "2025-08-14 05:04:03"))
+              (let ((release-date "2026-08-24 10:35:47"))
                 (string-append "RUN_TEMACS= "
                                #$(this-package-native-input "libfaketime")
                                "/bin/faketime -m -f '" release-date "'"
@@ -743,10 +732,10 @@ editor (with wide ints)" )
        (sha256
         (base32 "111cxlhdpxyvyj2mhqcx0s5s2nkdr3q2vhly1csq5d44p24c4yyy"))
        (patches
-        (search-patches "emacs-next-disable-jit-compilation.patch"
+        (search-patches "emacs-disable-jit-compilation.patch"
                         "emacs-fix-scheme-indent-function.patch"
                         "emacs-native-comp-driver-options.patch"
-                        "emacs-next-native-comp-fix-filenames.patch"
+                        "emacs-native-comp-fix-filenames.patch"
                         "emacs-native-comp-pin-packages.patch"))))
     (arguments
      (substitute-keyword-arguments arguments

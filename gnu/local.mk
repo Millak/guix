@@ -1272,13 +1272,10 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-native-comp-driver-options.patch   \
   %D%/packages/patches/emacs-native-comp-fix-filenames.patch   \
   %D%/packages/patches/emacs-native-comp-pin-packages.patch   \
-  %D%/packages/patches/emacs-next-disable-jit-compilation.patch			\
-  %D%/packages/patches/emacs-next-native-comp-fix-filenames.patch   \
   %D%/packages/patches/emacs-pasp-mode-quote-file-names.patch  \
   %D%/packages/patches/emacs-polymode-fix-lexical-variable-error.patch  \
   %D%/packages/patches/emacs-telega-test-env.patch		\
   %D%/packages/patches/emacs-wordnut-require-adaptive-wrap.patch	\
-  %D%/packages/patches/emacs-zoom-image-test-fix.patch	\
   %D%/packages/patches/enblend-enfuse-reproducible.patch	\
   %D%/packages/patches/enjarify-setup-py.patch			\
   %D%/packages/patches/enlightenment-fix-setuid-path.patch	\
