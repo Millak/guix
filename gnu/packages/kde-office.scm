@@ -64,15 +64,15 @@
 (define-public calligra
   (package
     (name "calligra")
-    (version "4.0.1")
+    (version "26.04.3")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/calligra/"
-                                  "calligra-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://invent.kde.org/office/calligra.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
-               (base32
-                "0pyri2ypzva4b4rnl2p3xp0ph5xcn181msj86l5xq6sg7zkza0fl"))
-              (patches (search-patches "calligra-qt-6.9.patch"))))
+               (base32 "1b9yyrq307y129aaa6k4myi8xwz0pd7kzhvn2svgjcswm945w1i6"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
