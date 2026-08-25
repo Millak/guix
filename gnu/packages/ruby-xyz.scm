@@ -13398,43 +13398,6 @@ strings or files.")
 the @file{spec} directory.")
     (license license:expat)))
 
-(define-public ruby-sass
-  (package
-    (name "ruby-sass")
-    (version "3.7.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/sass/ruby-sass")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "03215h9jkni3l9w6lq28p8adaj3qzb47qgxd20l6kldjnm1a1yky"))))
-    (build-system ruby-build-system)
-    (arguments
-     (list #:ruby ruby-3.3
-           #:test-target "test:ruby"
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-minitest
-                 (lambda _
-                   (substitute* (find-files "test" "\\.rb$")
-                     (("MiniTest")
-                      "Minitest"))))
-               (add-before 'check 'disable-frozen-string-literal
-                 (lambda _
-                   (setenv "RUBYOPT" "--disable=frozen_string_literal"))))))
-    (propagated-inputs
-     (list ruby-sass-listen))
-    (native-inputs
-     (list ruby-sass-spec ruby-mathn ruby-cmath))
-    (home-page "https://sass-lang.com/")
-    (synopsis "CSS extension language")
-    (description "Sass is a CSS extension language.  It extends CSS with
-features that don't exist yet like variables, nesting, mixins and inheritance.")
-    (license license:expat)))
-
 (define-public ruby-sassc
   (package
     (name "ruby-sassc")
