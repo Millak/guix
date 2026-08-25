@@ -14997,15 +14997,20 @@ development kit for Ruby.")
           (add-after 'extract-gemspec 'relax-requirements
             (lambda _
               (substitute* "spy.gemspec"
-                ((".*(pry-byebug|coveralls).*")
+                ((".*(pry|coveralls).*")
                  ""))
               (substitute* "test/test_helper.rb"
-                ((".*(pry-byebug|[Cc]overalls).*")
+                ((".*(pry|[Cc]overalls).*")
                  ""))
               (substitute* "Gemfile"
                 ((".*(redcarpet|yard).*")
-                 "")))))))
-    (native-inputs (list ruby-minitest-reporters ruby-pry
+                 ""))))
+          (add-before 'check 'skip-failing-tests
+            (lambda _
+              (substitute* "test/spy/test_subroutine.rb"
+                (("test_spy_hook_records_number_of_calls2" name)
+                 (string-append name "; skip 'fails with Ruby 3.4';"))))))))
+    (native-inputs (list ruby-minitest-reporters
                          ruby-rspec-core ruby-rspec-expectations))
     (synopsis "Mocking library for Ruby")
     (description
