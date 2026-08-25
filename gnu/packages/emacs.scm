@@ -196,7 +196,76 @@
      "package-vc-tests-upgrade-after-require/test-package-three"
      "package-vc-tests-upgrade-after-require/test-package-two")))
 
-(define %emacs-next-selector %emacs-selector)
+(define %emacs-next-selector
+  (emacs-ert-selector
+   '("benchmark-tests"
+     "esh-util-test/path/get-remote"
+     "esh-var-test/path-var/preserve-across-hosts"
+     "grep-tests--rgrep-abbreviate-properties-darwin"
+     "grep-tests--rgrep-abbreviate-properties-gnu-linux"
+     "grep-tests--rgrep-abbreviate-properties-windows-nt-dos-semantics"
+     "grep-tests--rgrep-abbreviate-properties-windows-nt-sh-semantics"
+     "info-xref-test-makeinfo"
+     "uuid-v7-generator-known-rnd-and-ts" ; wrong number of arguments
+     "tramp-test50-remote-load-path"
+
+     ;; These two tests look for header files.  We patch them to check
+     ;; "/run/current-system/profile/include" but that doesn't help us in the
+     ;; test suite
+     "man-tests-find-header-file"
+     "ffap-tests--c-path"
+
+     "diary-icalendar-test-import-bug-22092"
+     "diary-icalendar-test-import-bug-33277"
+     "diary-icalendar-test-import-with-timezone"
+
+     ;; This test fails on emacs, but succeeds on emacs-minimal and emacs-no-x.
+     "dired-test-bug25609"
+
+     ;; The following can be removed once upstream closes this bug report:
+     ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=80421
+     "python-shell--convert-file-name-to-send-1"
+     "package-vc-tests-install-post-conditions/test-package-eight"
+     "package-vc-tests-install-post-conditions/test-package-five"
+     "package-vc-tests-install-post-conditions/test-package-four"
+     "package-vc-tests-install-post-conditions/test-package-nine"
+     "package-vc-tests-install-post-conditions/test-package-one"
+     "package-vc-tests-install-post-conditions/test-package-seven"
+     "package-vc-tests-install-post-conditions/test-package-six"
+     "package-vc-tests-install-post-conditions/test-package-three"
+     "package-vc-tests-install-post-conditions/test-package-two"
+     "package-vc-tests-pkg-spec-make-shell-command/test-package-five"
+     "package-vc-tests-pkg-spec-make-shell-command/test-package-nine"
+     "package-vc-tests-pkg-spec-make-shell-command/test-package-one"
+     "package-vc-tests-pkg-spec-make-shell-command/test-package-seven"
+     "package-vc-tests-pkg-spec-make-shell-command/test-package-two"
+     "package-vc-tests-rebuild-after-require/test-package-eight"
+     "package-vc-tests-rebuild-after-require/test-package-five"
+     "package-vc-tests-rebuild-after-require/test-package-four"
+     "package-vc-tests-rebuild-after-require/test-package-nine"
+     "package-vc-tests-rebuild-after-require/test-package-one"
+     "package-vc-tests-rebuild-after-require/test-package-seven"
+     "package-vc-tests-rebuild-after-require/test-package-six"
+     "package-vc-tests-rebuild-after-require/test-package-three"
+     "package-vc-tests-rebuild-after-require/test-package-two"
+     "package-vc-tests-require/test-package-eight"
+     "package-vc-tests-require/test-package-five"
+     "package-vc-tests-require/test-package-four"
+     "package-vc-tests-require/test-package-nine"
+     "package-vc-tests-require/test-package-one"
+     "package-vc-tests-require/test-package-seven"
+     "package-vc-tests-require/test-package-six"
+     "package-vc-tests-require/test-package-three"
+     "package-vc-tests-require/test-package-two"
+     "package-vc-tests-upgrade-after-require/test-package-eight"
+     "package-vc-tests-upgrade-after-require/test-package-five"
+     "package-vc-tests-upgrade-after-require/test-package-four"
+     "package-vc-tests-upgrade-after-require/test-package-nine"
+     "package-vc-tests-upgrade-after-require/test-package-one"
+     "package-vc-tests-upgrade-after-require/test-package-seven"
+     "package-vc-tests-upgrade-after-require/test-package-six"
+     "package-vc-tests-upgrade-after-require/test-package-three"
+     "package-vc-tests-upgrade-after-require/test-package-two")))
 
 (define-public emacs-minimal
   (package
@@ -718,12 +787,12 @@ editor (with wide ints)" )
         #~(cons "--with-wide-int" #$flags))))))
 
 (define-public emacs-next-minimal
-  (let ((commit "57581b8bc2f73229d1f03dd5655aabb4a6de6183")
+  (let ((commit "2b026419537955b331e5229bb23ee47b18ac3c91")
         (revision "1"))
   (package
     (inherit emacs-minimal)
     (name "emacs-next-minimal")
-    (version (git-version "31.0.91" revision commit))
+    (version (git-version "32.0.50" revision commit))
     (source
      (origin
        (inherit (package-source emacs-minimal))
@@ -733,7 +802,7 @@ editor (with wide ints)" )
              (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "111cxlhdpxyvyj2mhqcx0s5s2nkdr3q2vhly1csq5d44p24c4yyy"))
+        (base32 "1200rsvwdp86zw3mxcplp73hpfwkapkiik69hcjk835n8kim1dny"))
        (patches
         (search-patches "emacs-disable-jit-compilation.patch"
                         "emacs-fix-scheme-indent-function.patch"
