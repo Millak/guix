@@ -24,9 +24,11 @@
   #:use-module (gnu packages lisp-check)
   #:use-module (gnu packages lisp-xyz)
   #:use-module (gnu packages machine-learning)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-science)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (guix build-system asdf)
   #:use-module (guix build-system pyproject)
@@ -110,6 +112,34 @@ running Noisy Intermediate-Scale Quantum (NISQ) circuits.  Built-in simulators
 are provided for running quantum algorithms.  Algorithms can also be run on a
 variety of commercial quantum computing platforms by installing additional
 integrations.")
+    (license %cirq-license)))
+
+(define-public python-cirq-google
+  (package
+    (name "python-cirq-google")
+    (version %cirq-version)
+    (source %cirq-source)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "cirq-google"))))))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-cirq-core
+           python-google-api-core
+           python-proto-plus
+           python-protobuf-6
+           python-typedunits))
+    (home-page %cirq-home-page)
+    (synopsis "Interface to Google's Quantum Computing Service")
+    (description
+     "This package provides an interface for Cirq to Google's Quantum Computing
+Service.")
     (license %cirq-license)))
 
 (define-public python-quimb
