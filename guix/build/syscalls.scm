@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -1582,13 +1582,20 @@ exception if it's already taken."
 
 (define* (lock-file file #:optional (mode "w0")
                     #:key (wait? #t))
-  "Wait and acquire an exclusive lock on FILE.  Return an open port according
-to MODE."
+  "Acquire an exclusive lock on FILE, waiting if WAIT? is true; when WAIT? is
+false and the lock cannot be acquired instantaneously, throw to 'flock-error.
+Return an open port according to MODE."
   (let ((port (open-file file mode)))
-    (fcntl-flock port
-                 (if (output-port? port) 'write-lock 'read-lock)
-                 #:wait? wait?)
-    port))
+    (catch 'flock-error
+      (lambda ()
+        (fcntl-flock port
+                     (if (output-port? port) 'write-lock 'read-lock)
+                     #:wait? wait?)
+        port)
+      (lambda (key . args)
+        ;; This is typically EAGAIN if WAIT? is false.
+        (close-port port)
+        (apply throw key args)))))
 
 (define (unlock-file port)
   "Unlock PORT, a port returned by 'lock-file', and close it."
