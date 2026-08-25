@@ -152,6 +152,7 @@
   #:use-module (gnu packages vim)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -6989,6 +6990,35 @@ developers to easily add advanced indexing and search facilities to their own
 applications.  It has built-in support for several families of weighting
 models and also supports a rich set of boolean query operators.")
     (license license:gpl2+)))
+
+(define-public guile-xkbcommon
+  (let ((revision "0")
+        (commit "5943bc5fcc7d6ef925b4828be1fcc68dd12dcc8a"))
+    (package
+      (name "guile-xkbcommon")
+      (version (git-version "0.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/z572/guile-xkbcommon")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "001hvnrmygdm3p5zpz59v9zpz9q817s1g4yn6r44mln5n8d1am31"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:make-flags
+             #~(list "GUILE_AUTO_COMPILE=0"))) ; to prevent guild warnings
+      (native-inputs
+       (list autoconf automake pkg-config guile-3.0))
+      (inputs
+       (list guile-3.0 libxkbcommon))
+      (home-page "https://codeberg.org/z572/guile-xkbcommon")
+      (synopsis "Guile bindings for libxkbcommon")
+      (description "This package provides Guile FFI bindings for libxkbcommon.")
+      (license license:gpl3+))))
 
 (define-public guile2.2-xapian
   (package
