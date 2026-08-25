@@ -7511,7 +7511,7 @@ intended for use with event loops such as async.")
            ruby-rdiscount
            ruby-redcarpet
            ruby-redcloth
-           ruby-sass
+           ruby-sassc
            ruby-slim
            ruby-yajl-ruby))
     (synopsis "Generic interface to multiple Ruby template engines")
