@@ -221,11 +221,12 @@ easy to use API.")
       (license license:gpl3+))))
 
 (define-public asmjit
-  (let ((commit "cfc9f813cc6ccda63cad872edb32b38e0662bedb")
-        (revision "2"))
+  (let ((commit "0bd5787b54b575ed94bf32ac452153b34385c514")
+        (revision "0"))
     (package
       (name "asmjit")
-      (version (git-version "0.0.0" revision commit))
+      ;; asmjit/core/api-config.h defines ASMJIT_LIBRARY_VERSION.
+      (version (git-version "1.21.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -235,7 +236,7 @@ easy to use API.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0lxkfg0b2bc2la0cvs5658a26mb00zlir4n0jkzzlg97l0jrbwpv"))))
+          (base32 "083xq06rz0qikkfpyxrgll9hmm00i23li61k9rms8wxn66hyj6cq"))))
       (build-system cmake-build-system)
       (arguments
        (list #:configure-flags #~(list "-DASMJIT_TEST=TRUE")))
