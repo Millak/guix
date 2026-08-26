@@ -1460,16 +1460,16 @@ to be able to read and render the Doxygen xml output.")
 (define-public python-sphinx-intl
   (package
     (name "python-sphinx-intl")
-    (version "2.0.1")
+    (version "2.3.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/sphinx-doc/sphinx-intl")
-             (commit version)))
+              (url "https://github.com/sphinx-doc/sphinx-intl")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sla69l477qrr5jb3aw76qg4qg4gw7y5w557xbmbzm6jsv18ck86"))))
+        (base32 "1hdn7d15kdh9vppa9wwvs6rzi8vb4wmwin57wxx0mhv9dx83w6p5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1477,8 +1477,13 @@ to be able to read and render the Doxygen xml output.")
       ;; These tests require the transifex_client library.
       #~(list "--ignore=tests/test_cmd_transifex.py"
               "--ignore=tests/test_transifex.py")))
-    (native-inputs (list python-mock python-pytest python-setuptools))
-    (propagated-inputs (list python-sphinx python-click))
+    (native-inputs
+     (list python-mock
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-sphinx
+           python-click))
     (home-page "https://github.com/sphinx-doc/sphinx-intl")
     (synopsis
      "Sphinx utility that makes it easy to translate and to apply translation")
