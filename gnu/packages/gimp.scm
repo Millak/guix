@@ -373,6 +373,8 @@ buffers.")
            pkg-config))
     (home-page "https://www.gimp.org")
     (synopsis "GNU Image Manipulation Program")
+    ;; CVE-2025-8672 concerns the Python bundled with GIMP < 3.1.4.2 on MacOS.
+    (properties '((lint-hidden-cve . (list "CVE-2025-8672"))))
     (description
      "GIMP is an application for image manipulation tasks such as photo
 retouching, composition and authoring.  It supports all common image formats
