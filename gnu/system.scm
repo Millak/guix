@@ -977,7 +977,7 @@ of PROVENANCE-SERVICE-TYPE to its services."
 
 (define %base-packages-networking
   ;; Default set of networking packages.
-  (list inetutils isc-dhcp
+  (list inetutils dhcpcd
         iproute
         wget
 	nss-certs

@@ -170,7 +170,7 @@ set -e -x
 guix --version
 
 export GUIX_BUILD_OPTIONS=--no-grafts
-guix build isc-dhcp
+guix build dhcpcd
 parted --script /dev/vdb mklabel gpt \\
   mkpart primary ext2 1M 3M \\
   mkpart primary ext2 3M 2G \\
@@ -196,7 +196,7 @@ set -e -x
 guix --version
 
 export GUIX_BUILD_OPTIONS=--no-grafts
-guix build isc-dhcp
+guix build dhcpcd
 parted --script /dev/vdb mklabel gpt \\
   mkpart primary ext2 1M 2G \\
   set 1 legacy_boot on
@@ -468,7 +468,7 @@ set -e -x
 guix --version
 
 export GUIX_BUILD_OPTIONS=--no-grafts
-guix build isc-dhcp
+guix build dhcpcd
 parted --script /dev/vda mklabel gpt \\
   mkpart primary ext2 1M 3M \\
   mkpart primary ext2 3M 2G \\
@@ -597,7 +597,7 @@ set -e -x
 guix --version
 
 export GUIX_BUILD_OPTIONS=--no-grafts
-guix build isc-dhcp
+guix build dhcpcd
 parted --script /dev/vdb mklabel gpt \\
   mkpart primary ext2 1M 3M \\
   mkpart primary ext2 3M 400M \\
@@ -1974,7 +1974,7 @@ build (current-guix) and then store a couple of full system images.")
 
 (define %extra-encrypted-packages
   ;; Packages needed when installing with an encrypted root.
-  (list isc-dhcp
+  (list dhcpcd
         lvm2-static cryptsetup-static e2fsck/static
         loadkeys-static grub-efi fatfsck/static dosfstools))
 

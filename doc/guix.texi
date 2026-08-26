@@ -2647,7 +2647,7 @@ At this point, you need to acquire an IP address.  On a network where IP
 addresses are automatically assigned @i{via} DHCP, you can run:
 
 @example
-dhclient -v @var{interface}
+dhcpcd @var{interface}
 @end example
 
 Try to ping a server to see if networking is up and running:

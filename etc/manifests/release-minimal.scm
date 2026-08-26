@@ -48,7 +48,7 @@ TARGET."
   (append (map specification->package
                '("guix" "shepherd" "guile-static-initrd"
                  "openssh" "tor" "ntp" "gpm" "mingetty"
-                 "connman" "network-manager" "wpa-supplicant" "isc-dhcp" "cups"
+                 "connman" "network-manager" "wpa-supplicant" "dhcpcd" "cups"
                  "linux-libre" "grub-hybrid"
                  ;; privileged programs
                  "shadow" "sudo" "fuse" "inetutils" "util-linux"))

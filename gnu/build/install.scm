@@ -134,7 +134,7 @@ STORE."
     (directory "/var/log")                          ; for shepherd
     (directory "/var/guix/gcroots")
     (directory "/var/empty")                        ; for no-login accounts
-    (directory "/var/db")                           ; for dhclient, etc.
+    (directory "/var/db")                           ; for dhcpcd, etc.
     (directory "/mnt")
     (directory "/var/guix/profiles/per-user/root" 0 0)
 

@@ -68,7 +68,7 @@ TARGET."
   ;; Key packages proposed by the Guix System installer.
   (map specification->package
        '("openssh" "tor" "ntp" "gpm"
-         "connman" "network-manager" "wpa-supplicant" "isc-dhcp" "cups"
+         "connman" "network-manager" "wpa-supplicant" "dhcpcd" "cups"
          "linux-libre" "grub-hybrid")))
 
 (define (%system-gui-packages target)

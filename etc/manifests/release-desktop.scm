@@ -117,7 +117,7 @@
          "usbutils"
          "util-linux-with-udev"
          "kmod"
-         "isc-dhcp"
+         "dhcpcd"
          "iproute2"
          "wget"
          "nss-certs"
