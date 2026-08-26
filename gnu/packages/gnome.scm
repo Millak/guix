@@ -5026,8 +5026,6 @@ claim to be \"RESTful\".  It includes convenience wrappers for libsoup and
 libxml to ease remote use of the RESTful API.")
     (license license:lgpl2.1+)))
 
-(define-deprecated-package rest librest)
-
 (define-public libshumate
   (package
     (name "libshumate")
