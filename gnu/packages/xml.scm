@@ -2035,27 +2035,6 @@ libxml2 and libxslt.  This variant is pinned to be updated less often than
 @code{python-lxml}.")
     (license license:bsd-3)))
 
-(define-public python-lxml-4.9
-  (hidden-package
-   (package
-     (inherit python-lxml)
-     (name "python-lxml")
-     (version "4.9.4")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "lxml" version))
-        (sha256
-         (base32 "03l86qr5xzvz0jcbk669sj8nbw1fjshmf0b7l83gl5cfnx81wm5i"))))
-     (arguments
-      (list #:tests? #f                 ;some tests fail with newer libxml2
-            #:phases
-            #~(modify-phases %standard-phases
-                (add-after 'unpack 'relax-gcc-14-strictness
-                  (lambda _
-                    (setenv "CFLAGS"
-                            "-Wno-error=incompatible-pointer-types")))))))))
-
 (define-public python-lxml-html-clean
   (package
     (name "python-lxml-html-clean")
