@@ -6142,6 +6142,12 @@ grep and friends let you play with text.  It is written in portable C.  jq can
 mangle the data format that you have into the one that you want with very
 little effort, and the program to do so is often shorter and simpler than
 you'd expect.")
+    (properties
+     '((lint-hidden-cve
+        ;; CVE's with incorrectly versions limits; solved in these commits:
+        . (list "CVE-2026-39979";2f09060afab23fe9390cce7cb860b10416e1bf5f
+                "CVE-2026-33948" ;6374ae0bcdfe33a18eb0ae6db28493b1f34a0a5b
+                "CVE-2026-44777")))) ;f58787c41835d9b17795730cb04925fdba25c71c
     (license (list license:cc-by3.0     ;docs
                    license:x11          ;vendor/decNumber
                    license:expat))))    ;rest
