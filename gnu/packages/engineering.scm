@@ -1806,7 +1806,6 @@ developed at MIT to model electromagnetic systems.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.26
       #:install-source? #f
       #:modules
       '((guix build go-build-system)
