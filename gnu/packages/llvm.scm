@@ -608,7 +608,8 @@ output), and Binutils.")
     ("19.1.7" . "18hkfhsm88bh3vnj21q7f118vrcnf7z6q1ylnwbknyb3yvk0343i")
     ("20.1.8" . "0v0lwf58i96vcwsql3hlgy72z3ncfvqwgyghyn26m2ri8vy83k6a")
     ("21.1.8" . "0v99a90546lrd3cxgam32c0jcnwzi0ljk0ihdvd9xghzss1pq1x6")
-    ("22.1.8" . "1rww5cs3rw2yyjnz84ywlpkcvh46p1m9ac1nkhwprjbjw2vwv20q")))
+    ("22.1.8" . "1rww5cs3rw2yyjnz84ywlpkcvh46p1m9ac1nkhwprjbjw2vwv20q")
+    ("23.1.0" . "0papvpzwgkl3yh8w0l4planl1pg6m57cqwi09p9rd8vras1lfihl")))
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"
@@ -630,7 +631,9 @@ output), and Binutils.")
                  "clang-17.0-link-dsymutil-latomic.patch"))
     ("22.1.8" . ("clang-18.0-libc-search-path.patch"
                  "clang-17.0-link-dsymutil-latomic.patch"
-                 "llvm-22-cfloat128-detection.patch"))))
+                 "llvm-22-cfloat128-detection.patch"))
+    ("23.1.0" . ("clang-18.0-libc-search-path.patch"
+                 "clang-17.0-link-dsymutil-latomic.patch"))))
 
 (define (llvm-monorepo version)
   (origin
@@ -1275,6 +1278,42 @@ Library.")
 (define-public clang-toolchain-22
   (make-clang-toolchain clang-22 libomp-22))
 
+
+(define-public llvm-23
+  (make-llvm "23.1.0"))
+
+(define-public clang-runtime-23
+  (clang-runtime-from-llvm llvm-23))
+
+(define-public clang-23
+  (clang-from-llvm
+   llvm-23 clang-runtime-23
+   #:tools-extra #t))
+
+(define-public libomp-23
+  (package
+    (inherit libomp-15)
+    (version (package-version llvm-23))
+    (source (llvm-monorepo version))
+    (arguments (substitute-keyword-arguments arguments
+                 ((#:configure-flags configure-flag #~())
+                  #~(cons* "-DLLVM_ENABLE_RUNTIMES=openmp"
+                           #$configure-flag))
+                 ((#:phases phases)
+                  #~(modify-phases #$phases
+                      (replace 'chdir-to-source-and-install-license
+                        (lambda _
+                          (install-file "openmp/LICENSE.TXT"
+                                        (string-append #$output "/share/doc"))
+                          (chdir "runtimes")))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-15)
+       (replace "clang" clang-23)
+       (replace "llvm" llvm-23)))))
+
+(define-public clang-toolchain-23
+  (make-clang-toolchain clang-23 libomp-23))
+
 ;; Default LLVM and Clang version.
 (define-public libomp libomp-22)
 (define-public llvm llvm-22)
@@ -1809,6 +1848,13 @@ components which highly leverage existing libraries in the larger LLVM Project."
     (version (package-version llvm-22))
     (source (llvm-monorepo version))
     (inputs (list llvm-22))))
+
+(define-public lld-23
+  (package
+    (inherit lld-15)
+    (version (package-version llvm-23))
+    (source (llvm-monorepo version))
+    (inputs (list llvm-23))))
 
 (define-public lld lld-22)
 
