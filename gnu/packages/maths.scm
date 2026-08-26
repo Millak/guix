@@ -76,6 +76,7 @@
 ;;; Copyright © 2026 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2026 Luca Alloatti <luca-guix@f-si.org>
 ;;; Copyright © 2026 Akiyoshi Suda <code@akiyoshisuda.com>
+;;; Copyright © 2026 Orahcio Felício de Sousa <orahcio@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -108,6 +109,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system dune)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system ocaml)
@@ -517,6 +519,75 @@ programming languages.")
      "cvc5 is a solver for @acronym{SMT, satisfiability modulo theories}
 problems.  It processes input in the standard SMT-LIB format.")
     (license (list license:expat license:bsd-3))))
+
+(define-public go-github-com-cpmech-gosl
+  (package
+    (name "go-github-com-cpmech-gosl")
+    (version "1.2.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cpmech/gosl")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gfx8wqfrxsssprdf3ccgm60nv65dgsygwrx0a1ajga3lzp6iw2d"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/cpmech/gosl"
+      #:test-flags #~(list "-vet=off")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Adapt la flags for Guix libraries.
+          (add-after 'unpack 'patch-la-flags
+            (lambda* (#:key import-path #:allow-other-keys)
+              (substitute* (string-append "src/" import-path "/la/flags.go")
+                (("_seq") "")))))))
+    (propagated-inputs
+     (list fftw
+           gfortran
+           (list gfortran "lib")
+           lapack
+           metis
+           mumps
+           openblas
+           suitesparse))
+    (home-page "https://github.com/cpmech/gosl")
+    (synopsis "Go Scientific Library")
+    (description
+     "Gosl is a set of tools for developing scientific simulations using the
+Go programing language.  It provides numerical methods and solvers for
+differential equations but also present some functions for @acronym{Fast
+Fourier Transforms, FFT}, the generation of random numbers, probability
+distributions, and computational geometry.
+
+Gosl includes the following Go packages:
+
+@itemize
+@item @code{chk} - to check numerical results and for unit testing
+@item @code{fun} - special functions, DFT, FFT, Bessel, elliptical integrals,
+orthogonal polynomials, interpolators
+@item @code{gm} - geometry algorithms and structures
+@item @code{hb} - pseudo hierarchical binary (hb) data file format
+@item @code{io} - input/output, including printing to the terminal and
+handling files
+@item @code{la} - linear algebra: vector, matrix, efficient sparse solvers,
+eigenvalues, decompositions
+@item @code{num} - fundamental numerical methods such as root solvers,
+non-linear solvers, numerical derivatives, and quadrature
+@item @code{ode} - solvers for ordinary differential equations
+@item @code{opt} - numerical optimization: Interior Point, Conjugate
+Gradients, Powell, Grad Descent
+@item @code{pde} - solvers for partial differential equations (FDM, Spectral,
+FEM)
+@item @code{rnd} - random numbers and probability distributions
+@item @code{utl} - to generate series (e.g., linspace) and other functions as
+in pylab/matlab/octave
+@end itemize")
+    (license license:bsd-3)))
 
 (define-public qdldl
   (package
