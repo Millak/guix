@@ -8915,7 +8915,6 @@ users.")
            eudev
            gnutls
            iptables
-           isc-dhcp
            iwd                          ;wpa_supplicant alternative
            jansson
            kmod
