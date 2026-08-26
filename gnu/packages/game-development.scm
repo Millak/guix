@@ -95,7 +95,7 @@
   #:use-module (gnu packages games)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-xyz)
-  #:use-module (gnu packages fltk)
+  #:use-module (gnu packages toolkits)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)

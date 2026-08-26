@@ -106,7 +106,6 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages file)
   #:use-module (gnu packages compiler-tools)
-  #:use-module (gnu packages fltk)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)

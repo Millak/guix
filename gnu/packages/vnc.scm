@@ -46,7 +46,7 @@
   #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dns)
-  #:use-module (gnu packages fltk)
+  #:use-module (gnu packages toolkits)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)

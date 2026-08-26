@@ -64,7 +64,6 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages engineering)
   #:use-module (gnu packages compiler-tools)
-  #:use-module (gnu packages fltk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages geo)
