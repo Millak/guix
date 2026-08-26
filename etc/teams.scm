@@ -1431,11 +1431,6 @@ the \"texlive\" importer."
                        "apteryx")
   maintainers codeberg core documentation electronics gnome qt telephony)
 
-(define-member (person "Katherine Cox-Buday"
-                       "cox.katherine.e+guix@gmail.com"
-                       "katco")
-  emacs lisp)
-
 (define-member (person "Munyoki Kilyungi"
                        "me@bonfacemunyoki.com"
                        "BonfaceKilz")
