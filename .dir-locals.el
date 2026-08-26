@@ -381,7 +381,6 @@
    (eval . (put 'debootstrap-configuration 'scheme-indent-function 0))
    (eval . (put 'dhcp-client-configuration 'scheme-indent-function 0))
    (eval . (put 'dhcpcd-configuration 'scheme-indent-function 0))
-   (eval . (put 'dhcpd-configuration 'scheme-indent-function 0))
    (eval . (put 'dicod-configuration 'scheme-indent-function 0))
    (eval . (put 'dict-configuration 'scheme-indent-function 0))
    (eval . (put 'directory-server-instance-configuration 'scheme-indent-function 0))

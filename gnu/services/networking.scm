@@ -94,17 +94,6 @@
   #:export (%facebook-host-aliases ;deprecated
             block-facebook-hosts-service-type
 
-            dhcpd-service-type
-            dhcpd-configuration
-            dhcpd-configuration?
-            dhcpd-configuration-package
-            dhcpd-configuration-config-file
-            dhcpd-configuration-version
-            dhcpd-configuration-run-directory
-            dhcpd-configuration-lease-file
-            dhcpd-configuration-pid-file
-            dhcpd-configuration-interfaces
-
             dhcpcd-service-type
             dhcpcd-configuration
             dhcpcd-configuration?
@@ -353,75 +342,6 @@
                              (const facebook-host-aliases))))
    (default-value #f)
    (description "Add a list of known Facebook hosts to @file{/etc/hosts}")))
-
-(define-record-type* <dhcpd-configuration>
-  dhcpd-configuration make-dhcpd-configuration
-  dhcpd-configuration?
-  (package   dhcpd-configuration-package ;file-like
-             (default isc-dhcp))
-  (config-file   dhcpd-configuration-config-file ;file-like
-                 (default #f))
-  (version dhcpd-configuration-version ;"4", "6", or "4o6"
-              (default "4"))
-  (run-directory dhcpd-configuration-run-directory
-                 (default "/run/dhcpd"))
-  (lease-file dhcpd-configuration-lease-file
-              (default "/var/db/dhcpd.leases"))
-  (pid-file dhcpd-configuration-pid-file
-            (default "/run/dhcpd/dhcpd.pid"))
-  ;; list of strings, e.g. (list "enp0s25")
-  (interfaces dhcpd-configuration-interfaces
-              (default '())))
-
-(define (dhcpd-shepherd-service config)
-  (match-record config <dhcpd-configuration>
-    (package config-file version run-directory
-             lease-file pid-file interfaces)
-    (unless config-file
-      (error "Must supply a config-file"))
-    (list (shepherd-service
-           ;; Allow users to easily run multiple versions simultaneously.
-           (provision (list (string->symbol
-                             (string-append "dhcpv" version "-daemon"))))
-           (documentation (string-append "Run the DHCPv" version " daemon"))
-           (requirement '(networking))
-           (start #~(make-forkexec-constructor
-                     '(#$(file-append package "/sbin/dhcpd")
-                       #$(string-append "-" version)
-                       "-lf" #$lease-file
-                       "-pf" #$pid-file
-                       "-cf" #$config-file
-                       #$@interfaces)
-                     #:pid-file #$pid-file))
-           (stop #~(make-kill-destructor))))))
-
-(define (dhcpd-activation config)
-  (match-record config <dhcpd-configuration>
-    (package config-file version run-directory
-             lease-file pid-file interfaces)
-    (with-imported-modules '((guix build utils))
-      #~(begin
-          (unless (file-exists? #$run-directory)
-            (mkdir #$run-directory))
-          ;; According to the DHCP manual (man dhcpd.leases), the lease
-          ;; database must be present for dhcpd to start successfully.
-          (unless (file-exists? #$lease-file)
-            (with-output-to-file #$lease-file
-              (lambda _ (display ""))))
-          ;; Validate the config.
-          (invoke/quiet
-           #$(file-append package "/sbin/dhcpd")
-           #$(string-append "-" version)
-           "-t" "-cf" #$config-file)))))
-
-(define dhcpd-service-type
-  (service-type
-   (name 'dhcpd)
-   (extensions
-    (list (service-extension shepherd-root-service-type dhcpd-shepherd-service)
-          (service-extension activation-service-type dhcpd-activation)))
-   (description "Run a DHCP (Dynamic Host Configuration Protocol) daemon.  The
-daemon is responsible for allocating IP addresses to its client.")))
 
 
 ;;

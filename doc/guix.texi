@@ -23872,56 +23872,10 @@ file is used.
 @subsection Networking Services
 
 The @code{(gnu services networking)} module discussed in the previous
-section provides services for more advanced setups: providing a DHCP
-service for others to use, filtering packets with iptables or nftables,
-running a WiFi access point with @command{hostapd}, running the
-@command{inetd} ``superdaemon'', and more.  This section describes
-those.
-
-@defvar dhcpd-service-type
-This type defines a service that runs a DHCP daemon.  To create a
-service of this type, you must supply a @code{<dhcpd-configuration>}.
-For example:
-
-@lisp
-(service dhcpd-service-type
-         (dhcpd-configuration
-          (config-file (local-file "my-dhcpd.conf"))
-          (interfaces '("enp0s25"))))
-@end lisp
-@end defvar
-
-@deftp {Data Type} dhcpd-configuration
-@table @asis
-@item @code{package} (default: @code{isc-dhcp})
-The package that provides the DHCP daemon.  This package is expected to
-provide the daemon at @file{sbin/dhcpd} relative to its output
-directory.  The default package is the
-@uref{https://www.isc.org/dhcp/, ISC's DHCP server}.
-@item @code{config-file} (default: @code{#f})
-The configuration file to use.  This is required.  It will be passed to
-@code{dhcpd} via its @code{-cf} option.  This may be any ``file-like''
-object (@pxref{G-Expressions, file-like objects}).  See @code{man
-dhcpd.conf} for details on the configuration file syntax.
-@item @code{version} (default: @code{"4"})
-The DHCP version to use.  The ISC DHCP server supports the values ``4'',
-``6'', and ``4o6''.  These correspond to the @code{dhcpd} program
-options @code{-4}, @code{-6}, and @code{-4o6}.  See @code{man dhcpd} for
-details.
-@item @code{run-directory} (default: @code{"/run/dhcpd"})
-The run directory to use.  At service activation time, this directory
-will be created if it does not exist.
-@item @code{pid-file} (default: @code{"/run/dhcpd/dhcpd.pid"})
-The PID file to use.  This corresponds to the @code{-pf} option of
-@code{dhcpd}.  See @code{man dhcpd} for details.
-@item @code{interfaces} (default: @code{'()})
-The names of the network interfaces on which dhcpd should listen for
-broadcasts.  If this list is not empty, then its elements (which must be
-strings) will be appended to the @code{dhcpd} invocation when starting
-the daemon.  It may not be necessary to explicitly specify any
-interfaces here; see @code{man dhcpd} for details.
-@end table
-@end deftp
+section provides services for more advanced setups: filtering packets
+with iptables or nftables, running a WiFi access point with
+@command{hostapd}, running the @command{inetd} ``superdaemon'', and
+more.  This section describes those.
 
 @cindex hostapd service, for Wi-Fi access points
 @cindex Wi-Fi access points, hostapd service
