@@ -405,7 +405,8 @@ clients to expose their services.  Clients such as file managers and desktop
 environments can then provide integrated access to the cloud providers
 services.")
     (home-page "https://csorianognome.wordpress.com/2015/07/07/cloud-providers/")
-    (license license:lgpl3+)))
+    (license license:lgpl3+)
+    (properties '((upstream-name . "libcloudproviders")))))
 
 (define-public libcloudproviders
   (package/inherit libcloudproviders-minimal
