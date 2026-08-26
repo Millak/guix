@@ -38818,27 +38818,6 @@ You can set the following @code{tcolor} arguments:
 programs that can interact with Telegram.")
     (license license:expat)))
 
-(define-public python-tempdir
-  (package
-    (name "python-tempdir")
-    (version "0.7.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tempdir" version))
-       (sha256
-        (base32 "13msyyxqbicr111a294x7fsqbkl6a31fyrqflx3q7k547gnq15k8"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f)) ; No tests.
-    (native-inputs (list python-setuptools))
-    (home-page "https://pypi.org/project/tempdir/")
-    (synopsis "Python library for managing temporary directories")
-    (description
-     "This library manages temporary directories that are automatically
-deleted with all their contents when they are no longer needed.  It is
-particularly convenient for use in tests.")
-    (license license:expat)))
-
 (define-public python-tempora
   (package
     (name "python-tempora")
