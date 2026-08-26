@@ -1983,7 +1983,7 @@ analyzer (FFT) and frequency sweep plot.")
 (define-public capstone
   (package
     (name "capstone")
-    (version "5.0.3")
+    (version "5.0.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1992,21 +1992,15 @@ analyzer (FFT) and frequency sweep plot.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fv8j1nzzbc5x9pg90641gpmlmp9h85wcg3l6258drk761rp979d"))))
+                "10k739n6iqzfgzk508nzjz7w5qk87rw765sd7h9l1346c8ls425q"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f
-       #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-                          (string-append "CC=" ,(cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         ;; cstool's Makefile ‘+=’s LDFLAGS, so we cannot pass it as a make flag.
-         (add-before 'build 'fix-cstool-ldflags
-           (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "LDFLAGS"
-                     (string-append "-Wl,-rpath="
-                                    (assoc-ref outputs "out") "/lib")))))))
+     (list
+      #:make-flags #~(list (string-append "PREFIX=" #$output)
+                           (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))        ;no configure script
     (home-page "https://github.com/capstone-engine/capstone")
     (synopsis "Lightweight multi-platform, multi-architecture disassembly framework")
     (description
