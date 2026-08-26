@@ -4864,7 +4864,8 @@ configuration storage systems.")
     (description "JSON-GLib is a library providing serialization and
 described by RFC 4627.  It implements a full JSON parser and generator using
 GLib and GObject, and integrates JSON with GLib data types.")
-    (license license:lgpl2.1+)))
+    (license license:lgpl2.1+)
+    (properties '((upstream-name . "json-glib")))))
 
 (define-public json-glib
   (package/inherit json-glib-minimal
