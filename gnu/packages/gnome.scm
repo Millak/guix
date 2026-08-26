@@ -1787,9 +1787,6 @@ configuration files for the GNOME menu, as well as a simple menu editor.")
     (home-page "https://gitlab.gnome.org/GNOME/gnome-menus")
     (license license:lgpl2.0+)))
 
-(define-deprecated/public-alias deja-dup
-  (@ (gnu packages gnome-circle) deja-dup))
-
 (define-public gnome-commander
   (package
     (name "gnome-commander")
