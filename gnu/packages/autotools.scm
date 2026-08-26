@@ -157,6 +157,18 @@ know anything about Autoconf or M4.")
        (base32
         "0niz4852fgyavfh3gr4h4kzalk01nk70v6vfsja6r3ap349mr25s"))))))
 
+(define-public autoconf-2.73
+  (package (inherit autoconf-2.71)
+    (version "2.73")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (string-append "mirror://gnu/autoconf/autoconf-"
+                          version ".tar.xz"))
+      (sha256
+       (base32
+        "0bmmsvh7prfs2vqdadpzj25jd1q9k5xlg83zlqpsqps2r2qp5mlz"))))))
+
 (define-public autoconf autoconf-2.69)
 
 (define-public autoconf-2.68
