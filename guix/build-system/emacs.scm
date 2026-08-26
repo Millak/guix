@@ -86,6 +86,7 @@
                       (phases '%standard-phases)
                       (outputs '("out"))
                       (lisp-directory #f)
+                      (compress-elisp? #f) ; disabled until grafts are supported
                       (include (quote %default-include))
                       (exclude (quote %default-exclude))
                       (search-paths '())
@@ -106,6 +107,7 @@
           (emacs-build #:name #$name
                        #:source #+source
                        #:lisp-directory #$lisp-directory
+                       #:compress-elisp? #$compress-elisp?
                        #:system #$system
                        #:test-command #$test-command
                        #:tests? #$tests?

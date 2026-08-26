@@ -345,6 +345,19 @@ for libraries following the ELPA convention."
   (string-append store-dir %install-dir "/"
                  (store-directory->elpa-name-version store-dir)))
 
+(define* (compress-elisp #:key
+                         outputs compress-elisp?
+                         (elisp-compressor "gzip")
+                         (elisp-compressor-flags
+                          '("--best" "--no-name"))
+                         #:allow-other-keys)
+  "When COMPRESS-ELISP? is true, compress Elisp files found in OUTPUTS using
+ELISP-COMPRESSOR, called with ELISP-COMPRESSOR-FLAGS."
+  (if compress-elisp?
+      (apply invoke elisp-compressor
+             (append elisp-compressor-flags
+                     (find-files (elpa-directory (assoc-ref outputs "out")) "\\.el$")))))
+
 (define %standard-phases
   (modify-phases gnu:%standard-phases
     (replace 'unpack unpack)
@@ -360,8 +373,9 @@ for libraries following the ELPA convention."
     (delete 'build)
     (replace 'check check)
     (replace 'install install)
+    (add-after 'install 'compress-elisp compress-elisp)
     ;; The .el files are byte compiled directly in the store.
-    (add-after 'install 'build build)
+    (add-after 'compress-elisp 'build build)
     (add-after 'build 'validate-compiled-autoloads validate-compiled-autoloads)
     (add-after 'validate-compiled-autoloads 'move-doc move-doc)))
 
