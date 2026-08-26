@@ -21921,7 +21921,6 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
            python-pytest-celery
            python-pytest-click
            python-pytest-order
-           python-pytest-subtests
            python-pytest-timeout
            python-redis
            python-setuptools))
