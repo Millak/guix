@@ -5833,7 +5833,6 @@ system for UZDoom and other Doom-related projects.")
                        `("GUIX_UZDOOM_PREFIX" = (,#$output))))))))
       (inputs (list (module-ref
                      (resolve-interface '(gnu packages debug)) 'cppdap)
-                    asmjit
                     bzip2
                     dbus
                     gtk+
