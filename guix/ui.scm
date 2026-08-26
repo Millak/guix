@@ -750,8 +750,11 @@ FILE."
 (set! mkdir
   (error-reporting-wrapper mkdir (directory . args) directory))
 
-(set! spawn
-  (error-reporting-wrapper spawn (filename . args) filename))
+;; 'spawn' appeared in Guile 3.0.9.  Address the situation where updating from
+;; an old Guix running on an older version of Guile lacking 'spawn'.
+(when (module-defined? the-scm-module 'spawn)
+  (set! spawn
+    (error-reporting-wrapper spawn (filename . args) filename)))
 
 (define (make-regexp* regexp . flags)
   "Like 'make-regexp' but error out if REGEXP is invalid, reporting the error
