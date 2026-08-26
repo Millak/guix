@@ -4994,9 +4994,6 @@ GLibproxyResolver, and a GNOME GProxyResolver that uses the proxy information
 from the GSettings schemas in gsettings-desktop-schemas.")
     (license license:lgpl2.1+)))
 
-(define-deprecated/public-alias raider
-  (@ (gnu packages gnome-circle) raider))
-
 (define-public librest
   (package
     (name "librest")
