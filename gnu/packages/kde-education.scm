@@ -384,17 +384,7 @@ to perform data analysis.")
     (build-system qt-build-system)
     (arguments
      (list
-      #:test-exclude
-      (string-append "("
-                     (string-join '("MarbleRunnerManagerTest"
-                                    "MarbleMapTest"
-                                    "MarbleWidgetTest"
-                                    "RenderPluginTest"
-                                    "AbstractDataPluginModelTest"
-                                    "AbstractDataPluginTest"
-                                    "AbstractFloatItemTest")
-                                  "|")
-                     ")")
+      #:test-exclude "MarbleRunnerManagerTest"
       #:qtbase qtbase
       #:configure-flags
       #~(list "-DBUILD_MARBLE_TOOLS=YES" ;file conversion tools
@@ -405,7 +395,12 @@ to perform data analysis.")
             (lambda _
               (substitute* "tools/vectorosm-tilecreator/autotests/CMakeLists.txt"
                 (("\\$<TARGET_FILE:osmconvert>")
-                 (which "osmconvert"))))))))
+                 (which "osmconvert")))))
+          ;; Some tests rely on plugins being installed, so
+          ;; check should be run after install.
+          (delete 'check)
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check)))))
     (native-inputs (list abseil-cpp
                          extra-cmake-modules
                          kdoctools
