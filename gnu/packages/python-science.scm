@@ -3542,15 +3542,12 @@ and more
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
             (lambda _
-              ;; PermissionError: [Errno 13] Permission denied:
-              ;; '/homeless-shelter'
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
            python-pytest
-           python-pytest-mpl
-           python-pytest-subtests))
+           python-pytest-mpl))
     (propagated-inputs
      (list python-flexcache
            python-flexparser
