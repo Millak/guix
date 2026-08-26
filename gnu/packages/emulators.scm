@@ -30,6 +30,7 @@
 ;;; Copyright © 2026 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2021–2023, 2026 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4203,6 +4204,34 @@ your PC, with many additional features and benefits.")
          "-DUSE_GAMEMODE=OFF")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-asmjit-1.17-compat
+            (lambda _
+              (define (bit-size register-kind)
+                (case (string->symbol register-kind)
+                  ((Xmm) 128)
+                  ((Ymm) 256)
+                  ((Zmm) 512)))
+              (substitute* '("rpcs3/Emu/Cell/PPUInterpreter.cpp"
+                             "rpcs3/Emu/Cell/SPUASMJITRecompiler.cpp"
+                             "rpcs3/Emu/Cell/SPUASMJITRecompiler.h"
+                             "rpcs3/Emu/Cell/SPUInterpreter.cpp"
+                             "rpcs3/util/simd.hpp")
+                (("x86::Xmm") "x86::Vec"))
+              (substitute* "Utilities/JITASM.cpp"
+                (("resolveUnresolvedLinks") "resolveCrossSectionFixups")
+                (("x86::([XYZ]mm)\\(([a-z]+\\.id\\(\\))\\)" _ kind id)
+                 (simple-format #f "x86::Vec::make_v~a(~a)"
+                   (bit-size kind) id))
+                (("x86::([XYZ]mm) ([a-z]+)\\(([a-z]+\\.id\\(\\))\\)"
+                  _ kind var id)
+                 (simple-format #f "auto ~a = x86::Vec::make_v~a(~a)"
+                   var (bit-size kind) id)))
+              (substitute* '("rpcs3/Emu/Cell/PPUInterpreter.cpp"
+                             "rpcs3/util/simd.hpp")
+                (("vec_type\\((.*)\\)" _ id)
+                 (simple-format #f "vec_type::make_v128(~a)" id))
+                (("vec_type\\{(.*)\\}" _ id)
+                 (simple-format #f "vec_type::make_v128(~a)" id)))))
           (add-after 'unpack 'add-some-submodules
             ;; TODO: Remove as many of these as possible.
             (lambda* (#:key inputs #:allow-other-keys)
@@ -4271,7 +4300,7 @@ your PC, with many additional features and benefits.")
       googletest
       pkg-config
       vulkan-memory-allocator
-      (package-source asmjit)
+      (package-source asmjit-1.17)
       (package-source fusion)
       (package-source stb)
       (origin
