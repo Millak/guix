@@ -1045,10 +1045,11 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 ;; This is a placeholder for the next RC version when it's tagged.
 (define-public go-next
   (deprecated-package "go-next" go-1.27))
+
 ;;
 ;; Default Golang version used in guix/build-system/go.scm to build packages.
 ;;
-(define-public go go-1.25)
+(define-public go go-1.26)
 
 (define make-go-std
   (mlambdaq (go)
