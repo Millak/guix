@@ -7980,8 +7980,6 @@ server.")
     (version "3.1.5")
     (source
      (origin
-       ;; We use the upstream repository, as the tests are not included in the
-       ;; PyPI releases.
        (method hg-fetch)
        (uri (hg-reference
               (url "https://foss.heptapod.net/openpyxl/openpyxl")
@@ -7992,24 +7990,12 @@ server.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: The workbook writer doesn't respect SOURCE_DATE_EPOCH
-      ;; https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2268
-      ;; It makes a few tests fail.
+      ;; tests: 2577 passed, 17 skipped, 4 deselected, 7 xfailed
       #:test-flags
-      #~(list "--ignore=openpyxl/worksheet/tests/test_read_only.py"
-              "-k" (string-join
-                    (list "not test_unsupport_drawing"
-                          "test_broken_sheet_ref"
-                          "test_no_default_style"
-                          "test_ctor"
-                          "test_force_dimension"
-                          "test_get_max_cell"
-                          "test_read_hyperlinks_read_only"
-                          "test_read_with_missing_cells"
-                          "test_read_empty_rows")
-                    " and not "))))
+      #~(list (string-append "--deselect=openpyxl/xml/tests/"
+                             "test_functions.py::test_iterparse"))))
     (native-inputs
-     (list python-lxml-4.9
+     (list python-lxml
            python-pillow
            python-pytest
            python-setuptools))
