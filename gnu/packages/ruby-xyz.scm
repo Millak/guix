@@ -14431,28 +14431,6 @@ to load dynamic content on storefronts.")
                 "0cr321nd0zkbxirgdfmz37xx7j26zfnicjh585fi20vx60frry83"))))
     (arguments (list #:tests? #f))))
 
-;;; This variant is purposefully incomplete, lacking ruby-liquid so that it
-;;; can be used for ruby-liquid's test suite.
-(define-public ruby-liquid-c-bootstrap
-  (package
-    (name "ruby-liquid-c-bootstrap")
-    (version "4.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "liquid-c" version))
-              (sha256
-               (base32
-                "040qspl1x0pm5l3zwf90w02rcygbk0xl9bb1jgbszpj857pyqh8p"))))
-    (build-system ruby-build-system)
-    (arguments (list #:tests? #f))
-    (native-inputs (list ruby-rake-compiler))
-    (synopsis "Liquid performance extension in C")
-    (description "This package provides a Partial native implementation of the
-liquid ruby gem in C that makes it operate about three times faster.")
-    (home-page "https://github.com/shopify/liquid-c")
-    (properties '((hidden? . #t)))
-    (license license:expat)))
-
 (define-public ruby-localhost
   (package
     (name "ruby-localhost")
