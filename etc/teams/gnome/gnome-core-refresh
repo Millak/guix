@@ -48,7 +48,7 @@
 (define %gnome-releng-versions-uri
   (make-parameter
    (or (getenv "GNOME_RELENG_VERSIONS_URI")
-       "https://gitlab.gnome.org/GNOME/releng/-/raw/master/tools/versions-49")))
+       "https://gitlab.gnome.org/GNOME/releng/-/raw/master/tools/versions-50")))
 
 (define (fetch-releng-content)
   "Return a string corresponding to the content of the %GNOME-RELENG-VERSIONS-URI
@@ -73,9 +73,25 @@ NL < '\n'")
 
 (define %names
   '(("adwaita-fonts" . "font-adwaita")
-    ("glycin" . "glycin-loaders")
+    ("glycin" . "libglycin")
+    ("json-glib" . "json-glib-minimal")
+    ("libcloudproviders" . "libcloudproviders-minimal")
+    ("libsoup" . "libsoup-minimal")
     ("pygobject" . "python-pygobject")
     ("pyatspi" . "python-pyatspi")))
+
+(define (make-name-spec name version)
+  "Return a package name specification given its NAME and VERSION.  This can
+be used when the package NAME need to be transformed based on its VERSION."
+  (match (list name (version-major version))
+    (("gcr" "3")
+     "gcr@3")
+    (("gtksourceview" "4")
+     "gtksourceview@4")
+    (("gtk" "3")
+     "gtk+")
+    ((name _)
+     (or (assoc-ref %names name) name))))
 
 (define (parse-releng data)
   "Return the complete parse tree for DATA, a string representing the content of
@@ -105,7 +121,7 @@ refresh' can automatically find the newest compatible version."
   (match tree
     (('releng ('entry ('suite "core") ('name name) ('version version) _) ...)
      (filter-map (lambda (name version)
-                   (let ((name (or (assoc-ref %names name) name)))
+                   (let* ((name (make-name-spec name version)))
                      (and (check-package-name name)
                           (if partial-versions?
                               (let* ((parts (string-split version #\.))
