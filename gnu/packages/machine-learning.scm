@@ -5431,8 +5431,7 @@ PyTorch.")
            valgrind/pinned))
     (inputs
      (append
-      (list asmjit
-            brotli ; for cpp-httplib
+      (list brotli ; for cpp-httplib
             clog
             concurrentqueue
             cpp-httplib
