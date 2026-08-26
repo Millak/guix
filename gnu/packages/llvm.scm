@@ -1904,7 +1904,7 @@ misuse of libraries outside of the store.")))
 (define-public lldb
   (package
     (name "lldb")
-    (version (package-version llvm-22))
+    (version (package-version llvm-23))
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (arguments
@@ -1920,8 +1920,8 @@ misuse of libraries outside of the store.")))
     (native-inputs
      (list pkg-config swig-4.0))
     (inputs
-     (list clang-22
-           llvm-22
+     (list clang-23
+           llvm-23
            ;; Optional (but recommended) inputs.
            ncurses
            libedit
