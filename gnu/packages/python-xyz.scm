@@ -33393,11 +33393,9 @@ syllables, and sentences.")
     (license license:asl2.0)))
 
 (define-public python-readability-lxml
-  ;; No releases since 2020, see:
-  ;; <https://github.com/buriy/python-readability/issues/196>.
   (package
     (name "python-readability-lxml")
-    (version "0.8.4.1")
+    (version "0.9")
     (source
      (origin
        (method git-fetch)
@@ -33406,7 +33404,7 @@ syllables, and sentences.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dr567k03ljhwx9pacmynrv47w5vgq9fkgncpm0vlvmby2g0xgdl"))))
+        (base32 "05alz7i33m4n7097jl5slxy5k2lnnxwwadqw956gwk1fihyzidrp"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-poetry-core
