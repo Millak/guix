@@ -251,6 +251,25 @@ allocator that makes it easy to generate complex code without a significant
 development effort.")
       (license license:zlib))))
 
+(define-public asmjit-1.17
+  (let ((commit "2ff454d41555d16d0759e4d0e95ade3c875b615e")
+        (revision "0"))
+    (package
+      (inherit asmjit)
+      (name "asmjit")
+      ;; src/asmjit/core/api-config.h defines ASMJIT_LIBRARY_VERSION.
+      (version (git-version "1.17.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/asmjit/asmjit")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1n8j1s5xj5mkbrsihxc385pf5c6h3wyv7b16h79jj9sm5zz851g1")))))))
+
 (define-public asyncplusplus
   (package
     (name "asyncplusplus")
