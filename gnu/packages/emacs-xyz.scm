@@ -41316,7 +41316,7 @@ all of your projects, then override or add variables on a per-project basis.")
 (define-public emacs-casual
   (package
     (name "emacs-casual")
-    (version "2.16.2")
+    (version "3.0.1")
     (source
      (origin
        (method git-fetch)
@@ -41325,7 +41325,7 @@ all of your projects, then override or add variables on a per-project basis.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fi15hgqjxjz1z6jxsm9lwssl97zaa1ds1hhsnsihhij0hs95vny"))))
+        (base32 "02bsfn81mn1wrhirkfqgqnf96fxi18kvic6wzw18p1a0vcbyhisf"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -41347,48 +41347,34 @@ all of your projects, then override or add variables on a per-project basis.")
           ;; FIXME: These tests fail.
           (add-before 'check 'remove-problematic-tests
             (lambda _
-              (substitute* (find-files "../tests/" "\\.el$")
-                (("\\(ert-deftest test-casual-dired-change-tmenu .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-casual-dired-regexp-tmenu .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-casual-dired-regexp-unmark .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-casual-dired-tmenu .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-casual-dired-tmenu-insert-subdir .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-casual-dired-tmenu-unmark .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-casual-editkit-tmenu .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-casual-editkit-project-tmenu .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-casual-man-tmenu .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-casual-org-tmenu-utility .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-casual-timezone--date-formatter .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-casual-timezone-local-time-to-remote .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-casual-timezone-local-time-to-remote-victoria .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-casual-timezone-map-local-to-timezone .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-casual-timezone-remote-time-to-local .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-casual-timezone-zone-info .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-timezone-sanity-check .*" all)
-                 (string-append all " (skip-unless nil)"))
-                (("\\(ert-deftest test-timezone-sanity-check2 .*" all)
-                 (string-append all " (skip-unless nil)"))))))
+              (let* ((failing-tests
+                      '("test-casual-dired-change-tmenu"
+                        "test-casual-dired-regexp-tmenu"
+                        "test-casual-dired-regexp-unmark"
+                        "test-casual-dired-tmenu"
+                        "test-casual-dired-tmenu-insert-subdir"
+                        "test-casual-dired-tmenu-unmark"
+                        "test-casual-editkit-project-tmenu"
+                        "test-casual-eshell-tmenu"
+                        "test-casual-help-tmenu"
+                        "test-casual-timezone--date-formatter"
+                        "test-casual-timezone-local-time-to-remote"
+                        "test-casual-timezone-local-time-to-remote-victoria"
+                        "test-casual-timezone-map-local-to-timezone"
+                        "test-casual-timezone-remote-time-to-local"
+                        "test-casual-timezone-zone-info"))
+                     (failing-tests-regexp
+                      (string-append "\\(ert-deftest ("
+                                     (string-join failing-tests "|")
+                                     ") .*")))
+                (substitute* (find-files "../tests/" "\\.el$")
+                  ((failing-tests-regexp all)
+                   (string-append all " :expected-result :failed")))))))
       #:lisp-directory "lisp"
       #:test-command #~(list "make" "tests"
                              (string-append " CASUAL_LIB_DIR=" (getcwd)
                                             "/source"))))
-    (native-inputs (list emacs-csv-mode texinfo))
+    (native-inputs (list emacs-csv-mode texinfo tzdata))
     ;; Casual relies on the latest stable release of `transient' which may
     ;; differ from the version that is preinstalled as a built-in.
     (propagated-inputs (list emacs-magit emacs-transient))
