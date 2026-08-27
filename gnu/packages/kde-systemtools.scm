@@ -727,9 +727,11 @@ as well as QR codes.")
            kwidgetsaddons
            kwindowsystem
            libxkbcommon
+           plasma-wayland-protocols
            qtsvg
            qtwayland
-           wayland))
+           wayland
+           xcb-util))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
