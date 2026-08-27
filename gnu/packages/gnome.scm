@@ -9967,7 +9967,6 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            `(,glib "bin")               ;for glib-compile-schemas, etc.
            desktop-file-utils           ;for update-desktop-database
            gobject-introspection
-           hicolor-icon-theme
            libxslt
            perl
            pkg-config
