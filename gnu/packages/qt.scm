@@ -5068,12 +5068,6 @@ This package provides the Python bindings.")))
     (description
      "This package contains the union of PyQt and the Qscintilla extension.")))
 
-;; FIXME Remove this procedure and its related package when qgis won't need them
-;; anymore
-(define python-sip-6.8-instead-of-python-sip
-  (package-input-rewriting `((,python-sip . ,python-sip-6.8))
-                           #:deep? #t))
-
 (define-public qtkeychain
   (package
     (name "qtkeychain")
