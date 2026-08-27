@@ -11541,6 +11541,7 @@ tools for managing PipeWire.")
           #~(cons "-Delogind=disabled" #$flags))))
       (inputs
        (modify-inputs inputs
+         (replace "pipewire" pipewire-minimal)
          (delete "elogind"))))))
 
 (define-public ell
