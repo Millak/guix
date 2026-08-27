@@ -5275,7 +5275,7 @@ language understood by many solvers.")
 (define-public mumps
   (package
     (name "mumps")
-    (version "5.8.0")
+    (version "5.9.1")
     (source
      (origin
        (method url-fetch)
@@ -5283,7 +5283,7 @@ language understood by many solvers.")
                            ".tar.gz"))
        (sha256
         (base32
-         "18208d3klhv08p4kgbbp332wf11x0iyi7z4c7fcs0hwq3n5ynqnp"))))
+         "0ihv7q05hwdwrjm3savkdkj4886xz7xa3fhqqqx00nkbcibrp735"))))
     (build-system gnu-build-system)
     (inputs
      (list gfortran
