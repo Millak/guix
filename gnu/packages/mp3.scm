@@ -905,7 +905,6 @@ fingerprinting library and the Acoustid API.")
            bash-minimal
            adwaita-icon-theme
            shared-mime-info
-           hicolor-icon-theme
            gsettings-desktop-schemas))
     (home-page "https://wavbreaker.sourceforge.io/")
     (synopsis "WAV and MP3 file splitter with a GUI")
