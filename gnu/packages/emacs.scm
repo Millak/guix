@@ -302,7 +302,10 @@
     (arguments
      (list
       #:modules (%emacs-modules build-system)
-      #:configure-flags #~(list "--with-gnutls=no" "--disable-build-details")
+      #:configure-flags #~(list "--with-gnutls=no" "--disable-build-details"
+                                ;; Prevent recursive load of ‘jka-compr’ and
+                                ;; enable store reference scanning in .el files.
+                                "--without-compress-install")
       #:make-flags
       #~(list (string-append "SELECTOR=" #$%emacs-selector)
               (let ((release-date "2026-08-24 10:35:47"))
