@@ -361,6 +361,12 @@ tool.")
           ((#:phases phases)
            #~(modify-phases #$phases
                (delete 'replace-firmwares)
+               (add-after 'unpack 'set-addr2line-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "accel/tcg/tcg-runtime.c"
+                     (("\"addr2line")
+                      (string-append
+                       "\"" (search-input-file inputs "bin/addr2line"))))))
                (delete 'patch-embedded-shebangs)
                (delete 'fix-optionrom-makefile)
                (delete 'disable-unusable-tests)
@@ -398,6 +404,7 @@ tool.")
                             (delete-file "tests/qemu-iotests/267"))))
                       '())))))
        (inputs (modify-inputs inputs
+                 (append gcc)
                  (delete "dtc")))
        (home-page "https://github.com/AFLplusplus/qemuafl")
        (synopsis "QEMU for AFL++")))))
