@@ -598,7 +598,6 @@ Counterpane's Passwordsafe.")
                   libgcrypt
                   libsecret
                   libzip
-                  hicolor-icon-theme
                   gtk+
                   jansson
                   protobuf
