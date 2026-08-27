@@ -25480,7 +25480,7 @@ in Emacs.")
 (define-public emacs-php-mode
   (package
     (name "emacs-php-mode")
-    (version "1.27.0")
+    (version "1.28.0")
     (home-page "https://github.com/emacs-php/php-mode")
     (source
      (origin
@@ -25490,23 +25490,14 @@ in Emacs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pkvqpzzy7wmbd99gvphfaz2ds79n5fcx4n7f772mgz8x5f9xq1b"))))
+        (base32 "05y6sm7nifxl2qd6qspcsdld0r0my3xgk9jyi38lxzmv1a18m5l9"))))
     (build-system emacs-build-system)
     (arguments
      (list
+      #:lisp-directory "lisp"
       #:test-command #~(list "emacs" "-Q" "--batch"
                              "-l" "../tests/php-mode-test.el"
-                             "-f" "ert-run-tests-batch-and-exit")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'prepare-testing-bed
-            (lambda _
-              ;; This file is necessary for `php-project-root' test.
-              (call-with-output-file "tests/project/1/.git"
-                (const #t))))
-          (add-after 'prepare-testing-bed 'enter-source-directory
-            (lambda _
-              (chdir "lisp"))))))
+                             "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs (list emacs-projectile))
     (synopsis "Major mode for editing PHP code")
     (description
