@@ -133,10 +133,7 @@
    empty-serializer)
   (assets
    (list-of-file-likes (list adwaita-icon-theme
-                             gnome-themes-extra
-                             ;; FIXME: hicolor-icon-theme should be in the
-                             ;; packages of the desktop templates.
-                             hicolor-icon-theme))
+                             gnome-themes-extra))
    "The list of packages complementing the greeter, such as package providing
 icon themes."
    empty-serializer)
