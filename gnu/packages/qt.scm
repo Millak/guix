@@ -5074,10 +5074,6 @@ This package provides the Python bindings.")))
   (package-input-rewriting `((,python-sip . ,python-sip-6.8))
                            #:deep? #t))
 
-(define-public python-pyqt+qscintilla-with-python-sip-6.8
-  (hidden-package
-   (python-sip-6.8-instead-of-python-sip python-pyqt+qscintilla)))
-
 (define-public qtkeychain
   (package
     (name "qtkeychain")
