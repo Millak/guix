@@ -3273,7 +3273,7 @@ compatible with the well-known scripts of the same name.")
 (define-public xdg-desktop-portal
   (package
     (name "xdg-desktop-portal")
-    (version "1.20.3")
+    (version "1.22.1")
     (source
      (origin
        (method url-fetch)
@@ -3282,7 +3282,7 @@ compatible with the well-known scripts of the same name.")
              version "/xdg-desktop-portal-" version ".tar.xz"))
        (sha256
         (base32
-         "1p4yvbhqr8yf231gm69vdz3h7na8m6x1mhiw3bmhg4gm6x4idysb"))))
+         "1lskawsvw60ja1fllh5cpikx5i9xy7k9fx0q367imzv57pdrv1yl"))))
     (build-system meson-build-system)
     (arguments
      (list
