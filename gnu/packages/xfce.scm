@@ -1387,7 +1387,6 @@ for and start applications.")
            elementary-xfce-icon-theme
            font-dejavu                  ;default font
            greybird-gtk-theme
-           hicolor-icon-theme
            mate-polkit
            mousepad
            ristretto
