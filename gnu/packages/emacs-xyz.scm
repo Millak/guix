@@ -21829,10 +21829,8 @@ manager.")
       (license license:gpl3+))))
 
 (define-public emacs-evil
-  ;; Commit message claims this is 1.15.0, but there's no tag for it, so we
-  ;; use full git-version instead
-  (let ((commit "008a6cdb12f15e748979a7d1c2f26c34c84dedbf")
-        (revision "0"))
+  (let ((commit "6a3e1ddd04ac504a016590940d0af2a3361b9efd")
+        (revision "1"))
     (package
       (name "emacs-evil")
       (version (git-version "1.15.0" revision commit))
@@ -21845,21 +21843,23 @@ manager.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1hxhw1rsm0wbrhz85gfabncanijpxd47g5yrdnl3bbm499z1gsvg"))))
+           "00ygsks3apl4f5sd79cnk3lghmfr4x5n0cvpa3i60nz8akfisnvk"))))
       (arguments
-       `(#:test-command (list "make" "test")
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'check 'fix-test-helpers
-             (lambda _
-               (substitute* "evil-test-helpers.el"
-                 (("\\(undo-tree-mode 1\\)") ""))
-               #t))
-           (add-before 'install 'make-info
-             (lambda _
-               (with-directory-excursion "doc/build/texinfo"
-                   (invoke "makeinfo" "--no-split"
-                           "-o" "evil.info" "evil.texi")))))))
+       (list
+        #:test-command #~(list "emacs" "-Q" "--batch"
+                               "-l" "evil-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'fix-test-helpers
+              (lambda _
+                (substitute* "evil-test-helpers.el"
+                  (("\\(undo-tree-mode 1\\)") ""))))
+            (add-before 'install 'make-info
+              (lambda _
+                (with-directory-excursion "doc/build/texinfo"
+                  (invoke "makeinfo" "--no-split"
+                          "-o" "evil.info" "evil.texi")))))))
       (build-system emacs-build-system)
       (native-inputs (list texinfo))
       (home-page "https://github.com/emacs-evil/evil")
