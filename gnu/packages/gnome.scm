@@ -3564,6 +3564,9 @@ compiles to GTKBuilder XML.")
                (find-files (string-append #$output "/bin"))))))))
     (inputs
      (list bash-minimal
+           ;; XXX: this-package-input does not find the adwaita-icon-theme
+           ;; propagated hicolor-icon-theme input, so is listed here
+           ;; explicitly.
            adwaita-icon-theme hicolor-icon-theme
            gsettings-desktop-schemas
            gtk
