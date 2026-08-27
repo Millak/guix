@@ -473,7 +473,7 @@ competitive (as in keystroke count) with Vim.")
 (define-public kak-lsp
   (package
     (name "kak-lsp")
-    (version "18.1.3")
+    (version "21.0.2")
     (source
      (origin
        (method git-fetch)
@@ -481,7 +481,7 @@ competitive (as in keystroke count) with Vim.")
              (url "https://github.com/kak-lsp/kak-lsp")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 "1wffw0whcjybjn7h1v83rjmga0qbzn0663ickfpx2l51wycz8c6s")))
+       (sha256 "1kqk8g4vafdbx8d53an6r94fyvdpyjs56m0szydqpjivf4ww73wx")))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
