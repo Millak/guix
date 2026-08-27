@@ -7913,7 +7913,6 @@ streaming audio server.")
            gstreamer
            gtk+
            gtksourceview-4 ; undo, redo, multiline text fields
-           hicolor-icon-theme
            keybinder ; keybindings outside of GNOME
            (librsvg-for-system)
            libsoup-minimal
