@@ -1772,6 +1772,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/kio-search-smbd-on-PATH.patch		\
   %D%/packages/patches/kismet-unbundle-boost.patch		\
   %D%/packages/patches/kissfft-tflite-micro.patch               \
+  %D%/packages/patches/kitinerary-add-missing-include.patch               \
+  %D%/packages/patches/kitinerary-poppler-26.06.patch               \
+  %D%/packages/patches/kitinerary-poppler-26.08.patch               \
   %D%/packages/patches/kmod-module-directory.patch		\
   %D%/packages/patches/kmscon-8-runtime-keymap-switch.patch	\
   %D%/packages/patches/knot-remove-runtime-deps.patch		\

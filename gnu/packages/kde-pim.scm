@@ -1450,7 +1450,10 @@ easier to do so.")
                                   version "/src/kitinerary-" version ".tar.xz"))
               (sha256
                (base32
-                "1bajnx3h487s48gsgbkm23j89bw3xj5vq87f62bkcgc1vrkdq6jx"))))
+                "1bajnx3h487s48gsgbkm23j89bw3xj5vq87f62bkcgc1vrkdq6jx"))
+              (patches (search-patches "kitinerary-poppler-26.06.patch"
+                                       "kitinerary-poppler-26.08.patch"
+                                       "kitinerary-add-missing-include.patch"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
