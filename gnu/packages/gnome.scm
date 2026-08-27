@@ -10891,7 +10891,6 @@ playing media, scanning, and much more.")
                             gst-plugins-base
                             gst-plugins-good
                             gucharmap
-                            hicolor-icon-theme
                             pinentry-gnome3
                             pulseaudio
                             shared-mime-info
