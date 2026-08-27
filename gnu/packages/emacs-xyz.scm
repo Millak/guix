@@ -22540,96 +22540,96 @@ federated blogging platform WriteFreely.")
 (define-public emacs-org
   (package
     (name "emacs-org")
-    (version "9.8.7")
+    (version "9.8.10")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.savannah.gnu.org/git/emacs/org-mode")
-             (commit (string-append "release_" version))))
+              (url "https://git.savannah.gnu.org/git/emacs/org-mode")
+              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16hxd3yzj1jrbh1wzh236yyrvl9i917h8wwgy2dgy4b38l1b16gd"))))
+        (base32 "01664gc9453crppn936f35rinkds73imvnxyg7qy0zavv97lxwk5"))))
     (build-system emacs-build-system)
     (outputs (list "out" "test"))
     (arguments
      (list
-      #:test-command #~(list "make" "test-dirty")
+      #:test-command #~(list "make" "-C" ".." "test-dirty")
+      #:lisp-directory "lisp"
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'expand-load-path
-            ;; Make sure `load-path' includes "lisp" directory, otherwise
-            ;; byte-compilation fails.
-            (lambda args
-              (with-directory-excursion "lisp"
-                (apply (assoc-ref %standard-phases 'expand-load-path) args))))
-          (add-after 'expand-load-path 'bootstrap
-            ;; XXX: Generate "org-loaddefs.el".
-            (lambda _
-              (invoke "make" "autoloads")))
-          (add-before 'check 'fix-tests
+          (add-after 'unpack 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
-              ;; XXX: Running tests updates ID locations.  The process expects
-              ;; a file to be writeable in "~/.emacs.d/".
-              (setenv "HOME" (getcwd))
-              (mkdir-p ".emacs.d")
-              ;; These files are modified during testing.
-              (with-directory-excursion "testing/examples"
-                (for-each make-file-writable
-                          '("babel.org"
-                            "ob-awk-test.org"
-                            "ob-sed-test.org"))
-                ;; Specify where sh executable is.
-                (let ((sh (search-input-file inputs "/bin/sh")))
-                  (substitute* "babel.org"
-                    (("/bin/sh") sh))))
-              ;; XXX: Fix failure in ob-tangle/collect-blocks.  The test
-              ;; assumes that ~/../.. corresponds to /.  This isn't true in
-              ;; our case.
-              (substitute* "testing/lisp/test-ob-tangle.el"
-                ((" ~/\\.\\./\\.\\./")
-                 (string-append " ~"
-                                ;; relative path from ${HOME} to / during
-                                ;; build
-                                (string-join
-                                 (map-in-order
-                                  (lambda (x)
-                                    (if (equal? x "") "" ".."))
-                                  (string-split (getcwd) #\/)) "/")
-                                "/")))
-              ;; XXX: Skip failing tests.
-              (substitute* "testing/lisp/test-ob-shell.el"
-                (("ob-shell/remote-with-stdin-or-cmdline .*" all)
-                 (string-append all "  (skip-unless nil)\n"))
-                (("ob-shell/cmdline .*" all)
-                 (string-append all "  (skip-unless nil)\n")))
-              (substitute* "testing/lisp/test-org.el"
-                (("test-org/org-log-done .*" all)
-                 (string-append all "  (skip-unless nil)\n")))))
-          (replace 'build
-            (lambda args
-              (with-directory-excursion "lisp"
-                (apply (assoc-ref %standard-phases 'build) args))))
-          (replace 'install
+              (substitute* "ob-shell.el"
+                (("/usr/bin/env")
+                 (search-input-file inputs "/bin/env")))))
+          (replace 'make-autoloads
             (lambda _
+              (invoke "make" "-C" ".." "autoloads"
+                      (string-append "ORGVERSION=" #$version))))
+          (add-before 'check 'fix-tests
+            (lambda* (#:key tests? inputs #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "../testing"
+                  ;; XXX: Running tests updates ID locations.  The process expects
+                  ;; a file to be writeable in "~/.emacs.d/".
+                  (setenv "HOME" (getcwd))
+                  (mkdir-p ".emacs.d")
+                  ;; These files are modified during testing.
+                  (with-directory-excursion "examples"
+                    (for-each make-file-writable
+                              '("babel.org"
+                                "ob-awk-test.org"
+                                "ob-sed-test.org"))
+                    ;; Specify where sh executable is.
+                    (let ((sh (search-input-file inputs "/bin/sh")))
+                      (substitute* "babel.org"
+                        (("/bin/sh") sh))))
+                  ;; XXX: Fix failure in ob-tangle/collect-blocks.  The test
+                  ;; assumes that ~/../.. corresponds to /.  This isn't true in
+                  ;; our case.
+                  (substitute* "lisp/test-ob-tangle.el"
+                    ((" ~/\\.\\./\\.\\./")
+                     (string-append " ~"
+                                    ;; relative path from ${HOME} to / during
+                                    ;; build
+                                    (string-join
+                                     (map-in-order
+                                      (lambda (x)
+                                        (if (equal? x "") "" ".."))
+                                      (string-split (getcwd) #\/)) "/")
+                                    "/")))
+                  ;; XXX: Skip failing tests.
+                  (substitute* "lisp/test-ob-shell.el"
+                    (("ob-shell/remote-with-stdin-or-cmdline .*" all)
+                     (string-append all "  (skip-unless nil)\n")))))))
+          (add-after 'install 'install-the-rest
+            ;; First install gets the lisp, then this install grabs the rest
+            ;; (info, news, etc)
+            (lambda args
               (let ((elpa (elpa-directory #$output))
                     (info (string-append #$output "/share/info")))
-                (substitute* "local.mk"
-                  (("^lispdir.*") (string-append "lispdir = " elpa))
-                  (("^datadir.*") (string-append "datadir = " elpa "/etc"))
-                  (("^infodir.*") (string-append "infodir = " info))))
-              (invoke "make" "install" (string-append "ORGVERSION=" #$version))))
+                (invoke "make" "-C" ".." "install-info" "install-etc"
+                        (string-append "ORGVERSION=" #$version)
+                        (string-append "datadir=" elpa "/etc")
+                        (string-append "infodir=" info)))))
           (add-after 'install 'install-org-test
             (lambda _
-              (with-directory-excursion "testing"
+              (with-directory-excursion "../testing"
                 (copy-recursively "."
                                   (string-append (elpa-directory #$output:test))))))
           (add-after 'install 'install-org-news
             ;; Install ORG-NEWS files in doc directory.
             (lambda _
-              (install-file "etc/ORG-NEWS"
+              (install-file "../etc/ORG-NEWS"
                             (string-append #$output "/share/doc/"
-                                           #$name "-" #$version)))))))
+                                           #$name "-" #$version))))
+          (replace 'install-license-files
+            (lambda args
+              ;; Change to top-level so we find the license.
+              (with-directory-excursion ".."
+                (apply (assoc-ref %standard-phases 'install-license-files)
+                       args)))))))
     (native-inputs
      (list texinfo tzdata))
     (home-page "https://orgmode.org/")
