@@ -341,6 +341,7 @@
                              "lisp/term.el"
                              "lisp/htmlfontify.el"
                              "lisp/mail/feedmail.el"
+                             "lisp/man.el"
                              "lisp/obsolete/pgg-pgp.el"
                              "lisp/obsolete/pgg-pgp5.el"
                              "lisp/org/ob-eval.el"
@@ -356,11 +357,12 @@
                              "lisp/mail/blessmail.el")
                 (("\"#!/bin/sh\\\n\"")
                  (format #f "\"#!~a~%\"" (search-input-file inputs "bin/sh"))))
-              (substitute* '("lisp/jka-compr.el"
-                             "lisp/man.el")
+              (substitute* "lisp/jka-compr.el"
                 (("\"sh\"")
-                 (format #f "~s" (search-input-file inputs "bin/sh"))))
-
+                 (format #f "~s" (search-input-file inputs "bin/sh")))
+                ;; Substitute "dd" command.
+                (("\"/bin/dd\"")
+                 (format #f "~s" (search-input-file inputs "bin/dd"))))
               ;; Substitute "awk" command.
               (substitute* '("lisp/gnus/nnspool.el"
                              "lisp/org/ob-awk.el"

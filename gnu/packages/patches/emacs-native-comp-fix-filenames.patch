@@ -235,6 +235,16 @@ Index: emacs/lisp/startup.el
  (defun startup--rescale-elt-match-p (font-pattern font-object)
    "Test whether FONT-OBJECT matches an element of `face-font-rescale-alist'.
  FONT-OBJECT is a font-object that specifies a font to test.
+@@ -709,8 +709,6 @@ normal-top-level
+                            (expand-file-name
+                             (decode-coding-string dir coding t)))
+-                         npath)))
+-          (setq startup--original-eln-load-path
+-                (copy-sequence native-comp-eln-load-path)))
++                         npath))))
+ 	(dolist (filesym '(data-directory doc-directory exec-directory
+ 					  installation-directory
+ 					  invocation-directory invocation-name
 @@ -771,9 +756,6 @@ It is the default value of the variable
        (unwind-protect
  	  (command-line)
