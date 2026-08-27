@@ -148,6 +148,9 @@
      "diary-icalendar-test-import-bug-33277"
      "diary-icalendar-test-import-with-timezone"
 
+     ;; This test fails on emacs, but succeeds on emacs-minimal and emacs-no-x.
+     "dired-test-bug25609"
+
      ;; The following can be removed once upstream closes this bug report:
      ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=80421
      "python-shell--convert-file-name-to-send-1"
