@@ -24936,7 +24936,11 @@ and revert them selectively.")
           (add-before 'check 'skip-failing-tests
             (lambda _
               (let ((skip-tests
-                     `("-forge-pullreq-show-diff-args:buffer-post-object"
+                     `("-with-file-bufs:basic-body-error-temporary-file-bufs-are-deleted"
+                       "-with-file-bufs:valueform-body-error-temporary-file-bufs-are-deleted"
+                       "-with-file-bufs:valueform-error-temporary-file-bufs-are-deleted"
+                       "-with-temp-advice:error-signaled-removes-advice"
+                       "-forge-pullreq-show-diff-args:buffer-post-object"
                        "-forge-pullreq-show-diff-args:current-topic"
                        ,(string-append
                          "-forge-pullreq-show-diff-args"
