@@ -370,6 +370,32 @@ units can be created by multiplying by const values and variables can be
 converted by casting.")
     (license license:asl2.0)))
 
+(define-public go-github-com-hmdsefi-gograph
+  (package
+    (name "go-github-com-hmdsefi-gograph")
+    (version "0.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hmdsefi/gograph")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02qjjlc11kpxvs2i66iciv2yd4k30lsid6i5fq63fdl0sgy7rkda"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hmdsefi/gograph"))
+    (home-page "https://github.com/hmdsefi/gograph")
+    (synopsis "Golang generic graph library")
+    (description
+     "@code{GoGraph} is a lightweight, efficient, and easy-to-use graph data
+structure implementation written in Go.  It provides a versatile framework for
+representing graphs and performing various operations on them, making it ideal
+for both educational purposes and practical applications.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-johncgriffin-overflow
   (package
     (name "go-github-com-johncgriffin-overflow")
