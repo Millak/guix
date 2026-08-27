@@ -120,6 +120,10 @@ If NATIVE?, only disable native compilation."
   (let* ((file (string-append directory "/" name "-autoloads.el"))
          (expr `(let ((backup-inhibited t)
                       (generated-autoload-file ,file))
+                  ;; This require helps us avoid a bug loading ".el.gz" files
+                  ;; in Emacs 31.1.
+                  ;; Resolved upstream at <https://debbugs.gnu.org/81819>.
+                  (require 'jka-compr)
                   (cond
                    ((require 'loaddefs-gen nil t)
                     ;; Emacs >= 29
