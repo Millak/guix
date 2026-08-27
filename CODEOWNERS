@@ -299,6 +299,7 @@ gnu/packages/linux\.scm                            @guix/linux-libre
 gnu/tests/linux-modules\.scm                       @guix/linux-libre
 guix/build/linux-module-build-system\.scm          @guix/linux-libre
 guix/build-system/linux-module\.scm                @guix/linux-libre
+etc/manifests/kernels\.scm                         @guix/linux-libre
 
 gnu/packages/lisp(-.+|)\.scm$                      @guix/lisp
 guix/build/asdf-build-system\.scm                  @guix/lisp
