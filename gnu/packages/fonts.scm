@@ -1532,6 +1532,180 @@ additional characters (mostly accented ones).  This package provides the
 OpenType variant of these fonts.")
     (license license:gfl1.0)))
 
+(define-public font-nerd-opendyslexic
+  (package
+    (name "font-nerd-opendyslexic")
+    (version "3.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ryanoasis/nerd-fonts")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0adash47a0pmvhhbqr9wzp3r287hzj50f28pswdxm30l0br6zgfa"))
+       (modules '((srfi srfi-26)
+                  (ice-9 ftw)
+                  (guix build utils)))
+       (snippet
+        ;; Remove fonts we don't use to save space and build time.
+        #~(begin
+            (delete-file-recursively "patched-fonts")
+            (with-directory-excursion "src/unpatched-fonts"
+              (let ((keep? (cut member <>
+                                '("." ".." "OpenDyslexic"))))
+                (for-each delete-file-recursively
+                          (scandir "."
+                                   (negate keep?)))))))))
+    (build-system font-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "src/unpatched-fonts/OpenDyslexic")))
+          (add-before 'install 'build
+            (lambda _
+              (let ((patch
+                     (lambda (modes fonts)
+                       (for-each
+                        (lambda (font)
+                          ;; Patch every font variant with the modes upstream
+                          ;; builds for it.
+                          ;; --complete: Include all icon sets.
+                          ;; --configfile: Honour the upstream patch options,
+                          ;; here "--removeligatures", which drops the 'ldot'
+                          ;; ligatures because they map to only one advance
+                          ;; width.
+                          ;; --mono will generate the Mono variants.
+                          ;; --variable-width-glyphs will generate the
+                          ;; Proportional variants (used for graphical
+                          ;; environments).
+                          ;; If no flag is specified, the no-mono
+                          ;; no-proportional font will be built.
+                          ;; No --ext is passed, so the OpenType format of the
+                          ;; source fonts is preserved.
+                          ;; --no-progressbars: Disable progress bars for clean
+                          ;; build output.
+                          (for-each
+                           (lambda (mode)
+                             (apply invoke "fontforge" "-script"
+                                    "../../../font-patcher"
+                                    `("--complete"
+                                      "--configfile"
+                                      "config.cfg"
+                                      ,@(if mode
+                                            (list mode)
+                                            '())
+                                      "--no-progressbars"
+                                      "--outputdir"
+                                      "."
+                                      ,font)))
+                           modes))
+                        fonts))))
+                (patch '(#nil "--variable-width-glyphs")
+                       '("Bold/OpenDyslexic-Bold.otf"
+                         "Bold-Italic/OpenDyslexic-BoldItalic.otf"
+                         "Italic/OpenDyslexic-Italic.otf"
+                         "Regular/OpenDyslexic-Regular.otf"
+                         "Alta-Bold/OpenDyslexicAlta-Bold.otf"
+                         "Alta-Bold-Italic/OpenDyslexicAlta-BoldItalic.otf"
+                         "Alta-Italic/OpenDyslexicAlta-Italic.otf"
+                         "Alta-Regular/OpenDyslexicAlta-Regular.otf"))
+                (patch '(#nil "--mono" "--variable-width-glyphs")
+                       '("Mono-Regular/OpenDyslexicMono-Regular.otf")))))
+          (add-after 'build 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (for-each (lambda (font)
+                            ;; Use Python script with fontforge to validate the font.
+                            (invoke "python3" "-c"
+                                    (format #f
+                                     "import fontforge
+name = ~s
+font = fontforge.open(name)
+glyph_count = len([g for g in font.glyphs() if g.unicode > 0])
+print(f'Font has {glyph_count} glyphs with Unicode mapping')
+if glyph_count < 8000:
+    raise ValueError(f'Font has too few glyphs: {glyph_count}')
+print(f'✓ Font validation passed for {name}')
+font.close()~%"
+                                     font)))
+                          '("OpenDyslexicNerdFont-Bold.otf"
+                            "OpenDyslexicNerdFont-BoldItalic.otf"
+                            "OpenDyslexicNerdFont-Italic.otf"
+                            "OpenDyslexicNerdFont-Regular.otf"
+                            "OpenDyslexicNerdFontPropo-Bold.otf"
+                            "OpenDyslexicNerdFontPropo-BoldItalic.otf"
+                            "OpenDyslexicNerdFontPropo-Italic.otf"
+                            "OpenDyslexicNerdFontPropo-Regular.otf"
+                            "OpenDyslexicAltNerdFont-Bold.otf"
+                            "OpenDyslexicAltNerdFont-BoldItalic.otf"
+                            "OpenDyslexicAltNerdFont-Italic.otf"
+                            "OpenDyslexicAltNerdFont-Regular.otf"
+                            "OpenDyslexicAltNerdFontPropo-Bold.otf"
+                            "OpenDyslexicAltNerdFontPropo-BoldItalic.otf"
+                            "OpenDyslexicAltNerdFontPropo-Italic.otf"
+                            "OpenDyslexicAltNerdFontPropo-Regular.otf"
+                            "OpenDyslexicMNerdFont-Regular.otf"
+                            "OpenDyslexicMNerdFontMono-Regular.otf"
+                            "OpenDyslexicMNerdFontPropo-Regular.otf")))))
+          (add-before 'install 'remove-unpatched-fonts
+            (lambda _
+              (for-each delete-file-recursively
+                        '("Alta-Bold"
+                          "Alta-Bold-Italic"
+                          "Alta-Italic"
+                          "Alta-Regular"
+                          "Bold"
+                          "Bold-Italic"
+                          "Italic"
+                          "Mono-Regular"
+                          "Regular")))))))
+    (native-inputs (list fontforge python-minimal))
+    (home-page "https://www.nerdfonts.com/")
+    (synopsis "OpenDyslexic with an iconic font collection")
+    (description
+     "This package provides the OpenDyslexic font with the extra glyphs from
+Nerd Fonts.  OpenDyslexic is designed to help readability for some of the
+symptoms of dyslexia: letters have heavy weighted bottoms to indicate
+orientation, and their unique shapes help prevent flipping and swapping.
+
+@itemize
+@item OpenDyslexic
+@item OpenDyslexic Alta
+@item OpenDyslexic Mono
+@end itemize
+
+These fonts include glyphs from multiple icon sets:
+
+@itemize
+@item Powerline with Extra Symbols
+@item Font Awesome and Font Awesome Extension
+@item Material Design Icons
+@item Weather Icons
+@item Devicons
+@item Octicons
+@item Font Logos (formerly Font Linux)
+@item Pomicons
+@item Codeicons
+@end itemize
+
+Only the OpenDyslexic Mono face is monospaced; it is the only one for which a
+Nerd Font Mono variant, with all glyphs of uniform width, is provided.  The
+Propo variants leave the advance width of the added icons unchanged and are
+meant for graphical environments.")
+    ;; https://github.com/ryanoasis/nerd-fonts/blob/master/license-audit.md
+    (license
+     (list
+      license:expat
+      license:cc-by4.0
+      license:unlicense
+      license:asl2.0
+      license:silofl1.1))))
+
 (define-public font-nerd-symbols
   (package
     (name "font-nerd-symbols")
