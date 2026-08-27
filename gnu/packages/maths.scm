@@ -5640,7 +5640,7 @@ implemented in ANSI C, and MPI for communications.")
 (define-public scotch
   (package
     (name "scotch")
-    (version "7.0.7")
+    (version "7.0.15")
     (source
      (origin
        (method git-fetch)
@@ -5649,15 +5649,8 @@ implemented in ANSI C, and MPI for communications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r46bmnz9xjlgcb3vvlx3sg2qh4gfgga89vs4vlbzz3s4lj48g46"))
-       (patches (search-patches "scotch-cmake-remove-metis.patch"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(substitute* "src/libscotchmetis/library_parmetis.h"
-            (("typedef DUMMYINT SCOTCH_Num" all)
-             ;; 'DUMMYINT' is typically replaced by 'int32_t'.  Include
-             ;; <stdint.h> to get that type definition.
-             (string-append "#include <stdint.h>\n" all "\n"))))))
+        (base32 "1d2v481zgi0b42qny3d97ysm1f5y89qkjhlzpnh8xx2abljssnqi"))
+       (patches (search-patches "scotch-cmake-remove-metis.patch"))))
     (build-system cmake-build-system)
     (inputs
      (list zlib))
@@ -5670,6 +5663,17 @@ implemented in ANSI C, and MPI for communications.")
                                  "-DBUILD_PTSCOTCH=OFF")
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'add-metis-executable-runpath
+                 (lambda _
+                   ;; 'adm2dgr' is linked to libptscotchparmetisv3 and
+                   ;; installed in the "metis" output so add
+                   ;; '${ORIGIN}/../lib' to its RUNPATH.
+                   (substitute* "src/libscotchmetis/CMakeLists.txt"
+                     (("target_link_libraries\\(adm2dgr (.*)\\)" _ libraries)
+                      (string-append
+                       "target_link_libraries(adm2dgr "
+                       libraries
+                       " -Wl,-rpath='\\${ORIGIN}/../lib')\n")))))
                (add-after 'install 'install-metis
                  (lambda* (#:key outputs #:allow-other-keys)
                    ;; Move the METIS compatibility library to a separate output to
@@ -5684,7 +5688,7 @@ implemented in ANSI C, and MPI for communications.")
                                                                     prefix))))
                                    (mkdir-p (dirname target))
                                    (rename-file file target)))
-                               (find-files out "metis"))))))))
+                               (find-files out "(adm2dgr|metis)"))))))))
     (home-page "https://www.labri.fr/perso/pelegrin/scotch/")
     (properties
      `((release-monitoring-url

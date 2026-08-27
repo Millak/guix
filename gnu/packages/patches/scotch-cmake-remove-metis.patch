@@ -10,15 +10,19 @@ available under '_IMPORT_PREFIX', which is only the case when
 
 diff --git a/cmake/SCOTCHConfig.cmake.in b/cmake/SCOTCHConfig.cmake.in
 index ec52ac5..4ce5c30 100644
---- a/cmake/SCOTCHConfig.cmake.in
-+++ b/cmake/SCOTCHConfig.cmake.in
-@@ -77,9 +77,3 @@ if(@BUILD_LIBESMUMPS@)
+---- a/cmake/SCOTCHConfig.cmake.in
+-+++ b/cmake/SCOTCHConfig.cmake.in
+@@ -79,13 +79,5 @@ if(@BUILD_LIBESMUMPS@)
      include("${CMAKE_CURRENT_LIST_DIR}/ptesmumpsTargets.cmake")
    endif()
  endif()
 -if(@BUILD_LIBSCOTCHMETIS@)
+-  set(@PROJECT_NAME@_LIBSCOTCH_METIS_FOUND ON)
 -  include("${CMAKE_CURRENT_LIST_DIR}/scotchmetisTargets.cmake")
 -  if(@BUILD_PTSCOTCH@)
+-    set(@PROJECT_NAME@_LIBSCOTCH_PARMETIS_FOUND ON)
 -    include("${CMAKE_CURRENT_LIST_DIR}/ptscotchparmetisTargets.cmake")
 -  endif()
 -endif()
+ 
+ check_required_components(@PROJECT_NAME@)
