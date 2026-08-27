@@ -544,7 +544,8 @@
                 (copy-file
                  (car (find-files "bin" "^emacs-([0-9]+\\.)+[0-9]+$"))
                  "bin/emacs")))))))
-    (inputs (list bash-minimal coreutils findutils gawk gzip ncurses sed))
+    (inputs
+     (list bash-minimal coreutils-minimal findutils gawk gzip ncurses sed))
     (native-inputs (list autoconf libfaketime pkg-config texinfo))
     (home-page "https://www.gnu.org/software/emacs/")
     (synopsis "The extensible text editor (minimal build for byte-compilation)")
@@ -842,8 +843,8 @@ editor (with wide ints)" )
 
 (define-public guile-emacs
   (let ((upstream-version "31.0.50")
-        (commit "f2d0459d6a4cda8b7c38b6fb12a55f1330ba50fa")
-        (revision "2"))
+        (commit "0aabb90443b5b9124428addc5f685fa3cad7090e")
+        (revision "3"))
     (package
       (inherit emacs)
       (name "guile-emacs")
@@ -851,19 +852,19 @@ editor (with wide ints)" )
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://codeberg.org/lyrra/guilemacs")
+                      (url "https://codeberg.org/guile-emacs/guile-emacs")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0ry0dn9xrndpz54hs92dnnsw4xa4qn4lz898ldlh2rs47ah1f4wl"))))
+                  "0a2mhg9gw7svsndzhryaz4d4cj4pn12lrpydpj12zi7fcxr2allp"))))
       (native-inputs
        (modify-inputs native-inputs
          (prepend autoconf automake guile-for-guile-emacs)))
       (inputs
        (modify-inputs inputs
          (prepend imagemagick)))
-      (home-page "https://guile-emacs.org")
+      (home-page "https://codeberg.org/guile-emacs/guile-emacs")
       (synopsis "Emacs text editor powered by Guile('s elisp implementation)")
       (description
        "Guile-Emacs brings Emacs and Guile together by providing a new Elisp
@@ -874,6 +875,8 @@ Started in 2014 as a GSOC project, Guile-Emacs was resurrected in 2024.")
       (arguments
        (substitute-keyword-arguments `(#:strip-binaries? #f
                                        ,@(package-arguments emacs))
+         ((#:tests? _ #t)
+          #f)
          ((#:configure-flags flags ''())
           #~`(#$(string-append "CFLAGS=-Og -ggdb3"
                                " -Wno-error=implicit-function-declaration"
