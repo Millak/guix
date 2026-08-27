@@ -810,7 +810,15 @@ UnifiedPush} client library and distributor daemon.")
     (arguments
      (list #:qtbase qtbase
            #:configure-flags
-           #~(list "-DSKIP_LICENSE_TESTS=ON")))
+           #~(list "-DSKIP_LICENSE_TESTS=ON")
+           ;; Disable tests requiring "localhost"
+           #:test-exclude
+           (string-append "("
+                          (string-join '("chatbarcachetest"
+                                         "actionstest"
+                                         "modeltest")
+                                       "|")
+                          ")")))
     (native-inputs
      (list extra-cmake-modules kdoctools pkg-config python-minimal))
     (inputs
