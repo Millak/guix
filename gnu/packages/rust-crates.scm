@@ -2873,6 +2873,10 @@
   (crate-source "blake2b_simd" "1.0.4"
                 "1wx21knjsj82d978hmn0w14p8vwr170byl2b4dvjacvidxjk965p"))
 
+(define rust-blake2b-simd-1.0.5
+  (crate-source "blake2b_simd" "1.0.5"
+                "1zyvyl1296kygn226jwzlcy7amnw78qkh6bjrm7q3zhyjnqsfq1m"))
+
 (define rust-blake3-1.8.1
   (crate-source "blake3" "1.8.1"
                 "1czffygg8dhdsjyzydsrf50harfrralrkm10ckhkja1i6jdhk6iq"))
@@ -2933,6 +2937,10 @@
   (crate-source "block-modes" "0.8.1"
                 "13id7rw1lhi83i701za8w5is3a8qkf4vfigqw3f8jp8mxldkvc1c"
                 #:snippet '(delete-file-recursively "tests")))
+
+(define rust-block-modes-0.9.1
+  (crate-source "block-modes" "0.9.1"
+                "07pjna64v0ng30j8ss9w7rv7k7l7gsii37yxm011a1kzh6q128ly"))
 
 (define rust-block-padding-0.2.1
   (crate-source "block-padding" "0.2.1"
@@ -17567,6 +17575,10 @@ fn main() {
   (crate-source "keccak" "0.2.0"
                 "1alql41qwrb6q2zw6358wvr1pd0m50c56liyh3nxfns0vl8a094y"))
 
+(define rust-keepass-0.6.19
+  (crate-source "keepass" "0.6.19"
+                "178mpkr20c9xxbvxllrwc56hsdqj99vgdbikc4ac8p55vbvayjmx"))
+
 (define rust-kem-0.3.0
   (crate-source "kem" "0.3.0"
                 "1p8ycb3p0l804s0rl92c951lkfiqklhbvdc6sk7lja40p9hp2wq1"))
@@ -28953,6 +28965,10 @@ fn main() {
   (crate-source "secret-service" "5.1.0"
                 "051wcbid9plwwjw71zvngilszamr6r0ljaas4mvh1bs7c3wdfqls"))
 
+(define rust-secstr-0.5.1
+  (crate-source "secstr" "0.5.1"
+                "04iy25y5qb8lzymsx1iz6250q1dxx29mkppn737w81gn8ir6akz0"))
+
 (define rust-section-testing-0.0.5
   (crate-source "section_testing" "0.0.5"
                 "18dfl8nacwcd1z2y4sgdx7751czzpl6282q6cd49ys5gd0xlkljz"))
@@ -39166,6 +39182,10 @@ fn main() {
 (define rust-xml-rs-0.8.28
   (crate-source "xml-rs" "0.8.28"
                 "0grdj7xwbki5zrkalrg8dljyf14y4yj3wrj34sbzqp06i9zk7s1s"))
+
+(define rust-xml-rs-0.8.29
+  (crate-source "xml-rs" "0.8.29"
+                "19y8s93sh2dx21bqlpagkixld2c66f3rln0j9k4k7zqxxnrgjl74"))
 
 (define rust-xml-rs-1.0.0
   (crate-source "xml-rs" "1.0.0"
@@ -66527,6 +66547,117 @@ fn main() {
                                           rust-zerofrom-derive-0.1.4
                                           rust-zerovec-0.10.4
                                           rust-zerovec-derive-0.10.3))
+                     (keepass-diff =>
+                                   (list rust-adler2-2.0.1
+                                    rust-aes-0.8.4
+                                    rust-android-system-properties-0.1.6
+                                    rust-anstream-1.0.0
+                                    rust-anstyle-1.0.14
+                                    rust-anstyle-parse-1.0.0
+                                    rust-anstyle-query-1.1.5
+                                    rust-anstyle-wincon-3.0.11
+                                    rust-arrayvec-0.7.8
+                                    rust-autocfg-1.5.1
+                                    rust-base64-0.21.7
+                                    rust-bitflags-2.13.1
+                                    rust-blake2b-simd-1.0.5
+                                    rust-block-buffer-0.10.4
+                                    rust-block-modes-0.9.1
+                                    rust-block-padding-0.3.3
+                                    rust-bumpalo-3.20.3
+                                    rust-byteorder-1.5.0
+                                    rust-cbc-0.1.2
+                                    rust-cc-1.4.4
+                                    rust-cfg-if-1.0.4
+                                    rust-chacha20-0.9.1
+                                    rust-chrono-0.4.45
+                                    rust-cipher-0.4.4
+                                    rust-clap-4.6.6
+                                    rust-clap-builder-4.6.6
+                                    rust-clap-derive-4.6.4
+                                    rust-clap-lex-1.1.0
+                                    rust-colorchoice-1.0.5
+                                    rust-constant-time-eq-0.3.1
+                                    rust-constant-time-eq-0.4.2
+                                    rust-core-foundation-sys-0.8.7
+                                    rust-cpufeatures-0.2.17
+                                    rust-crc32fast-1.5.1
+                                    rust-crypto-common-0.1.7
+                                    rust-digest-0.10.7
+                                    rust-errno-0.3.14
+                                    rust-find-msvc-tools-0.1.11
+                                    rust-flate2-1.1.10
+                                    rust-futures-core-0.3.34
+                                    rust-futures-task-0.3.34
+                                    rust-futures-util-0.3.34
+                                    rust-generic-array-0.14.7
+                                    rust-getrandom-0.2.17
+                                    rust-getrandom-0.4.3
+                                    rust-heck-0.5.0
+                                    rust-hex-literal-0.4.1
+                                    rust-hmac-0.12.1
+                                    rust-iana-time-zone-0.1.65
+                                    rust-iana-time-zone-haiku-0.1.2
+                                    rust-inout-0.1.4
+                                    rust-is-terminal-polyfill-1.70.2
+                                    rust-js-sys-0.3.104
+                                    rust-keepass-0.6.19
+                                    rust-libc-0.2.189
+                                    rust-linux-raw-sys-0.12.1
+                                    rust-log-0.4.34
+                                    rust-miniz-oxide-0.9.1
+                                    rust-num-traits-0.2.19
+                                    rust-once-cell-1.21.4
+                                    rust-once-cell-polyfill-1.70.2
+                                    rust-pin-project-lite-0.2.17
+                                    rust-proc-macro2-1.0.107
+                                    rust-quote-1.0.47
+                                    rust-r-efi-6.0.0
+                                    rust-rpassword-7.5.4
+                                    rust-rtoolbox-0.0.6
+                                    rust-rust-argon2-2.1.0
+                                    rust-rustix-1.1.4
+                                    rust-rustversion-1.0.23
+                                    rust-salsa20-0.10.2
+                                    rust-secstr-0.5.1
+                                    rust-serde-1.0.229
+                                    rust-serde-core-1.0.229
+                                    rust-serde-derive-1.0.229
+                                    rust-sha2-0.10.9
+                                    rust-shlex-2.0.1
+                                    rust-simd-adler32-0.3.10
+                                    rust-slab-0.4.12
+                                    rust-strsim-0.11.1
+                                    rust-subtle-2.6.1
+                                    rust-syn-2.0.119
+                                    rust-syn-3.0.4
+                                    rust-termcolor-1.4.1
+                                    rust-terminal-size-0.4.4
+                                    rust-thiserror-1.0.69
+                                    rust-thiserror-impl-1.0.69
+                                    rust-twofish-0.7.1
+                                    rust-typenum-1.20.1
+                                    rust-unicode-ident-1.0.24
+                                    rust-utf8parse-0.2.2
+                                    rust-uuid-1.26.0
+                                    rust-version-check-0.9.5
+                                    rust-wasi-0.11.1+wasi-snapshot-preview1
+                                    rust-wasm-bindgen-0.2.127
+                                    rust-wasm-bindgen-macro-0.2.127
+                                    rust-wasm-bindgen-macro-support-0.2.127
+                                    rust-wasm-bindgen-shared-0.2.127
+                                    rust-winapi-util-0.1.11
+                                    rust-windows-core-0.62.2
+                                    rust-windows-implement-0.60.2
+                                    rust-windows-interface-0.59.3
+                                    rust-windows-link-0.2.1
+                                    rust-windows-result-0.4.1
+                                    rust-windows-strings-0.5.1
+                                    rust-windows-sys-0.61.2
+                                    rust-xml-rs-0.8.29
+                                    rust-zeroize-1.9.0
+                                    rust-zeroize-derive-1.5.0
+                                    rust-zlib-rs-0.6.7))
                      (kibi =>
                            (list rust-aho-corasick-1.1.4
                                  rust-android-system-properties-0.1.5

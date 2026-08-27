@@ -48,6 +48,7 @@
 ;;; Copyright © 2026 Ivan Vilata i Balaguer <ivan@selidor.net>
 ;;; Copyright © 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2026 Zheng Junjie <z572@z572.online>
+;;; Copyright © 2026 Kjartan Oli Agustsson <kjartanoli@outlook.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -485,6 +486,28 @@ exec ~s/bin/mono ~s/lib/keepass/KeePass.exe \"$@\"
 you manage your passwords in a secure way.  All passwords are stored
 in an encrypted database, which is locked with a master key or key file.")
     (license license:gpl2)))
+
+(define-public keepass-diff
+  (package
+    (name "keepass-diff")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "keepass-diff" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kk1rmp05cp5ia0d8jwkwy0926w3px444bwisg9nl0bxnffvcxib"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f))
+    (inputs (cargo-inputs 'keepass-diff))
+    (home-page "https://github.com/Narigo/keepass-diff")
+    (synopsis "CLI tool to compare two Keepass (.kdbx) files")
+    (description
+     "This CLI-tool reads two Keepass (.kdbx) files and prints their differences.")
+    (properties '((tunable? . #t)))
+    (license license:expat)))
 
 (define-public pwsafe
   (package
