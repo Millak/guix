@@ -6219,7 +6219,7 @@ doesn't need a Wayland compositor to be used.")
 (define-public libseat
   (package
     (name "libseat")
-    (version "0.9.2")
+    (version "0.9.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6228,7 +6228,7 @@ doesn't need a Wayland compositor to be used.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rmi2f38g5zx50zzy5qicy314a5jmzjwdx3giy4yzb7rfwz0hlq7"))))
+                "1w2g3fykrjkq7q23bmspwq9qyr0js42ypf1h6w3765nya24gywkb"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags #~(list "-Dlibseat-logind=elogind"
