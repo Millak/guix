@@ -944,8 +944,5 @@ Started in 2014 as a GSOC project, Guile-Emacs was resurrected in 2024.")
                     (lambda (port) (display port))))))))))))
 
 ;; INFO: Deprecated on 2026-07-24.
-(define-deprecated/public-alias m17n-db
-  (@ (gnu packages language) m17n-db))
-;; INFO: Deprecated on 2026-07-24.
 (define-deprecated/public-alias m17n-lib
   (@ (gnu packages language) m17n-lib))
