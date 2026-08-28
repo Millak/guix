@@ -2521,41 +2521,70 @@ Game Jam.  The objective is to reach the goal by assigning rules to colors.")
 (define-public gnome-2048
   (package
     (name "gnome-2048")
-    (version "3.38.2")
+    (version "50.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-2048/"
-                                  (version-major+minor version)  "/"
+                                  (version-major version)  "/"
                                   "gnome-2048-" version ".tar.xz"))
               (sha256
                (base32
-                "0s5fg4z5in1h39fcr69j1qc5ynmg7a8mfprk3mc3c0csq3snfwz2"))
-              (patches
-               (search-patches "gnome-2048-fix-positional-argument.patch"))))
+                "1a9dpm14lk2b3p9g8gh0qhyp6yv6ijphi2arkv4z130jlrldy5bd"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true")))))))
-    (inputs
-     (list gtk+
-           clutter
-           clutter-gtk
-           libgee
-           libgnome-games-support-1))
+     (list
+      ;; The 'libgnome-games-support-tests' test fails (see:
+      ;; <https://gitlab.gnome.org/GNOME/gnome-2048/-/work_items/56>).
+      #:tests? #f
+      #:glib-or-gtk? #t
+      #:imported-modules
+      `((guix build cargo-build-system)
+        ,@%meson-build-system-modules)
+      #:modules '((guix build meson-build-system)
+                  ((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (substitute* "src/meson.build"
+                ;; The build system sets CARGO_HOME itself, which is also used
+                ;; by the cargo configure phase.
+                ((".*cargo_env.set.*CARGO_HOME.*") ""))
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:vendor-dir ".cargo/vendor"
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")))))))
     (native-inputs
-     (list gettext-minimal
-           `(,glib "bin")       ; for desktop-file-validate and appstream-util
-           itstool
-           libxml2
-           pkg-config
-           vala))
-    (home-page "https://wiki.gnome.org/Apps/2048")
+     (cons* desktop-file-utils
+            gettext-minimal
+            `(,glib "bin")       ; for desktop-file-validate and appstream-util
+            itstool
+            pkg-config
+            rust
+            `(,rust "cargo")
+            vala
+            (or (and=> (%current-target-system)
+                       (compose list make-rust-sysroot))
+                '())))
+    (inputs
+     (cons* libadwaita
+            gtk
+            (cargo-inputs 'gnome-2048)))
+    (home-page "https://gitlab.gnome.org/GNOME/gnome-2048")
     (synopsis "Move the tiles until you obtain the 2048 tile")
     (description "GNOME 2048 provides a 2D grid for playing 2048, a
 single-player sliding tile puzzle game.  The objective of the game is to merge
