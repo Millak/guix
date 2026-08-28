@@ -732,7 +732,7 @@ language as input.")
 (define-public aml
   (package
     (name "aml")
-    (version "0.3.0")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -741,7 +741,7 @@ language as input.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0r4k233hh3iqc6zlhh2agmdj8q973x49pdixhz7h5hz7md38qzq5"))))
+                "0cp0hmlfrsvmdrdhcr2b4msvhv80zx43bxqq995vlrk1ibljcj6p"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config))
@@ -755,8 +755,7 @@ with the following features:
 @item signal handlers
 @item idle dispatch callbacks
 @item thread pool support
-@end enumerate
-")
+@end enumerate")
     (license license:isc)))
 
 (define-public libbytesize
