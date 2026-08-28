@@ -447,20 +447,26 @@ easily implement VNC server or client functionality in your program.")
 (define-public neatvnc
   (package
     (name "neatvnc")
-    (version "0.9.4")
+    (version "1.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/any1/neatvnc")
-                    (commit (string-append "v" version))))
+                     (url "https://github.com/any1/neatvnc")
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09vafk99zmrbrb5mxr1sqb21rvggbr69kx7rwqf2g6dxk07p1mqg"))))
+                "1q7sqck7xvnxk0sr43z9hmph3q85b04vcxdip6jiy5p8vgf721v5"))))
     (build-system meson-build-system)
+    (arguments (list #:phases
+                     #~(modify-phases %standard-phases
+                         (add-after 'install 'sanitize-pkg-config-files
+                           (lambda _
+                             (substitute* (find-files #$output "\\.pc$")
+                               (("^Requires.private:.*") "")))))))
     (native-inputs (list pkg-config))
     (inputs
-     (list libdrm libglvnd libxkbcommon pixman aml gnutls libjpeg-turbo zlib))
+     (list aml libdrm libglvnd libxkbcommon pixman aml gnutls libjpeg-turbo zlib))
     (home-page "https://github.com/any1/neatvnc")
     (synopsis "Lightweight VNC server library")
     (description "NeatVNC is a lightweight VNC server library, supporting
