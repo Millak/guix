@@ -1197,6 +1197,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/cyrus-sasl-fix-time-h.patch              \
   %D%/packages/patches/daemontools-gcc14.patch                  \
   %D%/packages/patches/dante-non-darwin.patch			\
+  %D%/packages/patches/darkradiant-use-packaged-pugixml.patch	\
   %D%/packages/patches/date-ignore-zonenow.patch	\
   %D%/packages/patches/date-output-pkg-config-files.patch	\
   %D%/packages/patches/dbacl-include-locale.h.patch		\

@@ -75,6 +75,7 @@
   #:use-module (guix build-system renpy)
   #:use-module (guix build-system scons)
   #:use-module (gnu packages)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
@@ -138,6 +139,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
@@ -226,6 +228,105 @@
      "Bullet is a physics engine library usable for collision detection.  It
 is used in some video games and movies.")
     (license license:zlib)))
+
+(define-public darkradiant
+  (package
+    (name "darkradiant")
+    (version "3.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url "https://github.com/codereader/DarkRadiant")
+                           (commit version)))
+       (sha256 (base32 "0xp2swxi9kdi8rvqwrwmzjcxmpr6x14phyrxp7ldia4mr67pnpxg"))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (map (lambda (lib)
+                  (delete-file-recursively (string-append "libs/" lib)))
+                (list "libfmt"
+                      "pugixml"
+                      "pybind"))
+           (delete-file-recursively "tools")
+           (substitute* "CMakeLists.txt"
+             (("libs/libfmt ") "")
+             (("\\# Locate wxWidgets" locate-wxwidgets)
+              (string-append "find_package(fmt REQUIRED)\n"
+                             "\n"
+                             locate-wxwidgets))
+             (("find_package\\(Python REQUIRED COMPONENTS Development\\)"
+               find-python)
+              (string-append find-python "\n"
+                             "find_package(pybind11 REQUIRED)\n")))
+           (substitute* "plugins/script/CMakeLists.txt"
+             (("\\$\\{CMAKE_SOURCE_DIR\\}/libs/pybind") ""))))
+       (patches
+        (search-patches "darkradiant-use-packaged-pugixml.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           ;; Loads files from a relative path by default, causing
+           ;; validate-runpath phase to fail.
+           #~(list "-DENABLE_RELOCATION=NO")
+           ;; Running tests in parallel results in several test failures.
+           #:parallel-tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-broken-header-path
+                 ;; Fix the path for a header, odd that it only shows up after
+                 ;; unbundling dependencies.
+                 (lambda _
+                   (substitute* "libs/scene/merge/MergeAction.h"
+                     (("../scenelib.h") "../../scenelib.h"))))
+               (add-before 'check 'pre-check
+                 (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                   ;; Create a home directory and set it to $HOME for tests.
+                   (mkdir-p (string-append (getenv "TMPDIR") "/home"))
+                   (setenv "HOME" (string-append (getenv "TMPDIR") "/home"))
+                   ;; Most tests require an X server.
+                   (setenv "DISPLAY" ":1")
+                   (system "Xvfb :1 &")))
+               (replace 'check
+                 (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
+                   (when tests?
+                     ;; Some tests fail because they can't find SoundManager,
+                     ;; so disable them.
+                     (invoke "ctest"
+                             "-j" (if parallel-tests?
+                                      (number->string (parallel-job-count))
+                                      "1")
+                             "-E"
+                             (string-join (list "EntityTest.*Speaker*"
+                                                "SoundManagerTest.*")
+                                          "|"))))))))
+    (inputs
+     (list boost
+           eigen
+           fmt
+           ftgl
+           glew
+           glib
+           libjpeg-turbo
+           libogg
+           libpng
+           libsigc++-2
+           libvorbis
+           openal
+           pugixml
+           pybind11
+           python
+           wxwidgets))
+    (native-inputs
+     (list googletest
+           pkg-config
+           ruby-asciidoctor
+           xorg-server-for-tests))
+    (home-page "https://www.darkradiant.net")
+    (synopsis "Map editor for games on idTech4 engine")
+    (description "Map editor designed for use with The Dark Mod, a
+Thief-inspired game utilizing the idTech4 game engine.")
+    (license license:gpl2)))
 
 (define-public dds
   (let ((commit "d2bc4c2c703941664fc1d73e69caa5233cdeac18")
