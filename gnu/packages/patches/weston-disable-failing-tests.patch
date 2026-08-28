@@ -1,0 +1,27 @@
+These tests only fail in the Guix container.
+Upstream-status: <https://gitlab.freedesktop.org/wayland/weston/-/work_items/1142>
+
+--- weston-16.0.0/tests/meson.build	2026-08-28 14:28:40.547465863 +0900
++++ weston-16.0.0/tests/meson.build	2026-08-28 14:28:50.211500130 +0900
+@@ -1,10 +1,6 @@
+ subdir('harness')
+
+ tests = [
+-	{
+-		'name': 'alpha-blending',
+-		'dep_objs': dep_libm,
+-	},
+ 	{	'name': 'alpha-modifier', },
+ 	{	'name': 'alpha-modifier-smoke', },
+ 	{	'name': 'assert', },
+@@ -181,10 +177,6 @@
+ 	endif
+ 	tests += [
+ 		{
+-			'name': 'color-icc-output',
+-			'dep_objs': [ dep_libm, dep_lcms_util ]
+-		},
+-		{
+ 			'name': 'color-lcms-optimizer',
+ 			'link_with': plugin_color_lcms,
+ 			'dep_objs': [ dep_lcms_util ]

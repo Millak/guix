@@ -2695,6 +2695,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/webrtc-audio-processing-gcc-14.patch	\
   %D%/packages/patches/websocketpp-boost-compat.patch		\
   %D%/packages/patches/websocketpp-fix-for-cmake-3.15.patch	\
+  %D%/packages/patches/weston-disable-failing-tests.patch       \
   %D%/packages/patches/wmctrl-64-fix.patch			\
   %D%/packages/patches/wmfire-dont-inline-draw-fire.patch	\
   %D%/packages/patches/wmfire-update-for-new-gdk-versions.patch	\

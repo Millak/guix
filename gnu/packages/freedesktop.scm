@@ -27,7 +27,7 @@
 ;;; Copyright © 2021 Robby Zambito <contact@robbyzambito.me>
 ;;; Copyright © 2021, 2022, 2023 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021, 2022, 2024 John Kehayias <john.kehayias@protonmail.com>
-;;; Copyright © 2021-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
@@ -86,6 +86,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -151,6 +152,7 @@
   #:use-module (gnu packages video)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages virtualization)
+  #:use-module (gnu packages vnc)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages w3m)
   #:use-module (gnu packages web)
@@ -1609,7 +1611,7 @@ compositor.")
 (define-public weston
   (package
     (name "weston")
-    (version "10.0.2")
+    (version "16.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1617,25 +1619,29 @@ compositor.")
                     version "/downloads/weston-" version ".tar.xz"))
               (sha256
                (base32
-                "1rs92p7sfkw9lqlkfnqh5af19ym3x8l3hp3yfv117m7qv6h6qr49"))))
+                "0zqgraad4676wcz59g3yr1qqrldcfmhfrl58jixrbnmbrhmjxcyz"))
+              (patches (search-patches "weston-disable-failing-tests.patch"))))
     (build-system meson-build-system)
     (native-inputs
-     (list mscgen pkg-config python-3 xorg-server))
+     (list mscgen pkg-config python-3 xorg-server xcb-util-cursor))
     (inputs
-     (list cairo-xcb
+     (list aml
+           cairo-xcb
            colord
            dbus
-           elogind
-           freerdp
+           freerdp-3
            glib
+           glslang
            gstreamer
            gst-plugins-base
            lcms
+           libdisplay-info
            libdrm
            libevdev
            libinput-minimal
            libjpeg-turbo
            libpng
+           libseat
            libunwind
            libva
            libwebp
@@ -1646,8 +1652,10 @@ compositor.")
            mesa
            mtdev
            linux-pam
+           neatvnc
            pango
            pipewire
+           vulkan-loader
            wayland-protocols
            xorg-server-xwayland))
     (propagated-inputs
@@ -1663,25 +1671,13 @@ compositor.")
                         #$output "/lib/libweston-"
                         #$(version-major (package-version this-package)))
          "-Dbackend-default=auto"
+         "-Dshell-lua=false"            ;lua detection fails
          "-Dsystemd=false"
          (string-append "-Dxwayland-path="
                         #$(this-package-input "xorg-server-xwayland")
                         "/bin/Xwayland"))
-      #:parallel-tests? #f              ; Parallel tests cause failures.
       #:phases
       '(modify-phases %standard-phases
-         (add-before 'configure 'use-elogind
-           (lambda _
-             ;; Use elogind instead of systemd
-             (substitute* "libweston/meson.build"
-               (("libsystemd-login") "libelogind"))
-             (substitute* '("libweston/launcher-logind.c"
-                            "libweston/weston-launch.c")
-               (("#include <systemd/sd-login.h>")
-                "#include <elogind/sd-login.h>"))))
-         (add-after 'configure 'patch-confdefs.h
-           (lambda _
-             (system "echo \"#define HAVE_SYSTEMD_LOGIN_209 1\" >> confdefs.h")))
          (add-before 'check 'setup
            (lambda _
              (setenv "HOME" (getcwd))
