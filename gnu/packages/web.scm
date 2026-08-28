@@ -3048,11 +3048,11 @@ language known as SASS.")
     (properties '((hidden? . #t)))))
 
 (define-public guile-safsaf
-  (let ((commit "673520cf97c65a9a1c6b40b3e33f706808fd8e13")
+  (let ((commit "6a7d0c85459b9eda656ce914f5bdc6e906bf00f8")
         (revision "1"))
     (package
     (name "guile-safsaf")
-    (version (git-version "0.3" revision commit))
+    (version (git-version "0.4" revision commit))
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3060,12 +3060,9 @@ language known as SASS.")
                     (commit commit)))
               (sha256
                (base32
-                "0jppxs4lbq9gic4wfs453f95kzmkkfpgbshv1jf4as16222fcrcg"))
+                "13b0iardpq7ybxzm79rw9b2dmzw4lbxkxiw4z9a4z1n3b2r6qbmi"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
-    (arguments
-     ;; TODO Remove this when fixed upstream
-     '(#:parallel-tests? #f))
     (native-inputs
      (list pkg-config
            autoconf
