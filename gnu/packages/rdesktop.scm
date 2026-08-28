@@ -64,6 +64,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xml))
@@ -71,7 +72,7 @@
 (define-public freerdp
   (package
     (name "freerdp")
-    (version "3.25.0")
+    (version "3.31.0")
     (source
      (origin
        (method git-fetch)
@@ -80,7 +81,7 @@
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1plynfsr0hbp8f1mmshx2ab1c90vhamgirk0cdqwibm8y4kgc63y"))))
+        (base32 "1xkmblnqmk31a82c8sw2psr2by6565zh1lch8dhchz7yln7ppwiw"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -129,6 +130,7 @@
            fuse
            gsm
            icu4c
+           jansson
            lame
            libjpeg-turbo
            libusb
