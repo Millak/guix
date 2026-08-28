@@ -1085,7 +1085,7 @@ number generator")
 (define-public mbedtls
   (package
     (name "mbedtls")
-    (version "3.6.7")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
@@ -1093,7 +1093,7 @@ number generator")
                            "/download/mbedtls-" version
                            "/mbedtls-" version ".tar.bz2"))
        (sha256
-        (base32 "1xhi5lhn78vphv07kvwfyrigfdbbc9vmdwi4mys63xz6q2zbrs57"))))
+        (base32 "1spzwsylnlld4apdfh592bqwh2x3i8myg5xhadjzfs267dqrvv9b"))))
     (build-system cmake-build-system)
     (arguments
      (list #:parallel-tests? #f
