@@ -1940,7 +1940,7 @@ which highly leverage existing libraries in the larger LLVM project.")
 (define-public libcxx
   (package
     (name "libcxx")
-    (version (package-version llvm-19))
+    (version (package-version llvm))
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (arguments
@@ -1962,7 +1962,17 @@ which highly leverage existing libraries in the larger LLVM project.")
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'enter-subdirectory
+          (add-after 'unpack 'disable-tidy-checks
+            (lambda _
+              ;; This target breaks our build while trying to include memory.h
+              ;; then cstdlib and stdlib.h from gcc using #include_next
+              ;; directive, even though gcc is not part of native-inputs.
+              ;; See: https://gitlab.kitware.com/cmake/cmake/-/work_items/16919
+              ;; and https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70129.
+              (substitute* "libcxx/test/tools/clang_tidy_checks/CMakeLists.txt"
+                (("NOT Clang_FOUND")
+                 "1"))))
+          (add-after 'disable-tidy-checks 'enter-subdirectory
             (lambda _
               (chdir "runtimes")))
           (replace 'check
@@ -1975,7 +1985,7 @@ which highly leverage existing libraries in the larger LLVM project.")
        ;; headers (include/c++), which would interfere and cause build
        ;; failures.
        (delete "gcc")
-       (prepend clang-19 python-minimal)))
+       (prepend clang python-minimal)))
     (home-page "https://libcxx.llvm.org")
     (synopsis "C++ standard library")
     (description
