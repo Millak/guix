@@ -128,7 +128,7 @@ specifying desired matches and transformations in the C code.")
 (define-public e9patch
   (package
     (name "e9patch")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -137,7 +137,7 @@ specifying desired matches and transformations in the C code.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bgv05fnz0kfzpyikadp96zrr83214lk2nx82jpmlv9dq0lhxccq"))
+        (base32 "185zwzz2cxraidzan328qynibkakk21nw7jip4p9n60nnlha6aab"))
        ;; E9Patch is sensitive to Zydis version, including the latter's bugs:
        ;; https://github.com/GJDuck/e9patch/pull/94#issuecomment-2525069952
        (patches (search-patches "e9patch-zydis-4.1-compat.patch"))
@@ -160,12 +160,24 @@ specifying desired matches and transformations in the C code.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-e9compile
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/e9compile")
+                `("PATH" suffix
+                  (,(dirname (search-input-file inputs "bin/gcc"))
+                   ,(dirname (search-input-file inputs "bin/grep"))
+                   ,(dirname (search-input-file inputs "bin/head"))
+                   ,(dirname (search-input-file inputs "bin/readelf"))
+                   ,(dirname (search-input-file inputs "bin/xargs"))))
+                `("C_INCLUDE_PATH" suffix
+                  (,(dirname (search-input-directory
+                              inputs "include/linux")))))))
           (delete 'configure))
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
               (string-append "PREFIX=" #$output))))
     (native-inputs (list markdown xxd))
-    (inputs (list elfutils zycore zydis zlib))
+    (inputs (list elfutils findutils zycore zydis zlib))
     (home-page "https://github.com/GJDuck/e9patch")
     (synopsis "Static binary rewriting tool")
     (description
