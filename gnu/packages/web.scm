@@ -7187,14 +7187,14 @@ config files---you only have to specify the www root.")
 (define-public goaccess
   (package
     (name "goaccess")
-    (version "1.10.2")
+    (version "1.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://tar.goaccess.io/goaccess-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "03ma9v60nmqqzig76f6ilb05bjwxq7a7vp4jgly8cy9j8554idxr"))
+                "0wgz4md1ig10x2bdlgdbawmwp0qwbfskwrd4wyzq4icpkh94n0h1"))
               (modules '((guix build utils)))
               (snippet '(substitute* '("src/error.h"
                                        "src/parser.c")
