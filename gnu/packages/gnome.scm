@@ -6904,7 +6904,7 @@ which can read a large number of file formats.")
 (define-public rhythmbox
   (package
     (name "rhythmbox")
-    (version "3.4.9")
+    (version "3.5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/rhythmbox/"
@@ -6912,7 +6912,7 @@ which can read a large number of file formats.")
                                   "rhythmbox-" version ".tar.xz"))
               (sha256
                (base32
-                "1w888kp8rvlqgybfbg059sxriqnp0lzzfarmdgz1z8ppinhr28p4"))))
+                "14s0jbdghkr5lsrwbcbjnka1f0nm1fz4w9k4nhin15c18iqx3rwf"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -6946,13 +6946,6 @@ which can read a large number of file formats.")
            pkg-config
            vala))
     (inputs
-     ;; TODO:
-     ;;  * libgpod
-     ;;  * mx
-     ;; TODO: clutter* only used by visualizer plugin, which also requires mx
-     ;;clutter
-     ;;clutter-gtk
-     ;;clutter-gst
      (list adwaita-icon-theme
            at-spi2-core
            bash-minimal
@@ -6967,6 +6960,7 @@ which can read a large number of file formats.")
            gst-plugins-good
            gstreamer
            gtk+
+           libgpod
            libgudev
            libnotify
            libpeas
@@ -6980,7 +6974,7 @@ which can read a large number of file formats.")
            python-pygobject-3.50
            tdb
            totem-pl-parser))
-    (home-page "https://wiki.gnome.org/Apps/Rhythmbox")
+    (home-page "https://gitlab.gnome.org/GNOME/rhythmbox")
     (synopsis "Music player for GNOME")
     (description "Rhythmbox is a music playing application for GNOME.  It
 supports playlists, song ratings, and any codecs installed through gstreamer.")
