@@ -14186,33 +14186,37 @@ you to mark favorite talks and highlights conflicts between favorited talks.")
     (license license:gpl3+)))
 
 (define-public gtk-frdp
-  (package
-    (name "gtk-frdp")
-    ;; The latest published tag is 3.37.1, but it is very old:
-    ;; https://gitlab.gnome.org/GNOME/gtk-frdp/-/issues/39
-    (version "3.37.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.gnome.org/GNOME/gtk-frdp")
-             (commit "62fc62c5ccb7634f0bc87c57a4673877c24c94ed")))
-       (file-name (git-file-name "gtk-frdp" version))
-       (sha256
-        (base32
-         "0msw7qpsyf9hkyq9ddhvl4g4vk1fnyi7g0bddca9x6p9d0arprqz"))))
-    (build-system meson-build-system)
-    (arguments
-     (list #:glib-or-gtk? #t))
-    (inputs
-     (list freerdp fuse gtk+))
-    (native-inputs
-     (list `(,glib "bin") gobject-introspection pkg-config vala))
-    (home-page "https://gitlab.gnome.org/GNOME/gtk-frdp")
-    (synopsis "RDP viewer widget for Gtk")
-    (description "This library provides a widget to view
+  ;; No recent release (see:
+  ;; <https://gitlab.gnome.org/GNOME/gtk-frdp/-/issues/39>).  Use the latest
+  ;; commit.
+  (let ((commit "83854a24e31d1c07519f6e4393fe280d3b59e080")
+        (revision "0"))
+    (package
+      (name "gtk-frdp")
+      ;; https://gitlab.gnome.org/GNOME/gtk-frdp/-/issues/39
+      (version (git-version "3.37.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://gitlab.gnome.org/GNOME/gtk-frdp")
+                (commit commit)))
+         (file-name (git-file-name "gtk-frdp" version))
+         (sha256
+          (base32
+           "1cangyawn69c8vcfgd55k147jblyg8j7kr0mmsc679k422nj5zg9"))))
+      (build-system meson-build-system)
+      (arguments
+       (list #:glib-or-gtk? #t))
+      (inputs
+       (list freerdp-3 fuse gtk+))
+      (native-inputs
+       (list `(,glib "bin") gobject-introspection pkg-config vala))
+      (home-page "https://gitlab.gnome.org/GNOME/gtk-frdp")
+      (synopsis "RDP viewer widget for Gtk")
+      (description "This library provides a widget to view
 @acronym{RDP, Remote Desktop Protocol} sessions.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define gtk-frdp-for-gnome-connections
   (let ((commit "6cfdc840159bb349310c3b81cd2df949f1522760")
