@@ -1122,7 +1122,7 @@ The core is 12 builtin special forms and 33 builtin functions.")
         (base32 "10zpbbikkcpdzk6c52wkckiyhn7nhnqjv2djdzyjr0n8qxxy4hrn"))))
     (build-system gnu-build-system)
     (inputs
-     (list libatomic-ops mbedtls slib zlib))
+     (list libatomic-ops mbedtls-3 slib zlib))
     (native-inputs
      (list texinfo openssl ; needed for tests
            pkg-config))    ; needed to find external libatomic-ops

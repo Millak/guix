@@ -2056,7 +2056,7 @@ to avoid macro conflicts.")
       glslang
       libusb
       lz4
-      mbedtls
+      mbedtls-3
       mcl-cpp-for-eden
       nlohmann-json
       nx-tzdb

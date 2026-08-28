@@ -26429,7 +26429,7 @@ with Eglot.")
              (sha256
               (base32
                "0462mmqv6499lrp19sz5y7h1s5z0mflaphrdgndy6n0mhn03bcjm")))))
-    (inputs (list mbedtls))
+    (inputs (list mbedtls-3))
     (propagated-inputs (list emacs-fsm emacs-keymap-popup))
     (home-page "https://thanosapollo.org/projects/jabber/")
     (synopsis "XMPP (Jabber) client for Emacs")

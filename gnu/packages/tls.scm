@@ -1117,6 +1117,19 @@ coding footprint.")
     (home-page "https://www.trustedfirmware.org/projects/mbed-tls/")
     (license (list license:asl2.0 license:gpl2+)))) ;dual licensed
 
+(define-public mbedtls-3
+  (package
+    (inherit mbedtls)
+    (version "3.6.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/Mbed-TLS/mbedtls/releases"
+                           "/download/mbedtls-" version
+                           "/mbedtls-" version ".tar.bz2"))
+       (sha256
+        (base32 "1xhi5lhn78vphv07kvwfyrigfdbbc9vmdwi4mys63xz6q2zbrs57"))))))
+
 ;;; TODO: No longer maintained, migrate dependents to current mbedtls.
 (define-public mbedtls-lts
   (package
