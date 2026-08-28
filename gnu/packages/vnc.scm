@@ -95,6 +95,8 @@
      `(#:tests? #f                      ; No target
        #:configure-flags
        (list
+        "-DWITH_FREERDP3=ON"
+        "-DWITH_GVNC=ON"               ;VNC plugin for GNOME
         ;; Disable online version checking.
         "-DWITH_NEWS=OFF")
        #:imported-modules
@@ -137,13 +139,14 @@
            cups
            curl
            ffmpeg
-           freerdp                      ; for rdp plugin
+           freerdp-3                      ; for rdp plugin
            libgcrypt
            (librsvg-for-system)
            glib
            gnome-keyring
            gsettings-desktop-schemas
            gtk+
+           gtk-vnc
            harfbuzz
            json-glib
            libsecret                    ; for secret plugin
