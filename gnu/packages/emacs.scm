@@ -942,7 +942,3 @@ Started in 2014 as a GSOC project, Guile-Emacs was resurrected in 2024.")
                 (lambda _
                   (call-with-output-file "lisp/finder-inf.el"
                     (lambda (port) (display port))))))))))))
-
-;; INFO: Deprecated on 2026-07-24.
-(define-deprecated/public-alias m17n-lib
-  (@ (gnu packages language) m17n-lib))
