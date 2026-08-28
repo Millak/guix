@@ -2667,8 +2667,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/vagrant-Use-a-private-temporary-dir.patch	\
   %D%/packages/patches/vala-0.52-fix-valagirparser.patch	\
   %D%/packages/patches/vcmi-disable-privacy-breach.patch	\
-  %D%/packages/patches/vinagre-newer-freerdp.patch             \
-  %D%/packages/patches/vinagre-newer-rdp-parameters.patch      \
   %D%/packages/patches/vkmark-2025.1-fix-vulkan-headers-1.4.333.patch	\
   %D%/packages/patches/vsearch-unbundle-cityhash.patch		\
   %D%/packages/patches/vst3sdk-3.7.7-allow-winelib-compilation.patch	\

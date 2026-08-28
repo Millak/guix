@@ -4592,61 +4592,9 @@ editors, IDEs, etc.")
               (append libsixel)
               (append lz4)))))
 
-(define-public vinagre
-  (package
-    (name "vinagre")
-    (version "3.22.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
-              (patches (search-patches "vinagre-newer-freerdp.patch"
-                                       "vinagre-newer-rdp-parameters.patch"))
-              (sha256
-               (base32
-                "10jya3jyrm18nbw3v410gbkc7677bqamax44pzgd3j15randn76d"))))
-    (build-system glib-or-gtk-build-system)
-    (arguments
-     ;; Disable -Werror and such, to avoid build failures on compilation
-     ;; warnings.
-     (list
-      #:configure-flags
-      #~(list "--enable-compile-warnings=minimum"
-              (string-append "CFLAGS=-O2 -g -fcommon "
-                             "-Wno-implicit-int "
-                             "-Wno-incompatible-pointer-types"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'install 'skip-gtk-update-icon-cache
-            (lambda _
-              ;; Don't create 'icon-theme.cache'
-              (substitute* (find-files "." "^Makefile$")
-                (("gtk-update-icon-cache") (which "true")))))
-          (add-after 'unpack 'patch-configure
-            (lambda _
-              (substitute* "configure"
-                (("freerdp") "freerdp2")))))))
-    (native-inputs
-     (list pkg-config
-           intltool
-           itstool
-           (list glib "bin")))                 ;for glib-compile-schemas
-    (inputs
-     (list libxml2
-           gtk-vnc
-           gnome-keyring
-           libsecret
-           freerdp
-           spice
-           spice-gtk
-           telepathy-glib
-           vte/gtk+-3))
-    (home-page "https://wiki.gnome.org/Apps/Vinagre")
-    (synopsis "Remote desktop viewer for GNOME")
-    (description "Vinagre is a remote display client supporting the VNC, SPICE
-and RDP protocols.")
-    (license license:gpl3+)))
+;;; TODO: Remove when 2027/03 comes.
+(define-deprecated/public-alias vinagre
+  gnome-connections)
 
 (define-public dconf
   (package
