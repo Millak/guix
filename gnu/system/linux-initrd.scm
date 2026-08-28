@@ -375,7 +375,11 @@ FILE-SYSTEMS."
                       (%current-system))))
   "Return a list of modules tailored to KERNEL for SYSTEM to include in the
 initrd by default."
-  (assoc-ref (assoc-ref (package-properties kernel) 'base-initrd-modules)
+  (define (modules package)
+    (assoc-ref (package-properties package) 'base-initrd-modules))
+
+  (assoc-ref (or (modules kernel)
+                 (modules linux-libre))
              system))
 
 (define* (base-initrd file-systems
