@@ -1082,21 +1082,18 @@ correct OpenSSL include path.  It is intended for use in your
 number generator")
   (license license:perl-license)))
 
-;;; TODO: No longer maintained, migrate dependents to current mbedtls v3
-;;; (which is the new LTS).
-(define-public mbedtls-lts
+(define-public mbedtls
   (package
     (name "mbedtls")
-    (version "2.28.9")
+    (version "3.6.7")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ARMmbed/mbedtls")
-             (commit (string-append "mbedtls-" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://github.com/Mbed-TLS/mbedtls/releases"
+                           "/download/mbedtls-" version
+                           "/mbedtls-" version ".tar.bz2"))
        (sha256
-        (base32 "0ldqhvmj9wl0yp3hz675zbnq69lw533s0ahy9bbdxxnj5gjb86gw"))))
+        (base32 "1xhi5lhn78vphv07kvwfyrigfdbbc9vmdwi4mys63xz6q2zbrs57"))))
     (build-system cmake-build-system)
     (arguments
      (list #:parallel-tests? #f
@@ -1120,20 +1117,21 @@ coding footprint.")
     (home-page "https://www.trustedfirmware.org/projects/mbed-tls/")
     (license (list license:asl2.0 license:gpl2+)))) ;dual licensed
 
-(define-public mbedtls
+;;; TODO: No longer maintained, migrate dependents to current mbedtls.
+(define-public mbedtls-lts
   (package
-    (inherit mbedtls-lts)
+    (inherit mbedtls)
     (name "mbedtls")
-    (version "3.6.7")
+    (version "2.28.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/Mbed-TLS/mbedtls/releases"
-                           "/download/mbedtls-" version
-                           "/mbedtls-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ARMmbed/mbedtls")
+             (commit (string-append "mbedtls-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1xhi5lhn78vphv07kvwfyrigfdbbc9vmdwi4mys63xz6q2zbrs57"))))))
+        (base32 "0ldqhvmj9wl0yp3hz675zbnq69lw533s0ahy9bbdxxnj5gjb86gw"))))))
 
 ;; The Hiawatha Web server requires some specific features to be enabled.
 (define-public mbedtls-for-hiawatha
