@@ -5205,7 +5205,7 @@ parsing and frequency finding.")
                             (string-append #$output "/bin")))))))
     ;; As of GCC 14, the C++ modules feature is not complete enough, hence the
     ;; use of Clang.
-    (native-inputs (list ninja clang-toolchain-19))
+    (native-inputs (list ninja clang-toolchain))
     (inputs (list libcxx))
     (home-page "https://github.com/superg/redumper")
     (synopsis "Low-level CD/DVD dumper")
