@@ -12571,7 +12571,7 @@ functionality.")
 (define-public gthumb
   (package
     (name "gthumb")
-    (version "3.12.4")
+    (version "3.12.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gthumb/"
@@ -12579,7 +12579,7 @@ functionality.")
                                   "gthumb-" version ".tar.xz"))
               (sha256
                (base32
-                "1s4lqy883s296mbh4fywd1l3z79811ia00xs57c316pb1an97mmd"))))
+                "0xac51s5bck5hqf8n2i2fi7l236rwcd9awqvk3bvavydad3388ij"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -12599,10 +12599,7 @@ functionality.")
            pkg-config
            python))
     (inputs
-     (list clutter
-           clutter-gst
-           clutter-gtk
-           colord
+     (list colord
            exiv2
            gsettings-desktop-schemas
            gstreamer
@@ -12613,7 +12610,7 @@ functionality.")
            (librsvg-for-system)
            libtiff
            libwebp))
-    (home-page "https://wiki.gnome.org/Apps/Gthumb")
+    (home-page "https://gitlab.gnome.org/GNOME/gthumb")
     (synopsis "GNOME image viewer and browser")
     (description "GThumb is an image viewer, browser, organizer, editor and
 advanced image management tool")
