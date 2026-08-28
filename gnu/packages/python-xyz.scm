@@ -275,6 +275,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages node)
+  #:use-module (gnu packages node-xyz)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages pcre)
@@ -21500,89 +21501,78 @@ enhancements to optimization and data fitting problems.")
 (define-public python-bokeh
   (package
     (name "python-bokeh")
-    (version "3.7.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "bokeh" version))
-              (sha256
-               (base32
-                "0argn4fadyswnz86x6fsy1f13nmd8iwzn5ddwrg3s43vg6grma3h"))))
+    ;; Update bokehjs on (gnu packages javascript) to the same version.
+    (version "3.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bokeh/bokeh")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gh3zmc6nb7awxgpyry3ncy15a18kmimm1ja6sa0qprw4bysx1xb"))
+       (patches (list (search-patch "python-bokeh-bokehjs-env.patch")))
+       (modules '((guix build utils)))
+       (snippet
+        #~(delete-file-recursively "bokehjs"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; FIXME: Most of the tests do not work, figure out how to enable some
-      ;; portion.
-      #:tests? #f
       #:test-flags
-      '(list
-        ;; These require selenium.
-        "--ignore=tests/unit/bokeh/io/test_export.py"
-        "--ignore=tests/unit/bokeh/io/test_webdriver.py"
-        "--ignore=tests/unit/bokeh/embed/test_standalone.py"
-
-        ;; Doesn't find ManagedServerLoop fixture
-        "--ignore=tests/unit/bokeh/test_client_server.py"
-
-        ;; This fails because of the Guix wrapper around pytest
-        "--ignore=tests/unit/bokeh/io/test_util__io.py"
-
-        ;; Fixture ipython not found.
-        "--ignore=tests/unit/bokeh/application/handlers/test_notebook__handlers.py"
-        "--ignore=tests/unit/bokeh/command/subcommands/test_info.py"
-
-        ;; pd fixture not found.
-        "--ignore=tests/unit/bokeh/models/test_mappers.py"
-        "--ignore=tests/unit/bokeh/models/util/test_structure.py"
-        "--ignore=tests/unit/bokeh/plotting/test__plot.py"
-        "--ignore=tests/unit/bokeh/plotting/test__graph.py"
-        "--ignore=tests/unit/bokeh/plotting/test_figure.py"
-        "--ignore=tests/unit/bokeh/core/test_json_encoder.py"
-        "--ignore=tests/unit/bokeh/core/property/test_bases.py"
-        "--ignore=tests/unit/bokeh/core/property/test_container.py"
-        "--ignore=tests/unit/bokeh/core/property/test_dataspec.py"
-        "--ignore=tests/unit/bokeh/core/property/test_datetime.py"
-        "--ignore=tests/unit/bokeh/core/property/test_pandas.py"
-
-        ;; nx fixture not found.
-        "--ignore=tests/unit/bokeh/plotting/test_graph.py"
-        "--ignore=tests/unit/bokeh/models/test_graphs.py"
-        "--ignore=tests/unit/bokeh/io/test_showing.py"
-        "--ignore=tests/unit/bokeh/document/test_events__document.py"
-
-        ;; These tests need external sample data
-        "--ignore-glob=tests/unit/bokeh/sampledata/*"
-
-        ;; Attempts to install something via npm.
-        "--ignore=tests/unit/bokeh/test_ext.py"
-
-        ;; More failures due to set up problems.
-        "--ignore=tests/unit/bokeh/server/test_server__server.py"
-        "--ignore=tests/unit/bokeh/server/test_tornado__server.py"
-        "--ignore=tests/unit/bokeh/util/test_serialization.py"
-        "--ignore=tests/unit/bokeh/util/test_hex.py"
-        "--ignore=tests/unit/bokeh/models/test_sources.py"
-        "--ignore=tests/unit/bokeh/embed/test_bundle.py"
-
-        "-k"
-        (string-append
-         ;; Fails with: 'called_once_with' is not a valid assertion. [...]
-         ;; Did you mean: 'assert_called_once_with'?
-         "not test_set_from_json"
-
-         ;; XXX: This one test transforms a gif of a red box.  It transforms
-         ;; it all right but the base64 doesn't look as expected, probably
-         ;; because of a change in pillow.
-         " and not test_transform_PIL"))
+      #~(list
+         ;; Ignore bokejs outdated resources tests.
+         ;; 11998 passed, 23 skipped.
+         "--ignore=tests/test_bokehjs.py"                   ;1 failed.
+         "--ignore=tests/test_defaults.py"                  ;1 failed.
+         "--ignore=tests/test_examples.py"                  ;430 failed.
+         "--ignore=tests/test_cross.py"                     ;8 failed.
+         "--ignore=tests/codebase/"                         ;12 failed.
+         "--ignore=tests/unit/bokeh/embed/"                 ;3 failed.
+         "--ignore=tests/unit/bokeh/core/test_templates.py" ;2 failed.
+         "--ignore=tests/unit/bokeh/test_resources.py"      ;5 failed.
+         "--ignore=tests/unit/bokeh/util/test_compiler.py"  ;4 failed.
+         "--ignore=tests/unit/bokeh/test_ext.py"            ;1 failed.
+         "--ignore=tests/unit/bokeh/server/"                ;3 failed
+         "--ignore=tests/unit/bokeh/util/test_package.py")  ;1 failed.
       #:phases
       #~(modify-phases %standard-phases
+          ;; Skip bokehjs build and set environment
+          (add-after 'unpack 'skip-bokehjs-build-install
+            (lambda _
+              (substitute* "setup.py"
+                (("    else:" all)
+                 (string-append
+                  "    elif action == \"skip\":\n"
+                  "        return\n"
+                  all)))
+              (setenv "BOKEHJS_ACTION" "skip")
+              (setenv "HOME" "/tmp")))
           (add-before 'build 'set-version
             (lambda _
               (substitute* "pyproject.toml"
                 ((", \"setuptools-git-versioning\"") "")
                 (("dynamic = \\[\"version\"\\]")
                  (string-append "version = '" #$version "'"))))))))
+    (native-inputs
+     (list git-minimal
+           python-beautifulsoup4
+           python-dateutil
+           python-flaky
+           python-json5
+           python-mock
+           python-nbconvert
+           python-pandas
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-timeout
+           python-pytz
+           python-requests
+           python-setuptools
+           python-toml
+           python-wheel))
     (propagated-inputs
-     (list node-lts
+     (list node-bokehjs
            python-contourpy
            python-jinja2
            python-narwhals
@@ -21593,18 +21583,10 @@ enhancements to optimization and data fitting problems.")
            python-pyyaml
            python-tornado
            python-xyzservices))
-    (native-inputs
-     (list python-beautifulsoup4
-           python-dateutil
-           python-flaky
-           python-mock
-           python-nbconvert
-           python-pandas
-           python-pytest
-           python-pytz
-           python-requests
-           python-setuptools
-           python-wheel))
+    (native-search-paths
+     (list (search-path-specification
+             (variable "BOKEHJS_PATH")
+             (files '("bokehjs/static")))))
     (home-page "https://github.com/bokeh/bokeh")
     (synopsis "Interactive plots and applications in the browser from Python")
     (description

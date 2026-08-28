@@ -1,0 +1,26 @@
+diff --git a/src/bokeh/util/paths.py b/src/bokeh/util/paths.py
+index c9052e1ce..d60a010a2 100644
+--- a/src/bokeh/util/paths.py
++++ b/src/bokeh/util/paths.py
+@@ -19,6 +19,7 @@ log = logging.getLogger(__name__)
+ 
+ # Standard library imports
+ from pathlib import Path
++import os
+ 
+ # Bokeh imports
+ from .deprecation import deprecated
+@@ -66,6 +67,13 @@ def bokehjs_path(dev: bool = False) -> Path:
+         This is a low-level API. Prefer using ``settings.bokehjs_path()``
+         instead of this function.
+     """
++    env_path = os.environ.get("BOKEHJS_PATH")
++    if env_path:
++        js_dir = Path(env_path).resolve()
++        if js_dir.is_dir():
++            return js_dir
++        else:
++            log.warning(f"BOKEHJS_PATH's build directory '{js_dir}' doesn't exist; required. Install it or build the complete bokeh project.")
+     if dev:
+         js_dir = ROOT_DIR.parent.parent / "bokehjs" / "build"
+         if js_dir.is_dir():
