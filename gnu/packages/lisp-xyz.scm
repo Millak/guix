@@ -4897,6 +4897,67 @@ parser in Common Lisp.")
 (define-public ecl-cl-bnf
   (sbcl-package->ecl-package sbcl-cl-bnf))
 
+(define-public sbcl-cl-brotli
+  (let ((commit "a6b23bcb76e7cd2470bba6859f12d192ce25a5b3")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-brotli")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/fsm/cl-brotli.git")
+                (commit commit)))
+         (file-name (git-file-name "cl-brotli" version))
+         (sha256
+          (base32 "00jsi4cc6q5lcld2pj2x2x85p1391crk9c1q0gf1g1n6h3wx2fi2"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list brotli
+             sbcl-cffi
+             sbcl-cl-octet-streams
+             sbcl-trivial-gray-streams))
+      (native-inputs
+       (list sbcl-flexi-streams))
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "src/libbrotli.lisp"
+                  (("libbrotlicommon\\.so")
+                   (search-input-file inputs "lib/libbrotlicommon.so"))
+                  (("libbrotlienc\\.so")
+                   (search-input-file inputs "lib/libbrotlienc.so"))
+                  (("libbrotlidec\\.so")
+                   (search-input-file inputs "lib/libbrotlidec.so")))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (lisp-eval-program
+                   `((require :asdf)
+                     (asdf:load-asd ,(string-append (getcwd) "/cl-brotli.asd"))
+                     (asdf:load-asd ,(string-append (getcwd) "/cl-brotli-tests.asd"))
+                     (asdf:load-system "cl-brotli")
+                     (asdf:load-system "cl-brotli-tests")
+                     (brotli-tests:run-tests)))))))))
+      (home-page "https://codeberg.org/fsm/cl-brotli")
+      (synopsis "Common Lisp bindings for the Brotli compression library")
+      (description
+       "This package provides CFFI bindings to the Brotli compression
+library (RFC 7932) for Common Lisp.  It supports compressing and
+decompressing buffers, files and streams, and offers a Gray streams
+interface with support for incremental flushing.")
+      (license license:lgpl3+))))
+
+(define-public cl-brotli
+  (sbcl-package->cl-source-package sbcl-cl-brotli))
+
+(define-public ecl-cl-brotli
+  (sbcl-package->ecl-package sbcl-cl-brotli))
+
 (define-public sbcl-cl-cairo2
   (let ((commit "41ae45aac86553c46f4bb460f80e1fb620930f5b")
         (revision "1"))
