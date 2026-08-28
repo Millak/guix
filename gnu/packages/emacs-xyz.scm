@@ -26013,6 +26013,18 @@ It should enable you to implement low-level X11 applications.")
       #:tests? #f                       ;No test suite.
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-exwm-floating-toggle-floating
+            (lambda _
+              (emacs-batch-edit-file "exwm-floating.el"
+                `(progn (goto-char (point-min))
+                        (re-search-forward
+                         "exwm-floating-toggle-floating")
+                        (beginning-of-line)
+                        (kill-sexp)
+                        (next-line -1)
+                        (beginning-of-line)
+                        (kill-line)
+                        (basic-save-buffer)))))
           (add-after 'build 'install-xsession
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((xsessions (string-append #$output "/share/xsessions"))
