@@ -231,7 +231,7 @@ intended to be.")
 (define-public emacs-eldev
   (package
     (name "emacs-eldev")
-    (version "1.11.1")
+    (version "1.11.2")
     (source
      (origin
        (method git-fetch)
@@ -240,7 +240,7 @@ intended to be.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sf8xyzblc0fs2d65jgcycavnzmrp1wg0sfr29gjkq1kvzyl7phb"))))
+        (base32 "1khqapvgm1y3svzb3pr6s1a3b6mzxdwy1cybbnssaxlvfjvgyvaz"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -252,8 +252,11 @@ intended to be.")
               (setenv "ELDEV_LOCAL" (getcwd))
               (make-file-writable "test/project-i/project-i-autoloads.el")))
           (add-after 'unpack 'skip-failing-tests
-            ;; FIXME: 2 tests are failing.  Skip them for now.
             (lambda _
+              (substitute* "test/package.el"
+                (("\\(ert-deftest eldev-package-3 .*" all)
+                 (string-append all " (skip-unless nil)")))
+              ;; FIXME: 2 tests are failing.  Skip them for now.
               (delete-file "test/upgrade-self.el")))
           (add-after 'install 'install-eldev-executable
             ;; This constructs the eldev executable from templates and
