@@ -14209,7 +14209,7 @@ you to mark favorite talks and highlights conflicts between favorited talks.")
       (arguments
        (list #:glib-or-gtk? #t))
       (inputs
-       (list freerdp-3 fuse gtk+))
+       (list freerdp fuse gtk+))
       (native-inputs
        (list `(,glib "bin") gobject-introspection pkg-config vala))
       (home-page "https://gitlab.gnome.org/GNOME/gtk-frdp")

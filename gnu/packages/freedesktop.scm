@@ -1629,7 +1629,7 @@ compositor.")
            cairo-xcb
            colord
            dbus
-           freerdp-3
+           freerdp
            glib
            glslang
            gstreamer

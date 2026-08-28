@@ -573,7 +573,7 @@ desktop.")
                          ;; for wayland-scanner
                          wayland))
     (inputs (list
-             freerdp-3
+             freerdp
              kconfig
              kcmutils
              kcoreaddons

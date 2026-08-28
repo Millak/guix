@@ -139,7 +139,7 @@
            cups
            curl
            ffmpeg
-           freerdp-3                      ; for rdp plugin
+           freerdp                      ; for rdp plugin
            libgcrypt
            (librsvg-for-system)
            glib

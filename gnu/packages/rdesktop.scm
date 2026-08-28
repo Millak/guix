@@ -5,7 +5,7 @@
 ;;; Copyright © 2018, 2024, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2023, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -71,17 +71,47 @@
 (define-public freerdp
   (package
     (name "freerdp")
-    (version "2.11.7")
+    (version "3.25.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/FreeRDP/FreeRDP")
-             (commit version)))
+              (url "https://github.com/FreeRDP/FreeRDP")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h7yxjnl4zgl07ilh7dzbig8r7phll0wid72hm92jav6s4q75v63"))))
+        (base32 "1plynfsr0hbp8f1mmshx2ab1c90vhamgirk0cdqwibm8y4kgc63y"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:build-type "Release"
+      #:test-exclude "TestFreeRDPCodecInterleaved|TestClientRdpFile"
+      #:configure-flags
+      #~(list
+         "-DWITH_VERBOSE_WINPR_ASSERT=OFF"
+         "-DWITH_JPEG=ON"
+         #$@(if (target-x86-64?)
+                #~("-DWITH_SSE2=ON")
+                #~())
+         "-DWITH_PULSE=ON"
+         "-DWITH_CAIRO=ON"
+         "-DWITH_CUPS=ON"
+         "-DCHANNEL_RDPECAM_CLIENT=ON"  ;webcam support
+         "-DBUILD_TESTING=ON"
+         "-DWITH_SERVER=ON"             ;build servers
+         "-DWITH_SHADOW=ON"             ;build shadow server
+         "-DWITH_PROXY=ON"
+         "-DWITH_OPENH264=ON")          ;could also use ffmpeg instead
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-dlopen-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "winpr/libwinpr/smartcard/smartcard_pcsc.c"
+                (("\"libpcsclite[.]so[.]1\"")
+                 (string-append
+                  (format
+                   #f "~s"
+                   (search-input-file inputs "/lib/libpcsclite.so.1"))))))))))
     (native-inputs
      (list docbook-xml
            docbook-xsl
@@ -95,8 +125,10 @@
            cairo
            cups
            dbus
-           ffmpeg-4
+           ffmpeg
+           fuse
            gsm
+           icu4c
            lame
            libjpeg-turbo
            libusb
@@ -111,31 +143,19 @@
            libxrender
            libxinerama
            libxshmfence
+           mit-krb5
            opencl-headers
            openh264
            opensles
            openssl
-           pcsc-lite ; for smartcard support
+           pcsc-lite                    ; for smartcard support
            pulseaudio
+           sdl3
+           sdl3-gfx
+           sdl3-ttf
+           v4l-utils
            zlib))
     (propagated-inputs (list libxkbcommon openssl wayland))
-    (arguments
-     (list #:build-type "RELEASE"
-           #:configure-flags
-           #~(list
-              ;; Relax gcc-14's strictness.
-              (string-append "-DCMAKE_C_FLAGS="
-                             " -Wno-error=incompatible-pointer-types"
-                             " -Wno-error=int-conversion")
-              "-DWITH_JPEG=ON"
-              #$@(if (target-x86-64?)
-                     #~("-DWITH_SSE2=ON")
-                     #~())
-              "-DWITH_PULSE=ON"
-              "-DWITH_CUPS=ON"
-              "-DWITH_SERVER=ON" ;build servers
-              "-DWITH_SHADOW=ON" ;build shadow server
-              "-DWITH_PROXY=ON")))
     (home-page "https://www.freerdp.com")
     (synopsis "Remote Desktop Protocol implementation")
     (description "FreeRDP implements Microsoft's Remote Desktop Protocol.
@@ -143,53 +163,6 @@ It consists of the @code{xfreerdp} client, libraries for client and server
 functionality, and Windows Portable Runtime (WinPR), a portable implementation
 of parts of the Windows API.")
     (license license:asl2.0)))
-
-(define-public freerdp-3
-  (package
-    (inherit freerdp)
-    (name "freerdp")
-    (version "3.25.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/FreeRDP/FreeRDP")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1plynfsr0hbp8f1mmshx2ab1c90vhamgirk0cdqwibm8y4kgc63y"))))
-    (inputs
-     (modify-inputs inputs
-       (replace "ffmpeg" ffmpeg)
-       (prepend fuse icu4c mit-krb5 sdl3 sdl3-gfx sdl3-ttf v4l-utils)))
-    (arguments
-     (list #:build-type "Release"
-           #:test-exclude "TestFreeRDPCodecInterleaved|TestClientRdpFile"
-           #:configure-flags
-           #~(list
-              "-DWITH_VERBOSE_WINPR_ASSERT=OFF"
-              "-DWITH_JPEG=ON"
-              #$@(if (target-x86-64?)
-                     #~("-DWITH_SSE2=ON")
-                     #~())
-              "-DWITH_PULSE=ON"
-              "-DWITH_CAIRO=ON"
-              "-DWITH_CUPS=ON"
-              "-DCHANNEL_RDPECAM_CLIENT=ON" ;webcam support
-              "-DBUILD_TESTING=ON"
-              "-DWITH_SERVER=ON" ;build servers
-              "-DWITH_SHADOW=ON" ;build shadow server
-              "-DWITH_PROXY=ON"
-              "-DWITH_OPENH264=ON") ; could also use ffmpeg instead
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-dlopen-paths
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* "winpr/libwinpr/smartcard/smartcard_pcsc.c"
-                    (("\"libpcsclite[.]so[.]1\"")
-                     (string-append "\""
-                      (search-input-file inputs "/lib/libpcsclite.so.1")
-                      "\""))))))))))
 
 (define-public xrdp
   (package

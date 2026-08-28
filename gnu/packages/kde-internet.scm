@@ -626,7 +626,7 @@ Features are:
      (list breeze-icons ; default icon set
            gnutls
            kbookmarks
-           freerdp-3
+           freerdp
            fuse
            kcmutils
            kcompletion
