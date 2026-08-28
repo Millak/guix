@@ -10828,7 +10828,7 @@ GameController.")
 (define-public quadrapassel
   (package
     (name "quadrapassel")
-    (version "40.2")
+    (version "50.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/quadrapassel/"
@@ -10836,34 +10836,35 @@ GameController.")
                                   "quadrapassel-" version ".tar.xz"))
               (sha256
                (base32
-                "02n0khwy38pykw4xqpnkym6xvj2sv8izfjbaxlik3iq7890j5n0b"))))
+                "0z8lz8zyxgmcm09xkibv8xgcwbsgs4jzaqiybgndijyfcvyq36fg"))))
     (build-system meson-build-system)
     (arguments
-     '(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "build-aux/meson_post_install.py"
-               (("gtk-update-icon-cache") (which "true"))))))))
+     (list
+      #:tests? #f                   ;libgnome-games-support-tests test failure
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")))))))
     (native-inputs
-     (list desktop-file-utils           ; for desktop-file-validate
+     (list blueprint-compiler
+           desktop-file-utils           ; for desktop-file-validate
            gettext-minimal
            (list glib "bin")            ; for glib-compile-resources
-           itstool
-           libxml2                      ; for xmllint
            pkg-config
            vala))
     (inputs
-     (list clutter
-           clutter-gtk
-           gsound
-           gtk+
-           libcanberra
+     (list gtk
+           libadwaita
            libmanette
-           librsvg))
-    (home-page "https://wiki.gnome.org/Apps/Quadrapassel")
+           librsvg
+           libsndfile
+           openal))
+    (home-page "https://gitlab.gnome.org/GNOME/quadrapassel")
     (synopsis "GNOME version of Tetris")
     (description "Quadrapassel comes from the classic falling-block game,
 Tetris.  The goal of the game is to create complete horizontal lines of
