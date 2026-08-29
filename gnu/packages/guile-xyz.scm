@@ -4874,84 +4874,82 @@ list of components.  This module takes care of that for you.")
 (define-public guile-gi
   (let ((commit "388653ac9e95802d1a69c585aef1d60e35e6b71c")
         (revision "0"))
-  (package
-    (name "guile-gi")
-    (version (git-version "0.3.2" revision commit))
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/spk121/guile-gi.git")
-                     (commit commit)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1ndzqbgy5jbfm2fan6y31xfxdxglzjhgqib4c34b3w5inxzkrm6v"))
-              (patches (search-patches "guile-gi-fix-marshall-tests.patch"))))
-    (build-system glib-or-gtk-build-system)
-    (arguments
-     `(#:configure-flags '("CFLAGS=-Wno-error=incompatible-pointer-types"
-                           "--with-gnu-filesystem-hierarchy"
-                           "--enable-hardening")
-       #:modules ((guix build glib-or-gtk-build-system)
-                  (guix build utils)
-                  (ice-9 popen)
-                  (ice-9 rdelim))
-       #:disallowed-references ,(list grilo gtk+)
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (substitute* "test/value.scm"
-               ;; This test segfaults sometimes. Reported at
-               ;; <https://github.com/spk121/guile-gi/issues/143>.
-               (("\\(test-equal \"inout-closure\"")
-                "#;(test-equal \"inout-closure\""))))
-         (add-after 'unpack 'patch-references-to-extension
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((effective (read-line
-                               (open-pipe* OPEN_READ
-                                           "guile" "-c"
-                                           "(display (effective-version))"))))
-               (substitute* (find-files "module" ".*\\.scm")
-                 (("\\(load-extension \"libguile-gi\" \"(.*)\"\\)" m arg)
-                  (format #f "~s"
-                          `(load-extension
-                            (format #f "~alibguile-gi"
-                                    (if (getenv "GUILE_GI_UNINSTALLED")
-                                        ""
-                                        ,(format #f "~a/lib/guile/~a/extensions/"
-                                                 (assoc-ref outputs "out")
-                                                 effective)))
-                            ,arg)))))
-             (setenv "GUILE_GI_UNINSTALLED" "1")
-             #t))
-         (add-before 'check 'start-xorg-server
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; The init_check test requires a running X server.
-             (system (format #f "~a/bin/Xvfb :1 &"
-                             (assoc-ref inputs "xorg-server")))
-             (setenv "DISPLAY" ":1")
-             #t)))))
-    (native-inputs
-     (list autoconf
-           automake
-           texinfo
-           gettext-minimal
-           `(,glib "bin") ; for glib-compile-resources
-           grilo
-           gtk+
-           libtool
-           pkg-config
-           xorg-server-for-tests))
-    (propagated-inputs (list gobject-introspection))
-    (inputs (list guile-3.0 glib))
-    (home-page "https://github.com/spk121/guile-gi")
-    (synopsis "GObject bindings for Guile")
-    (description
-     "Guile-GI is a library for Guile that allows using GObject-based
+    (package
+      (name "guile-gi")
+      (version (git-version "0.3.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/spk121/guile-gi.git")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ndzqbgy5jbfm2fan6y31xfxdxglzjhgqib4c34b3w5inxzkrm6v"))
+                (patches (search-patches "guile-gi-fix-marshall-tests.patch"))))
+      (build-system glib-or-gtk-build-system)
+      (arguments
+       (list
+        #:configure-flags #~(list "CFLAGS=-Wno-error=incompatible-pointer-types"
+                                  "--with-gnu-filesystem-hierarchy"
+                                  "--enable-hardening")
+        #:modules '((guix build glib-or-gtk-build-system)
+                    (guix build utils)
+                    (ice-9 popen)
+                    (ice-9 rdelim))
+        #:disallowed-references (list grilo gtk+)
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'disable-failing-tests
+              (lambda _
+                (substitute* "test/value.scm"
+                  ;; This test segfaults sometimes. Reported at
+                  ;; <https://github.com/spk121/guile-gi/issues/143>.
+                  (("\\(test-equal \"inout-closure\"")
+                   "#;(test-equal \"inout-closure\""))))
+            (add-after 'unpack 'patch-references-to-extension
+              (lambda _
+                (let ((effective (read-line
+                                  (open-pipe* OPEN_READ
+                                              "guile" "-c"
+                                              "(display (effective-version))"))))
+                  (substitute* (find-files "module" ".*\\.scm")
+                    (("\\(load-extension \"libguile-gi\" \"(.*)\"\\)" m arg)
+                     (format
+                      #f "~s"
+                      `(load-extension
+                        (format #f "~alibguile-gi"
+                                (if (getenv "GUILE_GI_UNINSTALLED")
+                                    ""
+                                    ,(format #f "~a/lib/guile/~a/extensions/"
+                                             #$output effective)))
+                        ,arg)))))
+                (setenv "GUILE_GI_UNINSTALLED" "1")))
+            (add-before 'check 'start-xorg-server
+              (lambda _
+                ;; The init_check test requires a running X server.
+                (system "Xvfb :1 &")
+                (setenv "DISPLAY" ":1"))))))
+      (native-inputs
+       (list autoconf
+             automake
+             texinfo
+             gettext-minimal
+             `(,glib "bin")             ; for glib-compile-resources
+             grilo
+             gtk+
+             libtool
+             pkg-config
+             xorg-server-for-tests))
+      (propagated-inputs (list gobject-introspection))
+      (inputs (list guile-3.0 glib))
+      (home-page "https://github.com/spk121/guile-gi")
+      (synopsis "GObject bindings for Guile")
+      (description
+       "Guile-GI is a library for Guile that allows using GObject-based
 libraries, such as GTK+3.  Its README comes with the disclaimer: This is
 pre-alpha code.")
-    (license license:gpl3+))))
+      (license license:gpl3+))))
 
 (define-public guile2.2-gi
   (package
