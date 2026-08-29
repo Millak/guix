@@ -1547,6 +1547,11 @@ the \"texlive\" importer."
                        "fishinthecalculator")
   audio beam)
 
+(define-member (person "Sören Tempel"
+                       "soeren@soeren-tempel.net"
+                       "nmeum")
+  haskell)
+
 (define-member (person "Saku Laesvuori"
                        "saku@laesvuori.fi"
                        "slaesvuo")
