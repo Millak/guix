@@ -6526,6 +6526,22 @@ overwrite mode, it will turn into a block cursor.")
           (base32
            "0v9hmvq6bcr2hwlb09ldsd6pjl19ri5n2hl2bs3x52fqjj6fdzzn"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command
+        #~(list "emacs" "-Q" "--batch"
+                "-l" "paradox"
+                "-l" "test/paradox-test.el"
+                "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; Needed for tests
+            (add-before 'check 'set-home
+              (lambda _
+                (setenv "HOME" (getcwd))
+                (substitute* "test/paradox-test.el"
+                  (("ert-deftest sanity .*" all)
+                   (string-append all "(skip-unless nil)"))))))))
       (propagated-inputs
        (list emacs-hydra emacs-let-alist emacs-spinner))
       (native-inputs (list emacs-ert-runner emacs-undercover))
