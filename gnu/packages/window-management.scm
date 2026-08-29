@@ -2599,7 +2599,7 @@ limited size and a few external dependencies.  It is configurable via
 (define-public mangowm
   (package
     (name "mangowm")
-    (version "0.16.1")
+    (version "0.16.2")
     (source
      (origin
        (method git-fetch)
@@ -2608,7 +2608,7 @@ limited size and a few external dependencies.  It is configurable via
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13a9zfd7crlpaihyxk42xcnl7fjnwajdd4j2j06f6rkjpbjgsrfj"))))
+        (base32 "0f8ps5mbqriqzbnayr8cj69mqv8jqsvxg0zi7yjfdalfa8msbpm1"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -2648,9 +2648,9 @@ limited size and a few external dependencies.  It is configurable via
     (description
      "MangoWM is a modern, lightweight, high-performance Wayland compositor
 built on dwl — crafted for speed, flexibility, and a customizable desktop experience.")
-    (license (list license:gpl3 ;mangowm itself, dwl
-                   license:expat ;dwm, sway, wlroots
-                   license:cc0)))) ;tinywl
+    (license (list license:gpl3         ;mangowm itself, dwl
+                   license:expat        ;dwm, sway, wlroots
+                   license:cc0))))      ;tinywl
 
 (define-deprecated-package mangowc
   mangowm)
