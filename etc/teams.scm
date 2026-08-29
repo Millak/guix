@@ -1625,7 +1625,7 @@ the \"texlive\" importer."
 (define-member (person "Hugo Buddelmeijer"
                        "hugo@buddelmeijer.nl"
                        "hugobuddel")
-  python)
+  python security-response)
 
 (define-member (person "Yan Abu Arab"
                        "yanabuarab@gmail.com"
