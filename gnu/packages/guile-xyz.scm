@@ -4886,7 +4886,8 @@ list of components.  This module takes care of that for you.")
                 (sha256
                  (base32
                   "1ndzqbgy5jbfm2fan6y31xfxdxglzjhgqib4c34b3w5inxzkrm6v"))
-                (patches (search-patches "guile-gi-fix-marshall-tests.patch"))))
+                (patches (search-patches "guile-gi-fix-marshall-tests.patch"
+                                         "guile-gi-main-loop-test.patch"))))
       (build-system glib-or-gtk-build-system)
       (arguments
        (list

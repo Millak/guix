@@ -1586,6 +1586,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/guile-fix-invalid-unicode-handling.patch \
   %D%/packages/patches/guile-gdbm-ffi-support-gdbm-1.14.patch	\
   %D%/packages/patches/guile-gi-fix-marshall-tests.patch	\
+  %D%/packages/patches/guile-gi-main-loop-test.patch            \
   %D%/packages/patches/guile-hurd-posix-spawn.patch		\
   %D%/packages/patches/guile-lzlib-gcc-14.patch			\
   %D%/packages/patches/guile-lzlib-hurd64.patch			\
