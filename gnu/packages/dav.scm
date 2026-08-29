@@ -35,6 +35,7 @@
   #:use-module (guix git-download)
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -79,7 +80,7 @@ servers.")
 (define-public pimsync
   (package
     (name "pimsync")
-    (version "0.5.7")
+    (version "0.5.11")
     (source
      (origin
        (method git-fetch)
@@ -88,7 +89,7 @@ servers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x90l9k3sfnszrvmzqclykpv2py33v9jh92ps68wdd7xkrjp42ga"))))
+        (base32 "070301a0z3a9b9jc7ifkmgg4gj2p0srf67lyzf2mifd04jll3iw8"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -100,8 +101,9 @@ servers.")
               (substitute* "Cargo.toml"
                 (("^\\[patch.crates-io\\]")
                  "")
-                (("^hashify.*$")
-                 "hashify = { version = \"*\" }\n"))))
+                (("^digest_auth.*$")
+                 "digest_auth = { features = [\"http\"], version = \"*\" }
+"))))
           (add-after 'unpack 'setup-environment
             (lambda _
               (setenv "PIMSYNC_VERSION"
@@ -115,6 +117,8 @@ servers.")
                               (string-append man "5"))
                 (install-file "pimsync-migration.7"
                               (string-append man "7"))))))))
+    (native-inputs (list nss-certs-for-test ;needed to start pimsync in 'check.
+                         xandikos)) ;needed for 'check.
     (inputs (cons* sqlite
                    (cargo-inputs 'pimsync)))
     (synopsis
