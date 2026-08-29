@@ -1409,7 +1409,7 @@ the \"texlive\" importer."
 (define-member (person "Simon Tournier"
                        "zimon.toutoune@gmail.com"
                        "zimoun")
-  julia core mentors r)
+  julia core mentors r security-response)
 
 (define-member (person "宋文武"
                        "iyzsong@envs.net"
