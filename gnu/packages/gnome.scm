@@ -978,7 +978,7 @@ tomorrow, the rest of the week and for special occasions.")
     (description "GNOME Music is the new GNOME music playing application that
 aims to combine an elegant and immersive browsing experience with simple
 and straightforward controls.")
-    (home-page "https://wiki.gnome.org/Apps/Music")
+    (home-page "https://gitlab.gnome.org/GNOME/gnome-music")
     (license license:gpl2+)))
 
 (define-public portablexdr
