@@ -10821,7 +10821,6 @@ playing media, scanning, and much more.")
                             gnome-settings-daemon
                             gnome-shell
                             gnome-shell-extensions
-                            gnome-themes-extra
                             gnome-user-docs
                             gnome-user-share
                             gsettings-desktop-schemas
