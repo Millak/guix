@@ -11429,6 +11429,26 @@ writing to stdout and other handles.")
     (native-inputs '())
     (properties '((hidden? #t)))))
 
+(define-public ghc-simple-get-opt
+  (package
+    (name "ghc-simple-get-opt")
+    (version "0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "simple-get-opt" version))
+       (sha256
+        (base32 "0mprf5fw691sfv35y48mf8lxl5i9i8qr8rxygdbnzsyq7vz4ndb1"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "simple-get-opt")))
+    (home-page "https://github.com/yav/simple-get-opt")
+    (synopsis "Simple library for processing command-line options")
+    (description
+     "This package provides a simple library for processing command-line options.
+The library captures a common usage pattern of the @code{GetOpt} module form the
+standard library.")
+    (license license:bsd-3)))
+
 (define-public ghc-simple-reflect
   (package
     (name "ghc-simple-reflect")
