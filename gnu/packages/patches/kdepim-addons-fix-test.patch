@@ -1,0 +1,25 @@
+From 28f0ea8df152984aa68e804e104c9b654dfb1ccd Mon Sep 17 00:00:00 2001
+From: Volker Krause <vkrause@kde.org>
+Date: Mon, 10 Aug 2026 18:16:17 +0200
+Subject: [PATCH] Fix test for external script plugin arguments
+
+---
+ .../autotests/viewerpluginexternalscriptparseargumenttest.cpp   | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/plugins/messageviewerplugins/externalscriptplugin/autotests/viewerpluginexternalscriptparseargumenttest.cpp b/plugins/messageviewerplugins/externalscriptplugin/autotests/viewerpluginexternalscriptparseargumenttest.cpp
+index 96b569f08..8a59cc9f2 100644
+--- a/plugins/messageviewerplugins/externalscriptplugin/autotests/viewerpluginexternalscriptparseargumenttest.cpp
++++ b/plugins/messageviewerplugins/externalscriptplugin/autotests/viewerpluginexternalscriptparseargumenttest.cpp
+@@ -83,7 +83,7 @@ void ViewerPluginExternalScriptParseArgumentTest::shouldReturnBody()
+     initializeMessage(message);
+     parser.setMessage(message);
+     const QStringList lst = {QStringLiteral("%body")};
+-    const QStringList result = {QStringLiteral("\"Hello this is a test mail\n\"")};
++    const QStringList result = {QStringLiteral("\"Hello this is a test mail \"")};
+     QCOMPARE(parser.parse(lst), result);
+ }
+ 
+-- 
+GitLab
+

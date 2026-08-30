@@ -1762,6 +1762,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/kaldi-openblas-0.3.29-compatibility.patch	\
   %D%/packages/patches/kcontacts-incorrect-country-name.patch	\
   %D%/packages/patches/kde-cli-tools-delay-mime-db.patch	\
+  %D%/packages/patches/kdepim-addons-fix-test.patch	\
   %D%/packages/patches/kdiagram-Fix-missing-link-libraries.patch \
   %D%/packages/patches/kicad-disable-updates.patch		\
   %D%/packages/patches/kiki-level-selection-crash.patch		\

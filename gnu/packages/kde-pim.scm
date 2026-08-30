@@ -978,7 +978,9 @@ functions for accessing calendar data using the kcalcore API.")
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kdepim-addons-" version ".tar.xz"))
        (sha256
-        (base32 "1acdi068phbjx0xcb7wimalxnpsdivn99jzl15ax5schp50fdsqw"))))
+        (base32 "1acdi068phbjx0xcb7wimalxnpsdivn99jzl15ax5schp50fdsqw"))
+       ;; Could be removed when updating to release after 26.08
+       (patches (search-patches "kdepim-addons-fix-test.patch"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
