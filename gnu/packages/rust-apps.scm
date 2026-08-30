@@ -4887,7 +4887,7 @@ policies, and so on.
 (define-public radicle
   (package
     (name "radicle")
-    (version "1.9.1")
+    (version "1.10.2")
     (source
      (origin
        (method url-fetch/tarbomb)
@@ -4895,7 +4895,7 @@ policies, and so on.
              "https://files.radicle.dev/releases/"
              version "/heartwood-" version ".tar.gz"))
        (sha256
-        (base32 "0z4ygjn5gmhh4v3iw5g5hxy536288wz464sb1vh90145wnjx4i74"))
+        (base32 "1xqg2v0jrs8byqrdzyjx703pldzawiyd85ls3hwhcixjrx7152sf"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -4968,7 +4968,7 @@ policies, and so on.
       (list pkg-config
             ;; for test
             git-minimal/pinned)))
-    (inputs (cons* libgit2-1.9 sqlite-next (cargo-inputs 'radicle)))
+    (inputs (cons* libgit2-1.9.7 sqlite-next (cargo-inputs 'radicle)))
     (home-page "https://radicle.dev/")
     (synopsis "Peer-to-peer code collaboration stack")
     (description
