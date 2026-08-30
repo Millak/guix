@@ -10804,7 +10804,6 @@ playing media, scanning, and much more.")
     (list accountsservice
           evolution-data-server         ;for the calendar widget
           network-manager
-          packagekit
           upower))))
 
 (define-public gnome-meta-core-shell
