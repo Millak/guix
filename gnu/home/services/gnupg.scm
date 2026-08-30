@@ -157,12 +157,11 @@ agent, with support for handling OpenSSH material."))))
 
 (define (home-gpg-agent-environment-variables config)
   "Return GnuPG environment variables needed for @var{config}."
-  (let ((home (getenv "HOME"))
-        (gnupghome (home-gpg-agent-configuration-home config)))
+  (let ((gnupghome (home-gpg-agent-configuration-home config)))
    `(,@(if (home-gpg-agent-configuration-ssh-support? config)
            '(("SSH_AUTH_SOCK" . "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"))
            '())
-     ("GNUPGHOME" . ,(in-vicinity home gnupghome)))))
+     ("GNUPGHOME" . ,(in-vicinity "$HOME" gnupghome)))))
 
 (define (gpg-agent-activation config)
   (with-imported-modules (source-module-closure
