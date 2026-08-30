@@ -10834,35 +10834,35 @@ playing media, scanning, and much more.")
   (gnome-meta-package
    (name "gnome-meta-core-utilities")
    (propagated-inputs
-     (list baobab
-           decibels
-           epiphany
-           file-roller
-           foundry
-           gnome-calculator
-           gnome-calendar
-           gnome-characters
-           gnome-clocks
-           gnome-connections
-           gnome-console
-           gnome-contacts
-           gnome-disk-utility
-           gnome-font-viewer
-           gnome-maps
-           gnome-music
-           gnome-screenshot
-           gnome-system-monitor
-           gnome-text-editor
-           gnome-weather
-           localsearch
-           loupe
-           nautilus
-           papers
-           simple-scan
-           showtime
-           snapshot
-           xdg-desktop-portal-gnome
-           yelp))))
+    (list baobab
+          decibels
+          epiphany
+          file-roller
+          foundry
+          gnome-calculator
+          gnome-calendar
+          gnome-characters
+          gnome-clocks
+          gnome-connections
+          gnome-console
+          gnome-contacts
+          gnome-disk-utility
+          gnome-font-viewer
+          gnome-maps
+          gnome-music
+          gnome-screenshot
+          gnome-system-monitor
+          gnome-text-editor
+          gnome-weather
+          localsearch
+          loupe
+          nautilus
+          papers
+          simple-scan
+          showtime
+          snapshot
+          xdg-desktop-portal-gnome
+          yelp))))
 
 (define-public gnome-essential-extras
   (gnome-meta-package
