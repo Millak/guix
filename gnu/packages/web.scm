@@ -467,21 +467,6 @@ and its related documentation.")
     (license license:asl2.0)
     (home-page "https://httpd.apache.org/")))
 
-;; A package variant that may be out of date and vulnerable. Only for use in
-;; test suites and should never be referred to by a built package.
-(define-public httpd/pinned
-  (hidden-package
-    (package
-      (inherit httpd)
-      (version "2.4.52")
-      (source (origin
-               (method url-fetch)
-               (uri (string-append "mirror://apache/httpd/httpd-"
-                                   version ".tar.bz2"))
-               (sha256
-                (base32
-                 "1jgmfbazc2n9dnl7axhahwppyq25bvbvwx0lqplq76by97fgf9q1")))))))
-
 (define-public leafnode
   (package
     (name "leafnode")
