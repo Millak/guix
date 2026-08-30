@@ -11578,7 +11578,7 @@ basically a text box in which notes can be written.")
             "0pjbyf77lbaxdhwidvpgp81cw13lfhlaw1ynn9vsmkssahmqp97p"))))
     (package
       (name "gucharmap")
-      (version "17.0.1")
+      (version "17.0.2")
       (source
        (origin
          (method url-fetch)
@@ -11587,7 +11587,7 @@ basically a text box in which notes can be written.")
                              name "-" version ".tar.xz"))
          (sha256
           (base32
-           "0sfixlmk7qajcvls6kv2hfczmjafjcr54aczwcdfmp5jjll4m17r"))))
+           "1ah0vyxkx3w63ry1pn3592jsxpbrwmcg8z4jvps8ls5bmwn9f8s7"))))
       (build-system meson-build-system)
       (arguments
        `(#:modules ((ice-9 match)
@@ -11609,8 +11609,7 @@ basically a text box in which notes can be written.")
                  (for-each (match-lambda
                              ((file _)
                               (install-file (assoc-ref inputs file) ".")))
-                           ',unicode-files))
-               #t)))))
+                           ',unicode-files)))))))
       (native-inputs
         (cons* desktop-file-utils
                (list glib "bin")
@@ -11632,7 +11631,7 @@ basically a text box in which notes can be written.")
       (inputs
        (list gtk+
              libxml2))
-      (home-page "https://wiki.gnome.org/Apps/Gucharmap")
+      (home-page "https://gitlab.gnome.org/GNOME/gucharmap")
       (synopsis "Unicode character picker and font browser")
       (description
        "This program allows you to browse through all the available Unicode
