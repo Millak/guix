@@ -10552,7 +10552,7 @@ beautifying border effects.")
     (native-inputs
      (list `(,glib "bin")               ;for glib-compile-schemas, gio-2.0
            desktop-file-utils           ;for update-desktop-database
-           `(,gtk "bin")                ;for gtk-update-icon-cache
+           `(,gtk+ "bin")                ;for gtk-update-icon-cache
            intltool
            pkg-config
            vala))
