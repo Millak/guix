@@ -11449,6 +11449,27 @@ The library captures a common usage pattern of the @code{GetOpt} module form the
 standard library.")
     (license license:bsd-3)))
 
+(define-public ghc-simple-smt
+  (package
+    (name "ghc-simple-smt")
+    (version "0.9.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "simple-smt" version))
+       (sha256
+        (base32 "03naikilcai2x5jmvl0k98g2cz4qki39pc2y1kfi0qkjrcm8cvxp"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "simple-smt")))
+    (inputs (list ghc-simple-get-opt))
+    (home-page "https://github.com/yav/simple-smt")
+    (synopsis "Simple library to interact with SMT solvers via SMT-LIB")
+    (description
+     "This package provides a simple library to interact with an external
+@acronym{SMT, satisfiability modulo theories} solver (such as @code{z3})
+via the standardized @url{https://smt-lib.org, SMT-LIB} format.")
+    (license license:bsd-3)))
+
 (define-public ghc-simple-reflect
   (package
     (name "ghc-simple-reflect")
