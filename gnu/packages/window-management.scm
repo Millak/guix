@@ -3465,8 +3465,8 @@ including multimedia.")
 resources and provides animations for switching between backgrounds.")
     (license license:gpl3+)))
 
-(define-deprecated-package swww
-  awww)
+;;; INFO: Deprecated at 2026-05-29.
+(define-deprecated-package swww awww)
 
 (define-public swaynotificationcenter
   (package
