@@ -158,16 +158,16 @@ Features include:
 (define-public tuba
   (package
     (name "tuba")
-    (version "0.10.3")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/GeopJr/Tuba")
+             (url "https://codeberg.org/GeopJr/Tuba")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w87dma3v04zk8b7s67f3nq2fdrjarb91m8apkhhdh3qa23w3rk1"))))
+        (base32 "0y5znrrpszj6gi7l2k8y9ykzcqbh5yx44csmvnxapz5vg9830mwr"))))
     (build-system meson-build-system)
     (arguments
       (list
