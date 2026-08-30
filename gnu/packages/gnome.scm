@@ -512,7 +512,7 @@ bindings.")
 (define-public libdmapsharing
   (package
     (name "libdmapsharing")
-    (version "3.9.13")
+    (version "3.9.14")
     (source
      (origin
        (method url-fetch)
@@ -520,7 +520,7 @@ bindings.")
         (string-append "https://www.flyn.org/projects/"
                        name "/" name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ylzd6pwc6dda366f360z7psvwz3dg6dflwbwxm6s7g154zzcn9n"))))
+        (base32 "0h0ss2pj5vyj3xfbp4b0lqp8b3k6fw20mqgdg9gwljs34fa0vmja"))))
     (build-system glib-or-gtk-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -543,12 +543,12 @@ bindings.")
            gst-plugins-base
            gtk+))
     (propagated-inputs
-     (list glib glib-networking gstreamer libsoup-minimal-2))
+     (list glib glib-networking gstreamer libsoup))
     (synopsis "Media management library")
     (description "Libdmapsharing is a library which allows programs to access,
 share and control the playback of media content using DMAP (DAAP, DPAP & DACP).
 It is written in C using GObject and libsoup.")
-    (home-page "https://launchpad.net/gtx")
+    (home-page "https://gitlab.gnome.org/GNOME/libdmapsharing/")
     (license license:lgpl2.1+)))
 
 (define-public gtx
