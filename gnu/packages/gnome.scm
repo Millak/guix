@@ -12732,24 +12732,6 @@ interfaces for mobile devices using GTK+.  It provides responsive GTK+ widgets
 for usage on small and big screens.")
     (license license:lgpl2.1+)))
 
-(define-public libhandy-0.0
-  (package
-    (inherit libhandy)
-    (version "0.0.13")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.gnome.org/GNOME/libhandy")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "libhandy" version))
-       (sha256
-        (base32 "1y23k623sjkldfrdiwfarpchg5mg58smcy1pkgnwfwca15wm1ra5"))))
-    (arguments
-     (substitute-keyword-arguments arguments
-       ((#:configure-flags flags)
-        '(list "-Dglade_catalog=disabled" "-Dgtk_doc=true"))))))
-
 (define-public libgit2-glib
   (package
     (name "libgit2-glib")
