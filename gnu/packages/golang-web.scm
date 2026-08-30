@@ -18682,6 +18682,34 @@ information or even the peer of a VETH interface.")
 platform.")
     (license license:gpl3+)))
 
+(define-public go-github-com-sagernet-sing-shadowsocks
+  (package
+    (name "go-github-com-sagernet-sing-shadowsocks")
+    (version "0.2.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/SagerNet/sing-shadowsocks")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gq8k8lsbi68hnscl9c5f611cg76idz61g0i3bzmmrrnkims071k"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sagernet/sing-shadowsocks"))
+    (propagated-inputs
+     (list go-github-com-sagernet-sing
+           go-golang-org-x-crypto
+           go-lukechampine-com-blake3))
+    (home-page "https://github.com/sagernet/sing-shadowsocks")
+    (synopsis "Lightweight shadowsocks implementation")
+    (description
+     "This package provides a lightweight and efficient shadowsocks
+implementation with sing.")
+    (license license:gpl3+)))
+
 (define-public go-github-com-santhosh-tekuri-jsonschema-v5
   (package
     (name "go-github-com-santhosh-tekuri-jsonschema-v5")
