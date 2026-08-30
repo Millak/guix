@@ -25499,6 +25499,36 @@ Telegram Bot API}.  This package provides the best of its kind API for command
 routing, inline query requests and keyboards, as well as callbacks.")
     (license license:expat)))
 
+(define-public go-h12-io-socks
+  (package
+    (name "go-h12-io-socks")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/h12w/socks")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z05aa8j9p5hmbgmxsql1dx3b2vmy5zzz3629pbbs5517rlbc0v8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "h12.io/socks"
+      #:test-flags
+      #~(list "-vet=off")))
+    (native-inputs
+     (list go-github-com-h12w-go-socks5))
+    (propagated-inputs
+     (list go-github-com-phayes-freeport))
+    (home-page "https://h12.io/socks")
+    (synopsis "SOCKS proxy client implementation")
+    (description
+     "This package provides a proxy client for Go supporting SOCKS4, SOCKS4A
+and SOCKS5.")
+    (license license:bsd-2)))
+
 (define-public go-k8s-io-cri-api
   (package
     (name "go-k8s-io-cri-api")
