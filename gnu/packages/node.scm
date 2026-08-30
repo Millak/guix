@@ -649,14 +649,14 @@ parser definition into a C output.")
 (define-public node-lts
   (package
     (inherit node-bootstrap)
-    (version "24.19.0")
+    (version "24.20.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nodejs.org/dist/v" version
                                   "/node-v" version ".tar.gz"))
               (sha256
                (base32
-                "00avy95j70wyipck4km57n6wl8sn3rg3nnz0zd26is560s02bzhn"))
+                "0bq6j2cf9q9ijpc3aklkigdg6dkizqm0fx4zy2c8j0drda316wcq"))
               (modules '((guix build utils)))
               (snippet
                '(begin
