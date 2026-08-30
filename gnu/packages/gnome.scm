@@ -1525,7 +1525,6 @@ extraction, and lookup for applications on the desktop.")
            librest
            libsecret
            network-manager
-           packagekit
            polkit
            tecla
            upower
