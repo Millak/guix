@@ -43163,9 +43163,10 @@ intuitive, standard compliant Python profiler.")
     (name "python-yapsy")
     ;; 1.12.2 (2019-06-28), the latest changes provide support for Python
     ;; 3.12+; move back to git tag when released.
-    (properties '((commit . "6b487b04affb19ab40adbbc87827668bea0abcee")
+    (properties '((base-version . "1.12.2")
+                  (commit . "6b487b04affb19ab40adbbc87827668bea0abcee")
                   (revision . "0")))
-    (version (git-version "1.12.2"
+    (version (git-version (assoc-ref properties 'base-version)
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
     (source
@@ -43178,6 +43179,18 @@ intuitive, standard compliant Python profiler.")
        (sha256
         (base32 "046c505kwdbp4vhqjrc5xpdrji7lyxv11nzq9yn20c2q1186b9j0"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-source-dir
+            (lambda _
+              (chdir "package")))
+          (add-after 'change-source-dir 'patch-version
+            (lambda _
+              (substitute* "yapsy/__init__.py"
+                (("__version__=\"2.0.0\"")
+                 (format #nil "__version__=\"~a\"" #$(assoc-ref properties 'base-version)))))))))
     (native-inputs
      (list python-pytest python-setuptools))
     (home-page "https://yapsy.sourceforge.net")
