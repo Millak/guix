@@ -1782,6 +1782,7 @@ vector data.")
       #~(list "-DGDAL_USE_INTERNAL_LIBS=WHEN_NO_EXTERNAL"
               "-DGDAL_USE_JPEG12_INTERNAL=OFF"
               "-DGDAL_USE_LERC_INTERNAL=ON"
+              "-DGDAL_USE_LIBAEC=ON"
               (string-append "-DCMAKE_INSTALL_RPATH=" #$output "/lib"))
       #:phases
       #~(modify-phases %standard-phases
@@ -1807,6 +1808,7 @@ vector data.")
            geos
            giflib
            json-c
+           libaec
            libgeotiff
            libjpeg-turbo
            libjxl
