@@ -18653,6 +18653,35 @@ information from a network device such as statistics, driver related
 information or even the peer of a VETH interface.")
     (license license:asl2.0)))
 
+(define-public go-github-com-sagernet-sing
+  (package
+    (name "go-github-com-sagernet-sing")
+    (version "0.8.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/SagerNet/sing")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lc65fl58kh4g2r66yx141k3w1qnc1x76aq8wkg0gym6qdk2nzwg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/sagernet/sing"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/sagernet/sing")
+    (synopsis "Proxy platform core library")
+    (description
+     "This package provides a core functionality for a universal proxy
+platform.")
+    (license license:gpl3+)))
+
 (define-public go-github-com-santhosh-tekuri-jsonschema-v5
   (package
     (name "go-github-com-santhosh-tekuri-jsonschema-v5")
