@@ -1942,7 +1942,7 @@ formats like PNG, SVG, PDF and EPS.")
        ("liboauth" ,liboauth)
        ("libsoup" ,libsoup-minimal-2)
        ("libxml2" ,libxml2)))
-    (home-page "https://wiki.gnome.org/Projects/libgdata")
+    (home-page "https://gitlab.gnome.org/Archive/libgdata")
     (synopsis "Library for accessing online service APIs")
     (description
      "libgdata is a GLib-based library for accessing online service APIs using
