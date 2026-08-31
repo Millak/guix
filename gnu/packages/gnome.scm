@@ -6026,48 +6026,6 @@ It is a basic GtkUIManager replacement based on GAction.  It is suitable for
 both a traditional UI or a modern UI with a GtkHeaderBar.")
     (license license:lgpl2.1+)))
 
-(define-public devhelp
-  (package
-    (name "devhelp")
-    (version "43.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major version) "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "016xhpz16b9b13y7wnvkllymb4s2fb6ixvw190204bir0pyyxkk3"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "meson.build"
-               (("gtk_update_icon_cache: true")
-                "gtk_update_icon_cache: false")))))))
-    (propagated-inputs
-     (list gsettings-desktop-schemas))
-    (native-inputs
-     (list gettext-minimal
-           gobject-introspection
-           `(,glib "bin")               ; for glib-mkmenus
-           itstool
-           pkg-config))
-    (inputs
-     (list amtk
-           webkitgtk-for-gtk3))
-    (home-page "https://wiki.gnome.org/Apps/Devhelp")
-    (synopsis "API documentation browser for GNOME")
-    (description
-     "Devhelp is an API documentation browser for GTK+ and GNOME.  It works
-natively with GTK-Doc (the API reference system developed for GTK+ and used
-throughout GNOME for API documentation).")
-    (license license:gpl2+)))
-
 (define-public cogl
   (package
     (name "cogl")
@@ -10598,6 +10556,7 @@ playing media, scanning, and much more.")
                             rygel
                             sushi))))
 
+;;; See the list of core apps at <https://apps.gnome.org/>
 (define-public gnome-meta-core-utilities
   (gnome-meta-package
    (name "gnome-meta-core-utilities")
@@ -10621,15 +10580,14 @@ playing media, scanning, and much more.")
           gnome-screenshot
           gnome-system-monitor
           gnome-text-editor
+          gnome-tour
           gnome-weather
-          localsearch
           loupe
           nautilus
           papers
           simple-scan
           showtime
           snapshot
-          xdg-desktop-portal-gnome
           yelp))))
 
 (define-public gnome-essential-extras
@@ -10645,16 +10603,13 @@ playing media, scanning, and much more.")
                             gnome-online-accounts
                             gst-plugins-base
                             gst-plugins-good
-                            gucharmap
-                            pinentry-gnome3
+                            localsearch
                             pulseaudio
                             shared-mime-info
-                            system-config-printer
                             xdg-desktop-portal
+                            xdg-desktop-portal-gnome
                             xdg-user-dirs
-                            xdg-user-dirs-gtk
-                            yelp
-                            zenity))
+                            xdg-user-dirs-gtk))
    (description "This package provides a list of packages required for
 a good GNOME experience, mixed from core dependencies and other implicitly
 relied-on packages.")))
