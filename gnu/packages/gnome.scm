@@ -1227,56 +1227,55 @@ in particular in the GNOME desktop.")
 
 (define-public gnome-color-manager
   (package
-   (name "gnome-color-manager")
-   (version "3.36.2")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnome/sources/" name "/"
-                                (version-major+minor version) "/"
-                                name "-" version ".tar.xz"))
-            (sha256
-             (base32
-              "0zw87bipnk4s8qcb659gd5n3i1lz1fzq43l81ggnd9afpcmd811r"))))
-   (build-system meson-build-system)
-   (arguments
-    `(#:glib-or-gtk? #t
+    (name "gnome-color-manager")
+    (version "3.36.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0zw87bipnk4s8qcb659gd5n3i1lz1fzq43l81ggnd9afpcmd811r"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
       #:phases
-       (modify-phases %standard-phases
-        (add-before
-         'check 'pre-check
-         (lambda _
-           ;; Tests require a running X server.
-           (system "Xvfb :1 &")
-           (setenv "DISPLAY" ":1")
-           #t)))))
-   (native-inputs
-    `(("desktop-file-utils" ,desktop-file-utils)
-      ("gettext" ,gettext-minimal)
-      ("glib:bin" ,glib "bin")
-      ("gtk+:bin" ,gtk+ "bin")
-      ("itstool" ,itstool)
-      ("pkg-config" ,pkg-config)
-      ("xorg-server" ,xorg-server-for-tests)))
-   (inputs
-    (list adwaita-icon-theme
-          appstream-glib
-          colord-gtk
-          exiv2
-          gnome-desktop
-          libcanberra
-          libexif
-          libtiff
-          libxrandr
-          libxtst
-          libxxf86vm
-          vte/gtk+-3
-          xorgproto))
-   (synopsis "Color profile manager for the GNOME desktop")
-   (description "GNOME Color Manager is a session framework that makes
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1"))))))
+    (native-inputs
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           `(,gtk+ "bin")
+           itstool
+           pkg-config
+           xorg-server-for-tests))
+    (inputs
+     (list adwaita-icon-theme
+           appstream-glib
+           colord-gtk
+           exiv2
+           gnome-desktop
+           libcanberra
+           libexif
+           libtiff
+           libxrandr
+           libxtst
+           libxxf86vm
+           vte/gtk+-3
+           xorgproto))
+    (synopsis "Color profile manager for the GNOME desktop")
+    (description "GNOME Color Manager is a session framework that makes
 it easy to manage, install and generate color profiles
 in the GNOME desktop.")
-   (home-page "https://gitlab.gnome.org/GNOME/gnome-color-manager")
-   (license license:gpl2+)))
+    (home-page "https://gitlab.gnome.org/GNOME/gnome-color-manager")
+    (license license:gpl2+)))
 
 (define-public gssdp
   (package
