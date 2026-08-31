@@ -507,8 +507,8 @@ in ability, and easy to use.")
 
 (define-public emacs-ledger-mode
   ;; The last release was on Nov 8, 2019 and doesn't build with Emacs 28.
-  (let ((commit "356d8049ede02c06db4f487d1d6076f74d6098c5")
-        (revision "1"))
+  (let ((commit "b0e71b7e9ee612ccb0b0e5f8bfefcfddb69ae861")
+        (revision "2"))
     (package
       (name "emacs-ledger-mode")
       (version (git-version "4.0.0" revision commit))
@@ -520,11 +520,10 @@ in ability, and easy to use.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1wssagczhils0nx12b2nq2jk2gp9j26jn8nrqdrj255nzl40aia1"))))
+          (base32 "1izybqhsg4gl2jlp7xgbybazxxh96xgqc31f3l19244ppc73g2kr"))))
       (build-system emacs-build-system)
       (arguments
        (list
-        #:tests? #t
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'do-not-require-tests-at-runtime
@@ -545,8 +544,6 @@ in ability, and easy to use.")
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
                   (with-directory-excursion "../source/test"
-                    ;; Test does not respect `ledger-binary-path' and thus fails
-                    (delete-file-recursively "report-test.el")
                     (invoke "make" "test"))))))))
       (inputs
        (list ledger))
