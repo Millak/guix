@@ -26980,29 +26980,6 @@ also comes together with almost all possible parts required for full usability
 as a modern file manager.")
     (license license:gpl3+)))
 
-(define-public emacs-which-key
-  (package
-    (name "emacs-which-key")
-    (version "3.6.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/which-key-" version
-                           ".tar"))
-       (sha256
-        (base32 "0p1vl7dnd7nsvzgsff19px9yzcw4w07qb5sb8g9r8a8slgvf3vqh"))))
-    (build-system emacs-build-system)
-    (home-page "https://elpa.gnu.org/packages/which-key.html")
-    (synopsis "Display available keybindings in popup")
-    (description
-     "@code{emacs-which-key} is a minor mode for Emacs that displays the key
-bindings following your currently entered incomplete command (a prefix) in a
-popup.  For example, after enabling the minor mode if you enter C-x and wait
-for the default of 1 second, the minibuffer will expand with all of the
-available key bindings that follow C-x (or as many as space allows given your
-settings).")
-    (license license:gpl3+)))
-
 (define-public emacs-whisper-el
   (let ((commit "fd9bf5787a99dd31a4bdf54d2bd9821aacf84e93")
         (revision "0"))
@@ -27069,7 +27046,7 @@ C/C++ port whisper.cpp for inference.")
                  (base32
                   "0kgc29pb5k6cb2m13cz1yhys1k8l4dpx6wjjgldpdlg9qw2i1b53"))))
       (build-system emacs-build-system)
-      (propagated-inputs (list emacs-posframe emacs-which-key))
+      (propagated-inputs (list emacs-posframe))
       (home-page "https://github.com/emacsorphanage/which-key-posframe")
       (synopsis "Display which-key popup in a posframe (a child frame)")
       (description
@@ -27189,8 +27166,6 @@ Emacs.  It is relatively full-featured, but for the time being low-level.")
        (sha256
         (base32 "1rp37rhkj8jm07dwr74vc68dhrbvyvrxjdavpb0h073ps9vl9dsc"))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-which-key))
     (home-page "https://gitlab.com/jjzmajic/hercules.el")
     (synopsis "Call a chain of related commands without repeated prefix keys")
     (description
@@ -47528,7 +47503,6 @@ This allows working with files in the current @code{binder-project-directory}.")
       (propagated-inputs
        (list emacs-dash
              emacs-general
-             emacs-which-key
              emacs-bind-map))
       (home-page "https://github.com/mohkale/spaceleader")
       (synopsis "Emacs leader key implementation from Spacemacs")
