@@ -3151,7 +3151,7 @@ for @b{at least six months}, for instance by adding
 @findex define-deprecated/public-alias
 @lisp
 (define-deprecated/public-alias @var{name}
-  (@@ (gnu packages @var{new-module} @var{name}))
+  (@@ (gnu packages @var{new-module}) @var{name}))
 @end lisp
 in @var{gnu/packages/old-module.scm}.
 
