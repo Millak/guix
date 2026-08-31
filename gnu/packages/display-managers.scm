@@ -554,7 +554,7 @@ display manager which supports different greeters.")
 (define-public lightdm-gtk-greeter
   (package
     (name "lightdm-gtk-greeter")
-    (version "2.0.8")
+    (version "2.0.9")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -563,7 +563,7 @@ display manager which supports different greeters.")
                     "lightdm-gtk-greeter-" version ".tar.gz"))
               (sha256
                (base32
-                "04q62mvr97l9gv8h37hfarygqc7p0498ig7xclcg4kxkqw0b7yxy"))))
+                "0pb43w4g342jjrigrz780y8vfxr27kidyj0bml6rsgwsmacg3zf8"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
