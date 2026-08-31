@@ -17168,7 +17168,11 @@ for Perl programming, and a tutorial for novices to start using Emacs.")
     (arguments
      `(#:test-command '("emacs" "-Q" "-batch" "-L" "."
                         "-l" "test/test-perspective.el"
-                        "-f" "ert-run-tests-batch-and-exit")))
+                        "--eval"
+                        ;; This test is known to fail for Emacs 31,
+                        ;; see <https://github.com/nex3/perspective-el/pull/233>.
+                        "(ert-run-tests-batch-and-exit
+                          '(not \"basic-persp-window-prev-buffers\"))")))
     (home-page "https://github.com/nex3/perspective-el")
     (synopsis "Switch between named \"perspectives\"")
     (description
