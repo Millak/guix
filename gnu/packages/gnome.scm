@@ -3233,8 +3233,7 @@ some form of information without getting in the user's way.")
                                 (search-input-file inputs "bin/Xvfb")
                                 disp))))))))
     (inputs
-     (list gtk+
-           glade3
+     (list glade3
            python
            python-pygobject-3.50))
     (native-inputs
@@ -3246,8 +3245,8 @@ some form of information without getting in the user's way.")
            xorg-server-for-tests
            vala))
     (propagated-inputs
-     ;; The .pc file "Requires" gobject-introspection.
-     (list glib gobject-introspection))
+     ;; In "Requires" of the .pc files.
+     (list glib gtk+ gobject-introspection))
     (home-page "https://wiki.gnome.org/Projects/Libpeas")
     (synopsis "GObject plugin system")
     (description
