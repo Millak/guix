@@ -42083,26 +42083,6 @@ hints, exceptions, and the return type hint.")
 scripts.")
       (license license:gpl3+))))
 
-(define-public emacs-nadvice
-  (package
-    (name "emacs-nadvice")
-    (version "0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/"
-                           "nadvice-" version ".tar"))
-       (sha256
-        (base32 "0ac7zxi04gzcd5hz81lib1db3c6a7xmwkb381ljxvaha1mlzp1k0"))))
-    (build-system emacs-build-system)
-    (home-page "https://elpa.gnu.org/packages/nadvice.html")
-    (synopsis "Forward compatibility for Emacs-24.4's nadvice")
-    (description
-     "This package tries to re-implement some of nadvice.el's functionality on
-top of the old defadvice system, to help users of defadvice move to the new
-advice system without dropping support for Emacs<24.4.")
-    (license license:gpl3+)))
-
 (define-public emacs-url-http-oauth
   (package
     (name "emacs-url-http-oauth")
