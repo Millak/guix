@@ -1,7 +1,7 @@
 #!/usr/bin/env -S guix repl --
 !#   ;-*- mode: scheme; -*-
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -135,5 +135,6 @@ refresh' can automatically find the newest compatible version."
                  name version))))
 
 (apply guix-refresh (append (cdr (command-line))
-                            (releng-tree->update-specs
-                             (parse-releng (fetch-releng-content)))))
+                            (sort (releng-tree->update-specs
+                                   (parse-releng (fetch-releng-content)))
+                                  string>)))
