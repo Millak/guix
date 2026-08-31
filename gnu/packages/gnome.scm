@@ -7047,7 +7047,7 @@ supports image conversion, rotation, and slideshows.")
   ;; 'XDG_DATA_DIRS' appropriately set.
   (package
     (name "eog-plugins")
-    (version "42.1")
+    (version "44.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/eog-plugins/"
@@ -7055,7 +7055,7 @@ supports image conversion, rotation, and slideshows.")
                                   "eog-plugins-" version ".tar.xz"))
               (sha256
                (base32
-                "0prymlrfh66p03va5aj30wazshp7bn80gzcsj9dgsmss2k512wlb"))))
+                "14swm3a8rih9s0v745501wqwi51z91jn0qbbsy4licxbbwaq9hy4"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -7067,12 +7067,11 @@ supports image conversion, rotation, and slideshows.")
     (synopsis "Extensions for the Eye of GNOME image viewer")
     (native-inputs
      (list gettext-minimal
+           `(,glib "bin")
            pkg-config
            python))
     (inputs
      (list eog
-           glib
-           gtk+
            libchamplain
            libexif
            libgdata
@@ -7086,7 +7085,7 @@ notably:
 @item @dfn{Map}, which displays a map of where the picture was taken on the
 side panel;
 @item @dfn{Slideshow Shuffle}, to shuffle images in slideshow mode.
-@end itemize\n")
+@end itemize")
 
     ;; XXX: eog-postasa-plugin-resources.c (which we don't build) contains a
     ;; long suspicious byte stream that goes to a
