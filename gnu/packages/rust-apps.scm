@@ -4899,7 +4899,7 @@ policies, and so on.
       (list pkg-config
             ;; for test
             git-minimal/pinned)))
-    (inputs (cons* libgit2-1.9.7 sqlite-next (cargo-inputs 'radicle)))
+    (inputs (cons* libgit2-1.9 sqlite-next (cargo-inputs 'radicle)))
     (home-page "https://radicle.dev/")
     (synopsis "Peer-to-peer code collaboration stack")
     (description
