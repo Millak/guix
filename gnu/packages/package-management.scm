@@ -2868,14 +2868,14 @@ the boot loader configuration.")
 (define-public flatpak
   (package
     (name "flatpak")
-    (version "1.16.6")
+    (version "1.18.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/flatpak/flatpak/releases/download/"
                            version "/flatpak-" version ".tar.xz"))
        (sha256
-        (base32 "1hzfb337cyg5h4k3rh30jjzccfwazm3gx9lj9prh5dj4zvryfqqy"))
+        (base32 "044fy3bvh17gp37mgaix6qw0s6zargi2m4w4k70s6sf32k5zh3w0"))
        (patches
         (search-patches "flatpak-fix-fonts-icons.patch"
                         "flatpak-fix-icon-validation.patch"
@@ -2898,12 +2898,12 @@ the boot loader configuration.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-failing-tests
             (lambda _
-              (substitute* "tests/test-matrix/meson.build"
+              (substitute* "tests/meson.build"
                 ;; The following tests fail with error message related to fusermount3
                 ;; failing an unmount operation ("No such file or directory").
-                (("^.*test-http-utils.*$") "")
-                (("^.*test-summaries@system.wrap.*$") "")
-                (("^.*test-prune.*$") ""))))
+                ((".*http-utils.*") "")
+                ((".*summaries.*") "")
+                ((".*prune.*") ""))))
           (add-after 'unpack 'fix-tests
             (lambda* (#:key inputs #:allow-other-keys)
               (copy-recursively
@@ -2917,8 +2917,7 @@ the boot loader configuration.")
 cp -r /tmp/locale/*/en_US.*")))
               (substitute* "tests/libtest.sh"
                 (("/bin/kill") (which "kill"))
-                (("/usr/bin/python3") (which "python3")))
-              #t))
+                (("/usr/bin/python3") (which "python3")))))
           (add-after 'unpack 'p11-kit-fix
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((p11-path (search-input-file inputs "/bin/p11-kit")))
@@ -2978,7 +2977,7 @@ cp -r /tmp/locale/*/en_US.*")))
            gsettings-desktop-schemas
            gdk-pixbuf
            libcap
-           libsoup-minimal-2
+           libsoup
            libxml2
            p11-kit
            polkit
