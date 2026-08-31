@@ -39,13 +39,19 @@
         ((pair? modules) modules)
         (else '())))))
 
-(manifest
-  (map package->manifest-entry
-       (fold-packages
-        (lambda (package lst)
-          (if (apply has-emacs-build-system?
-                     (package-build-system package)
-                     (package-arguments package))
-              (cons package lst)
-              lst))
-        (list))))
+(concatenate-manifests
+ (list
+  (packages->manifest
+   (filter package?
+           (module-map
+            (lambda (sym var) (variable-ref var))
+            (resolve-interface '(gnu packages emacs)))))
+  (packages->manifest
+   (fold-packages
+    (lambda (package lst)
+      (if (apply has-emacs-build-system?
+                 (package-build-system package)
+                 (package-arguments package))
+          (cons package lst)
+          lst))
+    (list)))))
