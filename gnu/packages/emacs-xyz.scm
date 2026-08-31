@@ -35478,36 +35478,6 @@ reload the configuration with @code{gpgconf --reload gpg-agent}, and start the
 server with @code{M-x pinentry-start}.")
       (license license:gpl3+))))
 
-(define-public emacs-so-long
-  (package
-    (name "emacs-so-long")
-    (version "1.1.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.savannah.gnu.org/git/so-long")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "06a76ajfqgz48yqvvyhi5b9zss9c6h4xz6acg98ibg0v99v9k5pz"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list #:test-command #~(list "make" "test")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-tests
-                 (lambda _
-                   (substitute* "Makefile"
-                     (("tests\\.elc") "tests")))))))
-    (home-page "https://www.emacswiki.org/emacs/SoLong")
-    (synopsis "Improve performance in files with long lines")
-    (description "This package improves the performance of Emacs when
-viewing files with long lines.  It is included as standard with Emacs 27 or
-later.")
-    (license license:gpl3+)))
-
 (define-public emacs-srfi
   ;; SRFI data gets updated quite frequently; latest tag is from
   ;; 2020; commit from 2021-08-12.
