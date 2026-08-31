@@ -7177,7 +7177,7 @@ result in several formats:
                  '())
              (list pkg-config rust-cargo-c)))
     (inputs
-     (cons* libgit2-1.9/pinned zlib (cargo-inputs 'rav1e)))
+     (cons* libgit2-1.9 zlib (cargo-inputs 'rav1e)))
     (home-page "https://github.com/xiph/rav1e/")
     (synopsis "Fast and safe AV1 encoder")
     (description "@code{rav1e} is an AV1 video encoder.  It is designed to

@@ -1483,51 +1483,6 @@ write native speed custom Git applications in any language with bindings.")
     ;; GPLv2 with linking exception
     (license license:gpl2)))
 
-(define-public libgit2-1.9/pinned
-  ;; This is a pinned version used as a dependency for 'rust-cargo-c'.
-  ;; Update periodically.
-  (package/inherit libgit2-1.9
-    (version "1.9.2")
-    (source (origin
-              (inherit (package-source libgit2-1.9))
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/libgit2/libgit2")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name "libgit2" version))
-              (sha256
-               (base32
-                "1f3wnw0s5fx4lf68i400mj6l7qyw9hf6mr7i2xlqqmp9q23q89sc"))
-              (patches
-               (search-patches "libgit2-uninitialized-proxy-settings.patch"
-                               "libgit2-proxy-reconnection.patch"
-                               "libgit2-path-max.patch"))))
-    (arguments
-     (list #:configure-flags
-           #~(list "-DUSE_NTLMCLIENT=OFF"         ;TODO: package this
-                   "-DREGEX_BACKEND=pcre2"
-                   "-DUSE_HTTP_PARSER=http-parser"
-                   "-DUSE_SSH=ON" ; cmake fails to find libssh if this is missing
-                   ;; See https://github.com/libgit2/libgit2/issues/7169
-                   #$@(if (target-32bit?)
-                          '("-DCMAKE_C_FLAGS=-D_FILE_OFFSET_BITS=64")
-                          '()))
-           #:phases
-           #~(modify-phases %standard-phases
-               ;; Run checks more verbosely, unless we are cross-compiling.
-               (replace 'check
-                 (lambda* (#:key (tests? #t) #:allow-other-keys)
-                   (if tests?
-                       (invoke "./libgit2_tests" "-v" "-Q")
-                       ;; Tests may be disabled if cross-compiling.
-                       (format #t "Test suite not run.~%")))))))
-    (inputs
-     (list libssh2 http-parser))
-    (propagated-inputs
-     ;; These libraries are in 'Requires.private' in libgit2.pc.
-     (list openssl pcre2 zlib))
-    (properties '((hidden? . #t)))))
-
 (define-public libgit2-1.8
   (package
     (inherit libgit2-1.9)
