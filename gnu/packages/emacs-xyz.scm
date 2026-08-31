@@ -45130,13 +45130,31 @@ It also provides original Helm commands: @command{helm-cider-spec},
                  (base32
                   "1xp2hjhn52k6l1g6ypva6dsklpawni7gvjafbz6404f9dyxflh7l"))))
       (build-system emacs-build-system)
-      (arguments (list #:tests? #f      ; XXX: void-variable peg-stack
-                       #:test-command
-                       #~(list "emacs" "--batch" "-L" "." "-L" "tests"
-                               "-l" "tests/edn-tests"
-                               "-f" "ert-run-tests-batch-and-exit")))
+      (arguments (list
+                  #:test-command
+                  #~(list "emacs" "--batch" "-L" "." "-L" "tests"
+                          "-l" "tests/edn-tests"
+                          "-f" "ert-run-tests-batch-and-exit")
+                  #:phases
+                  #~(modify-phases %standard-phases
+                      (add-after 'unpack 'fix-build
+                        (lambda _
+                          ;; Lexical binding is required for the peg library I belive
+                          (emacs-batch-edit-file "edn.el"
+                            '(progn
+                              (end-of-line)
+                              (insert " -*-lexical-binding:t -*-\n")
+                              (insert "(defvar discarded)")
+                              (basic-save-buffer)))
+                          (substitute* "edn.el"
+                            (("peg-stack") "peg--stack")
+                            ;; Fix deprecated timezone declaration
+                            ((":utc") "t")
+                            ;; (wrong-type-argument listp t)
+                            (("cl-first") "car-safe")))))))
       (synopsis "Read and write EDN from Elisp")
-      (description "This is an Emacs Lisp library for reading and writing the
+      (description "This library is no longer maintained and is replaced by
+emacs-parseedn.  This is an Emacs Lisp library for reading and writing the
 data format @code{edn}.  See @url{https://github.com/edn-format/edn}.")
       (license license:gpl3+))))
 
