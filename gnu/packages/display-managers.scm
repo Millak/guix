@@ -12,7 +12,7 @@
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022-2023, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;;
@@ -457,20 +457,16 @@ the screen.")
 (define-public lightdm
   (package
     (name "lightdm")
-    (version "1.32.0")
+    (version "1.33.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/canonical/lightdm")
+                    (url "https://github.com/ubuntu/lightdm")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wr60c946p8jz9kb8zi4cd8d4mkcy7infbvlfzwajiglc22nblxn"))
-              (patches (search-patches "lightdm-arguments-ordering.patch"
-                                       "lightdm-vncserver-check.patch"
-                                       "lightdm-vnc-color-depth.patch"
-                                       "lightdm-vnc-ipv6.patch"))))
+                "1gayj1gasxfrr22njwyqs40k3w5dvkfjszzzf2sljildc9bpz7py"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -478,9 +474,7 @@ the screen.")
       #:configure-flags
       #~(list "--localstatedir=/var"
               "--sysconfdir=/etc"
-              "--enable-gtk-doc"
-              ;; Otherwise the test suite fails on such a warning.
-              "CFLAGS=-Wno-error=missing-prototypes")
+              "--enable-gtk-doc")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-paths
@@ -497,6 +491,13 @@ the screen.")
               (substitute* "src/seat.c"
                 (("/bin/sh")
                  (search-input-file inputs "bin/sh")))))
+          ;; The check phase is re-ordered after the install phase, so the
+          ;; shared libraries referenced absolutely in the typelibs (that's
+          ;; thanks to 'gobject-introspection-absolute-shlib-path.patch') are
+          ;; found (recent pygobject raises an error otherwise).
+          (delete 'check)               ;moved after install phase
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
           (add-before 'check 'pre-check
             (lambda _
               (wrap-program "tests/src/test-python-greeter"
@@ -536,18 +537,15 @@ the screen.")
            intltool
            libtool
            vala             ;for Vala bindings
-           ;; For tests
-           ;; All tests fail with dbus >= 1.15.2, see
-           ;; https://github.com/canonical/lightdm/issues/346
-           dbus-1.15.0
+           dbus
            python-wrapper
-           python-pygobject-3.50
+           python-pygobject    ;<https://github.com/ubuntu/lightdm/issues/471>
            which
            yelp-tools))
     ;; Required by liblightdm-gobject-1.pc.
     (propagated-inputs
      (list glib libx11 libxklavier))
-    (home-page "https://www.freedesktop.org/wiki/Software/LightDM/")
+    (home-page "https://github.com/ubuntu/lightdm")
     (synopsis "Lightweight display manager")
     (description "The Light Display Manager (LightDM) is a cross-desktop
 display manager which supports different greeters.")
