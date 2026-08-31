@@ -473,7 +473,7 @@ in which the loaded data is arranged in memory.")
 (define-public libfyaml
   (package
     (name "libfyaml")
-    (version "0.8")
+    (version "0.9.6")
     (source
      (origin
        (method git-fetch)
@@ -482,7 +482,7 @@ in which the loaded data is arranged in memory.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "002g0grddfi5y42lq06zj8266rf7h27wq76sr598ad5pxllx3y3g"))))
+        (base32 "1hrp1vaa1f192krrvkmmfr9rsladzpm5jgxjzpnx5hkrw9xi054r"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
