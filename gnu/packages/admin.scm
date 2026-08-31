@@ -1301,6 +1301,14 @@ re-executing them as necessary.")
       #:configure-flags
       #~(list "--localstatedir=/var"
               "--sysconfdir=/etc"
+              #$@(if (%current-target-system)
+                     '((string-append "--with-path-cp="
+                                      (search-input-file %build-target-inputs
+                                                         "bin/cp"))
+                       (string-append "--with-path-login="
+                                      (search-input-file %build-target-inputs
+                                                         "bin/login")))
+                     '())
               ;; Make sure 'PATH_PROCNET_DEV' gets defined when
               ;; cross-compiling (by default it does not.)
               #$@(if (and (%current-target-system)
@@ -1310,11 +1318,6 @@ re-executing them as necessary.")
               #$@(if (target-hurd?)
                      '("--with-path-klog=/dev/klog")
                      '()))
-      ;; Make sure that canonical "coreutils" package is not referred.
-      #:make-flags
-      #~(list (string-append "CPPFLAGS=-DPATHDEF_CP=\\\""
-                             (search-input-file %build-inputs "bin/cp")
-                             "\\\""))
       ;; On some systems, 'libls.sh' may fail with an error such as:
       ;; "Failed to tell switch -a apart from -A".
       #:parallel-tests? #f))
