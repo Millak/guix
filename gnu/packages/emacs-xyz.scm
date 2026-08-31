@@ -2613,7 +2613,6 @@ face properties and allows configuration of faces and colors.")
        (sha256
         (base32 "0g7in5lzv21j4mrmqp60bl02gwrh2mrs6fw1ysj6pwaqlza9hw4w"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-xref))
     (home-page "https://elpa.gnu.org/packages/project.html")
     (synopsis "Operations on the current project")
     (description
@@ -14578,8 +14577,7 @@ to install Docker Tramp Emacs package.")
                                emacs-f
                                emacs-pythonic
                                emacs-s
-                               emacs-tramp
-                               emacs-xref))
+                               emacs-tramp))
       (home-page "https://github.com/pythonic-emacs/anaconda-mode")
       (synopsis
        "Python code navigation, documentation lookup and completion in Emacs")
@@ -19124,7 +19122,7 @@ mode with the package emacs-julia-mode.")
       #:include
       #~(cons* "^JuliaSnail\\.jl" "extensions" %default-include)))
     (inputs
-     (list emacs-dash emacs-s emacs-spinner emacs-xref))
+     (list emacs-dash emacs-s emacs-spinner))
     (propagated-inputs
      (list libvterm
            emacs-julia-mode             ;required by parser
@@ -26332,8 +26330,7 @@ lines, and @code{gc} to comment out the target of a motion.")
     (propagated-inputs
      (list emacs-flymake
            emacs-jsonrpc
-           emacs-project
-           emacs-xref))
+           emacs-project))
     (home-page "https://github.com/joaotavora/eglot")
     (synopsis "Client for Language Server Protocol (LSP) servers")
     (description
@@ -47861,25 +47858,6 @@ franchise.")
        "This Emacs package provides a Janet REPL to evaluate @code{janet-mode}
 s-expression.")
       (license license:expat))))
-
-(define-public emacs-xref
-  (package
-    (name "emacs-xref")
-    (version "1.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/xref-"
-                           version ".tar"))
-       (sha256
-        (base32 "0jy49zrkqiqg9131k24y6nyjnq2am4dwwdrqmginrrwzvi3y9d24"))))
-    (build-system emacs-build-system)
-    (home-page "https://elpa.gnu.org/packages/xref.html")
-    (synopsis "Cross-referencing commands")
-    (description
-     "This library provides a generic infrastructure for cross referencing
-commands, in particular @code{find-definition}.")
-    (license license:gpl3+)))
 
 (define-public emacs-xref-union
   (package
