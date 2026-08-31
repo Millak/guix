@@ -95,7 +95,9 @@
               #:imported-modules (source-module-closure
                                   '((gnu services herd)))))
 
-  (define vm (virtual-machine os))
+  (define vm (virtual-machine
+               (operating-system os)
+               (memory-size 700)))      ;uses about 616 MiB
 
   (define test
     (with-imported-modules (source-module-closure
