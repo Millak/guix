@@ -42100,21 +42100,22 @@ programming in Emacs Lisp easy and fun.")
     (license license:gpl3+)))
 
 (define-public emacs-evil-traces
-  ;; XXX: Upstream does not tag releases.  Use commit matching exact version
-  ;; bump.
-  (let ((commit "05e201cd63b549e3c88b5c3fc9b264bd6fe5a42c"))
+  ;; Upstream does not tag releases.  Last release on 2019-12-14.  Using
+  ;; commit from 2023-08-20.
+  (let ((commit "82e8a7b4213aed140f6eb5f2cc33a09bb5587166")
+        (revision "0"))
     (package
       (name "emacs-evil-traces")
-      (version "0.2.0")
+      (version (git-version "0.2.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://github.com/mamapanda/evil-traces")
-                      (commit commit)))
+                       (url "https://github.com/mamapanda/evil-traces")
+                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0vadpy2whcgx08blyb4vw6wq3nrxdl03zv85lp37pf3mdk9kwmga"))))
+                  "025skn93jr6wphkpyhpz46v58na66k2d1l5pdqpmmd41wrx9cmvq"))))
       (build-system emacs-build-system)
       (arguments
        (list
