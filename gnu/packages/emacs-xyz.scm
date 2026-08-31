@@ -37374,28 +37374,34 @@ type.")
     (license license:gpl3+)))
 
 (define-public emacs-wttrin
-  (package
-    (name "emacs-wttrin")
-    (version "0.3.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/cjennings/emacs-wttrin")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "02wkqjyap6gxbi2mcrzpbdjz40igsmf1cbqqr7iw0mgp4ray7zxd"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list #:test-command #~(list "make" "test")))
-    (propagated-inputs
-     (list emacs-xterm-color))
-    (home-page "https://github.com/bcbcarl/emacs-wttrin")
-    (synopsis "Frontend for weather web service @url{wttr.in}")
-    (description "This package provides local weather information from
+  (let ((commit "ee8fdeb692d666c12ce068a2b1ee90e9451ac892")
+        (revision "1"))
+    (package
+      (name "emacs-wttrin")
+      (version (git-version "0.3.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/cjennings/emacs-wttrin")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "11yri41vzsj08arxvavc6hvkcxc4mg2bgc3in3fiksvcwy20pb44"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command
+        #~(list
+           "make" "test"
+           "EASK_EMACS=emacs --batch -q -L $(PROJECT_ROOT) -L $(TEST_DIR)")))
+      (propagated-inputs
+       (list emacs-xterm-color))
+      (home-page "https://github.com/bcbcarl/emacs-wttrin")
+      (synopsis "Frontend for weather web service @url{wttr.in}")
+      (description "This package provides local weather information from
 @url{wttr.in}.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public emacs-browse-kill-ring
   (package
