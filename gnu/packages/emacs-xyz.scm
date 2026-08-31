@@ -26304,7 +26304,13 @@ pressed simultaneously or a single key quickly pressed twice.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gfgmr4909m36gknprcam6q4rkcqfbi6w43ky7x6jnlmgb6mxggg"))))
+        (base32 "1gfgmr4909m36gknprcam6q4rkcqfbi6w43ky7x6jnlmgb6mxggg"))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    (substitute* "test/evil-surround-test.el"
+                      (("evil-add-to-alist\n") "evil-add-to-alist"))
+                    (substitute* "test/evil-surround-test.el"
+                      (("evil-add-to-alist[ ]*'") "evil--add-to-alist "))))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-evil))
