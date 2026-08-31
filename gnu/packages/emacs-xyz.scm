@@ -4301,7 +4301,6 @@ organizing remote Go repository clones.")
      (list emacs-compat
            emacs-cond-let
            emacs-llama
-           emacs-let-alist
            emacs-treepy))
     (home-page "https://github.com/magit/ghub")
     (synopsis "Emacs client libraries for the APIs of various Git forges")
@@ -6543,7 +6542,7 @@ overwrite mode, it will turn into a block cursor.")
                   (("ert-deftest sanity .*" all)
                    (string-append all "(skip-unless nil)"))))))))
       (propagated-inputs
-       (list emacs-hydra emacs-let-alist emacs-spinner))
+       (list emacs-hydra emacs-spinner))
       (native-inputs (list emacs-ert-runner emacs-undercover))
       (home-page "https://github.com/Malabarba/paradox")
       (synopsis "Paradox is an extension to Emacs packages menu")
@@ -8657,7 +8656,7 @@ during idle time, while Emacs is doing nothing else.")
     (inputs
      (list cairo glib libpng poppler zlib))
     (propagated-inputs
-     (list emacs-let-alist emacs-tablist))
+     (list emacs-tablist))
     (home-page "https://github.com/vedang/pdf-tools")
     (synopsis "Emacs support library for PDF files")
     (description
@@ -12439,7 +12438,7 @@ errors.")
        (sha256
         (base32 "1fh6j5w2387nh2fwwjphkhq17cgj5m2q5k0fhidvgc2w65lzbr1r"))))
     (propagated-inputs
-     (list emacs-dash emacs-flycheck emacs-let-alist))
+     (list emacs-dash emacs-flycheck))
     (native-inputs
      (list emacs-buttercup
            rust-bootstrap-1.54
@@ -18161,7 +18160,7 @@ possible, and falls back to moving the left or top border otherwise.")
                             (call-with-output-file "test/user-input.txt"
                               (const #t)))))))
     (propagated-inputs
-     (list emacs-let-alist emacs-imenu-list))
+     (list emacs-imenu-list))
     (native-inputs (list emacs-ert-runner))
     (home-page "https://github.com/bmag/emacs-purpose")
     (synopsis "Purpose-based window management for Emacs")
@@ -19614,7 +19613,7 @@ empty @file{.projectile} file in it.")
       (native-inputs
        (list emacs-ert-runner))
       (propagated-inputs
-       (list emacs-dash emacs-f emacs-let-alist emacs-s))
+       (list emacs-dash emacs-f emacs-s))
       (home-page "https://github.com/chrisbarrett/skeletor.el")
       (synopsis "Project skeletons for Emacs")
       (description "This package provides project templates and automates the
@@ -29664,7 +29663,7 @@ in Emacs for Pass-Age, a port of Pass, the standard Unix password manager.")
           (base32 "0xfw93pdf744h2yswc53qwyawfzkc31rv8dmha3irq7k1nklhq6y"))))
       (build-system emacs-build-system)
       (propagated-inputs
-       (list emacs-company emacs-dash emacs-flycheck emacs-let-alist
+       (list emacs-company emacs-dash emacs-flycheck
              emacs-s))
       (home-page "https://github.com/purescript-emacs/psc-ide-emacs")
       (synopsis "Emacs integration for PureScript's psc-ide tool")
@@ -30712,7 +30711,7 @@ with (La)TeX mode, Org mode and other Emacs editing modes.")
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ; XXX: too many broken tests
     (propagated-inputs
-     (list emacs-dash emacs-let-alist))
+     (list emacs-dash))
     (home-page "https://github.com/cpitclaudel/biblio.el")
     (synopsis "Browse and import bibliographic references")
     (description "This package provides an extensible Emacs package for
@@ -31561,24 +31560,6 @@ mode.")
       (description "@code{m-buffer} provides a set of list-orientated functions
 for operating over the contents of Emacs buffers.")
       (license license:gpl3+))))
-
-(define-public emacs-let-alist
-  (package
-    (name "emacs-let-alist")
-    (version "1.0.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://elpa.gnu.org/packages/let-alist-" version ".el"))
-       (sha256
-        (base32 "0szj7vnjzz4zci5fvz7xqgcpi4pzdyyf4qi2s8xar2hi7v3yaawr"))))
-    (build-system emacs-build-system)
-    (home-page "https://elpa.gnu.org/packages/let-alist.html")
-    (synopsis "Easily let-bind values of an assoc-list by their names")
-    (description "This package offers a single macro, @code{let-alist}.  This
-macro takes a first argument (whose value must be an alist) and a body.")
-    (license license:gpl3+)))
 
 (define-public emacs-esup
   (let ((commit "0de8af8233d9ce1b67f05a50f25c481c4f1118d8")
@@ -38208,7 +38189,7 @@ stored playlists.")
       (build-system emacs-build-system)
       (arguments (list #:tests? #f))    ; tests require networking
       (propagated-inputs
-       (list emacs-f emacs-json-mode emacs-let-alist emacs-request))
+       (list emacs-f emacs-json-mode emacs-request))
       (home-page "https://github.com/spiderbit/kodi-remote.el")
       (synopsis "Remote control for Kodi")
       (description
@@ -40086,7 +40067,7 @@ unescaping of quotes.")
           (base32 "1kjms9d2c98ffd1qxs879qhg0n4jzic0r5kni9y4gz3v09ww8zms"))))
       (build-system emacs-build-system)
       (propagated-inputs
-       (list emacs-flycheck emacs-let-alist))
+       (list emacs-flycheck))
       (home-page "https://github.com/bsermons/flycheck-elm")
       (synopsis "Flycheck support for the Elm language")
       (description "Flycheck Elm adds Flycheck support for Elm language.")
@@ -40114,7 +40095,7 @@ unescaping of quotes.")
              #:test-command #~(list "make" "test" "CASK=")
              #:tests? #f))  ; Several tests are failing on the haskell side.
       (propagated-inputs
-       (list emacs-dash emacs-flycheck emacs-haskell-mode emacs-let-alist))
+       (list emacs-dash emacs-flycheck emacs-haskell-mode))
       (native-inputs
        (list ghc))
       (home-page "https://github.com/flycheck/flycheck-haskell")
