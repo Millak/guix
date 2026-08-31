@@ -1949,7 +1949,7 @@ Common Lisp or Smalltalk, but for Emacs Lisp.")
       (build-system emacs-build-system)
       (arguments (list #:tests? #f))    ;no tests
       (propagated-inputs
-       (list emacs-map emacs-pdf-tools emacs-companion-mode))
+       (list emacs-pdf-tools emacs-companion-mode))
       (home-page "https://codeberg.org/rahguzar/inspirehep.el/")
       (synopsis "Search literature references for high energy physics")
       (description
@@ -47998,26 +47998,6 @@ franchise.")
 s-expression.")
       (license license:expat))))
 
-(define-public emacs-map
-  (package
-    (name "emacs-map")
-    (version "3.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/map-"
-                           version ".tar"))
-       (sha256
-        (base32
-         "1gvywhdfg27nx6pyq7yfwq9x6j96jama59i5s9rp41pvg2dlmvm0"))))
-    (build-system emacs-build-system)
-    (home-page "https://elpa.gnu.org/packages/map.html")
-    (synopsis "Map manipulation functions")
-    (description "This package provides Emacs map-manipulation functions that
-work on alists, hash-table and arrays.  All functions are prefixed with
-@code{map-}.")
-    (license license:gpl3+)))
-
 (define-public emacs-xref
   (package
     (name "emacs-xref")
@@ -48071,8 +48051,6 @@ commands, in particular @code{find-definition}.")
        (sha256
         (base32 "04qqxwb6pavgvis0irfg4s5rj2j5zja6gp78inb67fbvb0g4h84c"))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-map))
     (home-page "https://github.com/alphapapa/burly.el")
     (synopsis "Save and restore frame/window configurations with buffers")
     (description "This package provides tools to save and restore frame and
@@ -48961,7 +48939,6 @@ are documented in the docstring for @code{setup}.")
               (substitute* "test/all-tests.el"
                 (("\\(file-truename \\(vc-git-root default-directory\\)\\)")
                  (format #f "~s" (getcwd)))))))))
-    (propagated-inputs (list emacs-map))
     (home-page "https://github.com/kaushalmodi/tomelr/")
     (synopsis "Emacs-Lisp library for converting S-expressions to TOML")
     (description
