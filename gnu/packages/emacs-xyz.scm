@@ -16707,7 +16707,7 @@ call.")
                 (("\\(ert-deftest test-named .*" all)
                  (string-append all " (skip-unless nil)"))))))))
     (native-inputs (list emacs-ert-runner))
-    (propagated-inputs (list emacs-eglot emacs-peg emacs-tempel))
+    (propagated-inputs (list emacs-eglot emacs-tempel))
     (home-page "https://github.com/fejfighter/eglot-tempel")
     (synopsis "Bridge for Tempel templates with Eglot")
     (description "This package is an adapter to use the Tempel templating
@@ -29720,7 +29720,6 @@ match and total match information in the mode-line in various search modes.")
                (base32
                 "1nfbzyidzlrhxvsk2z50l67lss9lgl4fswm23iyfkzbqqxiwm3w3"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-peg))
     (home-page "https://github.com/emarsden/pg-el")
     (synopsis "Emacs Lisp interface for PostgreSQL")
     (description
@@ -30453,23 +30452,6 @@ temperature shifting tools and brightness adaption software.")
     (license (list license:gpl3+
                    license:expat))))
 
-(define-public emacs-peg
-  (package
-    (name "emacs-peg")
-    (version "1.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/peg-" version ".tar"))
-       (sha256
-        (base32 "133ngzl4chk63a8d3wh5k9zkmbfj9ag639yrk9i5zq1xa2aihcxb"))))
-    (build-system emacs-build-system)
-    (home-page "https://elpa.gnu.org/packages/peg.html")
-    (synopsis "Parsing Expression Grammars in Elisp")
-    (description "This package provides a macro that parses the current buffer
-according to a parsing expression grammar.")
-    (license license:gpl3+)))
-
 (define-public emacs-with-simulated-input
   (package
     (name "emacs-with-simulated-input")
@@ -30536,7 +30518,6 @@ interactive commands and functions, such as @code{completing-read}.")
            emacs-org
            emacs-org-super-agenda
            emacs-ov
-           emacs-peg
            emacs-s
            emacs-ts))
     (home-page "https://github.com/alphapapa/org-ql/")
@@ -45252,8 +45233,6 @@ It also provides original Helm commands: @command{helm-cider-spec},
                        #~(list "emacs" "--batch" "-L" "." "-L" "tests"
                                "-l" "tests/edn-tests"
                                "-f" "ert-run-tests-batch-and-exit")))
-      (propagated-inputs
-       (list emacs-peg))
       (synopsis "Read and write EDN from Elisp")
       (description "This is an Emacs Lisp library for reading and writing the
 data format @code{edn}.  See @url{https://github.com/edn-format/edn}.")
