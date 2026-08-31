@@ -2559,6 +2559,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/taskwarrior-link-taskchampion-cpp-with-sqlite3.patch \
   %D%/packages/patches/tbb-gcc-14.patch				\
   %D%/packages/patches/tbb-other-arches.patch			\
+  %D%/packages/patches/tcbrindle-span-include-exception.patch	\
   %D%/packages/patches/tclxml-3.2-install.patch			\
   %D%/packages/patches/tcsh-fix-autotest.patch			\
   %D%/packages/patches/tkremind-fix-fontchooser.patch		\

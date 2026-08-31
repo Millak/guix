@@ -1,0 +1,21 @@
+The std::terminate function is declared in the <exception> header, so we need
+to include it in the non-exception case.
+
+Upstream-Status: https://github.com/tcbrindle/span/pull/53
+
+diff --git a/include/tcb/span.hpp b/include/tcb/span.hpp
+index 8efcddb..96aaef5 100644
+--- a/include/tcb/span.hpp
++++ b/include/tcb/span.hpp
+@@ -27,6 +27,8 @@ http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/n4820.pdf
+ #ifndef TCB_SPAN_NO_EXCEPTIONS
+ #include <cstdio>
+ #include <stdexcept>
++#else
++#include <exception> // for std::terminate
+ #endif
+ 
+ // Various feature test macros
+-- 
+2.54.0
+

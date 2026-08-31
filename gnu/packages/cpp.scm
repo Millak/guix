@@ -4849,6 +4849,7 @@ meta data function.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "1v3x1mj4if8jrr7cmrcbhv8n8ygla0liqb0dic6g6ji7px2pr6jf"))
+         (patches (search-patches "tcbrindle-span-include-exception.patch"))
          (modules '((guix build utils)))
          ;; Unbundle catch.
          (snippet
