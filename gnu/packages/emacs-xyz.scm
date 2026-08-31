@@ -17384,10 +17384,11 @@ text excepting lines containing matches.")
 
 (define-public emacs-realgud
   ;; Last tagged release is from 2019.
-  (let ((commit "7a93c29c04a4f0d283d3acb3918c4d6381bbfc20")) ;version bump
+  (let ((commit "2075721ad093b4525038f746cc4ad5c013f6d0b8")
+        (revision "0"))
     (package
       (name "emacs-realgud")
-      (version "1.6.0")
+      (version (git-version "1.6.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -17396,7 +17397,7 @@ text excepting lines containing matches.")
                 (commit commit)))
          (sha256
           (base32
-           "1xprzpy70skg6ncmv1f22p1z7jpxsy9ycar8w3xhdk3mgpsf65dv"))
+           "1c36dhj07ja2v70bfmpx45bgbzvxhxym2fxfgy1dipjbyr1r0v0v"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
@@ -17419,16 +17420,6 @@ text excepting lines containing matches.")
                 (setenv "HOME" (getenv "TMPDIR"))))
             (add-before 'patch-el-files 'patch-more-el-files
               (lambda _
-                ;; Misc failures
-                (for-each delete-file
-                          (list "test/test-pdb.el"
-                                "test/test-shortkey.el"
-                                "test/test-track.el"
-                                "test/test-trepan2.el"
-                                "test/test-lang.el"))
-                ;; XXX: Some tests/assumptions in this file are
-                ;; not valid on Emacs@30.
-                (delete-file "test/test-regexp-perldb.el")
                 ;; FIXME: `patch-el-files' crashes on this file with error:
                 ;; unable to locate "bashdb".
                 (delete-file "./test/test-regexp-bashdb.el"))))
