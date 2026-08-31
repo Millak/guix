@@ -37026,32 +37026,6 @@ execute its commands and resize images.")
 backends, including the @command{wordnet} offline backend.")
     (license license:gpl3+)))
 
-(define-public emacs-editorconfig
-  (package
-    (name "emacs-editorconfig")
-    (version "0.11.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/editorconfig/editorconfig-emacs")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0bqwmh4lcnbn5gcn38qg4jjfs9bfkbr4dj4dafglgds6a5lhznws"))))
-    (build-system emacs-build-system)
-    (arguments (list #:test-command #~(list "ert-runner" "ert-tests")))
-    (native-inputs (list emacs-ert-runner))
-    (home-page "https://editorconfig.org/")
-    (synopsis "Define and maintain consistent coding styles between different
-editors and IDEs")
-    (description "The EditorConfig project consists of a file format for
-defining coding styles and a collection of text editor plugins that enable
-editors to read the file format and adhere to defined styles.  EditorConfig
-files are easily readable and they work nicely with version control systems.")
-    (license license:gpl3+)))
-
 (define-public emacs-nerd-icons
   (let ((commit "d41902fe68a94fcf4394f25a89ba2d510bec4461")
         (revision "2"))
