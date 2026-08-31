@@ -191,7 +191,7 @@ terminals.")
        ;; icedtea doesn't build reliably on all architectures.
        (if (or (target-x86?)
                (target-aarch64?))
-           (list `(,icedtea "jdk"))
+           (list `(,openjdk11 "jdk"))
            '())
        (list ;; ("linuxdoc" ,linuxdoc-tools)
              ocaml
