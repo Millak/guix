@@ -9070,7 +9070,7 @@ Compatible with Cisco VPN concentrators configured to use IPsec.")
            network-manager
            openconnect
            webkitgtk-for-gtk3))
-    (home-page "https://wiki.gnome.org/Projects/NetworkManager/VPN")
+    (home-page "https://gitlab.gnome.org/GNOME/NetworkManager-openconnect")
     (synopsis "OpenConnect plug-in for NetworkManager")
     (description
      "This extension of NetworkManager allows it to take care of connections
