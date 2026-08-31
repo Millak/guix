@@ -2872,7 +2872,9 @@ asynchronicity.")
                     #:test-target "tests" args))))))
    (build-system cmake-build-system)
    (native-inputs (list googletest pkg-config))
-   (inputs (list boost-1.83 protobuf icedtea icu4c))
+   ;; Upstream issue requesting support for newer boost
+   ;; <https://issuetracker.google.com/issues/554236365>.
+   (inputs (list boost-1.83 protobuf openjdk11 icu4c))
    (propagated-inputs (list abseil-cpp)) ;included in phonenumberutil.h
    (synopsis "Library for parsing and using phone numbers")
    (description
