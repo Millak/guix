@@ -717,8 +717,7 @@ and mmsh protocols.")
 (define-public libde265
   (package
     (name "libde265")
-    (version "1.0.14")
-    (replacement libde265/fixed)
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch)
@@ -728,17 +727,29 @@ and mmsh protocols.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1a4n1hnr9ybji87irg2kya95slf4jnybnkg4x2zihnqqihbnv539"))))
-    (build-system gnu-build-system)
+        (base32 "0mldsicrwxcg32a74qips34dmqwx7ynhknwfn9ycgzkwlqk40rnb"))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--disable-static")))
-    (native-inputs
-     (list autoconf automake libtool pkg-config python-wrapper))
+     (list #:configure-flags
+           #~'("-DBUILD_SHARED_LIBS=ON" "-DENABLE_SHERLOCK265=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Other tests in scripts/ci-run.sh requires non-free data.
+               (replace 'check
+                 (lambda _
+                   (invoke
+                    "sh" "-c"
+                    (simple-format #f "test \"$(~a)\" = ~a"
+                      (string-join
+                       '("dec265/dec265 ../source/testdata/girlshy.h265 -q -o -"
+                         "md5sum -"
+                         "cut -d ' ' -f1")
+                       "|")
+                      "b81538fa33a67278e5263e231e43ca98")))))))
     (inputs
      ;; XXX: Build a complete version using libswscale or libvideogfx
      ;; and qtbase-5.
-     (list sdl2))
+     (list sdl2-compat))
     (synopsis "H.265 video codec implementation")
     (description "Libde265 is an implementation of the h.265 video codec.  It is
 written from scratch and has a plain C API to enable a simple integration into
@@ -750,18 +761,6 @@ other software.")
       license:expat
       ;; Library.
       license:lgpl3+))))
-
-(define libde265/fixed
-  (package
-    (inherit libde265)
-    (source
-     (origin
-       (inherit (package-source libde265))
-       (patches (search-patches "libde265-CVE-2023-49465.patch"
-                                "libde265-CVE-2023-49467.patch"
-                                "libde265-CVE-2023-49468.patch"
-                                "libde265-CVE-2026-33164-CVE-2026-33165.patch"
-                                "libde265-CVE-2026-49295.patch"))))))
 
 (define-public tslib
   (package
