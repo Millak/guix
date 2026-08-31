@@ -12920,7 +12920,6 @@ by a query, so both a link can refer to several mails.")
                        (setenv "EMACSLOADPATH"
                                (string-append (getcwd) "/test:"
                                               (getenv "EMACSLOADPATH"))))))))
-    (propagated-inputs (list emacs-soap-client))
     (home-page "https://elpa.gnu.org/packages/debbugs.html")
     (synopsis "Access the Debbugs bug tracker in Emacs")
     (description
@@ -42089,24 +42088,6 @@ scripts.")
     (description "This package provides a NTLM handler for the URL package.")
     (license license:gpl3+)))
 
-(define-public emacs-soap-client
-  (package
-    (name "emacs-soap-client")
-    (version "3.2.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/"
-                           "soap-client-" version ".tar"))
-       (sha256
-        (base32 "0z6af253iwimam03jnpai2h989i6vyv05wdz7dadna6amdryfznc"))))
-    (build-system emacs-build-system)
-    (home-page "https://elpa.gnu.org/packages/soap-client.html")
-    (synopsis "Access SOAP web services")
-    (description
-     "This package provides a SOAP client to access web services.")
-    (license license:gpl3+)))
-
 (define-public emacs-fsm
   (package
     (name "emacs-fsm")
@@ -42139,7 +42120,6 @@ programming in Emacs Lisp easy and fun.")
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-fsm
-           emacs-soap-client
            emacs-url-http-ntlm
            emacs-url-http-oauth))
     (home-page "https://elpa.gnu.org/packages/excorporate.html")
