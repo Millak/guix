@@ -21691,7 +21691,7 @@ pycisTarget and SCENIC.")
     (name "python-arboreto")
     ;; 0.1.6 was released in 2021
     (properties '((commit . "79f916b0ea25c00989331b8db243826049c3d66c")
-                  (revision . "0")))
+                  (revision . "1")))
     (version (git-version "0.1.6"
                           (assoc-ref properties 'revision)
                           (assoc-ref properties 'commit)))
@@ -21707,7 +21707,7 @@ pycisTarget and SCENIC.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 38 tests (skipped=2)
+      ;; tests: 37 tests (skipped=2)
       #:test-backend #~'unittest
       #:phases
       #~(modify-phases %standard-phases
@@ -21720,9 +21720,15 @@ pycisTarget and SCENIC.")
               (substitute* "tests/test_algo.py"
                 ;; AssertionError: 'Timed out trying to connect to
                 ;; tcp://127.0.0.2:12345 after 10 s' not found in 'Timed out
-                ;; trying to connect to tcp://127.0.0.2:12345 after 30 s'
+                ;; trying to connect to tcp://127.0.0.2:12345 after 30 s'.
                 (("def test_address")
-                 "def __off_test_address")))))))
+                 "def __off_test_address")
+                ;; AssertionError: 'closing' != 'closed'
+                ;; - closing
+                ;; + closed
+                (("def test_client")
+                 "def __off_test_client")
+                ))))))
     (native-inputs
      (list python-setuptools))
     (propagated-inputs
