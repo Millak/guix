@@ -80,11 +80,10 @@
     (outputs '("out" "bin"))
     (arguments
      (list
-      #:tests? #f                       ; Tests require drivers
+      #:tests? #f                       ; Tests require drivers, gtk2
       #:configure-flags
       #~(list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"
-              "--disable-static"
-              "--enable-fake")
+              "--disable-static")
       #:phases
       #~(modify-phases %standard-phases
           #$@(if (this-package-native-input "config")
@@ -113,9 +112,7 @@
             python-wrapper
             swig-4.4)))
     (inputs
-     (list glib
-           gtk+-2
-           libusb-compat))
+     (list glib libusb-compat))
     (synopsis "Portable Braille Library")
     (description "Libbraille is a library to easily access Braille displays and
 terminals.")
