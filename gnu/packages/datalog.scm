@@ -83,7 +83,7 @@
                    (call-with-output-file "src/include/souffle/utility/span.h"
                      (lambda (port)
                        (display "#pragma once
-#include <span.hpp>
+#include <tcb/span.hpp>
 namespace souffle {
   using tcb::span;
 }
@@ -93,7 +93,7 @@ namespace souffle {
      (list libffi
            ncurses
            python
-           span
+           tcbrindle-span
            sqlite
            zlib))
     (native-inputs
