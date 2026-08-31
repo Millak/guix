@@ -2633,7 +2633,7 @@ some utility functions, and commands using that infrastructure.")
        (sha256
         (base32 "0jga23hdjl0kllxsdjwlqm488fscjlyipf98w5379qiajkhqxlzz"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-eldoc emacs-project))
+    (propagated-inputs (list emacs-project))
     (home-page "https://elpa.gnu.org/packages/flymake.html")
     (synopsis "Universal on-the-fly syntax checker")
     (description
@@ -26359,8 +26359,7 @@ lines, and @code{gc} to comment out the target of a motion.")
          "0fi10gxw33lh15xvwv5bfqzv81wp7k3yibqc2mzbn59kwrja94gc"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-eldoc
-           emacs-external-completion
+     (list emacs-external-completion
            emacs-flymake
            emacs-jsonrpc
            emacs-project
@@ -26508,30 +26507,6 @@ more information.  It supports OMEMO end-to-end encryption via picomemo.")
     (synopsis "Jarchive teaches Emacs how to navigate to files inside JARs")
     (description "Jarchive makes Emacs handle Java and LSP URIs pointing to
  source inside JARs.")
-    (license license:gpl3+)))
-
-(define-public emacs-eldoc
-  (package
-    (name "emacs-eldoc")
-    (version "1.16.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://elpa.gnu.org/packages/eldoc-" version ".tar"))
-       (sha256
-        (base32 "08dnvfyz6qkjx3fcggp628qacbxvac1agl7kgbkg6kiq4axwmifb"))))
-    (build-system emacs-build-system)
-    (home-page "https://elpa.gnu.org/packages/eldoc.html")
-    (synopsis "Show function arglist or variable docstring in echo area")
-    (description
-     "This program was inspired by the behavior of the ``mouse documentation
-window'' on many Lisp Machine systems; as you type a function's symbol name as
-part of a sexp, it will print the argument list for that function.  Behavior
-is not identical; for example, you need not actually type the function name,
-you need only move point around in a sexp that calls it.  Also, if point is
-over a documented variable, it will print the one-line documentation for that
-variable instead, to remind you of that variable's meaning.")
     (license license:gpl3+)))
 
 (define-public emacs-eldoc-box
