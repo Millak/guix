@@ -6684,7 +6684,7 @@ for application developers.")
            gstreamer
            json-glib
            avahi
-           libgdata
+           libdmapsharing
            libmediaart
            libsoup
            localsearch
