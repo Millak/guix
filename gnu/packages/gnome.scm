@@ -12745,7 +12745,7 @@ higher level porcelain stuff.")
 (define-public gitg
   (package
     (name "gitg")
-    (version "44")
+    (version "50")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -12753,7 +12753,7 @@ higher level porcelain stuff.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0c152c1vrkckqkfq3862c02fxp2scv7f7lqv6k6p35mb9ml32ail"))))
+                "0m41bac4x4nn3fiimik224filgnbrrinw0xhp654xk90d6l1c4ik"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -12767,6 +12767,12 @@ higher level porcelain stuff.")
                 (("'python'") ; there are no python sources to compile
                  (string-append "'" (which "true") "'"))
                 (("gtk-update-icon-cache") (which "true")))))
+          (add-after 'unpack 'patch-sources
+            (lambda _
+              ;; TODO: Remove when updating to next release (see:
+              ;; <https://gitlab.gnome.org/GNOME/gitg/-/merge_requests/410>).
+              (substitute* "gitg/gitg-result-dialog.vala"
+                (("\\\\u001b") "\x1b"))))
           (add-after 'unpack 'fix-test-sources
             (lambda _
               (substitute* "tests/libgitg/test-commit.vala"
@@ -12791,7 +12797,6 @@ higher level porcelain stuff.")
            libhandy
            libpeas
            libsecret
-           libsoup-minimal-2
            libxml2))
     (native-inputs
      (list `(,glib "bin")
