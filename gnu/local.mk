@@ -1822,7 +1822,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/libgit2-uninitialized-proxy-settings.patch	\
   %D%/packages/patches/libgnome-encoding.patch			\
   %D%/packages/patches/libgnomeui-utf8.patch			\
-  %D%/packages/patches/libgrss-CVE-2016-2001.patch		\
   %D%/packages/patches/libjxr-fix-function-signature.patch	\
   %D%/packages/patches/libjxr-fix-typos.patch			\
   %D%/packages/patches/libofa-ftbfs-1.diff		\
