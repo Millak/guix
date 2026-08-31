@@ -42052,24 +42052,6 @@ provided.  Those alternative commands are and bound by default to their
 corresponding Evil keys.")
       (license license:expat))))
 
-(define-public emacs-ntlm
-  (package
-    (name "emacs-ntlm")
-    (version "2.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/ntlm-" version ".el"))
-       (sha256
-        (base32 "01d0bcmh8a36qf871w6bc05kjk9bmnh843m9869xw06zyvqwg9mv"))))
-    (build-system emacs-build-system)
-    (home-page "https://elpa.gnu.org/packages/ntlm.html")
-    (synopsis "NTLM (NT LanManager) authentication support")
-    (description
-     "This library is a direct translation of the Samba release 2.2.0
-implementation of Windows NT and LanManager compatible password encryption.")
-    (license license:gpl3+)))
-
 (define-public emacs-numpydoc
   (package
     (name "emacs-numpydoc")
@@ -42171,7 +42153,6 @@ advice system without dropping support for Emacs<24.4.")
        (sha256
         (base32 "06bfw1w128gg9b60pb3wcpcib33jf13y1niyhs6grhm7yq11waz2"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-ntlm))
     (home-page "https://elpa.gnu.org/packages/url-http-ntlm.html")
     (synopsis "NTLM authentication for the url library")
     (description "This package provides a NTLM handler for the URL package.")
