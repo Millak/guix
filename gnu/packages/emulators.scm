@@ -709,6 +709,7 @@ It aims to support Nintendo DSi and 3DS as well.")
              pulseaudio
              qtbase
              qtsvg
+             qtwayland
              sdl3
              sfml
              soil
