@@ -6823,58 +6823,6 @@ supports playlists, song ratings, and any codecs installed through gstreamer.")
 supports image conversion, rotation, and slideshows.")
     (license license:gpl2+)))
 
-(define-public eog-plugins
-  ;; Note: EOG looks for its plugins (via libpeas) in ~/.local as well as
-  ;; $DATA/eog/plugins, where DATA is one of the entries in
-  ;; $XDG_DATA_DIRS.  Thus, for EOG to find these, you have to have
-  ;; 'XDG_DATA_DIRS' appropriately set.
-  (package
-    (name "eog-plugins")
-    (version "44.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/eog-plugins/"
-                                  (version-major version) "/"
-                                  "eog-plugins-" version ".tar.xz"))
-              (sha256
-               (base32
-                "14swm3a8rih9s0v745501wqwi51z91jn0qbbsy4licxbbwaq9hy4"))))
-    (build-system meson-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      ;; Otherwise, building fails because Meson strips libeog from RUNPATH.
-      #~(list (string-append "-Dc_link_args=-Wl,-rpath="
-                             #$(this-package-input "eog") "/lib/eog"))))
-    (home-page "https://wiki.gnome.org/Apps/EyeOfGnome/Plugins")
-    (synopsis "Extensions for the Eye of GNOME image viewer")
-    (native-inputs
-     (list gettext-minimal
-           `(,glib "bin")
-           pkg-config
-           python))
-    (inputs
-     (list eog
-           libchamplain
-           libexif
-           libgdata
-           libpeas))
-    (description
-     "This package provides plugins for the Eye of GNOME (EOG) image viewer,
-notably:
-
-@itemize
-@item @dfn{EXIF Display}, which displays camera (EXIF) information;
-@item @dfn{Map}, which displays a map of where the picture was taken on the
-side panel;
-@item @dfn{Slideshow Shuffle}, to shuffle images in slideshow mode.
-@end itemize")
-
-    ;; XXX: eog-postasa-plugin-resources.c (which we don't build) contains a
-    ;; long suspicious byte stream that goes to a
-    ;; ".gresource.eog_postasa_plugin" ELF section.
-    (license license:gpl2+)))
-
 ;; Also update (@ (gnu packages rust-sources) rust-glycin-3) when updating this.
 (define-public libglycin
   (package
