@@ -1262,7 +1262,6 @@ in particular in the GNOME desktop.")
            colord-gtk
            exiv2
            gnome-desktop
-           libcanberra
            libexif
            libtiff
            libxrandr
