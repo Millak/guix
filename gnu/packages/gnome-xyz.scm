@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2020, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2019-2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019, 2021 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2019, 2026 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2020 Alex Griffin <a@ajgrf.com>
@@ -93,6 +93,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages webkit)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
@@ -216,6 +217,119 @@ Moka")
     (home-page "https://snwh.org/moka")
     (license (list license:lgpl3+
                    license:cc-by-sa4.0))))
+
+(define-public cambalache
+  (package
+    (name "cambalache")
+    (version "0.12.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.gnome.org/jpu/cambalache")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1da8d5msk4ivmk5inaq8w0m78dsp7crarr9jmybag1c8qmqsjq4h"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:imported-modules (append %meson-build-system-modules
+                                 %pyproject-build-system-modules)
+      #:modules '((guix build meson-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:tests? #f                       ; XXX: tests spawn a socket...
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "cambalache/cmb_view.py"
+                (("GLib\\.find_program_in_path\\('(.*)'\\)" all cmd)
+                 (format #f "~s" (search-input-file
+                                  inputs (string-append "bin/" cmd)))))))
+          (add-after 'unpack 'patch-build
+            (lambda _
+              (substitute* "meson.build"
+                (("find_program\\('gtk-update-icon-cache'.*\\)") "")
+                (("find_program\\('update-desktop-database'.*\\)") ""))
+              (substitute* "postinstall.py"
+                (("gtk-update-icon-cache") "true")
+                (("update-desktop-database") "true"))))
+          (add-after 'unpack 'fake-cc
+            (lambda _
+              (substitute* "tools/cmb_init_dev.py"
+                (("\"cc") (string-append "\"" #$(cc-for-target))))))
+          (add-after 'install 'python-wrap
+            (assoc-ref py:%standard-phases 'wrap))
+          (delete 'check)
+          (add-after 'install 'add-install-to-pythonpath
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+          (add-after 'add-install-to-pythonpath 'pre-check
+            (lambda _
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1")))
+          (add-after 'pre-check 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion ".."
+                  (invoke "python3" "-m" "pytest")))))
+          (add-after 'glib-or-gtk-wrap 'wrap-typelib
+            (lambda _
+              (for-each
+               (lambda (prog)
+                 (unless (wrapped-program? prog)
+                   (wrap-program prog
+                     `("GI_TYPELIB_PATH" suffix
+                       (,(string-append #$output "/lib/girepository-1.0")
+                        ,(getenv "GI_TYPELIB_PATH")))
+                     ;; icons and schemas
+                     `("XDG_DATA_DIRS" suffix
+                       #$(map
+                          (lambda (input)
+                            (file-append (this-package-input input) "/share"))
+                          '("adwaita-icon-theme" "hicolor-icon-theme"
+                            "gsettings-desktop-schemas")))
+                     ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Cambalache to
+                     ;; load its own icons in pure environments.
+                     `("GDK_PIXBUF_MODULE_FILE" =
+                       (,(getenv "GDK_PIXBUF_MODULE_FILE"))))))
+               (find-files (string-append #$output "/bin"))))))))
+    (inputs
+     (list bash-minimal
+           ;; XXX: this-package-input does not find the adwaita-icon-theme
+           ;; propagated hicolor-icon-theme input, so is listed here
+           ;; explicitly.
+           adwaita-icon-theme hicolor-icon-theme
+           gsettings-desktop-schemas
+           gtk
+           gtksourceview-4
+           `(,gtk+ "bin")               ; broadwayd
+           `(,gtk "bin")
+           libadwaita
+           libhandy
+           (librsvg-for-system)
+           python
+           python-pycairo
+           python-pygobject
+           python-lxml
+           webkitgtk-for-gtk3
+           webkitgtk))
+    (native-inputs
+     (list `(,glib "bin")
+           gobject-introspection
+           gettext-minimal
+           pkg-config
+           python-pytest
+           weston
+           xorg-server-for-tests))
+    (home-page "https://gitlab.gnome.org/jpu/cambalache")
+    (synopsis "Rapid application development tool")
+    (description "Cambalache is a @acronym{RAD, rapid application development}
+tool for Gtk 4 and 3 with a clear @acronym{MVC, model-view-controller} design
+and data model first philosophy.")
+    (license (list license:lgpl2.1
+                   license:gpl2)))) ; tools
 
 (define-public moka-icon-theme
   (package
