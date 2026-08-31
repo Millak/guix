@@ -1319,25 +1319,6 @@ a debugging tool, @command{gssdp-device-sniffer}.")
     (home-page "https://gitlab.gnome.org/GNOME/gssdp")
     (license license:lgpl2.0+)))
 
-(define-public gssdp-1.4
-  (package
-    (inherit gssdp)
-    (name "gssdp")
-    (version "1.4.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/" name "/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "10hm8cgh2p8441xc83kswjgghrrqpzgblvc5523jp0pvayfq8xl6"))))
-    (arguments
-     (list #:configure-flags
-           #~(list "-Dgtk_doc=true")))
-    (propagated-inputs (modify-inputs propagated-inputs
-              (replace "libsoup" libsoup-minimal-2)))))
-
 (define-public gupnp
   (package
     (name "gupnp")
