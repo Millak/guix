@@ -136,7 +136,7 @@ can be ignored.")
 (define-public go-filippo-io-age
   (package
     (name "go-filippo-io-age")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -145,7 +145,7 @@ can be ignored.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h4k15bdbx5dx1397xvhx2h7b5akvbzksh80j3p46mqq6kgymks2"))
+        (base32 "0l16fsd6zbqngpwxxxm531nxy1073wdgyg97jlg1qnyaig758m83"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
