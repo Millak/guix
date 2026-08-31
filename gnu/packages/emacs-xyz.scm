@@ -33134,31 +33134,6 @@ fixed-pitch,everything else becomes variable-pitch.")
 interactive visual feedback.")
     (license license:gpl3+)))
 
-(define-public emacs-faceup
-  (let ((commit "6c92dad56a133e14e7b27831e1bcf9b3a71ff154")
-        (revision "1"))
-    (package
-      (name "emacs-faceup")
-      (version (string-append "0.0.1" "-" revision "."
-                              (string-take commit 7)))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/Lindydancer/faceup")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1yzmy7flrhrh0i10bdszx8idx6r8h6czm4vm4q0z6fp5fw94zwrx"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/Lindydancer/faceup")
-      (synopsis "Markup language for faces and font-lock regression testing")
-      (description "Emacs is capable of highlighting buffers based on
-language-specific @code{font-lock} rules.  This package makes it possible to
-perform regression test for packages that provide font-lock rules.")
-      (license license:gpl3+))))
-
 (define-public emacs-racket-mode
   ;; XXX: Upstream does not tag releases, nor does it bump versions.
   (let ((commit "71f27c643dadf70847e447e773760df6df48fe5a")
@@ -33202,7 +33177,7 @@ perform regression test for packages that provide font-lock rules.")
                   (invoke "makeinfo" "-o"
                           "../racket-mode.info" "racket-mode.texi")))))))
       (native-inputs
-       (list emacs-faceup emacs-paredit racket texinfo))
+       (list emacs-paredit racket texinfo))
       (propagated-inputs
        (list emacs-pos-tip))
       (home-page "https://www.racket-mode.com/")
@@ -38498,8 +38473,6 @@ indentation and a command to plot the file.")
     (build-system emacs-build-system)
     (arguments
      (list #:include #~(cons "^admin\\/" %default-include)))
-    (native-inputs
-     (list emacs-faceup))
     (home-page "https://github.com/Lindydancer/cmake-font-lock")
     (synopsis "Advanced type-aware syntax-highlighting for CMake")
     (description "This package highlights function arguments in CMake
