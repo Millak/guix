@@ -12010,14 +12010,14 @@ views can be printed as PDF or PostScript files, or exported to HTML.")
 (define-public lollypop
   (package
     (name "lollypop")
-    (version "1.4.42")
+    (version "1.4.45")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://adishatz.org/lollypop/"
                            "lollypop-" version ".tar.xz"))
        (sha256
-        (base32 "15bpg217vqbnspnls5mjg05424i6c9wd6g9ryr3h96lbgg90l93s"))))
+        (base32 "0wsqbpnqkq0rinq4yz14g876g61xxilk4fbl1pgrwlf76jfxlpyb"))))
     (build-system meson-build-system)
     (arguments
      (list #:imported-modules (append %meson-build-system-modules
@@ -12048,10 +12048,11 @@ views can be printed as PDF or PostScript files, or exported to HTML.")
            gobject-introspection
            gsettings-desktop-schemas
            gst-plugins-base
+           gtk+
            libnotify
            libsecret
            libhandy
-           libsoup-minimal-2
+           libsoup
            python
            python-beautifulsoup4
            python-gst
@@ -12059,8 +12060,7 @@ views can be printed as PDF or PostScript files, or exported to HTML.")
            python-pycairo
            python-pygobject
            python-pylast
-           totem-pl-parser
-           webkitgtk-for-gtk3))
+           totem-pl-parser))
     (propagated-inputs
      (list gst-plugins-good             ;required to start lollypop
            gst-plugins-ugly))           ;required for streaming
