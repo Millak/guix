@@ -8196,7 +8196,7 @@ implementation on platforms where this is unsupported.")
 (define-public ruby-jwt
   (package
     (name "ruby-jwt")
-    (version "2.7.1")
+    (version "3.2.0")
     (source
      (origin
        ;; For tests
@@ -8207,7 +8207,7 @@ implementation on platforms where this is unsupported.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "12ss6knfis6a6a41qndalnlvq3yykhpg6igzll8qyssnnwi9zdw7"))))
+         "1kjla8ixb56vgrq766r1h8xizyl59q15xc1lxc1867yp61aih5d4"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -8233,7 +8233,10 @@ implementation on platforms where this is unsupported.")
                 (("require 'codacy-coverage'") "")
                 (("Codacy::Reporter\\.start") "")))))))
     (native-inputs
-     (list bundler ruby-rspec ruby-rbnacl))
+     (list bundler
+           ruby-rubocop
+           ruby-rspec
+           ruby-rbnacl))
     (synopsis "Ruby implementation of the JSON Web Token standard")
     (description
      "This package provides a pure Ruby implementation of the RFC 7519 OAuth
