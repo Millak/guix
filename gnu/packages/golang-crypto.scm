@@ -4182,19 +4182,25 @@ is an extremely fast non-cryptographic hash algorithm.")
 (define-public go-github-com-zmap-zcrypto
   (package
     (name "go-github-com-zmap-zcrypto")
-    (version "0.0.0-20260309174858-0e3c42de5a13")
+    (properties '((commit . "0452b53f6c1b1fb5516ff7e3e22055931966ab9a")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260831034402-0452b53f6c1b")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/zmap/zcrypto")
-              (commit (go-version->git-ref version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vbgpr2jms9la1nrzxwcfn6ngi3c2pzglh3a3yfkm0ahxvh4wpca"))))
+        (base32 "0n7lx4f1iivyhw5350bmsy1v1shmlcmpyhy0jvg7px82k33mz2r8"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:go go-1.26
       #:import-path "github.com/zmap/zcrypto"
       #:test-flags
       ;; Network access is required.
