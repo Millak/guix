@@ -13807,8 +13807,7 @@ GtkTextView widgets.")
     (inputs
      (list bash-minimal                 ;for wrap-program
            cmark
-           clang-13
-           devhelp
+           clang
            d-spy
            ;; Cyclic modular dependency
            (module-ref
@@ -13829,11 +13828,11 @@ GtkTextView widgets.")
            libportal
            libsoup
            libspelling
-           llvm-13
+           llvm
            libostree
            libyaml
            python
-           python-pygobject-3.50
+           python-pygobject
            sysprof
            template-glib
            vte
@@ -13849,7 +13848,7 @@ GtkTextView widgets.")
            python                       ;for meson scripts
            vala
            xorg-server-for-tests))
-    (home-page "https://wiki.gnome.org/Apps/Builder")
+    (home-page "https://gitlab.gnome.org/GNOME/gnome-builder/")
     (synopsis "Toolsmith for GNOME-based applications")
     (description
      "Builder aims to be an integrated development environment (IDE) for
