@@ -38137,7 +38137,9 @@ tabulated-lists).")
        (snippet
         #~(begin
             ;; Remove generated terminfo database.
-            (delete-file-recursively "terminfo")))))
+            (delete-file-recursively "terminfo")))
+       (patches
+        (search-patches "emacs-eat-fix-dec-line-drawing.patch"))))
     (build-system emacs-build-system)
     (arguments
      (list

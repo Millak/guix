@@ -1,0 +1,40 @@
+From ea22dbf31fa513cec7ada6e0a8f81f15b1a398d0 Mon Sep 17 00:00:00 2001
+Message-ID: <ea22dbf31fa513cec7ada6e0a8f81f15b1a398d0.1787611092.git.liam@hpfr.net>
+From: Yikai Zhao <yikai@z1k.dev>
+Date: Sat, 27 Sep 2025 00:52:14 +0800
+Subject: [PATCH] Fix dec-line-drawing
+
+error: Attempt to store non-ASCII char into multibyte string
+
+Upstream-Status: https://codeberg.org/akib/emacs-eat/pulls/240
+---
+ eat.el | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/eat.el b/eat.el
+index d4469cd..8363ca9 100644
+--- a/eat.el
++++ b/eat.el
+@@ -1763,12 +1763,11 @@ character to actually show.")
+                      ;; less expensive in terms of bytes needed to
+                      ;; transfer than `us-ascii'.
+                      ('dec-line-drawing
+-                      (dotimes (i (length s))
+-                        (when-let*
+-                            ((r (gethash
+-                                 (aref s i)
+-                                 eat--t-dec-line-drawing-chars)))
+-                          (aset s i r)))))
++                      ;; remap the string according to dec-line-drawing charset.
++                      (setq s (mapconcat
++                               (lambda (c)
++                                 (char-to-string (gethash c eat--t-dec-line-drawing-chars c)))
++                               s))))
+                    ;; Add face.
+                    (put-text-property 0 (length s) 'face face s)
+                    (put-text-property
+
+base-commit: c8d54d649872bfe7b2b9f49ae5c2addbf12d3b99
+-- 
+2.54.0
+
