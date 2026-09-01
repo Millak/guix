@@ -8557,7 +8557,7 @@ particular, reads spanning multiple exons.")
 (define-public hisat2
   (package
     (name "hisat2")
-    (version "2.2.2")
+    (version "2.2.3")
     (source
      (origin
        (method git-fetch)
@@ -8567,7 +8567,7 @@ particular, reads spanning multiple exons.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1q60a8r8vgnpyn1ivrw9yp89awbdwi85k8hisy8lyvdpgrxwxgji"))))
+         "03z7rdg0x0wzc3bzsf249jnj4m0ywy97vm5rc4pxsiwzsd0a7c1m"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -8603,10 +8603,6 @@ particular, reads spanning multiple exons.")
      (list perl pandoc))             ; for documentation
     (inputs
      (list python-wrapper))
-    ;; Non-portable instructions are used so building fails on other platforms
-    ;; There is an open PR to address this issue:
-    ;; https://github.com/DaehwanKimLab/hisat2/pull/251
-    (supported-systems '("x86_64-linux"))
     (home-page "https://daehwankimlab.github.io/hisat2/")
     (synopsis "Graph-based alignment of genomic sequencing reads")
     (description "HISAT2 is a fast and sensitive alignment program for mapping
