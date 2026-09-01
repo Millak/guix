@@ -25947,12 +25947,6 @@ Configuration of the Xorg graphical server.
 @item @code{x-session} (default: @code{(xinitrc)})
 Script to run before starting a X session.
 
-@item @code{xdmcp?} (default: @code{#f})
-When true, enable the X Display Manager Control Protocol (XDMCP).  This
-should only be enabled in trusted environments, as the protocol is not
-secure.  When enabled, GDM listens for XDMCP queries on the UDP port
-177.
-
 @item @code{dbus-daemon} (default: @code{dbus-daemon-wrapper})
 File name of the @code{dbus-daemon} executable.
 
@@ -39079,7 +39073,7 @@ guix shell tigervnc-client -- vncviewer localhost:5910
 
 The following configuration combines XDMCP and Inetd to allow multiple
 users to concurrently use the remote system and login graphically via
-the GDM display manager:
+the LightDM display manager:
 
 @lisp
 (operating-system
@@ -39087,15 +39081,14 @@ the GDM display manager:
   (services (cons*
              [...]
              (service xvnc-service-type (xvnc-configuration
-                                         (display-number 5)
-                                         (localhost? #f)
-                                         (xdmcp? #t)
-                                         (inetd? #t)))
+                                          (display-number 5)
+                                          (localhost? #f)
+                                          (xdmcp? #t)
+                                          (inetd? #t)))
+             (service lightdm-service-type (lightdm-configuration
+                                             (xdmcp? #t)))
              (modify-services %desktop-services
-               (gdm-service-type config => (gdm-configuration
-                                            (inherit config)
-                                            (auto-suspend? #f)
-                                            (xdmcp? #t)))))))
+               (delete gdm-service-type)))))
 @end lisp
 
 A remote user could then connect to it by using the @command{vncviewer}

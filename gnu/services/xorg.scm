@@ -60,6 +60,7 @@
   #:use-module (gnu system shadow)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system trivial)
+  #:use-module (guix diagnostics)
   #:use-module (guix gexp)
   #:use-module (guix store)
   #:use-module ((guix modules) #:select (source-module-closure))
@@ -1203,6 +1204,14 @@ argument.")))
             (apply execl (cons (car args) args))
             (execl shell shell "--login" "-c" (string-join args)))))))
 
+(define-with-syntax-properties
+  (gdm-xdmcp-sanitizer (value properties))
+  (when value
+    (warning (source-properties->location properties)
+             (G_ "the `xdmcp?' field is deprecated and has no effect~%"))
+    (display-hint (G_ "Do not use the xdmcp? field."))
+    #f))
+
 (define-record-type* <gdm-configuration>
   gdm-configuration make-gdm-configuration
   gdm-configuration?
@@ -1219,8 +1228,10 @@ argument.")))
                       (default (xorg-configuration)))
   (x-session gdm-configuration-x-session
              (default (xinitrc)))
+  ;; TODO: Remove 'xdmcp?' when 2027/09 comes.
   (xdmcp? gdm-configuration-xdmcp?
-          (default #f))
+          (default #f)
+          (sanitizer gdm-xdmcp-sanitizer))
   (wayland? gdm-configuration-wayland? (default #t))
   (wayland-session gdm-configuration-wayland-session
                    (default gdm-wayland-session-wrapper)))
@@ -1282,11 +1293,7 @@ argument.")))
                    "\n"
                    "[security]\n"
                    "#DisallowTCP=true\n"
-                   "#AllowRemoteAutoLogin=false\n"
-                   "\n"
-                   "[xdmcp]\n"
-                   (format #f "Enable=~:[false~;true~]~%"
-                           (gdm-configuration-xdmcp? config))))
+                   "#AllowRemoteAutoLogin=false\n"))
 
 (define (gdm-pam-service config)
   "Return a PAM service for @command{gdm}."
