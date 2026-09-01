@@ -6536,7 +6536,7 @@ create smoother and stable videos.")
 (define-public libopenshot
   (package
     (name "libopenshot")
-    (version "0.7.0")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6545,7 +6545,7 @@ create smoother and stable videos.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b0z64ry9ch4kac4b3k0m5ink1pf727mliaw7fwsfn485aq8g5sp"))
+                "0xd0044rbz9c8ijvdhkqvswi06rkk5kzdm57f4a6kfhhb6mlal65"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Allow overriding of the python installation dir
@@ -6562,7 +6562,7 @@ create smoother and stable videos.")
            swig-4.4
            unittest-cpp))
     (inputs
-     (list alsa-lib zlib))
+     (list alsa-lib opencv protobuf zlib))
     (propagated-inputs                  ;all referenced in installed headers
      (list cppzmq
            ffmpeg-4
