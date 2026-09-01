@@ -4227,7 +4227,7 @@ Internet.  It is largely centered around the @code{WebPKI}.")
 (define-public go-github-com-zmap-zlint-v3
   (package
     (name "go-github-com-zmap-zlint-v3")
-    (version "3.6.8")
+    (version "3.7.1")
     (source
      (origin
        (method git-fetch)
@@ -4236,7 +4236,7 @@ Internet.  It is largely centered around the @code{WebPKI}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "054ddx6xdzhdjd214kp3kby0q5w4z1d4n61fav5vz73afm4z4bij"))))
+        (base32 "1i138gz3yxi9xr08qidiwlps9nz08k0sqfipgy3a80f2ammls2hy"))))
     (build-system go-build-system)
     (arguments
      (list
