@@ -19760,6 +19760,26 @@ provides the following features:
 @end itemize")
     (license license:gpl3+)))
 
+(define-public emacs-time-zones
+  (package
+    (name "emacs-time-zones")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://stable.melpa.org/packages/time-zones-"
+                           version ".tar"))
+       (sha256
+        (base32 "0xgq35drdq8g9dd28l66wzr3n5d1r0lvdl3wxvdf55vz5d15qd7n"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f)) ; There are no tests.
+    (home-page "https://github.com/xenodium/time-zones")
+    (synopsis "Time zone lookups")
+    (description
+     "This package gives you the ability to check the time for any city in the
+world.")
+    (license license:gpl3+)))
+
 (define-public emacs-tinysegmenter
   (let ((commit "872134704bd25c13a4c59552433da4c6881b5230"))
     (package
