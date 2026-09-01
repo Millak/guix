@@ -99,6 +99,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
@@ -225,7 +226,7 @@ low-end hardware and serving many concurrent requests.")
 (define-public alfis
   (package
     (name "alfis")
-    (version "0.8.5")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -234,30 +235,53 @@ low-end hardware and serving many concurrent requests.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "189dqgcnl11fdmd6242h1pbawlq7jdm22zykc1kkcj1dv6s55nvs"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 ;; Use a packaged version of web-view.
-                 (substitute* "Cargo.toml"
-                   (("git = .*web-view\",") "version = \"*\",")
-                   ((", git = .*ureq\"") "")
-                   (("git = .*ecies-ed25519-ng.*version") "version"))))))
+        (base32 "18m46m37yhj44drlf5hfwhb40r0718kf4i0j768mhspyck47vq42"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
        #:cargo-test-flags
-       '("--release" "--"
+       '("--"
          "--skip=dns::client::tests::test_tcp_client"
-         "--skip=dns::client::tests::test_udp_client")))
+         "--skip=dns::client::tests::test_udp_client")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'add-absolute-library-references
+             (lambda* (#:key inputs vendor-dir #:allow-other-keys)
+               ;; Fix dlopen()ing some libraries on pure Wayland (no $DISPLAY):
+               ;; The wayland library could not be loaded
+               (define shared-library-regex
+                 ;; Using regex decreases the time it takes to run the
+                 ;; substitution over 12000 files by about 40%.
+                 (string-join
+                   (list "libEGL\\.so"              ; rust-glutin
+                         "libGL\\.so"               ; rust-x11-dl, rust-glutin
+                         "libX[[:alpha:]]*\\.so"    ; rust-x11-dl
+                         ; rust-wayland-sys, rust-wayland-backend
+                         "libwayland-[[:alpha:]]*\\.so"
+                         ;; rust-xkbcommon-dl
+                         "libxkbcommon\\.so"
+                         "libxkbcommon-x11\\.so")
+                   "|"))
+               (substitute* (find-files vendor-dir "\\.rs$")
+                 ((shared-library-regex all)
+                  (search-input-file inputs (string-append "lib/" all)))))))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (cons* at-spi2-core
-            gtk
-            glib
-            pango
+     (cons* fontconfig
+            libxcursor
+            libxft
+            libxi
+            libxinerama
+            libxkbcommon
+            libxmu
+            libxpresent
+            libxrandr
+            libxscrnsaver
+            libxtst
+            mesa
             sqlite
-            webkitgtk-with-libsoup2
+            wayland
             (cargo-inputs 'alfis)))
     (home-page "https://github.com/Revertron/Alfis")
     (synopsis "Alternative Free Identity System")
