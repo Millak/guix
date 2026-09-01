@@ -1805,6 +1805,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libcyaml-libyaml-compat.patch		\
   %D%/packages/patches/libexpected-use-provided-catch2.patch	\
   %D%/packages/patches/libfaketime-32bit.patch			\
+  %D%/packages/patches/libfyaml-vlsize-32bit-fixes.patch        \
   %D%/packages/patches/libgda-CVE-2021-39359.patch		\
   %D%/packages/patches/libgda-disable-data-proxy-test.patch     \
   %D%/packages/patches/libgda-fix-build.patch			\

@@ -482,7 +482,8 @@ in which the loaded data is arranged in memory.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hrp1vaa1f192krrvkmmfr9rsladzpm5jgxjzpnx5hkrw9xi054r"))))
+        (base32 "1hrp1vaa1f192krrvkmmfr9rsladzpm5jgxjzpnx5hkrw9xi054r"))
+       (patches (search-patches "libfyaml-vlsize-32bit-fixes.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
