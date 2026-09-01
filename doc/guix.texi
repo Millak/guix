@@ -39079,7 +39079,7 @@ The package that provides the Xvnc binary.
 
 @item @code{display-number} (default: @code{0}) (type: number)
 The display number used by Xvnc.  You should set this to a number not
-already used a Xorg server.
+already used by the Xorg server.
 
 @item @code{geometry} (default: @code{"1024x768"}) (type: string)
 The size of the desktop to be created.
