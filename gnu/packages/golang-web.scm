@@ -10856,7 +10856,7 @@ for gRPC Go servers and clients.")
   (package
     (inherit go-github-com-grpc-ecosystem-go-grpc-middleware)
     (name "go-github-com-grpc-ecosystem-go-grpc-middleware-v2")
-    (version "2.3.3")
+    (version "2.3.4")
     (source
      (origin
        (method git-fetch)
@@ -10865,7 +10865,7 @@ for gRPC Go servers and clients.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qbh34r44sfw9s05kdipmz49fcgvlpnns20d0lbwvw9g3qwa095r"))
+        (base32 "1z24d57s20a39ydxfw2s5nrw7q9yh01989wa3hp1pl102khm7jgj"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -10878,15 +10878,16 @@ for gRPC Go servers and clients.")
     (arguments
      (list
       #:import-path "github.com/grpc-ecosystem/go-grpc-middleware/v2"
-      ;; Tests from files:
-      ;;  * github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/protovalidate
-      ;;  * github.com/grpc-ecosystem/go-grpc-middleware/v2/testing/
-      ;;        testvalidate/v1/test_validate.pb.go
-      ;; require:
-      ;;  * buf.build/go/protovalidate
-      ;;  * buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate
-      ;; which require others unpackages Go libraries. All other tests pass.
-      #:tests? #f))))
+      #:embed-files #~(list "authoring.tmpl")))
+    (native-inputs
+     (list go-buf-build-gen-go-bufbuild-protovalidate-protocolbuffers-go
+           go-buf-build-go-protovalidate
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-net
+           go-golang-org-x-oauth2
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))))
 
 (define-public go-github-com-grpc-ecosystem-grpc-gateway-v2
   (package
