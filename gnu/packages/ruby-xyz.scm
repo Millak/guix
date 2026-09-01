@@ -2955,54 +2955,17 @@ complexity.")
 (define-public ruby-oauth2
   (package
     (name "ruby-oauth2")
-    (version "2.0.9")
-    (source (origin
-              (method git-fetch)        ;for tests
-              (uri (git-reference
-                    (url "https://gitlab.com/oauth-xx/oauth2")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "191j1f4gjw8wij1jy2fvddgi8cv1mm0ki7v0b0795clix1avnj29"))))
+    (version "2.0.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/oauth-xx/oauth2")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cgya1rjf2v6f4j86cq1k5hpd1ks7xayvddsidsnc0fl3zkm8ygj"))))
     (build-system ruby-build-system)
-    (arguments
-     (list #:modules '((guix build ruby-build-system)
-                       (guix build utils)
-                       (ice-9 regex)
-                       (ice-9 textual-ports))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'relax-requirements
-                          (lambda _
-                            (substitute* "Gemfile"
-                              (("^linting = .*")
-                               "linting = false\n")
-                              (("^coverage = .*")
-                               "coverage = false\n")
-                              (("^debug = .*")
-                               "debug = false\n"))
-                            (substitute* "spec/spec_helper.rb"
-                              (("^RUN_COVERAGE = .*")
-                               "RUN_COVERAGE = false\n")
-                              (("^ALL_FORMATTERS = .*")
-                               "ALL_FORMATTERS = false\n"))))
-               (add-after 'unpack 'skip-problematic-test
-                 (lambda _
-                   ;; XXX: substitute* can't match 2 lines.
-                   (with-atomic-file-replacement
-                    "spec/oauth2/client_spec.rb"
-                    (lambda (in out)
-                      (let* ((pattern "\
-    context 'when parse: :xml but response is JSON' do\n\
-      it 'returns a configured AccessToken' do\n")
-                             (content (get-string-all in))
-                             (matched (string-match pattern content)))
-                        (if matched
-                            (format out "~a    skip('fails on guix')~%~a"
-                                    (string-take content (match:end matched))
-                                    (string-drop content (match:end matched)))
-                            (display content out))))))))))
     (native-inputs
      (list bundler
            ruby-addressable
@@ -3014,6 +2977,7 @@ complexity.")
            ruby-silent-stream))
     (propagated-inputs
      (list ruby-faraday
+           ruby-hashie
            ruby-jwt
            ruby-multi-xml
            ruby-rack
