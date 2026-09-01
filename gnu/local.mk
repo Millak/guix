@@ -1142,13 +1142,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/clog-fix-shared-build.patch		\
   %D%/packages/patches/clucene-gcc-14.patch			\
   %D%/packages/patches/clucene-pkgconfig.patch			\
-  %D%/packages/patches/codex-0.144.1-disable-code-mode.patch	\
-  %D%/packages/patches/codex-0.144.1-remove-libwebrtc.patch	\
-  %D%/packages/patches/codex-0.144.1-remove-patch-sections.patch	\
-  %D%/packages/patches/codex-0.144.1-test-disable-network-model-refresh.patch	\
-  %D%/packages/patches/codex-0.144.1-test-selected-capability-readiness.patch	\
-  %D%/packages/patches/codex-0.144.1-test-shebangs.patch		\
-  %D%/packages/patches/codex-0.144.1-test-timeout.patch		\
   %D%/packages/patches/codex-acp-0.11.1-disable-code-mode.patch \
   %D%/packages/patches/codex-acp-0.11.1-remove-patch-sections.patch \
   %D%/packages/patches/cogl-fix-double-free.patch		\
