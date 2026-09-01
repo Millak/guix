@@ -628,53 +628,6 @@ cloud.google.com/go/auth and golang.org/x/oauth2.")
 API service accounts for Go.")
     (license license:asl2.0)))
 
-(define-public go-cloud-google-com-go-kms
-  (package
-    (name "go-cloud-google-com-go-kms")
-    (version "1.26.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/googleapis/google-cloud-go")
-              (commit (go-version->git-ref version
-                                           #:subdir "kms"))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0l3dc1i1qqj8mfvl7xcm8rgvsi49xaxlzlrx3p4vjhc23skx1688"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
-       (snippet #~(begin
-                    (define (delete-all-but directory . preserve)
-                      (with-directory-excursion directory
-                        (let* ((pred (negate (cut member <>
-                                                  (cons* "." ".." preserve))))
-                               (items (scandir "." pred)))
-                          (for-each (cut delete-file-recursively <>) items))))
-                    (delete-all-but "." "kms")))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "cloud.google.com/go/kms"
-      #:unpack-path "cloud.google.com/go"))
-    (propagated-inputs
-     (list go-cloud-google-com-go-iam
-           go-cloud-google-com-go-longrunning
-           go-github-com-googleapis-gax-go-v2
-           go-google-golang-org-api
-           go-google-golang-org-genproto
-           go-google-golang-org-genproto-googleapis-api
-           go-google-golang-org-grpc
-           go-google-golang-org-protobuf))
-    (home-page "https://cloud.google.com/go")
-    (synopsis "Google Cloud Key Management Service Goland API")
-    (description
-     "This package provides a Go Client Library for Google Cloud Key Management
-Service (KMS) API.")
-    (license license:asl2.0)))
-
 (define-public go-cloud-google-com-go-iam
   (package
     (name "go-cloud-google-com-go-iam")
@@ -720,6 +673,53 @@ Service (KMS) API.")
      "Package iam supports the resource-specific operations of Google Cloud
 @acronym{IAM, Identity and Access Management} for the Google Cloud Libraries,
 see: @url{https://cloud.google.com/iam, IAM specification} for more details.")
+    (license license:asl2.0)))
+
+(define-public go-cloud-google-com-go-kms
+  (package
+    (name "go-cloud-google-com-go-kms")
+    (version "1.26.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/google-cloud-go")
+              (commit (go-version->git-ref version
+                                           #:subdir "kms"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l3dc1i1qqj8mfvl7xcm8rgvsi49xaxlzlrx3p4vjhc23skx1688"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "." "kms")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "cloud.google.com/go/kms"
+      #:unpack-path "cloud.google.com/go"))
+    (propagated-inputs
+     (list go-cloud-google-com-go-iam
+           go-cloud-google-com-go-longrunning
+           go-github-com-googleapis-gax-go-v2
+           go-google-golang-org-api
+           go-google-golang-org-genproto
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://cloud.google.com/go")
+    (synopsis "Google Cloud Key Management Service Goland API")
+    (description
+     "This package provides a Go Client Library for Google Cloud Key Management
+Service (KMS) API.")
     (license license:asl2.0)))
 
 (define-public go-cloud-google-com-go-logging
@@ -3110,6 +3110,34 @@ structured records.")
 for Amazon CloudWatch Logs.")
     (license license:asl2.0)))
 
+(define-public go-github-com-aws-aws-sdk-go-v2-service-iam
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-service-iam")
+    (version "1.53.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aws/aws-sdk-go-v2")
+              (commit (go-version->git-ref version
+                                           #:subdir "service/iam"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04cv6g96hhmjl6snql6a909grq4yxyjk95a3dzk6mpihvg79q47p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/service/iam"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS SDK for Go v2 - IAM module")
+    (description
+     "Package iam provides the API client, operations, and parameter types for
+AWS Identity and Access Management.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-aws-aws-sdk-go-v2-service-kms
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-service-kms")
@@ -3152,34 +3180,6 @@ for Amazon CloudWatch Logs.")
     (description
      "This package provides the API client, operations, and parameter types for
 AWS Key Management Service.")
-    (license license:asl2.0)))
-
-(define-public go-github-com-aws-aws-sdk-go-v2-service-iam
-  (package
-    (name "go-github-com-aws-aws-sdk-go-v2-service-iam")
-    (version "1.53.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/aws/aws-sdk-go-v2")
-              (commit (go-version->git-ref version
-                                           #:subdir "service/iam"))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "04cv6g96hhmjl6snql6a909grq4yxyjk95a3dzk6mpihvg79q47p"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/aws/aws-sdk-go-v2/service/iam"
-      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
-    (propagated-inputs
-     (list go-github-com-aws-smithy-go))
-    (home-page "https://github.com/aws/aws-sdk-go-v2")
-    (synopsis "AWS SDK for Go v2 - IAM module")
-    (description
-     "Package iam provides the API client, operations, and parameter types for
-AWS Identity and Access Management.")
     (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-service-s3
@@ -9852,6 +9852,121 @@ values that are guaranteed to be safe, by construction or by escaping or
 sanitization, to use in various HTML contexts and with various DOM APIs.")
     (license license:bsd-3)))
 
+(define-public go-github-com-google-trillian
+  (package
+    (name "go-github-com-google-trillian")
+    (version "1.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/trillian")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05cphh5jv9g3j46cqxxw8h7amfmlxp85n9gljv9nr90cngmqcm0c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/google/trillian"
+      ;; XXX: Remove when all inputs are packaged.
+      #:test-subdirs
+      #~(list "client"
+              "client/backoff"
+              "cmd/updatetree"
+              "crypto/keys"
+              "crypto/keys/der"
+              "crypto/keys/pem"
+              "docs/claimantmodel/experimental/cmd/render/internal"
+              "docs/storage/commit_log/signer"
+              "docs/storage/commit_log/simkafka"
+              "integration"
+              "integration/admin"
+              "integration/format"
+              "log"
+              "merkle/coniks"
+              "merkle/smt"
+              "merkle/smt/node"
+              "monitoring"
+              "monitoring/prometheus"
+              "quota"
+              "quota/cacheqm"
+              "quota/mysqlqm"
+              "quota/postgresqlqm"
+              "server"
+              "server/admin"
+              "server/errors"
+              "server/interceptor"
+              "storage"
+              "storage/cache"
+              "storage/memory"
+              "storage/mysql"
+              "storage/postgresql"
+              "testonly/flagsaver"
+              "testonly/matchers"
+              "trees"
+              "types"
+              "util/clock"
+              "util/election"
+              "util/election2/k8s"
+              "util/election2/testonly")))
+    (native-inputs
+     (list go-github-com-golang-mock
+           go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-go-redis-redis
+           go-github-com-go-sql-driver-mysql
+           go-github-com-google-btree
+           go-github-com-grpc-ecosystem-go-grpc-middleware
+           go-github-com-jackc-pgerrcode
+           go-github-com-jackc-pgx-v5
+           go-github-com-letsencrypt-pkcs11key-v4
+           go-github-com-lib-pq
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-transparency-dev-merkle
+           go-go-opencensus-io
+           go-golang-org-x-crypto
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-tools
+           go-google-golang-org-api
+           go-google-golang-org-genproto
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-grpc-cmd-protoc-gen-go-grpc
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v2
+           go-k8s-io-api
+           go-k8s-io-apimachinery
+           go-k8s-io-client-go
+           go-k8s-io-klog-v2
+           go-k8s-io-utils
+
+           ;; TODO: Complete packaging.
+           ;; go-bitbucket-org-creachadair-shell
+           ;; go-cloud-google-com-go-spanner
+           ;; go-contrib-go-opencensus-io-exporter-stackdriver
+           ;; go-github-com-apache-beam-sdks-v2
+           ;; go-github-com-cockroachdb-cockroach-go-v2
+           ;; go-github-com-fullstorydev-grpcurl
+           ;; go-github-com-google-go-licenses-v2
+           ;; go-github-com-pseudomuto-protoc-gen-doc
+           ;; go-go-etcd-io-etcd-client-v3
+           ;; go-go-etcd-io-etcd-etcdctl-v3
+           ;; go-go-etcd-io-etcd-server-v3
+           #;go-go-etcd-io-etcd-v3))
+    (home-page "https://github.com/google/trillian")
+    (synopsis "Transparent log infrastructure for certificate transparency")
+    (description
+     "Trillian is an implementation of the concepts described in the
+Verifiable Data Structures white paper.  It provides a transparent,
+append-only log of records that can be used for applications such as
+certificate transparency and key transparency.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-googleapis-enterprise-certificate-proxy
   (package
     (name "go-github-com-googleapis-enterprise-certificate-proxy")
@@ -10212,121 +10327,6 @@ collected traces and spans to Google Cloud.")
     (description
      "This package provides an OpenTelemetry Google Cloud resource mapping
 module.")
-    (license license:asl2.0)))
-
-(define-public go-github-com-google-trillian
-  (package
-    (name "go-github-com-google-trillian")
-    (version "1.7.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/google/trillian")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "05cphh5jv9g3j46cqxxw8h7amfmlxp85n9gljv9nr90cngmqcm0c"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "github.com/google/trillian"
-      ;; XXX: Remove when all inputs are packaged.
-      #:test-subdirs
-      #~(list "client"
-              "client/backoff"
-              "cmd/updatetree"
-              "crypto/keys"
-              "crypto/keys/der"
-              "crypto/keys/pem"
-              "docs/claimantmodel/experimental/cmd/render/internal"
-              "docs/storage/commit_log/signer"
-              "docs/storage/commit_log/simkafka"
-              "integration"
-              "integration/admin"
-              "integration/format"
-              "log"
-              "merkle/coniks"
-              "merkle/smt"
-              "merkle/smt/node"
-              "monitoring"
-              "monitoring/prometheus"
-              "quota"
-              "quota/cacheqm"
-              "quota/mysqlqm"
-              "quota/postgresqlqm"
-              "server"
-              "server/admin"
-              "server/errors"
-              "server/interceptor"
-              "storage"
-              "storage/cache"
-              "storage/memory"
-              "storage/mysql"
-              "storage/postgresql"
-              "testonly/flagsaver"
-              "testonly/matchers"
-              "trees"
-              "types"
-              "util/clock"
-              "util/election"
-              "util/election2/k8s"
-              "util/election2/testonly")))
-    (native-inputs
-     (list go-github-com-golang-mock
-           go-github-com-google-go-cmp))
-    (propagated-inputs
-     (list go-github-com-go-redis-redis
-           go-github-com-go-sql-driver-mysql
-           go-github-com-google-btree
-           go-github-com-grpc-ecosystem-go-grpc-middleware
-           go-github-com-jackc-pgerrcode
-           go-github-com-jackc-pgx-v5
-           go-github-com-letsencrypt-pkcs11key-v4
-           go-github-com-lib-pq
-           go-github-com-prometheus-client-golang
-           go-github-com-prometheus-client-model
-           go-github-com-transparency-dev-merkle
-           go-go-opencensus-io
-           go-golang-org-x-crypto
-           go-golang-org-x-sync
-           go-golang-org-x-sys
-           go-golang-org-x-tools
-           go-google-golang-org-api
-           go-google-golang-org-genproto
-           go-google-golang-org-genproto-googleapis-api
-           go-google-golang-org-genproto-googleapis-rpc
-           go-google-golang-org-grpc
-           go-google-golang-org-grpc-cmd-protoc-gen-go-grpc
-           go-google-golang-org-protobuf
-           go-gopkg-in-yaml-v2
-           go-k8s-io-api
-           go-k8s-io-apimachinery
-           go-k8s-io-client-go
-           go-k8s-io-klog-v2
-           go-k8s-io-utils
-
-           ;; TODO: Complete packaging.
-           ;; go-bitbucket-org-creachadair-shell
-           ;; go-cloud-google-com-go-spanner
-           ;; go-contrib-go-opencensus-io-exporter-stackdriver
-           ;; go-github-com-apache-beam-sdks-v2
-           ;; go-github-com-cockroachdb-cockroach-go-v2
-           ;; go-github-com-fullstorydev-grpcurl
-           ;; go-github-com-google-go-licenses-v2
-           ;; go-github-com-pseudomuto-protoc-gen-doc
-           ;; go-go-etcd-io-etcd-client-v3
-           ;; go-go-etcd-io-etcd-etcdctl-v3
-           ;; go-go-etcd-io-etcd-server-v3
-           #;go-go-etcd-io-etcd-v3))
-    (home-page "https://github.com/google/trillian")
-    (synopsis "Transparent log infrastructure for certificate transparency")
-    (description
-     "Trillian is an implementation of the concepts described in the
-Verifiable Data Structures white paper.  It provides a transparent,
-append-only log of records that can be used for applications such as
-certificate transparency and key transparency.")
     (license license:asl2.0)))
 
 (define-public go-github-com-gopacket-gopacket
@@ -10771,42 +10771,6 @@ and more, which can be a great generic building blocks that make it easy to
 build multiple microservices easily.")
     (license license:asl2.0)))
 
-(define-public go-github-com-grpc-ecosystem-go-grpc-middleware-v2
-  (package
-    (inherit go-github-com-grpc-ecosystem-go-grpc-middleware)
-    (name "go-github-com-grpc-ecosystem-go-grpc-middleware-v2")
-    (version "2.3.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/grpc-ecosystem/go-grpc-middleware")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0qbh34r44sfw9s05kdipmz49fcgvlpnns20d0lbwvw9g3qwa095r"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            (for-each delete-file-recursively
-                      (list ".bingo"
-                            "examples"
-                            "providers"
-                            "interceptors/logging/examples"))))))
-    (arguments
-     (list
-      #:import-path "github.com/grpc-ecosystem/go-grpc-middleware/v2"
-      ;; Tests from files:
-      ;;  * github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/protovalidate
-      ;;  * github.com/grpc-ecosystem/go-grpc-middleware/v2/testing/
-      ;;        testvalidate/v1/test_validate.pb.go
-      ;; require:
-      ;;  * buf.build/go/protovalidate
-      ;;  * buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate
-      ;; which require others unpackages Go libraries. All other tests pass.
-      #:tests? #f))))
-
 (define-public go-github-com-grpc-ecosystem-go-grpc-middleware-providers-prometheus
   (package
     (name "go-github-com-grpc-ecosystem-go-grpc-middleware-providers-prometheus")
@@ -10852,6 +10816,42 @@ build multiple microservices easily.")
      "This package provides a standalone interceptor for Prometheus monitoring
 for gRPC Go servers and clients.")
     (license license:asl2.0)))
+
+(define-public go-github-com-grpc-ecosystem-go-grpc-middleware-v2
+  (package
+    (inherit go-github-com-grpc-ecosystem-go-grpc-middleware)
+    (name "go-github-com-grpc-ecosystem-go-grpc-middleware-v2")
+    (version "2.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/grpc-ecosystem/go-grpc-middleware")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qbh34r44sfw9s05kdipmz49fcgvlpnns20d0lbwvw9g3qwa095r"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            (for-each delete-file-recursively
+                      (list ".bingo"
+                            "examples"
+                            "providers"
+                            "interceptors/logging/examples"))))))
+    (arguments
+     (list
+      #:import-path "github.com/grpc-ecosystem/go-grpc-middleware/v2"
+      ;; Tests from files:
+      ;;  * github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/protovalidate
+      ;;  * github.com/grpc-ecosystem/go-grpc-middleware/v2/testing/
+      ;;        testvalidate/v1/test_validate.pb.go
+      ;; require:
+      ;;  * buf.build/go/protovalidate
+      ;;  * buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate
+      ;; which require others unpackages Go libraries. All other tests pass.
+      #:tests? #f))))
 
 (define-public go-github-com-grpc-ecosystem-grpc-gateway-v2
   (package
@@ -11799,6 +11799,52 @@ It's an alternative fork of @url{https://github.com/johannesboyne/gofakes3}.")
 decisions based on HTTP/1 Host headers and the SNI hostname in TLS connections.")
     (license license:asl2.0)))
 
+(define-public go-github-com-insomniacslk-dhcp
+  (package
+    (name "go-github-com-insomniacslk-dhcp")
+    (version "0.0.0-20250417080101-5f8cf70e8c5f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/insomniacslk/dhcp")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1plxb84g7mn1iabgjjw71n16vc17m2kay3snihkydgb628j58hqv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/insomniacslk/dhcp"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-hugelgupf-socketpair
+           go-github-com-jsimonetti-rtnetlink
+           go-github-com-mdlayher-netlink
+           go-github-com-mdlayher-packet
+           go-github-com-u-root-uio
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/insomniacslk/dhcp")
+    (synopsis "DHCPv6 and DHCPv4 packet library")
+    (description
+     "DHCPv4 and DHCPv6 decoding/encoding library for Golang.  This package
+is split in several logical parts:
+
+@itemize
+@item @code{dhcpv4} - implementation of DHCPv4 packet, client and server
+@item @code{netboot} - network booting wrappers on top of dhcpv6 and dhcpv4
+@item @code{iana} - several IANA constants, and helpers used by dhcpv6 and
+dhcpv4
+@item @code{rfc1035label} - simple implementation of RFC1035 labels, used by
+dhcpv6 and dhcpv4
+@item @code{interfaces} - a thin layer of wrappers around network interfaces
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public go-github-com-intel-goresctrl
   (package
     (name "go-github-com-intel-goresctrl")
@@ -11850,51 +11896,6 @@ memory bandwidth; CPU frequency in core granularity; and Storage I/O scheduler
 priority and bandwidth.")
     (license license:asl2.0)))
 
-(define-public go-github-com-insomniacslk-dhcp
-  (package
-    (name "go-github-com-insomniacslk-dhcp")
-    (version "0.0.0-20250417080101-5f8cf70e8c5f")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/insomniacslk/dhcp")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1plxb84g7mn1iabgjjw71n16vc17m2kay3snihkydgb628j58hqv"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "github.com/insomniacslk/dhcp"))
-    (native-inputs
-     (list go-github-com-stretchr-testify
-           go-github-com-google-go-cmp))
-    (propagated-inputs
-     (list go-github-com-hugelgupf-socketpair
-           go-github-com-jsimonetti-rtnetlink
-           go-github-com-mdlayher-netlink
-           go-github-com-mdlayher-packet
-           go-github-com-u-root-uio
-           go-golang-org-x-net
-           go-golang-org-x-sys))
-    (home-page "https://github.com/insomniacslk/dhcp")
-    (synopsis "DHCPv6 and DHCPv4 packet library")
-    (description
-     "DHCPv4 and DHCPv6 decoding/encoding library for Golang.  This package
-is split in several logical parts:
-
-@itemize
-@item @code{dhcpv4} - implementation of DHCPv4 packet, client and server
-@item @code{netboot} - network booting wrappers on top of dhcpv6 and dhcpv4
-@item @code{iana} - several IANA constants, and helpers used by dhcpv6 and
-dhcpv4
-@item @code{rfc1035label} - simple implementation of RFC1035 labels, used by
-dhcpv6 and dhcpv4
-@item @code{interfaces} - a thin layer of wrappers around network interfaces
-@end itemize")
-    (license license:bsd-3)))
 
 (define-public go-github-com-invopop-jsonschema
   (package
@@ -18844,6 +18845,231 @@ support.")
 kinds of referrer URLs (search, social, ...).")
     (license license:expat)))
 
+(define-public go-github-com-shurcool-githubv4
+  (package
+    (name "go-github-com-shurcool-githubv4")
+    (version "0.0.0-20240429030203-be2daab69064")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shurcooL/githubv4")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kkvqwv0waa8hj1jr9b4nvz8rmslqpchidl7gs9bplrkl3fvsxn6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shurcooL/githubv4"))
+    (propagated-inputs
+     (list go-github-com-shurcool-graphql
+           go-golang-org-x-oauth2))
+    (home-page "https://github.com/shurcooL/githubv4")
+    (synopsis "Client library for GitHub GraphQL API v4")
+    (description
+     "Package githubv4 is a client library for accessing GitHub @code{GraphQL}
+API v4.")
+    (license license:expat)))
+
+(define-public go-github-com-shurcool-graphql
+  (package
+    (name "go-github-com-shurcool-graphql")
+    (version "0.0.0-20230722043721-ed46e5a46466")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shurcooL/graphql")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12cq16qak217bkpklqsmqhl42gz8cpadpzqw6fsivc3ambjpqdry"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shurcooL/graphql"))
+    (home-page "https://github.com/shurcooL/graphql")
+    (synopsis "GraphQL client")
+    (description
+     "Package graphql provides a @code{GraphQL} client implementation.")
+    (license license:expat)))
+
+(define-public go-github-com-shurcool-httpfs
+  (package
+    (name "go-github-com-shurcool-httpfs")
+    (version "0.0.0-20230704072500-f1e31cf0ba5c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/shurcooL/httpfs")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m0jjnfzr8372cjx0zjm2zm695kwaz8l1yk7gzgn05biadsklprm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/shurcooL/httpfs"))
+    (native-inputs
+     (list go-golang-org-x-tools-godoc))
+    (propagated-inputs
+     (list go-github-com-shurcool-httpgzip))
+    (home-page "https://github.com/shurcooL/httpfs")
+    (synopsis "Utilities for @code{http.FileSystem}")
+    (description
+     "Collection of Go packages for working with the +@code{http.FileSystem}
+interface.")
+    (license license:expat)))
+
+(define-public go-github-com-shurcool-httpgzip
+  (package
+    (name "go-github-com-shurcool-httpgzip")
+    (version "0.0.0-20230704072819-d1585fc322fa")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shurcooL/httpgzip")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10fnndia8ij3hwwvknn8qy8z3955bm7xyvqd69yh5g2zh25zc5x2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shurcooL/httpgzip"))
+    (native-inputs
+     (list go-golang-org-x-tools-godoc))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/shurcooL/httpgzip")
+    (synopsis "Primitives of @code{net-http}-like with gzip compression")
+    (description
+     "Package @code{httpgzip} provides @code{net/http}-like primitives that
+use gzip compression when serving HTTP requests.")
+    (license license:expat)))
+
+(define-public go-github-com-shurcool-vfsgen
+  (package
+    (name "go-github-com-shurcool-vfsgen")
+    (version "0.0.0-20230704071429-0000e147ea92")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shurcooL/vfsgen")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ypfdiv56ckb0yc7mccc2l8vc3gmfws2p7bcf9f0j415m7r0aq6q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/shurcooL/vfsgen"))
+    (native-inputs
+     (list go-golang-org-x-tools-godoc))
+    (propagated-inputs
+     (list go-github-com-shurcool-httpfs))
+    (home-page "https://github.com/shurcooL/vfsgen")
+    (synopsis "Generate Go code from an @code{http.FileSystem}")
+    (description
+     "Package @code{vfsgen} takes an @code{http.FileSystem} (likely at
+@code{go generate} time) and generates Go code that statically implements the
+provided @code{http.FileSystem}.")
+    (license license:expat)))
+
+(define-public go-github-com-sigstore-fulcio
+  (package
+    (name "go-github-com-sigstore-fulcio")
+    (version "1.8.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sigstore/fulcio")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cz66fswvy50868yr13s4pvrdn3lk9kh0wp3ynrb2g6l4y7z8rw5"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/sigstore/fulcio/hack/tools
+            (delete-file-recursively "hack/tools")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/sigstore/fulcio"
+      #:test-subdirs
+      ;; XXX: Remove when all inputs are packaged.
+      #~(list "pkg/api"
+              "pkg/certificate"
+              "pkg/ctl"
+              "pkg/oauthflow")))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-google-go-cmp
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-spf13-viper))
+    (propagated-inputs
+     (list go-github-com-asaskevich-govalidator
+           go-github-com-coreos-go-oidc-v3
+           go-github-com-fsnotify-fsnotify
+           go-github-com-go-jose-go-jose-v4
+           go-github-com-google-certificate-transparency-go
+           go-github-com-grpc-ecosystem-go-grpc-middleware
+           go-github-com-grpc-ecosystem-go-grpc-prometheus
+           go-github-com-grpc-ecosystem-grpc-gateway-v2
+           go-github-com-hashicorp-golang-lru-v2
+           go-github-com-magiconair-properties
+           go-github-com-paesslerag-jsonpath
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-prometheus-common
+           go-github-com-rs-cors
+           go-github-com-sigstore-protobuf-specs
+           go-github-com-sigstore-sigstore
+           go-github-com-spiffe-go-spiffe-v2
+           go-github-com-tink-crypto-tink-go-v2
+           go-go-uber-org-zap
+           go-go-yaml-in-yaml-v3
+           go-google-golang-org-api
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-sigs-k8s-io-release-utils
+
+           ;; TODO: Complete packaging
+           ;; go-chainguard-dev-go-grpc-kit
+           ;; go-chainguard-dev-sdk
+           ;; go-cloud-google-com-go-security
+           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-aws
+           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-azure
+           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-gcp
+           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-hashivault
+           ;; go-github-com-thalesignite-crypto11
+           ;; go-github-com-tink-crypto-tink-go-awskms-v2
+           ;; go-github-com-tink-crypto-tink-go-gcpkms-v2
+           ;; go-go-step-sm-crypto
+           #;go-goa-design-goa-v3))
+    (home-page "https://github.com/sigstore/fulcio")
+    (synopsis "Sigstore certificate authority for code signing")
+    (description
+     "Fulcio is a free-to-use certificate authority for issuing code signing
+certificates for an OpenID Connect (OIDC) identity, such as email address.
+It is part of the Sigstore project for software supply chain security.")
+    (license license:asl2.0)
+    ;; XXX: Don't expose since it's a partial package.
+    (properties '((hidden? . #t)))))
+
+
 (define-public go-github-com-sigstore-rekor
   (package
     (name "go-github-com-sigstore-rekor")
@@ -19043,6 +19269,94 @@ and consumers to transparently record signed metadata to a ledger.")
     (description
      "This package provides a tile-based implementation of a transparency log
 for the Sigstore ecosystem, supporting efficient verification of log entries.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-sigstore-sigstore
+  (package
+    (name "go-github-com-sigstore-sigstore")
+    (version "1.10.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sigstore/sigstore")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0whcwzdmvf8xhin55112dmwflk5ipcd14mxjlgj5lpw3a8fp38af"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/sigstore/sigstore/hack/tools
+            ;; - github.com/sigstore/sigstore/pkg/signature/kms/aws
+            ;; - github.com/sigstore/sigstore/pkg/signature/kms/azure
+            ;; - github.com/sigstore/sigstore/pkg/signature/kms/gcp
+            ;; - github.com/sigstore/sigstore/pkg/signature/kms/hashivault
+            ;; - sigstore-kms-localkms
+            ;; - github.com/sigstore/sigstore/test/fuzz
+            (for-each delete-file-recursively
+                      (list "hack/tools"
+                            "pkg/signature/kms/aws"
+                            "pkg/signature/kms/azure"
+                            "pkg/signature/kms/gcp"
+                            "pkg/signature/kms/hashivault"
+                            "test/cliplugin/localkms"
+                            "test/fuzz"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/sigstore/sigstore"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Network access is required.
+                       (list "TestAltLegacyURLToCDN"
+                             "TestCache"
+                             "TestConcurrentAccessInitialize"
+                             "TestConcurrentAccessNewFromEnv"
+                             "TestCustomRoot"
+                             "TestCustomRootFileRemoteStore"
+                             "TestGetTargetsByMeta"
+                             "TestLegacyBucketToCDN"
+                             "TestProviderIsAzureBacked"
+                             "TestNewFromEnv"
+                             "TestLegacyURLToCDN"
+                             "TestAltLegacyURLToCDN"
+                             "TestNoCache"
+                             "TestUpdatedTargetNamesEmbedded"
+                             "TestUpdatedTargetNamesEmbedded")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-coreos-go-oidc-v3
+           go-github-com-go-jose-go-jose-v4
+           go-github-com-go-rod-rod
+           go-github-com-google-go-containerregistry
+           go-github-com-letsencrypt-boulder
+           go-github-com-pkg-browser
+           go-github-com-secure-systems-lab-go-securesystemslib
+           go-github-com-sigstore-protobuf-specs
+           go-github-com-theupdateframework-go-tuf
+           go-github-com-tink-crypto-tink-go-v2
+           go-golang-org-x-crypto
+           go-golang-org-x-oauth2
+           go-golang-org-x-term))
+    (home-page "https://sigstore.dev/")
+    (synopsis "Common Go library for Sigstore services")
+    (description
+     "Sigstore is a Go library providing common functionality for Sigstore
+services.  It includes cryptographic utilities, OAuth/OIDC authentication,
+certificate handling, and tools for interacting with Sigstore infrastructure
+like Fulcio and Rekor.")
     (license license:asl2.0)))
 
 (define-public go-github-com-sigstore-sigstore-go
@@ -19354,318 +19668,6 @@ service.")
     (description
      "This package provides timestamp verification functionality for the
 Sigstore ecosystem, implementing RFC 3161 timestamp response validation.")
-    (license license:asl2.0)))
-
-(define-public go-github-com-shurcool-githubv4
-  (package
-    (name "go-github-com-shurcool-githubv4")
-    (version "0.0.0-20240429030203-be2daab69064")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/shurcooL/githubv4")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0kkvqwv0waa8hj1jr9b4nvz8rmslqpchidl7gs9bplrkl3fvsxn6"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/shurcooL/githubv4"))
-    (propagated-inputs
-     (list go-github-com-shurcool-graphql
-           go-golang-org-x-oauth2))
-    (home-page "https://github.com/shurcooL/githubv4")
-    (synopsis "Client library for GitHub GraphQL API v4")
-    (description
-     "Package githubv4 is a client library for accessing GitHub @code{GraphQL}
-API v4.")
-    (license license:expat)))
-
-(define-public go-github-com-shurcool-graphql
-  (package
-    (name "go-github-com-shurcool-graphql")
-    (version "0.0.0-20230722043721-ed46e5a46466")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/shurcooL/graphql")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "12cq16qak217bkpklqsmqhl42gz8cpadpzqw6fsivc3ambjpqdry"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/shurcooL/graphql"))
-    (home-page "https://github.com/shurcooL/graphql")
-    (synopsis "GraphQL client")
-    (description
-     "Package graphql provides a @code{GraphQL} client implementation.")
-    (license license:expat)))
-
-(define-public go-github-com-shurcool-httpfs
-  (package
-    (name "go-github-com-shurcool-httpfs")
-    (version "0.0.0-20230704072500-f1e31cf0ba5c")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/shurcooL/httpfs")
-              (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1m0jjnfzr8372cjx0zjm2zm695kwaz8l1yk7gzgn05biadsklprm"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "github.com/shurcooL/httpfs"))
-    (native-inputs
-     (list go-golang-org-x-tools-godoc))
-    (propagated-inputs
-     (list go-github-com-shurcool-httpgzip))
-    (home-page "https://github.com/shurcooL/httpfs")
-    (synopsis "Utilities for @code{http.FileSystem}")
-    (description
-     "Collection of Go packages for working with the +@code{http.FileSystem}
-interface.")
-    (license license:expat)))
-
-(define-public go-github-com-shurcool-httpgzip
-  (package
-    (name "go-github-com-shurcool-httpgzip")
-    (version "0.0.0-20230704072819-d1585fc322fa")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/shurcooL/httpgzip")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "10fnndia8ij3hwwvknn8qy8z3955bm7xyvqd69yh5g2zh25zc5x2"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/shurcooL/httpgzip"))
-    (native-inputs
-     (list go-golang-org-x-tools-godoc))
-    (propagated-inputs
-     (list go-golang-org-x-net))
-    (home-page "https://github.com/shurcooL/httpgzip")
-    (synopsis "Primitives of @code{net-http}-like with gzip compression")
-    (description
-     "Package @code{httpgzip} provides @code{net/http}-like primitives that
-use gzip compression when serving HTTP requests.")
-    (license license:expat)))
-
-(define-public go-github-com-shurcool-vfsgen
-  (package
-    (name "go-github-com-shurcool-vfsgen")
-    (version "0.0.0-20230704071429-0000e147ea92")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/shurcooL/vfsgen")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1ypfdiv56ckb0yc7mccc2l8vc3gmfws2p7bcf9f0j415m7r0aq6q"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/shurcooL/vfsgen"))
-    (native-inputs
-     (list go-golang-org-x-tools-godoc))
-    (propagated-inputs
-     (list go-github-com-shurcool-httpfs))
-    (home-page "https://github.com/shurcooL/vfsgen")
-    (synopsis "Generate Go code from an @code{http.FileSystem}")
-    (description
-     "Package @code{vfsgen} takes an @code{http.FileSystem} (likely at
-@code{go generate} time) and generates Go code that statically implements the
-provided @code{http.FileSystem}.")
-    (license license:expat)))
-
-(define-public go-github-com-sigstore-fulcio
-  (package
-    (name "go-github-com-sigstore-fulcio")
-    (version "1.8.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/sigstore/fulcio")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1cz66fswvy50868yr13s4pvrdn3lk9kh0wp3ynrb2g6l4y7z8rw5"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - github.com/sigstore/fulcio/hack/tools
-            (delete-file-recursively "hack/tools")))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "github.com/sigstore/fulcio"
-      #:test-subdirs
-      ;; XXX: Remove when all inputs are packaged.
-      #~(list "pkg/api"
-              "pkg/certificate"
-              "pkg/ctl"
-              "pkg/oauthflow")))
-    (native-inputs
-     (list go-github-com-stretchr-testify
-           go-github-com-google-go-cmp
-           go-github-com-spf13-cobra
-           go-github-com-spf13-pflag
-           go-github-com-spf13-viper))
-    (propagated-inputs
-     (list go-github-com-asaskevich-govalidator
-           go-github-com-coreos-go-oidc-v3
-           go-github-com-fsnotify-fsnotify
-           go-github-com-go-jose-go-jose-v4
-           go-github-com-google-certificate-transparency-go
-           go-github-com-grpc-ecosystem-go-grpc-middleware
-           go-github-com-grpc-ecosystem-go-grpc-prometheus
-           go-github-com-grpc-ecosystem-grpc-gateway-v2
-           go-github-com-hashicorp-golang-lru-v2
-           go-github-com-magiconair-properties
-           go-github-com-paesslerag-jsonpath
-           go-github-com-prometheus-client-golang
-           go-github-com-prometheus-client-model
-           go-github-com-prometheus-common
-           go-github-com-rs-cors
-           go-github-com-sigstore-protobuf-specs
-           go-github-com-sigstore-sigstore
-           go-github-com-spiffe-go-spiffe-v2
-           go-github-com-tink-crypto-tink-go-v2
-           go-go-uber-org-zap
-           go-go-yaml-in-yaml-v3
-           go-google-golang-org-api
-           go-google-golang-org-genproto-googleapis-api
-           go-google-golang-org-grpc
-           go-google-golang-org-protobuf
-           go-sigs-k8s-io-release-utils
-
-           ;; TODO: Complete packaging
-           ;; go-chainguard-dev-go-grpc-kit
-           ;; go-chainguard-dev-sdk
-           ;; go-cloud-google-com-go-security
-           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-aws
-           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-azure
-           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-gcp
-           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-hashivault
-           ;; go-github-com-thalesignite-crypto11
-           ;; go-github-com-tink-crypto-tink-go-awskms-v2
-           ;; go-github-com-tink-crypto-tink-go-gcpkms-v2
-           ;; go-go-step-sm-crypto
-           #;go-goa-design-goa-v3))
-    (home-page "https://github.com/sigstore/fulcio")
-    (synopsis "Sigstore certificate authority for code signing")
-    (description
-     "Fulcio is a free-to-use certificate authority for issuing code signing
-certificates for an OpenID Connect (OIDC) identity, such as email address.
-It is part of the Sigstore project for software supply chain security.")
-    (license license:asl2.0)
-    ;; XXX: Don't expose since it's a partial package.
-    (properties '((hidden? . #t)))))
-
-(define-public go-github-com-sigstore-sigstore
-  (package
-    (name "go-github-com-sigstore-sigstore")
-    (version "1.10.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/sigstore/sigstore")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0whcwzdmvf8xhin55112dmwflk5ipcd14mxjlgj5lpw3a8fp38af"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - github.com/sigstore/sigstore/hack/tools
-            ;; - github.com/sigstore/sigstore/pkg/signature/kms/aws
-            ;; - github.com/sigstore/sigstore/pkg/signature/kms/azure
-            ;; - github.com/sigstore/sigstore/pkg/signature/kms/gcp
-            ;; - github.com/sigstore/sigstore/pkg/signature/kms/hashivault
-            ;; - sigstore-kms-localkms
-            ;; - github.com/sigstore/sigstore/test/fuzz
-            (for-each delete-file-recursively
-                      (list "hack/tools"
-                            "pkg/signature/kms/aws"
-                            "pkg/signature/kms/azure"
-                            "pkg/signature/kms/gcp"
-                            "pkg/signature/kms/hashivault"
-                            "test/cliplugin/localkms"
-                            "test/fuzz"))))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "github.com/sigstore/sigstore"
-      #:test-flags
-      #~(list "-skip" (string-join
-                       ;; Network access is required.
-                       (list "TestAltLegacyURLToCDN"
-                             "TestCache"
-                             "TestConcurrentAccessInitialize"
-                             "TestConcurrentAccessNewFromEnv"
-                             "TestCustomRoot"
-                             "TestCustomRootFileRemoteStore"
-                             "TestGetTargetsByMeta"
-                             "TestLegacyBucketToCDN"
-                             "TestProviderIsAzureBacked"
-                             "TestNewFromEnv"
-                             "TestLegacyURLToCDN"
-                             "TestAltLegacyURLToCDN"
-                             "TestNoCache"
-                             "TestUpdatedTargetNamesEmbedded"
-                             "TestUpdatedTargetNamesEmbedded")
-                       "|"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-home
-            (lambda _
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list go-github-com-stretchr-testify
-           go-github-com-google-go-cmp))
-    (propagated-inputs
-     (list go-github-com-coreos-go-oidc-v3
-           go-github-com-go-jose-go-jose-v4
-           go-github-com-go-rod-rod
-           go-github-com-google-go-containerregistry
-           go-github-com-letsencrypt-boulder
-           go-github-com-pkg-browser
-           go-github-com-secure-systems-lab-go-securesystemslib
-           go-github-com-sigstore-protobuf-specs
-           go-github-com-theupdateframework-go-tuf
-           go-github-com-tink-crypto-tink-go-v2
-           go-golang-org-x-crypto
-           go-golang-org-x-oauth2
-           go-golang-org-x-term))
-    (home-page "https://sigstore.dev/")
-    (synopsis "Common Go library for Sigstore services")
-    (description
-     "Sigstore is a Go library providing common functionality for Sigstore
-services.  It includes cryptographic utilities, OAuth/OIDC authentication,
-certificate handling, and tools for interacting with Sigstore infrastructure
-like Fulcio and Rekor.")
     (license license:asl2.0)))
 
 (define-public go-github-com-slok-go-http-metrics
@@ -26317,6 +26319,33 @@ feature set and features are added on as the need arises.")
 @url{https://www.storj.io/, Storj Labs} decentralized storage network.")
     (license license:expat)))
 
+(define-public go-xorm-io-builder
+  (package
+    (name "go-xorm-io-builder")
+    (version "0.3.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitea.com/xorm/builder")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1khn5cmrn3my2sk8pldri2i6ymfy8q7bpc65h3pbi6l4grrmkily"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "xorm.io/builder"
+      #:test-flags #~(list "-vet=off")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-gitea-com-xorm-sqlfiddle))
+    (home-page "https://xorm.io/builder")
+    (synopsis "SQL builder for Go")
+    (description "Package builder is a simple and powerful SQL builder for Golang.")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Executables:
 ;;;
@@ -26360,33 +26389,6 @@ bundles
 @item @command{multirootca} - program, which is a certificate authority server
 that can use multiple signing keys
 @end itemize")))
-
-(define-public go-xorm-io-builder
-  (package
-    (name "go-xorm-io-builder")
-    (version "0.3.13")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://gitea.com/xorm/builder")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1khn5cmrn3my2sk8pldri2i6ymfy8q7bpc65h3pbi6l4grrmkily"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "xorm.io/builder"
-      #:test-flags #~(list "-vet=off")))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
-    (propagated-inputs
-     (list go-gitea-com-xorm-sqlfiddle))
-    (home-page "https://xorm.io/builder")
-    (synopsis "SQL builder for Go")
-    (description "Package builder is a simple and powerful SQL builder for Golang.")
-    (license license:bsd-3)))
 
 (define-public lyrebird
   (package
