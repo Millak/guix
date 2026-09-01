@@ -20201,16 +20201,22 @@ graphical login managers do not list them.
 
 @anchor{user-account-password}
 @cindex password, for user accounts
+@cindex user account password
 @item @code{password} (default: @code{#f})
-You would normally leave this field to @code{#f}, initialize user
-passwords as @code{root} with the @command{passwd} command, and then let
-users change it with @command{passwd}.  Passwords set with
-@command{passwd} are of course preserved across reboot and
+
+You would normally leave this field to @code{#f}@footnote{A @code{#f}
+value creates a locked password, per the @samp{shadow(5)} man page.},
+initialize user passwords as @code{root} with the @command{passwd}
+command, and then let users change it with @command{passwd}.  Passwords
+set with @command{passwd} are of course preserved across reboot and
 reconfiguration.
 
 If you @emph{do} want to set an initial password for an account, then
-this field must contain the encrypted password, as a string.  You can use the
-@code{crypt} procedure for this purpose:
+this field should contain the encrypted password, as a
+string@footnote{You can technically set a plain, unencrypted password
+string, which is discouraged for security reasons, but can be useful
+when testing, for example to set an empty password with @code{(password
+"")}.}.  You can use the @code{crypt} procedure for this purpose:
 
 @lisp
 (user-account
