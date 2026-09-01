@@ -22048,21 +22048,23 @@ for solving the Assignment Problem.")
 (define-public python-codespell
   (package
     (name "python-codespell")
-    (version "2.3.0")
+    (version "2.4.3")
     (source
       (origin
-        (method url-fetch)
-        (uri (pypi-uri "codespell" version))
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/codespell-project/codespell")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
         (sha256
-          (base32 "07s72zfxkznigqdc23k7jp9saq0hgq0gf2kjmmxzcrayyw87s31n"))))
+          (base32 "1c1wnl14af496s5iwsc0bp6pg4i8yankr7wvxxb66dc8s87n2rd1"))))
     (build-system pyproject-build-system)
     (native-inputs
       (list python-pygments
             python-pytest
             python-pytest-dependency
             python-setuptools
-            python-setuptools-scm
-            python-wheel))
+            python-setuptools-scm))
     (propagated-inputs
       (list python-chardet))
     (home-page "https://github.com/codespell-project/codespell/")
@@ -22071,7 +22073,7 @@ for solving the Assignment Problem.")
      "Codespell fixes common misspellings in text files.  It's designed
 primarily for checking misspelled words in source code, but it can be used
 with other files as well.  It does not check for word membership in a complete
-dictionary, but instead looks for a set of common misspellings. Therefore it
+dictionary, but instead looks for a set of common misspellings.  Therefore it
 should catch errors like \"adn\", but it will not catch \"adnasdfasdf\".  This
 also means it shouldn't generate false-positives when you use a niche term it
 doesn't know about.")
