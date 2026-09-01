@@ -12042,7 +12042,7 @@ the speedbar window.")
 (define-public emacs-shell-maker
   (package
     (name "emacs-shell-maker")
-    (version "0.97.1")
+    (version "0.97.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12051,7 +12051,7 @@ the speedbar window.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1cfs197z637qgg4xrp57ax362z3jxqqn1f9sz6hsqisz8l4d13pv"))))
+                "13rlph0m125sadqpbx1zch898zs44fzcra9cwvix1vrw5gcrxfpr"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command
