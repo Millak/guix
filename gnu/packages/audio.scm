@@ -7241,7 +7241,7 @@ bluetooth profile.")
 (define-public libopenshot-audio
   (package
     (name "libopenshot-audio")
-    (version "0.6.0")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7250,7 +7250,7 @@ bluetooth profile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08k84hfgs6dyilan1p12bs87cpil3jxvjy406sw28fmxgz4j7z1m"))))
+                "0arwyjrrawcbw5scihy7d5jpgs3car66sxgi2g3mn20g37fjr4y6"))))
     (build-system cmake-build-system)
     (inputs
      (list alsa-lib
@@ -7267,7 +7267,7 @@ bluetooth profile.")
       #~(list (string-append "-DCMAKE_CXX_FLAGS=-I"
                            #$(this-package-input "freetype")
                            "/include/freetype2"))))
-    (home-page "https://openshot.org")
+    (home-page "https://www.openshot.org")
     (synopsis "Audio editing and playback for OpenShot")
     (description "OpenShot Audio Library (libopenshot-audio) allows
 high-quality editing and playback of audio, and is based on the JUCE
