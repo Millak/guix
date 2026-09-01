@@ -6556,7 +6556,8 @@ create smoother and stable videos.")
                           (delete-file-recursively "thirdparty")))))
     (build-system qt-build-system)
     (native-inputs
-     (list pkg-config
+     (list catch2
+           pkg-config
            python
            swig-4.4
            unittest-cpp))
@@ -6574,7 +6575,6 @@ create smoother and stable videos.")
            zeromq))
     (arguments
      (list
-      #:tests? #f
       #:configure-flags
       #~(list (string-append "-DPYTHON_MODULE_PATH:PATH=" #$output "/lib/python"
                              #$(version-major+minor (package-version python))
