@@ -6554,12 +6554,12 @@ create smoother and stable videos.")
                              (string-append set " CACHE PATH "
                                             "\"Python bindings directory\")")))
                           (delete-file-recursively "thirdparty")))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("swig" ,swig-4.4)
-       ("unittest++" ,unittest-cpp)))
+     (list pkg-config
+           python
+           swig-4.4
+           unittest-cpp))
     (inputs
      (list alsa-lib zlib))
     (propagated-inputs                  ;all referenced in installed headers
@@ -6573,24 +6573,25 @@ create smoother and stable videos.")
            qtsvg-5
            zeromq))
     (arguments
-     `(#:tests? #f
-       #:configure-flags
-       (list (string-append "-DPYTHON_MODULE_PATH:PATH=" %output "/lib/python"
-                            ,(version-major+minor (package-version python))
-                            "/site-packages")
-             "-DUSE_SYSTEM_JSONCPP:BOOL=ON")
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list (string-append "-DPYTHON_MODULE_PATH:PATH=" #$output "/lib/python"
+                             #$(version-major+minor (package-version python))
+                             "/site-packages")
+              "-DUSE_SYSTEM_JSONCPP:BOOL=ON")
        #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-vars
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "LIBOPENSHOT_AUDIO_DIR"
-                     (assoc-ref inputs "libopenshot-audio"))
-             (setenv "ZMQDIR"
-                     (assoc-ref inputs "zeromq"))
-             (setenv "UNITTEST_DIR"
-                     (search-input-directory inputs
-                                             "include/UnitTest++")))))))
-    (home-page "https://openshot.org")
+       #~(modify-phases %standard-phases
+           (add-before 'configure 'set-vars
+             (lambda* (#:key inputs #:allow-other-keys)
+               (setenv "LIBOPENSHOT_AUDIO_DIR"
+                       #$(this-package-input "libopenshot-audio"))
+               (setenv "ZMQDIR"
+                       #$(this-package-input "zeromq"))
+               (setenv "UNITTEST_DIR"
+                       (search-input-directory inputs
+                                               "include/UnitTest++")))))))
+    (home-page "https://www.openshot.org")
     (synopsis "Video-editing, animation, and playback library")
     (description "OpenShot Library (libopenshot) is a powerful C++ video
 editing library with a multi-threaded and feature rich video editing
