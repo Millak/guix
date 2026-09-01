@@ -4426,39 +4426,22 @@ lcov-style coverage report.")
 (define-public ruby-snaky-hash
   (package
     (name "ruby-snaky-hash")
-    (version "2.0.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference       ;for tests
-                    (url "https://gitlab.com/oauth-xx/snaky_hash")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0zmixxzi2g2d75zii65bq037j4g67p25l6aqddbmmwizspsp5az6"))))
+    (version "2.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/oauth-xx/snaky_hash")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qmcm0765ny4qsvbm51fgg2bpk3gnxy9ycg0p572x0qmacy13yzf"))))
     (build-system ruby-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'relax-requirements
-                          (lambda _
-                            (substitute* "Gemfile"
-                              (("^linting = .*")
-                               "linting = false\n")
-                              (("^coverage = .*")
-                               "coverage = false\n")
-                              (("^debug = .*")
-                               "debug = false\n"))
-                            (substitute* "spec/spec_helper.rb"
-                              (("^RUN_COVERAGE = .*")
-                               "RUN_COVERAGE = false\n")
-                              (("^ALL_FORMATTERS = .*")
-                               "ALL_FORMATTERS = false\n"))))
-                        (add-before 'build 'drop-signing-key-requirement
-                          (lambda _
-                            (substitute* "snaky_hash.gemspec"
-                              (("spec.signing_key =.*")
-                               "spec.signing_key = nil")))))))
-    (native-inputs (list ruby-rspec ruby-rspec-block-is-expected))
+    (native-inputs
+     (list ruby-backports
+           ruby-rspec
+           ruby-rspec-block-is-expected
+           ruby-rspec-pending-for))
     (propagated-inputs (list ruby-hashie ruby-version-gem))
     (synopsis "Hash keys and look-ups normalization Ruby library")
     (description "The SnakyHash Ruby library provides classes for normalizing
