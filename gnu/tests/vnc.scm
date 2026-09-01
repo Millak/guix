@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>.
+;;; Copyright © 2022, 2026 Maxim Cournoyer <maxim@guixotic.coop>.
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -22,14 +22,13 @@
   #:use-module (gnu bootloader grub)
   #:use-module (gnu packages)
   #:use-module (gnu packages ocr)
-  #:use-module (gnu packages glib)
-  #:use-module (gnu packages gnome)
   #:use-module (gnu packages ratpoison)
   #:use-module (gnu packages vnc)
   #:use-module (gnu packages xorg)
   #:use-module (gnu services)
   #:use-module (gnu services dbus)
   #:use-module (gnu services desktop)
+  #:use-module (gnu services lightdm)
   #:use-module (gnu services networking)
   #:use-module (gnu services ssh)
   #:use-module (gnu services vnc)
@@ -43,6 +42,11 @@
   #:use-module (guix modules)
   #:export (%test-xvnc))
 
+;;; For manual inspection/troubleshooting:
+;;;
+;;; ./pre-inst-env guix system vm -e '(@@ (gnu tests vnc) %xvnc-os)'
+;;;
+
 (define %xvnc-os
   (operating-system
     ;; Usual boilerplate.
@@ -50,8 +54,8 @@
     (timezone "Europe/Berlin")
     (locale "en_US.UTF-8")
     (bootloader (bootloader-configuration
-                 (bootloader grub-bootloader)
-                 (targets '("/dev/sdX"))))
+                  (bootloader grub-bootloader)
+                  (targets '("/dev/sdX"))))
     (file-systems (cons (file-system
                           (device (file-system-label "my-root"))
                           (mount-point "/")
@@ -59,39 +63,41 @@
                         %base-file-systems))
 
     (users (cons (user-account
-                  (name "dummy")
-                  (group "users")
-                  (supplementary-groups '("wheel" "netdev"
-                                          "audio" "video")))
+                   (name "dummy")
+                   (group "users")
+                   (password "")        ;empty password
+                   (supplementary-groups '("wheel" "netdev"
+                                           "audio" "video")))
                  %base-user-accounts))
-    (packages (cons* dbus               ;for dbus-run-session
-                     dconf
-                     `(,glib "bin")
-                     glib
-                     gnome-settings-daemon ;for schemas
-                     ratpoison
-                     tigervnc-client
-                     xterm
-                     %base-packages))
+    (packages (cons* ratpoison tigervnc-client %base-packages))
     (services (cons*
                (service openssh-service-type (openssh-configuration
-                                              (permit-root-login #t)
-                                              (allow-empty-passwords? #t)))
+                                               (permit-root-login #t)
+                                               (allow-empty-passwords? #t)))
                (service xvnc-service-type (xvnc-configuration
-                                           (display-number 5)
-                                           (security-types (list "None"))
-                                           (log-level 100)
-                                           (localhost? #f)
-                                           (xdmcp? #t)
-                                           (inetd? #t)))
+                                            (display-number 5) ;port 5905
+                                            (security-types (list "None"))
+                                            (log-level 100)
+                                            (localhost? #f)
+                                            (xdmcp? #t)
+                                            (inetd? #t)))
+               (service lightdm-service-type
+                        (lightdm-configuration
+                          (allow-empty-passwords? #t)
+                          (debug? #t)
+                          (xdmcp? #t)
+                          (seats (list (lightdm-seat-configuration
+                                         ;; XXX: XDMCP sessions only use the
+                                         ;; 'Seat:*' section (see:
+                                         ;; <https://github.com/ubuntu/lightdm/issues/474>).
+                                         (name "*")
+                                         (user-session "ratpoison"))
+                                       (lightdm-seat-configuration
+                                         ;; Auto-login local users.
+                                         (name "seat*")
+                                         (autologin-user "dummy"))))))
                (modify-services %desktop-services
-                 (gdm-service-type config => (gdm-configuration
-                                              (inherit config)
-                                              (auto-login? #t)
-                                              (auto-suspend? #f)
-                                              (default-user "root")
-                                              (debug? #t)
-                                              (xdmcp? #t))))))))
+                 (delete gdm-service-type))))))
 
 (define (run-xvnc-test)
   "Run tests in %XVNC-OS."
@@ -137,27 +143,9 @@
                                  '(make-socket-address
                                    AF_INET6 (inet-pton AF_INET6 "::1") 5905)))
 
-            (test-assert "gdm auto-suspend is disabled"
-              ;; More a GDM than a Xvnc test, but since it's a cross-cutting
-              ;; concern and we have everything set up here, we might as well
-              ;; check it here.
-              (marionette-eval
-               '(begin
-                  (use-modules (guix build utils))
-                  ;; Check that DCONF_PROFILE is set...
-                  (invoke "/bin/sh" "-lc" "\
-pgrep gdm | head -n1 | xargs -I{} grep -Fq DCONF_PROFILE /proc/{}/environ")
-
-                  ;; ... and that 'sleep-inactive-ac-type' is unset.
-                  (invoke "/bin/sh" "-lc" "\
-sudo -E -u gdm env DCONF_PROFILE=/etc/dconf/profile/gdm dbus-run-session \
-gsettings get org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type \
-| grep -Fq nothing"))
-               marionette))
-
-            (test-group "vnc lands on the gdm login screen"
+            (test-group "vnc lands on the lightdm login screen"
               ;; This test runs vncviewer on the local VM and verifies that it
-              ;; manages to access the GDM login screen (via XDMCP).
+              ;; manages to access the LightDM login screen via XDMCP.
               (define (ratpoison-abort)
                 (marionette-control "sendkey ctrl-g" marionette))
 
@@ -183,20 +171,18 @@ gsettings get org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type \
                                       #:pre-action ratpoison-help
                                       #:post-action ratpoison-abort))
 
-              ;; Run vncviewer and expect the GDM login screen (accessed via
+              ;; Run vncviewer and expect the LightDM login screen (accessed via
               ;; XDMCP).  This can take a while to appear on slower machines.
               (ratpoison-exec "vncviewer localhost:5905")
 
-              (test-assert "GDM login screen ready"
-                ;; XXX: The '--invert' argument as the sole option to GNU
-                ;; Ocrad is required for it to recognize "Guix" from the
-                ;; background image.  'Username' from the UI would be a better
-                ;; choice but is not recognized at all.
+              (test-assert "LightDM login screen ready"
+                ;; GNU Ocrad fails to recognize the "Unlock" button text, so use
+                ;; Tesseract.
                 (wait-for-screen-text marionette
-                                      (cut string-contains <> "Guix")
-                                      #:ocr #$ocr
-                                      #:ocr-arguments '("--invert")
-                                      #:timeout 120))) ;for slow systems
+                                      (cut string-contains <> "Unlock")
+                                      #:ocr #$(file-append tesseract-ocr
+                                                           "/bin/tesseract")
+                                      #:timeout 60))) ;for slow systems
 
             (test-end)))))
 
@@ -206,6 +192,6 @@ gsettings get org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type \
   (system-test
    (name "xvnc")
    (description "Basic tests for the Xvnc service.  One of the tests validate
-that XDMCP works with GDM, and is therefore heavy in terms of disk and memory
+that XDMCP works with LightDM, and is therefore heavy in terms of disk and memory
 requirements.")
    (value (run-xvnc-test))))
