@@ -6569,9 +6569,9 @@ create smoother and stable videos.")
            imagemagick
            jsoncpp
            libopenshot-audio
-           qtbase-5
-           qtmultimedia-5
-           qtsvg-5
+           qtbase
+           qtmultimedia
+           qtsvg
            zeromq))
     (arguments
      (list
