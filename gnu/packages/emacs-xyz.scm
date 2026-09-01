@@ -27836,8 +27836,8 @@ from within Elisp using a DSL similar to CSS selectors.")
 
 (define-public emacs-envrc
   ;; Last tag is 2 years old.
-  (let ((commit "77e9dec1563bc204cc9e086cd8a7d3622196224c")
-        (revision "1"))
+  (let ((commit "c127d8fb1cfab37582eddb47ea28c8533de06f5b")
+        (revision "2"))
     (package
       (name "emacs-envrc")
       (version (git-version "0.12" revision commit))
@@ -27850,7 +27850,7 @@ from within Elisp using a DSL similar to CSS selectors.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "11ksm8049332a9j5p1xmrwwvmmn74kxwc7v4gaza131kx271jr19"))))
+           "1c1qa0kng64aa19s46sw9wvjfj4sg7ww60lqras99i3mcv6pxdi0"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -27866,12 +27866,7 @@ from within Elisp using a DSL similar to CSS selectors.")
                    (search-input-file inputs "/bin/direnv")))))
             (add-after 'unpack 'skip-failing-test
               (lambda _
-                (setenv "HOME" "/tmp")
-                (substitute* "envrc-tests.el"
-                  (("\\(ert-deftest envrc-setting-removed-when-denied .*" all)
-                   (string-append all " (skip-unless nil)"))
-                  (("\\(ert-deftest envrc-state-shared-between-buffers-in-dir .*" all)
-                   (string-append all " (skip-unless nil)"))))))))
+                (setenv "HOME" "/tmp"))))))
       (inputs
        (list direnv))
       (propagated-inputs
