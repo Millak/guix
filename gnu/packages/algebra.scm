@@ -879,6 +879,7 @@ changes are reflected immediately.")
     ;; linenoise is packaged, but the package doesn't provide shared
     ;; object files so we have to build it anyway.
     (license license:bsd-2)))
+
 (define-public fftw
   (package
     (name "fftw")

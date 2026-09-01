@@ -6234,6 +6234,7 @@ be blown away by a SQL-DB or an external database server.")
     (description "SDB is a simple key/value database based on djb's cdb disk
 storage that supports JSON and array introspection.")
     (license license:expat)))
+
 (define-public sqlitebrowser
   (package
     (name "sqlitebrowser")
