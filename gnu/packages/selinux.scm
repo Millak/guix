@@ -341,7 +341,7 @@ based on required access.")
     (native-inputs
      (list bison
            flex
-           python-cython-0
+           python-cython
            swig-4.0
            python-pytest
            python-pytest-qt
