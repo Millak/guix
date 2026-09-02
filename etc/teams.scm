@@ -1717,6 +1717,11 @@ the \"texlive\" importer."
                        "SilverlightningY")
   audio)
 
+(define-member (person "Orahcio Felício de Sousa"
+                       "orahcio@gmail.com"
+                       "orahcio")
+  go python science)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
