@@ -2937,7 +2937,7 @@ services including database, analytic, and machine learning technologies.")
 (define-public libexpected
   (package
     (name "libexpected")
-    (version "1.1.0")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -2949,7 +2949,7 @@ services including database, analytic, and machine learning technologies.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17akrv80h0n4cfmxwvlvbb8ycqza7y3qqygjyphv95rrabqm9r02"))
+        (base32 "119jhawkw33gb41pmki5di3vk7pki6pj6a1i394r6saqwvxkblzv"))
        (patches (search-patches "libexpected-use-provided-catch2.patch"))))
     (build-system cmake-build-system)
     (native-inputs
