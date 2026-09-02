@@ -494,16 +494,16 @@ authentication, SSH tunneling, and ZRLE or Tight encoding.")
                  '())
              (list pkg-config scdoc)))
     (inputs (list aml
-                  neatvnc
-                  zlib
-                  libjpeg-turbo
                   gnutls
                   jansson
                   libdrm
-                  pixman
                   libglvnd
+                  libjpeg-turbo
                   libxkbcommon
-                  wayland))
+                  neatvnc
+                  pixman
+                  wayland
+                  zlib))
     (home-page "https://github.com/any1/wayvnc")
     (synopsis "VNC server for wlroots-based Wayland compositors")
     (description
