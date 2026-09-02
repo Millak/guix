@@ -476,7 +476,7 @@ authentication, SSH tunneling, and ZRLE or Tight encoding.")
 (define-public wayvnc
   (package
     (name "wayvnc")
-    (version "0.9.1")
+    (version "0.10.1")
     (source
      (origin
        (method git-fetch)
@@ -485,7 +485,7 @@ authentication, SSH tunneling, and ZRLE or Tight encoding.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1brnzwabnrhjblcfymwxsg4z58pzdnlql1mgsmijp0kw5n8770rc"))))
+        (base32 "082g6kfn66yqjr2qi3dx6m381ljk0zs1mr2qbq2ypsnf7srbwnsx"))))
     (build-system meson-build-system)
     (native-inputs
      (append (if (%current-target-system)
