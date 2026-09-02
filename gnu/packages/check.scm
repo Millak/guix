@@ -2901,16 +2901,16 @@ each of the environments.")
 (define-public python-pylint
   (package
     (name "python-pylint")
-    (version "4.0.5")
+    (version "4.0.8")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/PyCQA/pylint")
+              (url "https://github.com/pylint-dev/pylint")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d66brpy06l5hhzx2z9im771wjxqn8lha6qxpw0rwkvv2kfigjj4"))))
+        (base32 "0rp9dmfyq7ai5y5mlyi5vmhq4zrc9zbpivywy1pxwwrp4pkchavc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2945,7 +2945,7 @@ each of the environments.")
            python-mccabe
            python-platformdirs
            python-tomlkit))
-    (home-page "https://github.com/PyCQA/pylint")
+    (home-page "https://github.com/pylint-dev/pylint")
     (synopsis "Advanced Python code static checker")
     (description "Pylint is a Python source code analyzer which looks
 for programming errors, helps enforcing a coding standard and sniffs
