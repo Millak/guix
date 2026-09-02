@@ -30,7 +30,10 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages python)
   #:use-module (gnu packages web) ; node-esbuild
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system node)
+  #:use-module ((guix build-system pyproject) #:select (pypi-uri))
+  #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -327,6 +330,53 @@ regular expressions as well!")
     (description "This package provides a helper module to locate native
 addons in a wide array of potential locations.")
     (license license:expat)))
+
+;; This package is a subproject from (python-xyz python-bokeh).
+;; TODO: Build it from typescript source.
+(define-public node-bokehjs
+  (package
+    (name "node-bokehjs")
+    ;; Update according python-bokeh on (gnu packages python-xyz).
+    (version "3.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "bokeh" version))
+       (sha256
+        (base32
+         "1kn5az69q0vcy3ql8sfcczv12fjkq98xrcjjdlmwl9brdp0b1w3k"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (let ((sub "src/bokeh/server/static"))
+              (define (delete-all-but-recursive preserve)
+                (let ((dir (dirname preserve))
+                      (pred (negate
+                             (cut member
+                                  <> (list "." ".." (basename preserve))))))
+                  (with-directory-excursion dir
+                    (for-each delete-file-recursively
+                              (scandir "." pred)))
+                  (unless (string=? dir ".")
+                    (delete-all-but-recursive dir))))
+              (delete-all-but-recursive sub))))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("src/bokeh/server/static/js" "bokehjs/static/")
+          ("src/bokeh/server/static/lib" "bokehjs/static/"))))
+    (home-page "https://docs.bokeh.org/en/latest/docs/user_guide/advanced/bokehjs.html")
+    (synopsis "Interactive plots and applications in the browser")
+    (description
+     "BokehJS is a client-side library that lets you create interactive plots
+and applications.  It takes care of drawing, rendering, and event handling.
+The Bokeh Python library (and libraries for other languages such as R, Scala,
+and Julia) enables convenient high-level interaction with BokehJS to make
+JavaScript or web development easier.")
+    (license license:bsd-3)))
 
 (define-public node-boolbase
   (package
