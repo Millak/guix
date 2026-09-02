@@ -6632,15 +6632,15 @@ for translating plain- and rich-text documents with Argos Translate.")
 (define-public libretranslate
   (package
     (name "libretranslate")
-    (version "1.9.3")
+    (version "1.9.6")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/LibreTranslate/LibreTranslate")
-             (commit (string-append "v" version))))
+              (url "https://github.com/LibreTranslate/LibreTranslate")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "14zdcknv7bra41ananqz6b9dmyq46cmbd8a8s00grzli4qkv5xn1"))
+       (sha256 (base32 "0gyhahlyz06nr7h8nb7nrw866z44kw6kaijczk6jk8wn3p1xp200"))
        (patches (search-patches "libretranslate-use-flasgger.patch"))))
     (build-system pyproject-build-system)
     (arguments
@@ -6661,17 +6661,18 @@ for translating plain- and rich-text documents with Argos Translate.")
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (inputs (list python-apscheduler
-                  python-argostranslate
                   python-argos-translate-files
+                  python-argostranslate
                   python-expiringdict
                   python-flasgger
                   python-flask
                   python-flask-babel
                   python-flask-limiter
-                  python-flask-session
                   python-itsdangerous
                   python-langdetect
                   python-lexilang
+                  python-minisbd
+                  python-numpy
                   python-packaging
                   python-polib
                   python-prometheus-client
