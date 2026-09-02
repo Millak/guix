@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2022-2025 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022-2026 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -128,8 +128,10 @@ corresponds to CPU, a record as returned by 'current-cpu'."
 
        (or (and (equal? "GenuineIntel" (cpu-vendor cpu))
                 (or (= 6 (cpu-family cpu))          ;the "Pentium Pro" family
+                    (= 18 (cpu-family cpu))
                     (= 19 (cpu-family cpu)))
-                (if-flags ("avx512f" "amx_transpose" => "diamondrapids")
+                (if-flags ("avx512f" "amx_fp8" => "diamondrapids")
+                          ("avx512f" "avx10_2" => "novalake")
                           ("avx512f" "amx_complex" => "graniterapids-d")
                           ("avx512f" "amx_fp16" => "graniterapids")
                           ("avx512f" "avx512vp2intersect" => "tigerlake")
@@ -144,10 +146,11 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                           ;("avx512f" "avx5124vnniw" => "knm")
                           ;("avx512f" "avx512er" => "knl")
                           ("avx512f" "avx512vl" => "skylake-avx512")
-                          ("avx" "prefetchi" => "pantherlake")
                           ("avx" "user_msr" => "clearwaterforest")
-                          ("avx" "sm3" => "arrowlake-s")
-                          ("avx" "avxvnniint8" => "sierraforest")
+                          ("avx" "sm3" "kl" => "arrowlake-s")
+                          ("avx" "sm3" => "patherlake")
+                          ("avx" "cldemote" => "sierraforest")
+                          ("avx" "avxvnniint8" => "arrowlake")
                           ("avx" "serialize" => "alderlake")
                           ("avx" "clflushopt" => "skylake")
                           ("avx" "adx" => "broadwell")
@@ -172,7 +175,8 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                                    ("lm" "sse3" => "k8-sse3")
                                    ("longmode" => "k8")
                                    ("lm" => "k8")))
-                    (if-flags ("avx512vp2intersect" => "znver5")
+                    (if-flags ("avx512bmm" => "znver6")
+                              ("avx512vp2intersect" => "znver5")
                               ("avx512f" => "znver4")
                               ("vaes" => "znver3")
                               ("clwb" => "znver2")
@@ -209,6 +213,13 @@ corresponds to CPU, a record as returned by 'current-cpu'."
              (cpu->micro-architecture-level cpu))
 
          ;; TODO: Recognize CENTAUR/CYRIX/NSC?
+           (and (equal? "HygonGenuine" (cpu-vendor cpu))
+                (cond
+                  ((= 4 (cpu-model cpu)) "c86-4g-m4")
+                  ((= 6 (cpu-model cpu)) "c86-4g-m6")
+                  ((= 7 (cpu-model cpu)) "c86-4g-m7")
+                  ((>= 8 (cpu-model cpu)) "c86-4g-m8")
+                  (else (cpu->micro-architecture-level cpu))))
 
          (match (cpu-architecture cpu)
            ("x86_64" "x86-64")
@@ -230,8 +241,10 @@ corresponds to CPU, a record as returned by 'current-cpu'."
            "armv8-r")
           ((or #xd46 #xd47 #xd4d #xd48 #xd4e #xd49 #xd4f)
            "armv9-a")
-          ((or #xd80 #xd82 #xd83 #xd84 #xd85 #xd87 #xd88 #xd89 #xd8e)
-           "armv9.2-a")))
+          ((or #xd80 #xd81 #xd82 #xd83 #xd84 #xd85 #xd87 #xd88 #xd89 #xd8e #xd8f)
+           "armv9.2-a")
+          ((or #xd8a #xd8b #xd8c #xd90)
+           "armv9.3-a")))
        ("0x42"
         "armv8.1-a")
        ("0x43"
@@ -251,7 +264,11 @@ corresponds to CPU, a record as returned by 'current-cpu'."
           (#x003
            "armv9.3a")))
        ("0x48"
-        "armv8.2-a")
+        (match (cpu-model cpu)
+          (#xd01
+           "armv8.2-a")
+          (#xd06
+           "armv8.7-a")))
        ("0x4e"
         "armv9.2-a")
        ("0x50"
@@ -274,8 +291,11 @@ corresponds to CPU, a record as returned by 'current-cpu'."
            "armv8.3-a")
           ((or #x20 #x21 #x22 #x23 #x24 #x25 #x28 #x29)
            "armv8.5-a")
-          ((or #x30 #x31 #x32 #x33 #x34 #x35 #x38 #x39 #x48 #x49)
-           "armv8.6-a")))
+          ((or #x30 #x31 #x32 #x33 #x34 #x35 #x38 #x39 #x42 #x43 #x44 #x45 #x48
+               #x49)
+           "armv8.6-a")
+          ((or #x52 #x53 #x54 #x55 #x58 #x59 #x62 #x63 #x64 #x65 #x68 #x69)
+           "armv8.7-a")))
        ("0x68"
         "armv8-a")
        ("0x6d"
@@ -285,7 +305,9 @@ corresponds to CPU, a record as returned by 'current-cpu'."
           ((or #xac3 #xac4)
            "armv8.6-a")
           (#xac5
-           "armv8.7-a")))
+           "armv8.7-a")
+          (#xac7
+           "armv9.2-a")))
        ("0xC00"
         "armv8-a")
        (_
@@ -334,15 +356,18 @@ CPUs for compilers which don't allow for more focused optimizing."
   ;; Matching gcc-architectures isn't an easy task, with the rule-of-thumb being
   ;; AVX512F+ for x86-64-v4, AVX+ for x86-64-v3.
   ;; https://gitlab.com/x86-psABIs/x86-64-ABI/-/blob/master/x86-64-ABI/low-level-sys-info.tex
+  ;; See also: gcc/common/config/i386/i386-common.cc
   (match gcc-architecture
-    ((or "diamondrapids" "graniterapids-d" "graniterapids" "tigerlake"
+    ((or "diamondrapids" "novalake" "graniterapids-d" "graniterapids" "tigerlake"
          "sapphirerapids" "cooperlake" "icelake-server" "icelake-client"
          "cannonlake" "knm" "knl" "skylake-avx512"
-         "znver5" "znver4")
+         "znver6" "znver5" "znver4"
+         "c86-4g-m7" "c86-4g-m8")
      "x86-64-v4")
-    ((or "pantherlake" "clearwaterforest" "arrowlake-s" "sierraforest"
-         "alderlake" "skylake" "broadwell" "haswell"
-         "znver3" "znver2" "znver1" "bdver4")
+    ((or "clearwaterforest" "arrowlake-s" "pantherlake" "sierraforest"
+         "arrowlake" "alderlake" "skylake" "broadwell" "haswell"
+         "znver3" "znver2" "znver1" "bdver4"
+         "c86-4g-m4" "c86-4g-m6")
      "x86-64-v3")
     ((or "sandybridge" "tremont" "goldmont-plus" "goldmont" "silvermont"
          "nehalem" "bonnell" "core2"
