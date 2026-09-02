@@ -1176,7 +1176,7 @@ for communicating with Xiaomi smart appliances over miIO and MIoT protocols.")
 (define-public fdroidserver
   (package
     (name "fdroidserver")
-    (version "2.4.3")
+    (version "2.4.5")
     (source
      (origin
        (method git-fetch)
@@ -1185,7 +1185,7 @@ for communicating with Xiaomi smart appliances over miIO and MIoT protocols.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1745fqxr2qfrls4wr6x9w1262b9pxmw9yvzd9b71ya2qmj74q17n"))))
+        (base32 "1ai5qrddmn6rvvnqq9ax5fj9pwc1rsvh6l4fap8p8fasiasy2802"))))
     (build-system pyproject-build-system)
     (arguments
      (list
