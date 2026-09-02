@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2024, 2026 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +38,52 @@
            (else '())))
       ("x86_64"
        ,@(cond
+           ((version>=? version "23.0")
+            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
+              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
+              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
+              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
+              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
+              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
+              "alderlake" "raptorlake" "arrowlake" "arrowlake-s" "lunarlake"
+              "gracemont" "pantherlake" "meteorlake" "wildcatlake" "novalake"
+              "sierraforest" "grandridge" "graniterapids" "graniterapids-d"
+              "emeraldrapids" "clearwaterforest" "diamondrapids" "knl" "knm"
+              "k8" "athlon64" "athlon-fx" "opteron" "k8-sse3" "athlon64-sse3"
+              "opteron-sse3" "amdfam10" "barcelona" "btver1" "btver2" "bdver1"
+              "bdver2" "bdver3" "bdver4" "znver1" "znver2" "znver3" "znver4"
+              "znver5" "znver6" "c86-4g-m4" "c86-4g-m6" "c86-4g-m7" "c86-4g-m8"
+              "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
+           ((version>=? version "22.0")
+            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
+              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
+              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
+              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
+              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
+              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
+              "alderlake" "raptorlake" "arrowlake" "arrowlake-s" "lunarlake"
+              "gracemont" "pantherlake" "meteorlake" "wildcatlake" "novalake"
+              "sierraforest" "grandridge" "graniterapids" "graniterapids-d"
+              "emeraldrapids" "clearwaterforest" "diamondrapids" "knl" "knm"
+              "k8" "athlon64" "athlon-fx" "opteron" "k8-sse3" "athlon64-sse3"
+              "opteron-sse3" "amdfam10" "barcelona" "btver1" "btver2" "bdver1"
+              "bdver2" "bdver3" "bdver4" "znver1" "znver2" "znver3" "znver4"
+              "znver5" "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
+           ((version>=? version "20.0")
+            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
+              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
+              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
+              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
+              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
+              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
+              "alderlake" "raptorlake" "arrowlake" "arrowlake-s" "lunarlake"
+              "gracemont" "pantherlake" "meteorlake" "sierraforest" "grandridge"
+              "graniterapids" "graniterapids-d" "emeraldrapids"
+              "clearwaterforest" "diamondrapids" "knl" "knm" "k8" "athlon64"
+              "athlon-fx" "opteron" "k8-sse3" "athlon64-sse3" "opteron-sse3"
+              "amdfam10" "barcelona" "btver1" "btver2" "bdver1" "bdver2"
+              "bdver3" "bdver4" "znver1" "znver2" "znver3" "znver4" "znver5"
+              "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
            ((version>=? version "19.0")
             '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
               "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
