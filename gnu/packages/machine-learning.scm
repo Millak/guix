@@ -835,6 +835,35 @@ learning algorithms based on GPs.")
 transforms.")
       (license license:gpl3+))))
 
+(define-public python-minisbd
+  (package
+    (name "python-minisbd")
+    (version "0.9.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/LibreTranslate/MiniSBD")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dfflfx39vq1fijrzmfq43hva2ackbx7pj6ixpxbq48p1v9r715a"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ;no tests
+    (native-inputs
+     (list python-hatchling))
+    (propagated-inputs
+     (list python-filelock
+           python-numpy
+           (list onnxruntime "python")))
+    (home-page "https://github.com/LibreTranslate/MiniSBD")
+    (synopsis "Sentence boundary detection Python library")
+    (description
+     "This package provides a Python library for fast sentence boundary
+detection.  It uses 8bit quantized ONNX models for inference, thus making it
+fast and lightweight.")
+    (license license:agpl3+)))
+
 (define-public python-ml-collections
   (package
     (name "python-ml-collections")
