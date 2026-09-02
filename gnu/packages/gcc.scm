@@ -809,6 +809,16 @@ Go.  It also includes runtime support libraries for these languages.")
     '("diamondrapids"                             ;Intel
       "shijidadao")))
 
+(define %gcc-16-aarch64-micro-architectures
+  (append %gcc-15-aarch64-micro-architectures
+          '("armv9.6-a")))
+
+(define %gcc-16-x86_64-micro-architectures
+  (append %gcc-15-x86_64-micro-architectures
+          '("arrowlake" "novalake"
+            "znver6"
+            "c86-4g-m4" "c86-4g-m6" "c86-4g-m7" "c86-4g-m8")))
+
 (define-public gcc-7
   (package
     (inherit gcc-base)
@@ -1109,11 +1119,11 @@ It also includes runtime support libraries for these languages.")
               (delete "libstdc++")))
     (properties
      `((compiler-cpu-architectures
-        ("aarch64" ,@%gcc-15-aarch64-micro-architectures)
+        ("aarch64" ,@%gcc-16-aarch64-micro-architectures)
         ("armhf" ,@%gcc-13-armhf-micro-architectures)
-        ("i686" ,@%gcc-15-x86_64-micro-architectures)
+        ("i686" ,@%gcc-16-x86_64-micro-architectures)
         ("powerpc64le" ,@%gcc-14-ppc64le-micro-architectures)
-        ("x86_64" ,@%gcc-15-x86_64-micro-architectures))
+        ("x86_64" ,@%gcc-16-x86_64-micro-architectures))
        ,@(package-properties gcc-11)))))
 
 
