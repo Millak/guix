@@ -321,7 +321,6 @@ based on required access.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f ; Most tests require access to /usr/bin/checkpolicy
       #:test-flags #~(list "tests")
       #:phases
       #~(modify-phases %standard-phases
@@ -330,11 +329,12 @@ based on required access.")
             (lambda* (#:key inputs #:allow-other-keys)
               (setenv "SEPOL"
                       (search-input-file inputs "/lib/libsepol.a"))))
-          (add-after 'unpack 'fix-target-paths
-            (lambda _
-              (substitute* "setup.py"
-                (("join\\(sys.prefix")
-                 (string-append "join(\"" #$output "/\"")))))
+          ;; tests assume /usr/bin/checkpolicy, override with
+          ;; CHECKPOLICY env variable
+          (add-before 'check 'set-checkpolicy-env
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CHECKPOLICY"
+                      (search-input-file inputs "/bin/checkpolicy"))))
           (add-before 'check 'fix-tests
             (lambda _
               (delete-file-recursively "setools"))))))
@@ -345,7 +345,8 @@ based on required access.")
            swig-4.0
            python-pytest
            python-pytest-qt
-           python-setuptools))
+           python-setuptools
+           checkpolicy))
     (inputs
      (list libsepol
            libselinux
