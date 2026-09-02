@@ -42954,13 +42954,16 @@ files.")
 (define-public python-yamllint
   (package
     (name "python-yamllint")
-    (version "1.37.1")
+    (version "1.38.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "yamllint" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/adrienverge/yamllint")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0p9401y9f1pgxi9lggmw6wv135kfnd361n3hjh2civ4vap2w1xw1"))))
+        (base32 "18wqyj600jhzwm01wnpc48cyppbkwrwz93vr47338iwkgmp2szz0"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-backend #~'unittest))
