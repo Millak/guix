@@ -216,9 +216,7 @@ corresponds to CPU, a record as returned by 'current-cpu'."
 
            ;; Fallback case for non-Intel processors or for processors not
            ;; recognized above.
-           (match (cpu-architecture cpu)
-             ("x86_64" "x86-64")
-             (_ "generic")))))
+           (cpu->micro-architecture-level cpu))))
     ("aarch64"
      ;; Transcribed from GCC's list of aarch64 processors in aarch64-cores.def
      ;; What to do with big.LITTLE cores?
