@@ -169,6 +169,7 @@
 ;;; Copyright © 2026 Jiyu Software <info@jiyu.dev>
 ;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
 ;;; Copyright © 2026 Julian Flake <julian@flake.de>
+;;; Copyright © 2026 John Haman <mail@johnhaman.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17049,6 +17050,35 @@ keywords in comments and strings.  This package also provides commands for
 moving to the next or previous keyword and to invoke @code{occur} with a
 regexp that matches all known keywords.")
     (license license:gpl3+)))
+
+(define-public emacs-selected
+  (let ((commit "9f5a6324e4911515972989841f143696472f2374")
+        (revision "0"))
+    (package
+      (name "emacs-selected")
+      (version (git-version "1.02" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Kungsgeten/selected.el")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "00k3r89br7wqd30ka94igsbk7iqljf9ink60pbc2wkr6i5xl5hdi"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:tests? #f))              ; No tests.
+      (home-page "https://github.com/Kungsgeten/selected.el")
+      (synopsis "Expose keymap for active regions in Emacs")
+      (description
+       "Selected provides the selected-minor-mode for Emacs.  When
+selected-minor-mode is active, the keybindings in selected-keymap will be
+enabled when the region is active.  This is useful for commands that operate
+on the region, which you only want bound to a key when the region is active.
+Selected also provides selected-global-mode, if you want selected-minor-mode
+in every buffer.")
+      (license license:expat))))
 
 (define-public emacs-pde
   (package
