@@ -25355,29 +25355,6 @@ reached with the right hand.")
 similar syntax; currently C++, Objective-C, Java, CORBA's IDL, Pike, and AWK.")
    (license license:gpl3+)))
 
-(define-public emacs-csharp-mode
-  (package
-    (name "emacs-csharp-mode")
-    (version "2.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/josteink/csharp-mode")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1d0pf236xi4c7fazv67a53yrac24lilnkzp9pb55xm88gig7rfmz"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/josteink/csharp-mode")
-    (synopsis "Major mode for C# code")
-    (description
-     "This is a C# editing mode for Emacs, based on CC mode.  It handles
-syntax coloring, indentation, insertion of matched pairs of curly braces and
-documentation generation.  In addition, it provides menu-based navigation
-using Imenu, and Compilation mode support for MSBuild, devenv and xbuild.")
-    (license license:gpl3+)))
-
 (define-public emacs-vala-mode
   ;; Upstream has no tagged release.
   (let ((commit "d696a8177e94c81ea557ad364a3b3dcc3abbc50f")
