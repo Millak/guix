@@ -781,7 +781,7 @@ Go.  It also includes runtime support libraries for these languages.")
 
 (define %gcc-13-x86_64-micro-architectures
   (append %gcc-12-x86_64-micro-architectures
-          '("graniterapids"                       ;Intel
+          '("sierraforest" "graniterapids" "grandridge" ;Intel
             "lujiazui")))
 
 (define %gcc-14-aarch64-micro-architectures
@@ -794,7 +794,8 @@ Go.  It also includes runtime support libraries for these languages.")
 
 (define %gcc-14-x86_64-micro-architectures
   (append %gcc-13-x86_64-micro-architectures
-          '("znver5"                              ;AMD
+          '("arrowlake-s"
+            "znver5"                              ;AMD
             "yongfeng")))
 
 (define %gcc-15-aarch64-micro-architectures
