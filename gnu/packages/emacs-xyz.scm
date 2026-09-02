@@ -45893,7 +45893,12 @@ emoji.")
              (make-file-writable "exiftool.el")
              (emacs-substitute-variables "exiftool.el"
                ("exiftool-executable"
-                (search-input-file inputs "/bin/exiftool"))))))))
+                (search-input-file inputs "/bin/exiftool")))))
+         (add-after 'unpack 'fix-error-signaling
+           (lambda _
+             (substitute* "exiftool.el"
+               (("\\(signal 'file-missing file\\)")
+                "(signal 'file-missing (list file))")))))))
     (inputs
      (list perl-image-exiftool))
     (home-page "https://git.systemreboot.net/exiftool.el/about/")
