@@ -25701,18 +25701,18 @@ package attempts to address the shortcomings of @code{isodate}.")
 (define-public python-isort
   (package
     (name "python-isort")
-    (version "6.0.1")
+    (version "9.0.1")
     (source
      (origin
        (method git-fetch)       ;no tests in PyPI archive
        (uri (git-reference
-              (url "https://github.com/timothycrosley/isort")
+              (url "https://github.com/PyCQA/isort")
               (commit version)))
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
        (snippet '(for-each delete-file (find-files "." "\\.whl$")))
        (sha256
-        (base32 "1fcwv1dlq0d3is9s6scp6vy7yw4l845kk51ihxac8419n8hrpvpq"))))
+        (base32 "0xrhrk245v7wqrh6ql1ysnfb1v6sh0mrzbvyaxq36hddvxdx7f45"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -25734,12 +25734,17 @@ package attempts to address the shortcomings of @code{isodate}.")
       ;; - example_isort_sorting_plugin
       ;; - example_shared_isort_profile
     (native-inputs
-     (list python-colorama
+     (list python-black
+           python-colorama
            python-hatch-vcs
            python-hatchling
            python-hypothesis
            python-pylama
            python-pytest))
+    (propagated-inputs
+     ;; XXX: python-mypy-extensions can be dropped when
+     ;; https://github.com/PyCQA/isort/issues/2629 is fixed.
+     (list python-mypy-extensions))
     (home-page "https://github.com/PyCQA/isort")
     (synopsis "Python utility/library to sort python imports")
     (description
