@@ -3,6 +3,7 @@
 ;;; Copyright © 2023 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2024 Nguyễn Gia Phong <cnx@loang.net>
+;;; Copyright © 2026 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -530,7 +531,7 @@ whole-system symbolic access, and can also handle simple tracing jobs.")
 (define-public uftrace
   (package
     (name "uftrace")
-    (version "0.17")
+    (version "0.20")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -538,7 +539,7 @@ whole-system symbolic access, and can also handle simple tracing jobs.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0p1iy70hc4vl3j16j9vvlh5amvk06l3m35iic2crpavm240dw7y7"))
+               (base32 "0sl9y7cipyzb7c9f6d8z19yhwsmkjdgar3x32hgjyhqlaka1nb72"))
               (patches (search-patches "uftrace-fix-tests.patch"))))
     (build-system gnu-build-system)
     (arguments
