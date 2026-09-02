@@ -197,22 +197,13 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                               ("mmx" => "k6")
                               (_ => "pentium"))))
 
-           ;; Fallback case for non-Intel processors or for processors not
-           ;; recognized above.
-           (if (and (= 7 (cpu-family cpu))
-                    (= #x3b (cpu-model cpu)))
-             "lujiazui"
-             (cpu->micro-architecture-level cpu))
-           (if (and (= 7 (cpu-family cpu))
-                    (= #x5b (cpu-model cpu)))
-             "yongfeng"
-             (cpu->micro-architecture-level cpu))
-           (if (and (= 7 (cpu-family cpu))
-                    (>= #x6b (cpu-model cpu)))
-             "shijidadao"
-             (cpu->micro-architecture-level cpu))
+           (and (= 7 (cpu-family cpu))
+                (cond
+                  ((= #x3b (cpu-model cpu)) "lujiazui")
+                  ((= #x5b (cpu-model cpu)) "yongfeng")
+                  ((>= #x6b (cpu-model cpu)) "shijidadao")
+                  (else (cpu->micro-architecture-level cpu))))
 
-         ;; TODO: Recognize CENTAUR/CYRIX/NSC?
            (and (equal? "HygonGenuine" (cpu-vendor cpu))
                 (cond
                   ((= 4 (cpu-model cpu)) "c86-4g-m4")
@@ -221,9 +212,13 @@ corresponds to CPU, a record as returned by 'current-cpu'."
                   ((>= 8 (cpu-model cpu)) "c86-4g-m8")
                   (else (cpu->micro-architecture-level cpu))))
 
-         (match (cpu-architecture cpu)
-           ("x86_64" "x86-64")
-           (_ "generic")))))
+           ;; TODO: Recognize CENTAUR/CYRIX/NSC?
+
+           ;; Fallback case for non-Intel processors or for processors not
+           ;; recognized above.
+           (match (cpu-architecture cpu)
+             ("x86_64" "x86-64")
+             (_ "generic")))))
     ("aarch64"
      ;; Transcribed from GCC's list of aarch64 processors in aarch64-cores.def
      ;; What to do with big.LITTLE cores?
@@ -367,12 +362,13 @@ CPUs for compilers which don't allow for more focused optimizing."
     ((or "clearwaterforest" "arrowlake-s" "pantherlake" "sierraforest"
          "arrowlake" "alderlake" "skylake" "broadwell" "haswell"
          "znver3" "znver2" "znver1" "bdver4"
+         "yongfeng" "shijidadao"
          "c86-4g-m4" "c86-4g-m6")
      "x86-64-v3")
     ((or "sandybridge" "tremont" "goldmont-plus" "goldmont" "silvermont"
          "nehalem" "bonnell" "core2"
          "btver2" "athalon" "k8-sse3" "k8" "bdver3" "bdver2" "bdver1" "btver1"
          "amdfam10"
-         "lujiazui" "yongfeng" "shijidadao" "x86-64")
+         "lujiazui" "x86-64")
      "x86-64")
     (_ gcc-architecture)))
