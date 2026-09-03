@@ -6601,7 +6601,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
 (define-public openshot
   (package
     (name "openshot")
-    (version "3.5.1")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -6610,11 +6610,10 @@ API.  It includes bindings for Python, Ruby, and other languages.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0df8sb7k43m580b50c1g430fqbml6vzszaklp9z7767j4gfz1dl8"))
+        (base32 "1ngz9v1syclwg8z8wp8i0h2pn4qvz0ligz73w40hbznpn1pk48k9"))
        (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; TODO: Unbundle jquery and others from src/timeline/media
            (delete-file-recursively "src/images/fonts")))))
     (build-system pyproject-build-system)
     (arguments
@@ -6640,7 +6639,26 @@ API.  It includes bindings for Python, Ruby, and other languages.")
             (lambda _
               ;; src/classes/info.py "needs" to create several
               ;; directories in $HOME when loaded during build
-              (setenv "HOME" "/tmp"))))))
+              (setenv "HOME" "/tmp")))
+          ;; Openshot imports 'qt_api.py' from site-packages/openshot_qt
+          ;; and we need to pass it explicitly to both build ('install-qt-api)
+          ;; and run ('wrap-qt-api) time.
+          (add-after 'install 'install-qt-api
+            (lambda _
+              (setenv "PYTHONPATH"
+                      (string-append #$output
+                                     "/lib/python"
+                                     #$(version-major+minor
+                                        (package-version python))
+                                     "/site-packages/openshot_qt"))))
+          (add-after 'wrap 'wrap-qt-api
+            (lambda _
+              (wrap-program (string-append #$output "/bin/openshot-qt")
+                `("PYTHONPATH" =
+                  (,(string-append #$output "/lib/python"
+                                   #$(version-major+minor
+                                      (package-version python))
+                                   "/site-packages/openshot_qt")))))))))
     (inputs (list bash-minimal
                   ffmpeg
                   font-dejavu
