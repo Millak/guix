@@ -245,7 +245,8 @@ of SHA1 string."
 (define (commit-id? str)
   "Return true if STR is likely a Git commit ID, false otherwise---e.g., if it
 is a tag name.  This is based on a simple heuristic so use with care!"
-  (and (= (string-length str) 40)
+  (and (or (= (string-length str) 40)   ;SHA-1
+           (= (string-length str) 64))  ;SHA-256
        (string-every char-set:hex-digit str)))
 
 (define commit-short-id

@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2016, 2019, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2026 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +35,8 @@
                            swh-download-directory-by-nar-hash)
   #:use-module (srfi srfi-34)
   #:use-module (ice-9 format)
+  #:use-module ((ice-9 popen) #:select (open-pipe*))
+  #:use-module ((ice-9 textual-ports) #:select (get-string-all))
   #:export (git-fetch
             git-fetch-with-fallback))
 
@@ -45,6 +48,21 @@ identifier.  When LFS? is true, configure Git to also fetch Large File
 Storage (LFS) files; it assumes that the @code{git-lfs} extension is available
 in the environment.  When RECURSIVE? is true, all the sub-modules of URL are
 fetched, recursively.  Return #t on success, #f otherwise."
+  (define (repository-object-format)
+    (let* ((pipe (open-pipe* OPEN_READ
+                             git-command "ls-remote" url "HEAD"))
+           (str (get-string-all pipe))
+           (commit (car (string-split str #\tab))))
+      (if (not (string-every char-set:hex-digit commit))
+          "sha1"                        ;Unexpected case, use default
+          (cond
+           ((= (string-length commit) 40)
+            "sha1")
+           ((= (string-length commit) 64)
+            "sha256")
+           (else                        ;Unexpected case, use default
+            "sha1")))))
+
   (cond
    ((string-prefix? "-" commit)
     ;; invalid commit specifier that could potentially be interpreted as an
@@ -57,51 +75,54 @@ fetched, recursively.  Return #t on success, #f otherwise."
 
     (mkdir-p directory)
 
-    (guard (c ((invoke-error? c)
-               (format (current-error-port)
-                       "git-fetch: '~a~{ ~a~}' failed with exit code ~a~%"
-                       (invoke-error-program c)
-                       (invoke-error-arguments c)
-                       (or (invoke-error-exit-status c) ;XXX: not quite accurate
-                           (invoke-error-stop-signal c)
-                           (invoke-error-term-signal c)))
-               (delete-file-recursively directory)
-               #f))
-      (with-directory-excursion directory
-        (invoke git-command "init" "--initial-branch=main")
-        (invoke git-command "remote" "add" "--" "origin" url)
+    (let ((object-format (repository-object-format)))
+      (guard (c ((invoke-error? c)
+                 (format (current-error-port)
+                         "git-fetch: '~a~{ ~a~}' failed with exit code ~a~%"
+                         (invoke-error-program c)
+                         (invoke-error-arguments c)
+                         (or (invoke-error-exit-status c) ;XXX: not quite accurate
+                             (invoke-error-stop-signal c)
+                             (invoke-error-term-signal c)))
+                 (delete-file-recursively directory)
+                 #f))
+        (with-directory-excursion directory
+          (format #t "Git format ~s~%" object-format)
+          (let ((object-format (string-append "--object-format=" object-format)))
+            (invoke git-command "init" "--initial-branch=main" object-format)
+            (invoke git-command "remote" "add" "--" "origin" url))
 
-        (when lfs?
-          (setenv "HOME" "/tmp")
-          (invoke git-command "lfs" "install")
-          ;; Substitute the git-lfs hooks shebangs.  These can't be patched
-          ;; in-package because the hooks are installed and the commands
-          ;; referenced in their shebangs could become stale.
-          (substitute* ".git/hooks/post-checkout"
-            (("^#!/bin/sh")
-             (string-append "#!" (which "sh")))))
+          (when lfs?
+            (setenv "HOME" "/tmp")
+            (invoke git-command "lfs" "install")
+            ;; Substitute the git-lfs hooks shebangs.  These can't be patched
+            ;; in-package because the hooks are installed and the commands
+            ;; referenced in their shebangs could become stale.
+            (substitute* ".git/hooks/post-checkout"
+              (("^#!/bin/sh")
+               (string-append "#!" (which "sh")))))
 
-        (if (zero? (system* git-command "fetch" "--depth" "1" "--" "origin" commit))
-            (invoke git-command "checkout" "FETCH_HEAD")
-            (begin
-              (setvbuf (current-output-port) 'line)
-              (format #t "Failed to do a shallow fetch; retrying a full fetch...~%")
-              (invoke git-command "fetch" "--" "origin")
-              (invoke git-command "checkout" commit "--")))
-        (when recursive?
-          ;; Now is the time to fetch sub-modules.
-          (invoke git-command "submodule" "update" "--init" "--recursive")
+          (if (zero? (system* git-command "fetch" "--depth" "1" "--" "origin" commit))
+              (invoke git-command "checkout" "FETCH_HEAD")
+              (begin
+                (setvbuf (current-output-port) 'line)
+                (format #t "Failed to do a shallow fetch; retrying a full fetch...~%")
+                (invoke git-command "fetch" "--" "origin")
+                (invoke git-command "checkout" commit "--")))
+          (when recursive?
+            ;; Now is the time to fetch sub-modules.
+            (invoke git-command "submodule" "update" "--init" "--recursive")
 
-          ;; In sub-modules, '.git' is a flat file, not a directory,
-          ;; so we can use 'find-files' here.
-          (for-each delete-file-recursively
-                    (find-files directory "^\\.git$")))
+            ;; In sub-modules, '.git' is a flat file, not a directory,
+            ;; so we can use 'find-files' here.
+            (for-each delete-file-recursively
+                      (find-files directory "^\\.git$")))
 
-        ;; The contents of '.git' vary as a function of the current
-        ;; status of the Git repo.  Since we want a fixed output, this
-        ;; directory needs to be taken out.
-        (delete-file-recursively ".git")
-        #t)))))
+          ;; The contents of '.git' vary as a function of the current
+          ;; status of the Git repo.  Since we want a fixed output, this
+          ;; directory needs to be taken out.
+          (delete-file-recursively ".git")
+          #t))))))
 
 
 (define* (git-fetch-with-fallback url commit directory
