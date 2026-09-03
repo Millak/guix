@@ -1377,15 +1377,26 @@ configuration, and more.")
     (version "1.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (rubygems-uri "logger" version))
+       (method git-fetch) ;for tests
+       (uri (git-reference
+             (url "https://github.com/ruby/logger")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "00q2zznygpbls8asz5knjvvj2brr3ghmqxgr83xnrdj4rk3xwvhr"))))
+        (base32 "18mcqih97jnwyv8w8kv67rcnpa3pzh7iy0xgwgmvd8i3a0cwxzpf"))))
     (build-system ruby-build-system)
-    (native-inputs (list bundler ruby-rake ruby-test-unit
-                         ruby-test-unit-ruby-core))
+    (native-inputs (list ruby-test-unit ruby-test-unit-ruby-core))
     (synopsis "Simple logging utility")
-    (arguments (list #:tests? #f)) ; no tests
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'replace-git-ls-files
+            (lambda _
+              (substitute* "logger.gemspec"
+                (("spec\\.files = .*")
+                 "spec.files = `find lib BSDL COPYING README.md -type f \
+| sort`.split\n")))))))
     (description
      "Logger is a simple but powerful logging utility to output
 messages in a Ruby program.
