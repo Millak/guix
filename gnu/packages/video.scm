@@ -6663,12 +6663,12 @@ API.  It includes bindings for Python, Ruby, and other languages.")
                   ffmpeg
                   font-dejavu
                   libopenshot
-                  python-pyqt
-                  python-pyqtwebengine
+                  python-pyqt-6
+                  python-pyqtwebengine-6
                   python-pyzmq
                   python-requests
-                  qtsvg-5
-                  qtwebengine-5))
+                  qtsvg
+                  qtwebengine))
     (home-page "https://www.openshot.org/")
     (synopsis "Video editor")
     (description
