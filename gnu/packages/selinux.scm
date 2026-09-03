@@ -324,29 +324,26 @@ based on required access.")
       #:test-flags #~(list "tests")
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'portability)
-          (add-after 'unpack 'set-SEPOL-variable
+          (add-before 'build 'pre-build
             (lambda* (#:key inputs #:allow-other-keys)
               (setenv "SEPOL"
-                      (search-input-file inputs "/lib/libsepol.a"))))
-          ;; tests assume /usr/bin/checkpolicy, override with
-          ;; CHECKPOLICY env variable
-          (add-before 'check 'set-checkpolicy-env
-            (lambda* (#:key inputs #:allow-other-keys)
+                      (search-input-file inputs "/lib/libsepol.a"))
+              ;; Tests assume /usr/bin/checkpolicy, override with
+              ;; CHECKPOLICY env variable.
               (setenv "CHECKPOLICY"
                       (search-input-file inputs "/bin/checkpolicy"))))
-          (add-before 'check 'fix-tests
+          (add-before 'check 'remove-local-source
             (lambda _
               (delete-file-recursively "setools"))))))
     (native-inputs
      (list bison
+           checkpolicy
            flex
            python-cython
-           swig-4.0
            python-pytest
            python-pytest-qt
            python-setuptools
-           checkpolicy))
+           swig-4.4))
     (inputs
      (list libsepol
            libselinux
