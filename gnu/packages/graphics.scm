@@ -1564,7 +1564,7 @@ distills complex, animated scenes into a set of baked geometric results.")
            glslang
            hwdata
            imgui-for-mangohud
-           implot
+           implot-0
            libx11
            libxkbcommon
            mesa

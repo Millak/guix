@@ -3,7 +3,7 @@
 ;;; Copyright © 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
-;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022-2023, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2023 Simon South <simon@simonsouth.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -277,7 +277,7 @@ used either in header only mode or in implementation mode.")
 (define-public implot
   (package
     (name "implot")
-    (version "0.16")
+    (version "1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -286,7 +286,7 @@ used either in header only mode or in implementation mode.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vbsw1qsi7j6pdz77840pxcqcghcl9fld80hchajbhpp1jr1a2gz"))))
+                "1pcq6nn82qpkwk27kyiaxky4pnaz9kj3fc3q25laj154r83ppikl"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -313,8 +313,7 @@ used either in header only mode or in implementation mode.")
                                                        "/include/implot")))
                         '("implot.h" "implot_internal.h")))))
       #:tests? #f))                     ; no test suite
-    (inputs
-     (list imgui-1.91))
+    (inputs (list imgui))
     (home-page "https://github.com/epezent/implot")
     (synopsis "Immediate-mode C++ plotting library for ImGui")
     (description "ImPlot is an immediate-mode, GPU-accelerated plotting
@@ -322,3 +321,18 @@ library in C++ for the ImGui GUI library, suitable for creating real-time
 visualizations or interactive plots.  Like ImGui, ImPlot is self-contained and
 requires only minimal code to integrate with existing applications.")
     (license license:expat)))
+
+(define-public implot-0
+  (package
+    (inherit implot)
+    (name "implot")
+    (version "0.17")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/epezent/implot")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1rp4lxgr11yc3z3cmlrpyaf916n74wp7401r21v7xbybfd2cvp0w"))))))
