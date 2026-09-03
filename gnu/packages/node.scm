@@ -978,3 +978,71 @@ source files.")
 (define-public node node-lts)
 
 (define-deprecated-package libnode node-lts)
+
+(define-public llhttpish
+  (package
+    (name "llhttpish")
+    (version "9.4.3")
+    (source (origin
+	      (method url-fetch)
+              (uri (string-append "https://codeberg.org/jlicht/llhttpish/releases/download/v" version
+                                  "/llhttpish-" version ".tgz"))
+	      (sha256
+	       (base32
+                "19zw4issqjhyfvwi7q39zvjhfmx1cq1kf887zp3sv7g7agyvczr8"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Fix imports for esbuild.
+                  ;; https://github.com/evanw/esbuild/issues/477
+                  (substitute* "llhttp/src/llhttp/http.ts"
+                    (("\\* as assert") "assert"))
+                  (substitute* "llhttp/Makefile"
+                    (("node --import tsx bin/generate.ts")
+                     "node bin/generate.js"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no tests
+      #:make-flags
+      #~(list (string-append "CLANG=" #$(cc-for-target))
+              (string-append "DESTDIR=" #$output)
+              "PREFIX=")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir-llhttp
+            (lambda _
+              (chdir "llhttp")))
+          (replace 'configure
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let ((esbuild (search-input-file (or native-inputs inputs)
+                                                "/bin/esbuild")))
+                (invoke esbuild
+                        "--platform=node"
+                        "--target=node10"
+                        "--outfile=bin/generate.js"
+                        "--bundle"
+                        "bin/generate.ts"))))
+          (add-before 'install 'create-install-directories
+            (lambda _
+              (mkdir #$output)
+              (with-directory-excursion #$output
+                (for-each mkdir (list "lib" "include" "src")))))
+          (add-after 'install 'install-src
+            (lambda _
+              (let ((src-dir (string-append #$output "/src")))
+                (install-file "build/c/llhttp.c" src-dir)
+                (install-file "src/native/api.c" src-dir)
+                (install-file "src/native/http.c" src-dir)))))))
+    (native-inputs
+     (list esbuild
+           node-bootstrap
+           node-llparse-bootstrap
+           node-semver-bootstrap))
+    (home-page "https://codeberg.org/jlicht/llhttpish")
+    (synopsis "Parser for HTTP messages")
+    (description "This is a soft fork of a rewrite of
+@url{https://github.com/nodejs/http-parser, http-parser} using
+@url{https://github.com/nodejs/llparse, llparse} to generate the C source
+files.")
+    (license license:expat)))
