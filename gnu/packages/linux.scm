@@ -946,7 +946,7 @@ GEXP)."
 ;; linux-libre-headers-latest points to the latest headers package
 ;; and should be used as a dependency for packages that depend on
 ;; the headers.
-(define-public linux-libre-headers-latest linux-libre-headers-7.1)
+(define-public linux-libre-headers-latest linux-libre-headers-7.2)
 
 
 ;;;
@@ -1488,6 +1488,12 @@ DFSDG}.")
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
+(define-public linux-libre-version         linux-libre-7.2-version)
+(define-public linux-libre-gnu-revision    linux-libre-7.2-gnu-revision)
+(define-public linux-libre-pristine-source linux-libre-7.2-pristine-source)
+(define-public linux-libre-source          linux-libre-7.2-source)
+(define-public linux-libre                 linux-libre-7.2)
+
 (define-public linux-libre-7.1
   (make-linux-libre* linux-libre-7.1-version
                      linux-libre-7.1-gnu-revision
@@ -1495,12 +1501,6 @@ DFSDG}.")
                      '("x86_64-linux" "i686-linux" "armhf-linux"
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
-
-(define-public linux-libre-version         linux-libre-7.1-version)
-(define-public linux-libre-gnu-revision    linux-libre-7.1-gnu-revision)
-(define-public linux-libre-pristine-source linux-libre-7.1-pristine-source)
-(define-public linux-libre-source          linux-libre-7.1-source)
-(define-public linux-libre                 linux-libre-7.1)
 
 (define-public linux-libre-6.18
   (make-linux-libre* linux-libre-6.18-version
