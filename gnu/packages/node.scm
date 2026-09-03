@@ -646,75 +646,6 @@ devices.")
 parser definition into a C output.")
     (license license:expat)))
 
-(define-public llhttp-bootstrap
-  (package
-    (name "llhttp-bootstrap")
-    (version "9.4.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/nodejs/llhttp.git")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0yb46qksyw0h14r1qp84xkk8zijfi661991288isivba61hijp2z"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Fix imports for esbuild.
-                  ;; https://github.com/evanw/esbuild/issues/477
-                  (substitute* "src/llhttp/http.ts"
-                    (("\\* as assert") "assert"))
-                  (substitute* "Makefile"
-                    (("node --import tsx bin/generate.ts")
-                     "node bin/generate.js"))
-                  #t))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ; no tests
-      #:make-flags
-      #~(list (string-append "CLANG=" #$(cc-for-target))
-              (string-append "DESTDIR=" #$output)
-              "PREFIX=")
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'configure
-            (lambda* (#:key inputs native-inputs #:allow-other-keys)
-              (let ((esbuild (search-input-file (or native-inputs inputs)
-                                                "/bin/esbuild")))
-                (invoke esbuild
-                        "--platform=node"
-                        "--target=node10"
-                        "--outfile=bin/generate.js"
-                        "--bundle"
-                        "bin/generate.ts"))))
-          (add-before 'install 'create-install-directories
-            (lambda _
-              (mkdir #$output)
-              (with-directory-excursion #$output
-                (for-each mkdir (list "lib" "include" "src")))))
-          (add-after 'install 'install-src
-            (lambda _
-              (let ((src-dir (string-append #$output "/src")))
-                (install-file "build/c/llhttp.c" src-dir)
-                (install-file "src/native/api.c" src-dir)
-                (install-file "src/native/http.c" src-dir)))))))
-    (native-inputs
-     (list esbuild
-           node-bootstrap
-           node-llparse-bootstrap
-           node-semver-bootstrap))
-    (home-page "https://github.com/nodejs/llhttp")
-    (properties '((hidden? . #t)))
-    (synopsis "Parser for HTTP messages")
-    (description "This is a rewrite of
-@url{https://github.com/nodejs/http-parser, http-parser} using
-@url{https://github.com/nodejs/llparse, llparse} to generate the C
-source files.")
-    (license license:expat)))
-
 (define-public node-lts
   (package
     (inherit node-bootstrap)
@@ -963,7 +894,7 @@ source files.")
            c-ares-for-node-lts
            icu4c-76
            libuv-for-node-lts
-           llhttp-bootstrap
+           llhttpish
            brotli
            ngtcp2
            nghttp3
