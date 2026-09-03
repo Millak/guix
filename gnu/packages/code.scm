@@ -278,14 +278,14 @@ Using cscope, you can easily search for where symbols are used and defined.")
 (define-public global                             ; a global variable
   (package
     (name "global")
-    (version "6.6.14")
+    (version "6.7")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/global/global-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "085kihqvl26q275dvp2a8b4xalb5mxmn31mnbgl95lmfd05zvrzn"))))
+               "1xwbbhm5yydhpfdspsywwid5kj62c1z1ricrbvanhbfskc65kazx"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
