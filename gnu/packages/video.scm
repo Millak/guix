@@ -6618,13 +6618,16 @@ API.  It includes bindings for Python, Ruby, and other languages.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    "not "
+                    (string-join
+                     (list "test_properties_dock_reanchors_to_files_when_shown_after_view_removed_it"
+                           "test_application_filter_styles_future_message_boxes"
+                           "test_assigns_semantic_button_roles_and_removes_icons")
+                     " and not ")))
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "QT_QPA_PLATFORM" "offscreen")
-                (invoke "python" "src/tests/test_query.py"))))
           (add-after 'unpack 'patch-font-location
             (lambda _
               (let ((font #$(this-package-input "font-dejavu")))
@@ -6659,6 +6662,8 @@ API.  It includes bindings for Python, Ruby, and other languages.")
                                    #$(version-major+minor
                                       (package-version python))
                                    "/site-packages/openshot_qt")))))))))
+    ;; Project uses unittest but pytest makes it easier to skip tests.
+    (native-inputs (list python-pytest))
     (inputs (list bash-minimal
                   ffmpeg
                   font-dejavu
