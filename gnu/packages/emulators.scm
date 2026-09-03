@@ -671,6 +671,7 @@ It aims to support Nintendo DSi and 3DS as well.")
            imgui
            implot-0
            libevdev
+           libmgba
            libpng
            libusb
            libx11
@@ -679,7 +680,6 @@ It aims to support Nintendo DSi and 3DS as well.")
            lz4
            lzo
            mbedtls-lts
-           mgba
            mesa
            miniupnpc
            minizip-ng
