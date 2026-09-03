@@ -684,6 +684,7 @@ parser definition into a C output.")
                               "deps/ngtcp2"
                               "deps/llhttp"
                               "deps/uv"
+                              "deps/uvwasi"
                               "deps/zlib"
                               "deps/zstd"))))))
     (arguments
@@ -701,6 +702,7 @@ parser definition into a C output.")
            "--shared-ngtcp2"
            "--shared-nghttp3"
            "--shared-zstd"
+           "--shared-uvwasi"
            "--shared"
            ;;Needed for correct snapshot checksums
            "--v8-enable-snapshot-compression"))
@@ -901,6 +903,7 @@ parser definition into a C output.")
            `(,nghttp2-for-node-lts "lib")
            openssl
            zlib
+           uvwasi-for-node-lts
            `(,zstd "lib")))
     (supported-systems
      (cons "riscv64-linux" (package-supported-systems node-bootstrap)))
