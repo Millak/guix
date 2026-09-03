@@ -24425,6 +24425,30 @@ exposes a small API to assist in writing your own snippets.")
        "This Emacs library provides Helm interface for Yasnippet.")
       (license license:gpl2+))))
 
+(define-public emacs-system-packages
+  (package
+    (name "emacs-system-packages")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/system-packages-"
+                           version ".tar"))
+       (sha256
+        (base32 "0zjblm8jsyi2vkgnclkap5f9j2iakaf1lpajqi3s4qryrfq7rf68"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command
+      #~(list "make" "test")))
+    (home-page "https://gitlab.com/jabranham/system-packages")
+    (synopsis "Functions to manage system packages")
+    (description
+     "This package provides functions to make handling installed system
+packages more convenient through Emacs, including a new use-package macro
+keyword, @code{:ensure-system-package}.")
+    (license license:gpl3+)))
+
 (define-public emacs-helm-system-packages
   (package
     (name "emacs-helm-system-packages")
