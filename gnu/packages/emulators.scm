@@ -1237,6 +1237,36 @@ and Game Boy Color games.")
            zlib))
     (synopsis "Game Boy Advance emulator")))
 
+(define-public libretro-mgba
+  (package
+    (inherit mgba)
+    (name "libretro-mgba")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:tests? _ #f)
+        #f)                             ;no tests when not building library
+       ((#:disallowed-references _ ''())
+        (list qtbase))
+       ((#:configure-flags flags ''())
+        #~(cons* "-DBUILD_LIBRETRO=ON"
+                 "-DBUILD_QT=OFF"
+                 "-DENABLE_SCRIPTING=OFF"
+                 "-DSKIP_LIBRARY=ON"
+                 #$flags))
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'delete-extraneous-files
+              (lambda _
+                (for-each
+                 delete-file-recursively
+                 (list (string-append #$output "/include")
+                       (string-append #$output "/share/doc/mGBA")))))))))
+    (native-inputs (modify-inputs native-inputs
+                     (delete "qttools")))
+    (inputs (modify-inputs inputs
+              (delete "qtbase" "qtmultimedia" "qtwayland")))
+    (synopsis "Libretro core for the MGBA emulator")))
+
 (define-public sameboy
   (package
     (name "sameboy")
