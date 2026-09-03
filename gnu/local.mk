@@ -2687,6 +2687,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/warzone2100-unbundle-sqlitecpp.patch	\
   %D%/packages/patches/warzone2100-unbundle-inih.patch		\
   %D%/packages/patches/warzone2100-unbundle-utfcpp.patch	\
+  %D%/packages/patches/watcher-fix-pkg-config.patch             \
   %D%/packages/patches/wcstools-extend-makefiles.patch	\
   %D%/packages/patches/wdl-link-libs-and-fix-jnetlib.patch	\
   %D%/packages/patches/webkitgtk-adjust-bubblewrap-paths.patch	\

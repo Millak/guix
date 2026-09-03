@@ -2603,31 +2603,15 @@ securefs, SSHFS, and Cryptomator.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "118zkz6zfj57rny1ysy80ib3sqy3lfjpf611j5b4rw29dzwsa1xi"))))
+                "118zkz6zfj57rny1ysy80ib3sqy3lfjpf611j5b4rw29dzwsa1xi"))
+              (patches (search-patches "watcher-fix-pkg-config.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags
       #~(list "-DBUILD_TESTING=ON"
               ;; This is needed to find 'snitch' from the system.
-              "-DFETCHCONTENT_TRY_FIND_PACKAGE_MODE=ALWAYS")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-.pc-files-prefix
-            ;; There are some issues with the new .pc files (see:
-            ;; <https://github.com/e-dant/watcher/issues/82>).
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                (("\"\\$\\{CMAKE_INSTALL_LIBDIR}\"")
-                 "\"${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}\"")
-                (("\\$\\{CMAKE_INSTALL_INCLUDEDIR}/wtr")
-                 "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/wtr"))
-              (substitute* "watcher.pc.in"
-                (("@PC_WATCHER_PREFIX@")
-                 #$output))
-              (substitute* "watcher-c/watcher-c.pc.in"
-                (("@PC_LIBWATCHER_C_PREFIX@")
-                 #$output)))))))
+              "-DFETCHCONTENT_TRY_FIND_PACKAGE_MODE=ALWAYS")))
     (native-inputs (list jq snitch))
     (home-page "https://github.com/e-dant/watcher")
     (synopsis "File system watcher program and library")

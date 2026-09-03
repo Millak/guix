@@ -1,0 +1,79 @@
+Upstream-status: <https://github.com/e-dant/watcher/pull/126>
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 953f2c0..ecea90c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -115,10 +115,7 @@ if(ANDROID)
+   set(LINK_LIBRARIES "${LINK_LIBRARIES}")
+ else()
+   find_package(Threads REQUIRED)
+-  set(LINK_LIBRARIES
+-    "${LINK_LIBRARIES}"
+-    "Threads::Threads"
+-  )
++  list(APPEND LINK_LIBRARIES "Threads::Threads")
+   if(APPLE)
+     list(APPEND LINK_LIBRARIES
+       "-framework CoreFoundation"
+@@ -483,14 +480,15 @@ wtr_add_bin_target(
+   ""
+   ""
+ )
+-
+-set(PC_WATCHER_LIBS_PRIVATE "${LINK_LIBRARIES}")
++set(PC_WATCHER_PREFIX "${CMAKE_INSTALL_PREFIX}")
+ set(PC_WATCHER_LIBDIR "${CMAKE_INSTALL_LIBDIR}")
++set(PC_WATCHER_LIBS_PRIVATE "${LINK_LIBRARIES}")
+ set(PC_WATCHER_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}/wtr")
+ wtr_add_pkg_config_target("watcher.pc" "watcher.pc.in")
+ 
+-set(PC_LIBWATCHER_C_LIBS_PRIVATE "${LINK_LIBRARIES}")
++set(PC_LIBWATCHER_C_PREFIX "${CMAKE_INSTALL_PREFIX}")
+ set(PC_LIBWATCHER_C_LIBDIR "${CMAKE_INSTALL_LIBDIR}")
++set(PC_LIBWATCHER_C_LIBS_PRIVATE "${LINK_LIBRARIES}")
+ set(PC_LIBWATCHER_C_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}/wtr")
+ wtr_add_pkg_config_target("watcher-c.pc" "watcher-c/watcher-c.pc.in")
+ 
+diff --git a/watcher-c/watcher-c.pc.in b/watcher-c/watcher-c.pc.in
+index f48d927..9200b73 100644
+--- a/watcher-c/watcher-c.pc.in
++++ b/watcher-c/watcher-c.pc.in
+@@ -1,14 +1,12 @@
+ prefix=@PC_LIBWATCHER_C_PREFIX@
+ exec_prefix=${prefix}
+-libdir=@PC_LIBWATCHER_C_LIBDIR@
+-includedir=@PC_LIBWATCHER_C_INCLUDEDIR@
++libdir=${exec_prefix}/@PC_LIBWATCHER_C_LIBDIR@
++includedir=${prefix}/@PC_LIBWATCHER_C_INCLUDEDIR@
+ 
+ Name: libwatcher-c
+ Description: @PROJECT_DESCRIPTION@
+ URL: @PROJECT_HOMEPAGE_URL@
+ Version: @PROJECT_VERSION@
+-Requires:
+-Conflicts:
+ Libs: -L${libdir} -lwatcher-c
+ Libs.private: @PC_LIBWATCHER_C_LIBS_PRIVATE@
+ Cflags: -I${includedir}
+diff --git a/watcher.pc.in b/watcher.pc.in
+index 14d3296..198cdcb 100644
+--- a/watcher.pc.in
++++ b/watcher.pc.in
+@@ -1,14 +1,11 @@
+ prefix=@PC_WATCHER_PREFIX@
+ exec_prefix=${prefix}
+-libdir=@PC_WATCHER_LIBDIR@
+-includedir=@PC_WATCHER_INCLUDEDIR@
++libdir=${exec_prefix}/@PC_WATCHER_LIBDIR@
++includedir=${prefix}/@PC_WATCHER_INCLUDEDIR@
+ 
+ Name: watcher
+ Description: @PROJECT_DESCRIPTION@
+ URL: @PROJECT_HOMEPAGE_URL@
+ Version: @PROJECT_VERSION@
+-Requires:
+-Conflicts:
+-Libs:
+ Libs.private: @PC_WATCHER_LIBS_PRIVATE@
+ Cflags: -I${includedir}
