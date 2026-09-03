@@ -479,17 +479,6 @@ It aims to support Nintendo DSi and 3DS as well.")
      (base32
       "0vj6har1l5izmirvzv2qs28qmjfshx6awn3zilq99pk66nx9xsdy"))))
 
-(define dolphin-glslang-submodule
-  (origin
-    (method git-fetch)
-    (uri (git-reference
-           (url "https://github.com/KhronosGroup/glslang")
-           (commit "a57276bf558f5cf94d3a9854ebdf5a2236849a5a")))
-    (file-name "dolphin-glslang-submodule-checkout")
-    (sha256
-     (base32
-      "05lg4k0m79lx9lrz9k5giaq9yh2c8v3avnf5rsv1s2w6wk51sg7w"))))
-
 (define dolphin-cpp-ipc-submodule
   (origin
     (method git-fetch)
@@ -575,7 +564,7 @@ It aims to support Nintendo DSi and 3DS as well.")
                               "cpp-ipc"
                               "cpp-optparse"
                               "expr"
-                              "glslang"
+                              "glslang" ;submodule
                               "imgui"
                               "implot"  ;submodule
                               "picojson"
@@ -584,8 +573,6 @@ It aims to support Nintendo DSi and 3DS as well.")
               (with-directory-excursion "Externals"
                 (copy-recursively #$dolphin-rcheevos-submodule
                                   "rcheevos/rcheevos")
-                (copy-recursively #$dolphin-glslang-submodule
-                                  "glslang/glslang")
                 (copy-recursively #$dolphin-cpp-ipc-submodule
                                   "cpp-ipc/cpp-ipc")
                 (copy-recursively #$dolphin-cpp-optparse-submodule
@@ -689,6 +676,7 @@ It aims to support Nintendo DSi and 3DS as well.")
              freetype
              glew
              glib
+             glslang
              glu
              gtk+
              hidapi
