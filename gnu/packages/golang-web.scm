@@ -11032,19 +11032,21 @@ encrypted cookie values for Go web applications.")
 (define-public go-github-com-gorilla-sessions
   (package
     (name "go-github-com-gorilla-sessions")
-    (version "1.2.1")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/gorilla/sessions")
-             (commit (string-append "v" version))))
+              (url "https://github.com/gorilla/sessions")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zjw2s37yggk9231db0vmgs67z8m3am8i8l4gpgz6fvlbv52baxp"))))
+        (base32 "1f3gyzcsm641giks9ggfmhr5i6z6g98p5jqzdbb3w4wfbg7vdckh"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/gorilla/sessions"))
+     (list
+      #:import-path "github.com/gorilla/sessions"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-gorilla-securecookie))
     (home-page "https://github.com/gorilla/sessions")
