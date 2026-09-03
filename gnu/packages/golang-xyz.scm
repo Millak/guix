@@ -12736,7 +12736,7 @@ It's an alternative fork of @url{https://github.com/docopt/docopt.go}.")
 (define-public go-github-com-fxamacker-cbor-v2
   (package
     (name "go-github-com-fxamacker-cbor-v2")
-    (version "2.9.2")
+    (version "2.9.3")
     (source
      (origin
        (method git-fetch)
@@ -12745,7 +12745,7 @@ It's an alternative fork of @url{https://github.com/docopt/docopt.go}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cvka4ykwydmgc2wh4dv00063ww7rww9pcj9dc3rgx6pi6879s7g"))))
+        (base32 "02p9iqw51j2p2i8a69i83g2ahycy5n84p3mh9fqfaavz2cyq8hy8"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -12754,7 +12754,8 @@ It's an alternative fork of @url{https://github.com/docopt/docopt.go}.")
       ;; 1000000000000 (untyped int constant) to type uint
       #:tests? (and (target-64bit?)
                     (not (%current-target-system)))
-      #:import-path "github.com/fxamacker/cbor/v2"))
+      #:import-path "github.com/fxamacker/cbor/v2"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-x448-float16))
     (home-page "https://github.com/fxamacker/cbor")
