@@ -2575,7 +2575,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/texi2html-i18n.patch			\
   %D%/packages/patches/texmacs-wayland-hidpi.patch	\
   %D%/packages/patches/tflite-micro_disable_download.patch 	\
-  %D%/packages/patches/thefuck-test-environ.patch		\
   %D%/packages/patches/tidy-CVE-2015-5522+5523.patch		\
   %D%/packages/patches/timewarrior-time-sensitive-tests.patch	\
   %D%/packages/patches/tinydir-fix-cbehave-test.patch		\
