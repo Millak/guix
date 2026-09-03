@@ -1156,12 +1156,12 @@ The following systems are supported:
     ;; Main license is GPL2+.  Some parts are BSD-3.
     (license (list license:gpl2+ license:bsd-3))))
 
-(define-public mgba
+(define-public libmgba
   ;; Use the latest commit, as the last release does not support Qt 6 yet.
   (let ((commit "c6aa8f5523b21fd84336c9855b7f4df54a606a32")
         (revision "0"))
     (package
-      (name "mgba")
+      (name "libmgba")
       (version (git-version "0.10.5" revision commit))
       (source
        (origin
@@ -1184,48 +1184,58 @@ The following systems are supported:
                          (items (scandir "." pred)))
                     (for-each (cut delete-file-recursively <>) items))))
 
-              (delete-all-but "src/third-party"
-                              "blip_buf"
-                              "inih")))))
-      (build-system qt-build-system)
+              (delete-all-but "src/third-party" "inih")))))
+      (build-system cmake-build-system)
       (arguments
        (list
-        #:qtbase qtbase
+        #:tests? #f                     ;no test suite in library mode
         #:configure-flags
-        #~(list "-DBUILD_SUITE=ON"
-                "-DUSE_DISCORD_RPC=OFF" ;avoid bundled copy
-                "-DUSE_LIBZIP=OFF"      ;use "zlib" instead
-                "-DUSE_LZMA=OFF")       ;do not use bundled LZMA
-        ;; The platform-qt-autoscript and platform-qt-library tests fails due
-        ;; to 'LibraryModelTest::testList' not returning the expected value
-        ;; (see: <https://github.com/mgba-emu/mgba/issues/3593>).
-        #:test-exclude "(platform-qt-autoscript|platform-qt-library)"))
-      (native-inputs (list cmocka pkg-config qttools))
-      (inputs
-       (list ffmpeg
-             libedit
-             elfutils
-             libepoxy
-             libpng
-             mesa
-             minizip
-             ncurses
-             qtbase
-             qtmultimedia
-             qtwayland
-             sdl2
-             sqlite
-             zlib))
+        #~(list "-DLIBMGBA_ONLY=ON" "-DCMAKE_C_FLAGS=-O3 -fPIC")))
       (home-page "https://mgba.io")
-      (synopsis "Game Boy Advance emulator")
+      (synopsis "Game Boy Advance emulator library")
       (description
        "mGBA is an emulator for running Game Boy Advance games.  It aims to be
-        faster and more accurate than many existing Game Boy Advance emulators, as
-        well as adding features that other emulators lack.  It also supports Game Boy
-        and Game Boy Color games")
+faster and more accurate than many existing Game Boy Advance emulators, as
+well as adding features that other emulators lack.  It also supports Game Boy
+and Game Boy Color games.")
       (license (list license:mpl2.0     ;mgba itself
-                     license:lgpl2.1+   ;blip_buf bundled library
-                     license:bsd-3)))))    ;inih bundled library
+                     license:bsd-3))))) ;inih bundled library
+
+(define-public mgba
+  ;; Use the latest commit, as the last release does not support Qt 6 yet.
+  (package
+    (inherit libmgba)
+    (name "mgba")
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:configure-flags
+      #~(list "-DBUILD_SUITE=ON"
+              "-DUSE_DISCORD_RPC=OFF"   ;avoid bundled copy
+              "-DUSE_LIBZIP=OFF"        ;use "zlib" instead
+              "-DUSE_LZMA=OFF")         ;do not use bundled LZMA
+      ;; The platform-qt-autoscript and platform-qt-library tests fails due
+      ;; to 'LibraryModelTest::testList' not returning the expected value
+      ;; (see: <https://github.com/mgba-emu/mgba/issues/3593>).
+      #:test-exclude "(platform-qt-autoscript|platform-qt-library)"))
+    (native-inputs (list cmocka pkg-config qttools))
+    (inputs
+     (list ffmpeg
+           libedit
+           elfutils
+           libepoxy
+           libpng
+           mesa
+           minizip
+           ncurses
+           qtbase
+           qtmultimedia
+           qtwayland
+           sdl3
+           sqlite
+           zlib))
+    (synopsis "Game Boy Advance emulator")))
 
 (define-public sameboy
   (package
