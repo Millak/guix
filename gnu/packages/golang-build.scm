@@ -1355,18 +1355,21 @@ low-level interaction with the operating system.")
 (define-public go-golang-org-x-telemetry
   (package
     (name "go-golang-org-x-telemetry")
-    ;; Beware: the updater gets this wrong.  Use the latest commit and its
-    ;; matching date.
-    (version "0.0.0-20260611141451-d61e87d5f4a3")
+    (properties '((commit . "3ef544be842145257e8635e98d367e959e2f77ba")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260902144106-3ef544be8421")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://go.googlesource.com/telemetry")
-              (commit (go-version->git-ref version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1czbaqfma2w2gyscqy0xwbfg7yfans8zihp7087lpd717l3dyzms"))
+        (base32 "0v8spfkf6qybqxd7mrz2fgf1m0kqn35nr107z78lhcr89gcka7p3"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
