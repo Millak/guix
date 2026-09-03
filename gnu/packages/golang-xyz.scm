@@ -2795,10 +2795,10 @@ inspired by the causal messaging system in the Pony programming language.")
           ;; on (copy-recursively...
           (add-after 'check 'remove-symlink-loop-testdata
             (lambda* (#:key import-path #:allow-other-keys)
-	      (let ((loops (string-append
-			    "src/"
-			    import-path
-			    "/testdata/loops")))
+              (let ((loops (string-append
+                            "src/"
+                            import-path
+                            "/testdata/loops")))
                 (when (file-exists? loops)
                   (delete-file-recursively loops))))))))
     (native-inputs
@@ -10861,7 +10861,7 @@ go-jpeg-image-structure}.")
     (build-system go-build-system)
     (arguments
      (list
-      ;; Cycles with go-github-com-dsoprea-go-exif-v3. 
+      ;; Cycles with go-github-com-dsoprea-go-exif-v3.
       #:skip-build? #t
       #:tests? #f
       #:import-path "github.com/dsoprea/go-utility/v2"
@@ -14731,9 +14731,9 @@ color (24-bit, RGB)
       #:import-path "github.com/goreleaser/chglog"))
     (native-inputs
      (list go-github-com-go-git-go-billy-v5
-	   go-github-com-google-go-cmp
+           go-github-com-google-go-cmp
            go-github-com-smartystreets-goconvey
-	   go-github-com-spf13-cobra
+           go-github-com-spf13-cobra
            go-github-com-spf13-viper))
     (propagated-inputs
      (list go-github-com-go-git-go-git-v5

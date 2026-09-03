@@ -403,11 +403,11 @@ devices.")
      (origin
        (method git-fetch)
        (uri (git-reference
-	      (url "https://github.com/bufbuild/protovalidate-go")
-	      (commit (string-append "v" version))))
+              (url "https://github.com/bufbuild/protovalidate-go")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-	(base32 "1y6c43qm3jd2anvvgz76jxj1398ycc1bf3mzq63an2pin5lf0j6g"))))
+        (base32 "1y6c43qm3jd2anvvgz76jxj1398ycc1bf3mzq63an2pin5lf0j6g"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -418,8 +418,8 @@ devices.")
      (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-buf-build-gen-go-bufbuild-protovalidate-protocolbuffers-go
-	   go-github-com-google-cel-go
-	   go-google-golang-org-protobuf))
+           go-github-com-google-cel-go
+           go-google-golang-org-protobuf))
     (home-page "https://github.com/bufbuild/protovalidate-go")
     (synopsis "Protocol Buffer Validation for Golang")
     (description
@@ -1668,7 +1668,7 @@ Gemini clients and servers.")
      (list
       ;; The try to access to
       ;; <http://sqlfiddle.com/backend/createSchema?_action=create>.
-      #:tests? #f 
+      #:tests? #f
       #:import-path "gitea.com/xorm/sqlfiddle"))
     (home-page "https://gitea.com/xorm/sqlfiddle")
     (synopsis "SQL Fiddle API (UnOfficial)")
@@ -4546,7 +4546,7 @@ network,using GOCACHEPROG.")
       #:test-flags
       #~(list "-vet=off"
               "-skip" (string-join
-		       ;; Some random mismatch in example tests.
+                       ;; Some random mismatch in example tests.
                        (list "ExampleCar"
                              "ExampleCreditCard"
                              "ExampleCreditCardExp"
@@ -4590,7 +4590,7 @@ network,using GOCACHEPROG.")
       #:import-path "github.com/brianvoe/gofakeit/v7"
       #:test-flags
       #~(list "-skip" (string-join
-		       ;; Some random mismatch in example tests.
+                       ;; Some random mismatch in example tests.
                        (list "ExampleCreditCard"
                              "ExampleCreditCardExp"
                              "ExampleDate"
@@ -22902,13 +22902,13 @@ browsing activities based on HTTP Upgrade (HTTPT).")
       #:test-flags
       ;; Skip network resource tests.
       #~(list "-skip" (string-join
-	               (list "TestDownload"
-		             "TestResume"
-		             "TestResumeOnAlreadyCompletedFile"
-		             "TestNoResume"
-		             "TestRunAndPool"
-		             "TestApplyUserAgentHeaderUsingConfig")
-	               "|"))))
+                       (list "TestDownload"
+                             "TestResume"
+                             "TestResumeOnAlreadyCompletedFile"
+                             "TestNoResume"
+                             "TestRunAndPool"
+                             "TestApplyUserAgentHeaderUsingConfig")
+                       "|"))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (home-page "https://go.bug.st/downloader")
@@ -24186,7 +24186,7 @@ prometheus.Collector to provide a handler for these metrics.")
               (url "https://github.com/open-telemetry/opentelemetry-go")
               (commit (go-version->git-ref version
                                            #:subdir
-					   "exporters/stdout/stdoutmetric"))))
+                                           "exporters/stdout/stdoutmetric"))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0583dw99k25k07pnq8hhhb45kwqhsx30lbk9yxsh4m50ji65wl8h"))
@@ -24218,8 +24218,8 @@ prometheus.Collector to provide a handler for these metrics.")
      (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-go-opentelemetry-io-otel
-	   go-go-opentelemetry-io-otel-sdk
-	   go-go-opentelemetry-io-otel-sdk-metric))
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric))
     (home-page "https://go.opentelemetry.io/otel")
     (synopsis "OTLP STDOUT Metric Exporter")
     (description
@@ -25613,7 +25613,7 @@ emails using a local Postfix, an API, etc.")
      (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-goccy-go-yaml
-	   go-github-com-spf13-viper))
+           go-github-com-spf13-viper))
     (home-page "https://github.com/go-telebot/telebot")
     (synopsis "Telegram bot framework in Golang")
     (description
