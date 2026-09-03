@@ -15,7 +15,7 @@
 ;;; Copyright © 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2021 Felipe Balbi <balbi@kernel.org>
 ;;; Copyright © 2021, 2024, 2025 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2021, 2024-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2024-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2023 c4droid <c4droid@foxmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
@@ -501,28 +501,6 @@ It aims to support Nintendo DSi and 3DS as well.")
      (base32
       "11409rai8inia1rjl3kig5rcs4sfmschf9jrb0q22v7pdlaqmxw5"))))
 
-(define dolphin-imgui-submodule
-  (origin
-    (method git-fetch)
-    (uri (git-reference
-           (url "https://github.com/ocornut/imgui.git")
-           (commit "45acd5e0e82f4c954432533ae9985ff0e1aad6d5")))
-    (file-name "dolphin-imgui-submodule-checkout")
-    (sha256
-     (base32
-      "108dvbsqyf9am0f744z3ymgfppw1ad0amqkbwwwg2kqdm85dq1wv"))))
-
-(define dolphin-implot-submodule
-  (origin
-    (method git-fetch)
-    (uri (git-reference
-           (url "https://github.com/epezent/implot.git")
-           (commit "3da8bd34299965d3b0ab124df743fe3e076fa222")))
-    (file-name "dolphin-implot-submodule-checkout")
-    (sha256
-     (base32
-      "0vgh3vs60my4blfn0ryjmas2q62466c8hx7smf0w4lgf2kkmqyag"))))
-
 (define-public dolphin-emu
   ;; Note: make sure to update the above rcheevos commit to match that of the
   ;; corresponding git submodule in dolphin (see:
@@ -564,9 +542,6 @@ It aims to support Nintendo DSi and 3DS as well.")
                               "cpp-ipc"
                               "cpp-optparse"
                               "expr"
-                              "glslang" ;submodule
-                              "imgui"
-                              "implot"  ;submodule
                               "picojson"
                               "rangeset"
                               "rcheevos") ;submodule
@@ -576,11 +551,11 @@ It aims to support Nintendo DSi and 3DS as well.")
                 (copy-recursively #$dolphin-cpp-ipc-submodule
                                   "cpp-ipc/cpp-ipc")
                 (copy-recursively #$dolphin-cpp-optparse-submodule
-                                  "cpp-optparse/cpp-optparse")
-                (copy-recursively #$dolphin-imgui-submodule
-                                  "imgui/imgui")
-                (copy-recursively #$dolphin-implot-submodule
-                                  "implot/implot"))
+                                  "cpp-optparse/cpp-optparse"))
+              ;; Complete unbundling.
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory\\(Externals/im(gui|plot))" all)
+                 (string-append "# " all)))
               (for-each delete-file
                         (find-files
                          "."
@@ -598,6 +573,18 @@ It aims to support Nintendo DSi and 3DS as well.")
       (build-system cmake-build-system)
       (arguments
        (list
+        #:configure-flags
+        #~(list
+           "-DUSE_DISCORD_PRESENCE=OFF" ;avoid bundled discord-rpc lib
+           "-DDSPTOOL=ON"
+           ;; The bundled CMakeLists.txt had defined those--but we unbundled it.
+           (string-join
+            (list "-DCMAKE_CXX_FLAGS=-DHAVE_CRC32 "
+                  "-DENABLE_VFS"
+                  "-DENABLE_DIRECTORIES"
+                  ;; Help find the imgui/implot headers.
+                  "-I" (search-input-directory %build-inputs "include/imgui")
+                  "-I" (search-input-directory %build-inputs "include/implot"))))
         #:modules '((guix build cmake-build-system)
                     ((guix build gnu-build-system) #:prefix gnu:)
                     (guix build utils))
@@ -648,12 +635,7 @@ It aims to support Nintendo DSi and 3DS as well.")
               (lambda _
                 (with-directory-excursion "../source"
                   (invoke "python3" "docs/DSP/free_dsp_rom/generate_coefs.py")
-                  (rename-file "dsp_coef.bin" "Data/Sys/GC/dsp_coef.bin")))))
-        #:configure-flags
-        #~(list "-DUSE_DISCORD_PRESENCE=OFF" ;avoid bundled discord-rpc lib
-                "-DDSPTOOL=ON"
-                ;; The bundled CMakeLists.txt had defined those--but we unbundled it.
-                "-DCMAKE_CXX_FLAGS=-DHAVE_CRC32 -DENABLE_VFS -DENABLE_DIRECTORIES")))
+                  (rename-file "dsp_coef.bin" "Data/Sys/GC/dsp_coef.bin")))))))
       (native-inputs
        (list (cross-gcc "powerpc-linux-gnu")
              gettext-minimal
@@ -671,7 +653,7 @@ It aims to support Nintendo DSi and 3DS as well.")
              enet
              eudev
              ffmpeg
-             fmt-11
+             fmt
              font-wqy-microhei
              freetype
              glew
@@ -680,6 +662,8 @@ It aims to support Nintendo DSi and 3DS as well.")
              glu
              gtk+
              hidapi
+             imgui
+             implot-0
              libevdev
              libpng
              libusb
@@ -689,9 +673,9 @@ It aims to support Nintendo DSi and 3DS as well.")
              lz4
              lzo
              mbedtls-lts
-             mgba-for-dolphin
+             mgba
              mesa
-             miniupnpc-2.1
+             miniupnpc
              minizip-ng
              openal
              pugixml
@@ -1236,37 +1220,6 @@ The following systems are supported:
       (license (list license:mpl2.0     ;mgba itself
                      license:lgpl2.1+   ;blip_buf bundled library
                      license:bsd-3)))))    ;inih bundled library
-
-(define-public mgba-for-dolphin
-  ;; The commit should match that of the mgba git submodule in dolphin (see:
-  ;; <https://github.com/dolphin-emu/dolphin/tree/master/Externals/mGBA>).
-  (let ((commit "0b40863f64d0940f333fa1c638e75f86f8a26a33")
-        (revision "1"))
-    (hidden-package
-     (package
-       (inherit mgba)
-       (name "mgba-for-dolphin")
-       (version (git-version "0.9.1" revision commit))
-       (source
-        (origin
-          (inherit (package-source mgba))
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://github.com/mgba-emu/mgba")
-                 (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32
-            "1l4iv0p5aah8adhf5fpjil883mhiabk88yfy05p6h3650nj8n9v7"))))
-       (arguments
-        (substitute-keyword-arguments arguments
-          ((#:configure-flags flags ''())
-           ;; Relax error checks to avoid a build failure with GCC 14.
-           #~(cons "-DCMAKE_C_FLAGS=-Wno-error=incompatible-pointer-types"
-                   #$flags))))
-      (inputs
-        (modify-inputs inputs
-                       (replace "ffmpeg" ffmpeg-6)))))))
 
 (define-public sameboy
   (package
