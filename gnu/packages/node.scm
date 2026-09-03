@@ -36,7 +36,9 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages javascript)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages networking)
@@ -48,7 +50,6 @@
   #:use-module (gnu packages)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system node)
   #:use-module (guix derivations)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -337,64 +338,49 @@ devices.")
                   (cpe-name . "node.js")
                   (hidden? . #t)))))
 
-;; Stripped down version of the node-build-system, avoids (json) and some
-;; niceties, resulting in a simpler but brittle phases.  This allows us to work
-;; on node-build-system without recompiling node-lts for each edit.
-(define bootstrap-node-phases
-  #~(modify-phases %standard-phases
-      (add-after 'unpack 'set-home
-        (lambda _
-          (with-directory-excursion ".."
-            (let loop ((i 0))
-              (let ((dir (string-append "npm-home-" (number->string i))))
-                (if (directory-exists? dir)
-                    (loop (1+ i))
-                    (begin
-                      (mkdir dir)
-                      (setenv "HOME" (string-append (getcwd) "/" dir))
-                      (format #t "set HOME to ~s~%" (getenv "HOME")))))))))
-      (add-before 'configure 'delete-lockfiles
-        (lambda _
-          (let ((lock "package-lock.json"))
-            (when (file-exists? lock)
-            (delete-file lock)))))
-      (replace 'configure
-        (lambda* (#:key inputs #:allow-other-keys)
-          (let ((npm (string-append (assoc-ref inputs "node") "/bin/npm")))
-            (invoke npm "--offline"
-                    "--ignore-scripts"
-                    "--install-links"
-                    "--no-audit"
-                    "install"))))
-      (add-before 'install 'repack
-        (lambda _
-          (invoke "tar"
-                  ;; Add options suggested by https://reproducible-builds.org/docs/archives/
-                  "--sort=name"
-                  (string-append "--mtime=@" (getenv "SOURCE_DATE_EPOCH"))
-                  "--owner=0"
-                  "--group=0"
-                  "--numeric-owner"
-                  "-czf" "../package.tgz" ".")))
-      (delete 'build)
-      (replace 'install
-        (lambda* (#:key inputs outputs #:allow-other-keys)
-          (let ((out (assoc-ref outputs "out"))
-                (npm (string-append (assoc-ref inputs "node") "/bin/npm")))
-            (invoke npm "--prefix" #$output
-                    "--global"
-                    "--offline"
-                    "--loglevel" "info"
-                    "--production"
-                    "--install-links"
-                    "install" "../package.tgz"))))))
+;; Stripped-down build phases for JS packages.  Uses esbuild + NODE_PATH instead
+;; of npm, so editing node-build-system does not rebuild node-lts.  Set the
+;; ENTRYPOINT environment variable before the build phase to override the entry
+;; point auto-detected from package.json's "main" field, used when "main" points
+;; to compiled output but the TypeScript source is what esbuild should bundle.
+(define set-node-path-phase
+  #~(lambda* (#:key inputs native-inputs #:allow-other-keys)
+      (setenv "NODE_PATH"
+              (string-join
+               (delq #f
+                     (map (lambda (input)
+                            (let ((dir (string-append (cdr input) "/lib/node_modules")))
+                              (and (file-exists? dir) dir)))
+                          (append (or native-inputs '()) inputs)))
+               ":"))))
 
-(define (delete-dependencies* dependencies)
-  #~(substitute* "package.json"
-      (((string-append " *\"("
-                       (string-join (list #$@dependencies) "|")
-                       ")\": \".*"))
-       "")))
+(define (bootstrap-node-phases)
+  (with-extensions (list guile-json-4)
+    #~(begin
+        (use-modules (json))
+        (modify-phases %standard-phases
+          (replace 'configure #$set-node-path-phase)
+          (replace 'build
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let* ((all-inputs (append (or native-inputs '()) inputs))
+                     (esbuild (search-input-file all-inputs "/bin/esbuild"))
+                     (pkg (call-with-input-file "package.json" json->scm))
+                     (entry (or (getenv "ENTRYPOINT")
+                                (assoc-ref pkg "main")
+                                "index.js")))
+                (invoke esbuild "--bundle" "--platform=node" "--format=cjs"
+                        "--outfile=bundle.js" entry))))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (pkg (call-with-input-file "package.json" json->scm))
+                     (name (assoc-ref pkg "name"))
+                     (dest (string-append out "/lib/node_modules/" name)))
+                (mkdir-p dest)
+                (call-with-output-file (string-append dest "/package.json")
+                  (lambda (port)
+                    (scm->json (assoc-set! pkg "main" "./index.js") port)))
+                (copy-file "bundle.js" (string-append dest "/index.js")))))))))
 
 (define-public node-semver-bootstrap
   (package
@@ -413,12 +399,8 @@ devices.")
     (arguments
      (list
       #:tests? #f
-      #:phases
-      #~(modify-phases #$bootstrap-node-phases
-          (add-before 'configure 'patch-dependencies
-            (lambda _
-              #$(delete-dependencies* (list "tap")))))))
-    (native-inputs (list node-bootstrap))
+      #:phases (bootstrap-node-phases)))
+    (native-inputs (list esbuild))
     (home-page "https://github.com/npm/node-semver")
     (properties '((hidden? . #t)))
     (synopsis "Parses semantic versions strings")
@@ -450,7 +432,7 @@ devices.")
        (list
         #:tests? #f
         #:phases
-        #~(modify-phases #$bootstrap-node-phases
+        #~(modify-phases #$(bootstrap-node-phases)
             (add-after 'unpack 'fix-imports-for-esbuild
               ;; https://github.com/evanw/esbuild/issues/477
               (lambda _
@@ -467,28 +449,11 @@ devices.")
                                "src/code/field.ts"
                                "src/span-allocator.ts")
                   (("\\* as assert") "assert"))))
-            (add-before 'configure 'patch-dependencies
-              (lambda* (#:key inputs #:allow-other-keys)
-                #$(delete-dependencies* (list "@eslint/js"
-                                              "@stylistic/eslint-plugin"
-                                              "@types/eslint__js"
-                                              "@types/node"
-                                              "@typescript-eslint/eslint-plugin"
-                                              "@typescript-eslint/parser"
-                                              "borp"
-                                              "eslint"
-                                              "typescript-eslint"
-                                              "typescript"))))
-            (add-before 'repack 'build
-              (lambda* (#:key inputs #:allow-other-keys)
-                (let ((esbuild (search-input-file inputs "/bin/esbuild")))
-                  (invoke esbuild
-                          "--platform=node"
-                          "--outfile=lib/builder.js"
-                          "--bundle"
-                          "src/builder.ts")))))))
+            (add-before 'build 'set-entrypoint
+              (lambda _
+                (setenv "ENTRYPOINT" "src/builder.ts"))))))
       (native-inputs
-       (list esbuild node-bootstrap))
+       (list esbuild))
       (home-page "https://github.com/nodejs/llparse-builder#readme")
       (properties '((hidden? . #t)))
       (synopsis "Graph builder for consumption by llparse")
@@ -513,7 +478,7 @@ devices.")
      (list
       #:tests? #f
       #:phases
-      #~(modify-phases #$bootstrap-node-phases
+      #~(modify-phases #$(bootstrap-node-phases)
           (add-after 'unpack 'fix-imports-for-esbuild
             ;; https://github.com/evanw/esbuild/issues/477
             (lambda _
@@ -525,43 +490,21 @@ devices.")
                              "src/node/single.ts"
                              "src/node/table-lookup.ts"
                              "src/trie/index.ts")
-                (("\\* as assert") "assert"))))
-          (add-before 'configure 'patch-dependencies
-            (lambda* (#:key inputs #:allow-other-keys)
+                (("\\* as assert") "assert"))
               ;; Drop debug dependency, see
               ;; https://github.com/nodejs/llparse-frontend/pull/8
               (substitute* "src/frontend.ts"
                 (("import \\* as debugAPI from 'debug';")
                  "import { debuglog } from 'node:util';")
                 (("debugAPI")
-                 "debuglog"))
-              #$(delete-dependencies* (list "@types/debug"
-                                            "@types/mocha"
-                                            "@types/node"
-                                            "debug"
-                                            "mocha"
-                                            "ts-node"
-                                            "tslint"
-                                            "typescript"))
-              ;; Resolve dependencies manually.
-              (let* ((builder-path "lib/node_modules/llparse-builder")
-                     (builder (search-input-directory inputs builder-path)))
-                (substitute* "package.json"
-                  (("\"llparse-builder\": \".*")
-                   (format #f "\"llparse-builder\": \"file://~a\""
-                           builder))))))
-          (add-before 'repack 'build
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((esbuild (search-input-file inputs "/bin/esbuild")))
-                (invoke esbuild
-                        "--platform=node"
-                        "--outfile=lib/frontend.js"
-                        "--bundle"
-                        "src/frontend.ts")))))))
+                 "debuglog"))))
+          (add-before 'build 'set-entrypoint
+            (lambda _
+              (setenv "ENTRYPOINT" "src/frontend.ts"))))))
     (inputs
      (list node-llparse-builder-bootstrap))
     (native-inputs
-     (list esbuild node-bootstrap))
+     (list esbuild))
     (home-page "https://github.com/nodejs/llparse-frontend#readme")
     (properties '((hidden? . #t)))
     (synopsis "Frontend for the llparse compiler")
@@ -586,7 +529,7 @@ devices.")
      (list
       #:tests? #f
       #:phases
-      #~(modify-phases #$bootstrap-node-phases
+      #~(modify-phases #$(bootstrap-node-phases)
           (add-after 'unpack 'fix-imports-for-esbuild
             ;; https://github.com/evanw/esbuild/issues/477
             (lambda _
@@ -596,49 +539,21 @@ devices.")
                              "src/implementation/c/compilation.ts"
                              "src/implementation/c/helpers/match-sequence.ts"
                              "src/implementation/c/code/mul-add.ts")
-                (("\\* as assert") "assert"))))
-          (add-before 'configure 'patch-dependencies
-            (lambda* (#:key inputs #:allow-other-keys)
+                (("\\* as assert") "assert"))
               ;; Drop debug dependency, see
               ;; https://github.com/nodejs/llparse/pull/87
               (substitute* "src/compiler/index.ts"
                 (("import \\* as debugAPI from 'debug';")
                  "import { debuglog } from 'node:util';")
                 (("debugAPI")
-                 "debuglog"))
-              #$(delete-dependencies* (list "@stylistic/eslint-plugin"
-                                            "@typescript-eslint/eslint-plugin"
-                                            "@typescript-eslint/parser"
-                                            "@types/debug"
-                                            "@types/mocha"
-                                            "@types/node"
-                                            "debug"
-                                            "esm"
-                                            "eslint"
-                                            "llparse-test-fixture"
-                                            "mocha"
-                                            "ts-node"
-                                            "tslint"
-                                            "typescript"))
-              ;; Resolve dependencies manually.
-              (let* ((frontend-path "lib/node_modules/llparse-frontend")
-                     (frontend (search-input-directory inputs frontend-path)))
-                (substitute* "package.json"
-                  (("\"llparse-frontend\": \".*")
-                   (format #f "\"llparse-frontend\": \"file://~a\""
-                           frontend))))))
-          (add-before 'repack 'build
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((esbuild (search-input-file inputs "/bin/esbuild")))
-                (invoke esbuild
-                       "--platform=node"
-                       "--outfile=lib/api.js"
-                       "--bundle"
-                       "src/api.ts")))))))
+                 "debuglog"))))
+          (add-before 'build 'set-entrypoint
+            (lambda _
+              (setenv "ENTRYPOINT" "src/api.ts"))))))
     (inputs
      (list node-llparse-frontend-bootstrap))
     (native-inputs
-     (list esbuild node-bootstrap))
+     (list esbuild))
     (home-page "https://github.com/nodejs/llparse#readme")
     (properties '((hidden? . #t)))
     (synopsis "Compile incremental parsers to C code")
@@ -923,17 +838,7 @@ parser definition into a C output.")
                                   "/llhttpish-" version ".tgz"))
 	      (sha256
 	       (base32
-                "19zw4issqjhyfvwi7q39zvjhfmx1cq1kf887zp3sv7g7agyvczr8"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Fix imports for esbuild.
-                  ;; https://github.com/evanw/esbuild/issues/477
-                  (substitute* "llhttp/src/llhttp/http.ts"
-                    (("\\* as assert") "assert"))
-                  (substitute* "llhttp/Makefile"
-                    (("node --import tsx bin/generate.ts")
-                     "node bin/generate.js"))))))
+                "19zw4issqjhyfvwi7q39zvjhfmx1cq1kf887zp3sv7g7agyvczr8"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -944,33 +849,10 @@ parser definition into a C output.")
               "PREFIX=")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'chdir-llhttp
-            (lambda _
-              (chdir "llhttp")))
-          (replace 'configure
-            (lambda* (#:key inputs native-inputs #:allow-other-keys)
-              (let ((esbuild (search-input-file (or native-inputs inputs)
-                                                "/bin/esbuild")))
-                (invoke esbuild
-                        "--platform=node"
-                        "--target=node10"
-                        "--outfile=bin/generate.js"
-                        "--bundle"
-                        "bin/generate.ts"))))
-          (add-before 'install 'create-install-directories
-            (lambda _
-              (mkdir #$output)
-              (with-directory-excursion #$output
-                (for-each mkdir (list "lib" "include" "src")))))
-          (add-after 'install 'install-src
-            (lambda _
-              (let ((src-dir (string-append #$output "/src")))
-                (install-file "build/c/llhttp.c" src-dir)
-                (install-file "src/native/api.c" src-dir)
-                (install-file "src/native/http.c" src-dir)))))))
+          (replace 'configure #$set-node-path-phase))))
     (native-inputs
      (list esbuild
-           node-bootstrap
+           quickjs
            node-llparse-bootstrap
            node-semver-bootstrap))
     (home-page "https://codeberg.org/jlicht/llhttpish")
