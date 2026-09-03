@@ -802,7 +802,7 @@ toolchain.  The parts needed in the main Go repository are copied in.")
 (define-public go-golang-org-x-crypto
   (package
     (name "go-golang-org-x-crypto")
-    (version "0.53.0")
+    (version "0.56.0")
     (source
      (origin
        (method git-fetch)
@@ -811,21 +811,11 @@ toolchain.  The parts needed in the main Go repository are copied in.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lycdrpdr2mj0rlbh1c76x5zg6fkxwn4lpphi70yidi4qj07l1fg"))
+        (base32 "1g8ih6bkhwwbfgcyrnsn564cx1531hv7927bz0r1vh9qhsnwi0z4"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - golang.org/x/crypto/argon2/_asm
-            ;; - golang.org/x/crypto/blake2b/_asm/AVX2
-            ;; - golang.org/x/crypto/blake2b/_asm/standard
-            ;; - golang.org/x/crypto/blake2s/_asm
-            ;; - golang.org/x/crypto/chacha20poly1305/_asm
-            ;; - golang.org/x/crypto/internal/poly1305/_asm
-            ;; - golang.org/x/crypto/salsa20/salsa/_asm
-            ;; - golang.org/x/crypto/sha3/_asm
-            ;; - golang.org/x/crypto/x509roots/fallback
+            ;; Submodules with their own go.mod files and packaged separately.
             (for-each delete-file-recursively
                       (list "argon2/_asm"
                             "blake2b/_asm/AVX2"
