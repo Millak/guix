@@ -502,208 +502,214 @@ It aims to support Nintendo DSi and 3DS as well.")
       "11409rai8inia1rjl3kig5rcs4sfmschf9jrb0q22v7pdlaqmxw5"))))
 
 (define-public dolphin-emu
-  ;; Note: make sure to update the above rcheevos commit to match that of the
-  ;; corresponding git submodule in dolphin (see:
-  ;; <https://github.com/dolphin-emu/dolphin/tree/master/Externals/>).
-  (let ((commit "6094cfcf7b8fba733b3116fdf3414d51c1c0e4a4")
-        (revision "1"))
-    (package
-      (name "dolphin-emu")
-      (version (git-version "2606" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/dolphin-emu/dolphin")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "15fcpr3a1y55iwkr1fvcwk6hxmw39fch2a3nnbgy52kdabvm4y0f"))
-         (modules '((guix build utils)
-                    (ice-9 ftw)
-                    (ice-9 regex)
-                    (srfi srfi-26)))
-         (snippet
-          #~(begin
-              (define (delete-all-but directory . preserve)
-                (with-directory-excursion directory
-                  (let* ((pred (negate (cut member <>
-                                            (cons* "." ".." preserve))))
-                         (items (scandir "." pred)))
-                    (for-each (cut delete-file-recursively <>) items))))
+  ;; Note: make sure to update the above rcheevos, cpp-ipc and cpp-optparse
+  ;; submodules to match that of the corresponding git submodule in dolphin
+  ;; (see: <https://github.com/dolphin-emu/dolphin/tree/master/Externals/>).
+  ;;
+  ;; Also make sure libretro-dolphin-emu is updated in tandem, as it inherits
+  ;; from this one.
+  (package
+    (name "dolphin-emu")
+    (version "2606a")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dolphin-emu/dolphin")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d92ld30zcc77lx6kvg4kxdaf7l333lyc17d8s4lbwh0g94x11hn"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (ice-9 regex)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
 
-              ;; Clean up the source from bundled libraries we don't need.
-              (delete-all-but "Externals"
-                              ;; XXX: The build system is currently hard-coded
-                              ;; to rely on these bundled copies.
-                              "Bochs_disasm"
-                              "FatFs"
-                              "FreeSurround"
-                              "cpp-ipc"
-                              "cpp-optparse"
-                              "expr"
-                              "picojson"
-                              "rangeset"
-                              "rcheevos") ;submodule
-              (with-directory-excursion "Externals"
-                (copy-recursively #$dolphin-rcheevos-submodule
-                                  "rcheevos/rcheevos")
-                (copy-recursively #$dolphin-cpp-ipc-submodule
-                                  "cpp-ipc/cpp-ipc")
-                (copy-recursively #$dolphin-cpp-optparse-submodule
-                                  "cpp-optparse/cpp-optparse"))
-              ;; Complete unbundling.
-              (substitute* "CMakeLists.txt"
-                (("add_subdirectory\\(Externals/im(gui|plot))" all)
-                 (string-append "# " all)))
-              (for-each delete-file
-                        (find-files
-                         "."
-                         (lambda (file _)
-                           (and (string-match "\\.(bin|dsy|exe|jar|rar)$" file)
-                                ;; Preserve the important wc24 .bin
-                                ;; configuration *data* files.
-                                (not (member (basename file)
-                                             '("misc.bin"
-                                               "nwc24dl.bin"
-                                               "nwc24fl.bin"
-                                               "nwc24fls.bin")))))))))
-         (patches (search-patches "dolphin-emu-unbundle-watcher.patch"
-                                  "dolphin-emu-unbundle-tinygltf.patch"))))
-      (build-system cmake-build-system)
-      (arguments
-       (list
-        #:configure-flags
-        #~(list
-           "-DUSE_DISCORD_PRESENCE=OFF" ;avoid bundled discord-rpc lib
-           "-DDSPTOOL=ON"
-           ;; The bundled CMakeLists.txt had defined those--but we unbundled it.
-           (string-join
-            (list "-DCMAKE_CXX_FLAGS=-DHAVE_CRC32 "
-                  "-DENABLE_VFS"
-                  "-DENABLE_DIRECTORIES"
-                  ;; Help find the imgui/implot headers.
-                  "-I" (search-input-directory %build-inputs "include/imgui")
-                  "-I" (search-input-directory %build-inputs "include/implot"))))
-        #:modules '((guix build cmake-build-system)
-                    ((guix build gnu-build-system) #:prefix gnu:)
-                    (guix build utils))
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'configure 'generate-fonts&hardcode-libvulkan-path
-              (lambda* (#:key inputs #:allow-other-keys)
-                (let ((fontfile
-                       (search-input-file
-                        inputs "/share/fonts/truetype/wqy-microhei.ttc"))
-                      (libvulkan
-                       (search-input-file inputs "/lib/libvulkan.so")))
-                  (chdir "docs")
-                  (invoke "bash" "-c" "g++ -O2 $(freetype-config \
+            ;; Clean up the source from bundled libraries we don't need.
+            (delete-all-but "Externals"
+                            ;; XXX: The build system is currently hard-coded
+                            ;; to rely on these bundled copies.
+                            "Bochs_disasm"
+                            "FatFs"
+                            "FreeSurround"
+                            "cpp-ipc"
+                            "cpp-optparse"
+                            "expr"
+                            "libretro-common" ;for libretro-dolphin-emu
+                            "picojson"
+                            "rangeset"
+                            "rcheevos") ;submodule
+            (with-directory-excursion "Externals"
+              (copy-recursively #$dolphin-rcheevos-submodule
+                                "rcheevos/rcheevos")
+              (copy-recursively #$dolphin-cpp-ipc-submodule
+                                "cpp-ipc/cpp-ipc")
+              (copy-recursively #$dolphin-cpp-optparse-submodule
+                                "cpp-optparse/cpp-optparse"))
+            ;; Complete unbundling.
+            (substitute* "CMakeLists.txt"
+              (("add_subdirectory\\(Externals/im(gui|plot))" all)
+               (string-append "# " all)))
+            (for-each delete-file
+                      (find-files
+                       "."
+                       (lambda (file _)
+                         (and (string-match "\\.(bin|dsy|exe|jar|rar)$" file)
+                              ;; Preserve the important wc24 .bin
+                              ;; configuration *data* files.
+                              (not (member (basename file)
+                                           '("misc.bin"
+                                             "nwc24dl.bin"
+                                             "nwc24fl.bin"
+                                             "nwc24fls.bin")))))))))
+       (patches (search-patches "dolphin-emu-unbundle-watcher.patch"
+                                "dolphin-emu-unbundle-tinygltf.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "-DUSE_DISCORD_PRESENCE=OFF" ;avoid bundled discord-rpc lib
+         "-DDSPTOOL=ON"
+         ;; The bundled CMakeLists.txt had defined those--but we unbundled it.
+         (string-join
+          (list "-DCMAKE_CXX_FLAGS=-DHAVE_CRC32 "
+                "-DENABLE_VFS"
+                "-DENABLE_DIRECTORIES"
+                ;; Help find the imgui/implot headers.
+                "-I" (search-input-directory %build-inputs "include/imgui")
+                "-I" (search-input-directory %build-inputs "include/implot"))))
+      #:modules '((guix build cmake-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'generate-fonts&hardcode-libvulkan-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((fontfile
+                     (search-input-file
+                      inputs "/share/fonts/truetype/wqy-microhei.ttc"))
+                    (libvulkan
+                     (search-input-file inputs "/lib/libvulkan.so")))
+                (with-directory-excursion "docs"
+                  (invoke "bash" "-c" "g++ -O2 -std=c++11 $(freetype-config \
 --cflags --libs) gc-font-tool.cpp -o gc-font-tool")
                   (invoke "./gc-font-tool" "a" fontfile "font_western.bin")
                   (invoke "./gc-font-tool" "s" fontfile "font_japanese.bin")
-                  (copy-file "font_japanese.bin" "../Data/Sys/GC/font_japanese.bin")
-                  (copy-file "font_western.bin" "../Data/Sys/GC/font_western.bin")
-                  (chdir "..")
-                  (substitute* "Source/Core/VideoBackends/Vulkan/VulkanLoader.cpp"
-                    (("\"vulkan\", 1") (string-append "\"vulkan\""))
-                    (("\"vulkan\"") (string-append "\"" libvulkan "\""))
-                    (("Common::DynamicLibrary::GetVersionedFilename") "")))))
-            (replace 'check
-              (lambda* (#:rest args)
-                (apply (assoc-ref gnu:%standard-phases 'check)
-                       #:test-target "unittests" args)))
-            (add-before 'install 'build-codeloader.bin
-              (lambda _
-                (with-directory-excursion "../source/docs"
-                  ;; The following command-line is adapted from the example in
-                  ;; codehandler.s.
-                  (invoke "powerpc-linux-gnu-gcc" "-mpowerpc" "-mbig"
-                          "codehandler.s" "-nostartfiles" "-nodefaultlibs"
-                          "-nostdlib" "-T" "codehandler.ld"
-                          "-o" "codehandler.bin")
-                  (copy-file "codehandler.bin" "../Data/Sys/codehandler.bin"))))
-            (add-before 'install 'build-dsp_rom.bin
-              (lambda _
-                ;; Ensure dsptool is on PATH.
-                (setenv "PATH" (string-append (getenv "PATH") ":"
-                                              (getcwd) "/Binaries"))
-                (with-directory-excursion "../source"
-                  (invoke "dsptool" "-o" "Data/Sys/GC/dsp_rom.bin"
-                          "docs/DSP/free_dsp_rom/dsp_rom.ds"))))
-            (add-before 'install 'build-dsp_coefs.bin
-              (lambda _
-                (with-directory-excursion "../source"
-                  (invoke "python3" "docs/DSP/free_dsp_rom/generate_coefs.py")
-                  (rename-file "dsp_coef.bin" "Data/Sys/GC/dsp_coef.bin")))))))
-      (native-inputs
-       (list (cross-gcc "powerpc-linux-gnu")
-             gettext-minimal
-             googletest
-             pkg-config
-             python-minimal
-             python-numpy-1))
-      (inputs
-       (list alsa-lib
-             ao
-             bluez
-             bzip2
-             cubeb
-             curl
-             enet
-             eudev
-             ffmpeg
-             fmt
-             font-wqy-microhei
-             freetype
-             glew
-             glib
-             glslang
-             glu
-             gtk+
-             hidapi
-             imgui
-             implot-0
-             libevdev
-             libpng
-             libusb
-             libx11
-             libxi
-             libxrandr
-             lz4
-             lzo
-             mbedtls-lts
-             mgba
-             mesa
-             miniupnpc
-             minizip-ng
-             openal
-             pugixml
-             pulseaudio
-             qtbase
-             qtsvg
-             sdl3
-             sfml
-             soil
-             spirv-cross
-             spng
-             tinygltf
-             vulkan-headers             ;references loader
-             vulkan-loader
-             vulkan-memory-allocator
-             watcher
-             xxhash
-             zlib
-             `(,zstd "lib")))
-      (home-page "https://dolphin-emu.org/")
-      (synopsis "Nintendo Wii and GameCube emulator")
-      (description
-       "Dolphin is an emulator for two Nintendo video game consoles: the
+                  (copy-file "font_japanese.bin"
+                             "../Data/Sys/GC/font_japanese.bin")
+                  (copy-file "font_western.bin"
+                             "../Data/Sys/GC/font_western.bin"))
+                (substitute* "Source/Core/VideoBackends/Vulkan/VulkanLoader.cpp"
+                  (("\"vulkan\", 1") (string-append "\"vulkan\""))
+                  (("\"vulkan\"") (string-append "\"" libvulkan "\""))
+                  (("Common::DynamicLibrary::GetVersionedFilename") "")))))
+          (replace 'check
+            (lambda* (#:rest args)
+              (apply (assoc-ref gnu:%standard-phases 'check)
+                     #:test-target "unittests" args)))
+          (add-before 'install 'build-codeloader.bin
+            (lambda _
+              (with-directory-excursion "../source/docs"
+                ;; The following command-line is adapted from the example in
+                ;; codehandler.s.
+                (invoke "powerpc-linux-gnu-gcc" "-mpowerpc" "-mbig"
+                        "codehandler.s" "-nostartfiles" "-nodefaultlibs"
+                        "-nostdlib" "-T" "codehandler.ld"
+                        "-o" "codehandler.bin")
+                (copy-file "codehandler.bin" "../Data/Sys/codehandler.bin"))))
+          (add-before 'install 'build-dsp_rom.bin
+            (lambda _
+              ;; Ensure dsptool is on PATH.
+              (setenv "PATH" (string-append (getenv "PATH") ":"
+                                            (getcwd) "/Binaries"))
+              (with-directory-excursion "../source"
+                (invoke "dsptool" "-o" "Data/Sys/GC/dsp_rom.bin"
+                        "docs/DSP/free_dsp_rom/dsp_rom.ds"))))
+          (add-before 'install 'build-dsp_coefs.bin
+            (lambda _
+              (with-directory-excursion "../source"
+                (invoke "python3" "docs/DSP/free_dsp_rom/generate_coefs.py")
+                (rename-file "dsp_coef.bin" "Data/Sys/GC/dsp_coef.bin")))))))
+    (native-inputs
+     (list (cross-gcc "powerpc-linux-gnu")
+           gettext-minimal
+           googletest
+           pkg-config
+           python-minimal
+           ;; A more recent numpy cannot currently be used to generate the
+           ;; dsp_coef.bin file (see:
+           ;; <https://bugs.dolphin-emu.org/issues/14127>).
+           python-numpy-1))
+    (inputs
+     (list alsa-lib
+           ao
+           bluez
+           bzip2
+           cubeb
+           curl
+           enet
+           eudev
+           ffmpeg
+           fmt
+           font-wqy-microhei
+           freetype
+           glew
+           glib
+           glslang
+           glu
+           gtk+
+           hidapi
+           imgui
+           implot-0
+           libevdev
+           libpng
+           libusb
+           libx11
+           libxi
+           libxrandr
+           lz4
+           lzo
+           mbedtls-lts
+           mgba
+           mesa
+           miniupnpc
+           minizip-ng
+           openal
+           pugixml
+           pulseaudio
+           qtbase
+           qtsvg
+           sdl3
+           sfml
+           soil
+           spirv-cross
+           spng
+           tinygltf
+           vulkan-headers             ;references loader
+           vulkan-loader
+           vulkan-memory-allocator
+           watcher
+           xxhash
+           zlib
+           `(,zstd "lib")))
+    (home-page "https://dolphin-emu.org/")
+    (synopsis "Nintendo Wii and GameCube emulator")
+    (description
+     "Dolphin is an emulator for two Nintendo video game consoles: the
 GameCube and the Wii.  It provides compatibility with all PC controllers,
 turbo speed, networked multiplayer, and graphical enhancements.")
-      (supported-systems '("x86_64-linux" "aarch64-linux"))
-      ;; dolphin/Data/Sys/GC/font_*.bin: Licensed under ASL2.0.
-      (license (list license:gpl2+ license:asl2.0 license:fdl1.2+)))))
+    (supported-systems '("x86_64-linux" "aarch64-linux"))
+    ;; dolphin/Data/Sys/GC/font_*.bin: Licensed under ASL2.0.
+    (license (list license:gpl2+ license:asl2.0 license:fdl1.2+))))
 
 ;;; XXX: The libretro port is currently based on an old version of dolphin, so
 ;;; its packaging/inputs are lagging behind.
