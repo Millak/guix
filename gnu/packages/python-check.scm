@@ -2778,37 +2778,6 @@ your template is working as expected and takes care of cleaning up after
 running the tests.")
     (license license:expat)))
 
-(define-public python-pytest-csv
-  (package
-    (name "python-pytest-csv")
-    (version "3.0.0")
-    (source
-     (origin
-       (method git-fetch)               ;no tests in PyPI archive
-       (uri (git-reference
-             (url "https://github.com/nicoulaj/pytest-csv")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "17518f2fn5l98lyk9p8r7215c1whi61imzrh6ahrmcksr8w0zz04"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest-8
-           python-pytest-flake8
-           python-pytest-xdist
-           python-setuptools
-           python-tabulate
-           python-wheel))
-    (propagated-inputs
-     (list python-six))
-    (home-page "https://github.com/nicoulaj/pytest-csv")
-    (synopsis "CSV reporter for Pytest")
-    (description "This package provides a plugin for Pytest that enables a
-CSV output mode for Pytest.  It can be enabled via the @option{--csv} option
-it adds to the Pytest command line interface (CLI).")
-    (license license:gpl3+)))
-
 (define-public python-pytest-cython
   (package
     (name "python-pytest-cython")
