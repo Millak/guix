@@ -5921,21 +5921,19 @@ as torchvision, torchtext, and others.")
 (define-public python-readchar
   (package
     (name "python-readchar")
-    (version "4.2.1")
+    (version "4.2.2")
     (source
      (origin
-       ;; There is no tests data in PyPI archive.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/magmax/python-readchar/")
-             (commit (string-append "v" version))))
+              (url "https://github.com/magmax/python-readchar/")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "16ypci664l54ka6ickwkpaa2id14h9h00y7z24z0bv0szld4mrxg"))))
+        (base32 "1m5knal63lg1pmhkkkcpvz1vq6k5rpar4yvq1rafc4q47m2cfaaq"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest-8 python-setuptools))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/magmax/python-readchar")
     (synopsis "Library to easily read single chars and key strokes")
     (description "This package provides a Python library to easily read single
