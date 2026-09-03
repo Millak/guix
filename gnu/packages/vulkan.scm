@@ -277,7 +277,9 @@ translation between LLVM IR and SPIR-V.")
                                  "1")
                         "--rerun-failed"
                         "--output-on-failure")))))))
-    (inputs (list spirv-tools))
+    ;; Propagate spirv-tools as its CMake module is a dependency of glslang's
+    ;; own CMake module.
+    (propagated-inputs (list spirv-tools))
     (native-inputs
      (list pkg-config python-minimal))
     (home-page "https://github.com/KhronosGroup/glslang")
