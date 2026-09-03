@@ -538,7 +538,6 @@ go-datastore}.")
           (add-before 'check 'pre-check
             (lambda* (#:key tests? import-path #:allow-other-keys)
               ;; See: <https://go.dev/blog/synctest>.
-              (setenv "GOEXPERIMENT" "synctest")
               (setenv "GODEBUG" "asynctimerchan=0"))))))
     (native-inputs
      (list go-github-com-ipfs-go-test))
