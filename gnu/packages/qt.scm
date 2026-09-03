@@ -4635,6 +4635,7 @@ contain over 620 classes.")
                   qtdeclarative
                   qtmultimedia
                   qtpositioning
+                  qtscxml
                   qtspeech
                   qtsvg
                   qttools
