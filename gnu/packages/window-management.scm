@@ -1866,7 +1866,7 @@ tiling window manager for X.")
 (define-public evilwm
   (package
     (name "evilwm")
-    (version "1.3.1")
+    (version "1.5")
     (source
      (origin
        (method url-fetch)
@@ -1874,7 +1874,7 @@ tiling window manager for X.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "1jry36qkg2l02v37zvzszxvxm2d8c62z25gks5gdqqjl9ifbpv1j"))))
+         "03vll9bmk41c0a266nn9n2rf4faxlajxvjhx6rlhdmg62cj8a131"))))
     (build-system gnu-build-system)
     (inputs
      (list libx11 libxext libxrandr))
