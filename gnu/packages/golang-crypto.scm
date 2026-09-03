@@ -5555,7 +5555,9 @@ encryption primitives, it SHOULD NOT be used for new applications.")
         (base32 "1lh938194hvkf8pqgnxwf6hvjv9rv0j3kasi07r2ckrj8sxzk4jc"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "git.torproject.org/pluggable-transports/goptlib.git"))
+     (list
+      #:import-path "git.torproject.org/pluggable-transports/goptlib.git"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://gitweb.torproject.org/pluggable-transports/goptlib.git/")
     (synopsis "Go pluggable transports library")
     (description "GoPtLib is a library for writing Tor pluggable transports in

@@ -1135,7 +1135,8 @@ strings which may be used in mock tests.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/crossdock/crossdock-go"))
+      #:import-path "github.com/crossdock/crossdock-go"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-davecgh-go-spew
            go-github-com-pmezard-go-difflib

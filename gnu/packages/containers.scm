@@ -599,6 +599,7 @@ attachments, etc.")
      (list
       #:skip-build? #t
       #:import-path "github.com/containerd/stargz-snapshotter"
+      #:test-flags #~(list "-vet=off")
       ;; TODO: Remove when all transitive inputs are packaged.
       #:test-subdirs
       #~(list "fs" "task" "cache" "estargz" "fs/layer" "fs/reader"

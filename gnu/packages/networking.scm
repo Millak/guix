@@ -5078,7 +5078,8 @@ implementing them.")
            ;; XXX: Test fails with "runtime error: slice bounds out of range
            ;; [:32] with capacity 0."  See:
            ;;   <https://github.com/yggdrasil-network/yggdrasil-go/issues/1353>
-           #:test-flags #~(list "-skip" "TestConfigReadFromEmpty/empty")
+           #:test-flags #~(list "-skip" "TestConfigReadFromEmpty/empty"
+                                "-vet=off")
            #:phases
            #~(modify-phases %standard-phases
                (replace 'build

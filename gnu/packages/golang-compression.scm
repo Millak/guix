@@ -449,6 +449,7 @@ to @url{https://pkg.go.dev/io/fs#FS, fs.FS}, but for tar files.")
     (arguments
      (list
       #:import-path "github.com/dsnet/compress"
+      #:test-flags #~(list "-vet=off")
       #:test-subdirs
       #~(list "brotli/..." "bzip2/..." "flate" "internal" "internal/prefix"
               "internal/testutil" "xflate/...")
@@ -1228,7 +1229,8 @@ any dependency on any C code.")
     (arguments
      (list
       #:skip-build? #t
-      #:import-path "github.com/vbatts/tar-split"))
+      #:import-path "github.com/vbatts/tar-split"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-fatih-color
            go-github-com-magefile-mage

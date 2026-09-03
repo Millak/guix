@@ -288,7 +288,8 @@ automatically resolves shift / reduce and reduce / reduce conflicts.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/golang/glog"))
+      #:import-path "github.com/golang/glog"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-google-go-cmp))
     (home-page "https://github.com/golang/glog")

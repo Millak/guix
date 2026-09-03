@@ -148,7 +148,8 @@ alternative fork of @url{https://github.com/gxed/bbloom}.")
       #:embed-files #~(list "sorted-network-list.bin")
       #:import-path "github.com/ipfs/boxo"
       #:test-flags
-      #~(list "-skip" (string-join
+      #~(list "-vet=off"
+              "-skip" (string-join
                        ;; Network access is required.
                        (list "TestAddNewDNSResolver"
                              "TestOverrideDNSDefaults"

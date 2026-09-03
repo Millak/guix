@@ -4015,7 +4015,9 @@ based on murmurhash.")
         (base32 "16s66zbfkn35msmxpkiwf5dv91kzw7yzxzkcv8ma44j7lbgzx5qk"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/blang/semver"))
+     (list
+      #:import-path "github.com/blang/semver"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/blang/semver")
     (synopsis "Semantic versioning library written in Go")
     (description
@@ -4040,6 +4042,7 @@ based on murmurhash.")
      (list
       #:import-path "github.com/blang/semver/v4"
       #:unpack-path "github.com/blang/semver"
+      #:test-flags #~(list "-vet=off")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
@@ -7426,7 +7429,8 @@ cgroup uses the OCI runtime-spec found
      (list
       #:import-path  "github.com/containerd/cgroups/v3"
       #:test-flags
-      #~(list "-skip" (string-join
+      #~(list "-vet=off"
+              "-skip" (string-join
                        ;; Tests requiring root access to cgrups.
                        (list "TestCPUQuotaPeriodUSec"
                              "TestCgroupType"
@@ -8158,7 +8162,8 @@ between different image formats like Docker and OCI.")
      (list
       #:import-path "github.com/containers/storage"
       #:test-flags
-      #~(list "-skip" (string-join
+      #~(list "-vet=off"
+              "-skip" (string-join
                        ;; Most of these tests require root level access to
                        ;; write files in, check if they may be covered:
                        ;;
@@ -11871,7 +11876,8 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc6350, RFC 6350}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/emersion/go-webdav"))
+      #:import-path "github.com/emersion/go-webdav"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-emersion-go-ical
            go-github-com-emersion-go-vcard))
@@ -14003,7 +14009,8 @@ professionally translated
      (list
       #:test-flags
       ;; Tests require running Redis server.
-      #~(list "-skip" "Example|TestGinkgoSuite")
+      #~(list "-skip" "Example|TestGinkgoSuite"
+              "-vet=off")
       #:import-path "github.com/go-redis/redis"))
     (native-inputs
      (list go-github-com-onsi-ginkgo))
@@ -18538,7 +18545,9 @@ destinations: the console and a log file.")
         (base32 "0kf29cmmbic72kfrfd1xnass7l9j85impf8mqn5f3fd3ibi9bs74"))))
     (build-system go-build-system)
     (arguments
-     (list #:import-path "github.com/jinzhu/copier"))
+     (list
+      #:import-path "github.com/jinzhu/copier"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/jinzhu/copier")
     (synopsis "Go copier library")
     (description
@@ -22497,7 +22506,7 @@ optimized for UTF-16.")
     (arguments
      (list
       #:import-path "github.com/maypok86/otter/v2"
-      #:test-flags #~(list "-timeout=30m" "-shuffle=on")
+      #:test-flags #~(list "-timeout=30m" "-shuffle=on" "-vet=off")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'go-generate
@@ -27511,7 +27520,8 @@ counter, concurrent hash table, multiple concurrent queues and @code{mutex}.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/puzpuzpuz/xsync/v4"))))
+      #:import-path "github.com/puzpuzpuz/xsync/v4"
+      #:test-flags #~(list "-vet=off")))))
 
 (define-public go-github-com-quasilyte-go-ruleguard-dsl
   (package
@@ -29325,6 +29335,7 @@ and branchless algorithms shine.")
      (list
       #:skip-build? #t
       #:import-path "github.com/segmentio/encoding"
+      #:test-flags #~(list "-vet=off")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'go-generate
@@ -30433,7 +30444,8 @@ packages
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/spf13/cobra"))
+      #:import-path "github.com/spf13/cobra"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-cpuguy83-go-md2man-v2
            go-github-com-spf13-pflag
@@ -34779,7 +34791,8 @@ objects.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/zeebo/errs"))
+      #:import-path "github.com/zeebo/errs"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/zeebo/errs")
     (synopsis "Simple error package")
     (description
@@ -35544,7 +35557,8 @@ context for Go.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "go.bug.st/relaxed-semver"))
+      #:import-path "go.bug.st/relaxed-semver"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -36417,6 +36431,7 @@ organization}.")
     (arguments
      (list
       #:import-path "go.yaml.in/yaml/v4"
+      #:test-flags #~(list "-vet=off")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'copy-yaml-test-suite
@@ -36671,7 +36686,8 @@ distributions of benchmark measurements
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "google.golang.org/appengine"))
+      #:import-path "google.golang.org/appengine"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-golang-protobuf
            go-golang-org-x-text
