@@ -9,6 +9,7 @@
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2026 Jelle Licht <jlicht@fsfe.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,6 +32,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
   #:use-module (gnu packages autotools)
@@ -330,3 +332,27 @@ and still be faster than other event loops currently supported in Perl.")
     (description "RPC::EPC::Service enables to connect the other process with
 the S-expression protocol, like the Swank protocol of the SLIME.")
     (license license:perl-license)))
+
+(define-public uvwasi
+  (package
+    (name "uvwasi")
+    (version "0.0.23")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nodejs/uvwasi")
+                    (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32
+                "0xlffyl8j6c16dl5r4s7nrm2v1mxpmy9wf2ispak2i0i6flzzz7s"))
+       (patches (search-patches "uvwasi-fix-assert-side-effects.patch"))))
+    (build-system cmake-build-system)
+    (inputs (list libuv))
+    (home-page "https://github.com/nodejs/uvwasi")
+    (synopsis "WASI syscall API built atop libuv")
+    (description "@code{uvwasi} implements the @acronym{WASI, WebAssembly
+System Interface} system call API, so that WebAssembly runtimes can easily
+implement WASI calls.  Under the hood, @code{uvwasi} leverages @code{libuv}
+where possible for maximum portability.")
+    (license license:expat)))

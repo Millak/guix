@@ -2658,6 +2658,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/unzip-32bit-zipbomb-fix.patch    \
   %D%/packages/patches/ustr-fix-build-with-gcc-5.patch		\
   %D%/packages/patches/util-linux-tests.patch			\
+  %D%/packages/patches/uvwasi-fix-assert-side-effects.patch	\
   %D%/packages/patches/vagrant-bin-vagrant-silence-warning-about-installer.patch	\
   %D%/packages/patches/vagrant-Support-system-installed-plugins.patch	\
   %D%/packages/patches/vagrant-Use-a-private-temporary-dir.patch	\
