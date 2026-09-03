@@ -6602,28 +6602,23 @@ API.  It includes bindings for Python, Ruby, and other languages.")
   (package
     (name "openshot")
     (version "3.5.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/OpenShot/openshot-qt")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0df8sb7k43m580b50c1g430fqbml6vzszaklp9z7767j4gfz1dl8"))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OpenShot/openshot-qt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0df8sb7k43m580b50c1g430fqbml6vzszaklp9z7767j4gfz1dl8"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; TODO: Unbundle jquery and others from src/timeline/media
-           (delete-file-recursively "src/images/fonts") #t))))
+           (delete-file-recursively "src/images/fonts")))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:modules `((guix build pyproject-build-system)
-                  (guix build qt-utils)
-                  (guix build utils))
-      #:imported-modules
-      (cons* '(guix build qt-utils) %pyproject-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
@@ -6632,8 +6627,8 @@ API.  It includes bindings for Python, Ruby, and other languages.")
                 (setenv "QT_QPA_PLATFORM" "offscreen")
                 (invoke "python" "src/tests/test_query.py"))))
           (add-after 'unpack 'patch-font-location
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((font (assoc-ref inputs "font-dejavu")))
+            (lambda _
+              (let ((font #$(this-package-input "font-dejavu")))
                 (substitute* "src/classes/app.py"
                   (("info.IMAGES_PATH")
                    (string-append "\"" font "\""))
@@ -6646,23 +6641,22 @@ API.  It includes bindings for Python, Ruby, and other languages.")
               ;; src/classes/info.py "needs" to create several
               ;; directories in $HOME when loaded during build
               (setenv "HOME" "/tmp"))))))
-    (inputs
-     (list bash-minimal
-           ffmpeg
-           font-dejavu
-           libopenshot
-           python
-           python-pyqt
-           python-pyqtwebengine
-           python-pyzmq
-           python-requests
-           qtsvg-5
-           qtwebengine-5))
+    (inputs (list bash-minimal
+                  ffmpeg
+                  font-dejavu
+                  libopenshot
+                  python-pyqt
+                  python-pyqtwebengine
+                  python-pyzmq
+                  python-requests
+                  qtsvg-5
+                  qtwebengine-5))
     (home-page "https://www.openshot.org/")
     (synopsis "Video editor")
-    (description "OpenShot takes your videos, photos, and music files and
-helps you create the film you have always dreamed of.  Easily add sub-titles,
-transitions, and effects and then export your film to many common formats.")
+    (description
+     "OpenShot takes your videos, photos, and music files and helps you create
+the film you have always dreamed of.  Easily add sub-titles, transitions, and
+effects and then export your film to many common formats.")
     (license license:gpl3+)))
 
 (define-public shotcut
