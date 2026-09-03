@@ -7420,20 +7420,21 @@ RFC 5321.")
 (define-public go-github-com-emicklei-go-restful-v3
   (package
     (name "go-github-com-emicklei-go-restful-v3")
-    (version "3.4.0")
+    (version "3.13.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/emicklei/go-restful")
-             (commit (string-append "v" version))))
+              (url "https://github.com/emicklei/go-restful")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m1y5a6xr6hmdj77afrvyh2llkbhn1166lcrgis654shl8zs9qhz"))))
+        (base32 "04ha5a2m5mjcq41al7s334dv6834qxmb23g64f9cvnb8g55nck56"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/emicklei/go-restful"
+      #:test-flags #~(list "-vet=off")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
