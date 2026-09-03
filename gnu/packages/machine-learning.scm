@@ -582,11 +582,11 @@ CTranslate2, which is a inference engine for transformer models.")
               ;; XXX: The project has no updates since 2023 and probably not
               ;; compatible with current Python science stack (NumPy, SciPy,
               ;; Pandas...).
-              ;; 
+              ;;
               ;; See open issues:
               ;; <https://github.com/pyro-ppl/funsor/issues/609>
               ;; <https://github.com/pyro-ppl/funsor/pull/610>
-              ;; 
+              ;;
               ;; TypeError: argument of type 'property' is not iterable
               "--ignore=test/examples/test_sensor_fusion.py"
               "--ignore=test/torch/test_provenance.py"
@@ -4885,7 +4885,7 @@ different backends")
 (define-public koboldcpp
   (package
     (name "koboldcpp")
-    (version "1.119")
+    (version "1.122")
     (source
      (origin
        (method git-fetch)
@@ -4901,7 +4901,7 @@ different backends")
             (delete-file-recursively "lib")
             (for-each delete-file (find-files "." "\\.(dll|exe|bat)$"))))
        (sha256
-        (base32 "1pwi961xrxq76n8akci9lcd4y3yrksjcxsyzfn8bh6013v75p5aq"))))
+        (base32 "184336v6n3a3l7gvirm230rkknn93i91710wpr6190sdg5rbmmgl"))))
     (build-system gnu-build-system)
     (arguments
      (list
