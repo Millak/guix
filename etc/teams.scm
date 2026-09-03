@@ -1722,6 +1722,11 @@ the \"texlive\" importer."
                        "orahcio")
   go python science)
 
+(define-member (person "Vivien Kraus"
+                       "vivien@planete-kraus.eu"
+                       "vivien")
+  hpc)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
