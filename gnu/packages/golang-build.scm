@@ -1562,7 +1562,7 @@ time.")
 (define-public go-golang-org-x-tools
   (package
     (name "go-golang-org-x-tools")
-    (version "0.46.0")
+    (version "0.49.0")
     (source
      (origin
        (method git-fetch)
@@ -1571,13 +1571,11 @@ time.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "083pzd2i4ir7f3fg1h34q4wgy21jk2d1lik2hb3l5fsjzpw462bq"))
+        (base32 "1d6i9yrbsv517gi2ylpmx9cbxb3caafgl9rfzvr6hdcp1pbq7ppr"))
        (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; Submodules with their own go.mod files and packaged separately:
-           ;;
-           ;; - golang.org/x/tools/gopls
+           ;; Submodules with their own go.mod files and packaged separately.
            (delete-file-recursively "gopls")))))
     (build-system go-build-system)
     (arguments
