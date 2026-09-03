@@ -1038,7 +1038,7 @@ log in.")))
               (string-join
                (map (match-lambda
                       ((alias . value)
-                       (format #f "~a=~s~%" alias value)))
+                       (format #f "alias ~a=~s~%" alias value)))
                     %default-bash-aliases)
                "")))
 

@@ -658,6 +658,10 @@ test \"$PROFILE_D_OK\" = yes")
 set -e -x
 test -f /etc/bashrc.d/bash_completion.sh
 test -f /etc/bashrc.d/aliases.sh
+test \"$(alias ls)\" = \"alias ls='ls -p --color=auto'\"
+test \"$(alias ll)\" = \"alias ll='ls -l'\"
+test \"$(alias grep)\" = \"alias grep='grep --color=auto'\"
+test \"$(alias ip)\" = \"alias ip='ip -color=auto'\"
 test -f /etc/bashrc.d/test_bashrc_d.sh
 test \"$BASHRC_D_OK\" = yes"))
                                 #$marionette))))))))))
