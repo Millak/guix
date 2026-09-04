@@ -6143,6 +6143,51 @@ and multi-selects with a focus on user experience and aesthetics.")
      "This package provides a minimal and colorful Go logging library.")
     (license license:expat)))
 
+(define-public go-github-com-charmbracelet-ultraviolet
+  (package
+    (name "go-github-com-charmbracelet-ultraviolet")
+    (version "0.0.0-20260903151058-ae99b731b8c5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/charmbracelet/ultraviolet")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ban8incalhgyb6vkj77nzq0bizy6rk92ckhhrc0b1vwiparc4lr"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; Submodules with their own go.mod files and packaged separately:
+            (delete-file-recursively "examples")
+            (delete-file-recursively "internal/conformance")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/charmbracelet/ultraviolet"))
+    (propagated-inputs
+     (list go-github-com-charmbracelet-colorprofile
+           go-github-com-charmbracelet-x-ansi
+           go-github-com-charmbracelet-x-term
+           go-github-com-charmbracelet-x-termios
+           go-github-com-charmbracelet-x-windows
+           go-github-com-clipperhouse-uax29-v2
+           go-github-com-lucasb-eyer-go-colorful
+           go-github-com-muesli-cancelreader
+           go-github-com-rivo-uniseg
+           go-github-com-xo-terminfo
+           go-golang-org-x-sync
+           go-golang-org-x-sys))
+    (home-page "https://github.com/charmbracelet/ultraviolet")
+    (synopsis "Terminal user interface primitives for Go")
+    (description
+     "Ultraviolet is a set of primitives for building terminal user interfaces
+in Go.  It provides cell-based rendering, cross-platform input handling, and a
+diffing renderer inspired by ncurses—without the need for @code{terminfo} or
+@code{termcap} databases.")
+    (license license:expat)))
+
 (define-public go-github-com-charmbracelet-x-ansi
   (package
     (name "go-github-com-charmbracelet-x-ansi")
