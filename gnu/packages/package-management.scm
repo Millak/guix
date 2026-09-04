@@ -3539,7 +3539,7 @@ from R7RS, which allows most R7RS code to run on R6RS implementations.")
      (list go-github-com-go-git-go-git-v5
            go-github-com-mgechev-revive
            go-github-com-otiai10-copy
-           go-github-com-rogpeppe-go-internal-1.14
+           go-github-com-rogpeppe-go-internal
            go-github-com-stretchr-testify
            go-github-com-urfave-cli-v3
            go-golang-org-x-sys
