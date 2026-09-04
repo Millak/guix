@@ -209,6 +209,36 @@ zero-page addresses.
     ;; and / or redistribute any part of this software in any fashion."
     (license (license:non-copyleft "LICENSE.txt"))))
 
+(define-public avra
+  (package
+    (name "avra")
+    (version "1.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Ro5bert/avra")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09h8lw7z9xl6vpsnsdvxf1rcx5wg8xaw7dfbgnwjixcrsprs70wf"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (home-page "https://github.com/Ro5bert/avra")
+    (synopsis "Atmel AVR (Arduino) assembler")
+    (description
+     "AVRA is an assembler targeting the Atmel AVR family of microcontrollers,
+best known for their use on the Arduino family of single-board microcontroller
+kits.  It is near-compatible with Atmel's own assembler, AVRASM32.")
+    (license license:gpl2+)))
+
 (define-public nasm
   (package
     (name "nasm")
