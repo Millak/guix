@@ -3623,15 +3623,22 @@ messages with @acronym{DKIM, DomainKeys Identified Mail} (RFC 4871).")
               (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/poolpOrg/filter-rspamd"
+     (list
+       #:import-path "github.com/poolpOrg/filter-rspamd"
+       #:modules '((guix build go-build-system)
+                   (guix build utils)
+                   (srfi srfi-1))
        #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-bootstrap-variables
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             ;; Tell the build system where to install binaries
-             (let* ((out (assoc-ref outputs "out"))
-                    (libexec (string-append out "/libexec/opensmtpd")))
-               (setenv "GOBIN" libexec)))))))
+       #~(modify-phases %standard-phases
+           ;; GOBIN cannot be set for cross compile, and we install
+           ;; binaries to libexec anyway.
+           (add-before 'build 'unset-gobin
+             (lambda _ (setenv "GOBIN" #f)))
+           (add-after 'install 'install-libexec
+             (lambda _
+               (install-file (first (find-files "bin" "^filter-rspamd$"))
+                             (string-append #$output
+                                            "/libexec/opensmtpd")))))))
     (native-inputs
      (list opensmtpd))
     (home-page "https://github.com/poolpOrg/filter-rspamd")
