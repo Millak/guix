@@ -1021,7 +1021,7 @@ compile does not support generics.")
 (define-public go-golang-org-x-image
   (package
     (name "go-golang-org-x-image")
-    (version "0.32.0")
+    (version "0.45.0")
     (source
      (origin
        (method git-fetch)
@@ -1030,7 +1030,7 @@ compile does not support generics.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "174mwxshc6idwihajb05h68ynf63ppfqw5zi6cm5ja08dsfbk43b"))))
+        (base32 "0fyaf0hgqzgav1y5zqwvldkwwszi1wgwwv3ibhlw20d0bxb993m0"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1043,7 +1043,8 @@ compile does not support generics.")
               (delete-file-recursively
                (string-append "src/" import-path "/example")))))))
     (propagated-inputs
-     (list go-golang-org-x-text))
+     (list go-golang-org-x-sys
+           go-golang-org-x-text))
     (home-page "https://pkg.go.dev/golang.org/x/image")
     (synopsis "Supplemental Go image libraries")
     (description
