@@ -5997,7 +5997,7 @@ used to skip the test
 (define-public go-honnef-co-go-tools
   (package
     (name "go-honnef-co-go-tools")
-    (version "0.6.1")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
@@ -6006,20 +6006,58 @@ used to skip the test
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y4xbb91mv1rj7aps5g7hz1mhf5pbdc8yp5bxz6dq5ajlmfqwi3s"))))
+        (base32 "19mm7mc5z0xkjhjz2rzb4wlfpyr5hl653g1f8cjnwbfzz6hnbsf1"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "honnef.co/go/tools"
-      #:unpack-path "honnef.co/go/tools"))
+      #:unpack-path "honnef.co/go/tools"
+      #:test-subdirs
+      ;; XXX: To bypass build faileur in
+      ;; internal/xtools-internal/typesinternal: relocation target
+      ;; golang.org/x/tools/go/types/typeutil.usedIdent not defined.
+      #~(list "analysis/..."
+              "go/..."
+              "internal/passes/buildir"
+              "internal/renameio"
+              "internal/xtools-internal/aliases"
+              "internal/xtools-internal/astutil"
+              "internal/xtools-internal/astutil/free"
+              "internal/xtools-internal/expect"
+              "internal/xtools-internal/gocommand"
+              "internal/xtools-internal/graph"
+              "internal/xtools-internal/packagestest"
+              "internal/xtools-internal/proxydir"
+              "internal/xtools-internal/testfiles"
+              "internal/xtools-internal/typeparams"
+              "internal/xtools-internal/typesinternal/typeindex"
+              "internal/xtools-internal/versions"
+              "lintcmd/..."
+              "pattern"
+              "printf"
+              "quickfix/..."
+              "simple/..."
+              "staticcheck/..."
+              "unused")
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestCalls"
+                             "TestFree124"
+                             "TestOrigin/alias"
+                             "TestOrigin/localalias"
+                             "TestRmdirAfterGoList_Direct/0s"
+                             "TestRmdirAfterGoList_Direct/30s")
+                       "|"))))
     (native-inputs
-     (list go-golang-org-x-tools-go-expect)) ;XXX: Remove with a new release
+     (list go-github-com-google-go-cmp
+           go-golang-org-x-tools-go-expect))
     (propagated-inputs
      (list go-github-com-burntsushi-toml
            go-golang-org-x-exp
            go-golang-org-x-exp-typeparams
-           go-golang-org-x-sys
+           go-golang-org-x-mod
+           go-golang-org-x-sync
            go-golang-org-x-tools))
     (home-page "https://staticcheck.dev/")
     (synopsis "Staticcheck advanced Go linter library")
