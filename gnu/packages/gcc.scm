@@ -813,6 +813,10 @@ Go.  It also includes runtime support libraries for these languages.")
   (append %gcc-15-aarch64-micro-architectures
           '("armv9.6-a")))
 
+(define %gcc-16-riscv64-micro-architectures
+  '("rv64gc" "rva20u64" "rva22u64" "rva23u64" "rva23s64" "rvb23u64"
+    "rvb23s64"))
+
 (define %gcc-16-x86_64-micro-architectures
   (append %gcc-15-x86_64-micro-architectures
           '("arrowlake" "novalake"
@@ -1123,6 +1127,7 @@ It also includes runtime support libraries for these languages.")
         ("armhf" ,@%gcc-13-armhf-micro-architectures)
         ("i686" ,@%gcc-16-x86_64-micro-architectures)
         ("powerpc64le" ,@%gcc-14-ppc64le-micro-architectures)
+        ("riscv64" ,@%gcc-16-riscv64-micro-architectures)
         ("x86_64" ,@%gcc-16-x86_64-micro-architectures))
        ,@(package-properties gcc-11)))))
 
