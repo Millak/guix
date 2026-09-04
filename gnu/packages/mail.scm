@@ -4923,17 +4923,31 @@ on RFC 3501 and original @code{imaplib} module.")
     (version "3.14.3")
     (source
      (origin
+       (file-name (git-file-name name version))
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/rspamd/rspamd")
              (commit version)))
        (sha256
         (base32 "1yh3933ak7qzzys6yzixrs8pmmsh16ny23im958h8rqg0xrq3mcy"))
-       (file-name (git-file-name name version))))
+       (modules '((guix build utils)))
+       (snippet
+        ;; TODO: Unbundle other dependencies.
+        #~(let ((dependencies '("snowball")))
+            (substitute* "cmake/AddDependencySubdirectories.cmake"
+              ((".*add_subdirectory\\(contrib/(snowball).*") ""))
+            (with-directory-excursion "contrib"
+              (for-each delete-file-recursively dependencies))))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags #~(list "-DENABLE_LUAJIT=ON"
-                                     "-DLOCAL_CONFDIR=/etc/rspamd")
+     (list #:configure-flags
+           #~'(#$@(if (%current-target-system)
+                      ;; Do not test for support with try_run(...).
+                      #~("-D_CAN_RUN=FAILED_TO_RUN" ;pthread shared mutex
+                         "-DHAVE_ATOMIC_BUILTINS_EXITCODE=FAILED_TO_RUN")
+                      #~())
+               "-DENABLE_LUAJIT=ON"
+               "-DLOCAL_CONFDIR=/etc/rspamd")
            #:phases
            #~(modify-phases %standard-phases
                (replace 'check
@@ -4949,15 +4963,15 @@ on RFC 3501 and original @code{imaplib} module.")
            libbfd
            libiberty
            libsodium
+           libstemmer
            luajit
            openssl
            pcre2
            perl
-           ragel
            sqlite
            zlib))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config ragel))
     (synopsis "Spam filtering system")
     (description
      "Rspamd is a spam filter that evaluates email messages by a number
