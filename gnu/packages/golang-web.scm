@@ -2267,7 +2267,7 @@ that of BeautifulSoup.")
 (define-public go-github-com-andybalholm-cascadia
   (package
     (name "go-github-com-andybalholm-cascadia")
-    (version "1.3.1")
+    (version "1.3.5")
     (source
      (origin
        (method git-fetch)
@@ -2276,10 +2276,11 @@ that of BeautifulSoup.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zgc9fjkn7d66cnmgnmalr9lrq4ii1spap95pf2x1hln4pflib5s"))))
+        (base32 "1r4ykrd2yaxd6vv80kfj3a3m1mbbhvinrjajsw0qb2xr4mfbwajq"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/andybalholm/cascadia"))
+     (list
+      #:import-path "github.com/andybalholm/cascadia"))
     (native-inputs
      (list go-golang-org-x-net))
     (home-page "https://github.com/andybalholm/cascadia/")
