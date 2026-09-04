@@ -78,35 +78,40 @@
               "-I" (string-append (getcwd) "/source")
               "-I" (search-input-directory %build-inputs "include/freetype2")
               "-g" "-O2" "-fPIC" "-shared"
-              "-lGL" "-lSDL2" "-lglfw"
+              "-lGL" "-lSDL3" "-lfreetype" "-lglfw"
               "-o" "libimgui.so")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'adjust-includes
-            (lambda _
-              (substitute* (find-files "." "(\\.cpp|\\.mm)$")
-                (("#include <SDL")
-                 "#include <SDL2/SDL"))))
           (delete 'configure)
           (replace 'build
-            (lambda* (#:key make-flags #:allow-other-keys)
+            (lambda* (#:key inputs make-flags #:allow-other-keys)
               ;; Build main library.
-              (apply invoke #$(cc-for-target)
-                     (append make-flags
-                             `("imgui.cpp"
-                               "imgui_draw.cpp"
-                               "imgui_tables.cpp"
-                               "imgui_widgets.cpp"
-                               ;; Include the supported backends.
-                               "backends/imgui_impl_glfw.cpp"
-                               ,(if (file-exists? "backends/imgui_impl_sdl2.cpp")
-                                    "backends/imgui_impl_sdl2.cpp"
-                                    "backends/imgui_impl_sdl.cpp")
-                               "backends/imgui_impl_opengl2.cpp"
-                               "backends/imgui_impl_opengl3.cpp"
-                               ;; Include wrappers for C++ standard library (STL) and
-                               ;; fontconfig.
-                               ,@(find-files "misc" "\\.cpp$"))))))
+              (define sdl3?
+                (false-if-exception
+                 (search-input-file inputs "lib/libSDL3.so")))
+              (unless sdl3?
+                (substitute* (find-files "." "(\\.cpp|\\.mm)$")
+                  (("#include <SDL")
+                   "#include <SDL2/SDL")))
+              (define args
+                (append make-flags
+                        `("imgui.cpp"
+                          "imgui_draw.cpp"
+                          "imgui_tables.cpp"
+                          "imgui_widgets.cpp"
+                          ;; Include the supported backends.
+                          "backends/imgui_impl_glfw.cpp"
+                          ,(if sdl3?
+                               "backends/imgui_impl_sdl3.cpp"
+                               "backends/imgui_impl_sdl2.cpp")
+                          "backends/imgui_impl_opengl2.cpp"
+                          "backends/imgui_impl_opengl3.cpp"
+                          ;; Include wrappers for C++ standard library
+                          ;; (STL) and fontconfig.
+                          ,@(find-files "misc" "\\.cpp$"))))
+              (format #t "invoking ~s with arguments: ~s~%"
+                      #$(cc-for-target) args)
+              (apply invoke #$(cc-for-target) args)))
           (replace 'install
             (lambda _
               (let* ((header? (cut string-suffix? ".h" <>))
@@ -135,7 +140,7 @@
                 (copy-recursively "examples"
                                   (string-append #$output:doc
                                                  "/share/imgui/examples"))))))))
-    (inputs (list fontconfig freetype glfw mesa sdl2))
+    (inputs (list fontconfig freetype glfw mesa sdl3))
     (home-page "https://github.com/ocornut/imgui")
     (synopsis "Immediate-mode C++ GUI library with minimal dependencies")
     (description "@code{dear imgui} (also know as ImGui) is a graphical user
@@ -150,6 +155,15 @@ It is particularly suited to integration in game engine tooling, real-time 3D
 applications, full-screen applications, and embedded platforms without
 standard operating system features.")
     (license license:expat)))
+
+(define-public imgui-with-sdl2
+  (package/inherit imgui
+    (name "imgui-with-sdl2")
+    (arguments (substitute-keyword-arguments arguments
+                 ((#:make-flags flags ''())
+                  #~(cons* "-lSDL2" (delete "-lSDL3" #$flags)))))
+    (inputs (modify-inputs inputs
+              (replace "sdl3" sdl2)))))
 
 (define-public imgui-1.91
   (package
