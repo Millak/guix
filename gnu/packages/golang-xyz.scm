@@ -22531,20 +22531,21 @@ the @code{cpan} module @code{Parse::CommandLine}.")
 (define-public go-github-com-mattn-go-sqlite3
   (package
     (name "go-github-com-mattn-go-sqlite3")
-    (version "1.14.34")
+    (version "1.14.50")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mattn/go-sqlite3")
-             (commit (string-append "v" version))))
+              (url "https://github.com/mattn/go-sqlite3")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zp6v3y8hg6b02b3g63x4bmz56yl0d00akvzw6bsfc5l6m3pgiix"))))
+        (base32 "151zwcmmz4bnz4wh3a5117r2a7h1p0ah2l1zv3kyaqa3mxllgh7h"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/mattn/go-sqlite3"))
+      #:import-path "github.com/mattn/go-sqlite3"
+      #:test-flags #~(list "-vet=off")))
     (home-page "https://github.com/mattn/go-sqlite3")
     (synopsis "Sqlite3 driver for Go")
     (description
