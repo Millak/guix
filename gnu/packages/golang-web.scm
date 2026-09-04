@@ -15621,16 +15621,16 @@ creating and managing tunnels with SSH-based connections.")
 (define-public go-github-com-miekg-dns
   (package
     (name "go-github-com-miekg-dns")
-    (version "1.1.72")
+    (version "1.1.73")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/miekg/dns")
-             (commit (string-append "v" version))))
+              (url "https://github.com/miekg/dns")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05b9r955fdyak4l6azzv3z2yccmr2srp73b42yjkx3wha41g154b"))))
+        (base32 "19wklnrd6b706gjbla706djikwayxxbdn6w62kndf4a3vscbads6"))))
     (build-system go-build-system)
     (arguments
      (list
