@@ -4523,16 +4523,16 @@ matching.")
 (define-public git-lfs
   (package
     (name "git-lfs")
-    (version "3.7.1")
+    (version "3.8.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/git-lfs/git-lfs")
-             (commit (string-append "v" version))))
+              (url "https://github.com/git-lfs/git-lfs")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zvawzaqk528rsnrkqif04b806348p4argmpcsg6ppl0gi7295rp"))))
+        (base32 "0c3w392bgiw1s9dcxn5qdb7v3w4lb9i021i7lrlfxdbm90zqhjfh"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -4577,6 +4577,7 @@ matching.")
                    go-github-com-git-lfs-wildmatch-v2
                    go-github-com-golang-groupcache
                    go-github-com-jmhodges-clock
+                   go-github-com-klauspost-compress
                    go-github-com-leonelquinteros-gotext
                    go-github-com-mattn-go-isatty
                    go-github-com-olekukonko-ts
