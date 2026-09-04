@@ -29,6 +29,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages dejagnu)
   #:use-module (gnu packages compiler-tools)
@@ -98,6 +99,9 @@
                   ,@%default-gnu-modules)
       #:configure-flags
       #~(list
+         #$@(if (this-package-input "zlib")
+                '("--with-system-zlib")
+                '())
          #$@(if (and (this-package-input "python-wrapper")
                      (%current-target-system))
                 #~((string-append "--with-python="
@@ -166,6 +170,7 @@
        ("guile" ,guile-3.0)
        ("python-wrapper" ,python-wrapper)
        ("source-highlight" ,source-highlight)
+       ("zlib" ,zlib)
 
        ;; Allow use of XML-formatted syscall information.  This enables 'catch
        ;; syscall' and similar commands.
@@ -218,6 +223,10 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
               (sha256
                (base32
                 "0xnqqv3j463r5rnfmblj3zwhf0l0lyy4bp1zaid8zxn9fignz68l"))))
+    ;; XXX: Remove this when updating gdb/pinned
+    (inputs
+     (modify-inputs inputs
+       (delete "zlib")))
     (properties `((hidden? . #t)))))
 
 (define-public gdb-15
