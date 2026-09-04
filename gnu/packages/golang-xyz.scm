@@ -28195,7 +28195,7 @@ strings.")
 (define-public go-github-com-rogpeppe-go-internal
   (package
     (name "go-github-com-rogpeppe-go-internal")
-    (version "1.12.0")
+    (version "1.16.0")
     (source
      (origin
        (method git-fetch)
@@ -28204,13 +28204,20 @@ strings.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18szjxqrjjvgsvyjbkqs6xw4bvg5nn1myg5hhb5qzwz5xl4wvw5a"))))
+        (base32 "0wz7l8yhdlzsfbc4nss85zpn2rqpanqxmpskckgc49wx8vr43k80"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "github.com/rogpeppe/go-internal"
-      #:test-flags #~(list "-skip" "TestSimple/cover")))
+      #:test-flags
+      #~(list "-vet=off"
+              "-skip" (string-join
+                       ;; Skip tests rquriring  network access.
+                       (list "TestSetup/overlay/overlay"
+                             "TestSimple/cover"
+                             "TestTestwork")
+                       "|"))))
     (propagated-inputs
      (list go-golang-org-x-mod
            go-golang-org-x-sys
@@ -28225,17 +28232,11 @@ implementation.
 
 Included are the following:
 @itemize
-@item dirhash: calculate hashes over directory trees the same way that the Go
-tool does.
 @item goproxytest: a GOPROXY implementation designed for test use.
 @item gotooltest: Use the Go tool inside test scripts (see testscript below)
 @item imports: list of known architectures and OSs, and support for reading
-import import statements.
-@item modfile: read and write go.mod files while preserving formatting and
-comments.
-@item module: module paths and versions.
+import statements.
 @item par: do work in parallel.
-@item semver: semantic version parsing.
 @item testenv: information on the current testing environment.
 @item testscript: script-based testing based on txtar files
 @item txtar: simple text-based file archives for testing.
