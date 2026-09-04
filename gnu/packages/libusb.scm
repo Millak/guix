@@ -934,7 +934,7 @@ HID-Class devices.")
 (define-public hidapitester
   (package
     (name "hidapitester")
-    (version "0.5")
+    (version "0.6")
     (source
      (origin
        (method git-fetch)
@@ -943,11 +943,11 @@ HID-Class devices.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pilnq01yd4974xicy6as330f5b74pnj9mn5gvg1s21f78lxx4is"))))
+        (base32 "07cbxr7xi3p6zj0g2a3wb5cg40fw1igadih70b5pdf52i1m81b2s"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f
+      #:test-target "test"
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
