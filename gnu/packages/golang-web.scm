@@ -27126,27 +27126,34 @@ etc)
 (define-public go-mvdan-cc-xurls-v2
   (package
     (name "go-mvdan-cc-xurls-v2")
-    (version "2.6.0")
+    ;; 2.6.0 (2025-01-02); the latest unreleased changes support Go 1.26 and
+    ;; github.com/rogpeppe/go-internal v1.16.0.
+    (properties '((commit . "4481366c01352229765e4a9a45e58df8eceeaa8b")
+                  (revision . "0")))
+    (version (git-version "2.6.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mvdan/xurls")
-             (commit (string-append "v" version))))
+              (url "https://github.com/mvdan/xurls")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kk4mjizr23zjzsavs21krp13w52p3b8dcm4ahlrr6xkkfn8ry3i"))))
+        (base32 "1adhgmw0s9cmbqkxivph0px7rm2qslvysp80987f7qdfd1wazdcv"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "mvdan.cc/xurls/v2"
-      #:build-flags #~(list (string-append "-ldflags=-X main.version="
-                                           #$version))
-      #:test-flags #~(list "-skip" "TestScript/version")))
+      #:build-flags
+      #~(list (string-append "-ldflags=-X main.version=" #$version))
+      #:test-flags
+      #~(list "-skip" "TestScript/version|TestScript/flags|TestScript/fix")))
+    (native-inputs
+     (list go-github-com-rogpeppe-go-internal))
     (propagated-inputs
-     (list go-github-com-rogpeppe-go-internal-1.14
-           go-golang-org-x-mod
-           go-golang-org-x-sync))
+     (list go-golang-org-x-sync))
     (home-page "https://github.com/mvdan/xurls")
     (synopsis "Extracts URLs from text")
     (description
@@ -28067,8 +28074,7 @@ snowflake-webext}.")))
   (package/inherit go-mvdan-cc-xurls-v2
     (name "xurls")
     (arguments
-     (substitute-keyword-arguments
-         (package-arguments go-mvdan-cc-xurls-v2)
+     (substitute-keyword-arguments arguments
        ((#:tests? _ #t) #f)
        ((#:install-source? _ #t) #f)
        ((#:import-path _ "mvdan.cc/xurls/v2") "mvdan.cc/xurls/cmd/xurls")
