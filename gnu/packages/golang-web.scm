@@ -14179,7 +14179,7 @@ use as a production CA.")
 (define-public go-github-com-libdns-libdns
   (package
     (name "go-github-com-libdns-libdns")
-    (version "0.2.2")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
@@ -14188,7 +14188,7 @@ use as a production CA.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00zx6yij1ac8mhswhsks1nchzgmhbzrsm9hr0faqbmx0vkip78j5"))))
+        (base32 "19a8lfk4v20z3mrm18j6bqpyx4zhm53m53g0dhhkki1xw736hi2k"))))
     (build-system go-build-system)
     (arguments
      (list
