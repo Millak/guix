@@ -4801,16 +4801,16 @@ accessing fields by providing the path to them.")
 (define-public go-github-com-caddyserver-certmagic
   (package
     (name "go-github-com-caddyserver-certmagic")
-    (version "0.22.1")
+    (version "0.25.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/caddyserver/certmagic")
-             (commit (string-append "v" version))))
+              (url "https://github.com/caddyserver/certmagic")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xi3c4b0wcpk75lrpvx254zf49pi2yibxvl3x7hm9j1xhah6fsaa"))))
+        (base32 "08rw2bnrldyvwf2hkqwsdy2l5fg8rcdi1bjyim3c28jxqa7psz5z"))))
     (build-system go-build-system)
     (arguments
      (list
