@@ -161,6 +161,37 @@ core based on dependent typed theory, aiming to bridge the gap between
 interactive and automated theorem proving.")
     (license license:asl2.0)))
 
+(define (lean-package-name package)
+  "Return the name of the Lean package that this Guix PACKAGE represents, as
+specified in its lean-package-name property."
+  (assoc-ref (package-properties package)
+             'lean-package-name))
+
+(define (make-package-overrides.json package)
+  "Return a GEXP for a package-overrides.json file which tells Lake where to
+find the dependencies of PACKAGE."
+  (let* ((packages (map cadr
+                        (package-propagated-inputs package)))
+         (relevant-packages (filter lean-package-name packages)))
+    (mixed-text-file "package-overrides.json"
+                     "{\"version\":\"1.2.0\",\"packages\": ["
+                     #~(string-join (list #$@(map (lambda (package
+                                                            )
+                                                    #~(string-append
+                                                       "{\"name\":\""
+                                                       #$(lean-package-name
+                                                          package)
+                                                       "\",\"type\":\"path\",\"dir\":\""
+                                                       #$package
+                                                       "\",\"inherited\":false}"))
+                                                  relevant-packages)) ",")
+                     "]}")))
+
+(define-syntax-rule (package-overrides.json)
+  "Returns a GEXP for a package-overrides.json file which tells Lake where to
+find the dependencies of the current package."
+  (make-package-overrides.json this-package))
+
 (define-public python-mathlibtools
   (package
     (name "python-mathlibtools")
