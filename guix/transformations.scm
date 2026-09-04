@@ -516,6 +516,15 @@ actual compiler."
                                            version))))))
                      ((string-prefix? "powerpc" psabi)
                       (setenv "GOPPC64" psabi))
+                     ((string-prefix? "rv" psabi)
+                      (setenv "GORISCV64"
+                              (match psabi
+                                ((or "rva23u64" "rva23s64")
+                                 "rva23u64")
+                                ((or "rvb23u64" "rvb23s64" "rva22u64" "rva22s64")
+                                 "rva22u64")
+                                ;; Minimum as of go-1.23.
+                                (_ "rva20u64"))))
                      ((string-prefix? "x86-64" psabi)
                       (setenv "GOAMD64" (string-take-right psabi 2)))
                      (else #t))

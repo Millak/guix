@@ -855,6 +855,9 @@ in the style of communicating sequential processes (@dfn{CSP}).")
           (map (lambda (suffix) (string-append "armv9" suffix "-a"))
                '("" ".1" ".2" ".3" ".4" ".5"))))
 
+(define %go-1.23-riscv64-micro-architectures
+  '("rva20u64" "rva22u64"))
+
 (define-public go-1.24
   (package
     (inherit go-1.22)
@@ -903,7 +906,11 @@ in the style of communicating sequential processes (@dfn{CSP}).")
          ("aarch64" ,@%go-1.23-arm64-micro-architectures)
          ("armhf" ,@%go-1.17-arm-micro-architectures)
          ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures)
+         ("riscv64" ,@%go-1.23-riscv64-micro-architectures)
          ("x86_64" ,@%go-1.18-x86_64-micro-architectures))))))
+
+(define %go-1.25-riscv64-micro-architectures
+  '("rva20u64" "rva22u64" "rva23u64"))
 
 (define-public go-1.25
   (package
@@ -956,8 +963,13 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                           (("TestExecPtrace\\(.*" all)
                            (string-append all "\n        t.Skip(\"golang.org/issue/75720\")\n"))))))
                    '())))))
-      (properties
-       (alist-delete 'hidden? (package-properties go-1.24)))))
+    (properties
+     `((compiler-cpu-architectures
+         ("aarch64" ,@%go-1.23-arm64-micro-architectures)
+         ("armhf" ,@%go-1.17-arm-micro-architectures)
+         ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures)
+         ("riscv64" ,@%go-1.25-riscv64-micro-architectures)
+         ("x86_64" ,@%go-1.18-x86_64-micro-architectures))))))
 
 (define-public go-1.26
   (package
