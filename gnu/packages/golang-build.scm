@@ -910,30 +910,25 @@ does not provide a verifier or system roots pool.")
 (define-public go-golang-org-x-exp
   (package
     (name "go-golang-org-x-exp")
-    ;; Note: Beware, the updater gets this wrong.  Take the latest version
-    ;; string from <https://pkg.go.dev/golang.org/x/exp?tab=versions>, or try
-    ;; "guix import go golang.org/x/exp".
-    (version "0.0.0-20250911091902-df9299821621")
+    (properties '((commit . "e88cd73687aa969fbec16261e6c467ab22a053f2")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260824195058-e88cd73687aa")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://go.googlesource.com/exp")
-             (commit (go-version->git-ref version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jmpq16f2d8i3bnwxa78j384vi5gynfajh34m2nh3vhji3d35777"))
+        (base32 "0krgskxx4c6q7kmpcik2pd1a1nkafabllnz3wx5f23qfrqrmcvpa"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packed as separated
-            ;; packages:
-            ;;
-            ;; - golang.org/x/exp/event
-            ;; - golang.org/x/exp/jsonrpc2
-            ;; - golang.org/x/exp/shiny
-            ;; - golang.org/x/exp/sumbdb
-            ;; - golang.org/x/exp/typeparams
+            ;; Submodules with their own go.mod files and packaged separately.
             (for-each delete-file-recursively
                       (list "event" "jsonrpc2" "shiny" "sumdb" "typeparams"))))))
     (build-system go-build-system)
@@ -966,7 +961,7 @@ does not provide a verifier or system roots pool.")
      (list go-github-com-google-go-cmp
            go-golang-org-x-mod
            go-golang-org-x-tools))
-    (home-page "https://golang.org/x/exp")
+    (home-page "https://go.googlesource.com/exp")
     (synopsis "Experimental and deprecated Go packages")
     (description
      "This subrepository holds experimental and deprecated (in the @code{old}
