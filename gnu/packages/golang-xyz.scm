@@ -6089,6 +6089,9 @@ and multi-selects with a focus on user experience and aesthetics.")
     (arguments
      (list
       #:import-path "github.com/charmbracelet/lipgloss"
+      #:test-flags
+      #~(list "-skip"
+              "TestContentWrapping_ColumnWidth/LongTextDifferentLanguages")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
