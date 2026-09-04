@@ -439,18 +439,24 @@ parser definition into a C output.")
          (add-before 'configure 'set-bootstrap-host-rpath
            (lambda* (#:key native-inputs inputs #:allow-other-keys)
              (let* ((inputs        (or native-inputs inputs))
-                    (c-ares        (assoc-ref inputs "c-ares"))
                     (brotli        (assoc-ref inputs "brotli"))
+                    (c-ares        (assoc-ref inputs "c-ares"))
                     (icu4c         (assoc-ref inputs "icu4c"))
-                    (nghttp2       (assoc-ref inputs "nghttp2"))
-                    (openssl       (assoc-ref inputs "openssl"))
                     (libuv         (assoc-ref inputs "libuv"))
+                    (llhttpish     (assoc-ref inputs "llhttpish"))
+                    (nghttp2       (assoc-ref inputs "nghttp2"))
+                    (nghttp3       (assoc-ref inputs "nghttp3"))
+                    (ngtcp2        (assoc-ref inputs "ngtcp2"))
+                    (openssl       (assoc-ref inputs "openssl"))
+                    (uvwasi        (assoc-ref inputs "uvwasi"))
                     (zlib          (assoc-ref inputs "zlib"))
+                    (zstd          (assoc-ref inputs "zstd"))
                     (host-binaries '("torque"
                                      "bytecode_builtins_list_generator"
                                      "gen-regexp-special-case"
                                      "node_mksnapshot"
-                                     "mksnapshot")))
+                                     "mksnapshot"
+                                     "node_js2c")))
                (substitute* '("node.gyp" "tools/v8_gypfiles/v8.gyp")
                  (((string-append "'target_name': '("
                                   (string-join host-binaries "|")
@@ -458,13 +464,18 @@ parser definition into a C output.")
                    target)
                   (string-append target
                                  "'ldflags': ['-Wl,-rpath="
-                                 c-ares "/lib:"
                                  brotli "/lib:"
+                                 c-ares "/lib:"
                                  icu4c "/lib:"
-                                 nghttp2 "/lib:"
-                                 openssl "/lib:"
                                  libuv "/lib:"
-                                 zlib "/lib"
+                                 llhttpish "/lib:"
+                                 nghttp2 "/lib:"
+                                 nghttp3 "/lib:"
+                                 ngtcp2 "/lib:"
+                                 openssl "/lib:"
+                                 uvwasi "/lib:"
+                                 zlib "/lib:"
+                                 zstd "/lib"
                                  "'],"))))))
          (replace 'configure
            ;; Node's configure script is actually a python script, so we can't
@@ -590,14 +601,18 @@ parser definition into a C output.")
                   "/bin/npx"))))))))
     (native-inputs
      (list ;; Runtime dependencies for binaries used as a bootstrap.
-      c-ares-for-node-lts
       brotli
+      c-ares-for-node-lts
       icu4c-78
       libuv-for-node-lts
+      llhttpish
       `(,nghttp2-for-node-lts "lib")
+      nghttp3
+      ngtcp2
       openssl
+      uvwasi-for-node-lts
       zlib
-                                        ; ngtcp2? nghttp3?
+      `(,zstd "lib")
       ;; Regular build-time dependencies.
       perl
       pkg-config
@@ -610,18 +625,18 @@ parser definition into a C output.")
              (files '("lib/node_modules")))))
     (inputs
      (list bash-minimal
+           brotli
            coreutils
            c-ares-for-node-lts
            icu4c-78
            libuv-for-node-lts
            llhttpish
-           brotli
-           ngtcp2
-           nghttp3
            `(,nghttp2-for-node-lts "lib")
+           nghttp3
+           ngtcp2
            openssl
-           zlib
            uvwasi-for-node-lts
+           zlib
            `(,zstd "lib")))
     (synopsis "Evented I/O for V8 JavaScript")
     (description
