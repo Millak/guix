@@ -18120,7 +18120,7 @@ packetizer and depacketizer.")
 (define-public go-github-com-pion-sctp
   (package
     (name "go-github-com-pion-sctp")
-    (version "1.9.2")
+    (version "1.11.1")
     (source
      (origin
        (method git-fetch)
@@ -18129,11 +18129,12 @@ packetizer and depacketizer.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0byfznyagyq9xp20iy3rd4pnriy727csvkn7jhm60wwr47151rzs"))))
+        (base32 "1n9wcp437f69pcjwzixxrkn801fys9vybaynh8gm2bc9w2b08dmk"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/pion/sctp"))
+      #:import-path "github.com/pion/sctp"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
