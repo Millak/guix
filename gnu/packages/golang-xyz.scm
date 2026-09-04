@@ -35630,7 +35630,7 @@ word on a list of words, if none is found, look for a similar word.")
 (define-public go-go-abhg-dev-log-silog
   (package
     (name "go-go-abhg-dev-log-silog")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method git-fetch)
@@ -35639,7 +35639,7 @@ word on a list of words, if none is found, look for a similar word.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lsms1na9hp23m2b2za3v567wf6c8ywri23b707sbs29rwf25yrr"))))
+        (base32 "18fz0w9fc0k4jj4zhi2h550c5bwxy01abq2akw9qi9if1zp3csmd"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -35647,8 +35647,7 @@ word on a list of words, if none is found, look for a similar word.")
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-charmbracelet-lipgloss
-           go-github-com-muesli-termenv))
+     (list go-charm-land-lipgloss-v2))
     (home-page "https://go.abhg.dev/log/silog")
     (synopsis "Colorful log/slog handler for CLI applications ")
     (description
