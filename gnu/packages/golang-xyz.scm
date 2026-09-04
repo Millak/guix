@@ -434,6 +434,46 @@ for simple and complex terminal applications, either inline, full-window, or a
 mix of both.")
     (license license:expat)))
 
+(define-public go-charm-land-lipgloss-v2
+  (package
+    (name "go-charm-land-lipgloss-v2")
+    (version "2.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/charmbracelet/lipgloss")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19l95pds8ic39wnjhl54knc1k7jlky6dfxblxyksr9fmjmqfa693"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; Submodules with their own go.mod files and packaged separately.
+            (delete-file-recursively "examples")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "charm.land/lipgloss/v2"))
+    (propagated-inputs
+     (list go-github-com-aymanbagabas-go-udiff
+           go-github-com-charmbracelet-colorprofile
+           go-github-com-charmbracelet-ultraviolet
+           go-github-com-charmbracelet-x-ansi
+           go-github-com-charmbracelet-x-exp-golden
+           go-github-com-charmbracelet-x-term
+           go-github-com-clipperhouse-displaywidth
+           go-github-com-lucasb-eyer-go-colorful
+           go-github-com-rivo-uniseg
+           go-golang-org-x-sys))
+    (home-page "https://charm.land/lipgloss")
+    (synopsis "Style definitions for nice terminal layouts")
+    (description
+     "Package lipgloss provides style definitions for nice terminal layouts.
+Built with @acronym{Terminal User Interfaces, TUI}s in mind.")
+    (license license:expat)))
+
 (define-public go-code-cloudfoundry-org-bytefmt
   (package
     (name "go-code-cloudfoundry-org-bytefmt")
