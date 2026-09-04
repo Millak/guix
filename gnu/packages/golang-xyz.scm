@@ -394,6 +394,43 @@ implementation of the kernel-userspace communication protocol, and does not
 use the C library from the project called FUSE.")
     (license (list license:bsd-2 license:bsd-3 license:hpnd))))
 
+(define-public go-charm-land-bubbles-v2
+  (package
+    (name "go-charm-land-bubbles-v2")
+    (version "2.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/charmbracelet/bubbles")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rs3h0zymlh3fxgys3s0kyxw896nb5jfv4b71gsprbi8agg5zwfh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "charm.land/bubbles/v2"))
+    (propagated-inputs
+     (list go-charm-land-bubbletea-v2
+           go-charm-land-lipgloss-v2
+           go-github-com-atotto-clipboard
+           go-github-com-charmbracelet-harmonica
+           go-github-com-charmbracelet-x-ansi
+           go-github-com-charmbracelet-x-exp-golden
+           go-github-com-dustin-go-humanize
+           go-github-com-makenowjust-heredoc
+           go-github-com-mattn-go-runewidth
+           go-github-com-rivo-uniseg
+           go-github-com-sahilm-fuzzy))
+    (home-page "https://charm.land/bubbles")
+    (synopsis "TUI components for Bubble Tea")
+    (description
+     "Package bubbles provides some components for Bubble Tea applications.
+These components are used in production in Glow, Charm and many other
+applications.")
+    (license license:expat)))
+
 (define-public go-charm-land-bubbletea-v2
   (package
     (name "go-charm-land-bubbletea-v2")
