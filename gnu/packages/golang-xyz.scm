@@ -6144,7 +6144,7 @@ and multi-selects with a focus on user experience and aesthetics.")
 (define-public go-github-com-charmbracelet-x-ansi
   (package
     (name "go-github-com-charmbracelet-x-ansi")
-    (version "0.10.2")
+    (version "0.11.8")
     (source
      (origin
        (method git-fetch/lfs)
@@ -6154,7 +6154,7 @@ and multi-selects with a focus on user experience and aesthetics.")
                                            #:subdir "ansi"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nr09574rdrgnsj7c2z11233zljl3gcqax0jb3na6v4ixl7gnhq2"))
+        (base32 "070gjf4f0pgbnwik6bd7cp8lac76xjq7g851n21bd9iq269wchvq"))
        (modules '((guix build utils)))
        (snippet #~(delete-all-but "." "ansi"))))
     (build-system go-build-system)
@@ -6164,9 +6164,10 @@ and multi-selects with a focus on user experience and aesthetics.")
       #:unpack-path "github.com/charmbracelet/x"))
     (propagated-inputs
      (list go-github-com-bits-and-blooms-bitset
+           go-github-com-clipperhouse-displaywidth
+           go-github-com-clipperhouse-uax29-v2
            go-github-com-lucasb-eyer-go-colorful
-           go-github-com-mattn-go-runewidth
-           go-github-com-rivo-uniseg))
+           go-github-com-mattn-go-runewidth))
     (home-page "https://github.com/charmbracelet/x")
     (synopsis "ANSI escape sequence parser and definitions")
     (description
