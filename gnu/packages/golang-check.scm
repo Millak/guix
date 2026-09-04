@@ -6122,16 +6122,21 @@ scanners/lexers/tokenizers.")
 (define-public go-mvdan-cc-unparam
   (package
     (name "go-mvdan-cc-unparam")
-    (version "0.0.0-20251027182757-5beb8c8f8f15")
+    (properties '((commit . "2fa3d841b0c8e173319678a0a49267c7aecf488e")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260823230713-2fa3d841b0c8")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/mvdan/unparam")
-              (commit (go-version->git-ref version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16gk6bb0ahm1qpsdq4ma93yqbv77n354i1gss71ada6i248pc6az"))))
+        (base32 "0kmdxhd07q9riz98kzs3b42r049mnrg5wg9rakmn7i73x8zj4yrm"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -6149,7 +6154,7 @@ scanners/lexers/tokenizers.")
                                 "testdata/script/typealias.txtar"
                                 "testdata/script/usedas.txtar"))))))))
     (native-inputs
-     (list go-github-com-rogpeppe-go-internal-1.14))
+     (list go-github-com-rogpeppe-go-internal))
     (propagated-inputs
      (list go-golang-org-x-tools))
     (home-page "https://mvdan.cc/unparam/")
