@@ -4359,6 +4359,9 @@ tablets.
 (define-public node-types-boolbase
   (node-types "boolbase"))
 
+(define-public node-types-combine-source-map
+  (node-types "combine-source-map"))
+
 (define-public node-types-estree
   (node-types "estree"))
 
