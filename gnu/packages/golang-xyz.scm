@@ -36793,35 +36793,48 @@ their ASCII approximations.")
 (define-public go-golang-org-x-perf
   (package
     (name "go-golang-org-x-perf")
-    (version "0.0.0-20250515181355-8f5f3abfb71a")
+    (properties '((commit . "19be9d8e6c701dc8ccabaad34bf705f773fd398b")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260825160852-19be9d8e6c70")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/perf")
-             (commit (go-version->git-ref version))))
+              (url "https://go.googlesource.com/perf")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01qby8hvyamacndkavij7kk0dp95q3irssj4krpb7ppqwpq4j7l3"))))
+        (base32 "0a1q5v415cpq9ydn38ljnskqxj293viwwlzmjy698hr3pi0rla8a"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
-      #:tests? #f
-      #:import-path "golang.org/x/perf"))
+      #:import-path "golang.org/x/perf"
+      #:test-subdirs
+      ;; XXX: Remove when all inputs are packaged.
+      #~(list "storage" "benchfmt" "benchmath" "benchproc" "benchstat"
+              "benchunit" "storage/db" "storage/app" "analysis/app"
+              "cmd/benchstat" "storage/query" "internal/stats"
+              "storage/benchfmt" "storage/fs/local" "benchproc/internal/parse"
+              "cmd/benchstat/internal/texttab")))
     (propagated-inputs
-     (list ;; go-cloud-google-com-go-storage
+     (list go-cloud-google-com-go-storage
            go-github-com-aclements-go-gg
            go-github-com-aclements-go-moremath
            go-github-com-go-sql-driver-mysql
            go-github-com-google-safehtml
-           ;; go-github-com-googlecloudplatform-cloudsql-proxy
            go-github-com-mattn-go-sqlite3
            go-golang-org-x-net
            go-golang-org-x-oauth2
-           ;; go-gonum-org-v1-plot
-           ;; go-google-golang-org-api
-           go-google-golang-org-appengine))
+           go-google-golang-org-api
+           go-google-golang-org-appengine
+
+           ;; TODO: Complete packaging.
+           ;; go-github-com-googlecloudplatform-cloudsql-proxy
+           #;go-gonum-org-v1-plot))
     (home-page "https://cs.opensource.google/go/x/perf")
     (synopsis "Golang benchmark analysis tools and libraries")
     (description
