@@ -347,7 +347,7 @@ or @code{tar.bz2} formats easily.")
 (define-public go-github-com-containerd-stargz-snapshotter-estargz
   (package
     (name "go-github-com-containerd-stargz-snapshotter-estargz")
-    (version "0.18.0")
+    (version "0.18.2")
     (source
      (origin
        (method git-fetch)
@@ -357,12 +357,13 @@ or @code{tar.bz2} formats easily.")
                                            #:subdir "estargz"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0058acl307d8gkkp0iyd9w290kwixi9362ji48azl5cp7mx4l27f"))))
+        (base32 "06nksi5xpbys6bfqsfm7bax9lxnwynl7y3hw6pcxhv5hckxnb8fp"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/containerd/stargz-snapshotter/estargz"
-      #:unpack-path "github.com/containerd/stargz-snapshotter"))
+      #:unpack-path "github.com/containerd/stargz-snapshotter"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-klauspost-compress
            go-github-com-opencontainers-go-digest
