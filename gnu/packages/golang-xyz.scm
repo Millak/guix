@@ -6268,17 +6268,21 @@ ECMA-48} specs.")
 (define-public go-github-com-charmbracelet-x-exp-golden
   (package
     (name "go-github-com-charmbracelet-x-exp-golden")
-    (version "0.0.0-20241121171228-5bc00623ea2f")
+    (properties '((commit . "6f6ad8b37b0af7e0765bcf38bac6aafaecb9a7d6")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260902165432-6f6ad8b37b0a")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch/lfs)
        (uri (git-reference
-             (url "https://github.com/charmbracelet/x")
-             (commit (go-version->git-ref version
-                                          #:subdir "exp/golden"))))
+              (url "https://github.com/charmbracelet/x")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "016s67690dr3w3an6m24q6f4vrmwpk0qd4akvvh1dzpfyf4khxd4"))))
+        (base32 "0yfp69db4b97c1cb3jhzad9pr1g3x0gkbw1l5havqykvz4gdjhir"))))
     (build-system go-build-system)
     (arguments
      (list
