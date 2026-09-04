@@ -301,9 +301,10 @@ parser definition into a C output.")
                '(begin
                   ;; openssl.cnf is required for build.
                   (for-each delete-file-recursively
-                            (find-files "deps/openssl"
-                                        (lambda (file stat)
-                                          (not (string-contains file "nodejs-openssl.cnf")))))
+                            (find-files
+                             "deps/openssl"
+                             (lambda (file stat)
+                               (not (string-contains file "nodejs-openssl.cnf")))))
                   ;; [temp.names] requires a 'template' when calling a template
                   ;; member via a dependent expression.  This header is compiled
                   ;; for 32-bit targets (V8_TARGET_ARCH_32_BIT), so
@@ -626,7 +627,7 @@ parser definition into a C output.")
     (inputs
      (list bash-minimal
            brotli
-           coreutils
+           coreutils-minimal
            c-ares-for-node-lts
            icu4c-78
            libuv-for-node-lts
