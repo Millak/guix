@@ -4388,6 +4388,10 @@ tablets.
   (node-types "source-map-support"
               #:inputs (delay (list node-source-map))))
 
+(define-public node-types-yargs
+  (node-types "yargs"
+              #:inputs (delay (list node-types-yargs-parser))))
+
 (define-public node-typescript
   (package
     (name "node-typescript")
