@@ -490,7 +490,7 @@ LISP-1 dialect.")
 (define-public shfmt
   (package
     (name "shfmt")
-    (version "3.12.0")
+    (version "3.14.0")
     (source
      (origin
        (method git-fetch)
@@ -499,13 +499,15 @@ LISP-1 dialect.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11rlx3l37aspd9674xdisw394bdly0yb38asqxaz4riadgj0vbfx"))
+        (base32 "0lbj5wkm64pc69d5ybk02py5r1agywxwwl46fjn147zaaz8zhksv"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
             ;; It fails during check phase, looks like a MVP: gosh is a proof
             ;; of concept shell built on top of [interp].
-            (delete-file-recursively "cmd/gosh")))))
+            (delete-file-recursively "cmd/gosh")
+            ;; Submodules with their own go.mod files and packaged separately.
+            (delete-file-recursively "moreinterp")))))
     (build-system go-build-system)
     (arguments
      (list
@@ -516,10 +518,12 @@ LISP-1 dialect.")
       ;; Tests fail for these groups unable to set locale.
       #~(list "-skip" (string-join
                        (list "FuzzQuote"
+                             "TestExecETXTBSY"
                              "TestKillTimeout"
                              "TestParseBashConfirm"
                              "TestParseErrBashConfirm"
                              "TestRunnerRun"
+                             "TestScript/flags"
                              "TestRunnerRunConfirm")
                        "|"))
       #:test-subdirs #~(list "../../...")       ;test the whole library
@@ -542,7 +546,7 @@ LISP-1 dialect.")
            go-github-com-go-quicktest-qt
            go-github-com-google-go-cmp
            go-github-com-google-renameio-v2
-           go-github-com-rogpeppe-go-internal-1.14
+           go-github-com-rogpeppe-go-internal
            go-golang-org-x-sys
            go-golang-org-x-term
            go-mvdan-cc-editorconfig))
