@@ -613,9 +613,10 @@ It aims to support Nintendo DSi and 3DS as well.")
                   (("\"vulkan\"") (string-append "\"" libvulkan "\""))
                   (("Common::DynamicLibrary::GetVersionedFilename") "")))))
           (replace 'check
-            (lambda* (#:rest args)
-              (apply (assoc-ref gnu:%standard-phases 'check)
-                     #:test-target "unittests" args)))
+            (lambda* (#:key tests? #:allow-other-keys #:rest args)
+              (when tests?
+                (apply (assoc-ref gnu:%standard-phases 'check)
+                       #:test-target "unittests" args))))
           (add-before 'install 'build-codeloader.bin
             (lambda _
               (with-directory-excursion "../source/docs"
