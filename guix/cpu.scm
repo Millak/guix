@@ -79,6 +79,11 @@
              (match (string-tokenize str)
                (("CPU" "implementer" ":" vendor)
                 (loop vendor family model flags))))
+            ;; vendor for riscv64
+            ((? (prefix? "mvendorid") str)
+             (match (string-tokenize str)
+               (("mvendorid" ":" vendor)
+                (loop (string->number vendor) family model flags))))
             ;; family for x86_64 and i686
             ((? (prefix? "cpu family") str)
              (match (string-tokenize str)
@@ -96,6 +101,11 @@
              (match (string-tokenize str)
                (("CPU" "part" ":" model)
                 (loop vendor family (string->number (string-drop model 2) 16) flags))))
+            ;; model for riscv64; for -mtune/-mcpu
+            ((? (prefix? "uarch") str)
+             (match (string-tokenize str)
+               (("uarch" ":" model ...)
+                (loop vendor family (list->set (string-split (car model) #\,)) flags))))
             ;; flags for x86_64 and i686
             ((? (prefix? "flags") str)
              (match (string-tokenize str)
@@ -106,6 +116,11 @@
              (match (string-tokenize str)
                (("Features" ":" flags ...)
                 (loop vendor family model (list->set flags)))))
+            ;; flags for riscv64
+            ((? (prefix? "isa") str)
+             (match (string-tokenize str)
+               (("isa" ":" flags ...)
+                (loop vendor family model (list->set (string-split (car flags) #\_))))))
             (_
              (loop vendor family model flags))))))))
 
@@ -306,6 +321,9 @@ corresponds to CPU, a record as returned by 'current-cpu'."
        (_
         "armv8-a"))
      "armv8-a")
+    ("riscv64"
+     ;; TODO: Determine the specific CPU for tuning, like for aarch64.
+     (cpu->micro-architecture-level cpu))
     (architecture
      ;; TODO: More architectures
      architecture)))
@@ -339,6 +357,75 @@ correspond roughly to CPU, a record as returned by 'current-cpu'."
              ("popcnt" "sse3" "sse4_1" "sse4_2" "ssse3" => "x86-64-v2")
              (_ => "x86-64")))
          "x86-64"))
+    ("riscv64"
+     (or (letrec-syntax ((if-flags (syntax-rules (=>)
+                                     ((_)
+                                      #f)
+                                     ((_ (flags => name) rest ...)
+                                      (if (every (lambda (flag)
+                                                   (set-contains? (cpu-flags cpu)
+                                                                  flag))
+                                                 flags)
+                                        name
+                                        (if-flags rest ...))))))
+
+           ;; See the rendered manual about the riscv profiles or the source:
+           ;; https://riscv.github.io/riscv-isa-manual/snapshot/spec/#vol:profiles
+           ;; https://github.com/riscv/riscv-isa-manual/tree/main/src/profiles
+           ;; also in GCC: gcc/config/riscv/riscv-profiles.def
+           ;; The specifications generally build on the previous one.
+           (let* ((rva20u64
+                    '("rv64imafdc" "zicsr" "zicntr" "ziccif" "ziccrse"
+                      "ziccamoa" "zicclsm" "za128rs"))
+                  (rva20s64-additions
+                    '("zifencei" "svbare" "svade" "ssccptr" "sstvecd" "sstvala"))
+                  (rva20s64
+                    (append rva20u64 rva20s64-additions))
+                  (rva22u64
+                    (append (cons* "rv64imafdcb"
+                                   (fold delete rva20u64
+                                         '("rv64imafdc" "za128rs")))
+                            '("za64rs" "zihpm" "zihintpause" "zic64b" "zicbom"
+                              "zicbop" "zicboz" "zfhmin" "zkt")))
+                  (rva22s64-additions
+                    (append rva20s64-additions
+                            '("sscounterenw" "svpbmt" "svinval")))
+                  (rva22s64
+                    (append rva22u64 rva22s64-additions))
+                  (rva23u64
+                    (append (cons* "rv64imafdcbv"
+                                   (delete "rv64imafdcb" rva22u64))
+                            '("zvfhmin" "zvbb" "zvkt" "zihintntl" "zicond"
+                              "zimop" "zcmop" "zcb" "zfa" "zawrs" "supm")))
+                  (rva23s64-additions
+                    (append rva22s64-additions
+                            '("svnapot" "sstc" "sscofpmf" "ssnpm" "ssu64xl"
+                              "sha")))
+                  (rva23s64
+                    (append rva23u64 rva23s64-additions))
+                  (rvb23u64
+                    ;(fold delete rva23u64
+                    ;      '("zvfhmin" "zvbb" "zvkt" "supm"))
+                    (append rva22u64
+                            '("zihintntl" "zicond" "zimop" "zcmop" "zcb" "zfa"
+                              "zawrs")))
+                  (rvb23s64-additions
+                    ;(fold delete rva23s64-additions
+                    ;      '("ssnpm" "sha"))
+                    (append rva22s64-additions
+                            '("svnapot" "sstc" "sscofpmf" "ssu64xl")))
+                  (rvb23s64
+                    (append rvb23u64 rvb23s64-additions)))
+           (if-flags (rva23s64 => "rva23s64")
+                     (rva23u64 => "rva23u64")
+                     (rvb23s64 => "rvb23s64")
+                     (rvb23u64 => "rvb23u64")
+                     (rva22s64 => "rva22s64")
+                     (rva22u64 => "rva22u64")
+                     (rva20s64 => "rva20s64")
+                     (rva20u64 => "rva20u64"))))
+         ;; We have chosen rv64gc/rv64imafdc_zicsr_zifencei as our base.
+         "rv64gc"))
     (architecture
      ;; TODO: More architectures
      architecture)))
