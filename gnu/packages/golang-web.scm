@@ -14116,16 +14116,19 @@ server for rapidly testing HTTP-01, DNS-01 and TLS-ALPN-01 challenge types.")
 (define-public go-github-com-letsencrypt-pebble-v2
   (package
     (name "go-github-com-letsencrypt-pebble-v2")
-    (version "2.8.0")
+    (version "2.10.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/letsencrypt/pebble")
-             (commit (string-append "v" version))))
+              (url "https://github.com/letsencrypt/pebble")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17jqkmgh8hl4cazslnjc90blzncqv5g2h0nf1bihpc26x7an3xqx"))))
+        (base32 "0djvafaidgr66nfymbyz8z7xnfckylx6g5hvxp8xsv51y45mbn9v"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
     (build-system go-build-system)
     (arguments
      (list
