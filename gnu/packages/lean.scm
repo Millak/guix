@@ -6,6 +6,7 @@
 ;;; Copyright © 2023 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2025 Luca Di Sera <disera.luca@gmail.com>
 ;;; Copyright © 2026 Lîm Tsú-thuàn <inbox@dannypsnl.me>
+;;; Copyright © 2026 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -145,6 +146,14 @@
               (for-each delete-file-recursively
                (find-files "../source/src/lake/tests" "^\\.git$"
                            #:directories? #t)))))))
+    (native-search-paths
+     ;; Lean packages are a full build tree for the package, which stores its
+     ;; build results in this directory.  This fits with how Lake expects to
+     ;; find things, so it all works out.  Hopefully upstream improves this
+     ;; over time: https://github.com/leanprover/lean4/issues/5122
+     (list (search-path-specification
+             (variable "LEAN_PATH")
+             (files (list ".lake/build/lib/lean")))))
     (synopsis "Theorem prover and programming language")
     (description
      "Lean is a theorem prover and programming language with a small trusted
