@@ -4365,6 +4365,9 @@ tablets.
 (define-public node-types-convert-source-map
   (node-types "convert-source-map"))
 
+(define-public node-types-css
+  (node-types "css"))
+
 (define-public node-types-estree
   (node-types "estree"))
 
