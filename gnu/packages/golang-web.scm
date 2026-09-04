@@ -8512,7 +8512,7 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
   (package
     (inherit go-github-com-go-jose-go-jose-v3)
     (name "go-github-com-go-jose-go-jose-v4")
-    (version "4.0.5")
+    (version "4.1.5")
     (source
      (origin
        (method git-fetch)
@@ -8521,7 +8521,7 @@ Encryption, JSON Web Signature, and JSON Web Token standards.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1v29i3i364n6y2k7bcm1wc0s5am8p8bbn0nkfhh7v22dzi0z0dn4"))))
+        (base32 "18yvlalh1cy9wspiypa35zwcvv29b4ml8xr2yykqmbr5qgb6sx0s"))))
     (arguments
      (list
       #:import-path "github.com/go-jose/go-jose/v4"))))
