@@ -49110,6 +49110,44 @@ experience for opening and closing folds.")
     (home-page "https://github.com/jamescherti/kirigami.el")
     (license license:gpl3+)))
 
+(define-public emacs-kiwix
+  (let ((commit "f6becc2abf733b9e631c687c431dabd2097d1fba")
+        (revision "0"))
+    (package
+      (name "emacs-kiwix")
+      (version (git-version "1.1.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://repo.or.cz/kiwix.el.git")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ass0n9b9gka26izah8vjmbv8vzi5rdps49wq4gfz8bz3crab00i"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f ; no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-program-references
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "kiwix.el"
+                  ("kiwix-server-command"
+                   (search-input-file inputs "/bin/kiwix-serve"))))))))
+      (inputs (list kiwix-tools))
+      (propagated-inputs (list emacs-request))
+      (home-page "https://repo.or.cz/kiwix.el.git")
+      (synopsis "Kiwix search interface for Emacs")
+      (description "Kiwix.el provides an Emacs interface to the Kiwix server,
+with Org-mode integration.  Offline and autonomous ZIM archives (such as a
+copy of Wikipedia) can be served via the Kiwix server.
+
+The package can launch a local @code{kiwix-serve} daemon or connect to remote
+server.")
+      (license license:gpl3+))))
+
 (define-public emacs-folding
   (let ((commit "443b826c76a4938fc0961298ff0e6c924c723ed7")
         (revision "0"))
