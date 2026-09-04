@@ -168,7 +168,7 @@ can be ignored.")
       #:import-path "filippo.io/age"))
     (native-inputs
      (list go-c2sp-org-cctv-age
-           go-github-com-rogpeppe-go-internal-1.14))
+           go-github-com-rogpeppe-go-internal))
     (propagated-inputs
      (list go-filippo-io-edwards25519
            go-filippo-io-hpke
