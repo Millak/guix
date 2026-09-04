@@ -6458,7 +6458,7 @@ package provides an API for comparing Golden files.")
 (define-public go-github-com-charmbracelet-x-windows
   (package
     (name "go-github-com-charmbracelet-x-windows")
-    (version "0.2.0")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch/lfs)
@@ -6468,7 +6468,7 @@ package provides an API for comparing Golden files.")
                                           #:subdir "windows"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "011kkz7l7fqr3a4sslfipiyl6bq51md1rc7ayj73xm5ayscpm0r2"))))
+        (base32 "0cvpyks5pnfsb7ifm2bdd1jaw50q39bdf7vj4lnhjyw1l62xn5v0"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/charmbracelet/x/windows"
