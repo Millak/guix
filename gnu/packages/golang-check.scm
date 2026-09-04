@@ -690,7 +690,7 @@ application can use the realtime clock while tests can use the mock clock.")
 (define-public go-github-com-bitfield-gotestdox
   (package
     (name "go-github-com-bitfield-gotestdox")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method git-fetch)
@@ -699,14 +699,14 @@ application can use the realtime clock while tests can use the mock clock.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kxj8igjm0wmq9nj3wns7nf95rx70xm327ra68d3ffh300rxg401"))))
+        (base32 "1n9y3l4jga1wfha82pklh2llggf2z2r2v64vaq3xz1vj35mq4cgk"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/bitfield/gotestdox"))
     (native-inputs
      (list go-github-com-google-go-cmp
-           go-github-com-rogpeppe-go-internal-1.14))
+           go-github-com-rogpeppe-go-internal))
     (propagated-inputs
      (list go-github-com-fatih-color
            go-github-com-mattn-go-isatty
