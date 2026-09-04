@@ -1533,22 +1533,26 @@ clean task of each project.")
 (define-public node-has-flag
   (package
     (name "node-has-flag")
-    (version "3.0.0")
-    (source (origin
-      (method git-fetch)
-      (uri (git-reference
-        (url "https://github.com/sindresorhus/has-flag")
-        (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256
-        (base32 "0wz3ihagci5nk2fawbw2pfprnqbhlvxi79ikvrn4kkhh3vfn85q2"))))
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sindresorhus/has-flag")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14acxip075a6wbgzg91valcsb12z82bi90iinam10015cy545qch"))))
     (build-system node-build-system)
-    (arguments (list
+    (arguments
+     (list
       #:tests? #f ; FIXME: Tests require 'xo' and 'ava'.
-      #:phases #~(modify-phases %standard-phases
-        (add-before 'patch-dependencies 'modify-package (lambda _
-          (modify-json
-            (delete-dev-dependencies)))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'patch-dependencies 'modify-package
+            (lambda _
+              (modify-json
+               (delete-dev-dependencies)))))))
     (synopsis "Check if argv has a specific flag")
     (description "Check if argv has a specific flag
 Correctly stops looking after an -- argument terminator.")
