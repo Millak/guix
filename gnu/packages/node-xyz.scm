@@ -216,15 +216,16 @@ HTTP.Agent instances from a function.")
 (define-public node-ansi-styles
   (package
     (name "node-ansi-styles")
-    (version "3.2.1")
-    (source (origin
-      (method git-fetch)
-      (uri (git-reference
-        (url "https://github.com/chalk/ansi-styles")
-        (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256
-        (base32 "15b5ggrhxi2zw5qlhr2di1b7rmfyacrl4rf8j3ndf8iqkv9fijqd"))))
+    (version "4.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chalk/ansi-styles")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16w388iv73g09yjxab61h201imkdw2i0aggjrs9b4kf3dyrjyr27"))))
     (build-system node-build-system)
     (inputs (list
       node-color-convert))
