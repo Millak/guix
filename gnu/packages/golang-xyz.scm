@@ -394,6 +394,46 @@ implementation of the kernel-userspace communication protocol, and does not
 use the C library from the project called FUSE.")
     (license (list license:bsd-2 license:bsd-3 license:hpnd))))
 
+(define-public go-charm-land-bubbletea-v2
+  (package
+    (name "go-charm-land-bubbletea-v2")
+    (version "2.0.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/charmbracelet/bubbletea")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vkbcxz4n0pq5zw9bzyr9agjvqjx415fk4wapqcgis732y6rjcxy"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; Submodules with their own go.mod files and packaged separately.
+            (delete-file-recursively "examples")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "charm.land/bubbletea/v2"))
+    (propagated-inputs
+     (list go-github-com-charmbracelet-colorprofile
+           go-github-com-charmbracelet-ultraviolet
+           go-github-com-charmbracelet-x-ansi
+           go-github-com-charmbracelet-x-exp-golden
+           go-github-com-charmbracelet-x-term
+           go-github-com-lucasb-eyer-go-colorful
+           go-github-com-muesli-cancelreader
+           go-golang-org-x-sys))
+    (home-page "https://charm.land/bubbletea")
+    (synopsis "Powerful little TUI framework")
+    (description
+     "Package tea provides a framework for building rich terminal user
+interfaces based on the paradigms of The Elm Architecture.  It's well-suited
+for simple and complex terminal applications, either inline, full-window, or a
+mix of both.")
+    (license license:expat)))
+
 (define-public go-code-cloudfoundry-org-bytefmt
   (package
     (name "go-code-cloudfoundry-org-bytefmt")
