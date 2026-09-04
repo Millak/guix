@@ -4365,6 +4365,9 @@ tablets.
 (define-public node-types-he
   (node-types "he"))
 
+(define-public node-types-less
+  (node-types "less"))
+
 (define-public node-types-node
   (node-types "node"
               #:inputs (delay (list node-undici-types))))
