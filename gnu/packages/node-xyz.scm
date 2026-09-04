@@ -4362,6 +4362,9 @@ tablets.
 (define-public node-types-combine-source-map
   (node-types "combine-source-map"))
 
+(define-public node-types-convert-source-map
+  (node-types "convert-source-map"))
+
 (define-public node-types-estree
   (node-types "estree"))
 
