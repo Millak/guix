@@ -1215,7 +1215,7 @@ the date of the most recent commit that modified them
 (define-public git-spice
   (package
     (name "git-spice")
-    (version "0.23.0")
+    (version "0.29.2")
     (source
      (origin
        (method git-fetch)
@@ -1224,7 +1224,7 @@ the date of the most recent commit that modified them
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1za4rr1jxjhlbbx0gw8wlsfa9dhw4zrpm43fz8scxlbh126wlid7"))))
+        (base32 "1lzjphbix393gzyhbb4l4sar07rj3hzsikkk7rg4hbvb50d2c67c"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1236,22 +1236,22 @@ the date of the most recent commit that modified them
       #~(list "-skip"
               (string-join
                ;; XXX: Tests failing with various reasons: requiring
-               ;; networking config or write access, or outbound access, check
-               ;; if some of them may be fixed.
+               ;; networking config, git setup, write access, or outbound
+               ;; access, check if some of them may be fixed.
                (list "TestAuthenticationFlow_PAT"
-                     "TestBuildRESTHandler_GETRequest"
-                     "TestBuildRESTHandler_GenericError"
-                     "TestBuildRESTHandler_HTTPError"
-                     "TestBuildRESTHandler_IntegerPath"
-                     "TestBuildRESTHandler_InvalidIntegerPath"
-                     "TestBuildRESTHandler_PathParameters"
-                     "TestDeviceFlowAuthenticator"
+                     "TestBranchTreeSelect_Script"
+                     "TestBuildRESTHandler"
                      "TestDeviceFlowAuthenticator"
                      "TestForkWorkflow"
-                     "TestSelectAuthenticator")
+                     "TestGraphLogPresenter_Present"
+                     "TestIntegrationEditor"
+                     "TestSelect")
                "|"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "GODEBUG" "asynctimerchan=0")))
           (add-after 'install 'install-shell-completion
             (lambda _
               (let* ((out #$output)
@@ -1278,31 +1278,35 @@ the date of the most recent commit that modified them
                   (lambda _ (invoke gs "shell" "completion" "zsh")))))))))
     (native-inputs
      (list git-minimal/pinned ; for tests in testdata/scripts
+           go-charm-land-bubbles-v2
+           go-charm-land-bubbletea-v2
+           go-charm-land-lipgloss-v2
            go-github-com-alecthomas-kong
            go-github-com-buildkite-shellwords
-           go-github-com-charmbracelet-bubbles
-           go-github-com-charmbracelet-bubbletea
-           go-github-com-charmbracelet-lipgloss
+           go-github-com-charmbracelet-colorprofile
+           go-github-com-charmbracelet-x-ansi
+           go-github-com-charmbracelet-x-term
            go-github-com-cli-browser
            go-github-com-creack-pty
            go-github-com-dustin-go-humanize
            go-github-com-hexops-autogold-v2
            go-github-com-mattn-go-isatty
-           go-github-com-rogpeppe-go-internal-1.14
+           go-github-com-rogpeppe-go-internal
            go-github-com-sahilm-fuzzy
            go-github-com-shurcool-githubv4
            go-github-com-stretchr-testify
            go-github-com-tidwall-gjson
            go-github-com-vito-midterm
            go-github-com-zalando-go-keyring
-           go-gitlab-com-gitlab-org-api-client-go
            go-go-abhg-dev-container-ring
            go-go-abhg-dev-io-ioutil
            go-go-abhg-dev-komplete
            go-go-abhg-dev-log-silog
            go-go-abhg-dev-testing-stub
            go-go-uber-org-mock
+           go-golang-org-x-mod
            go-golang-org-x-oauth2
+           go-golang-org-x-sync
            go-gopkg-in-dnaeon-go-vcr-v4
            go-gopkg-in-yaml-v3
            go-pgregory-net-rapid))
