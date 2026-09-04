@@ -5866,7 +5866,7 @@ the source code, it only prints out style mistakes.")
   (package
     (inherit go-gopkg-in-dnaeon-go-vcr-v3)
     (name "go-gopkg-in-dnaeon-go-vcr-v4")
-    (version "4.0.6")
+    (version "4.0.7")
     (source
      (origin
        (method git-fetch)
@@ -5875,11 +5875,12 @@ the source code, it only prints out style mistakes.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10zgsiaibdr6lc8bn5hl2qbqgakg8vmvc3l2v8pc8p2b5hjp3vqp"))))
+        (base32 "1q84gcwsbnk1i6a540rf9220j80wmfm5gpxhgq5bgw6a18lmbvkk"))))
     (arguments
      (list
       #:skip-build? #t
       #:import-path "gopkg.in/dnaeon/go-vcr.v4"
+      #:test-flags #~(list "-vet=off")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'make-test-file-writable
