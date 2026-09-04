@@ -19233,7 +19233,7 @@ implementation in the Go standard library}.")
 (define-public go-github-com-quic-go-quic-go
   (package
     (name "go-github-com-quic-go-quic-go")
-    (version "0.59.0")
+    (version "0.60.0")
     (source
      (origin
        (method git-fetch)
@@ -19242,26 +19242,24 @@ implementation in the Go standard library}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yj7l75my9nv24lv52g3mmj8bc4fhgrxkgrzvlmf79sgqlpjs51c"))
+        (base32 "1q0kqq1k0q33yl299frjn9503wrz8l8diafx9bsr72n401ld63lr"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - test
+            ;; Submodules with their own go.mod files and packaged separately.
             (delete-file-recursively "integrationtests/gomodvendor")))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; Remove when a fresh version is released.
-      ;; See: <https://github.com/quic-go/quic-go/issues/5623>,
-      ;; <https://github.com/quic-go/quic-go/issues/5286>.
-      #:go go-1.24
       #:import-path "github.com/quic-go/quic-go"
       #:test-flags
-      ;; [1] Error: Should NOT be empty, but was []
-      ;; [2] Error: Received unexpected error: Application error 0x0 (remote)
-      #~(list "-skip" "TestHandshakePacketBuffering|TestDrainServerAcceptQueue")
+      #~(list "-shuffle=on"
+              ;; [1] Panic with deadlock.
+              ;; [2] Error: Should NOT be empty, but was []
+              ;; [3] Packets are not equal
+              "-skip" (string-append "TestHTTP3StreamPriority"        ;1
+                                     "|TestHandshakePacketBuffering"  ;2
+                                     "|TestHandshakeWithPacketLoss")) ;3
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
@@ -19278,7 +19276,8 @@ implementation in the Go standard library}.")
               (setenv "GODEBUG" "asynctimerchan=0")
               (setenv "TIMESCALE_FACTOR" "10"))))))
     (native-inputs
-     (list go-github-com-stretchr-testify
+     (list go-github-com-quic-go-go-ossfuzz-seeds
+           go-github-com-stretchr-testify
            go-go-uber-org-mock))
     (propagated-inputs
      (list go-github-com-quic-go-qpack
