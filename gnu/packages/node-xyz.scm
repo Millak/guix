@@ -545,15 +545,16 @@ buffer masking and unmasking operations.")
 (define-public node-color-convert
   (package
     (name "node-color-convert")
-    (version "1.9.3")
-    (source (origin
-      (method git-fetch)
-      (uri (git-reference
-        (url "https://github.com/Qix-/color-convert")
-        (commit version)))
-      (file-name (git-file-name name version))
-      (sha256
-        (base32 "0apgv8p1y9hs5z42wwrwrid62vfkfb89kh3a75s9lvqdbyh04390"))))
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Qix-/color-convert")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gr892xvcn24ph2wdxbh7g5vpv644hjiyhhxh7d1jwzr2wj5zxkk"))))
     (build-system node-build-system)
     (inputs (list
       node-color-name))
