@@ -768,16 +768,16 @@ library.")
 (define-public go-golang-org-x-arch
   (package
     (name "go-golang-org-x-arch")
-    (version "0.22.0")
+    (version "0.30.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/arch")
-             (commit (string-append "v" version))))
+              (url "https://go.googlesource.com/arch")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14s32fhg9wxvnsnl9szfsbhkxyxcql6dg2qwli055wfly8wly26m"))))
+        (base32 "0fy4zd7a7n7fm4ikypdd35yr041hanhmaddv7difn87yccx2bpx1"))))
     (build-system go-build-system)
     (arguments
      (list
