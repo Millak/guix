@@ -4392,6 +4392,9 @@ tablets.
   (node-types "yargs"
               #:inputs (delay (list node-types-yargs-parser))))
 
+(define-public node-types-yargs-parser
+  (node-types "yargs-parser"))
+
 (define-public node-typescript
   (package
     (name "node-typescript")
