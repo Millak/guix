@@ -15519,19 +15519,24 @@ RFC 8737} (tls-alpn-01 challenge), @url{https://tools.ietf.org/html/rfc8823, RFC
   (package
     (inherit go-github-com-mholt-acmez-v2)
     (name "go-github-com-mholt-acmez-v3")
-    (version "3.1.2")
+    (version "3.1.6")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mholt/acmez")
-             (commit (string-append "v" version))))
+              (url "https://github.com/mholt/acmez")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0knh1j9679ma50myh38nj1hpgifk2h3jyn70nnjsmmmm6whysnlg"))))
+        (base32 "04jdv117q5bzcih0jmik26p55gbxnixjc132jqphvhs56xgwc0pp"))))
     (arguments
      (list
-      #:import-path "github.com/mholt/acmez/v3"))))
+      #:import-path "github.com/mholt/acmez/v3"))
+    (native-inputs
+     (list go-code-pfad-fr-check))
+    (propagated-inputs
+     (list go-github-com-letsencrypt-pebble-v2
+           go-golang-org-x-crypto go-golang-org-x-net))))
 
 (define-public go-github-com-microcosm-cc-bluemonday
   (package
