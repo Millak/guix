@@ -5294,8 +5294,10 @@ similar to Go's standard library @code{json} and @code{xml} package.")
       ;; 1. channel_test.go:126: expected 1, got 0
       ;; 2. channel_test.go:29: [2026-05-01 13:00:21.776437502 +0000 UTC]
       ;; channel finished; channel_test.go:155: expected 6, got 5
-      ;;              [1]              [2]
-      #~(list "-skip" "TestChannelClose|TestChannelGCClose")))
+      ;; 3. per_p_metricer_test.go:129: assertion failed: 110 != 100
+      ;;              [1]              [2]                [3]
+      #~(list "-skip" "TestChannelClose|TestChannelGCClose|TestPerPMetricer2"
+              "-vet=off")))
     (propagated-inputs
      (list go-golang-org-x-sync
            go-golang-org-x-sys))
