@@ -270,8 +270,14 @@ for configuration, scripting, and rapid prototyping.")
                                     "luajit-add-riscv64-support.patch"))))))
                         #~())
                  (delete 'configure)) ; no configure script
-             #:make-flags #~(list (string-append "PREFIX="
-                                                 (assoc-ref %outputs "out")))))
+             #:make-flags
+             #~(list #$@(let ((target (%current-target-system)))
+                          (if target
+                              ;; src/Makefile uses e.g. $(CROSS)$(CC),
+                              ;; expecting a hyphen at the end of CROSS.
+                              #~((string-append "CROSS=" #$target "-"))
+                              #~()))
+                     (string-append "PREFIX=" #$output))))
       (native-search-paths
        (list (search-path-specification
                (variable "GUIX_LUA_PATH")
