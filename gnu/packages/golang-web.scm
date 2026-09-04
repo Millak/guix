@@ -4882,7 +4882,7 @@ and reduce scope of key compromise.
 (define-public go-github-com-caddyserver-zerossl
   (package
     (name "go-github-com-caddyserver-zerossl")
-    (version "0.1.3")
+    (version "0.1.5")
     (source
      (origin
        (method git-fetch)
@@ -4891,7 +4891,7 @@ and reduce scope of key compromise.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16mrlmsl3ajdrn2qsdq51k79z3fi8v8j82r2c6xyj7mp2yr979h6"))))
+        (base32 "0hrn29217ljix2ihq22sn26mmjf92qak25r62j9c3jvvfqhcx85d"))))
     (build-system go-build-system)
     (arguments
      (list
