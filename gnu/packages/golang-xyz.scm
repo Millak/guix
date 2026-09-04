@@ -29457,7 +29457,7 @@ compact-output,binary and feature-rich serialization protocol.")
 (define-public go-github-com-sergi-go-diff
   (package
     (name "go-github-com-sergi-go-diff")
-    (version "1.3.1")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -29466,18 +29466,20 @@ compact-output,binary and feature-rich serialization protocol.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c7lsa3kjxbrx66r93d0pvx1408b80ignpi39fzka1qc0ylshw32"))))
+        (base32 "1g1gmw06nihnj34w9kwv2lnb3lssxwlzdrrhghiddxl6g28z84vn"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/sergi/go-diff/diffmatchpatch"
-      #:unpack-path "github.com/sergi/go-diff"))
+      #:skip-build? #t
+      #:import-path "github.com/sergi/go-diff"))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (home-page "https://github.com/sergi/go-diff/")
     (synopsis "Algorithms to perform operations for synchronizing plain text")
-    (description "@code{go-diff} offers algorithms to perform operations required for
+    (description
+     "@code{go-diff} offers algorithms to perform operations required for
 synchronizing plain text:
+
 @itemize
 @item compare two texts and return their differences
 @item perform fuzzy matching of text
