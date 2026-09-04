@@ -35547,8 +35547,8 @@ word on a list of words, if none is found, look for a similar word.")
 
 (define-public go-go-abhg-dev-container-ring
   ;; The latest version 0.3.0 was released in 2023, use the latest commit.
-  (let ((commit "5feb657d1370c86f039188acc39afdc16172de0e")
-        (revision "0"))
+  (let ((commit "779ba7c4d284ad6db5602e5dea617c123bc35cd0")
+        (revision "1"))
     (package
       (name "go-go-abhg-dev-container-ring")
       (version (git-version "0.3.0" revision commit))
@@ -35560,7 +35560,7 @@ word on a list of words, if none is found, look for a similar word.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0fcqxrf7jzf0682fhw6ly10m3b1sm2b7pnmcmbxg7zn7kjw91353"))))
+          (base32 "15smk9lcnxk14amdfh7m23dmjfrkpl8kyfh0m0g8kli40r5p8qcs"))))
       (build-system go-build-system)
       (arguments
        (list
