@@ -573,17 +573,16 @@ buffer masking and unmasking operations.")
 (define-public node-color-name
   (package
     (name "node-color-name")
-    (version "1.1.3")
+    (version "1.1.4")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/colorjs/color-name")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "09rbmj16nfwcwkhrybqxyy66bkrs50vpw6hkdqqb14l3gsyxpr74"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/colorjs/color-name")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m9paib6kj7hy49aapv2h0mi8a77r0rqdyj8xnp34lkkwpz7qasi"))))
     (build-system node-build-system)
     (home-page "https://github.com/colorjs/color-name")
     (synopsis "JSON with CSS color names")
