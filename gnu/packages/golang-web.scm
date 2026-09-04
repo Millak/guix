@@ -7026,16 +7026,16 @@ standard @code{net/http} package.")
 (define-public go-github-com-elazarl-goproxy
   (package
     (name "go-github-com-elazarl-goproxy")
-    (version "0.0.0-20241221210044-9faedc2f9e9f")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/elazarl/goproxy")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/elazarl/goproxy")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j3v0y18igr3wy9vbwyg19fzy12jc41kmpfcz2jh1dnk6kxn2n67"))))
+        (base32 "03iarcwm7jbci187in9ylzw5drfmcb0i3njiq7v1sbglyym5sdii"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -7043,13 +7043,19 @@ standard @code{net/http} package.")
       #:test-flags
       #~(list "-skip" (string-join
                        ;; Networking or curl are required.
-                       (list "TestCurlMinusP"
-                             "TestSimpleHttpRequest"
+                       (list "TestBasicAuthWithCurl"
                              "TestBasicConnectAuthWithCurl"
-                             "TestBasicAuthWithCurl"
                              "TestConstantImageHandler"
+                             "TestCurlMinusP"
+                             "TestHasGoproxyCA"
                              "TestImageHandler"
-                             "TestReplaceImage")
+                             "TestMitmHTTP2ALPN"
+                             "TestMitmProxyOverHTTP2"
+                             "TestProxyWithCertStorage"
+                             "TestReplaceImage"
+                             "TestSignerRsaTls"
+                             "TestSimpleHttpRequest"
+                             "TestSignerRsaX509")
                        "|"))
       #:phases
       #~(modify-phases %standard-phases
@@ -7057,8 +7063,11 @@ standard @code{net/http} package.")
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
                 (delete-file-recursively "examples")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-golang-org-x-net))
+     (list go-github-com-coder-websocket
+           go-golang-org-x-net))
     (home-page "https://github.com/elazarl/goproxy")
     (synopsis "HTTP proxy library for Go")
     (description
