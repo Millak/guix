@@ -20,6 +20,7 @@
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Reza Housseini <reza@housseini.me>
+;;; Copyright © 2026 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -658,6 +659,30 @@ debug information.
 @item Compatible with C99 and C++.
 @item Covered with unit tests.
 @end itemize")))
+
+(define-public massivethreads
+  (package
+    (name "massivethreads")
+    (version "1.02")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/massivethreads/massivethreads")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bhl577jg4ss0j757711mw596j5x7kjs4znmfphw8pfdlz1sh9gp"))))
+    (build-system gnu-build-system)
+    (home-page
+     "https://www.eidos.ic.i.u-tokyo.ac.jp/en/contents/research/massivethreads")
+    (synopsis "Lightweight thread library")
+    (description
+     "MassiveThreads is a thread library that can spawn threads two orders of
+magnitude faster than native operating system threads.  It provides three APIs
+to use: native intefrace, pthread-compatible interface, and TBB-like
+interface.")
+    (license license:bsd-2)))
 
 (define-public psimd
   ;; There is currently no tag in this repo.
