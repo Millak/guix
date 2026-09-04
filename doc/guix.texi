@@ -9991,6 +9991,38 @@ This is useful to ensure that a package does not erroneously keep a
 reference to some of it build-time inputs, in cases where doing so
 would, for example, unnecessarily increase its size (@pxref{Invoking
 guix size}).
+
+@item #:modules
+This argument specifies the list of modules in scope for build-side
+code.  This is required because Guile @emph{does not} support the usage
+of @code{use-modules} in non-top-level forms.
+
+Users that need to import additional modules in build-side code, for
+example in a phase (see above), @emph{must} rely on the @code{#:modules}
+argument instead.
+
+For example, for a package where @code{ice-9 match} is needed on the
+build side, one could write:
+
+@lisp
+#:modules `((ice-9 match) ,@@%default-gnu-modules)
+@end lisp
+
+@item #:imported-modules
+This argument lists modules to be imported on the build side; it is
+equivalent to @code{with-imported-modules} (@pxref{G-Expressions}).
+This is required for modules not provided by Guile.  For instance, users
+@emph{can} use modules from @code{ice-9} or SRFI libraries that are
+provided along the @code{guile} package whilst to use modules from a
+library or another build system, one should add them to this list.
+
+For example, to combine modules from the @code{cargo-build-system} with
+modules from the @code{meson-build-system}, one could write:
+
+@lisp
+#:imported-modules `(,@@%meson-build-system-modules
+                     ,@@%cargo-build-system-modules)
+@end lisp
 @end table
 
 Most other build systems support these keyword arguments.
