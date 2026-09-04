@@ -38396,16 +38396,16 @@ files, as defined in https://editorconfig.org/.")
 (define-public go-mvdan-cc-gofumpt
   (package
     (name "go-mvdan-cc-gofumpt")
-    (version "0.9.2")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mvdan/gofumpt")
-             (commit (string-append "v" version))))
+              (url "https://github.com/mvdan/gofumpt")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l93hl2k10hjzzxqn9lrnc1cdf1cj57zhsgnhqy6vaa7hbqs02ly"))))
+        (base32 "156yx6kb1j2f29g8sz7knjbd4pa0znw7js38xw56g0rk73vricf9"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -38433,11 +38433,10 @@ files, as defined in https://editorconfig.org/.")
                    (format #f "const fallbackVersion = ~s~%"
                            (string-append #$version " (GNU Guix)"))))))))))
     (native-inputs
-     (list go-github-com-go-quicktest-qt))
+     (list go-github-com-go-quicktest-qt
+           go-github-com-rogpeppe-go-internal))
     (propagated-inputs
-     (list go-github-com-google-go-cmp
-           go-github-com-rogpeppe-go-internal-1.14
-           go-golang-org-x-mod
+     (list go-golang-org-x-mod
            go-golang-org-x-sync
            go-golang-org-x-sys
            go-golang-org-x-tools))
