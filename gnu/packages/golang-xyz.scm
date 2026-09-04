@@ -14479,33 +14479,30 @@ to use CSV files in Golang.")
 (define-public go-github-com-goccy-go-yaml
   (package
     (name "go-github-com-goccy-go-yaml")
-    (version "1.18.0")
+    (version "1.19.2")
     (home-page "https://github.com/goccy/go-yaml")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url home-page)
-             (commit (string-append "v" version))))
+              (url home-page)
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0abvpywscsi503nq5a6z1jxhvvhk5gc366nk6xdlslp0gdh4sfhq"))))
+        (base32 "016bidwq02w0d22g38xp1j1m8fpgsgcc1kh9xakm8x0h69am0fv4"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; Submodules with their own go.mod files and packaged separately.
+            (for-each delete-file-recursively
+                      (list "benchmarks"
+                            "cmd/ycat"
+                            "docs/playground"))))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/goccy/go-yaml"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-benchmarks
-            (lambda* (#:key import-path #:allow-other-keys)
-              (delete-file-recursively
-               (string-append "src/" import-path "/benchmarks")))))))
-    (native-inputs
-     (list go-github-com-go-playground-validator-v10
-           go-github-com-google-go-cmp))
-    (propagated-inputs
-     (list go-github-com-fatih-color
-           go-golang-org-x-xerrors))
+      #:test-flags #~(list "-vet=off")))
     (synopsis "YAML support for the Go language")
     (description
      "This package provides features beyond the
