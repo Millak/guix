@@ -5311,7 +5311,7 @@ offerings such as Boost, Better std, Cloud tools.")
 (define-public go-github-com-bytedance-sonic
   (package
     (name "go-github-com-bytedance-sonic")
-    (version "1.15.1")
+    (version "1.15.3")
     (source
      (origin
        (method git-fetch)
@@ -5320,16 +5320,11 @@ offerings such as Boost, Better std, Cloud tools.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00830kk5rkbsgj3ygfh79mx79a4gj36mfr2par57nf97aqgazkj3"))
+        (base32 "06ish7g9bvzzm6a4asx9lym1w8lw7zlgx1kn32y671m04p373z2m"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - github.com/bytedance/sonic/external_jsonlib_test
-            ;; - github.com/bytedance/sonic/fuzz
-            ;; - github.com/bytedance/sonic/generic_test
-            ;; - github.com/bytedance/sonic/loader
+            ;; Submodules with their own go.mod files and packaged separately.
             (for-each delete-file-recursively
                       (list "external_jsonlib_test"
                             "fuzz"
