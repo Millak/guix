@@ -567,8 +567,11 @@ which takes version as an input."
                         pure-version)
            (git->origin vcs-repo-url
                         (if subdir
-                            (peekable-lambda (version subdir)
-                              (go-version->git-ref version #:subdir subdir))
+                            (let ((proc (peekable-lambda (version subdir)
+                                        (go-version->git-ref version #:subdir subdir))))
+                              (set-procedure-property! proc 'body
+                                       `(go-version->git-ref version #:subdir ,subdir))
+                              proc)
                             (peekable-lambda (version subdir)
                               (go-version->git-ref version)))
                         pure-version
