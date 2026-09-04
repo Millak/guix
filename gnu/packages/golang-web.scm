@@ -14090,16 +14090,16 @@ for checking RSA and ECDSA public keys for common weaknesses.")
 (define-public go-github-com-letsencrypt-challtestsrv
   (package
     (name "go-github-com-letsencrypt-challtestsrv")
-    (version "1.3.3")
+    (version "1.4.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/letsencrypt/challtestsrv")
-             (commit (string-append "v" version))))
+              (url "https://github.com/letsencrypt/challtestsrv")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03g5bvifxijhg9kw4qrs3x3h48m6q6s9a14w7172s1mwshmyr0wi"))))
+        (base32 "032pngy0k2rxni4z8zg2nxmgbr1j152j33019xqc2jy79kh85l0m"))))
     (build-system go-build-system)
     (arguments
      (list
