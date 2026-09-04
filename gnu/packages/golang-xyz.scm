@@ -33417,16 +33417,21 @@ performance, that is between 25 to 50x time faster than native one.")
 (define-public go-github-com-vito-midterm
   (package
     (name "go-github-com-vito-midterm")
-    (version "0.1.4")
+    (version "0.2.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/vito/midterm")
-             (commit (string-append "v" version))))
+              (url "https://github.com/vito/midterm")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bvgw84750xfpm89hrab7pzfv1d5dy94igiqwzk5ivy4yca90ipw"))))
+        (base32 "064pxfb5nrg8rf729jsr84f81c72jc9rhshx01jrayli2f0f0cf7"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately.
+            (delete-file-recursively "ghostest")))))
     (build-system go-build-system)
     (arguments
      (list
@@ -33436,6 +33441,8 @@ performance, that is between 25 to 50x time faster than native one.")
     (propagated-inputs
      (list go-github-com-charmbracelet-bubbletea
            go-github-com-creack-pty
+           go-github-com-danielgatis-go-ansicode
+           go-github-com-lucasb-eyer-go-colorful
            go-github-com-muesli-termenv
            go-github-com-sebdah-goldie-v2
            go-golang-org-x-term))
