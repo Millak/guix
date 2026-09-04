@@ -652,7 +652,7 @@ an internal library for both Prometheus and Open Telemetry,")
 (define-public go-github-com-prometheus-procfs
   (package
     (name "go-github-com-prometheus-procfs")
-    (version "0.19.2")
+    (version "0.22.0")
     (source
      (origin
        (method git-fetch)
@@ -661,7 +661,7 @@ an internal library for both Prometheus and Open Telemetry,")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1szpgj5w4bbrrjy7whpmaz0l05zkrzscg6nwkph8fajfq78aalvg"))))
+        (base32 "1xl63lxmndy1nhqrk27nynr8dzhkl1l3pkyvcgbn4man4micxm66"))))
     (build-system go-build-system)
     (arguments
      (list
