@@ -712,97 +712,41 @@ turbo speed, networked multiplayer, and graphical enhancements.")
     ;; dolphin/Data/Sys/GC/font_*.bin: Licensed under ASL2.0.
     (license (list license:gpl2+ license:asl2.0 license:fdl1.2+))))
 
-;;; XXX: The libretro port is currently based on an old version of dolphin, so
-;;; its packaging/inputs are lagging behind.
 (define-public libretro-dolphin-emu
-  ;; There are no tag or release; use the latest commit.
-  (let ((commit "a09f78f735f0d2184f64ba5b134abe98ee99c65f")
-        (revision "1"))
+  ;; Use the latest commit as the last release, 2606, is missing build system
+  ;; fixes.
+  (let ((commit "e1e6d25fa1392b7d1bc05bf800c71b807a2bd2e0")
+        (revision "0"))
     (package
       (inherit dolphin-emu)
       (name "libretro-dolphin-emu")
-      (version (git-version "5.0" revision commit))
+      (version (git-version "2606" revision commit))
       (source
        (origin
          (inherit (package-source dolphin-emu))
-         (method git-fetch)
          (uri (git-reference
                 (url "https://github.com/libretro/dolphin")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "15vv3kz1vcsk53m4b19ckx9xx9cx8l0lgpzalpy625iv7qvdcj9m"))
-         (modules '((guix build utils)
-                    (ice-9 ftw)
-                    (ice-9 regex)
-                    (srfi srfi-26)))
-         (snippet
-          #~(begin
-              ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-              (define (delete-all-but directory . preserve)
-                (with-directory-excursion directory
-                  (let* ((pred (negate (cut member <>
-                                            (cons* "." ".." preserve))))
-                         (items (scandir "." pred)))
-                    (for-each (cut delete-file-recursively <>) items))))
-
-              ;; Clean up the source from bundled libraries we don't need.
-              (delete-all-but "Externals"
-                              ;; XXX: The build system is currently hard-coded
-                              ;; to rely on these bundled copies.
-                              "Bochs_disasm"
-                              "FreeSurround"
-                              "Libretro"
-                              "cpp-optparse"
-                              "glslang"
-                              "imgui"
-                              "picojson")
-              (for-each delete-file
-                        (find-files
-                         "."
-                         (lambda (file _)
-                           (and (string-match "\\.(bin|dsy|exe|jar|rar)$" file)
-                                ;; Preserve the important wc24 .bin
-                                ;; configuration *data* files.
-                                (not (member (basename file)
-                                             '("misc.bin"
-                                               "nwc24dl.bin"
-                                               "nwc24fl.bin"
-                                               "nwc24fls.bin")))))))))
-         (patches
-          (search-patches "libretro-dolphin-emu-data.patch"
-                          "libretro-dolphin-emu-gc-font-tool.patch"
-                          "libretro-dolphin-emu-libusb-assert.patch"
-                          "libretro-dolphin-emu-vulkan-headers.patch"))))
+           "1627m35i2s7hxrawa7hxivh9534gj5f476iik5jvjvw3jhc9xvph"))
+         (patches (search-patches
+                   "libretro-dolphin-emu-unbundle-watcher.patch"
+                   "libretro-dolphin-emu-unbundle-tinygltf.patch"))))
       (arguments
        (substitute-keyword-arguments arguments
+         ((#:disallowed-references _ ''())
+          (list gtk+ gtk qtbase-5 qtbase))
+         ((#:tests? _ #f)
+          #f)                           ;no tests
          ((#:configure-flags flags ''())
-          #~(cons* (string-append "-DCMAKE_CXX_FLAGS="
-                                  "-I" (search-input-directory
-                                        %build-inputs "include/soundtouch"))
-                   "-DLIBRETRO=ON"
-                   "-DUSE_SHARED_ENET=ON"
-                   #$flags))
+          #~(cons "-DLIBRETRO=ON" #$flags))
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
-              (add-after 'unpack 'link-unittest-to-gtest
-                (lambda _
-                  ;; Otherwise, linking with the tests with gtest_main fails
-                  ;; with a "DSO missing from command line"
-                  (substitute* "Source/UnitTests/CMakeLists.txt"
-                    (("PRIVATE core uicommon gtest_main" all)
-                     (string-append all " gtest")))))
-              (add-after 'unpack 'deregister-bundled-sources
-                (lambda _
-                  (substitute* "CMakeLists.txt"
-                    ((".*add_subdirectory.*Externals/curl.*") "")
-                    ((".*add_subdirectory.*Externals/gtest.*") "")
-                    ((".*add_subdirectory.*Externals/libpng.*") "")
-                    ((".*add_subdirectory.*Externals/soundtouch.*") "")
-                    ((".*add_subdirectory.*Externals/xxhash.*") ""))))
               (replace 'install
                 (lambda _
+                  ;; See: <https://github.com/libretro/dolphin/issues/494>
                   (install-file "dolphin_libretro.so"
                                 (string-append #$output "/lib/libretro"))
                   ;; The system data files are also required for the proper
@@ -815,47 +759,20 @@ turbo speed, networked multiplayer, and graphical enhancements.")
                     (mkdir-p sysdir)
                     (copy-recursively "../source/Data/Sys"
                                       (string-append sysdir "/Sys")))))))))
-      (inputs
-       (list alsa-lib
-             ao
-             bluez
-             bzip2
-             cubeb
-             curl
-             enet
-             eudev
-             fmt-9
-             font-wqy-microhei
-             freetype
-             glew
-             glib
-             glu
-             googletest
-             hidapi
-             libevdev
-             libpng
-             libusb
-             libx11
-             libxi
-             libxrandr
-             lzo
-             mbedtls-lts
-             mesa
-             miniupnpc-2.1
-             minizip-ng-compat
-             openal
-             pugixml
-             pulseaudio
-             sdl2
-             sfml-2
-             soil
-             soundtouch-1/integer-samples
-             xxhash
-             vulkan-loader
-             vulkan-headers
-             zlib
-             `(,zstd "lib")))
-      (synopsis "Libretro port of Dolphin, the Nintendo Wii/GameCube emulator"))))
+      (inputs (modify-inputs inputs
+                (delete "alsa-lib"
+                        "ao"
+                        "bluez"
+                        "cubeb"
+                        "ffmpeg"
+                        "gtk+"
+                        "openal"
+                        "pulseaudio"
+                        "qtbase"
+                        "qtsvg"
+                        "sdl3")))
+      (synopsis "Libretro core for Dolphin, the Nintendo Wii\
+/GameCube emulator"))))
 
 (define-public dosbox
   (package

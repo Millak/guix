@@ -1,0 +1,55 @@
+Upstream-status: <https://github.com/dolphin-emu/dolphin/pull/13824>
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index fd4426d68f..c653dd69e2 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -704,7 +704,8 @@ dolphin_find_optional_system_library(glslang Externals/glslang DOLPHIN_TRY_VERSI
+ if(WIN32 OR APPLE)
+   add_subdirectory(Externals/spirv_cross)
+ endif()
+-add_subdirectory(Externals/tinygltf)
++
++dolphin_find_optional_system_library(TinyGLTF Externals/tinygltf)
+ 
+ if(ENABLE_VULKAN)
+   add_definitions(-DHAS_VULKAN)
+diff --git a/Externals/tinygltf/CMakeLists.txt b/Externals/tinygltf/CMakeLists.txt
+index b11ac09b68..3a445b33b1 100644
+--- a/Externals/tinygltf/CMakeLists.txt
++++ b/Externals/tinygltf/CMakeLists.txt
+@@ -7,5 +7,7 @@ if (NOT MSVC)
+ endif()
+ target_sources(tinygltf PRIVATE
+   tinygltf/tiny_gltf.cc)
+-target_include_directories(tinygltf INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
++target_include_directories(tinygltf INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/tinygltf)
+ dolphin_disable_warnings(tinygltf)
++
++add_library(tinygltf::tinygltf ALIAS tinygltf)
+diff --git a/Source/Core/VideoCommon/Assets/MeshAsset.cpp b/Source/Core/VideoCommon/Assets/MeshAsset.cpp
+index 133184aa33..ad8a83997b 100644
+--- a/Source/Core/VideoCommon/Assets/MeshAsset.cpp
++++ b/Source/Core/VideoCommon/Assets/MeshAsset.cpp
+@@ -6,7 +6,7 @@
+ #include <array>
+ #include <utility>
+ 
+-#include <tinygltf/tiny_gltf.h>
++#include <tiny_gltf.h>
+ 
+ #include "Common/IOFile.h"
+ #include "Common/Logging/Log.h"
+diff --git a/Source/Core/VideoCommon/CMakeLists.txt b/Source/Core/VideoCommon/CMakeLists.txt
+index 69a0968e4d..10c396d9b1 100644
+--- a/Source/Core/VideoCommon/CMakeLists.txt
++++ b/Source/Core/VideoCommon/CMakeLists.txt
+@@ -247,7 +247,7 @@ PRIVATE
+   imgui
+   implot
+   glslang::SPIRV
+-  tinygltf
++  tinygltf::tinygltf
+ )
+ 
+ if(_M_X86_64)

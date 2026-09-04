@@ -1,0 +1,17 @@
+Upstream-status: <https://github.com/dolphin-emu/dolphin/pull/13823>
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index fd4426d68f..2d5831a9cb 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -837,7 +837,9 @@ if (USE_RETRO_ACHIEVEMENTS)
+ endif()
+ 
+ if (NOT IOS)
+-  add_subdirectory(Externals/watcher)
++  dolphin_find_optional_system_library_pkgconfig(
++    WATCHER watcher watcher Externals/watcher
++)
+ endif()
+ 
+ # Any other platform or BSD is currently unsupported by cpp-ipc
