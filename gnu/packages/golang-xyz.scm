@@ -20660,16 +20660,16 @@ representation suitable for computing diffs.")
 (define-public go-github-com-labstack-gommon
   (package
     (name "go-github-com-labstack-gommon")
-    (version "0.4.2")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/labstack/gommon")
-             (commit (string-append "v" version))))
+              (url "https://github.com/labstack/gommon")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05mafzmx050hc3js3i0h05ga81kk3hhhlv395xwzv9n38h27xpnz"))))
+        (base32 "1jkia7byx9db0hi9h60155b8wd9m13hdxzyb52hq8m5xdjbyxgj0"))))
     (build-system go-build-system)
     (arguments
      (list
