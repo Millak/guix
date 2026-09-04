@@ -203,7 +203,6 @@ hardware.")
            eudev                           ;for discovering input devices
            glib
            ibus-minimal
-           libdecor
            vulkan-loader
            wayland-protocols))))
 
