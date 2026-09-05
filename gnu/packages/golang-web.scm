@@ -12583,7 +12583,7 @@ dhcpv6 and dhcpv4
 (define-public go-github-com-intel-goresctrl
   (package
     (name "go-github-com-intel-goresctrl")
-    (version "0.12.0")
+    (version "0.13.0")
     (source
      (origin
        (method git-fetch)
@@ -12592,7 +12592,7 @@ dhcpv6 and dhcpv4
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lifx5nq3x29x17lixhwh2f6yp2q3sxy8mqm036mp2bh2araqgdy"))))
+        (base32 "1bkrcgb8fgfvqk1aplv7qqf7qaazqsq57ip5i2h5p7pi86iz3ggj"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -12604,7 +12604,8 @@ dhcpv6 and dhcpv4
       ;; any other architecture; test only on x86-64
       #:tests? (and (not (%current-target-system)) (target-x86-64?))
       #:test-flags
-      #~(list "-skip" (string-join
+      #~(list "-vet=off"
+              "-skip" (string-join
                        (list "TestInfo"
                              "TestConfig"
                              "TestRdt"
