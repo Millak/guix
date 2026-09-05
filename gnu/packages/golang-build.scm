@@ -1065,16 +1065,21 @@ compile does not support generics.")
 (define-public go-golang-org-x-mobile
   (package
     (name "go-golang-org-x-mobile")
-    (version "0.0.0-20251113184115-a159579294ab")
+    (properties '((commit . "4776eadac327bcb80cebc7413c91f8b4abf8ffa1")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260821190718-4776eadac327")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/mobile")
-             (commit (go-version->git-ref version))))
+              (url "https://go.googlesource.com/mobile")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c6h7w1xmv47g61j24y9xkagl2f0833r9bhjzrp0aarhc6fz99b2"))))
+        (base32 "0ccb576fbk3zgsvz8rjvpbc3j7n78nzpv50fn2nqa1snjmw7ig2b"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -1087,7 +1092,11 @@ compile does not support generics.")
                               "TestGobind/Modules"
                               ;; build_test.go:100: cannot set -o when
                               ;; building non-main package
-                              "TestAndroidBuild")
+                              "TestAndroidBuild"
+                              ;; iOS test fails; bind_test.go:460: error
+                              ;; message does not contain
+                              ;; "go.dev/issue/77183".
+                              "TestBindMissingMobileModule")
                         ;; archNDK() in cmd/gomobile/env.go only maps
                         ;; GOARCH 386 and amd64 (plus arm64 on darwin)
                         ;; and panics otherwise, so TestInit crashes
@@ -1103,14 +1112,17 @@ compile does not support generics.")
             (lambda* (#:key import-path #:allow-other-keys)
               (delete-file-recursively
                (string-append "src/" import-path "/example")))))))
-    (inputs (list openal mesa))
+    (native-inputs
+     (list go-golang-org-x-tools-go-packages-packagestest))
+    (inputs
+     (list openal
+           mesa))
     (propagated-inputs
-     (list go-golang-org-x-exp
+     (list #;go-golang-org-x-exp-shiny
            go-golang-org-x-image
            go-golang-org-x-mod
            go-golang-org-x-sync
-           go-golang-org-x-tools
-           go-golang-org-x-tools-go-packages-packagestest))
+           go-golang-org-x-tools))
     (home-page "https://golang.org/x/mobile")
     (synopsis "Mobile devices support for Golang")
     (description
