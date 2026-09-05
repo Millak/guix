@@ -5040,7 +5040,7 @@ exponentially increase and stop increasing when a certain threshold is met.")
   (package
     (inherit go-github-com-cenkalti-backoff-v4)
     (name "go-github-com-cenkalti-backoff-v5")
-    (version "5.0.2")
+    (version "5.0.3")
     (source
      (origin
        (method git-fetch)
@@ -5049,7 +5049,7 @@ exponentially increase and stop increasing when a certain threshold is met.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hc4manlkqfy9acva1jb8ayh8jihjb0h76l3g1sqqp0vlaq5y6q3"))))
+        (base32 "1rld7qs5a4vppkjadvx6manysvivv88kzpmigcx17wf3ygfbiakc"))))
     (arguments
      (list
       #:import-path "github.com/cenkalti/backoff/v5"
