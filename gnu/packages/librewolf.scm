@@ -125,14 +125,14 @@
   ;; tar xf /gnu/store/...-firefox-123.4.source.tar.xz --wildcards -O \
   ;;     firefox-*/browser/locales/l10n-changesets.json \
   ;;     | grep revision | sort | uniq
-  (let ((commit "a0ca3bf67a883f206ab85c6527d767b3b54675ad"))
+  (let ((commit "1e09418678f567f24b53396f3175ca6863aa6b17"))
    (origin
       (method git-fetch)
       (uri (git-reference
             (url "https://github.com/mozilla-l10n/firefox-l10n.git")
             (commit commit)))
       (file-name (git-file-name "firefox-l10n" commit))
-      (sha256 (base32 "1ard1gmi0bbmcjraa523r2kwh00hfkzlyr41ch6ngwl5gnns12z3")))))
+      (sha256 (base32 "1a4h0sprh02r618kn9zvg8cq6jx4krs7zdimk0jzjasw4r6r8nr5")))))
 
 (define* (make-librewolf-source #:key version firefox-hash librewolf-hash l10n)
   (let* ((ff-src (firefox-source-origin
@@ -244,17 +244,17 @@
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
 ;; or: (format-time-string "%Y%m%d%H%M%S")
-(define %librewolf-build-id "20260903212235")
+(define %librewolf-build-id "20260905095637")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "155.0-1")
+    (version "155.0.1-1")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "1yqdsysb05crh360jxdm4s31vh9q49wd5slbyv3vkigq6ncdazy5"
-      #:librewolf-hash "02nv16hmi84pqlr14x83i5mcgv4wmmw2wyc1imz74457w8rf9wic"
+      #:firefox-hash "04qd6xa7jx13x42lrzlwdmsgh784yxi4xqgrgv70skcdg3aaqj3m"
+      #:librewolf-hash "0p30yafs8kn33avy0qhwflyd3w1n46qmy9w56pf011k86h898caj"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
