@@ -19316,7 +19316,7 @@ protocol.")
 (define-public go-github-com-quic-go-webtransport-go
     (package
       (name "go-github-com-quic-go-webtransport-go")
-      (version "0.10.0")
+      (version "0.11.0")
       (source
        (origin
          (method git-fetch)
@@ -19325,7 +19325,7 @@ protocol.")
                (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0np42zg6pkflp1hfnl4xbgk3bkfvhm210mbw9qzldwglxh7mql7i"))))
+          (base32 "0h1lyjjnkqs61hd8x1i79nir01yqipc575nzi47vljc3djd6ci6i"))))
       (build-system go-build-system)
       (arguments
        (list
@@ -19346,10 +19346,10 @@ protocol.")
       (synopsis "WebTransport implementation based on quic-go")
       (description
        "webtransport-go is an implementation of the @code{WebTransport}
-protocol, based on @@url{https://github.com/quic-go/quic-go,quic-go}.  It
+protocol, based on @url{https://github.com/quic-go/quic-go, quic-go}.  It
 currently implements
-@@url{https://www.ietf.org/archive/id/draft-ietf-webtrans-http3-02.html,draft-02}
-of the specification.")
+@url{https://www.ietf.org/archive/id/draft-ietf-webtrans-http3-02.html,
+draft-02} of the specification.")
       (license license:expat)))
 
 (define-public go-github-com-rabbitmq-amqp091-go
