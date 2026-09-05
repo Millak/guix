@@ -3045,17 +3045,17 @@ utilities.")
 (define-public go-github-com-aws-aws-sdk-go-v2-credentials
   (package
     (name "go-github-com-aws-aws-sdk-go-v2-credentials")
-    (version "1.19.7")
+    (version "1.20.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/aws/aws-sdk-go-v2")
-             (commit (go-version->git-ref version
-                                          #:subdir "credentials"))))
+              (url "https://github.com/aws/aws-sdk-go-v2")
+              (commit (go-version->git-ref version
+                                           #:subdir "credentials"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04cv6g96hhmjl6snql6a909grq4yxyjk95a3dzk6mpihvg79q47p"))
+        (base32 "03manwhrbmhzvlma616jyr18cjj1hdphhw7nb9b9z56cfy2q9919"))
        (modules '((guix build utils)))
        (snippet #~(delete-all-but "." "credentials"))))
     (build-system go-build-system)
@@ -3075,6 +3075,10 @@ utilities.")
            go-github-com-aws-aws-sdk-go-v2-feature-ec2-imds
            go-github-com-aws-aws-sdk-go-v2-internal-configsources
            go-github-com-aws-aws-sdk-go-v2-internal-endpoints-v2
+           ;; go-github-com-aws-aws-sdk-go-v2-internal-v4a
+           ;; go-github-com-aws-aws-sdk-go-v2-service-internal-accept-encoding
+           ;; go-github-com-aws-aws-sdk-go-v2-service-internal-presigned-url
+           go-github-com-aws-aws-sdk-go-v2-service-signin
            go-github-com-aws-aws-sdk-go-v2-service-sso
            go-github-com-aws-aws-sdk-go-v2-service-ssooidc
            go-github-com-aws-aws-sdk-go-v2-service-sts
