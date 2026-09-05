@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2026 coopi <coldsideofyourpillow@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +51,12 @@
 
 (eval-when (expand load eval)
   ;; The procedures below are needed both at run time and at expansion time.
+
+  (define %record-constructor-max-argument-count
+    ;; Maximum number of positional arguments for record constructors.  This
+    ;; matches Guile's 'make-record-type', which uses a rest argument above
+    ;; that number.
+    20)
 
   (define (current-abi-identifier type)
     "Return an identifier unhygienically derived from TYPE for use as its
@@ -148,6 +155,12 @@ of TYPE matches the expansion-time ABI."
         #:defaults defaults)
      (define-syntax name
        (lambda (s)
+         (define (constructor-call field-values)
+           (if (< (length '(expected ...))
+                  %record-constructor-max-argument-count)
+               #`(ctor #,abi-cookie #,@field-values)
+               #`(apply ctor #,abi-cookie (list #,@field-values))))
+
          (define (record-inheritance orig-record field+value)
            ;; Produce code that returns a record identical to ORIG-RECORD,
            ;; except that values for the FIELD+VALUE alist prevail.
@@ -164,16 +177,15 @@ of TYPE matches the expansion-time ABI."
                (record-error 'name s "extraneous field initializers ~a"
                              unexpected)))
 
-           #`(ctor #,abi-cookie
-                   #,@(map (lambda (field index)
-                             (or (field-inherited-value field)
-                                 (if (innate-field? field)
-                                     (wrap-field-value
-                                      field (field-default-value field))
-                                     #`(struct-ref #,orig-record
-                                                   #,index))))
-                           '(expected ...)
-                           (iota (length '(expected ...))))))
+           (constructor-call
+            (map (lambda (field index)
+                   (or (field-inherited-value field)
+                       (if (innate-field? field)
+                           (wrap-field-value
+                            field (field-default-value field))
+                           #`(struct-ref #,orig-record #,index))))
+                 '(expected ...)
+                 (iota (length '(expected ...))))))
 
          (define (thunked-field? f)
            (memq (syntax->datum f) 'thunked))
@@ -314,8 +326,8 @@ record type '~a' shadows local variable~%"
                 (cond ((lset= eq? fields '(expected ...))
                        #`(let* #,(field-bindings
                                   #'((field value) (... ...)))
-                           (ctor #,abi-cookie
-                                 #,@(map field-value '(expected ...)))))
+                           #,(constructor-call
+                              (map field-value '(expected ...)))))
                       ((pair? (lset-difference eq? fields
                                                '(expected ...)))
                        (record-error 'name s
@@ -507,13 +519,35 @@ inherited."
                                       #'((field properties ...) ...)))
               (sanitizers (filter-map field-sanitizer
                                       #'((field properties ...) ...)))
-              (cookie     (compute-abi-cookie field-spec)))
-         (with-syntax ((ctor-procedure
-                        (datum->syntax
-                         #'ctor
-                         (symbol-append (string->symbol " %")
-                                        (syntax->datum #'ctor)
-                                        '-procedure/abi-check)))
+              (cookie     (compute-abi-cookie field-spec))
+              (field-count (length field-spec))
+              (constructor-procedure
+               (datum->syntax
+                #'ctor
+                (symbol-append (string->symbol " %")
+                               (syntax->datum #'ctor)
+                               '-procedure/abi-check))))
+
+         (define (constructor-body)
+           (if (< field-count %record-constructor-max-argument-count)
+               #`(case-lambda
+                   ((actual-cookie field ...)
+                    (unless (eq? actual-cookie #,cookie)
+                      (record-abi-mismatch-error type))
+                    (ctor field ...))
+                   (_
+                    (record-abi-mismatch-error type)))
+               #`(case-lambda
+                   ((actual-cookie . field-values)
+                    (unless (and (eq? actual-cookie #,cookie)
+                                 (= (length field-values)
+                                    #,field-count))
+                      (record-abi-mismatch-error type))
+                    (apply ctor field-values))
+                   (_
+                    (record-abi-mismatch-error type)))))
+
+         (with-syntax ((ctor-procedure constructor-procedure)
                        ((field-spec* ...)
                         (map field-spec->srfi-9 field-spec))
                        ((field-type ...)
@@ -586,13 +620,7 @@ of a record instantiation"
                  ;; This procedure is *not* inlined, to reduce code bloat
                  ;; (struct initialization takes at least one instruction per
                  ;; field).
-                 (case-lambda
-                   ((cookie field ...)
-                    (unless (eq? cookie #,cookie)
-                      (record-abi-mismatch-error type))
-                    (ctor field ...))
-                   (_
-                    (record-abi-mismatch-error type))))
+                 #,(constructor-body))
 
                (make-syntactic-constructor type syntactic-ctor ctor-procedure
                                            (field ...)

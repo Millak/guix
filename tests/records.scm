@@ -19,6 +19,7 @@
 (define-module (test-records)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
   #:use-module (guix records))
@@ -54,6 +55,29 @@
            (($ <foo> 1 2) #t))
          (match (foo (bar 1))
            (($ <foo> 1 42) #t)))))
+
+(test-equal "define-record-type* with 20 fields"
+  '(0 9 19 0 42 19)
+  ;; This record has enough fields for its constructor to use a rest argument.
+  (eval
+   `(begin
+      (define-record-type* <wide-record> wide-record make-wide-record
+        wide-record?
+        ,@(map
+           (lambda (n)
+             (let ((name (string->symbol (format #f "field-~a" n))))
+               `(,name ,name (default ,n))))
+           (iota 20)))
+
+      (let* ((record (wide-record))
+             (inherited (wide-record (inherit record) (field-9 42))))
+        (list (field-0 record)
+              (field-9 record)
+              (field-19 record)
+              (field-0 inherited)
+              (field-9 inherited)
+              (field-19 inherited))))
+   (test-module)))
 
 (test-assert "define-record-type* with let* behavior"
   ;; Make sure field initializers can refer to each other as if they were in
