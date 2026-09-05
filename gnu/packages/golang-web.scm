@@ -5887,7 +5887,7 @@ library to provide APIs for CNI plugin interactions.")
   ;; TODO: Move to (gnu packages containers).
   (package
     (name "go-github-com-containerd-nri")
-    (version "0.12.0")
+    (version "0.12.2")
     (source
      (origin
        (method git-fetch)
@@ -5896,7 +5896,7 @@ library to provide APIs for CNI plugin interactions.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xa6sndksmpissnsabaxi1k2zzvp71i62s1rgb03qy7zvxsymh9d"))
+        (base32 "1d9ifwpvpd6sipxdb1khwz10xp6aqwrnf7cn96b1a4rbn4lbf98r"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -5916,26 +5916,26 @@ library to provide APIs for CNI plugin interactions.")
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/containerd/nri"))
+      #:import-path "github.com/containerd/nri"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
-     (list go-github-com-stretchr-testify
-           go-github-com-onsi-gomega
-           go-github-com-onsi-ginkgo-v2))
-    (propagated-inputs
      (list go-github-com-brianvoe-gofakeit-v7
-           go-github-com-containerd-ttrpc
+           go-github-com-onsi-ginkgo-v2
+           go-github-com-onsi-gomega
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-containerd-ttrpc
            go-github-com-google-go-cmp
            go-github-com-knqyf263-go-plugin
            go-github-com-moby-sys-mountinfo
            go-github-com-opencontainers-runtime-spec
-           go-github-com-opencontainers-runtime-tools
            go-github-com-sirupsen-logrus
            go-github-com-tetratelabs-wazero
+           go-go-yaml-in-yaml-v3
            go-golang-org-x-mod
            go-golang-org-x-sys
            go-google-golang-org-grpc
-           go-google-golang-org-protobuf
-           go-gopkg-in-yaml-v3))
+           go-google-golang-org-protobuf))
     (home-page "https://github.com/containerd/nri")
     (synopsis "Node Resource Interface")
     (description
