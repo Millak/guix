@@ -37609,9 +37609,10 @@ without direct type dependencies. Its first consumers are
     (license license:asl2.0)))
 
 (define-public go-k8s-io-client-go
+  ;; TODO: Move to (gnu packages kubernetes).
   (package
     (name "go-k8s-io-client-go")
-    (version "0.34.1")
+    (version "0.34.11")
     (source
      (origin
        (method git-fetch)
@@ -37620,7 +37621,7 @@ without direct type dependencies. Its first consumers are
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s3pfrqjk1zjg7hyn90ykgkn5ak5x1r5w5jfcr0sdlv9p42q0yqi"))))
+        (base32 "1pzsyq77ymrdjwzzx7w10wiz6xyf66sbaylaap422xqp45d97bqj"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -37636,6 +37637,7 @@ without direct type dependencies. Its first consumers are
      (list go-github-com-gogo-protobuf
            go-github-com-google-go-cmp
            go-github-com-stretchr-testify
+           go-github-com-spf13-pflag
            go-go-uber-org-goleak
            go-sigs-k8s-io-randfill))
     (propagated-inputs
@@ -37646,7 +37648,6 @@ without direct type dependencies. Its first consumers are
            go-github-com-gregjones-httpcache
            go-github-com-munnerz-goautoneg
            go-github-com-peterbourgon-diskv
-           go-github-com-spf13-pflag
            go-golang-org-x-net
            go-golang-org-x-oauth2
            go-golang-org-x-term
@@ -37659,6 +37660,7 @@ without direct type dependencies. Its first consumers are
            go-k8s-io-kube-openapi
            go-k8s-io-utils
            go-sigs-k8s-io-json
+           go-sigs-k8s-io-randfill
            go-sigs-k8s-io-structured-merge-diff-v6
            go-sigs-k8s-io-yaml))
     (home-page "https://k8s.io/client-go")
