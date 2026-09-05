@@ -2986,6 +2986,7 @@ functions.")
                             "service/iam"
                             "service/kms"
                             "service/s3"
+                            "service/signin"
                             "service/sns"
                             "service/sqs"
                             "service/ssm"
@@ -3417,6 +3418,50 @@ Amazon Simple Storage Service.")
     (description
      "Package secretsmanager provides the API client, operations, and
 parameter types for AWS Secrets Manager.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-aws-aws-sdk-go-v2-service-signin
+  (package
+    (name "go-github-com-aws-aws-sdk-go-v2-service-signin")
+    (version "1.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aws/aws-sdk-go-v2")
+              (commit (go-version->git-ref version
+                                           #:subdir "service/signin"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03manwhrbmhzvlma616jyr18cjj1hdphhw7nb9b9z56cfy2q9919"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "service" "signin")
+            (delete-all-but "." "service")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aws/aws-sdk-go-v2/service/signin"
+      #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-internal-configsources
+           go-github-com-aws-aws-sdk-go-v2-internal-endpoints-v2
+           go-github-com-aws-smithy-go))
+    (home-page "https://github.com/aws/aws-sdk-go-v2")
+    (synopsis "AWS Signin service")
+    (description
+     "Package signin provides the API client, operations, and parameter types
+for AWS Sign-In Service.")
     (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2-service-sns
