@@ -350,7 +350,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "4.10.0")
+    (version "4.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -359,7 +359,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0awqiyp8kn0acwpljh1a79hx9qpc8k9bjkqs0wq4hz3ap2pi77yr"))))
+                "0zih0ipvvrhdcwpkyqym4c1y1dxrxdi25bvbwvadxcx3jcq41f8l"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
