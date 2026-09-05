@@ -337,7 +337,7 @@ and inhibition of alerts.")
 (define-public go-github-com-prometheus-client-golang
   (package
     (name "go-github-com-prometheus-client-golang")
-    (version "1.23.2")
+    (version "1.24.1")
     (source
      (origin
        (method git-fetch)
@@ -346,11 +346,10 @@ and inhibition of alerts.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "054hdlyjkyna1xx39apl7srzvjsyirnn1ihbaqarxbygdrz3zrx1"))))
+        (base32 "1dizf62jvv0bpdbmz80zjinic8bxvqv8yzjfj07dw90gjmmfq6p7"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.24
       #:skip-build? #t
       ;; XXX: Check if the most of the tests may be enabled:
       ;; api/prometheus/v1/api_test.go:1063:23: cannot use 1634644800304
@@ -361,9 +360,11 @@ and inhibition of alerts.")
       #~(list "-skip"
               (string-join
                (list
-                ;; go_collector_latest_test.go:131: found unexpected metric
-                ;; go_godebug_non_default_behavior_httpcookiemaxnum_events_total
+                ;; Tests failing with similar errors: Found unexpected metric.
                 "TestGoCollector_ExposedMetrics"
+                "TestHandlerWithEmojiUnit"
+                "TestHandlerWithLongUnit"
+                "TestHandlerWithUnit"
                 ;; Tests fail with message: found new runtime/metrics
                 ;; metric
                 ;; /godebug/non-default-behavior/httpcookiemaxnum:events
@@ -387,7 +388,11 @@ and inhibition of alerts.")
                 (for-each delete-file-recursively
                           (list "api/prometheus/v1/example_test.go"
                                 "examples"
-                                "tutorials"))))))))
+                                "tutorials")))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              ;; See: <https://go.dev/blog/synctest>.
+              (setenv "GODEBUG" "asynctimerchan=0"))))))
     (native-inputs
      (list go-github-com-google-go-cmp
            go-go-uber-org-goleak))
