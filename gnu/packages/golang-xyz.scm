@@ -37381,59 +37381,80 @@ The yaml package supports most of YAML 1.2, but preserves some behavior from
      "This package provides an ORM library for Golang.")
     (license license:expat)))
 
-;; XXX: It's a source only variant to include in other packages as input (e.g
-;; to build NNCP and remove vendor) dependency for Golang.  Full build depends
-;; on Bazel <https://bazel.build/>.
 (define-public go-gvisor-dev-gvisor
-  (let ((commit "9414b50a5633100fd7299a5a7998742575dcb669")
-        (revision "1"))
+    ;; TODO: Move to (gnu packages containers).
     (package
       (name "go-gvisor-dev-gvisor")
-      (version (git-version "0.0.0" revision commit))
+      (version "20260831.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/google/gvisor")
-               (commit commit)))
+                (url "https://github.com/google/gvisor")
+                (commit (string-append "release-" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0vqaclb2ignkcs7n463bj349m0xybdsv71i6afhzh8r05hdywzax"))))
+          (base32 "12hyhw15k4z8xy01ybq26bcbq41rmybzg91iz84hm5ng35x5vpiy"))))
       (build-system go-build-system)
       (arguments
        (list
-        #:tests? #f
         #:skip-build? #t
-        #:import-path "gvisor.dev/gvisor"))
+        #:import-path "gvisor.dev/gvisor"
+        #:test-subdirs
+        ;; TODO: Enable all tests when missing parts are packaged.
+        #~(list "pkg/bits" "pkg/trie" "pkg/secio" "pkg/binary" "pkg/bitmap"
+                "pkg/fspath" "pkg/hostos" "pkg/cleanup" "pkg/gohacks"
+                "pkg/ringdeque" "pkg/state/wire" "runsc/mitigate"
+                "pkg/sentry/hostcpu" "pkg/tcpip/checksum"
+                "pkg/errors/linuxerr" "tools/constraintutil"
+                "test/benchmarks/tools" "pkg/tcpip/hash/jenkins"
+                "pkg/sentry/kernel/sched" "pkg/shim/v1/runtimeoptions")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-examples
+              (lambda* (#:key tests? import-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" import-path)
+                  (delete-file-recursively "examples")))))))
       (propagated-inputs
-       (list ;; go-github-com-bazelbuild-rules-go
+       (list go-cloud-google-com-go-auth
+             go-cloud-google-com-go-auth-oauth2adapt
+             go-cloud-google-com-go-storage
              go-github-com-burntsushi-toml
-             ;; go-github-com-cenkalti-backoff
+             go-github-com-cenkalti-backoff-v7
              go-github-com-cilium-ebpf
-             go-github-com-containerd-cgroups
+             go-github-com-containerd-cgroups-v3
              go-github-com-containerd-console
-             ;; go-github-com-containerd-containerd
+             go-github-com-containerd-containerd-api
+             go-github-com-containerd-containerd-v2
+             go-github-com-containerd-errdefs
+             go-github-com-containerd-errdefs-pkg
              go-github-com-containerd-fifo
              go-github-com-containerd-go-runc
-             go-github-com-containerd-typeurl
+             go-github-com-containerd-log
+             go-github-com-containerd-plugin
+             go-github-com-containerd-ttrpc
+             go-github-com-containerd-typeurl-v2
              go-github-com-coreos-go-systemd-v22
+             go-github-com-creack-pty
              go-github-com-godbus-dbus-v5
              go-github-com-gofrs-flock
              go-github-com-gogo-protobuf
              go-github-com-google-btree
              go-github-com-google-subcommands
-             ;; go-github-com-kr-pty
              go-github-com-mattbaird-jsonpatch
+             go-github-com-moby-sys-capability
              go-github-com-mohae-deepcopy
              go-github-com-opencontainers-runtime-spec
              go-github-com-sirupsen-logrus
-             go-github-com-syndtr-gocapability
              go-github-com-vishvananda-netlink
+             go-golang-org-x-exp
              go-golang-org-x-mod
              go-golang-org-x-sync
              go-golang-org-x-sys
              go-golang-org-x-time
              go-golang-org-x-tools
+             go-google-golang-org-api
+             go-google-golang-org-grpc
              go-google-golang-org-protobuf
              go-k8s-io-api
              go-k8s-io-apimachinery
@@ -37453,7 +37474,7 @@ containers.
 
 This package provides the source only to include in other packages as
 dependencies.")
-      (license license:asl2.0))))
+      (license license:asl2.0)))
 
 (define-public go-howett-net-plist
   (package
