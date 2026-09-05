@@ -60,6 +60,16 @@
      ;; This is line 60; the test relies on line/column numbers!
      (port "This is not a number!"))))
 
+(test-equal "field value evaluated once"
+  '(1 80)
+  (let ((evaluations 0))
+    (let ((configuration
+           (port-configuration
+            (port (begin
+                    (set! evaluations (1+ evaluations))
+                    80)))))
+      (list evaluations (port-configuration-port configuration)))))
+
 (define-configuration port-configuration-cs
   (port (number 80) "The port number." empty-serializer))
 

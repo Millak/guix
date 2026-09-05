@@ -292,13 +292,17 @@ deprecated, use (serializer ~a) instead~%") (syntax->datum #'proc))
                    ((_ value)
                     (with-syntax ((name #'#,name)
                                   (pred #'#,pred)
+                                  (field-value
+                                   (car
+                                    (generate-temporaries #'(value))))
                                   (loc (datum->syntax #'value
                                                       (syntax-source #'value))))
-                      #'(if (pred value)
-                            value
-                            (configuration-field-error
-                             (and=> 'loc source-properties->location)
-                             'name value))))))))
+                      #'(let ((field-value value))
+                          (if (pred field-value)
+                              field-value
+                              (configuration-field-error
+                               (and=> 'loc source-properties->location)
+                               'name field-value)))))))))
 
          #`(begin
              ;; Define field validation macros.
