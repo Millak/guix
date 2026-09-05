@@ -35,6 +35,7 @@
 ;;; Copyright © 2025 Romain Garbage <romain.garbage@inria.fr>
 ;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2026 Goran Vukoman <g@odyss3us.net>
+;;; Copyright © 2026 bdunahu <bdunahu@operationnull.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4881,6 +4882,46 @@ frameworks, and the performance- and efficiency-focused hardware backends.
 TVM works with deep learning frameworks to provide end to end compilation to
 different backends")
       (license license:asl2.0))))
+
+(define-public usearch
+  (package
+    (name "usearch")
+    (version "2.26.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/unum-cloud/usearch")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0j8nmqh9q7n15xwlpcs6zd8wr93yl4hn0kbf4v2fcwkkbj6khhzk"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DUSEARCH_INSTALL=ON"
+              "-DUSEARCH_BUILD_BENCH_CPP=OFF")))
+    (inputs (list stringzilla))
+    (home-page "https://unum.cloud/usearch")
+    (synopsis "Similarity search engine")
+    (description "USearch is a free software search and clustering
+engine.  Features include:
+@itemize
+@item 10x faster HNSW implementation than FAISS.
+@item Simple and extensible single C++11 header library.
+@item SIMD-optimized and user-defined metrics with JIT compilation.
+@item Hardware-agnostic bf16, e5m2, & i8 - half-precision & quarter-precision support.
+@item View large indexes from disk without loading into RAM.
+@item Heterogeneous lookups, renaming/relabeling, and on-the-fly deletions.
+@item Binary Tanimoto and Sorensen coefficients for Genomics and Chemistry applications.
+@item Space-efficient point-clouds with uint40_t, accommodating 4B+ size.
+@item Compatible with OpenMP and custom \"executors\" for fine-grained parallelism.
+@item Semantic Search and Joins.
+@item Near-real-time clustering and sub-clustering for Tens or Millions of clusters.
+@end itemize")
+    (license license:asl2.0)))
 
 (define-public koboldcpp
   (package
