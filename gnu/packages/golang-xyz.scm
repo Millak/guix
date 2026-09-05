@@ -7573,7 +7573,6 @@ cgroup uses the OCI runtime-spec found
 (define-public go-github-com-containerd-cgroups-v3
   ;; TODO: Move to (gnu packages containers).
   (package
-    (inherit go-github-com-containerd-cgroups)
     (name "go-github-com-containerd-cgroups-v3")
     (version "3.1.3")
     (source
@@ -7588,11 +7587,9 @@ cgroup uses the OCI runtime-spec found
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodule(s) with their own go.mod files and packed as
-            ;; separated packages:
-            ;;
-            ;; - github.com/containerd/cgroups/cmd cgctl
+            ;; Submodules with their own go.mod files and packaged separately.
             (delete-file-recursively "cmd")))))
+    (build-system go-build-system)
     (arguments
      (list
       #:import-path  "github.com/containerd/cgroups/v3"
@@ -7620,6 +7617,9 @@ cgroup uses the OCI runtime-spec found
                              "TestSystemdCgroupPSIController"
                              "TestSystemdCgroupPidsController")
                        "|"))))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-go-uber-org-goleak))
     (propagated-inputs
      (list go-github-com-cilium-ebpf
            go-github-com-containerd-log
@@ -7629,7 +7629,15 @@ cgroup uses the OCI runtime-spec found
            go-github-com-moby-sys-userns
            go-github-com-opencontainers-runtime-spec
            go-golang-org-x-sys
-           go-google-golang-org-protobuf))))
+           go-google-golang-org-protobuf))
+    (home-page "https://containerd.io/")
+    (synopsis "Cgroups for Golang")
+    (description
+     "This package implements a functionality for creating, managing,
+inspecting, and destroying cgroups.  The resources format for settings on the
+cgroup uses the OCI runtime-spec found
+@url{https://github.com/opencontainers/runtime-spec,here}.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-containerd-console
   (package
