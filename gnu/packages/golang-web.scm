@@ -2958,7 +2958,7 @@ functions.")
 (define-public go-github-com-aws-aws-sdk-go-v2
   (package
     (name "go-github-com-aws-aws-sdk-go-v2")
-    (version "1.41.7")
+    (version "1.47.1")
     (source
      (origin
        (method git-fetch)
@@ -2967,14 +2967,13 @@ functions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j68835z0dgzxwf3m4gfir50wi6r30yx3g78y63x55sdg2imbhsk"))
+        (base32 "1ihinnj5mcva0h2hv89bj9ixn070ws6hqbx0fqwww81pqv5vv631"))
        ;; XXX: It contains a lot of sub packages defined with go.mod, consider
        ;; to pack them separately.
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; All of the submodules prefixed with
-            ;; "github.com/aws/aws-sdk-go-v2" and contain go.mod file.
+            ;; Submodules with their own go.mod files and packaged separately.
             (for-each delete-file-recursively
                       (list "config"
                             "credentials"
@@ -2999,8 +2998,7 @@ functions.")
       #:import-path "github.com/aws/aws-sdk-go-v2"
       #:test-subdirs #~(list ".")))
     (propagated-inputs
-     (list go-github-com-jmespath-go-jmespath
-           go-github-com-aws-smithy-go))
+     (list go-github-com-aws-smithy-go))
     (home-page "https://github.com/aws/aws-sdk-go-v2")
     (synopsis "AWS SDK for Go v2")
     (description
