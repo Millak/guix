@@ -7860,7 +7860,7 @@ attachments, etc.")
 (define-public go-github-com-containerd-continuity
   (package
     (name "go-github-com-containerd-continuity")
-    (version "0.4.5")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -7869,19 +7869,18 @@ attachments, etc.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01p5cqc0lvv6z5m0w23xq38fmc86k490wvylng5sfn90zplgjrwi"))
+        (base32 "1y98nz7bs3ywd9p0kzqbkm4rkbgdq8n6fklm81sswgmvhihx9m15"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - github.com/containerd/continuity/cmd/continuity
+            ;; Submodules with their own go.mod files and packaged separately.
             (delete-file-recursively "cmd/continuity")
             (delete-file-recursively "vendor")))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/containerd/continuity"))
+      #:import-path "github.com/containerd/continuity"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-containerd-log
            ;; go-github-com-microsoft-go-winio ; for Windows only
@@ -7892,7 +7891,8 @@ attachments, etc.")
     (home-page "https://github.com/containerd/continuity")
     (synopsis "Transport-agnostic, filesystem metadata manifest system")
     (description
-     "This package provides a transport-agnostic, filesystem metadata manifest system.")
+     "This package provides a transport-agnostic, filesystem metadata manifest
+system.")
     (license license:asl2.0)))
 
 (define-public go-github-com-containerd-errdefs
