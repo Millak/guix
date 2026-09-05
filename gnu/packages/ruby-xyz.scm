@@ -8163,27 +8163,15 @@ implementation on platforms where this is unsupported.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-unnecessary-dependencies
             (lambda _
-              (substitute* "ruby-jwt.gemspec"
-                (("spec\\.add_development_dependency 'appraisal'") "")
-                (("spec\\.add_development_dependency 'simplecov'") ""))
-              (substitute* "Gemfile"
-                (("gem 'rubocop'.*") ""))
               (substitute* "Rakefile"
+                (("require 'bundler/setup'") "")
                 (("require 'rubocop/rake_task'") "")
                 (("RuboCop::RakeTask\\.new\\(:rubocop\\)") ""))
               (substitute* "spec/spec_helper.rb"
-                (("require 'simplecov.*") "\n")
-                ;; Use [].each to disable running the SimpleCov configuration
-                ;; block
-                (("SimpleCov\\.configure") "[].each")
-                (("require 'codeclimate-test-reporter'") "")
-                (("require 'codacy-coverage'") "")
-                (("Codacy::Reporter\\.start") "")))))))
+                (("require 'simplecov'") "")))))))
+    (propagated-inputs (list ruby-base64))
     (native-inputs
-     (list bundler
-           ruby-rubocop
-           ruby-rspec
-           ruby-rbnacl))
+     (list ruby-rspec ruby-rbnacl))
     (synopsis "Ruby implementation of the JSON Web Token standard")
     (description
      "This package provides a pure Ruby implementation of the RFC 7519 OAuth
