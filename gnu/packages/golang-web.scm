@@ -8952,24 +8952,34 @@ specifications knows how to deal with those.")
 (define-public go-github-com-go-openapi-swag
   (package
     (name "go-github-com-go-openapi-swag")
-    (version "0.23.0")
+    (version "0.29.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/go-openapi/swag")
-             (commit (string-append "v" version))))
+              (url "https://github.com/go-openapi/swag")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c03mnmy162rrd1rzfqxiwnblvlwl4v09yklq55q4j9p4jqv740g"))))
+        (base32 "1kk84irx6ifln01b5w1rzyrx4gmpzf6nkm190n6hhw7s4y28pq80"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately.
+            (for-each delete-file-recursively
+                      (list "jsonutils/adapters/testintegration/benchmarks"
+                            "jsonutils/adapters/testintegration"
+                            "jsonutils/adapters/easyjson"))))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/go-openapi/swag"))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-go-openapi-testify-enable-yaml-v2
+           go-github-com-go-openapi-testify-v2))
     (propagated-inputs
-     (list go-github-com-mailru-easyjson go-gopkg-in-yaml-v3))
+     (list go-github-com-go-openapi-jsonpointer
+           go-go-yaml-in-yaml-v3))
     (home-page "https://github.com/go-openapi/swag")
     (synopsis "Goodie bag in use in the go-openapi projects")
     (description
