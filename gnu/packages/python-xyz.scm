@@ -11872,7 +11872,7 @@ Server (PLS).")
 (define-public python-lsp-server
   (package
     (name "python-lsp-server")
-    (version "1.14.0")
+    (version "1.15.0")
     (source
      (origin
        (method git-fetch)
@@ -11881,7 +11881,7 @@ Server (PLS).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dyp49x844c4mja0qg01nilsbi09w7526izsk3pi5zpylmhmvbk2"))
+        (base32 "0bmwshwdlnbj15ki2vld832lbp6j1slyhvgmwrr8kjbhgk3v8vic"))
        (patches
         (search-patches "python-lsp-server-python-3.13-compatibility.patch"))))
     (build-system pyproject-build-system)
@@ -11899,7 +11899,9 @@ Server (PLS).")
           (add-after 'unpack 'relax-deps
             (lambda _
               (substitute* "pyproject.toml"
-                (("autopep8>=2.0.4,<2.1.0") "autopep8"))))
+                (("autopep8>=2.0.4,<2.1.0") "autopep8")
+                (("pycodestyle>=2.12.0,<2.13.0") "pycodestyle")
+                (("pyflakes>=3.2.0,<3.3.0") "pyflakes"))))
           (add-before 'check 'set-HOME
             (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
