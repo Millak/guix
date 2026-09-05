@@ -8755,24 +8755,22 @@ found in the go-openapi toolkit.")
 (define-public go-github-com-go-openapi-jsonpointer
   (package
     (name "go-github-com-go-openapi-jsonpointer")
-    (version "0.21.0")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/go-openapi/jsonpointer")
-             (commit (string-append "v" version))))
+              (url "https://github.com/go-openapi/jsonpointer")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17gb0ab2r61j4gqbpwgpz6cvf9jy91xwn11gkbg3b1rq797if7vc"))))
+        (base32 "09h055hislbq7rmknvhcnckf0wqy707xrj5w5pnah3yb7a6zcgbf"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/go-openapi/jsonpointer"))
     (native-inputs
-     (list go-github-com-stretchr-testify))
-    (propagated-inputs
-     (list go-github-com-go-openapi-swag))
+     (list go-github-com-go-openapi-testify-v2))
     (home-page "https://github.com/go-openapi/jsonpointer")
     (synopsis "JSON Pointer with structs")
     (description
