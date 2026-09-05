@@ -3613,27 +3613,23 @@ Security Token Service.")
 (define-public go-github-com-aws-smithy-go
   (package
     (name "go-github-com-aws-smithy-go")
-    (version "1.24.0")
+    (version "1.28.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/aws/smithy-go")
-             (commit (string-append "v" version))))
+              (url "https://github.com/aws/smithy-go")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1agg4krriqxrb6wf20a6rcgvxkiyaxbba2bmilpps97k3bcwrdld"))
+        (base32 "0j8bjr9xcq2r346kv2fdjwr31aapjqzfxz7dmpwxdlqs1607qwvf"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - github.com/aws/smithy-go/aws-http-auth
-            ;; - github.com/aws/smithy-go/codegen
-            ;; - github.com/aws/smithy-go/metrics/smithyotelmetrics
-            ;; - github.com/aws/smithy-go/tracing/smithyoteltracing
+            ;; Submodules with their own go.mod files and packaged separately.
             (for-each delete-file-recursively
                       (list "aws-http-auth"
+                            "aws-http-auth-schemes"
                             "codegen"
                             "metrics/smithyotelmetrics"
                             "tracing/smithyoteltracing"))))))
