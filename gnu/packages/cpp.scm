@@ -4028,6 +4028,36 @@ computing Fast Fourier transformations.  It supports multidimensional arrays,
 different floating point sizes and complex transformations.")
       (license license:bsd-3))))
 
+(define-public ppqsort
+  (package
+    (name "ppqsort")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/GabTux/PPQSort")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0h3py4g3d4vwk6k4w79nnq7cbhpr06hmazy90fyd0xq6cjkkw0qy"))))
+    ;; The cmake files (standalone, tests) include a meddling cmake helper which
+    ;; manages installing!  In addition, the cmake appears to be boilerplate,
+    ;; adding source/*.cpp, compiling, etc.; mostly no-ops because this is
+    ;; header only.
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan #~'(("./include" "/include"))))
+    (home-page "https://gabtux.github.io/PPQSort/")
+    (synopsis "Parallel quicksort library")
+    (description "@acronym{PPQSort, Parallel Pattern Quicksort} is an
+implementation of the parallel quicksort algorithm written only using C++20
+features, without external libraries.  It focuses on ease-of-use, a
+header-only implementation, and a user-friendly API.")
+    (license license:expat)))
+
 (define-public libbinio
   ;; The latest tagged version does not support CMake build.  This commit has
   ;; builds with CMake and has updated CMake version support.
