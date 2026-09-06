@@ -26113,19 +26113,25 @@ most complex network-level interference.")
 (define-public go-golang-zx2c4-com-wireguard
   (package
     (name "go-golang-zx2c4-com-wireguard")
-    (version "0.0.0-20250521234502-f333402bd9cb")
+    (properties '((commit . "ecfc5a8d54462e18e13c72173e2623d16d8e25a0")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260522210424-ecfc5a8d5446")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        ;; NOTE: module URL is a redirect
        ;; target: git.zx2c4.com/wireguard-go
        ;; source: golang.zx2c4.com/wireguard
+       ;; Mirror: https://github.com/WireGuard/wireguard-go
        (uri (git-reference
              (url "https://git.zx2c4.com/wireguard-go/")
-             (commit (go-version->git-ref version))))
+             (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h4rmdvssk939gk31f0sfwa1yaks72zk8rkcs7fj3qcvl8sgq6hr"))))
+        (base32 "1ixy4hv6hvgh9p48d8xng7dlph12vgsrsv8q08znwbabj2c3rmn0"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -26134,7 +26140,7 @@ most complex network-level interference.")
      (list go-golang-org-x-crypto
            go-golang-org-x-net
            go-golang-org-x-sys
-           go-gvisor-dev-gvisor))
+           go-gvisor-dev-gvisor-source))
     (home-page "https://git.zx2c4.com/wireguard")
     (synopsis "Implementation of WireGuard in Go")
     (description "This package is a Go Implementation of WireGuard.")
