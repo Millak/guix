@@ -2073,6 +2073,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/onnx-skip-model-downloads.patch		\
   %D%/packages/patches/onnxruntime-1.22.0-splittosequence-bool.patch    \
   %D%/packages/patches/openbios-aarch64-riscv64-support.patch	\
+  %D%/packages/patches/openboardview-remove-glad-dependency.patch       \
   %D%/packages/patches/openboardview-use-system-imgui.patch	\
   %D%/packages/patches/openboardview-use-system-mpc.patch	\
   %D%/packages/patches/openbox-add-fix-for-glib2-exposed-segfault.patch \

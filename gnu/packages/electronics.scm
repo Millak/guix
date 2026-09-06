@@ -5,7 +5,7 @@
 ;;; Copyright © 2018-2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017-2018, 2021, 2023-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2021-2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021-2023, 2025, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2025, 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2025-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -2668,84 +2668,75 @@ PSL.  It includes experimental support for Verilog and VHDL-2019.")
     (license license:gpl3+)))
 
 (define-public openboardview
-  (package
-    (name "openboardview")
-    (version "9.95.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/OpenBoardView/OpenBoardView")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (modules '((ice-9 ftw)
-                         (srfi srfi-26)
-                         (guix build utils)))
-              (snippet
-               '(with-directory-excursion "src"
-                  (define keep (list "." ".." "openboardview"))
-                  (for-each (lambda (f)
-                              (when (eq? 'directory (stat:type (lstat f)))
-                                (delete-file-recursively f)))
-                            (scandir "." (negate (cut member <> keep))))))
-              (patches
-               (search-patches "openboardview-use-system-imgui.patch"
-                               "openboardview-use-system-mpc.patch"))
-              (sha256
-               (base32
-                "1gkl91rcbwiapllxw5chwgzjq2p076h9bpp3nbh13mb2v3wc6qwa"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ;no test suite
-      #:imported-modules `((guix build glib-or-gtk-build-system)
-                           ,@%cmake-build-system-modules)
-      #:modules '((guix build cmake-build-system)
-                  (guix build utils)
-                  ((guix build glib-or-gtk-build-system) #:prefix gtk:))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'configure-glad
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "src/CMakeLists.txt"
-                (("add_subdirectory\\(glad\\)")
-                 (string-append
-                  ;; Configure Glad to use static Khronos XML specifications
-                  ;; instead of attempting to fetch them from the Internet.
-                  "option(GLAD_REPRODUCIBLE \"Reproducible build\" ON)\n"
-                  ;; Use the CMake files from our glad package.
-                  "add_subdirectory("
-                  (search-input-directory inputs "share/glad") ;source_dir
-                  " src/glad)\n")))))                          ;binary dir
-          (add-before 'configure 'dynamically-load-gtk-via-absolute-path
-            ;; The GTK library is not linked thus not present in the RUNPATH of
-            ;; the produced binary; the absolute path of the libraries must to
-            ;; the dynamic loader otherwise they aren't found.
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "src/openboardview/unix.cpp"
-                (("libgtk-3.so")
-                 (search-input-file inputs "lib/libgtk-3.so")))))
-          ;; Add the two extra phases from `glib-or-gtk-build-system'.
-          (add-after 'install 'glib-or-gtk-compile-schemas
-            (assoc-ref gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-          (add-after 'install 'glib-or-gtk-wrap
-            (assoc-ref gtk:%standard-phases 'glib-or-gtk-wrap)))))
-    (native-inputs
-     (list pkg-config
-           python-minimal-wrapper
-           glad-0.1
-           stb-image
-           utf8-h))
-    (inputs
-     (list fontconfig
-           gtk+
-           imgui
-           orangeduck-mpc
-           sdl2
-           sqlite
-           zlib))
-    (home-page "https://github.com/OpenBoardView/OpenBoardView")
-    (synopsis "Viewer for BoardView files")
-    (description "OpenBoardView is a viewer for BoardView files, which present
+  ;; There are a few important fixes not yet released.
+  (let ((commit "cc76e697c85efd2285134dfe2df0b7809e4a49d0")
+        (revision "0"))
+    (package
+      (name "openboardview")
+      (version (git-version "10.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/OpenBoardView/OpenBoardView")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (modules '((ice-9 ftw)
+                           (srfi srfi-26)
+                           (guix build utils)))
+                (snippet
+                 '(with-directory-excursion "src"
+                    (define keep (list "." ".." "openboardview"))
+                    (for-each (lambda (f)
+                                (when (eq? 'directory (stat:type (lstat f)))
+                                  (delete-file-recursively f)))
+                              (scandir "." (negate (cut member <> keep))))))
+                (patches
+                 (search-patches "openboardview-remove-glad-dependency.patch"
+                                 "openboardview-use-system-imgui.patch"
+                                 "openboardview-use-system-mpc.patch"))
+                (sha256
+                 (base32
+                  "1dm7pvqawixikk7xiywhalxq53v65295wsq41g8357g5b4if01p6"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f                       ;no test suite
+        #:imported-modules `((guix build glib-or-gtk-build-system)
+                             ,@%cmake-build-system-modules)
+        #:modules '((guix build cmake-build-system)
+                    (guix build utils)
+                    ((guix build glib-or-gtk-build-system) #:prefix gtk:))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'configure 'dynamically-load-gtk-via-absolute-path
+              ;; The GTK library is not linked thus not present in the RUNPATH of
+              ;; the produced binary; the absolute path of the libraries must to
+              ;; the dynamic loader otherwise they aren't found.
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "src/openboardview/unix.cpp"
+                  (("libgtk-3.so")
+                   (search-input-file inputs "lib/libgtk-3.so")))))
+            ;; Add the two extra phases from `glib-or-gtk-build-system'.
+            (add-after 'install 'glib-or-gtk-compile-schemas
+              (assoc-ref gtk:%standard-phases 'glib-or-gtk-compile-schemas))
+            (add-after 'install 'glib-or-gtk-wrap
+              (assoc-ref gtk:%standard-phases 'glib-or-gtk-wrap)))))
+      (native-inputs
+       (list pkg-config
+             python-minimal-wrapper
+             stb-image
+             utf8-h))
+      (inputs
+       (list fontconfig
+             gtk+
+             imgui-with-sdl2
+             orangeduck-mpc
+             sdl2
+             sqlite
+             zlib))
+      (home-page "https://github.com/OpenBoardView/OpenBoardView")
+      (synopsis "Viewer for BoardView files")
+      (description "OpenBoardView is a viewer for BoardView files, which present
 the details of a printed circuit board (PCB).  It comes with features
 such as:
 @itemize
@@ -2756,7 +2747,7 @@ such as:
 @item Configurable for running on slower systems
 @item Reads FZ (with key), BRD, BRD2, BDV and BV* formats.
 @end itemize")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public opencircuitx
   (package
