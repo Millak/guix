@@ -6786,6 +6786,37 @@ modules that provide Node.js compatibility.")
 fork of @url{https://github.com/google/gopacket}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-doridian-water
+  (package
+    (name "go-github-com-doridian-water")
+    (version "1.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Doridian/water")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zwydban8kgy2x09ffc7kfz8km9gn3j712pkx1xwqrh9394crr4l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f     ;tests require network interface access
+      #:import-path "github.com/Doridian/water"))
+    (propagated-inputs
+     (list go-github-com-doridian-gopacket
+           go-golang-org-x-sys
+           go-golang-zx2c4-com-wireguard))
+    (home-page "https://github.com/Doridian/water")
+    (synopsis "Simple TUN/TAP library written in native Go")
+    (description
+     "Package water is a simple TUN/TAP interface library that efficiently
+works with standard packages like io, bufio, etc..  Use waterutil with it to
+work with TUN/TAP packets/frames.  This is a fork of
+@url{https://github.com/songgao/water}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-dpotapov-go-spnego
   (package
     (name "go-github-com-dpotapov-go-spnego")
