@@ -16267,6 +16267,40 @@ does not necessarily conform to a fixed structure.")
 @code{OpenVPN} protocol in Go (client only).")
     (license license:gpl3)))
 
+(define-public go-github-com-ooni-netem
+  (package
+    (name "go-github-com-ooni-netem")
+    (version "0.0.0-20260715150927-e0a456040e27")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ooni/netem")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hs4lc90pw8g9ipk31iv9zss9x0dahvc06s9pxsw9rkw2sm0cm1b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ooni/netem"
+      #:test-flags #~(list "-vet=off")))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-montanaflynn-stats))
+    (propagated-inputs
+     (list go-github-com-apex-log
+           go-github-com-google-gopacket
+           go-github-com-miekg-dns
+           go-golang-org-x-crypto
+           go-gvisor-dev-gvisor-source))
+    (home-page "https://github.com/ooni/netem")
+    (synopsis "Network emulation for writing integration tests in Go")
+    (description
+     "Package netem is a framework to write integration tests that use TCP/IP
+stacks implemented in userspace.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-ooni-oohttp
   (package
     (name "go-github-com-ooni-oohttp")
