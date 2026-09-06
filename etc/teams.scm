@@ -1529,7 +1529,7 @@ the \"texlive\" importer."
 (define-member (person "Ashvith Shetty"
                        "ashvithshetty0010@zohomail.in"
                        "Ashvith")
-  games go javascript sysadmin xfce)
+  javascript xfce)
 
 (define-member (person "Konrad Hinsen"
                        "guix@khinsen.fastmail.net"
