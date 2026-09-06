@@ -12113,31 +12113,30 @@ algorithms in Go.")
 (define-public go-github-com-envoyproxy-protoc-gen-validate
   (package
     (name "go-github-com-envoyproxy-protoc-gen-validate")
-    (version "1.2.1")
+    (version "1.3.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/bufbuild/protoc-gen-validate")
-             (commit (string-append "v" version))))
+              (url "https://github.com/bufbuild/protoc-gen-validate")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yd77gnsn9bbiihbkdyn9klwbv314l6ar83z4kivpn9mr93xysch"))
+        (base32 "0ijl7mzvmljcaz5aqmyg1kcc61pn0lnca579xxqbbdjdfgcxis32"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Submodules with their own go.mod files and packaged separately:
-            ;;
-            ;; - github.com/envoyproxy/protoc-gen-validate/tests
+            ;; Submodules with their own go.mod files and packaged separately.
             (delete-file-recursively "tests")))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
-      #:import-path "github.com/envoyproxy/protoc-gen-validate"))
+      #:import-path "github.com/envoyproxy/protoc-gen-validate"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
      (list go-github-com-iancoleman-strcase
-           go-github-com-lyft-protoc-gen-star-v2-next
+           go-github-com-lyft-protoc-gen-star-v2
            go-golang-org-x-net
            go-google-golang-org-protobuf))
     (home-page "https://github.com/envoyproxy/protoc-gen-validate")
