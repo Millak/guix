@@ -893,32 +893,32 @@ the default AWS credential chain.")
 (define-public go-github-com-prometheus-statsd-exporter
   (package
     (name "go-github-com-prometheus-statsd-exporter")
-    (version "0.28.0")
+    (version "0.31.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/prometheus/statsd_exporter")
-             (commit (string-append "v" version))))
+              (url "https://github.com/prometheus/statsd_exporter")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h7ypmsx1j6x1p5wdj03i3jzwms7ab03asn2capl1gg6x07k57w7"))))
+        (base32 "0fdav745fqg4b5ia8w7g9xk240w2d88l0d1s7x91pipg7kra7pga"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/prometheus/statsd_exporter"
-      #:embed-files #~(list "landing_page.css" "landing_page.html")))
+      #:embed-files #~(list "landing_page.css" "landing_page.html")
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-stvp-go-udp-testing))
     (propagated-inputs
      (list go-github-com-alecthomas-kingpin-v2
-           go-github-com-go-kit-log
            go-github-com-golang-groupcache
            go-github-com-prometheus-client-golang
            go-github-com-prometheus-client-model
            go-github-com-prometheus-common
            go-github-com-prometheus-exporter-toolkit
-           go-gopkg-in-yaml-v2))
+           go-go-yaml-in-yaml-v2))
     (home-page "https://github.com/prometheus/statsd_exporter")
     (synopsis "StatsD to Prometheus metrics exporter")
     (description
