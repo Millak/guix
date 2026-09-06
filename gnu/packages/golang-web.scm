@@ -114,7 +114,7 @@
 (define-public go-0xacab-org-leap-geoip-service
   (package
     (name "go-0xacab-org-leap-geoip-service")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method git-fetch)
@@ -123,7 +123,7 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hsliznb7x61x7nx0k90jk0qqcbjqx7mbglf56xg793v9xlbiisj"))))
+        (base32 "1i9hffjf4l51si02brqgg0iz3xcpjsdfzr2m5l67396azckhysr3"))))
     (build-system go-build-system)
     (arguments
      (list
