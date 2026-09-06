@@ -192,38 +192,6 @@ rendering modes are: Bitmaps, Anti-aliased pixmaps, Texture maps, Outlines,
 Polygon meshes, and Extruded polygon meshes.")
     (license license:x11)))
 
-(define-public glad-0.1
-  (package
-    (name "glad")
-    (version "0.1.36")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Dav1dde/glad")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0m55ya1zrmg6n2cljkajy80ilmi5sblln8742fm0k1sw9k7hzn8n"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; XXX: testing seems complex, see utility/compiletest.sh
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'install-cmakelists.txt
-            (lambda _
-              (let ((share (string-append #$output "/share/"
-                                          #$(package-name this-package))))
-                (install-file "CMakeLists.txt" share)))))))
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/Dav1dde/glad")
-    (synopsis "Multi-language GL/GLES/EGL/GLX/WGL loader generator")
-    (description "Glad uses the official Khronos XML specifications to
-generate a GL/GLES/EGL/GLX/WGL loader tailored for specific requirements.")
-    (license license:expat)))
-
 (define-public glad
   (package
     (name "glad")

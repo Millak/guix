@@ -43,16 +43,16 @@
 (define-public imgui
   (package
     (name "imgui")
-    (version "1.92.2b")
+    (version "1.92.9b")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/ocornut/imgui")
-                    (commit (string-append "v" version))))
+                     (url "https://github.com/ocornut/imgui")
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "108dvbsqyf9am0f744z3ymgfppw1ad0amqkbwwwg2kqdm85dq1wv"))
+                "0m35zy4j1m7pvlymxhmg8gcll58acil0il1x79iyyakksylvwd92"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove bundled fonts.
