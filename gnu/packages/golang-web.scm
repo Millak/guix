@@ -12831,16 +12831,21 @@ port mapping and discovering the external IP address of a firewall.")
 (define-public go-github-com-jaytaylor-html2text
   (package
     (name "go-github-com-jaytaylor-html2text")
-    (version "0.0.0-20230321000545-74c2419ad056")
+    (properties '((commit . "1a4bdc82ececa5f94e256e479a5d4fb0ea01b640")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260303211410-1a4bdc82ecec")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/jaytaylor/html2text")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/jaytaylor/html2text")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14r0ph8w4yxx129kfvj0qbx4cyid65md93qmwlz2cly4iwjnr7w2"))
+        (base32 "1pyrxr44x16cn86zkpq033x05b2hpq0s5kr34q74fvqy7ck9n8z8"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -12852,9 +12857,9 @@ port mapping and discovering the external IP address of a firewall.")
      (list
       #:import-path "github.com/jaytaylor/html2text"))
     (propagated-inputs
-     (list go-golang-org-x-net
-           go-github-com-olekukonko-tablewriter-0.0.5
-           go-github-com-ssor-bom))
+     (list go-github-com-olekukonko-tablewriter
+           go-github-com-ssor-bom
+           go-golang-org-x-net))
     (home-page "https://github.com/jaytaylor/html2text")
     (synopsis "Convert HTML emails to text")
     (description
@@ -27890,16 +27895,17 @@ and unmarshaling interface implementation for custom struct type(s).")))
 go-git-sr-ht-emersion-gqlclient package.")))
 
 (define-public go-html2text
-  (package
-    (inherit go-github-com-jaytaylor-html2text)
+  (package/inherit go-github-com-jaytaylor-html2text
     (name "go-html2text")
     (arguments
-     (list
-      #:install-source? #f
-      #:import-path "github.com/jaytaylor/html2text/cmd/html2text"
-      #:unpack-path "github.com/jaytaylor/html2text"))
+     (substitute-keyword-arguments arguments
+       ((#:import-path _) "github.com/jaytaylor/html2text/cmd/html2text")
+       ((#:install-source? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:unpack-path _ "") "github.com/jaytaylor/html2text")))
     (native-inputs
-     (list go-github-com-pborman-getopt))
+     (package-propagated-inputs go-github-com-jaytaylor-html2text))
+    (propagated-inputs '())
     (description
      (string-append (package-description go-github-com-jaytaylor-html2text)
                     " This package provides an command line interface (CLI)
