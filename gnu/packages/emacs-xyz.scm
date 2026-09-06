@@ -4938,29 +4938,32 @@ compile}.")
     (license license:gpl3+)))
 
 (define-public emacs-flymake-languagetool
-  (package
-    (name "emacs-flymake-languagetool")
-    (version "0.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url
-              "https://github.com/emacs-languagetool/flymake-languagetool")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1sylnd4hybxnygcgxqw8p7mlp0r000n6f44y5fq3sv9518l5mflz"))))
-    (build-system emacs-build-system)
-    (arguments (list #:tests? #f)) ; no tests included
-    (native-inputs (list emacs-s))
-    (home-page "https://github.com/emacs-languagetool/flymake-languagetool")
-    (synopsis "Flymake support for LanguageTool")
-    (description
-     "This package implements a flymake backend to interface with LanguageTool,
+  ;; Last release was in 2021.
+  (let ((commit "fcd9904535253ac4470c129549c9470c3bc80550")
+        (revision "1"))
+    (package
+      (name "emacs-flymake-languagetool")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url
+                 "https://github.com/emacs-languagetool/flymake-languagetool")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1sylnd4hybxnygcgxqw8p7mlp0r000n6f44y5fq3sv9518l5mflz"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f)) ; no tests included
+      (native-inputs (list emacs-s))
+      (home-page "https://github.com/emacs-languagetool/flymake-languagetool")
+      (synopsis "Flymake support for LanguageTool")
+      (description
+       "This package implements a flymake backend to interface with LanguageTool,
 a proofreading software for different languages.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-flymake-perlcritic
   (let ((commit "311743e97d2f705e76755697eea9ff451a39dd64")
