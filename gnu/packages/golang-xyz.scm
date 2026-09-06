@@ -27819,6 +27819,60 @@ ordinarily fail).")
 logging.")
     (license license:expat)))
 
+(define-public go-github-com-rubenv-sql-migrate
+  (package
+    (name "go-github-com-rubenv-sql-migrate")
+    (version "1.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rubenv/sql-migrate")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "038ic13wmm75fcp35fhl1cxqjla819csyvkfy6dv24sa1yk2mbc6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Source only for go-github-com-ooni-probe-engine.
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/rubenv/sql-migrate"))
+    (native-inputs
+     (list go-github-com-mitchellh-cli
+           go-gopkg-in-check-v1
+           go-github-com-olekukonko-tablewriter))
+    (propagated-inputs
+     (list go-github-com-go-sql-driver-mysql
+           go-github-com-lib-pq
+           go-github-com-mattn-go-sqlite3
+           go-gopkg-in-yaml-v2
+
+           ;; TODO: Complete packaging.
+           ;; go-github-com-denisenkom-go-mssqldb
+           ;; go-github-com-go-gorp-gorp-v3
+           ;; go-github-com-godror-godror
+           #;go-github-com-mattn-go-oci8))
+    (home-page "https://github.com/rubenv/sql-migrate")
+    (synopsis "SQL schema migration tool for Go")
+    (description
+     "This packages provides a SQL Schema migration tool for Go.
+
+Features
+@itemize
+@item usable as a CLI tool or as a library
+@item supports SQLite, PostgreSQL, MySQL, MSSQL and Oracle databases (through
+gorp)
+@item can embed migrations into your application
+@item migrations are defined with SQL for full flexibility
+@item atomic migrations
+@item up/down migrations to allow rollback
+@item supports multiple database types in one project
+@item works great with other libraries such as @code{sqlx}
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-russross-blackfriday
   (package
     (name "go-github-com-russross-blackfriday")
