@@ -827,7 +827,7 @@ developed with the aim of being used with the Librem 5 phone.")
 (define-public polari
   (package
     (name "polari")
-    (version "46.0")
+    (version "50.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/polari/"
@@ -835,7 +835,7 @@ developed with the aim of being used with the Librem 5 phone.")
                                   "/polari-" version ".tar.xz"))
               (sha256
                (base32
-                "0c8a6q6g1mgpc9g423rgqplbpjwb7zq1bvylad7jk2ci6yg71cfj"))))
+                "1nv7wlvfsz5r23v76gpnwhs4m9mgfjfn53nhb9yzs9a74swrca55"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
