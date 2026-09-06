@@ -16209,6 +16209,64 @@ does not necessarily conform to a fixed structure.")
 (define-deprecated-package go-github-com-olivere-elastic
   go-github-com-olivere-elastic-v7)
 
+(define-public go-github-com-ooni-minivpn
+  (package
+    (name "go-github-com-ooni-minivpn")
+    (version "0.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ooni/minivpn")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07qs7z3255xi35c2ypbizxdp6mn5xm3xlzlsf63ncyi1khs6xwhb"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Module name has been changed upstream.
+            (substitute* (find-files "." "\\.go$")
+              (("git.torproject.org/pluggable-transports/goptlib.git")
+               "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/goptlib"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/ooni/minivpn"
+      #:test-flags #~(list "-vet=off")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-integration-tests
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; Depends on github.com/google/martian.
+                (delete-file-recursively
+                 "internal/tlssession/tlshandshake_test.go")
+                ;; Depends on github.com/ory/dockertest/v3.
+                (delete-file-recursively "tests/integration")))))))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-apex-log
+           go-github-com-doridian-water
+           go-github-com-google-gopacket
+           go-github-com-google-uuid
+           go-github-com-jackpal-gateway
+           go-github-com-refraction-networking-utls
+           go-gitlab-com-yawning-obfs4-git
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib
+           go-golang-org-x-exp
+           go-golang-org-x-net
+           go-golang-org-x-sync))
+    (home-page "https://github.com/ooni/minivpn")
+    (synopsis "Minimalistic OpenVPN implementation in Go")
+    (description
+     "This package provides a minimalistic implementation of the
+@code{OpenVPN} protocol in Go (client only).")
+    (license license:gpl3)))
+
 (define-public go-github-com-ooni-oohttp
   (package
     (name "go-github-com-ooni-oohttp")
