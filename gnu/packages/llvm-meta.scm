@@ -19,6 +19,7 @@
 
 (define-module (gnu packages llvm-meta)
   #:use-module (guix utils)
+  #:use-module (srfi srfi-1)
   #:export (clang-compiler-cpu-architectures))
 
 (define (clang-compiler-cpu-architectures version)
@@ -37,8 +38,7 @@
             '("power8" "power9" "power10" "powerpc64le"))
            (else '())))
       ("x86_64"
-       ,@(cond
-           ((version>=? version "23.0")
+       ,@(let* ((clang-23-cpu-architectures
             '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
               "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
               "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
@@ -54,110 +54,48 @@
               "bdver2" "bdver3" "bdver4" "znver1" "znver2" "znver3" "znver4"
               "znver5" "znver6" "c86-4g-m4" "c86-4g-m6" "c86-4g-m7" "c86-4g-m8"
               "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
+              (clang-22-cpu-architectures
+                (fold delete clang-23-cpu-architectures
+                      '("znver6" "c86-4g-m4" "c86-4g-m6" "c86-4g-m7"
+                        "c86-4g-m8")))
+              (clang-20-cpu-architectures
+                (fold delete clang-22-cpu-architectures
+                      '("wildcatlake" "novalake")))
+              (clang-19-cpu-architectures
+                (delete "diamondrapids" clang-20-cpu-architectures))
+              (clang-18-cpu-architectures
+                (delete "znver5" clang-19-cpu-architectures))
+              (clang-17-cpu-architectures
+                (fold delete clang-18-cpu-architectures
+                      '("arrowlake" "arrowlake-s" "lunarlake" "gracemont"
+                        "pantherlake" "clearwaterforest")))
+              (clang-16-cpu-architectures
+                (delete "graniterapids-d" clang-17-cpu-architectures))
+              (clang-13-cpu-architectures
+                (fold delete clang-16-cpu-architectures
+                      '("raptorlake" "meteorlake" "sierraforest" "grandridge"
+                        "graniterapids" "emeraldrapids" "znver4")))
+              (clang-9-cpu-architectures
+                (fold delete clang-13-cpu-architectures
+                      '("rocketlake" "tigerlake" "sapphirerapids" "alderlake"
+                        "znver3" "x86-64-v2" "x86-64-v3" "x86-64-v4"))))
+         (cond
+           ((version>=? version "23.0")
+            clang-23-cpu-architectures)
            ((version>=? version "22.0")
-            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
-              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
-              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
-              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
-              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
-              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
-              "alderlake" "raptorlake" "arrowlake" "arrowlake-s" "lunarlake"
-              "gracemont" "pantherlake" "meteorlake" "wildcatlake" "novalake"
-              "sierraforest" "grandridge" "graniterapids" "graniterapids-d"
-              "emeraldrapids" "clearwaterforest" "diamondrapids" "knl" "knm"
-              "k8" "athlon64" "athlon-fx" "opteron" "k8-sse3" "athlon64-sse3"
-              "opteron-sse3" "amdfam10" "barcelona" "btver1" "btver2" "bdver1"
-              "bdver2" "bdver3" "bdver4" "znver1" "znver2" "znver3" "znver4"
-              "znver5" "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
+            clang-22-cpu-architectures)
            ((version>=? version "20.0")
-            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
-              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
-              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
-              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
-              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
-              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
-              "alderlake" "raptorlake" "arrowlake" "arrowlake-s" "lunarlake"
-              "gracemont" "pantherlake" "meteorlake" "sierraforest" "grandridge"
-              "graniterapids" "graniterapids-d" "emeraldrapids"
-              "clearwaterforest" "diamondrapids" "knl" "knm" "k8" "athlon64"
-              "athlon-fx" "opteron" "k8-sse3" "athlon64-sse3" "opteron-sse3"
-              "amdfam10" "barcelona" "btver1" "btver2" "bdver1" "bdver2"
-              "bdver3" "bdver4" "znver1" "znver2" "znver3" "znver4" "znver5"
-              "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
+            clang-20-cpu-architectures)
            ((version>=? version "19.0")
-            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
-              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
-              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
-              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
-              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
-              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
-              "alderlake" "raptorlake" "arrowlake" "arrowlake-s" "lunarlake"
-              "gracemont" "pantherlake" "meteorlake" "sierraforest" "grandridge"
-              "graniterapids" "graniterapids-d" "emeraldrapids"
-              "clearwaterforest" "knl" "knm" "k8" "athlon64" "athlon-fx"
-              "opteron" "k8-sse3" "athlon64-sse3" "opteron-sse3" "amdfam10"
-              "barcelona" "btver1" "btver2" "bdver1" "bdver2" "bdver3" "bdver4"
-              "znver1" "znver2" "znver3" "znver4" "znver5" "x86-64" "x86-64-v2"
-              "x86-64-v3" "x86-64-v4"))
+            clang-19-cpu-architectures)
            ((version>=? version "18.0")
-            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
-              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
-              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
-              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
-              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
-              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
-              "alderlake" "raptorlake" "arrowlake" "arrowlake-s" "lunarlake"
-              "gracemont" "pantherlake" "meteorlake" "sierraforest" "grandridge"
-              "graniterapids" "graniterapids-d" "emeraldrapids"
-              "clearwaterforest" "knl" "knm" "k8" "athlon64" "athlon-fx"
-              "opteron" "k8-sse3" "athlon64-sse3" "opteron-sse3" "amdfam10"
-              "barcelona" "btver1" "btver2" "bdver1" "bdver2" "bdver3" "bdver4"
-              "znver1" "znver2" "znver3" "znver4" "x86-64" "x86-64-v2"
-              "x86-64-v3" "x86-64-v4"))
+            clang-18-cpu-architectures)
            ((version>=? version "17.0")
-            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
-              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
-              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
-              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
-              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
-              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
-              "alderlake" "raptorlake" "meteorlake" "sierraforest" "grandridge"
-              "graniterapids" "graniterapids-d" "emeraldrapids" "knl" "knm" "k8"
-              "athlon64" "athlon-fx" "opteron" "k8-sse3" "athlon64-sse3"
-              "opteron-sse3" "amdfam10" "barcelona" "btver1" "btver2" "bdver1"
-              "bdver2" "bdver3" "bdver4" "znver1" "znver2" "znver3" "znver4"
-              "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
+            clang-17-cpu-architectures)
            ((version>=? version "16.0")
-            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
-              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
-              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
-              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
-              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
-              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
-              "alderlake" "raptorlake" "meteorlake" "sierraforest" "grandridge"
-              "graniterapids" "emeraldrapids" "knl" "knm" "k8" "athlon64"
-              "athlon-fx" "opteron" "k8-sse3" "athlon64-sse3" "opteron-sse3"
-              "amdfam10" "barcelona" "btver1" "btver2" "bdver1" "bdver2"
-              "bdver3" "bdver4" "znver1" "znver2" "znver3" "znver4" "x86-64"
-              "x86-64-v2" "x86-64-v3" "x86-64-v4"))
+            clang-16-cpu-architectures)
            ((version>=? version "13.0")
-            '("nocona" "core2" "penryn" "bonnell" "atom" "silvermont" "slm"
-              "goldmont" "goldmont-plus" "tremont" "nehalem" "corei7" "westmere"
-              "sandybridge" "corei7-avx" "ivybridge" "core-avx-i" "haswell"
-              "core-avx2" "broadwell" "skylake" "skylake-avx512" "skx"
-              "cascadelake" "cooperlake" "cannonlake" "icelake-client"
-              "rocketlake" "icelake-server" "tigerlake" "sapphirerapids"
-              "alderlake" "knl" "knm" "k8" "athlon64" "athlon-fx" "opteron"
-              "k8-sse3" "athlon64-sse3" "opteron-sse3" "amdfam10" "barcelona"
-              "btver1" "btver2" "bdver1" "bdver2" "bdver3" "bdver4" "znver1"
-              "znver2" "znver3" "x86-64" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
+            clang-13-cpu-architectures)
            ((version>=? version "9.0")
-            '("atom" "silvermont" "slm" "goldmont" "goldmont-plus" "tremont"
-              "nehalem" "corei7" "westmere" "sandybridge" "corei7-avx"
-              "ivybridge" "core-avx-i" "haswell" "core-avx2" "broadwell"
-              "skylake" "skylake-avx512" "skx" "cascadelake" "cooperlake"
-              "cannonlake" "icelake-client" "icelake-server" "knl" "knm" "k8"
-              "athlon64" "athlon-fx" "opteron" "k8-sse3" "athlon64-sse3"
-              "opteron-sse3" "amdfam10" "barcelona" "btver1" "btver2" "bdver1"
-              "bdver2" "bdver3" "bdver4" "znver1" "znver2" "x86-64"))
-           (else '()))))))
+            clang-9-cpu-architectures)
+           (else '())))))))
