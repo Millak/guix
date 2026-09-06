@@ -21615,16 +21615,21 @@ that writes tinted (colorized) logs.  The output format is inspired by the
 (define-public go-github-com-loft-sh-log
   (package
     (name "go-github-com-loft-sh-log")
-    (version "0.0.0-20250610153027-c2f046135b12")
+    (properties '((commit . "874a69680b1839d6b8373678ce4c24528ff4d3dd")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260812120051-874a69680b18")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/loft-sh/log")
-              (commit (go-version->git-ref version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "062i269ikh9y45lnl1v3qfcncp00nw4f9rzjpx98xs078nl5j3ah"))
+        (base32 "0y36ls30zvsmb72q52bmyscdq8wg3aq817kmjaxwkmrij0qc6jgq"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -21643,7 +21648,7 @@ that writes tinted (colorized) logs.  The output format is inspired by the
            go-github-com-k0kubun-go-ansi
            go-github-com-mgutz-ansi
            go-github-com-moby-term
-           go-github-com-olekukonko-tablewriter-0.0.5
+           go-github-com-olekukonko-tablewriter-0.0.5     ;hard dependency
            go-github-com-pkg-errors
            go-github-com-sirupsen-logrus
            go-github-com-sytten-logrus-zap-hook
