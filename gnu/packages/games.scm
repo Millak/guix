@@ -1249,7 +1249,12 @@ Quizzes: arithmetic and quiz.")
            #:configure-flags
            (if (target-hurd?)
                #~(list "CPPFLAGS=-DPATH_MAX=4096")
-               #~(list))))
+               #~(list))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'install 'fix-man-page
+                 (lambda _
+                   (mkdir-p (in-vicinity #$output "share/man/man6")))))))
     (inputs (list ncurses))
     (synopsis "Original rogue game")
     (description
