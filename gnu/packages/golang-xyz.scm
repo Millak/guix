@@ -31972,6 +31972,50 @@ codec/encoding library for BINC, MSGPACK, CBOR, JSON.")
 file(.ini) parser.")
     (license license:asl2.0)))
 
+(define-public go-github-com-upper-db-v4
+  (package
+    (name "go-github-com-upper-db-v4")
+    (version "4.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/upper/db")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sncqwvz7cy499cf6szpmlj1af9s008s2600ak4q106zbx2409zf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/upper/db/v4"
+      ;; XXX: Remove when all inputs are packaged.
+      #:test-subdirs #~(list "." "internal/reflectx")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-sql-driver-mysql
+           go-github-com-google-uuid
+           go-github-com-jackc-pgtype
+           go-github-com-jackc-pgx-v5
+           go-github-com-lib-pq
+           go-github-com-mattn-go-sqlite3
+           go-github-com-sirupsen-logrus
+           go-go-mongodb-org-mongo-driver
+
+           ;; TODO: Complete packaging.
+           ;; go-github-com-denisenkom-go-mssqldb
+           ;; go-github-com-segmentio-fasthash
+           #;go-modernc-org-ql))
+    (home-page "https://github.com/upper/db")
+    (synopsis "Data Access Layer with ORM-like features for Go")
+    (description
+     "Package db (or upper/db) provides an agnostic data access layer to work
+with different databases - PostgreSQL, MySQL, MSSQL, CockroachDB, MongoDB, QL,
+and SQLite.")
+    (license license:expat)))
+
 (define-public go-github-com-urfave-cli
   (package
     (name "go-github-com-urfave-cli")
