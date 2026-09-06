@@ -6754,6 +6754,38 @@ modules that provide Node.js compatibility.")
             go-golang-org-x-net
             go-golang-org-x-text)))))
 
+(define-public go-github-com-doridian-gopacket
+  (package
+    (name "go-github-com-doridian-gopacket")
+    (version "1.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Doridian/gopacket")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xhm6n8ywd8fwwq3agalgjd2bqxgf4kfa45pd90gzf9j2zy3nikd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Doridian/gopacket"
+      ;; XXX: pfring/pfring.go:14:10: fatal error: pfring.h: No such file or
+      ;; directory. Check how to fix all tests.
+      #:test-subdirs #~(list ".")))
+    (propagated-inputs
+     (list go-github-com-vishvananda-netlink
+           go-github-com-vishvananda-netns
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/Doridian/gopacket")
+    (synopsis "Provides packet processing capabilities for Go")
+    (description
+     "Package gopacket provides packet decoding for the Go language.  It's a
+fork of @url{https://github.com/google/gopacket}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-dpotapov-go-spnego
   (package
     (name "go-github-com-dpotapov-go-spnego")
