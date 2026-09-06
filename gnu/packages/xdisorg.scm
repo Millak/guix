@@ -2419,7 +2419,15 @@ natural language input and provide results.")
                 "123apmgs6x2zfv1q57dyl4mwqf0vsw5ndh5jsg6p3fvhr66l1aja"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f))                      ;no test target
+     (list
+      #:tests? #f                       ; no test target
+      #:phases
+      #~(modify-phases %standard-phases ; add missing libm dependency
+          (add-before 'configure 'fix-tint2conf-link
+            (lambda _
+              (substitute* "src/tint2conf/CMakeLists.txt"
+                (("\\$\\{RSVG_LIBRARIES\\} \\)")
+                 "${RSVG_LIBRARIES} m )")))))))
     (inputs
      (list gtk+
            imlib2
