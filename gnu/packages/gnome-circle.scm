@@ -838,27 +838,28 @@ developed with the aim of being used with the Librem 5 phone.")
                 "1nv7wlvfsz5r23v76gpnwhs4m9mgfjfn53nhb9yzs9a74swrca55"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           (lambda _
-             (substitute* "meson.build"
-               (("gtk_update_icon_cache: true")
-                "gtk_update_icon_cache: false"))))
-         (add-after 'install 'fix-desktop-file
-           ;; Hard-code launcher to be on the safe side.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* (search-input-file
-                           outputs
-                           "share/applications/org.gnome.Polari.desktop")
-               (("Exec=.*")
-                (string-append "Exec=" (search-input-file outputs "bin/polari")
-                               "\n")))))
-         (add-after 'glib-or-gtk-wrap 'wrap-typelib
-           (lambda* (#:key outputs #:allow-other-keys)
-             (wrap-program (search-input-file outputs "bin/polari")
-               `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
+          (add-after 'install 'fix-desktop-file
+            ;; Hard-code launcher to be on the safe side.
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* (search-input-file
+                            outputs
+                            "share/applications/org.gnome.Polari.desktop")
+                (("Exec=.*")
+                 (string-append "Exec=" (search-input-file outputs "bin/polari")
+                                "\n")))))
+          (add-after 'glib-or-gtk-wrap 'wrap-typelib
+            (lambda* (#:key outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/polari")
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (native-inputs
      (list desktop-file-utils
            gettext-minimal
