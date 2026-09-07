@@ -9831,23 +9831,22 @@ German and Dutch stemmers as sub-packages.")
   (package
     (inherit go-github-com-deckarep-golang-set)
     (name "go-github-com-deckarep-golang-set-v2")
-    (version "2.6.0")
+    (version "2.9.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/deckarep/golang-set")
-             (commit (string-append "v" version))))
+              (url "https://github.com/deckarep/golang-set")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yvmra0hfcdzyyw51k0gnnd13zklvsacja0qkd0j1wjhpqmmfbcy"))))
+        (base32 "1x9smx8ixw75ks801r6lrhl0nny27mr0gssq0qi63xyqyy4cnjnh"))))
     (arguments
      (list
-      #:import-path "github.com/deckarep/golang-set/v2"))
-    (native-inputs
-     (list go-github-com-stretchr-testify))
+      #:import-path "github.com/deckarep/golang-set/v2"
+      #:test-flags #~(list "-vet=off")))
     (propagated-inputs
-     (list go-github-com-elliotchance-orderedmap-v2))))
+     (list go-go-mongodb-org-mongo-driver))))
 
 (define-public go-github-com-decred-dcrd-container-lru
   (package
