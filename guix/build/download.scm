@@ -307,15 +307,24 @@ host name without trailing dot."
             "gnutls: [~a|~a] ~a" (getpid) level str))
 
   (load-gnutls)
-  (let ((session  (make-session connection-end/client))
+
+  (define (gnutls-defined? sym)
+    (module-defined? (resolve-interface '(gnutls)) sym))
+
+  (define (%make-session)
+    ;; If the port is non-blocking, tell GnuTLS
+    (if (logand O_NONBLOCK (fcntl port F_GETFL))
+        (make-session connection-end/client connection-flag/nonblock)
+        (make-session connection-end/client)))
+
+  (let ((session  (%make-session))
         (ca-certs (%x509-certificate-directory)))
 
     ;; Some servers such as 'cloud.github.com' require the client to support
     ;; the 'SERVER NAME' extension.  However, 'set-session-server-name!' is
     ;; not available in older GnuTLS releases.  See
     ;; <http://bugs.gnu.org/18526> for details.
-    (if (module-defined? (resolve-interface '(gnutls))
-                         'set-session-server-name!)
+    (if (gnutls-defined? 'set-session-server-name!)
         (set-session-server-name! session server-name-type/dns server)
         (format (current-error-port)
                 "warning: TLS 'SERVER NAME' extension not supported~%"))
@@ -344,7 +353,20 @@ host name without trailing dot."
         (lambda ()
           (handshake session))
         (lambda (key err proc . rest)
-          (cond ((eq? err error/warning-alert-received)
+          (cond ((and
+                  (or (eq? err error/again)
+                      (eq? err error/interrupted))
+                  ;; Guile-GnuTLS >= 4.0.0
+                  (gnutls-defined? 'record-get-direction))
+
+                 (if (= 0 (record-get-direction session))
+                     ((current-read-waiter) port)
+                     ((current-write-waiter) port))
+
+                 ;; These errors are expected and just signal that
+                 ;; GnuTLS was interrupted, so don't count the retry.
+                 (loop retries))
+                ((eq? err error/warning-alert-received)
                  ;; Like Wget, do no stop upon non-fatal alerts such as
                  ;; 'alert-description/unrecognized-name'.
                  (format (current-error-port)
@@ -372,8 +394,7 @@ host name without trailing dot."
 
     (let ((record (session-record-port session)))
       (setvbuf record 'block)
-      (if (module-defined? (resolve-interface '(gnutls))
-                           'set-session-record-port-close!) ;GnuTLS >= 3.7.7
+      (if (gnutls-defined? 'set-session-record-port-close!) ;GnuTLS >= 3.7.7
           (let ((close-wrapped-port (lambda (_) (close-port port))))
             (set-session-record-port-close! record close-wrapped-port)
             record)
