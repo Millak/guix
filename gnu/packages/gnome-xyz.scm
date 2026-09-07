@@ -1043,10 +1043,20 @@ Requires the focus-timer application to be installed.")
                              (string-append
                               "#!" (search-input-file inputs "/bin/gjs") " -m"))))
                         '("installed-tests/minijasmine"
-                          "src/gsconnect-preferences"
                           "src/service/nativeMessagingHost.js"
                           "src/service/daemon.js"
                           "webextension/gettext.js"))))
+          (add-after 'unpack 'patch-gsconnect-preferences
+            (lambda* (#:key inputs #:allow-other-keys)
+              (call-with-output-file "src/gsconnect-preferences"
+                (lambda (port)
+                  (display (string-append
+                            "#!/usr/bin/env sh\n"
+                            "exec " (search-input-file inputs "/bin/gjs")
+                            " -m " #$output "/share/gnome-shell"
+                            "/extensions/gsconnect@andyholmes.github.io"
+                            "/gsconnect-preferences.js\n")
+                           port)))))
           (add-before 'configure 'fix-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((gapplication (search-input-file inputs "/bin/gapplication"))
@@ -1071,7 +1081,11 @@ Requires the focus-timer application to be installed.")
                                  ".prepend_search_path(path));\n")
                                 output)
                                (dump-port input output))))
-                          '("src/extension.js" "src/prefs.js")))))
+                          '("src/extension.js" "src/prefs.js"))
+                (substitute* (list "src/prefs.js" "src/service/daemon.js")
+                  (("spawnv\\(\\['gjs'")
+                   (string-append
+                    "spawnv(['" (search-input-file inputs "/bin/gjs") "'"))))))
           (add-after 'install 'wrap-programs
             (lambda _
               (let* ((out #$output)
