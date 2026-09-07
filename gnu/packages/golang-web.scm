@@ -455,6 +455,7 @@ custom rules.  It's the next generation of
             (for-each delete-file-recursively
                       (list "auth"
                             "compute/metadata"
+                            "datacatalog"
                             "iam"
                             "kms"
                             "logging"
@@ -662,6 +663,55 @@ cloud.google.com/go/auth and golang.org/x/oauth2.")
     (description
      "This package provides access to Google Compute Engine (GCE) metadata and
 API service accounts for Go.")
+    (license license:asl2.0)))
+
+(define-public go-cloud-google-com-go-datacatalog
+  (package
+    (name "go-cloud-google-com-go-datacatalog")
+    (version "1.27.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/google-cloud-go")
+              (commit (go-version->git-ref version #:subdir "datacatalog"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qrhsn90v1myvyd46pjvg02pzwqzny1v3f75jdby03bbdcd7al9m"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "." "datacatalog")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "cloud.google.com/go/datacatalog"
+      #:unpack-path "cloud.google.com/go"))
+    (propagated-inputs
+     (list go-cloud-google-com-go-iam
+           go-cloud-google-com-go-longrunning
+           go-github-com-google-uuid
+           go-github-com-googleapis-gax-go-v2
+           go-go-opentelemetry-io-otel-trace
+           go-google-golang-org-api
+           go-google-golang-org-genproto
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://cloud.google.com/go")
+    (synopsis "Google Cloud Data Catalog API")
+    (description
+     "This package provides a Go Client Library for Google Cloud Data Catalog
+ API.")
     (license license:asl2.0)))
 
 (define-public go-cloud-google-com-go-iam
