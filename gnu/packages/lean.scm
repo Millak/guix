@@ -270,6 +270,45 @@ lightweight DSL.")
     (license license:expat)
     (properties '((lean-package-name . "Cli")))))
 
+(define-public lean4-quote4
+  (package
+    (name "lean4-quote4")
+    (version (package-version lean4))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/leanprover-community/quote4")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03cx5xpm3sr6b8hmigq14apn4ahw13n12f7m17gbl9b7zn33kmm4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (setenv "CC" "gcc")
+              (invoke "lake" "build" "--packages"
+                      #$(package-overrides.json) "Qq:static")))
+          (delete 'check)
+          (replace 'install
+            (lambda _
+              (copy-recursively "."
+                                #$output))))))
+    (native-inputs (list lean4))
+    (home-page "https://github.com/leanprover-community/quote4")
+    (synopsis "Type-safe expression quotations for Lean 4")
+    (description
+     "This package implements type-safe expression quotations,
+which are a way of constructing object-level expressions (Expr) in meta-level
+code.")
+    (license license:asl2.0)
+    (properties '((lean-package-name . "Qq")))))
+
 (define-public python-mathlibtools
   (package
     (name "python-mathlibtools")
