@@ -3700,6 +3700,8 @@ commands in the status line using swaybar-protocol.")
     (build-system meson-build-system)
     (arguments
      (list
+      #:build-type "release"
+      #:configure-flags #~(list "-Dprint_trace=false")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'fix-shell-path
@@ -3719,6 +3721,7 @@ commands in the status line using swaybar-protocol.")
                          wayland))
     (inputs (list cairo
                   glm
+                  libdrm
                   libevdev
                   libjpeg-turbo
                   libomp
@@ -3728,6 +3731,7 @@ commands in the status line using swaybar-protocol.")
                   wf-config
                   wlroots-0.20
                   yyjson))
+    (propagated-inputs (list xorg-server-xwayland))
     (home-page "https://wayfire.org/")
     (synopsis "Modular and extensible wayland compositor")
     (description
