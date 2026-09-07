@@ -12365,21 +12365,22 @@ protocol) - used to discover UPnP services on a network
 (define-public go-github-com-ibm-go-sdk-core-v5
   (package
     (name "go-github-com-ibm-go-sdk-core-v5")
-    (version "5.21.1")
+    (version "5.23.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/IBM/go-sdk-core")
-             (commit (string-append "v" version))))
+              (url "https://github.com/IBM/go-sdk-core")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ccdnxyimls91f4gq5ci2jaqm56qqv1mm3dxw56ha2bj5zr7ipnk"))))
+        (base32 "1ih0slsld88d4bcw6f0zdcjqlffrhvg0dsnk6gzsbldf2kaph9bj"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
-      #:import-path "github.com/IBM/go-sdk-core/v5"))
+      #:import-path "github.com/IBM/go-sdk-core/v5"
+      #:test-flags #~(list "-vet=off")))
     (native-inputs
      (list go-github-com-onsi-ginkgo
            go-github-com-onsi-gomega
@@ -12389,6 +12390,7 @@ protocol) - used to discover UPnP services on a network
            go-github-com-go-playground-validator-v10
            go-github-com-hashicorp-go-cleanhttp
            go-github-com-hashicorp-go-retryablehttp
+           go-github-com-onsi-ginkgo
            go-sigs-k8s-io-yaml))
     (home-page "https://github.com/IBM/go-sdk-core")
     (synopsis "IBM Go SDK Core")
