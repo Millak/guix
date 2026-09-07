@@ -233,6 +233,43 @@ computer-science applications and mathematics applications of Lean 4.")
     (license license:asl2.0)
     (properties '((lean-package-name . "batteries")))))
 
+(define-public lean4-cli
+  (package
+    (name "lean4-cli")
+    (version (package-version lean4))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/leanprover/lean4-cli")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fasl91y1dlfpgd8whfs6cbv1a8z0m2p07p47rc0p6ymqpi2a9cc"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (setenv "CC" "gcc")
+              (invoke "lake" "build" "Cli:static")))
+          (delete 'check)
+          (replace 'install
+            (lambda _
+              (copy-recursively "."
+                                #$output))))))
+    (native-inputs (list lean4))
+    (home-page "https://github.com/leanprover/lean4-cli")
+    (synopsis "Command line parsing for Lean 4")
+    (description "Cli is a Lean 4 library for configuring Command Line
+Interfaces and parsing command line arguments.  Commands are configured with a
+lightweight DSL.")
+    (license license:expat)
+    (properties '((lean-package-name . "Cli")))))
+
 (define-public python-mathlibtools
   (package
     (name "python-mathlibtools")
