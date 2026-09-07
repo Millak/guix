@@ -22,7 +22,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
-;;; Copyright © 2025 aurtzy <aurtzy@gmail.com>
+;;; Copyright © 2025-2026 aurtzy <aurtzy@gmail.com>
 ;;; Copyright © 2025, 2026 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
@@ -1060,11 +1060,15 @@ Requires the focus-timer application to be installed.")
                             (with-atomic-file-replacement
                              file
                              (lambda (input output)
-                               (format output "~a"
-                                       (string-append
-                                        "'" gi-typelib-path "'.split(':').forEach("
-                                        "path => imports.gi.GIRepository.Repository."
-                                        "prepend_search_path(path));\n"))
+                               (display
+                                (string-append
+                                 "import GIRepository from 'gi://GIRepository';\n"
+                                 "const repo ="
+                                 " GIRepository.Repository.dup_default();\n"
+                                 "'" gi-typelib-path "'.split(':')"
+                                 ".forEach(path => repo"
+                                 ".prepend_search_path(path));\n")
+                                output)
                                (dump-port input output))))
                           '("src/extension.js" "src/prefs.js")))))
           (add-after 'install 'wrap-programs
