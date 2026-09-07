@@ -10066,7 +10066,7 @@ something with a bit more flair than the Modus themes.")
 (define-public emacs-doric-themes
   (package
     (name "emacs-doric-themes")
-    (version "1.1.0")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -10075,13 +10075,7 @@ something with a bit more flair than the Modus themes.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15mmpab2nh7imdza8p4wy27x4ckfi9dnqjm5a1k9ix02d0i3b3yz"))
-       (modules '((guix build utils)))
-       (snippet #~(begin
-                  ;; This variable is only mentioned in the tests. See
-                  ;; https://github.com/protesilaos/doric-themes/issues/25
-                  (substitute* "tests/doric-themes-test.el"
-                    (("doric-themes-success-background-faces") ""))))))
+        (base32 "0dldjpk2nz85had0xnl2z1x7rf37h5ss1r4q4pyal7sbd38axf3p"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command
