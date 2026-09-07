@@ -3938,7 +3938,7 @@ headers before the request is sent over the wire.")
 (define-public go-github-com-azure-azure-sdk-for-go-sdk-azcore
   (package
     (name "go-github-com-azure-azure-sdk-for-go-sdk-azcore")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method git-fetch)
@@ -3948,7 +3948,7 @@ headers before the request is sent over the wire.")
                                            #:subdir "sdk/azcore"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qbcm8mqg2qvikv129s832qqvpydipv71825s4dkyjmzar5g04vf"))
+        (base32 "0cafl8vv0gp1rqqpylwa3hi3pza5m4xz1821i16mvb3gjvshdn9c"))
        (modules '((guix build utils)))
        (snippet #~(begin
                     (delete-all-but "sdk" "azcore")
