@@ -33,6 +33,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix gexp)
@@ -191,6 +192,46 @@ find the dependencies of PACKAGE."
   "Returns a GEXP for a package-overrides.json file which tells Lake where to
 find the dependencies of the current package."
   (make-package-overrides.json this-package))
+
+(define-public lean4-batteries
+  (package
+    (name "lean4-batteries")
+    (version (package-version lean4))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/leanprover-community/batteries")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "013bh6anafhwgq8mav7yswqy7ym86gwvf5m6h39s45dnd25h6hmh"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (setenv "CC" "gcc")
+              (invoke "lake" "build" "--packages"
+                      #$(package-overrides.json) "Batteries:static")))
+          (delete 'check)
+          (replace 'install
+            (lambda _
+              (copy-recursively "."
+                                #$output))))))
+    (native-inputs (list lean4))
+    (home-page "https://github.com/leanprover-community/batteries")
+    (synopsis
+     "Collection of maths/computer science data structures and tactics")
+    (description
+     "Batteries is the the \"batteries included\" extended library for Lean 4.
+This is a collection of data structures and tactics intended for use by both
+computer-science applications and mathematics applications of Lean 4.")
+    (license license:asl2.0)
+    (properties '((lean-package-name . "batteries")))))
 
 (define-public python-mathlibtools
   (package
