@@ -145,14 +145,21 @@ archives as created by Podman, CRI-O and containerd.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "086ywdk8mnqnjj3a07ggcyf52cqqsr8cbx2iw2qrncd1slb9l0vv"))))
+        (base32 "086ywdk8mnqnjj3a07ggcyf52cqqsr8cbx2iw2qrncd1slb9l0vv"))
+       (modules '((guix build utils)))
+        (snippet
+         #~(begin
+            ;; It requires Windows-only packages in check phase
+            ;; (go-github-com-microsoft-hcsshim)
+            (delete-file-recursively "cmd/ctr")))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "github.com/containerd/accelerated-container-image"
-      ;; TODO: Remove when all transitive inputs are packaged.
-      #:test-subdirs #~(list "cmd/convertor/builder")))
+      #:test-flags
+      ;; Requires network connection
+      #~(list "-skip" "TestConvertReferrer")))
     (native-inputs
      (list go-github-com-containerd-log
            go-github-com-prometheus-client-golang
