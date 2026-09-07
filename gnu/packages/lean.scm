@@ -349,6 +349,75 @@ lightweight DSL.")
     (license license:asl2.0)
     (properties '((lean-package-name . "importGraph")))))
 
+(define-public lean4-mathlib4
+  (package
+    (name "lean4-mathlib4")
+    (version (package-version lean4))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/leanprover-community/mathlib4")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wbrb5nnxja0x8ccjvk0ppp6dbx1jcxgxxr503kx5i8dp15smvvx"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'remove-proof-widgets
+            (lambda _
+              ;; ProofWidgets needs some JavaScript dependencies that we can't
+              ;; properly package, so patch the lakefile to not require it.
+              (substitute* "lakefile.lean"
+                (("require \"leanprover-community\" / \"proofwidgets\"")
+                 "/-")
+                (("Lean Zulip.\"")
+                 "-/"))))
+          (add-before 'build 'remove-widget-tactics
+            (lambda _
+              ;; These tactics don't work without ProofWidgets, so delete them
+              ;; and all references to them.
+              (substitute* '("Mathlib.lean" "Mathlib/Tactic.lean"
+                             "Mathlib/Tactic/Common.lean")
+                (("^public import Mathlib.Tactic.Widget.*")
+                 ""))
+              (substitute* "Mathlib/Tactic/Linter/DirectoryDependency.lean"
+                (("\\(`MathlibTest.Header, `ProofWidgets\\),")
+                 "")
+                ((", `ProofWidgets")
+                 ""))
+              (delete-file-recursively "Mathlib/Tactic/Widget")))
+          (replace 'build
+            (lambda _
+              (setenv "CC" "gcc")
+              (invoke "lake" "build" "--packages"
+                      #$(package-overrides.json) "Mathlib:static")))
+          (delete 'check)
+          (replace 'install
+            (lambda _
+              (copy-recursively "."
+                                #$output))))))
+    (native-inputs (list lean4))
+    (propagated-inputs (list lean4-cli
+                             lean4-batteries
+                             lean4-quote4
+                             lean4-aesop
+                             lean4-import-graph
+                             lean4-plausible
+                             lean4-search-client))
+    (home-page "https://github.com/leanprover-community/mathlib4")
+    (synopsis "The math library of Lean 4")
+    (description
+     "Mathlib is a user maintained library for the Lean theorem
+prover.  It contains both programming infrastructure and mathematics, as well
+as tactics that use the former and allow to develop the latter.")
+    (license license:asl2.0)
+    (properties '((lean-package-name . "MathLib")))))
+
 (define-public lean4-plausible
   (package
     (name "lean4-plausible")
