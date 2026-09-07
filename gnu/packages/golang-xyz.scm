@@ -10642,7 +10642,7 @@ Mark} detection.")
 (define-public go-github-com-diskfs-go-diskfs
   (package
     (name "go-github-com-diskfs-go-diskfs")
-    (version "1.7.0")
+    (version "1.9.4")
     (source
      (origin
        (method git-fetch)
@@ -10651,14 +10651,15 @@ Mark} detection.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dgdlj5va8jcjah23vzy9cmhz45fk5iw1lpzyq9s7s2vbrzw9ivr"))))
+        (base32 "16kv20hc1fdzx6ss4h9r1yv47qhn7frdm7vkzhvv6mwyl9i6i36q"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/diskfs/go-diskfs"
-      ;; disk_test.go:543: error generating fat32 test artifact for disk test:
-      ;; exit status 127
-      #:test-flags #~(list "-skip" "TestGetFilesystem/whole_disk")
+      ;; [1] disk_test.go:543: error generating fat32 test artifact for disk
+      ;; test: exit status 127
+      ;; [2] Trying to coma re time which is freeze in build container.
+      #:test-flags #~(list "-skip" "TestGetFilesystem/whole_disk|TestTimeStamp")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-example
