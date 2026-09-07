@@ -193,6 +193,46 @@ find the dependencies of PACKAGE."
 find the dependencies of the current package."
   (make-package-overrides.json this-package))
 
+(define-public lean4-aesop
+  (package
+    (name "lean4-aesop")
+    (version (package-version lean4))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/leanprover-community/aesop")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n1njrklz5fh7xm7wd8sdagq2wgwrhcwjn04gpnnhf9w50v33p08"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (setenv "CC" "gcc")
+              (invoke "lake" "build" "--packages"
+                      #$(package-overrides.json) "Aesop:static")))
+          (delete 'check)
+          (replace 'install
+            (lambda _
+              (copy-recursively "."
+                                #$output))))))
+    (native-inputs (list lean4))
+    (propagated-inputs (list lean4-batteries))
+    (home-page "https://github.com/leanprover-community/aesop")
+    (synopsis "White-box automation for Lean 4")
+    (description "Aesop is a proof tactic for Lean 4 that is broadly similar
+to Isabelle's @code{auto}.  Definitions can be tagged with @code{@@[aesop]}.
+The @code{aesop} tactic will use these tagged definitions to attempt to
+automatically prove goals.")
+    (license license:asl2.0)
+    (properties '((lean-package-name . "aesop")))))
+
 (define-public lean4-batteries
   (package
     (name "lean4-batteries")
