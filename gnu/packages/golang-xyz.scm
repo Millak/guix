@@ -2456,6 +2456,80 @@ Language Recognition, a parser generator that uses a LL algorithm for
 parsing.")
     (license license:bsd-3)))
 
+(define-public go-github-com-apache-arrow-go-v18
+  (package
+    (name "go-github-com-apache-arrow-go-v18")
+    (version "18.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/apache/arrow-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wgkl2983xr1xmrd6zwfrwrx5n0m7bmaaawx36xz3i838nls58yk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/apache/arrow-go/v18"
+      #:test-subdirs
+      ;; XXX: Remove when all inputs are packaged.
+      #~(list "arrow/math" "arrow/util" "arrow/arrio" "arrow/flight"
+              "arrow/memory" "arrow/scalar" "arrow/tensor" "arrow/bitutil"
+              "arrow/decimal" "arrow/encoded" "arrow/float16" "internal/utils"
+              "parquet/variant" "arrow/decimal128" "arrow/decimal256"
+              "internal/hashing" "internal/bitutils" "arrow/flight/session"
+              "parquet/internal/bmi" "arrow/array/arreflect"
+              "arrow/flight/flightsql" "arrow/internal/arrjson"
+              "arrow/ipc/cmd/arrow-ls" "arrow/ipc/cmd/arrow-cat"
+              "arrow/memory/mallocator" "arrow/internal/dictutils"
+              "arrow/internal/testing/tools" "arrow/flight/flightsql/driver"
+              "arrow/compute/internal/kernels"
+              "arrow/ipc/cmd/arrow-file-to-stream"
+              "arrow/ipc/cmd/arrow-stream-to-file"
+              "parquet/internal/encoding/streaming"
+              "arrow/ipc/cmd/arrow-json-integration-test")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-andybalholm-brotli
+           go-github-com-cespare-xxhash-v2
+           go-github-com-goccy-go-json
+           go-github-com-google-flatbuffers
+           go-github-com-google-uuid
+           go-github-com-klauspost-compress
+           go-github-com-klauspost-cpuid-v2
+           go-github-com-pierrec-lz4-v4
+           go-github-com-pterm-pterm
+           go-github-com-stoewer-go-strcase
+           go-github-com-tidwall-sjson
+           go-github-com-zeebo-xxh3
+           go-golang-org-x-exp
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-gonum-org-v1-gonum
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-modernc-org-sqlite
+
+           ;; TODO: Complete packaging.
+           ;; go-github-com-apache-thrift
+           ;; go-github-com-hamba-avro-v2
+           ;; go-github-com-substrait-io-substrait-go-v8
+           #;go-github-com-substrait-io-substrait-protobuf-go))
+    (home-page "https://github.com/apache/arrow-go")
+    (synopsis "Go implementation of Apache Arrow")
+    (description
+     "@url{https://arrow.apache.org, Apache Arrow} is a cross-language
+development platform for in-memory data.  It specifies a standardized
+language-independent columnar memory format for flat and hierarchical data,
+organized for efficient analytic operations on modern hardware.  It also
+provides computational libraries and zero-copy streaming messaging and
+inter-process communication.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-apex-logs
   (package
     (name "go-github-com-apex-logs")
