@@ -2132,6 +2132,37 @@ batch or interactive systems without root privileges.")
 ;; of several associated packages (docker-libnetwork and go-sctp).
 (define %docker-version "20.10.27")
 
+(define-public accelerated-container-image
+  (package/inherit go-github-com-containerd-accelerated-container-image
+    (name "accelerated-container-image")
+    (arguments
+     (substitute-keyword-arguments arguments
+       ((#:import-path _)
+        "github.com/containerd/accelerated-container-image/cmd/...")
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:unpack-path _ "")
+        "github.com/containerd/accelerated-container-image")))
+    (native-inputs
+     (append
+      (package-native-inputs
+       go-github-com-containerd-accelerated-container-image)
+      (package-propagated-inputs
+       go-github-com-containerd-accelerated-container-image)))
+    (propagated-inputs '())
+    (inputs '())
+    (description
+     "This package provides command line interface commnd of remote/on-demand
+container/sandbox/vm image format (overlaybd) and snapshotter.
+@itemize
+@item @command{convertor} - an image conversion tool from oci image to
+overlaybd image
+@item @command{overlaybd-attacher} - a tool to attach/detach overlaybd devices
+@item @command{overlaybd-snapshotter} - a containerd snapshotter plugin for
+overlaybd image
+@end itemize")))
+
 (define-public buildah
   (package
     (name "buildah")
