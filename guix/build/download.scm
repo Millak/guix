@@ -414,11 +414,13 @@ host name without trailing dot."
 (define* (open-socket-for-uri uri-or-string
                               #:key
                               (timeout
-                               (default-connection-establishment-timeout)))
+                               (default-connection-establishment-timeout))
+                              (socket-style SOCK_STREAM))
   "Return an open input/output port for a connection to URI.  When TIMEOUT is
 not #f, it must be a (possibly inexact) number denoting the maximum duration
 in seconds to wait for the connection to complete; passed TIMEOUT, an
-ETIMEDOUT error is raised."
+ETIMEDOUT error is raised. SOCKET-STYLE defaults to SOCK_STREAM, and can be
+bitwise or'ed with options like SOCK_CLOEXEC or SOCK_NONBLOCK."
   ;; Includes a fix for <http://bugs.gnu.org/15368> which affects Guile's
   ;; 'open-socket-for-uri' up to 2.0.11 included, uses 'connect*' instead
   ;; of 'connect', and uses AI_ADDRCONFIG.
@@ -441,7 +443,9 @@ ETIMEDOUT error is raised."
     (let* ((ai (car addresses))
            (s  (with-fluids ((%default-port-encoding #f))
                  ;; Restrict ourselves to TCP.
-                 (socket (addrinfo:fam ai) SOCK_STREAM IPPROTO_IP))))
+                 (socket (addrinfo:fam ai)
+                         socket-style
+                         IPPROTO_IP))))
       (catch 'system-error
         (lambda ()
           (connect* s (addrinfo:addr ai) timeout)
