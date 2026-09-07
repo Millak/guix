@@ -349,6 +349,45 @@ lightweight DSL.")
     (license license:asl2.0)
     (properties '((lean-package-name . "importGraph")))))
 
+(define-public lean4-plausible
+  (package
+    (name "lean4-plausible")
+    (version (package-version lean4))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/leanprover-community/plausible")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "178vkdys7hzaf5w2m7rkpd4rm2hxgvly8rsy4y1hmr4ac43wviyk"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (setenv "CC" "gcc")
+              (invoke "lake" "build" "--packages"
+                      #$(package-overrides.json) "Plausible:static")))
+          (delete 'check)
+          (replace 'install
+            (lambda _
+              (copy-recursively "."
+                                #$output))))))
+    (native-inputs (list lean4))
+    (propagated-inputs (list lean4-batteries))
+    (home-page "https://github.com/leanprover-community/plausible")
+    (synopsis "Property testing framework for Lean 4 that integrates into
+the tactic framework")
+    (description "Plausible is a property testing framework for Lean 4 that
+integrates into the tactic framework.")
+    (license license:asl2.0)
+    (properties '((lean-package-name . "plausible")))))
+
 (define-public lean4-quote4
   (package
     (name "lean4-quote4")
