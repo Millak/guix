@@ -480,7 +480,8 @@ bitwise or'ed with options like SOCK_CLOEXEC or SOCK_NONBLOCK."
                                   #:key
                                   (timeout
                                    (default-connection-establishment-timeout))
-                                  (verify-certificate? #t))
+                                  (verify-certificate? #t)
+                                  (non-blocking? #f))
   "Like 'open-socket-for-uri', but also handle HTTPS connections.  When
 VERIFY-CERTIFICATE? is true, verify HTTPS server certificates."
   ;; Note: Guile 2.2.0's (web client) has a same-named export that's actually
@@ -506,7 +507,11 @@ VERIFY-CERTIFICATE? is true, verify HTTPS server certificates."
                            (thunk))
                          (thunk)))))))
     (with-https-proxy
-     (let ((s (open-socket-for-uri uri #:timeout timeout)))
+     (let ((s (open-socket-for-uri uri #:timeout timeout
+                                   #:socket-style
+                                   (if non-blocking?
+                                       (logior SOCK_STREAM SOCK_NONBLOCK)
+                                       SOCK_STREAM))))
        ;; Buffer input and output on this port.
        (setvbuf s 'block %http-receive-buffer-size)
 
