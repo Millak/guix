@@ -31019,7 +31019,7 @@ dissertation in LaTeX.")
     (license license:lppl1.2+)))
 
 (define-public texlive-neoschool
-  (let ((revision 80044))             ;release 1.3.12
+  (let ((revision 80193))             ;release 1.3.13
     (package
       (name "texlive-neoschool")
       (version (string-append "2026.1-" (number->string revision)))
@@ -31033,7 +31033,7 @@ dissertation in LaTeX.")
                                  "tex/latex/neoschool/"))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0kkxzi7vwpjjmvlq5dmpdhb5drgslg59lmjwjvfh2h1fncm6a7j1"))))
+          (base32 "1h7xy6j2d8pndk55f1i5yy4pgxzipwav3islgbl8g2bqf1500hj5"))))
       (outputs '("out" "doc"))
       (build-system texlive-build-system)
       (home-page "https://ctan.org/pkg/neoschool")
