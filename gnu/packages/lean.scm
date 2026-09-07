@@ -309,6 +309,46 @@ code.")
     (license license:asl2.0)
     (properties '((lean-package-name . "Qq")))))
 
+(define-public lean4-search-client
+  (package
+    (name "lean4-search-client")
+    (version "4.32.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/leanprover-community/LeanSearchClient")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wwlh8sz9bhbrydr5ifrjiph9yf9agn3s0m9ljl68jsg6vv5a52k"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (setenv "CC" "gcc")
+              (invoke "lake" "build" "--packages"
+                      #$(package-overrides.json) "LeanSearchClient:static")))
+          (delete 'check)
+          (replace 'install
+            (lambda _
+              (copy-recursively "."
+                                #$output))))))
+    (native-inputs (list lean4))
+    (home-page "https://github.com/leanprover-community/LeanSearchClient")
+    (synopsis "Natural language search within Lean")
+    (description
+     "LeanSearchClient provides syntax for search using the
+leansearch API and the LeanStateSearch API from within Lean.  It allows you to
+search for Lean tactics and theorems using natural language.  It also allows
+searches on Loogle from within Lean.")
+    (license license:asl2.0)
+    (properties '((lean-package-name . "LeanSearchClient")))))
+
 (define-public python-mathlibtools
   (package
     (name "python-mathlibtools")
