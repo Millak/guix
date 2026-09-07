@@ -270,6 +270,45 @@ lightweight DSL.")
     (license license:expat)
     (properties '((lean-package-name . "Cli")))))
 
+(define-public lean4-import-graph
+  (package
+    (name "lean4-import-graph")
+    (version (package-version lean4))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/leanprover-community/import-graph")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f39gycfiwwfkk39fp1x9169f8xn7vpblcmddk29r24nmkd4x9xn"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (setenv "CC" "gcc")
+              (invoke "lake" "build" "--packages"
+                      #$(package-overrides.json) "ImportGraph:static")))
+          (delete 'check)
+          (replace 'install
+            (lambda _
+              (copy-recursively "."
+                                #$output))))))
+    (native-inputs (list lean4))
+    (propagated-inputs (list lean4-cli))
+    (home-page "https://github.com/leanprover-community/import-graph")
+    (synopsis "Create import graphs of Lake packages")
+    (description
+     "This package provides a tool to create import graphs of Lake packages
+(Lean projects) in the Graphviz/dot format or as HTML.")
+    (license license:asl2.0)
+    (properties '((lean-package-name . "importGraph")))))
+
 (define-public lean4-quote4
   (package
     (name "lean4-quote4")
