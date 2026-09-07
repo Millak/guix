@@ -2277,7 +2277,7 @@ APIs of Alibaba Cloud @acronym{OSS, Object Storage Service}.")
 (define-public go-github-com-amnezia-vpn-amneziawg-go
   (package
     (name "go-github-com-amnezia-vpn-amneziawg-go")
-    (version "0.2.17")
+    (version "3.1.20260828")
     (source
      (origin
        (method git-fetch)
@@ -2286,7 +2286,7 @@ APIs of Alibaba Cloud @acronym{OSS, Object Storage Service}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fs4f68b0r4nfxx5w04j57vf9vnkdzd8vi12fmivbqhn72sjp3fw"))
+        (base32 "0i3r710nqfic4c0a0bm92l89aa77njrf7xlmbl2zzsiy43czp5mx"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
