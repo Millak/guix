@@ -27,6 +27,7 @@
 ;;; Copyright © 2026 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2026 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2026 Jelle Licht <jlicht@fsfe.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,6 +66,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compiler-tools)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages perl)
@@ -323,6 +325,43 @@ common extended features of widespread compilers like @code{gcc} and
  supporting most of C11 along with some GCC and C2x extensions.")
       (home-page "https://sr.ht/~mcf/cproc")
       (license license:expat))))
+
+(define-public hdrhistogram-c
+  (package
+    (name "hdrhistogram-c")
+    (version "0.11.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/HdrHistogram/HdrHistogram_c")
+                    (commit version)))
+       (file-name (git-file-name name version))
+       (sha256 (base32
+                "1y72lxxlqjr7sw0614qx3pfmw8wz191dgjagh5dhsf5izgp67iic"))
+       (patches (search-patches "hdrhistogram-c-no-avx2-on-i386.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(if #$(target-ppc32?)
+            (list "-DCMAKE_EXE_LINKER_FLAGS=-latomic"
+                  "-DCMAKE_SHARED_LINKER_FLAGS=-latomic")
+            '())))
+    (inputs (list zlib))
+    (home-page "https://github.com/HdrHistogram/HdrHistogram_c")
+    (synopsis "C port of the HdrHistogram")
+    (description "This is a C port of HdrHistogram, which contains a subset of
+the functionality supported by the Java implementation.  The current supported
+features are:
+@enumerate
+@item Intercept any memory access or directly map real memory ranges.
+@item Standard histogram with 64 bit counts (32/16 bit counts not supported).
+@item All iterator types (all values, recorded, percentiles, linear, logarithmic)>
+@item Histogram serialisation (encoding version 1.2, decoding 1.0-1.2).
+@item Reader/writer phaser and interval recorder.
+@end enumerate")
+    (license license:cc0)))
 
 (define-public minini
   (package
