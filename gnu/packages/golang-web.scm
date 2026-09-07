@@ -4167,7 +4167,7 @@ challenge authentication policy.")
 (define-public go-github-com-azure-azure-sdk-for-go-sdk-storage-azblob
   (package
     (name "go-github-com-azure-azure-sdk-for-go-sdk-storage-azblob")
-    (version "1.6.3")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -4177,7 +4177,7 @@ challenge authentication policy.")
                                           #:subdir "sdk/storage/azblob"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08a8kx4n31pa4krrxs1hrcwygryh86nz98fyr9hvw67202zr3adw"))
+        (base32 "0vw95158c12lspya4rlglqybiv4c6c6zdn6zasa4q3s857pb06bq"))
        (modules '((guix build utils)))
        (snippet #~(begin
                     (delete-all-but "sdk/storage" "azblob")
