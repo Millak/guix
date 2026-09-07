@@ -280,8 +280,18 @@ processor.")
     (build-system ruby-build-system)
     (arguments
       (list
-        ;;TODO: Investigate why tests fail
-        #:tests? #f))
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (substitute* "spec/spec_helper.rb"
+                    (("require 'simplecov'") "")
+                    (("SimpleCov\\.start") ""))
+                  (setenv "HOME" (getcwd))
+                  (invoke "rspec" "-Ilib" "-rfilewatcher/spec_helper"
+                          "-Ispec" "-rspec_helper")))))))
+    (native-inputs (list ruby-rspec))
     (propagated-inputs (list ruby-module-methods))
     (synopsis "Ruby gem to perform actions when files are changed")
     (description "Detect changes in file system. Works anywhere. No config
