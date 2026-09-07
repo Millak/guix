@@ -207,7 +207,10 @@ mission-critical safety and performance for financial services.")
       #:tests? #f
       #:zig-release-type "safe"
       #:zig-build-flags
-      #~(list "-Dpie")))
+      #~(list "-Dpie"
+              ;; Needed to build for aarch64 on 1.6.0.
+              ;; TODO: remove with next release.
+              "-Dllvm")))
     (inputs (list linux-pam zig-wayland zig-xkbcommon-0.3))
     (native-inputs (list pkg-config scdoc))
     (home-page "https://codeberg.org/ifreund/waylock")
