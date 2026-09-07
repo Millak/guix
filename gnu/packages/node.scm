@@ -33,6 +33,7 @@
 (define-module (gnu packages node)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages dns)
   #:use-module (gnu packages gcc)
@@ -319,6 +320,7 @@ parser definition into a C output.")
                   (for-each delete-file-recursively
                             '("deps/brotli"
                               "deps/cares"
+                              "deps/histogram"
                               "deps/icu-small"
                               "deps/nghttp2"
                               "deps/ngtcp2"
@@ -342,6 +344,7 @@ parser definition into a C output.")
                            "--shared-nghttp3"
                            "--shared-zstd"
                            "--shared-uvwasi"
+                           "--shared-hdr-histogram"
                            "--shared"
                            ;; Needed for correct snapshot checksums
                            "--v8-enable-snapshot-compression")
@@ -442,6 +445,7 @@ parser definition into a C output.")
              (let* ((inputs        (or native-inputs inputs))
                     (brotli        (assoc-ref inputs "brotli"))
                     (c-ares        (assoc-ref inputs "c-ares"))
+                    (hdrhistogram  (assoc-ref inputs "hdrhistogram-c"))
                     (icu4c         (assoc-ref inputs "icu4c"))
                     (libuv         (assoc-ref inputs "libuv"))
                     (llhttpish     (assoc-ref inputs "llhttpish"))
@@ -467,6 +471,7 @@ parser definition into a C output.")
                                  "'ldflags': ['-Wl,-rpath="
                                  brotli "/lib:"
                                  c-ares "/lib:"
+                                 hdrhistogram "/lib:"
                                  icu4c "/lib:"
                                  libuv "/lib:"
                                  llhttpish "/lib:"
@@ -604,6 +609,7 @@ parser definition into a C output.")
      (list ;; Runtime dependencies for binaries used as a bootstrap.
       brotli
       c-ares-for-node-lts
+      hdrhistogram-c
       icu4c-78
       libuv-for-node-lts
       llhttpish
@@ -629,6 +635,7 @@ parser definition into a C output.")
            brotli
            coreutils-minimal
            c-ares-for-node-lts
+           hdrhistogram-c
            icu4c-78
            libuv-for-node-lts
            llhttpish
