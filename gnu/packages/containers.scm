@@ -579,6 +579,39 @@ storage, container execution and supervision, low-level storage and network
 attachments, etc.")
     (license license:asl2.0)))
 
+(define-public go-github-com-containerd-fuse-overlayfs-snapshotter-v2
+  (package
+    (name "go-github-com-containerd-fuse-overlayfs-snapshotter-v2")
+    (version "2.1.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containerd/fuse-overlayfs-snapshotter")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jcn6mwnaznz36m7xp85mnizm9kwnfymvsimcjj1ki0kd0xgdny3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/fuse-overlayfs-snapshotter/v2"))
+    (propagated-inputs
+     (list go-github-com-containerd-containerd-api
+           go-github-com-containerd-containerd-v2
+           go-github-com-containerd-continuity
+           go-github-com-containerd-log
+           go-github-com-containerd-platforms
+           go-github-com-containerd-plugin
+           go-github-com-coreos-go-systemd-v22
+           go-google-golang-org-grpc))
+    (home-page "https://github.com/containerd/fuse-overlayfs-snapshotter")
+    (synopsis "Rootless version of overlayfs for Golang")
+    (description
+     "This package provides a fuse-overlayfs plugin for rootless containerd on
+old Linux (not needed on modern Linux).")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containerd-stargz-snapshotter
   (package
     (name "go-github-com-containerd-stargz-snapshotter")
