@@ -7519,6 +7519,41 @@ metrics (i.e. response time, bytes written, and http status code) from your
 application's http.Handlers.")
     (license license:expat)))
 
+(define-public go-github-com-filenclouddienste-filen-sdk-go
+  (package
+    (name "go-github-com-filenclouddienste-filen-sdk-go")
+    (version "0.0.39")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/FilenCloudDienste/filen-sdk-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a9mdyi5m27x0g807bcvl55kr3zb4012z8jbhcrlp5a69rgrcwbj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f       ;cycles with rclone
+      #:import-path "github.com/FilenCloudDienste/filen-sdk-go"))
+    (propagated-inputs
+     (list go-github-com-dromara-dongle-1.0
+           go-github-com-google-uuid
+           go-github-com-joho-godotenv
+           ;; go-github-com-rclone-rclone ;cycles with rclone
+           go-github-com-zeebo-blake3
+           go-golang-org-x-crypto
+           go-golang-org-x-sync
+           go-golang-org-x-text))
+    (home-page "https://github.com/FilenCloudDienste/filen-sdk-go")
+    (synopsis "Filen SDK Go")
+    (description
+     "This package provide a SDK to interact with @url{https://filen.io/,
+Filen}, an encrypted cloud storage, for Go.")
+    (license license:expat)))
+
 (define-public go-github-com-files-com-files-sdk-go-v3
   (package
     (name "go-github-com-files-com-files-sdk-go-v3")

@@ -1411,6 +1411,28 @@ for Go applications.  It's an alternative fork of deprecated
 crypto package.")
     (license license:expat)))
 
+(define-public go-github-com-dromara-dongle-1.0
+  ;; Source only package to build rclone@1.75.1, remove when is not required.
+  (hidden-package
+   (package
+     (inherit go-github-com-dromara-dongle)
+     (name "go-github-com-dromara-dongle")
+     (version "1.0.1")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/dromara/dongle")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1idxj5w0dvp4khh3zldp801whk2lhq4cfibqq7jbjp1p31wybxbz"))))
+     (arguments
+      (list
+       #:tests? #f
+       #:skip-build? #t
+       #:import-path "github.com/dromara/dongle")))))
+
 (define-public go-github-com-dvsekhvalnov-jose2go
   (package
     (name "go-github-com-dvsekhvalnov-jose2go")
