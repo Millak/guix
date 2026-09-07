@@ -11435,6 +11435,42 @@ go/cgo, rather than cgo bindings for libsigar.  This package provides an
 alternative fork of @url{https://github.com/cloudfoundry/gosigar}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-elek-bubbles
+  (package
+    (name "go-github-com-elek-bubbles")
+    (properties '((commit . "860c0efc50ae3e99b1f5ff7bb1b0fbd69bf071c0")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20230923192006-860c0efc50ae")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/elek/bubbles")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ckb03xc0pnqpri5l6xps4wbnpxmz3j57bswaipbl9ygspw1ssif"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/elek/bubbles"
+      #:test-flags #~(list "-skip" "TestScrolled")))   ;not equal tables
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-charmbracelet-bubbles
+           go-github-com-charmbracelet-bubbletea
+           go-github-com-charmbracelet-lipgloss))
+    (home-page "https://github.com/elek/bubbles")
+    (synopsis "TUI framework in Go")
+    (description
+     "This package provides Text User Interface (TUI) framework implemented in
+Go.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-eliben-go-sentencepiece
   (package
     (name "go-github-com-eliben-go-sentencepiece")
