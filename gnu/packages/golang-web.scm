@@ -12051,13 +12051,16 @@ priority and bandwidth.")
      (list
       #:skip-build? #t
       #:import-path "github.com/internxt/rclone-adapter"
-      #:test-subdirs
-      ;; To bypass the build error in
-      ;; src/github.com/internxt/rclone-adapter/auth/access.go:14:2:
-      ;; "github.com/tyler-smith/go-bip39" imported as runnergroup and not
-      ;; used.
-      #~(list "config" "consistency" "endpoints" "errors" "folders"
-              "thumbnails" "users")))
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Network access is required for the tests.
+                       (list "TestDownloadFile"
+                             "TestGenerateFileKey"
+                             "TestFinishUpload"
+                             "TestRefreshToken"
+                             "TestFinishMultipartUpload"
+                             "TestStartUpload")
+                       "|"))))
     (propagated-inputs
      (list go-github-com-tyler-smith-go-bip39
            go-golang-org-x-crypto
@@ -12066,8 +12069,8 @@ priority and bandwidth.")
     (synopsis "Internxt Drive API in Go")
     (description
      "This package provides a pure Go library allowing you to interact with
-the @url{https://api.internxt.com/drive/, Internxt Drive API}.  It's a clone
-of @url{https://github.com/StarHack/go-internxt-drive}.")
+the @url{https://internxt.com/drive, Internxt Drive API}.  It's a clone of
+@url{https://github.com/StarHack/go-internxt-drive}.")
     (license license:expat)))
 
 (define-public go-github-com-invopop-jsonschema
