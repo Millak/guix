@@ -586,7 +586,7 @@ Python dependency, and @command{spdk-sma} requires @code{grpcio} and
 (define-public garage
   (package
     (name "garage")
-    (version "2.3.0")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -595,7 +595,7 @@ Python dependency, and @command{spdk-sma} requires @code{grpcio} and
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12zigcvnv662lk31gh30hg37ljnclkgmrfxaivivyp50a5lxr88a"))
+        (base32 "0v93gl1gppr7llwjgv3x6hyhsc5pj3drnlhcc7xhnza1m6lz16fl"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "doc")))))
