@@ -31436,13 +31436,13 @@ stopped.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l0accx6c880smkcma0qca3c67kx8p1bc4q2zq54iv8yjy1b2h4w"))))
+        (base32 "0daadv14696l9zq5nny1wbg4c5m6lsmw5kdvkfqb2i5hsh35d26x"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/tyler-smith/go-bip39"))
-    (native-inputs
-     (list go-github-com-txthinking-runnergroup))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
     ;; The project is gone, only availalbe as archive:
     ;; https://archive.softwareheritage.org/browse/origin/directory/
     ;; ?origin_url=https://github.com/tyler-smith/go-bip39
