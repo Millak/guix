@@ -454,6 +454,7 @@ custom rules.  It's the next generation of
             ;; Submodules with their own go.mod files and packaged separately:
             (for-each delete-file-recursively
                       (list "auth"
+                            "bigquery"
                             "compute/metadata"
                             "datacatalog"
                             "iam"
@@ -473,8 +474,7 @@ custom rules.  It's the next generation of
       #:test-flags
       #~(list "-vet=off")
       #:test-subdirs
-      #~(list "bigquery/internal/query"
-              "civil"
+      #~(list "civil"
               "compute/metadata"
               "container/apiv1"
               "errorreporting"
@@ -633,6 +633,80 @@ automatic token management.")
     (synopsis "Convert Google Auth types")
     (description "This package helps convert types used in
 cloud.google.com/go/auth and golang.org/x/oauth2.")
+    (license license:asl2.0)))
+
+(define-public go-cloud-google-com-go-bigquery
+  (package
+    (name "go-cloud-google-com-go-bigquery")
+    (version "1.77.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/google-cloud-go")
+              (commit (go-version->git-ref version #:subdir "bigquery"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "033xm9hh7zv0wh3x0ypzrlma2k8y0ljhsywz0p0mv31a2nvdacmm"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "." "bigquery")
+               (substitute* (find-files "." "\\.go$")
+                 ;; Use split v18 instead old v15 which was part of Apache
+                 ;; Arrow source tree.
+                 (("github.com/apache/arrow/go/v15")
+                  "github.com/apache/arrow-go/v18"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "cloud.google.com/go/bigquery"
+      #:unpack-path "cloud.google.com/go"
+      #:test-flags
+      #~(list "-vet=off"
+              "-skip"
+              ;; Network setup is required.
+              "TestTracingTelemetryAttributes|TestGRPCClient|TestRESTClient")))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-cloud-google-com-go
+           go-cloud-google-com-go-datacatalog
+           go-cloud-google-com-go-iam
+           go-cloud-google-com-go-longrunning
+           go-cloud-google-com-go-storage
+           go-github-com-apache-arrow-go-v18
+           go-github-com-google-uuid
+           go-github-com-googleapis-gax-go-v2
+           go-go-opencensus-io
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-trace
+           go-golang-org-x-sync
+           go-golang-org-x-xerrors
+           go-google-golang-org-api
+           go-google-golang-org-genproto
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+
+           ;; XXX: These packages have to be bootstrapped to break cycle with
+           ;; go-google-golang-org-grpc.
+           go-github-com-envoyproxy-go-control-plane
+           go-github-com-envoyproxy-go-control-plane-envoy))
+    (home-page "https://cloud.google.com/go")
+    (synopsis "Go wrapper for Google Compute Engine BigQuery service")
+    (description
+     "Package bigquery provides a client for the @code{BigQuery} service.")
     (license license:asl2.0)))
 
 (define-public go-cloud-google-com-go-compute-metadata
