@@ -27351,75 +27351,51 @@ Kubernetes components which are using nftables.")
 (define-public go-storj-io-common
   (package
     (name "go-storj-io-common")
-    (version "0.0.0-20251120170554-032ced125058")
+    (properties '((commit . "b776c2238d07f8c1a38a72baf931f7bba7587077")
+                  (revision . "0")
+                  (go-pseudo-version . "0.0.0-20260903112600-b776c2238d07")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/storj/common")
-              (commit (go-version->git-ref version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11aiwpr34z3x2nx5qbj5cr21676abnbrlwhw3h8lficr66rlx1a4"))))
-    ;; TODO: Remove vendored code <github.com/btcsuite/btcd/btcutil/base58>.
+        (base32 "0y2wb5nqs81wcn8sm6ahzafb4sdyyw3lar1mkvgp91i7wbl120h6"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "storj.io/common"
-      #:test-flags
-      #~(list "-skip" (string-join
-                       (list "TestLookupNodeAddress_Host"
-                             "TestLookupNodeAddress_HostAndPort"
-                             "TestFromBuild")
-                       "|"))
       #:test-subdirs
-      ;; XXX: Remove when all missing dependencies are packaged.
-      #~(list "accesslogs/..."
-              "base58/..."
-              "bloomfilter/..."
-              "cfgstruct/..."
-              "context2/..."
-              "currency/..."
-              "debug/..."
-              "errs2/..."
-              "eventstat/..."
-              "experiment/..."
-              "fpath/..."
-              "grant/..."
-              "http/requestid/..."
-              "identity/..."
-              "leak/..."
-              "macaroon/..."
-              "memory/..."
-              "metrics/..."
-              "nodetag/..."
-              "paths/..."
-              "pb/..."
-              "peertls/..."
-              "pkcrypto/..."
-              "process/gcloudlogging/..."
-              "processgroup/..."
-              "ranger/..."
-              "rpc/..."
-              "signing/..."
-              "storj/..."
-              "strictcsv/..."
-              "sync2/..."
-              "telemetry/..."
-              "testrand/..."
-              "testtrace/..."
-              "time2/..."
-              "useragent/..."
-              "uuid/..."
-              "version/...")))
+      ;; It's a collection of common packages, it introduces cycles when all
+      ;; tests cases are enabled, therefore run only some portion of them.
+      #~(list "pb" "leak" "uuid" "debug" "errs2" "fpath" "grant" "paths"
+              "storj" "sync2" "time2" "base58" "memory" "ranger" "metrics"
+              "nodetag" "peertls" "signing" "version" "context2" "currency"
+              "identity" "macaroon" "pkcrypto" "rpc/quic" "testrand"
+              "cfgstruct" "eventstat" "rpc/noise" "strictcsv" "telemetry"
+              "testtrace" "useragent" "accesslogs" "encryption" "experiment"
+              "bloomfilter" "rpc/rpcpool" "rpc/rpctest" "processgroup"
+              "rpc/rpccache" "rpc/multidial" "rpc/rpcstatus" "http/requestid"
+              "storj/location" "sync2/combiner" "peertls/tlsopts"
+              "sync2/mpscqueue" "ranger/httpranger" "peertls/extensions"
+              "internal/hmacsha512" "peertls/testpeertls"
+              "identity/testidentity" "process/gcloudlogging")))
     (native-inputs
      (list go-github-com-stretchr-testify
+           go-github-com-spf13-cast
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-spf13-viper
+           go-cloud-google-com-go-profiler
            go-go-uber-org-zap))
     (propagated-inputs
-     (list ;; go-cloud-google-com-go-profiler ; 100+ go-cloud-google-com*
-           go-github-com-blang-semver-v4
-           go-github-com-bmkessler-fastdiv
+     (list go-github-com-bmkessler-fastdiv
            go-github-com-calebcase-tmpfile
            go-github-com-flynn-noise
            go-github-com-gogo-protobuf
@@ -27432,10 +27408,6 @@ Kubernetes components which are using nftables.")
            go-github-com-quic-go-quic-go
            go-github-com-shopspring-decimal
            go-github-com-spacemonkeygo-monkit-v3
-           go-github-com-spf13-cast
-           go-github-com-spf13-cobra
-           go-github-com-spf13-pflag
-           go-github-com-spf13-viper
            go-github-com-zeebo-admission-v3
            go-github-com-zeebo-blake3
            go-github-com-zeebo-errs
@@ -27446,8 +27418,8 @@ Kubernetes components which are using nftables.")
            go-golang-org-x-sys
            go-gopkg-in-yaml-v2
            go-storj-io-drpc
-           go-storj-io-eventkit
-           ;; go-storj-io-monkit-jaeger ; cycles
+           ;; go-storj-io-eventkit       ;cycles
+           ;; go-storj-io-monkit-jaeger  ;cycles
            go-storj-io-picobuf))
     (home-page "https://storj.io/common")
     (synopsis "Common web and networking Golang utilities")
