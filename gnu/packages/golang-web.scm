@@ -8990,7 +8990,7 @@ projects.")
 (define-public go-github-com-go-openapi-swag-conv
   (package
     (name "go-github-com-go-openapi-swag-conv")
-    (version "0.24.0")
+    (version "0.29.2")
     (source
      (origin
        (method git-fetch)
@@ -8999,7 +8999,7 @@ projects.")
               (commit (go-version->git-ref version #:subdir "conv"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0p1k008zh6s1v55fi83v8ihldsvknf0wmwmc6i2ks0vw5gbwmaam"))
+        (base32 "1kk84irx6ifln01b5w1rzyrx4gmpzf6nkm190n6hhw7s4y28pq80"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -9017,7 +9017,7 @@ projects.")
       #:unpack-path "github.com/go-openapi/swag"))
     (native-inputs
      (list go-github-com-go-openapi-swag-typeutils
-           go-github-com-stretchr-testify))
+           go-github-com-go-openapi-testify-v2))
     (home-page "https://github.com/go-openapi/swag")
     (synopsis "Type conversion utilities for go-openapi")
     (description
