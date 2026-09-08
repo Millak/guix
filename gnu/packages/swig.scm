@@ -94,3 +94,6 @@ you tailor the wrapping process to suit your application.")
                          guile-3.0
                          perl))
     (inputs (list pcre2))))
+
+;; Remove when all packages depending on swig@4.0 are updated.
+-(define-public swig swig-4.4)
