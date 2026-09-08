@@ -36,7 +36,7 @@
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
-;;; Copyright © 2021-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021-2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021, 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
@@ -142,6 +142,7 @@
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages debian)
   #:use-module (gnu packages dns)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages file)
   #:use-module (gnu packages file-systems)
@@ -162,6 +163,7 @@
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages gperf)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -6316,6 +6318,54 @@ alias sysdig=sudo sysdig --modern-bpf
 alias cysdig=sudo csysdig --modern-bpf
 ")                                      ;XXX no @example Texinfo support
     (license license:asl2.0)))
+
+(define-public systemd-documentation
+  (package
+    (name "systemd-documentation")
+    (version "261.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/systemd/systemd")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "014mjygixfh9j1p1f09xgy114v5lfah6hwh8xcscy1nqxk3p2hf3"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-Dman=true")
+           #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'build
+                 (lambda* (#:key parallel-build? #:allow-other-keys)
+                   (invoke "ninja" "--verbose"
+                           "-j" (if parallel-build?
+                                    (number->string (parallel-job-count))
+                                    "1")
+                           "man")))
+               (replace 'install
+                 (lambda _
+                   (let ((man-dir (string-append #$output "/share/man")))
+                     (with-directory-excursion "man"
+                       (for-each
+                        (lambda (n)
+                          (let ((man-pages (find-files "."
+                                                       (format #f "\\.~a$" n)))
+                                (dest (format #f "~a/man~a" man-dir n)))
+                            (for-each (lambda (x)
+                                        (install-file x dest))
+                                      man-pages)))
+                        (iota 8 1)))))))))
+    (native-inputs (list docbook-xml-4.5 docbook-xsl gperf python-3
+                         python-jinja2 libxslt))
+    (inputs (list libxcrypt))
+    (home-page "https://systemd.io/")
+    (synopsis "Man pages of systemd")
+    (description "This package provides the entire man pages collection of
+systemd, the system and service manager.")
+    (license license:lgpl2.1+)))
 
 (define-public fail2ban
   (package
