@@ -9827,7 +9827,7 @@ with caching and de-duplication that works across a set of peer processes.")
 (define-public go-github-com-google-certificate-transparency-go
   (package
     (name "go-github-com-google-certificate-transparency-go")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
      (origin
        (method git-fetch)
@@ -9836,38 +9836,21 @@ with caching and de-duplication that works across a set of peer processes.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c2ngmjjmnhcnfwjy0pqnx1hvxygsdc4lscqvnyqrms0zbc51c0m"))))
+        (base32 "1fb96ld5lbxpa0ik2cnhydi4xgv0c647dl8l6hgh20gjphpk2hdl"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "github.com/google/certificate-transparency-go"
-      ;; XXX: Remove when all inputs are packaged.
+      #:test-flags #~(list "-vet=off")
       #:test-subdirs
-      #~(list "."
-              "asn1"
-              "client"
-              "ctpolicy"
-              "ctutil"
-              "fixchain"
-              "gossip/minimal/x509ext"
-              "internal/witness/cmd/witness/internal/http"
-              "internal/witness/cmd/witness/internal/witness"
-              "jsonclient"
-              "logid"
-              "loglist3"
-              "scanner"
-              "schedule"
-              "submission"
-              "tls"
-              "trillian/ctfe"
-              "trillian/ctfe/cache/lru"
-              "trillian/ctfe/storage/mysql"
-              "trillian/ctfe/storage/postgresql"
-              "trillian/integration"
-              "trillian/migrillian/core"
-              "x509"
-              "x509util")))
+      ;; XXX: Remove when all inputs are packaged.
+      #~(list "." "tls" "asn1" "x509" "logid" "client" "ctutil" "scanner"
+              "ctpolicy" "fixchain" "loglist3" "schedule" "x509util"
+              "jsonclient" "submission" "trillian/ctfe" "trillian/integration"
+              "gossip/minimal/x509ext" "trillian/ctfe/cache/lru"
+              "trillian/migrillian/core" "trillian/ctfe/storage/mysql"
+              "trillian/ctfe/storage/postgresql")))
     (native-inputs
      (list go-github-com-data-dog-go-sqlmock
            go-github-com-golang-mock
@@ -9879,10 +9862,8 @@ with caching and de-duplication that works across a set of peer processes.")
            go-github-com-spf13-pflag))
     (propagated-inputs
      (list go-github-com-go-sql-driver-mysql
-           go-github-com-gorilla-mux
            go-github-com-hashicorp-golang-lru-v2
            go-github-com-jackc-pgx-v5
-           go-github-com-mattn-go-sqlite3
            go-github-com-prometheus-client-golang
            go-github-com-rs-cors
            go-github-com-tomasen-realip
@@ -9890,15 +9871,16 @@ with caching and de-duplication that works across a set of peer processes.")
            go-golang-org-x-crypto
            go-golang-org-x-time
            go-google-golang-org-grpc
+           go-google-golang-org-grpc-cmd-protoc-gen-go-grpc
            go-google-golang-org-protobuf
-           go-gopkg-in-yaml-v3
            go-k8s-io-klog-v2
 
            ;; TODO: Complete packaging.
            ;; go-github-com-fullstorydev-grpcurl
-           ;; go-go-etcd-io-etcd-v3
+           ;; go-github-com-pseudomuto-protoc-gen-doc
            ;; go-go-etcd-io-etcd-client-v3
-           #;go-go-etcd-io-etcd-etcdctl-v3))
+           ;; go-go-etcd-io-etcd-etcdctl-v3
+           #;go-go-etcd-io-etcd-v3))
     (home-page "https://github.com/google/certificate-transparency-go")
     (synopsis "Go client for Certificate Transparency logs")
     (description
