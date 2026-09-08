@@ -9028,7 +9028,7 @@ the go-openapi and go-swagger projects.")
 (define-public go-github-com-go-openapi-swag-loading
   (package
     (name "go-github-com-go-openapi-swag-loading")
-    (version "0.27.0")
+    (version "0.29.2")
     (source
      (origin
        (method git-fetch)
@@ -9037,7 +9037,7 @@ the go-openapi and go-swagger projects.")
               (commit (go-version->git-ref version #:subdir "loading"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rg5q7xif4gmhc99kkgvnz03d0d0z2vanyv8xa4myn6ykvacw458"))
+        (base32 "1kk84irx6ifln01b5w1rzyrx4gmpzf6nkm190n6hhw7s4y28pq80"))
        (modules '((guix build utils)))
        (snippet #~(delete-all-but "." "loading"))))
     (build-system go-build-system)
@@ -9046,14 +9046,10 @@ the go-openapi and go-swagger projects.")
       #:import-path "github.com/go-openapi/swag/loading"
       #:unpack-path "github.com/go-openapi/swag"))
     (native-inputs
-     (list go-github-com-go-openapi-swag-jsonutils-fixtures-test
-           go-github-com-go-openapi-testify-enable-yaml-v2
+     (list go-github-com-go-openapi-testify-enable-yaml-v2
            go-github-com-go-openapi-testify-v2))
     (propagated-inputs
-     (list go-github-com-go-openapi-swag-conv
-           go-github-com-go-openapi-swag-jsonutils
-           go-github-com-go-openapi-swag-typeutils
-           go-github-com-go-openapi-swag-yamlutils))
+     (list go-github-com-go-openapi-swag-yamlutils))
     (home-page "https://github.com/go-openapi/swag")
     (synopsis "Tools to load a file from HTTP or from a local file system")
     (description
