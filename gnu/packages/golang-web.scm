@@ -8781,7 +8781,7 @@ prototyped in @url{https://github.com/xeipuuv/gojsonpointer}.")
 (define-public go-github-com-go-openapi-jsonreference
   (package
     (name "go-github-com-go-openapi-jsonreference")
-    (version "0.21.0")
+    (version "1.0.2")
     (source
      (origin
        (method git-fetch)
@@ -8790,16 +8790,17 @@ prototyped in @url{https://github.com/xeipuuv/gojsonpointer}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1121cnjjh07qdl4jdrd46kmdhx4dgsxn02rvsq5xzapl8gz5nhcn"))))
+        (base32 "1ii484dzpyl0s9scabbibh1fap8lcm23j35qzh81xnn9g788nnna"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/go-openapi/jsonreference"))
-    (native-inputs (list go-github-com-stretchr-testify))
+      #:import-path "github.com/go-openapi/jsonreference"
+      ;; Expected url.Parse to fail.
+      #:test-flags #~(list "-skip" "TestUrlnorm")))
+    (native-inputs
+     (list go-github-com-go-openapi-testify-v2))
     (propagated-inputs
-     (list go-github-com-go-openapi-jsonpointer
-           go-github-com-go-openapi-swag
-           go-github-com-puerkitobio-purell))
+     (list go-github-com-go-openapi-jsonpointer))
     (home-page "https://github.com/go-openapi/jsonreference")
     (synopsis "JSON Reference with structs")
     (description
