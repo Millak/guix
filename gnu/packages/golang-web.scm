@@ -18900,7 +18900,7 @@ changes.")
   (package
     (name "go-github-com-protonmail-gluon")
     ;; The latest commit from dev branch, 0.17.0 was placed in 2023.
-    (properties '((commit . "17b9426ae8f792e9eaa4309cb7dceb193d31cb66")
+    (properties '((commit . "b1f9ccf142a4b49efca9777eb66aab9249f05211")
                   (revision . "0")))
     (version (git-version "0.17.0"
                           (assoc-ref properties 'revision)
@@ -18913,28 +18913,28 @@ changes.")
               (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bbbn3777947ffls5ngdfh5r1miqws1l9lq7g2379843admsszc8"))))
+        (base32 "08bs78g662br83paxh7l5fx4n33fjfz8c019xks0qvbff8zprrzw"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/ProtonMail/gluon"))
     (native-inputs
      (list go-github-com-stretchr-testify
-           go-go-uber-org-goleak))
+           go-go-uber-org-goleak
+           go-go-uber-org-mock))
     (propagated-inputs
-     (list go-github-com-bradenaw-juniper
+     (list go-github-com-protonmail-go-mbox
+           go-github-com-bradenaw-juniper
            go-github-com-emersion-go-imap
            go-github-com-emersion-go-imap-uidplus
-           go-github-com-golang-mock
            go-github-com-google-uuid
            go-github-com-mattn-go-sqlite3
            go-github-com-pierrec-lz4-v4
            go-github-com-pkg-profile
-           go-github-com-protonmail-go-mbox
            go-github-com-sirupsen-logrus
-           go-golang-org-x-exp
            go-golang-org-x-sys
            go-golang-org-x-text
+           go-gopkg-in-yaml-v3
            go-gopkg-in-yaml-v3))
     (home-page "https://github.com/ProtonMail/gluon")
     (synopsis "IMAP server library")
