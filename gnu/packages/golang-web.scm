@@ -9091,7 +9091,7 @@ file system.")
 (define-public go-github-com-go-openapi-swag-stringutils
   (package
     (name "go-github-com-go-openapi-swag-stringutils")
-    (version "0.26.1")
+    (version "0.29.2")
     (source
      (origin
        (method git-fetch)
@@ -9100,7 +9100,7 @@ file system.")
               (commit (go-version->git-ref version #:subdir "stringutils"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0501r62xf03gzl00d7j7kwk15ssp3zikh9lq4899pyzyqfq2h8rk"))))
+        (base32 "1kk84irx6ifln01b5w1rzyrx4gmpzf6nkm190n6hhw7s4y28pq80"))))
     (build-system go-build-system)
     (arguments
      (list
