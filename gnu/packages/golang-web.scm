@@ -20717,7 +20717,7 @@ like Fulcio and Rekor.")
 (define-public go-github-com-sigstore-sigstore-go
   (package
     (name "go-github-com-sigstore-sigstore-go")
-    (version "1.1.4")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -20726,18 +20726,21 @@ like Fulcio and Rekor.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jr8jj4wibzxawn3dzv1j4cxmbh2b5g356mh2bqq9d0p78idf7k3"))))
+        (base32 "0fg7wi3i0qfwsnkya1zxmh0mgwwlh1zlzwrlik84m9900p4m86ix"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "github.com/sigstore/sigstore-go"
       #:embed-files #~(list ".*\\.json")
-      #:test-subdirs
-      #~(list "pkg/bundle"
-              "pkg/fulcio/certificate"
-              "pkg/tlog"
-              "pkg/tuf")))
+      ;; XXX: Remove when all inputs are packaged.
+      #:test-subdirs #~(list "pkg/tuf")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
@@ -20756,6 +20759,8 @@ like Fulcio and Rekor.")
            go-github-com-sigstore-sigstore
            go-github-com-sigstore-timestamp-authority-v2
            go-github-com-theupdateframework-go-tuf-v2
+           go-github-com-transparency-dev-formats
+           go-github-com-transparency-dev-merkle
            go-golang-org-x-crypto
            go-golang-org-x-mod
            go-google-golang-org-protobuf))
