@@ -1806,7 +1806,7 @@ and YAML transformations.")
 (define-public go-github-com-go-openapi-testify-enable-yaml-v2
   (package
     (name "go-github-com-go-openapi-testify-enable-yaml-v2")
-    (version "2.6.0")
+    (version "2.8.0")
     (source
      (origin
        (method git-fetch)
@@ -1815,7 +1815,7 @@ and YAML transformations.")
               (commit (go-version->git-ref version #:subdir "enable/yaml"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10p3pxgcag3xyp36w52m86b88lgj3hqbl9r7i4zyyfchkcf8nqkc"))
+        (base32 "1702hvh77sxzzdq1syyr4b0w3n5zfl87fz8krl2yrlb7d7zximgf"))
        (modules '((guix build utils)))
        (snippet
         ;; It's a helper for go-build-system to compile import-path and
