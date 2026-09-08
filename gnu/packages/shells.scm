@@ -545,7 +545,7 @@ history mechanism, job control and a C-like syntax.")
 (define-public zsh
   (package
     (name "zsh")
-    (version "5.9.1")
+    (version "5.9.2")
     (source (origin
               (method url-fetch)
               (uri (list (string-append
@@ -556,7 +556,7 @@ history mechanism, job control and a C-like syntax.")
                            ".tar.xz")))
               (sha256
                (base32
-                "0398v1c2w15m2v2cbibr3xjgz22k87klbhlyl3lw87cq7z0bw82x"))))
+                "109gil3xz5jmmcj1dv3rqy9gkqi2g3bbq2gc5ic86ixlfi1p7yin"))))
     (build-system gnu-build-system)
     (arguments `(#:configure-flags
                  `(,(string-append "CFLAGS=-g -O2"
