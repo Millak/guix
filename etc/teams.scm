@@ -1382,7 +1382,7 @@ the \"texlive\" importer."
 (define-member (person "jgart"
                        "jgart@dismail.de"
                        "jgart")
-  hare lisp mentors)
+  hare lisp mentors php)
 
 (define-member (person "John Kehayias"
                        "john@guixotic.coop"
