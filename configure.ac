@@ -149,6 +149,9 @@ if test "x$have_gnutls" != "xyes"; then
   AC_MSG_ERROR([The Guile bindings of GnuTLS are missing; please install them.])
 fi
 
+dnl Check Guile-GnuTLS version resp. required recently added symbol.
+GUILE_MODULE_REQUIRED_EXPORT([(gnutls)], [record-get-direction])
+
 dnl Check for Guile-Git.
 GUILE_MODULE_AVAILABLE([have_guile_git], [(git)])
 if test "x$have_guile_git" != "xyes"; then
