@@ -6034,7 +6034,7 @@ glamorous default themes.")
 (define-public go-github-com-charmbracelet-huh
   (package
     (name "go-github-com-charmbracelet-huh")
-    (version "0.8.0")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch/lfs)
@@ -6043,7 +6043,7 @@ glamorous default themes.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "166j1hrspj74z0ffbw1zbwapisfq1zz7l0bkj8xsqa08rz7nspjv"))))
+        (base32 "0zqylsp0cc7jgglqmahpjwp2zwzlc0njxjhqz25y6ahr424bvfdh"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -6062,7 +6062,9 @@ glamorous default themes.")
            go-github-com-charmbracelet-bubbletea
            go-github-com-charmbracelet-lipgloss
            go-github-com-charmbracelet-x-ansi
+           go-github-com-charmbracelet-x-cellbuf
            go-github-com-charmbracelet-x-exp-strings
+           go-github-com-charmbracelet-x-term
            go-github-com-mitchellh-hashstructure-v2))
     (home-page "https://github.com/charmbracelet/huh")
     (synopsis "Interactive terminal forms and prompts")
