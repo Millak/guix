@@ -13561,6 +13561,32 @@ inflect English words, modify case style (Capitalize, camelCase, snake_case,
 etc.).")
     (license license:expat)))
 
+(define-public go-github-com-go-openapi-swag-fileutils
+  (package
+    (name "go-github-com-go-openapi-swag-fileutils")
+    (version "0.29.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-openapi/swag")
+              (commit (go-version->git-ref version #:subdir "fileutils"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kk84irx6ifln01b5w1rzyrx4gmpzf6nkm190n6hhw7s4y28pq80"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-openapi/swag/fileutils"
+      #:unpack-path "github.com/go-openapi/swag"))
+    (native-inputs
+     (list go-github-com-go-openapi-testify-v2))
+    (home-page "https://github.com/go-openapi/swag")
+    (synopsis "Utilities to deal with files and paths")
+    (description
+     "Package fileutils exposes utilities to deal with files and paths.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-go-openapi-swag-jsonutils
   (package
     (name "go-github-com-go-openapi-swag-jsonutils")
