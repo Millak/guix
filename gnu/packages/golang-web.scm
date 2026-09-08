@@ -8810,28 +8810,31 @@ prototyped in @url{https://github.com/xeipuuv/gojsonreference}.")
 (define-public go-github-com-go-openapi-loads
   (package
     (name "go-github-com-go-openapi-loads")
-    (version "0.22.0")
+    (version "0.25.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/go-openapi/loads")
-             (commit (string-append "v" version))))
+              (url "https://github.com/go-openapi/loads")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qlcpdlm4y4v9r2r533aqvrc86b67nj31gsz29x9ilr7smr5299d"))))
+        (base32 "0mcy85i8ff9g2rac72jyd6qhpvarg6ryq9fmmqq599yf0lcvnysk"))))
     (build-system go-build-system)
     (arguments
      (list
       #:embed-files #~(list "jsonschema-draft-04\\.json" "schema\\.json")
       #:import-path "github.com/go-openapi/loads"))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-go-openapi-testify-v2
+           go-github-com-go-openapi-testify-enable-yaml-v2))
     (propagated-inputs
      (list go-github-com-go-openapi-analysis
            go-github-com-go-openapi-spec
-           go-github-com-go-openapi-swag
-           go-gopkg-in-yaml-v3))
+           go-github-com-go-openapi-swag-jsonutils
+           go-github-com-go-openapi-swag-loading
+           go-github-com-go-openapi-swag-yamlutils
+           go-go-yaml-in-yaml-v3))
     (home-page "https://github.com/go-openapi/loads")
     (synopsis "Load OAI specification documents")
     (description
