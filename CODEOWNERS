@@ -349,6 +349,15 @@ guix/build-system/rakudo\.scm                      @guix/perl
 guix/import/cpan\.scm                              @guix/perl
 guix/scripts/import/cpan\.scm                      @guix/perl
 
+gnu/packages/php\.scm                              @guix/php
+gnu/packages/php-xyz\.scm                          @guix/php
+gnu/packages/aux-files/findclass\.php              @guix/php
+guix/build-system/composer\.scm                    @guix/php
+guix/build/composer-build-system\.scm              @guix/php
+guix/import/composer\.scm                          @guix/php
+guix/scripts/import/composer\.scm                  @guix/php
+tests/import/composer\.scm                         @guix/php
+
 gnu/packages/aux-files/python/.*\.py$              @guix/python
 gnu/packages/django\.scm                           @guix/python
 gnu/packages/jupyter\.scm                          @guix/python

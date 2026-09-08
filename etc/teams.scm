@@ -15,7 +15,7 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
 ;;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@disroot.org>
 ;;; Copyright © 2025-2026 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2025 jgart <jgart@dismail.de>
+;;; Copyright © 2025, 2026 jgart <jgart@dismail.de>
 ;;; Copyright © 2026 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1032,6 +1032,20 @@ perl-build-system as well as the rakudo-build-system."
               "guix/build-system/rakudo.scm"
               "guix/import/cpan.scm"
               "guix/scripts/import/cpan.scm")))
+
+(define-team php
+  (team 'php
+        #:name "PHP team"
+        #:description
+        "PHP, PHP packages, the \"composer\" importer, and the composer-build-system."
+        #:scope (list "gnu/packages/php.scm"
+                      "gnu/packages/php-xyz.scm"
+                      "gnu/packages/aux-files/findclass.php"
+                      "guix/build-system/composer.scm"
+                      "guix/build/composer-build-system.scm"
+                      "guix/import/composer.scm"
+                      "guix/scripts/import/composer.scm"
+                      "tests/import/composer.scm")))
 
 (define-team python
   (team 'python
