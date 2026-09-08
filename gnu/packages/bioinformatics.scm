@@ -11994,7 +11994,7 @@ of these reads to align data quickly through a hash-based indexing scheme.")
                     (db    (assoc-ref outputs "db"))
                     (share
                      (string-append db "/share/sortmerna/rRNA_databases")))
-               (install-file "src/sortmerna" bin)
+               (install-file "src/sortmerna/sortmerna" bin)
                (for-each (lambda (file)
                            (install-file file share))
                          (find-files "../source/data/rRNA_databases" ".*fasta"))))))))
