@@ -8728,7 +8728,7 @@ about the content.")
 (define-public go-github-com-go-openapi-errors
   (package
     (name "go-github-com-go-openapi-errors")
-    (version "0.22.1")
+    (version "0.22.8")
     (source
      (origin
        (method git-fetch)
@@ -8737,14 +8737,13 @@ about the content.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ll8hys25q536q73d5qhgf7ch9cl5183g6bqgdq61zdgcvvz0krf"))))
+        (base32 "1xlxbd3caqmnk9hlh6f8hbjr1c6abv8gsha3p1rb2gq3cbk6q5yz"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/go-openapi/errors"
-      #:test-flags #~(list "-vet=off")))
+      #:import-path "github.com/go-openapi/errors"))
     (native-inputs
-     (list go-github-com-stretchr-testify))
+     (list go-github-com-go-openapi-testify-v2))
     (home-page "https://github.com/go-openapi/errors")
     (synopsis "OpenAPI toolkit common errors")
     (description
