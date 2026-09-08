@@ -4682,8 +4682,8 @@ support the streaming mode required by Go's standard Hash interface.")
   ;; XXX: The latest commits provides test fixtures, see:
   ;; <https://github.com/veraison/go-cose/pull/214/>. Revert back to git tag
   ;; when a fresh release is available.
-  (let ((commit "a633822d54e270749baecce653c5ba4f07ccbb46")
-        (revision "0"))
+  (let ((commit "dea543bf9b89b0cef461c0d194747c9ed5e6666c")
+        (revision "1"))
     (package
       (name "go-github-com-veraison-go-cose")
       (version (git-version "1.3.0" revision commit))
@@ -4695,22 +4695,14 @@ support the streaming mode required by Go's standard Hash interface.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0nni0pv8s6mn1jpk6pxpi464qdji0s0pq587y2mnsa4zkp9pp09z"))))
+          (base32 "0q6h68533xb83c8dvbc6sc4i12x0gnshg827i3k035dj1h3sl563"))))
       (build-system go-build-system)
       (arguments
        (list
         #:import-path "github.com/veraison/go-cose"
-        #:test-flags
-        ;; Some tests are not compatible with cbor@2.9.0.
-        ;; See: <https://github.com/veraison/go-cose/pull/218>.
-        #~(list "-skip" (string-join
-                         (list "TestProtectedHeader_UnmarshalCBOR/duplicated_key"
-                               "TestUnprotectedHeader_UnmarshalCBOR/duplicated_key"
-                               "TestKey_UnmarshalCBOR/duplicated_param"
-                               "TestKey_UnmarshalCBOR/duplicated_kty"
-                               "TestConformance/sign1-verify-negative-0002"
-                               "TestConformance/sign1-verify-negative-0003")
-                         "|"))))
+        ;; verifier_test.go:148: NewVerifier() error = ES256: invalid public
+        ;; key: P256 point not on curve, wantErr ES256: invalid public key.
+        #:test-flags #~(list "-skip" "TestNewVerifier")))
       (propagated-inputs
        (list go-github-com-fxamacker-cbor-v2))
       (home-page "https://github.com/veraison/go-cose")
