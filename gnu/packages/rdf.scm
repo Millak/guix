@@ -100,29 +100,44 @@ HTML and JSON.")
   (package
     (name "clucene")
     (version "2.3.3.4")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://sourceforge/clucene/"
-                                 "clucene-core-unstable/2.3/clucene-core-"
-                                 version ".tar.gz"))
-             (sha256
-              (base32
-               "1arffdwivig88kkx685pldr784njm0249k0rb1f1plwavlrw9zfx"))
-             (patches (search-patches "clucene-pkgconfig.patch"
-                                      "clucene-contribs-lib.patch"
-                                      "clucene-gcc-14.patch"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/clucene/"
+                           "clucene-core-unstable/2.3/clucene-core-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1arffdwivig88kkx685pldr784njm0249k0rb1f1plwavlrw9zfx"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(substitute* "src/shared/cmake/MacroCheckGccVisibility.cmake"
+            (("exec_program\\(") "execute_process(COMMAND ")
+            (("ARGS ") "")))
+       (patches (search-patches "clucene-pkgconfig.patch"
+                                "clucene-contribs-lib.patch"
+                                "clucene-gcc-14.patch"))))
     (build-system cmake-build-system)
     (inputs
      (list boost ; could also use bundled copy
            zlib))
     (arguments
-     `(#:configure-flags '("-DBUILD_CONTRIBS_LIB=ON")
-       #:tests? #f)) ; Tests do not compile, as TestIndexSearcher.cpp uses
-                     ; undeclared usleep. After fixing this, one needs to run
-                     ; "make test" in addition to "make cl_test", then
-                     ; SimpleTest fails.
-                     ; Notice that the library appears to be unmaintained
-                     ; with no reaction to bug reports.
+     (list
+       ;; Tests do not compile, as TestIndexSearcher.cpp uses
+       ;; undeclared usleep. After fixing this, one needs to run
+       ;; "make test" in addition to "make cl_test", then
+       ;; SimpleTest fails.
+       #:tests? #f
+       #:configure-flags
+       #~(cons
+           "-DBUILD_CONTRIBS_LIB=ON"
+           (if #$(%current-target-system)
+               '("-D_CL_HAVE_PTHREAD_MUTEX_RECURSIVE_EXITCODE=FAILED_TO_RUN"
+                 "-D_CL_HAVE_GCC_ATOMIC_FUNCTIONS_EXITCODE=FAILED_TO_RUN"
+                 "-D_CL_HAVE_TRY_BLOCKS_EXITCODE=FAILED_TO_RUN"
+                 "-D_CL_HAVE_NAMESPACES_EXITCODE=FAILED_TO_RUN"
+                 "-D_CL_HAVE_NO_SNPRINTF_BUG_EXITCODE=FAILED_TO_RUN"
+                 "-DLUCENE_STATIC_CONSTANT_SYNTAX_EXITCODE=FAILED_TO_RUN")
+                '()))))
     (home-page "https://clucene.sourceforge.net/")
     (synopsis "C text indexing and searching library")
     (description "CLucene is a high-performance, scalable, cross platform,
