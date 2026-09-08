@@ -1843,7 +1843,7 @@ YAMLEq} capability in testify.")
 (define-public go-github-com-go-openapi-testify-v2
   (package
     (name "go-github-com-go-openapi-testify-v2")
-    (version "2.5.1")
+    (version "2.8.0")
     (source
      (origin
        (method git-fetch)
@@ -1852,7 +1852,7 @@ YAMLEq} capability in testify.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fs6xh9wz8wwiw6gq6csfhm3f51yzsdh1pw2miy4vylvvvyx4n15"))
+        (base32 "1702hvh77sxzzdq1syyr4b0w3n5zfl87fz8krl2yrlb7d7zximgf"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
