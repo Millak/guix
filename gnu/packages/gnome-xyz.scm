@@ -1040,7 +1040,8 @@ Requires the focus-timer application to be installed.")
               (for-each (lambda (file)
                           (substitute* file
                             (("^#!/usr/bin/env -S gjs.*$")
-                             (string-append "#!" (which "gjs") " -m"))))
+                             (string-append
+                              "#!" (search-input-file inputs "/bin/gjs") " -m"))))
                         '("installed-tests/minijasmine"
                           "src/gsconnect-preferences"
                           "src/service/nativeMessagingHost.js"
